@@ -33,7 +33,6 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.Period;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,32 +74,22 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
     }
     BigDecimal duration =
         BigDecimal.ZERO; // Declaring duration as BigDecimal to use it with manufOrderProducedRatio
+    BigDecimal realDuration = BigDecimal.valueOf(operationOrder.getRealDuration());
+    int calculationType = parentCostSheetLine.getCostSheet().getCalculationTypeSelect();
 
     if (operationOrder.getTimesheetLineList() != null) {
-      if (parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
-              == CostSheetRepository.CALCULATION_END_OF_PRODUCTION
-          || parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
-              == CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION) {
-        Period period =
-            previousCostSheetDate != null
-                ? Period.between(
-                    parentCostSheetLine.getCostSheet().getCalculationDate(), previousCostSheetDate)
-                : null;
+      if (calculationType == CostSheetRepository.CALCULATION_END_OF_PRODUCTION
+          || calculationType == CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION) {
         duration =
-            period != null
-                ? new BigDecimal(period.getDays() * 24)
-                : new BigDecimal(operationOrder.getRealDuration());
-      } else if (parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
-          == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS) {
-
+            computeDurationBetweenCostSheets(
+                previousCostSheetDate,
+                parentCostSheetLine.getCostSheet().getCalculationDate(),
+                realDuration);
+      } else if (calculationType == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS) {
         BigDecimal ratio = costSheet.getManufOrderProducedRatio();
-
-        /*
-         * Using BigDecimal value of plannedDuration and realDuration for calculation with manufOrderProducedRatio
-         */
-        duration =
-            (new BigDecimal(operationOrder.getRealDuration()))
-                .subtract((new BigDecimal(operationOrder.getPlannedDuration()).multiply(ratio)));
+        BigDecimal plannedDuration =
+            BigDecimal.valueOf(operationOrder.getPlannedDuration()).multiply(ratio);
+        duration = realDuration.subtract(plannedDuration).abs();
       }
 
       // TODO get the timesheet Line done when we run the calculation.

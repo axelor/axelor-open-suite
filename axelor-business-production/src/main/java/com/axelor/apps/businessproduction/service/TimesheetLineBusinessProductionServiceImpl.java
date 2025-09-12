@@ -20,6 +20,7 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproduction.exception.BusinessProductionExceptionMessage;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
@@ -103,13 +104,18 @@ public class TimesheetLineBusinessProductionServiceImpl
             .map(OperationOrder::getManufOrder)
             .orElse(null));
 
-    tsl.setDuration(
-        computeDuration(
-            timesheet,
-            DurationHelper.getSecondsDuration(
-                Duration.between(
-                    operationOrderDuration.getStartingDateTime(),
-                    operationOrderDuration.getStoppingDateTime()))));
+    long secondsDuration =
+        DurationHelper.getSecondsDuration(
+            Duration.between(
+                operationOrderDuration.getStartingDateTime(),
+                operationOrderDuration.getStoppingDateTime()));
+    tsl.setDuration(computeDuration(timesheet, secondsDuration));
+    tsl.setHoursDuration(
+        BigDecimal.valueOf(secondsDuration)
+            .divide(
+                BigDecimal.valueOf(3600),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP));
 
     tsl.setDate(operationOrderDuration.getStartingDateTime().toLocalDate());
     tsl.setEmployee(timesheet.getEmployee());
