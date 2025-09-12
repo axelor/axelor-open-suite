@@ -151,7 +151,7 @@ public class BankStatementLineCreationCAMT53ServiceImpl
 
     LocalDate valueDate = camt53ToolService.computeLocalDateFromDateTimeChoice(ntry.getValDt());
 
-    String description = Optional.of(ntry).map(ReportEntry2::getAcctSvcrRef).orElse("");
+    String description = camt53ToolService.constructDescriptionFromNtry(ntry);
 
     Integer commissionExemptionIndexSelect =
         camt53ToolService.getCommissionExemptionIndexSelect(ntry);
@@ -177,7 +177,7 @@ public class BankStatementLineCreationCAMT53ServiceImpl
       debit = amount;
     }
 
-    String origin = description;
+    String origin = camt53ToolService.getOrigin(ntry);
 
     String reference = camt53ToolService.getReference(ntry);
 
