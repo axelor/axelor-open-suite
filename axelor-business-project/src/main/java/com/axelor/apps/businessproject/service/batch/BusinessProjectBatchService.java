@@ -160,13 +160,10 @@ public class BusinessProjectBatchService extends AbstractBatchService {
 
     List<Map<String, Object>> recordList = (List<Map<String, Object>>) jsonContext.get(field);
 
-    String ids =
-        !CollectionUtils.isEmpty(recordList)
-            ? recordList.stream()
-                .map(_map -> _map.get("id").toString())
-                .collect(Collectors.joining(","))
-            : null;
-
-    return ids;
+      return !CollectionUtils.isEmpty(recordList)
+          ? recordList.stream()
+              .map(_map -> _map.get("id").toString())
+              .collect(Collectors.joining(","))
+          : null;
   }
 }

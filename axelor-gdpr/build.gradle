@@ -15,5 +15,36 @@ axelor {
 }
 
 dependencies {
-    api project(":modules:axelor-base")
+    dependencies.api(project(":modules:axelor-base")) {
+        exclude group: 'com.axelor'
+    }
+    dependencies.api("com.axelor:axelor-web:7.3.3") {
+        exclude group: 'com.axelor'
+    }
+    dependencies.api("com.axelor:axelor-core:7.3.3") {
+        exclude group: 'org.ow2.asm', module: 'asm'
+        exclude group: 'com.zaxxer', module: 'HikariCP'
+        exclude group: 'com.google.guava', module: 'guava'
+        exclude group: 'com.fasterxml', module: 'classmate'
+        exclude group: 'org.javassist', module: 'javassist'
+        exclude group: 'org.jboss.logging', module: 'jboss-logging'
+        exclude group: 'io.smallrye.config', module: 'smallrye-config'
+        exclude group: 'com.fasterxml.woodstox', module: 'woodstox-core'
+    }
+    // https://mvnrepository.com/artifact/io.smallrye.config/smallrye-config
+    implementation("io.smallrye.config:smallrye-config:2.13.3")
+    // https://mvnrepository.com/artifact/com.zaxxer/HikariCP
+    implementation "com.zaxxer:HikariCP:6.3.0"
+    // https://mvnrepository.com/artifact/com.fasterxml/classmate
+    implementation("com.fasterxml:classmate:1.7.0")
+    // https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy
+    implementation("net.bytebuddy:byte-buddy:1.17.5")
+    // https://mvnrepository.com/artifact/com.fasterxml.woodstox/woodstox-core
+    implementation("com.fasterxml.woodstox:woodstox-core:7.0.0")
+    // https://mvnrepository.com/artifact/org.ow2.asm/asm
+    implementation("org.ow2.asm:asm:9.8")
+    // https://mvnrepository.com/artifact/com.google.guava/guava
+    implementation("com.google.guava:guava:33.4.8-jre")
+    // https://mvnrepository.com/artifact/org.jboss.logging/jboss-logging
+    implementation("org.jboss.logging:jboss-logging:3.6.1.Final")
 }

@@ -31,14 +31,14 @@ ext {
 }
 
 node {
-	version = '16.17.0'
-	yarnVersion = '1.22.19'
+	version = '22.16.0'
+	yarnVersion = '1.22.22'
     download = true
     distBaseUrl = null
     nodeModulesDir = file(reactDir)
 }
 
-task buildFront(type: YarnTask) {
+tasks.register('buildFront', YarnTask) {
     group = 'axelor'
     description = 'Build Front-end'
 
@@ -48,11 +48,11 @@ task buildFront(type: YarnTask) {
     inputs.dir(fileTree("${reactDir}/.yarn"))
     outputs.dir("${reactDir}/build")
 
-	dependsOn 'installFrontDeps'
+    dependsOn 'installFrontDeps'
     args = ["run", "build"]
 }
 
-task installFrontDeps(type: YarnTask) {
+tasks.register('installFrontDeps', YarnTask) {
     group = 'axelor'
     description = 'Install Front-end dependencies'
 
@@ -60,13 +60,13 @@ task installFrontDeps(type: YarnTask) {
 }
 
 
-task copyReactWebapp(type: Copy) {
-	destinationDir = file("$rootProject.buildDir/webapp")
-	into("hr/timesheet") {
-		from "${reactDir}/build"
-	}
-	
-	dependsOn 'buildFront'
+tasks.register('copyReactWebapp', Copy) {
+    destinationDir = file("$rootProject.buildDir/webapp")
+    into("hr/timesheet") {
+        from "${reactDir}/build"
+    }
+
+    dependsOn 'buildFront'
 }
 
 
