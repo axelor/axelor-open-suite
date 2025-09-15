@@ -575,6 +575,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
+      if (saleOrderLine.getQty().signum() == 0) {
+        continue;
+      }
       if (this.isStockMoveProduct(saleOrderLine, saleOrder)) {
 
         if (saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {
