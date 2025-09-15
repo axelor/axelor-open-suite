@@ -789,28 +789,6 @@
       expr="true"/>
   </action-attrs>
 
-  <action-validate name="action-sale-order-line-validate-check-coefficient-config">
-    <error message="Coefficient on invoice line must be enabled for progress billing."
-      if="eval: !__repo__(AccountConfig).findByCompany(__parent__.company)?.isInvoiceCoefficientEnabled &amp;&amp; invoicingModeSelect == __repo__(SaleOrderLine).INVOICING_MODE_PROGRESS_BILLING"
-      action="action-sale-order-line-attrs-reset-invoicing-mode"/>
-  </action-validate>
-
-  <action-attrs name="action-sale-order-line-attrs-reset-invoicing-mode">
-    <attribute for="invoicingModeSelect" name="value"
-      expr="eval: __repo__(SaleOrderLine).INVOICING_MODE_STANDARD"/>
-    <attribute for="toInvoice" name="value" expr="eval: false"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-order-line-attrs-to-invoice">
-    <attribute for="toInvoice" name="value"
-      expr="eval: invoicingModeSelect == __repo__(SaleOrderLine).INVOICING_MODE_DIRECTLY || invoicingModeSelect == __repo__(SaleOrderLine).INVOICING_MODE_ON_DELIVERY"/>
-  </action-attrs>
-
-  <action-group name="action-sale-order-line-group-invoicing-mode-select-onchange">
-    <action name="action-sale-order-line-validate-check-coefficient-config"/>
-    <action name="action-sale-order-line-attrs-to-invoice"/>
-  </action-group>
-
   <action-method name="action-sale-order-line-method-add-to-cart">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="addToCart"/>
   </action-method>
