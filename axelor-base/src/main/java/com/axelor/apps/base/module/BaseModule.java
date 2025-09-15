@@ -52,6 +52,8 @@ import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageRepository;
+import com.axelor.apps.base.db.repo.MapViewBaseRepository;
+import com.axelor.apps.base.db.repo.MapViewRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -572,5 +574,6 @@ public class BaseModule extends AxelorModule {
     bind(PublicHolidayService.class).to(PublicHolidayServiceImpl.class);
     bind(MapGroupService.class).to(MapGroupServiceImpl.class);
     bind(MapViewService.class).to(MapViewServiceImpl.class);
+    bind(MapViewRepository.class).to(MapViewBaseRepository.class);
   }
 }

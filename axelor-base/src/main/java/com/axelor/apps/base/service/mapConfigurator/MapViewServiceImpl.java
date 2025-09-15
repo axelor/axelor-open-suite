@@ -19,6 +19,7 @@
 package com.axelor.apps.base.service.mapConfigurator;
 
 import com.axelor.apps.base.db.MapView;
+import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.utils.helpers.MetaActionHelper;
 import com.google.inject.persist.Transactional;
@@ -29,6 +30,11 @@ public class MapViewServiceImpl implements MapViewService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void computeMapActionView(MapView mapView) {
+    MetaMenu metaMenu = mapView.getMetaMenu();
+
+    if (metaMenu == null || metaMenu.getAction() != null) {
+      return;
+    }
 
     String actionName = String.format("menu.map.view.%d", mapView.getId());
 
@@ -43,10 +49,7 @@ public class MapViewServiceImpl implements MapViewService {
                     .toString())
             .get();
 
-    mapView
-        .getMetaMenu()
-        .setAction(
-            MetaActionHelper.actionToMetaAction(
-                actionView, actionName, "action-view", "axelor-base"));
+    metaMenu.setAction(
+        MetaActionHelper.actionToMetaAction(actionView, actionName, "action-view", "axelor-base"));
   }
 }
