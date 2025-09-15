@@ -288,7 +288,7 @@
   <action-attrs name="action-contract-line-attrs-hide-consumption-line"
     model="com.axelor.apps.contract.db.ContractLine">
     <attribute name="hidden" for="isConsumptionLine"
-      expr="eval: !__parent__?.isConsumptionManagement"/>
+      expr="eval: (__parent__ &amp;&amp; __parent__?._parent) ? !__parent__?._parent?.isConsumptionManagement : !__parent__?.isConsumptionManagement"/>
   </action-attrs>
 
   <action-attrs
