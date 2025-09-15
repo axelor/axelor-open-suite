@@ -42,6 +42,7 @@
         <field name="checkExistingSequenceOnGeneration" widget="boolean-switch" colSpan="3"/>
         <field name="draftPrefix" colSpan="3"/>
         <field name="defaultBatchFetchLimit"/>
+        <field name="importErrorPath"/>
         <field name="isRegistrationCodeCheckBlocking" widget="boolean-switch"/>
         <field name="isGlobalDiscountEnabled" widget="boolean-switch"
           if="['sale','invoice'].any{module -> __config__.app.isApp(module)}"/>

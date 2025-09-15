@@ -126,4 +126,6 @@ public interface AppBaseService extends AppService {
   String getSireneKey() throws AxelorException;
 
   String getSireneSecret() throws AxelorException;
+
+  String getImportErrorPath();
 }

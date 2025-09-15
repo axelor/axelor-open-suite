@@ -200,6 +200,8 @@
     <string name="sireneSecret" title="Consumer secret" encrypted="true"/>
     <string name="sireneAccessToken" title="Access token" encrypted="true"/>
 
+    <string name="importErrorPath" title="Import error directory path"/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -302,6 +304,7 @@
       <field name="companyPhoneBookPrintTemplate" on="UPDATE"/>
       <field name="contactPhoneBookPrintTemplate" on="UPDATE"/>
       <field name="productCatalogPGQLPrintTemplate" on="UPDATE"/>
+      <field name="importErrorPath" on="UPDATE"/>
       <!-- 32 fields -->
     </track>
 
