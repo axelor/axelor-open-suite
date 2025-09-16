@@ -324,6 +324,7 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningServiceImp;
+import com.axelor.apps.base.tracking.AosHibernateConfigurator;
 import com.axelor.apps.base.tracking.GlobalTrackingLogService;
 import com.axelor.apps.base.tracking.GlobalTrackingLogServiceImpl;
 import com.axelor.auth.db.repo.UserRepository;
@@ -560,5 +561,6 @@ public class BaseModule extends AxelorModule {
         .equals(GlobalAuditInterceptor.class.getName())) {
       bind(ExportObserver.class);
     }*/
+    addHibernateListenerConfigurator(AosHibernateConfigurator.class);
   }
 }
