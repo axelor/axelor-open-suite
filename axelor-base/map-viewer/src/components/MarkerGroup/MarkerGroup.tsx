@@ -42,12 +42,47 @@ const MarkerGroup = ({ id, name }: { id: number; name: string }) => {
     [config?.color]
   );
 
+  const overlayName = useMemo(() => {
+    return `
+      <span data-map-group-id="${id}" style="display:none"></span>
+      <span>${name}</span>
+    `;
+  }, [name, id]);
+
+  useEffect(() => {
+    const color = config?.color ?? "#457896";
+
+    const applyCheckboxColor = () => {
+      const hook = document.querySelector(
+        `.leaflet-control-layers-overlays [data-map-group-id='${id}']`
+      ) as HTMLElement | null;
+      if (!hook) return;
+      const label = hook.closest("label") as HTMLLabelElement | null;
+      const input = label?.querySelector(
+        "input[type='checkbox']"
+      ) as HTMLInputElement | null;
+      if (!label || !input) return;
+      label.style.setProperty("--leaflet-layer-accent", color);
+      (input.style as any).accentColor = color;
+    };
+
+    applyCheckboxColor();
+
+    const container = document.querySelector(
+      ".leaflet-control-layers-overlays"
+    );
+    if (!container) return;
+    const obs = new MutationObserver(() => applyCheckboxColor());
+    obs.observe(container, { childList: true, subtree: true });
+    return () => obs.disconnect();
+  }, [config?.color, id]);
+
   if (!Array.isArray(config?.data)) {
     return null;
   }
 
   return (
-    <LayersControl.Overlay key={`${name}-${id}`} checked name={name}>
+    <LayersControl.Overlay key={`${name}-${id}`} checked name={overlayName}>
       <LayerGroup>
         {(config.data as MarkerPoint[]).map((m, idx) => (
           <Marker
