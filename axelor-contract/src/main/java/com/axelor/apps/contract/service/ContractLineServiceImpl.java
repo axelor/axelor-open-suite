@@ -381,11 +381,12 @@ public class ContractLineServiceImpl implements ContractLineService {
     if (contract == null) {
       return domain;
     }
+    Company company = contract.getCompany();
     if (appBaseService.getAppBase().getEnableTradingNamesManagement()
         && appSaleService.getAppSale().getEnableSalesProductByTradName()
         && contract.getTradingName() != null
-        && contract.getCompany() != null
-        && !CollectionUtils.isEmpty(contract.getCompany().getTradingNameList())) {
+        && company != null
+        && !CollectionUtils.isEmpty(company.getTradingNameList())) {
       domain +=
           " AND " + contract.getTradingName().getId() + " member of self.tradingNameSellerSet";
     }
@@ -393,12 +394,24 @@ public class ContractLineServiceImpl implements ContractLineService {
     int targetTypeSelect = contract.getTargetTypeSelect();
     if (targetTypeSelect == ContractRepository.CUSTOMER_CONTRACT
         || targetTypeSelect == ContractRepository.YEB_CUSTOMER_CONTRACT) {
-      domain += " AND self.sellable = true";
+      domain += buildDomain(company, "sellable");
     } else if (targetTypeSelect == ContractRepository.SUPPLIER_CONTRACT
         || targetTypeSelect == ContractRepository.YEB_SUPPLIER_CONTRACT) {
-      domain += " AND self.purchasable = true";
+      domain += buildDomain(company, "purchasable");
     }
 
     return domain;
+  }
+
+  protected String buildDomain(Company company, String fieldName) {
+    if (company != null && productCompanyService.isCompanySpecificProductFields(fieldName)) {
+      return " AND EXISTS (SELECT pc FROM self.productCompanyList pc"
+          + " WHERE pc.company.id = "
+          + company.getId()
+          + " AND pc."
+          + fieldName
+          + " = true)";
+    }
+    return " AND self." + fieldName + " = true";
   }
 }
