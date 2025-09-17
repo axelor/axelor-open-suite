@@ -676,6 +676,8 @@
     <action name="action-supplychain-stock-move-line-attrs-hide-button"/>
     <action name="action-stock-move-line-method-translate-product-description-and-name"/>
     <action name="action-stock-move-line-attrs-reset-qty" if="eval: product == null"/>
+    <action name="action-stock-move-line-method-set-stock-location"
+      if="__config__.app.getApp('base').enableSiteManagementForStock &amp;&amp; __config__.app.getApp('stock').isManageStockLocationOnStockMoveLine"/>
   </action-group>
 
   <action-group name="action-group-stock-stockmoveline-production-onnew">
@@ -771,6 +773,10 @@
   <action-method name="action-stock-move-line-method-update-lines">
     <call class="com.axelor.apps.stock.web.StockMoveLineController"
       method="splitStockMoveLineByTrackingNumber"/>
+  </action-method>
+
+  <action-method name="action-stock-move-line-method-set-stock-location">
+    <call class="com.axelor.apps.stock.web.StockMoveLineController" method="fillStockLocation"/>
   </action-method>
 
   <action-record name="action-stock-move-line-record-product"

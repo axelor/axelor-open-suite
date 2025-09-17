@@ -374,6 +374,10 @@
           <panel-dashlet action="action-stock-view-stock-location-line-history"
             name="stockHistoryLinePanel" colSpan="12" showIf="productTypeSelect == 'storable'"/>
         </panel>
+
+        <field name="defaultStockLocationBySite" colSpan="12"
+          if="__config__.app.getApp('base').enableSiteManagementForStock &amp;&amp; __config__.app.getApp('stock').isManageStockLocationOnStockMoveLine"/>
+
       </panel>
       <panel name="productionInformationsPanel" title="Production information"
         showTitle="false"

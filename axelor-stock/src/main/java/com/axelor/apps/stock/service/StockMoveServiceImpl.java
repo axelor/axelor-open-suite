@@ -94,6 +94,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected StockConfigService stockConfigService;
   protected AppStockService appStockService;
   protected ProductCompanyService productCompanyService;
+  protected StockMoveLineStockLocationService stockMoveLineStockLocationService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -107,7 +108,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AppStockService appStockService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      StockMoveLineStockLocationService stockMoveLineStockLocationService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -119,6 +121,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.stockConfigService = stockConfigService;
     this.appStockService = appStockService;
     this.productCompanyService = productCompanyService;
+    this.stockMoveLineStockLocationService = stockMoveLineStockLocationService;
   }
 
   /**
@@ -330,12 +333,36 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMoveLine.setTrackingNumber(stockMoveLine.getTrackingNumber());
     }
 
+    boolean isDefaultLocationManagementEnabled =
+        appBaseService.getAppBase().getEnableSiteManagementForStock()
+            && appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine();
+
     if (stockMoveLine.getToStockLocation() == null) {
-      stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
+      StockLocation toStockLocation = stockMove.getToStockLocation();
+      stockMoveLine.setToStockLocation(toStockLocation);
+
+      if (isDefaultLocationManagementEnabled) {
+        stockMoveLine.setToStockLocation(
+            Optional.of(
+                    stockMoveLineStockLocationService.getDefaultToStockLocation(
+                        stockMoveLine, stockMove))
+                .orElse(toStockLocation));
+      }
     }
+
     if (stockMoveLine.getFromStockLocation() == null) {
-      stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
+      StockLocation fromStockLocation = stockMove.getFromStockLocation();
+      stockMoveLine.setFromStockLocation(fromStockLocation);
+
+      if (isDefaultLocationManagementEnabled) {
+        stockMoveLine.setFromStockLocation(
+            Optional.ofNullable(
+                    stockMoveLineStockLocationService.getDefaultFromStockLocation(
+                        stockMoveLine, stockMove))
+                .orElse(fromStockLocation));
+      }
     }
+
     stockMoveLine.setIsRealQtyModifiedByUser(true);
     stockMoveLine.setUnitPriceUntaxed(product.getLastPurchasePrice());
     stockMove.addStockMoveLineListItem(stockMoveLine);
@@ -888,18 +915,21 @@ public class StockMoveServiceImpl implements StockMoveService {
       return Optional.empty();
     }
 
-    reverseStockMoveLineStockLocation(stockMove, newStockMoveLineList);
+    reverseStockMoveLineStockLocation(newStockMoveLineList);
 
     fillNewStockMoveFields(newStockMove, stockMove);
 
     return Optional.of(stockMoveRepo.save(newStockMove));
   }
 
-  protected void reverseStockMoveLineStockLocation(
-      StockMove stockMove, List<StockMoveLine> newStockMoveLineList) {
+  protected void reverseStockMoveLineStockLocation(List<StockMoveLine> newStockMoveLineList) {
     for (StockMoveLine stockMoveLine : newStockMoveLineList) {
-      stockMoveLine.setFromStockLocation(stockMove.getToStockLocation());
-      stockMoveLine.setToStockLocation(stockMove.getFromStockLocation());
+
+      StockLocation toStockLocation = stockMoveLine.getToStockLocation();
+      StockLocation fromStockLocation = stockMoveLine.getFromStockLocation();
+
+      stockMoveLine.setFromStockLocation(toStockLocation);
+      stockMoveLine.setToStockLocation(fromStockLocation);
     }
   }
 
