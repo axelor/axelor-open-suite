@@ -38,6 +38,8 @@ public class PartnerApiFetchServiceImpl extends GenericApiFetchService
 
   protected final AppBaseService appBaseService;
 
+  protected static final String SIRENE_API_KEY_HEADER = "X-INSEE-Api-Key-Integration";
+
   @Inject
   public PartnerApiFetchServiceImpl(AppBaseService appBaseService) {
     super(appBaseService);
@@ -70,8 +72,7 @@ public class PartnerApiFetchServiceImpl extends GenericApiFetchService
   protected Map<String, String> getHeaders() throws AxelorException {
     Map<String, String> headers = new HashMap<>();
     headers.put(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-    headers.put(
-        HttpHeaders.AUTHORIZATION, "Bearer " + appBaseService.getAppBase().getSireneAccessToken());
+    headers.put(SIRENE_API_KEY_HEADER, appBaseService.getAppBase().getSireneApiKey());
     return headers;
   }
 
