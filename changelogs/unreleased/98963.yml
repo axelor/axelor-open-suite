@@ -1,0 +1,3 @@
+---
+title: "Project task: fixed sold time is not set when the task is linked to a task template without a product."
+module: axelor-business-project
