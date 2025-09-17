@@ -20,7 +20,9 @@
       <field name="formViewToUse" onSelect="action-map-group-attrs-set-form-view-domain"
         colSpan="4" target-name="name"/>
       <field name="markerColor" widget="ColorPicker" colSpan="4"/>
-      <field name="filter" colSpan="12"/>
+      <field name="filter" colSpan="8"/>
+      <button name="previewFilteredRecordsBtn" title="Preview filtered records"
+        readonlyIf="!metaModel" onClick="action-map-group-method-preview-records" colSpan="4"/>
       <field name="cardContent" colSpan="12"/>
     </panel>
   </form>
@@ -29,5 +31,9 @@
     <attribute name="domain" for="formViewToUse"
       expr="eval: &quot;self.type = 'form' AND self.model = '${metaModel?.fullName}' AND self.priority IN (SELECT MAX(priority) FROM MetaView WHERE name = self.name GROUP BY name) &quot;"/>
   </action-attrs>
+
+  <action-method name="action-map-group-method-preview-records">
+    <call class="com.axelor.apps.base.web.MapGroupController" method="previewRecords"/>
+  </action-method>
 
 </object-views>
