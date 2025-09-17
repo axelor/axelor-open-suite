@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.ReconcileGroup;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.base.AxelorException;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class ReconcileGroupLetterServiceImpl implements ReconcileGroupLetterService {

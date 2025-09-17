@@ -28,7 +28,7 @@ import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.common.StringUtils;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class ProjectPlanningTimeToolServiceImpl implements ProjectPlanningTimeToolService {

@@ -24,7 +24,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 

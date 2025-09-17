@@ -26,8 +26,8 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class BusinessProjectServiceImpl implements BusinessProjectService {
 

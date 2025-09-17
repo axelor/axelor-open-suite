@@ -29,8 +29,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
     implements PartnerSupplychainService {

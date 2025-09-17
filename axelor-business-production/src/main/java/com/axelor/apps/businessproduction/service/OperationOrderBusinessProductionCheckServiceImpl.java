@@ -27,7 +27,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetFetchService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Objects;
 
 public class OperationOrderBusinessProductionCheckServiceImpl

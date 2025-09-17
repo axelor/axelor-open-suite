@@ -35,7 +35,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
 import com.axelor.utils.helpers.file.PdfHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

@@ -22,7 +22,7 @@ import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.service.SaleOrderLineBomSyncService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomSyncServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class SaleOrderLineDetailsBomSyncBusinessProductionServiceImpl
     extends SaleOrderLineDetailsBomSyncServiceImpl {

@@ -31,8 +31,8 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.studio.db.AppRecruitment;
 import com.axelor.studio.db.repo.AppRecruitmentRepository;
 import com.axelor.utils.service.CipherService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import jakarta.mail.MessagingException;
 import java.util.Date;
 

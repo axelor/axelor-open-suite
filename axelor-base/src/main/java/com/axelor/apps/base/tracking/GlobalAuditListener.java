@@ -112,7 +112,7 @@ public class GlobalAuditListener
 
   @Override
   public void onPreUpdateCollection(PreCollectionUpdateEvent event) {
-        final EventSource session = event.getSession();
+    final EventSource session = event.getSession();
     final GlobalAuditTracker tracker = get(session);
 
     if (event.getAffectedOwnerOrNull() instanceof Model owner) {

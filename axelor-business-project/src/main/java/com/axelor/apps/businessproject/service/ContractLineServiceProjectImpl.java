@@ -36,7 +36,7 @@ import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ContractLineServiceProjectImpl extends ContractLineServiceImpl {
 

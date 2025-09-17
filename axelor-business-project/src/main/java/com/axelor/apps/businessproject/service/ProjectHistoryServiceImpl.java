@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHistoryLine;
 import com.axelor.apps.project.db.repo.ProjectHistoryLineRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

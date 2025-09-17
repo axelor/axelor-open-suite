@@ -28,7 +28,7 @@ import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class WorkflowCancelServiceContractImpl extends WorkflowCancelServiceSupplychainImpl {
 

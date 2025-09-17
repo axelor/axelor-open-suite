@@ -20,8 +20,8 @@ package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.repo.PlannedTimeValueRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class PlannedTimeValueServiceImpl implements PlannedTimeValueService {

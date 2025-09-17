@@ -25,7 +25,7 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.timer.TimesheetTimerService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class TimesheetTimerHRRepository extends TSTimerRepository {
 

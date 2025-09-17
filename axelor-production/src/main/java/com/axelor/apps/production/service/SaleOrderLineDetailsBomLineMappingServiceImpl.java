@@ -24,7 +24,7 @@ import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Objects;
 
 public class SaleOrderLineDetailsBomLineMappingServiceImpl

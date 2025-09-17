@@ -27,7 +27,7 @@ import com.axelor.apps.talent.exception.TalentExceptionMessage;
 import com.axelor.apps.talent.service.TrainingRegisterComputeNameService;
 import com.axelor.apps.talent.service.TrainingRegisterComputeRatingService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.validation.ValidationException;
 import java.util.List;
 

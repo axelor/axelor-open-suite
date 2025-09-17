@@ -23,7 +23,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
 import com.axelor.apps.production.service.manuforder.ManufOrderCreateBarcodeService;
 import com.axelor.apps.production.service.operationorder.OperationOrderCreateBarcodeService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ManufOrderBusinessProductionManagementRepository
     extends ManufOrderManagementRepository {

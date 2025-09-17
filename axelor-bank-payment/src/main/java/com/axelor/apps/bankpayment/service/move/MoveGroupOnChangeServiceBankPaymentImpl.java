@@ -26,7 +26,7 @@ import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class MoveGroupOnChangeServiceBankPaymentImpl extends MoveGroupOnChangeServiceImpl {

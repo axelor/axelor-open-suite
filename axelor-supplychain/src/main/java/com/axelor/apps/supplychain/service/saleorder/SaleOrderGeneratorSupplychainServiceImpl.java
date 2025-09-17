@@ -16,8 +16,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class SaleOrderGeneratorSupplychainServiceImpl extends SaleOrderGeneratorServiceImpl {
 

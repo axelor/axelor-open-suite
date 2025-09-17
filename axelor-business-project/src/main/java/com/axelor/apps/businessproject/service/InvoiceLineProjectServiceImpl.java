@@ -40,8 +40,8 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class InvoiceLineProjectServiceImpl extends InvoiceLineSupplychainService

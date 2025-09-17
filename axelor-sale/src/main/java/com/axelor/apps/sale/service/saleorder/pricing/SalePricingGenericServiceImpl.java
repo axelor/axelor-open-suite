@@ -29,7 +29,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class SalePricingGenericServiceImpl extends PricingGenericServiceImpl {

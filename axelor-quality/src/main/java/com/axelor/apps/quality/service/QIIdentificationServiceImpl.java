@@ -23,7 +23,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class QIIdentificationServiceImpl implements QIIdentificationService {

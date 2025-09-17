@@ -40,8 +40,8 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowServiceImpl {

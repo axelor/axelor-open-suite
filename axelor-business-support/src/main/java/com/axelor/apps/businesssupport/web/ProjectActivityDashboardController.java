@@ -22,7 +22,7 @@ import com.axelor.apps.project.service.ProjectActivityDashboardService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 

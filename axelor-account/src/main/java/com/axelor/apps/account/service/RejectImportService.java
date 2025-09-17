@@ -26,7 +26,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.utils.helpers.file.FileHelper;
 import com.google.common.io.Files;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;

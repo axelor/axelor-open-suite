@@ -35,7 +35,7 @@ import com.axelor.quartz.JobRunner;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class AppBaseController {

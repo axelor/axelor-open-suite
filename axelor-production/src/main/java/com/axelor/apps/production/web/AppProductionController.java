@@ -24,7 +24,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppProduction;
 import com.axelor.studio.db.repo.AppProductionRepository;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class AppProductionController {

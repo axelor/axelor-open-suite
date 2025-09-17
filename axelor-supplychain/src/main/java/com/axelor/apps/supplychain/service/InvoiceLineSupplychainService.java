@@ -44,7 +44,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashMap;

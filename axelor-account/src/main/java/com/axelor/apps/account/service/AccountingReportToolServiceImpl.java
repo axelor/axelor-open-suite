@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;

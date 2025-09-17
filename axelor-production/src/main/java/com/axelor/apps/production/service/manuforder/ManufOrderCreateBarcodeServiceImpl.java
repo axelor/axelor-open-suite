@@ -25,7 +25,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.validation.ValidationException;
 import java.io.IOException;
 import java.io.InputStream;

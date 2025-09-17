@@ -21,7 +21,7 @@ package com.axelor.apps.bankpayment.db.repo;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Map;
 

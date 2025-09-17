@@ -9,11 +9,6 @@ apply {
 	version = openSuiteVersion
 }
 
-
-license {
-  exclude "**/swagger/**"
-}
-
 axelor {
 	title "Axelor Base"
 	description "Axelor Base Module"

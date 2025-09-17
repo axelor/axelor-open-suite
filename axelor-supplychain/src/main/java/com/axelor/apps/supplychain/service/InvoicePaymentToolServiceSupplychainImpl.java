@@ -39,9 +39,9 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 
 @RequestScoped
 public class InvoicePaymentToolServiceSupplychainImpl extends InvoicePaymentToolServiceImpl {

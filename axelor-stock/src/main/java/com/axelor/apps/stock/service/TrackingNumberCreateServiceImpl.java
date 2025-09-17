@@ -34,8 +34,8 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppStock;
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 
 public class TrackingNumberCreateServiceImpl implements TrackingNumberCreateService {

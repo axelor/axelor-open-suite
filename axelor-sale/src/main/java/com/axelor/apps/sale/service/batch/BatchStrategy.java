@@ -21,7 +21,7 @@ package com.axelor.apps.sale.service.batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public abstract class BatchStrategy extends AbstractBatch {
 

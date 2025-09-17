@@ -30,8 +30,8 @@ import com.axelor.apps.bankpayment.report.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 

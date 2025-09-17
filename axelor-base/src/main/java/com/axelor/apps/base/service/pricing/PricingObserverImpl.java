@@ -25,7 +25,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.web.ITranslation;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class PricingObserverImpl implements PricingObserver {
 

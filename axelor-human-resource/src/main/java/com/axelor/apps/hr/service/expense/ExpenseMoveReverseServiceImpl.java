@@ -39,8 +39,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 
 public class ExpenseMoveReverseServiceImpl extends MoveReverseServiceBankPaymentImpl {

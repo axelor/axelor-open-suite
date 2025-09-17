@@ -21,8 +21,8 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.project.db.Project;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class ExpenseLineProjectServiceImpl implements ExpenseLineProjectService {

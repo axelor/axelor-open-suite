@@ -53,7 +53,7 @@ import com.axelor.studio.db.AppPurchase;
 import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

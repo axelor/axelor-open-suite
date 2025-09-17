@@ -24,7 +24,7 @@ import com.axelor.apps.quality.db.QIStatus;
 import com.axelor.apps.quality.db.repo.QIStatusRepository;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class QualityImprovementServiceImpl implements QualityImprovementService {
 

@@ -25,8 +25,8 @@ import com.axelor.apps.budget.db.GlobalBudget;
 import com.axelor.apps.budget.db.VersionExpectedAmountsLine;
 import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.VersionExpectedAmountsLineRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 

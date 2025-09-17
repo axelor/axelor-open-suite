@@ -30,7 +30,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

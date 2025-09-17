@@ -34,7 +34,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

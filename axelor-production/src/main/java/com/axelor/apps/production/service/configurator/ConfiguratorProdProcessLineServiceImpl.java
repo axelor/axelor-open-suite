@@ -33,7 +33,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.JsonContext;
 import com.axelor.studio.db.AppProduction;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;

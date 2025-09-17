@@ -26,7 +26,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Objects;
 import java.util.Optional;
 

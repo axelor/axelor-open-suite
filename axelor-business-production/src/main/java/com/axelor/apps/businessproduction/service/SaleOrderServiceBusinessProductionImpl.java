@@ -46,8 +46,8 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticSe
 import com.axelor.studio.db.AppProduction;
 import com.axelor.studio.db.repo.AppProductionRepository;
 import com.axelor.studio.db.repo.AppSaleRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class SaleOrderServiceBusinessProductionImpl extends SaleOrderServiceSupplychainImpl {
 

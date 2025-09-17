@@ -22,7 +22,7 @@ import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskStatusProgressByCategory;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;

@@ -23,7 +23,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.meta.loader.ModuleManager;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineDomainServiceImpl implements SaleOrderLineDomainService {

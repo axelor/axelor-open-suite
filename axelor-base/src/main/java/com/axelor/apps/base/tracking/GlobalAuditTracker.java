@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.base.tracking;
 
+import static org.eclipse.birt.data.engine.olap.data.api.cube.TimeDimensionUtil.getFieldName;
+
 import com.axelor.apps.base.db.GlobalTrackingConfigurationLine;
 import com.axelor.apps.base.db.GlobalTrackingLog;
 import com.axelor.apps.base.db.GlobalTrackingLogLine;
@@ -39,7 +41,6 @@ import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -67,10 +68,6 @@ import org.hibernate.collection.spi.PersistentBag;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.collection.spi.PersistentSet;
 import org.hibernate.engine.spi.SessionImplementor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import static org.eclipse.birt.data.engine.olap.data.api.cube.TimeDimensionUtil.getFieldName;
 
 public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
 
@@ -135,12 +132,14 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
     final Map<String, Object> values = state.values;
     final Map<String, Object> oldValues = state.oldValues;
     final Map<String, Object> previousState = oldValues.isEmpty() ? null : oldValues;
-    List<GlobalTrackingConfigurationLine> configurationLines = getGlobalTrackingConfigLines(entity).stream()
+    List<GlobalTrackingConfigurationLine> configurationLines =
+        getGlobalTrackingConfigLines(entity).stream()
             .filter(
-                    configLine ->
-                            configLine.getMetaField().getRelationship() == null
-                                    || (configLine.getMetaField().getRelationship() == null && (configLine.getMetaField().getRelationship().equals("ManyToOne")
-                                    || configLine.getMetaField().getRelationship().equals("OneToOne"))))
+                configLine ->
+                    configLine.getMetaField().getRelationship() == null
+                        || (configLine.getMetaField().getRelationship() == null
+                            && (configLine.getMetaField().getRelationship().equals("ManyToOne")
+                                || configLine.getMetaField().getRelationship().equals("OneToOne"))))
             .toList();
     if (CollectionUtils.isEmpty(configurationLines)) {
       return;
@@ -163,7 +162,7 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
       MetaField metaField = globalTrackingConfigurationLine.getMetaField();
       if (isNotCollectionField(metaField)) {
         GlobalTrackingLogLine logLine =
-                createCreationLogLine(log, globalTrackingConfigurationLine, metaField, values);
+            createCreationLogLine(log, globalTrackingConfigurationLine, metaField, values);
         if (logLine != null) {
           log.addGlobalTrackingLogLineListItem(logLine);
         }
@@ -218,13 +217,13 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
       MetaField metaField = globalTrackingConfigurationLine.getMetaField();
       if (isNotCollectionField(metaField)) {
         GlobalTrackingLogLine logLine =
-                createUpdateLogLine(log, globalTrackingConfigurationLine, metaField, values, oldValues);
+            createUpdateLogLine(log, globalTrackingConfigurationLine, metaField, values, oldValues);
         if (logLine != null) {
           log.addGlobalTrackingLogLineListItem(logLine);
         }
       }
     }
-    if (CollectionUtils.isEmpty(log.getGlobalTrackingLogLineList())){
+    if (CollectionUtils.isEmpty(log.getGlobalTrackingLogLineList())) {
       return;
     }
     getGlobalTrackingLogRepository().save(log);
@@ -242,7 +241,7 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
     String metaFieldName = metaField.getName();
     Object currentValue = values.get(metaFieldName);
     Object oldValue = oldValues.get(metaFieldName);
-    if(currentValue.equals(oldValue)) {
+    if (currentValue.equals(oldValue)) {
       return null;
     }
     GlobalTrackingLogLine logLine = new GlobalTrackingLogLine();
@@ -396,11 +395,10 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
   }
 
   protected boolean isNotCollectionField(MetaField metaField) {
-    String relationShip = metaField
-            .getRelationship();
-    return StringUtils.isEmpty(relationShip) || (relationShip.equals("OneToMany") && relationShip.equals("ManyToMany"));
+    String relationShip = metaField.getRelationship();
+    return StringUtils.isEmpty(relationShip)
+        || (relationShip.equals("OneToMany") && relationShip.equals("ManyToMany"));
   }
-
 
   private void processTracks() {
     var count = 0;
@@ -433,13 +431,14 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
 
   private void processCollection(CollectionState collectionState) {
     List<GlobalTrackingConfigurationLine> configurationLines =
-            getGlobalTrackingConfigLines(collectionState.owner()).stream()
-                    .filter(
-                            configLine ->
-                                    configLine.getMetaField().getRelationship() != null
-                                            && (configLine.getMetaField().getRelationship().equals("OneToMany")
-                                            || configLine.getMetaField().getRelationship().equals("ManyToOne")))
-                    .toList();;
+        getGlobalTrackingConfigLines(collectionState.owner()).stream()
+            .filter(
+                configLine ->
+                    configLine.getMetaField().getRelationship() != null
+                        && (configLine.getMetaField().getRelationship().equals("OneToMany")
+                            || configLine.getMetaField().getRelationship().equals("ManyToOne")))
+            .toList();
+    ;
     if (CollectionUtils.isEmpty(configurationLines)) {
       return;
     }
@@ -456,14 +455,14 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
     String fieldName = getFieldName(newValues.getRole(), owner);
     for (GlobalTrackingConfigurationLine configLine : configurationLines) {
       if (configLine.getMetaModel().getFullName().equals(owner.getClass().getName())
-              && configLine.getMetaField().getName().equals(fieldName)) {
+          && configLine.getMetaField().getName().equals(fieldName)) {
         addCollectionModification(collection, oldCollection, configLine.getMetaField());
       }
     }
   }
 
   protected void addCollectionModification(
-          Object collection, Object oldCollection, MetaField metaField) {
+      Object collection, Object oldCollection, MetaField metaField) {
     if (!(collection instanceof AbstractPersistentCollection)) {
       return;
     }
@@ -488,8 +487,9 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
   }
 
   protected void createLog(
-          AbstractPersistentCollection newValues,
-          Collection<AuditableModel> oldValues, MetaField metaField) {
+      AbstractPersistentCollection newValues,
+      Collection<AuditableModel> oldValues,
+      MetaField metaField) {
     Model owner = (Model) newValues.getOwner();
     String fieldName = getFieldName(newValues.getRole(), owner);
 
@@ -502,12 +502,16 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
   }
 
   protected void createLineLog(
-          GlobalTrackingLog log, String fieldName, List<Long> previousIdList, List<Long> newIdList, MetaField metaField) {
+      GlobalTrackingLog log,
+      String fieldName,
+      List<Long> previousIdList,
+      List<Long> newIdList,
+      MetaField metaField) {
     GlobalTrackingLogLine line =
-            log.getGlobalTrackingLogLineList().stream()
-                    .filter(l -> l.getMetaFieldName().equals(fieldName))
-                    .findFirst()
-                    .orElse(null);
+        log.getGlobalTrackingLogLineList().stream()
+            .filter(l -> l.getMetaFieldName().equals(fieldName))
+            .findFirst()
+            .orElse(null);
 
     if (line == null) {
       line = new GlobalTrackingLogLine();
@@ -515,14 +519,14 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
       line.setMetaField(metaField);
       line.setGlobalTrackingLog(log);
       line.setPreviousValue(
-              String.format(
-                      "[%s]",
-                      previousIdList.stream().map(String::valueOf).collect(Collectors.joining(", "))));
+          String.format(
+              "[%s]",
+              previousIdList.stream().map(String::valueOf).collect(Collectors.joining(", "))));
       log.addGlobalTrackingLogLineListItem(line);
     }
     line.setNewValue(
-            String.format(
-                    "[%s]", newIdList.stream().map(String::valueOf).collect(Collectors.joining(", "))));
+        String.format(
+            "[%s]", newIdList.stream().map(String::valueOf).collect(Collectors.joining(", "))));
   }
 
   protected String getFieldName(String role, Model owner) {

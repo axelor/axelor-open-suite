@@ -29,7 +29,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.repo.MessageRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;

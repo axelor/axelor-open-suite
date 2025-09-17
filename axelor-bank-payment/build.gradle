@@ -39,12 +39,6 @@ dependencies {
 	testImplementation libs.mockito
 }
 
-license {
-	// Don't generate license header on java classes generated from xsd
-	// exclude "**/xsd/pain_001_001_*/**"
-	exclude "**/xsd/sepa/**"
-}
-
 task xjc () {
 	def source = "${projectDir}/src/main/resources/xsd/sepa"
 	def target = "${buildDir}/src-gen/xjc"

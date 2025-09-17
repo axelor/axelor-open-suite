@@ -24,7 +24,7 @@ import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.studio.db.repo.AppSaleRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

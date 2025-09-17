@@ -30,7 +30,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppProject;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

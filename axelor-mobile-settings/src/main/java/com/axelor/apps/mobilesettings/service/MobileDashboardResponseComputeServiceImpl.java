@@ -27,7 +27,7 @@ import com.axelor.apps.mobilesettings.rest.dto.MobileChartResponse;
 import com.axelor.apps.mobilesettings.rest.dto.MobileDashboardLineResponse;
 import com.axelor.apps.mobilesettings.rest.dto.MobileDashboardResponse;
 import com.axelor.auth.AuthUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

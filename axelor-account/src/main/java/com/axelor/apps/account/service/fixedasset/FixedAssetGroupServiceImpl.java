@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.service.fixedasset.attributes.FixedAssetAttrsService;
 import com.axelor.apps.base.db.Company;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;

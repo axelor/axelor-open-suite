@@ -29,7 +29,7 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import com.google.inject.name.Named;
+import jakarta.inject.Named;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;

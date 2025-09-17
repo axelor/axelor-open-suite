@@ -28,7 +28,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.util.Set;
 
 @Singleton

@@ -27,7 +27,7 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.db.Query;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Optional;
 

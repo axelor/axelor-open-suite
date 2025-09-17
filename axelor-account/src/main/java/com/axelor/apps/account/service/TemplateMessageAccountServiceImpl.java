@@ -25,8 +25,8 @@ import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class TemplateMessageAccountServiceImpl implements TemplateMessageAccountService {
 

@@ -37,8 +37,8 @@ import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 
 public class ExpenseLineCreateServiceProjectImpl extends ExpenseLineCreateServiceImpl {

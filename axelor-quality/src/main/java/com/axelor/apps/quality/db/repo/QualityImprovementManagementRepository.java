@@ -33,7 +33,7 @@ import com.axelor.apps.quality.exception.QualityExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 
 public class QualityImprovementManagementRepository extends QualityImprovementRepository {

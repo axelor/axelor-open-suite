@@ -26,7 +26,7 @@ import com.axelor.meta.db.repo.MetaGroupMenuAssistantRepository;
 import com.axelor.meta.service.MetaGroupMenuAssistantService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.time.LocalDateTime;
 
 @Singleton

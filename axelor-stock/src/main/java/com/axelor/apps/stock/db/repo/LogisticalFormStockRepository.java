@@ -32,7 +32,7 @@ import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 
 public class LogisticalFormStockRepository extends LogisticalFormRepository {

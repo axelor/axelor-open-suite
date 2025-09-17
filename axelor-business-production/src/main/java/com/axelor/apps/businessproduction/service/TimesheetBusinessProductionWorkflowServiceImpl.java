@@ -28,8 +28,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class TimesheetBusinessProductionWorkflowServiceImpl extends TimesheetWorkflowServiceImpl {
 

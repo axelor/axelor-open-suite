@@ -22,8 +22,8 @@ import static com.axelor.apps.base.db.repo.PartnerRepository.PARTNER_TYPE_INDIVI
 
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class PartnerConvertServiceImpl implements PartnerConvertService {
 

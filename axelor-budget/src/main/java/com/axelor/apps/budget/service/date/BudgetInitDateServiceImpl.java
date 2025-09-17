@@ -30,7 +30,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class BudgetInitDateServiceImpl implements BudgetInitDateService {
 

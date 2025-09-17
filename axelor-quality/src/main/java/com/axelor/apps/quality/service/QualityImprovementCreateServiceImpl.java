@@ -27,8 +27,8 @@ import com.axelor.apps.quality.db.repo.QualityImprovementRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 

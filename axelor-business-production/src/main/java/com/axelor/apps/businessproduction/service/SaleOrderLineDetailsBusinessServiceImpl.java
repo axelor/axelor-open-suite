@@ -28,7 +28,7 @@ import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class SaleOrderLineDetailsBusinessServiceImpl extends SaleOrderLineDetailsServiceImpl {
 

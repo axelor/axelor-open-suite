@@ -27,7 +27,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 
 public class WorkingDayServiceImpl implements WorkingDayService {

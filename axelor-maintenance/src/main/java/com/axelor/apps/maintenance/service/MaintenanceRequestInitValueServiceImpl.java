@@ -4,7 +4,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.maintenance.db.MaintenanceRequest;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 

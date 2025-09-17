@@ -26,7 +26,7 @@ import com.axelor.apps.stock.db.repo.StockHistoryLineManagementRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 

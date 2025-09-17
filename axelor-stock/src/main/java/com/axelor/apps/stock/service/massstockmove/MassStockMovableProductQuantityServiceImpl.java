@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.interfaces.massstockmove.MassStockMovableProduct;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class MassStockMovableProductQuantityServiceImpl

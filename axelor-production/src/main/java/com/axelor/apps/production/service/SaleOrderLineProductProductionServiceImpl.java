@@ -47,7 +47,7 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSup
 import com.axelor.studio.db.AppProduction;
 import com.axelor.studio.db.AppSale;
 import com.axelor.studio.db.repo.AppSaleRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

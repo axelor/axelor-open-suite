@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.service.MetaModelService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ConnectorMapperManagementServiceImpl implements ConnectorMapperManagementService {
 

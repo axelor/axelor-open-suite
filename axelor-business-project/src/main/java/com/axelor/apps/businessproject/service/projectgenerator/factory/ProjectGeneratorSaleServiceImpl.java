@@ -29,8 +29,8 @@ import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class ProjectGeneratorSaleServiceImpl implements ProjectGeneratorSaleService {
 

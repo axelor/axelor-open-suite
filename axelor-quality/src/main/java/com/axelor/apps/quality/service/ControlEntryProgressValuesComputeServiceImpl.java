@@ -28,7 +28,7 @@ import com.axelor.apps.quality.db.repo.ControlEntrySampleRepository;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
 import com.axelor.apps.quality.rest.dto.ControlEntryProgressValuesResponse;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class ControlEntryProgressValuesComputeServiceImpl

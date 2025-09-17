@@ -30,7 +30,7 @@ import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ConfiguratorCheckServiceProductionImpl
     extends ConfiguratorCheckServiceSupplychainImpl {

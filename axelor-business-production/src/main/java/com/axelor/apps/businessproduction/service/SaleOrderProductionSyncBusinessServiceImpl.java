@@ -32,7 +32,7 @@ import com.axelor.apps.production.service.SolProdProcessCustomizationService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class SaleOrderProductionSyncBusinessServiceImpl extends SaleOrderSyncAbstractService

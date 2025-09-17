@@ -23,8 +23,8 @@ import com.axelor.apps.base.service.PartnerConvertServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class PartnerConvertHRServiceImpl extends PartnerConvertServiceImpl {
 

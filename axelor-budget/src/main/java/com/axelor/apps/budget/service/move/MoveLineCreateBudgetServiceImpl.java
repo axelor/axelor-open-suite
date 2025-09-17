@@ -42,7 +42,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {

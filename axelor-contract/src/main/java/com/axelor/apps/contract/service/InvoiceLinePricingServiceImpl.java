@@ -26,7 +26,7 @@ import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.service.pricing.PricingComputer;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.db.EntityHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class InvoiceLinePricingServiceImpl implements InvoiceLinePricingService {
 

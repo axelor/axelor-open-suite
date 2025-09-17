@@ -28,8 +28,8 @@ import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDe
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
 import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineCreateAFB120Service;
 import com.axelor.apps.base.AxelorException;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 
 public class BankStatementImportAFB120Service extends BankStatementImportAbstractService {

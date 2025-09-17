@@ -41,7 +41,7 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ModelHelper;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableMap;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import jakarta.validation.ValidationException;
 import java.util.Map;
 

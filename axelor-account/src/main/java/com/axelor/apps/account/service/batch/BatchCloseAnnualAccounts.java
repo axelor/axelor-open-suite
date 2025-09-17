@@ -49,7 +49,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.Query;
 import java.math.BigDecimal;

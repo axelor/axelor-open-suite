@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.service.moveline.MoveLineService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import org.apache.commons.collections.CollectionUtils;
 

@@ -21,7 +21,7 @@ package com.axelor.apps.base.db.repo;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.service.language.LanguageService;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
 public class LanguageBaseRepository extends LanguageRepository {

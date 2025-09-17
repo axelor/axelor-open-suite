@@ -24,8 +24,8 @@ import com.axelor.apps.production.service.StockMoveProductionService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class ManufOrderUpdateStockMoveServiceImpl implements ManufOrderUpdateStockMoveService {

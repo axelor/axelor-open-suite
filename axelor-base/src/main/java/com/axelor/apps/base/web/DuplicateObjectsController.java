@@ -36,7 +36,7 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Arrays;

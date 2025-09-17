@@ -21,8 +21,8 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Objects;
 
 public class TrackingNumberSupplychainServiceImpl implements TrackingNumberSupplychainService {

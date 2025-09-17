@@ -31,8 +31,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class ContractSaleOrderGenerationImpl implements ContractSaleOrderGeneration {
 

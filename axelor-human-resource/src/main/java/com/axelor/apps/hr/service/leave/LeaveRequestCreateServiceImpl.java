@@ -23,8 +23,8 @@ import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDurationService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDateTime;
 
 public class LeaveRequestCreateServiceImpl implements LeaveRequestCreateService {

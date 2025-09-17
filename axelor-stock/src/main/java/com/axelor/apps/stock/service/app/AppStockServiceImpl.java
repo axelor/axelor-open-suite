@@ -24,8 +24,8 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.studio.db.AppStock;
 import com.axelor.studio.db.repo.AppStockRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class AppStockServiceImpl implements AppStockService {

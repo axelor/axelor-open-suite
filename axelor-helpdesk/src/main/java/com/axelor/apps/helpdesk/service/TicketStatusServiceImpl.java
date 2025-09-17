@@ -22,7 +22,7 @@ import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.TicketStatus;
 import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
 import com.axelor.studio.db.AppHelpdesk;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class TicketStatusServiceImpl implements TicketStatusService {
 

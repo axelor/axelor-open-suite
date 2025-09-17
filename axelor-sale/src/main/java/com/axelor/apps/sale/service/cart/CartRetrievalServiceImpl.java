@@ -21,7 +21,7 @@ package com.axelor.apps.sale.service.cart;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.repo.CartRepository;
 import com.axelor.auth.AuthUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class CartRetrievalServiceImpl implements CartRetrievalService {
 

@@ -23,7 +23,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class ExpenseLineDomainServiceImpl implements ExpenseLineDomainService {

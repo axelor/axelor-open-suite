@@ -23,7 +23,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MediaType;
 import java.net.http.HttpResponse;
 import java.util.HashMap;

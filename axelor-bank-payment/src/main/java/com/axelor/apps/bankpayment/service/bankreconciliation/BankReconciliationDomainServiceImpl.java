@@ -29,7 +29,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.common.StringUtils;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;

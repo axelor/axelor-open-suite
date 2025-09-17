@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.db.repo;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineDeleteService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class BankStatementManagementRepository extends BankStatementRepository {
 

@@ -25,7 +25,7 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;

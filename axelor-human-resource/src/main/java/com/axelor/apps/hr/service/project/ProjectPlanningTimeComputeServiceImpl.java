@@ -33,7 +33,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.apps.project.service.config.ProjectConfigService;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;

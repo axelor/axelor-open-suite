@@ -29,7 +29,7 @@ import com.axelor.apps.account.service.moveline.MoveLineTaxServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class MoveLineTaxHRServiceImpl extends MoveLineTaxServiceImpl {
 

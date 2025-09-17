@@ -24,7 +24,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.common.StringUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class ProjectTaskAttrsServiceImpl implements ProjectTaskAttrsService {

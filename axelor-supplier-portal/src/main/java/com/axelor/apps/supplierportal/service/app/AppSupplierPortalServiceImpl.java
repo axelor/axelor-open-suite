@@ -20,7 +20,7 @@ package com.axelor.apps.supplierportal.service.app;
 
 import com.axelor.studio.db.AppSupplierPortal;
 import com.axelor.studio.db.repo.AppSupplierPortalRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AppSupplierPortalServiceImpl implements AppSupplierPortalService {
 

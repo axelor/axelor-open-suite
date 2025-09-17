@@ -25,7 +25,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.inject.Beans;
 import com.axelor.meta.loader.LoaderHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

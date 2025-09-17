@@ -21,7 +21,7 @@ package com.axelor.apps.stock.db.repo;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.stock.db.repo.product.ProductStockRepositorySave;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class ProductStockRepository extends ProductBaseRepository {

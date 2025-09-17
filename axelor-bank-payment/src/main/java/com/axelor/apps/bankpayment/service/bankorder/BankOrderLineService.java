@@ -43,7 +43,7 @@ import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

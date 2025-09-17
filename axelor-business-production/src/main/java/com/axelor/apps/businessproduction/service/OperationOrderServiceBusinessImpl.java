@@ -37,8 +37,8 @@ import com.axelor.apps.production.service.operationorder.OperationOrderOutsource
 import com.axelor.apps.production.service.operationorder.OperationOrderServiceImpl;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.Duration;
 import java.util.List;
 

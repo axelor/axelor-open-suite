@@ -25,7 +25,7 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportServ
 import com.axelor.common.StringUtils;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;

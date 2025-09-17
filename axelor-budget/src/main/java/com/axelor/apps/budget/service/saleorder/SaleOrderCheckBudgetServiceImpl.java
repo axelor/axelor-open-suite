@@ -34,7 +34,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckSupplychainSe
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 

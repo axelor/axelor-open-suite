@@ -29,7 +29,7 @@ import com.axelor.apps.businessproject.db.BusinessProjectConfig;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ProjectAnalyticTemplateServiceImpl implements ProjectAnalyticTemplateService {
 

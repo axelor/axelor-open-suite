@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.AddressRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AddressFetchServiceImpl implements AddressFetchService {
 

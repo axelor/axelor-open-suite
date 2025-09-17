@@ -35,8 +35,8 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppSupplychain;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmSupplychainService {
 

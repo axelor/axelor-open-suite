@@ -25,7 +25,7 @@ import com.axelor.apps.base.rest.dto.UserPermissionResponse;
 import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaPermissionRule;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.service.bankorder.file.transfer;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.base.AxelorException;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class BankOrderFileAFB160ICTService extends BankOrderFileAFB160Service {
 

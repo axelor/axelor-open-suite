@@ -32,7 +32,7 @@ import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 

@@ -23,7 +23,7 @@ import com.axelor.apps.account.db.AccountEquiv;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class FiscalPositionAccountServiceImpl extends FiscalPositionServiceImpl
     implements FiscalPositionAccountService {

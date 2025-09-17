@@ -25,7 +25,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.service.MetaModelService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

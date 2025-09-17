@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 
 public class LeaveRequestComputeHalfDayServiceImpl implements LeaveRequestComputeHalfDayService {

@@ -18,7 +18,7 @@
  */
 package com.axelor.apps.budget.export;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collection;

@@ -38,7 +38,7 @@ import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.apps.project.service.app.AppProjectService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

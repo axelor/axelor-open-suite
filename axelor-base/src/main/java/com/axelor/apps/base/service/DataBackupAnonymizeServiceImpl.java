@@ -26,7 +26,7 @@ import com.axelor.apps.base.db.repo.AnonymizerLineRepository;
 import com.axelor.db.mapper.Property;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.utils.helpers.ComputeNameHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;

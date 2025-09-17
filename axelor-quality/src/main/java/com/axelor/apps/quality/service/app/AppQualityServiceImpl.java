@@ -31,8 +31,8 @@ import com.axelor.studio.db.AppQuality;
 import com.axelor.studio.db.repo.AppQualityRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQualityService {

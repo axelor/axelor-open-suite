@@ -20,7 +20,7 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;

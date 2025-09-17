@@ -45,7 +45,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.auth.db.User;
 import com.axelor.team.db.Team;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import org.slf4j.Logger;

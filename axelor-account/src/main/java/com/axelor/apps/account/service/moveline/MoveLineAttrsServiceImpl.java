@@ -36,7 +36,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

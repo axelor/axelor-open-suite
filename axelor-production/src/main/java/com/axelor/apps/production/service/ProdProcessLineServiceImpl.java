@@ -21,7 +21,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import org.apache.commons.collections.CollectionUtils;

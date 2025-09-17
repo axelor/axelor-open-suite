@@ -25,7 +25,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaJsonField;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;

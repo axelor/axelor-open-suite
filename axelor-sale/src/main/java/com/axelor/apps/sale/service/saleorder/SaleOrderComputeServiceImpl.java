@@ -30,7 +30,7 @@ import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;

@@ -24,7 +24,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderMergingService.PurchaseOrde
 import com.axelor.apps.purchase.service.PurchaseOrderMergingViewServiceImpl;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class PurchaseOrderMergingViewServiceSupplyChainImpl

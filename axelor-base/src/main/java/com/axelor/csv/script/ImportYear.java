@@ -21,7 +21,7 @@ package com.axelor.csv.script;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.YearService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ImportYear {

@@ -50,7 +50,7 @@ import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;

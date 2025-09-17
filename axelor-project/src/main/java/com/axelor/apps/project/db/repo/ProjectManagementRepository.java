@@ -36,7 +36,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppProject;
 import com.axelor.team.db.Team;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import java.util.Map;
 

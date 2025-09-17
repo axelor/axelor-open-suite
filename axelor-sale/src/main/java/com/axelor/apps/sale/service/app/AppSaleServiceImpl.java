@@ -31,9 +31,9 @@ import com.axelor.studio.db.AppSale;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 @Singleton

@@ -30,7 +30,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.ui.QuickMenu;
 import com.axelor.ui.QuickMenuCreator;
 import com.axelor.ui.QuickMenuItem;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;

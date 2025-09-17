@@ -25,7 +25,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class SaleOrderLineAnalyticServiceImpl implements SaleOrderLineAnalyticService {

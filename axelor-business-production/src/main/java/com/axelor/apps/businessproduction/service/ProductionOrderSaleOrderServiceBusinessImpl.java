@@ -27,7 +27,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderSaleOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ProductionOrderSaleOrderServiceBusinessImpl
     extends ProductionOrderSaleOrderServiceImpl {

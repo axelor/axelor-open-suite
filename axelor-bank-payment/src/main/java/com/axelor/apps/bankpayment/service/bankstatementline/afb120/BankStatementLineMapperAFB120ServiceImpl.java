@@ -29,7 +29,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.db.repo.CurrencyRepository;
 import com.axelor.common.StringUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

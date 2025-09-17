@@ -56,8 +56,8 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineBlockingSu
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;

@@ -28,7 +28,7 @@ import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 
 public class MassStockMoveManagementRepository extends MassStockMoveRepository {

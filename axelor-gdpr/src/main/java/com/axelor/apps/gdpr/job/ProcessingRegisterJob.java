@@ -23,7 +23,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.gdpr.db.GDPRProcessingRegister;
 import com.axelor.apps.gdpr.db.repo.GDPRProcessingRegisterRepository;
 import com.axelor.apps.gdpr.service.GdprProcessingRegisterService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 import org.quartz.Job;

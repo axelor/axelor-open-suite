@@ -45,8 +45,8 @@ import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
     implements InvoiceServiceProject {

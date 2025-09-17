@@ -49,7 +49,7 @@ import com.axelor.rpc.Context;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppCrm;
 import com.axelor.utils.service.BinaryConversionService;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

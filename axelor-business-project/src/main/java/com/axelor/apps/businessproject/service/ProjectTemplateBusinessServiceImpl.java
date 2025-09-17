@@ -24,7 +24,7 @@ import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectTemplateServiceImpl;
 import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.apps.project.service.app.AppProjectService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ProjectTemplateBusinessServiceImpl extends ProjectTemplateServiceImpl {

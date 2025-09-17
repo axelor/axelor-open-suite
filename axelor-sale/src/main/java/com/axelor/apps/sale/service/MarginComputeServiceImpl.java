@@ -26,7 +26,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.interfaces.MarginLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;

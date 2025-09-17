@@ -34,7 +34,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class SaleOrderLineCheckSupplychainServiceImpl extends SaleOrderLineCheckServiceImpl
     implements SaleOrderLineCheckSupplychainService {

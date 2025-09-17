@@ -46,7 +46,7 @@ import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierApplyPricingService;
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 

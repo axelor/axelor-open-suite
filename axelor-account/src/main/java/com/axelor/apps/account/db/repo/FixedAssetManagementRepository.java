@@ -34,7 +34,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppAccount;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.util.List;

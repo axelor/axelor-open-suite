@@ -7,8 +7,8 @@ import com.axelor.apps.maintenance.db.MaintenanceRequest;
 import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
 import com.axelor.apps.maintenance.exception.MaintenanceExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 
 public class MaintenanceRequestCreateServiceImpl implements MaintenanceRequestCreateService {

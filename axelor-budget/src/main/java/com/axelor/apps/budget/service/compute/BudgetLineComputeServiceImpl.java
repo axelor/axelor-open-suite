@@ -27,7 +27,7 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.repo.BudgetLineRepository;
 import com.axelor.utils.helpers.date.LocalDateHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;

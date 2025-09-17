@@ -48,7 +48,7 @@ import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComput
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
 import com.axelor.studio.db.AppSale;
 import com.axelor.utils.junit.BaseTest;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;

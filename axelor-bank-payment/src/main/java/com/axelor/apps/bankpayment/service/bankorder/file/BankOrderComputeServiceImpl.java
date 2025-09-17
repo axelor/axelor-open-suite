@@ -26,7 +26,7 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;

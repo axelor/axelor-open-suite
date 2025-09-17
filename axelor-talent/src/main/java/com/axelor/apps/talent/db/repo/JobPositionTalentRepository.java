@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.talent.db.JobPosition;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class JobPositionTalentRepository extends JobPositionRepository {
 

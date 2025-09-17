@@ -26,7 +26,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountServi
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;

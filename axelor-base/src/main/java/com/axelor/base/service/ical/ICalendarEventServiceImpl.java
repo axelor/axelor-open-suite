@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.ical.ICalendarException;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.message.db.EmailAddress;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.text.ParseException;

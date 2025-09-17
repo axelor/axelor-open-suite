@@ -28,7 +28,7 @@ import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseCompute
 import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.api.ResponseConstructor;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import java.math.BigDecimal;
 

@@ -28,7 +28,7 @@ import com.axelor.apps.helpdesk.service.TicketService;
 import com.axelor.apps.helpdesk.service.TicketStatusService;
 import com.axelor.apps.helpdesk.service.app.AppHelpdeskService;
 import com.axelor.studio.db.AppHelpdesk;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 import java.util.Optional;
 

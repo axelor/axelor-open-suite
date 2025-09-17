@@ -38,8 +38,8 @@ import com.axelor.message.service.AppSettingsMessageService;
 import com.axelor.message.service.SendMailQueueService;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 
 public class MessageServiceCrmImpl extends MessageServiceBaseImpl {

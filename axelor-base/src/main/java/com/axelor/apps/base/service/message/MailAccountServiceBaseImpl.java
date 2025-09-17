@@ -32,7 +32,7 @@ import com.axelor.message.service.MailAccountServiceImpl;
 import com.axelor.meta.MetaFiles;
 import com.axelor.studio.db.AppBase;
 import com.axelor.utils.service.CipherService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 

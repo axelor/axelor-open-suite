@@ -34,7 +34,7 @@ import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.studio.db.AppMobileSettings;
 import com.axelor.studio.db.repo.AppMobileSettingsRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;

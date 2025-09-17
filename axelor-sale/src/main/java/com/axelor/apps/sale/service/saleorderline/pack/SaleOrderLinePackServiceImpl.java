@@ -38,7 +38,7 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductSe
 import com.axelor.apps.sale.translation.ITranslation;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;

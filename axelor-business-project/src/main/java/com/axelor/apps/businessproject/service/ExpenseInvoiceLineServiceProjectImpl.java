@@ -24,7 +24,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -29,7 +29,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;

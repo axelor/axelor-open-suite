@@ -46,8 +46,8 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProduct
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {

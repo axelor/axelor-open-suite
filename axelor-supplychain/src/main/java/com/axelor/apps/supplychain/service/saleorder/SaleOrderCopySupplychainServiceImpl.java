@@ -24,7 +24,7 @@ import static com.axelor.apps.sale.db.repo.SaleOrderRepository.INVOICING_STATE_N
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class SaleOrderCopySupplychainServiceImpl implements SaleOrderCopySupplychainService {

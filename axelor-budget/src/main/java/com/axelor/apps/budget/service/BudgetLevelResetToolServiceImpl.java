@@ -22,7 +22,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.BudgetLevel;
 import com.axelor.apps.budget.db.repo.BudgetLevelRepository;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import org.apache.commons.collections.CollectionUtils;
 

@@ -21,7 +21,7 @@ package com.axelor.apps.base.service;
 import com.axelor.apps.base.db.repo.FakerApiFieldRepository;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaJsonField;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

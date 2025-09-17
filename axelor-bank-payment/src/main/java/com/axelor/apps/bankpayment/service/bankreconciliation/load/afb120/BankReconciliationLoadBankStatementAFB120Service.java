@@ -31,8 +31,8 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconcili
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFilterService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;

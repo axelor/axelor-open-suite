@@ -20,7 +20,7 @@ package com.axelor.apps.project.service;
 
 import com.axelor.apps.project.db.ResourceBooking;
 import com.axelor.apps.project.db.repo.ResourceBookingRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 

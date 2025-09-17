@@ -33,7 +33,7 @@ import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class SaleOrderLineCreateSupplychainServiceImpl extends SaleOrderLineCreateServiceImpl {

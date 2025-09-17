@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.db.repo.MassStockMoveRepository;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class StoredProductProcessingRealizeServiceImpl

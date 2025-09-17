@@ -45,7 +45,7 @@ import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.service.move.MoveValidateHRServiceImpl;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class MoveValidateBudgetServiceImpl extends MoveValidateHRServiceImpl {
 

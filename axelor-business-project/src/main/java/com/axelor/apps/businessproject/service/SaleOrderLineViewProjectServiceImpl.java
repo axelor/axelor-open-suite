@@ -21,7 +21,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.StringUtils;
 import com.axelor.studio.db.AppProject;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 

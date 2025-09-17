@@ -34,8 +34,8 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 
 public class MoveCreateBankPaymentServiceImpl extends MoveCreateServiceImpl {

@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class SaleOrderDomainServiceImpl implements SaleOrderDomainService {

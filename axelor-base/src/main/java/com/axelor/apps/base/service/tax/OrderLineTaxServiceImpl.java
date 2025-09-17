@@ -29,7 +29,7 @@ import com.axelor.apps.base.interfaces.PricedOrderLine;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Optional;

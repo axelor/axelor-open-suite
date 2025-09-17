@@ -35,8 +35,8 @@ import com.axelor.apps.account.service.reconcile.foreignexchange.ForeignExchange
 import com.axelor.apps.account.service.reconcile.reconcilegroup.UnreconcileGroupService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class UnreconcileBudgetServiceImpl extends UnreconcileServiceImpl {

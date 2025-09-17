@@ -47,7 +47,7 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.Query;
 import java.io.File;
 import java.util.Comparator;

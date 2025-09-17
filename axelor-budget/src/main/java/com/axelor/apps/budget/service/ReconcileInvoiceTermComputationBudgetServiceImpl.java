@@ -35,8 +35,8 @@ import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputation
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class ReconcileInvoiceTermComputationBudgetServiceImpl

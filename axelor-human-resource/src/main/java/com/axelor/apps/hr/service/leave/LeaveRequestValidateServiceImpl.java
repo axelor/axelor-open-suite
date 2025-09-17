@@ -30,8 +30,8 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class LeaveRequestValidateServiceImpl implements LeaveRequestValidateService {

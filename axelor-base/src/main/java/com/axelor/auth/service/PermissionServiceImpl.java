@@ -22,7 +22,7 @@ import com.axelor.auth.db.Permission;
 import com.axelor.auth.db.repo.PermissionRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.metamodel.Metamodel;
 import java.util.List;
 import java.util.Set;

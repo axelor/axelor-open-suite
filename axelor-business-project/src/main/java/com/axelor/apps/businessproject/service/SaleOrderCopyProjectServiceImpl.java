@@ -21,7 +21,7 @@ package com.axelor.apps.businessproject.service;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class SaleOrderCopyProjectServiceImpl implements SaleOrderCopyProjectService {
 

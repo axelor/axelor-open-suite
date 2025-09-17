@@ -22,8 +22,8 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
 import com.axelor.apps.base.AxelorException;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 
 public abstract class BankStatementImportAbstractService {

@@ -22,8 +22,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class PartnerEmployeeServiceImpl implements PartnerEmployeeService {
 

@@ -26,7 +26,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class OpportunitySequenceServiceImpl implements OpportunitySequenceService {
 

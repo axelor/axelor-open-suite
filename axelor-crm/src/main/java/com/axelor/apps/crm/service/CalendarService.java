@@ -28,7 +28,7 @@ import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

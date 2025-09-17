@@ -32,7 +32,7 @@ import com.axelor.db.Model;
 import com.axelor.message.service.TemplateContextService;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.utils.template.TemplateMaker;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Locale;
 import java.util.Optional;
 

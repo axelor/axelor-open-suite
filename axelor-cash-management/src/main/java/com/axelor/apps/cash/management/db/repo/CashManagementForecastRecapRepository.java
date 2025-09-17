@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.cash.management.db.ForecastRecap;
 import com.axelor.apps.cash.management.exception.CashManagementExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
 

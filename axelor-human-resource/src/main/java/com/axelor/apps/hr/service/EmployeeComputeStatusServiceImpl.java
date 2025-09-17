@@ -21,7 +21,7 @@ package com.axelor.apps.hr.service;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.auth.AuthUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 
 public class EmployeeComputeStatusServiceImpl implements EmployeeComputeStatusService {

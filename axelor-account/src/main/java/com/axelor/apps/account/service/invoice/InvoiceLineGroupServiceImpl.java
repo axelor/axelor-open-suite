@@ -21,7 +21,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class InvoiceLineGroupServiceImpl implements InvoiceLineGroupService {

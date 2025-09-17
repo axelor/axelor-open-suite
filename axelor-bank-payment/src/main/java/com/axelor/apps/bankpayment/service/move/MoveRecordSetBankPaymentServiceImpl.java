@@ -34,7 +34,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class MoveRecordSetBankPaymentServiceImpl extends MoveRecordSetServiceImpl {
   protected final BankDetailsBankPaymentService bankDetailsBankPaymentService;

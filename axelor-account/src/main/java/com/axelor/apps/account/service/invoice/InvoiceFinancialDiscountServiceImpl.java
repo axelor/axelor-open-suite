@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.FinancialDiscount;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.service.FinancialDiscountService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;

@@ -28,7 +28,7 @@ import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.UnitCostCalcLine;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.repo.UnitCostCalcLineRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

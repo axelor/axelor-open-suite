@@ -39,7 +39,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.io.MoreFiles;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

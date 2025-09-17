@@ -31,7 +31,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AccountingSituationInitSupplychainServiceImpl
     extends AccountingSituationInitServiceImpl {

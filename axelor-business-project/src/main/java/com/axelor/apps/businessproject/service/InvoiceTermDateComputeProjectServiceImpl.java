@@ -25,7 +25,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeServiceImpl
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;

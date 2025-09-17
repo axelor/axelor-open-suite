@@ -20,7 +20,7 @@ package com.axelor.apps.intervention.service.planning;
 
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.WeeklyPlanning;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDateTime;
 
 public class PlanningDateTimeServiceImpl implements PlanningDateTimeService {

@@ -20,8 +20,8 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.repo.CallTenderOfferRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 

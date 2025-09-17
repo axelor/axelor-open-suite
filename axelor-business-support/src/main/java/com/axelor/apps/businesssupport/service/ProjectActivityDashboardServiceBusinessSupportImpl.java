@@ -27,7 +27,7 @@ import com.axelor.mail.db.MailMessage;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.db.Wizard;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

@@ -30,7 +30,7 @@ import com.axelor.events.PreRequest;
 import com.axelor.events.RequestEvent;
 import com.axelor.events.qualifiers.EntityType;
 import com.axelor.inject.Beans;
-import com.google.inject.name.Named;
+import jakarta.inject.Named;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

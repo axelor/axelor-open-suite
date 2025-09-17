@@ -1,7 +1,7 @@
 package com.axelor.apps.base.tracking;
 
 import com.axelor.db.audit.HibernateListenerConfigurator;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.EventType;
 

@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.service.debtrecovery.DoubtfulCustomerService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public abstract class PreviewBatch extends BatchStrategy {

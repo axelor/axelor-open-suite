@@ -27,8 +27,8 @@ import com.axelor.apps.crm.db.PartnerStatus;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Objects;
 
 public class PartnerCrmServiceImpl implements PartnerCrmService {

@@ -26,7 +26,7 @@ import com.axelor.db.JPA;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.Query;
 import java.util.HashMap;
 import java.util.Map;

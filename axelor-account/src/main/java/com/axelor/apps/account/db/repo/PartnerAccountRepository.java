@@ -25,8 +25,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import jakarta.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 

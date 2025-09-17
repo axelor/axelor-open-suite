@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.InvoicingPaymentSituation;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;

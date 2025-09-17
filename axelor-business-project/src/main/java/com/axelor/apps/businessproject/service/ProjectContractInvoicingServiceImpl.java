@@ -37,7 +37,7 @@ import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.apps.contract.service.ContractYearEndBonusService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ProjectContractInvoicingServiceImpl extends ContractInvoicingServiceImpl {
 

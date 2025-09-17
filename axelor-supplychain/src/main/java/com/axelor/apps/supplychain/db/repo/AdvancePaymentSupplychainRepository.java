@@ -24,7 +24,7 @@ import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
 import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.inject.Beans;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 
 public class AdvancePaymentSupplychainRepository extends AdvancePaymentSaleRepository {

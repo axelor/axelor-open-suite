@@ -55,7 +55,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Resource;
 import com.axelor.studio.db.App;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;

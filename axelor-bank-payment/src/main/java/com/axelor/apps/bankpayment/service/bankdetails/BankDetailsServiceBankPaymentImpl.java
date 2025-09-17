@@ -24,7 +24,7 @@ import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class BankDetailsServiceBankPaymentImpl extends BankDetailsServiceAccountImpl {
 

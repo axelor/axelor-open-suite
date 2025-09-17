@@ -37,8 +37,8 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderWorkflowServiceSupplychainImpl;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class SaleOrderWorkflowServiceBusinessProductionImpl
     extends SaleOrderWorkflowServiceSupplychainImpl {

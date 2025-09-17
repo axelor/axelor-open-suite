@@ -33,7 +33,7 @@ import com.axelor.studio.db.AppHelpdesk;
 import com.axelor.studio.db.repo.AppHelpdeskRepository;
 import com.axelor.utils.helpers.date.DurationHelper;
 import com.axelor.utils.helpers.date.LocalDateHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Comparator;

@@ -22,8 +22,8 @@ import com.axelor.apps.mobilesettings.db.MobileConfig;
 import com.axelor.apps.mobilesettings.db.repo.MobileConfigRepository;
 import com.axelor.db.Query;
 import com.axelor.studio.db.AppMobileSettings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
 

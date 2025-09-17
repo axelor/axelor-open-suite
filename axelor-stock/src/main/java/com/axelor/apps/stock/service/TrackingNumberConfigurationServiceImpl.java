@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.studio.db.AppStock;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class TrackingNumberConfigurationServiceImpl implements TrackingNumberConfigurationService {
 

@@ -40,7 +40,7 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.repo.MessageRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;

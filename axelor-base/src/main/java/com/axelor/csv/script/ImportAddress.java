@@ -23,7 +23,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import org.slf4j.Logger;

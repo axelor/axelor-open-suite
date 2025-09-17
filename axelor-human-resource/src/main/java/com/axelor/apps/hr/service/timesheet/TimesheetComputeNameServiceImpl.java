@@ -21,7 +21,7 @@ package com.axelor.apps.hr.service.timesheet;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import org.slf4j.Logger;

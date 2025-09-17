@@ -24,8 +24,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped

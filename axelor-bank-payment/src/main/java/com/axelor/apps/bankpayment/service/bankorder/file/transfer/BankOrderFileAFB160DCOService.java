@@ -33,7 +33,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;

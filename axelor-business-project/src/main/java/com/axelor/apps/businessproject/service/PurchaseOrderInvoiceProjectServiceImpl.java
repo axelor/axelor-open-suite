@@ -60,8 +60,8 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderSer
 import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.repo.AppBaseRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;

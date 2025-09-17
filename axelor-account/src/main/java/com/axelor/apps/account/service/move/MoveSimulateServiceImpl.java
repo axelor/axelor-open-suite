@@ -21,8 +21,8 @@ package com.axelor.apps.account.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.AxelorException;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class MoveSimulateServiceImpl implements MoveSimulateService {

@@ -22,8 +22,8 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.service.config.SaleConfigServiceImpl;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import jakarta.persistence.Query;
 
 public class SupplychainSaleConfigServiceImpl extends SaleConfigServiceImpl

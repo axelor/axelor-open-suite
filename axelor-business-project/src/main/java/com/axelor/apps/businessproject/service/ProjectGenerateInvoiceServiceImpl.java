@@ -59,8 +59,8 @@ import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGenerato
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBusinessProject;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

@@ -21,7 +21,7 @@ package com.axelor.csv.script;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.service.LogisticalFormSequenceService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ImportLogisticalForm {

@@ -42,7 +42,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.repo.AppBaseRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

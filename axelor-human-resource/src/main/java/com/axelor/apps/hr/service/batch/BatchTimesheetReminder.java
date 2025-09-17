@@ -37,7 +37,7 @@ import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.db.MetaModel;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.mail.MessagingException;
 import java.time.LocalDate;
 import java.util.List;

@@ -32,7 +32,7 @@ import com.axelor.apps.sale.service.saleorder.views.SaleOrderAttrsService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.studio.db.AppSale;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 

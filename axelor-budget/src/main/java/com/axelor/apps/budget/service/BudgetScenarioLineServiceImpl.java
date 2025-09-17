@@ -26,7 +26,7 @@ import com.axelor.apps.budget.db.BudgetScenarioVariable;
 import com.axelor.apps.budget.db.repo.BudgetScenarioLineRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;

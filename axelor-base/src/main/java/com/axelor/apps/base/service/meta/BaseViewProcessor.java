@@ -22,7 +22,7 @@ import com.axelor.apps.base.service.pricing.PricingMetaService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateMetaService;
 import com.axelor.meta.schema.views.AbstractView;
 import com.axelor.meta.service.ViewProcessor;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class BaseViewProcessor implements ViewProcessor {
 

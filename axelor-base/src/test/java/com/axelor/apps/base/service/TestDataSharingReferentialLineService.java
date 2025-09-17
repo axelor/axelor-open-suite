@@ -25,8 +25,8 @@ import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.utils.junit.BaseTest;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

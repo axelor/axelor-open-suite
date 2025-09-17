@@ -33,7 +33,7 @@ import com.axelor.studio.db.repo.AppBaseRepository;
 import com.axelor.ui.QuickMenu;
 import com.axelor.ui.QuickMenuCreator;
 import com.axelor.ui.QuickMenuItem;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

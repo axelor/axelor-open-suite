@@ -29,7 +29,7 @@ import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLine
 import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderComputeServiceSupplychainImpl;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 

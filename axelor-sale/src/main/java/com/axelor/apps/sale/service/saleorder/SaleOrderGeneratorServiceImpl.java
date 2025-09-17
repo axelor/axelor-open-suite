@@ -34,8 +34,8 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService {
   protected SaleOrderRepository saleOrderRepository;

@@ -20,7 +20,7 @@ package com.axelor.apps.businesssupport.db.repo;
 
 import com.axelor.apps.businesssupport.db.ProjectAnnouncement;
 import com.axelor.apps.project.service.ProjectTaskService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ProjectAnnouncementBusinessSupportRepository extends ProjectAnnouncementRepository {
 

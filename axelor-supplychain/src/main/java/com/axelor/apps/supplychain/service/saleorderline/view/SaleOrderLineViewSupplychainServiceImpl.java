@@ -34,7 +34,7 @@ import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainServ
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.studio.db.AppAccount;
 import com.axelor.studio.db.AppSupplychain;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

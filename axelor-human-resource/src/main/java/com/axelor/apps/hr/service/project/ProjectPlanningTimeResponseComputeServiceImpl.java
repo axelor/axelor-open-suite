@@ -24,7 +24,7 @@ import com.axelor.apps.hr.rest.dto.ProjectPlanningTimeRestrictedValueResponse;
 import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.ProjectConfig;
 import com.axelor.apps.project.service.config.ProjectConfigService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 

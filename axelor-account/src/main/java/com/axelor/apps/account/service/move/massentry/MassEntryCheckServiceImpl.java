@@ -27,8 +27,8 @@ import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServi
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;

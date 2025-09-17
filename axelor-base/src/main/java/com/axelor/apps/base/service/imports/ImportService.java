@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.Map;
 

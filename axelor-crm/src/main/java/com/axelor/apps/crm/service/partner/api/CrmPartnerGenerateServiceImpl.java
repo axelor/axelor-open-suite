@@ -30,7 +30,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
 import com.axelor.apps.base.service.partner.api.PartnerGenerateServiceImpl;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.NavigableMap;

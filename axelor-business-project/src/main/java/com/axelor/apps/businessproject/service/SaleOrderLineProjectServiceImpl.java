@@ -22,8 +22,8 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class SaleOrderLineProjectServiceImpl implements SaleOrderLineProjectService {

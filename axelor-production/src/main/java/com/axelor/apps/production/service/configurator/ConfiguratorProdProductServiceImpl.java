@@ -29,7 +29,7 @@ import com.axelor.apps.production.service.ProdProductService;
 import com.axelor.apps.sale.service.configurator.ConfiguratorService;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.JsonContext;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class ConfiguratorProdProductServiceImpl implements ConfiguratorProdProductService {

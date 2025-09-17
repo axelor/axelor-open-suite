@@ -27,7 +27,7 @@ import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Objects;
 
 public class SolDetailsProdProcessLineMappingServiceImpl

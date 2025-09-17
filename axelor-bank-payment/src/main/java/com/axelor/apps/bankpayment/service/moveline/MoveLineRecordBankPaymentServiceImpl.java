@@ -21,7 +21,7 @@ package com.axelor.apps.bankpayment.service.moveline;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class MoveLineRecordBankPaymentServiceImpl implements MoveLineRecordBankPaymentService {

@@ -35,8 +35,8 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.service.ArchivingService;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Map;
 

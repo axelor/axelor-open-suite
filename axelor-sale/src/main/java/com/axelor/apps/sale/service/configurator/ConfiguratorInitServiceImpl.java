@@ -22,8 +22,8 @@ import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.meta.db.MetaJsonField;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 import wslite.json.JSONObject;
 

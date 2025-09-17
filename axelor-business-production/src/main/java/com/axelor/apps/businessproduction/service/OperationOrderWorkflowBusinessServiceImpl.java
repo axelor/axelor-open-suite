@@ -30,7 +30,7 @@ import com.axelor.apps.production.service.operationorder.OperationOrderPlanningS
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowServiceImpl;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class OperationOrderWorkflowBusinessServiceImpl extends OperationOrderWorkflowServiceImpl {
 

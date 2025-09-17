@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.cash.management.db.Forecast;
 import com.axelor.apps.cash.management.exception.CashManagementExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 
 public class CashManagementForecastRepository extends ForecastRepository {

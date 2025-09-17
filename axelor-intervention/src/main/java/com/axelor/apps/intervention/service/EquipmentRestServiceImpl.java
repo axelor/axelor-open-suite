@@ -28,8 +28,8 @@ import com.axelor.apps.intervention.rest.dto.EquipmentPicturePutRequest;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class EquipmentRestServiceImpl implements EquipmentRestService {
   protected final MetaFileRepository metaFileRepository;

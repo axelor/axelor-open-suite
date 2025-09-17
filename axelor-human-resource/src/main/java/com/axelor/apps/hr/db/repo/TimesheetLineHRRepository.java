@@ -21,7 +21,7 @@ package com.axelor.apps.hr.db.repo;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineComputeNameService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 
 public class TimesheetLineHRRepository extends TimesheetLineRepository {

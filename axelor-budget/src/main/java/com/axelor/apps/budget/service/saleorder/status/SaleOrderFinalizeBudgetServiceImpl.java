@@ -34,8 +34,8 @@ import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderFinalizeSupplychainServiceImpl;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderFinalizeBudgetServiceImpl extends SaleOrderFinalizeSupplychainServiceImpl {

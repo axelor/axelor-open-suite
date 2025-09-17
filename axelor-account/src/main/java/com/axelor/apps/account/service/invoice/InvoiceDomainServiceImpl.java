@@ -24,7 +24,7 @@ import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.FiscalPositionRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.PriceListRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

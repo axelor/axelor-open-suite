@@ -43,7 +43,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.budget.service.date.BudgetDateService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {

@@ -40,7 +40,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.MapHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;

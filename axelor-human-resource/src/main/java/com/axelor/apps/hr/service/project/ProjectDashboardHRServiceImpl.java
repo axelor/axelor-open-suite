@@ -25,7 +25,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
 import com.axelor.apps.project.service.ProjectToolService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;

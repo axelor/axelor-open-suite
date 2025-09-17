@@ -29,7 +29,7 @@ import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceImpl

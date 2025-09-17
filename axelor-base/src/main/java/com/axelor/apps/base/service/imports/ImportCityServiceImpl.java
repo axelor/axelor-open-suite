@@ -33,7 +33,7 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.studio.db.AppBase;
 import com.axelor.utils.helpers.net.UrlHelper;
 import com.google.common.io.Files;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;

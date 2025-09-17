@@ -33,7 +33,7 @@ import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.common.ObjectUtils;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 

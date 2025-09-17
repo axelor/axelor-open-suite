@@ -27,8 +27,8 @@ import com.axelor.apps.hr.db.MedicalVisit;
 import com.axelor.apps.hr.db.repo.MedicalVisitRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 

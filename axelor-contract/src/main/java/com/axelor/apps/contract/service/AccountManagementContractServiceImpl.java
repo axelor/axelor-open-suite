@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AccountManagementContractServiceImpl extends AccountManagementServiceAccountImpl
     implements AccountManagementContractService {

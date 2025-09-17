@@ -34,9 +34,9 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.Message;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 import wslite.json.JSONException;
 

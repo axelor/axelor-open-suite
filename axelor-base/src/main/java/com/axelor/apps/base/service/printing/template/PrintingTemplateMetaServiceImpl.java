@@ -23,7 +23,7 @@ import com.axelor.meta.schema.views.Button;
 import com.axelor.meta.schema.views.FormView;
 import com.axelor.meta.schema.views.GridView;
 import com.axelor.web.ITranslation;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import net.fortuna.ical4j.util.Optional;

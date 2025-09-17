@@ -32,7 +32,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import org.slf4j.Logger;

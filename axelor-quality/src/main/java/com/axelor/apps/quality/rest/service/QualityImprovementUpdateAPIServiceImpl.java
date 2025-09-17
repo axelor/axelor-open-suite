@@ -27,7 +27,7 @@ import com.axelor.apps.quality.rest.dto.QualityImprovementCreateUpdateResult;
 import com.axelor.apps.quality.rest.dto.QualityImprovementPutRequest;
 import com.axelor.apps.quality.service.QualityImprovementUpdateService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class QualityImprovementUpdateAPIServiceImpl implements QualityImprovementUpdateAPIService {
 

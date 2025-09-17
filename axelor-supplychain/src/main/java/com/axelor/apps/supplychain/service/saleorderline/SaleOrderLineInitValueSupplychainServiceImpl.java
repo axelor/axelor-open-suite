@@ -25,7 +25,7 @@ import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValu
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.studio.db.AppSupplychain;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 

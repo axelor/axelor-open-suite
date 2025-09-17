@@ -29,7 +29,7 @@ import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class TimesheetProjectPPTServiceImpl extends TimesheetProjectPlanningTimeServiceImpl {
 

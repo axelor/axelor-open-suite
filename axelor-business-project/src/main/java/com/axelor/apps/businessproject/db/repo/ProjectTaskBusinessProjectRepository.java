@@ -22,7 +22,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateService;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.project.db.ProjectTask;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import java.util.Collections;
 

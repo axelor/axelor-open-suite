@@ -30,8 +30,8 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class WorkflowCancelBudgetServiceImpl extends WorkflowCancelServiceProjectImpl {
 

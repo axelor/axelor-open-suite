@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.ControlEntrySample;
 import com.axelor.apps.quality.db.repo.ControlEntryPlanLineRepository;
 import com.axelor.apps.quality.db.repo.ControlEntrySampleRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class ControlEntrySampleUpdateServiceImpl implements ControlEntrySampleUpdateService {
 

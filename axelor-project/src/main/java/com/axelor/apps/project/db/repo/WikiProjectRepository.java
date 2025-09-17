@@ -20,7 +20,7 @@ package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.Wiki;
 import com.axelor.apps.project.service.ProjectTaskService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class WikiProjectRepository extends WikiRepository {
 

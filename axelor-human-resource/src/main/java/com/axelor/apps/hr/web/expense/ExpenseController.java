@@ -91,7 +91,7 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;

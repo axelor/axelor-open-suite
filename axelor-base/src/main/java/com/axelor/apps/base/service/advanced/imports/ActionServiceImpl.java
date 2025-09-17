@@ -33,7 +33,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.ContextEntity;
 import com.axelor.rpc.ContextHandlerFactory;
 import com.axelor.rpc.Resource;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;

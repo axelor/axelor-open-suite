@@ -25,7 +25,7 @@ import com.axelor.apps.cash.management.db.repo.ForecastRecapLineRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRecapRepository;
 import com.axelor.auth.db.User;
 import com.axelor.utils.helpers.date.LocalDateHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;

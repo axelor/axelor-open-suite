@@ -27,7 +27,7 @@ import com.axelor.apps.sale.db.SaleBatch;
 import com.axelor.apps.sale.db.repo.SaleBatchRepository;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class SaleBatchService extends AbstractBatchService {
 

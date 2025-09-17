@@ -20,7 +20,7 @@ package com.axelor.apps.base.service.advancedExport;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AdvancedExport;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class AdvancedExportGeneratorFactory {

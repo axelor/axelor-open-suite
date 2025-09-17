@@ -27,7 +27,7 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class PeriodCheckServiceImpl implements PeriodCheckService {
 

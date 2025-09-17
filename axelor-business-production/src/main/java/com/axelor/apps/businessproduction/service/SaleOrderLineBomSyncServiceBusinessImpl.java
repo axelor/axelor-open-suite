@@ -23,7 +23,7 @@ import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.service.SaleOrderLineBomSyncServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.studio.db.repo.AppSaleRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 

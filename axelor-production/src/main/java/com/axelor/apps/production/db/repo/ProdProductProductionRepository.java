@@ -26,7 +26,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;

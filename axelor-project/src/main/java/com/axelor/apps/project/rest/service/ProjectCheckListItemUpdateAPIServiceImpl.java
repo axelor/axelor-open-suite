@@ -3,8 +3,8 @@ package com.axelor.apps.project.rest.service;
 import com.axelor.apps.project.db.ProjectCheckListItem;
 import com.axelor.apps.project.db.repo.ProjectCheckListItemRepository;
 import com.axelor.apps.project.rest.dto.ProjectCheckListItemPutStructure;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class ProjectCheckListItemUpdateAPIServiceImpl

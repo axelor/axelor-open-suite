@@ -20,7 +20,7 @@ package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.production.db.ProdProcessLine;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Objects;
 import java.util.Optional;
 

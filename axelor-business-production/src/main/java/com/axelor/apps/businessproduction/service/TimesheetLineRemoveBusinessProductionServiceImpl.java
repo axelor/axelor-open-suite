@@ -22,8 +22,8 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveServiceImpl;
 import com.axelor.apps.production.db.OperationOrder;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class TimesheetLineRemoveBusinessProductionServiceImpl
     extends TimesheetLineRemoveServiceImpl {

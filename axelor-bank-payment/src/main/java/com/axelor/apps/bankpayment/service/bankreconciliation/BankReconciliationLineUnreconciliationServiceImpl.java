@@ -26,8 +26,8 @@ import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.service.moveline.MoveLinePostedNbrService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.StringUtils;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 

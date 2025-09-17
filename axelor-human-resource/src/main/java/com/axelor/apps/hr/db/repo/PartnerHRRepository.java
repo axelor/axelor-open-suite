@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 
 public class PartnerHRRepository extends PartnerAccountRepository {

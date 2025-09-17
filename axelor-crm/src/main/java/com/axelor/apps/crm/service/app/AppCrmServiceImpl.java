@@ -38,8 +38,8 @@ import com.axelor.meta.loader.AppVersionService;
 import com.axelor.studio.db.AppCrm;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmService {

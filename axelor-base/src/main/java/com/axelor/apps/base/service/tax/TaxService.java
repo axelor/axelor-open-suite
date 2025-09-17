@@ -26,7 +26,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.collect.Sets;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;

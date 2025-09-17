@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.ProductServiceImpl;
 import com.axelor.apps.base.service.ProductVariantService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ProductServicePurchaseImpl extends ProductServiceImpl {
 

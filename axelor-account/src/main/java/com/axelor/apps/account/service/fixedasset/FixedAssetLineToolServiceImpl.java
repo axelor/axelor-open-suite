@@ -26,7 +26,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.interfaces.ArithmeticOperation;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.utils.helpers.date.LocalDateHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;

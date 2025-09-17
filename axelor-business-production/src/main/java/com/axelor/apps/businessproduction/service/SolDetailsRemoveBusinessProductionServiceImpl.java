@@ -20,7 +20,7 @@ package com.axelor.apps.businessproduction.service;
 
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class SolDetailsRemoveBusinessProductionServiceImpl
     implements SolDetailsRemoveBusinessProductionService {

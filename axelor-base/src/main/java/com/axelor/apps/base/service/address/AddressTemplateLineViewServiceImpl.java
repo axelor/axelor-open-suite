@@ -18,7 +18,7 @@
  */
 package com.axelor.apps.base.service.address;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.stream.Collectors;
 
 public class AddressTemplateLineViewServiceImpl implements AddressTemplateLineViewService {

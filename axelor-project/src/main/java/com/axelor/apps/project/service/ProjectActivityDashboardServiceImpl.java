@@ -38,7 +38,7 @@ import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

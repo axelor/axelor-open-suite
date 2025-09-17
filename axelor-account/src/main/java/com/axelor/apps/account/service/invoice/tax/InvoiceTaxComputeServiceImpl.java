@@ -21,7 +21,7 @@ package com.axelor.apps.account.service.invoice.tax;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class InvoiceTaxComputeServiceImpl implements InvoiceTaxComputeService {

@@ -23,7 +23,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectActivityDashboardServiceImpl;
 import com.axelor.mail.db.MailMessage;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;

@@ -35,7 +35,7 @@ import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveHoursSer
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppTimesheet;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -23,7 +23,7 @@ import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
 import com.axelor.apps.maintenance.service.MaintenanceRequestService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class MaintenanceRequestController {
 

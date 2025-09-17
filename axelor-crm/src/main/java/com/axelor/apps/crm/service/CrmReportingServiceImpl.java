@@ -34,7 +34,7 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.studio.db.AppCrm;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 

@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.filesourceconnector.factory.FileTransfertSes
 import com.axelor.apps.base.service.filesourceconnector.models.FileTransfertSession;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 

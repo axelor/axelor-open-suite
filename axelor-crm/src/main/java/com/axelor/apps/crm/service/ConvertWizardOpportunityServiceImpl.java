@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.db.mapper.Mapper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ConvertWizardOpportunityServiceImpl implements ConvertWizardOpportunityService {

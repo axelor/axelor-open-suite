@@ -27,7 +27,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class BankDetailsDomainServiceBankPaymentImpl extends BankDetailsDomainServiceAccountImpl {

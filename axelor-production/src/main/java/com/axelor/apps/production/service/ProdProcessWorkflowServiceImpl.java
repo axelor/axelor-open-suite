@@ -24,8 +24,8 @@ import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class ProdProcessWorkflowServiceImpl implements ProdProcessWorkflowService {
 

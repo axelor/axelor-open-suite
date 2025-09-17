@@ -22,7 +22,7 @@ import com.axelor.apps.talent.db.TrainingSession;
 import com.axelor.apps.talent.exception.TalentExceptionMessage;
 import com.axelor.apps.talent.service.TrainingSessionComputeNameService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.validation.ValidationException;
 
 public class TrainingSessionTalentRepository extends TrainingSessionRepository {

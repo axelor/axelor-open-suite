@@ -27,7 +27,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskCategoryRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;

@@ -26,7 +26,7 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.utils.StockLocationUtilsService;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppStock;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class StockLocationStockRepository extends StockLocationRepository {

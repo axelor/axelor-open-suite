@@ -26,7 +26,7 @@ import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
 import com.axelor.apps.crm.service.OpportunityServiceImpl;
 import com.axelor.apps.crm.service.app.AppCrmService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class OpportunityServiceSaleImpl extends OpportunityServiceImpl {
 

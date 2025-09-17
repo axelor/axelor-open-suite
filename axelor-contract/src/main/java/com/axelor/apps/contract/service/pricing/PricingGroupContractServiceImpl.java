@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.pricing.PricingGenericService;
 import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class PricingGroupContractServiceImpl extends PricingGroupSupplyChainServiceImpl {
 

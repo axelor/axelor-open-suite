@@ -24,7 +24,7 @@ import com.axelor.apps.quality.db.ControlPlanFrequency;
 import com.axelor.apps.quality.db.repo.ControlPlanFrequencyRepository;
 import com.axelor.utils.service.TranslationService;
 import com.axelor.utils.service.translation.TranslationBaseService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class ControlPlanFrequencyServiceImpl implements ControlPlanFrequencyService {

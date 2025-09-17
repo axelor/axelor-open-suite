@@ -20,7 +20,7 @@ package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectToolServiceImpl;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Objects;
 
 public class ProjectToolBusinessProjectServiceImpl extends ProjectToolServiceImpl {

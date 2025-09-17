@@ -29,7 +29,7 @@ import com.axelor.apps.base.service.partner.registrationnumber.factory.PartnerRe
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;

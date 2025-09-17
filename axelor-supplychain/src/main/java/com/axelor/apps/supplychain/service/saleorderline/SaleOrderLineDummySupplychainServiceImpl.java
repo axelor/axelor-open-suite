@@ -31,7 +31,7 @@ import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDummyService
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;

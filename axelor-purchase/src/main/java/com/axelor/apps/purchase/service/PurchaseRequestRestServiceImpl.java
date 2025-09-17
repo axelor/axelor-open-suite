@@ -23,8 +23,8 @@ import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.rest.dto.PurchaseRequestLineRequest;
 import com.axelor.apps.purchase.rest.dto.PurchaseRequestPostRequest;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 

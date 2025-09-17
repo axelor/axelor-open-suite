@@ -28,7 +28,7 @@ import com.axelor.apps.maintenance.db.Imaintenance;
 import com.axelor.apps.maintenance.exception.MaintenanceExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 
 public class EquipementMaintenanceRepo extends EquipementMaintenanceRepository {

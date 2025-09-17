@@ -23,8 +23,8 @@ import com.axelor.apps.project.db.ProjectBatch;
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectBatchRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 

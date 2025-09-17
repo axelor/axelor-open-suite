@@ -34,7 +34,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AnalyticMoveLineContractServiceImpl extends AnalyticMoveLineSupplychainServiceImpl {
 

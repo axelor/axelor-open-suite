@@ -35,7 +35,7 @@ import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class AnalyticLineModelProjectServiceImpl extends AnalyticLineModelServiceImpl {

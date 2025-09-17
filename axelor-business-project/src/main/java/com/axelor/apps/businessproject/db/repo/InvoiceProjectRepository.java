@@ -25,7 +25,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Collections;
 import java.util.List;
 

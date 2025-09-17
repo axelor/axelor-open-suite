@@ -21,7 +21,7 @@ package com.axelor.apps.supplychain.service.analytic;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 

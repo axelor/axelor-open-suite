@@ -35,7 +35,7 @@ import com.axelor.apps.stock.service.batch.model.StockMoveLineOrigin;
 import com.axelor.apps.stock.service.batch.model.TrackProduct;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;

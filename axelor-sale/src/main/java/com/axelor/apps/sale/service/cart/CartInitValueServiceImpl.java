@@ -21,7 +21,7 @@ package com.axelor.apps.sale.service.cart;
 import com.axelor.apps.base.service.CompanyService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.auth.AuthUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 

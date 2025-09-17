@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ICalendar;
 import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class BatchCalendarSynchronization extends BatchStrategy {

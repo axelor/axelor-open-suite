@@ -24,7 +24,7 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.IndexRevaluation;
 import com.axelor.apps.contract.db.RevaluationFormula;
 import com.axelor.apps.contract.service.utils.FormulaProcessingResults;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import javax.script.ScriptEngine;

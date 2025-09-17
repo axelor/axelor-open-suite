@@ -34,7 +34,7 @@ import com.axelor.apps.quality.rest.dto.QualityImprovementRequest;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;

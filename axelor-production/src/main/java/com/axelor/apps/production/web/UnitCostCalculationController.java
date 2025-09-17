@@ -36,7 +36,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.io.Files;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;

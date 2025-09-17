@@ -20,7 +20,7 @@ package com.axelor.apps.sale.service.saleorder.views;
 
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 

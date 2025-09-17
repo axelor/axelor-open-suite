@@ -38,7 +38,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

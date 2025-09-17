@@ -20,7 +20,7 @@ package com.axelor.apps.project.service.roadmap;
 
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.Sprint;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;

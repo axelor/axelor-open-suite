@@ -26,8 +26,8 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionServiceImpl;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class SaleOrderVersionSupplyChainServiceImpl extends SaleOrderVersionServiceImpl
     implements SaleOrderVersionService {

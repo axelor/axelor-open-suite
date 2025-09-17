@@ -34,8 +34,8 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class PurchaseOrderLineServiceProjectImpl extends PurchaseOrderLineServiceSupplyChainImpl

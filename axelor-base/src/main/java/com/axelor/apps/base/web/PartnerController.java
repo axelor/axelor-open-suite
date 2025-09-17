@@ -67,7 +67,7 @@ import com.axelor.utils.helpers.StringHelper;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;

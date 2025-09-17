@@ -29,7 +29,7 @@ import com.axelor.apps.intervention.exception.InterventionExceptionMessage;
 import com.axelor.apps.intervention.service.helper.CustomerRequestHelper;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 
 public class InterventionManagementRepository extends InterventionRepository {

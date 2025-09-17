@@ -33,7 +33,7 @@ import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingServ
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
