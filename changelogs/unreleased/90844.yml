@@ -1,0 +1,3 @@
+---
+title: "Deposit slip: change condition for hiding a panel in deposit slip view and fix depositBankDetails field in payment voucher list grid."
+module: axelor-account
