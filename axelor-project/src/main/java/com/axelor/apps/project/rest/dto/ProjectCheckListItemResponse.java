@@ -16,16 +16,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.rest.service;
+package com.axelor.apps.project.rest.dto;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.ProjectCheckListItem;
-import com.axelor.apps.project.rest.dto.ProjectCheckListItemPostRequest;
+import com.axelor.utils.api.ResponseStructure;
 
-public interface ProjectCheckListItemUpdateAPIService {
+public class ProjectCheckListItemResponse extends ResponseStructure {
 
-  void updateCompleteStatus(ProjectCheckListItem projectCheckListItem, boolean isComplete);
+  private final Long id;
 
-  ProjectCheckListItem createProjectCheckListItem(ProjectCheckListItemPostRequest requestBody)
-      throws AxelorException;
+  public ProjectCheckListItemResponse(ProjectCheckListItem projectCheckListItem) {
+    super(projectCheckListItem.getVersion());
+    this.id = projectCheckListItem.getId();
+  }
+
+  public Long getId() {
+    return id;
+  }
 }
