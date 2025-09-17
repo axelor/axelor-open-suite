@@ -11,6 +11,16 @@
     <integer name="errorNumber" title="Number of errors occurred"/>
     <many-to-one name="importExportTranslation" title="Import/Export translation"
       ref="com.axelor.apps.base.db.ImportExportTranslation"/>
-  </entity>
+    <integer name="statusSelect" title="Status"
+      selection="import.export.translation.history.status.select" default="0"/>
 
+    <extra-code>
+      <![CDATA[
+          public static final int DATA_BACKUP_STATUS_DRAFT = 0;
+          public static final int DATA_BACKUP_STATUS_IN_PROGRESS = 1;
+          public static final int DATA_BACKUP_STATUS_COMPLETED = 2;
+      ]]>
+    </extra-code>
+
+  </entity>
 </domain-models>
