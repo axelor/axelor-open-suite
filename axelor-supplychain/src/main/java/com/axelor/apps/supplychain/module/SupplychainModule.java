@@ -112,6 +112,8 @@ import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpManagementRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
+import com.axelor.apps.supplychain.db.repo.PackagingRepository;
+import com.axelor.apps.supplychain.db.repo.PackagingSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
@@ -558,5 +560,6 @@ public class SupplychainModule extends AxelorModule {
     bind(PartnerCreationServiceImpl.class).to(PartnerCreationServiceSupplychainImpl.class);
     bind(SaleOrderGeneratorSupplychainService.class)
         .to(SaleOrderGeneratorSupplychainServiceImpl.class);
+    bind(PackagingRepository.class).to(PackagingSupplychainRepository.class);
   }
 }
