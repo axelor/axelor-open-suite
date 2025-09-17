@@ -8,6 +8,7 @@ import { computeMapGroupData } from "../../api/map-group";
 
 const ICON_ORIGINAL_SIZE = 24;
 const ICON_SIZE = 30;
+const DEFAULT_COLOR = "#457896";
 
 const MarkerGroup = ({ id, name }: { id: number; name: string }) => {
   const [config, setConfig] = useState<any>();
@@ -18,13 +19,15 @@ const MarkerGroup = ({ id, name }: { id: number; name: string }) => {
       .catch(() => setConfig(null));
   }, [id]);
 
+  const color = useMemo(() => config?.color ?? DEFAULT_COLOR, [config?.color]);
+
   const colorIcon = useMemo(
     () =>
       L.divIcon({
         className: "",
         html: `
         <svg xmlns="http://www.w3.org/2000/svg" width="${ICON_SIZE}" height="${ICON_SIZE}" viewBox="0 0 ${ICON_SIZE} ${ICON_SIZE}" fill="${
-          config?.color ?? "#457896"
+          color
         }" stroke="currentColor"  stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
             <g transform="scale(${ICON_SIZE / ICON_ORIGINAL_SIZE}, ${
           ICON_SIZE / ICON_ORIGINAL_SIZE
@@ -39,7 +42,7 @@ const MarkerGroup = ({ id, name }: { id: number; name: string }) => {
         iconSize: [ICON_SIZE, ICON_SIZE],
         iconAnchor: [ICON_SIZE / 2, ICON_SIZE],
       }),
-    [config?.color]
+    [color]
   );
 
   const overlayName = useMemo(() => {
@@ -50,7 +53,6 @@ const MarkerGroup = ({ id, name }: { id: number; name: string }) => {
   }, [name, id]);
 
   useEffect(() => {
-    const color = config?.color ?? "#457896";
 
     const applyCheckboxColor = () => {
       const hook = document.querySelector(
@@ -75,7 +77,7 @@ const MarkerGroup = ({ id, name }: { id: number; name: string }) => {
     const obs = new MutationObserver(() => applyCheckboxColor());
     obs.observe(container, { childList: true, subtree: true });
     return () => obs.disconnect();
-  }, [config?.color, id]);
+  }, [color, id]);
 
   if (!Array.isArray(config?.data)) {
     return null;
