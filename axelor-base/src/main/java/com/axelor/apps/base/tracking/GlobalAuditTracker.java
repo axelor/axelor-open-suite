@@ -569,8 +569,16 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
     @SuppressWarnings("unchecked")
     var value = (Collection<? extends Model>) collection.getValue();
 
+    if (collection.getStoredSnapshot() instanceof HashMap<?, ?>) {
+      return;
+    }
+
     @SuppressWarnings("unchecked")
     var snapshot = (Collection<? extends Model>) collection.getStoredSnapshot();
+
+    if (snapshot == null || snapshot.isEmpty()) {
+      return;
+    }
 
     var oldValue =
         snapshot instanceof Set
