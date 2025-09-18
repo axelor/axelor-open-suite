@@ -19,20 +19,25 @@
 package com.axelor.apps.base.rest.dto;
 
 import com.axelor.apps.base.db.MapGroup;
+import com.axelor.meta.db.MetaView;
 import com.axelor.utils.api.ResponseStructure;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class MapGroupResponse extends ResponseStructure {
 
   private final String model;
   private final String color;
+  private final String viewName;
   private final List<Map<String, Object>> data;
 
   public MapGroupResponse(MapGroup mapGroup, List<Map<String, Object>> data) {
     super(mapGroup.getVersion());
     this.model = mapGroup.getMetaModel().getFullName();
     this.color = mapGroup.getMarkerColor();
+    this.viewName =
+        Optional.ofNullable(mapGroup.getFormViewToUse()).map(MetaView::getName).orElse(null);
     this.data = data;
   }
 
@@ -42,6 +47,10 @@ public class MapGroupResponse extends ResponseStructure {
 
   public String getColor() {
     return color;
+  }
+
+  public String getViewName() {
+    return viewName;
   }
 
   public List<Map<String, Object>> getData() {
