@@ -1,0 +1,3 @@
+---
+title: "BANKORDER/UMR : Fix cannot confirm a bankOrder while an active UMR is set on the partner"
+module: axelor-bank-payment
