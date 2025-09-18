@@ -1,0 +1,3 @@
+---
+title: "Invoice : Fix financialDiscount not emptied onChange of the partner"
+module: axelor-account
