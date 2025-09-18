@@ -1734,6 +1734,7 @@
 "Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true","Le champ préfixe ou suffixe doit contenir %M ou %FM, et %YY ou %YYYY, car le choix d'une remise à zéro mensuelle a été fait.",,
 "Prefix or suffix must contain %YY or %YYYY since yearly reset is true","Le champ préfixe ou suffixe doit contenir %YY ou %YYYY, car le choix d'une remise à zéro annuelle a été fait.",,
 "Prefix or suffix must not contain characters forbidden in filenames.","Le champ préfixe ou suffixe ne doit pas contenir de caractères interdits dans les noms de fichiers.",,
+"Preview filtered records","Prévisualiser les enregistrements filtrés",,
 "Previous","Précédent",,
 "Previous pricing","Barème précédent",,
 "Previous value","Valeur précédente",,

@@ -1734,6 +1734,7 @@
 "Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true",,,
 "Prefix or suffix must contain %YY or %YYYY since yearly reset is true",,,
 "Prefix or suffix must not contain characters forbidden in filenames.",,,
+"Preview filtered records",,,
 "Previous",,,
 "Previous pricing",,,
 "Previous value",,,
