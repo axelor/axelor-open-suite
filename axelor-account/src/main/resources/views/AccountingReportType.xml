@@ -23,7 +23,9 @@
     <panel name="accountingReportTypeMainPanel">
       <field name="name"/>
       <panel stacked="true">
-        <field name="company" showIf="typeSelect != 3000" requiredIf="typeSelect != 3000"/>
+        <field name="company" showIf="typeSelect != 3000"
+          onChange="action-accounting-report-type-record-company-onchange"
+          requiredIf="typeSelect != 3000"/>
         <field name="companySet" showIf="typeSelect == 3000" widget="TagSelect"/>
       </panel>
       <field name="reportExportTypeSelect" validIf="reportExportTypeSelect > 0"
@@ -74,6 +76,11 @@
     <field name="typeSelect" expr="eval: null"/>
     <field name="reportTitle" expr="eval: null"/>
     <field name="typeSelect" expr="3000" if="reportExportTypeSelect == 1"/>
+  </action-record>
+
+  <action-record name="action-accounting-report-type-record-company-onchange"
+    model="com.axelor.apps.account.db.AccountingReportType">
+    <field name="companySet" expr="eval: [company] as Set"/>
   </action-record>
 
   <action-attrs name="action-accounting-report-type-attrs-comparison-onchange"
