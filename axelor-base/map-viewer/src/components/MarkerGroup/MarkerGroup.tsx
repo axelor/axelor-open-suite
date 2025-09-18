@@ -92,7 +92,11 @@ const MarkerGroup = ({ id, name }: { id: number; name: string }) => {
             position={[m.latitude, m.longitude]}
             icon={colorIcon}
           >
-            <MarkerPopup {...m} model={config?.model} />
+            <MarkerPopup
+              {...m}
+              model={config?.model}
+              viewName={config?.viewName}
+            />
           </Marker>
         ))}
       </LayerGroup>

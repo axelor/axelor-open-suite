@@ -1,6 +1,8 @@
+import { useMemo } from "react";
 import { Popup } from "react-leaflet";
 
 import { openAxelorView, type MarkerPoint } from "../../utils";
+import LinkIcon from "../LinkIcon/LinkIcon";
 
 interface MarkerPopup extends MarkerPoint {
   model: string;
@@ -9,19 +11,23 @@ interface MarkerPopup extends MarkerPoint {
 const MarkerPopup = ({
   model,
   recordId,
-  viewName,
+  viewName = "",
   cardContent,
 }: MarkerPopup) => {
+  const isViewConfigured = useMemo(() => !!viewName, [viewName]);
+
   return (
     <Popup>
       <div
         onDoubleClick={
-          viewName != null
+          isViewConfigured
             ? () => openAxelorView(viewName, recordId, model)
             : undefined
         }
-        dangerouslySetInnerHTML={{ __html: cardContent }}
-      />
+      >
+        <div dangerouslySetInnerHTML={{ __html: cardContent }} />
+        {isViewConfigured && <LinkIcon />}
+      </div>
     </Popup>
   );
 };
