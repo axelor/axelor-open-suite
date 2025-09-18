@@ -43,7 +43,6 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.apps.stock.service.StockMoveLineStockLocationService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -75,7 +74,6 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       StockConfigService stockConfigService,
       AppStockService appStockService,
       ProductCompanyService productCompanyService,
-      StockMoveLineStockLocationService stockMoveLineStockLocationService,
       AppSupplychainService appSupplyChainService,
       AppAccountService appAccountService,
       PurchaseOrderRepository purchaseOrderRepo,
@@ -100,7 +98,6 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         stockConfigService,
         appStockService,
         productCompanyService,
-        stockMoveLineStockLocationService,
         appSupplyChainService,
         appAccountService,
         purchaseOrderRepo,

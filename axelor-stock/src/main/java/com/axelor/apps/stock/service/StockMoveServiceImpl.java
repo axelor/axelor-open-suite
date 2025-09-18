@@ -94,7 +94,6 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected StockConfigService stockConfigService;
   protected AppStockService appStockService;
   protected ProductCompanyService productCompanyService;
-  protected StockMoveLineStockLocationService stockMoveLineStockLocationService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -108,8 +107,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AppStockService appStockService,
-      ProductCompanyService productCompanyService,
-      StockMoveLineStockLocationService stockMoveLineStockLocationService) {
+      ProductCompanyService productCompanyService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -121,7 +119,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.stockConfigService = stockConfigService;
     this.appStockService = appStockService;
     this.productCompanyService = productCompanyService;
-    this.stockMoveLineStockLocationService = stockMoveLineStockLocationService;
   }
 
   /**
@@ -333,34 +330,12 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMoveLine.setTrackingNumber(stockMoveLine.getTrackingNumber());
     }
 
-    boolean isDefaultLocationManagementEnabled =
-        appBaseService.getAppBase().getEnableSiteManagementForStock()
-            && appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine();
-
     if (stockMoveLine.getToStockLocation() == null) {
-      StockLocation toStockLocation = stockMove.getToStockLocation();
-      stockMoveLine.setToStockLocation(toStockLocation);
-
-      if (isDefaultLocationManagementEnabled) {
-        stockMoveLine.setToStockLocation(
-            Optional.of(
-                    stockMoveLineStockLocationService.getDefaultToStockLocation(
-                        stockMoveLine, stockMove))
-                .orElse(toStockLocation));
-      }
+      stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
     }
 
     if (stockMoveLine.getFromStockLocation() == null) {
-      StockLocation fromStockLocation = stockMove.getFromStockLocation();
-      stockMoveLine.setFromStockLocation(fromStockLocation);
-
-      if (isDefaultLocationManagementEnabled) {
-        stockMoveLine.setFromStockLocation(
-            Optional.ofNullable(
-                    stockMoveLineStockLocationService.getDefaultFromStockLocation(
-                        stockMoveLine, stockMove))
-                .orElse(fromStockLocation));
-      }
+      stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
     }
 
     stockMoveLine.setIsRealQtyModifiedByUser(true);

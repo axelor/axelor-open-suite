@@ -44,14 +44,15 @@ public class StockMoveLineStockLocationServiceImpl implements StockMoveLineStock
     // outgoing => fill from
     if (typeSelect == StockMoveRepository.TYPE_OUTGOING) {
       StockLocation defaultFromStockLocation =
-          getDefaultFromStockLocation(stockMoveLine, stockMove);
+          getDefaultFromStockLocation(stockMoveLine.getProduct(), stockMove);
       if (defaultFromStockLocation != null) {
         stockMoveLine.setFromStockLocation(defaultFromStockLocation);
       }
 
       // incoming => fill to
     } else if (typeSelect == StockMoveRepository.TYPE_INCOMING) {
-      StockLocation defaultToStockLocation = getDefaultToStockLocation(stockMoveLine, stockMove);
+      StockLocation defaultToStockLocation =
+          getDefaultToStockLocation(stockMoveLine.getProduct(), stockMove);
       if (defaultToStockLocation != null) {
         stockMoveLine.setToStockLocation(defaultToStockLocation);
       }
@@ -59,16 +60,9 @@ public class StockMoveLineStockLocationServiceImpl implements StockMoveLineStock
   }
 
   @Override
-  public StockLocation getDefaultFromStockLocation(
-      StockMoveLine stockMoveLine, StockMove stockMove) {
-    // if option is not enabled, return old value
-    if (!appBaseService.getAppBase().getEnableSiteManagementForStock()
-        || !appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()) {
-      return stockMoveLine.getFromStockLocation();
-    }
+  public StockLocation getDefaultFromStockLocation(Product product, StockMove stockMove) {
 
     StockLocation fromStockLocation = null;
-    Product product = stockMoveLine.getProduct();
     List<DefaultStockLocationBySite> defaultStockLocationBySiteList =
         product.getDefaultStockLocationBySite();
 
@@ -92,16 +86,9 @@ public class StockMoveLineStockLocationServiceImpl implements StockMoveLineStock
   }
 
   @Override
-  public StockLocation getDefaultToStockLocation(StockMoveLine stockMoveLine, StockMove stockMove) {
-    // if option is not enabled, return old value
-    if (!appBaseService.getAppBase().getEnableSiteManagementForStock()
-        || !appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()) {
-      return stockMoveLine.getToStockLocation();
-    }
-
+  public StockLocation getDefaultToStockLocation(Product product, StockMove stockMove) {
     StockLocation toStockLocation = null;
 
-    Product product = stockMoveLine.getProduct();
     List<DefaultStockLocationBySite> defaultStockLocationBySiteList =
         product.getDefaultStockLocationBySite();
 
@@ -164,9 +151,10 @@ public class StockMoveLineStockLocationServiceImpl implements StockMoveLineStock
 
       Integer typeSelect = stockMove.getTypeSelect();
       if (typeSelect == StockMoveRepository.TYPE_INCOMING) {
-        stockLocationForMoveLine = getDefaultToStockLocation(stockMoveLine, stockMove);
+        stockLocationForMoveLine = getDefaultToStockLocation(stockMoveLine.getProduct(), stockMove);
       } else if (typeSelect == StockMoveRepository.TYPE_OUTGOING) {
-        stockLocationForMoveLine = getDefaultFromStockLocation(stockMoveLine, stockMove);
+        stockLocationForMoveLine =
+            getDefaultFromStockLocation(stockMoveLine.getProduct(), stockMove);
       }
 
       if (stockLocationForMoveLine != null) {
