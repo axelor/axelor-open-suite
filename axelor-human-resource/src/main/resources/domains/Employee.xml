@@ -16,6 +16,7 @@
       selection="hr.time.logging.preference.select" massUpdate="true"/>
     <decimal name="weeklyWorkHours" title="Weekly work hours" scale="2" precision="20"/>
     <decimal name="dailyWorkHours" title="Daily work hours" scale="2" precision="20"/>
+    <decimal name="dailySalaryCost" title="Daily salary cost" scale="2" precision="20"/>
     <many-to-one name="managerUser" ref="com.axelor.auth.db.User" title="Manager"
       massUpdate="true"/>
     <boolean name="timesheetReminder" title="Timesheet reminder"/>
