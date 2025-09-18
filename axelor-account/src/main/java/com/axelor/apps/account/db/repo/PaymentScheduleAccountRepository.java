@@ -1,0 +1,40 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+package com.axelor.apps.account.db.repo;
+
+import com.axelor.apps.account.db.PaymentSchedule;
+import com.google.common.collect.Lists;
+import java.math.BigDecimal;
+import java.util.Collections;
+
+public class PaymentScheduleAccountRepository extends PaymentScheduleRepository {
+
+  @Override
+  public PaymentSchedule copy(PaymentSchedule paymentSchedule, boolean deep) {
+    PaymentSchedule copy = super.copy(paymentSchedule, deep);
+
+    if (copy.getStatusSelect().equals(PaymentScheduleRepository.STATUS_CONFIRMED)) {
+      copy.setStatusSelect(PaymentScheduleRepository.STATUS_DRAFT);
+      copy.setInTaxAmount(BigDecimal.ZERO);
+      copy.setInvoiceSet(Collections.emptySet());
+      copy.setPaymentScheduleLineList(Lists.newArrayList());
+    }
+    return copy;
+  }
+}
