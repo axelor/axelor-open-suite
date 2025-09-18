@@ -7,7 +7,7 @@
     extension="true">
 
     <extend
-      target="//panel[@name='stepUserPanel']/panel[@name='stepOverviewPanel']/field[@name='noHelp']">
+      target="panel[@name='stepUserPanel']/panel[@name='stepOverviewPanel']/field[@name='noHelp']">
       <insert position="after">
         <field name="activeProject"
           domain=":__self__ member of self.membersUserSet AND (self.archived = false OR self.archived is null) AND (:activeCompany IS NULL OR self.company IS NULL OR self.company = :activeCompany)"
@@ -16,13 +16,20 @@
       </insert>
     </extend>
 
-    <extend
-      target="//panel[@name='mainUserPanel']/panel[@name='overviewPanel']/field[@name='noHelp']">
+    <extend target="panel[@name='mainUserPanel']/field[@name='noHelp']">
       <insert position="after">
         <field name="activeProject"
           domain=":__self__ member of self.membersUserSet AND (self.archived = false OR self.archived is null) AND (:activeCompany IS NULL OR self.company IS NULL OR self.company = :activeCompany)"
           if-module="axelor-project" if="__config__.app.isApp('project')"/>
         <field name="isIncludeSubProjects" showIf="activeProject"/>
+      </insert>
+    </extend>
+
+    <extend target="//panel-dashlet[@name='userPermissionPanel']">
+      <insert position="after">
+        <panel-related name="projectSetPanel" field="projectSet" canEdit="false"
+          showIf="stepStatusSelect == 1" form-view="project-form" grid-view="project-grid"
+          if="__config__.app.isApp('project')" colSpan="12"/>
       </insert>
     </extend>
 
