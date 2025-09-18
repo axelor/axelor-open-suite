@@ -68,3 +68,7 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+.leaflet-control-layers-overlays label input[type="checkbox"] {
+  accent-color: var(--leaflet-layer-accent, initial);
+}
