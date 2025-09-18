@@ -547,7 +547,7 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
     for (SaleOrder saleOrder : saleOrderList) {
       int countLine = 1;
       for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-        SaleOrderLine copiedSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, false);
+        SaleOrderLine copiedSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, true);
         copiedSaleOrderLine.setSequence(countLine * 10);
         saleOrderMerged.addSaleOrderLineListItem(copiedSaleOrderLine);
         countLine++;

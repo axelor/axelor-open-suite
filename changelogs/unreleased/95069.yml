@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed the sub sale order lines when merging the multiple sale orders."
+module: axelor-sale
