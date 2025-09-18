@@ -5,12 +5,10 @@
 
   <form id="user-form-mobilesettings" name="user-form" title="User"
     model="com.axelor.auth.db.User" extension="true">
-    <extend target="//panel[@name='mainUserPanel']/panel[@name='overviewPanel']">
+    <extend target="//panel[@name='mainUserPanel']/field[@name='language']">
       <insert position="after">
         <panel name="qrCodePanel" colSpan="2">
-          <field name="qrCode" colSpan="12" showTitle="false" hidden="true" readonly="true"
-            hideIf="qrCode == null" widget="Image" canRemove="true"
-            if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnabled()"/>
+
         </panel>
       </insert>
       <attribute name="colSpan" value="10"/>
@@ -18,9 +16,16 @@
     <extend target="//panel[@name='testingPanel']">
       <insert position="after">
         <panel name="configAppPanel" sidebar="true">
+          <panel name="qrCodePanel" colSpan="12">
+            <spacer colSpan="4"/>
+            <field name="qrCode" showTitle="false" hidden="true" readonly="true"
+              hideIf="qrCode == null" widget="Image" canRemove="true"
+              if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnabled()"/>
+          </panel>
           <button name="generateQrCodeBtn" title="Generate QR Code"
             readonlyIf="qrCode != null" onClick="action-user-group-generate-qr-code-button-on-click"
-            if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnabled()"/>
+            if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnabled()"
+            colSpan="12"/>
         </panel>
       </insert>
     </extend>
