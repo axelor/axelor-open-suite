@@ -31,34 +31,28 @@ public class ProjectTaskGroupServiceImpl implements ProjectTaskGroupService {
 
   protected ProjectTaskComputeService projectTaskComputeService;
   protected ProjectTaskBusinessProjectService projectTaskBusinessProjectService;
+  protected ProjectTaskComputeBusinessProjectService projectTaskComputeBusinessProjectService;
 
   @Inject
   public ProjectTaskGroupServiceImpl(
       ProjectTaskComputeService projectTaskComputeService,
-      ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
+      ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
+      ProjectTaskComputeBusinessProjectService projectTaskComputeBusinessProjectService) {
     this.projectTaskComputeService = projectTaskComputeService;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
+    this.projectTaskComputeBusinessProjectService = projectTaskComputeBusinessProjectService;
   }
 
   @Override
   public Map<String, Object> updateBudgetedTime(ProjectTask projectTask, Unit oldTimeUnit)
       throws AxelorException {
     projectTaskComputeService.computeBudgetedTime(projectTask, oldTimeUnit);
-
-    Map<String, Object> valuesMap = new HashMap<>(updateSoldTime(projectTask));
-
-    valuesMap.put("budgetedTime", projectTask.getBudgetedTime());
-
-    return valuesMap;
-  }
-
-  @Override
-  public Map<String, Object> updateSoldTime(ProjectTask projectTask) throws AxelorException {
-    projectTask.setSoldTime(projectTask.getBudgetedTime());
+    projectTaskComputeBusinessProjectService.computeSoldTime(projectTask, oldTimeUnit);
 
     Map<String, Object> valuesMap = new HashMap<>(updateUpdatedTime(projectTask));
 
     valuesMap.put("soldTime", projectTask.getSoldTime());
+    valuesMap.put("budgetedTime", projectTask.getBudgetedTime());
 
     return valuesMap;
   }

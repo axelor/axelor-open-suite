@@ -188,8 +188,7 @@
         <field name="timeUnit" colSpan="4" readonlyIf="saleOrderLine || parentTask"
           onSelect="action-project-task-attrs-set-time-unit-domain"
           onChange="action-project-task-method-update-budgeted-time, save"/>
-        <field name="budgetedTime" colSpan="4"
-          onChange="action-project-task-method-update-sold-time">
+        <field name="budgetedTime" colSpan="4">
         </field>
         <field name="soldTime" readonlyIf="saleOrderLine" hidden="true" showIf="!parentTask"
           onChange="action-project-task-method-update-updated-time" colSpan="4"/>
@@ -492,11 +491,6 @@
   <action-method name="action-project-task-method-update-budgeted-time">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="updateBudgetedTime"/>
-  </action-method>
-
-  <action-method name="action-project-task-method-update-sold-time">
-    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
-      method="updateSoldTime"/>
   </action-method>
 
   <action-method name="action-project-task-method-update-updated-time">
