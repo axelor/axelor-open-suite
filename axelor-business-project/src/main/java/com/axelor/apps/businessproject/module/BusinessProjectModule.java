@@ -110,6 +110,8 @@ import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectG
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorSaleServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskComputeBusinessProjectService;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskComputeBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskComputeBusinessService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskComputeBusinessServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupBusinessService;
@@ -138,6 +140,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetLineServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeServiceImpl;
 import com.axelor.apps.project.service.ProjectMenuServiceImpl;
 import com.axelor.apps.project.service.ProjectServiceImpl;
+import com.axelor.apps.project.service.ProjectTaskComputeServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskGroupServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.project.service.ProjectTemplateServiceImpl;
@@ -243,5 +246,9 @@ public class BusinessProjectModule extends AxelorModule {
     bind(InvoiceTermDateComputeServiceImpl.class)
         .to(InvoiceTermDateComputeProjectServiceImpl.class);
     bind(SaleOrderCopyProjectService.class).to(SaleOrderCopyProjectServiceImpl.class);
+    bind(ProjectTaskComputeBusinessProjectService.class)
+        .to(ProjectTaskComputeBusinessProjectServiceImpl.class);
+    bind(ProjectTaskComputeServiceImpl.class)
+        .to(ProjectTaskComputeBusinessProjectServiceImpl.class);
   }
 }

@@ -214,15 +214,6 @@ public class ProjectTaskController {
   }
 
   @ErrorException
-  public void updateSoldTime(ActionRequest request, ActionResponse response)
-      throws AxelorException {
-    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
-
-    response.setValues(
-        Beans.get(ProjectTaskGroupBusinessService.class).updateSoldTime(projectTask));
-  }
-
-  @ErrorException
   public void updateUpdatedTime(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
