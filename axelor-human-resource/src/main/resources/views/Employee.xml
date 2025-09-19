@@ -6,7 +6,7 @@
   <grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee"
     orderBy="contactPartner.simpleFullName">
     <toolbar>
-      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print"
+      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="print"
         onClick="action-print-employee-phonebook"/>
     </toolbar>
     <field name="contactPartner.partnerSeq" width="120"/>
@@ -650,7 +650,7 @@
   <cards name="employee-card" title="Employee" model="com.axelor.apps.hr.db.Employee"
     css="rect-image" orderBy="contactPartner.simpleFullName">
     <toolbar>
-      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print"
+      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="print"
         onClick="action-print-employee-phonebook"/>
     </toolbar>
     <field name="contactPartner.picture"/>

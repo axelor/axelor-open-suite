@@ -7,7 +7,7 @@
     model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
     <toolbar>
       <button name="printBtn" title="Print"
-        onClick="action-purchase-order-method-show-purchase-order" icon="fa-print"/>
+        onClick="action-purchase-order-method-show-purchase-order" icon="print"/>
     </toolbar>
     <menubar>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -29,7 +29,7 @@
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="print"
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
@@ -39,7 +39,7 @@
     model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
     <toolbar>
       <button name="printBtn" title="Print"
-        onClick="action-purchase-order-method-show-purchase-order" icon="fa-print"/>
+        onClick="action-purchase-order-method-show-purchase-order" icon="print"/>
     </toolbar>
     <menubar>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -59,7 +59,7 @@
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="print"
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
@@ -76,7 +76,7 @@
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="print"
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
@@ -128,7 +128,7 @@
     onLoad="action-group-purchase-order-on-load-actions"
     onNew="action-group-purchase-order-on-new-actions">
     <toolbar>
-      <button name="printBtn" title="Reports" icon="fa-print"
+      <button name="printBtn" title="Reports" icon="print"
         hideIf="supplierPartner == null" readonlyIf="!id"
         onClick="save,action-purchase-order-method-show-purchase-order"/>
     </toolbar>
@@ -440,7 +440,7 @@
     orderBy="-orderDate">
     <toolbar>
       <button name="printBtn" title="Print"
-        onClick="action-purchase-order-method-show-purchase-order" icon="fa-print"/>
+        onClick="action-purchase-order-method-show-purchase-order" icon="print"/>
     </toolbar>
     <menubar>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">

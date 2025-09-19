@@ -47,7 +47,7 @@
       readonlyIf="excludeFromDas2Report"/>
     <button
       onClick="action-account-payment-move-line-distribution-method-include-line-in-das2"
-      icon="fa-check" help="Include in DAS2 report" name="includeInDas2Btn"
+      icon="check" help="Include in DAS2 report" name="includeInDas2Btn"
       readonlyIf="!excludeFromDas2Report || !$get('moveLine.account.serviceType.n4dsCode')"/>
   </grid>
 

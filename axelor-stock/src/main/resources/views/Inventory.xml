@@ -30,14 +30,14 @@
       </panel>
 
       <panel name="actionsPanel" colSpan="2" itemSpan="12">
-        <button name="planBtn" title="Plan" icon="fa-calendar"
+        <button name="planBtn" title="Plan" icon="calendar_today"
           showIf="statusSelect == 1 &amp;&amp; stockLocation != null"
           onClick="action-group-stock-inventory-plan-click"/>
-        <button name="startBtn" title="Start" icon="fa-play" showIf="statusSelect == 2"
+        <button name="startBtn" title="Start" icon="play-fill" showIf="statusSelect == 2"
           onClick="action-group-stock-inventory-start-click"/>
-        <button name="completeBtn" title="Complete" icon="fa-check"
+        <button name="completeBtn" title="Complete" icon="check"
           showIf="statusSelect == 3" onClick="action-group-stock-inventory-complete-click"/>
-        <button name="validateBtn" title="Validate" icon="fa-check"
+        <button name="validateBtn" title="Validate" icon="check"
           showIf="statusSelect == 4" onClick="action-group-stock-inventory-validate-click"/>
         <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger"
           showIf="statusSelect &lt; 6" onClick="action-group-stock-inventory-cancel-click"/>

@@ -152,7 +152,7 @@
           hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="validateBtn" hidden="true" onClick="action-timesheet-group-validate"
-          title="Validate" icon="fa-check" css="btn-success"
+          title="Validate" icon="check" css="btn-success"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="refuseBtn" hidden="true" onClick="action-timesheet-group-refuse"
           title="Refuse" icon="fa-times" css="btn-danger"

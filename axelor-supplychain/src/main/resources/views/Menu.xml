@@ -67,14 +67,14 @@
 
 
   <menuitem name="purchase-mrp-configuration" parent="purchase-mrp" title="Configuration"
-    icon="fa-cog" order="300"/>
+    icon="settings" order="300"/>
 
   <menuitem name="purchase-mrp-configuration-mrp-line-type"
     parent="purchase-mrp-configuration" title="MRP move types"
     action="stock.mrp.configuration.mrp.line.type" order="100"/>
 
   <menuitem name="stock-mrp-configuration" parent="stock-mrp" title="Configuration"
-    icon="fa-cog" order="300"/>
+    icon="settings" order="300"/>
 
   <menuitem name="stock-mrp-configuration-mrp-line-type" parent="stock-mrp-configuration"
     title="MRP move types" action="stock.mrp.configuration.mrp.line.type" order="100"/>

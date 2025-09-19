@@ -7,7 +7,7 @@
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
     <toolbar>
       <button name="printBtn" title="Print"
-        onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
+        onClick="action-sale-order-method-show-sale-order" icon="print"/>
     </toolbar>
     <menubar>
       <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -39,7 +39,7 @@
     <field name="statusSelect"/>
     <field name="lastReminderDate"/>
     <field name="lastReminderComments"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
@@ -49,7 +49,7 @@
     orderBy="-creationDate">
     <toolbar>
       <button name="printBtn" title="Print"
-        onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
+        onClick="action-sale-order-method-show-sale-order" icon="print"/>
     </toolbar>
     <menubar>
       <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -81,7 +81,7 @@
     <field name="deliveryState" if="__config__.app.isApp('supplychain')"/>
     <field name="statusSelect"/>
     <field name="salespersonUser"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
@@ -91,7 +91,7 @@
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
     <toolbar>
       <button name="printBtn" title="Print"
-        onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
+        onClick="action-sale-order-method-show-sale-order" icon="print"/>
     </toolbar>
     <menubar>
       <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -111,7 +111,7 @@
     <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="statusSelect"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
@@ -133,7 +133,7 @@
     <field name="inTaxTotalRemainingToOrder" aggregate="sum"
       x-scale="currency.numberOfDecimals"/>
     <field name="statusSelect"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
@@ -153,7 +153,7 @@
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
@@ -275,7 +275,7 @@
     model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
     onNew="action-sale-order-method-onnew">
     <toolbar>
-      <button name="printBtn" title="Reports" icon="fa-print" hideIf="clientPartner == null"
+      <button name="printBtn" title="Reports" icon="print" hideIf="clientPartner == null"
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
       <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
         onClick="action-send-by-email-with-template" hidden="true" showIf="id"/>
@@ -1163,7 +1163,7 @@
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="print"
       onClick="action-sale-order-method-show-sale-order"/>
   </grid>
 
@@ -1172,7 +1172,7 @@
     onLoad="action-group-sale-saleorder-onload" onSave="action-group-sale-order-onsave"
     onNew="action-sale-order-method-onnew" width="large">
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
+      <button name="printBtn" title="Print" icon="print"
         onClick="save,action-sale-order-method-show-sale-order"/>
     </toolbar>
     <panel name="mainPanel" readonly="true">
@@ -1468,7 +1468,7 @@
     model="com.axelor.apps.sale.db.SaleOrder" width="360px" css="rect-image" orderBy="-orderDate">
     <toolbar>
       <button name="printBtn" title="Print"
-        onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
+        onClick="action-sale-order-method-show-sale-order" icon="print"/>
     </toolbar>
     <menubar>
       <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
