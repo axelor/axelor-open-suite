@@ -444,4 +444,7 @@ public final class ProductionExceptionMessage {
 
   public static final String SALE_ORDER_LINES_CANNOT_PRODUCT = /*$$(*/
       "Warning : One or more lines are blocked for production" /*)*/;
+
+  public static final String OPERATION_ORDER_CANNOT_ADD_PRODUCT = /*$$(*/
+      "Phase consumption is not enabled for this operation. Please add the consumed products directly to the manufacturing order." /*)*/;
 }
