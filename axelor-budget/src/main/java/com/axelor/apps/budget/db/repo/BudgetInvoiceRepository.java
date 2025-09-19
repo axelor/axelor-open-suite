@@ -26,7 +26,6 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.BudgetInvoiceLineService;
 import com.axelor.apps.supplychain.db.repo.InvoiceSupplychainRepository;
 import com.axelor.inject.Beans;
-import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 

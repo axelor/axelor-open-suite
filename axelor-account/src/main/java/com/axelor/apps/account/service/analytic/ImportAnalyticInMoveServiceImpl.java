@@ -19,13 +19,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
 
 public class ImportAnalyticInMoveServiceImpl implements ImportAnalyticInMoveService {
 

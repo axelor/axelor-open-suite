@@ -30,9 +30,9 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Objects;
-import jakarta.inject.Inject;
 
 public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWorkflowServiceImpl {
 

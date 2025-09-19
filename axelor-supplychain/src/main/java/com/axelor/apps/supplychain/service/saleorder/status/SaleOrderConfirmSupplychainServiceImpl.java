@@ -37,9 +37,9 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Objects;
-import jakarta.inject.Inject;
 
 public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmSupplychainService {
 

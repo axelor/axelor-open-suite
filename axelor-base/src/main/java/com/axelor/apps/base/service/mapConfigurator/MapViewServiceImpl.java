@@ -23,7 +23,7 @@ import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.utils.helpers.MetaActionHelper;
 import com.google.inject.persist.Transactional;
-import javax.ws.rs.core.UriBuilder;
+import jakarta.ws.rs.core.UriBuilder;
 
 public class MapViewServiceImpl implements MapViewService {
 
