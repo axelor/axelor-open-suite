@@ -80,7 +80,8 @@ public class ManufOrderRestController {
     return ResponseConstructor.build(
         Response.Status.OK,
         I18n.get(ITranslation.REQUEST_COMPLETED),
-        new ManufOrderProductListResponse(consumedProductList, requestBody.fetchManufOrder()));
+        new ManufOrderProductListResponse(
+            consumedProductList, requestBody.fetchManufOrder().getVersion()));
   }
 
   @Operation(
@@ -104,7 +105,8 @@ public class ManufOrderRestController {
     return ResponseConstructor.build(
         Response.Status.OK,
         I18n.get(ITranslation.REQUEST_COMPLETED),
-        new ManufOrderProductListResponse(producedProductList, requestBody.fetchManufOrder()));
+        new ManufOrderProductListResponse(
+            producedProductList, requestBody.fetchManufOrder().getVersion()));
   }
 
   @Operation(

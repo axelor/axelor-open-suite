@@ -20,14 +20,23 @@ package com.axelor.apps.production.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.rest.dto.ManufOrderProductListResponse;
+import com.axelor.apps.production.rest.dto.ManufOrderProductResponse;
+import com.axelor.apps.production.rest.dto.OperationOrderProductGetRequest;
 import com.axelor.apps.production.rest.dto.OperationOrderPutRequest;
+import com.axelor.apps.production.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
+import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -57,5 +66,30 @@ public class OperationOrderRestController {
 
     return Beans.get(OperationOrderRestService.class)
         .updateStatusOfOperationOrder(operationOrder, requestBody.getStatus());
+  }
+
+  @Operation(
+      summary = "Fetch consumed product",
+      tags = {"Operation Order"})
+  @Path("/consumed-products/fetch")
+  @POST
+  @HttpExceptionHandler
+  public Response fetchConsumedProducts(OperationOrderProductGetRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck()
+        .readAccess(OperationOrder.class, requestBody.getOperationOrderId())
+        .readAccess(ProdProduct.class)
+        .check();
+
+    List<ManufOrderProductResponse> consumedProductList =
+        Beans.get(ManufOrderProductRestService.class)
+            .getConsumedProductList(requestBody.fetchOperationOrder());
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.REQUEST_COMPLETED),
+        new ManufOrderProductListResponse(
+            consumedProductList, requestBody.fetchOperationOrder().getVersion()));
   }
 }
