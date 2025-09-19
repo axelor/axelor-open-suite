@@ -2,9 +2,9 @@
 title: "API Siren: Fix current obsolete version."
 module: axelor-base
 developer: |
-  ALTER TABLE studio_app_base DROP COLUMN IF EXISTS sirene_token_generator_url
-  ALTER TABLE studio_app_base DROP COLUMN IF EXISTS sirene_secret
-  ALTER TABLE studio_app_base DROP COLUMN IF EXISTS sirene_access_token
+  ALTER TABLE studio_app_base DROP COLUMN IF EXISTS sirene_token_generator_url;
+  ALTER TABLE studio_app_base DROP COLUMN IF EXISTS sirene_secret;
+  ALTER TABLE studio_app_base DROP COLUMN IF EXISTS sirene_access_token;
 
   DELETE from meta_field
   WHERE name IN ('sireneTokenGeneratorUrl', 'sireneSecret', 'sireneAccessToken')
