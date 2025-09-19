@@ -72,4 +72,14 @@
     <option value="jobPosition">Job position</option>
   </selection>
 
+  <selection name="job.application.family.status.select">
+    <option value="1">Single</option>
+    <option value="2">Married</option>
+    <option value="3">In a civil partnership / In a domestic partnership</option>
+    <option value="4">Cohabiting / Living together</option>
+    <option value="5">Divorced</option>
+    <option value="6">Widowed</option>
+    <option value="6">Separated</option>
+  </selection>
+
 </object-views>
