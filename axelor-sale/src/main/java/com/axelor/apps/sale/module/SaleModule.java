@@ -170,6 +170,8 @@ import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingPlanSe
 import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingPlanServiceImpl;
 import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingService;
 import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingServiceImpl;
+import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderProductPackagingService;
+import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderProductPackagingServiceImpl;
 import com.axelor.apps.sale.service.saleorder.pricing.PricingObserverSaleImpl;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingServiceImpl;
@@ -358,5 +360,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderPackagingOrientationService.class)
         .to(SaleOrderPackagingOrientationServiceImpl.class);
     bind(SaleOrderPackagingMessageService.class).to(SaleOrderPackagingMessageServiceImpl.class);
+    bind(SaleOrderProductPackagingService.class).to(SaleOrderProductPackagingServiceImpl.class);
   }
 }
