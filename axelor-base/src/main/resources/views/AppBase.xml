@@ -123,7 +123,7 @@
         <panel name="apiSirenePanel" title="API Sirene configuration" colSpan="12">
           <help colSpan="12"><![CDATA[Calling the Sirene API will fill following partner fields: Name, First name, Title, Type, Tax number, Category, Main activity, Address.]]></help>
           <field name="sireneUrl" widget="url"/>
-          <field name="sireneApiKey" widget="password"/>
+          <field name="sireneKey" widget="password"/>
         </panel>
 
 
