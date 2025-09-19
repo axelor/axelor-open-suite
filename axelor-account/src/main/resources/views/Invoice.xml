@@ -9,7 +9,7 @@
     orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="print"/>
     </toolbar>
     <menubar>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -52,7 +52,7 @@
     <field name="debtRecoveryBlockingOk"/>
     <field name="paymentProgress" widget="Progress"/>
     <field name="paymentDelay"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
@@ -62,7 +62,7 @@
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="print"/>
     </toolbar>
     <menubar>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -99,7 +99,7 @@
     <field name="statusSelect" width="100" widget="single-select"/>
     <field name="billOfExchangeBlockingOk"/>
     <field name="paymentDelay"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
@@ -109,7 +109,7 @@
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="print"/>
     </toolbar>
     <menubar>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -152,7 +152,7 @@
     <field name="paymentDelayReason"/>
     <field name="nextActionDate"/>
     <field name="paymentDelayReasonComments" widget="html"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
@@ -162,7 +162,7 @@
     orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="print"/>
     </toolbar>
     <menubar>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -207,7 +207,7 @@
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" width="100" widget="single-select"/>
     <field name="paymentDelay"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
@@ -217,7 +217,7 @@
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="print"/>
     </toolbar>
     <menubar>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -269,7 +269,7 @@
     <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="paymentDelay"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
@@ -279,7 +279,7 @@
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="print"/>
     </toolbar>
     <menubar>
       <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -326,7 +326,7 @@
     <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
       name="pfpValidatorUser" title="PFP val."/>
     <field name="paymentDelay"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-send-by-email-with-template"/>
@@ -336,7 +336,7 @@
     orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="print"/>
     </toolbar>
     <menubar>
       <menu title="Tools" icon="fa-wrench" showTitle="true">
@@ -369,7 +369,7 @@
     <field name="currency"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" widget="single-select"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="print"
       onClick="action-invoice-method-show-invoice"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
@@ -391,7 +391,7 @@
     <field name="statusSelect" widget="single-select"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="print"
       onClick="action-invoice-method-show-invoice"/>
   </grid>
 
@@ -400,7 +400,7 @@
     onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
 
     <toolbar>
-      <button name="printBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
+      <button name="printBtn" title="Reports" icon="print" showIf="statusSelect != 4"
         readonlyIf="!id" onClick="action-invoice-group-report-button"/>
     </toolbar>
 
@@ -1180,7 +1180,7 @@
     onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
 
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
+      <button name="printBtn" title="Print" icon="print"
         onClick="save,action-invoice-method-show-invoice"/>
     </toolbar>
 

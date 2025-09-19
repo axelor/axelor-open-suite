@@ -52,7 +52,7 @@
       </panel>
 
       <panel name="confirmButtonPanel" colOffset="3">
-        <button name="confirmButton" title="Confirm" icon="fa-check" css="btn-success"
+        <button name="confirmButton" title="Confirm" icon="check" css="btn-success"
           prompt="Are you sure to confirm the request ?"
           onClick="save,action-gdpr-select-person,save,action-gdpr-method-request-generate-response,save"
           showIf="statusSelect == 0"/>

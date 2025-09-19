@@ -69,7 +69,7 @@
   </action-view>
 
   <menuitem title="Configuration" name="contracts-root-conf-all" parent="contracts-root"
-    icon="fa-cog" order="500"/>
+    icon="settings" order="500"/>
 
   <menuitem title="Terminated contracts" name="contracts-root-conf-terminated"
     action="contracts.root.conf.terminated" parent="contracts-root-conf-all" order="100"/>

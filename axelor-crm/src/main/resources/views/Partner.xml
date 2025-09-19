@@ -441,9 +441,9 @@
   <cards id="crm-partner-cards" name="partner-cards" model="com.axelor.apps.base.db.Partner"
     title="Partners" css="rect-image">
     <toolbar>
-      <button name="printPhoneBookBtn" title="Contact PhoneBook" icon="fa-print"
+      <button name="printPhoneBookBtn" title="Contact PhoneBook" icon="print"
         onClick="action-print-phonebook"/>
-      <button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="fa-print"
+      <button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="print"
         onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
       <button name="checkDuplicateBtn" title="Check Duplicate"
         onClick="action-general-check-duplicate-records"/>

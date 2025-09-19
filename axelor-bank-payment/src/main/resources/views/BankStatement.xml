@@ -23,7 +23,7 @@
   <form name="bank-statement-form" title="Bank Statement"
     model="com.axelor.apps.bankpayment.db.BankStatement" width="large" canDelete="false">
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print" readonlyIf="statusSelect &lt; 2"
+      <button name="printBtn" title="Print" icon="print" readonlyIf="statusSelect &lt; 2"
         onClick="action-bank-statement-validate-file-format,action-method-print-template"/>
       <button name="generateBankReconciliationBtn" title="Run bank reconciliation"
         readonlyIf="statusSelect &lt; 2"
