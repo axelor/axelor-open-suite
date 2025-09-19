@@ -29,12 +29,11 @@ public class PaymentScheduleAccountRepository extends PaymentScheduleRepository 
   public PaymentSchedule copy(PaymentSchedule paymentSchedule, boolean deep) {
     PaymentSchedule copy = super.copy(paymentSchedule, deep);
 
-    if (copy.getStatusSelect().equals(PaymentScheduleRepository.STATUS_CONFIRMED)) {
-      copy.setStatusSelect(PaymentScheduleRepository.STATUS_DRAFT);
-      copy.setInTaxAmount(BigDecimal.ZERO);
-      copy.setInvoiceSet(Collections.emptySet());
-      copy.setPaymentScheduleLineList(Lists.newArrayList());
-    }
+    copy.setStatusSelect(PaymentScheduleRepository.STATUS_DRAFT);
+    copy.setInTaxAmount(BigDecimal.ZERO);
+    copy.setInvoiceSet(Collections.emptySet());
+    copy.setPaymentScheduleLineList(Lists.newArrayList());
+    copy.setPaymentScheduleSeq(null);
     return copy;
   }
 }
