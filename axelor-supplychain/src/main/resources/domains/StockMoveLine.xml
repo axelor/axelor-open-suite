@@ -25,6 +25,8 @@
 
     <datetime name="reservationDateTime" readonly="true"/>
 
+    <decimal name="qtyRemainingToPackage" title="Qty remaining to package" default="0"
+      scale="3" precision="20"/>
 
     <finder-method name="findForDeclarationOfExchanges"
       using="LocalDate:fromDate,LocalDate:toDate,String:productTypeSelect,int:stockMoveTypeSelect,com.axelor.apps.base.db.Country:country,com.axelor.apps.base.db.Company:company "
