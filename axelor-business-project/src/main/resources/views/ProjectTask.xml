@@ -487,11 +487,6 @@
       method="getProductData"/>
   </action-method>
 
-  <action-method name="action-project-task-method-update-sold-time">
-    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
-      method="updateSoldTime"/>
-  </action-method>
-
   <action-method name="action-project-task-method-update-updated-time">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="updateUpdatedTime"/>
@@ -581,7 +576,6 @@
 
   <action-group name="action-project-task-group-budgeted-time-onchange">
     <action name="action-project-task-group-sprint-onchange"/>
-    <action name="action-project-task-method-update-sold-time"/>
   </action-group>
 
   <action-attrs name="action-project-task-attrs-discountamount-title">
