@@ -192,16 +192,11 @@
 
     <panel name="timesheetsSBSPanel" title="Timesheets" if="__config__.app.isApp('timesheet')"
       showIf="stepByStepSelect == 3">
-      <field name="timeLoggingPreferenceSelect" colSpan="3"
-        validIf="(timesheetImputationSelect == 2 &amp;&amp; timeLoggingPreferenceSelect != 'days') || timesheetImputationSelect != 2"/>
+      <field name="timeLoggingPreferenceSelect" colSpan="3"/>
       <field name="product" canEdit="false" colSpan="3"
         domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
         grid-view="product-grid"/>
       <field name="timesheetReminder" colSpan="3"/>
-      <field name="timesheetImputationSelect" colSpan="3"
-        if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"
-        if-module="axelor-business-production"
-        onChange="action-employee-attrs-timesheet-imputation-select-selection-in"/>
     </panel>
     <!-- END OF Leaves and timesheets -->
 
@@ -471,10 +466,6 @@
           domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
           grid-view="product-grid"/>
         <field name="timesheetReminder" colSpan="3"/>
-        <field name="timesheetImputationSelect" colSpan="3"
-          if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"
-          if-module="axelor-business-production"
-          onChange="action-employee-attrs-timesheet-imputation-select-selection-in"/>
 
         <panel-dashlet name="employeeUserTimesheetsPanel"
           action="action-employee-view-user-timesheets" colSpan="12"/>
@@ -507,7 +498,8 @@
           <field name="analyticDistributionTemplate"
             grid-view="analytic-distribution-template-grid"
             form-view="analytic-distribution-template-form"
-            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+            onSelect="action-employee-method-set-domain-analytic-distribution-template"/>
           <panel-related name="expenseLimitListPanel" title="Expense limits"
             field="expenseLimitList" colSpan="12" form-view="expense-limit-form"
             grid-view="expense-limit-grid"/>
@@ -847,12 +839,16 @@
       method="updateEmployeeFilesWithMedicalVisit"/>
   </action-method>
 
+  <action-method
+    name="action-employee-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.hr.web.EmployeeController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
+
   <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
     title="Employee filters">
     <field name="bankDetails" hidden="true"
       if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
-    <field name="timesheetImputationSelect" hidden="true"
-      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getEnableTimesheetOnManufOrder())"/>
     <field name="lunchVoucherFormatSelect" hidden="true"
       if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher())"/>
     <field name="lunchVoucherAdvanceList" hidden="true"

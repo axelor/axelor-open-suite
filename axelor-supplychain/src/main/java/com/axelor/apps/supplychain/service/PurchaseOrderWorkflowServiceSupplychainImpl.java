@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
@@ -29,6 +30,8 @@ import com.axelor.apps.purchase.service.app.AppPurchaseService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
+import java.util.Objects;
 import jakarta.inject.Inject;
 
 public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWorkflowServiceImpl {
@@ -66,6 +69,17 @@ public class PurchaseOrderWorkflowServiceSupplychainImpl extends PurchaseOrderWo
 
     if (!appSupplychainService.isApp("supplychain")) {
       return;
+    }
+
+    if (purchaseOrder.getEstimatedReceiptDate() == null) {
+      var estimatedReceiptDate =
+          purchaseOrder.getPurchaseOrderLineList().stream()
+              .map(PurchaseOrderLine::getEstimatedReceiptDate)
+              .filter(Objects::nonNull)
+              .max(LocalDate::compareTo)
+              .orElse(null);
+
+      purchaseOrder.setEstimatedReceiptDate(estimatedReceiptDate);
     }
 
     if (appSupplychainService.getAppSupplychain().getSupplierStockMoveGenerationAuto()

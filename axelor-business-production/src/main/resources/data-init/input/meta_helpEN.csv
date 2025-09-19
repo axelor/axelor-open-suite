@@ -1,2 +1,0 @@
-"module";"object";"view";"field";"help"
-"axelor-business-production";"TimesheetLine";"timesheet-line-timesheet-manuf-order-form";"enableEditor";"If 'Enable editor' is TRUE, when editing that logtime line (on this same specific date) on editor it will update duration of that logtime line. If 'Enable editor' is FALSE, when editing that line on editor it will create a new logtime line."

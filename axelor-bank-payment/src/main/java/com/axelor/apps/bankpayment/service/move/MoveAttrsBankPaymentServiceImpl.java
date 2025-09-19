@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsServiceImpl;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -42,7 +43,9 @@ import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveAttrsBankPaymentServiceImpl extends MoveAttrsServiceImpl {
+
   protected BankDetailsBankPaymentService bankDetailsBankPaymentService;
+  protected AppBankPaymentService appBankPaymentService;
 
   @Inject
   public MoveAttrsBankPaymentServiceImpl(
@@ -55,7 +58,8 @@ public class MoveAttrsBankPaymentServiceImpl extends MoveAttrsServiceImpl {
       AnalyticAttrsService analyticAttrsService,
       CompanyRepository companyRepository,
       JournalRepository journalRepository,
-      BankDetailsBankPaymentService bankDetailsBankPaymentService) {
+      BankDetailsBankPaymentService bankDetailsBankPaymentService,
+      AppBankPaymentService appBankPaymentService) {
     super(
         accountConfigService,
         appAccountService,
@@ -67,6 +71,7 @@ public class MoveAttrsBankPaymentServiceImpl extends MoveAttrsServiceImpl {
         companyRepository,
         journalRepository);
     this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
+    this.appBankPaymentService = appBankPaymentService;
   }
 
   @Override
@@ -78,7 +83,9 @@ public class MoveAttrsBankPaymentServiceImpl extends MoveAttrsServiceImpl {
     if (partner != null
         && !CollectionUtils.isEmpty(partner.getBankDetailsList())
         && paymentMode != null
-        && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD) {
+        && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD
+        && Boolean.TRUE.equals(
+            appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment())) {
       Company company = move.getCompany();
       List<BankDetails> bankDetailsList =
           bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(

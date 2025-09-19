@@ -13,20 +13,26 @@
   <form name="call-tender-form" model="com.axelor.apps.purchase.db.CallTender"
     title="Call for tender">
     <panel name="headerPanel" showTitle="false">
-
+      <field name="callTenderSeq" showTitle="false" colSpan="12" readonly="true">
+        <viewer><![CDATA[
+	          <>
+	             <h3>
+	             	{callTenderSeq}
+	             </h3>
+	          </>
+	       ]]></viewer>
+      </field>
       <field name="name" colSpan="6"/>
-      <field name="description" colSpan="6"/>
+      <field name="company" colSpan="6"/>
       <field name="callForTenderMailTemplate" colSpan="6"
         domain="self.metaModel.name='CallTenderOffer'"/>
+      <field name="description" colSpan="12"/>
     </panel>
     <panel name="actionPanel" showTitle="false" sidebar="true">
       <button name="generateCallTenderBtn" title="Generate call for tenders"
         onClick="save,action-call-tender-method-generate-call-tender-offers" colSpan="12"/>
       <button name="sendCallTendersBtn" title="Send call for tenders"
         onClick="save,action-call-tender-method-send-call-tender-offers" colSpan="12"/>
-    </panel>
-    <panel name="seqPanel" showTitle="false" sidebar="true">
-      <field name="callTenderSeq"/>
     </panel>
     <panel-related field="callTenderNeedList" title="Product needs"
       form-view="call-tender-need-form" grid-view="call-tender-need-grid" colSpan="12"

@@ -88,8 +88,6 @@
           hidden="true"/>
         <label name="tradingNameLabel"
           if="!(__config__.app.getApp('base')?.enableTradingNamesManagement)" colSpan="3"/>
-        <field name="project" colSpan="8" domain="self.clientPartner=:partner" hidden="true"
-          showIf="contractTypeSelect == 1"/>
         <field name="company.tradingNameList" hidden="true"/>
       </panel>
     </panel>
@@ -592,7 +590,6 @@
       expr="action:action-record-contract-version-default-record"/>
     <field name="partner" expr="eval: _clientPartner" if="_clientPartner != null"/>
     <field name="currency" expr="eval: __user__.activeCompany?.currency"/>
-    <field name="project" expr="eval:_project" if="_project != null"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
   </action-record>
 

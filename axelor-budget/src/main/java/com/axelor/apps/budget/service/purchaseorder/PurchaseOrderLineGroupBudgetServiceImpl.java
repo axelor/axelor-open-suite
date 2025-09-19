@@ -23,18 +23,20 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.businessproject.service.PurchaseOrderLineServiceProjectImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
 
-public class PurchaseOrderLineGroupBudgetServiceImpl extends PurchaseOrderLineServiceProjectImpl {
+public class PurchaseOrderLineGroupBudgetServiceImpl
+    extends PurchaseOrderLineServiceSupplyChainImpl {
 
   protected BudgetToolsService budgetToolsService;
   protected AppBudgetService appBudgetService;
@@ -46,16 +48,18 @@ public class PurchaseOrderLineGroupBudgetServiceImpl extends PurchaseOrderLineSe
       AppAccountService appAccountService,
       AccountConfigService accountConfigService,
       AnalyticLineModelService analyticLineModelService,
-      PurchaseOrderLineRepository purchaseOrderLineRepo,
       BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      PublicHolidayService publicHolidayService,
+      AppSupplychainService appSupplychainService) {
     super(
         analyticMoveLineService,
         unitConversionService,
         appAccountService,
         accountConfigService,
         analyticLineModelService,
-        purchaseOrderLineRepo);
+        publicHolidayService,
+        appSupplychainService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
   }

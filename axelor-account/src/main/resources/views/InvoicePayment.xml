@@ -17,7 +17,7 @@
     <field name="move" width="120" form-view="move-form" grid-view="move-grid"/>
     <field name="statusSelect" widget="single-select"/>
     <button name="cancelBtn" icon="fa-times-circle"
-      onClick="action-invoice-payment-method-cancel" readonlyIf="statusSelect == 2"/>
+      onClick="action-invoice-payment-group-cancel" readonlyIf="statusSelect == 2"/>
   </grid>
 
   <form name="invoice-payment-form" title="Payment"
@@ -99,9 +99,8 @@
       <field name="statusSelect" widget="single-select"
         hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"
         selection-in="[0,1,2]"/>
-      <button name="cancelBtn" title="Cancel"
-        readonlyIf="statusSelect == 2 || move.statusSelect == 3" hideIf="move.statusSelect == 3"
-        icon="fa-times-circle" onClick="action-invoice-payment-method-cancel"/>
+      <button name="cancelBtn" title="Remove this payment" icon="fa-times-circle"
+        showIf="statusSelect != 2" onClick="action-invoice-payment-group-cancel"/>
       <field name="move.statusSelect" hidden="true" readonly="true"/>
     </panel>
     <panel name="newInvoicePaymentPanel" hideIf="id">
@@ -185,6 +184,11 @@
     <action name="action-invoice-payment-method-new-discount"/>
   </action-group>
 
+  <action-group name="action-invoice-payment-group-cancel">
+    <action name="action-invoice-payment-method-validate-before-unlink"/>
+    <action name="action-invoice-payment-method-cancel"/>
+  </action-group>
+
   <action-validate name="action-invoice-payment-validate-mass-payment">
     <error message="Please fill in the company bank details." if="companyBankDetails == null"/>
     <error message="Please fill in the date." if="paymentDate == null"/>
@@ -266,6 +270,11 @@
   <action-method name="action-invoice-payment-method-cancel">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="cancelInvoicePayment"/>
+  </action-method>
+
+  <action-method name="action-invoice-payment-method-validate-before-unlink">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="validateBeforeUnlink"/>
   </action-method>
 
   <action-method name="action-invoice-payment-method-fill-bank-details">

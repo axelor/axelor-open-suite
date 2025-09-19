@@ -28,6 +28,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -59,6 +60,7 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
   protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
   protected FreightCarrierPricingService freightCarrierPricingService;
   protected FreightCarrierApplyPricingService freightCarrierApplyPricingService;
+  protected PublicHolidayService publicHolidayService;
 
   @Inject
   public SaleOrderLineProductSupplychainServiceImpl(
@@ -79,7 +81,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       AppSupplychainService appSupplychainService,
       SaleOrderLineAnalyticService saleOrderLineAnalyticService,
       FreightCarrierPricingService freightCarrierPricingService,
-      FreightCarrierApplyPricingService freightCarrierApplyPricingService) {
+      FreightCarrierApplyPricingService freightCarrierApplyPricingService,
+      PublicHolidayService publicHolidayService) {
     super(
         appSaleService,
         appBaseService,
@@ -99,6 +102,7 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
     this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
     this.freightCarrierPricingService = freightCarrierPricingService;
     this.freightCarrierApplyPricingService = freightCarrierApplyPricingService;
+    this.publicHolidayService = publicHolidayService;
   }
 
   @Override
@@ -122,9 +126,27 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       saleOrderLineMap.putAll(
           saleOrderLineAnalyticService.printAnalyticAccounts(saleOrder, saleOrderLine));
       saleOrderLineMap.putAll(setShippingCostPrice(saleOrderLine, saleOrder));
+
+      if (saleOrder.getEstimatedShippingDate() == null
+          && product.getAvailabilityMeanTime() != null) {
+        saleOrderLineMap.putAll(setEstimatedShippingDate(saleOrder, product));
+      }
+
     } else {
       return saleOrderLineMap;
     }
+    return saleOrderLineMap;
+  }
+
+  protected Map<String, Object> setEstimatedShippingDate(SaleOrder saleOrder, Product product) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    var company = saleOrder.getCompany();
+    var todayDate = appBaseService.getTodayDate(company);
+    var freeDateDay =
+        publicHolidayService.getFreeDay(
+            todayDate.plusDays(product.getAvailabilityMeanTime()), company);
+    saleOrderLineMap.put("estimatedShippingDate", freeDateDay);
+
     return saleOrderLineMap;
   }
 

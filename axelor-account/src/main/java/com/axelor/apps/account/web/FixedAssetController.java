@@ -38,6 +38,7 @@ import com.axelor.apps.account.service.fixedasset.FixedAssetGenerationService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetGroupService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetValidateService;
+import com.axelor.apps.account.service.fixedasset.attributes.FixedAssetAttrsService;
 import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
@@ -617,5 +618,18 @@ public class FixedAssetController {
     }
     fieldMap.put("saleTaxLineSet", saleTaxLineSet);
     return fieldMap;
+  }
+
+  @ErrorException
+  public void setDomainAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    FixedAsset fixedAsset = context.asType(FixedAsset.class);
+
+    response.setAttr(
+        "analyticDistributionTemplate",
+        "domain",
+        Beans.get(FixedAssetAttrsService.class)
+            .addCurrentAnalyticDistributionTemplateInDomain(fixedAsset));
   }
 }

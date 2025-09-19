@@ -12,7 +12,8 @@
             <spacer colSpan="4"/>
             <field name="qrCode" showTitle="false" hidden="true" readonly="true"
               hideIf="qrCode == null" widget="Image" canRemove="true"
-              if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnabled()" colSpan="4"/>
+              if="__config__.app.getApp('mobile-settings')?.getIsLoginUserQrcodeEnabled()"
+              colSpan="4"/>
             <spacer colSpan="4"/>
           </panel>
           <button name="generateQrCodeBtn" title="Generate QR Code"

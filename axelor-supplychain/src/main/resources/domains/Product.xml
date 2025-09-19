@@ -11,6 +11,8 @@
       title="MRP family" massUpdate="true"/>
     <boolean name="excludeFromMrp" title="Exclude from MRP" massUpdate="true"/>
     <integer name="standardDelay" title="Standard delay (days)" default="0"/>
+    <integer name="availabilityMeanTime" title="Availability mean time" min="0"
+      help="Average product availability time in working days" nullable="true"/>
 
   </entity>
 

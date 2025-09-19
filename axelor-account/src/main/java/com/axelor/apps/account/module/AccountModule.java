@@ -121,6 +121,8 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.analytic.AnalyticToolServiceImpl;
+import com.axelor.apps.account.service.analytic.ImportAnalyticInMoveService;
+import com.axelor.apps.account.service.analytic.ImportAnalyticInMoveServiceImpl;
 import com.axelor.apps.account.service.analytic.TradingNameAnalyticService;
 import com.axelor.apps.account.service.analytic.TradingNameAnalyticServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -145,6 +147,8 @@ import com.axelor.apps.account.service.fecimport.FECImportService;
 import com.axelor.apps.account.service.fecimport.FECImportServiceImpl;
 import com.axelor.apps.account.service.fecimport.ImportFECTypeService;
 import com.axelor.apps.account.service.fecimport.ImportFECTypeServiceImpl;
+import com.axelor.apps.account.service.fecimport.ImportMoveFecService;
+import com.axelor.apps.account.service.fecimport.ImportMoveFecServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
@@ -926,6 +930,8 @@ public class AccountModule extends AxelorModule {
 
     bind(ImportFECTypeService.class).to(ImportFECTypeServiceImpl.class);
 
+    bind(ImportMoveFecService.class).to(ImportMoveFecServiceImpl.class);
+
     bind(FixedAssetLineRepository.class).to(FixedAssetLineManagementRepository.class);
 
     bind(FixedAssetGroupService.class).to(FixedAssetGroupServiceImpl.class);
@@ -938,6 +944,8 @@ public class AccountModule extends AxelorModule {
         .to(FixedAssetDerogatoryLineManagementRepository.class);
 
     bind(FindFixedAssetService.class).to(FindFixedAssetServiceImpl.class);
+
+    bind(ImportAnalyticInMoveService.class).to(ImportAnalyticInMoveServiceImpl.class);
 
     bind(PeriodCheckService.class).to(PeriodCheckServiceImpl.class);
 

@@ -136,6 +136,18 @@
 
     <string name="dtype" insertable="false" updatable="false"/>
 
+    <boolean name="isPackaging" title="This product is a packaging ?" default="false"/>
+    <decimal name="innerLength" title="Inner length (mm)" default="0" scale="3"
+      precision="20"/>
+    <decimal name="innerWidth" title="Inner width (mm)" default="0" scale="3" precision="20"/>
+    <decimal name="innerHeight" title="Inner height (mm)" default="0" scale="3"
+      precision="20"/>
+    <decimal name="outerLength" title="Outer length (mm)" default="0" scale="3"
+      precision="20"/>
+    <decimal name="outerWidth" title="Outer width (mm)" default="0" scale="3" precision="20"/>
+    <decimal name="outerHeight" title="Outer height (mm)" default="0" scale="3"
+      precision="20"/>
+
     <!-- Json field -->
     <string name="productAttrs" title="Fields" json="true"/>
 

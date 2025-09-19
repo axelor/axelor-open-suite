@@ -73,7 +73,8 @@ public class StockMoveLineRestController {
             requestBody.getConformity(),
             requestBody.fetchUnit(),
             requestBody.fetchFromStockLocation(),
-            requestBody.fetchToStockLocation());
+            requestBody.fetchToStockLocation(),
+            requestBody.getDescription());
 
     return ResponseConstructor.build(
         Response.Status.OK,

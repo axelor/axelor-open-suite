@@ -119,6 +119,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public boolean partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       return super.partialFinish(manufOrder);

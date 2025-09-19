@@ -29,10 +29,6 @@
         colSpan="12" action="action-project-version-method-show-sprint-list" height="200%"
         canSearch="true" editable="true" canNew="id" canDelete="true"/>
     </panel>
-    <panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-      <panel-dashlet name="taskDashletPanel" title="Ticket associated"
-        action="action-dashlet-version-view-show-task" colSpan="12"/>
-    </panel>
   </form>
 
   <action-group name="action-project-version-onnew">

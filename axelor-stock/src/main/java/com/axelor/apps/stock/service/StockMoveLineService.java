@@ -303,7 +303,8 @@ public interface StockMoveLineService {
       Unit unit,
       Integer conformitySelect,
       StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      StockLocation toStockLocation,
+      String description)
       throws AxelorException;
 
   /** To update realQty and conformity of a stock move line (API AOS) */
@@ -313,7 +314,8 @@ public interface StockMoveLineService {
       Integer conformity,
       Unit unit,
       StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      StockLocation toStockLocation,
+      String description)
       throws AxelorException;
 
   /**

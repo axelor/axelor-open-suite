@@ -71,6 +71,7 @@
     <option value="qualityImprovement">Quality improvement</option>
     <option value="qiActionDistribution">QI Action distribution</option>
     <option value="qiDecisionDistribution">QI Decision distribution</option>
+    <option value="requiredDocument">Required document</option>
   </selection>
 
   <selection name="team.type.select" id="quality.team.type.select">
@@ -123,6 +124,62 @@
     <option value="1">No checked</option>
     <option value="2">Yes</option>
     <option value="3">No</option>
+  </selection>
+
+  <selection name="quality.required.document.status.select">
+    <option value="1">Required</option>
+    <option value="2">Available</option>
+    <option value="3">Obsolete</option>
+  </selection>
+
+  <selection name="quality.required.document.type.select">
+    <option value="1">Sale order</option>
+    <option value="2">Project</option>
+  </selection>
+
+  <selection name="quality.required.document.related.to.select">
+    <option value="com.axelor.apps.base.db.Product">Product</option>
+    <option value="com.axelor.apps.purchase.db.PurchaseOrder">Purchase order</option>
+    <option value="com.axelor.apps.production.db.ManufOrder">ManufOrder</option>
+  </selection>
+
+  <selection name="quality.control.origin.related.to.select">
+    <option value="com.axelor.apps.base.db.Product" data-grid="product-grid"
+      product-form="invoice-form">Product</option>
+    <option value="com.axelor.apps.base.db.Partner" data-grid="partner-grid"
+      data-form="partner-form" data-domain="self.isSupplier = true">Partner</option>
+    <option value="com.axelor.apps.project.db.Project" data-grid="project-grid"
+      data-form="project-form">Project</option>
+  </selection>
+
+  <selection name="quality.control.plan.related.to.select">
+    <option value="com.axelor.apps.base.db.Product">Product</option>
+    <option value="com.axelor.apps.production.db.ProdProcessLine">ProdProcessLine</option>
+  </selection>
+
+  <selection name="quality.control.entry.related.to.select">
+    <option value="com.axelor.apps.stock.db.StockMove">StockMove</option>
+    <option value="com.axelor.apps.stock.db.StockMoveLine">StockMoveLine</option>
+    <option value="com.axelor.apps.production.db.ManufOrder">ManufOrder</option>
+    <option value="com.axelor.apps.production.db.OperationOrder">OperationOrder</option>
+    <option value="com.axelor.apps.base.db.Product">Product</option>
+    <option value="com.axelor.apps.stock.db.TrackingNumber">TrackingNumber</option>
+  </selection>
+
+  <selection name="quality.control.entry.operation.order.related.to.select">
+    <option value="com.axelor.apps.production.db.OperationOrder">OperationOrder</option>
+  </selection>
+
+  <selection name="quality.characteristic.type.characteristic.type.select">
+    <option value="1">Measurable</option>
+    <option value="2">List</option>
+    <option value="3">Comment</option>
+  </selection>
+
+  <selection name="quality.tracking.number.conformity.select">
+    <option value="1">Compliant</option>
+    <option value="2">Non-compliant</option>
+    <option value="3">Not assessed</option>
   </selection>
 
 </object-views>

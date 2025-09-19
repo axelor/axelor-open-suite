@@ -19,8 +19,10 @@
 package com.axelor.apps.hr.service.leave;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.auth.db.User;
 import java.time.LocalDateTime;
 
 public interface LeaveRequestCreateService {
@@ -30,6 +32,8 @@ public interface LeaveRequestCreateService {
       int startOnSelect,
       int endOnSelect,
       String comment,
-      LeaveReason leaveReason)
+      LeaveReason leaveReason,
+      User user,
+      Employee employee)
       throws AxelorException;
 }

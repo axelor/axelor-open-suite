@@ -61,9 +61,8 @@ public class DMSServiceImpl implements DMSService {
   @Override
   public DMSFile setDmsFile(MetaFile metaFile, PdfViewer pdfViewer) {
     if (metaFile == null) {
-      pdfViewer.setDmsFile(null);
-
       DMSFile previousDmsFile = pdfViewer.getDmsFile();
+      pdfViewer.setDmsFile(null);
       if (previousDmsFile != null) {
         dmsFileRepository.remove(previousDmsFile);
       }

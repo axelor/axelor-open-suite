@@ -41,8 +41,6 @@
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="date"/>
-    <field name="project" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project')"/>
     <field name="typeSelect"/>
   </grid>
 
@@ -87,8 +85,7 @@
 
   <form name="analytic-move-line-form" title="Analytic Move Line"
     model="com.axelor.apps.account.db.AnalyticMoveLine"
-    onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project"
-    onLoad="action-analytic-move-line-attrs-title-project"
+    onNew="action-analytic-move-line-record-currency"
     onSave="save,action-analytic-move-line-method-refresh-axis" width="large">
     <panel name="mainPanel">
       <field name="analyticJournal" form-view="analytic-journal-form"
@@ -105,11 +102,6 @@
       <field name="amount" x-scale="currency.numberOfDecimals"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
-      <field name="project"
-        domain="self.analyticDistributionTemplate IS NOT null AND self.isBusinessProject = true"
-        if-module="axelor-business-project" form-view="business-project-form"
-        grid-view="project-grid" if="__config__.app.isApp('business-project')"
-        title="Business project"/>
       <field name="account" onSelect="action-analytic-move-line-attrs-account-domain"
         onChange="action-analytic-move-line-record-account-onchange"/>
       <field name="accountType"
@@ -150,8 +142,6 @@
       <field name="originalPieceAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
       <field name="amount" colSpan="4" readonly="true" x-scale="currency.numberOfDecimals"/>
       <field name="date" colSpan="4"/>
-      <field name="project" grid-view="project-grid" form-view="business-project-form"
-        if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
       <field name="typeSelect"/>
       <field name="currency" hidden="true" grid-view="currency-grid" form-view="currency-form"/>
       <field name="currency.numberOfDecimals" hidden="true"/>
@@ -184,12 +174,7 @@
       expr="eval: 'self.accountType = :accountType AND self.statusSelect = 1'" if="accountType"/>
   </action-attrs>
 
-  <action-attrs if-module="axelor-business-project"
-    name="action-analytic-move-line-attrs-title-project">
-    <attribute name="title" for="project"
-      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
-      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
-  </action-attrs>
+
 
   <action-attrs if-module="axelor-supplychain"
     name="action-analytic-move-line-attrs-set-original-piece-amount">
@@ -251,7 +236,6 @@
 
   <search-filters name="analytic-move-line-filters"
     model="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move line filters">
-    <field name="project" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <filter name="analytic-move-line-filters-type-select" title="Real (accounting)">
       <domain>self.typeSelect = 3</domain>
     </filter>

@@ -1,5 +1,6 @@
 plugins {
 	id 'com.axelor.app'
+	id "com.github.node-gradle.node"
 }
 
 apply from: "../libs.gradle"
@@ -74,3 +75,64 @@ dependencies {
 	implementation libs.bcpkix_jdk18on
 	implementation libs.flyingsaucer_openpdf
 }
+
+ext.reactDir = 'map-viewer'
+ext.reactOutputDir = 'webapp/base/map-viewer'
+
+node {
+  	version = '22.17.1'
+	yarnVersion = '1.22.19'
+	download = true
+	distBaseUrl = null
+	nodeModulesDir = file(reactDir)
+}
+
+task installFrontDeps(type: YarnTask) {
+	group = 'axelor'
+	description = 'Install Front-end dependencies'
+
+	args = ['install']
+}
+
+task buildFront(type: YarnTask) {
+	group = 'axelor'
+	description = 'Build Front-end'
+
+	inputs.files("${reactDir}/package.json", "${reactDir}/yarn.lock")
+	inputs.dir("${reactDir}/src")
+	outputs.dir("${reactDir}/dist")
+
+	dependsOn 'installFrontDeps'
+	args = ["run", "build"]
+}
+
+
+task copyReactWebapp(type: Copy) {
+  	destinationDir = file(rootProject.layout.buildDirectory)
+	into(reactOutputDir) {
+		from "${reactDir}/dist"
+	}
+
+	dependsOn 'buildFront'
+}
+
+clean {
+	delete	"${reactDir}/.yarn/cache",
+			"${reactDir}/.yarn/unplugged",
+			"${reactDir}/.yarn/install-state.gz",
+			"${reactDir}/dist",
+			"${reactDir}/node_modules"
+}
+
+jar {
+	dependsOn 'buildFront'
+	into(reactOutputDir) {
+		from "${reactDir}/dist"
+		duplicatesStrategy 'exclude'
+	}
+}
+
+build.dependsOn copyReactWebapp
+
+rootProject.tasks.processResources.dependsOn copyReactWebapp
+rootProject.tasks.compileJava.dependsOn copyReactWebapp

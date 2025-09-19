@@ -50,6 +50,8 @@ public class StockInternalMoveStockMoveLinePostRequest {
   @Min(0)
   private Long toStockLocationId;
 
+  private String description;
+
   public StockInternalMoveStockMoveLinePostRequest() {}
 
   public Long getProductId() {
@@ -128,5 +130,13 @@ public class StockInternalMoveStockMoveLinePostRequest {
       return ObjectFinder.find(StockLocation.class, toStockLocationId, ObjectFinder.NO_VERSION);
     }
     return null;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 }

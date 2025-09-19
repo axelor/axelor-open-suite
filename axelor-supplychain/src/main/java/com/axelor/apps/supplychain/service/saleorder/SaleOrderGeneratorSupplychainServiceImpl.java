@@ -1,5 +1,7 @@
 package com.axelor.apps.supplychain.service.saleorder;
 
+import com.axelor.apps.account.db.PaymentCondition;
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -19,7 +21,8 @@ import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 
-public class SaleOrderGeneratorSupplychainServiceImpl extends SaleOrderGeneratorServiceImpl {
+public class SaleOrderGeneratorSupplychainServiceImpl extends SaleOrderGeneratorServiceImpl
+    implements SaleOrderGeneratorSupplychainService {
 
   protected final PartnerLinkService partnerLinkService;
 
@@ -72,5 +75,28 @@ public class SaleOrderGeneratorSupplychainServiceImpl extends SaleOrderGenerator
     } else {
       saleOrder.setDeliveredPartner(clientPartner);
     }
+  }
+
+  @Override
+  public SaleOrder createSaleOrder(
+      Partner clientPartner,
+      Partner deliveredPartner,
+      Company company,
+      Partner contact,
+      Currency currency,
+      Boolean inAti,
+      PaymentMode paymentMode,
+      PaymentCondition paymentCondition)
+      throws AxelorException {
+
+    SaleOrder saleOrder =
+        createSaleOrder(clientPartner, deliveredPartner, company, contact, currency, inAti);
+    if (paymentMode != null) {
+      saleOrder.setPaymentMode(paymentMode);
+    }
+    if (paymentCondition != null) {
+      saleOrder.setPaymentCondition(paymentCondition);
+    }
+    return saleOrder;
   }
 }

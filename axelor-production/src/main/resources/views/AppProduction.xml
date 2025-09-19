@@ -32,20 +32,8 @@
           <field name="manageProdProcessVersion" widget="boolean-switch"/>
           <field name="manageWorkCenterGroup" widget="boolean-switch"/>
           <field name="isInputInHundredthHours" widget="boolean-switch"/>
-          <field name="manageBusinessProduction"
-            onChange="action-app-production-manage-business-production-record-onchange"
-            title="Manage business production" if-module="axelor-business-production"
-            widget="boolean-switch"/>
-          <field name="enableTimesheetOnManufOrder" widget="boolean-switch"
-            if-module="axelor-business-production" showIf="manageBusinessProduction"/>
-          <field name="autoGenerateTimesheetLine" if-module="axelor-business-production"
-            widget="boolean-switch"
-            showIf="manageBusinessProduction &amp;&amp; enableTimesheetOnManufOrder"/>
           <field name="allowPersonalizedProdProcess" widget="boolean-switch"/>
           <field name="operationContinuitySelect"/>
-          <field name="updateProjectSolDetailsLineTypeSelect"
-            if="__config__.app.getApp('sale')?.allowPendingOrderModification &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI"
-            if-module="axelor-business-production"/>
           <field name="isProdProcessLineGenerationInSODisabled" widget="boolean-switch"/>
         </panel>
 
@@ -112,12 +100,6 @@
     <view type="grid" name="production-config-grid"/>
     <view type="form" name="production-config-form"/>
   </action-view>
-
-  <action-record
-    name="action-app-production-record-manage-business-production-onchange"
-    model="com.axelor.studio.db.AppProduction">
-    <field name="enableTimesheetOnManufOrder" expr="eval: false"/>
-  </action-record>
 
   <action-method name="action-app-production-method-check-outsourcing-disabled-onsave"
     model="com.axelor.studio.db.AppProduction">

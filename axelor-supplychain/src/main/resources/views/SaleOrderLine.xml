@@ -170,8 +170,6 @@
     </toolbar>
     <field name="saleOrder" hidden="true"/>
     <field name="saleOrder.clientPartner" width="200"/>
-    <field name="project" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project')" width="150"/>
     <field name="saleOrder.company" width="200"/>
     <field name="saleOrder.tradingName"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>

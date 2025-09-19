@@ -46,6 +46,8 @@
       title="Source QI"/>
     <many-to-one name="writtenBy" title="Written by" ref="com.axelor.auth.db.User"/>
     <datetime name="writtenOn" title="Written on"/>
+    <many-to-one ref="com.axelor.apps.quality.db.ControlEntry" name="controlEntry"
+      title="Control entry"/>
   </entity>
 
 </domain-models>

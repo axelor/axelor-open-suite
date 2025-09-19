@@ -18,9 +18,7 @@
  */
 package com.axelor.apps.bankpayment.service.bankstatementline.afb120;
 
-import com.axelor.apps.account.db.InterbankCodeLine;
 import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
-import com.axelor.apps.account.db.repo.InterbankCodeRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.service.cfonb.CfonbToolService;
 import com.axelor.apps.base.AxelorException;
@@ -269,7 +267,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             33,
             2);
     structuredLineContent.setOperationInterbankCodeLine(
-        getInterbankCodeLine(operationInterbankCode));
+        interbankCodeLineRepository.findOperationCodeByCode(operationInterbankCode));
 
     // Zone 2-J : Date de comptabilisation de l'opération (JJMMAA)
     String movementDate =
@@ -291,7 +289,8 @@ public class BankStatementLineMapperAFB120ServiceImpl
             cfonbToolService.FORMAT_NUMERIC,
             41,
             2);
-    structuredLineContent.setRejectInterbankCodeLine(getInterbankCodeLine(rejectInterbankCodeLine));
+    structuredLineContent.setRejectInterbankCodeLine(
+        interbankCodeLineRepository.findOperationCodeByCode(rejectInterbankCodeLine));
 
     // Zone 2-L : Date de valeur (JJMMAA)
     String valueDate =
@@ -537,7 +536,7 @@ public class BankStatementLineMapperAFB120ServiceImpl
             33,
             2);
     structuredLineContent.setOperationInterbankCodeLine(
-        getInterbankCodeLine(operationInterbankCode));
+        interbankCodeLineRepository.findOperationCodeByCode(operationInterbankCode));
 
     // Zone 2b-J : Date de comptabilisation de l'opération (JJMMAA)
     String date =
@@ -759,14 +758,5 @@ public class BankStatementLineMapperAFB120ServiceImpl
     String correctAmount = integerPartOfAmount + "." + decimalPartOfAmount;
 
     return new BigDecimal(correctAmount);
-  }
-
-  protected InterbankCodeLine getInterbankCodeLine(String code) {
-    return interbankCodeLineRepository
-        .all()
-        .filter("self.code = :code AND self.interbankCode.typeSelect = :type")
-        .bind("code", code)
-        .bind("type", InterbankCodeRepository.TYPE_OPERATION_CODE)
-        .fetchOne();
   }
 }

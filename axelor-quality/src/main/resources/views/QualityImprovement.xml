@@ -84,6 +84,14 @@
                 onChange="action-quality-improvement-group-supplier-purchase-order-line-on-change"
                 domain="self.purchaseOrder = :supplierPurchaseOrder"/>
             </panel>
+            <panel name="controlPanel" title="Control" colSpan="12">
+              <field name="qualityControl" hideIf="$get('qi.type') == 2"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+              <field name="sourceQIList" widget="tag-select" canNew="false" colSpan="6"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by "/>
+              <field name="controlEntry" colSpan="6"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+            </panel>
             <panel title="Interne" name="intPanel" colSpan="12">
               <field name="detectedByInternal"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"
@@ -113,10 +121,6 @@
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
               <field name="nonConformingQuantity" hideIf="$get('qi.type') == 2"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-              <field name="qualityControl" hideIf="$get('qi.type') == 2"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-              <field name="sourceQIList" widget="tag-select" canNew="false" colSpan="6"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by "/>
             </panel>
             <panel name="hiddenPanel" hidden="true">
               <field name="qi"/>
@@ -261,6 +265,21 @@
       <button name="sendDistributionBtn" title="Send the distributions"
         onClick="action-quality-improvement-method-send-qi-decision-distributions"
         showIf="$qiDecisionDistributionMessageTemplate"/>
+    </panel>
+  </form>
+
+  <form name="qi-create-wizard-form" title="Create quality improvement"
+    model="com.axelor.utils.db.Wizard" canNew="false" canSave="false" canDelete="false"
+    canArchive="false">
+    <panel name="mainPanel" colSpan="12">
+      <field name="type" type="integer" title="Type" selection="quality.qi.type.select"
+        required="true" x-dirty="false"/>
+      <field name="qiDetection" title="Detection"
+        target="com.axelor.apps.quality.db.QIDetection" type="many-to-one"
+        form-view="qi-detection-form" grid-view="qi-detection-grid" showIf="type" required="true"/>
+      <spacer colSpan="6" x-dirty="false"/>
+      <button name="createQiBtn" title="Create quality improvement"
+        onClick="action-method-quality-improvement-create-qi" showIf="type &amp;&amp; qiDetection"/>
     </panel>
   </form>
 
@@ -871,6 +890,11 @@
     name="action-quality-improvement-method-generate-qi-decision-distributions">
     <call class="com.axelor.apps.quality.web.QIResolutionController"
       method="generateQIDecisionDistributions"/>
+  </action-method>
+
+  <action-method name="action-method-quality-improvement-create-qi">
+    <call class="com.axelor.apps.quality.web.QualityImprovementController"
+      method="createQualityImprovement"/>
   </action-method>
 
   <action-validate

@@ -152,6 +152,12 @@ import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatemen
 import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLineMapperAFB120ServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLinePrintAFB120Service;
 import com.axelor.apps.bankpayment.service.bankstatementline.afb120.BankStatementLinePrintAFB120ServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementline.camt53.BankStatementLineCreateCAMT53Service;
+import com.axelor.apps.bankpayment.service.bankstatementline.camt53.BankStatementLineCreateCAMT53ServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementline.camt53.BankStatementLineCreationCAMT53Service;
+import com.axelor.apps.bankpayment.service.bankstatementline.camt53.BankStatementLineCreationCAMT53ServiceImpl;
+import com.axelor.apps.bankpayment.service.bankstatementline.camt53.CAMT53ToolService;
+import com.axelor.apps.bankpayment.service.bankstatementline.camt53.CAMT53ToolServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryService;
 import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQueryServiceImpl;
 import com.axelor.apps.bankpayment.service.bankstatementrule.BankStatementRuleService;
@@ -288,6 +294,11 @@ public class BankPaymentModule extends AxelorModule {
     bind(BankStatementLineCreationService.class).to(BankStatementLineCreationServiceImpl.class);
     bind(BankStatementLineCreationAFB120Service.class)
         .to(BankStatementLineCreationAFB120ServiceImpl.class);
+    bind(BankStatementLineCreateCAMT53Service.class)
+        .to(BankStatementLineCreateCAMT53ServiceImpl.class);
+    bind(BankStatementLineCreationCAMT53Service.class)
+        .to(BankStatementLineCreationCAMT53ServiceImpl.class);
+    bind(CAMT53ToolService.class).to(CAMT53ToolServiceImpl.class);
     bind(BankStatementLinePrintAFB120Service.class)
         .to(BankStatementLinePrintAFB120ServiceImpl.class);
     bind(BankReconciliationAccountService.class).to(BankReconciliationAccountServiceImpl.class);

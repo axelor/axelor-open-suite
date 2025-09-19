@@ -26,7 +26,7 @@
       <field name="isRelativeDate" widget="boolean-switch"
         onChange="action-data-backup-attrs-onchange-relativedate" colSpan="4"/>
       <field name="relativeDateTime" widget="datetime" colSpan="4" showIf="isRelativeDate"/>
-      <field name="updateImportId" widget="boolean-switch" showIf="isRelativeDate" colSpan="4"/>
+      <field name="updateImportId" widget="boolean-switch" colSpan="4"/>
       <field name="isExportApp" widget="boolean-switch" colSpan="4"/>
       <field name="anonymizer" colSpan="4" canRemove="true"/>
       <field name="anonymizer.anonymizerLineList" showIf="anonymizer != null" colSpan="12"/>
@@ -114,7 +114,6 @@
   </action-method>
 
   <action-attrs name="action-data-backup-attrs-onchange-relativedate">
-    <attribute name="value" for="updateImportId" expr="false" if="!isRelativeDate"/>
     <attribute name="value" for="relativeDateTime"
       expr="eval: isRelativeDate ? __datetime__ : null"/>
   </action-attrs>

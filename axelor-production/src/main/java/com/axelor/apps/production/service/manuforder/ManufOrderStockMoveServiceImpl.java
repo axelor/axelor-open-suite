@@ -134,8 +134,12 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   protected StockLocation _getDefaultInOutsourcingStockLocation(
       ManufOrder manufOrder, Company company) throws AxelorException {
     StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-    // Because it will be send to outsource.
-    return stockConfigProductionService.getPickupDefaultStockLocation(stockConfig);
+
+    return Optional.ofNullable(manufOrder)
+        .map(ManufOrder::getProdProcess)
+        .map(ProdProcess::getStockLocation)
+        .filter(StockLocation::getIsConsignmentStock)
+        .orElse(stockConfigProductionService.getPickupDefaultStockLocation(stockConfig));
   }
 
   @Override

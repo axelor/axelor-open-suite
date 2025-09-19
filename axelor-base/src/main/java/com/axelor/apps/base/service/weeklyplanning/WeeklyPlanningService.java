@@ -86,4 +86,6 @@ public interface WeeklyPlanningService {
 
   LocalDateTime computeEndDateTime(
       LocalDateTime startDateTime, WeeklyPlanning weeklyPlanning, BigDecimal timeInHours);
+
+  boolean isWorkingDay(WeeklyPlanning weeklyPlanning, LocalDate date);
 }

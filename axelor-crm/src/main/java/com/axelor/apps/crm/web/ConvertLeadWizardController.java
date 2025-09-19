@@ -22,7 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
-import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
@@ -173,6 +172,7 @@ public class ConvertLeadWizardController {
                 .context("_partnerMap", partnerMap)
                 .context("_contactPartnerList", contactPartnerList)
                 .context("_contactPartnerMap", contactPartnerMap)
+                .context("_isProspect", true)
                 .map());
       } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
         response.setView(
@@ -212,19 +212,7 @@ public class ConvertLeadWizardController {
     partnerMap.put("sizeSelect", lead.getSizeSelect());
     partnerMap.put("isNurturing", lead.getIsNurturing());
     partnerMap.put("agency", lead.getAgency());
-    if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
-      if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
-          == CompanyRepository.CATEGORY_CUSTOMER) {
-        partnerMap.put("isCustomer", true);
-      } else if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
-          == CompanyRepository.CATEGORY_SUPPLIER) {
-        partnerMap.put("isSupplier", true);
-      } else {
-        response.setAttr("isProspect", "value", true);
-      }
-    } else {
-      partnerMap.put("isProspect", true);
-    }
+    partnerMap.put("isProspect", true);
 
     if (!isCompany || StringUtils.isEmpty(lead.getEnterpriseName())) {
       partnerMap.put("firstName", lead.getFirstName());

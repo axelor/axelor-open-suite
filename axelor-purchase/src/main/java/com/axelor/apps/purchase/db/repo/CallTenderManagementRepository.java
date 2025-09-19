@@ -19,6 +19,7 @@
 package com.axelor.apps.purchase.db.repo;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -28,6 +29,7 @@ import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
+import java.util.Optional;
 
 public class CallTenderManagementRepository extends CallTenderRepository {
 
@@ -44,22 +46,22 @@ public class CallTenderManagementRepository extends CallTenderRepository {
     try {
 
       if (entity.getCallTenderSeq() == null) {
-        try {
-          String seq =
-              sequenceService.getSequenceNumber(
-                  SequenceRepository.CALL_FOR_TENDER,
-                  null,
-                  CallTender.class,
-                  "callTenderSeq",
-                  entity);
-          entity.setCallTenderSeq(seq);
-        } catch (AxelorException e) {
+        String seq =
+            sequenceService.getSequenceNumber(
+                SequenceRepository.CALL_FOR_TENDER,
+                entity.getCompany(),
+                CallTender.class,
+                "callTenderSeq",
+                entity);
+
+        if (seq == null) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-              I18n.get(PurchaseExceptionMessage.CALL_FOR_TENDER_NO_SEQ));
+              I18n.get(PurchaseExceptionMessage.CALL_FOR_TENDER_NO_SEQ),
+              Optional.ofNullable(entity.getCompany()).map(Company::getName).orElse(""));
         }
+        entity.setCallTenderSeq(seq);
       }
-
       return super.save(entity);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

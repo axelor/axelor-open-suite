@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.LunchVoucherAdvance;
 import com.axelor.apps.hr.db.LunchVoucherMgt;
@@ -34,13 +35,14 @@ import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.service.EmployeeComputeDaysLeaveLunchVoucherService;
 import com.axelor.apps.hr.service.config.HRConfigService;
+import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineService {
 
@@ -180,44 +182,39 @@ public class LunchVoucherMgtLineServiceImpl implements LunchVoucherMgtLineServic
 
   @Override
   public int computeRestaurant(Employee employee, Period payPeriod) {
-    LocalDate fromDate = payPeriod.getFromDate();
-    LocalDate toDate = payPeriod.getToDate();
-    return (int)
-        expenseLineRepository
-            .all()
-            .filter(
-                "self.expenseProduct.deductLunchVoucher = true "
-                    + "AND self.expense.employee = :employee "
-                    + "AND self.expense.statusSelect = :statusSelect "
-                    + "AND self.expense.ventilated = false "
-                    + "AND self.expense.period.fromDate >= :fromDate "
-                    + "AND self.expense.period.toDate <= :toDate")
-            .bind("employee", employee)
-            .bind("statusSelect", ExpenseRepository.STATUS_VALIDATED)
-            .bind("fromDate", fromDate)
-            .bind("toDate", toDate)
-            .count();
+    return countExpenseLinesForEmployee(
+        employee, payPeriod, "self.expense.employee = :employee", null);
   }
 
   @Override
   public int computeInvitation(Employee employee, Period payPeriod) {
-    LocalDate fromDate = payPeriod.getFromDate();
-    LocalDate toDate = payPeriod.getToDate();
-    return (int)
-        expenseLineRepository
-            .all()
-            .filter(
-                "self.expenseProduct.deductLunchVoucher = true "
-                    + "AND :employee MEMBER OF self.invitedCollaboratorSet "
-                    + "AND self.expense.statusSelect = :statusSelect "
-                    + "AND self.expense.ventilated = false "
-                    + "AND self.expense.period.fromDate >= :fromDate "
-                    + "AND self.expense.period.toDate <= :toDate")
-            .bind("employee", employee)
-            .bind("statusSelect", ExpenseRepository.STATUS_VALIDATED)
-            .bind("fromDate", fromDate)
-            .bind("toDate", toDate)
-            .count();
+    return countExpenseLinesForEmployee(
+        employee, payPeriod, ":employee MEMBER OF self.invitedCollaboratorSet", null);
+  }
+
+  protected int countExpenseLinesForEmployee(
+      Employee employee, Period payPeriod, String extraFilter, Map<String, Object> extraBindings) {
+    String filter =
+        "self.expenseProduct.deductLunchVoucher = true "
+            + "AND (self.expense.statusSelect IN :statusSelects OR self.expense.ventilated IS TRUE) "
+            + "AND self.expense.period.fromDate >= :fromDate "
+            + "AND self.expense.period.toDate <= :toDate "
+            + "AND "
+            + extraFilter;
+    List<Integer> statusSelects =
+        List.of(ExpenseRepository.STATUS_VALIDATED, ExpenseRepository.STATUS_REIMBURSED);
+    Query<ExpenseLine> query = expenseLineRepository.all().filter(filter);
+
+    query.bind("employee", employee);
+    query.bind("statusSelects", statusSelects);
+    query.bind("fromDate", payPeriod.getFromDate());
+    query.bind("toDate", payPeriod.getToDate());
+
+    if (extraBindings != null) {
+      extraBindings.forEach(query::bind);
+    }
+
+    return (int) query.count();
   }
 
   @Override

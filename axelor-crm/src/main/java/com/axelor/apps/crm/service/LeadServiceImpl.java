@@ -242,8 +242,9 @@ public class LeadServiceImpl implements LeadService {
     LeadStatus leadStatus = lead.getLeadStatus();
     LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
     LeadStatus convertedLeadStatus = appCrmService.getConvertedLeadStatus();
+    LeadStatus previousStatus = leadRepo.find(lead.getId()).getLeadStatus();
 
-    if (Objects.isNull(leadStatus)) {
+    if (Objects.isNull(leadStatus) || previousStatus.equals(leadStatus)) {
       return;
     }
     if (leadStatus.equals(convertedLeadStatus)) {
@@ -255,6 +256,11 @@ public class LeadServiceImpl implements LeadService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_LOSE_KANBAN));
+    }
+    if (previousStatus.equals(convertedLeadStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_CONVERT_WRONG_STATUS_KANBAN));
     }
   }
 

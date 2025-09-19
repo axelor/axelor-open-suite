@@ -1682,14 +1682,15 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       Unit unit,
       Integer conformitySelect,
       StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      StockLocation toStockLocation,
+      String description)
       throws AxelorException {
 
     StockMoveLine line =
         createStockMoveLine(
             product,
             product.getName(),
-            "",
+            description,
             qty,
             null,
             null,
@@ -1718,7 +1719,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       Integer conformity,
       Unit unit,
       StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      StockLocation toStockLocation,
+      String description)
       throws AxelorException {
     if (stockMoveLine.getStockMove() == null) {
       throw new AxelorException(
@@ -1737,6 +1739,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         }
         if (toStockLocation != null) {
           stockMoveLine.setToStockLocation(toStockLocation);
+        }
+        if (description != null) {
+          stockMoveLine.setDescription(description);
         }
       }
     }

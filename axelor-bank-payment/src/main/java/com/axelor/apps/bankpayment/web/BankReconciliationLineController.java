@@ -20,6 +20,7 @@ package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
@@ -28,6 +29,7 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliation
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineService;
 import com.axelor.apps.bankpayment.service.bankreconciliation.BankReconciliationLineUnreconciliationService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
@@ -143,5 +145,31 @@ public class BankReconciliationLineController {
 
       response.setValue("analyticDistributionTemplate", analyticDistributionTemplate);
     }
+  }
+
+  @ErrorException
+  public void setDomainAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    BankReconciliationLine bankReconciliationLine = context.asType(BankReconciliationLine.class);
+    Company company = null;
+
+    if (request.getContext().getParent() != null) {
+      BankReconciliation bankReconciliation =
+          request.getContext().getParent().asType(BankReconciliation.class);
+      company = bankReconciliation.getCompany();
+    }
+
+    response.setAttr(
+        "analyticDistributionTemplate",
+        "domain",
+        Beans.get(AnalyticAttrsService.class)
+            .getAnalyticDistributionTemplateDomain(
+                bankReconciliationLine.getPartner(),
+                null,
+                company,
+                null,
+                bankReconciliationLine.getAccount(),
+                false));
   }
 }

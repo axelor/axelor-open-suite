@@ -75,12 +75,14 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.naming.NamingException;
@@ -112,6 +114,8 @@ public class DataBackupCreateService {
           "attrs");
 
   StringBuilder sb = new StringBuilder();
+
+  protected static List<String> headerList = Arrays.asList("importId", "code", "name");
 
   protected static Map<Object, Object> AutoImportModelMap =
       ImmutableMap.builder()
@@ -466,6 +470,7 @@ public class DataBackupCreateService {
       int count = 0;
       Integer maxLinesPerFile = dataBackup.getMaxLinesPerFile();
       LocalDateTime relativeDateTime = dataBackup.getRelativeDateTime();
+      List<String> sortedHeaderArr = new ArrayList<>();
 
       csvInput.setFileName(metaModel.getName() + ".csv");
       csvInput.setTypeName(metaModel.getFullName());
@@ -515,7 +520,8 @@ public class DataBackupCreateService {
                       "com.axelor.apps.base.service.DataBackupRestoreService:importObjectWithByteArray");
                   byteArrFieldFlag = false;
                 }
-                printer.printRecord(headerArr);
+                sortedHeaderArr = sortHeader(headerArr);
+                printer.printRecord(sortedHeaderArr);
                 headerFlag = false;
               }
 
@@ -528,7 +534,7 @@ public class DataBackupCreateService {
                 dataBackupAnonymizeService.csvAnonymizeImportId(dataArr, headerArr, salt);
               }
 
-              printer.printRecord(dataArr);
+              printer.printRecord(sortData(headerArr, dataArr, sortedHeaderArr));
               count++;
             }
             if (maxLinesPerFile != null && count >= maxLinesPerFile) {
@@ -539,9 +545,9 @@ public class DataBackupCreateService {
         }
         if (isTemplateWithDescription) {
           printer.println();
-          printer.printRecord(titleArr);
-          printer.printRecord(attrsArr);
-          printer.printRecord(helpArr);
+          printer.printRecord(sortData(headerArr, titleArr, sortedHeaderArr));
+          printer.printRecord(sortData(headerArr, attrsArr, sortedHeaderArr));
+          printer.printRecord(sortData(headerArr, helpArr, sortedHeaderArr));
         }
       } else {
         for (Property property : pro) {
@@ -560,12 +566,13 @@ public class DataBackupCreateService {
               "com.axelor.apps.base.service.DataBackupRestoreService:importObjectWithByteArray");
           byteArrFieldFlag = false;
         }
-        printer.printRecord(headerArr);
+        sortedHeaderArr = sortHeader(headerArr);
+        printer.printRecord(sortedHeaderArr);
         if (isTemplateWithDescription) {
           printer.println();
-          printer.printRecord(titleArr);
-          printer.printRecord(attrsArr);
-          printer.printRecord(helpArr);
+          printer.printRecord(sortData(headerArr, titleArr, sortedHeaderArr));
+          printer.printRecord(sortData(headerArr, attrsArr, sortedHeaderArr));
+          printer.printRecord(sortData(headerArr, helpArr, sortedHeaderArr));
         }
       }
 
@@ -1005,9 +1012,9 @@ public class DataBackupCreateService {
       case BOOLEAN:
         return "Boolean";
       case INTEGER:
-        return "Long";
-      case LONG:
         return "Integer";
+      case LONG:
+        return "Long";
       case DOUBLE:
         return "Double";
       case DECIMAL:
@@ -1054,5 +1061,32 @@ public class DataBackupCreateService {
                     .append(" : ")
                     .append(I18n.get(item.getTitle())));
     return builder.toString();
+  }
+
+  protected List<String> sortHeader(List<String> headerArr) {
+    List<String> sortedHeaderArr = new ArrayList<>();
+    for (String header : headerList) {
+      if (headerArr.contains(header)) {
+        sortedHeaderArr.add(header);
+      }
+    }
+    List<String> remainingHeaderArr =
+        headerArr.stream()
+            .filter(h -> !sortedHeaderArr.contains(h))
+            .sorted()
+            .collect(Collectors.toList());
+    sortedHeaderArr.addAll(remainingHeaderArr);
+    return sortedHeaderArr;
+  }
+
+  protected List<String> sortData(
+      List<String> headerArr, List<String> dataArr, List<String> sortedHeaderArr) {
+    Map<String, String> map = new HashMap<>();
+    for (int i = 0; i < headerArr.size(); i++) {
+      map.put(headerArr.get(i), dataArr.get(i));
+    }
+    return sortedHeaderArr.stream()
+        .map(header -> map.getOrDefault(header, ""))
+        .collect(Collectors.toList());
   }
 }

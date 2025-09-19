@@ -76,7 +76,9 @@ public class AnalyticToolSupplychainServiceImpl implements AnalyticToolSupplycha
     List<String> productList =
         purchaseOrder.getPurchaseOrderLineList().stream()
             .filter(
-                purchaseOrderLine -> purchaseOrderLine.getAnalyticDistributionTemplate() == null)
+                purchaseOrderLine ->
+                    purchaseOrderLine.getAnalyticDistributionTemplate() == null
+                        && !purchaseOrderLine.getIsTitleLine())
             .map(PurchaseOrderLine::getProductName)
             .collect(Collectors.toList());
 

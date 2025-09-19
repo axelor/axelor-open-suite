@@ -1172,15 +1172,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public void applyCutOffDates(
-      Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
+  public void applyCutOffDates(Invoice invoice) {
     if (CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
       invoice
           .getInvoiceLineList()
-          .forEach(
-              invoiceLine ->
-                  invoiceLineService.applyCutOffDates(
-                      invoiceLine, invoice, cutOffStartDate, cutOffEndDate));
+          .forEach(invoiceLine -> invoiceLineService.applyCutOffDates(invoiceLine, invoice));
     }
   }
 

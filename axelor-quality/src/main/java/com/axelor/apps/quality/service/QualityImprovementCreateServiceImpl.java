@@ -19,6 +19,8 @@
 package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.quality.db.ControlEntry;
+import com.axelor.apps.quality.db.QIDetection;
 import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.QIResolution;
 import com.axelor.apps.quality.db.QIResolutionDefault;
@@ -53,20 +55,34 @@ public class QualityImprovementCreateServiceImpl implements QualityImprovementCr
 
   @Transactional(rollbackOn = Exception.class)
   @Override
+  public QualityImprovement createQualityImprovementFromControlEntry(
+      ControlEntry controlEntry, QIDetection qiDetection) throws AxelorException {
+
+    QualityImprovement qi = new QualityImprovement();
+    setDefaultValues(qi);
+    qi.setQiDetection(qiDetection);
+    qi = qualityImprovementRepository.save(qi);
+
+    QIIdentification qiIdentification = qi.getQiIdentification();
+    qiIdentification.setControlEntry(controlEntry);
+    return qi;
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  @Override
   public QualityImprovement createQualityImprovement(
       QualityImprovement qualityImprovement,
       QIIdentification qiIdentification,
       QIResolution qiResolution)
       throws AxelorException {
 
-    qualityImprovement.setCompany(AuthUtils.getUser().getActiveCompany());
+    setDefaultValues(qualityImprovement);
 
     qiIdentification.setQi(qualityImprovement);
     qiResolution.setQi(qualityImprovement);
     qualityImprovement.setQiIdentification(qiIdentification);
     qualityImprovement.setQiResolution(qiResolution);
 
-    qualityImprovement.setQiStatus(qualityImprovementService.getDefaultQIStatus());
     qualityImprovementCheckValuesService.checkQualityImprovementValues(qualityImprovement);
 
     qualityImprovement = qualityImprovementRepository.save(qualityImprovement);
@@ -78,5 +94,10 @@ public class QualityImprovementCreateServiceImpl implements QualityImprovementCr
       }
     }
     return qualityImprovement;
+  }
+
+  protected void setDefaultValues(QualityImprovement qualityImprovement) throws AxelorException {
+    qualityImprovement.setCompany(AuthUtils.getUser().getActiveCompany());
+    qualityImprovement.setQiStatus(qualityImprovementService.getDefaultQIStatus());
   }
 }

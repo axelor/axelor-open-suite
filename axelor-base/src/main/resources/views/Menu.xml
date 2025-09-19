@@ -207,6 +207,15 @@
     <view type="form" name="import-export-translation-form"/>
   </action-view>
 
+  <menuitem name="admin-root-general-map-configurator" title="Map configurators"
+    parent="admin-root-general" action="admin.root.general.map.configurator" order="1200"/>
+
+  <action-view name="admin.root.general.map.configurator" title="Map configurators"
+    model="com.axelor.apps.base.db.MapView">
+    <view type="grid" name="map-view-grid"/>
+    <view type="form" name="map-view-form"/>
+  </action-view>
+
   <menuitem name="referential-root" title="Referential" order="300" parent="admin-root"
     if="__config__.app.isApp('base')"/>
   <menuitem name="referential-root-partners" parent="referential-root" title="Partners"
@@ -1210,16 +1219,17 @@
     <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
 
-  <menuitem name="base-icpe-all" parent="referential-root" title="ICPE"
-    action="base.icpe.all" order="610"/>
+  <menuitem name="base-icpe-all" parent="base-referential-root-product-settings"
+    title="ICPE" action="base.icpe.all" order="610"/>
 
   <action-view name="base.icpe.all" title="ICPE" model="com.axelor.apps.base.db.Icpe">
     <view type="grid" name="base-icpe-grid"/>
     <view type="form" name="base-icpe-form"/>
   </action-view>
 
-  <menuitem name="base-hazard-pictogram-all" parent="referential-root"
-    title="Hazard Pictograms" action="base.hazard.pictogram.all" order="620"/>
+  <menuitem name="base-hazard-pictogram-all"
+    parent="base-referential-root-product-settings" title="Hazard Pictograms"
+    action="base.hazard.pictogram.all" order="620"/>
 
   <action-view name="base.hazard.pictogram.all" title="Hazard Pictograms"
     model="com.axelor.apps.base.db.HazardPictogram">
@@ -1227,13 +1237,16 @@
     <view type="form" name="base-hazard-pictogram-form"/>
   </action-view>
 
-  <menuitem name="base-hazard-phrase-all" parent="referential-root" title="Hazard phrases"
-    action="base.hazard.phrase.all" order="100"/>
+  <menuitem name="base-hazard-phrase-all" parent="base-referential-root-product-settings"
+    title="Hazard phrases" action="base.hazard.phrase.all" order="100"/>
 
   <action-view name="base.hazard.phrase.all" title="Hazard Phrases"
     model="com.axelor.apps.base.db.HazardPhrase">
     <view type="grid" name="base-hazard-phrase-grid"/>
     <view type="form" name="base-hazard-phrase-form"/>
   </action-view>
+
+  <menuitem name="base-referential-root-product-settings" title="Settings" order="400"
+    parent="referential-root-product-root"/>
 
 </object-views>

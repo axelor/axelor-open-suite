@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -90,7 +91,8 @@ public class SaleOrderLineProductProductionServiceImpl
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
       SolBomUpdateService solBomUpdateService,
       SolDetailsBomUpdateService solDetailsBomUpdateService,
-      SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService) {
+      SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService,
+      PublicHolidayService publicHolidayService) {
     super(
         appSaleService,
         appBaseService,
@@ -109,7 +111,8 @@ public class SaleOrderLineProductProductionServiceImpl
         appSupplychainService,
         saleOrderLineAnalyticService,
         freightCarrierPricingService,
-        freightCarrierApplyPricingService);
+        freightCarrierApplyPricingService,
+        publicHolidayService);
     this.appProductionService = appProductionService;
     this.saleOrderLineBomService = saleOrderLineBomService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;

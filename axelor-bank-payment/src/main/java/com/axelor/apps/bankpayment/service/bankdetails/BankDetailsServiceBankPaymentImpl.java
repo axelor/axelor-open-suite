@@ -21,6 +21,7 @@ package com.axelor.apps.bankpayment.service.bankdetails;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.BankDetailsServiceAccountImpl;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -29,11 +30,14 @@ import jakarta.inject.Inject;
 public class BankDetailsServiceBankPaymentImpl extends BankDetailsServiceAccountImpl {
 
   protected BankDetailsBankPaymentService bankDetailsBankPaymentService;
+  protected AppBankPaymentService appBankPaymentService;
 
   @Inject
   public BankDetailsServiceBankPaymentImpl(
-      BankDetailsBankPaymentService bankDetailsBankPaymentService) {
+      BankDetailsBankPaymentService bankDetailsBankPaymentService,
+      AppBankPaymentService appBankPaymentService) {
     this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
+    this.appBankPaymentService = appBankPaymentService;
   }
 
   @Override
@@ -41,7 +45,10 @@ public class BankDetailsServiceBankPaymentImpl extends BankDetailsServiceAccount
       Partner partner, Company company, PaymentMode paymentMode) {
     BankDetails defaultBankDetails = super.getDefaultBankDetails(partner, company, paymentMode);
 
-    if (paymentMode != null && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD) {
+    if (paymentMode != null
+        && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD
+        && Boolean.TRUE.equals(
+            appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment())) {
       defaultBankDetails =
           bankDetailsBankPaymentService
               .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)

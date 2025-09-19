@@ -31,7 +31,6 @@ import com.axelor.apps.production.db.repo.UnitCostCalcLineRepository;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,8 +55,7 @@ public class UnitCostCalcLineServiceImpl implements UnitCostCalcLineService {
 
   @Override
   public UnitCostCalcLine createUnitCostCalcLine(
-      Product product, Company company, int maxLevel, CostSheet costSheet, BigDecimal qtyRatio)
-      throws AxelorException {
+      Product product, Company company, int maxLevel, CostSheet costSheet) throws AxelorException {
 
     UnitCostCalcLine unitCostCalcLine = new UnitCostCalcLine();
     unitCostCalcLine.setProduct(product);
@@ -66,10 +64,7 @@ public class UnitCostCalcLineServiceImpl implements UnitCostCalcLineService {
         (BigDecimal) productCompanyService.get(product, "costPrice", company));
     unitCostCalcLine.setCostSheet(costSheet);
 
-    BigDecimal costPrice =
-        costSheet
-            .getCostPrice()
-            .divide(qtyRatio, appService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+    BigDecimal costPrice = costSheet.getCostPrice();
     unitCostCalcLine.setComputedCost(costPrice);
     unitCostCalcLine.setCostToApply(costPrice);
     unitCostCalcLine.setMaxLevel(maxLevel);

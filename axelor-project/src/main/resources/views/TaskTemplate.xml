@@ -35,16 +35,10 @@
     <panel name="contentPanel" title="Description" colSpan="12">
       <field name="description" showTitle="false" colSpan="12" widget="html"/>
     </panel>
-    <panel if="__config__.app.isApp('business-support')" if-module="axelor-business-support"
-      name="internalDescriptionPanel" title="Internal Description">
-      <field name="internalDescription" colSpan="12" widget="html"/>
-    </panel>
   </form>
 
   <search-filters name="task-template-filters"
     model="com.axelor.apps.project.db.TaskTemplate" title="Task template filters">
-    <field name="internalDescription" hidden="true"
-      if="!__config__.app.isApp('business-support')"/>
   </search-filters>
 
 </object-views>

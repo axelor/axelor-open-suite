@@ -121,7 +121,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     values.putAll(getCompanyBankDetails(saleOrder));
     values.putAll(getAdvancePayment(saleOrder));
     values.putAll(saleOrderIntercoService.getInterco(saleOrder));
-    values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
+    values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder, false));
     values.putAll(saleOrderStockLocationService.getToStockLocation(saleOrder));
     values.putAll(getIsIspmRequired(saleOrder));
     values.putAll(setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder));
@@ -131,7 +131,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
   @Override
   public Map<String, Object> companyOnChange(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> values = super.companyOnChange(saleOrder);
-    values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
+    values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder, true));
     values.putAll(saleOrderStockLocationService.getToStockLocation(saleOrder));
     values.putAll(getIncoterm(saleOrder));
     values.putAll(saleOrderTaxNumberService.getTaxNumber(saleOrder));
@@ -212,8 +212,9 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     PaymentMode paymentMode;
     Partner clientPartner = saleOrder.getClientPartner();
     Company company = saleOrder.getCompany();
-    if (clientPartner != null && clientPartner.getPaymentCondition() != null) {
-      paymentMode = clientPartner.getInPaymentMode();
+    PaymentMode inPaymentMode = clientPartner.getInPaymentMode();
+    if (clientPartner != null && inPaymentMode != null) {
+      paymentMode = inPaymentMode;
     } else {
       paymentMode = accountConfigService.getAccountConfig(company).getInPaymentMode();
     }

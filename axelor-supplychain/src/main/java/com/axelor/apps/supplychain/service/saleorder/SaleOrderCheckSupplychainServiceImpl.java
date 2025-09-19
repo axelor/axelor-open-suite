@@ -24,7 +24,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckServiceImpl;
 import com.axelor.apps.stock.service.app.AppStockService;
-import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
@@ -35,19 +34,19 @@ public class SaleOrderCheckSupplychainServiceImpl extends SaleOrderCheckServiceI
   protected AppSupplychainService appSupplychainService;
   protected AppStockService appStockService;
   protected AppSaleService appSaleService;
-  protected final SaleOrderBlockingSupplychainService saleOrderBlockingSupplychainService;
+  protected final SaleOrderCheckBlockingSupplychainService saleOrderCheckBlockingSupplychainService;
 
   @Inject
   public SaleOrderCheckSupplychainServiceImpl(
       AppBaseService appBaseService,
       AppSupplychainService appSupplychainService,
       AppStockService appStockService,
-      SaleOrderBlockingSupplychainService saleOrderBlockingSupplychainService,
+      SaleOrderCheckBlockingSupplychainService saleOrderCheckBlockingSupplychainService,
       AppSaleService appSaleService) {
     super(appBaseService, appSaleService);
     this.appSupplychainService = appSupplychainService;
     this.appStockService = appStockService;
-    this.saleOrderBlockingSupplychainService = saleOrderBlockingSupplychainService;
+    this.saleOrderCheckBlockingSupplychainService = saleOrderCheckBlockingSupplychainService;
   }
 
   @Override
@@ -56,10 +55,7 @@ public class SaleOrderCheckSupplychainServiceImpl extends SaleOrderCheckServiceI
     if (!appSupplychainService.isApp("supplychain")) {
       return alertList;
     }
-    if (saleOrderBlockingSupplychainService.hasOnGoingBlocking(saleOrder)
-        && appSupplychainService.getAppSupplychain().getCustomerStockMoveGenerationAuto()) {
-      alertList.add(I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINES_CANNOT_DELIVER));
-    }
+    alertList.addAll(saleOrderCheckBlockingSupplychainService.checkBlocking(saleOrder));
     return alertList;
   }
 }

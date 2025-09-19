@@ -151,6 +151,10 @@ public final class HumanResourceExceptionMessage {
       "Employees' leaves failed to be computed due to missing data : %s" /*)*/;
   public static final String BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS = /*$$(*/
       "Qty must be lower than %d." /*)*/;
+  public static final String BATCH_LEAVE_REQUEST_ENDING_1 = /*$$(*/
+      "Leaves request successfully computed : %s" /*)*/;
+  public static final String BATCH_LEAVE_REQUEST_ENDING_2 = /*$$(*/
+      "Leaves request failed to be computed due to configuration anomaly : %s" /*)*/;
   public static final String BATCH_SENIORITY_LEAVE_MANAGEMENT_FORMULA = /*$$(*/
       "There is an error in a formula" /*)*/;
   public static final String BATCH_PAYROLL_PREPARATION_GENERATION_RECAP = /*$$(*/

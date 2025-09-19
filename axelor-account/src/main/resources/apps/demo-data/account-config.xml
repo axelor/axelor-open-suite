@@ -50,10 +50,11 @@
 
   <input file="account_journal.csv" separator=";" type="com.axelor.apps.account.db.Journal"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportJournal:importAccountType">
+    <bind to="company" search="self.importId = :company_importId"/>
     <bind column="validAccountTypes" to="validAccountTypeSet"
       search="self.importId in :validAccountTypes" eval="validAccountTypes.split('\\|') as List"/>
     <bind column="validAccounts" to="validAccountSet"
-      search="self.importId in :validAccounts and self.company.importId = :company_importId"
+      search="self.code in :validAccounts and self.company.importId = :company_importId"
       eval="validAccounts.split('\\|') as List"/>
   </input>
 
@@ -327,8 +328,11 @@
     <bind to="name" column="name"/>
     <bind to="reportExportTypeSelect" eval="'1'"/>
     <bind to="reportTitle" column="name"/>
-    <bind to="company" column="company" search="self.importId = :company"/>
+    <bind to="company" column="company" search="self.importId = :company"
+      if="typeSelect != '3000'"/>
     <bind to="comparison" eval="typeSelect == '3000' ? '1' : '0'"/>
+    <bind to="companySet" column="companySet" search="self.importId in :companySet"
+      eval="companySet.split('\\|') as List" if="typeSelect == '3000'"/>
   </input>
 
   <input file="account_accountingReportConfigLine.csv" separator=";"

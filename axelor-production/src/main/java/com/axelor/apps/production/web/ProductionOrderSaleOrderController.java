@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.SaleOrderBlockingProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -40,6 +41,14 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class ProductionOrderSaleOrderController {
+
+  public void checkBlocking(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    if (Beans.get(SaleOrderBlockingProductionService.class).hasOnGoingBlocking(saleOrder)) {
+      response.setAlert(I18n.get(ProductionExceptionMessage.SALE_ORDER_LINES_CANNOT_PRODUCT));
+    }
+  }
 
   public void createProductionOrders(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -87,7 +96,7 @@ public class ProductionOrderSaleOrderController {
                 .param("search-filters", "production-order-filters")
                 .domain("self.id in (" + Joiner.on(",").join(productionOrderIds) + ")")
                 .map());
-      } else {
+      } else if (!productionOrderSaleOrderService.areAllBlocked(selectedSaleOrderLines)) {
         response.setInfo(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
       }
 

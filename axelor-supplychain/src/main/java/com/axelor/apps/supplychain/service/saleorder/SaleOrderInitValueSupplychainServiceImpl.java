@@ -32,6 +32,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
 import com.axelor.auth.AuthUtils;
@@ -59,6 +60,7 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
       CompanyService companyService,
       SaleOrderUserService saleOrderUserService,
       SaleOrderProductPrintingService saleOrderProductPrintingService,
+      SaleOrderService saleOrderService,
       SaleOrderShipmentService saleOrderShipmentService,
       SaleOrderIntercoService saleOrderIntercoService,
       SaleOrderStockLocationService saleOrderStockLocationService,
@@ -71,7 +73,8 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
         saleConfigService,
         companyService,
         saleOrderUserService,
-        saleOrderProductPrintingService);
+        saleOrderProductPrintingService,
+        saleOrderService);
     this.saleOrderShipmentService = saleOrderShipmentService;
     this.saleOrderIntercoService = saleOrderIntercoService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
@@ -84,7 +87,7 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
     Map<String, Object> initValues = super.getOnNewInitValues(saleOrder);
     initValues.putAll(getPaymentMode(saleOrder));
     initValues.putAll(getBankDetails(saleOrder));
-    initValues.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
+    initValues.putAll(saleOrderStockLocationService.getStockLocation(saleOrder, true));
     initValues.putAll(saleOrderIntercoService.getInterco(saleOrder));
     initValues.putAll(getShipmentCostLine(saleOrder));
     initValues.putAll(saleOrderTaxNumberService.getTaxNumber(saleOrder));

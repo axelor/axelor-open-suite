@@ -596,7 +596,7 @@ public class ClientViewServiceImpl implements ClientViewService {
             "self.clientPartner.id = "
                 + user.getPartner().getId()
                 + " AND self.projectStatus.isCompleted = false");
-    if (user.getActiveCompany() != null && appService.isApp("business-project")) {
+    if (user.getActiveCompany() != null && appService.isApp("project")) {
       filter =
           Filter.and(
               filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
@@ -619,7 +619,7 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + ProjectTaskRepository.TYPE_TASK
                 + "' AND self.project.clientPartner.id = "
                 + user.getPartner().getId());
-    if (user.getActiveCompany() != null && appService.isApp("business-project")) {
+    if (user.getActiveCompany() != null && appService.isApp("project")) {
       filter =
           Filter.and(
               filter,

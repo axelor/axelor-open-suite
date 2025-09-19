@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service.saleorder.status;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -36,6 +37,8 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
+import java.util.Objects;
 import jakarta.inject.Inject;
 
 public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmSupplychainService {
@@ -75,6 +78,17 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
 
     if (!appSupplychainService.isApp("supplychain")) {
       return "";
+    }
+
+    if (saleOrder.getEstimatedShippingDate() == null) {
+      var estimatedShippingDate =
+          saleOrder.getSaleOrderLineList().stream()
+              .map(SaleOrderLine::getEstimatedShippingDate)
+              .filter(Objects::nonNull)
+              .max(LocalDate::compareTo)
+              .orElse(null);
+
+      saleOrder.setEstimatedShippingDate(estimatedShippingDate);
     }
 
     analyticToolSupplychainService.checkSaleOrderLinesAnalyticDistribution(saleOrder);

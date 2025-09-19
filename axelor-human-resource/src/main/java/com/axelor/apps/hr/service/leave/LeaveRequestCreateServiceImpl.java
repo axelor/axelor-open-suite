@@ -19,10 +19,12 @@
 package com.axelor.apps.hr.service.leave;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDurationService;
+import com.axelor.auth.db.User;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.time.LocalDateTime;
@@ -51,10 +53,12 @@ public class LeaveRequestCreateServiceImpl implements LeaveRequestCreateService 
       int startOnSelect,
       int endOnSelect,
       String comment,
-      LeaveReason leaveReason)
+      LeaveReason leaveReason,
+      User user,
+      Employee employee)
       throws AxelorException {
     LeaveRequest leaveRequest = new LeaveRequest();
-    leaveRequestInitValueService.initLeaveRequest(leaveRequest);
+    leaveRequestInitValueService.initLeaveRequest(leaveRequest, user, employee);
 
     leaveRequest.setFromDateT(fromDateTime);
     leaveRequest.setToDateT(toDateTime);
