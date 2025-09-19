@@ -8,16 +8,21 @@
     <field name="productToPackage"/>
     <field name="packaging"/>
     <field name="qty"/>
+    <field name="packagingMaxTotalWeight"/>
   </grid>
 
   <form name="product-packaging-form" model="com.axelor.apps.base.db.ProductPackaging"
-    title="Product packaging" onNew="action-product-packaging-record-default">
+    title="Product packaging" onNew="action-product-packaging-record-default"
+    onSave="action-product-packaging-compute-packaging-max-total-weight,action-product-packaging-validate-total-weight">
     <panel name="mainPanel">
       <field name="productToPackage" grid-view="product-grid" form-view="product-form"
-        domain="self.isPackaging = false"/>
+        domain="self.isPackaging = false"
+        onChange="action-product-packaging-compute-packaging-max-total-weight"/>
       <field name="packaging" grid-view="product-grid" form-view="product-form"
-        domain="self.isPackaging = true"/>
-      <field name="qty"/>
+        domain="self.isPackaging = true"
+        onChange="action-product-packaging-compute-packaging-max-total-weight"/>
+      <field name="qty" onChange="action-product-packaging-compute-packaging-max-total-weight"/>
+      <field name="packagingMaxTotalWeight" readonly="true"/>
     </panel>
   </form>
 
@@ -25,5 +30,17 @@
     model="com.axelor.apps.base.db.ProductPackaging">
     <field name="productToPackage" expr="eval: __parent__" if="__parent__"/>
   </action-record>
+
+  <action-record name="action-product-packaging-compute-packaging-max-total-weight"
+    model="com.axelor.apps.base.db.ProductPackaging">
+    <field name="packagingMaxTotalWeight"
+      expr="eval: (packaging?.grossMass ?: 0) + ((productToPackage?.grossMass ?: 0) * (qty ?: 0))"/>
+  </action-record>
+
+  <action-validate name="action-product-packaging-validate-total-weight">
+    <error
+      message="The products' total weight exceeds the maximum weight carried by the packaging"
+      if="((productToPackage?.grossMass ?: 0) * (qty ?: 0)) > (packaging?.maxWeight ?: 0)"/>
+  </action-validate>
 
 </object-views>
