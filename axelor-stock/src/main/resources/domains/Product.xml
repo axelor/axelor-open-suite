@@ -22,6 +22,10 @@
       scale="10"/>
     <decimal name="productDensity" title="Final product density" precision="20" scale="10"/>
 
+    <one-to-many name="defaultStockLocationBySite"
+      ref="com.axelor.apps.stock.db.DefaultStockLocationBySite"
+      title="Default stock location by site" mappedBy="product"/>
+
     <track on="UPDATE">
       <field name="trackingNumberConfiguration"/>
     </track>

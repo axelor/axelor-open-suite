@@ -47,6 +47,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveLineStockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -95,6 +96,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected ProductCompanyService productCompanyService;
   protected TaxService taxService;
   protected AppStockService appStockService;
+  protected StockMoveLineStockLocationService stockMoveLineStockLocationService;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -109,7 +111,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       StockConfigService stockConfigService,
       ProductCompanyService productCompanyService,
       TaxService taxService,
-      AppStockService appStockService) {
+      AppStockService appStockService,
+      StockMoveLineStockLocationService stockMoveLineStockLocationService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -123,6 +126,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.productCompanyService = productCompanyService;
     this.taxService = taxService;
     this.appStockService = appStockService;
+    this.stockMoveLineStockLocationService = stockMoveLineStockLocationService;
   }
 
   /**
@@ -376,16 +380,30 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
 
     if (this.isStockMoveProduct(purchaseOrderLine)) {
 
+      StockLocation finalToStockLocation =
+          Optional.ofNullable(purchaseOrderLine.getStockLocation())
+              .orElse(purchaseOrderLine.getPurchaseOrder().getStockLocation());
+
+      if (needControlOnReceipt(purchaseOrderLine)) {
+        // control on receipt, send to control stock location
+        finalToStockLocation = toStockLocation;
+      } else if (appBaseService.getAppBase().getEnableSiteManagementForStock()
+          && appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()) {
+        // search for default stock location
+        finalToStockLocation =
+            Optional.ofNullable(
+                    stockMoveLineStockLocationService.getDefaultToStockLocation(
+                        purchaseOrderLine.getProduct(), stockMove))
+                .orElse(finalToStockLocation);
+      }
+
       stockMoveLine =
           createProductStockMoveLine(
               purchaseOrderLine,
               qty,
               needControlOnReceipt(purchaseOrderLine) ? qualityStockMove : stockMove,
               fromStockLocation,
-              needControlOnReceipt(purchaseOrderLine)
-                  ? toStockLocation
-                  : Optional.ofNullable(purchaseOrderLine.getStockLocation())
-                      .orElse(purchaseOrderLine.getPurchaseOrder().getStockLocation()));
+              finalToStockLocation);
 
     } else if (purchaseOrderLine.getIsTitleLine()) {
       stockMoveLine = createTitleStockMoveLine(purchaseOrderLine, stockMove);

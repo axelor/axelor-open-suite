@@ -333,9 +333,11 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (stockMoveLine.getToStockLocation() == null) {
       stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
     }
+
     if (stockMoveLine.getFromStockLocation() == null) {
       stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
     }
+
     stockMoveLine.setIsRealQtyModifiedByUser(true);
     stockMoveLine.setUnitPriceUntaxed(product.getLastPurchasePrice());
     stockMove.addStockMoveLineListItem(stockMoveLine);
@@ -888,18 +890,21 @@ public class StockMoveServiceImpl implements StockMoveService {
       return Optional.empty();
     }
 
-    reverseStockMoveLineStockLocation(stockMove, newStockMoveLineList);
+    reverseStockMoveLineStockLocation(newStockMoveLineList);
 
     fillNewStockMoveFields(newStockMove, stockMove);
 
     return Optional.of(stockMoveRepo.save(newStockMove));
   }
 
-  protected void reverseStockMoveLineStockLocation(
-      StockMove stockMove, List<StockMoveLine> newStockMoveLineList) {
+  protected void reverseStockMoveLineStockLocation(List<StockMoveLine> newStockMoveLineList) {
     for (StockMoveLine stockMoveLine : newStockMoveLineList) {
-      stockMoveLine.setFromStockLocation(stockMove.getToStockLocation());
-      stockMoveLine.setToStockLocation(stockMove.getFromStockLocation());
+
+      StockLocation toStockLocation = stockMoveLine.getToStockLocation();
+      StockLocation fromStockLocation = stockMoveLine.getFromStockLocation();
+
+      stockMoveLine.setFromStockLocation(toStockLocation);
+      stockMoveLine.setToStockLocation(fromStockLocation);
     }
   }
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid model="com.axelor.apps.stock.db.DefaultStockLocationBySite"
+    title="Default stock location by site" name="default-stock-location-by-site-grid">
+    <field name="site"/>
+    <field name="receiptDefaultStockLocation"/>
+    <field name="pickupDefaultStockLocation"/>
+  </grid>
+
+  <form model="com.axelor.apps.stock.db.DefaultStockLocationBySite"
+    title="Default stock location by site" name="default-stock-location-by-site-form">
+    <panel name="mainPanel">
+      <field name="site"/>
+      <field name="receiptDefaultStockLocation" domain="self.site = :site" colOffset="6"/>
+      <field name="pickupDefaultStockLocation" domain="self.site = :site"/>
+    </panel>
+  </form>
+
+</object-views>
