@@ -430,4 +430,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String SALE_ORDER_ESTIMATED_SHIPPING_DATE_NOT_UPDATED = /*$$(*/
       "Warning : Estimated shipping date isn't updated due to pricing set on sale order." /*)*/;
+
+  public static final String SUPPLYCHAIN_PACKAGING_SEQUENCE_ERROR = /*$$(*/
+      "There is no configured sequence for the Packaging" /*)*/;
 }

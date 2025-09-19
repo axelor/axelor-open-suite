@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="packaging-grid" model="com.axelor.apps.supplychain.db.Packaging"
+    title="Packagings">
+    <field name="packagingNumber"/>
+    <field name="logisticalForm"/>
+    <field name="stockMove"/>
+    <field name="saleOrder"/>
+    <field name="parentPackaging"/>
+    <field name="packageUsed"/>
+    <field name="packagingLevelSelect"/>
+    <field name="grossMass"/>
+  </grid>
+
+  <form name="packaging-form" model="com.axelor.apps.supplychain.db.Packaging"
+    title="Packaging" width="large" onNew="action-packaging-record-set-parent-packaging">
+    <panel name="mainPanel">
+      <field name="packagingNumber"/>
+      <field name="logisticalForm" grid-view="logistical-form-grid"
+        from-view="logistical-form-form"/>
+      <field name="stockMove" grid-view="stock-move-grid" from-view="stock-move-form"
+        domain="self.typeSelect = 2"/>
+      <field name="saleOrder" grid-view="sale-order-grid" from-view="sale-order-form"/>
+      <field name="parentPackaging" grid-view="packaging-grid" from-view="packaging-form"/>
+      <field name="packageUsed" grid-view="product-grid" from-view="product-form"
+        domain="self.isPackaging = true"/>
+      <field name="packagingLevelSelect"/>
+      <field name="grossMass"/>
+      <panel-related field="packagingLineList" grid-view="packaging-line-grid"
+        from-view="packaging-line-form" colSpan="12"/>
+      <panel-related field="childrenPackagingList" grid-view="packaging-grid"
+        from-view="packaging-form" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-record name="action-packaging-record-set-parent-packaging"
+    model="com.axelor.apps.supplychain.db.Packaging">
+    <field name="parentPackaging" expr="eval: __parent__" if="__parent__"/>
+  </action-record>
+
+</object-views>
