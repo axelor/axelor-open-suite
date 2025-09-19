@@ -42,17 +42,20 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
   protected SaleOrderPackagingPlanService saleOrderPackagingPlanService;
   protected SaleOrderPackagingDimensionService saleOrderPackagingDimensionService;
   protected SaleOrderPackagingMessageService saleOrderPackagingMessageService;
+  protected SaleOrderProductPackagingService saleOrderProductPackagingService;
 
   @Inject
   public SaleOrderPackagingServiceImpl(
       ProductRepository productRepository,
       SaleOrderPackagingPlanService saleOrderPackagingPlanService,
       SaleOrderPackagingDimensionService saleOrderPackagingDimensionService,
-      SaleOrderPackagingMessageService saleOrderPackagingMessageService) {
+      SaleOrderPackagingMessageService saleOrderPackagingMessageService,
+      SaleOrderProductPackagingService saleOrderProductPackagingService) {
     this.productRepository = productRepository;
     this.saleOrderPackagingPlanService = saleOrderPackagingPlanService;
     this.saleOrderPackagingDimensionService = saleOrderPackagingDimensionService;
     this.saleOrderPackagingMessageService = saleOrderPackagingMessageService;
+    this.saleOrderProductPackagingService = saleOrderProductPackagingService;
   }
 
   @Override
@@ -64,6 +67,8 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
             .collect(
                 Collectors.toMap(
                     SaleOrderLine::getProduct, SaleOrderLine::getQty, BigDecimal::add));
+
+    saleOrderProductPackagingService.checkMultipleQty(productQtyMap);
 
     List<String> messages = new ArrayList<>();
     List<Product> packagingOptions =
@@ -110,16 +115,39 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
     Map<Product, BigDecimal[]> weightMap =
         levelWeights.computeIfAbsent(level, l -> new HashMap<>());
 
-    processPackaging(
-        level,
-        productQtyMap,
-        messages,
-        levelWeights,
-        currentLevelBoxes,
-        products,
-        packedThisLevel,
-        descMap,
-        weightMap);
+    if (level == ProductRepository.PACKAGING_LEVEL_BOX) {
+      List<Product> productsWithPackaging = new ArrayList<>();
+      List<Product> productsWithoutPackaging = new ArrayList<>();
+
+      for (Product product : products) {
+        if (CollectionUtils.isNotEmpty(
+            saleOrderProductPackagingService.getProductPackagings(product))) {
+          productsWithPackaging.add(product);
+        } else {
+          productsWithoutPackaging.add(product);
+        }
+      }
+      saleOrderProductPackagingService.packWithProductPackaging(
+          productQtyMap, messages, productsWithPackaging, packedThisLevel, descMap, weightMap);
+
+      processPackaging(
+          productQtyMap,
+          messages,
+          currentLevelBoxes,
+          productsWithoutPackaging,
+          packedThisLevel,
+          descMap,
+          weightMap);
+    } else {
+      processPackaging(
+          productQtyMap,
+          messages,
+          currentLevelBoxes,
+          products,
+          packedThisLevel,
+          descMap,
+          weightMap);
+    }
 
     int nextLevel = level + 1;
     if (nextLevel <= ProductRepository.PACKAGING_LEVEL_CONTAINER
@@ -134,10 +162,8 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
   }
 
   protected void processPackaging(
-      int level,
       Map<Product, BigDecimal> productQtyMap,
       List<String> messages,
-      Map<Integer, Map<Product, BigDecimal[]>> levelWeights,
       List<Product> currentLevelBoxes,
       List<Product> products,
       List<Product> packedThisLevel,

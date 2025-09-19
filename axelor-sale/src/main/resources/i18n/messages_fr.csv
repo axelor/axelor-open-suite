@@ -719,6 +719,7 @@
 "Turnover per month per salesman","CA HT par mois par commercial",,
 "Type",,,
 "Type select normal","Type normal",,
+"Unable to start the simulation because one or more products in the order have a sold quantity that is not a multiple of the default packaging defined in their product form.","Impossible de lancer la simulation car il existe un où plusieurs produit(s) de la commande dont la quantité vendue n'est pas un multiple de l'emballage par défaut défini dans sa fiche produit.",,
 "Unit","Unité",,
 "Unit cost price in company currency","Coût unitaire dans devise société",,
 "Unit price A.T.I.","Prix unitaire T.T.C.",,

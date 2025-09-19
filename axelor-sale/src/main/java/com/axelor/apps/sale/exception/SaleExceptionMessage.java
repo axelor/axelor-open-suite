@@ -212,4 +212,7 @@ public final class SaleExceptionMessage {
 
   public static final String PACKAGING_TOO_MANY_ITERATIONS = /*$$(*/
       "The packaging process was stopped because it exceeded the maximum number of iterations." /*)*/;
+
+  public static final String SALE_ORDER_INVALID_PACKAGING_QTY = /*$$(*/
+      "Unable to start the simulation because one or more products in the order have a sold quantity that is not a multiple of the default packaging defined in their product form." /*)*/;
 }
