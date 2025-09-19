@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed NPE when selecting a quantity to order on confirm wizard."
+module: axelor-sale

@@ -152,7 +152,7 @@ public class SaleOrderConfirmController {
       }
       SaleOrderLine saleOrderLine =
           Beans.get(SaleOrderLineRepository.class)
-              .find(Long.parseLong(lineContext.get("id").toString()));
+              .find(Long.parseLong(lineContext.get("solId").toString()));
       BigDecimal price =
           saleOrder.getInAti() ? saleOrderLine.getInTaxPrice() : saleOrderLine.getPrice();
       BigDecimal qtyToOrder =
