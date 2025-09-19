@@ -21,6 +21,7 @@ package com.axelor.apps.stock.service.massstockmove;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.MassStockMoveNeed;
+import com.axelor.apps.stock.db.TrackingNumber;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -29,5 +30,8 @@ public interface MassStockMoveNeedService {
       MassStockMove massStockMove, List<Long> stockMoveLinesIdList);
 
   MassStockMoveNeed createMassStockMoveNeed(
-      MassStockMove massStockMove, Product product, BigDecimal qtyToMove);
+      MassStockMove massStockMove,
+      Product product,
+      BigDecimal qtyToMove,
+      TrackingNumber trackingNumber);
 }
