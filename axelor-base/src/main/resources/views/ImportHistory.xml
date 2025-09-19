@@ -18,6 +18,7 @@
       <field name="dataMetaFile" form-view="meta-files-form" grid-view="meta-files-grid"/>
       <field name="createdOn"/>
       <field name="logMetaFile" widget="binary-link"/>
+      <field name="errorMetaFile" widget="binary-link"/>
     </panel>
   </form>
 
