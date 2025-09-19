@@ -11,6 +11,7 @@
 
         //SEQUENCE SELECT
   		public static final String SUPPLYCHAIN_MRP = "mrp";
+  		public static final String SUPPLYCHAIN_PACKAGING = "packaging";
 
      ]]></extra-code>
 
