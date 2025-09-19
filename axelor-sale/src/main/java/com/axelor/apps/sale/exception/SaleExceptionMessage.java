@@ -209,4 +209,7 @@ public final class SaleExceptionMessage {
 
   public static final String SALE_QUOTATION_DELETE_LINE_WITH_ORDERED_QTY_ERROR = /*$$(*/
       "You can not delete lines with an ordered quantity superior to 0." /*)*/;
+
+  public static final String PACKAGING_TOO_MANY_ITERATIONS = /*$$(*/
+      "The packaging process was stopped because it exceeded the maximum number of iterations." /*)*/;
 }
