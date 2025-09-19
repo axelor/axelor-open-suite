@@ -21,6 +21,7 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.google.common.collect.Lists;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collections;
 
 public class PaymentScheduleAccountRepository extends PaymentScheduleRepository {
@@ -30,10 +31,17 @@ public class PaymentScheduleAccountRepository extends PaymentScheduleRepository 
     PaymentSchedule copy = super.copy(paymentSchedule, deep);
 
     copy.setStatusSelect(PaymentScheduleRepository.STATUS_DRAFT);
-    copy.setInTaxAmount(BigDecimal.ZERO);
     copy.setInvoiceSet(Collections.emptySet());
     copy.setPaymentScheduleLineList(Lists.newArrayList());
     copy.setPaymentScheduleSeq(null);
+    LocalDate currentDate = LocalDate.now();
+    copy.setCreationDate(currentDate);
+    copy.setStartDate(currentDate);
+
+    if (!copy.getTypeSelect().equals(PaymentScheduleRepository.TYPE_MONTHLY)) {
+      copy.setInTaxAmount(BigDecimal.ZERO);
+    }
+
     return copy;
   }
 }
