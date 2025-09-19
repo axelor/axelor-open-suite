@@ -20,14 +20,19 @@ package com.axelor.apps.production.rest;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.production.rest.dto.ManufOrderStockMoveLineResponse;
+import com.axelor.apps.production.rest.dto.OperationOrderProductPostRequest;
 import com.axelor.apps.production.rest.dto.OperationOrderPutRequest;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
+import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -57,5 +62,36 @@ public class OperationOrderRestController {
 
     return Beans.get(OperationOrderRestService.class)
         .updateStatusOfOperationOrder(operationOrder, requestBody.getStatus());
+  }
+
+  @Operation(
+      summary = "Add product",
+      tags = {"Operation Order"})
+  @Path("/{operationOrderId}/add-product/")
+  @POST
+  @HttpExceptionHandler
+  public Response addProduct(
+      @PathParam("operationOrderId") long operationOrderId,
+      OperationOrderProductPostRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck()
+        .writeAccess(OperationOrder.class, operationOrderId)
+        .createAccess(StockMoveLine.class)
+        .check();
+
+    OperationOrder operationOrder =
+        ObjectFinder.find(OperationOrder.class, operationOrderId, requestBody.getVersion());
+
+    StockMoveLine stockMoveLine =
+        Beans.get(OperationOrderRestService.class)
+            .addOperationOrderProduct(
+                requestBody.fetchProduct(),
+                requestBody.getQty(),
+                requestBody.fetchTrackingNumber(),
+                operationOrder);
+
+    return ResponseConstructor.buildCreateResponse(
+        stockMoveLine, new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 }
