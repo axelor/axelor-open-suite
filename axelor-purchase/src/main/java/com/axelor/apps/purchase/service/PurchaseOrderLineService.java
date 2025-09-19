@@ -105,4 +105,6 @@ public interface PurchaseOrderLineService {
 
   public Map<String, Object> recomputeTax(
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
+
+  public void validateDeletion(PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 }

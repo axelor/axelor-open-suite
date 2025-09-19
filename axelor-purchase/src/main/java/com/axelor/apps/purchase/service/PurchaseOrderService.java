@@ -68,4 +68,8 @@ public interface PurchaseOrderService {
   public void updateCostPrice(PurchaseOrder purchaseOrder) throws AxelorException;
 
   void checkPrintingSettings(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  void enableEditOrder(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  void validateChanges(PurchaseOrder purchaseOrder);
 }
