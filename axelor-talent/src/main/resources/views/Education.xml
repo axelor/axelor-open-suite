@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="education-grid" title="Educations" model="com.axelor.apps.talent.db.Education">
+    <field name="degreeName"/>
+    <field name="institute"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+  </grid>
+
+  <form name="education-form" title="Education" model="com.axelor.apps.talent.db.Education"
+    width="large" onNew="action-training-set-default">
+    <panel name="mainPanel">
+      <field name="degreeName" required="true"/>
+      <field name="institute"/>
+      <field name="fromDate" validIf="toDate == null || toDate &gt;= fromDate"/>
+      <field name="toDate" validIf="toDate == null || toDate &gt;= fromDate"/>
+      <field name="description" colSpan="12"/>
+    </panel>
+  </form>
+
+</object-views>
