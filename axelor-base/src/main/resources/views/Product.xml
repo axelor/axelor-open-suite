@@ -376,7 +376,7 @@
         </panel>
 
         <field name="defaultStockLocationBySite" colSpan="12"
-          if="__config__.app.getApp('base').enableSiteManagementForStock &amp;&amp; __config__.app.getApp('stock').isManageStockLocationOnStockMoveLine"/>
+          if="__config__.app.getApp('base')?.enableSiteManagementForStock &amp;&amp; __config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
 
       </panel>
       <panel name="productionInformationsPanel" title="Production information"
