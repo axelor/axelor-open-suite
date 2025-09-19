@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ManufOrderProductResponse;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
@@ -147,6 +148,23 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
     result.addAll(
         getAdditionalProductList(
             manufOrder, checkProducts, manufOrder.getConsumedStockMoveLineList()));
+    return result;
+  }
+
+  @Override
+  public List<ManufOrderProductResponse> getConsumedProductList(OperationOrder operationOrder)
+      throws AxelorException {
+    List<Product> checkProducts = new ArrayList<>();
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
+    List<ManufOrderProductResponse> result =
+        new ArrayList<>(
+            getPlannedProductList(
+                manufOrder,
+                checkProducts,
+                operationOrder.getToConsumeProdProductList(),
+                consumedStockMoveLineList));
+    result.addAll(getAdditionalProductList(manufOrder, checkProducts, consumedStockMoveLineList));
     return result;
   }
 
