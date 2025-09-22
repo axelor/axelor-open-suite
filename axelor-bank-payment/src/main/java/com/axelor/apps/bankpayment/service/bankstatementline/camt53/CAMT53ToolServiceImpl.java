@@ -7,6 +7,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.report.ITranslation;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.AccountIdentification4Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.AccountStatement2;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ActiveOrHistoricCurrencyAndAmount;
@@ -19,6 +20,7 @@ import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CashAccount16;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CashAccount20;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CashBalance3;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CreditDebitCode;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CreditorReferenceInformation2;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.DateAndDateTimeChoice;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.DateTimePeriodDetails;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.EntryDetails1;
@@ -32,11 +34,13 @@ import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.RemittanceInformatio
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ReportEntry2;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ReturnReason5Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ReturnReasonInformation10;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.StructuredRemittanceInformation7;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.TransactionParty2;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.TransactionReferences2;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppAccount;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -230,16 +234,20 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
   @Override
   public String constructDescriptionFromNtry(ReportEntry2 ntry) {
     /*
-     * get the following tag values:
-     * 1. TxDtls -> RmtInf -> Ustrd : as the first line
-     * 2. TxDtls -> AddtlTxInf : remove "/LIB/"
-     * 3. RltdPties -> Cdtr -> Nm
-     * 4. RltdPties -> UltmtDbtr -> Nm
-     * 5. RltdPties -> UltmtDbtr -> Id -> OrgId -> BICOrBEI
-     * 6. RltdPties -> UltmtCdtr -> Nm
-     * 8. NtryDtls -> Btch -> PmtInfId
-     * 7. RltdPties -> CdtrAcct -> Id -> IBAN
-     */
+    * get the following tag values:
+    * 1. TxDtls -> RmtInf -> Ustrd : as the first line
+    * 2. TxDtls -> RmtInf -> Strd -> CdtrRefInf -> Ref
+    * 3. TxDtls -> AddtlTxInf : remove "/LIB/"
+    * 4. RltdPties -> Cdtr -> Nm
+    * 5. RltdPties -> Dbtr -> Nm
+    * 6. RltdPties -> UltmtDbtr -> Nm
+    * 7. RltdPties -> UltmtDbtr -> Id -> OrgId -> BICOrBEI
+    * 8. RltdPties -> UltmtCdtr -> Nm
+    * 9. TxDls -> Ref -> ChqNb
+    * 10. NtryDtls -> Btch -> PmtInfId
+    * 11. RltdPties -> CdtrAcct -> Id -> IBAN
+
+    */
     EntryDetails1 ntryDtls =
         Optional.of(ntry)
             .map(ReportEntry2::getNtryDtls)
@@ -264,14 +272,28 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
       }
       descriptionLines.add(line1);
 
+      String strdStr =
+          Optional.of(txDtl)
+              .map(EntryTransaction2::getRmtInf)
+              .map(RemittanceInformation5::getStrd)
+              .flatMap(strd -> strd.stream().findFirst())
+              .map(StructuredRemittanceInformation7::getCdtrRefInf)
+              .map(CreditorReferenceInformation2::getRef)
+              .orElse(null);
       String line2 = "";
-      String addtlTxInf = Optional.of(txDtl).map(EntryTransaction2::getAddtlTxInf).orElse(null);
-      if (addtlTxInf != null && !addtlTxInf.isEmpty()) {
-        line2 = addtlTxInf.replace("/LIB/", "\n");
+      if (strdStr != null && !strdStr.isEmpty()) {
+        line2 = String.join(" ", strdStr);
       }
       descriptionLines.add(line2);
 
       String line3 = "";
+      String addtlTxInf = Optional.of(txDtl).map(EntryTransaction2::getAddtlTxInf).orElse(null);
+      if (addtlTxInf != null && !addtlTxInf.isEmpty()) {
+        line3 = addtlTxInf.replace("/LIB/", "\n");
+      }
+      descriptionLines.add(line3);
+
+      String line4 = "";
       String cdtrNm =
           Optional.of(txDtl)
               .map(EntryTransaction2::getRltdPties)
@@ -279,11 +301,23 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
               .map(PartyIdentification32::getNm)
               .orElse(null);
       if (cdtrNm != null && !cdtrNm.isEmpty()) {
-        line3 = cdtrNm;
+        line4 = cdtrNm;
       }
-      descriptionLines.add(line3);
+      descriptionLines.add(line4);
 
-      String line4 = "";
+      String line5 = "";
+      String dbtrNm =
+          Optional.of(txDtl)
+              .map(EntryTransaction2::getRltdPties)
+              .map(TransactionParty2::getDbtr)
+              .map(PartyIdentification32::getNm)
+              .orElse(null);
+      if (dbtrNm != null && !dbtrNm.isEmpty()) {
+        line5 = dbtrNm;
+      }
+      descriptionLines.add(line5);
+
+      String line6 = "";
       String ultmtDbtrNm =
           Optional.of(txDtl)
               .map(EntryTransaction2::getRltdPties)
@@ -291,11 +325,11 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
               .map(PartyIdentification32::getNm)
               .orElse(null);
       if (ultmtDbtrNm != null && !ultmtDbtrNm.isEmpty()) {
-        line4 = ultmtDbtrNm;
+        line6 = ultmtDbtrNm;
       }
-      descriptionLines.add(line4);
+      descriptionLines.add(line6);
 
-      String line5 = "";
+      String line7 = "";
       String bicOrBEI =
           Optional.of(txDtl)
               .map(EntryTransaction2::getRltdPties)
@@ -305,11 +339,11 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
               .map(OrganisationIdentification4::getBICOrBEI)
               .orElse(null);
       if (bicOrBEI != null && !bicOrBEI.isEmpty()) {
-        line5 = bicOrBEI;
+        line7 = bicOrBEI;
       }
-      descriptionLines.add(line5);
+      descriptionLines.add(line7);
 
-      String line6 = "";
+      String line8 = "";
       String ultmtCdtrNm =
           Optional.of(txDtl)
               .map(EntryTransaction2::getRltdPties)
@@ -317,25 +351,36 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
               .map(PartyIdentification32::getNm)
               .orElse(null);
       if (ultmtCdtrNm != null && !ultmtCdtrNm.isEmpty()) {
-        line6 = ultmtCdtrNm;
+        line8 = ultmtCdtrNm;
       }
-      descriptionLines.add(line6);
+      descriptionLines.add(line8);
+
+      String line9 = "";
+      String chqNb =
+          Optional.of(txDtl)
+              .map(EntryTransaction2::getRefs)
+              .map(TransactionReferences2::getChqNb)
+              .orElse(null);
+      if (chqNb != null && !chqNb.isEmpty()) {
+        line9 = String.format(I18n.get(ITranslation.CAMT053_CHQ_NB_LABEL), chqNb);
+      }
+      descriptionLines.add(line9);
     }
 
-    String line8 = "";
+    String line10 = "";
     String btchPmtInfId =
         Optional.of(ntryDtls)
             .map(EntryDetails1::getBtch)
             .map(BatchInformation2::getPmtInfId)
             .orElse(null);
     if (btchPmtInfId != null && !btchPmtInfId.isEmpty()) {
-      line8 = btchPmtInfId;
+      line10 = btchPmtInfId;
     }
-    descriptionLines.add(line8);
+    descriptionLines.add(line10);
 
     if (txDtl != null) {
       // RltdPties -> CdtrAcct -> Id -> IBAN
-      String line7 = "";
+      String line11 = "";
       String cdtrAcctIBAN =
           Optional.of(txDtl)
               .map(EntryTransaction2::getRltdPties)
@@ -344,9 +389,9 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
               .map(AccountIdentification4Choice::getIBAN)
               .orElse(null);
       if (cdtrAcctIBAN != null && !cdtrAcctIBAN.isEmpty()) {
-        line7 = cdtrAcctIBAN;
+        line11 = cdtrAcctIBAN;
       }
-      descriptionLines.add(line7);
+      descriptionLines.add(line11);
     }
 
     StringBuilder descriptionSB = new StringBuilder();
