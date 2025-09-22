@@ -4,5 +4,5 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.base.AxelorException;
 
 public interface BankStatementLineCreateCAMT53Service {
-  void processCAMT53(BankStatement bankStatement) throws AxelorException;
+  BankStatement processCAMT53(BankStatement bankStatement) throws AxelorException;
 }

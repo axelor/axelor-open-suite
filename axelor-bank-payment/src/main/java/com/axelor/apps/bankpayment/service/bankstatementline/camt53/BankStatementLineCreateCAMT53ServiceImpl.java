@@ -1,6 +1,7 @@
 package com.axelor.apps.bankpayment.service.bankstatementline.camt53;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
+import com.axelor.apps.bankpayment.db.BankStatementRule;
 import com.axelor.apps.bankpayment.db.repo.BankStatementFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
@@ -21,7 +22,6 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
 import java.util.List;
@@ -51,7 +51,7 @@ public class BankStatementLineCreateCAMT53ServiceImpl
   }
 
   @Override
-  public void processCAMT53(BankStatement bankStatement) throws AxelorException {
+  public BankStatement processCAMT53(BankStatement bankStatement) throws AxelorException {
     this.bankStatement = bankStatement;
     try {
       JAXBContext jaxbContext = JAXBContext.newInstance(Document.class);
@@ -98,6 +98,7 @@ public class BankStatementLineCreateCAMT53ServiceImpl
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_XML_FILE_UNMARSHAL_ERROR));
     }
+    return this.bankStatement;
   }
 
   /**
@@ -107,7 +108,6 @@ public class BankStatementLineCreateCAMT53ServiceImpl
    * @param stmt the input AccountStatement2 object from the file
    * @throws AxelorException
    */
-  @Transactional(rollbackOn = {Exception.class})
   protected void fillBankStatement(AccountStatement2 stmt, BankStatement bankStatement)
       throws AxelorException {
     CashAccount20 acct = stmt.getAcct();
@@ -169,9 +169,12 @@ public class BankStatementLineCreateCAMT53ServiceImpl
                 sequence,
                 balanceType,
                 currencyCodeFromStmt);
+        if (sequence % 5 == 0) {
+          JPA.clear();
+          bankStatement = findBankStatement();
+        }
       }
     }
-
     return sequence;
   }
 
@@ -183,6 +186,10 @@ public class BankStatementLineCreateCAMT53ServiceImpl
         sequence =
             bankStatementLineCreationCAMT53Service.createEntryLine(
                 bankStatement, bankDetails, ntry, sequence, currencyCodeFromStmt);
+        if (sequence % 5 == 0) {
+          JPA.clear();
+          bankStatement = findBankStatement();
+        }
       }
     }
 
@@ -190,10 +197,6 @@ public class BankStatementLineCreateCAMT53ServiceImpl
   }
 
   protected BankStatement findBankStatement() {
-    bankStatement =
-        JPA.em().contains(bankStatement)
-            ? bankStatement
-            : bankStatementRepository.find(bankStatement.getId());
-    return bankStatement;
+    return bankStatementRepository.find(bankStatement.getId());
   }
 }
