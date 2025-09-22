@@ -194,13 +194,6 @@ public interface StockMoveService {
    */
   Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException;
 
-  /**
-   * Update fully spread over logistical forms flag on stock move.
-   *
-   * @param stockMove
-   */
-  void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
-
   void setAvailableStatus(StockMove stockMove) throws AxelorException;
 
   /**

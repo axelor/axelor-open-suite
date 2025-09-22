@@ -22,7 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
@@ -218,33 +217,6 @@ public interface StockMoveLineService {
    * @throws AxelorException
    */
   public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList) throws AxelorException;
-
-  /**
-   * Check whether a stock move line is fully spread over logistical form lines.
-   *
-   * @param stockMoveLine
-   * @return
-   */
-  boolean computeFullySpreadOverLogisticalFormLinesFlag(StockMoveLine stockMoveLine);
-
-  /**
-   * Get the quantity spreadable over logistical form lines.
-   *
-   * @param stockMoveLine
-   * @return
-   */
-  BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine);
-
-  /**
-   * Get the quantity spreadable over logistical form lines. Take into account the lines from the
-   * specified logistical form.
-   *
-   * @param stockMoveLine
-   * @param logisticalForm
-   * @return
-   */
-  BigDecimal computeSpreadableQtyOverLogisticalFormLines(
-      StockMoveLine stockMoveLine, LogisticalForm logisticalForm);
 
   /**
    * Set product information.

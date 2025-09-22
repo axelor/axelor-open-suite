@@ -350,18 +350,6 @@
     <bind to="forwarderPartner" search="self.importId = :forwarderPartner_importId"/>
   </input>
 
-  <input file="stock_logisticalFormLine.csv" separator=";"
-    type="com.axelor.apps.stock.db.LogisticalFormLine" search="self.importId = :importId">
-    <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.stock.db.LogisticalFormLine', 'typeSelect', typeSelect)"
-      check-message="Invalid typeSelect"/>
-    <bind to="logisticalForm" search="self.importId = :logisticalForm_importId"
-      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.stock.db.LogisticalFormLine', 'importId', importId, 'typeSelect, parcelPalletNumber, logisticalForm.importId, stockMoveId', typeSelect, parcelPalletNumber, logisticalForm_importId, stockMoveId)"
-      check-message="Type, parcel/pallet number, logistical form and stock move must be unique"/>
-    <bind to="stockMoveLine" search="self.importId = :stockMoveLine_importId"
-      if="stockMoveLine_importId"/>
-  </input>
-
   <input file="stock_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer" separator=";">
     <bind column="name" to="name"
       check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
