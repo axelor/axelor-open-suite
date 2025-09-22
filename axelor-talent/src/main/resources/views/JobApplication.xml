@@ -82,7 +82,7 @@
     <panel-tabs name="tabsPanel" height="550">
       <panel title="Application information" name="applicantInfoPanel" itemSpan="12">
         <field name="skillSet" widget="TagSelect"/>
-        <field name="languages"/>
+        <field name="languageSet" widget="TagSelect"/>
         <field name="educationList"/>
         <field name="experienceList"/>
         <field name="cerificationList"/>
