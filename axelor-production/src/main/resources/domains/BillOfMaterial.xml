@@ -46,7 +46,7 @@
 
     <string name="note" large="true"/>
 
-    <decimal name="calculationQty" title="Calculation quantity" precision="20" scale="10"/>
+    <decimal name="calculationQty" title="Calculation quantity" precision="20" scale="10" default="1"/>
 
     <extra-code><![CDATA[
 

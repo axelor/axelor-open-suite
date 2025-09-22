@@ -342,7 +342,7 @@
   </action-attrs>
 
   <action-attrs name="action-bill-of-material-attrs-update-calculation-qty">
-    <attribute for="calculationQty" name="value" expr="eval: prodProcess?.launchQty"/>
+    <attribute for="calculationQty" name="value" expr="eval: (prodProcess?.launchQty &gt; 0) ? prodProcess.launchQty : 1"/>
   </action-attrs>
 
   <search-filters name="bill-of-material-filters"

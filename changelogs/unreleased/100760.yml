@@ -1,0 +1,3 @@
+---
+title: "Bill Of Material: calculationQty defaults to 1 when creating a bill of material."
+module: axelor-production
