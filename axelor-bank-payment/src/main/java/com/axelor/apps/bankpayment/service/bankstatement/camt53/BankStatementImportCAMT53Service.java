@@ -55,7 +55,8 @@ public class BankStatementImportCAMT53Service extends BankStatementImportAbstrac
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void runImport(BankStatement bankStatement) throws AxelorException, IOException {
-    BankStatement processedBankStatement = bankStatementLineCreateCAMT53Service.processCAMT53(bankStatement);
+    BankStatement processedBankStatement =
+        bankStatementLineCreateCAMT53Service.processCAMT53(bankStatement);
 
     checkImport(processedBankStatement);
     updateBankDetailsBalance(processedBankStatement);

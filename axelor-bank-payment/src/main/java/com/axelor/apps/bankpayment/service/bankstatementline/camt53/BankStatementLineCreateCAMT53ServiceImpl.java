@@ -1,7 +1,6 @@
 package com.axelor.apps.bankpayment.service.bankstatementline.camt53;
 
 import com.axelor.apps.bankpayment.db.BankStatement;
-import com.axelor.apps.bankpayment.db.BankStatementRule;
 import com.axelor.apps.bankpayment.db.repo.BankStatementFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
