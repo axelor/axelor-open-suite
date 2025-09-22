@@ -52,7 +52,6 @@
 
     <string name="title"/>
     <string name="function" column="function_id"/>
-    <string name="languages"/>
     <string name="evaluation" large="true"/>
     <string name="commentary" large="true"/>
     <string name="currentSalary" title="Current salary"/>
@@ -77,6 +76,8 @@
     <one-to-many ref="com.axelor.apps.hr.db.EmploymentContract"
       name="proposedContractList" title="Proposed contracts"/>
     <one-to-many ref="com.axelor.apps.crm.db.Event" name="eventList" title="Events"/>
+    <many-to-many name="languageSet" title="Languages"
+      ref="com.axelor.apps.base.db.Language"/>
 
     <extra-code>
 	   		<![CDATA[
