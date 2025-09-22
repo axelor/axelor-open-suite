@@ -196,6 +196,11 @@
     </panel>
   </form>
 
+  <action-record name="action-stock-move-line-record-set-qty-remaining-to-package"
+    model="com.axelor.apps.stock.db.StockMoveLine">
+    <field name="qtyRemainingToPackage" expr="eval: realQty"/>
+  </action-record>
+
   <action-view name="action-stock-move-line-product-reserved-planned"
     title="${fullName} plan. st. move" model="com.axelor.apps.stock.db.StockMoveLine">
     <view type="grid" name="stock-move-line-all-grid-planned"/>

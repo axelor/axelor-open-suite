@@ -100,6 +100,15 @@
           action="action-supplychain-stock-move-method-fill-real-quantities"/>
       </insert>
     </extend>
+    <extend target="//panel[@name='linksPanel']">
+      <insert position="after">
+        <panel name="packagingsPanel" title="Packagings" hidden="true" showIf="id">
+          <spacer colSpan="9"/>
+          <panel-dashlet name="packagingsViewPanel" colSpan="12"
+            action="action-stock-move-view-packagings" canNew="true"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <action-attrs name="action-stock-move-attrs-fill-ctx">
@@ -389,6 +398,15 @@
     <call class="com.axelor.apps.supplychain.web.StockMoveInvoiceController"
       method="generateInvoiceFromPopUp"/>
   </action-method>
+
+  <action-view name="action-stock-move-view-packagings" title="Packagings"
+    model="com.axelor.apps.supplychain.db.Packaging">
+    <view type="grid" name="packaging-tree-grid"/>
+    <view type="form" name="packaging-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.stockMove.id = :_id AND self.parentPackaging IS NULL</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
 
   <search-filters id="supplychain-customer-deliveries-filter"
     name="customer-deliveries-filters" model="com.axelor.apps.stock.db.StockMove"

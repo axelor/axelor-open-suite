@@ -743,6 +743,8 @@
     <action name="action-stock-move-line-compute-price"/>
     <action name="action-stock-move-line-record-total-net-mass"/>
     <action name="action-stock-move-line-method-set-available-status"/>
+    <action name="action-stock-move-line-record-set-qty-remaining-to-package"
+      if="__config__.app.isApp('supplychain')"/>
   </action-group>
 
   <action-group name="action-stock-move-line-group-net-mass-onchange">
