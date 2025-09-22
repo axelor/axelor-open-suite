@@ -21,7 +21,7 @@ package com.axelor.apps.base.rest;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.MapGroup;
 import com.axelor.apps.base.rest.dto.MapGroupResponse;
-import com.axelor.apps.base.service.MapGroupService;
+import com.axelor.apps.base.service.mapConfigurator.MapGroupService;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;

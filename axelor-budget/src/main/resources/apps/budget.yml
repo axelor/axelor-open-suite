@@ -9,5 +9,6 @@ image: app-budget.png
 modules: 
    axelor-budget
 dependsOn: 
-   - cash-management
+   - contract
+   - employee
 sequence: 7

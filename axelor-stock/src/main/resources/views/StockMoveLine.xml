@@ -183,7 +183,7 @@
         onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
         x-scale="$nbDecimalDigitForQty"/>
       <field name="isRealQtyModifiedByUser" hidden="true"/>
-      <field name="qtyInvoiced" colSpan="6" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+      <field name="qtyInvoiced" colSpan="3" readonly="true" x-scale="$nbDecimalDigitForQty"/>
       <field name="$availableQty" showIf="product &amp;&amp; productTypeSelect != 'service'"
         type="decimal" title="Available qty" readonly="true" hidden="true"
         x-scale="$nbDecimalDigitForQty"/>

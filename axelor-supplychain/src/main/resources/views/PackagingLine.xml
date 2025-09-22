@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="packaging-line-grid" model="com.axelor.apps.supplychain.db.PackagingLine"
+    title="Packaging lines">
+    <field name="stockMoveLine"/>
+    <field name="saleOrderLine"/>
+    <field name="qty"/>
+  </grid>
+
+  <form name="packaging-line-form" model="com.axelor.apps.supplychain.db.PackagingLine"
+    title="Packaging line">
+    <panel name="mainPanel">
+      <field name="stockMoveLine" grid-view="stock-move-line-grid"
+        from-view="stock-move-line-form" domain="self.stockMove.typeSelect = 2"/>
+      <field name="saleOrderLine" grid-view="sale-order-line-grid"
+        from-view="sale-order-line-form"/>
+      <field name="trackingNumberSet" grid-view="tracking-number-grid"
+        from-view="tracking-number-form" widget="TagSelect"/>
+      <field name="qty"/>
+    </panel>
+  </form>
+
+</object-views>

@@ -16,7 +16,7 @@
       <field name="productToPackage" grid-view="product-grid" form-view="product-form"
         domain="self.isPackaging = false"/>
       <field name="packaging" grid-view="product-grid" form-view="product-form"
-        domain="self.isPackaging = true"/>
+        domain="self.isPackaging = true AND self.packagingLevelSelect = 0"/>
       <field name="qty"/>
     </panel>
   </form>

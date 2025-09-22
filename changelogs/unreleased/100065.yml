@@ -1,3 +1,0 @@
----
-title: "Databackup: fixed a potential security breach when restoring a backup."
-module: axelor-base
