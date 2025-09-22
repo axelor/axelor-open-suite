@@ -39,6 +39,7 @@ import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.TransactionParty2;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.TransactionReferences2;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppAccount;
@@ -179,7 +180,7 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
             .map(BatchInformation2::getPmtInfId)
             .orElse(null);
     if (origin == null) {
-      origin =
+      TransactionReferences2 refs =
           Optional.ofNullable(ntry)
               .map(ReportEntry2::getNtryDtls)
               .flatMap(
@@ -187,10 +188,16 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
                       ntryDtls.stream()
                           .findFirst()) // Convert to Stream and get first element if present
               .map(EntryDetails1::getTxDtls)
-              .flatMap(txDetls -> txDetls.stream().findFirst())
+              .flatMap(txDtls -> txDtls.stream().findFirst())
               .map(EntryTransaction2::getRefs)
-              .map(TransactionReferences2::getPmtInfId)
               .orElse(null);
+      if (ObjectUtils.notEmpty(refs)) {
+        origin = refs.getPmtInfId();
+
+        if (origin == null) {
+          origin = refs.getChqNb();
+        }
+      }
     }
     return origin;
   }
@@ -243,9 +250,9 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
     * 6. RltdPties -> UltmtDbtr -> Nm
     * 7. RltdPties -> UltmtDbtr -> Id -> OrgId -> BICOrBEI
     * 8. RltdPties -> UltmtCdtr -> Nm
-    * 9. TxDls -> Ref -> ChqNb
-    * 10. NtryDtls -> Btch -> PmtInfId
-    * 11. RltdPties -> CdtrAcct -> Id -> IBAN
+    * 9. NtryDtls -> Btch -> PmtInfId
+    * 10. RltdPties -> CdtrAcct -> Id -> IBAN
+    * 11. NtryDtls -> Btch -> NbOfTxs
 
     */
     EntryDetails1 ntryDtls =
@@ -254,7 +261,7 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
             .flatMap(ntryDtlsList -> ntryDtlsList.stream().findFirst())
             .orElse(null);
     EntryTransaction2 txDtl =
-        Optional.of(ntryDtls)
+        Optional.ofNullable(ntryDtls)
             .map(EntryDetails1::getTxDtls)
             .flatMap(txDtls -> txDtls.stream().findFirst())
             .orElse(null);
@@ -354,33 +361,22 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
         line8 = ultmtCdtrNm;
       }
       descriptionLines.add(line8);
-
-      String line9 = "";
-      String chqNb =
-          Optional.of(txDtl)
-              .map(EntryTransaction2::getRefs)
-              .map(TransactionReferences2::getChqNb)
-              .orElse(null);
-      if (chqNb != null && !chqNb.isEmpty()) {
-        line9 = String.format(I18n.get(ITranslation.CAMT053_CHQ_NB_LABEL), chqNb);
-      }
-      descriptionLines.add(line9);
     }
 
-    String line10 = "";
+    String line9 = "";
     String btchPmtInfId =
-        Optional.of(ntryDtls)
+        Optional.ofNullable(ntryDtls)
             .map(EntryDetails1::getBtch)
             .map(BatchInformation2::getPmtInfId)
             .orElse(null);
     if (btchPmtInfId != null && !btchPmtInfId.isEmpty()) {
-      line10 = btchPmtInfId;
+      line9 = btchPmtInfId;
     }
-    descriptionLines.add(line10);
+    descriptionLines.add(line9);
 
     if (txDtl != null) {
       // RltdPties -> CdtrAcct -> Id -> IBAN
-      String line11 = "";
+      String line10 = "";
       String cdtrAcctIBAN =
           Optional.of(txDtl)
               .map(EntryTransaction2::getRltdPties)
@@ -389,10 +385,21 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
               .map(AccountIdentification4Choice::getIBAN)
               .orElse(null);
       if (cdtrAcctIBAN != null && !cdtrAcctIBAN.isEmpty()) {
-        line11 = cdtrAcctIBAN;
+        line10 = cdtrAcctIBAN;
       }
-      descriptionLines.add(line11);
+      descriptionLines.add(line10);
     }
+
+    String line11 = "";
+    String chqNb =
+        Optional.ofNullable(ntryDtls)
+            .map(EntryDetails1::getBtch)
+            .map(BatchInformation2::getNbOfTxs)
+            .orElse(null);
+    if (chqNb != null && !chqNb.isEmpty()) {
+      line11 = String.format(I18n.get(ITranslation.CAMT053_CHQ_TRANSACTION_LABEL), chqNb);
+    }
+    descriptionLines.add(line11);
 
     StringBuilder descriptionSB = new StringBuilder();
     for (int i = 0; i < descriptionLines.size() - 1; i++) {
