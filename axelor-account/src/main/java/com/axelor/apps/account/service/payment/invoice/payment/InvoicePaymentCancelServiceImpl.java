@@ -28,6 +28,7 @@ import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.reconcile.ReconcileToolService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.CancelReason;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -102,7 +103,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     Map<String, Object> reverseMap = buildReverseMap(paymentMove);
     moveReverseService.generateReverse(paymentMove, reverseMap);
 
-    invoicePayment = invoicePaymentRepository.find(invoicePayment.getId());
+    invoicePayment = findInvoicePayment(invoicePayment);
     updateCancelStatus(invoicePayment);
   }
 
@@ -172,5 +173,13 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     reverseMap.put("isUnreconcileOriginalMove", true);
 
     return reverseMap;
+  }
+
+  protected InvoicePayment findInvoicePayment(InvoicePayment invoicePayment) {
+    CancelReason cancelReason = invoicePayment.getCancelReason();
+    invoicePayment = invoicePaymentRepository.find(invoicePayment.getId());
+    invoicePayment.setCancelReason(cancelReason);
+
+    return invoicePayment;
   }
 }

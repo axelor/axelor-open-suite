@@ -104,13 +104,15 @@
         showIf="statusSelect != 2" onClick="action-invoice-payment-group-cancel"/>
       <field name="move.statusSelect" hidden="true" readonly="true"/>
       <panel name="reversePaymentMovePanel"
-        showIf="move &amp;&amp; statusSelect != 2 &amp;&amp; typeSelect &lt; 3 &amp;&amp; typeSelect &gt; 9"
+        showIf="move &amp;&amp; statusSelect != 2 &amp;&amp; (typeSelect &lt; 3 || typeSelect &gt; 9)"
         colSpan="12">
         <field name="cancelReason" title="Cancel reason (Required to execute the process)"/>
         <button name="reversePaymentMoveBtn"
           onClick="action-invoice-payment-group-reverse-move" title="Cancel the payment entry"
           readonlyIf="!cancelReason"/>
       </panel>
+      <field name="cancelReason" readonly="true"
+        showIf="statusSelect == 2 &amp;&amp; cancelReason"/>
     </panel>
     <panel name="newInvoicePaymentPanel" hideIf="id">
       <button name="saveBtn" title="OK" colOffset="11" colspan="1" width="50"
