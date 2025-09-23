@@ -30,10 +30,10 @@
     <field name="mainAddress"/>
     <field name="companySet" widget="TagSelect"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+    <button name="scheduleEventBtn" title="Schedule Event" icon="people-fill"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
   </grid>
@@ -63,10 +63,10 @@
     <field name="user"/>
     <field name="companySet" widget="TagSelect"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+    <button name="scheduleEventBtn" title="Schedule Event" icon="people-fill"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
   </grid>
@@ -99,10 +99,10 @@
     <field name="companySet" widget="TagSelect"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="das2Activity" hidden="true" if="__config__.app.isApp('account')"/>
-    <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+    <button name="scheduleEventBtn" title="Schedule Event" icon="people-fill"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
   </grid>
@@ -121,10 +121,10 @@
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="mainPartner.simpleFullName" title="Main company"/>
     <field name="jobTitleFunction"/>
-    <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+    <button name="scheduleEventBtn" title="Schedule Event" icon="people-fill"
       onClick="action-contact-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
   </grid>

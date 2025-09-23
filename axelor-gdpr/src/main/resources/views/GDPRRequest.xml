@@ -81,7 +81,7 @@
     <panel name="sendingButtonPanel"
       showIf="gdprResponse != null &amp;&amp; !gdprResponse.responseMessage" colSpan="12"
       colOffset="3">
-      <button name="sendResponseButton" icon="fa-envelope"
+      <button name="sendResponseButton" icon="envelope-fill"
         onClick="save,action-gdpr-group-send-response" css="btn-success" title="Send Response"
         showIf="statusSelect == 1" colSpan="6" colOffset="3"/>
 

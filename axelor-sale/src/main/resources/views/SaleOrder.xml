@@ -41,7 +41,7 @@
     <field name="lastReminderComments"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -83,7 +83,7 @@
     <field name="salespersonUser"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -113,7 +113,7 @@
     <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -135,7 +135,7 @@
     <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -155,7 +155,7 @@
     <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -277,9 +277,9 @@
     <toolbar>
       <button name="printBtn" title="Reports" icon="fa-print" hideIf="clientPartner == null"
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
-      <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+      <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
         onClick="action-send-by-email-with-template" hidden="true" showIf="id"/>
-      <button name="estimatePackagingBtn" title="Estimate packaging" icon="fa-envelope"
+      <button name="estimatePackagingBtn" title="Estimate packaging" icon="envelope-fill"
         onClick="save,action-sale-order-method-estimate-packaging"
         readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button name="recomputePricesBtn" title="Recompute prices"

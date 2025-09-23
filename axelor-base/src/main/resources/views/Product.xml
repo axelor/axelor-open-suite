@@ -7,7 +7,7 @@
     orderBy="code,name" x-row-height="80">
     <toolbar>
       <button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog"
-        icon="fa-book"/>
+        icon="import_contacts"/>
       <button name="checkDuplicateBtn" title="Check Duplicate"
         onClick="action-general-check-duplicate-records"/>
     </toolbar>
@@ -22,7 +22,7 @@
     <field name="salePrice" x-scale="2"/>
     <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
     <field name="internalDescription" widget="html" width="400"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -30,7 +30,7 @@
     orderBy="code,name" x-row-height="80">
     <toolbar>
       <button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog"
-        icon="fa-book"/>
+        icon="import_contacts"/>
       <button name="checkDuplicateBtn" title="Check Duplicate"
         onClick="action-general-check-duplicate-records"/>
     </toolbar>
@@ -44,7 +44,7 @@
     <field name="purchasePrice" x-scale="2"/>
     <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
     <field name="internalDescription" widget="html" width="400"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -52,7 +52,7 @@
     model="com.axelor.apps.base.db.Product" orderBy="code,name" x-row-height="80">
     <toolbar>
       <button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog"
-        icon="fa-book"/>
+        icon="import_contacts"/>
       <button name="checkDuplicateBtn" title="Check Duplicate"
         onClick="action-general-check-duplicate-records"/>
     </toolbar>
@@ -65,7 +65,7 @@
     <field name="productTypeSelect" width="100"/>
     <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
     <field name="internalDescription" widget="html" width="400"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -88,7 +88,7 @@
     <toolbar>
       <button name="printBtn" title="Product sheet" icon="fa-print"
         onClick="save,action-product-validate-user-active-company,action-method-print-template"/>
-      <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+      <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
         onClick="action-send-by-email-with-template"/>
     </toolbar>
     <panel name="mainPanel">
@@ -610,7 +610,7 @@
     width="25%" css="rect-image" orderBy="code,name">
     <toolbar>
       <button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog"
-        icon="fa-book"/>
+        icon="import_contacts"/>
       <button name="checkDuplicateBtn" title="Check Duplicate"
         onClick="action-general-check-duplicate-records"/>
     </toolbar>

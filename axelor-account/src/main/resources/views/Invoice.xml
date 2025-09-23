@@ -54,7 +54,7 @@
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 
@@ -101,7 +101,7 @@
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 
@@ -154,7 +154,7 @@
     <field name="paymentDelayReasonComments" widget="html"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 
@@ -209,7 +209,7 @@
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 
@@ -271,7 +271,7 @@
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -328,7 +328,7 @@
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -371,7 +371,7 @@
     <field name="statusSelect" widget="single-select"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 

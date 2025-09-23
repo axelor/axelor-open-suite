@@ -12,7 +12,7 @@
     <field name="mobilePhone" widget="phone"/>
     <field name="jobPosition"/>
     <button name="resume" onClick="action-job-application-method-show-resume"
-      icon="fa-file-text-o"/>
+      icon="file-text"/>
   </grid>
 
   <form title="Job application" name="job-application-form"

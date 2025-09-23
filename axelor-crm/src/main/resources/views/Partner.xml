@@ -424,9 +424,9 @@
       widget="TagSelect"/>
     <field name="leadScoringSelect" widget="Rating"/>
     <button if="__config__.app.isApp('crm')" if-module="axelor-crm" name="scheduleEventBtn"
-      title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event"/>
+      title="Schedule Event" icon="people-fill" onClick="action-partner-view-schedule-event"/>
     <button if="__config__.app.isApp('crm')" if-module="axelor-crm" name="sendByEmailBtn"
-      title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+      title="Send Email" icon="envelope-fill" onClick="action-send-by-email-with-template"/>
   </grid>
 
   <grid id="crm-partner-grid" name="partner-grid" title="Partners"

@@ -37,7 +37,7 @@
     model="com.axelor.apps.base.db.Product" width="25%" css="rect-image" orderBy="code,name">
     <toolbar>
       <button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog"
-        icon="fa-book"/>
+        icon="import_contacts"/>
       <button name="checkDuplicateBtn" title="Check Duplicate"
         onClick="action-general-check-duplicate-records"/>
     </toolbar>

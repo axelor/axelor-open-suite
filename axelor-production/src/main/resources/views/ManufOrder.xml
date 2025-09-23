@@ -505,7 +505,7 @@
     <field name="product" form-view="product-form" grid-view="product-grid"/>
     <field name="qty" x-scale="2"/>
     <field name="unit"/>
-    <button name="openManufOrderBtn" title="Manufacturing Order" icon="fa-file-text-o"
+    <button name="openManufOrderBtn" title="Manufacturing Order" icon="file-text"
       onClick="action-manuf-order-view-open-form-view-onclick,close"/>
   </grid>
 
