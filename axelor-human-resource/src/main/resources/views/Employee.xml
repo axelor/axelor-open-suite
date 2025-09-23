@@ -157,8 +157,7 @@
         onChange="action-employee-record-set-daily-salary-cost"/>
       <field name="hourlyRate" colSpan="3"
         onChange="action-employee-record-set-daily-salary-cost"/>
-      <field name="dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"
-        x-bind="{{hourlyRate * dailyWorkHours}}"/>
+      <field name="dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"/>
     </panel>
 
     <panel name="mainEmploymentContractSBSPanel" title="Main employment contract"
@@ -744,7 +743,6 @@
     <action name="action-employee-method-set-social-network-url"/>
     <action name="action-attrs-employee-step-by-step-select-selection-in"/>
     <action name="action-employee-attrs-timesheet-imputation-select-selection-in"/>
-    <action name="action-employee-record-set-daily-salary-cost"/>
   </action-group>
 
   <action-group name="action-group-employee-on-new">
