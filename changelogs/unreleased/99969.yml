@@ -1,0 +1,3 @@
+---
+title: "Production API : fixed request to fetch consumed products was not working when 'Manage consumed products on operations' is enabled."
+module: axelor-production
