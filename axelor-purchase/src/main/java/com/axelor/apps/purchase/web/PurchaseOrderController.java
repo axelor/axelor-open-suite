@@ -443,7 +443,8 @@ public class PurchaseOrderController {
     }
   }
 
-  public void validateChanges(ActionRequest request, ActionResponse response) {
+  public void validateChanges(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     PurchaseOrder purchaseOrder =
         Beans.get(PurchaseOrderRepository.class)
             .find(request.getContext().asType(PurchaseOrder.class).getId());

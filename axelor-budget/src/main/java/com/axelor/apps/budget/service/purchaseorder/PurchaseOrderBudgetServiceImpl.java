@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service.purchaseorder;
 
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -89,15 +90,16 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderInvoiceContract
       CurrencyScaleService currencyScaleService,
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
-      BudgetRepository budgetRepository,
-      PurchaseOrderLineBudgetService purchaseOrderLineBudgetService,
-      BudgetDistributionService budgetDistributionService,
-      BudgetService budgetService,
-      BudgetDistributionRepository budgetDistributionRepository,
-      AppBudgetService appBudgetService,
-      BudgetToolsService budgetToolsService,
+      InvoiceLineRepository invoiceLineRepository,
+      PurchaseOrderRepository purchaseOrderRepo,
       CurrencyScaleService currencyScaleService1,
-      PurchaseOrderRepository purchaseOrderRepo) {
+      BudgetToolsService budgetToolsService,
+      AppBudgetService appBudgetService,
+      BudgetDistributionRepository budgetDistributionRepository,
+      BudgetService budgetService,
+      BudgetDistributionService budgetDistributionService,
+      PurchaseOrderLineBudgetService purchaseOrderLineBudgetService,
+      BudgetRepository budgetRepository) {
     super(
         invoiceServiceSupplychain,
         invoiceService,
@@ -111,16 +113,17 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderInvoiceContract
         currencyService,
         currencyScaleService,
         orderInvoiceService,
-        invoiceTaxService);
-    this.budgetRepository = budgetRepository;
-    this.purchaseOrderLineBudgetService = purchaseOrderLineBudgetService;
-    this.budgetDistributionService = budgetDistributionService;
-    this.budgetService = budgetService;
-    this.budgetDistributionRepository = budgetDistributionRepository;
-    this.appBudgetService = appBudgetService;
-    this.budgetToolsService = budgetToolsService;
-    this.currencyScaleService = currencyScaleService1;
+        invoiceTaxService,
+        invoiceLineRepository);
     this.purchaseOrderRepo = purchaseOrderRepo;
+    this.currencyScaleService = currencyScaleService1;
+    this.budgetToolsService = budgetToolsService;
+    this.appBudgetService = appBudgetService;
+    this.budgetDistributionRepository = budgetDistributionRepository;
+    this.budgetService = budgetService;
+    this.budgetDistributionService = budgetDistributionService;
+    this.purchaseOrderLineBudgetService = purchaseOrderLineBudgetService;
+    this.budgetRepository = budgetRepository;
   }
 
   @Override

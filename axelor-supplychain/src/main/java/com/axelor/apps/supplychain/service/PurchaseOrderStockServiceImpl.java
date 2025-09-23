@@ -585,47 +585,6 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     return nbStockMove > 0;
   }
 
-  public void updateReceiptState(PurchaseOrder purchaseOrder) throws AxelorException {
-    purchaseOrder.setReceiptState(computeReceiptState(purchaseOrder));
-  }
-
-  protected int computeReceiptState(PurchaseOrder purchaseOrder) throws AxelorException {
-
-    if (purchaseOrder.getPurchaseOrderLineList() == null
-        || purchaseOrder.getPurchaseOrderLineList().isEmpty()) {
-      return PurchaseOrderRepository.STATE_NOT_RECEIVED;
-    }
-
-    int receiptState = -1;
-
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-
-      if (this.isStockMoveProduct(purchaseOrderLine, purchaseOrder)) {
-
-        if (purchaseOrderLine.getReceiptState() == PurchaseOrderRepository.STATE_RECEIVED) {
-          if (receiptState == PurchaseOrderRepository.STATE_NOT_RECEIVED
-              || receiptState == PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED) {
-            return PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED;
-          } else {
-            receiptState = PurchaseOrderRepository.STATE_RECEIVED;
-          }
-        } else if (purchaseOrderLine.getReceiptState()
-            == PurchaseOrderRepository.STATE_NOT_RECEIVED) {
-          if (receiptState == PurchaseOrderRepository.STATE_RECEIVED
-              || receiptState == PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED) {
-            return PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED;
-          } else {
-            receiptState = PurchaseOrderRepository.STATE_NOT_RECEIVED;
-          }
-        } else if (purchaseOrderLine.getReceiptState()
-            == PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED) {
-          return PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED;
-        }
-      }
-    }
-    return receiptState;
-  }
-
   @Override
   public String getPurchaseOrderLineListForAProduct(
       Long productId, Long companyId, Long stockLocationId) {

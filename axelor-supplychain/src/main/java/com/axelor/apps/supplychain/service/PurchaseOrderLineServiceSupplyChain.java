@@ -31,6 +31,4 @@ public interface PurchaseOrderLineServiceSupplyChain {
   boolean validateRealizedQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
 
   boolean validateInvoicedQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
-
-  boolean validateInvoicedPrice(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
 }

@@ -47,6 +47,8 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -199,18 +201,17 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
             .all()
             .autoFlush(false)
             .filter(
-                "self.purchaseOrderLine = :purchaseOrderLine AND self.stockMove.statusSelect NOT IN (:draft, :planned)")
+                "self.purchaseOrderLine = :purchaseOrderLine AND self.stockMove.statusSelect = :realizedStatus")
             .bind("purchaseOrderLine", purchaseOrderLine)
-            .bind("draft", StockMoveRepository.STATUS_DRAFT)
-            .bind("planned", StockMoveRepository.STATUS_PLANNED)
+            .bind("realizedStatus", StockMoveRepository.STATUS_REALIZED)
             .fetchOne();
     if (stockMoveLine != null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_LINE_DELETE_NOT_ALLOWED_STOCK_MOVE));
     }
-    InvoiceLine invoiceLine = getInvoiceLine(purchaseOrderLine);
-    if (invoiceLine != null) {
+    List<InvoiceLine> invoiceLines = getInvoiceLines(purchaseOrderLine);
+    if (CollectionUtils.isNotEmpty(invoiceLines)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_LINE_DELETE_NOT_ALLOWED_INVOICE));
@@ -241,31 +242,27 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
     if (!isEditable(purchaseOrder)) {
       return true;
     }
-    InvoiceLine invoiceLine = getInvoiceLine(purchaseOrderLine);
-    return invoiceLine == null || purchaseOrderLine.getQty().compareTo(invoiceLine.getQty()) >= 0;
-  }
-
-  @Override
-  public boolean validateInvoicedPrice(
-      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
-    if (!isEditable(purchaseOrder)) {
-      return true;
-    }
-    InvoiceLine invoiceLine = getInvoiceLine(purchaseOrderLine);
-    return invoiceLine == null
-        || purchaseOrderLine.getPrice().compareTo(invoiceLine.getPrice()) >= 0;
+    List<InvoiceLine> invoiceLines = getInvoiceLines(purchaseOrderLine);
+    return CollectionUtils.isEmpty(invoiceLines)
+        || purchaseOrderLine
+                .getQty()
+                .compareTo(
+                    invoiceLines.stream()
+                        .map(InvoiceLine::getQty)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add))
+            >= 0;
   }
 
   protected boolean isEditable(PurchaseOrder purchaseOrder) {
     return purchaseOrder != null && purchaseOrder.getOrderBeingEdited();
   }
 
-  protected InvoiceLine getInvoiceLine(PurchaseOrderLine purchaseOrderLine) {
+  protected List<InvoiceLine> getInvoiceLines(PurchaseOrderLine purchaseOrderLine) {
     return invoiceLineRepository
         .all()
         .autoFlush(false)
         .filter("self.purchaseOrderLine = :purchaseOrderLine")
         .bind("purchaseOrderLine", purchaseOrderLine)
-        .fetchOne();
+        .fetch();
   }
 }

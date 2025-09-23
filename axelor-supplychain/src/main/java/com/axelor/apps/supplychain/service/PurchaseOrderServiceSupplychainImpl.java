@@ -73,6 +73,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
   protected CurrencyScaleService currencyScaleService;
   protected AdvancePaymentRefundService refundService;
   protected AnalyticLineModelService analyticLineModelService;
+  protected final PurchaseOrderEditStockMoveService purchaseOrderEditStockMoveService;
+  protected final PurchaseOrderChangeValidationSupplychainService
+      purchaseOrderChangeValidationSupplychainService;
 
   @Inject
   public PurchaseOrderServiceSupplychainImpl(
@@ -87,7 +90,10 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       StockConfigService stockConfigService,
       CurrencyScaleService currencyScaleService,
       AdvancePaymentRefundService refundService,
-      AnalyticLineModelService analyticLineModelService) {
+      AnalyticLineModelService analyticLineModelService,
+      PurchaseOrderEditStockMoveService purchaseOrderEditStockMoveService,
+      PurchaseOrderChangeValidationSupplychainService
+          purchaseOrderChangeValidationSupplychainService) {
 
     this.appSupplychainService = appSupplychainService;
     this.accountConfigService = accountConfigService;
@@ -101,6 +107,9 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
     this.currencyScaleService = currencyScaleService;
     this.refundService = refundService;
     this.analyticLineModelService = analyticLineModelService;
+    this.purchaseOrderEditStockMoveService = purchaseOrderEditStockMoveService;
+    this.purchaseOrderChangeValidationSupplychainService =
+        purchaseOrderChangeValidationSupplychainService;
   }
 
   @Override
@@ -253,5 +262,23 @@ public class PurchaseOrderServiceSupplychainImpl extends PurchaseOrderServiceImp
       AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
       analyticLineModelService.checkRequiredAxisByCompany(analyticLineModel);
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void enableEditOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+    super.enableEditOrder(purchaseOrder);
+    purchaseOrderEditStockMoveService.cancelStockMoves(purchaseOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void validateChanges(PurchaseOrder purchaseOrder) throws AxelorException {
+    super.validateChanges(purchaseOrder);
+    if (!appSupplychainService.isApp("supplychain")) {
+      return;
+    }
+
+    purchaseOrderChangeValidationSupplychainService.validatePurchaseOrderChange(purchaseOrder);
   }
 }

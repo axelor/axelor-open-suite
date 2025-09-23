@@ -374,7 +374,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void validateChanges(PurchaseOrder purchaseOrder) {
+  public void validateChanges(PurchaseOrder purchaseOrder) throws AxelorException {
     purchaseOrder.setOrderBeingEdited(false);
   }
 }

@@ -275,23 +275,4 @@ public class PurchaseOrderLineController {
       response.setValue("$qtyValid", true);
     }
   }
-
-  public void validateInvoicedPrice(ActionRequest request, ActionResponse response) {
-    PurchaseOrder purchaseOrder =
-        ContextHelper.getContextParent(request.getContext(), PurchaseOrder.class, 1);
-    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
-
-    boolean priceValid =
-        Beans.get(PurchaseOrderLineServiceSupplyChain.class)
-            .validateInvoicedPrice(purchaseOrder, purchaseOrderLine);
-
-    if (!priceValid) {
-      response.setValue("$priceValid", false);
-      response.setError(
-          I18n.get(
-              SupplychainExceptionMessage.PURCHASE_ORDER_LINE_PRICE_UPDATE_NOT_ALLOWED_INVOICED));
-    } else {
-      response.setValue("$priceValid", true);
-    }
-  }
 }

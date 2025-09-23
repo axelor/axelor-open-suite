@@ -223,6 +223,9 @@ public final class SupplychainExceptionMessage {
   public static final String SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER = /*$$(*/
       "You must configure a cancel reason on changing sale order in app supplychain." /*)*/;
 
+  public static final String SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_PURCHASE_ORDER = /*$$(*/
+      "You must configure a cancel reason on changing purchase order in app supplychain." /*)*/;
+
   /** Subscription invoice */
   public static final String TOTAL_SUBSCRIPTION_INVOICE_GENERATED = /*$$(*/
       "Total subscription invoice(s) generated: %s" /*)*/;
@@ -435,7 +438,7 @@ public final class SupplychainExceptionMessage {
       "There is no configured sequence for the Packaging" /*)*/;
 
   public static final String PURCHASE_ORDER_LINE_DELETE_NOT_ALLOWED_STOCK_MOVE = /*$$(*/
-      "The purchase order line can't be deleted because it is linked to stock move with status different from 'Draft' or 'Planned'." /*)*/;
+      "The purchase order line can't be deleted because it is linked to a realized stock move." /*)*/;
 
   public static final String PURCHASE_ORDER_LINE_DELETE_NOT_ALLOWED_INVOICE = /*$$(*/
       "The purchase order line can't be deleted because it is linked to an invoice." /*)*/;
@@ -445,7 +448,4 @@ public final class SupplychainExceptionMessage {
 
   public static final String PURCHASE_ORDER_LINE_QTY_UPDATE_NOT_ALLOWED_INVOICED = /*$$(*/
       "The purchase order line qty can't be lower than the qty already invoiced." /*)*/;
-
-  public static final String PURCHASE_ORDER_LINE_PRICE_UPDATE_NOT_ALLOWED_INVOICED = /*$$(*/
-      "The purchase order line price can't be lower than the price already invoiced." /*)*/;
 }

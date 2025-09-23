@@ -94,6 +94,9 @@
       title="Limit of stock location line to add to the cart."
       help="This option prevents adding by mistake too many products in carts from a stock location."/>
 
+    <many-to-one name="cancelReasonOnChangingPurchaseOrder"
+      ref="com.axelor.apps.base.db.CancelReason"/>
+
     <track>
       <field name="custStockMoveMgtOnSO" on="UPDATE"/>
       <field name="customerStockMoveGenerationAuto" on="UPDATE"/>

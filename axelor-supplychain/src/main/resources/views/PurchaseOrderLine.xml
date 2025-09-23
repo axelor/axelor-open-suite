@@ -186,11 +186,6 @@
       method="validateInvoicedQty"/>
   </action-method>
 
-  <action-method name="action-purchase-order-line-method-validate-invoiced-price">
-    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
-      method="validateInvoicedPrice"/>
-  </action-method>
-
   <action-attrs name="action-purchase-order-line-attrs-set-stock-location-domain">
     <attribute name="domain" for="stockLocation"
       expr="eval: &quot;self.company = ${__parent__?.company?.id} AND ((self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true) OR self.id IN (${(__parent__?.tradingName?.stockLocationList.collect{it.id}+[0]).join(',')}))&quot;"

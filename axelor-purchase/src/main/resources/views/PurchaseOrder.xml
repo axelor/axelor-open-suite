@@ -314,7 +314,7 @@
         readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
       <button name="validateChangesBtn" title="Validate changes"
         showIf="statusSelect == 3 &amp;&amp; orderBeingEdited"
-        onClick="action-purchase-order-method-validate-changes" icon="bookmark-check"
+        onClick="action-purchase-order-group-validate-changes" icon="bookmark-check"
         readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
       <button name="generateInvoiceBtn" title="Generate control invoice"
         showIf="statusSelect == 3"
@@ -661,6 +661,14 @@
   <action-group name="action-group-purchase-order-cancel">
     <action name="action-purchase-order-method-cancel-receipt" if="statusSelect==3"/>
     <action name="action-purchase-order-method-cancel"/>
+  </action-group>
+
+  <action-group name="action-purchase-order-group-validate-changes">
+    <action name="action-purchase-order-method-check-analytic-distribution-template"/>
+    <action name="action-purchase-order-validate-purchase-order-line"/>
+    <action name="action-purchase-order-validate-stock-location"/>
+    <action name="save"/>
+    <action name="action-purchase-order-method-validate-changes"/>
   </action-group>
 
   <action-method

@@ -71,5 +71,5 @@ public interface PurchaseOrderService {
 
   void enableEditOrder(PurchaseOrder purchaseOrder) throws AxelorException;
 
-  void validateChanges(PurchaseOrder purchaseOrder);
+  void validateChanges(PurchaseOrder purchaseOrder) throws AxelorException;
 }
