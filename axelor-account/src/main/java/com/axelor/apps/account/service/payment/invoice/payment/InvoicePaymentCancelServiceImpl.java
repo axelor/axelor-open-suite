@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCancelService;
+import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.reconcile.ReconcileToolService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
@@ -32,7 +33,9 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +48,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
   protected InvoiceTermService invoiceTermService;
   protected ReconcileToolService reconcileToolService;
   protected UnreconcileService unreconcileService;
+  protected MoveReverseService moveReverseService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -55,13 +59,15 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
       InvoicePaymentToolService invoicePaymentToolService,
       InvoiceTermService invoiceTermService,
       ReconcileToolService reconcileToolService,
-      UnreconcileService unreconcileService) {
+      UnreconcileService unreconcileService,
+      MoveReverseService moveReverseService) {
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.moveCancelService = moveCancelService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.invoiceTermService = invoiceTermService;
     this.reconcileToolService = reconcileToolService;
     this.unreconcileService = unreconcileService;
+    this.moveReverseService = moveReverseService;
   }
 
   /**
@@ -83,6 +89,20 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     } else {
       cancelImputedInvoicePayment(invoicePayment);
     }
+    updateCancelStatus(invoicePayment);
+  }
+
+  @Override
+  public void reversePaymentMove(InvoicePayment invoicePayment) throws AxelorException {
+    Move paymentMove = invoicePayment.getMove();
+    if (paymentMove == null) {
+      return;
+    }
+
+    Map<String, Object> reverseMap = buildReverseMap(paymentMove);
+    moveReverseService.generateReverse(paymentMove, reverseMap);
+
+    invoicePayment = invoicePaymentRepository.find(invoicePayment.getId());
     updateCancelStatus(invoicePayment);
   }
 
@@ -142,5 +162,15 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
       invoiceTermService.updateInvoiceTermsAmountRemaining(imputedBy.getInvoiceTermPaymentList());
       updateCancelStatus(imputedBy);
     }
+  }
+
+  protected Map<String, Object> buildReverseMap(Move move) {
+    Map<String, Object> reverseMap = new HashMap<String, Object>();
+    reverseMap.put("dateOfReversion", move.getDate());
+    reverseMap.put("isAutomaticReconcile", true);
+    reverseMap.put("isAutomaticAccounting", true);
+    reverseMap.put("isUnreconcileOriginalMove", true);
+
+    return reverseMap;
   }
 }

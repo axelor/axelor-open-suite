@@ -359,4 +359,13 @@ public class InvoicePaymentController {
       response.setAlert(I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_UNLINK_ALERT));
     }
   }
+
+  public void reversePaymentMove(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+
+    Beans.get(InvoicePaymentCancelService.class).reversePaymentMove(invoicePayment);
+
+    response.setReload(true);
+  }
 }
