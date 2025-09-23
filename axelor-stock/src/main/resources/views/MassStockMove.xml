@@ -7,7 +7,7 @@
     model="com.axelor.apps.stock.db.MassStockMove" onNew="action-mass-stock-move-method-on-new">
     <field name="sequence"/>
     <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
-    <field name="statusSelect" required="true"/>
+    <field name="statusSelect" required="true" widget="single-select"/>
     <field name="cartStockLocation" domain="self.company = :company AND self.typeSelect != 3"
       onChange="action-mass-stock-move-attrs-refresh-cart-content"/>
     <field name="commonFromStockLocation"
