@@ -154,8 +154,13 @@
     <view type="grid" name="stock-location-line-mass-stock-move-cart-grid"/>
     <view type="form" name="stock-location-line-form"/>
     <view-param name="show-toolbar" value="false"/>
-    <domain>self.currentQty > 0 and (self.stockLocation = :cartStockLocation OR
-      self.detailsStockLocation = :cartStockLocation)</domain>
+    <domain>self.currentQty > 0 AND (self.stockLocation = :cartStockLocation OR
+      self.detailsStockLocation = :cartStockLocation)
+      AND (self.trackingNumber IS NOT NULL OR
+      (self.trackingNumber IS NULL
+      AND NOT EXISTS (SELECT line.id FROM StockLocationLine line WHERE
+      line.product.id = self.product.id AND line.trackingNumber IS NOT NULL)))
+    </domain>
     <context name="cartStockLocation" expr="eval: __this__?.cartStockLocation"/>
   </action-view>
 
