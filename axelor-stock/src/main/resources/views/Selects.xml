@@ -27,12 +27,12 @@
   </selection>
 
   <selection name="inventory.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Planned</option>
-    <option value="3">In progress</option>
-    <option value="4">Completed</option>
-    <option value="5">Validated</option>
-    <option value="6">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="yellow">Planned</option>
+    <option value="3" color="orange">In progress</option>
+    <option value="4" color="green">Completed</option>
+    <option value="5" color="teal">Validated</option>
+    <option value="6" color="red">Canceled</option>
   </selection>
 
   <selection name="stock.move.type.select">
