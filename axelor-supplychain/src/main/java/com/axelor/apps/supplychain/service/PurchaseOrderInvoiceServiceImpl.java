@@ -718,7 +718,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
                   currencyScaleService.getScale(purchaseOrder),
                   RoundingMode.HALF_UP);
     }
-    amountToInvoice = amountToInvoice.subtract(computeAmountAlreadyInvoiced(purchaseOrder, amountToInvoice));
+    amountToInvoice =
+        amountToInvoice.subtract(computeAmountAlreadyInvoiced(purchaseOrder, amountToInvoice));
     BigDecimal sumInvoices = orderInvoiceService.amountToBeInvoiced(purchaseOrder);
     sumInvoices = sumInvoices.add(amountToInvoice);
     if (sumInvoices.compareTo(purchaseOrder.getExTaxTotal()) > 0) {
@@ -730,14 +731,15 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     }
   }
 
-  protected BigDecimal computeAmountAlreadyInvoiced(PurchaseOrder purchaseOrder, BigDecimal amountToInvoice) {
+  protected BigDecimal computeAmountAlreadyInvoiced(
+      PurchaseOrder purchaseOrder, BigDecimal amountToInvoice) {
     return invoiceRepo
-            .all()
-            .filter("self.purchaseOrder = :purchaseOrder")
-            .bind("purchaseOrder", purchaseOrder)
-            .fetch()
-            .stream()
-            .map(Invoice::getExTaxTotal)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        .all()
+        .filter("self.purchaseOrder = :purchaseOrder")
+        .bind("purchaseOrder", purchaseOrder)
+        .fetch()
+        .stream()
+        .map(Invoice::getExTaxTotal)
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
   }
 }
