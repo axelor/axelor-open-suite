@@ -13,11 +13,11 @@
   </selection>
 
   <selection name="stock.move.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Planned</option>
-    <option value="3">Realized</option>
-    <option value="4">Canceled</option>
-    <option value="5">Merged</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="indigo">Planned</option>
+    <option value="3" color="green">Realized</option>
+    <option value="4" color="red">Canceled</option>
+    <option value="5" color="purple">Merged</option>
   </selection>
 
   <selection name="stock.stock.move.available.status.select">
