@@ -208,4 +208,10 @@
     <option value="2">Missing</option>
   </selection>
 
+  <selection name="base.product.packaging.group.select">
+    <option value="1">I</option>
+    <option value="2">II</option>
+    <option value="3">III</option>
+  </selection>
+
 </object-views>
