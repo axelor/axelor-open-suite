@@ -21,7 +21,7 @@
     <field name="rack"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
-    <button name="stockCorrectionBtn" icon="fa-pencil-square-o"
+    <button name="stockCorrectionBtn" icon="pencil-square"
       onClick="action-stock-location-line-view-open-stock-correction-form"/>
   </grid>
 
@@ -215,7 +215,7 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" domain="self.product = :product"/>
     <field name="rack"/>
-    <button name="stockCorrectionBtn" icon="fa-pencil-square-o"
+    <button name="stockCorrectionBtn" icon="pencil-square"
       onClick="action-stock-location-line-view-open-stock-correction-form"/>
   </grid>
 

@@ -87,8 +87,8 @@
       <field as="type" name="typeSelect"/>
       <field as="indicator" name="indicatorSelect"/>
       <field as="_inService" name="_inService"/>
-      <button name="newBtn" icon="fa-plus" onClick="action-equipment-method-new-item-on-tree"/>
-      <button name="deleteBtn" icon="fa-trash"
+      <button name="newBtn" icon="plus" onClick="action-equipment-method-new-item-on-tree"/>
+      <button name="deleteBtn" icon="trash"
         onClick="com.axelor.apps.intervention.web.EquipmentController:removeEquipment"/>
     </node>
     <node model="com.axelor.apps.intervention.db.Equipment" parent="parentEquipment"
@@ -100,8 +100,8 @@
       <field as="type" name="typeSelect"/>
       <field as="indicator" name="indicatorSelect"/>
       <field as="_inService" name="_inService"/>
-      <button name="newBtn" icon="fa-plus" onClick="action-equipment-method-new-item-on-tree"/>
-      <button name="deleteBtn" icon="fa-trash"
+      <button name="newBtn" icon="plus" onClick="action-equipment-method-new-item-on-tree"/>
+      <button name="deleteBtn" icon="trash"
         onClick="com.axelor.apps.intervention.web.EquipmentController:removeEquipment"/>
     </node>
   </tree>

@@ -10,7 +10,7 @@
         onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
     </toolbar>
     <menubar>
-      <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="saleOrderToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-sale-order-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
@@ -52,7 +52,7 @@
         onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
     </toolbar>
     <menubar>
-      <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="saleOrderToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="seeSaleOrderLinesItem" title="See sale orders lines"
           action="action-view-open-sale-order-lines"/>
       </menu>
@@ -94,7 +94,7 @@
         onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
     </toolbar>
     <menubar>
-      <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="saleOrderToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="seeSaleOrderLinesItem" title="See sale orders lines"
           action="action-view-open-sale-order-lines"/>
       </menu>
@@ -1397,7 +1397,7 @@
   <cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     width="360px" css="rect-image" orderBy="-orderDate">
     <menubar>
-      <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="saleOrderToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="seeSaleOrderLinesItem" title="See sale orders lines"
           action="action-view-open-sale-order-lines"/>
       </menu>
@@ -1471,7 +1471,7 @@
         onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
     </toolbar>
     <menubar>
-      <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="saleOrderToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-open-sale-quotation-merge-form"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"

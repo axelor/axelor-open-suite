@@ -104,7 +104,7 @@
   </action-view>
 
   <menuitem name="quality-reportings" parent="menu-quality-root" title="Reportings"
-    icon="fa-bar-chart" order="500"/>
+    icon="bar-chart" order="500"/>
 
   <menuitem name="quality-reportings-dashboard" parent="quality-reportings"
     title="Quality Dashboard" action="quality.dashboard.view" order="100"/>
@@ -114,7 +114,7 @@
   </action-view>
 
   <menuitem name="quality-configurations" parent="menu-quality-root" title="Configuration"
-    icon="fa-cog" order="600"/>
+    icon="settings" order="600"/>
 
   <menuitem name="quality-control-plan-frequencies" parent="quality-configurations"
     title="Control plan frequencies" action="quality.control.plan.frequencies.view" order="80"/>

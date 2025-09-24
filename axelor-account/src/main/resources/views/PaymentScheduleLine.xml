@@ -29,7 +29,7 @@
       if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"
       if-module="axelor-bank-payment"/>
     <field name="paymentSchedule.statusSelect" hidden="true"/>
-    <button name="rejectBtn" title="Reject" icon="fa-times"
+    <button name="rejectBtn" title="Reject" icon="close_small"
       onClick="action-payment-schedule-line-show-reject-wizard"
       readonlyIf="statusSelect != 3 || $get('paymentSchedule.statusSelect') != 2"
       if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
@@ -90,7 +90,7 @@
       grid-view="interbank-code-line-grid"/>
     <field name="statusSelect" widget="single-select"/>
     <field name="paymentSchedule.statusSelect" hidden="true"/>
-    <button name="rejectBtn" title="Reject" icon="fa-times"
+    <button name="rejectBtn" title="Reject" icon="close_small"
       onClick="action-payment-schedule-line-show-reject-wizard"
       readonlyIf="statusSelect != 3 || $get('paymentSchedule.statusSelect') != 2"
       if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>

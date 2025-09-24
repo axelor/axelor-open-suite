@@ -47,7 +47,7 @@
         <item name="companyPhoneBookItem" title="Company phoneBook"
           action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
       </menu>
-      <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="partnerToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="checkDuplicateItem" title="Check Duplicate"
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"
@@ -80,7 +80,7 @@
         <item name="companyPhoneBookItem" title="Company phoneBook"
           action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
       </menu>
-      <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="partnerToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="checkDuplicateItem" title="Check Duplicate"
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"
@@ -154,7 +154,7 @@
   <form name="incl-event-actions-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" id="incl-event-actions-base-partner-form">
     <menubar>
-      <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="partnerToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="sendEmailItem" title="Send email"
           action="save,action-send-by-email-with-template" readonlyIf="id == null"
           if-module="axelor-message"/>
@@ -169,9 +169,9 @@
     onSave="action-partner-group-onsave" width="large">
     <toolbar>
       <button name="convertToContactPartnerBtn" title="Convert into a contact partner"
-        icon="fa-user" onClick="save,action-partner-method-change-employee-type"
+        icon="person-fill" onClick="save,action-partner-method-change-employee-type"
         showIf="id != null &amp;&amp; !isContact &amp;&amp; isEmployee &amp;&amp; partnerTypeSelect == 2"/>
-      <button name="showMapBtn" title="Map" icon="fa-map-marker"
+      <button name="showMapBtn" title="Map" icon="geo-alt-fill"
         onClick="action-partner-method-show-on-map" readonlyIf="!id"/>
     </toolbar>
     <menubar>
@@ -474,16 +474,16 @@
       </panel>
       <panel name="eventPanel" title="Events" showIf="id != null &amp;&amp; !isEmployee"
         if-module="axelor-crm" hidden="true" if="__config__.app.isApp('crm')">
-        <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
+        <button name="meetingBtn" title="Create a meeting" link="" icon="pencil-square"
           onClick="save,action-partner-view-meeting-event" colSpan="3"/>
-        <button name="callBtn" title="Create a call" link="" icon="fa-phone"
+        <button name="callBtn" title="Create a call" link="" icon="telephone"
           onClick="save,action-partner-view-call-event" colSpan="3"/>
-        <button name="taskBtn" title="Create a task" link="" icon="fa-tasks"
+        <button name="taskBtn" title="Create a task" link="" icon="list"
           onClick="save,action-partner-view-task-event" colSpan="3"/>
-        <button name="noteBtn" title="Create a note" link="" icon="fa-sticky-note-o"
+        <button name="noteBtn" title="Create a note" link="" icon="sticky"
           onClick="save,action-partner-view-note-event" colSpan="3"/>
         <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
-          icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null"/>
+          icon="list" onClick="action-partner-view-events" readonlyIf="id == null"/>
         <panel-include view="incl-activities-partner-form"/>
       </panel>
       <panel name="opportunitiesPanel" title="Opportunities"
@@ -634,7 +634,7 @@
     onSave="save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
     <toolbar>
       <button name="convertToIndividualPartnerBtn" title="Convert into an individual partner"
-        icon="fa-user" onClick="save,action-convert-into-individual-partner,close"
+        icon="person-fill" onClick="save,action-convert-into-individual-partner,close"
         showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null"/>
     </toolbar>
     <menubar>
@@ -726,16 +726,16 @@
       </panel>
       <panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm"
         if="__config__.app.isApp('crm')">
-        <button name="meetingBtn" title="Create a meeting" icon="fa-pencil-square-o" link=""
+        <button name="meetingBtn" title="Create a meeting" icon="pencil-square" link=""
           onClick="save,action-partner-view-meeting-event" colSpan="3"/>
-        <button name="callBtn" title="Create a call" icon="fa-phone" link=""
+        <button name="callBtn" title="Create a call" icon="telephone" link=""
           onClick="save,action-partner-view-call-event" colSpan="3"/>
-        <button name="taskBtn" title="Create a task" icon="fa-tasks" link=""
+        <button name="taskBtn" title="Create a task" icon="list" link=""
           onClick="save,action-partner-view-task-event" colSpan="3"/>
-        <button name="noteBtn" title="Create a note" icon="fa-sticky-note-o" link=""
+        <button name="noteBtn" title="Create a note" icon="sticky" link=""
           onClick="save,action-partner-view-note-event" colSpan="3"/>
         <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
-          icon="fa-tasks" onClick="action-contact-view-events" readonlyIf="id == null"/>
+          icon="list" onClick="action-contact-view-events" readonlyIf="id == null"/>
         <panel-include view="incl-activities-contact-form"/>
       </panel>
       <panel-dashlet name="contactOpportunitiesPanel" title="Opportunity" colSpan="12"

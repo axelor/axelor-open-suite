@@ -311,7 +311,7 @@
   <grid name="move-line-cut-off-grid" title="Move lines concerned by cut off"
     model="com.axelor.apps.account.db.MoveLine" groupBy="move">
     <toolbar>
-      <button name="validateBtn" title="Validate" icon="fa-check"
+      <button name="validateBtn" title="Validate" icon="check"
         onClick="action-move-line-method-validate-preview-batch"/>
     </toolbar>
     <hilite color="danger" if="$get('move.cutOffMoveGenerated')"/>
@@ -336,7 +336,7 @@
   <grid name="move-line-doubtful-customer-grid" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine">
     <toolbar>
-      <button name="validateBtn" title="Validate" icon="fa-check"
+      <button name="validateBtn" title="Validate" icon="check"
         onClick="action-move-line-method-validate-preview-batch"/>
     </toolbar>
     <field name="name" title="Reference"/>

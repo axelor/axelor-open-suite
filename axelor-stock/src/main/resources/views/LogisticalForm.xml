@@ -61,7 +61,7 @@
         <button name="carrierValidatedBtn" title="Carrier validated"
           showIf="statusSelect == 1"
           readonlyIf="!(logisticalFormLineList &amp;&amp; logisticalFormLineList.length > 0)"
-          onClick="action-group-logistical-form-carrier-validated" icon="fa-check"
+          onClick="action-group-logistical-form-carrier-validated" icon="check"
           css="btn btn-success" colSpan="12" prompt="Are you sure you want to validate the carrier?"/>
         <button name="collectedBtn" title="Collected" showIf="statusSelect == 2"
           readonlyIf="!(logisticalFormLineList &amp;&amp; logisticalFormLineList.length > 0)"

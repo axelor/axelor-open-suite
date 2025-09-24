@@ -10,7 +10,7 @@
         onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
     </toolbar>
     <menubar>
-      <menu name="projectToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="projectToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="ganttWithUserItem" title="Gantt with user"
           action="action-project-open-popup-select-users"/>
         <item name="ganttWithProjectItem" title="Gantt with project"
@@ -43,7 +43,7 @@
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-group-on-save" width="large">
     <menubar>
-      <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
+      <menu name="taskMenu" title="Tasks" showTitle="true" icon="list">
         <item name="myOpenTasks" title="My open tasks"
           action="save,action-project-method-my-open-tasks"
           showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
@@ -57,7 +57,7 @@
         <item name="allTasksTree" title="All tasks (tree)"
           action="save, action-view-show-project-task-tree" showIf="id"/>
       </menu>
-      <menu name="projectToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+      <menu name="projectToolsMenu" title="Tools" showTitle="true" icon="wrench">
         <item name="ganttItem" title="Gantt" showIf="id &amp;&amp; isShowGantt"
           action="save,action-project-open-gantt"/>
         <item name="bookResourceItem" title="Book resource"

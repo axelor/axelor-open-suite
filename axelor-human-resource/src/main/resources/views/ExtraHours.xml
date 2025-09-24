@@ -47,7 +47,7 @@
           title="Refuse"/>
         <button name="cancelBtn"
           onClick="action-extra-hours-method-cancel,save,action-extra-hours-attrs-buttons"
-          hideIf="statusSelect == 5" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+          hideIf="statusSelect == 5" title="Cancel" icon="cancel" css="btn-danger"/>
         <button name="draftBtn"
           onClick="action-extra-hours-record-draft,save,action-extra-hours-attrs-buttons"
           title="Return to draft status" showIf="statusSelect &gt; 3 "/>

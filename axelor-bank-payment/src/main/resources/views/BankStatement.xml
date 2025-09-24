@@ -8,7 +8,7 @@
     <toolbar>
       <button name="showBankStatementLinesBtn" title="See bank statement lines"
         onClick="account-bank-statement-view-bank-statement-lines"/>
-      <button name="deleteStatementBtn" title="Delete" icon="fa-trash"
+      <button name="deleteStatementBtn" title="Delete" icon="trash"
         onClick="action-bank-statement-method-delete-multiple-statement"/>
       <button name="printBtn" hidden="true" onClick=""/>
     </toolbar>
@@ -28,7 +28,7 @@
       <button name="generateBankReconciliationBtn" title="Run bank reconciliation"
         readonlyIf="statusSelect &lt; 2"
         onClick="action-bank-statement-method-run-bank-reconciliation"/>
-      <button name="deleteStatementBtn" title="Delete" icon="fa-trash"
+      <button name="deleteStatementBtn" title="Delete" icon="trash"
         onClick="action-bank-statement-method-delete-statement"/>
     </toolbar>
 

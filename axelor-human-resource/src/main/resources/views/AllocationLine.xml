@@ -7,7 +7,7 @@
     model="com.axelor.apps.hr.db.AllocationLine" groupBy="period" orderBy="period.fromDate"
     editable="true" onNew="action-allocation-line-attrs-set-default-values">
     <toolbar>
-      <button name="addMultipleLinesBtn" title="Add multiple lines" icon="fa-plus"
+      <button name="addMultipleLinesBtn" title="Add multiple lines" icon="plus"
         onClick="action-allocation-line-view-add-multiple-lines"/>
       <button name="allAllocationLinesBtn" title="All allocation lines" colSpan="2"
         css="btn-custom text-left" icon="calendar3-week"

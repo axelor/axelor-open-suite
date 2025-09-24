@@ -12,7 +12,7 @@
         onClick="action-invoice-method-show-invoice" icon="fa-print"/>
     </toolbar>
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -65,7 +65,7 @@
         onClick="action-invoice-method-show-invoice" icon="fa-print"/>
     </toolbar>
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -112,7 +112,7 @@
         onClick="action-invoice-method-show-invoice" icon="fa-print"/>
     </toolbar>
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -165,7 +165,7 @@
         onClick="action-invoice-method-show-invoice" icon="fa-print"/>
     </toolbar>
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -220,7 +220,7 @@
         onClick="action-invoice-method-show-invoice" icon="fa-print"/>
     </toolbar>
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -282,7 +282,7 @@
         onClick="action-invoice-method-show-invoice" icon="fa-print"/>
     </toolbar>
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -339,7 +339,7 @@
         onClick="action-invoice-method-show-invoice" icon="fa-print"/>
     </toolbar>
     <menubar>
-      <menu title="Tools" icon="fa-wrench" showTitle="true">
+      <menu title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -405,7 +405,7 @@
     </toolbar>
 
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="sendEmailItem" title="Send email"
           action="save,action-send-by-email-with-template" readonlyIf="partner == null"/>
       </menu>

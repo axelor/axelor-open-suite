@@ -12,7 +12,7 @@
     <field name="contactDate"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
     <field name="statusSelect"/>
-    <button name="leadPresentAtEventBtn" title="Present at the event" icon="fa-check"
+    <button name="leadPresentAtEventBtn" title="Present at the event" icon="check"
       onClick="action-campaign-method-mark-lead-present" hidden="true"/>
   </grid>
 

@@ -47,7 +47,7 @@
     <field name="supplierPartner" onSelect="action-mrp-line-attrs-domain-supplier-partner"
       readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
     <field name="proposalGenerated" hidden="true"/>
-    <button name="generateProposalBtn" icon="fa-calendar"
+    <button name="generateProposalBtn" icon="calendar"
       onClick="action-mrp-line-method-generate-proposal"
       readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
     <field name="mrpLineType.elementSelect" hidden="true"/>

@@ -38,7 +38,7 @@
   <form name="incl-event-actions-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" id="incl-event-actions-crm-partner-form">
     <menubar>
-      <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="partnerToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="sirenApiBtn" title="Fill from Sirene API"
           action="save,action-partner-view-wizard-api-sirene-configuration"/>
         <item title="Customer recovery" name="customerRecoveryItem"
@@ -406,7 +406,7 @@
         <item if="__config__.app.isApp('employee')" name="companyPhoneBookItem"
           title="Company phoneBook" action="action-print-company-phonebook"/>
       </menu>
-      <menu name="partnerToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+      <menu name="partnerToolsMenu" title="Tools" showTitle="true" icon="wrench">
         <item name="checkDuplicateItem" title="Check Duplicate"
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"

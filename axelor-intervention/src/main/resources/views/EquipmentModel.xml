@@ -12,9 +12,9 @@
     <field name="equipmentFamily"/>
     <field name="updatableQuantities"/>
     <field name="numberOfElementsToGenerate"/>
-    <button icon="fa-plus" name="newBtn"
+    <button icon="plus" name="newBtn"
       onClick="action-equipment-model-view-new-equipment-model"/>
-    <button icon="fa-trash" name="deleteBtn"
+    <button icon="trash" name="deleteBtn"
       onClick="action-equipment-model-script-remove-equipment-model"/>
   </grid>
 
@@ -63,9 +63,9 @@
       <field as="name" name="name"/>
       <field as="type" name="typeSelect" selection="equipment.type.select"/>
       <field as="_inService" name="_inService"/>
-      <button name="newBtn" icon="fa-plus"
+      <button name="newBtn" icon="plus"
         onClick="action-equipment-model-view-new-equipment-model"/>
-      <button name="deleteBtn" icon="fa-trash"
+      <button name="deleteBtn" icon="trash"
         onClick="action-equipment-model-script-remove-equipment-model"/>
     </node>
     <node model="com.axelor.apps.intervention.db.EquipmentModel" parent="parentEquipmentModel"
@@ -74,9 +74,9 @@
       <field as="name" name="name"/>
       <field as="type" name="typeSelect" selection="equipment.type.select"/>
       <field as="_inService" name="_inService"/>
-      <button name="newBtn" icon="fa-plus"
+      <button name="newBtn" icon="plus"
         onClick="action-equipment-model-view-new-equipment-model"/>
-      <button name="deleteBtn" icon="fa-trash"
+      <button name="deleteBtn" icon="trash"
         onClick="action-equipment-model-script-remove-equipment-model"/>
     </node>
   </tree>

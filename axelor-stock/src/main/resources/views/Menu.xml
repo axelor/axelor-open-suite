@@ -181,7 +181,7 @@
   <!-- STOCK REPORTING -->
 
   <menuitem name="stock-root-report" parent="stock-root" title="Reportings" order="1100"
-    icon="fa-bar-chart"/>
+    icon="bar-chart"/>
 
   <menuitem name="menu-stock-dashboard-1" parent="stock-root-report" title="General"
     action="stock.dashboard.one.view" order="100"/>
@@ -201,7 +201,7 @@
   <!-- STOCK CONFIGURATION -->
 
   <menuitem name="stock-root-conf" parent="stock-root" title="Configuration" order="1200"
-    icon="fa-cog"/>
+    icon="settings"/>
 
   <menuitem name="stock-root-incoterm" parent="stock-root-conf" title="Incoterms"
     action="stock.root.incoterm" order="100" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>

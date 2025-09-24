@@ -29,16 +29,16 @@
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
     <field name="statusSelect" widget="single-select"/>
-    <button name="planBtn" icon="fa-calendar" onClick="action-manuf-order-method-quick-plan"
+    <button name="planBtn" icon="calendar" onClick="action-manuf-order-method-quick-plan"
       readonlyIf="statusSelect >= 3"/>
-    <button name="startBtn" icon="fa-play"
+    <button name="startBtn" icon="play"
       onClick="action-manuf-order-method-start-or-resume"
       readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-    <button name="pauseBtn" icon="fa-pause" onClick="action-manuf-order-method-pause"
+    <button name="pauseBtn" icon="pause" onClick="action-manuf-order-method-pause"
       readonlyIf="statusSelect != 4"/>
-    <button name="finishBtn" icon="fa-power-off" onClick="action-manuf-order-group-finish"
+    <button name="finishBtn" icon="power_settings_new" onClick="action-manuf-order-group-finish"
       readonlyIf="statusSelect != 4"/>
-    <button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-view-cancel"
+    <button name="cancelBtn" icon="cancel" onClick="action-manuf-order-view-cancel"
       readonlyIf="statusSelect == 2"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-maintenance-manuf-order-group-print-report"/>
@@ -128,19 +128,19 @@
       </panel>
       <panel name="actionsPanel" title="Actions" colSpan="4">
         <button name="planBtn" title="Plan" showIf="statusSelect == 1 || statusSelect == 2"
-          colSpan="12" icon="fa-calendar" onClick="save,action-manuf-order-method-plan"/>
+          colSpan="12" icon="calendar" onClick="save,action-manuf-order-method-plan"/>
         <button name="startBtn" title="Start" showIf="statusSelect == 3" colSpan="12"
-          icon="fa-play" onClick="save,action-manuf-order-method-start"/>
+          icon="play" onClick="save,action-manuf-order-method-start"/>
         <button name="pauseBtn" title="Pause" showIf="statusSelect == 4" colSpan="12"
-          icon="fa-pause" onClick="save,action-manuf-order-method-pause"/>
+          icon="pause" onClick="save,action-manuf-order-method-pause"/>
         <button name="resumeBtn" title="Resume" showIf="statusSelect == 5" colSpan="12"
           icon="fa-step-forward" onClick="save,action-manuf-order-method-resume"/>
         <button name="finishBtn" title="Finish" showIf="statusSelect == 4" colSpan="12"
-          icon="fa-power-off" onClick="save,action-manuf-order-group-finish"/>
+          icon="power_settings_new" onClick="save,action-manuf-order-group-finish"/>
         <button name="finishPartBtn" title="Partial Finish" showIf="statusSelect == 4"
-          colSpan="12" icon="fa-power-off" onClick="save, action-manuf-order-method-part-finish"/>
+          colSpan="12" icon="power_settings_new" onClick="save, action-manuf-order-method-part-finish"/>
         <button name="cancelBtn" title="Cancel" showIf="statusSelect != 2" colSpan="12"
-          icon="fa-times-circle" onClick="save,action-manuf-order-view-cancel"/>
+          icon="cancel" onClick="save,action-manuf-order-view-cancel"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab" colSpan="4">

@@ -29,12 +29,12 @@
     model="com.axelor.apps.project.db.ProjectTask" edit-icon="true"
     orderBy="-priority.technicalTypeSelect">
     <toolbar>
-      <button name="newLineBtn" title="New line" icon="fa-plus"
+      <button name="newLineBtn" title="New line" icon="plus"
         onClick="action-project-add-task"/>
-      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+      <button name="removeLineBtn" title="Remove lines" icon="trash"
         onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/>
       <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-        icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
+        icon="list" onClick="save,action-project-view-show-related-tasks"/>
     </toolbar>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
@@ -46,9 +46,9 @@
     <field name="taskDate" width="100"/>
     <field name="status" width="100"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
-    <button name="createSubtaskBtn" icon="fa-plus"
+    <button name="createSubtaskBtn" icon="plus"
       onClick="save, action-project-view-add-subtask"/>
-    <button name="deleteTaskBtn" icon="fa-times-circle"
+    <button name="deleteTaskBtn" icon="cancel"
       onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
   </grid>
 
@@ -56,9 +56,9 @@
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
     width="large">
     <toolbar>
-      <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
+      <button name="grabEventBtn" icon="suitcase-lg-fill" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
-      <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
+      <button name="doneBtn" icon="check" onClick="action-project-task-group-click-done"
         showIf="project.taskStatusManagementSelect != 1"/>
     </toolbar>
     <menubar>
@@ -317,11 +317,11 @@
       if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')" canCollapse="true"
       collapseIf="false">
       <panel name="actionsPanel" title="Actions">
-        <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12" hidden="true"
+        <button name="startTimerBtn" title="Start" icon="play" colSpan="12" hidden="true"
           onClick="action-project-task-method-start-timer"/>
-        <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="12" hidden="true"
+        <button name="stopTimerBtn" title="Stop" icon="pause" colSpan="12" hidden="true"
           onClick="action-project-task-method-stop-timer"/>
-        <button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="12"
+        <button name="cancelTimerBtn" title="Cancel" icon="cancel" colSpan="12"
           hidden="true" onClick="action-project-task-method-cancel-timer"/>
       </panel>
       <panel name="durationPanel">

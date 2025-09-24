@@ -24,7 +24,7 @@
     canNew="false" canEdit="false" canDelete="false">
     <panel name="overviewPanel" title="Dashboard" readonly="true" colSpan="12"
       canCollapse="true">
-      <panel name="issueTrackingPanel" title="Task tracking" icon="fa-sticky-note">
+      <panel name="issueTrackingPanel" title="Task tracking" icon="sticky-fill">
         <field name="$categoryList" showTitle="false" hideIf="$categoryList.length == 0">
           <viewer>
             <![CDATA[

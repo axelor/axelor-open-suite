@@ -7,7 +7,7 @@
     model="com.axelor.apps.crm.db.Opportunity"
     orderBy="opportunityStatus.sequence,expectedCloseDate">
     <toolbar>
-      <button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge"
+      <button name="grabOpportunityBtn" icon="suitcase-lg-fill" help="Take charge"
         onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
       <!-- <button name="showMap" title="Map" onClick="action-show-opportunities-on-map-page"/> -->
     </toolbar>
@@ -28,7 +28,7 @@
     <field name="user" form-view="user-form" grid-view="user-grid"/>
     <field name="$closedWonId" hidden="true"/>
     <field name="$closedLostId" hidden="true"/>
-    <button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge"
+    <button name="grabOpportunityBtn" icon="suitcase-lg-fill" help="Take charge"
       onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"
       hideIf="user.id == _internalUserId"/>
     <button name="next-stage-gridBtn" icon="fa-chevron-circle-right" help="Next stage"
@@ -118,7 +118,7 @@
   <form name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity"
     onNew="action-opportunity-group-new" onLoad="action-opportunity-attrs-set-attrs-on-load">
     <menubar>
-      <menu name="opportunityToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+      <menu name="opportunityToolsMenu" title="Tools" showTitle="true" icon="wrench">
         <item name="convertIntoQuotationItem" if="__config__.app.isApp('sale')"
           if-module="axelor-sale" title="Create a quotation"
           action="save,action-sale-group-generate-sale-order"/>
@@ -177,16 +177,16 @@
           colSpan="12" widget="html"/>
       </panel>
       <panel name="eventPanel" title="Events">
-        <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
+        <button name="meetingBtn" title="Create a meeting" link="" icon="pencil-square"
           onClick="save,action-opportunity-view-meeting-event" colSpan="3"/>
-        <button name="callBtn" title="Create a call" link="" icon="fa-phone"
+        <button name="callBtn" title="Create a call" link="" icon="telephone"
           onClick="save,action-opportunity-view-call-event" colSpan="3"/>
-        <button name="taskBtn" title="Create a task" link="" icon="fa-tasks"
+        <button name="taskBtn" title="Create a task" link="" icon="list"
           onClick="save,action-opportunity-view-task-event" colSpan="3"/>
-        <button name="noteBtn" title="Create a note" link="" icon="fa-sticky-note-o"
+        <button name="noteBtn" title="Create a note" link="" icon="sticky"
           onClick="save,action-opportunity-view-note-event" colSpan="3"/>
         <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
-          icon="fa-tasks" onClick="action-opportunity-view-all-events" readonlyIf="id == null"/>
+          icon="list" onClick="action-opportunity-view-all-events" readonlyIf="id == null"/>
         <field name="lastEventDateT" readonly="true" colSpan="3"/>
         <field name="nextScheduledEventDateT" readonly="true" colSpan="3"/>
         <panel-dashlet name="eventPanelDashlet"

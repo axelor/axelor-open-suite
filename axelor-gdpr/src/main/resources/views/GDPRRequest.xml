@@ -31,7 +31,7 @@
       <field name="modelSelect" widget="refSelect" showIf="statusSelect > 0"
         x-related="modelId" title="Reference" colSpan="12" readonly="true"/>
 
-      <panel title="Search" icon="fa-search" name="searchPanel" colSpan="12" hidden="true"
+      <panel title="Search" icon="search" name="searchPanel" colSpan="12" hidden="true"
         showIf="statusSelect == 0">
         <field name="__lastName" title="Last name"
           onChange="action-gdpr-request-group-search-person" colSpan="6"/>
@@ -41,7 +41,7 @@
           onChange="action-gdpr-request-group-search-person"/>
         <field name="__phone" title="Phone" widget="phone" colSpan="4"
           onChange="action-gdpr-request-group-search-person"/>
-        <button name="search-person-button" title="Search" icon="fa-search"
+        <button name="search-person-button" title="Search" icon="search"
           onClick="action-gdpr-request-group-search-person" colSpan="4"/>
 
         <panel-related name="gdprSearchResultsPanel" title="Results"
@@ -52,12 +52,12 @@
       </panel>
 
       <panel name="confirmButtonPanel" colOffset="3">
-        <button name="confirmButton" title="Confirm" icon="fa-check" css="btn-success"
+        <button name="confirmButton" title="Confirm" icon="check" css="btn-success"
           prompt="Are you sure to confirm the request ?"
           onClick="save,action-gdpr-select-person,save,action-gdpr-method-request-generate-response,save"
           showIf="statusSelect == 0"/>
 
-        <button name="cancelButton" title="Cancel" icon="fa-times" css="btn-danger"
+        <button name="cancelButton" title="Cancel" icon="close_small" css="btn-danger"
           prompt="Are you sure to cancel the request ?"
           onClick="action-gdpr-attrs-gdpr-request-set-status-to-canceled,save"
           showIf="statusSelect == 0"/>
@@ -85,7 +85,7 @@
         onClick="save,action-gdpr-group-send-response" css="btn-success" title="Send Response"
         showIf="statusSelect == 1" colSpan="6" colOffset="3"/>
 
-      <button name="cancelSendResponseButton" title="Cancel" icon="fa-times" css="btn-danger"
+      <button name="cancelSendResponseButton" title="Cancel" icon="close_small" css="btn-danger"
         prompt="Are you sure to cancel the request ?"
         onClick="save,action-gdpr-attrs-gdpr-request-set-status-to-canceled,save"
         showIf="statusSelect == 1 &amp;&amp; typeSelect == 0" colSpan="6" colOffset="3"/>

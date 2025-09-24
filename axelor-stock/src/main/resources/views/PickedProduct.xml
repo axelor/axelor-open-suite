@@ -23,7 +23,7 @@
       readonlyIf="stockMoveLine"/>
     <button name="realizePickingBtn" title="Realize picking"
       onClick="action-picked-product-method-realize-picking" readonlyIf="stockMoveLine != null"
-      icon="fa-play" hideIf="!id"/>
+      icon="play" hideIf="!id"/>
     <button name="cancelPickingBtn" icon="fa-undo"
       onClick="action-picked-product-method-cancel-picking" readonlyIf="stockMoveLine == null"
       hideIf="!id"/>

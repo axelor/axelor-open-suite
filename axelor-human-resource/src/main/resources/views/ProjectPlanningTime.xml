@@ -6,11 +6,11 @@
   <grid name="project-planning-time-grid" title="Planned time"
     model="com.axelor.apps.project.db.ProjectPlanningTime">
     <toolbar>
-      <button name="addMultipleLinesBtn" title="Add multiple lines" icon="fa-plus"
+      <button name="addMultipleLinesBtn" title="Add multiple lines" icon="plus"
         onClick="action-project-view-add-multiple-project-planning-time" hideIf="$popup()"/>
-      <button name="newLineBtn" title="New line" icon="fa-plus"
+      <button name="newLineBtn" title="New line" icon="plus"
         onClick="action-project-view-project-planning-time-add-new"/>
-      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+      <button name="removeLineBtn" title="Remove lines" icon="trash"
         onClick="action-project-validate-remove-project-planning-time,action-project-planning-time-method-remove-project-planning-time"/>
     </toolbar>
     <field name="plannedTime" readonly="true"/>

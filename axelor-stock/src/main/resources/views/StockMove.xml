@@ -59,7 +59,7 @@
       <button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)"
         onClick="action-print-picking-stock-move" icon="fa-print"/>
       <button name="seeStockMoveLinesBtn" title="See stock move lines"
-        onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
+        onClick="action-stock-move-view-stock-move-line" icon="list"/>
       <button name="mergeBtn" title="Merge stock moves" icon="fa-object-ungroup"
         onClick="action-stock-move-group-merge"/>
     </toolbar>
@@ -169,7 +169,7 @@
       <button name="printBtn" title="Print StockMove(s)"
         onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
       <button name="seeStockMoveLinesBtn" title="See stock move lines"
-        onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
+        onClick="action-stock-move-view-stock-move-line" icon="list"/>
       <button name="mergeBtn" title="Merge stock moves" icon="fa-object-ungroup"
         onClick="action-stock-move-group-merge"/>
     </toolbar>
@@ -252,7 +252,7 @@
           showIf="statusSelect != 1 &amp;&amp; isNeedingConformityCertificate"/>
       </menu>
 
-      <menu name="stockMoveToolsMenu" title="Tools" icon="fa-wrench">
+      <menu name="stockMoveToolsMenu" title="Tools" icon="wrench">
         <item name="viewDirectionItem" title="View Direction"
           showIf="typeSelect == 2 &amp;&amp; statusSelect!=4"
           action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
@@ -381,7 +381,7 @@
         </panel>
       </panel>
       <panel name="actionPanel" colSpan="3" itemSpan="12">
-        <button name="planBtn" title="Plan" icon="fa-calendar" showIf="statusSelect == 1"
+        <button name="planBtn" title="Plan" icon="calendar" showIf="statusSelect == 1"
           onClick="action-group-stock-stockmove-plan-click"/>
         <button name="passedForPaymentAuthorizedBtn" showIf="pfpValidateStatusSelect != 2"
           title="PFP authorized"
@@ -393,7 +393,7 @@
           onClick="action-stock-move-group-save-and-update-stocks,action-stock-move-record-pfp-refusal-to-pay,save"
           if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-        <button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2"
+        <button name="realizeBtn" title="Realize" icon="check" showIf="statusSelect == 2"
           prompt="Are you sure you want to realize this stock move?"
           onClick="action-group-stock-stockmove-realize-click"/>
         <button
@@ -417,7 +417,7 @@
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 4"
           css="btn-success"
           onClick="save,action-stock-move-method-set-invoicing-status-invoiced-validated"/>
-        <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger"
+        <button name="cancelBtn" title="Cancel" icon="cancel" css="btn-danger"
           showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4"
           onClick="action-group-stock-stockmove-cancel-click"/>
         <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
@@ -763,9 +763,9 @@
 
       <button name="yesBtn" title="Yes"
         onClick="action-stock-move-popup-backorder-record-set-backorder,save,action-stock-move-method-realize,close"
-        icon="fa-check" colOffset="3" colSpan="3"/>
+        icon="check" colOffset="3" colSpan="3"/>
       <button name="noBtn" title="No" onClick="action-stock-move-method-realize,close"
-        icon="fa-times" css="btn-danger" colSpan="3"/>
+        icon="close_small" css="btn-danger" colSpan="3"/>
 
       <field name="typeSelect" hidden="true"/>
       <field name="fromStockLocation" hidden="true"/>
@@ -792,9 +792,9 @@
         </viewer>
       </field>
       <button name="confirmBtn" title="Confirm"
-        onClick="save,action-stock-move-group-realize,close" icon="fa-check" colOffset="3"
+        onClick="save,action-stock-move-group-realize,close" icon="check" colOffset="3"
         colSpan="3"/>
-      <button name="cancelBtn" title="Cancel" onClick="close" icon="fa-times"
+      <button name="cancelBtn" title="Cancel" onClick="close" icon="close_small"
         css="btn-danger" colSpan="3"/>
       <field name="$percentToleranceForWapChange" type="integer" hidden="true"/>
       <field name="$productsWithError" type="string" hidden="true"/>

@@ -70,7 +70,7 @@
     <view type="form" name="vehicle-cost-form"/>
   </action-view>
 
-  <menuitem name="fleet-conf" title="Configuration" parent="fleet-root" icon="fa-cog"
+  <menuitem name="fleet-conf" title="Configuration" parent="fleet-root" icon="settings"
     order="800"/>
 
   <menuitem name="fleet-conf-recurring-cost" title="Recurring Costs"

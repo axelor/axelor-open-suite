@@ -60,13 +60,13 @@
     <panel name="detailPanel" sidebar="true">
       <button name="requestBtn" title="Request" icon="fa-bullhorn" showIf="statusSelect == 1"
         onClick="action-purchase-request-group-request-button"/>
-      <button name="acceptBtn" title="Accept" icon="fa-check" showIf="statusSelect == 2"
+      <button name="acceptBtn" title="Accept" icon="check" showIf="statusSelect == 2"
         onClick="action-purchase-request-group-accept-button"/>
       <button name="purchaseBtn" title="Purchase" icon="fa-shopping-cart"
         showIf="statusSelect == 3" onClick="action-purchase-request-group-purchase-button"/>
-      <button name="refuseBtn" title="Refuse" icon="fa-times" css="btn-danger"
+      <button name="refuseBtn" title="Refuse" icon="close_small" css="btn-danger"
         showIf="statusSelect == 2" onClick="action-purchase-request-group-refuse-button"/>
-      <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger"
+      <button name="cancelBtn" title="Cancel" icon="cancel" css="btn-danger"
         onClick="action-purchase-request-group-cancel-button" hideIf="statusSelect == 6"/>
       <button name="draftBtn" title="Draft" icon="edit" showIf="statusSelect == 6"
         onClick="action-purchase-request-group-draft-button"/>

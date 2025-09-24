@@ -44,7 +44,7 @@
     name="intervention-form" width="large" onNew="action-intervention-group-on-new"
     onLoad="action-intervention-group-on-load">
     <menubar>
-      <menu name="interventionToolsMenu" title="Tools" icon="fa-wrench">
+      <menu name="interventionToolsMenu" title="Tools" icon="wrench">
         <item if-module="axelor-message" name="sendEmailItem" title="Send email"
           readonlyIf="id == null" action="save,action-send-by-email-with-template"/>
       </menu>

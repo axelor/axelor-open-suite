@@ -6,7 +6,7 @@
   <grid name="payment-session-grid" title="Payment sessions" canDelete="false"
     model="com.axelor.apps.account.db.PaymentSession" orderBy="-paymentDate,-sequence">
     <toolbar>
-      <button name="removePaymentSessionBtn" title="Delete" icon="fa-trash"
+      <button name="removePaymentSessionBtn" title="Delete" icon="trash"
         onClick="action-payment-session-validate-remove-multiple-payment-session,action-payment-session-method-remove-multiple-payment-session"/>
     </toolbar>
     <field name="sequence"/>

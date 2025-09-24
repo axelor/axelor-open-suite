@@ -88,7 +88,7 @@
   </action-view>
 
   <!-- INTERVENTION CONFIG -->
-  <menuitem title="Configuration" name="intervention-root-configuration" icon="fa-cog"
+  <menuitem title="Configuration" name="intervention-root-configuration" icon="settings"
     icon-background="#e59331" parent="intervention-root" order="999"/>
 
   <menuitem title="Questions" name="intervention-root-configuration-question"

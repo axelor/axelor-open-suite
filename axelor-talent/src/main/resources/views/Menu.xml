@@ -31,7 +31,7 @@
   </action-view>
 
   <menuitem name="recruitment-config" parent="recruitment-root" title="Configuration"
-    icon="fa-cog" order="300"/>
+    icon="settings" order="300"/>
 
   <menuitem name="recruitment-config-education-level" parent="recruitment-config"
     title="Level of education" action="recruitment.config.education.level" order="100"/>
@@ -93,7 +93,7 @@
     <view type="dashboard" name="training.dashboard"/>
   </action-view>
 
-  <menuitem name="training-conf" parent="training-root" title="Configuration" icon="fa-cog"
+  <menuitem name="training-conf" parent="training-root" title="Configuration" icon="settings"
     order="300"/>
 
   <menuitem name="training-category-all" parent="training-conf" title="Categories"
@@ -143,7 +143,7 @@
   </action-view>
 
   <menuitem name="appraisal-config" title="Configuration" parent="appraisal-root"
-    icon="fa-cog" order="200"/>
+    icon="settings" order="200"/>
 
   <menuitem name="appraisal-template-appraisals" title="Appraisal templates"
     action="appraisal.template.appraisals" parent="appraisal-config" order="100"/>

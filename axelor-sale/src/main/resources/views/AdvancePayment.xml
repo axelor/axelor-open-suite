@@ -11,7 +11,7 @@
     <field name="paymentMode" if-module="axelor-supplychain" form-view="payment-mode-form"
       grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')"/>
     <field name="statusSelect" widget="single-select"/>
-    <button name="cancelBtn" icon="fa-times-circle"
+    <button name="cancelBtn" icon="cancel"
       onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
   </grid>
 
@@ -31,7 +31,7 @@
     <panel showIf="id" name="otherDetailsPanel">
       <field name="move" form-view="move-form" grid-view="move-grid"/>
       <field name="statusSelect" widget="single-select"/>
-      <button name="cancelBtn" icon="fa-times-circle"
+      <button name="cancelBtn" icon="cancel"
         onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
     </panel>
   </form>

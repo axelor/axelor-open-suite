@@ -16,7 +16,7 @@
     <field name="typeSelect"/>
     <field name="move" width="120" form-view="move-form" grid-view="move-grid"/>
     <field name="statusSelect" widget="single-select"/>
-    <button name="cancelBtn" icon="fa-times-circle"
+    <button name="cancelBtn" icon="cancel"
       onClick="action-invoice-payment-group-cancel" readonlyIf="statusSelect == 2"/>
   </grid>
 
@@ -99,7 +99,7 @@
       <field name="statusSelect" widget="single-select"
         hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"
         selection-in="[0,1,2]"/>
-      <button name="cancelBtn" title="Remove this payment" icon="fa-times-circle"
+      <button name="cancelBtn" title="Remove this payment" icon="cancel"
         showIf="statusSelect != 2" onClick="action-invoice-payment-group-cancel"/>
       <field name="move.statusSelect" hidden="true" readonly="true"/>
     </panel>

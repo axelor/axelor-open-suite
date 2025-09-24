@@ -56,7 +56,7 @@
         showIf="statusSelect == 1 || statusSelect == 2" colSpan="12"/>
       <button name="cancelBtn" title="Cancel"
         onClick="save,action-job-position-record-status-cancel,save" hideIf="statusSelect == 4"
-        colSpan="12" icon="fa-times-circle" css="btn-danger"/>
+        colSpan="12" icon="cancel" css="btn-danger"/>
     </panel>
     <panel name="otherDetailPanel" sidebar="true" readonlyIf="statusSelect == 4">
       <field name="contractType" colSpan="6"/>

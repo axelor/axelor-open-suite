@@ -8,7 +8,7 @@
     model="com.axelor.apps.gdpr.db.GDPRProcessingRegister">
     <toolbar>
       <button onClick="action-gdpr-method-launch-register" name="archiveBtn" title="Archive"
-        icon="fa-cog"/>
+        icon="settings"/>
     </toolbar>
     <field name="name"/>
     <field name="code"/>
@@ -17,7 +17,7 @@
     <field name="anonymizer"/>
     <field name="isArchiveData"/>
     <button onClick="action-gdpr-method-launch-register" name="archiveBtn" title="Archive"
-      icon="fa-cog"/>
+      icon="settings"/>
   </grid>
 
   <form name="gdpr-processing-register-form" title="Processing register"
@@ -46,14 +46,14 @@
         onClick="action-processing-register-validate-check-options,action-gdpr-record-activate-register,save"
         title="Activate"
         showIf="status == 0 &amp;&amp; gdprProcessingRegisterRuleList &amp;&amp; gdprProcessingRegisterRuleList.length > 0"
-        icon="fa-check" css="btn-success"/>
+        icon="check" css="btn-success"/>
       <button name="archiveBtn"
         onClick="action-processing-register-validate-check-options,save,action-gdpr-method-launch-register"
         title="Run process" hidden="true"
         showIf="status == 1 &amp;&amp; gdprProcessingRegisterRuleList &amp;&amp; gdprProcessingRegisterRuleList.length > 0"
-        icon="fa-cog"/>
+        icon="settings"/>
       <button name="registerCancelBtn" onClick="action-gdpr-record-cancel-register,save"
-        title="Cancel" showIf="id != null &amp;&amp; status == 1" icon="fa-times" css="btn-danger"/>
+        title="Cancel" showIf="id != null &amp;&amp; status == 1" icon="close_small" css="btn-danger"/>
       <button onClick="action-gdpr-record-restore-register,save" name="registerRestoreBtn"
         title="Restore" hidden="true" showIf="status == 2"/>
     </panel>

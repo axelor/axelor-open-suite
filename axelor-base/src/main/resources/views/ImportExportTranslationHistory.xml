@@ -6,7 +6,7 @@
   <grid name="import-export-translation-history-grid" title="History"
     model="com.axelor.apps.base.db.ImportExportTranslationHistory" canNew="false">
     <button name="traceBackHistoryBtn" title="Tracebacks"
-      onClick="import-export-translation-history-view-trace-back-history" icon="fa-wrench"
+      onClick="import-export-translation-history-view-trace-back-history" icon="wrench"
       help="Show tracebacks"/>
     <field name="actionType"/>
     <field name="recordNumber"/>

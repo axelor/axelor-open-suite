@@ -34,11 +34,11 @@
     hidden="false" order="-2200" title="Documents" icon="card-list" icon-background="#3f6bb9"/>
 
   <menuitem id="abs-menu-dms-config" name="menu-dms-config" title="Configuration"
-    parent="menu-dms" order="-70" icon="fa-cog"/>
+    parent="menu-dms" order="-70" icon="settings"/>
 
   <menuitem id="abs-menu-team" name="menu-team"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getTeamManagement()"
-    hidden="false" order="-2400" title="Teamwork" icon="fa-user" icon-background="blue"/>
+    hidden="false" order="-2400" title="Teamwork" icon="person-fill" icon-background="blue"/>
 
   <menuitem id="abs-menu-team-tasks-due" name="menu-team-tasks-due" hidden="true"
     title="Tasks due"/>
@@ -60,7 +60,7 @@
 
   <menuitem id="calendar.root.menu"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnableCalendars()"
-    name="menu-calendar" order="-2300" title="Calendar" icon="fa-calendar" icon-background="#34d0f7"/>
+    name="menu-calendar" order="-2300" title="Calendar" icon="calendar" icon-background="#34d0f7"/>
 
   <menuitem id="calendar.root.menu.general" name="menu-calendar-general" title="My events"
     parent="menu-calendar" action="calendar.root.menu.my.calendar" order="100"/>
@@ -70,7 +70,7 @@
   </action-method>
 
   <menuitem id="calendar.root.menu.configuration" name="menu-calendar-configuration"
-    title="Configuration" parent="menu-calendar" icon="fa-cog" order="300"/>
+    title="Configuration" parent="menu-calendar" icon="settings" order="300"/>
 
   <menuitem id="calendar.root.menu.configuration.calendars"
     name="menu-calendar-configuration-calendars" title="My calendars"
@@ -350,7 +350,7 @@
 
 
   <menuitem name="referential-conf" title="Configuration" order="600"
-    parent="referential-root" icon="fa-cog"/>
+    parent="referential-root" icon="settings"/>
 
   <menuitem name="referential-conf-contact-function" parent="referential-conf"
     title="Contact function" action="referential.conf.contact.function" order="100"/>
@@ -486,10 +486,10 @@
   </action-view>
 
   <menuitem name="referential-report" parent="referential-root" order="400"
-    title="Reportings" icon="fa-bar-chart"/>
+    title="Reportings" icon="bar-chart"/>
 
   <menuitem name="referential-report-dashboards-customers" parent="referential-report"
-    title="Customers / prospects" icon="fa-bar-chart" action="customer.list.dashboard.view"
+    title="Customers / prospects" icon="bar-chart" action="customer.list.dashboard.view"
     order="100"/>
 
   <action-view name="customer.list.dashboard.view" title="Customers / prospects">
@@ -656,7 +656,7 @@
   </action-view>
 
   <menuitem name="admin-root-user-configuration" parent="admin-root-user"
-    title="Configuration" icon="fa-cog" order="500"/>
+    title="Configuration" icon="settings" order="500"/>
 
   <menuitem name="company-department-all" parent="admin-root-user-configuration"
     title="Departments" action="company.department.all" order="100"/>
