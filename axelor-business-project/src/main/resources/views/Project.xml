@@ -132,7 +132,7 @@
       </panel>
 
     </panel>
-
+    <!-- MGM-66 -->
     <panel-tabs name="mainPanelTab">
 
       <panel name="overviewPanel" title="Overview"
@@ -140,29 +140,53 @@
         <panel name="generalInfoPanel" colSpan="12" title="General information"
           canCollapse="true" collapseIf="false">
           <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
-            onChange="action-business-project-group-project-status-on-change"/>
-          <field name="fromDate" colSpan="3"/>
-          <field name="toDate" colSpan="3"/>
-          <field name="company" form-view="company-form" grid-view="company-grid" colSpan="3"
+            onChange="action-business-project-group-project-status-on-change" colSpan="12"/>
+          <field name="fromDate" colSpan="6"/>
+          <field name="toDate" colSpan="6"/>
+          <field name="company" form-view="company-form" grid-view="company-grid" colSpan="6"
             canEdit="false" if-module="axelor-business-project"/>
           <field name="clientPartner"
             domain="self.isCustomer = true AND :company member of self.companySet"
             onChange="action-project-method-get-partner-data" required="true"
-            form-view="partner-form" grid-view="partner-grid" colSpan="3"
+            form-view="partner-form" grid-view="partner-grid" colSpan="6"
             if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-          <field name="currency" colSpan="3" if="__config__.app.isApp('business-project')"
-            if-module="axelor-business-project" canEdit="false"/>
-          <field name="priceList" colSpan="3" if="__config__.app.isApp('business-project')"
-            if-module="axelor-business-project" canEdit="false"/>
           <field name="contactPartner" onSelect="action-attrs-domain-on-contact-partner"
             form-view="partner-form" grid-view="partner-grid" colSpan="6"
             if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
           <field name="customerAddress" grid-view="address-grid" form-view="address-form"
             if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-            domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"/>
+            domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"
+            colSpan="6"/>
+          <field name="currency" colSpan="6" if="__config__.app.isApp('business-project')"
+            if-module="axelor-business-project" canEdit="false"/>
+          <!-- <field name="priceList" colSpan="3" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+            canEdit="false"/> -->
         </panel>
         <panel-include view="incl-project-overview-panel-form"/>
       </panel>
+
+      <panel title="Configurations" name="configurationsPanel">
+        <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
+          canCollapse="true" collapseIf="false">
+          <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
+          <field name="projectTimeUnit" onSelect="action-project-attrs-set-time-unit-domain"/>
+          <field name="numberHoursADay"/>
+          <field name="spentTimeCostComputationMethod"/>
+          <field name="allowToGetPricesFromFrameworkContract"/>
+        </panel>
+        <panel-include view="incl-project-config-panel-form"/>
+      </panel>
+
+      <panel title="Tasks" name="taskTreePanel">
+        <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
+          height="200%" colSpan="12" action="action-view-show-business-project-task"
+          x-show-bars="true" canSearch="true"/>
+        <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
+          height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
+          if="__config__.app.isApp('business-project')" canSearch="true"/>
+      </panel>
+
+      <panel-include view="incl-checklist-panel-form"/>
 
       <panel name="reportingPanel" title="Reporting">
         <panel title="Time follow-up" colSpan="12" canCollapse="true" collapseIf="true">
@@ -255,30 +279,21 @@
         </panel>
       </panel>
 
-      <panel title="Tasks" name="taskTreePanel">
-        <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
-          height="200%" colSpan="12" action="action-view-show-business-project-task"
-          x-show-bars="true" canSearch="true"/>
-        <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
-          height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
-          if="__config__.app.isApp('business-project')" canSearch="true"/>
-      </panel>
       <panel title="Technical case" name="saleOrderPanel" hidden="true">
         <button name="openLines" title="Open lines"
           onClick="action-project-dashlet-sale-order-line"/>
         <panel-dashlet name="saleOrderLinePanelDashlet"
           action="action-project-dashlet-sale-order-line" colSpan="12"/>
       </panel>
-      <panel-include view="incl-wiki-panel-form"/>
-
-      <panel-include view="incl-checklist-panel-form"/>
+      <!-- MGM-66 -->
+      <!-- <panel-include view="incl-wiki-panel-form"/> -->
 
       <panel title="Log Times" name="logTimesPanel" if-module="axelor-human-resource"
         if="__config__.app.isApp('timesheet')">
         <panel-include view="incl-log-times-panel-form"/>
       </panel>
-      <panel-include view="incl-project-roadmap-panel-form"/>
-
+      <!-- MGM-66 -->
+      <!-- <panel-include view="incl-project-roadmap-panel-form"/> -->
       <panel title="Invoicing" name="invoicingPanel">
         <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
         <field name="toInvoice" colSpan="3"
@@ -299,18 +314,6 @@
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
           domain="self.company = :company AND self.isSpecific = false"/>
-      </panel>
-
-      <panel title="Configurations" name="configurationsPanel">
-        <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
-          canCollapse="true" collapseIf="false">
-          <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
-          <field name="projectTimeUnit" onSelect="action-project-attrs-set-time-unit-domain"/>
-          <field name="numberHoursADay"/>
-          <field name="spentTimeCostComputationMethod"/>
-          <field name="allowToGetPricesFromFrameworkContract"/>
-        </panel>
-        <panel-include view="incl-project-config-panel-form"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
