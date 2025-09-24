@@ -228,7 +228,8 @@
     <field name="ref" readonly="true"/>
     <field name="valueForCollectionMove.journal" hidden="true"/>
     <field name="valueForCollectionMove.date" hidden="true"/>
-    <field name="depositBankDetails" required="true" domain="self.active = true AND self.company = :company"/>
+    <field name="depositBankDetails" required="true"
+      domain="self.active = true AND self.company = :company"/>
     <field name="chequeDate" required="true"/>
     <field name="chequeOwner" required="true"/>
     <field name="chequeBank" required="true"/>
