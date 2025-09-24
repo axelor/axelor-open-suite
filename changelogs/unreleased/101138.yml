@@ -1,3 +1,0 @@
----
-title: "Fix: Exception on invoice ventilation with invoice having invoice line linked to sub sale order line"
-module: axelor-supplychain
