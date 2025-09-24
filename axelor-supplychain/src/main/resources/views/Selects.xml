@@ -14,9 +14,9 @@
   </selection>
 
   <selection name="supplychain.mrp.status.select">
-    <option value="0">Draft</option>
-    <option value="1">Calculation started</option>
-    <option value="2">Calculation ended</option>
+    <option value="0" color="blue">Draft</option>
+    <option value="1" color="orange">Calculation started</option>
+    <option value="2" color="green">Calculation ended</option>
   </selection>
 
   <selection name="supplychain.mrp.line.element.select">
@@ -98,9 +98,9 @@
   </selection>
 
   <selection name="supplychain.mrp.forecast.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Confirmed</option>
-    <option value="3">Cancelled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Confirmed</option>
+    <option value="3" color="red">Cancelled</option>
   </selection>
 
   <selection name="sequence.generic.code.select"

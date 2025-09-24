@@ -60,6 +60,7 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.helpers.ContextHelper;
 import jakarta.inject.Singleton;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -322,6 +323,12 @@ public class MoveController {
         Long accountingReportId =
             Long.valueOf(request.getContext().get("_accountingReportId").toString());
         actionViewBuilder.domain("self.move.accountingReport.id = " + accountingReportId);
+      }
+      if (request.getContext().get("fecImportId") != null) {
+        Long fecImport =
+            ContextHelper.getFieldFromContextParent(
+                request.getContext(), "fecImportId", Long.class);
+        actionViewBuilder.domain("self.move.fecImport.id = " + fecImport);
       }
       response.setView(actionViewBuilder.map());
     } catch (Exception e) {

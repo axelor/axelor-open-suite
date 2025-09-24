@@ -13,11 +13,11 @@
   </selection>
 
   <selection name="stock.move.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Planned</option>
-    <option value="3">Realized</option>
-    <option value="4">Canceled</option>
-    <option value="5">Merged</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="indigo">Planned</option>
+    <option value="3" color="green">Realized</option>
+    <option value="4" color="red">Canceled</option>
+    <option value="5" color="purple">Merged</option>
   </selection>
 
   <selection name="stock.stock.move.available.status.select">
@@ -27,12 +27,12 @@
   </selection>
 
   <selection name="inventory.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Planned</option>
-    <option value="3">In progress</option>
-    <option value="4">Completed</option>
-    <option value="5">Validated</option>
-    <option value="6">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="yellow">Planned</option>
+    <option value="3" color="orange">In progress</option>
+    <option value="4" color="green">Completed</option>
+    <option value="5" color="teal">Validated</option>
+    <option value="6" color="red">Canceled</option>
   </selection>
 
   <selection name="stock.move.type.select">
@@ -76,9 +76,9 @@
   </selection>
 
   <selection name="logistical.form.status.select">
-    <option value="1">Provision</option>
-    <option value="2">Carrier validated</option>
-    <option value="3">Collected</option>
+    <option value="1" color="blue">Provision</option>
+    <option value="2" color="green">Carrier validated</option>
+    <option value="3" color="purple">Collected</option>
   </selection>
 
   <selection name="logistical.form.account.to.carrier.select">
@@ -113,8 +113,8 @@
   </selection>
 
   <selection name="stock.correction.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Validated</option>
   </selection>
 
   <selection name="abc.analysis.type.select" id="stock.abc.analysis.type.select">
@@ -158,10 +158,10 @@
   </selection>
 
   <selection name="stock.mass.stock.move.status.select">
-    <option value="1">Draft</option>
-    <option value="2">In progress</option>
-    <option value="3">Realized</option>
-    <option value="4">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="orange">In progress</option>
+    <option value="3" color="green">Realized</option>
+    <option value="4" color="red">Canceled</option>
   </selection>
 
   <selection name="stock.mass.stock.move.step.select">

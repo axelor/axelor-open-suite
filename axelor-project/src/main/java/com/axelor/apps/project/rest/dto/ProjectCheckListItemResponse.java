@@ -16,22 +16,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.service.massstockmove;
+package com.axelor.apps.project.rest.dto;
 
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.stock.db.MassStockMove;
-import com.axelor.apps.stock.db.MassStockMoveNeed;
-import com.axelor.apps.stock.db.TrackingNumber;
-import java.math.BigDecimal;
-import java.util.List;
+import com.axelor.apps.project.db.ProjectCheckListItem;
+import com.axelor.utils.api.ResponseStructure;
 
-public interface MassStockMoveNeedService {
-  void createMassStockMoveNeedFromStockMoveLinesId(
-      MassStockMove massStockMove, List<Long> stockMoveLinesIdList);
+public class ProjectCheckListItemResponse extends ResponseStructure {
 
-  MassStockMoveNeed createMassStockMoveNeed(
-      MassStockMove massStockMove,
-      Product product,
-      BigDecimal qtyToMove,
-      TrackingNumber trackingNumber);
+  private final Long id;
+
+  public ProjectCheckListItemResponse(ProjectCheckListItem projectCheckListItem) {
+    super(projectCheckListItem.getVersion());
+    this.id = projectCheckListItem.getId();
+  }
+
+  public Long getId() {
+    return id;
+  }
 }
