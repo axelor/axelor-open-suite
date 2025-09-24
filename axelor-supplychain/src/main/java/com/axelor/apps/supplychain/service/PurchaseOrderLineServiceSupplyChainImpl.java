@@ -224,6 +224,10 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
     if (!isEditable(purchaseOrder)) {
       return true;
     }
+
+    if (purchaseOrderLine.getId() == null) {
+      return true;
+    }
     StockMoveLine stockMoveLine =
         stockMoveLineRepository
             .all()
@@ -242,6 +246,11 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
     if (!isEditable(purchaseOrder)) {
       return true;
     }
+
+    if (purchaseOrderLine.getId() == null) {
+      return true;
+    }
+
     List<InvoiceLine> invoiceLines = getInvoiceLines(purchaseOrderLine);
     return CollectionUtils.isEmpty(invoiceLines)
         || purchaseOrderLine
