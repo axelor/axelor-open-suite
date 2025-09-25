@@ -1,3 +1,0 @@
----
-title: "Payment schedule: fixed an issue where values were not reset during duplication."
-module: axelor-account

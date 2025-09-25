@@ -1,3 +1,84 @@
+## [8.2.25] (2025-09-25)
+
+### Fixes
+#### Base
+
+* User: fixed trading name not filtered on company.
+* Update Axelor Utils to 3.3.4
+
+#### Account
+
+* Deposit slip: fixed the date filter to use the cheque's due date rather than the deposit slip date.
+* Move line: added an error message when trying to reconcile moves from incompatible accounts.
+* Partner: fixed French translation for 'Unpaid invoices' and 'View all unpaid invoices'.
+* Fixed asset: allow a number of depreciation of 0.
+* Payment scheduler: fixed an issue where records were created without a sequence.
+* Fixed asset: fixed fixed asset creation from invoice.
+* ACCOUNT : Fix status mass update
+* Accounting report type: fixed company sync between M2O and M2M fields.
+* Payment schedule: fixed an issue where values were not reset during duplication.
+* Accounting report: fixed domain filter for analytic accounts and analytic axis.
+* Deposit slip: fixed display condition for deposit slip date.
+* Invoice: fixed an issue where financial discount was not emptied when changing partner.
+
+#### Business Project
+
+* Project task: fixed estimated time modification should not update the sold time.
+
+#### Contract
+
+* Contract line: fixed display issue of 'Invoice from consumption' field.
+* Contract line: fixed domain for product based on product per company.
+
+#### CRM
+
+* Lead: prevent users from reopening converted lead in kanban view.
+* Event: fixed duration computation when creating a new event.
+
+#### Production
+
+* Production API : fixed request to fetch consumed products was not working when 'Manage consumed products on operations' is enabled.
+
+#### Sale
+
+* Sale config: client box and legal note fields are now translatable.
+* Sale order: fixed the sub sale order lines when merging the multiple sale orders.
+
+#### Supply Chain
+
+* Sale order: fixed delivery state computation to ignore sale order lines with qty 0.
+* MRP: fixed an error occurring with manufacturing order in certain cases.
+
+#### Talent
+
+* Sequence: added missing selection value for job position.
+
+
+### Developer
+
+#### Account
+
+Removed action that is now useless since it will be replaced by the repository save.
+
+DELETE FROM meta_action WHERE name = 'action-payment-schedule-payment-schedule-id';
+
+---
+
+For AccountingReportTypes with `typeSelect != 3000`, the company M2O field is now synced
+into the company M2M field. Existing inconsistent data should be corrected using the script below. 
+-- Cleanup existing M2M entries for typeSelect != 3000
+DELETE FROM account_accounting_report_type_company_set
+WHERE account_accounting_report_type IN (
+    SELECT id FROM account_accounting_report_type
+    WHERE type_select != 3000
+);
+-- Insert new M2M entries based on the M2O value
+INSERT INTO account_accounting_report_type_company_set (account_accounting_report_type, company_set)
+SELECT art.id AS account_accounting_report_type, art.company AS company_set
+FROM account_accounting_report_type art
+WHERE art.type_select != 3000
+  AND art.company IS NOT NULL;
+
 ## [8.2.24] (2025-09-11)
 
 ### Fixes
@@ -1740,6 +1821,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.25]: https://github.com/axelor/axelor-open-suite/compare/v8.2.24...v8.2.25
 [8.2.24]: https://github.com/axelor/axelor-open-suite/compare/v8.2.23...v8.2.24
 [8.2.23]: https://github.com/axelor/axelor-open-suite/compare/v8.2.22...v8.2.23
 [8.2.22]: https://github.com/axelor/axelor-open-suite/compare/v8.2.21...v8.2.22
