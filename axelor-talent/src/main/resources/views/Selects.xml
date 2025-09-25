@@ -68,4 +68,8 @@
     <option value="license">License</option>
   </selection>
 
+  <selection name="sequence.generic.code.select" id="talent.sequence.generic.code.select">
+    <option value="jobPosition">Job position</option>
+  </selection>
+
 </object-views>
