@@ -1,5 +1,5 @@
 ---
-title: "API Siren: Fix current obsolete version."
+title: "API Siren: updated current version."
 module: axelor-base
 developer: |
   ALTER TABLE studio_app_base DROP COLUMN IF EXISTS sirene_token_generator_url;
