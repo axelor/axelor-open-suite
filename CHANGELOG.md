@@ -1,3 +1,57 @@
+## [7.2.49] (2025-09-25)
+
+### Fixes
+#### Base
+
+* User: fixed trading name not filtered on company.
+
+#### Account
+
+* Deposit slip: fixed the date filter to use the cheque's due date rather than the deposit slip date.
+* Move line: added an error message when trying to reconcile moves from incompatible accounts.
+* Partner: fixed French translation for 'Unpaid invoices' and 'View all unpaid invoices'.
+* Fixed asset: allow a number of depreciation of 0.
+* Payment scheduler: fixed an issue where records were created without a sequence.
+* Fixed asset: fixed fixed asset creation from invoice.
+* ACCOUNT : Fix status mass update
+* Payment schedule: fixed an issue where values were not reset during duplication.
+* Accounting report: fixed domain filter for analytic accounts and analytic axis.
+* Deposit slip: fixed display condition for deposit slip date.
+* Invoice: fixed an issue where financial discount was not emptied when changing partner.
+
+#### Contract
+
+* Contract line: fixed display issue of 'Invoice from consumption' field.
+
+#### CRM
+
+* Lead: prevent users from reopening converted lead in kanban view.
+
+#### Production
+
+* Production API : fixed request to fetch consumed products was not working when 'Manage consumed products on operations' is enabled.
+
+#### Sale
+
+* Sale config: client box and legal note fields are now translatable.
+
+#### Supply Chain
+
+* Sale order: fixed delivery state computation to ignore sale order lines with qty 0.
+
+#### Talent
+
+* Sequence: added missing selection value for job position.
+
+
+### Developer
+
+#### Account
+
+Removed action that is now useless since it will be replaced by the repository save.
+
+DELETE FROM meta_action WHERE name = 'action-payment-schedule-payment-schedule-id';
+
 ## [7.2.48] (2025-09-11)
 
 ### Fixes
@@ -2068,6 +2122,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.49]: https://github.com/axelor/axelor-open-suite/compare/v7.2.48...v7.2.49
 [7.2.48]: https://github.com/axelor/axelor-open-suite/compare/v7.2.47...v7.2.48
 [7.2.47]: https://github.com/axelor/axelor-open-suite/compare/v7.2.46...v7.2.47
 [7.2.46]: https://github.com/axelor/axelor-open-suite/compare/v7.2.45...v7.2.46
