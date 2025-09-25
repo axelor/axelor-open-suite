@@ -906,7 +906,7 @@
   <action-attrs
     name="action-attrs-account-fixed-asset-depreciation-plan-override-if-none">
     <attribute name="value" for="depreciationPlanSelect" expr="eval:'0'"
-      if="depreciationPlanSelect.contains(&quot;0&quot;)"/>
+      if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;0&quot;)"/>
   </action-attrs>
 
   <action-group name="action-group-account-fixed-asset-failover-control">
