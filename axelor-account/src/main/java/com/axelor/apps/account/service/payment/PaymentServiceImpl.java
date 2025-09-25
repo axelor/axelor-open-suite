@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentMoveLineCreateService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -35,10 +36,13 @@ import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
@@ -565,13 +569,7 @@ public class PaymentServiceImpl implements PaymentService {
   @Override
   public boolean reconcileMoveLinesWithCompatibleAccounts(List<MoveLine> moveLineList)
       throws AxelorException {
-    if (moveLineList.size() == 2
-        && !moveLineList.get(0).getAccount().equals(moveLineList.get(1).getAccount())
-        && moveLineList
-            .get(0)
-            .getAccount()
-            .getCompatibleAccountSet()
-            .contains(moveLineList.get(1).getAccount())) {
+    if (moveLineList.size() == 2) {
       MoveLine creditMoveLine = null;
       MoveLine debitMoveLine = null;
 
@@ -586,6 +584,12 @@ public class PaymentServiceImpl implements PaymentService {
       }
 
       if (creditMoveLine != null && debitMoveLine != null) {
+        if (!ReconcileService.isReconcilable(debitMoveLine, creditMoveLine)) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.RECONCILE_2),
+              I18n.get(BaseExceptionMessage.EXCEPTION));
+        }
         reconcileService.reconcile(debitMoveLine, creditMoveLine, true, true);
         return true;
       }

@@ -1,0 +1,3 @@
+---
+title: "Move line: added an error message when trying to reconcile moves from incompatible accounts."
+module: axelor-account
