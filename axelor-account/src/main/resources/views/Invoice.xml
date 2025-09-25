@@ -2710,8 +2710,7 @@ InvoiceSet.length > 0))"
 
   <action-record name="action-record-invoice-set-discount-values"
     model="com.axelor.apps.account.db.Invoice">
-    <field name="financialDiscount" expr="eval: partner.financialDiscount" if="partner"/>
-    <field name="financialDiscount" expr="eval: null" if="!partner"/>
+    <field name="financialDiscount" expr="eval: partner?.financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate"
       if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountTotalAmount"
