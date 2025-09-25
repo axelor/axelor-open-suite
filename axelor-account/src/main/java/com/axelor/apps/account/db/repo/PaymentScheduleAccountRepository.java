@@ -19,10 +19,6 @@
 package com.axelor.apps.account.db.repo;
 
 import com.axelor.apps.account.db.PaymentSchedule;
-import com.google.common.collect.Lists;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Collections;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -33,6 +29,10 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Collections;
 import javax.persistence.PersistenceException;
 
 public class PaymentScheduleAccountRepository extends PaymentScheduleRepository {
