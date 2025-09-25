@@ -1,3 +1,4 @@
 ---
-title: "MRP: NPE with MF in certain cases"
+title: "MRP: fixed an error occurring with manufacturing order in certain cases."
 module: axelor-supplychain
+
