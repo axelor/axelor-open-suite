@@ -1,0 +1,8 @@
+---
+title: "Payment scheduler: fixed an issue where records were created without a sequence."
+module: axelor-account
+developer: |
+  Removed action that is now useless since it will be replaced by the repository save.
+  
+  DELETE FROM meta_action WHERE name = 'action-payment-schedule-payment-schedule-id';
+  
