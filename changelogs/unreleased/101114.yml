@@ -1,3 +1,5 @@
 ---
-title: "Partner: fixed error when selecting price lists in partner."
+title: "Partner: fixed error when selecting price list and the partner was not saved."
 module: axelor-base
+developer: |
+  Removed 'PartnerPriceListRepository' from 'PartnerPriceListDomainServiceImpl' constructor.
