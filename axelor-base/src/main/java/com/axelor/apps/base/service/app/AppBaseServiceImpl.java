@@ -313,20 +313,6 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   }
 
   @Override
-  public String getSireneTokenGeneratorUrl() throws AxelorException {
-    AppBase appBase = getAppBase();
-    String tokenGeneratorUrl = appBase.getSireneTokenGeneratorUrl();
-    if (tokenGeneratorUrl != null) {
-      return tokenGeneratorUrl;
-    } else {
-      throw new AxelorException(
-          appBase,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_TOKEN_GENERATOR_URL_MISSING));
-    }
-  }
-
-  @Override
   public String getSireneUrl() throws AxelorException {
     AppBase appBase = getAppBase();
     String sireneUrl = appBase.getSireneUrl();
@@ -337,34 +323,6 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_URL_MISSING));
-    }
-  }
-
-  @Override
-  public String getSireneKey() throws AxelorException {
-    AppBase appBase = getAppBase();
-    String sireneKey = appBase.getSireneKey();
-    if (sireneKey != null) {
-      return sireneKey;
-    } else {
-      throw new AxelorException(
-          appBase,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_KEY_MISSING));
-    }
-  }
-
-  @Override
-  public String getSireneSecret() throws AxelorException {
-    AppBase appBase = getAppBase();
-    String sireneSecret = appBase.getSireneSecret();
-    if (sireneSecret != null) {
-      return sireneSecret;
-    } else {
-      throw new AxelorException(
-          appBase,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_SECRET_MISSING));
     }
   }
 }
