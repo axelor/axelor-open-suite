@@ -1,3 +1,30 @@
+## [8.1.31] (2025-09-25)
+
+### Fixes
+#### Account
+
+* Accounting report type: fixed company sync between M2O and M2M fields.
+
+
+### Developer
+
+#### Account
+
+For AccountingReportTypes with `typeSelect != 3000`, the company M2O field is now synced
+into the company M2M field. Existing inconsistent data should be corrected using the script below. 
+-- Cleanup existing M2M entries for typeSelect != 3000
+DELETE FROM account_accounting_report_type_company_set
+WHERE account_accounting_report_type IN (
+    SELECT id FROM account_accounting_report_type
+    WHERE type_select != 3000
+);
+-- Insert new M2M entries based on the M2O value
+INSERT INTO account_accounting_report_type_company_set (account_accounting_report_type, company_set)
+SELECT art.id AS account_accounting_report_type, art.company AS company_set
+FROM account_accounting_report_type art
+WHERE art.type_select != 3000
+  AND art.company IS NOT NULL;
+
 ## [8.1.30] (2025-09-11)
 
 ### Fixes
@@ -1700,6 +1727,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.31]: https://github.com/axelor/axelor-open-suite/compare/v8.1.30...v8.1.31
 [8.1.30]: https://github.com/axelor/axelor-open-suite/compare/v8.1.29...v8.1.30
 [8.1.29]: https://github.com/axelor/axelor-open-suite/compare/v8.1.28...v8.1.29
 [8.1.28]: https://github.com/axelor/axelor-open-suite/compare/v8.1.27...v8.1.28
