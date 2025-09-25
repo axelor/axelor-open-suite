@@ -8,6 +8,6 @@ developer: |
 
   DELETE from meta_field
   WHERE name IN ('sireneTokenGeneratorUrl', 'sireneSecret', 'sireneAccessToken')
-    AND meta_model = (SELECT id FROM meta_model mm WHERE mm.full_name = 'com.axelor.studio.db.Base');
+    AND meta_model = (SELECT id FROM meta_model mm WHERE mm.full_name = 'com.axelor.studio.db.AppBase');
 
   UPDATE studio_app_base SET sirene_url = 'https://api.insee.fr/api-sirene/3.11';
