@@ -571,7 +571,7 @@
   </action-attrs>
 
   <action-record name="action-user-record-change-trading-name"
-                 model="com.axelor.auth.db.User">
+    model="com.axelor.auth.db.User">
     <field name="tradingName" expr="eval: null"/>
   </action-record>
 
