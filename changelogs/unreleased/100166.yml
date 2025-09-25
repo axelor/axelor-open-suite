@@ -1,3 +1,0 @@
----
-title: "Deposit slip: fixed the date filter to use the cheque's due date rather than the deposit slip date."
-module: axelor-account

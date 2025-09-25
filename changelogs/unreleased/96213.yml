@@ -1,4 +1,0 @@
----
-title: "Project: fixed an issue where the parent task was not assigned when clicking the create sub task button."
-module: axelor-project
-

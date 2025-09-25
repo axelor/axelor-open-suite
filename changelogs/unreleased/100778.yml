@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed an issue where financial discount was not emptied when changing partner."
-module: axelor-account

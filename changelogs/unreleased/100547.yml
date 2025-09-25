@@ -1,3 +1,0 @@
----
-title: "Bank order/UMR: fixed an issue where the user could not confirm a bank order while an active UMR is set on the partner."
-module: axelor-bank-payment
