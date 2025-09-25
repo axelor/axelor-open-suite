@@ -54,11 +54,11 @@
 
 
   <selection name="purchase.call.tender.offer.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Sent</option>
-    <option value="3">Replied</option>
-    <option value="4">Selected</option>
-    <option value="5">Rejected</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="orange">Sent</option>
+    <option value="3" color="green">Replied</option>
+    <option value="4" color="teal">Selected</option>
+    <option value="5" color="red">Rejected</option>
   </selection>
 
 </object-views>
