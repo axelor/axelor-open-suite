@@ -101,7 +101,8 @@ public class SaleOrderPackagingPlanServiceImpl implements SaleOrderPackagingPlan
     freeSpaces.add(
         new BigDecimal[] {box.getInnerLength(), box.getInnerWidth(), box.getInnerHeight()});
 
-    BigDecimal totalWeight = box.getGrossMass();
+    BigDecimal totalWeight =
+        saleOrderPackagingDimensionService.getConvertedWeight(box.getGrossMass(), box);
     BigDecimal maxWeight = box.getMaxWeight();
 
     while (hasQtyRemaining(productQtyMap)) {
@@ -139,7 +140,10 @@ public class SaleOrderPackagingPlanServiceImpl implements SaleOrderPackagingPlan
           BigDecimal usedHeight = (BigDecimal) plan[3];
 
           BigDecimal placeQty = BigDecimal.valueOf(placedQty);
-          BigDecimal productWeight = product.getGrossMass().multiply(placeQty);
+          BigDecimal productWeight =
+              saleOrderPackagingDimensionService
+                  .getConvertedWeight(product.getGrossMass(), product)
+                  .multiply(placeQty);
           totalWeight = totalWeight.add(productWeight);
 
           boxContents.merge(product, placeQty, BigDecimal::add);
@@ -195,13 +199,12 @@ public class SaleOrderPackagingPlanServiceImpl implements SaleOrderPackagingPlan
       long capacity = maxLength * maxWidth * maxHeight;
       long qty = Math.min(qtyLeft, capacity);
 
-      BigDecimal totalWeight =
-          currentBoxWeight.add(product.getGrossMass().multiply(BigDecimal.valueOf(qty)));
+      BigDecimal grossMass =
+          saleOrderPackagingDimensionService.getConvertedWeight(product.getGrossMass(), product);
+      BigDecimal totalWeight = currentBoxWeight.add(grossMass.multiply(BigDecimal.valueOf(qty)));
       if (totalWeight.compareTo(boxMaxWeight) > 0) {
         BigDecimal allowedQty =
-            boxMaxWeight
-                .subtract(currentBoxWeight)
-                .divide(product.getGrossMass(), RoundingMode.FLOOR);
+            boxMaxWeight.subtract(currentBoxWeight).divide(grossMass, RoundingMode.FLOOR);
         qty = Math.min(qty, allowedQty.longValue());
       }
       if (qty <= 0) {

@@ -18,9 +18,11 @@
  */
 package com.axelor.apps.sale.service.saleorder.packaging;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,14 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderPackagingMessageServiceImpl implements SaleOrderPackagingMessageService {
+
+  protected final SaleOrderPackagingDimensionService saleOrderPackagingDimensionService;
+
+  @Inject
+  public SaleOrderPackagingMessageServiceImpl(
+      SaleOrderPackagingDimensionService saleOrderPackagingDimensionService) {
+    this.saleOrderPackagingDimensionService = saleOrderPackagingDimensionService;
+  }
 
   @Override
   public String formatPackagingMessage(String title, List<String> messages) {
@@ -44,28 +54,38 @@ public class SaleOrderPackagingMessageServiceImpl implements SaleOrderPackagingM
       Map<Product, BigDecimal> productQtyMap,
       List<String> messages,
       Map<Product, String> descMap,
-      Map<Product, BigDecimal[]> weightMap) {
+      Map<Product, BigDecimal[]> weightMap)
+      throws AxelorException {
 
     for (Map.Entry<Product, BigDecimal> entry : boxContents.entrySet()) {
       productQtyMap.put(
           entry.getKey(), productQtyMap.get(entry.getKey()).subtract(entry.getValue()));
     }
-    BigDecimal totalWeight = selectedBox.getGrossMass();
+    BigDecimal totalWeight =
+        saleOrderPackagingDimensionService.getConvertedWeight(
+            selectedBox.getGrossMass(), selectedBox);
+
     BigDecimal totalNetMass = BigDecimal.ZERO;
 
     for (Map.Entry<Product, BigDecimal> entry : boxContents.entrySet()) {
       Product subProduct = entry.getKey();
       BigDecimal qty = entry.getValue();
 
+      BigDecimal netMass =
+          saleOrderPackagingDimensionService.getConvertedWeight(
+              subProduct.getNetMass(), subProduct);
+      BigDecimal grossMass =
+          saleOrderPackagingDimensionService.getConvertedWeight(
+              subProduct.getGrossMass(), subProduct);
+
       if (subProduct.getIsPackaging()) {
         BigDecimal[] subWeights =
-            weightMap.getOrDefault(
-                subProduct, new BigDecimal[] {subProduct.getNetMass(), subProduct.getGrossMass()});
+            weightMap.getOrDefault(subProduct, new BigDecimal[] {netMass, grossMass});
         totalNetMass = totalNetMass.add(subWeights[0].multiply(qty));
         totalWeight = totalWeight.add(subWeights[1].multiply(qty));
       } else {
-        totalNetMass = totalNetMass.add(subProduct.getNetMass().multiply(qty));
-        totalWeight = totalWeight.add(subProduct.getGrossMass().multiply(qty));
+        totalNetMass = totalNetMass.add(netMass.multiply(qty));
+        totalWeight = totalWeight.add(grossMass.multiply(qty));
       }
     }
 
