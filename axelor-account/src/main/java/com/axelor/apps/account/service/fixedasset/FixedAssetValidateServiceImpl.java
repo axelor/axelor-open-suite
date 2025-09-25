@@ -94,7 +94,7 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
           .contains(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
         fixedAsset = fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
       } else {
-        fixedAsset.setNumberOfDepreciation(fixedAsset.getNumberOfDepreciation() - 1);
+        fixedAsset.setNumberOfDepreciation(0);
       }
 
       Optional<FixedAssetLine> lastRealizedLine =
