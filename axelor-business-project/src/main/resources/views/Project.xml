@@ -187,8 +187,8 @@
       </panel>
 
       <panel-include view="incl-checklist-panel-form"/>
-
-      <panel name="reportingPanel" title="Reporting">
+      <!--- MGM-66: display panel to only selected group e.g admins -->
+      <panel name="reportingPanel" title="Reporting" if="__user__.group.code == admins">
         <panel title="Time follow-up" colSpan="12" canCollapse="true" collapseIf="true">
           <panel-dashlet action="action-project-view-sold-time-custom" colSpan="3"
             showTitle="false" height="125" canSearch="true"/>
@@ -207,7 +207,9 @@
             colSpan="3" showTitle="false" height="125" canSearch="true"/>
         </panel>
 
-        <panel title="Financial follow-up" colSpan="12" canCollapse="true" collapseIf="true">
+        <!--- MGM-66: display panel to only selected group e.g admins -->
+        <panel title="Financial follow-up" colSpan="12" canCollapse="true" collapseIf="true"
+          if="__user__.group.code == admins || __user__.group.code == accounting">
           <panel name="soldPanel" title="ProjectTask.Sold" colSpan="12" showIf="!parentTask">
             <panel-dashlet action="action-project-view-turnover-custom" colSpan="3"
               height="125" canSearch="true"/>
@@ -292,9 +294,9 @@
         if="__config__.app.isApp('timesheet')">
         <panel-include view="incl-log-times-panel-form"/>
       </panel>
-      <!-- MGM-66 -->
-      <!-- <panel-include view="incl-project-roadmap-panel-form"/> -->
-      <panel title="Invoicing" name="invoicingPanel">
+      <panel-include view="incl-project-roadmap-panel-form"/>
+      <!--- MGM-66: display panel to only selected group e.g admins -->
+      <panel title="Invoicing" name="invoicingPanel" if="__user__.group.code == admins">
         <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses, etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly created element with "To invoice" as True.]]></help>
         <field name="toInvoice" colSpan="3"
           onChange="action-project-attrs-set-invoicing-sequence"/>

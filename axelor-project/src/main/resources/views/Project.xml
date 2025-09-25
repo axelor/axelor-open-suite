@@ -235,7 +235,9 @@
   </form>
 
   <form name="incl-wiki-panel-form" title="Project" model="com.axelor.apps.project.db.Project">
-    <panel title="Wiki" name="wikiPanel" canCollapse="true" collapseIf="true" colSpan="12">
+    <!--- MGM-66: display panel to only selected group e.g admins -->
+    <panel title="Wiki" name="wikiPanel" canCollapse="true" collapseIf="true" colSpan="12"
+      if="__user__.group.code == admins">
       <field name="wikiDescription" colSpan="12" widget="html"/>
       <panel-related name="wikiListPanel" field="wikiList" colSpan="12"
         form-view="wiki-form" grid-view="wiki-grid-incl-project" canSearch="true"/>
@@ -378,7 +380,8 @@
 
   <form name="incl-project-roadmap-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel title="Roadmap" name="roadmapPanel">
+    <!--- MGM-66: display panel to only selected group e.g admins -->
+    <panel title="Roadmap" name="roadmapPanel" if="__user__.group.code == admins">
       <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
         form-view="project-version-form" grid-view="project-version-grid"/>
       <panel name="sprintPanel" title="Sprints" colSpan="12"
