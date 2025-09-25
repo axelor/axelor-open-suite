@@ -36,17 +36,7 @@
         </viewer>
       </field>
       <panel name="infoPanel" colSpan="9" itemSpan="12">
-        <field name="hiringStage.name" showIf="$readonly()" showTitle="false">
-          <viewer depends="hiringStage.name">
-          <![CDATA[
-          	<>
-          		<Box d="flex" justifyContent="center">
-          			<Badge bg="info" fontSize={6}>{$fmt('hiringStage')}</Badge>
-          		</Box>
-          	</>
-          ]]>
-          </viewer>
-        </field>
+        <field name="hiringStage" widget="NavSelect" showTitle="false"/>
         <field name="fullName" showTitle="false">
           <viewer depends="fullName">
           <![CDATA[
@@ -57,7 +47,7 @@
           </viewer>
           <editor>
             <field name="titleSelect" colSpan="3" selection-in="[1,2]" title="Civility"/>
-            <field name="firstName" colSpan="5"/>
+            <field name="firstName" colSpan="5" required="true"/>
             <field name="lastName" colSpan="4"/>
           </editor>
         </field>
@@ -80,35 +70,35 @@
       <field name="linkedInProfile" widget="url"/>
     </panel>
     <panel-tabs name="tabsPanel" height="550">
-      <panel title="Application information" name="applicantInfoPanel" itemSpan="12">
+      <panel name="applicationInfoPanel" title="Application information">
+        <field name="jobPosition" onChange="action-job-application-record-fill-responsible"/>
+        <field name="talentSource" title="Source" colSpan="6"/>
+        <field name="creationDate" title="Application date"/>
+        <field name="availabilityFrom"/>
+        <field name="evaluation" colSpan="12" widget="htmls"/>
+      </panel>
+      <panel title="Career" name="carerrPanel" itemSpan="12">
         <field name="skillSet" widget="TagSelect"/>
         <field name="languageSet" widget="TagSelect"/>
         <field name="educationList"/>
         <field name="experienceList"/>
-        <field name="cerificationList"/>
+        <field name="certificationList"/>
       </panel>
-      <panel name="applicationInfoPanel" title="Application information">
-        <field name="hiringStage"/>
-        <field name="jobPosition" onChange="action-job-application-record-fill-responsible"/>
-        <field name="talentSource" title="Source" colSpan="6"/>
-        <field name="creationDate" title="Application date">
-          <viewer depends="creationDate">
-          <![CDATA[
+      <panel name="resumePanel" title="CV" height="500"
+        showIf="($readonly() &amp;&amp; resume) || !$readonly()">
+        <field name="resume" widget="binary-link"
+          onChange="save,action-job-application-method-set-dms-file, action-job-application-method-set-inline-url"
+          showTitle="false"/>
+        <field name="$inlineUrl" hidden="true"/>
+        <field name="$pdf" showTitle="false" readonly="true" colSpan="12">
+          <viewer depends="$inlineUrl">
+            <![CDATA[
               <>
-                 {creationDate &&
-                       <Box d="flex" justifyContent="center" fontWeight="bold">
-                               <span>{_t('Applied :')} {creationDate}</span>
-                       </Box>
-                 }
+                  <Box as="iframe" height="900" border="0" src={$inlineUrl}></Box>
               </>
-          ]]>
+            ]]>
           </viewer>
-          <editor>
-            <field name="creationDate"/>
-          </editor>
         </field>
-        <field name="availabilityFrom"/>
-        <field name="evaluation" colSpan="12" widget="htmls"/>
       </panel>
       <panel name="hrPanel" title="HR information">
         <field name="responsible" canEdit="false" title="Manager"/>
@@ -125,22 +115,6 @@
           grid-view="employment-contract-employee-grid"/>
         <field name="commentary" widget="html" colSpan="12"/>
       </panel>
-      <panel name="resumePanel" title="JobApplication.resume" height="500"
-        showIf="($readonly() &amp;&amp; resume) || !$readonly()">
-        <field name="resume" widget="binary-link"
-          onChange="save,action-job-application-method-set-dms-file, action-job-application-method-set-inline-url"
-          showTitle="false"/>
-        <field name="$inlineUrl" hidden="true"/>
-        <field name="$pdf" showTitle="false" readonly="true" colSpan="12">
-          <viewer depends="$inlineUrl">
-            <![CDATA[
-              <>
-                  <Box as="iframe" height="900" border="0" src={$inlineUrl}></Box>
-              </>
-            ]]>
-          </viewer>
-        </field>
-      </panel>
       <panel name="actionPanel" title="Actions">
         <button name="meetingBtn" title="Create a meeting" colSpan="3"
           icon="fa-pencil-square-o" link="" onClick="save,action-job-application-view-meeting-event"/>
@@ -153,9 +127,8 @@
         <button name="showAllEventsBtn" title="Show all events" readonlyIf="id == null"
           css="btn-custom text-left" icon="fa-tasks"
           onClick="action-job-application-view-all-events"/>
-
         <panel-dashlet name="eventPanelDashlet" title="Events" colSpan="12"
-          height="550" action="action-lead-view-events"/>
+          canDelete="true" height="550" action="action-job-application-events"/>
       </panel>
     </panel-tabs>
     <panel-mail name="mailPanel">
@@ -173,17 +146,36 @@
     <field name="mobilePhone"/>
     <field name="jobPosition"/>
     <field name="dmsFile"/>
+    <field name="picture"/>
     <template><![CDATA[
-			<>
-				<strong>{fullName}</strong>
-				<Box mt={4}>
-					<span>{_t('Email')}</span><span> : { emailAddress.address }</span> <Box/>
-					<span>{_t('Fixed phone')}</span><span> : { fixedPhone }</span> <Box/>
-					<span>{_t('Mobile phone')}</span><span> : { mobilePhone }</span>
-					<Box mt={2}>
-						{dmsFile && <Link href={`#/ds/dms.file/edit/${dmsFile.id}`} target="_self">{_t('JobApplication.resume')}</Link>}
-					</Box>
-				</Box>
+            <>
+			<Box d="flex" flexDirection="column" alignItems="left" justifyContent="center">
+	            {picture && <Image src={$image('picture')} style={{ width: 128, height: 64 }}></Image>}
+	            <Box as="strong" mt={2} >{fullName}</Box>
+	        </Box>
+         	<Box as="dl" mt={4}>
+         		{emailAddress.address &&
+         			<Box>
+         				<dt>{_t('Email')}</dt>
+         				<Box as="dd" ms={2}>{emailAddress.address}</Box>
+         			</Box>
+         		}
+         		{fixedPhone &&
+         			<Box>
+         				<dt>{_t('Fixed phone')}</dt>
+         				<Box as="dd" ms={2}>{fixedPhone}</Box>
+         			</Box>
+         		}
+         		{mobilePhone &&
+         			<Box>
+         				<dt>{_t('Mobile phone')}</dt>
+         				<Box as="dd" ms={2}>{mobilePhone}</Box>
+         			</Box>
+         		}
+         	</Box>
+         	<Box mt={2}>
+				{dmsFile && <Link href={`#/ds/dms.file/edit/${dmsFile.id}`} target="_self">{_t('JobApplication.resume')}</Link>}
+			</Box>
 			</>
 		]]></template>
   </kanban>
@@ -234,18 +226,8 @@
     model="com.axelor.apps.crm.db.Event">
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>self.eventJobApplication.id = :_jobApplicationId </domain>
-    <context name="_jobApplicationId" expr="eval: id"/>
-  </action-view>
-
-  <action-view name="action-job-application-view-events" title="Events"
-    model="com.axelor.apps.crm.db.Event">
-    <view type="cards" name="event-cards"/>
-    <view type="grid" name="list-event-grid"/>
-    <view type="form" name="event-form"/>
-    <view-param name="forceEdit" value="true"/>
-    <domain>self.eventJobApplication.id = :_jobApplicationId </domain>
-    <context name="_jobApplicationId" expr="eval: id"/>
+    <domain>self.relatedToSelect = 'com.axelor.apps.talent.db.JobApplication' and
+      self.relatedToSelectId = :id</domain>
   </action-view>
 
   <action-view name="action-job-application-schedule-event" title="Schedule Event"
@@ -257,22 +239,12 @@
 
   <action-view name="action-job-application-events" model="com.axelor.apps.crm.db.Event"
     title="Events">
+    <view type="cards" name="event-cards"/>
     <view type="grid" name="event-grid"/>
     <view type="form" name="event-form"/>
     <domain>self.relatedToSelect = 'com.axelor.apps.talent.db.JobApplication' and
       self.relatedToSelectId = :id</domain>
   </action-view>
-
-  <action-record name="action-event-record-event-from-job-application"
-    model="com.axelor.apps.crm.db.Event">
-    <field name="eventJobApplication" expr="eval: _eventJobApplication"/>
-    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.talent.db.JobApplication'"/>
-    <field name="relatedToSelectId" expr="eval: _eventJobApplication.id"/>
-    <field name="typeSelect" expr="eval: 1" if="_call"/>
-    <field name="typeSelect" expr="eval: 2" if="_meeting"/>
-    <field name="typeSelect" expr="eval: 3" if="_task"/>
-    <field name="typeSelect" expr="eval: 5" if="_note"/>
-  </action-record>
 
   <action-record name="action-job-application-defaults"
     model="com.axelor.apps.talent.db.JobApplication">
@@ -280,6 +252,8 @@
       if="eval: _jobPositionId"/>
     <field name="responsible" expr="eval:__repo__(Employee).find(_responsibleId)"
       if="eval: _responsibleId"/>
+    <field name="hiringStage"
+      expr="eval:__config__.app.getApp('recruitment')?.getDefaultHiringStatus()"/>
   </action-record>
 
   <action-method name="action-job-application-method-hire">

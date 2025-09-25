@@ -46,8 +46,7 @@
     <string name="fax" title="Fax"/>
     <many-to-one name="employeeAddress" title="Address"
       ref="com.axelor.apps.base.db.Address"/>
-    <many-to-one name="resume" title="JobApplication.resume"
-      ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="resume" title="CV" ref="com.axelor.meta.db.MetaFile"/>
     <many-to-one name="dmsFile" ref="com.axelor.dms.db.DMSFile"/>
 
     <string name="title"/>
@@ -71,11 +70,10 @@
       title="Education" mappedBy="jobApplicant"/>
     <one-to-many ref="com.axelor.apps.talent.db.Experience" name="experienceList"
       title="Experiences" mappedBy="jobApplicant"/>
-    <one-to-many ref="com.axelor.apps.talent.db.Certification" name="cerificationList"
-      title="Certificates" mappedBy="jobApplicant"/>
+    <one-to-many ref="com.axelor.apps.talent.db.Certification" name="certificationList"
+      title="Certifications" mappedBy="jobApplicant"/>
     <one-to-many ref="com.axelor.apps.hr.db.EmploymentContract"
       name="proposedContractList" title="Proposed contracts"/>
-    <one-to-many ref="com.axelor.apps.crm.db.Event" name="eventList" title="Events"/>
     <many-to-many name="languageSet" title="Languages"
       ref="com.axelor.apps.base.db.Language"/>
 
@@ -86,15 +84,18 @@
 	   			public static final Integer STATUS_REJECTED = 2;
 	   			public static final Integer STATUS_CANCELLED = 3;
 
-	   			public static final Integer FAMILY_STATUS_SINGLE = 1;
-	   			public static final Integer FAMILY_STATUS_MARRIED = 2;
-	   			public static final Integer FAMILY_STATUS_PARTNERSHIP = 3;
-	   			public static final Integer FAMILY_STATUS_LIVING_TOGETHER = 4;
-	   			public static final Integer FAMILY_STATUS_DIVORCED = 5;
-	   			public static final Integer FAMILY_STATUS_WIDOW = 6;
-	   			public static final Integer FAMILY_STATUS_SEPARATED = 7;
+	   			public static final Integer FAMILY_STATUS_SINGLE = 0;
+	   			public static final Integer FAMILY_STATUS_MARRIED = 1;
+	   			public static final Integer FAMILY_STATUS_PARTNERSHIP = 2;
+	   			public static final Integer FAMILY_STATUS_LIVING_TOGETHER = 3;
+	   			public static final Integer FAMILY_STATUS_DIVORCED = 4;
+	   			public static final Integer FAMILY_STATUS_WIDOW = 5;
+	   			public static final Integer FAMILY_STATUS_SEPARATED = 6;
 	   		]]>
     </extra-code>
+
+    <entity-listener
+      class="com.axelor.apps.talent.db.repo.JobApplicationEntityListener"/>
   </entity>
 
 </domain-models>
