@@ -7,13 +7,13 @@
     type="com.axelor.studio.db.AppMobileSettings" search="self.app.code = :code"
     call="com.axelor.csv.script.ImportAppMobileSetting:getMinimalVersion">
     <bind column="fieldsToShowOnTimesheet" to="fieldsToShowOnTimesheet"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppMobileSettings', 'fieldsToShowOnTimesheet', fieldsToShowOnTimesheet)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppMobileSettings', 'fieldsToShowOnTimesheet', fieldsToShowOnTimesheet)"
       check-message="Invalid fieldsToShowOnTimesheet"/>
     <bind column="productTypesToDisplaySelect" to="productTypesToDisplaySelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppMobileSettings', 'productTypesToDisplaySelect', productTypesToDisplaySelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppMobileSettings', 'productTypesToDisplaySelect', productTypesToDisplaySelect)"
       check-message="Invalid productTypesToDisplaySelect"/>
     <bind column="reportingTypesToDisplaySelect" to="reportingTypesToDisplaySelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.studio.db.AppMobileSettings', 'reportingTypesToDisplaySelect', reportingTypesToDisplaySelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppMobileSettings', 'reportingTypesToDisplaySelect', reportingTypesToDisplaySelect)"
       check-message="Invalid reportingTypesToDisplaySelect"/>
     <bind to="app" column="code" search="self.code = :code"/>
     <bind to="minimalRequiredMobileAppVersion" column="minimalRequiredMobileAppVersion"
@@ -23,17 +23,17 @@
   <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
     search="self.name = :name">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="object" to="object"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(object)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(object)"
       check-message="Object must not be null"/>
   </input>
 
   <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"
     search="self.name = :name">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="permissions" to="permissions" search="self.name in :permissions"
       eval="permissions.split('\\|') as List"/>
@@ -42,16 +42,16 @@
   <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group"
     search="self.code = :code">
     <bind column="code" to="code"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
       check-message="Code must not be null"/>
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.Group', 'code', code, 'name', name)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.Group', 'code', code, 'name', name)"
       check-message="Name must be unique"/>
     <bind column="navigation" to="navigation"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.auth.db.Group', 'navigation', navigation)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.auth.db.Group', 'navigation', navigation)"
       check-message="Invalid navigation"/>
     <bind column="permissions" to="permissions" search="self.name in :permissions"
       eval="permissions.split('\\|') as List"/>
@@ -62,16 +62,16 @@
   <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group"
     search="self.code = :code">
     <bind column="code" to="code"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
       check-message="Code must not be null"/>
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.Group', 'code', code, 'name', name)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.Group', 'code', code, 'name', name)"
       check-message="Name must be unique"/>
     <bind column="navigation" to="navigation"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.auth.db.Group', 'navigation', navigation)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.auth.db.Group', 'navigation', navigation)"
       check-message="Invalid navigation"/>
     <bind column="permissions" to="permissions" search="self.name in :permissions"
       eval="permissions.split('\\|') as List"/>
@@ -84,21 +84,21 @@
   <input file="base_partner.csv" separator=";" type="com.axelor.apps.base.db.Partner"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportPartner:importPartner">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name/Company name must not be null"/>
     <bind column="partnerTypeSelect" to="partnerTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Partner', 'partnerTypeSelect', partnerTypeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.Partner', 'partnerTypeSelect', partnerTypeSelect)"
       check-message="Invalid partnerTypeSelect"/>
     <bind column="titleSelect" to="titleSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Partner', 'titleSelect', titleSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.Partner', 'titleSelect', titleSelect)"
       check-message="Invalid titleSelect"/>
     <bind to="partnerSeq"
       eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.repo.SequenceRepository.PARTNER,com.axelor.apps.base.db.Partner,'partnerSeq')"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Partner', 'importId', importId, 'partnerSeq', partnerSeq)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Partner', 'importId', importId, 'partnerSeq', partnerSeq)"
       check-message="Reference must be unique"/>
     <bind to="emailAddress" if="email &amp;&amp; email.trim() != ''"
       search="self.partner.importId = :importId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Partner', 'importId', importId, 'emailAddress.address', email)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Partner', 'importId', importId, 'emailAddress.address', email)"
       check-message="Email address must be unique">
       <bind to="address" column="email"/>
     </bind>
@@ -119,20 +119,20 @@
     update="true" type="com.axelor.apps.base.db.Partner"
     call="com.axelor.csv.script.ImportPartner:updateContacts">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name/Company name must not be null"/>
     <bind column="partnerSeq" to="partnerSeq"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Partner', 'importId', importId, 'partnerSeq', partnerSeq)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Partner', 'importId', importId, 'partnerSeq', partnerSeq)"
       check-message="Reference must be unique"/>
     <bind column="partnerTypeSelect" to="partnerTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Partner', 'partnerTypeSelect', partnerTypeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.Partner', 'partnerTypeSelect', partnerTypeSelect)"
       check-message="Invalid partnerTypeSelect"/>
     <bind column="titleSelect" to="titleSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Partner', 'titleSelect', titleSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.Partner', 'titleSelect', titleSelect)"
       check-message="Invalid titleSelect"/>
     <bind to="emailAddress" if="email &amp;&amp; email.trim() != ''"
       search="self.partner.importId = :importId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Partner', 'importId', importId, 'emailAddress.address', email)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Partner', 'importId', importId, 'emailAddress.address', email)"
       check-message="Email address must be unique">
       <bind to="address" column="email"/>
     </bind>
@@ -143,29 +143,29 @@
     search="self.importId  = :importId">
     <bind column="contactPartner_importId" to="contactPartner"
       search="self.importId = :contactPartner_importId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner', 'importId', contactPartner_importId)"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner', 'importId', contactPartner_importId)"
       check-message="Contact doesn't exist"/>
     <bind column="contactPartner_importId" to="contactPartner"
       search="self.importId = :contactPartner_importId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.hr.db.Employee', 'importId', importId, 'contactPartner.importId', contactPartner_importId)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.hr.db.Employee', 'importId', importId, 'contactPartner.importId', contactPartner_importId)"
       check-message="Contact must be unique"/>
     <bind column="stepByStepSelect" to="stepByStepSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'stepByStepSelect', stepByStepSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'stepByStepSelect', stepByStepSelect)"
       check-message="Invalid stepByStepSelect"/>
     <bind column="timeLoggingPreferenceSelect" to="timeLoggingPreferenceSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'timeLoggingPreferenceSelect', timeLoggingPreferenceSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'timeLoggingPreferenceSelect', timeLoggingPreferenceSelect)"
       check-message="Invalid timeLoggingPreferenceSelect"/>
     <bind column="maritalStatus" to="maritalStatus"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'maritalStatus', maritalStatus)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'maritalStatus', maritalStatus)"
       check-message="Invalid maritalStatus"/>
     <bind column="sexSelect" to="sexSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'sexSelect', sexSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'sexSelect', sexSelect)"
       check-message="Invalid sexSelect"/>
     <bind column="lunchVoucherFormatSelect" to="lunchVoucherFormatSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'lunchVoucherFormatSelect', lunchVoucherFormatSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'lunchVoucherFormatSelect', lunchVoucherFormatSelect)"
       check-message="Invalid lunchVoucherFormatSelect"/>
     <bind column="companyCbSelect" to="companyCbSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'companyCbSelect', companyCbSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'companyCbSelect', companyCbSelect)"
       check-message="Invalid companyCbSelect"/>
     <bind to="hireDate" column="hireDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(hireDate)"/>
@@ -176,22 +176,22 @@
   <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"
     search="self.code = :code" call="com.axelor.csv.script.ImportUser:importUser">
     <bind column="code" to="code"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
       check-message="Code must not be null"/>
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="password" to="password"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(password)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(password)"
       check-message="Password must not be null"/>
     <bind column="email" to="email"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.User', 'code', code, 'email', email)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.User', 'code', code, 'email', email)"
       check-message="Email must be unique"/>
     <bind column="partner_importId" to="partner" search="self.importId = :partner_importId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.User', 'importId', importId, 'partner.importId', partner_importId)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.User', 'importId', importId, 'partner.importId', partner_importId)"
       check-message="Partner must be unique"/>
     <bind column="stepStatusSelect" to="stepStatusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.auth.db.User', 'stepStatusSelect', stepStatusSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.auth.db.User', 'stepStatusSelect', stepStatusSelect)"
       check-message="Invalid stepStatusSelect"/>
   </input>
 
