@@ -30,8 +30,7 @@
   </input>
 
   <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
-    <bind to="help"
-      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(help)"
+    <bind to="help" check="com.axelor.utils.helpers.ImportHelper.isValuePresent(help)"
       check-message="Help value must not be null"/>
     <bind to="language" eval="'en'"
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'language', 'en')"
@@ -44,8 +43,7 @@
   </input>
 
   <input file="meta_helpFR.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
-    <bind to="help"
-      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(help)"
+    <bind to="help" check="com.axelor.utils.helpers.ImportHelper.isValuePresent(help)"
       check-message="Help value must not be null"/>
     <bind to="language" eval="'fr'"
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'language', 'fr')"
