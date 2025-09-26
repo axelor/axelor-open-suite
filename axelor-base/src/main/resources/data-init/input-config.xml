@@ -6,26 +6,26 @@
   <input file="auth_group.csv" separator=";" type="com.axelor.auth.db.Group"
     search="self.code = :code">
     <bind column="code" to="code"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
       check-message="Code must not be null"/>
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.Group', 'code', code, 'name', name)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.Group', 'code', code, 'name', name)"
       check-message="Name must be unique"/>
     <bind column="navigation" to="navigation"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.auth.db.Group', 'navigation', navigation)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.auth.db.Group', 'navigation', navigation)"
       check-message="Invalid navigation"/>
   </input>
 
   <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
     search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="object" to="object"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(object)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(object)"
       check-message="Object must not be null"/>
     <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
     <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
@@ -37,13 +37,13 @@
   <input file="base_birtTemplate.csv" separator=";"
     type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="format" to="format"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplate', 'format', format)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplate', 'format', format)"
       check-message="Invalid format"/>
     <bind column="templateEngineSelect" to="templateEngineSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplate', 'templateEngineSelect', templateEngineSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplate', 'templateEngineSelect', templateEngineSelect)"
       check-message="Invalid templateEngineSelect"/>
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
@@ -51,17 +51,17 @@
   <input file="base_birtTemplateParameter.csv" separator=";"
     type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="type" to="type"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplateParameter', 'type', type)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplateParameter', 'type', type)"
       check-message="Invalid type"/>
   </input>
 
   <input file="base_printingTemplate.csv" type="com.axelor.apps.base.db.PrintingTemplate"
     separator=";" search="self.importId = :importId">
     <bind column="statusSelect" to="statusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.PrintingTemplate', 'statusSelect', statusSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.PrintingTemplate', 'statusSelect', statusSelect)"
       check-message="Invalid statusSelect"/>
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
@@ -70,7 +70,7 @@
     type="com.axelor.apps.base.db.PrintingTemplateLine" separator=";"
     search="self.importId = :importId">
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.PrintingTemplateLine', 'typeSelect', typeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.PrintingTemplateLine', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect"/>
   </input>
 
@@ -80,70 +80,70 @@
   <input file="base_registrationNumberTemplate.csv" separator=";"
     type="com.axelor.apps.base.db.RegistrationNumberTemplate" search="self.importId = :importId">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="validationMethodSelect" to="validationMethodSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.RegistrationNumberTemplate', 'validationMethodSelect', validationMethodSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.RegistrationNumberTemplate', 'validationMethodSelect', validationMethodSelect)"
       check-message="Invalid validationMethodSelect"/>
   </input>
 
   <input file="base_addressTemplate.csv" separator=";"
     type="com.axelor.apps.base.db.AddressTemplate" search="self.importId = :importId">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="templateStr" to="templateStr"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(templateStr)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(templateStr)"
       check-message="Template content must not be null"/>
     <bind column="engineSelect" to="engineSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.AddressTemplate', 'engineSelect', engineSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.AddressTemplate', 'engineSelect', engineSelect)"
       check-message="Invalid engineSelect"/>
   </input>
 
   <input file="base_country.csv" separator=";" type="com.axelor.apps.base.db.Country"
     search="self.importId = :importId">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="addressTemplate_importId" to="addressTemplate"
       search="self.importId = :addressTemplate_importId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.AddressTemplate', 'importId', addressTemplate_importId)"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.AddressTemplate', 'importId', addressTemplate_importId)"
       check-message="Address template doesn't exist"/>
   </input>
 
   <input file="base_language.csv" separator=";" type="com.axelor.apps.base.db.Language"
     search="self.code = :code">
     <bind column="code" to="code"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
       check-message="Code must not be null"/>
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
   </input>
 
   <input file="base_localization.csv" separator=";"
     type="com.axelor.apps.base.db.Localization" search="self.code = :code">
     <bind column="code" to="code"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
       check-message="Code must not be null"/>
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
   </input>
 
   <input file="base_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="mediaTypeSelect" to="mediaTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
       check-message="Invalid mediaTypeSelect"/>
     <bind column="templateEngineSelect" to="templateEngineSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
       check-message="Invalid templateEngineSelect"/>
     <bind column="language" to="language"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
       check-message="Invalid language"/>
     <bind column="printTemplateSet_importId" to="printTemplateSet"
       search="self.importId in :printTemplateSet_importId"
@@ -155,29 +155,29 @@
   <input file="base_barcodeTypeConfig.csv" separator=";"
     type="com.axelor.apps.base.db.BarcodeTypeConfig" search="self.name = :name">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.BarcodeTypeConfig', 'name', name)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.BarcodeTypeConfig', 'name', name)"
       check-message="Invalid name"/>
     <bind column="height" to="height"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(height)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(height)"
       check-message="Height(px) must not be null"/>
     <bind column="width" to="width"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(width)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(width)"
       check-message="Width(px) must not be null"/>
   </input>
 
   <input file="base_currency.csv" separator=";" type="com.axelor.apps.base.db.Currency"
     search="self.code = :code">
     <bind column="code" to="code"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
       check-message="Code must not be null"/>
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="codeISO" to="codeISO"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(codeISO)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(codeISO)"
       check-message="Iso code must not be null"/>
     <bind column="codeISO" to="codeISO"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Currency', 'code', code, 'codeISO', codeISO)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Currency', 'code', code, 'codeISO', codeISO)"
       check-message="Iso code must be unique"/>
   </input>
 
@@ -185,41 +185,39 @@
     type="com.axelor.apps.base.db.CurrencyConversionLine" search="self.importId = :importId">
     <bind column="startCurrency_code" to="startCurrency"
       search="self.code = :startCurrency_code"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Currency', 'code', startCurrency_code)"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Currency', 'code', startCurrency_code)"
       check-message="Start currency doesn't exist"/>
     <bind column="endCurrency_code" to="endCurrency" search="self.code = :endCurrency_code"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Currency', 'code', endCurrency_code)"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Currency', 'code', endCurrency_code)"
       check-message="End currency doesn't exist"/>
     <bind to="appBase" column="appBase" search="self.app.code = :appBase" update="true"/>
     <bind to="fromDate" column="fromDate"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(fromDate)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(fromDate)"
       check-message="From date must not be null"/>
   </input>
 
 
   <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
-    <bind to="help"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(help)"
+    <bind to="help" check="com.axelor.utils.helpers.ImportHelper.isValuePresent(help)"
       check-message="Help value must not be null"/>
     <bind to="language" eval="'en'"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'language', 'en')"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'language', 'en')"
       check-message="Invalid language"/>
     <bind to="type" eval="'tooltip'"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'type', 'tooltip')"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'type', 'tooltip')"
       check-message="Invalid help type"/>
     <bind to="model" eval="__repo__(MetaModel).findByName(object)?.getFullName()"
       column="object"/>
   </input>
 
   <input file="meta_helpFR.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
-    <bind to="help"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(help)"
+    <bind to="help" check="com.axelor.utils.helpers.ImportHelper.isValuePresent(help)"
       check-message="Help value must not be null"/>
     <bind to="language" eval="'fr'"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'language', 'fr')"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'language', 'fr')"
       check-message="Invalid language"/>
     <bind to="type" eval="'tooltip'"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'type', 'tooltip')"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'type', 'tooltip')"
       check-message="Invalid help type"/>
     <bind to="model" eval="__repo__(MetaModel).findByName(object)?.getFullName()"
       column="object"/>
@@ -228,89 +226,89 @@
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
     search="self.name = :name and self.module = 'axelor-base'" update="true">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="title" to="title"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(title)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(title)"
       check-message="Title must not be null"/>
     <bind column="xmlId" to="xmlId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name, module', name, 'axelor-base', 'xmlId', xmlId)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name, module', name, 'axelor-base', 'xmlId', xmlId)"
       check-message="Xml id must be unique"/>
     <bind column="tagStyle" to="tagStyle"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.meta.db.MetaMenu', 'tagStyle', tagStyle)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaMenu', 'tagStyle', tagStyle)"
       check-message="Invalid tagStyle"/>
   </input>
 
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
     search="self.name = :name and self.module = 'axelor-core'" update="true">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="title" to="title"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(title)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(title)"
       check-message="Title must not be null"/>
     <bind column="xmlId" to="xmlId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name, module', name, 'axelor-core', 'xmlId', xmlId)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name, module', name, 'axelor-core', 'xmlId', xmlId)"
       check-message="Xml id must be unique"/>
     <bind column="tagStyle" to="tagStyle"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.meta.db.MetaMenu', 'tagStyle', tagStyle)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaMenu', 'tagStyle', tagStyle)"
       check-message="Invalid tagStyle"/>
   </input>
 
   <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"
     search="self.code = :code" call="com.axelor.auth.AuthService:encrypt">
     <bind column="code" to="code"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(code)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
       check-message="Code must not be null"/>
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="password" to="password"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(password)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(password)"
       check-message="Password must not be null"/>
     <bind column="email" to="email"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.User', 'code', code, 'email', email)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.User', 'code', code, 'email', email)"
       check-message="Email must be unique"/>
     <bind column="partner_importId" to="partner" search="self.importId = :partner_importId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.User', 'importId', importId, 'partner.importId', partner_importId)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.User', 'importId', importId, 'partner.importId', partner_importId)"
       check-message="Partner must be unique"/>
     <bind column="stepStatusSelect" to="stepStatusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.auth.db.User', 'stepStatusSelect', stepStatusSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.auth.db.User', 'stepStatusSelect', stepStatusSelect)"
       check-message="Invalid stepStatusSelect"/>
   </input>
 
   <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="job" to="job"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(job)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(job)"
       check-message="Job must not be null"/>
     <bind column="cron" to="cron"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(cron)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(cron)"
       check-message="Cron must not be null"/>
     <bind column="batchServiceSelect" to="batchServiceSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.meta.db.MetaSchedule', 'batchServiceSelect', batchServiceSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaSchedule', 'batchServiceSelect', batchServiceSelect)"
       check-message="Invalid batchServiceSelect"/>
   </input>
 
   <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"
     search="self.name = :name">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
   </input>
 
   <input file="base_addressTemplate.csv" separator=";"
     type="com.axelor.apps.base.db.AddressTemplate" search="self.importId = :importId">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="templateStr" to="templateStr"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(templateStr)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(templateStr)"
       check-message="Template content must not be null"/>
     <bind column="engineSelect" to="engineSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.AddressTemplate', 'engineSelect', engineSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.AddressTemplate', 'engineSelect', engineSelect)"
       check-message="Invalid engineSelect"/>
   </input>
 
@@ -318,7 +316,7 @@
     type="com.axelor.apps.base.db.AddressTemplateLine" search="self.importId = :importId">
     <bind to="metaField" column="metaField"
       search="self.name = :metaField AND self.metaModel.name = :metaModel"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaField', 'name, metaModel.name', metaField, metaModel)"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaField', 'name, metaModel.name', metaField, metaModel)"
       check-message="Meta field doesn't exist"/>
   </input>
 
