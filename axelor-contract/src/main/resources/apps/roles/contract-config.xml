@@ -6,17 +6,17 @@
   <input file="contract_role.csv" separator=";" type="com.axelor.auth.db.Role"
     search="self.name = :name">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
   </input>
 
   <input file="contract_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
     search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="object" to="object"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(object)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(object)"
       check-message="Object must not be null"/>
     <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
     <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
@@ -28,16 +28,16 @@
   <input file="contract_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
     search="self.name = :name" update="true">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="title" to="title"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(title)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(title)"
       check-message="Title must not be null"/>
     <bind column="xmlId" to="xmlId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name', name, 'xmlId', xmlId)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name', name, 'xmlId', xmlId)"
       check-message="Xml id must be unique"/>
     <bind column="tagStyle" to="tagStyle"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.meta.db.MetaMenu', 'tagStyle', tagStyle)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaMenu', 'tagStyle', tagStyle)"
       check-message="Invalid tagStyle"/>
     <bind column="roles" to="roles" search="self.name in :roles"
       eval="roles.split('\\|') as List"/>
