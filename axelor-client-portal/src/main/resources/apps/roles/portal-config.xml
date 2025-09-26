@@ -6,17 +6,17 @@
   <input file="portal_role.csv" separator=";" type="com.axelor.auth.db.Role"
     search="self.name = :name">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
   </input>
 
   <input file="portal_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
     search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="object" to="object"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(object)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(object)"
       check-message="Object must not be null"/>
     <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
     <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
