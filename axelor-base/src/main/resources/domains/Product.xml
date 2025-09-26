@@ -147,9 +147,9 @@
     <decimal name="outerWidth" title="Outer width (mm)" default="0" scale="3" precision="20"/>
     <decimal name="outerHeight" title="Outer height (mm)" default="0" scale="3"
       precision="20"/>
-    <decimal name="minWeight" title="Min acceptable weight" default="0" scale="3"
+    <decimal name="minWeight" title="Min acceptable weight (kg)" default="0" scale="3"
       precision="20"/>
-    <decimal name="maxWeight" title="Max acceptable weight" default="0" scale="3"
+    <decimal name="maxWeight" title="Max acceptable weight (kg)" default="0" scale="3"
       precision="20"/>
     <integer name="packagingLevelSelect" title="Packaging level"
       selection="base.product.packaging.level.select"/>

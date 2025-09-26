@@ -751,4 +751,7 @@ public final class BaseExceptionMessage {
 
   public static final String PARTNER_INVALID_BOOLEAN_2 = /*$$(*/
       "A partner cannot be both a customer and a prospect." /*)*/;
+
+  public static final String PACKAGING_MAX_WEIGHT_EXCEEDED = /*$$(*/
+      "The products' total weight exceeds the maximum weight carried by the packaging." /*)*/;
 }

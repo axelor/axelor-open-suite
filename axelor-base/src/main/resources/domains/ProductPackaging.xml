@@ -12,6 +12,8 @@
     <many-to-one name="packaging" ref="com.axelor.apps.base.db.Product"
       title="Packaging"/>
     <integer name="qty" title="Quantity"/>
+    <decimal name="packagingMaxTotalWeight" title="Packaging max total weight (kg)"
+      default="0" scale="3" precision="20"/>
 
   </entity>
 
