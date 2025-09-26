@@ -43,6 +43,7 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
   protected SaleOrderPackagingDimensionService saleOrderPackagingDimensionService;
   protected SaleOrderPackagingMessageService saleOrderPackagingMessageService;
   protected SaleOrderProductPackagingService saleOrderProductPackagingService;
+  protected SaleOrderPackagingOrientationService saleOrderPackagingOrientationService;
 
   @Inject
   public SaleOrderPackagingServiceImpl(
@@ -50,12 +51,14 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
       SaleOrderPackagingPlanService saleOrderPackagingPlanService,
       SaleOrderPackagingDimensionService saleOrderPackagingDimensionService,
       SaleOrderPackagingMessageService saleOrderPackagingMessageService,
-      SaleOrderProductPackagingService saleOrderProductPackagingService) {
+      SaleOrderProductPackagingService saleOrderProductPackagingService,
+      SaleOrderPackagingOrientationService saleOrderPackagingOrientationService) {
     this.productRepository = productRepository;
     this.saleOrderPackagingPlanService = saleOrderPackagingPlanService;
     this.saleOrderPackagingDimensionService = saleOrderPackagingDimensionService;
     this.saleOrderPackagingMessageService = saleOrderPackagingMessageService;
     this.saleOrderProductPackagingService = saleOrderProductPackagingService;
+    this.saleOrderPackagingOrientationService = saleOrderPackagingOrientationService;
   }
 
   @Override
@@ -63,7 +66,13 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
     List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
     Map<Product, BigDecimal> productQtyMap =
         saleOrderLines.stream()
-            .filter(line -> line.getQty().compareTo(BigDecimal.ZERO) > 0)
+            .filter(
+                line ->
+                    line.getProduct()
+                            .getProductTypeSelect()
+                            .equals(ProductRepository.PRODUCT_TYPE_STORABLE)
+                        && line.getProduct().getDtype().equals("Product")
+                        && line.getQty().compareTo(BigDecimal.ZERO) > 0)
             .collect(
                 Collectors.toMap(
                     SaleOrderLine::getProduct, SaleOrderLine::getQty, BigDecimal::add));
@@ -73,6 +82,9 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
     List<String> messages = new ArrayList<>();
     List<Product> packagingOptions =
         productRepository.all().filter("self.isPackaging = true").fetch();
+
+    saleOrderPackagingOrientationService.validateProductsForPackaging(
+        productQtyMap.keySet(), packagingOptions);
 
     Map<Integer, Map<Product, String>> levelDescriptions = new HashMap<>();
     Map<Integer, Map<Product, BigDecimal[]>> levelWeights = new HashMap<>();

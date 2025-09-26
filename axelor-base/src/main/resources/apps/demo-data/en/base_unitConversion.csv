@@ -24,3 +24,5 @@
 23;103;480;100;1;0;
 24;501;0;306;2;0;"// Convert from m3 to kg using the product characteristics
 $Product.netMass$ / $Product.articleVolume$"
+27;403;1000;400;1;0;
+28;403;100;401;1;0;
