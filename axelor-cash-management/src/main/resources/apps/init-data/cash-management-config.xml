@@ -7,35 +7,35 @@
     type="com.axelor.apps.cash.management.db.ForecastRecapLineType"
     search="self.importId = :importId">
     <bind column="elementSelect" to="elementSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'elementSelect', elementSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'elementSelect', elementSelect)"
       check-message="Invalid elementSelect"/>
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'typeSelect', typeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect"/>
     <bind column="operationTypeSelect" to="operationTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'operationTypeSelect', operationTypeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'operationTypeSelect', operationTypeSelect)"
       check-message="Invalid operationTypeSelect"/>
     <bind column="payDaySelect" to="payDaySelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'payDaySelect', payDaySelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'payDaySelect', payDaySelect)"
       check-message="Invalid payDaySelect"/>
     <bind column="functionalOriginSelect" to="functionalOriginSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'functionalOriginSelect', functionalOriginSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.cash.management.db.ForecastRecapLineType', 'functionalOriginSelect', functionalOriginSelect)"
       check-message="Invalid functionalOriginSelect"/>
   </input>
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind column="codeSelect" to="codeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
       check-message="Invalid codeSelect"/>
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(sequenceTypeSelect)"
       check-message="Sequence type must not be null"/>
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence', 'importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence', 'importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
       check-message="Company, code, prefixe and suffixe must be unique"/>
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
