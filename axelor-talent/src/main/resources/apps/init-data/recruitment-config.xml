@@ -6,6 +6,18 @@
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.codeSelect = :codeSelect"
     call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind column="codeSelect" to="codeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
+      check-message="Invalid codeSelect"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check-message="Sequence type must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence', 'importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check-message="Company, code, prefixe and suffixe must be unique"/>
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
@@ -16,13 +28,29 @@
 
   <input file="message_template.csv" separator=";" type="com.axelor.message.db.Template"
     search="self.name = :name">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="mediaTypeSelect" to="mediaTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
+      check-message="Invalid mediaTypeSelect"/>
+    <bind column="templateEngineSelect" to="templateEngineSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
+      check-message="Invalid templateEngineSelect"/>
+    <bind column="language" to="language"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
+      check-message="Invalid language"/>
     <bind column="printTemplateSet_importId" to="printTemplateSet"
       search="self.importId in :printTemplateSet_importId"
       eval="printTemplateSet_importId.split('\\|') as List" update="true"/>
   </input>
 
   <input file="talent_hiringStage.csv" separator=";"
-    type="com.axelor.apps.talent.db.HiringStage" search="self.name = :name"/>
+    type="com.axelor.apps.talent.db.HiringStage" search="self.name = :name">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="studio_appRecruitment.csv" separator=";"
     type="com.axelor.studio.db.AppRecruitment" search="self.app.code = :code">

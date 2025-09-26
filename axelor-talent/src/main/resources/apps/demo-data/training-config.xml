@@ -4,20 +4,48 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
   <input file="talent_training.csv" separator=";" type="com.axelor.apps.talent.db.Training"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="talent_trainingRegister.csv" separator=";"
     type="com.axelor.apps.talent.db.TrainingRegister" search="self.importId = :importId">
+    <bind column="employee_importId" to="employee" search="self.importId = :employee_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.Employee', 'importId', employee_importId)"
+      check-message="Employee doesn't exist"/>
+    <bind column="training_importId" to="training" search="self.importId = :training_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.talent.db.Training', 'importId', training_importId)"
+      check-message="Training doesn't exist"/>
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.talent.db.TrainingRegister', 'statusSelect', statusSelect)"
+      check-message="Invalid statusSelect"/>
     <bind to="fromDate"
-      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(fromDate)" column="fromDate"/>
+      eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(fromDate)" column="fromDate"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(fromDate)"
+      check-message="From date must not be null"/>
     <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(toDate)"
-      column="toDate"/>
+      column="toDate" check="com.axelor.utils.helpers.ImportHelper.isValuePresent(toDate)"
+      check-message="To date must not be null"/>
   </input>
 
   <input file="talent_appraisalType.csv" separator=";"
-    type="com.axelor.apps.talent.db.AppraisalType" search="self.importId = :importId"/>
+    type="com.axelor.apps.talent.db.AppraisalType" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="talent_appraisal.csv" separator=";" type="com.axelor.apps.talent.db.Appraisal"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="appraisalType_importId" to="appraisalType"
+      search="self.importId = :appraisalType_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.talent.db.AppraisalType', 'importId', appraisalType_importId)"
+      check-message="Type of appraisal doesn't exist"/>
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.talent.db.Appraisal', 'statusSelect', statusSelect)"
+      check-message="Invalid statusSelect"/>
+  </input>
 
 </csv-inputs>
