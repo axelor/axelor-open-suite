@@ -111,15 +111,7 @@ public class StockMoveLineStockLocationServiceImpl implements StockMoveLineStock
     return toStockLocation;
   }
 
-  /**
-   * get default stock location by site (linked to stock move stock location)
-   *
-   * @param defaultStockLocationBySiteList
-   * @param stockMoveStockLocation
-   * @param mapDefaultStockLocation
-   * @return
-   */
-  public StockLocation getDefaultStockLocation(
+  protected StockLocation getDefaultStockLocation(
       List<DefaultStockLocationBySite> defaultStockLocationBySiteList,
       StockLocation stockMoveStockLocation,
       Function<DefaultStockLocationBySite, StockLocation> mapDefaultStockLocation) {
