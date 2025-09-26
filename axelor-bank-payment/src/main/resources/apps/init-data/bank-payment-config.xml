@@ -6,16 +6,16 @@
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
     <bind column="codeSelect" to="codeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
       check-message="Invalid codeSelect"/>
     <bind column="name" to="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(sequenceTypeSelect)"
       check-message="Sequence type must not be null"/>
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence', 'importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence', 'importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
       check-message="Company, code, prefixe and suffixe must be unique"/>
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
@@ -28,32 +28,32 @@
   <input file="bankpayment_bankStatementQuery.csv" separator=";"
     type="com.axelor.apps.bankpayment.db.BankStatementQuery" search="self.importId = :importId">
     <bind to="name" column="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind to="query" column="query"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(query)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(query)"
       check-message="Test function must not be null"/>
     <bind column="ruleTypeSelect" to="ruleTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.bankpayment.db.BankStatementQuery', 'ruleTypeSelect', ruleTypeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.bankpayment.db.BankStatementQuery', 'ruleTypeSelect', ruleTypeSelect)"
       check-message="Invalid ruleTypeSelect"/>
     <bind column="confidenceIndex" to="confidenceIndex"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.bankpayment.db.BankStatementQuery', 'confidenceIndex', confidenceIndex)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.bankpayment.db.BankStatementQuery', 'confidenceIndex', confidenceIndex)"
       check-message="Invalid confidenceIndex"/>
   </input>
 
   <input file="account_accountingReportType.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.account.db.AccountingReportType">
     <bind to="name" column="name"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(name)"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
     <bind to="reportExportTypeSelect" column="reportExportTypeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'reportExportTypeSelect', reportExportTypeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'reportExportTypeSelect', reportExportTypeSelect)"
       check-message="Invalid reportExportTypeSelect"/>
     <bind to="typeSelect" column="typeSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'typeSelect', typeSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect"/>
     <bind to="comparison" column="comparison"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'comparison', comparison)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'comparison', comparison)"
       check-message="Invalid comparison"/>
   </input>
 
