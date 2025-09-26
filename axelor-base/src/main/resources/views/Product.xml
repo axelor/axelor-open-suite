@@ -537,7 +537,7 @@
           <field name="countryOfOrigin" showIf="usedInDEB"/>
         </panel>
         <panel name="packagingPanel" title="Packaging details" colSpan="12">
-          <field name="isPackaging" colSpan="12"/>
+          <field name="isPackaging" colSpan="4"/>
           <panel name="dimensionPanel" colSpan="12" itemSpan="4" hidden="true"
             showIf="isPackaging">
             <field name="innerLength" requiredIf="isPackaging"/>
