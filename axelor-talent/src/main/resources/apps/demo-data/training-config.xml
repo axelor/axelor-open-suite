@@ -26,8 +26,7 @@
       check="com.axelor.utils.helpers.ImportHelper.isValuePresent(fromDate)"
       check-message="From date must not be null"/>
     <bind to="toDate" eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(toDate)"
-      column="toDate"
-      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(toDate)"
+      column="toDate" check="com.axelor.utils.helpers.ImportHelper.isValuePresent(toDate)"
       check-message="To date must not be null"/>
   </input>
 
