@@ -8,25 +8,79 @@
 
   <input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";"
     search="self.importId  = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="unitSelect" to="unitSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.LeaveReason', 'unitSelect', unitSelect)"
+      check-message="Invalid unitSelect"/>
+    <bind column="leaveReasonTypeSelect" to="leaveReasonTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.LeaveReason', 'leaveReasonTypeSelect', leaveReasonTypeSelect)"
+      check-message="Invalid leaveReasonTypeSelect"/>
     <bind to="recoveryLeaveReason" column="recoveryLeaveReason_importId"
       search="self.importId = :recoveryLeaveReason_importId" if="recoveryLeaveReason_importId"/>
   </input>
 
   <input file="hr_hrConfig.csv" type="com.axelor.apps.hr.db.HRConfig" separator=";"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.hr.db.HRConfig', 'importId', importId, 'company.importId', company_importId)"
+      check-message="Company must be unique"/>
+    <bind column="lunchVoucherFormatSelect" to="lunchVoucherFormatSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.HRConfig', 'lunchVoucherFormatSelect', lunchVoucherFormatSelect)"
+      check-message="Invalid lunchVoucherFormatSelect"/>
+  </input>
 
   <input file="hr_kilometricAllowParam.csv" type="com.axelor.apps.hr.db.KilometricAllowParam"
     separator=";" search="self.code = :code"/>
 
   <input file="hr_kilometricAllowanceRate.csv"
     type="com.axelor.apps.hr.db.KilometricAllowanceRate" separator=";"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="kilometricAllowParam_code" to="kilometricAllowParam"
+      search="self.code = :kilometricAllowParam_code"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.KilometricAllowParam', 'code', kilometricAllowParam_code)"
+      check-message="Kilometric allowance param doesn't exist"/>
+  </input>
 
   <input file="hr_kilometricAllowanceRule.csv"
-    type="com.axelor.apps.hr.db.KilometricAllowanceRule" separator=";"/>
+    type="com.axelor.apps.hr.db.KilometricAllowanceRule" separator=";">
+    <bind column="rate" to="rate"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(rate)"
+      check-message="Rate must not be null"/>
+  </input>
 
   <input file="hr_employee.csv" separator=";" type="com.axelor.apps.hr.db.Employee"
     search="self.importId  = :importId">
+    <bind column="contactPartner_importId" to="contactPartner"
+      search="self.importId = :contactPartner_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner', 'importId', contactPartner_importId)"
+      check-message="Contact doesn't exist"/>
+    <bind column="contactPartner_importId" to="contactPartner"
+      search="self.importId = :contactPartner_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.hr.db.Employee', 'importId', importId, 'contactPartner.importId', contactPartner_importId)"
+      check-message="Contact must be unique"/>
+    <bind column="stepByStepSelect" to="stepByStepSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'stepByStepSelect', stepByStepSelect)"
+      check-message="Invalid stepByStepSelect"/>
+    <bind column="timeLoggingPreferenceSelect" to="timeLoggingPreferenceSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'timeLoggingPreferenceSelect', timeLoggingPreferenceSelect)"
+      check-message="Invalid timeLoggingPreferenceSelect"/>
+    <bind column="maritalStatus" to="maritalStatus"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'maritalStatus', maritalStatus)"
+      check-message="Invalid maritalStatus"/>
+    <bind column="sexSelect" to="sexSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'sexSelect', sexSelect)"
+      check-message="Invalid sexSelect"/>
+    <bind column="lunchVoucherFormatSelect" to="lunchVoucherFormatSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'lunchVoucherFormatSelect', lunchVoucherFormatSelect)"
+      check-message="Invalid lunchVoucherFormatSelect"/>
+    <bind column="companyCbSelect" to="companyCbSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'companyCbSelect', companyCbSelect)"
+      check-message="Invalid companyCbSelect"/>
     <bind to="hireDate" column="hireDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(hireDate)"/>
     <bind to="leavingDate" column="leavingDate"
@@ -38,10 +92,50 @@
   </input>
 
   <input file="hr_contract.csv" separator=";" type="com.axelor.apps.hr.db.EmploymentContract"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="payCompany_importId" to="payCompany"
+      search="self.importId = :payCompany_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', payCompany_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="amendmentTypeSelect" to="amendmentTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.EmploymentContract', 'amendmentTypeSelect', amendmentTypeSelect)"
+      check-message="Invalid amendmentTypeSelect"/>
+    <bind column="status" to="status"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.EmploymentContract', 'status', status)"
+      check-message="Invalid status"/>
+    <bind column="executiveStatusSelect" to="executiveStatusSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.EmploymentContract', 'executiveStatusSelect', executiveStatusSelect)"
+      check-message="Invalid executiveStatusSelect"/>
+  </input>
 
   <input file="hr_employee.csv" separator=";" type="com.axelor.apps.hr.db.Employee"
     search="self.importId  = :importId" update="true">
+    <bind column="contactPartner_importId" to="contactPartner"
+      search="self.importId = :contactPartner_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner', 'importId', contactPartner_importId)"
+      check-message="Contact doesn't exist"/>
+    <bind column="contactPartner_importId" to="contactPartner"
+      search="self.importId = :contactPartner_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.hr.db.Employee', 'importId', importId, 'contactPartner.importId', contactPartner_importId)"
+      check-message="Contact must be unique"/>
+    <bind column="stepByStepSelect" to="stepByStepSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'stepByStepSelect', stepByStepSelect)"
+      check-message="Invalid stepByStepSelect"/>
+    <bind column="timeLoggingPreferenceSelect" to="timeLoggingPreferenceSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'timeLoggingPreferenceSelect', timeLoggingPreferenceSelect)"
+      check-message="Invalid timeLoggingPreferenceSelect"/>
+    <bind column="maritalStatus" to="maritalStatus"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'maritalStatus', maritalStatus)"
+      check-message="Invalid maritalStatus"/>
+    <bind column="sexSelect" to="sexSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'sexSelect', sexSelect)"
+      check-message="Invalid sexSelect"/>
+    <bind column="lunchVoucherFormatSelect" to="lunchVoucherFormatSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'lunchVoucherFormatSelect', lunchVoucherFormatSelect)"
+      check-message="Invalid lunchVoucherFormatSelect"/>
+    <bind column="companyCbSelect" to="companyCbSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Employee', 'companyCbSelect', companyCbSelect)"
+      check-message="Invalid companyCbSelect"/>
     <bind to="mainEmploymentContract" search="self.importId = :importId"/>
     <bind to="hireDate" column="hireDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(hireDate)"/>
@@ -54,19 +148,77 @@
   </input>
 
   <input file="auth_user.csv" separator=";" search="self.importId = :importId"
-    type="com.axelor.auth.db.User" update="true"/>
+    type="com.axelor.auth.db.User" update="true">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="password" to="password"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(password)"
+      check-message="Password must not be null"/>
+    <bind column="email" to="email"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.User', 'code', code, 'email', email)"
+      check-message="Email must be unique"/>
+    <bind column="partner_importId" to="partner" search="self.importId = :partner_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.User', 'importId', importId, 'partner.importId', partner_importId)"
+      check-message="Partner must be unique"/>
+    <bind column="stepStatusSelect" to="stepStatusSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.auth.db.User', 'stepStatusSelect', stepStatusSelect)"
+      check-message="Invalid stepStatusSelect"/>
+    <bind column="employee_importId" to="employee" search="self.importId = :employee_importId"
+      update="true"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.auth.db.User', 'importId', importId, 'employee.importId', employee_importId)"
+      check-message="Employee must be unique"/>
+  </input>
 
-  <input file="hr_hrBatch.csv" type="com.axelor.apps.hr.db.HrBatch" separator=";"/>
+  <input file="hr_hrBatch.csv" type="com.axelor.apps.hr.db.HrBatch" separator=";"
+    search="self.code = :code">
+    <bind column="actionSelect" to="actionSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.HrBatch', 'actionSelect', actionSelect)"
+      check-message="Invalid actionSelect"/>
+    <bind column="leaveReasonTypeSelect" to="leaveReasonTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.HrBatch', 'leaveReasonTypeSelect', leaveReasonTypeSelect)"
+      check-message="Invalid leaveReasonTypeSelect"/>
+    <bind column="payrollPreparationExportTypeSelect" to="payrollPreparationExportTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.HrBatch', 'payrollPreparationExportTypeSelect', payrollPreparationExportTypeSelect)"
+      check-message="Invalid payrollPreparationExportTypeSelect"/>
+    <bind column="employmentContractExportTypeSelect" to="employmentContractExportTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.HrBatch', 'employmentContractExportTypeSelect', employmentContractExportTypeSelect)"
+      check-message="Invalid employmentContractExportTypeSelect"/>
+  </input>
 
-  <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
+  <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="job" to="job"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(job)"
+      check-message="Job must not be null"/>
+    <bind column="cron" to="cron"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(cron)"
+      check-message="Cron must not be null"/>
+    <bind column="batchServiceSelect" to="batchServiceSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaSchedule', 'batchServiceSelect', batchServiceSelect)"
+      check-message="Invalid batchServiceSelect"/>
+  </input>
 
-  <input file="hr_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer" separator=";"/>
+  <input file="hr_anonymizer.csv" type="com.axelor.apps.base.db.Anonymizer" separator=";">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="hr_anonymizerLine.csv" type="com.axelor.apps.base.db.AnonymizerLine"
     separator=";">
-    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"/>
+    <bind to="metaModel" column="metaModel" search="self.name = :metaModel"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaModel', 'name', metaModel)"
+      check-message="Meta model doesn't exist"/>
     <bind to="metaField" column="metaField"
-      search="self.name = :metaField AND self.metaModel.name = :metaModel"/>
+      search="self.name = :metaField AND self.metaModel.name = :metaModel"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaField', 'name, metaModel.name', metaField, metaModel)"
+      check-message="Meta field doesn't exist"/>
     <bind to="anonymizer" column="anonymizer_importId"
       search="self.importId = :anonymizer_importId"/>
     <bind to="useFakeData" column="useFakeData"/>
