@@ -9,24 +9,23 @@
   <input file="hr_extraHours.csv" separator=";" type="com.axelor.apps.hr.db.ExtraHours"
     search="self.importId = :importId">
     <bind column="company_importId" to="company" search="self.importId = :company_importId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
       check-message="Company doesn't exist"/>
     <bind column="employee_importId" to="employee" search="self.importId = :employee_importId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.Employee', 'importId', employee_importId)"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.Employee', 'importId', employee_importId)"
       check-message="Employee doesn't exist"/>
     <bind column="statusSelect" to="statusSelect"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.checkSelection('com.axelor.apps.hr.db.ExtraHours', 'statusSelect', statusSelect)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.ExtraHours', 'statusSelect', statusSelect)"
       check-message="Invalid statusSelect"/>
   </input>
 
   <input file="hr_extraHoursLine.csv" separator=";"
     type="com.axelor.apps.hr.db.ExtraHoursLine" search="self.importId = :importId">
     <bind column="employee_importId" to="employee" search="self.importId = :employee_importId"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.Employee', 'importId', employee_importId)"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.Employee', 'importId', employee_importId)"
       check-message="Employee doesn't exist"/>
     <bind to="date" eval="call:com.axelor.csv.script.ImportDateTime:importDate(date)"
-      column="date"
-      check="com.axelor.apps.base.service.imports.importer.ImportHelper.isValuePresent(date)"
+      column="date" check="com.axelor.utils.helpers.ImportHelper.isValuePresent(date)"
       check-message="Date must not be null"/>
   </input>
 
