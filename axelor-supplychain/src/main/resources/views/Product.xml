@@ -85,8 +85,12 @@
           <field name="limitedQty"/>
           <field name="unCode"/>
           <field name="packagingGroupSelect" requiredIf="isAdr"/>
-          <field name="isReturnable" hidden="true" showIf="isPackaging"/>
         </panel>
+      </insert>
+    </extend>
+    <extend target="//field[@name='isPackaging']">
+      <insert position="after">
+        <field name="isReturnable" hidden="true" showIf="isPackaging" colSpan="4"/>
       </insert>
     </extend>
   </form>
