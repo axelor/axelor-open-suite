@@ -10,7 +10,7 @@
     <string name="packagingNumber" title="Packaging number" namecolumn="true" readonly="true"/>
     <many-to-one name="logisticalForm" title="Logistical form"
       ref="com.axelor.apps.stock.db.LogisticalForm"/>
-    <many-to-one name="stockMove" title="Delivery note"
+    <many-to-many name="stockMoveSet" title="Delivery notes"
       ref="com.axelor.apps.stock.db.StockMove"/>
     <many-to-one name="saleOrder" title="Sale order"
       ref="com.axelor.apps.sale.db.SaleOrder"/>
