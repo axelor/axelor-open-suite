@@ -337,4 +337,7 @@ public final class StockExceptionMessage {
 
   public static final String LOGISTICAL_FORM_STATUS_MISMATCH = /*$$(*/
       "Stock move(s) status must be planned." /*)*/;
+
+  public static final String LOGISTICAL_FORM_PARTNER_NOT_A_CARRIER = /*$$(*/
+      "The chosen partner is not a carrier." /*)*/;
 }

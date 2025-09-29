@@ -919,6 +919,7 @@
 "Supplier virtual stock location","Emplacement virtuel fournisseur",,
 "Team to alert","Equipe à alerter",,
 "Text in certificate of conformity","Texte dans l'impression du certificat de conformité",,
+"The chosen partner is not a carrier.","Le tiers choisi n'est pas un transporteur.",,
 "The move doesn't contain any product, do you wish to continue ?","Le mouvement de stock ne contient aucun produit, souhaitez-vous continuer ?",,
 "The partner's language is different from the current language. Description and product name are in :","La langue du tiers est différente de la langue actuelle. La description et le nom du produit est en :",,
 "The product %s have already been stored","Le produit %s a déjà été stocké",,

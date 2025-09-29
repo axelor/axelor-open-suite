@@ -919,6 +919,7 @@
 "Supplier virtual stock location",,,
 "Team to alert",,,
 "Text in certificate of conformity",,,
+"The chosen partner is not a carrier.",,,
 "The move doesn't contain any product, do you wish to continue ?",,,
 "The partner's language is different from the current language. Description and product name are in :",,,
 "The product %s have already been stored",,,
