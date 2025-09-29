@@ -31,6 +31,7 @@ import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderFinalizeSupplychainServiceImpl;
 import com.google.inject.Inject;
@@ -52,6 +53,7 @@ public class SaleOrderFinalizeBudgetServiceImpl extends SaleOrderFinalizeSupplyc
       AppCrmService appCrmService,
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
+      AnalyticToolSupplychainService analyticToolSupplychainService,
       SaleOrderBudgetService saleOrderBudgetService) {
     super(
         saleOrderRepository,
@@ -62,7 +64,8 @@ public class SaleOrderFinalizeBudgetServiceImpl extends SaleOrderFinalizeSupplyc
         appSaleService,
         appCrmService,
         appSupplychainService,
-        accountingSituationSupplychainService);
+        accountingSituationSupplychainService,
+        analyticToolSupplychainService);
     this.saleOrderBudgetService = saleOrderBudgetService;
   }
 
