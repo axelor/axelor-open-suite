@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed delivery state computation to ignore sale order lines with qty 0."
-module: axelor-supplychain

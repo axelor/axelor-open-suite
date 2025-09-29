@@ -1,3 +1,112 @@
+## [8.4.7] (2025-09-25)
+
+### Fixes
+#### Base
+
+* User: fixed trading name not filtered on company.
+* Partner: fixed error when selecting price list and the partner was not saved.
+* Update Axelor Utils to 3.4.2
+* API Siren: updated current version.
+
+#### Account
+
+* Deposit slip: fixed the date filter to use the cheque's due date rather than the deposit slip date.
+* Move line: added an error message when trying to reconcile moves from incompatible accounts.
+* Partner: fixed French translation for 'Unpaid invoices' and 'View all unpaid invoices'.
+* Fixed asset: allow a number of depreciation of 0.
+* Payment scheduler: fixed an issue where records were created without a sequence.
+* Fixed asset: fixed fixed asset creation from invoice.
+* ACCOUNT : Fix status mass update
+* Accounting report type: fixed company sync between M2O and M2M fields.
+* Payment schedule: fixed an issue where values were not reset during duplication.
+* Accounting report: fixed domain filter for analytic accounts and analytic axis.
+* Deposit slip: fixed display condition for deposit slip date.
+* Invoice: fixed an issue where financial discount was not emptied when changing partner.
+
+#### Bank Payment
+
+* Bank order/UMR: fixed an issue where the user could not confirm a bank order while an active UMR is set on the partner.
+
+#### Business Project
+
+* Project task: fixed estimated time modification should not update the sold time.
+* Project task: fixed sold time is not set when the task is linked to a task template without a product.
+
+#### Contract
+
+* Contract line: fixed display issue of 'Invoice from consumption' field.
+* Contract line: fixed domain for product based on product per company.
+
+#### CRM
+
+* Lead: prevent users from reopening converted lead in kanban view.
+* Event: fixed duration computation when creating a new event.
+
+#### Production
+
+* Production API : fixed request to fetch consumed products was not working when 'Manage consumed products on operations' is enabled.
+
+#### Project
+
+* Project: fixed an issue where the parent task was not assigned when clicking the create sub task button.
+
+#### Sale
+
+* Sale config: client box and legal note fields are now translatable.
+* Sale order: fixed the sub sale order lines when merging the multiple sale orders.
+* Sale order: fixed an error occurring when selecting a quantity to order on confirm wizard.
+
+#### Supply Chain
+
+* Sale order: fixed delivery state computation to ignore sale order lines with qty 0.
+* MRP: fixed an error occurring with manufacturing order in certain cases.
+
+#### Talent
+
+* Sequence: added missing selection value for job position.
+
+
+### Developer
+
+#### Base
+
+Removed 'PartnerPriceListRepository' from 'PartnerPriceListDomainServiceImpl' constructor.
+
+---
+
+ALTER TABLE studio_app_base DROP COLUMN IF EXISTS sirene_token_generator_url;
+ALTER TABLE studio_app_base DROP COLUMN IF EXISTS sirene_secret;
+ALTER TABLE studio_app_base DROP COLUMN IF EXISTS sirene_access_token;
+
+DELETE from meta_field
+WHERE name IN ('sireneTokenGeneratorUrl', 'sireneSecret', 'sireneAccessToken')
+  AND meta_model = (SELECT id FROM meta_model mm WHERE mm.full_name = 'com.axelor.studio.db.AppBase');
+
+UPDATE studio_app_base SET sirene_url = 'https://api.insee.fr/api-sirene/3.11';
+
+#### Account
+
+Removed action that is now useless since it will be replaced by the repository save.
+
+DELETE FROM meta_action WHERE name = 'action-payment-schedule-payment-schedule-id';
+
+---
+
+For AccountingReportTypes with `typeSelect != 3000`, the company M2O field is now synced
+into the company M2M field. Existing inconsistent data should be corrected using the script below. 
+-- Cleanup existing M2M entries for typeSelect != 3000
+DELETE FROM account_accounting_report_type_company_set
+WHERE account_accounting_report_type IN (
+    SELECT id FROM account_accounting_report_type
+    WHERE type_select != 3000
+);
+-- Insert new M2M entries based on the M2O value
+INSERT INTO account_accounting_report_type_company_set (account_accounting_report_type, company_set)
+SELECT art.id AS account_accounting_report_type, art.company AS company_set
+FROM account_accounting_report_type art
+WHERE art.type_select != 3000
+  AND art.company IS NOT NULL;
+
 ## [8.4.6] (2025-09-11)
 
 ### Fixes
@@ -682,6 +791,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.7]: https://github.com/axelor/axelor-open-suite/compare/v8.4.6...v8.4.7
 [8.4.6]: https://github.com/axelor/axelor-open-suite/compare/v8.4.5...v8.4.6
 [8.4.5]: https://github.com/axelor/axelor-open-suite/compare/v8.4.4...v8.4.5
 [8.4.4]: https://github.com/axelor/axelor-open-suite/compare/v8.4.3...v8.4.4
