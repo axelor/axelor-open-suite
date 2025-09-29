@@ -288,18 +288,6 @@ public class StockLocationServiceImpl implements StockLocationService {
   }
 
   @Override
-  public String computeStockLocationChildren(StockLocation stockLocation) {
-    if (stockLocation == null) {
-      return "self.id in (0)";
-    }
-    return String.format(
-        "self.id in (%s)",
-        getAllLocationAndSubLocation(stockLocation, false).stream()
-            .map(location -> location.getId().toString())
-            .collect(Collectors.joining(",")));
-  }
-
-  @Override
   public Set<Long> getLocationAndAllParentLocationsIdsOrderedFromTheClosestToTheFurthest(
       StockLocation stockLocation) {
     Set<Long> resultSet = new LinkedHashSet<>();

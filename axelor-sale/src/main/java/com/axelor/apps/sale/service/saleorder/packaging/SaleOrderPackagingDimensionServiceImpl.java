@@ -35,6 +35,7 @@ public class SaleOrderPackagingDimensionServiceImpl implements SaleOrderPackagin
 
   protected static final BigDecimal THICKNESS = BigDecimal.valueOf(5); // (in mm)
   protected static final String UNIT_MILLIMETER = "mm";
+  protected static final String UNIT_KG = "kg";
 
   protected UnitConversionService unitConversionService;
   protected UnitRepository unitRepository;
@@ -114,6 +115,26 @@ public class SaleOrderPackagingDimensionServiceImpl implements SaleOrderPackagin
         .all()
         .filter("self.labelToPrinting = :labelToPrinting")
         .bind("labelToPrinting", UNIT_MILLIMETER)
+        .fetchOne();
+  }
+
+  @Override
+  public BigDecimal getConvertedWeight(BigDecimal value, Product product) throws AxelorException {
+    Unit unit = product.getMassUnit();
+    Unit targetUnit = getKilogramUnit();
+    if (unit != null && !unit.equals(targetUnit)) {
+      value =
+          unitConversionService.convert(
+              unit, targetUnit, value, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, product);
+    }
+    return value;
+  }
+
+  protected Unit getKilogramUnit() {
+    return unitRepository
+        .all()
+        .filter("self.labelToPrinting = :labelToPrinting")
+        .bind("labelToPrinting", UNIT_KG)
         .fetchOne();
   }
 }

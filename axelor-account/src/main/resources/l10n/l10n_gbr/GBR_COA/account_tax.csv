@@ -1,4 +1,4 @@
-"importId";"code";"name";"_activeTaxLine";"taxType.importId"
+"importId";"code";"name";"_activeTaxLine";"taxType_importId"
 "GBR_COA1";"UK_SRT";"Standard rate purchase (20%)";"GBR_COA1";"GBR_COA1"
 "GBR_COA2";"UK_SRS_20";"Standard rate sale (20%)";"GBR_COA2";"GBR_COA1"
 "GBR_COA3";"UK_ZRP_EC";"Zero rated purchase from EC";"GBR_COA3";"GBR_COA1"

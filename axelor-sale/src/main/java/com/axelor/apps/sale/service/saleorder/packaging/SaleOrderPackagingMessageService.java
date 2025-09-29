@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.service.saleorder.packaging;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import java.math.BigDecimal;
 import java.util.List;
@@ -33,5 +34,6 @@ public interface SaleOrderPackagingMessageService {
       Map<Product, BigDecimal> productQtyMap,
       List<String> messages,
       Map<Product, String> descMap,
-      Map<Product, BigDecimal[]> weightMap);
+      Map<Product, BigDecimal[]> weightMap)
+      throws AxelorException;
 }

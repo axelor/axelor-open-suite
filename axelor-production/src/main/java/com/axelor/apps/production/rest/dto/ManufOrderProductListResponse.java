@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.production.rest.dto;
 
-import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.utils.api.ResponseStructure;
 import java.util.List;
 
@@ -27,8 +26,8 @@ public class ManufOrderProductListResponse extends ResponseStructure {
   private final List<ManufOrderProductResponse> productList;
 
   public ManufOrderProductListResponse(
-      List<ManufOrderProductResponse> productList, ManufOrder manufOrder) {
-    super(manufOrder.getVersion());
+      List<ManufOrderProductResponse> productList, Integer version) {
+    super(version);
     this.productList = productList;
   }
 

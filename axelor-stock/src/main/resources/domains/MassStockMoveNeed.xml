@@ -12,6 +12,8 @@
       ref="com.axelor.apps.base.db.Product" required="true"/>
     <decimal name="qtyToMove" title="Quantity" required="true" precision="20" scale="10"
       min="0"/>
+    <many-to-one name="trackingNumber" ref="com.axelor.apps.stock.db.TrackingNumber"
+      title="Tracking number"/>
   </entity>
 
 

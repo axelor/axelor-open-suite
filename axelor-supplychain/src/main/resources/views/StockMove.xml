@@ -11,7 +11,7 @@
     <field name="estimatedDate"/>
     <field name="realDate"/>
     <field name="availableStatusSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printStockMoveBtn" title="Print" readonlyIf="statusSelect == 1" width="32"
       icon="fa-print" onClick="action-stock-move-group-print-stock-move"/>
     <button name="viewDirectionBtn" readonlyIf="typeSelect != 2 || statusSelect == 1"
@@ -27,7 +27,7 @@
     <field name="estimatedDate"/>
     <field name="realDate"/>
     <field name="availableStatusSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printStockMoveBtn" title="Print" readonlyIf="statusSelect == 1" width="32"
       icon="fa-print" onClick="action-stock-move-group-print-stock-move"/>
     <button name="viewDirectionBtn" readonlyIf="typeSelect != 2 || statusSelect == 1"
@@ -45,7 +45,7 @@
     <field name="fromAddressStr" hidden="true"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="availableStatusSelect">
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
       <hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
