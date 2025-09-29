@@ -14,8 +14,9 @@
 
     <extend target="//panel-tabs[@name='mainPanelTab']/*[last()]">
       <insert position="after">
-        <panel name="analyticDistributionPanel" readonlyIf="$isReadOnly !== false"
-          title="Analytics" if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
+        <panel name="analyticDistributionPanel"
+          readonlyIf="$isReadOnly !== false || saleOrder.statusSelect == 3" title="Analytics"
+          if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
           onTabSelect="action-sale-order-line-method-set-distribution-line-readonly">
           <field name="analyticDistributionTemplate"
             grid-view="analytic-distribution-template-grid"

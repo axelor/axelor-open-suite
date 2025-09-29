@@ -33,6 +33,7 @@ import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeServiceImpl;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.IntercoService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -42,6 +43,7 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
 
   protected AppSupplychainService appSupplychainService;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
+  protected AnalyticToolSupplychainService analyticToolSupplychainService;
 
   @Inject
   public SaleOrderFinalizeSupplychainServiceImpl(
@@ -53,7 +55,8 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
       AppSaleService appSaleService,
       AppCrmService appCrmService,
       AppSupplychainService appSupplychainService,
-      AccountingSituationSupplychainService accountingSituationSupplychainService) {
+      AccountingSituationSupplychainService accountingSituationSupplychainService,
+      AnalyticToolSupplychainService analyticToolSupplychainService) {
     super(
         saleOrderRepository,
         sequenceService,
@@ -64,6 +67,7 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
         appCrmService);
     this.appSupplychainService = appSupplychainService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+    this.analyticToolSupplychainService = analyticToolSupplychainService;
   }
 
   @Override
@@ -88,6 +92,8 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
     if (saleOrder.getCreatedByInterco()) {
       fillIntercompanyPurchaseOrderCounterpart(saleOrder);
     }
+
+    analyticToolSupplychainService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
   }
 
   /**
