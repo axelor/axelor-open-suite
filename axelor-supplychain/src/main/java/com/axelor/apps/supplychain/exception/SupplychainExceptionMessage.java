@@ -433,4 +433,10 @@ public final class SupplychainExceptionMessage {
 
   public static final String SUPPLYCHAIN_PACKAGING_SEQUENCE_ERROR = /*$$(*/
       "There is no configured sequence for the Packaging" /*)*/;
+
+  public static final String INVALID_PACKAGING_LINE_QTY = /*$$(*/
+      "The packaging line qty can not be greater than the stock move line's qty remaining to package." /*)*/;
+
+  public static final String NO_ANY_STOCK_MOVE_LINE_SELECTED = /*$$(*/
+      "At least one stock move line must be selected." /*)*/;
 }
