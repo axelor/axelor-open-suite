@@ -1,0 +1,4 @@
+---
+title: "FEC Import : No longer remove date from generated move reference."
+module: axelor-account
+
