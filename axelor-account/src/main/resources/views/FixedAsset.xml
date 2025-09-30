@@ -360,6 +360,10 @@
         readonlyIf="disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0 &amp;&amp; $generateSaleMove &amp;&amp; !saleTaxLineSet"/>
       <field name="$generateSaleMove" title="Generate Sale Move" widget="boolean"
         showIf="_moveGenerationException != 2 &amp;&amp; disposalTypeSelect == 2"/>
+      <field name="$customer" title="Customer" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner" showIf="$generateSaleMove" hidden="true"
+        onChange="action-fixed-asset-wizard-record-on-customer-change"/>
+      <field name="$customerId" type="Integer" hidden="true"/>
       <field name="saleTaxLineSet" requiredIf="$generateSaleMove" title="Tax lines"
         canNew="false" type="many-to-many" target="com.axelor.apps.account.db.TaxLine"
         showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove" hidden="true"
@@ -472,6 +476,8 @@
     <field name="$originalQty" expr="eval: _fixedAsset?.qty"/>
     <field name="_moveGenerationException" expr="eval: _fixedAsset?.moveGenerationException"/>
     <field name="_fixedAssetId" expr="eval: _fixedAsset?.id"/>
+    <field name="$customer" expr="eval: _fixedAsset?.partner"/>
+    <field name="$customerId" expr="eval: _fixedAsset?.partner?.id"/>
   </action-record>
 
   <action-record name="action-fixed-asset-record-default"
@@ -1049,5 +1055,11 @@
     <call class="com.axelor.apps.account.web.FixedAssetController"
       method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
+
+  <action-record name="action-fixed-asset-wizard-record-on-customer-change"
+    model="com.axelor.utils.db.Wizard">
+    <field name="$customerId" expr="eval: customer.id" if="customer != null"/>
+    <field name="$customerId" expr="null" if="customer == null"/>
+  </action-record>
 </object-views>
 
