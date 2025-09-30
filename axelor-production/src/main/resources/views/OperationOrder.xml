@@ -114,7 +114,8 @@
       <field name="operationName" readonlyIf="statusSelect == 6" required="true"/>
       <field name="manufOrder" colSpan="3" hidden="true" readonly="true"/>
       <field name="outsourcing" colSpan="3"/>
-      <field name="isToInvoice" colSpan="3"/>
+      <field name="isToInvoice" colSpan="3" if-module="axelor-business-production"
+        if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
       <field name="prodProcessLine" hidden="true"/>
       <field name="prodProcessLine.optional" colSpan="3" readonly="true" showTitle="false">
         <viewer>
