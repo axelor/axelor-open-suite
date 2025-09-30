@@ -1,3 +1,4 @@
 ---
-title: "Price Lists:Harmonise menu to display exclusive records"
-module: axelor-supplychain
+title: "Price list: fixed price list filter in grid views."
+module: axelor-base
+
