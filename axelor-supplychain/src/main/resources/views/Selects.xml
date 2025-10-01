@@ -207,4 +207,9 @@
     <option value="2">Missing</option>
   </selection>
 
+  <selection name="base.pricing.type.select" id="supplychain.base.pricing.type.select">
+    <option value="FreightCarrierPricing">Freight Carrier Pricing</option>
+    <option value="FreightCarrierDelay">Freight Carrier Delay</option>
+  </selection>
+
 </object-views>
