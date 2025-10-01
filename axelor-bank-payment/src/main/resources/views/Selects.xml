@@ -138,12 +138,16 @@
     <option value="pain.002.001.02.ack">pain.002.001.02.ack</option>
     <option value="csv.jma.dot">csv.jma.dot</option>
     <option value="csv.ymd.dot">csv.ymd.dot</option>
+    <option value="pain.002.001.03.ara">pain.002.001.03.ara</option>
+    <option value="pain.002.001.03.ack">pain.002.001.03.ack</option>
+    <option value="camt.xxx.cb2a.cbc">camt.xxx.cb2a.cbc</option>
+    <option value="camt.054.001.02.rct">camt.054.001.02.rct</option>
+    <option value="camt.054.001.02.ard">camt.054.001.02.ard</option>
+    <option value="camt.054.001.02.rsd">camt.054.001.02.rsd</option>
+    <option value="camt.052.001.02.rep">camt.052.001.02.rep</option>
+    <option value="camt.054.001.02.rdd">camt.054.001.02.rdd</option>
+    <option value="camt.054.001.xx.add">camt.054.001.xx.add</option>
   </selection>
-
-
-
-
-
 
   <selection name="iaccounting.batch.action.select"
     id="bankpayment.iaccounting.batch.action.select">
