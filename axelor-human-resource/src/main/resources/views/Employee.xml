@@ -153,10 +153,11 @@
       <field name="profitSharingBeneficiary" colSpan="3"/>
 
       <field name="weeklyWorkHours" colSpan="3"/>
-      <field name="dailyWorkHours" colSpan="3"/>
-      <field name="hourlyRate" colSpan="3"/>
-      <field name="$dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"
-        x-bind="{{hourlyRate * dailyWorkHours}}"/>
+      <field name="dailyWorkHours" colSpan="3"
+        onChange="action-employee-record-set-daily-salary-cost"/>
+      <field name="hourlyRate" colSpan="3"
+        onChange="action-employee-record-set-daily-salary-cost"/>
+      <field name="dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"/>
     </panel>
 
     <panel name="mainEmploymentContractSBSPanel" title="Main employment contract"
@@ -418,10 +419,11 @@
           <field name="profitSharingBeneficiary" colSpan="6"/>
 
           <field name="weeklyWorkHours" colSpan="3"/>
-          <field name="dailyWorkHours" colSpan="3"/>
-          <field name="hourlyRate" colSpan="3"/>
-          <field name="$dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"
-            x-bind="{{hourlyRate * dailyWorkHours}}"/>
+          <field name="dailyWorkHours" colSpan="3"
+            onChange="action-employee-record-set-daily-salary-cost"/>
+          <field name="hourlyRate" colSpan="3"
+            onChange="action-employee-record-set-daily-salary-cost"/>
+          <field name="dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"/>
 
           <panel name="planningPanel" title="Plannings" colSpan="12" canCollapse="true"
             collapseIf="true">
@@ -844,6 +846,11 @@
     <call class="com.axelor.apps.hr.web.EmployeeController"
       method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
+
+  <action-record name="action-employee-record-set-daily-salary-cost"
+    model="com.axelor.apps.hr.db.Employee">
+    <field name="dailySalaryCost" expr="eval: dailyWorkHours * hourlyRate"/>
+  </action-record>
 
   <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
     title="Employee filters">
