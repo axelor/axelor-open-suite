@@ -451,4 +451,10 @@ public final class SupplychainExceptionMessage {
 
   public static final String PURCHASE_ORDER_LINE_QTY_UPDATE_NOT_ALLOWED_INVOICED = /*$$(*/
       "The purchase order line qty can't be lower than the qty already invoiced." /*)*/;
+
+  public static final String INVALID_PACKAGING_LINE_QTY = /*$$(*/
+      "The packaging line qty can not be greater than the stock move line's qty remaining to package." /*)*/;
+
+  public static final String NO_ANY_STOCK_MOVE_LINE_SELECTED = /*$$(*/
+      "At least one stock move line must be selected." /*)*/;
 }

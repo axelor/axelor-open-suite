@@ -18,39 +18,36 @@
  */
 package com.axelor.apps.supplychain.db.repo;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Sequence;
-import com.axelor.apps.base.db.repo.SequenceRepository;
-import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.administration.SequenceService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.supplychain.db.Packaging;
-import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.i18n.I18n;
-import com.google.common.base.Strings;
+import com.axelor.apps.supplychain.service.packaging.PackagingSequenceService;
+import com.axelor.apps.supplychain.service.packaging.PackagingStockMoveLineService;
 import com.google.inject.Inject;
+import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class PackagingSupplychainRepository extends PackagingRepository {
 
-  protected final SequenceService sequenceService;
+  protected final AppBaseService appBaseService;
+  protected final PackagingSequenceService packagingSequenceService;
+  protected final PackagingStockMoveLineService packagingStockMoveLineService;
 
   @Inject
-  public PackagingSupplychainRepository(SequenceService sequenceService) {
-    this.sequenceService = sequenceService;
+  public PackagingSupplychainRepository(
+      AppBaseService appBaseService,
+      PackagingSequenceService packagingSequenceService,
+      PackagingStockMoveLineService packagingStockMoveLineService) {
+    this.appBaseService = appBaseService;
+    this.packagingSequenceService = packagingSequenceService;
+    this.packagingStockMoveLineService = packagingStockMoveLineService;
   }
 
   @Override
   public Packaging save(Packaging packaging) {
     try {
-      if (Strings.isNullOrEmpty(packaging.getPackagingNumber())) {
-        setPackagingNumber(packaging);
-      }
-      for (Packaging childPackaging : packaging.getChildrenPackagingList()) {
-        if (Strings.isNullOrEmpty(childPackaging.getPackagingNumber())) {
-          setPackagingNumber(childPackaging);
-        }
-      }
+      packagingSequenceService.generatePackagingNumber(packaging);
+      packagingStockMoveLineService.updateQtyRemainingToPackage(packaging);
       return super.save(packaging);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
@@ -58,19 +55,16 @@ public class PackagingSupplychainRepository extends PackagingRepository {
     }
   }
 
-  protected void setPackagingNumber(Packaging packaging) throws AxelorException {
-    String packagingNumber =
-        sequenceService.getSequenceNumber(
-            SequenceRepository.SUPPLYCHAIN_PACKAGING,
-            Packaging.class,
-            "packagingNumber",
-            packaging);
-    if (Strings.isNullOrEmpty(packagingNumber)) {
-      throw new AxelorException(
-          Sequence.class,
-          TraceBackRepository.CATEGORY_NO_VALUE,
-          I18n.get(SupplychainExceptionMessage.SUPPLYCHAIN_PACKAGING_SEQUENCE_ERROR));
-    }
-    packaging.setPackagingNumber(packagingNumber);
+  @Override
+  public Packaging copy(Packaging packaging, boolean deep) {
+    packaging.setPackagingNumber(null);
+    return super.copy(packaging, deep);
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    json.put("$nbDecimalDigitForUnitPrice", appBaseService.getNbDecimalDigitForUnitPrice());
+
+    return super.populate(json, context);
   }
 }
