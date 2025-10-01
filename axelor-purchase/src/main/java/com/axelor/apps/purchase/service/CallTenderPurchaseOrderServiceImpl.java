@@ -14,6 +14,7 @@ import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderOffer;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.purchase.db.repo.CallTenderOfferRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.auth.AuthUtils;
@@ -87,6 +88,23 @@ public class CallTenderPurchaseOrderServiceImpl implements CallTenderPurchaseOrd
       Company company,
       List<CallTenderOffer> callTenderOfferList)
       throws AxelorException {
+    PurchaseOrder purchaseOrder = createPurchaseOrder(callTender, partner, company);
+    List<CallTenderOffer> filteredCallTenderOfferList =
+        callTenderOfferList.stream()
+            .filter(offer -> offer.getSupplierPartner().equals(partner))
+            .collect(Collectors.toList());
+    for (CallTenderOffer filteredCallTenderOffer : filteredCallTenderOfferList) {
+      filteredCallTenderOffer.setStatusSelect(CallTenderOfferRepository.STATUS_SELECTED);
+      PurchaseOrderLine purchaseOrderLine =
+          createPurchaseOrderLine(filteredCallTenderOffer, company, purchaseOrder);
+      purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
+    }
+    purchaseOrderService.computePurchaseOrder(purchaseOrder);
+    return purchaseOrderRepository.save(purchaseOrder);
+  }
+
+  protected PurchaseOrder createPurchaseOrder(
+      CallTender callTender, Partner partner, Company company) throws AxelorException {
     PurchaseOrder purchaseOrder =
         purchaseOrderCreateService.createPurchaseOrder(
             AuthUtils.getUser(),
@@ -99,19 +117,10 @@ public class CallTenderPurchaseOrderServiceImpl implements CallTenderPurchaseOrd
             appBaseService.getTodayDate(company),
             partnerPriceListService.getDefaultPriceList(partner, PriceListRepository.TYPE_PURCHASE),
             partner,
+            null,
             null);
     purchaseOrder.setCallTender(callTender);
-    List<CallTenderOffer> filteredCallTenderOfferList =
-        callTenderOfferList.stream()
-            .filter(offer -> offer.getSupplierPartner().equals(partner))
-            .collect(Collectors.toList());
-    for (CallTenderOffer filteredCallTenderOffer : filteredCallTenderOfferList) {
-      PurchaseOrderLine purchaseOrderLine =
-          createPurchaseOrderLine(filteredCallTenderOffer, company, purchaseOrder);
-      purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
-    }
-    purchaseOrderService.computePurchaseOrder(purchaseOrder);
-    return purchaseOrderRepository.save(purchaseOrder);
+    return purchaseOrder;
   }
 
   protected PurchaseOrderLine createPurchaseOrderLine(

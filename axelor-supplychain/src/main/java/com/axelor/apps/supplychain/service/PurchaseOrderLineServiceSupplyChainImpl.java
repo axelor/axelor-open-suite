@@ -76,6 +76,21 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+  @Override
+  public PurchaseOrderLine createPurchaseOrderLine(
+      PurchaseOrder purchaseOrder,
+      Product product,
+      String productName,
+      String description,
+      BigDecimal qty,
+      Unit unit)
+      throws AxelorException {
+    PurchaseOrderLine purchaseOrderLine =
+        super.createPurchaseOrderLine(purchaseOrder, product, productName, description, qty, unit);
+    purchaseOrderLine.setStockLocation(purchaseOrder.getStockLocation());
+    return purchaseOrderLine;
+  }
+
   public PurchaseOrderLine fill(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder)
       throws AxelorException {
 
