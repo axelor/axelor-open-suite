@@ -1,4 +1,4 @@
-"importId";"partner_importId";"ownerName";"iban";"bankCode";"sortCode";"accountNbr";"bbanKey";"ibanBic";"bank.importId";"bankAddress.importId";"company.importId"
+"importId";"partner_importId";"ownerName";"iban";"bankCode";"sortCode";"accountNbr";"bbanKey";"ibanBic";"bank_importId";"bankAddress.importId";"company.importId"
 1;20;"APOLLO ";"FR7699111053182427705722824";"99111";"05318";24277057228;24;"FR7699111053182427705722824 AAAAFRPPXXX";1;1;
 2;44;"BLUEBERRY TELECOM";"FR7699111053257084773754411";"99111";"05325";70847737544;11;"FR7699111053257084773754411 AAAAFRPPXXX";1;1;
 3;70;"MASSON Logistics";"FR7699111054591684853901734";"99111";"05459";16848539017;34;"FR7699111054591684853901734 AAAAFRPPXXX";1;1;

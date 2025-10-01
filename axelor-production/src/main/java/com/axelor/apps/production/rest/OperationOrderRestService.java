@@ -19,11 +19,19 @@
 package com.axelor.apps.production.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.OperationOrder;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import jakarta.ws.rs.core.Response;
+import java.math.BigDecimal;
 
 public interface OperationOrderRestService {
 
   Response updateStatusOfOperationOrder(OperationOrder operationOrder, Integer targetStatus)
+      throws AxelorException;
+
+  StockMoveLine addOperationOrderProduct(
+      Product product, BigDecimal qty, TrackingNumber trackingNumber, OperationOrder operationOrder)
       throws AxelorException;
 }

@@ -36,4 +36,6 @@ public interface SaleOrderPackagingDimensionService {
   BigDecimal[] getDimensions(Product product, boolean isBox) throws AxelorException;
 
   BigDecimal[] getProductDimensions(Product product) throws AxelorException;
+
+  BigDecimal getConvertedWeight(BigDecimal value, Product product) throws AxelorException;
 }

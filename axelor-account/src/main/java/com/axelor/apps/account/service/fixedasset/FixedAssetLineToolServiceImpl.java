@@ -30,12 +30,12 @@ import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService {
 
@@ -54,20 +54,16 @@ public class FixedAssetLineToolServiceImpl implements FixedAssetLineToolService 
       FixedAsset fixedAsset) {
     Objects.requireNonNull(fixedAsset);
 
-    // Preparation of data needed for computation
-    List<FixedAssetLine> allFixedAssetLineList = new ArrayList<>();
-    // This method will only compute line that are not realized.
-    allFixedAssetLineList.addAll(
-        fixedAsset.getFiscalFixedAssetLineList().stream()
+    List<FixedAssetLine> allFixedAssetLineList =
+        Stream.of(fixedAsset.getFiscalFixedAssetLineList(), fixedAsset.getFixedAssetLineList())
+            .filter(Objects::nonNull)
+            .flatMap(List::stream)
             .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
-            .collect(Collectors.toList()));
-    allFixedAssetLineList.addAll(
-        fixedAsset.getFixedAssetLineList().stream()
-            .filter(line -> line.getStatusSelect() == FixedAssetLineRepository.STATUS_PLANNED)
-            .collect(Collectors.toList()));
-
-    allFixedAssetLineList.sort(Comparator.comparing(FixedAssetLine::getDepreciationDate));
-
+            .sorted(
+                Comparator.comparing(
+                    FixedAssetLine::getDepreciationDate,
+                    Comparator.nullsLast(Comparator.naturalOrder())))
+            .collect(Collectors.toList());
     return groupByPeriodicityInMonth(allFixedAssetLineList, fixedAsset.getPeriodicityInMonth());
   }
 

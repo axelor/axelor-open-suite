@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="stock" package="com.axelor.apps.stock.db"/>
+
+  <entity name="DefaultStockLocationBySite">
+
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product"/>
+    <many-to-one name="site" ref="com.axelor.apps.base.db.Site" title="Site"
+      required="true"/>
+    <many-to-one name="receiptDefaultStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Receipt default stock location"/>
+    <many-to-one name="pickupDefaultStockLocation"
+      ref="com.axelor.apps.stock.db.StockLocation" title="Pickup default stock location"/>
+
+  </entity>
+
+</domain-models>

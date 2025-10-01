@@ -16,8 +16,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.base.service;
 
-import com.axelor.apps.stock.service.LogisticalFormService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.ProductPackaging;
+import java.math.BigDecimal;
 
-public interface LogisticalFormSupplychainService extends LogisticalFormService {}
+public interface ProductPackagingService {
+
+  BigDecimal computePackagingMaxTotalWeight(ProductPackaging productPackaging)
+      throws AxelorException;
+
+  boolean isTotalWeightNotValid(ProductPackaging productPackaging) throws AxelorException;
+}

@@ -559,7 +559,6 @@ public class PartnerController {
 
   public void getSalePartnerPriceListDomain(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
-    partner = Beans.get(PartnerRepository.class).find(partner.getId());
     response.setAttr(
         "salePartnerPriceList",
         "domain",
@@ -568,7 +567,6 @@ public class PartnerController {
 
   public void getPurchasePartnerPriceListDomain(ActionRequest request, ActionResponse response) {
     Partner partner = request.getContext().asType(Partner.class);
-    partner = Beans.get(PartnerRepository.class).find(partner.getId());
     response.setAttr(
         "purchasePartnerPriceList",
         "domain",

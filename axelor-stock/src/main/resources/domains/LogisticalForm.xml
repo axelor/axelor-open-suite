@@ -34,10 +34,6 @@
       default="1"/>
     <string name="customerAccountNumberToCarrier"/>
 
-    <one-to-many name="logisticalFormLineList"
-      ref="com.axelor.apps.stock.db.LogisticalFormLine" title="Packing lines"
-      mappedBy="logisticalForm"/>
-
     <boolean name="isEmailSent" readonly="true" title="Email sent" default="false"/>
 
     <extra-code>

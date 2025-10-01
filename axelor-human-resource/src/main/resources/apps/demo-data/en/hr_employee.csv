@@ -1,4 +1,4 @@
-"importId";"contactPartner.importId";"hourlyRate";"timeLoggingPreferenceSelect";"weeklyWorkHours";"dailyWorkHours";"manager.importId";"department.importId";"timesheetReminder";"external";"weeklyPlanning.importId";"lunchVoucherFormatSelect";"hireDate";"leavingDate";"stepByStepSelect";"publicHolidayEventsPlanning.importId";"hrManager";"seniorityDate";"birthDate";"bonusCoef";"profitSharingBeneficiary"
+"importId";"contactPartner_importId";"hourlyRate";"timeLoggingPreferenceSelect";"weeklyWorkHours";"dailyWorkHours";"manager.importId";"department.importId";"timesheetReminder";"external";"weeklyPlanning.importId";"lunchVoucherFormatSelect";"hireDate";"leavingDate";"stepByStepSelect";"publicHolidayEventsPlanning.importId";"hrManager";"seniorityDate";"birthDate";"bonusCoef";"profitSharingBeneficiary"
 1;90001;72;"days";35;7;;;;;1;1;"TODAY[+5d]";;5;1;;"TODAY[+5d]";"TODAY[-30y]";;true
 2;90002;46;"hours";35;7;;;;;1;1;"TODAY[+20d]";;5;1;;"TODAY[+20d]";"TODAY[-27y]";;false
 3;90003;34;"hours";35;7;;;;;1;1;"TODAY[+35d]";;5;1;;"TODAY[+35d]";"TODAY[-33y]";;true

@@ -23,9 +23,12 @@ import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ManufOrderProductListResponse;
 import com.axelor.apps.production.rest.dto.ManufOrderProductResponse;
+import com.axelor.apps.production.rest.dto.ManufOrderStockMoveLineResponse;
 import com.axelor.apps.production.rest.dto.OperationOrderProductGetRequest;
+import com.axelor.apps.production.rest.dto.OperationOrderProductPostRequest;
 import com.axelor.apps.production.rest.dto.OperationOrderPutRequest;
 import com.axelor.apps.production.translation.ITranslation;
+import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -91,5 +94,36 @@ public class OperationOrderRestController {
         I18n.get(ITranslation.REQUEST_COMPLETED),
         new ManufOrderProductListResponse(
             consumedProductList, requestBody.fetchOperationOrder().getVersion()));
+  }
+
+  @Operation(
+      summary = "Add product",
+      tags = {"Operation Order"})
+  @Path("/{operationOrderId}/add-product/")
+  @POST
+  @HttpExceptionHandler
+  public Response addProduct(
+      @PathParam("operationOrderId") long operationOrderId,
+      OperationOrderProductPostRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck()
+        .writeAccess(OperationOrder.class, operationOrderId)
+        .createAccess(StockMoveLine.class)
+        .check();
+
+    OperationOrder operationOrder =
+        ObjectFinder.find(OperationOrder.class, operationOrderId, requestBody.getVersion());
+
+    StockMoveLine stockMoveLine =
+        Beans.get(OperationOrderRestService.class)
+            .addOperationOrderProduct(
+                requestBody.fetchProduct(),
+                requestBody.getQty(),
+                requestBody.fetchTrackingNumber(),
+                operationOrder);
+
+    return ResponseConstructor.buildCreateResponse(
+        stockMoveLine, new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 }

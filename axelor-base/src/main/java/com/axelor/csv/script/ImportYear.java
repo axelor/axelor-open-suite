@@ -21,7 +21,9 @@ package com.axelor.csv.script;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.YearService;
+import com.google.common.base.Strings;
 import jakarta.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public class ImportYear {
@@ -34,5 +36,12 @@ public class ImportYear {
     year.setCode(year.getCode() + year.getFromDate().getYear());
     year.setPeriodList(yearService.generatePeriods(year));
     return year;
+  }
+
+  public String computeCode(String code, String fromDate) {
+    if (Strings.isNullOrEmpty(code) || Strings.isNullOrEmpty(fromDate)) {
+      return null;
+    }
+    return code + LocalDateTime.parse(fromDate).toLocalDate().getYear();
   }
 }

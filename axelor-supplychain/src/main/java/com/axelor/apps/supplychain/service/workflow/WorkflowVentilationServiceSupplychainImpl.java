@@ -41,6 +41,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -205,7 +206,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       return null;
     }
 
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    SaleOrder saleOrder = SaleOrderLineUtils.getParentSol(saleOrderLine).getSaleOrder();
 
     // Update invoiced amount on sale order line
     BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();

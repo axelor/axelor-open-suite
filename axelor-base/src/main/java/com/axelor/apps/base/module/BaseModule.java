@@ -165,6 +165,8 @@ import com.axelor.apps.base.service.ProductConversionService;
 import com.axelor.apps.base.service.ProductConversionServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
+import com.axelor.apps.base.service.ProductPackagingService;
+import com.axelor.apps.base.service.ProductPackagingServiceImpl;
 import com.axelor.apps.base.service.ProductPriceListService;
 import com.axelor.apps.base.service.ProductPriceListServiceImpl;
 import com.axelor.apps.base.service.ProductPriceService;
@@ -569,6 +571,7 @@ public class BaseModule extends AxelorModule {
     bind(MapGroupService.class).to(MapGroupServiceImpl.class);
     bind(MapViewService.class).to(MapViewServiceImpl.class);
     bind(MapViewRepository.class).to(MapViewBaseRepository.class);
+    bind(ProductPackagingService.class).to(ProductPackagingServiceImpl.class);
     bind(ExportObserver.class);
     addHibernateListenerConfigurator(AosHibernateConfigurator.class);
   }
