@@ -59,7 +59,7 @@ public interface PurchaseOrderLineService {
   public PriceListLine getPriceListLine(
       PurchaseOrderLine purchaseOrderLine, PriceList priceList, BigDecimal price);
 
-  public Map<String, BigDecimal> compute(
+  public Map<String, Object> compute(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException;
 
   public BigDecimal computeDiscount(PurchaseOrderLine purchaseOrderLine, Boolean inAti);
