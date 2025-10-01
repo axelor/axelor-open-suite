@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="business-project" package="com.axelor.apps.businessproject.db"/>
+
+  <entity name="TaskReport">
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
+    <many-to-one name="location" ref="com.axelor.apps.base.db.Address" title="Location"/>
+    <many-to-one name="printedPdf" title="Printed PDF" ref="com.axelor.meta.db.MetaFile"/>
+
+    <date name="taskDate" title="Date"/>
+    <datetime name="startTime" title="Start time"/>
+    <decimal name="breakTimeHours" title="Break time (hours)" precision="5" scale="2"/>
+    <datetime name="endTime" title="End time"/>
+    <decimal name="totalWorkHours" title="Total working time (hours)" precision="6"
+      scale="2" readonly="true"/>
+    <many-to-many name="activities" ref="com.axelor.apps.base.db.Product"
+      title="Activities performed"/>
+
+    <boolean name="travelExpenses" title="Travel expenses"/>
+    <boolean name="toolsUsage" title="Tools usage"/>
+    <boolean name="emergencyService" title="Emergency service"/>
+    <string name="material" title="Material" large="true"/>
+    <string name="otherServices" title="Other services" large="true"/>
+
+    <string name="comments" title="Comments" large="true"/>
+    <binary name="employeeSignature" title="Employee signature"/>
+    <string name="customerName" title="Customer name"/>
+    <binary name="customerSignature" title="Customer signature"/>
+    <datetime name="signedOn" title="Signed on"/>
+  </entity>
+
+</domain-models>

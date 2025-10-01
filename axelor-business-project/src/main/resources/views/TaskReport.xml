@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+                                  http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <!-- Grid View -->
+  <grid name="task-report-grid" title="Task Reports"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <field name="project" title="Order "/>
+    <field name="customer.simpleFullName" title="Customer"/>
+    <field name="taskDate" title="Date"/>
+    <field name="location"/>
+    <field name="totalWorkHours"/>
+  </grid>
+
+  <!-- Form View -->
+  <form name="task-report-form" title="Task Reports"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+
+    <panel title="General Information">
+      <field name="project" title="Order"/>
+      <field name="customer"/>
+      <field name="employee"/>
+      <field name="location"/>
+      <field name="taskDate"/>
+    </panel>
+
+    <panel title="Work Timing">
+      <field name="startTime"/>
+      <field name="breakTimeHours"/>
+      <field name="endTime"/>
+      <field name="totalWorkHours"/>
+    </panel>
+
+    <panel title="Work Details">
+      <panel colSpan="12">
+
+        <panel title="Additional Services" colSpan="8">
+          <field name="travelExpenses" colSpan="4" widget="checkbox"/>
+          <field name="toolsUsage" colSpan="4" widget="checkbox"/>
+          <field name="emergencyService" colSpan="4" widget="checkbox"/>
+        </panel>
+
+        <panel title="Activity Details" colSpan="12">
+          <field name="activities" colSpan="12" widget="multiselect"/>
+          <field name="material" colSpan="12" widget="textarea"/>
+          <field name="otherServices" colSpan="12" widget="textarea"/>
+          <field name="comments" title="Comments" colSpan="12" widget="textarea"/>
+        </panel>
+      </panel>
+    </panel>
+
+    <panel title="Sign-Off" toolbar="true">
+      <panel colSpan="12">
+        <panel colSpan="6">
+          <field name="employeeSignature" title="Employee Signature" widget="drawing"
+            colSpan="12"/>
+        </panel>
+        <panel colSpan="6">
+          <field name="customerName" colSpan="12"/>
+          <field name="customerSignature" title="Customer Signature" widget="drawing"
+            colSpan="12"/>
+          <field name="signedOn" colSpan="12" align="right" widget="date"/>
+        </panel>
+      </panel>
+      <button name="printTaskReport" title="Print Report" icon="fa-print"
+        onClick="action-task-report-method-print" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-method name="action-task-report-method-print">
+    <call class="com.axelor.apps.businessproject.web.TaskReportController"
+      method="printTaskReport"/>
+  </action-method>
+
+  <menuitem name="menu-task-report" title="Task Reports" parent="menu-project"
+    action="task-report-view" icon="fa-tasks"/>
+
+  <action-view name="task-report-view" title="Task Reports"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <view type="grid" name="task-report-grid"/>
+    <view type="form" name="task-report-form"/>
+  </action-view>
+
+  <!-- <action-report name="action-report-task-report" -->
+  <!-- model="com.axelor.apps.businessproject.db.TaskReport" design="task-report.rptdesign" -->
+  <!-- output="task-report-${date}-${time}" format="pdf" attachment="true"> -->
+  <!-- <param name="reportId" expr="self.id"/> -->
+  <!-- </action-report> -->
+
+</object-views>
