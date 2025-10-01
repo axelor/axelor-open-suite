@@ -344,15 +344,15 @@
             onChange="action-product-record-set-control-on-receipt"/>
           <field name="productApproval.controlOnReceipt" hidden="true"/>
         </panel>
+        <button name="showAllStockMoveLineBtn" title="Show all stock moves" colSpan="6"
+          onClick="action-product-view-stock-move-line"/>
+        <button name="updateUnitBtn" title="Update stock location" colSpan="6"
+          showIf="id &amp;&amp; productTypeSelect == 'storable' &amp;&amp; stockManaged"
+          onClick="save,action-product-method-update-stock-location"/>
         <panel name="stockPanel" colSpan="12" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')">
           <field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"
             if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'controlOnReceipt'})"/>
-          <button name="showAllStockMoveLineBtn" title="Show all stock moves" colSpan="6"
-            onClick="action-product-view-stock-move-line"/>
-          <button name="updateUnitBtn" title="Update stock location" colSpan="6"
-            showIf="id &amp;&amp; productTypeSelect == 'storable' &amp;&amp; stockManaged"
-            onClick="save,action-product-method-update-stock-location"/>
           <field name="avgPrice" hideIf="!stockManaged"
             if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'avgPrice'})"/>
           <spacer name="avgPriceSpacer"/>
