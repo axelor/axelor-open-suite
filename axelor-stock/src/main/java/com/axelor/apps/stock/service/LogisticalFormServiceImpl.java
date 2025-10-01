@@ -19,14 +19,18 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber;
 import com.axelor.apps.stock.db.LogisticalForm;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,18 +39,44 @@ import java.util.stream.Collectors;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
 
+  protected final StockConfigService stockConfigService;
+
+  @Inject
+  public LogisticalFormServiceImpl(StockConfigService stockConfigService) {
+    this.stockConfigService = stockConfigService;
+  }
+
   @Override
   public String getStockMoveDomain(LogisticalForm logisticalForm) throws AxelorException {
 
-    if (logisticalForm.getDeliverToCustomerPartner() == null) {
+    Company company = logisticalForm.getCompany();
+    if (company == null) {
       return "self IS NULL";
     }
 
+    StockConfig stockConfig = stockConfigService.getStockConfig(company);
     List<String> domainList = new ArrayList<>();
 
     domainList.add("self.company = :company");
-    domainList.add("self.partner = :deliverToCustomerPartner");
-    domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
+    if (stockConfig.getAllowInternalStockMoveOnLogisticalForm()) {
+      if (!stockConfig.getIsLogisticalFormMultiClientsEnabled()) {
+        domainList.add(
+            String.format(
+                "(self.typeSelect = %d AND self.partner = :deliverToCustomerPartner) OR self.typeSelect = %d",
+                StockMoveRepository.TYPE_OUTGOING, StockMoveRepository.TYPE_INTERNAL));
+      } else {
+        domainList.add(
+            String.format(
+                "self.statusSelect in (%d, %d)",
+                StockMoveRepository.TYPE_OUTGOING, StockMoveRepository.TYPE_INTERNAL));
+      }
+    } else {
+      domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
+      if (!stockConfig.getIsLogisticalFormMultiClientsEnabled()) {
+        domainList.add("self.partner = :deliverToCustomerPartner");
+      }
+    }
+
     domainList.add(
         String.format(
             "self.statusSelect in (%d, %d)",

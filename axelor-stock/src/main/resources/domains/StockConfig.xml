@@ -123,6 +123,8 @@
 
     <boolean name="isLogisticalFormMultiClientsEnabled"
       title="Multi clients logistical form" default="false"/>
+    <boolean name="allowInternalStockMoveOnLogisticalForm"
+      title="Allow internal stock move on logistical form" default="false"/>
 
     <extra-code><![CDATA[
 		public static final int VALUATION_TYPE_WAP_VALUE = 1;
@@ -193,6 +195,7 @@
       <field name="supplierArrivalCancellationAutomaticMail" on="UPDATE"/>
       <field name="supplierArrivalCancellationMessageTemplate" on="UPDATE"/>
       <field name="isLogisticalFormMultiClientsEnabled" on="UPDATE"/>
+      <field name="allowInternalStockMoveOnLogisticalForm" on="UPDATE"/>
     </track>
   </entity>
 

@@ -12,7 +12,7 @@
     <many-to-one name="stockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Stock location"/>
     <many-to-one name="deliverToCustomerPartner" ref="com.axelor.apps.base.db.Partner"
-      required="true" title="Deliver to customer"/>
+      title="Deliver to customer"/>
     <date name="collectionDate" required="true"/>
 
     <many-to-one name="carrierPartner" ref="com.axelor.apps.base.db.Partner"
@@ -35,6 +35,9 @@
     <string name="customerAccountNumberToCarrier"/>
 
     <boolean name="isEmailSent" readonly="true" title="Email sent" default="false"/>
+
+    <one-to-many name="stockMoveList" title="Stock moves"
+      ref="com.axelor.apps.stock.db.StockMove" mappedBy="logisticalForm" orphanRemoval="false"/>
 
     <extra-code>
 		<![CDATA[

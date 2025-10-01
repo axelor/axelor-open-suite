@@ -23,6 +23,7 @@
 "Allocate",,,
 "Allocate all",,,
 "Allocations of costs",,,
+"Allow internal stock move on logistical form",,,
 "Allows to add every product from the common stock location",,,
 "An error occurred while importing the file data, product not found with code :",,,
 "An error occurred while importing the file data, there are multiple products with code :",,,
