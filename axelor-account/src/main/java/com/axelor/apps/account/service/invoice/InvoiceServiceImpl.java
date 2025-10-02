@@ -266,12 +266,6 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     compute(invoice);
 
     validateFactory.getValidator(invoice).process();
-
-    // if the invoice is an advance payment invoice, we also "ventilate" it
-    // without creating the move
-    if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
-      ventilate(invoice);
-    }
   }
 
   /**
