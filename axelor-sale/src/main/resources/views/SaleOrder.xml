@@ -2032,7 +2032,7 @@
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.id in (SELECT smLine.id FROM StockMoveLine smLine
       JOIN StockMove sm ON
-      (smLine.stockMove = sm.id)
+      (smLine.stockMove.id = sm.id)
       JOIN SaleOrder so ON (so MEMBER OF sm.saleOrderSet AND so.id =
       :saleOrder))</domain>
     <context name="saleOrder" expr="eval: __self__.id"/>

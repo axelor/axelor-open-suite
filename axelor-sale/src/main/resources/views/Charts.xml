@@ -815,7 +815,7 @@
       AND self.saleOrder.company = :activeCompany
       AND
       self.product.productCategory.id = :id
-      AND self.saleOrder.confirmationDateTime BETWEEN
+      AND DATE(self.saleOrder.confirmationDateTime) BETWEEN
       DATE(:fromDate) AND DATE(:toDate)
       GROUP BY
       TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM')

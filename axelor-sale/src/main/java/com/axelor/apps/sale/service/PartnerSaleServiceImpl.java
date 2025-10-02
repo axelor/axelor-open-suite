@@ -78,14 +78,14 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
 
   public List<Product> getProductBoughtByCustomer(Partner customer) {
     String domain =
-        "self.id in (SELECT line.product"
-            + " FROM SaleOrderLine line join SaleOrder sale on line.saleOrder = sale.id"
+        "self.id in (SELECT line.product.id"
+            + " FROM SaleOrderLine line join SaleOrder sale on line.saleOrder = sale"
             + " WHERE sale.statusSelect IN ("
             + SaleOrderRepository.STATUS_ORDER_CONFIRMED
             + ", "
             + SaleOrderRepository.STATUS_ORDER_COMPLETED
             + ")"
-            + " AND sale.clientPartner = "
+            + " AND sale.clientPartner.id = "
             + customer.getId()
             + ")";
 
@@ -101,15 +101,15 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
     String qtySelection = "SELECT SUM(line.qty)";
     String priceSelection = "SELECT SUM(line.exTaxTotal)";
     String endQuery =
-        " FROM SaleOrderLine line join SaleOrder sale on line.saleOrder = sale.id"
+        " FROM SaleOrderLine line join SaleOrder sale on line.saleOrder.id = sale.id"
             + " WHERE sale.statusSelect IN ("
             + SaleOrderRepository.STATUS_ORDER_CONFIRMED
             + ", "
             + SaleOrderRepository.STATUS_ORDER_COMPLETED
             + ")"
-            + " AND sale.clientPartner = "
+            + " AND sale.clientPartner.id = "
             + customer.getId()
-            + " AND line.product = "
+            + " AND line.product.id = "
             + product.getId();
 
     BigDecimal qty =

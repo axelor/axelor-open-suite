@@ -123,7 +123,7 @@ public class PartnerSaleController {
             Beans.get(SaleOrderRepository.class)
                 .all()
                 .filter("self.clientPartner = :partner")
-                .bind("partner", partner.getId())
+                .bind("partner", partner)
                 .count();
         if (saleOrderCount > 0) {
           response.setValue("customerCantBeRemoved", true);
