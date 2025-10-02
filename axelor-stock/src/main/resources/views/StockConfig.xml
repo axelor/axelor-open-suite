@@ -76,6 +76,8 @@
         <field name="isWithReturnSurplus" widget="boolean-switch" colSpan="4"/>
         <field name="isWithBackorder" widget="boolean-switch" colSpan="4"/>
         <field name="isLogisticalFormMultiClientsEnabled" widget="boolean-switch" colSpan="4"/>
+        <field name="allowInternalStockMoveOnLogisticalForm" widget="boolean-switch"
+          colSpan="4"/>
       </panel>
     </panel>
     <panel name="stockRuleInfoPanel" title="Stock rule information">

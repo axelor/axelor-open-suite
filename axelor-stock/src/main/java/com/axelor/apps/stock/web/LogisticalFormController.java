@@ -18,10 +18,12 @@
  */
 package com.axelor.apps.stock.web;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.service.LogisticalFormService;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -36,9 +38,14 @@ public class LogisticalFormController {
     try {
       LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
       String domain = Beans.get(LogisticalFormService.class).getStockMoveDomain(logisticalForm);
-      response.setAttr("$stockMove", "domain", domain);
+      response.setAttr("stockMoveList", "domain", domain);
 
-      if (logisticalForm.getDeliverToCustomerPartner() == null) {
+      Company company = logisticalForm.getCompany();
+      if (logisticalForm.getDeliverToCustomerPartner() == null
+          && company != null
+          && !Beans.get(StockConfigService.class)
+              .getStockConfig(company)
+              .getIsLogisticalFormMultiClientsEnabled()) {
         response.setNotify(I18n.get("Deliver to customer is not set."));
       }
     } catch (Exception e) {
