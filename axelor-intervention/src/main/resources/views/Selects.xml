@@ -70,6 +70,11 @@
     <option value="3">Hour</option>
   </selection>
 
+  <selection name="base.duration.application.type.select"
+    id="intervention.base.duration.application.type.select">
+    <option value="3">Intervention</option>
+  </selection>
+
   <selection name="range.type.type.select">
     <option value="equipment">By equipment</option>
     <option value="family">By equipment family</option>
