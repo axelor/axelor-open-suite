@@ -24,7 +24,7 @@
   <action-attrs name="action-call-tender-supplier-attrs-set-contact-domain">
     <attribute for="contactPartnerSet" name="domain" expr="eval: &quot;self = null&quot;"/>
     <attribute for="contactPartnerSet" name="domain"
-      expr="eval: &quot;self.isContact = 'true' and self.id in (${supplierPartner.contactPartnerSet?.collect{it.id}.join(',')})&quot;"
+      expr="eval: &quot;self.isContact = true and self.id in (${supplierPartner.contactPartnerSet?.collect{it.id}.join(',')})&quot;"
       if="supplierPartner?.contactPartnerSet &amp;&amp; !supplierPartner?.contactPartnerSet.isEmpty()"/>
   </action-attrs>
 

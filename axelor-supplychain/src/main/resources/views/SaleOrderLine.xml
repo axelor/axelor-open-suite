@@ -15,7 +15,7 @@
     <extend
       target="//panel-tabs[@name='mainPanelTab']/panel[@name='informationsPanel']/panel[@name='taxPanel']/field[@name='taxLineSet']">
       <attribute name="domain"
-        value="(self.endDate = null or self.endDate &gt; :__date__) AND self.tax.isNonDeductibleTax = false"/>
+        value="(self.endDate IS null or self.endDate &gt; :__date__) AND self.tax.isNonDeductibleTax = false"/>
     </extend>
 
     <extend target="//panel-tabs[@name='mainPanelTab']/*[last()]">
@@ -92,7 +92,7 @@
     title="SO line" model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
     <extend target="//panel[@name='product2Panel']/field[@name='taxLineSet']">
       <attribute name="domain"
-        value="(self.endDate = null or self.endDate &gt; :__date__) AND self.tax.isNonDeductibleTax = false"/>
+        value="(self.endDate IS null or self.endDate &gt; :__date__) AND self.tax.isNonDeductibleTax = false"/>
     </extend>
 
     <extend target="//panel-tabs[@name='allPanelTab']/*[last()]">
@@ -158,7 +158,7 @@
     id="sale-order-line-editable-grid" extension="true">
     <extend target="//field[@name='taxLineSet']">
       <attribute name="domain"
-        value="(self.endDate = null or self.endDate &gt; :__date__) AND self.tax.isNonDeductibleTax = false"/>
+        value="(self.endDate IS null or self.endDate &gt; :__date__) AND self.tax.isNonDeductibleTax = false"/>
     </extend>
   </grid>
 

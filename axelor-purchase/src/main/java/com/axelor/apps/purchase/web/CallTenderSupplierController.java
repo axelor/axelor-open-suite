@@ -42,7 +42,7 @@ public class CallTenderSupplierController {
       if (callTender.getCompany() != null) {
         var domain =
             String.format(
-                "self.isSupplier IS true and %s MEMBER OF self.companySet",
+                "self.isSupplier IS true and %s IN (SELECT c.id FROM self.companySet c)",
                 callTender.getCompany().getId());
         response.setAttr("supplierPartner", "domain", domain);
       } else {
