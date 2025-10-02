@@ -49,9 +49,10 @@
     <panel-dashlet name="paymentScheduleLineSelectedPanel"
       action="action-payment-schedule-line-selected-view" showTitle="false" readonly="true"/>
     <panel name="mainPanel">
-      <field name="$interbankCodeLine" x-type="many-to-one"
-        x-target="com.axelor.apps.account.db.InterbankCodeLine" title="Rejection reason"
-        colSpan="12" canEdit="false" canNew="false" domain="self.interbankCode.typeSelect = 2"/>
+      <field name="$interbankCodeLine" type="many-to-one"
+        target="com.axelor.apps.account.db.InterbankCodeLine" x-target-name="name"
+        title="Rejection reason" colSpan="12" canEdit="false" canNew="false"
+        domain="self.interbankCode.typeSelect = 2"/>
       <field name="$represent" widget="boolean" title="Represent" colSpan="3" colOffset="6"/>
       <button name="rejectBtn" title="Reject"
         onClick="action-payment-schedule-line-reject,close" colSpan="3"/>
