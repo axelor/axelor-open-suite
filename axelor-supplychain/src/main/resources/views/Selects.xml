@@ -219,4 +219,10 @@
     <option value="FreightCarrierDelay">Freight Carrier Delay</option>
   </selection>
 
+
+  <selection id="supplychain.call.tender.need.type.select"
+    name="purchase.call.tender.need.type.select">
+    <option value="2">MRP</option>
+  </selection>
+
 </object-views>

@@ -142,6 +142,8 @@ import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.MrpCallTenderService;
+import com.axelor.apps.supplychain.service.MrpCallTenderServiceImpl;
 import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
 import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpForecastService;
@@ -556,5 +558,6 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderGeneratorSupplychainService.class)
         .to(SaleOrderGeneratorSupplychainServiceImpl.class);
     bind(PackagingRepository.class).to(PackagingSupplychainRepository.class);
+    bind(MrpCallTenderService.class).to(MrpCallTenderServiceImpl.class);
   }
 }
