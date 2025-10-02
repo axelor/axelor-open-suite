@@ -711,7 +711,7 @@
       WHERE
       self.saleOrder.statusSelect in (3,4)
       AND
-      self.saleOrder.confirmationDateTime BETWEEN DATE(:fromDate) AND DATE(:toDate)
+      DATE(self.saleOrder.confirmationDateTime) BETWEEN DATE(:fromDate) AND DATE(:toDate)
       AND
       self.saleOrder.company = :activeCompany
       AND item.select.name='partner.partner.type.select'
@@ -738,7 +738,7 @@
       SaleOrderLine self
       WHERE
       self.saleOrder.statusSelect in (3,4)
-      AND self.saleOrder.confirmationDateTime BETWEEN
+      AND DATE(self.saleOrder.confirmationDateTime) BETWEEN
       DATE(:fromDate) AND DATE(:toDate)
       AND self.saleOrder.company = :activeCompany
       GROUP BY
@@ -764,7 +764,7 @@
       IndustrySector industrySector
       WHERE
       self.saleOrder.statusSelect in (3,4)
-      AND self.saleOrder.confirmationDateTime BETWEEN
+      AND DATE(self.saleOrder.confirmationDateTime) BETWEEN
       DATE(:fromDate) AND DATE(:toDate)
       AND self.saleOrder.company = :activeCompany
       AND
@@ -815,7 +815,7 @@
       AND self.saleOrder.company = :activeCompany
       AND
       self.product.productCategory.id = :id
-      AND self.saleOrder.confirmationDateTime BETWEEN
+      AND DATE(self.saleOrder.confirmationDateTime) BETWEEN
       DATE(:fromDate) AND DATE(:toDate)
       GROUP BY
       TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM')

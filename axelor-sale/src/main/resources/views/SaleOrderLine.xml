@@ -136,7 +136,7 @@
     <field name="taxLineSet" canEdit="false" width="160%" canNew="false"
       readonlyIf="deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0 || $isParentTitleLine"
       onChange="action-sale-order-line-method-tax-line-onchange"
-      domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
+      domain="self.endDate IS null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
       form-view="tax-line-form" widget="TagSelect"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="$currencyNumberOfDecimals"
       readonly="true"/>
@@ -396,7 +396,7 @@
           <field name="taxLineSet" canEdit="false" colSpan="6" canNew="false"
             readonlyIf="$isReadOnly !== false || deliveryState == 2 || deliveryState == 3 || amountInvoiced &gt; 0"
             onChange="action-sale-order-line-method-tax-line-onchange"
-            domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
+            domain="self.endDate IS null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
             form-view="tax-line-form" widget="TagSelect"/>
           <field name="exTaxTotal" readonly="true" colSpan="3"
             x-scale="$currency.numberOfDecimals"/>
@@ -583,7 +583,7 @@
       </panel>
       <field name="taxLineSet" canEdit="false" colSpan="4" canNew="false"
         onChange="action-sale-order-line-method-tax-line-onchange"
-        domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
+        domain="self.endDate IS null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
         form-view="tax-line-form" widget="TagSelect"/>
       <field name="exTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
       <field name="inTaxTotal" readonly="true" x-scale="$currency.numberOfDecimals"/>
