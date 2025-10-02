@@ -55,7 +55,7 @@
     model="com.axelor.apps.purchase.db.CallTenderMail">
     <view type="grid" name="call-tender-mail-grid"/>
     <view type="form" name="call-tender-mail-form"/>
-    <domain>self.id IN (SELECT cfo.offerMail FROM CallTenderOffer cfo WHERE cfo.callTender =
+    <domain>self.id IN (SELECT cfo.offerMail.id FROM CallTenderOffer cfo WHERE cfo.callTender =
       :callTender)</domain>
     <context name="callTender" expr="eval: __self__"/>
   </action-view>

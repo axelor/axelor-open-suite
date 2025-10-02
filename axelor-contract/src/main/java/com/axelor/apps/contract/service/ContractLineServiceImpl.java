@@ -376,7 +376,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   public String computeProductDomain(Contract contract) {
     String domain =
         "self.isModel = false"
-            + " and (self.endDate = null or self.endDate > :__date__)"
+            + " and (self.endDate IS null or self.endDate > :__date__)"
             + " and self.dtype = 'Product'";
 
     if (contract == null) {

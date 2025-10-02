@@ -42,7 +42,7 @@ public class PartnerPurchaseController {
             Beans.get(PurchaseOrderRepository.class)
                 .all()
                 .filter("self.supplierPartner = :partner")
-                .bind("partner", partner.getId())
+                .bind("partner", partner)
                 .count();
         if (purchaseOrderCount > 0) {
           response.setValue("supplierCantBeRemoved", true);
