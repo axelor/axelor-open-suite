@@ -23,7 +23,7 @@
 
   <action-view name="contracts.root.supplier.all" title="Supplier contracts"
     model="com.axelor.apps.contract.db.Contract">
-    <view type="grid" name="contract-grid"/>
+    <view type="grid" name="supplier-contract-grid"/>
     <view type="form" name="contract-form"/>
     <view-param name="search-filters" value="contract-filters"/>
     <domain>self.targetTypeSelect = 2 AND self.contractTypeSelect = 1 AND self.statusSelect != 3</domain>
@@ -49,7 +49,7 @@
 
   <action-view name="contracts.root.yer.supplier.all" title="YEB/YER Supplier contracts"
     model="com.axelor.apps.contract.db.Contract">
-    <view type="grid" name="contract-grid"/>
+    <view type="grid" name="supplier-contract-grid"/>
     <view type="form" name="contract-form"/>
     <view-param name="search-filters" value="contract-filters"/>
     <domain>self.targetTypeSelect = 4 AND self.contractTypeSelect = 1 AND self.statusSelect != 3</domain>
