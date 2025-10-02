@@ -117,7 +117,8 @@
           showIf="outsourcing &amp;&amp; !manufOrder.outsourcing"
           domain="self.isSubcontractor = true" colSpan="4"/>
       </panel>
-      <field name="isToInvoice" colSpan="3"/>
+      <field name="isToInvoice" colSpan="3" if-module="axelor-business-production"
+        if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
       <field name="prodProcessLine" hidden="true"/>
       <field name="generatePurchaseOrderOnMoPlanning" hidden="true"/>
       <field name="prodProcessLine.optional" colSpan="3" readonly="true" showTitle="false">

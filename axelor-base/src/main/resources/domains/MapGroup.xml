@@ -20,6 +20,9 @@
     <string name="cardContent" title="Card content" large="true" multiline="true"
       help="Use a Groovy expression to define the information to be displayed when a user clicks on a point on the map."/>
     <many-to-one name="mapView" ref="com.axelor.apps.base.db.MapView" title="Map view"/>
+    <many-to-one name="formViewToUse" title="Form view to use"
+      help="Define the form view to open when a user double-clicks on a record’s popup in the map."
+      ref="com.axelor.meta.db.MetaView"/>
 
   </entity>
 

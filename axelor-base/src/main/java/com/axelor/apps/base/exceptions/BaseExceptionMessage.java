@@ -723,23 +723,13 @@ public final class BaseExceptionMessage {
   public static final String PARTNER_REGISTRATION_CODE_ALREADY_EXISTS = /*$$(*/
       "Registration number already exists for partner %s." /*)*/;
 
-  public static final String APP_BASE_SIRENE_API_TOKEN_GENERATOR_URL_MISSING = /*$$(*/
-      "Please fill API Sirene token generator url in app base." /*)*/;
-
   public static final String APP_BASE_SIRENE_API_URL_MISSING = /*$$(*/
       "Please fill API Sirene url in app base." /*)*/;
 
-  public static final String APP_BASE_SIRENE_API_KEY_MISSING = /*$$(*/
-      "Please fill API Sirene key in app base." /*)*/;
-
-  public static final String APP_BASE_SIRENE_API_SECRET_MISSING = /*$$(*/
-      "Please fill API Sirene secret in app base." /*)*/;
-
-  public static final String APP_BASE_SIRENE_API_ACCESS_TOKEN_MISSING = /*$$(*/
-      "Please fill API Sirene access token in app base." /*)*/;
-
   public static final String PFX_CERTIFICATE_VALIDITY_ERROR = /*$$(*/
       "Signature certificate is expired. Please change to a new certificate." /*)*/;
+
+  public static final String DATABACKUP_ERROR_1 = /*$$(*/ "The entry file %s is not secured." /*)*/;
 
   public static final String PARTNER_BOOLEAN_MISSING = /*$$(*/
       "At least one of isContact, isCustomer, isSupplier or isProspect must be true." /*)*/;
@@ -749,4 +739,7 @@ public final class BaseExceptionMessage {
 
   public static final String PARTNER_INVALID_BOOLEAN_2 = /*$$(*/
       "A partner cannot be both a customer and a prospect." /*)*/;
+
+  public static final String PACKAGING_MAX_WEIGHT_EXCEEDED = /*$$(*/
+      "The products' total weight exceeds the maximum weight carried by the packaging." /*)*/;
 }

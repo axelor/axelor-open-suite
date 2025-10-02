@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.ManufOrder;
+import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.rest.dto.ManufOrderProductResponse;
 import com.axelor.apps.production.service.manuforder.ManufOrderGetStockMoveService;
@@ -33,15 +34,16 @@ import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.apache.commons.lang3.ObjectUtils;
 
 public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestService {
 
@@ -136,17 +138,47 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
   @Override
   public List<ManufOrderProductResponse> getConsumedProductList(ManufOrder manufOrder)
       throws AxelorException {
+    Boolean isConsProOnOperation = manufOrder.getIsConsProOnOperation();
+    List<ProdProduct> toConsumeProdProductList =
+        isConsProOnOperation
+            ? manufOrder.getOperationOrderList().stream()
+                .map(OperationOrder::getToConsumeProdProductList)
+                .filter(ObjectUtils::notEmpty)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList())
+            : manufOrder.getToConsumeProdProductList();
+    List<StockMoveLine> consumedStockMoveLineList =
+        isConsProOnOperation
+            ? manufOrder.getOperationOrderList().stream()
+                .map(OperationOrder::getConsumedStockMoveLineList)
+                .filter(ObjectUtils::notEmpty)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList())
+            : manufOrder.getConsumedStockMoveLineList();
+
     List<Product> checkProducts = new ArrayList<>();
+    List<ManufOrderProductResponse> result =
+        new ArrayList<>(
+            getPlannedProductList(
+                manufOrder, checkProducts, toConsumeProdProductList, consumedStockMoveLineList));
+    result.addAll(getAdditionalProductList(manufOrder, checkProducts, consumedStockMoveLineList));
+    return result;
+  }
+
+  @Override
+  public List<ManufOrderProductResponse> getConsumedProductList(OperationOrder operationOrder)
+      throws AxelorException {
+    List<Product> checkProducts = new ArrayList<>();
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
     List<ManufOrderProductResponse> result =
         new ArrayList<>(
             getPlannedProductList(
                 manufOrder,
                 checkProducts,
-                manufOrder.getToConsumeProdProductList(),
-                manufOrder.getConsumedStockMoveLineList()));
-    result.addAll(
-        getAdditionalProductList(
-            manufOrder, checkProducts, manufOrder.getConsumedStockMoveLineList()));
+                operationOrder.getToConsumeProdProductList(),
+                consumedStockMoveLineList));
+    result.addAll(getAdditionalProductList(manufOrder, checkProducts, consumedStockMoveLineList));
     return result;
   }
 

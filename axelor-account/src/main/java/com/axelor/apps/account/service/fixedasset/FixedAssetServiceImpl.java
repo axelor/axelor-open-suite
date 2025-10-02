@@ -343,7 +343,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     if (fixedAsset
         .getDepreciationPlanSelect()
         .contains(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
-      fixedAsset.setNumberOfDepreciation(fixedAssetCategory.getNumberOfDepreciation() - 1);
+      fixedAsset.setNumberOfDepreciation(0);
     } else {
       fixedAsset.setNumberOfDepreciation(fixedAssetCategory.getNumberOfDepreciation());
     }
@@ -351,6 +351,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
     fixedAsset.setAnalyticDistributionTemplate(
         fixedAssetCategory.getAnalyticDistributionTemplate());
     fixedAsset.setFiscalPeriodicityTypeSelect(fixedAssetCategory.getPeriodicityTypeSelect());
+    fixedAsset.setPeriodicityTypeSelect(fixedAssetCategory.getPeriodicityTypeSelect());
   }
 
   protected void checkFixedAssetScissionQty(BigDecimal disposalQty, FixedAsset fixedAsset)

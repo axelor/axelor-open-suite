@@ -1,27 +1,36 @@
 package com.axelor.apps.bankpayment.service.bankstatementline.camt53;
 
+import com.axelor.apps.account.db.InterbankCode;
+import com.axelor.apps.account.db.InterbankCodeLine;
+import com.axelor.apps.account.db.repo.InterbankCodeLineRepository;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.AccountIdentification4Choice;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.AccountStatement2;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.ActiveOrHistoricCurrencyAndAmount;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.BalanceType12;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.BalanceType12Code;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.BalanceType5Choice;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.CashAccount20;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.CashBalance3;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.CreditDebitCode;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.DateAndDateTimeChoice;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.DateTimePeriodDetails;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.EntryDetails1;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.EntryTransaction2;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.GenericAccountIdentification1;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.ReportEntry2;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.TransactionReferences2;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.AccountIdentification4Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.AccountStatement2;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ActiveOrHistoricCurrencyAndAmount;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.BalanceType12;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.BalanceType12Code;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.BalanceType5Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.BankTransactionCodeStructure4;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CashAccount20;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CashBalance3;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CreditDebitCode;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.DateAndDateTimeChoice;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.DateTimePeriodDetails;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.EntryDetails1;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.EntryTransaction2;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.GenericAccountIdentification1;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ProprietaryBankTransactionCodeStructure1;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ReportEntry2;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ReturnReason5Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ReturnReasonInformation10;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.TransactionReferences2;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.common.StringUtils;
+import com.axelor.studio.db.AppAccount;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -32,15 +41,21 @@ import javax.xml.datatype.XMLGregorianCalendar;
 
 public class CAMT53ToolServiceImpl implements CAMT53ToolService {
 
+  protected AppAccountService appAccountService;
   protected BankStatementRepository bankStatementRepository;
   protected BankDetailsRepository bankDetailsRepository;
+  protected InterbankCodeLineRepository interBankCodeLineRepository;
 
   @Inject
   public CAMT53ToolServiceImpl(
+      AppAccountService appAccountService,
       BankStatementRepository bankStatementRepository,
-      BankDetailsRepository bankDetailsRepository) {
+      BankDetailsRepository bankDetailsRepository,
+      InterbankCodeLineRepository interBankCodeLineRepository) {
+    this.appAccountService = appAccountService;
     this.bankStatementRepository = bankStatementRepository;
     this.bankDetailsRepository = bankDetailsRepository;
+    this.interBankCodeLineRepository = interBankCodeLineRepository;
   }
 
   @Override
@@ -191,5 +206,68 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
               .orElse(null);
     }
     return ibanOrOthers;
+  }
+
+  @Override
+  public InterbankCodeLine getOperationCodeInterBankCodeLineCode(ReportEntry2 reportEntry2) {
+    String interBankCodeLineCodeStr = getOperationCodeInterBankCodeLineCodeStr(reportEntry2);
+
+    if (StringUtils.isEmpty(interBankCodeLineCodeStr)) {
+      return null;
+    }
+
+    return interBankCodeLineRepository.findOperationCodeByCode(interBankCodeLineCodeStr);
+  }
+
+  @Override
+  public InterbankCodeLine getRejectReturnInterBankCodeLineCode(ReportEntry2 reportEntry2) {
+    String interBankCodeLineCodeStr = getRejectReturnInterBankCodeLineCodeStr(reportEntry2);
+    InterbankCode chequeInterbankCode =
+        Optional.ofNullable(appAccountService.getAppAccount())
+            .map(AppAccount::getChequeInterbankCode)
+            .orElse(null);
+
+    if (StringUtils.isEmpty(interBankCodeLineCodeStr) || chequeInterbankCode == null) {
+      return null;
+    }
+
+    return interBankCodeLineRepository.findOperationCodeByCodeAndInterBankCode(
+        interBankCodeLineCodeStr, chequeInterbankCode);
+  }
+
+  protected String getOperationCodeInterBankCodeLineCodeStr(ReportEntry2 reportEntry2) {
+    String interBankCodeLineCode = null;
+    String code =
+        Optional.ofNullable(reportEntry2)
+            .map(ReportEntry2::getBkTxCd)
+            .map(BankTransactionCodeStructure4::getPrtry)
+            .map(ProprietaryBankTransactionCodeStructure1::getCd)
+            .orElse("");
+
+    if (StringUtils.isEmpty(code)) {
+      return "";
+    }
+
+    return (code.split("/"))[0];
+  }
+
+  protected String getRejectReturnInterBankCodeLineCodeStr(ReportEntry2 reportEntry2) {
+    String interBankCodeLineCode = null;
+    String code =
+        Optional.ofNullable(reportEntry2)
+            .map(ReportEntry2::getNtryDtls)
+            .flatMap(ntryDtls -> ntryDtls.stream().findFirst())
+            .map(EntryDetails1::getTxDtls)
+            .flatMap(txDtls -> txDtls.stream().findFirst())
+            .map(EntryTransaction2::getRtrInf)
+            .map(ReturnReasonInformation10::getRsn)
+            .map(ReturnReason5Choice::getPrtry)
+            .orElse("");
+
+    if (StringUtils.isEmpty(code)) {
+      return "";
+    }
+
+    return (code.split("/"))[0];
   }
 }

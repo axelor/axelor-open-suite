@@ -10,9 +10,9 @@ import com.axelor.apps.bankpayment.db.repo.BankStatementLineCAMT53Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementDateService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineCreationService;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.ActiveOrHistoricCurrencyAndAmount;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.CashBalance3;
-import com.axelor.apps.bankpayment.xsd.bankstatement.camt_053_001_02.ReportEntry2;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ActiveOrHistoricCurrencyAndAmount;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CashBalance3;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ReportEntry2;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
@@ -181,16 +181,10 @@ public class BankStatementLineCreationCAMT53ServiceImpl
 
     String reference = camt53ToolService.getReference(ntry);
 
-    String operationCodeInterBankCodeLineCode = "";
-    // Todo in the future, Ntry -> BkTxCd -> Prtry -> Cd and get the value before '/'.e.g.:
-    // <Cd>21/0529</Cd> then get 21.
-    String rejectReturnCodeInterBankCodeLineCode = "";
-    // Todo in the future NtryDtls.TxDtls.RtrInf.Rsn.Prtry.Cd check in the
-    // appAccountService.getAppAccount().getChequeInterbankCode()
     InterbankCodeLine operationInterbankCodeLine =
-        interBankCodeLineRepository.findOperationCodeByCode(operationCodeInterBankCodeLineCode);
+        camt53ToolService.getOperationCodeInterBankCodeLineCode(ntry);
     InterbankCodeLine rejectInterbankCodeLine =
-        interBankCodeLineRepository.findOperationCodeByCode(rejectReturnCodeInterBankCodeLineCode);
+        camt53ToolService.getRejectReturnInterBankCodeLineCode(ntry);
 
     if (bankDetails != null) {
       bankDetails = bankDetailsRepository.find(bankDetails.getId());

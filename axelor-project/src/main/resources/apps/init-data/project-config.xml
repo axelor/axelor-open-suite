@@ -7,15 +7,30 @@
     search="self.app.code = :code"/>
 
   <input file="project_project_task_link_type.csv" separator=";"
-    type="com.axelor.apps.project.db.ProjectTaskLinkType" search="self.importId = :importId"/>
+    type="com.axelor.apps.project.db.ProjectTaskLinkType" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.project.db.ProjectTaskLinkType', 'importId', importId, 'name', name)"
+      check-message="Name must be unique"/>
+  </input>
 
   <input file="project_project_task_link_type.csv" separator=";" update="true"
-    type="com.axelor.apps.project.db.ProjectTaskLinkType" search="self.importId = :importId"/>
+    type="com.axelor.apps.project.db.ProjectTaskLinkType" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.project.db.ProjectTaskLinkType', 'importId', importId, 'name', name)"
+      check-message="Name must be unique"/>
+  </input>
 
   <input file="task_status.csv" separator=";" type="com.axelor.apps.project.db.TaskStatus"
     search="self.importId = :importId"/>
 
   <input file="meta_metaTranslation.csv" separator=";"
-    type="com.axelor.meta.db.MetaTranslation" search="self.key = :key AND self.language = :language"/>
+    type="com.axelor.meta.db.MetaTranslation" search="self.key = :key AND self.language = :language">
+    <bind column="key" to="key"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(key)"
+      check-message="Message key must not be null"/>
+    <bind column="language" to="language"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(language)"
+      check-message="Language must not be null"/>
+  </input>
 
 </csv-inputs>

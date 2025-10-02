@@ -52,6 +52,8 @@ import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageRepository;
+import com.axelor.apps.base.db.repo.MapViewBaseRepository;
+import com.axelor.apps.base.db.repo.MapViewRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
@@ -164,6 +166,8 @@ import com.axelor.apps.base.service.ProductConversionService;
 import com.axelor.apps.base.service.ProductConversionServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
+import com.axelor.apps.base.service.ProductPackagingService;
+import com.axelor.apps.base.service.ProductPackagingServiceImpl;
 import com.axelor.apps.base.service.ProductPriceListService;
 import com.axelor.apps.base.service.ProductPriceListServiceImpl;
 import com.axelor.apps.base.service.ProductPriceService;
@@ -250,6 +254,10 @@ import com.axelor.apps.base.service.language.LanguageService;
 import com.axelor.apps.base.service.language.LanguageServiceImpl;
 import com.axelor.apps.base.service.localization.LocalizationService;
 import com.axelor.apps.base.service.localization.LocalizationServiceImpl;
+import com.axelor.apps.base.service.mapConfigurator.MapGroupService;
+import com.axelor.apps.base.service.mapConfigurator.MapGroupServiceImpl;
+import com.axelor.apps.base.service.mapConfigurator.MapViewService;
+import com.axelor.apps.base.service.mapConfigurator.MapViewServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
@@ -566,5 +574,9 @@ public class BaseModule extends AxelorModule {
     bind(MetaThemeFetchService.class).to(MetaThemeFetchServiceImpl.class);
     bind(PartnerCreationService.class).to(PartnerCreationServiceImpl.class);
     bind(PublicHolidayService.class).to(PublicHolidayServiceImpl.class);
+    bind(MapGroupService.class).to(MapGroupServiceImpl.class);
+    bind(MapViewService.class).to(MapViewServiceImpl.class);
+    bind(MapViewRepository.class).to(MapViewBaseRepository.class);
+    bind(ProductPackagingService.class).to(ProductPackagingServiceImpl.class);
   }
 }
