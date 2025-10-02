@@ -119,7 +119,7 @@ public class BankReconciliationLoadBankStatementAFB120Service
             .order("valueDate")
             .order("sequence");
 
-    if(bankReconciliation.getIncludeOtherBankStatements()) {
+    if (bankReconciliation.getIncludeOtherBankStatements()) {
       queryFilter += " AND self.operationDate <= (:bankReconciliationToDate)";
       bankStatementLinesQuery.bind("bankReconciliationToDate", bankReconciliation.getToDate());
     }
