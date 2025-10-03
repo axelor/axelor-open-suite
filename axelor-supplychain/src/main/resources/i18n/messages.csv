@@ -708,7 +708,6 @@
 "The purchase order %s invoiced amount cannot be greater than its total amount.",,,
 "The purchase order line can't be deleted because it is linked to a realized stock move.",,,
 "The purchase order line can't be deleted because it is linked to an invoice.",,,
-"The purchase order line price can't be lower than the price already invoiced.",,,
 "The purchase order line qty can't be lower than the qty already invoiced.",,,
 "The purchase order line qty can't be lower than the qty already realized.",,,
 "The purchase order trading name is missing.",,,

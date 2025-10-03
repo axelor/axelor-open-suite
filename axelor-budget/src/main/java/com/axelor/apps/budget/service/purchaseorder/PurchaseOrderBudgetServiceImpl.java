@@ -18,10 +18,6 @@
  */
 package com.axelor.apps.budget.service.purchaseorder;
 
-import com.axelor.apps.account.db.repo.InvoiceLineRepository;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyScaleService;

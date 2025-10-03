@@ -95,7 +95,7 @@
       help="This option prevents adding by mistake too many products in carts from a stock location."/>
 
     <many-to-one name="cancelReasonOnChangingPurchaseOrder"
-      ref="com.axelor.apps.base.db.CancelReason"/>
+      title="Cancel reason on changing purchase order" ref="com.axelor.apps.base.db.CancelReason"/>
 
     <track>
       <field name="custStockMoveMgtOnSO" on="UPDATE"/>

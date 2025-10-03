@@ -247,13 +247,11 @@ public class PurchaseOrderLineController {
         Beans.get(PurchaseOrderLineServiceSupplyChain.class)
             .validateRealizedQty(purchaseOrder, purchaseOrderLine);
 
+    response.setValue("$qtyValid", qtyValid);
     if (!qtyValid) {
-      response.setValue("$qtyValid", false);
       response.setError(
           I18n.get(
               SupplychainExceptionMessage.PURCHASE_ORDER_LINE_QTY_UPDATE_NOT_ALLOWED_REALIZED));
-    } else {
-      response.setValue("$qtyValid", true);
     }
   }
 
@@ -266,13 +264,11 @@ public class PurchaseOrderLineController {
         Beans.get(PurchaseOrderLineServiceSupplyChain.class)
             .validateInvoicedQty(purchaseOrder, purchaseOrderLine);
 
+    response.setValue("$qtyValid", qtyValid);
     if (!qtyValid) {
-      response.setValue("$qtyValid", false);
       response.setError(
           I18n.get(
               SupplychainExceptionMessage.PURCHASE_ORDER_LINE_QTY_UPDATE_NOT_ALLOWED_INVOICED));
-    } else {
-      response.setValue("$qtyValid", true);
     }
   }
 }

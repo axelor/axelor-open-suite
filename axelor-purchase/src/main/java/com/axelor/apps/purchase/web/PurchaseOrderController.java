@@ -47,6 +47,7 @@ import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.purchase.service.split.PurchaseOrderSplitService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -434,8 +435,7 @@ public class PurchaseOrderController {
   public void enableEditOrder(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder =
-          Beans.get(PurchaseOrderRepository.class)
-              .find(request.getContext().asType(PurchaseOrder.class).getId());
+          JPA.find(PurchaseOrder.class, request.getContext().asType(PurchaseOrder.class).getId());
       Beans.get(PurchaseOrderService.class).enableEditOrder(purchaseOrder);
       response.setReload(true);
     } catch (Exception e) {
@@ -446,8 +446,7 @@ public class PurchaseOrderController {
   public void validateChanges(ActionRequest request, ActionResponse response)
       throws AxelorException {
     PurchaseOrder purchaseOrder =
-        Beans.get(PurchaseOrderRepository.class)
-            .find(request.getContext().asType(PurchaseOrder.class).getId());
+        JPA.find(PurchaseOrder.class, request.getContext().asType(PurchaseOrder.class).getId());
     Beans.get(PurchaseOrderService.class).validateChanges(purchaseOrder);
     response.setReload(true);
   }
