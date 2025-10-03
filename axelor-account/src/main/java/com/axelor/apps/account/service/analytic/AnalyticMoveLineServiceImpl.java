@@ -417,6 +417,16 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
+  public String getAnalyticJournalDomain(Company company) throws AxelorException {
+    if (company == null) {
+      return "self.id IN (0)";
+    }
+    return "self.statusSelect = 1 AND (self.company is null OR self.company.id ="
+        + company.getId()
+        + ")";
+  }
+
+  @Override
   public void setAnalyticCurrency(Company company, AnalyticMoveLine analyticMoveLine) {
     if (analyticMoveLine != null) {
       analyticMoveLine.setCurrency(

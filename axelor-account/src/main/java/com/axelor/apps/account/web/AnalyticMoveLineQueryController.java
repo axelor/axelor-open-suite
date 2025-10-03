@@ -263,6 +263,38 @@ public class AnalyticMoveLineQueryController {
     }
   }
 
+  public void setAnalyticJournalDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      AnalyticMoveLine analyticMoveLine = context.asType(AnalyticMoveLine.class);
+      Company company = null;
+      String domain = null;
+      if (analyticMoveLine.getAnalyticAxis() != null
+          && analyticMoveLine.getAnalyticAxis().getCompany() != null) {
+        company = analyticMoveLine.getAnalyticAxis().getCompany();
+      } else {
+        if (context.getParent() == null) {
+          domain = "self.statusSelect = 1";
+        } else {
+          company = ContextHelper.getFieldFromContextParent(context, "company", Company.class);
+          if (company == null) {
+            Move move = ContextHelper.getFieldFromContextParent(context, "move", Move.class);
+            if (move != null) {
+              company = move.getCompany();
+            }
+          }
+        }
+      }
+      if (domain == null) {
+        domain = Beans.get(AnalyticMoveLineService.class).getAnalyticJournalDomain(company);
+      }
+
+      response.setAttr("analyticAxis", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void refreshAxis(ActionRequest request, ActionResponse response) throws AxelorException {
     AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
 
