@@ -41,6 +41,7 @@ import com.axelor.apps.base.service.PartnerLinkServiceImpl;
 import com.axelor.apps.base.service.partner.PartnerCreationServiceImpl;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
+import com.axelor.apps.purchase.service.CallTenderPurchaseOrderServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderLineTaxComputeServiceImpl;
@@ -133,6 +134,7 @@ import com.axelor.apps.supplychain.service.AdvancePaymentServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.CallTenderPurchaseOrderSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.CommonInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
@@ -569,5 +571,7 @@ public class SupplychainModule extends AxelorModule {
         .to(PurchaseOrderChangeValidationSupplychainServiceImpl.class);
     bind(PurchaseOrderEditStockMoveService.class).to(PurchaseOrderEditStockMoveServiceImpl.class);
     bind(PurchaseOrderReceiptStateService.class).to(PurchaseOrderReceiptStateServiceImpl.class);
+    bind(CallTenderPurchaseOrderServiceImpl.class)
+        .to(CallTenderPurchaseOrderSupplychainServiceImpl.class);
   }
 }

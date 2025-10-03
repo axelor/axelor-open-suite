@@ -108,4 +108,5 @@ public final class PurchaseExceptionMessage {
 
   public static final String PURCHASE_ORDER_FINISHED = /*$$(*/
       "This purchase order is finished." /*)*/;
+  public static final String CALL_FOR_TENDER_NO_PO_SELECTED = /*$$(*/ "No selected offer." /*)*/;
 }

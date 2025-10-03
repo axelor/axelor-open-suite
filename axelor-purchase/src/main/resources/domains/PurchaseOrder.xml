@@ -102,6 +102,9 @@
 
     <boolean name="orderBeingEdited" title="Order being edited"/>
 
+    <many-to-one name="callTender" title="Call for tenders"
+      ref="com.axelor.apps.purchase.db.CallTender"/>
+
     <unique-constraint columns="purchaseOrderSeq,company"/>
 
     <extra-code>
