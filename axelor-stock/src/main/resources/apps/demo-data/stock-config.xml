@@ -397,4 +397,14 @@
       eval="profileFieldFormulaSet.split('\\|') as List"/>
   </input>
 
+  <input file="meta_metaTranslation.csv" separator=";"
+    type="com.axelor.meta.db.MetaTranslation" search="self.key = :key AND self.language = :language">
+    <bind column="key" to="key"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(key)"
+      check-message="Message key must not be null"/>
+    <bind column="language" to="language"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(language)"
+      check-message="Language must not be null"/>
+  </input>
+
 </csv-inputs>
