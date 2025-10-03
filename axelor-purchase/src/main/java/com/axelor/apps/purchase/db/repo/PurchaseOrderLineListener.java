@@ -16,19 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.purchase.db.repo;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.inject.Beans;
+import javax.persistence.PreRemove;
 
-public interface PurchaseOrderLineServiceSupplyChain {
+public class PurchaseOrderLineListener {
 
-  PurchaseOrderLine createPurchaseOrderLine(
-      PurchaseOrder purchaseOrder, SaleOrderLine saleOrderLine) throws AxelorException;
-
-  boolean validateRealizedQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
-
-  boolean validateInvoicedQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
+  @PreRemove
+  protected void onPreRemove(PurchaseOrderLine purchaseOrderLine) throws AxelorException {
+    Beans.get(PurchaseOrderLineService.class).validateDeletion(purchaseOrderLine);
+  }
 }

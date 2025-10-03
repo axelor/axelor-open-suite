@@ -170,8 +170,12 @@ import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.apps.supplychain.service.ProjectedStockServiceImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderChangeValidationSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderChangeValidationSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderCreateSupplychainService;
+import com.axelor.apps.supplychain.service.PurchaseOrderEditStockMoveService;
+import com.axelor.apps.supplychain.service.PurchaseOrderEditStockMoveServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesService;
 import com.axelor.apps.supplychain.service.PurchaseOrderFromSaleOrderLinesServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
@@ -182,6 +186,8 @@ import com.axelor.apps.supplychain.service.PurchaseOrderLineTaxComputeSupplychai
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingViewServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderReceiptStateService;
+import com.axelor.apps.supplychain.service.PurchaseOrderReceiptStateServiceImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderShipmentService;
 import com.axelor.apps.supplychain.service.PurchaseOrderShipmentServiceImpl;
@@ -561,6 +567,10 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderGeneratorSupplychainServiceImpl.class);
     bind(PackagingRepository.class).to(PackagingSupplychainRepository.class);
     bind(MrpCallTenderService.class).to(MrpCallTenderServiceImpl.class);
+    bind(PurchaseOrderChangeValidationSupplychainService.class)
+        .to(PurchaseOrderChangeValidationSupplychainServiceImpl.class);
+    bind(PurchaseOrderEditStockMoveService.class).to(PurchaseOrderEditStockMoveServiceImpl.class);
+    bind(PurchaseOrderReceiptStateService.class).to(PurchaseOrderReceiptStateServiceImpl.class);
     bind(CallTenderPurchaseOrderServiceImpl.class)
         .to(CallTenderPurchaseOrderSupplychainServiceImpl.class);
   }

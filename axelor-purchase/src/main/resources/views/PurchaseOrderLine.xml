@@ -120,94 +120,101 @@
 
     <panel-tabs name="mainPanelTab" hideIf="isTitleLine">
       <panel name="informationsPanel" title="Information">
-        <field name="$partnerLanguage" hidden="true"/>
-        <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
-          showTitle="false">
-          <viewer depends="$partnerLanguage">
+        <panel name="infoPanel" colSpan="12">
+          <field name="$partnerLanguage" hidden="true"/>
+          <field name="$differentLanguageMessage" readonly="true" hidden="true" colSpan="12"
+            showTitle="false">
+            <viewer depends="$partnerLanguage">
             <![CDATA[<>{$partnerLanguage && <Badge bg="warning">{_t("The partner's language is different from the current language. Description and product name are in :")} {$partnerLanguage}</Badge>}</>]]>
-          </viewer>
-        </field>
-        <field name="$unitWarningMessage" hidden="true" readonly="true" colSpan="12"
-          showTitle="false">
-          <viewer>
+            </viewer>
+          </field>
+          <field name="$unitWarningMessage" hidden="true" readonly="true" colSpan="12"
+            showTitle="false">
+            <viewer>
             <![CDATA[<><Badge bg="warning">{_t("The supplier catalog's unit is different from the current unit.")}</Badge></>]]>
-          </viewer>
-        </field>
-        <label name="differentSupplierLabel" hidden="true" colSpan="12"/>
-        <field name="receiptState" showTitle="false" colSpan="3" showIf="receiptState > 0"
-          if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
-          <viewer><![CDATA[
+            </viewer>
+          </field>
+          <label name="differentSupplierLabel" hidden="true" colSpan="12"/>
+          <field name="receiptState" showTitle="false" colSpan="3" showIf="receiptState > 0"
+            if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')">
+            <viewer><![CDATA[
 			          <>
 			             {receiptState == 1 && <Badge bg="danger">{_t('Not received')}</Badge>}
 			             {receiptState == 2 && <Badge bg="warning">{_t('Partially received')}</Badge>}
 			             {receiptState == 3 && <Badge bg="success">{_t('Received')}</Badge>}
 			          </>
 	          ]]></viewer>
-        </field>
-        <spacer name="receiptStateSpacer" if="__config__.app.isApp('supplychain')"/>
-        <field name="product" canEdit="false" x-image-field="picture"
-          onChange="action-group-purchase-purchase-orderline-product-onchange"
-          onSelect="action-purchase-order-line-attrs-product-domain" form-view="product-form"
-          grid-view="product-purchase-grid"/>
-        <field name="enableFreezeFields" colSpan="2"/>
-        <field name="$isFilterOnSupplier" type="boolean" title="Filter on supplier"
-          widget="boolean-switch" colSpan="2"
-          if="__config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
-        <field name="isTitleLine" colSpan="2"
-          onChange="action-purchase-order-line-method-empty-line" widget="boolean-switch"/>
-        <field name="productCode" colSpan="3"/>
-        <field name="productName" colSpan="9" requiredIf="!isTitleLine"/>
-        <panel name="orderDetailsPanel" colSpan="12">
+          </field>
+          <spacer name="receiptStateSpacer" if="__config__.app.isApp('supplychain')"/>
+          <field name="product" canEdit="false" x-image-field="picture"
+            onChange="action-group-purchase-purchase-orderline-product-onchange"
+            onSelect="action-purchase-order-line-attrs-product-domain" form-view="product-form"
+            grid-view="product-purchase-grid"/>
+          <field name="enableFreezeFields" colSpan="2"/>
+          <field name="$isFilterOnSupplier" type="boolean" title="Filter on supplier"
+            widget="boolean-switch" colSpan="2"
+            if="__config__.app.getApp('purchase')?.getManageSupplierCatalog()"/>
+          <field name="isTitleLine" colSpan="2"
+            onChange="action-purchase-order-line-method-empty-line" widget="boolean-switch"/>
+          <field name="productCode" colSpan="3"/>
+          <field name="productName" colSpan="9" requiredIf="!isTitleLine"/>
+        </panel>
+        <panel name="qtyPricePanel" colSpan="12">
           <field name="qty" onChange="action-group-purchase-purchase-orderline-qty-onchange"
-            colSpan="3" validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
-          <field name="unit" colSpan="3" canEdit="false" form-view="unit-form"
-            grid-view="unit-grid" requiredIf="!isTitleLine"
-            onChange="action-purchase-order-line-attrs-display-different-unit-message"/>
-          <panel name="pricePanel" colSpan="3">
-            <field name="price" hidden="true" colSpan="12"
-              onChange="action-purchase-order-line-method-onchange-price,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution"
-              x-scale="$nbDecimalDigitForUnitPrice">
-              <hilite color="danger" if=" $number(maxPurchasePrice) &lt; $number(price)"/>
-            </field>
-            <field name="inTaxPrice" hidden="true" colSpan="12"
-              onChange="action-purchase-order-line-method-onchange-intaxprice,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution"
-              x-scale="$nbDecimalDigitForUnitPrice">
-              <hilite color="danger" if=" $number(maxPurchasePrice) &lt; $number(price)"/>
-            </field>
+            validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"/>
+          <field name="price" hidden="true"
+            onChange="action-group-purchase-purchase-orderline-price-onchange"
+            x-scale="$nbDecimalDigitForUnitPrice">
+            <hilite color="danger" if=" $number(maxPurchasePrice) &lt; $number(price)"/>
+          </field>
+        </panel>
+        <panel name="detailsPanel" colSpan="12">
+          <panel name="orderDetailsPanel" colSpan="12">
+            <field name="unit" colSpan="3" canEdit="false" form-view="unit-form"
+              grid-view="unit-grid" requiredIf="!isTitleLine"
+              onChange="action-purchase-order-line-attrs-display-different-unit-message"/>
+            <panel name="pricePanel" colSpan="3">
+              <field name="inTaxPrice" hidden="true" colSpan="12"
+                onChange="action-purchase-order-line-method-onchange-intaxprice,action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution"
+                x-scale="$nbDecimalDigitForUnitPrice">
+                <hilite color="danger" if=" $number(maxPurchasePrice) &lt; $number(price)"/>
+              </field>
+            </panel>
+            <field name="maxPurchasePrice" colSpan="3" readonly="true"
+              x-scale="$nbDecimalDigitForUnitPrice"/>
+            <label name="qtyLimitNotRespectedLabel" hidden="true" colSpan="12"/>
+            <label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
+            <field name="$qtyValid" hidden="true" colSpan="12" x-scale="$nbDecimalDigitForQty"/>
+            <field name="$nbDecimalDigitForQty" hidden="true"/>
+            <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
           </panel>
-          <field name="maxPurchasePrice" colSpan="3" readonly="true"
-            x-scale="$nbDecimalDigitForUnitPrice"/>
-          <label name="qtyLimitNotRespectedLabel" hidden="true" colSpan="12"/>
-          <label name="multipleQtyNotRespectedLabel" hidden="true" colSpan="12"/>
-          <field name="$qtyValid" hidden="true" colSpan="12" x-scale="$nbDecimalDigitForQty"/>
-          <field name="$nbDecimalDigitForQty" hidden="true"/>
-          <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
-        </panel>
-        <panel name="discountPanel" colSpan="12">
-          <field name="discountTypeSelect" colSpan="3"
-            onChange="action-purchase-order-line-method-compute,action-purchase-order-line-attrs-discountamount-title,action-purchase-order-line-method-compute-analytic-distribution"/>
-          <field name="discountAmount" colSpan="3"
-            onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution"
-            hideIf="discountTypeSelect == 3" x-scale="$nbDecimalDigitForUnitPrice"/>
-          <field name="priceDiscounted" colSpan="3" readonly="true" hidden="true"
-            x-scale="$nbDecimalDigitForUnitPrice"/>
-        </panel>
-        <field name="taxLineSet" canEdit="false" canNew="false"
-          onChange="action-group-purchase-purchase-orderline-taxline-onchange"
-          domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
-          form-view="tax-line-form" widget="TagSelect"/>
-        <field name="exTaxTotal" colSpan="3" readonly="true"
-          x-scale="$currency.numberOfDecimals"/>
-        <field name="inTaxTotal" colSpan="3" readonly="true"
-          x-scale="$currency.numberOfDecimals"/>
-        <field name="$currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"
-          hidden="true"/>
-        <field name="$currency.numberOfDecimals" hidden="true"/>
-        <field name="fixedAssets" widget="boolean-switch"/>
-        <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
-          form-view="tax-equiv-form"/>
-        <panel name="descriptionPanel" title="Description" colSpan="12">
-          <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
+          <panel name="discountPanel" colSpan="12">
+            <field name="discountTypeSelect" colSpan="3"
+              onChange="action-purchase-order-line-method-compute,action-purchase-order-line-attrs-discountamount-title,action-purchase-order-line-method-compute-analytic-distribution"/>
+            <field name="discountAmount" colSpan="3"
+              onChange="action-purchase-order-line-method-compute,action-purchase-order-line-method-compute-analytic-distribution"
+              hideIf="discountTypeSelect == 3" x-scale="$nbDecimalDigitForUnitPrice"/>
+            <field name="priceDiscounted" colSpan="3" readonly="true" hidden="true"
+              x-scale="$nbDecimalDigitForUnitPrice"/>
+          </panel>
+          <field name="taxLineSet" canEdit="false" canNew="false"
+            onChange="action-group-purchase-purchase-orderline-taxline-onchange"
+            domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
+            form-view="tax-line-form" widget="TagSelect"/>
+          <field name="exTaxTotal" colSpan="3" readonly="true"
+            x-scale="$currency.numberOfDecimals"/>
+          <field name="inTaxTotal" colSpan="3" readonly="true"
+            x-scale="$currency.numberOfDecimals"/>
+          <field name="$currency" type="many-to-one" target="com.axelor.apps.base.db.Currency"
+            hidden="true"/>
+          <field name="$currency.numberOfDecimals" hidden="true"/>
+          <field name="fixedAssets" widget="boolean-switch"/>
+          <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid"
+            form-view="tax-equiv-form"/>
+          <panel name="descriptionPanel" title="Description" colSpan="12">
+            <field name="description" showTitle="false" colSpan="12" widget="html"
+              x-lite="true"/>
+          </panel>
         </panel>
       </panel>
       <panel name="supplierRequestsPanel" title="Suppliers requests"
@@ -367,6 +374,17 @@
     <action name="action-purchase-order-line-method-compute-analytic-distribution"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
     <action name="action-purchase-order-line-method-check-qty"/>
+    <action name="action-purchase-order-line-method-validate-realized-qty"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="action-purchase-order-line-method-validate-invoiced-qty"
+      if="__config__.app.isApp('supplychain')"/>
+  </action-group>
+
+  <action-group name="action-group-purchase-purchase-orderline-price-onchange">
+    <action name="action-purchase-order-line-method-onchange-price"/>
+    <action name="action-purchase-order-line-method-compute"/>
+    <action name="action-purchase-order-line-method-compute-analytic-distribution"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
   </action-group>
 
   <action-group
@@ -466,12 +484,18 @@
   </action-attrs>
 
   <action-attrs name="action-purchase-order-line-attrs-readonly-form">
-    <attribute name="readonly" for="informationsPanel"
+    <attribute name="readonly" for="infoPanel"
+      expr="eval: __parent__?.statusSelect &gt; 2"/>
+    <attribute name="readonly" for="qtyPricePanel"
+      expr="eval: __parent__?.statusSelect &gt; 2 &amp;&amp; !__parent__?.orderBeingEdited"/>
+    <attribute name="readonly" for="detailsPanel"
       expr="eval: __parent__?.statusSelect &gt; 2"/>
     <attribute name="readonly" for="supplierRequestsPanel"
       expr="eval: __parent__?.statusSelect &gt; 2"/>
     <attribute name="readonly" for="deliveryInformationPanel"
       expr="eval: __parent__?.statusSelect &gt; 3"/>
+    <attribute name="readonly" for="price"
+      expr="eval: __parent__?.statusSelect &gt; 2 &amp;&amp; (!__parent__?.orderBeingEdited || receivedQty &gt; 0 || amountInvoiced &gt; 0)"/>
   </action-attrs>
 
   <action-attrs name="action-purchase-order-line-attrs-set-isFilterOnSupplier">
