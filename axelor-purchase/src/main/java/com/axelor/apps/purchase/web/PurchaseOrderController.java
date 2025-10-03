@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -315,6 +316,13 @@ public class PurchaseOrderController {
 
       if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
         domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
+      }
+
+      List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+      if (!(purchaseOrderLineList == null || purchaseOrderLineList.isEmpty())) {
+        domain =
+            Beans.get(PricedOrderDomainService.class)
+                .getPartnerDomain(purchaseOrder, domain, PriceListRepository.TYPE_PURCHASE);
       }
 
       response.setAttr("supplierPartner", "domain", domain);

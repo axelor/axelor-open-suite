@@ -19,6 +19,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.ObjectUtils;
@@ -40,6 +41,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import javax.persistence.Query;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,11 +56,14 @@ public class DuplicateObjectsService {
 
     List<Object> duplicateObjects = getDuplicateObject(selectedIds, modelName);
     Object originalObjct = getOriginalObject(selectedIds, modelName);
+
+    managePartnerAccountingSituations(duplicateObjects, originalObjct);
+
     List<MetaField> allField =
         metaFieldRepo
             .all()
             .filter(
-                "(relationship = 'ManyToOne' AND typeName = ?1) OR (relationship = 'ManyToMany' AND (typeName = ?1 OR metaModel.name =?1))",
+                "((relationship = 'ManyToOne' AND typeName = ?1) OR (relationship = 'ManyToMany' AND (typeName = ?1 OR metaModel.name =?1))) AND metaModel.tableName IS NOT NULL",
                 modelName)
             .fetch();
     for (MetaField metaField : allField) {
@@ -305,5 +310,30 @@ public class DuplicateObjectsService {
     }
 
     return finalQuery.getResultList();
+  }
+
+  @SuppressWarnings("unchecked")
+  protected void managePartnerAccountingSituations(
+      List<Object> duplicateObjects, Object originalObject) {
+
+    if (originalObject instanceof Partner) {
+      Partner partner = (Partner) originalObject;
+      Query query =
+          JPA.em()
+              .createQuery(
+                  "SELECT DISTINCT self.company.id FROM AccountingSituation self WHERE self.partner = :partner AND self.company IS NOT NULL");
+      query.setParameter("partner", partner);
+      List<Long> companyIds = query.getResultList();
+      if (CollectionUtils.isEmpty(companyIds)) {
+        return;
+      }
+      Query deleteQuery =
+          JPA.em()
+              .createQuery(
+                  "DELETE FROM AccountingSituation self WHERE self.partner IN (:duplicates) AND self.company.id IN (:companyIds)");
+      deleteQuery.setParameter("duplicates", duplicateObjects);
+      deleteQuery.setParameter("companyIds", companyIds);
+      deleteQuery.executeUpdate();
+    }
   }
 }

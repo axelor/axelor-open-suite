@@ -26,7 +26,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
@@ -48,6 +47,7 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
   protected CompanyService companyService;
   protected SaleOrderUserService saleOrderUserService;
   protected SaleOrderProductPrintingService saleOrderProductPrintingService;
+  protected SaleOrderService saleOrderService;
 
   @Inject
   public SaleOrderInitValueServiceImpl(
@@ -57,7 +57,8 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
       SaleConfigService saleConfigService,
       CompanyService companyService,
       SaleOrderUserService saleOrderUserService,
-      SaleOrderProductPrintingService saleOrderProductPrintingService) {
+      SaleOrderProductPrintingService saleOrderProductPrintingService,
+      SaleOrderService saleOrderService) {
     this.appBaseService = appBaseService;
     this.userService = userService;
     this.saleOrderBankDetailsService = saleOrderBankDetailsService;
@@ -65,6 +66,7 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
     this.companyService = companyService;
     this.saleOrderUserService = saleOrderUserService;
     this.saleOrderProductPrintingService = saleOrderProductPrintingService;
+    this.saleOrderService = saleOrderService;
   }
 
   @Override
@@ -104,7 +106,6 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
             .map(User::getActiveCompany)
             .map(Company::getPrintingSettings)
             .orElse(null);
-    SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
 
     saleOrderMap.put("exTaxTotal", BigDecimal.ZERO);
     saleOrderMap.put("taxTotal", BigDecimal.ZERO);
@@ -124,6 +125,7 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
     saleOrderMap.put("template", saleOrder.getTemplate());
 
     if (company != null) {
+      SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
       saleOrderMap.put("duration", saleConfig.getDefaultValidityDuration());
       saleOrderMap.put("currency", company.getCurrency());
     }
@@ -133,15 +135,8 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
 
   protected Map<String, Object> getInAti(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> saleOrderMap = new HashMap<>();
-    SaleConfig saleConfig = saleConfigService.getSaleConfig(saleOrder.getCompany());
     Company company = companyService.getDefaultCompany(null);
-    if (company != null) {
-      int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
-      boolean inAti =
-          saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
-              || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_DEFAULT;
-      saleOrder.setInAti(inAti);
-    }
+    saleOrder.setInAti(saleOrderService.getInAti(saleOrder, company));
     saleOrderMap.put("inAti", saleOrder.getInAti());
     return saleOrderMap;
   }

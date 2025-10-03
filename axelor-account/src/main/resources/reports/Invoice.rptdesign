@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202201280001</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -4664,10 +4664,9 @@ left outer join base_trading_name as TradingName on (TradingName.id = Invoice.tr
 left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 left outer join account_invoice as OriginalInvoice on (Invoice.original_invoice = OriginalInvoice.id)
 left outer join account_invoice_stock_move_set as InvoiceStockMove on (InvoiceStockMove.invoice_set = Invoice.id)
-left outer join account_accounting_situation as SupplierAccountingSituation on  Partner.id = SupplierAccountingSituation.partner
-left outer join account_accounting_situation as CompanyAccountingSituation on  CompanyPartner.id = CompanyAccountingSituation.partner
-where Invoice.id = InvoiceId
-and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = CompanyAccountingSituation.company);
+left outer join account_accounting_situation as SupplierAccountingSituation on (Partner.id = SupplierAccountingSituation.partner and Invoice.company = SupplierAccountingSituation.company)
+left outer join account_accounting_situation as CompanyAccountingSituation on (CompanyPartner.id = CompanyAccountingSituation.partner and Invoice.company = CompanyAccountingSituation.company)
+where Invoice.id = InvoiceId;
 ELSE
 return query
 select distinct
@@ -4768,10 +4767,9 @@ left outer join base_trading_name as TradingName on (TradingName.id = Invoice.tr
 left outer join meta_file as MetaFileTN on (MetaFileTN.id = TradingName.logo)
 left outer join account_invoice as OriginalInvoice on (Invoice.original_invoice = OriginalInvoice.id)
 left outer join account_invoice_stock_move_set as InvoiceStockMove on (InvoiceStockMove.invoice_set = Invoice.id)
-left outer join account_accounting_situation as SupplierAccountingSituation on  Partner.id = SupplierAccountingSituation.partner
-left outer join account_accounting_situation as CompanyAccountingSituation on  CompanyPartner.id = CompanyAccountingSituation.partner
-where Invoice.id = InvoiceId
-and (Invoice.company = SupplierAccountingSituation.company or Invoice.company = CompanyAccountingSituation.company);
+left outer join account_accounting_situation as SupplierAccountingSituation on (Partner.id = SupplierAccountingSituation.partner and Invoice.company = SupplierAccountingSituation.company)
+left outer join account_accounting_situation as CompanyAccountingSituation on (CompanyPartner.id = CompanyAccountingSituation.partner and Invoice.company = CompanyAccountingSituation.company)
+where Invoice.id = InvoiceId;
 END IF;
 END;
 $func$ LANGUAGE plpgsql;]]></xml-property>
@@ -5072,14 +5070,15 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                                     <structure>
                                         <property name="paramName">param_1</property>
                                         <simple-property-list name="expression">
-                                            <value type="javascript">
-                                                if (row["status_select"] == "1") {
+                                            <value type="javascript">if (row["status_select"] == "1") {
                                                     'Invoice.draftInvoiceNo'
                                                 } else if(row["status_select"] == "2") {
                                                     if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                         'Invoice.purchaseInvoiceAdvPaymentNo'
                                                     } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                         'Invoice.invoiceAdvPaymentNo'
+                                                    }else if ((row["operation_type_select"] == "2" || row["operation_type_select"] == "4") &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                        'Invoice.invoiceCreditAdvPaymentNo'
                                                     } else {
                                                         'Invoice.draftInvoiceNo'
                                                     }
@@ -5723,14 +5722,15 @@ this.height=row["logo_height"];]]></method>
                             <structure>
                                 <property name="paramName">param_1</property>
                                 <simple-property-list name="expression">
-                                    <value type="javascript">
-                                        if (row["status_select"] == "1") {
+                                    <value type="javascript">if (row["status_select"] == "1") {
                                             'Invoice.draftInvoiceNo'
                                         } else if(row["status_select"] == "2") {
                                             if (row["operation_type_select"] == "1" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.purchaseInvoiceAdvPaymentNo'
                                             } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.invoiceAdvPaymentNo'
+                                            } else if ((row["operation_type_select"] == "2" || row["operation_type_select"] == "4") &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                'Invoice.invoiceCreditAdvPaymentNo'
                                             } else {
                                                 'Invoice.draftInvoiceNo'
                                             }
@@ -6422,6 +6422,8 @@ row["message_key"]
                                                 'Invoice.purchaseInvoiceAdvPaymentNo'
                                             } else if (row["operation_type_select"] == "3" &amp;&amp; row["operation_sub_type_select"] == "2") {
                                                 'Invoice.invoiceAdvPaymentNo'
+                                            } else if ((row["operation_type_select"] == "2" || row["operation_type_select"] == "4") &amp;&amp; row["operation_sub_type_select"] == "2") {
+                                                'Invoice.invoiceCreditAdvPaymentNo'
                                             } else {
                                                 'Invoice.draftInvoiceNo'
                                             }
@@ -9055,7 +9057,7 @@ else{ 1.00 }
                                         </list-property>
                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["ex_tax_total"] != 0) {Formatter.format(row["ex_tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))}</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["ex_tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="5731">
                                         <property name="fontFamily">sans-serif</property>
@@ -9099,7 +9101,7 @@ else{ 1.00 }
                                         </list-property>
                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["ex_tax_total"] != 0){row["currencycode"]}</VALUE-OF>]]></text-property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["currencycode"]</VALUE-OF>]]></text-property>
                                     </text>
                                     <text id="5429">
                                         <property name="fontSize">8pt</property>
@@ -13245,7 +13247,7 @@ else {'Invoice.totalTaxes'}</value>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["translation"] != null) {
 	row["translation"]
 } else {
 	row._outer["SaleLegalNote"]
@@ -13473,7 +13475,7 @@ else {'Invoice.totalTaxes'}</value>
                                             </structure>
                                         </list-property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+                                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["translation"] != null) {
 	row["translation"]
 } else {
 	row._outer["ClientBox"]
@@ -13912,190 +13914,6 @@ else {'Invoice.totalTaxes'}</value>
             </list-property>
             <column id="5209"/>
             <column id="5224"/>
-            <row id="5218">
-                <property name="borderBottomStyle">solid</property>
-                <property name="borderBottomWidth">thin</property>
-                <cell id="5219">
-                    <image id="4356">
-                        <property name="textAlign">left</property>
-                        <property name="overflow">hidden</property>
-                        <property name="height">71px</property>
-                        <property name="width">309px</property>
-                        <structure name="toc"/>
-                        <property name="source">file</property>
-                        <property name="proportionalScale">true</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"]+row["logo_path"]</expression>
-                    </image>
-                </cell>
-                <cell id="5220">
-                    <text id="4357">
-                        <property name="fontSize">8pt</property>
-                        <property name="textAlign">justify</property>
-                        <property name="dataSet">InvoiceDB</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">inv_id</property>
-                                <text-property name="displayName">inv_id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["inv_id"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">invoice_id</property>
-                                <text-property name="displayName">invoice_id</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["invoice_id"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">operation_type_select</property>
-                                <text-property name="displayName">operation_type_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["operation_type_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">invoice_date</property>
-                                <text-property name="displayName">invoice_date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["invoice_date"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                            <structure>
-                                <property name="name">partner_type_select</property>
-                                <text-property name="displayName">partner_type_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["partner_type_select"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                            <structure>
-                                <property name="name">partnerName</property>
-                                <text-property name="displayName">partnerName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["partnerName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">partnerFirstName</property>
-                                <text-property name="displayName">partnerFirstName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["partnerFirstName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">title_select</property>
-                                <text-property name="displayName">title_select</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">contactName</property>
-                                <text-property name="displayName">contactName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contactName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">contactFirstName</property>
-                                <text-property name="displayName">contactFirstName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["contactFirstName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">address_str</property>
-                                <text-property name="displayName">address_str</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["address_str"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">paymentConditionName</property>
-                                <text-property name="displayName">paymentConditionName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["paymentConditionName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">due_date</property>
-                                <text-property name="displayName">due_date</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["due_date"]</expression>
-                                <property name="dataType">date</property>
-                            </structure>
-                            <structure>
-                                <property name="name">currencyCode</property>
-                                <text-property name="displayName">currencyCode</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["currencyCode"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">invoice_in_tax_total</property>
-                                <text-property name="displayName">invoice_in_tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["invoice_in_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">invoice_ex_tax_total</property>
-                                <text-property name="displayName">invoice_ex_tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["invoice_ex_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">invoice_tax_total</property>
-                                <text-property name="displayName">invoice_tax_total</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["invoice_tax_total"]</expression>
-                                <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">companyName</property>
-                                <text-property name="displayName">companyName</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["companyName"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">iban</property>
-                                <text-property name="displayName">iban</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["iban"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">bic</property>
-                                <text-property name="displayName">bic</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["bic"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">bank_address</property>
-                                <text-property name="displayName">bank_address</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["bank_address"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">note</property>
-                                <text-property name="displayName">note</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["note"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">internal_reference</property>
-                                <text-property name="displayName">internal_reference</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["internal_reference"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">external_reference</property>
-                                <text-property name="displayName">external_reference</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["external_reference"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">header</property>
-                                <text-property name="displayName">header</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["header"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">footer</property>
-                                <text-property name="displayName">footer</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["footer"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <structure name="toc"/>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["header"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-            </row>
             <row id="5216">
                 <property name="height">0.873cm</property>
                 <cell id="5217">
@@ -14177,7 +13995,7 @@ else {'Invoice.totalTaxes'}</value>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null) {
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">if(row["translation"] != null) {
 	row["translation"]
 } else {
 	row._outer["termsAndConditions"]

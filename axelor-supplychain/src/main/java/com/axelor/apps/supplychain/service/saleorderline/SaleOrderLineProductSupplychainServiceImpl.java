@@ -40,9 +40,12 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
+import com.axelor.apps.supplychain.db.FreightCarrierPricing;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.pricing.FreightCarrierApplyPricingService;
+import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -54,6 +57,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
   protected AnalyticLineModelService analyticLineModelService;
   protected AppSupplychainService appSupplychainService;
   protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
+  protected FreightCarrierPricingService freightCarrierPricingService;
+  protected FreightCarrierApplyPricingService freightCarrierApplyPricingService;
 
   @Inject
   public SaleOrderLineProductSupplychainServiceImpl(
@@ -72,7 +77,9 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       BlockingService blockingService,
       AnalyticLineModelService analyticLineModelService,
       AppSupplychainService appSupplychainService,
-      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService,
+      FreightCarrierPricingService freightCarrierPricingService,
+      FreightCarrierApplyPricingService freightCarrierApplyPricingService) {
     super(
         appSaleService,
         appBaseService,
@@ -90,6 +97,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
     this.analyticLineModelService = analyticLineModelService;
     this.appSupplychainService = appSupplychainService;
     this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
+    this.freightCarrierPricingService = freightCarrierPricingService;
+    this.freightCarrierApplyPricingService = freightCarrierApplyPricingService;
   }
 
   @Override
@@ -112,6 +121,7 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
 
       saleOrderLineMap.putAll(
           saleOrderLineAnalyticService.printAnalyticAccounts(saleOrder, saleOrderLine));
+      saleOrderLineMap.putAll(setShippingCostPrice(saleOrderLine, saleOrder));
     } else {
       return saleOrderLineMap;
     }
@@ -200,6 +210,32 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
   protected Map<String, Object> resetProductInformationMap(SaleOrderLine line) {
     Map<String, Object> saleOrderLineMap = super.resetProductInformationMap(line);
     saleOrderLineMap.put("saleSupplySelect", null);
+
+    return saleOrderLineMap;
+  }
+
+  protected Map<String, Object> setShippingCostPrice(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+
+    if (saleOrder.getFreightCarrierMode() == null
+        || !saleOrderLine.getProduct().getIsShippingCostsProduct()
+        || !appBaseService.getAppBase().getEnablePricingScale()) {
+      return saleOrderLineMap;
+    }
+
+    FreightCarrierPricing freightCarrierPricing =
+        freightCarrierPricingService.createFreightCarrierPricing(
+            saleOrder.getFreightCarrierMode(), saleOrder);
+
+    if (freightCarrierPricing == null) {
+      return saleOrderLineMap;
+    }
+
+    freightCarrierApplyPricingService.applyPricing(freightCarrierPricing);
+    saleOrderLine.setPrice(freightCarrierPricing.getPricingAmount());
+
+    saleOrderLineMap.put("price", saleOrderLine.getPrice());
 
     return saleOrderLineMap;
   }

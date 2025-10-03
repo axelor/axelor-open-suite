@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
 
   <menuitem name="menu-products-dashboard-1" parent="referential-report"
@@ -179,6 +179,7 @@
   <action-view name="stock.root.multi.purchase.invoicing"
     title="Mass Suppl. Stock Move Invoicing" model="com.axelor.apps.stock.db.StockMove">
     <view type="form" name="stock-move-multi-purchase-invoicing-form"/>
+    <view-param name="show-toolbar" value="false"/>
   </action-view>
 
   <menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale" order="800"
@@ -188,6 +189,7 @@
   <action-view name="stock.root.multi.sale.invoicing"
     title="Mass Cust. Stock Move Invoicing" model="com.axelor.apps.stock.db.StockMove">
     <view type="form" name="stock-move-multi-sale-invoicing-form"/>
+    <view-param name="show-toolbar" value="false"/>
   </action-view>
 
   <menuitem name="stock-root-availabilityreq" parent="sc-root-sale" order="900"
@@ -256,6 +258,48 @@
       (self.invoicingState = 1 OR self.invoicingState = 2) AND
       self.saleOrder.statusSelect = 3
     </domain>
+  </action-view>
+
+  <!-- Pricing menus -->
+  <menuitem title="Transport rates" name="stock-root-freight-carrier-pricing"
+    parent="stock-root-conf" order="510" if="__config__.app.getApp('base')?.enablePricingScale"/>
+
+  <menuitem title="Pricing" name="stock-pricing-freight-carrier-pricing-pricing"
+    parent="stock-root-freight-carrier-pricing" order="10"
+    action="stock.root.carrier.freight.pricing.pricing"
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
+
+  <action-view name="stock.root.carrier.freight.pricing.pricing" title="Pricing"
+    model="com.axelor.apps.base.db.Pricing">
+    <view type="grid" name="freight-carrier-mode-pricing-grid"/>
+    <view type="form" name="freight-carrier-mode-pricing-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING"/>
+  </action-view>
+
+  <menuitem title="Delay pricing" name="stock-pricing-freight-carrier-pricing-delay"
+    parent="stock-root-freight-carrier-pricing" order="20"
+    action="stock.root.carrier.freight.pricing.delay"/>
+
+  <action-view name="stock.root.carrier.freight.pricing.delay" title="Delay pricing"
+    model="com.axelor.apps.base.db.Pricing">
+    <view type="grid" name="pricing-grid"/>
+    <view type="form" name="pricing-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_DELAY"/>
+  </action-view>
+
+  <menuitem title="Pricing rules" name="stock-pricing-carrier-freight-conf-pricing-rule"
+    parent="stock-root-freight-carrier-pricing" order="20"
+    action="stock.root.carrier.freight.conf.pricing.rule"
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
+
+  <action-view name="stock.root.carrier.freight.conf.pricing.rule" title="Pricing rules"
+    model="com.axelor.apps.base.db.PricingRule">
+    <view type="grid" name="pricing-rule-grid"/>
+    <view type="form" name="pricing-rule-form"/>
   </action-view>
 </object-views>
 

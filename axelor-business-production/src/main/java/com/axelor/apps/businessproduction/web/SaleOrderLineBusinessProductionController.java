@@ -30,7 +30,8 @@ public class SaleOrderLineBusinessProductionController {
       throws AxelorException {
     SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
 
-    Beans.get(SaleOrderProductionSyncBusinessService.class).syncSaleOrderLine(saleOrderLine);
+    Beans.get(SaleOrderProductionSyncBusinessService.class)
+        .syncSaleOrderLine(saleOrderLine.getSaleOrder(), saleOrderLine);
     response.setValues(saleOrderLine);
   }
 }

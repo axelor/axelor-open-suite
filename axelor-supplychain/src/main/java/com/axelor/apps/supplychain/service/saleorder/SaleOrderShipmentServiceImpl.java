@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service.saleorder;
 
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.interfaces.ShippableOrder;
@@ -44,6 +45,7 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
   protected SaleOrderLineRepository saleOrderLineRepo;
   protected SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
   protected SaleOrderLineInitValueService saleOrderLineInitValueService;
+  protected InvoiceRepository invoiceRepository;
 
   @Inject
   public SaleOrderShipmentServiceImpl(
@@ -52,13 +54,15 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
       SaleOrderMarginService saleOrderMarginService,
       SaleOrderLineRepository saleOrderLineRepo,
       SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
-      SaleOrderLineInitValueService saleOrderLineInitValueService) {
+      SaleOrderLineInitValueService saleOrderLineInitValueService,
+      InvoiceRepository invoiceRepository) {
     super(shippingService);
     this.saleOrderComputeService = saleOrderComputeService;
     this.saleOrderMarginService = saleOrderMarginService;
     this.saleOrderLineRepo = saleOrderLineRepo;
     this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
     this.saleOrderLineInitValueService = saleOrderLineInitValueService;
+    this.invoiceRepository = invoiceRepository;
   }
 
   @Override
@@ -73,12 +77,40 @@ public class SaleOrderShipmentServiceImpl extends ShippingAbstractService
   }
 
   @Override
+  protected void updateLineAndComputeOrder(
+      ShippableOrder shippableOrder, Product shippingCostProduct) throws AxelorException {
+    SaleOrder saleOrder = getSaleOrder(shippableOrder);
+    if (saleOrder == null) {
+      return;
+    }
+    SaleOrderLine saleOrderLine = createShippingCostLine(saleOrder, shippingCostProduct);
+    saleOrder
+        .getSaleOrderLineList()
+        .forEach(
+            line -> {
+              if (line.getProduct() != null && line.getProduct().getIsShippingCostsProduct()) {
+                line.setPrice(saleOrderLine.getPrice());
+                line.setProduct(saleOrderLine.getProduct());
+              }
+            });
+    computeSaleOrder(saleOrder);
+  }
+
+  @Override
   protected String removeLineAndComputeOrder(ShippableOrder shippableOrder) throws AxelorException {
     SaleOrder saleOrder = getSaleOrder(shippableOrder);
     if (saleOrder == null) {
       return null;
     }
-    String message = removeShipmentCostLine(saleOrder);
+    String message = null;
+    if (invoiceRepository
+        .all()
+        .filter("self.saleOrder.id=:saleOrderId")
+        .bind("saleOrderId", saleOrder.getId())
+        .fetch()
+        .isEmpty()) {
+      message = removeShipmentCostLine(saleOrder);
+    }
     computeSaleOrder(saleOrder);
     return message;
   }

@@ -687,7 +687,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (toStatus == StockMoveRepository.STATUS_REALIZED) {
       BigDecimal avgPrice =
           this.computeNewAveragePriceLocationLine(stockLocationLine, stockMoveLine);
-      stockLocationLine.setAvgPrice(avgPrice);
+      setAvgPriceAndComputeForProduct(stockLocationLine, avgPrice);
 
       stockLocationLineService.updateHistory(
           stockLocationLine,
@@ -740,7 +740,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (toStatus == StockMoveRepository.STATUS_CANCELED) {
       resetAvgPrice(stockLocationLine, origin);
     } else {
-      stockLocationLine.setAvgPrice(
+      setAvgPriceAndComputeForProduct(
+          stockLocationLine,
           Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO));
     }
 
@@ -752,7 +753,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         getStockLocationLineHistoryTypeSelect(toStatus));
   }
 
-  protected void resetAvgPrice(StockLocationLine stockLocationLine, String origin) {
+  protected void resetAvgPrice(StockLocationLine stockLocationLine, String origin)
+      throws AxelorException {
 
     // Sort by date.
     List<StockLocationLineHistory> sortedHistoryLines =
@@ -780,14 +782,16 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       // Case where firstHistoryLine is simply not from same origin.
       // Or we could not find historyLine from different origin.
       if (i == 0 || i >= sortedHistoryLines.size()) {
-        stockLocationLine.setAvgPrice(
+        setAvgPriceAndComputeForProduct(
+            stockLocationLine,
             Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO));
       } else {
-        stockLocationLine.setAvgPrice(lastHistoryLine.getWap());
+        setAvgPriceAndComputeForProduct(stockLocationLine, lastHistoryLine.getWap());
       }
 
     } else {
-      stockLocationLine.setAvgPrice(
+      setAvgPriceAndComputeForProduct(
+          stockLocationLine,
           Optional.ofNullable(stockLocationLine.getAvgPrice()).orElse(BigDecimal.ZERO));
     }
   }
@@ -843,6 +847,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       newAvgPrice = oldAvgPrice;
     }
     return newAvgPrice;
+  }
+
+  protected void setAvgPriceAndComputeForProduct(
+      StockLocationLine stockLocationLine, BigDecimal avgPrice) throws AxelorException {
+    stockLocationLine.setAvgPrice(avgPrice);
+    weightedAveragePriceService.computeAvgPriceForProduct(stockLocationLine.getProduct());
   }
 
   @Override
@@ -1384,12 +1394,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     //      draft = false;
     //    }
     BigDecimal totalSplitQty = BigDecimal.ZERO;
+    boolean isAlreadyExceeded = false;
     for (LinkedHashMap<String, Object> trackingNumberItem : trackingNumbers) {
       BigDecimal counter = new BigDecimal(trackingNumberItem.get("counter").toString());
       if (counter.compareTo(BigDecimal.ZERO) == 0) {
         continue;
       }
-      totalSplitQty = totalSplitQty.add(counter);
 
       TrackingNumber trackingNumber =
           trackingNumberRepo
@@ -1460,11 +1470,21 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       }
 
       StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, true);
-      //      if (draft) {
-      newStockMoveLine.setQty(counter);
-      //      } else {
+      boolean isExceeded = totalSplitQty.add(counter).compareTo(stockMoveLine.getQty()) > 0;
+      BigDecimal remainder = stockMoveLine.getQty().subtract(totalSplitQty);
+      totalSplitQty = totalSplitQty.add(counter);
+      if (!isAlreadyExceeded) {
+        if (isExceeded) {
+          newStockMoveLine.setQty(remainder);
+          isAlreadyExceeded = true;
+        } else {
+          newStockMoveLine.setQty(counter);
+        }
+      } else {
+        newStockMoveLine.setQty(BigDecimal.ZERO);
+      }
+
       newStockMoveLine.setRealQty(counter);
-      //      }
       newStockMoveLine.setTrackingNumber(trackingNumber);
       newStockMoveLine.setStockMove(stockMoveLine.getStockMove());
       stockMoveLineRepository.save(newStockMoveLine);
@@ -1831,6 +1851,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   public void fillRealQuantities(StockMoveLine stockMoveLine, StockMove stockMove, BigDecimal qty) {
     if (stockMoveLine != null) {
       stockMoveLine.setRealQty(qty);
+      stockMoveLine.setTotalNetMass(qty.multiply(stockMoveLine.getNetMass()));
     }
   }
 

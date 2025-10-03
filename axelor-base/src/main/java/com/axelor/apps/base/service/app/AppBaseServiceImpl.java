@@ -33,10 +33,9 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
+import com.axelor.meta.loader.AppVersionService;
 import com.axelor.studio.app.service.AppServiceImpl;
-import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
@@ -61,18 +60,10 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
       MetaFileRepository metaFileRepo) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
   }
 
   @Override
@@ -313,20 +304,6 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
   }
 
   @Override
-  public String getSireneTokenGeneratorUrl() throws AxelorException {
-    AppBase appBase = getAppBase();
-    String tokenGeneratorUrl = appBase.getSireneTokenGeneratorUrl();
-    if (tokenGeneratorUrl != null) {
-      return tokenGeneratorUrl;
-    } else {
-      throw new AxelorException(
-          appBase,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_TOKEN_GENERATOR_URL_MISSING));
-    }
-  }
-
-  @Override
   public String getSireneUrl() throws AxelorException {
     AppBase appBase = getAppBase();
     String sireneUrl = appBase.getSireneUrl();
@@ -337,34 +314,6 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
           appBase,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_URL_MISSING));
-    }
-  }
-
-  @Override
-  public String getSireneKey() throws AxelorException {
-    AppBase appBase = getAppBase();
-    String sireneKey = appBase.getSireneKey();
-    if (sireneKey != null) {
-      return sireneKey;
-    } else {
-      throw new AxelorException(
-          appBase,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_KEY_MISSING));
-    }
-  }
-
-  @Override
-  public String getSireneSecret() throws AxelorException {
-    AppBase appBase = getAppBase();
-    String sireneSecret = appBase.getSireneSecret();
-    if (sireneSecret != null) {
-      return sireneSecret;
-    } else {
-      throw new AxelorException(
-          appBase,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_SECRET_MISSING));
     }
   }
 }

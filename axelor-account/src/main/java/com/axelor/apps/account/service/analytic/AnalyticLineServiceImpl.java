@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
@@ -155,17 +156,30 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   @Override
   public boolean isAxisRequired(AnalyticLine line, Company company, int position)
       throws AxelorException {
-    if (analyticToolService.isManageAnalytic(company)
-        && line != null
-        && line.getAccount() != null
-        && line.getAccount().getCompany() != null) {
-      Account account = line.getAccount();
-      return account.getAnalyticDistributionAuthorized()
-          && account.getAnalyticDistributionRequiredOnMoveLines()
-          && line.getAnalyticDistributionTemplate() == null
-          && analyticToolService.isPositionUnderAnalyticAxisSelect(company, position);
+    Account account = line.getAccount();
+    if (!analyticToolService.isManageAnalytic(company)
+        || !analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)
+        || account == null
+        || !account.getAnalyticDistributionAuthorized()) {
+      return false;
     }
-    return false;
+
+    if (analyticToolService.isFreeAnalyticDistribution(company)) {
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+      List<AnalyticAxisByCompany> analyticAxisByCompanyList =
+          accountConfig.getAnalyticAxisByCompanyList();
+      if (ObjectUtils.isEmpty(analyticAxisByCompanyList)
+          || analyticAxisByCompanyList.size() < position) {
+        return false;
+      }
+      return Optional.ofNullable(analyticAxisByCompanyList.get(position - 1))
+          .map(AnalyticAxisByCompany::getIsRequired)
+          .orElse(false);
+
+    } else {
+      return account.getAnalyticDistributionRequiredOnMoveLines()
+          && line.getAnalyticDistributionTemplate() == null;
+    }
   }
 
   @Override
@@ -249,8 +263,12 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
 
   protected Stream<AnalyticMoveLine> getAnalyticMoveLineOnAxis(
       AnalyticLine analyticLine, AnalyticAxis analyticAxis) {
-    return analyticLine.getAnalyticMoveLineList().stream()
-        .filter(it -> it.getAnalyticAxis().equals(analyticAxis));
+    if (analyticAxis != null) {
+      return analyticLine.getAnalyticMoveLineList().stream()
+          .filter(it -> analyticAxis.equals(it.getAnalyticAxis()));
+    }
+
+    return Stream.empty();
   }
 
   protected void setAxisAccount(

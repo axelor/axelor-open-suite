@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form name="app-business-project-config-form" title="App business project"
     model="com.axelor.studio.db.AppBusinessProject" canDelete="false" canNew="false" width="large">
@@ -46,8 +46,8 @@
           <![CDATA[
             <>
                   {_t('Depending on the chosen configuration, the user get an alert or an error message if:')}<br/>
-                  {_t('- a linked sale order is not totally invoiced')} <br/>
-                  {_t('- a linked purchase order is not totally invoiced or is not totally delivered')}<br/>
+                  {_t('- a linked sale order line is not totally invoiced')} <br/>
+                  {_t('- a linked purchase order line is not totally invoiced or is not totally delivered')}<br/>
                   {_t('- a linked contract is not at finished status')}<br/>
                   {_t('- a linked timesheet line that must be invoiced has not been invoiced')}<br/>
                   {_t('- a linked expense line is not invoiced')}

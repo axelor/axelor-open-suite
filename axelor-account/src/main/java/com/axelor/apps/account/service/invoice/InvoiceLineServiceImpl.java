@@ -208,13 +208,17 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
   @Override
   public BigDecimal getCompanyExTaxTotal(BigDecimal exTaxTotal, Invoice invoice)
       throws AxelorException {
-
+    LocalDate date;
+    int operationTypeSelect = invoice.getOperationTypeSelect();
+    if (operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        || operationTypeSelect == InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
+      date = invoice.getOriginDate();
+    } else {
+      date = invoice.getInvoiceDate();
+    }
     return currencyService
         .getAmountCurrencyConvertedAtDate(
-            invoice.getCurrency(),
-            invoice.getCompany().getCurrency(),
-            exTaxTotal,
-            invoice.getInvoiceDate())
+            invoice.getCurrency(), invoice.getCompany().getCurrency(), exTaxTotal, date)
         .setScale(currencyScaleService.getCompanyScale(invoice), RoundingMode.HALF_UP);
   }
 
@@ -535,9 +539,9 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     BigDecimal qty =
         invoiceLine
             .getQty()
-            .divide(oldQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN)
+            .divide(oldQty, appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP)
             .multiply(newQty)
-            .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_EVEN);
+            .setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
     invoiceLine.setQty(qty);
     if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL
         || invoiceLine.getProduct() == null) {

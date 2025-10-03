@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="accounting-situation-partner-grid" title="Accounting situations"
     model="com.axelor.apps.account.db.AccountingSituation">
@@ -84,7 +84,8 @@
     <panel name="analyticsPanel" title="Analytics" colSpan="12" hidden="true">
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
-        form-view="analytic-distribution-template-form" domain="self.company = :company"/>
+        form-view="analytic-distribution-template-form"
+        onSelect="action-accounting-situation-method-set-domain-analytic-distribution-template"/>
       <field name="company.accountConfig" hidden="true"/>
       <field name="company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
     </panel>
@@ -242,6 +243,12 @@
 
   <action-method name="action-accounting-situation-method-onload">
     <call class="com.axelor.apps.account.web.AccountingSituationController" method="onLoad"/>
+  </action-method>
+
+  <action-method
+    name="action-accounting-situation-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.AccountingSituationController"
+      method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 
 </object-views>

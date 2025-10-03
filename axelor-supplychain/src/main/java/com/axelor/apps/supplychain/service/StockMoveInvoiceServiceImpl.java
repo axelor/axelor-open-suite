@@ -216,6 +216,7 @@ public class StockMoveInvoiceServiceImpl implements StockMoveInvoiceService {
 
       if (saleOrderSet.size() == 1) {
         invoice.setSaleOrder(saleOrderSet.iterator().next());
+        invoice.setCompanyTaxNumber(saleOrder.getTaxNumber());
       }
 
       invoice.setDeliveryAddress(stockMove.getToAddress());

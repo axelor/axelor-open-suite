@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -222,6 +222,10 @@
 		public static final int MOVE_GENERATION_EXCEPTION_NONE = 0;
 		public static final int MOVE_GENERATION_NO_DISPOSAL = 1;
 		public static final int MOVE_GENERATION_NO_MOVES = 2;
+
+		// Reference Date for first depreciation
+		public static final int REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION = 1;
+		public static final int REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE = 2;
 
 	]]></extra-code>
 

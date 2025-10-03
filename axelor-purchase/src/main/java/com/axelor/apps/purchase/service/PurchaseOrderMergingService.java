@@ -19,6 +19,7 @@
 package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -67,6 +68,10 @@ public interface PurchaseOrderMergingService {
     boolean getAllFiscalPositionsAreNull();
 
     void setAllFiscalPositionsAreNull(boolean allFiscalPositionsAreNull);
+
+    TaxNumber getCommonCompanyTaxNumber();
+
+    void setCommonCompanyTaxNumber(TaxNumber commonCompanyTaxNumber);
   }
 
   interface Checks {
@@ -97,6 +102,10 @@ public interface PurchaseOrderMergingService {
     boolean isExistFiscalPositionDiff();
 
     void setExistFiscalPositionDiff(boolean existFiscalPositionDiff);
+
+    boolean isExistAtiDiff();
+
+    void setExistAtiDiff(boolean existAtiDiff);
   }
 
   interface PurchaseOrderMergingResult {

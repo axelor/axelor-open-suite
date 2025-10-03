@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="umr-grid" title="Unique Mandate References"
     model="com.axelor.apps.account.db.Umr">
     <field name="umrNumber"/>
-    <field name="debtorName"/>
-    <field name="debtorAddress" form-view="address-form" grid-view="address-grid"/>
-    <field name="creationDate"/>
-    <field name="mandateSignatureDate"/>
-    <field name="mandateSignatureCity" form-view="city-form" grid-view="city-grid"/>
+    <field name="debtorName" readonly="true"/>
+    <field name="debtorAddress" form-view="address-form" grid-view="address-grid"
+      readonly="true"/>
+    <field name="creationDate" readonly="true"/>
+    <field name="mandateSignatureDate" readonly="true"/>
+    <field name="mandateSignatureCity" form-view="city-form" grid-view="city-grid"
+      readonly="true"/>
   </grid>
 
   <form name="umr-form" title="Unique Mandate References"
     model="com.axelor.apps.account.db.Umr" onNew="action-umr-method-onnew">
-    <panel name="mainPanel">
+    <panel name="mainPanel" readonlyIf="id">
       <field name="umrNumber"/>
       <field name="debtorName"/>
       <field name="debtorAddress" form-view="address-form" grid-view="address-grid"/>

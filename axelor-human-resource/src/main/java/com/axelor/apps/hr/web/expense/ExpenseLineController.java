@@ -18,11 +18,15 @@
  */
 package com.axelor.apps.hr.web.expense;
 
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseCreateWizardService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -81,5 +85,38 @@ public class ExpenseLineController {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
     String domain = Beans.get(ExpenseLineService.class).computeProjectTaskDomain(expenseLine);
     response.setAttr("projectTask", "domain", domain);
+  }
+
+  public void setInvitedCollaboratorSetDomain(ActionRequest request, ActionResponse response) {
+    ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+    Expense expense =
+        request.getContext().getParent() != null
+            ? request.getContext().getParent().asType(Expense.class)
+            : null;
+    String domain =
+        Beans.get(ExpenseLineDomainService.class).getInvitedCollaborators(expenseLine, expense);
+    response.setAttr("invitedCollaboratorSet", "domain", domain);
+  }
+
+  public void setDomainAnalyticDistributionTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+      Expense expense =
+          request.getContext().getParent() != null
+              ? request.getContext().getParent().asType(Expense.class)
+              : null;
+
+      if (expense != null) {
+        response.setAttr(
+            "analyticDistributionTemplate",
+            "domain",
+            Beans.get(AnalyticAttrsService.class)
+                .getAnalyticDistributionTemplateDomain(
+                    null, expenseLine.getExpenseProduct(), expense.getCompany(), null, null, true));
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

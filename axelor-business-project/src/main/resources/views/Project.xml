@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="business-project-grid" title="Projects"
     model="com.axelor.apps.project.db.Project">
@@ -298,7 +298,7 @@
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
-          domain="self.company = :company AND self.isSpecific = false"/>
+          onSelect="action-business-project-method-set-domain-analytic-distribution-template"/>
       </panel>
 
       <panel title="Configurations" name="configurationsPanel">
@@ -313,9 +313,6 @@
         <panel-include view="incl-project-config-panel-form"/>
       </panel>
     </panel-tabs>
-    <panel name="attrsPanel">
-      <field name="attrs" colSpan="12"/>
-    </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
@@ -498,7 +495,7 @@
           <field name="analyticDistributionTemplate"
             grid-view="analytic-distribution-template-grid"
             form-view="analytic-distribution-template-form" canEdit="false" canNew="false"
-            domain="self.company = :company AND self.isSpecific = false"/>
+            onSelect="action-business-project-method-set-domain-analytic-distribution-template"/>
           <panel-dashlet name="analyticDashletPanel" canSearch="true" height="200%"
             action="action-project-dashlet-analytic-move-lines" colSpan="12"/>
         </panel>
@@ -654,7 +651,7 @@
     <attribute name="value" for="fromDate" expr="eval: __datetime__"/>
     <attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
     <attribute name="value" for="assignedTo" expr="eval: __user__"/>
-    <attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
+    <attribute name="value:add" for="membersUserSet" expr="eval: [id:__user__.id]"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-invoicing-sequence">
@@ -843,7 +840,7 @@
     <attribute name="hidden" for="addSelectedSOLinesBtn" expr="eval:false"/>
     <attribute name="hidden" for="cancelManageSOLinesBtn" expr="eval:false"/>
     <attribute name="hidden" for="$salesOrderLineSet" expr="eval:false"/>
-    <attribute name="value" for="$salesOrderLineSet" expr="eval:false"/>
+    <attribute name="value" for="$salesOrderLineSet" expr="eval:null"/>
     <attribute name="title" for="$salesOrderLineSet"
       expr="eval:com.axelor.i18n.I18n.get('Select lines to add')"/>
     <attribute name="domain" for="$salesOrderLineSet"
@@ -1310,7 +1307,7 @@
 
   <action-group name="action-business-project-group-project-status-on-change">
     <action name="action-business-project-method-check-project-state"
-      if="__config__.app.isApp('business-project') &amp;&amp; projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus.id"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; (projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus.id || projectStatus.id == __config__.app.getApp('project')?.completedPaidProjectStatus.id)"/>
     <action name="action-project-group-finish-project"
       if="__config__.app.isApp('business-project') &amp;&amp; projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus.id"/>
   </action-group>
@@ -1353,6 +1350,12 @@
     name="action-business-project-method-get-analytic-distribution-template">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="getAnalyticDistributionTemplate"/>
+  </action-method>
+
+  <action-method
+    name="action-business-project-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.hr.web.expense.ProjectController"
+      method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 
 </object-views>

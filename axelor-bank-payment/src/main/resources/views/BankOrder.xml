@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders"
     model="com.axelor.apps.bankpayment.db.BankOrder">
@@ -27,7 +27,7 @@
     <field name="senderReference"/>
     <field name="nbOfLines"/>
     <field name="senderBankDetails.bank.bankName"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <grid name="bank-order-grid" orderBy="-bankOrderDate" title="Bank Orders"
@@ -54,7 +54,7 @@
     <field name="senderReference"/>
     <field name="nbOfLines"/>
     <field name="senderBankDetails.bank.bankName"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <grid name="bank-order-send-grid" orderBy="-bankOrderDate" title="Bank Orders"
@@ -78,7 +78,7 @@
     <field name="bankOrderCurrency"/>
     <field name="senderReference"/>
     <field name="senderBankDetails.bank.bankName"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="bank-order-form" title="Bank Order"
@@ -459,6 +459,7 @@
     <action name="action-bank-order-attrs-bank-order-file-format-change"/>
     <action name="action-bank-order-record-update-bankorder-currency"/>
     <action name="action-bank-order-record-update-bank-order-parameter"/>
+    <action name="action-bank-order-method-check-bank-order-line-bank-details"/>
   </action-group>
 
   <action-group name="action-bank-order-group-bank-order-file-format-onchange">
@@ -617,8 +618,6 @@
     <field name="partnerTypeSelect" expr="3" if="orderTypeSelect == 2 || orderTypeSelect == 4"/>
   </action-record>
 
-
-
   <action-record name="action-bank-order-record-currency-onchange"
     model="com.axelor.apps.bankpayment.db.BankOrder">
     <field name="senderBankDetails"
@@ -631,6 +630,11 @@
   </action-record>
 
   <!-- Actions Methods -->
+
+  <action-method name="action-bank-order-method-check-bank-order-line-bank-details">
+    <call class="com.axelor.apps.bankpayment.web.BankOrderController"
+      method="checkBankOrderLineBankDetails"/>
+  </action-method>
 
   <action-method name="action-bank-order-method-set-status-correct">
     <call class="com.axelor.apps.bankpayment.web.BankOrderController" method="setStatusCorrect"/>
@@ -647,8 +651,6 @@
   <action-method name="action-bank-order-method-merge">
     <call class="com.axelor.apps.bankpayment.web.BankOrderController" method="merge"/>
   </action-method>
-
-
 
   <action-method name="action-bank-order-method-bank-details-domain">
     <call class="com.axelor.apps.bankpayment.web.BankOrderController"

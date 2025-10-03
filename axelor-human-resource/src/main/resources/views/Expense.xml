@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
     orderBy="-sentDateTime" groupBy="period">
@@ -16,8 +16,8 @@
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="inTaxTotal" aggregate="sum"/>
-    <field name="currency" colSpan="2" required="true"/>
-    <field name="statusSelect"/>
+    <field name="currency" colSpan="2"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="ventilated"/>
   </grid>
 
@@ -45,12 +45,13 @@
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
     onNew="action-expense-group-form-onNew" onLoad="action-expense-group-form-onLoad"
-    onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false">
+    onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false"
+    canCopy="false">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printAll" title="Print report and files"
@@ -89,9 +90,7 @@
             canEdit="false" canView="false"
             onChange="action-expense-record-employee-onchange,action-expense-method-update-general-and-kilometric-expense-line-employee"
             required="true"/>
-          <field name="currency" canEdit="false" colSpan="6" required="true"
-            readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
-            onChange="action-expense-attrs-kilometric-panel-visibility"/>
+          <field name="currency" canEdit="false" colSpan="6" readonly="true"/>
           <field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management"
             onSelect="action-accounting-batch-attrs-bank-details-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"
@@ -204,7 +203,7 @@
         </panel>
         <panel name="paymentInfoPanel" showIf=" statusSelect == 4" title="Payment information"
           colSpan="12">
-          <field name="paymentStatusSelect" colSpan="4"/>
+          <field name="paymentStatusSelect" colSpan="4" widget="single-select"/>
           <field name="paymentMode" readonly="true" showIf="paymentMode" colSpan="4"/>
           <field name="paymentDate" showIf="paymentDate" colSpan="4" readonly="true"/>
           <field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
@@ -221,14 +220,15 @@
   </form>
 
   <form name="popup-expense-refusal-form" title="Ground for refusal"
-    model="com.axelor.apps.hr.db.Expense">
+    model="com.axelor.apps.hr.db.Expense" canCopy="false">
     <panel name="mainPanel">
       <field name="groundForRefusal" showTitle="false"/>
     </panel>
   </form>
 
   <form name="popup-expense-form" title="Select the expense you want to edit"
-    model="com.axelor.utils.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
+    model="com.axelor.utils.db.Wizard" onNew="action-expense-attrs-domain-expense-select"
+    canCopy="false">
     <panel name="mainPanel">
       <field name="$expenseSelect" title="Select Expense" type="many-to-one"
         target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" canEdit="false"/>
@@ -238,7 +238,7 @@
   </form>
 
   <form name="popup-expense-add-payment-form" title="Choose payment mode"
-    model="com.axelor.apps.hr.db.Expense">
+    model="com.axelor.apps.hr.db.Expense" canCopy="false">
     <panel name="mainPanel">
       <field name="paymentMode" domain="self.inOutSelect = 2"/>
       <field name="paymentDate" colSpan="4" required="true"/>
@@ -250,7 +250,7 @@
   <form name="complete-my-expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense"
     width="large" onNew="action-expense-group-form-onNew" onLoad="action-expense-group-form-onLoad"
     onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false"
-    canNew="false">
+    canNew="false" canCopy="false">
     <panel-include view="expense-form"/>
   </form>
 
@@ -258,7 +258,6 @@
     <action name="action-expense-record-default"/>
     <action name="action-expense-attrs-hide-button-readonly-field"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
-    <action name="action-expense-attrs-kilometric-panel-visibility"/>
     <action name="action-validate-check-user-employee"/>
   </action-group>
 
@@ -266,7 +265,6 @@
     <action name="action-expense-attrs-hide-button-readonly-field"/>
     <action name="action-expense-attrs-expense-company-cb"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
-    <action name="action-expense-attrs-kilometric-panel-visibility"/>
     <action name="action-expense-method-check-total-amount"/>
   </action-group>
 
@@ -300,6 +298,7 @@
     <action name="action-expense-method-compute"/>
     <action name="action-expense-method-update-moveDate-and-period"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
+    <action name="action-expense-method-check-analytic-axis"/>
   </action-group>
 
   <action-record name="action-expense-record-default"
@@ -326,7 +325,7 @@
     <field name="bankDetails"
       expr="eval: employee?.mainEmploymentContract?.payCompany ? employee?.mainEmploymentContract?.payCompany?.defaultBankDetails : employee?.user?.activeCompany?.defaultBankDetails"/>
     <field name="currency"
-      expr="eval: employee?.mainEmploymentContract?.payCompany.currency ?: employee?.user?.activeCompany?.currency"/>
+      expr="eval: employee?.mainEmploymentContract?.payCompany?.currency ?: employee?.user?.activeCompany?.currency"/>
   </action-record>
 
   <action-record name="action-expense-record-company-onchange"
@@ -388,8 +387,7 @@
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="refuseBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; user?.employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
-    <attribute name="hidden" for="cancelBtn"
-      expr="eval: period?.toDate?.isAfter(__config__.date) || statusSelect == 6 || ventilated"/>
+    <attribute name="hidden" for="cancelBtn" expr="eval: statusSelect == 6 || ventilated"/>
     <attribute name="readonly" for="period" expr="eval: true"
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="period" expr="eval: ventilated"
@@ -463,11 +461,6 @@
       expr="eval: inTaxTotal - (advanceAmount + withdrawnCash + personalExpenseAmount + paymentAmount)"/>
   </action-attrs>
 
-  <action-attrs name="action-expense-attrs-kilometric-panel-visibility">
-    <attribute for="kilometricExpenseLineList" name="hidden"
-      expr="eval: currency != company?.currency"/>
-  </action-attrs>
-
   <action-method name="action-expense-method-print-report-and-proof-file">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController"
       method="printReportAndProofFiles"/>
@@ -483,6 +476,10 @@
 
   <action-method name="action-expense-method-draft">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="backToDraft"/>
+  </action-method>
+
+  <action-method name="action-expense-method-check-analytic-axis">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkAnalyticAxis"/>
   </action-method>
 
   <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"

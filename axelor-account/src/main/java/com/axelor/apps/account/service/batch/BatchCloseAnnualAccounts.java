@@ -239,13 +239,15 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       try {
         if (accountingBatch.getGenerateResultMove() && batch.getDone() > 0) {
           Company company = companyRepo.find(accountingBatch.getCompany().getId());
-          accountingCloseAnnualService.generateResultMove(
-              company,
-              accountingBatch.getYear().getReportedBalanceDate(),
-              accountingBatch.getResultMoveDescription(),
-              accountingBatch.getBankDetails(),
-              accountingBatch.getGeneratedMoveStatusSelect(),
-              resultMoveAmount);
+          Move resultMove =
+              accountingCloseAnnualService.generateResultMove(
+                  company,
+                  accountingBatch.getYear().getReportedBalanceDate(),
+                  accountingBatch.getResultMoveDescription(),
+                  accountingBatch.getBankDetails(),
+                  accountingBatch.getGeneratedMoveStatusSelect(),
+                  resultMoveAmount);
+          updateAccountMove(resultMove, false);
         }
       } catch (AxelorException e) {
         TraceBackService.trace(new AxelorException(e, e.getCategory(), null, batch.getId()));
@@ -493,14 +495,14 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
       Query qIncome =
           JPA.em()
               .createQuery(
-                  "select SUM(self.debit + self.credit) FROM MoveLine as self WHERE "
+                  "select SUM(self.credit - self.debit) FROM MoveLine as self WHERE "
                       + query
                       + " AND self.account.accountType.technicalTypeSelect = 'income'",
                   BigDecimal.class);
       Query qCharge =
           JPA.em()
               .createQuery(
-                  "select SUM(self.debit + self.credit) FROM MoveLine as self WHERE "
+                  "select SUM(self.debit - self.credit) FROM MoveLine as self WHERE "
                       + query
                       + " AND self.account.accountType.technicalTypeSelect = 'charge'",
                   BigDecimal.class);

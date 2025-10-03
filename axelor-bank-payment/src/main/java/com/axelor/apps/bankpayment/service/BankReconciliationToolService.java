@@ -18,8 +18,13 @@
  */
 package com.axelor.apps.bankpayment.service;
 
+import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
+import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.base.db.Company;
+import com.axelor.common.ObjectUtils;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class BankReconciliationToolService {
@@ -32,5 +37,33 @@ public class BankReconciliationToolService {
       return !company.getCurrency().equals(bankReconciliation.getCurrency());
     }
     return false;
+  }
+
+  public static List<MoveLine> getMoveLineOnMultipleReconciliationLine(
+      BankReconciliation bankReconciliation) {
+    List<MoveLine> errorMoveLineList = new ArrayList<>();
+
+    if (bankReconciliation == null
+        || ObjectUtils.isEmpty(bankReconciliation.getBankReconciliationLineList())) {
+      return errorMoveLineList;
+    }
+
+    List<MoveLine> moveLineList = new ArrayList<>();
+
+    for (BankReconciliationLine bankReconciliationLine :
+        bankReconciliation.getBankReconciliationLineList()) {
+      MoveLine moveLine = bankReconciliationLine.getMoveLine();
+      if (moveLine == null) {
+        continue;
+      }
+
+      if (moveLineList.contains(moveLine)) {
+        errorMoveLineList.add(moveLine);
+      } else {
+        moveLineList.add(moveLine);
+      }
+    }
+
+    return errorMoveLineList;
   }
 }

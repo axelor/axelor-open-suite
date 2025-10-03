@@ -21,8 +21,8 @@ package com.axelor.apps.account.service.fixedasset;
 import static com.axelor.apps.account.service.fixedasset.FixedAssetServiceImpl.CALCULATION_SCALE;
 
 import com.axelor.apps.account.db.FixedAsset;
+import com.axelor.apps.account.db.FixedAssetCategory;
 import com.axelor.apps.account.db.FixedAssetLine;
-import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.AxelorException;
@@ -124,8 +124,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   public Optional<FixedAssetLine> computeInitialPlannedFixedAssetLine(FixedAsset fixedAsset)
       throws AxelorException {
 
-    LocalDate firstDepreciationDate;
-    firstDepreciationDate = computeStartDepreciationDate(fixedAsset);
+    LocalDate firstDepreciationDate = computeStartDepreciationDate(fixedAsset);
     BigDecimal depreciationBase = computeInitialDepreciationBase(fixedAsset);
     BigDecimal depreciation = BigDecimal.ZERO;
     BigDecimal accountingValue = BigDecimal.ZERO;
@@ -212,6 +211,22 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   protected boolean isAlreadyDepreciated(FixedAsset fixedAsset) {
+    BigDecimal expectedDepreciation =
+        fixedAssetLineToolService.getCompanyScaledValue(
+            fixedAsset.getGrossValue(),
+            fixedAsset.getResidualValue(),
+            fixedAsset,
+            BigDecimal::subtract);
+
+    BigDecimal actualDepreciation = getAlreadyDepreciatedAmount(fixedAsset);
+    boolean isProrataTemporis =
+        Optional.ofNullable(fixedAsset)
+            .map(FixedAsset::getFixedAssetCategory)
+            .map(FixedAssetCategory::getIsProrataTemporis)
+            .orElse(false);
+    if (isProrataTemporis) {
+      return fixedAssetLineToolService.equals(expectedDepreciation, actualDepreciation, fixedAsset);
+    }
 
     return fixedAssetLineToolService.equals(
         getNumberOfDepreciation(fixedAsset), getNumberOfPastDepreciation(fixedAsset), fixedAsset);
@@ -250,36 +265,62 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
   protected BigDecimal computeInitialDepreciation(FixedAsset fixedAsset, BigDecimal baseValue)
       throws AxelorException {
-    // Theses cases is for when user want to depreciate in one year.
-    // This case is if list is not empty when calling this method
-    if (getFixedAssetLineList(fixedAsset) != null
-        && numberOfDepreciationDone(fixedAsset)
-            .equals(getNumberOfDepreciation(fixedAsset).subtract(BigDecimal.ONE))
-        && !fixedAsset.getFixedAssetCategory().getIsProrataTemporis()) {
-      if (fixedAssetFailOverControlService.isFailOver(fixedAsset)
-          && getComputationMethodSelect(fixedAsset)
-              .equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)) {
-        return fixedAssetLineToolService.getCurrenciesMaxScaledValue(
-            baseValue, getAlreadyDepreciatedAmount(fixedAsset), BigDecimal::subtract);
+
+    if (fixedAsset == null) {
+      return baseValue;
+    }
+
+    boolean hasLines = getFixedAssetLineList(fixedAsset) != null;
+    boolean isProrata =
+        Optional.ofNullable(fixedAsset)
+            .map(FixedAsset::getFixedAssetCategory)
+            .map(FixedAssetCategory::getIsProrataTemporis)
+            .orElse(false);
+    boolean isFailOver = fixedAssetFailOverControlService.isFailOver(fixedAsset);
+
+    // How many periods remain (could be zero or negative if past schedule)
+    BigDecimal remainingDepreciations =
+        getNumberOfDepreciation(fixedAsset).subtract(numberOfDepreciationDone(fixedAsset));
+
+    // Treat any remaining ≤ 1 as the final period
+    boolean isLastDepreciation = remainingDepreciations.compareTo(BigDecimal.ONE) <= 0;
+
+    String computationMethod = getComputationMethodSelect(fixedAsset);
+    boolean isLinear = FixedAssetRepository.COMPUTATION_METHOD_LINEAR.equals(computationMethod);
+    boolean isDegressive =
+        FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(computationMethod);
+
+    // Existing lines, last period, non‑prorata schedule
+    if (hasLines && isLastDepreciation && !isProrata) {
+      if (isFailOver && isLinear) {
+        return getDepreciationDifference(fixedAsset, baseValue);
       }
       return baseValue;
     }
-    if (getFixedAssetLineList(fixedAsset) == null
-        && getNumberOfDepreciation(fixedAsset)
-            .subtract(numberOfDepreciationDone(fixedAsset))
-            .equals(BigDecimal.ONE)
-        && !fixedAssetFailOverControlService.isFailOver(fixedAsset)) {
-      return fixedAssetLineToolService.getCurrenciesMaxScaledValue(
-          baseValue, getAlreadyDepreciatedAmount(fixedAsset), BigDecimal::subtract);
-    }
-    if (getComputationMethodSelect(fixedAsset) != null
-        && getComputationMethodSelect(fixedAsset)
-            .equals(FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE)) {
 
-      return computeInitialDegressiveDepreciation(fixedAsset, baseValue);
-    } else {
-      return computeInitialLinearDepreciation(fixedAsset, baseValue);
+    // No lines yet, last period, not in fail‑over → scale difference
+    if (!hasLines && isLastDepreciation && !isFailOver) {
+      return getDepreciationDifference(fixedAsset, baseValue);
     }
+
+    // Prorata + fail‑over + last or overdue → scale difference
+    if (isProrata
+        && isFailOver
+        && isLastDepreciation
+        && remainingDepreciations.compareTo(BigDecimal.ZERO) <= 0) {
+      return getDepreciationDifference(fixedAsset, baseValue);
+    }
+
+    // Fallback: apply degressive or linear computation
+    if (isDegressive) {
+      return computeInitialDegressiveDepreciation(fixedAsset, baseValue);
+    }
+    return computeInitialLinearDepreciation(fixedAsset, baseValue);
+  }
+
+  protected BigDecimal getDepreciationDifference(FixedAsset fixedAsset, BigDecimal baseValue) {
+    return fixedAssetLineToolService.getCurrenciesMaxScaledValue(
+        baseValue, getAlreadyDepreciatedAmount(fixedAsset), BigDecimal::subtract);
   }
 
   protected BigDecimal computeInitialLinearDepreciation(
@@ -626,7 +667,7 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   protected LocalDate computeProrataTemporisAcquisitionDate(FixedAsset fixedAsset) {
     LocalDate date;
     if (getFirstDateDepreciationInitSelect(fixedAsset)
-            == FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+            == FixedAssetRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
         && fixedAsset.getFirstServiceDate() != null) {
       date = fixedAsset.getFirstServiceDate();
     } else {

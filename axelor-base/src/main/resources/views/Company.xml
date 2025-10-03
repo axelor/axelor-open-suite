@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="company-grid" title="Companies" model="com.axelor.apps.base.db.Company">
     <field name="name"/>
@@ -13,7 +13,7 @@
     onSave="action-company-check-multi-banks" canNew="_canNew">
     <panel name="mainPanel" readonlyIf="$popup()">
       <panel name="logoPanel" colSpan="4">
-        <field name="logo" widget="Image" colSpan="12"/>
+        <field name="logo" widget="Image"/>
         <field name="width" requiredIf="height"
           onChange="action-company-condition-validate-logo-height-and-width">
           <viewer depends="width"><![CDATA[
@@ -114,6 +114,10 @@
         <field name="localization" colSpan="6" canEdit="false" grid-view="localization-grid"
           form-view="localization-form"/>
         <field name="timezone" colSpan="6"/>
+        <panel name="altLogoPanel" title="Alternative logos">
+          <field name="lightLogo" widget="Image"/>
+          <field name="darkLogo" widget="Image"/>
+        </panel>
         <field name="taxNumberList" colSpan="12" canSelect="true" canNew="false"
           canEdit="false" domain="self.company.id = :id"
           if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('base')?.getEnableTaxNumbers()"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid id="purchase-order-line-purchase-order-supplychain-grid"
     name="purchase-order-line-purchase-order-grid" title="PO lines"
@@ -43,7 +43,7 @@
             grid-view="analytic-distribution-template-grid"
             form-view="analytic-distribution-template-form" canEdit="false"
             onChange="action-purchase-order-line-group-analytic-distribution-template-onchange"
-            onSelect="action-purchase-order-line-attrs-set-domain-analytic-distribution-template"/>
+            onSelect="action-purchase-order-line-method-set-domain-analytic-distribution-template"/>
           <field name="axis1AnalyticAccount" grid-view="analytic-account-grid"
             form-view="analytic-account-form" readonlyIf="analyticDistributionTemplate"
             onSelect="action-purchase-order-line-method-set-axis-domain"
@@ -127,11 +127,11 @@
       expr="eval: !__config__.app.isApp('supplychain') || __repo__(AccountConfig).findByCompany(__parent__.company)?.analyticDistributionTypeSelect != 1"/>
   </action-attrs>
 
-  <action-attrs
-    name="action-purchase-order-line-attrs-set-domain-analytic-distribution-template">
-    <attribute name="domain" for="analyticDistributionTemplate"
-      expr="eval: &quot; self.company.id = ${__parent__?.company.id} &quot;"/>
-  </action-attrs>
+  <action-method
+    name="action-purchase-order-line-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.supplychain.web.PurchaseOrderLineController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 
   <!-- ACTION METHOD -->
 

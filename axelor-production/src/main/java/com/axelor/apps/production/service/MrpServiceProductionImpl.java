@@ -60,6 +60,7 @@ import com.axelor.apps.supplychain.db.repo.MrpForecastRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineRepository;
 import com.axelor.apps.supplychain.db.repo.MrpLineTypeRepository;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
+import com.axelor.apps.supplychain.service.MrpLineSaleOrderService;
 import com.axelor.apps.supplychain.service.MrpLineService;
 import com.axelor.apps.supplychain.service.MrpLineTypeService;
 import com.axelor.apps.supplychain.service.MrpSaleOrderCheckLateSaleService;
@@ -124,6 +125,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       StockHistoryLineRepository stockHistoryLineRepository,
       MrpSaleOrderCheckLateSaleService mrpSaleOrderCheckLateSaleService,
       MrpLineTypeService mrpLineTypeService,
+      MrpLineSaleOrderService mrpLineSaleOrderService,
       ManufOrderRepository manufOrderRepository,
       ProductCompanyService productCompanyService,
       BillOfMaterialService billOfMaterialService,
@@ -153,7 +155,8 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
         appPurchaseService,
         stockHistoryLineRepository,
         mrpSaleOrderCheckLateSaleService,
-        mrpLineTypeService);
+        mrpLineTypeService,
+        mrpLineSaleOrderService);
     this.manufOrderRepository = manufOrderRepository;
     this.productCompanyService = productCompanyService;
     this.billOfMaterialService = billOfMaterialService;
@@ -492,7 +495,6 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
           updateMaturityDate(maturityDate, billOfMaterial, reorderQty)
               .minusDays(mrpLineType.getSecurityDelay());
     }
-
     MrpLine mrpLine =
         super.createProposalMrpLine(
             mrp,
@@ -511,6 +513,11 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     if (mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && billOfMaterial != null) {
+
+      if (maturityDate.isBefore(mrpLine.getMaturityDate())) {
+        mrpLine.setWarnDelayFromManufacturing(true);
+        mrpLine.setDeliveryDelayDate(maturityDate);
+      }
 
       MrpLineType manufProposalNeedMrpLineType =
           mrpLineTypeService.getMrpLineType(
@@ -543,7 +550,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
       } else {
         for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
           Product subProduct = billOfMaterialLine.getProduct();
-          if (this.isMrpProduct(subProduct)) {
+          if (this.isMrpProduct(subProduct) && !billOfMaterialLine.getHasNoManageStock()) {
             MrpLine subProductMrpLine =
                 super.createProposalMrpLine(
                     mrp,
@@ -771,7 +778,7 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
         Product subProduct = billOfMaterialLine.getProduct();
 
-        if (this.isMrpProduct(subProduct)) {
+        if (this.isMrpProduct(subProduct) && !billOfMaterialLine.getHasNoManageStock()) {
           this.assignProductLevel(billOfMaterialLine, level);
 
           Company company = mrp.getStockLocation().getCompany();

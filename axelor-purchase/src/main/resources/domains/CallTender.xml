@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="CallTender">
+
+    <string name="name" title="Call tender name"/>
+    <string name="description" title="Description"/>
+    <one-to-many name="callTenderNeedList"
+      ref="com.axelor.apps.purchase.db.CallTenderNeed" title="Product needs" mappedBy="callTender"/>
+    <one-to-many name="callTenderSupplierList"
+      ref="com.axelor.apps.purchase.db.CallTenderSupplier" title="Suppliers" mappedBy="callTender"/>
+    <one-to-many name="callTenderOfferList"
+      ref="com.axelor.apps.purchase.db.CallTenderOffer" title="Offers" mappedBy="callTender"/>
+    <many-to-one name="callForTenderMailTemplate" title="Call for tender mail template"
+      ref="com.axelor.message.db.Template"/>
+
+
+    <track on="UPDATE">
+      <field name="callTenderNeedList"/>
+      <field name="callTenderSupplierList"/>
+    </track>
+  </entity>
+
+</domain-models>

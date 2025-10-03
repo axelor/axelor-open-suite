@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -53,6 +53,15 @@
 
 
     <integer name="standardDelay" title="Standard delay (days)" default="0"/>
+
+    <!-- Blocking information -->
+    <boolean name="isDeliveryBlocking" title="Block delivery"/>
+    <many-to-one name="deliveryBlockingReason" ref="com.axelor.apps.base.db.StopReason"
+      title="Blocking delivery reason"/>
+    <date name="deliveryBlockingToDate" title="Blocking delivery until"/>
+    <many-to-one name="deliveryBlockingByUser" ref="com.axelor.auth.db.User"
+      title="Delivery blocking done by"/>
+    <string name="commentDeliveryBlocking" title="Blocking comment for delivery" large="true"/>
 
 
 

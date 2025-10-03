@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="analytic-move-line-grid" title="Analytic Move Lines"
     model="com.axelor.apps.account.db.AnalyticMoveLine">
@@ -76,7 +76,7 @@
     <panel name="mainPanel">
       <field name="analyticAxis"
         onSelect="action-method-domain-onselect-axis-analytic-move-line"
-        onChange="action-record-onchange-axis-analytic-move-line"/>
+        onChange="action-record-onchange-axis-analytic-move-line" required="true"/>
       <field name="analyticAccount" onSelect="action-group-domain-onselect-analytic-account"
         readonlyIf="!analyticAxis"/>
       <field name="percentage" min="0" max="100"
@@ -88,7 +88,8 @@
   <form name="analytic-move-line-form" title="Analytic Move Line"
     model="com.axelor.apps.account.db.AnalyticMoveLine"
     onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project"
-    onLoad="action-analytic-move-line-attrs-title-project" width="large">
+    onLoad="action-analytic-move-line-attrs-title-project"
+    onSave="save,action-analytic-move-line-method-refresh-axis" width="large">
     <panel name="mainPanel">
       <field name="analyticJournal" form-view="analytic-journal-form"
         grid-view="analytic-journal-grid"
@@ -140,7 +141,7 @@
         form-view="analytic-journal-form"
         onSelect="action-attrs-domain-onselect-journal-analytic-move-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
-        onSelect="action-method-domain-onselect-axis-analytic-move-line"/>
+        onSelect="action-method-domain-onselect-axis-analytic-move-line" required="true"/>
       <field name="analyticAccount" showIf="analyticAxis" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onSelect="action-group-domain-onselect-analytic-account"/>
       <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>
@@ -305,6 +306,11 @@
   <action-method name="action-method-analytic-move-line-move-line-onnew">
     <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
       method="manageNewAnalyticDistributionLine"/>
+  </action-method>
+
+  <action-method name="action-analytic-move-line-method-refresh-axis">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="refreshAxis"/>
   </action-method>
 
   <grid model="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic Move Lines"

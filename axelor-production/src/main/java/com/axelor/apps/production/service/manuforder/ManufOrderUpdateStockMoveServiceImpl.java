@@ -27,6 +27,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import java.util.Objects;
 
 public class ManufOrderUpdateStockMoveServiceImpl implements ManufOrderUpdateStockMoveService {
 
@@ -98,6 +99,12 @@ public class ManufOrderUpdateStockMoveServiceImpl implements ManufOrderUpdateSto
 
     // remove lines in stock move removed in manuf order
     if (stockMove.getStockMoveLineList() != null) {
+      // Clearing originstockmoveline of lines that will be removed.
+      stockMove.getStockMoveLineList().stream()
+          .filter(stockMoveLine -> !stockMoveLineList.contains(stockMoveLine))
+          .map(StockMoveLine::getTrackingNumber)
+          .filter(Objects::nonNull)
+          .forEach(trackingNumber -> trackingNumber.setOriginStockMoveLine(null));
       stockMove
           .getStockMoveLineList()
           .removeIf(stockMoveLine -> !stockMoveLineList.contains(stockMoveLine));

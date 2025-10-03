@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
 
   <selection name="bankpayment.bank.reconciliation.type.select">
@@ -17,14 +17,14 @@
   </selection>
 
   <selection name="bankpayment.bank.reconciliation.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
-    <option value="3">Under correction</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Validated</option>
+    <option value="3" color="orange">Under correction</option>
   </selection>
 
   <selection name="bankpayment.bank.statement.status.select">
-    <option value="1">Received</option>
-    <option value="2">Imported</option>
+    <option value="1" color="blue">Received</option>
+    <option value="2" color="green">Imported</option>
   </selection>
 
   <selection name="bankpayment.bank.order.type.select">
@@ -47,10 +47,10 @@
   </selection>
 
   <selection name="bankpayment.bank.order.status.select">
-    <option value="1">Draft</option>
-    <option value="3">Confirmed</option>
-    <option value="4">Carried out</option>
-    <option value="6">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="3" color="orange">Confirmed</option>
+    <option value="4" color="green">Carried out</option>
+    <option value="6" color="red">Canceled</option>
   </selection>
 
   <selection name="bankpayment.bank.order.reject.status.select">

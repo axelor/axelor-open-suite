@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="sop-line-grid" title="Sales and Operations Planning Line"
     model="com.axelor.apps.production.db.SopLine" editable="true">
@@ -46,7 +46,7 @@
     <panel name="wizardPanel" colSpan="12">
       <panel-related name="mrpForecastPanel" field="$mrpForecasts" canSelect="false"
         editable="true" type="one-to-many" colSpan="12"
-        target="com.axelor.apps.supplychain.db.MrpForecast" canNew="false">
+        target="com.axelor.apps.supplychain.db.MrpForecast" canNew="false" title="MRP forecasts">
         <field name="forecastDate" title="Forecast date" type="date" required="true"
           onChange="action-mrp-forecast-validate-check-forecast-date"/>
         <field name="product" readonly="true"/>

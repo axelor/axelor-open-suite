@@ -24,11 +24,12 @@ import java.util.Map;
 
 public interface ProjectTaskGroupBusinessService {
 
-  Map<String, Object> updateSoldTime(ProjectTask projectTask) throws AxelorException;
-
   Map<String, Object> updateUpdatedTime(ProjectTask projectTask) throws AxelorException;
 
   Map<String, Object> updateQuantity(ProjectTask projectTask) throws AxelorException;
 
   Map<String, Object> updateFinancialDatas(ProjectTask projectTask) throws AxelorException;
+
+  Map<String, Object> updateFinancialDatasWithoutPriceUnits(ProjectTask projectTask)
+      throws AxelorException;
 }

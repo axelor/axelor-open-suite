@@ -122,6 +122,7 @@ public class MrpServiceImpl implements MrpService {
   protected StockHistoryLineRepository stockHistoryLineRepository;
   protected MrpLineTypeService mrpLineTypeService;
   protected MrpSaleOrderCheckLateSaleService mrpSaleOrderCheckLateSaleService;
+  protected MrpLineSaleOrderService mrpLineSaleOrderService;
 
   protected AppBaseService appBaseService;
   protected AppSaleService appSaleService;
@@ -156,7 +157,8 @@ public class MrpServiceImpl implements MrpService {
       AppPurchaseService appPurchaseService,
       StockHistoryLineRepository stockHistoryLineRepository,
       MrpSaleOrderCheckLateSaleService mrpSaleOrderCheckLateSaleService,
-      MrpLineTypeService mrpLineTypeService) {
+      MrpLineTypeService mrpLineTypeService,
+      MrpLineSaleOrderService mrpLineSaleOrderService) {
 
     this.mrpRepository = mrpRepository;
     this.stockLocationRepository = stockLocationRepository;
@@ -179,6 +181,7 @@ public class MrpServiceImpl implements MrpService {
     this.stockHistoryLineRepository = stockHistoryLineRepository;
     this.mrpLineTypeService = mrpLineTypeService;
     this.mrpSaleOrderCheckLateSaleService = mrpSaleOrderCheckLateSaleService;
+    this.mrpLineSaleOrderService = mrpLineSaleOrderService;
   }
 
   @Override
@@ -306,7 +309,6 @@ public class MrpServiceImpl implements MrpService {
 
     for (int level = 0; level <= this.getMaxLevel(); level++) {
       this.currentLevel = level;
-      this.productMapToBeAssigned = new HashMap<>();
       for (Product product : this.getProductList(level)) {
         this.checkInsufficientCumulativeQty(product);
       }
@@ -995,16 +997,8 @@ public class MrpServiceImpl implements MrpService {
 
     if (this.isBeforeEndDate(maturityDate)) {
       Unit unit = saleOrderLine.getProduct().getUnit();
-      BigDecimal qty = saleOrderLine.getQty().subtract(saleOrderLine.getDeliveredQty());
-      if (!unit.equals(saleOrderLine.getUnit())) {
-        qty =
-            unitConversionService.convert(
-                saleOrderLine.getUnit(),
-                unit,
-                qty,
-                saleOrderLine.getQty().scale(),
-                saleOrderLine.getProduct());
-      }
+      BigDecimal qty =
+          mrpLineSaleOrderService.getSoMrpLineQty(saleOrderLine, unit, saleOrderMrpLineType);
 
       MrpLine mrpLine =
           this.createMrpLine(
@@ -1516,15 +1510,22 @@ public class MrpServiceImpl implements MrpService {
             I18n.get(SupplychainExceptionMessage.MRP_NO_PRODUCT_UNIT),
             product.getFullName());
       }
-      if (!this.productMap.containsKey(product.getId())) {
+      Long productId = product.getId();
+      if (!this.productMap.containsKey(productId)) {
+        if (currentLevel == null) {
+          currentLevel = 0;
+        }
         int nextLevel = currentLevel + 1;
-        this.productMap.put(product.getId(), nextLevel);
-        this.productMapToBeAssigned.put(product.getId(), nextLevel);
+        if (this.productMapToBeAssigned == null) {
+          this.productMapToBeAssigned = new HashMap<>();
+        }
+        this.productMap.put(productId, nextLevel);
+        this.productMapToBeAssigned.put(productId, nextLevel);
       }
       return mrpLineService.createMrpLine(
           mrp,
           product,
-          this.productMap.get(product.getId()),
+          this.productMap.get(productId),
           mrpLineType,
           qty,
           maturityDate,

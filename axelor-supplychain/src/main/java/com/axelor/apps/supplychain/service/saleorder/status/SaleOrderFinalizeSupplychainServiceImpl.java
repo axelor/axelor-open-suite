@@ -28,11 +28,13 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSequenceService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeServiceImpl;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.IntercoService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -42,6 +44,7 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
 
   protected AppSupplychainService appSupplychainService;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
+  protected AnalyticToolSupplychainService analyticToolSupplychainService;
 
   @Inject
   public SaleOrderFinalizeSupplychainServiceImpl(
@@ -52,8 +55,10 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
       SaleConfigService saleConfigService,
       AppSaleService appSaleService,
       AppCrmService appCrmService,
+      SaleOrderSequenceService saleOrderSequenceService,
       AppSupplychainService appSupplychainService,
-      AccountingSituationSupplychainService accountingSituationSupplychainService) {
+      AccountingSituationSupplychainService accountingSituationSupplychainService,
+      AnalyticToolSupplychainService analyticToolSupplychainService) {
     super(
         saleOrderRepository,
         sequenceService,
@@ -61,9 +66,11 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
         saleOrderPrintService,
         saleConfigService,
         appSaleService,
-        appCrmService);
+        appCrmService,
+        saleOrderSequenceService);
     this.appSupplychainService = appSupplychainService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+    this.analyticToolSupplychainService = analyticToolSupplychainService;
   }
 
   @Override
@@ -77,7 +84,7 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
       return;
     }
 
-    accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
+    accountingSituationSupplychainService.checkExceededUsedCredit(saleOrder);
     super.finalizeQuotation(saleOrder);
     int intercoSaleCreatingStatus =
         appSupplychainService.getAppSupplychain().getIntercoSaleCreatingStatusSelect();
@@ -88,6 +95,8 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
     if (saleOrder.getCreatedByInterco()) {
       fillIntercompanyPurchaseOrderCounterpart(saleOrder);
     }
+
+    analyticToolSupplychainService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
   }
 
   /**

@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid id="budget-sale-order-line-grid" model="com.axelor.apps.sale.db.SaleOrderLine"
     title="SO lines" name="sale-order-line-grid" extension="true">
     <extend target="//field[@name='estimatedDeliveryDate']">
       <insert position="after">
         <field name="budgetStr" if="__config__.app.isApp('budget')"/>
+        <field name="budgetRemainingAmountToAllocate" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+        <field name="unassignedAmt" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+          if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <grid id="budget-sale-order-line-menu-grid" name="sale-order-line-menu-grid" title="SO lines"
+    model="com.axelor.apps.sale.db.SaleOrderLine" extension="true">
+    <extend target="//field[@name='estimatedDeliveryDate']">
+      <insert position="after">
+        <field name="budgetRemainingAmountToAllocate" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+        <field name="unassignedAmt" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"
+          if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
       </insert>
     </extend>
   </grid>
@@ -29,15 +45,16 @@
           </field>
           <field if="__config__.app.getApp('budget')?.getManageMultiBudget()"
             name="budgetRemainingAmountToAllocate" readonly="true" colSpan="6"
-            x-currency="$currencySymbol" x-scale="$companyCurrencyScale">
-            <viewer depends="budgetRemainingAmountToAllocate">
-              <![CDATA[
-				<dd>{{$fmt('budgetRemainingAmountToAllocate')}}</dd>
-              ]]>
-            </viewer>
-          </field>
+            x-scale="$nbDecimalDigitForUnitPrice"/>
+          <panel name="datesPanel" colSpan="12">
+            <field name="budgetFromDate" requiredIf="budgetToDate"
+              onChange="action-budget-method-manage-budget-date-label"/>
+            <field name="budgetToDate" requiredIf="budgetFromDate"
+              onChange="action-budget-method-manage-budget-date-label"/>
+            <label name="budgetDatesLabel" hidden="true" css="label-danger" colSpan="12"/>
+          </panel>
           <field if="!__config__.app.getApp('budget')?.getManageMultiBudget()" name="budget"
-            onChange="action-budget-sale-order-line-method-fill-budget-str, action-reset-budget-distribution-list-method"
+            onChange="action-sale-order-line-group-budget-onchange"
             onSelect="action-budget-sale-order-line-method-budget-domain"/>
           <panel name="accountPanel" colSpan="12">
             <field name="account" onSelect="action-budget-sale-order-line-set-account-domain"
@@ -50,6 +67,7 @@
             onChange="action-group-budget-sale-order-line-budget-distribution-onchange"/>
           <field name="$currencySymbol" hidden="true"/>
           <field name="$companyCurrencyScale" hidden="true"/>
+          <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
         </panel>
       </insert>
     </extend>
@@ -63,6 +81,13 @@
     <action name="action-method-sale-order-line-budget-distribution-validate-amount"/>
     <action name="action-sale-order-method-compute-budget-remaining-amount-to-allocate"/>
     <action name="action-budget-sale-order-line-method-fill-budget-str"/>
+    <action name="action-budget-method-manage-budget-date-label"/>
+  </action-group>
+
+  <action-group name="action-sale-order-line-group-budget-onchange">
+    <action name="action-budget-sale-order-line-method-fill-budget-str"/>
+    <action name="action-reset-budget-distribution-list-method"/>
+    <action name="action-budget-method-manage-budget-date-label"/>
   </action-group>
 
   <action-method

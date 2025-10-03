@@ -19,10 +19,12 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.util.List;
 
 public interface SaleOrderProductionSyncService {
 
-  void syncSaleOrderLineList(List<SaleOrderLine> saleOrderLineList) throws AxelorException;
+  void syncSaleOrderLineList(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList)
+      throws AxelorException;
 }

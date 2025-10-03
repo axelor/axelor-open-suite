@@ -108,6 +108,10 @@ public interface SaleOrderMergingService {
     boolean isExistTradingNameDiff();
 
     void setExistTradingNameDiff(boolean existTradingNameDiff);
+
+    boolean isExistAtiDiff();
+
+    void setExistAtiDiff(boolean existAtiDiff);
   }
 
   interface SaleOrderMergingResult {

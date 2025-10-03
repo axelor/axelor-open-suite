@@ -21,6 +21,8 @@ package com.axelor.apps.account.service.umr;
 import com.axelor.apps.account.db.InvoicingPaymentSituation;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.StringJoiner;
@@ -51,6 +53,22 @@ public class UmrNumberServiceImpl implements UmrNumberService {
         .add(partner.getPartnerSeq())
         .add(date.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
-    return rumNumber.toString();
+    String result = rumNumber.toString();
+
+    if (ObjectUtils.isEmpty(invoicingPaymentSituation.getUmrList())) {
+      return result;
+    }
+
+    long umrSize =
+        invoicingPaymentSituation.getUmrList().stream()
+            .filter(
+                umr ->
+                    StringUtils.notEmpty(umr.getUmrNumber()) && umr.getUmrNumber().contains(result))
+            .count();
+    if (umrSize == 0) {
+      return result;
+    }
+
+    return String.format("%s -%s", result, umrSize);
   }
 }

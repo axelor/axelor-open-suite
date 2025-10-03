@@ -61,7 +61,7 @@ public class AccountingSituationInitSupplychainServiceImpl
 
     AccountingSituation accountingSituation = super.createAccountingSituation(partner, company);
 
-    if (partner.getIsCustomer()
+    if ((partner.getIsCustomer() || partner.getIsProspect())
         && appAccountService.getAppAccount().getManageCustomerCredit()
         && appAccountService.isApp("supplychain")) {
       SaleConfig config = saleConfigService.getSaleConfig(company);

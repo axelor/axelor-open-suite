@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="employee-bonus-mgt-line-grid" title="Employee bonus"
     model="com.axelor.apps.hr.db.EmployeeBonusMgtLine">
@@ -11,7 +11,7 @@
     <field name="coef" width="100px"/>
     <field name="weeklyPlanning" canEdit="false" width="120px"/>
     <field name="seniorityDate"/>
-    <field name="statusSelect" width="100px"/>
+    <field name="statusSelect" width="100px" widget="single-select"/>
   </grid>
 
   <grid name="employee-bonus-mgt-line-employee-grid" title="Employee bonus"

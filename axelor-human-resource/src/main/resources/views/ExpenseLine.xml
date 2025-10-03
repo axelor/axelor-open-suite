@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="expense-line-grid" title="Expense lines"
     model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
@@ -175,7 +175,7 @@
           onChange="action-expense-line-record-alone-meal-on-change"/>
         <field name="invitedCollaboratorSet" grid-view="employee-grid"
           form-view="employee-form"
-          onSelect="action-expense-line-attrs-set-invited-collaborators-domain" hidden="true"
+          onSelect="action-expense-line-method-set-invited-collaborators-domain" hidden="true"
           showIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal"
           requiredIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal" widget="TagSelect"/>
         <field name="comments" colSpan="12"/>
@@ -194,6 +194,7 @@
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false"
+          onSelect="action-expense-line-method-set-domain-analytic-distribution-template"
           onChange="action-expense-line-method-create-distribution"/>
         <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
           grid-view="analytic-move-line-distribution-grid"
@@ -437,10 +438,10 @@
       if="__config__.app.isApp('business-project')"/>
   </action-attrs>
 
-  <action-attrs name="action-expense-line-attrs-set-invited-collaborators-domain">
-    <attribute name="domain" for="invitedCollaboratorSet"
-      expr="eval: &quot;self.user.blocked = false AND self.hireDate &lt;= '${expenseDate}' AND (self.user.expiresOn is null OR self.user.expiresOn &gt;= CURRENT_DATE) AND self.mainEmploymentContract.payCompany IN (${__user__.companySet?.collect{it.id}.join(',')}) AND self.id != ${__parent__?.employee?.id}&quot;"/>
-  </action-attrs>
+  <action-method name="action-expense-line-method-set-invited-collaborators-domain">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseLineController"
+      method="setInvitedCollaboratorSetDomain"/>
+  </action-method>
 
   <action-record name="action-expense-line-record-expense-product-on-change"
     model="com.axelor.apps.hr.db.ExpenseLine">
@@ -534,5 +535,11 @@
     <action name="action-expense-line-attrs-fill-arrival-from-site"/>
     <action name="action-kilometric-allowance-method-compute-distance"/>
   </action-group>
+
+  <action-method
+    name="action-expense-line-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseLineController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 
 </object-views>

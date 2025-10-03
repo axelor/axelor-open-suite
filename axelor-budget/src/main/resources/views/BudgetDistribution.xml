@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="budget-distribution-grid" title="Budget distributions"
     model="com.axelor.apps.budget.db.BudgetDistribution">
@@ -170,8 +170,8 @@
     model="com.axelor.apps.budget.db.BudgetDistribution" groupBy="budget" canNew="false"
     canArchive="false" canDelete="false" canEdit="false">
     <field name="budget"/>
-    <field name="invoiceLine"/>
     <field name="moveLine"/>
+    <field name="moveLine.move.invoice"/>
     <field name="imputationDate"/>
     <field name="amount" aggregate="sum" x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="budget.company.currency.numberOfDecimals" hidden="true"/>
@@ -440,6 +440,20 @@
     <attribute name="value" for="$fromGroup" expr="eval:_fromGroup"/>
     <attribute name="value" for="$fromSection" expr="eval:_fromSection"/>
     <attribute name="value" for="$fromBudget" expr="eval:_fromBudget"/>
+  </action-attrs>
+
+  <action-method name="action-budget-method-manage-budget-date-label">
+    <call class="com.axelor.apps.budget.web.BudgetDateController"
+      method="manageBudgetDateLabel"/>
+  </action-method>
+
+  <action-method name="action-budget-validate-budget-dates">
+    <call class="com.axelor.apps.budget.web.BudgetDateController" method="checkBudgetDates"/>
+  </action-method>
+
+  <action-attrs name="action-budget-dates-attrs-initialize-budget-dates">
+    <attribute for="budgetFromDate" name="value" expr="eval: __parent__?.budgetFromDate"/>
+    <attribute for="budgetToDate" name="value" expr="eval: __parent__?.budgetToDate"/>
   </action-attrs>
 
 </object-views>

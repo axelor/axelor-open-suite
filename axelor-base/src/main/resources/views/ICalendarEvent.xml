@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="calendar-event-grid" model="com.axelor.apps.base.db.ICalendarEvent"
     title="Events" orderBy="-startDateTime">
@@ -108,6 +108,7 @@
     <field name="endDateTime"
       expr="eval: __config__.app.getTodayDateTime().truncatedTo(java.time.temporal.ChronoUnit.HOURS).plusHours(2)"
       if="!endDateTime"/>
+    <field name="user" expr="eval: __user__"/>
   </action-record>
 
 </object-views>

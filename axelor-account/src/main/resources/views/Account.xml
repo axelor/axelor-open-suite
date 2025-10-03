@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="account-grid" title="Accounting.Accounts"
     model="com.axelor.apps.account.db.Account">
@@ -18,7 +18,7 @@
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="defaultTaxSet" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <grid name="account-simple-grid" title="Accounting.Accounts"
@@ -74,7 +74,6 @@
     </panel>
     <panel-tabs name="mainPaneltab">
       <panel name="generalPanel" title="General" hideIf="$popup()">
-        <button name="exportMoveLinesBtn" title="Export Move lines" onClick="" colSpan="12"/>
         <panel-dashlet name="viewMoveLinePanel" colSpan="12" title="General"
           hideIf="$popup() || reconcileOk" height="450" action="action-account-view-show-move-lines"
           canSearch="true"/>
@@ -137,7 +136,7 @@
             if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account').getManageAnalyticAccounting()"
             canEdit="false" canNew="false"
             onChange="action-account-group-analytic-distribution-onChange"
-            domain="self.company = :company AND self.isSpecific = false"/>
+            onSelect="action-account-method-set-domain-analytic-distribution-template"/>
           <button name="personalizeBtn" title="Create personalized analytic template"
             colSpan="3"
             showIf="analyticDistributionAuthorized &amp;&amp; !analyticDistributionTemplate.isSpecific"
@@ -152,6 +151,9 @@
                 form-view="analytic-distribution-line-form"/>
             </editor>
           </field>
+          <label name="analyticDistributionTemplateLabel"
+            title="Analytic template must be filled on the partner." hidden="true"
+            css="label-danger"/>
           <field name="analyticDistributionTemplate.isSpecific" hidden="true"/>
         </panel>
         <panel name="cutOffPanel" title="Cut off configuration" colSpan="12"
@@ -223,17 +225,17 @@
   <form name="mass-update-status-wizard-form" title="Mass update status"
     model="com.axelor.utils.db.Wizard" width="large">
     <panel name="mainPanel">
-      <field name="statusSelect" type="integer" title="Status"
+      <field name="statusSelect" type="integer" title="Status" widget="single-select"
         selection="iaccount.status.select.selection"
         showIf="_metaModel == 'com.axelor.apps.account.db.Account'" required="true"/>
-      <field name="statusSelect" type="integer" title="Status"
+      <field name="statusSelect" type="integer" title="Status" widget="single-select"
         selection="ianalytic.account.status.select"
         showIf="_metaModel == 'com.axelor.apps.account.db.AnalyticAccount'" required="true"/>
       <field name="statusSelect" type="integer" title="Status"
         selection="account.journal.status.select"
         showIf="_metaModel == 'com.axelor.apps.account.db.Journal'" required="true"/>
       <field name="statusSelect" type="integer" title="Status"
-        selection="ianalytic.journal.status.select"
+        selection="ianalytic.journal.status.select" widget="single-select"
         showIf="_metaModel == 'com.axelor.apps.account.db.AnalyticJournal'" required="true"/>
       <button name="massUpdateSelectedBtn" title="Mass update selected"
         onClick="action-method-wizard-mass-update-selected"/>
@@ -269,7 +271,6 @@
 
   <action-group name="action-account-group-onsave">
     <action name="action-account-method-check-if-code-already-exist-for-company"/>
-    <action name="action-on-change-distribution-template-account"/>
     <action name="action-account-method-verify-template-value"
       if="__this__.analyticDistributionTemplate != null"/>
   </action-group>
@@ -302,6 +303,7 @@
     <action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
     <action name="action-method-account-hide-analytic"/>
     <action name="action-attrs-account-account-status-show-title"/>
+    <action name="action-account-method-show-origin-analytic-template"/>
   </action-group>
 
   <action-group name="action-account-group-new-customer-account">
@@ -322,6 +324,7 @@
   <action-group name="action-account-group-on-change-analytic-distribution-authorized">
     <action name="action-account-record-uncheck-analytic-distribution-required"/>
     <action name="action-account-validate-uncheck-analytic-distribution-authorized"/>
+    <action name="action-account-method-show-origin-analytic-template"/>
   </action-group>
 
   <action-group name="action-group-account-is-tax-authorized-onchange">
@@ -337,7 +340,6 @@
 
   <action-group name="action-account-group-analytic-distribution-onChange">
     <action name="action-account-method-personalize-template"/>
-    <action name="action-on-change-distribution-template-account"/>
   </action-group>
 
   <action-group name="action-account-group-reconcile-onChange">
@@ -479,10 +481,6 @@
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
 
-  <action-method name="action-on-change-distribution-template-account">
-    <call class="com.axelor.apps.account.web.AccountController" method="checkAnalyticAccount"/>
-  </action-method>
-
   <action-method name="account-account-method-toggle-status-active">
     <call class="com.axelor.apps.account.web.AccountController" method="toggleStatus"/>
   </action-method>
@@ -562,5 +560,16 @@
     <view-param name="popup" value="true"/>
     <context name="_accountId" expr="eval: __id__"/>
   </action-view>
+
+  <action-method name="action-account-method-show-origin-analytic-template">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="originAnalyticDistTemplate"/>
+  </action-method>
+
+  <action-method
+    name="action-account-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.AccountController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 
 </object-views>

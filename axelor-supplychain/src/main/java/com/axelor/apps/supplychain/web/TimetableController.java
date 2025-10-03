@@ -112,4 +112,34 @@ public class TimetableController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void percentageOnChange(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    Context parentContext = context.getParent();
+    Timetable timetable = context.asType(Timetable.class);
+    TimetableService timetableService = Beans.get(TimetableService.class);
+    if (parentContext != null && parentContext.getContextClass().equals(SaleOrder.class)) {
+      SaleOrder saleOrder = parentContext.asType(SaleOrder.class);
+      response.setValue(
+          "amount",
+          timetableService.computeAmount(
+              timetable,
+              saleOrder.getTimetableList(),
+              saleOrder.getInAti() ? saleOrder.getInTaxTotal() : saleOrder.getExTaxTotal(),
+              saleOrder.getCurrency()));
+    }
+
+    if (parentContext != null && parentContext.getContextClass().equals(PurchaseOrder.class)) {
+      PurchaseOrder purchaseOrder = parentContext.asType(PurchaseOrder.class);
+      response.setValue(
+          "amount",
+          timetableService.computeAmount(
+              timetable,
+              purchaseOrder.getTimetableList(),
+              purchaseOrder.getInAti()
+                  ? purchaseOrder.getInTaxTotal()
+                  : purchaseOrder.getExTaxTotal(),
+              purchaseOrder.getCurrency()));
+    }
+  }
 }

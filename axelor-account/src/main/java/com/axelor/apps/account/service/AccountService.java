@@ -20,9 +20,6 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountType;
-import com.axelor.apps.account.db.AnalyticAccount;
-import com.axelor.apps.account.db.AnalyticDistributionTemplate;
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticRulesRepository;
@@ -44,10 +41,8 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import javax.persistence.Query;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,17 +85,17 @@ public class AccountService {
     return this.computeBalance(account, null, null, balanceType);
   }
 
-  public BigDecimal computeBalance(AccountType accountType, Year year, int balanceType) {
-    return this.computeBalance(null, accountType, year, balanceType);
+  public BigDecimal computeBalance(List<AccountType> accountTypeList, Year year, int balanceType) {
+    return this.computeBalance(null, accountTypeList, year, balanceType);
   }
 
   protected BigDecimal computeBalance(
-      Account account, AccountType accountType, Year year, int balanceType) {
+      Account account, List<AccountType> accountTypeList, Year year, int balanceType) {
     Query balanceQuery =
         JPA.em()
             .createQuery(
                 String.format(
-                    "select sum(self.debit - self.credit) from MoveLine self where self.account%s = :account "
+                    "select sum(self.debit - self.credit) from MoveLine self where self.account%s IN (:account) "
                         + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN ("
                         + Joiner.on(',')
                             .join(
@@ -110,7 +105,7 @@ public class AccountService {
                     account == null ? ".accountType" : "",
                     year != null ? " and self.move.period.year = :year" : ""));
 
-    balanceQuery.setParameter("account", account != null ? account : accountType);
+    balanceQuery.setParameter("account", account != null ? account : accountTypeList);
 
     if (year != null) {
       balanceQuery.setParameter("year", year);
@@ -166,63 +161,6 @@ public class AccountService {
         .stream()
         .map(m -> (Long) m.get("id"))
         .collect(Collectors.toList());
-  }
-
-  public void checkAnalyticAxis(
-      Account account,
-      AnalyticDistributionTemplate analyticDistributionTemplate,
-      boolean isRequiredOnMoveLine,
-      boolean isRequiredOnInvoiceLine)
-      throws AxelorException {
-    if (account != null && account.getAnalyticDistributionAuthorized()) {
-      if (analyticDistributionTemplate == null
-          && account.getCompany() != null
-          && accountConfigService
-                  .getAccountConfig(account.getCompany())
-                  .getAnalyticDistributionTypeSelect()
-              != AccountConfigRepository.DISTRIBUTION_TYPE_FREE
-          && accountConfigService
-                  .getAccountConfig(account.getCompany())
-                  .getAnalyticDistributionTypeSelect()
-              != AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT
-          && (isRequiredOnInvoiceLine || isRequiredOnMoveLine)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get("Please put AnalyticDistribution Template"));
-
-      } else {
-        if (analyticDistributionTemplate != null) {
-          if (analyticDistributionTemplate.getAnalyticDistributionLineList() == null) {
-            throw new AxelorException(
-                TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                I18n.get(
-                    "Please put AnalyticDistributionLines in the Analytic Distribution Template"));
-          } else {
-            List<Long> analyticAccountIdList = getAnalyticAccountsIds(account);
-
-            if (CollectionUtils.isNotEmpty(analyticAccountIdList)
-                && analyticDistributionTemplate.getAnalyticDistributionLineList().stream()
-                    .map(
-                        analyticDistributionLine -> {
-                          AnalyticAccount analyticAccount =
-                              analyticDistributionLine.getAnalyticAccount();
-                          if (analyticAccount != null) {
-                            return analyticAccount.getId();
-                          }
-                          return null;
-                        })
-                    .filter(Objects::nonNull)
-                    .anyMatch(it -> !analyticAccountIdList.contains(it))) {
-              throw new AxelorException(
-                  TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-                  I18n.get(
-                      AccountExceptionMessage
-                          .ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS));
-            }
-          }
-        }
-      }
-    }
   }
 
   @Transactional

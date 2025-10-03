@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="import-batch-grid" title="Import batches"
     model="com.axelor.apps.base.db.ImportBatch">
@@ -43,7 +43,8 @@
         <field name="createdOn"/>
         <field name="createdBy" form-view="user-form" grid-view="user-grid"/>
         <field name="description"/>
-        <field name="batchList" form-view="batch-form" grid-view="batch-grid" colSpan="12"/>
+        <panel-dashlet name="batchListPanel" colSpan="12"
+          action="action-batch-method-show-batches" canSearch="true"/>
       </panel>
     </panel-tabs>
     <panel name="actionsPanel" sidebar="true">

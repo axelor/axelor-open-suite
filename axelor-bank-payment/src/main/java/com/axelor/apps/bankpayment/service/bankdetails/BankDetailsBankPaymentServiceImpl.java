@@ -18,30 +18,44 @@
  */
 package com.axelor.apps.bankpayment.service.bankdetails;
 
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
+import com.axelor.apps.account.service.umr.UmrService;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPaymentService {
   protected BankStatementLineFetchService bankStatementLineFetchService;
   protected BankDetailsRepository bankDetailsRepository;
   protected CurrencyScaleService currencyScaleService;
+  protected UmrService umrService;
+  protected AppBankPaymentService appBankPaymentService;
 
   @Inject
   public BankDetailsBankPaymentServiceImpl(
       BankStatementLineFetchService bankStatementLineFetchService,
       BankDetailsRepository bankDetailsRepository,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      UmrService umrService,
+      AppBankPaymentService appBankPaymentService) {
     this.bankStatementLineFetchService = bankStatementLineFetchService;
     this.bankDetailsRepository = bankDetailsRepository;
     this.currencyScaleService = currencyScaleService;
+    this.umrService = umrService;
+    this.appBankPaymentService = appBankPaymentService;
   }
 
   @Override
@@ -67,5 +81,33 @@ public class BankDetailsBankPaymentServiceImpl implements BankDetailsBankPayment
       }
       bankDetailsRepository.save(bankDetail);
     }
+  }
+
+  @Override
+  public List<BankDetails> getBankDetailsLinkedToActiveUmr(
+      PaymentMode paymentMode, Partner partner, Company company) {
+    if (paymentMode != null && partner != null && company != null) {
+      boolean isManageDirectDebitPayment =
+          appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment();
+      if (isManageDirectDebitPayment
+          && (paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD)
+          && !partner.getBankDetailsList().isEmpty()) {
+        return partner.getBankDetailsList().stream()
+            .filter(bankDetails -> umrService.getActiveUmr(company, bankDetails) != null)
+            .collect(Collectors.toList());
+      }
+    }
+    return Collections.emptyList();
+  }
+
+  @Override
+  public boolean isBankDetailsNotLinkedToActiveUmr(
+      PaymentMode paymentMode, Company company, BankDetails bankDetails) {
+    return paymentMode != null
+        && company != null
+        && bankDetails != null
+        && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD
+        && appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment()
+        && (umrService.getActiveUmr(company, bankDetails) == null);
   }
 }

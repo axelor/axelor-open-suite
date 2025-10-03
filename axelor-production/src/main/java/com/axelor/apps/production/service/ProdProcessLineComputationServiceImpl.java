@@ -56,13 +56,19 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
       ProdProcessLine prodProcessLine, BigDecimal nbCycles) throws AxelorException {
     Objects.requireNonNull(prodProcessLine);
 
-    BigDecimal setupDuration =
-        nbCycles
-            .subtract(BigDecimal.ONE)
-            .multiply(BigDecimal.valueOf(prodProcessLine.getSetupDuration()));
-    return BigDecimal.valueOf(
-            prodProcessLine.getStartingDuration() + prodProcessLine.getEndingDuration())
-        .add(setupDuration);
+    return computeMachineInstallingDuration(
+        nbCycles,
+        prodProcessLine.getStartingDuration(),
+        prodProcessLine.getEndingDuration(),
+        prodProcessLine.getSetupDuration());
+  }
+
+  @Override
+  public BigDecimal computeMachineInstallingDuration(
+      BigDecimal nbCycles, long startingDuration, long endingDuration, long setupDuration) {
+    BigDecimal cycleSetupDuration =
+        nbCycles.subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(setupDuration));
+    return BigDecimal.valueOf(startingDuration + endingDuration).add(cycleSetupDuration);
   }
 
   @Override
@@ -99,19 +105,35 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
             I18n.get(ProductionExceptionMessage.WORKCENTER_NO_MACHINE),
             workCenter.getName());
       }
-
-      return nbCycles
-          .multiply(BigDecimal.valueOf(prodProcessLine.getDurationPerCycle()))
-          .add(getMachineInstallingDuration(prodProcessLine, nbCycles));
+      return computeMachineDuration(
+          nbCycles,
+          prodProcessLine.getDurationPerCycle(),
+          getMachineInstallingDuration(prodProcessLine, nbCycles));
     }
 
     return BigDecimal.ZERO;
   }
 
   @Override
-  public BigDecimal getHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles) {
+  public BigDecimal computeMachineDuration(
+      BigDecimal nbCycle, long durationPerCycle, BigDecimal machineInstallingDuration) {
+    return nbCycle.multiply(BigDecimal.valueOf(durationPerCycle)).add(machineInstallingDuration);
+  }
+
+  @Override
+  public BigDecimal getHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException {
     Objects.requireNonNull(prodProcessLine);
     WorkCenter workCenter = prodProcessLine.getWorkCenter();
+    if (workCenter == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(ProductionExceptionMessage.PROD_PROCESS_LINE_MISSING_WORK_CENTER),
+          prodProcessLine.getProdProcess() != null
+              ? prodProcessLine.getProdProcess().getCode()
+              : "null",
+          prodProcessLine.getName());
+    }
     int workCenterTypeSelect = workCenter.getWorkCenterTypeSelect();
     if (workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_HUMAN
         || workCenterTypeSelect == WorkCenterRepository.WORK_CENTER_TYPE_BOTH) {
@@ -119,6 +141,13 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
     }
 
     return BigDecimal.ZERO;
+  }
+
+  @Override
+  public BigDecimal getHourHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException {
+    return getHumanDuration(prodProcessLine, nbCycles)
+        .divide(BigDecimal.valueOf(3600), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
 
   @Override
@@ -136,6 +165,13 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
   }
 
   @Override
+  public BigDecimal getHourTotalDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException {
+    return getTotalDuration(prodProcessLine, nbCycles)
+        .divide(BigDecimal.valueOf(3600), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+  }
+
+  @Override
   public long computeEntireCycleDuration(
       OperationOrder operationOrder, ProdProcessLine prodProcessLine, BigDecimal qty)
       throws AxelorException {
@@ -150,5 +186,11 @@ public class ProdProcessLineComputationServiceImpl implements ProdProcessLineCom
     }
 
     return totalDuration.longValue();
+  }
+
+  @Override
+  public BigDecimal getHourDurationPerCycle(ProdProcessLine prodProcessLine) {
+    return BigDecimal.valueOf(prodProcessLine.getDurationPerCycle())
+        .divide(BigDecimal.valueOf(3600), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
   }
 }

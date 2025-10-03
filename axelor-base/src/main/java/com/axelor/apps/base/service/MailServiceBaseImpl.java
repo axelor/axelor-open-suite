@@ -386,7 +386,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     return templates.fromText(subject).make(templatesContext).render();
   }
 
-  void updateTemplateAndContext(MailMessage message, Model entity) {
+  protected void updateTemplateAndContext(MailMessage message, Model entity) {
     if (entity == null) {
       return;
     }
@@ -486,7 +486,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     builder.cc(ccRcp);
   }
 
-  void updateRecipientsTemplatesContext(Set<String> recipients) {
+  protected void updateRecipientsTemplatesContext(Set<String> recipients) {
     String contRecipients = String.join(", ", recipients);
 
     if (templatesContext == null) {

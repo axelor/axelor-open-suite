@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee"
     orderBy="contactPartner.simpleFullName">
@@ -26,7 +26,7 @@
       form-view="partner-contact-form"/>
     <field name="managerUser" form-view="user-form" grid-view="user-grid"/>
     <field name="$employeeStatus" title="Employee status"
-      selection="hr.employee.employee.status.select" type="string"/>
+      selection="hr.employee.employee.status.select" type="string" widget="single-select"/>
     <field name="mainEmploymentContract.companyDepartment" form-view="company-department-form"
       grid-view="company-department-grid"/>
   </grid>
@@ -57,6 +57,10 @@
     </panel>
 
     <panel name="contactSBSPanel" colSpan="12" showIf="stepByStepSelect &lt; 5" sidebar="true">
+      <panel colSpan="12">
+        <field name="hrManager" colSpan="6" widget="InlineCheckbox"/>
+        <field name="external" colSpan="6" widget="InlineCheckbox"/>
+      </panel>
       <field name="contactPartner" colSpan="12"
         domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
         form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false"
@@ -136,11 +140,6 @@
           form-view="events-planning-form" grid-view="events-planning-grid"/>
         <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4"
           form-view="events-planning-form" grid-view="events-planning-grid"/>
-      </panel>
-
-      <panel colSpan="12">
-        <field name="hrManager" colSpan="4" widget="InlineCheckbox"/>
-        <field name="external" colSpan="4" widget="InlineCheckbox"/>
       </panel>
     </panel>
     <!-- END OF Basic info -->
@@ -508,7 +507,8 @@
           <field name="analyticDistributionTemplate"
             grid-view="analytic-distribution-template-grid"
             form-view="analytic-distribution-template-form"
-            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+            onSelect="action-employee-method-set-domain-analytic-distribution-template"/>
           <panel-related name="expenseLimitListPanel" title="Expense limits"
             field="expenseLimitList" colSpan="12" form-view="expense-limit-form"
             grid-view="expense-limit-grid"/>
@@ -846,6 +846,12 @@
     name="action-employee-method-update-employee-files-with-medical-visit">
     <call class="com.axelor.apps.hr.web.EmployeeController"
       method="updateEmployeeFilesWithMedicalVisit"/>
+  </action-method>
+
+  <action-method
+    name="action-employee-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.hr.web.EmployeeController"
+      method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 
   <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"

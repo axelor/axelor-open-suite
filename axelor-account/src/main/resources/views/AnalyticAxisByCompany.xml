@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
   <grid name="analytic-axis-by-company-grid" title="Analytic Axis By Company"
     model="com.axelor.apps.account.db.AnalyticAxisByCompany"
     onNew="action-record-analytic-axis-by-company-on-new">
     <field name="analyticAxis"/>
     <field name="accountConfig.company.code" title="Company" hidden="true"/>
+    <field name="isRequired"/>
   </grid>
 
   <form name="analytic-axis-by-company-form" title="Analytic Axis By company"
@@ -15,6 +16,7 @@
     <panel name="mainPanel">
       <field name="analyticAxis"/>
       <field name="accountConfig.company.code" title="Company" hidden="true"/>
+      <field name="isRequired"/>
     </panel>
   </form>
 
@@ -24,6 +26,7 @@
     <panel name="mainPanel">
       <field name="analyticAxis" onSelect="action-method-axis-by-company-set-axis-domain"/>
       <field name="accountConfig.company.code" title="Company" hidden="true"/>
+      <field name="isRequired"/>
     </panel>
   </form>
 

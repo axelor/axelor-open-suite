@@ -21,14 +21,18 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
+import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
+import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryPercentageService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -126,21 +130,26 @@ public class AnalyticMoveLineQueryController {
   protected void reverses(
       ActionResponse response,
       AnalyticMoveLineQuery analyticMoveLineQuery,
-      List<AnalyticMoveLine> analyticMoveLines) {
+      List<AnalyticMoveLine> analyticMoveLines)
+      throws AxelorException {
+    AnalyticMoveLineQueryService analyticMoveLineQueryService =
+        Beans.get(AnalyticMoveLineQueryService.class);
+
+    Beans.get(AnalyticMoveLineQueryPercentageService.class)
+        .validateReverseParameterAxisPercentage(
+            analyticMoveLineQuery.getReverseAnalyticMoveLineQueryParameterList());
 
     Set<AnalyticMoveLine> reverseAnalyticMoveLines =
-        Beans.get(AnalyticMoveLineQueryService.class)
-            .analyticMoveLineReverses(analyticMoveLineQuery, analyticMoveLines);
+        analyticMoveLineQueryService.analyticMoveLineReverses(
+            analyticMoveLineQuery, analyticMoveLines);
     Set<AnalyticMoveLine> newAnalyticMoveLines =
-        Beans.get(AnalyticMoveLineQueryService.class)
-            .createAnalyticaMoveLines(analyticMoveLineQuery, analyticMoveLines);
+        analyticMoveLineQueryService.createAnalyticMoveLines(
+            analyticMoveLineQuery, analyticMoveLines);
 
     List<AnalyticMoveLine> filteredAnalyticMoveLineList =
         Beans.get(AnalyticMoveLineRepository.class)
             .all()
-            .filter(
-                Beans.get(AnalyticMoveLineQueryService.class)
-                    .getAnalyticMoveLineQuery(analyticMoveLineQuery))
+            .filter(analyticMoveLineQueryService.getAnalyticMoveLineQuery(analyticMoveLineQuery))
             .fetch();
 
     response.setInfo(
@@ -252,5 +261,28 @@ public class AnalyticMoveLineQueryController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void refreshAxis(ActionRequest request, ActionResponse response) throws AxelorException {
+    AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
+
+    Beans.get(AnalyticMoveLineParentService.class).refreshAxisOnParent(analyticMoveLine);
+    response.setReload(true);
+  }
+
+  public void initPercentage(ActionRequest request, ActionResponse response) {
+    AnalyticMoveLineQueryParameter parameter =
+        request.getContext().asType(AnalyticMoveLineQueryParameter.class);
+    List<AnalyticMoveLineQueryParameter> reverseList =
+        request
+            .getContext()
+            .getParent()
+            .asType(AnalyticMoveLineQuery.class)
+            .getReverseAnalyticMoveLineQueryParameterList();
+
+    response.setValue(
+        "percentage",
+        Beans.get(AnalyticMoveLineQueryPercentageService.class)
+            .getMissingPercentageOnAxis(parameter, reverseList));
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form id="intervention-partner-from" title="Partner" name="partner-form"
     model="com.axelor.apps.base.db.Partner" extension="true">
@@ -11,7 +11,7 @@
           colSpan="12">
           <field name="tradingNameSet" requiredIf="isContact != true &amp;&amp; isCustomer"
             colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
-            widget="TagSelect" domain="self.company IS NULL OR self.company IN :companySet"/>
+            widget="TagSelect" onSelect="action-partner-attrs-set-trading-name-domain"/>
         </panel>
       </insert>
     </extend>
@@ -55,5 +55,10 @@
       expr="eval: tradingNameSet?.findAll{ it.company == null || it.company?.id in companySet*.id }"
       if="tradingNameSet &amp;&amp; tradingNameSet.size() > 0"/>
   </action-record>
+
+  <action-attrs name="action-partner-attrs-set-trading-name-domain">
+    <attribute name="domain" for="tradingNameSet"
+      expr="eval: &quot; self.company IS NULL OR self.company IN (${((companySet ?: [])*.id+[0]).join(',')})&quot;"/>
+  </action-attrs>
 
 </object-views>

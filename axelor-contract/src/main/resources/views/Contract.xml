@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract"
     orderBy="-contractId">
@@ -15,7 +15,7 @@
     <field name="currentContractVersion.supposedEndDate"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="currentContractVersion.initialExTaxTotalPerYear"
@@ -507,7 +507,7 @@
         <field name="createdOn"/>
         <field name="activationDateTime"/>
         <field name="endDateTime"/>
-        <field name="statusSelect"/>
+        <field name="statusSelect" widget="single-select"/>
       </panel-related>
 
       <panel-dashlet name="generatedSaleOrdersPanel" title="Sale orders"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="fixed-asset-category-grid" title="Fixed asset categories"
     model="com.axelor.apps.account.db.FixedAssetCategory" orderBy="company,fixedAssetType,name">
@@ -46,7 +46,7 @@
           showIf="fixedAssetType.technicalTypeSelect &gt; 1">
           <field name="numberOfDepreciation"
             onChange="action-fixed-asset-attrs-set-degressive-coef,action-fixed-asset-category-record-compute-duration"
-            min="1"/>
+            min="0"/>
           <field name="periodicityTypeSelect"/>
           <field name="periodicityInMonth" showIf="periodicityTypeSelect == 1"
             onChange="action-fixed-asset-category-record-compute-duration"/>
@@ -119,7 +119,8 @@
         if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
         name="analyticPanel" title="Analytic">
         <field name="analyticDistributionTemplate" canEdit="false"
-          domain="self.company = :company" form-view="analytic-distribution-template-form"
+          onSelect="action-fixed-asset-category-method-set-domain-analytic-distribution-template"
+          form-view="analytic-distribution-template-form"
           grid-view="analytic-distribution-template-grid"/>
       </panel>
     </panel-tabs>
@@ -146,6 +147,12 @@
     model="com.axelor.apps.account.db.FixedAssetCategory">
     <field name="durationInMonth" expr="eval: periodicityInMonth * numberOfDepreciation"/>
   </action-record>
+
+  <action-method
+    name="action-fixed-asset-category-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.FixedAssetCategoryController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 
   <action-attrs
     name="action-attrs-account-fixed-asset-category-reset-journal-account-fields">

@@ -23,6 +23,7 @@ import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -31,16 +32,20 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class BankOrderCheckServiceImpl implements BankOrderCheckService {
 
   protected AppBaseService appBaseService;
+  protected BankDetailsBankPaymentService bankDetailsBankPaymentService;
 
   @Inject
-  public BankOrderCheckServiceImpl(AppBaseService appBaseService) {
+  public BankOrderCheckServiceImpl(
+      AppBaseService appBaseService, BankDetailsBankPaymentService bankDetailsBankPaymentService) {
     this.appBaseService = appBaseService;
+    this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
   }
 
   @Override
@@ -284,5 +289,21 @@ public class BankOrderCheckServiceImpl implements BankOrderCheckService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_LINE_AMOUNT_NEGATIVE));
     }
+  }
+
+  @Override
+  public List<BankOrderLine> checkBankOrderLineBankDetails(BankOrder bankOrder) {
+    if (bankOrder.getBankOrderLineList() != null) {
+      for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
+        if (bankDetailsBankPaymentService.isBankDetailsNotLinkedToActiveUmr(
+            bankOrder.getPaymentMode(),
+            bankOrderLine.getReceiverCompany(),
+            bankOrderLine.getReceiverBankDetails())) {
+          bankOrderLine.setReceiverBankDetails(null);
+        }
+      }
+      return bankOrder.getBankOrderLineList();
+    }
+    return Collections.emptyList();
   }
 }

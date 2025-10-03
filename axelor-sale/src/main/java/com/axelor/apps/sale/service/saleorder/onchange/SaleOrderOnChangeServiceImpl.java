@@ -32,6 +32,7 @@ import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
@@ -56,6 +57,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
   protected SaleConfigService saleConfigService;
   protected SaleOrderBankDetailsService saleOrderBankDetailsService;
   protected AppBaseService appBaseService;
+  protected SaleOrderDateService saleOrderDateService;
 
   @Inject
   public SaleOrderOnChangeServiceImpl(
@@ -69,7 +71,8 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
       SaleOrderComputeService saleOrderComputeService,
       SaleConfigService saleConfigService,
       SaleOrderBankDetailsService saleOrderBankDetailsService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      SaleOrderDateService saleOrderDateService) {
     this.partnerService = partnerService;
     this.saleOrderUserService = saleOrderUserService;
     this.saleOrderService = saleOrderService;
@@ -81,6 +84,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     this.saleConfigService = saleConfigService;
     this.saleOrderBankDetailsService = saleOrderBankDetailsService;
     this.appBaseService = appBaseService;
+    this.saleOrderDateService = saleOrderDateService;
   }
 
   @Override
@@ -107,7 +111,8 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     values.putAll(getCompanyConfig(saleOrder));
     values.putAll(saleOrderBankDetailsService.getBankDetails(saleOrder));
     values.putAll(getEndOfValidityDate(saleOrder));
-    resetTradingName(saleOrder);
+    values.putAll(resetTradingName(saleOrder));
+    values.putAll(getInAti(saleOrder));
     return values;
   }
 
@@ -234,7 +239,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
 
   protected Map<String, Object> getEndOfValidityDate(SaleOrder saleOrder) {
     Map<String, Object> values = new HashMap<>();
-    saleOrderService.computeEndOfValidityDate(saleOrder);
+    saleOrderDateService.computeEndOfValidityDate(saleOrder);
     values.put("duration", saleOrder.getDuration());
     values.put("endOfValidityDate", saleOrder.getEndOfValidityDate());
     return values;
@@ -251,6 +256,9 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
       saleOrder.setPrintingSettings(company.getPrintingSettings());
       values.put("printingSettings", saleOrder.getPrintingSettings());
 
+      saleOrder.setCurrency(company.getCurrency());
+      values.put("currency", saleOrder.getCurrency());
+
       saleOrder.setCreationDate(appBaseService.getTodayDate(company));
       values.put("creationDate", saleOrder.getCreationDate());
     }
@@ -261,11 +269,18 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
   protected Map<String, Object> resetTradingName(SaleOrder saleOrder) {
     Map<String, Object> values = new HashMap<>();
     AppBase appBase = appBaseService.getAppBase();
-    if (!appBase.getEnableTradingNamesManagement()) {
+    if (appBase.getEnableTradingNamesManagement()) {
       saleOrder.setTradingName(null);
       values.put("tradingName", saleOrder.getTradingName());
     }
 
+    return values;
+  }
+
+  protected Map<String, Object> getInAti(SaleOrder saleOrder) throws AxelorException {
+    Map<String, Object> values = new HashMap<>();
+    saleOrder.setInAti(saleOrderService.getInAti(saleOrder, saleOrder.getCompany()));
+    values.put("inAti", saleOrder.getInAti());
     return values;
   }
 }

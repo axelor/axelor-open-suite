@@ -29,6 +29,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.service.FinancialDiscountService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
@@ -51,12 +52,12 @@ import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderComputeService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderValidationService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -80,7 +81,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
   @Inject
   public PaymentSessionValidateBankPaymentServiceImpl(
-      AppBaseService appBaseService,
+      AppAccountService appService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
       MoveCutOffService moveCutOffService,
@@ -109,7 +110,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       BankOrderValidationService bankOrderValidationService,
       PaymentSessionBankOrderService paymentSessionBankOrderService) {
     super(
-        appBaseService,
+        appService,
         moveCreateService,
         moveValidateService,
         moveCutOffService,
@@ -286,6 +287,38 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
     paymentSessionBankOrderService.manageInvoicePayment(
         paymentSession, invoiceTerm, pair.getRight());
+  }
+
+  @Override
+  public Move createMove(
+      PaymentSession paymentSession,
+      Partner partner,
+      Partner thirdPartyPayerPartner,
+      LocalDate accountingDate,
+      BankDetails partnerBankDetails)
+      throws AxelorException {
+    Move move =
+        moveCreateService.createMove(
+            paymentSession.getJournal(),
+            paymentSession.getCompany(),
+            paymentSession.getCurrency(),
+            partner,
+            accountingDate,
+            paymentSession.getPaymentDate(),
+            paymentSession.getPaymentMode(),
+            null,
+            MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
+            getMoveOrigin(paymentSession),
+            "",
+            paymentSession.getBankDetails());
+
+    move.setPartnerBankDetails(partnerBankDetails);
+    move.setPaymentSession(paymentSession);
+    move.setPaymentCondition(null);
+    move.setThirdPartyPayerPartner(thirdPartyPayerPartner);
+
+    return move;
   }
 
   @Override

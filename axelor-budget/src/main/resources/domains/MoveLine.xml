@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -10,9 +10,14 @@
     <many-to-one name="budget" ref="com.axelor.apps.budget.db.Budget" title="Budget"/>
     <one-to-many ref="com.axelor.apps.budget.db.BudgetDistribution"
       name="budgetDistributionList" mappedBy="moveLine" title="Budget Distribution"/>
+    <one-to-many ref="com.axelor.apps.budget.db.BudgetDistribution"
+      name="oldBudgetDistributionList" mappedBy="moveLine" title="Budget Distribution"
+      transient="true"/>
     <boolean name="isBudgetImputed" title="Budget distribution imputed"/>
     <decimal name="budgetRemainingAmountToAllocate"
       title="Remaining amount to allocate on budgets"/>
+    <date name="budgetFromDate" title="From date"/>
+    <date name="budgetToDate" title="To date"/>
 
   </entity>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <dashboard name="project-my-projects" title="My projects">
     <dashlet action="action-project-db-my-tasks-to-do"/>
@@ -77,7 +77,7 @@
       </panel>
       <panel name="spentTimePanel" title="Spent time" icon="fa-clock-o"
         if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource"
-        hideIf="$spentTime == 0" showIf="$manageTimeSpent">
+        hideIf="$spentTime == 0" showIf="manageTimeSpent">
         <field name="$spentTime" showTitle="false" colSpan="12">
           <viewer>
             <![CDATA[

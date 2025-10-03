@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
   <selection name='iaccount.payment.voucher.status.select'>
-    <option value='1'>Draft</option>
+    <option value='1' color="blue">Draft</option>
     <!-- Delete #47990 <option value='2'>Waiting for deposit slip</option> -->
-    <option value='2'>Confirmed</option>
-    <option value='3'>Canceled</option>
+    <option value='2' color="green">Confirmed</option>
+    <option value='3' color="red">Canceled</option>
   </selection>
 
   <selection name='account.account.technical.type.select'>
@@ -44,28 +44,28 @@
   </selection>
 
   <selection name='account.reconcile.status.select'>
-    <option value='1'>Draft</option>
-    <option value='2'>Confirmed</option>
-    <option value='3'>Canceled</option>
+    <option value='1' color="blue">Draft</option>
+    <option value='2' color="green">Confirmed</option>
+    <option value='3' color="red">Canceled</option>
   </selection>
 
   <selection name='account.reconcile.group.status.select'>
-    <option order="1" value="4">Proposal</option>
-    <option order="2" value='1'>Partial</option>
-    <option order="3" value='2'>Balanced</option>
-    <option order="4" value="3">Unlettered</option>
+    <option order="1" value="4" color="blue">Proposal</option>
+    <option order="2" value="1" color="orange">Partial</option>
+    <option order="3" value="2" color="green">Balanced</option>
+    <option order="4" value="3" color="red">Unlettered</option>
   </selection>
 
   <selection name='account.journal.status.select'>
-    <option value="0">Inactive</option>
-    <option value="1">Active</option>
+    <option value="0" color="red">Inactive</option>
+    <option value="1" color="green">Active</option>
   </selection>
 
   <selection name='iaccount.payment.schedule.status.select'>
-    <option value='1'>Draft</option>
-    <option value='2'>Confirmed</option>
-    <option value='3'>Closed</option>
-    <option value='4'>Canceled</option>
+    <option value='1' color="blue">Draft</option>
+    <option value='2' color="green">Confirmed</option>
+    <option value='3' color="bluegrey">Closed</option>
+    <option value='4' color="red">Canceled</option>
   </selection>
 
   <selection name='accounting.report.type.select'>
@@ -290,45 +290,45 @@
   </selection>
 
   <selection name="iaccount.invoice.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
-    <option value="3">Ventilated</option>
-    <option value="4">Canceled</option>
+    <option value="1" color="cyan">Draft</option>
+    <option value="2" color="green">Validated</option>
+    <option value="3" color="teal">Ventilated</option>
+    <option value="4" color="red">Canceled</option>
   </selection>
 
   <selection name="iaccount.reimbursement.status.select">
-    <option value="1">Draft</option>
-    <option value="2">To validate</option>
-    <option value="3">Validated</option>
-    <option value="4">Reimbursed</option>
-    <option value="5">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="orange">To validate</option>
+    <option value="3" color="lime">Validated</option>
+    <option value="4" color="green">Reimbursed</option>
+    <option value="5" color="red">Canceled</option>
   </selection>
 
   <selection name="iaccount.account.clearance.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Validated</option>
   </selection>
 
   <selection name="iaccount.cheque.rejection.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Validated</option>
   </selection>
 
   <selection name="iaccount.accounting.report.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Validated</option>
   </selection>
 
   <selection name="iaccount.payment.schedule.line.status.select">
-    <option value="1">Draft</option>
-    <option value="2">In progress</option>
-    <option value="3">Validated</option>
-    <option value="4">Closed</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="orange">In progress</option>
+    <option value="3" color="green">Validated</option>
+    <option value="4" color="red">Closed</option>
   </selection>
 
   <selection name="iaccount.irrecoverable.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Validated</option>
   </selection>
 
 
@@ -354,10 +354,10 @@
   </selection>
 
   <selection name="invoice.payment.status.select">
-    <option value="0">Draft</option>
-    <option value="1">Validated</option>
-    <option value="2">Canceled</option>
-    <option value="3">Pending</option>
+    <option value="0" color="blue">Draft</option>
+    <option value="1" color="green">Validated</option>
+    <option value="2" color="red">Canceled</option>
+    <option value="3" color="yellow">Pending</option>
   </selection>
 
   <selection name="assistant.report.invoice.graph.type.select">
@@ -392,16 +392,16 @@
   </selection>
 
   <selection name="account.subrogation.release.status.select">
-    <option value="1">New release</option>
-    <option value="2">Release transmitted</option>
-    <option value="3">Release accounted</option>
-    <option value="4">Release cleared</option>
-    <option value="5">Release canceled</option>
+    <option value="1" color="blue">New release</option>
+    <option value="2" color="orange">Release transmitted</option>
+    <option value="3" color="green">Release accounted</option>
+    <option value="4" color="teal">Release cleared</option>
+    <option value="5" color="red">Release canceled</option>
   </selection>
 
   <selection name="account.notification.status.select">
-    <option value="1">New notification</option>
-    <option value="2">Notification validated</option>
+    <option value="1" color="cyan">New notification</option>
+    <option value="2" color="green">Notification validated</option>
   </selection>
 
   <selection name="iaccount.payment.schedule.type.select">
@@ -465,15 +465,15 @@
   </selection>
 
   <selection name="account.fixed.asset.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
-    <option value="3">Depreciated</option>
-    <option value="4">Transferred</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Validated</option>
+    <option value="3" color="deeporange">Depreciated</option>
+    <option value="4" color="purple">Transferred</option>
   </selection>
 
   <selection name="account.fixed.asset.line.status.select">
-    <option value="1">Planned</option>
-    <option value="2">Realized</option>
+    <option value="1" color="blue">Planned</option>
+    <option value="2" color="green">Realized</option>
   </selection>
 
   <selection name="account.move.template.type.type.select">
@@ -496,18 +496,18 @@
   </selection>
 
   <selection name="invoice.pfp.validate.status.select">
-    <option value="0">No PFP</option>
-    <option value="1">Awaiting</option>
-    <option value="2">PFP validated</option>
-    <option value="3">Litigation</option>
+    <option value="0" color="grey">No PFP</option>
+    <option value="1" color="yellow">Awaiting</option>
+    <option value="2" color="green">PFP validated</option>
+    <option value="3" color="red">Litigation</option>
   </selection>
 
   <selection name="invoiceterm.pfp.validate.status.select">
-    <option value="0">No PFP</option>
-    <option value="1">Awaiting</option>
-    <option value="2" order="3">PFP validated</option>
-    <option value="3" order="4">Litigation</option>
-    <option value="4" order="2">Partially validated</option>
+    <option value="0" color="grey">No PFP</option>
+    <option value="1" color="yellow">Awaiting</option>
+    <option value="2" order="3" color="green">PFP validated</option>
+    <option value="3" order="4" color="red">Litigation</option>
+    <option value="4" order="2" color="lime">Partially validated</option>
   </selection>
 
   <selection name='move.line.reimbursement.status.select'>
@@ -565,9 +565,9 @@
   </selection>
 
   <selection name='iaccount.move.mass.entry.status.select'>
-    <option value='0'/>
-    <option value='1'>Ongoing</option>
-    <option value='2'>Closed</option>
+    <option value='0' color="grey"/>
+    <option value='1' color="green">Ongoing</option>
+    <option value='2' color="amber">Closed</option>
   </selection>
 
   <selection name="account.year.period.duration.select">
@@ -702,18 +702,18 @@
   </selection>
 
   <selection name='iaccount.status.select.selection'>
-    <option value="0">Inactive</option>
-    <option value="1">Active</option>
+    <option value="0" color="red">Inactive</option>
+    <option value="1" color="green">Active</option>
   </selection>
 
   <selection name='ianalytic.journal.status.select'>
-    <option value="0">Inactive</option>
-    <option value="1">Active</option>
+    <option value="0" color="red">Inactive</option>
+    <option value="1" color="green">Active</option>
   </selection>
 
   <selection name='ianalytic.account.status.select'>
-    <option value="0">Inactive</option>
-    <option value="1">Active</option>
+    <option value="0" color="red">Inactive</option>
+    <option value="1" color="green">Active</option>
   </selection>
 
   <selection name="account.fixed.asset.split.type.select">
@@ -793,9 +793,9 @@
   </selection>
 
   <selection name="account.closure.assistant.status.select">
-    <option value="1">New</option>
-    <option value="2">In progress</option>
-    <option value="3">Finished</option>
+    <option value="1" color="blue">New</option>
+    <option value="2" color="deeporange">In progress</option>
+    <option value="3" color="green">Finished</option>
   </selection>
 
   <selection name='iaccount.vat.system.invoice.line.tax.select'>

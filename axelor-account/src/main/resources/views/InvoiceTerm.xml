@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="invoice-term-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
@@ -97,7 +97,7 @@
       x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="pfpValidateStatusSelect"
+    <field name="pfpValidateStatusSelect" widget="single-select"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
@@ -136,7 +136,7 @@
       x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="pfpValidateStatusSelect"
+    <field name="pfpValidateStatusSelect" widget="single-select"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="applyFinancialDiscount" hidden="true"/>
     <field name="amountRemaining" hidden="true"/>
@@ -171,7 +171,7 @@
       x-scale="company.currency.numberOfDecimals"/>
     <field name="financialDiscountDeadlineDate"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
-    <field name="pfpValidateStatusSelect"
+    <field name="pfpValidateStatusSelect" widget="single-select"
       if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="company.currency.numberOfDecimals" hidden="true"/>
@@ -270,7 +270,7 @@
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
+          onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
@@ -330,7 +330,7 @@
         <panel name="pfpButtonPanel" itemSpan="4"
           showIf="$isValidPfpValidatorUser &amp;&amp; !isPaid">
           <button name="passedForPaymentValidationBtn" title="Pass for payment validation"
-            css="btn-success" onClick="action-invoice-term-group-validate-pfp"
+            css="btn-success" onClick="action-invoice-term-group-validate-pfp-process"
             showIf="[1,3].includes(pfpValidateStatusSelect)"/>
           <button name="passedForPaymentPartialValidationBtn" title="Grant Partial PFP"
             css="btn-warning" onClick="action-invoice-term-group-partial-pfp"
@@ -442,7 +442,7 @@
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           readonlyIf="isPaid"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
+          onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="$isPaymentConditionFree" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
@@ -615,7 +615,7 @@
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
+          onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
 
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
@@ -793,7 +793,7 @@
         <field name="bankDetails"
           showIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
           requiredIf="paymentMode.typeSelect == 2 || paymentMode.typeSelect == 3 || paymentMode.typeSelect == 9 || paymentMode.typeSelect == 10"
-          onSelect="action-invoice-term-attrs-bank-details-from-partner-domain"/>
+          onSelect="action-invoice-term-method-bank-details-from-partner-domain"/>
         <field name="applyFinancialDiscount" hidden="true"/>
         <field name="paymentMode.typeSelect" hidden="true"/>
         <field name="company" hidden="true"/>
@@ -922,7 +922,13 @@
     <action name="action-invoice-term-validate-pfp-stock-move"
       if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
     <action name="action-invoice-term-method-validate-pfp"/>
+  </action-group>
+
+  <action-group name="action-invoice-term-group-validate-pfp-process">
+    <action name="action-invoice-term-validate-pfp-stock-move"
+      if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain').getGenerateInvoiceFromStockMove()"/>
     <action name="save"/>
+    <action name="action-invoice-term-method-validate-process"/>
   </action-group>
 
   <action-group name="action-invoice-term-group-partial-pfp">
@@ -1035,6 +1041,10 @@
     <call class="com.axelor.apps.account.web.InvoiceTermController" method="setDueDate"/>
   </action-method>
 
+  <action-method name="action-invoice-term-method-validate-process">
+    <call class="com.axelor.apps.account.web.InvoiceTermController" method="validatePfpProcess"/>
+  </action-method>
+
   <action-view name="action-invoiceterm-view-refusal-to-pay" title="Cancellation"
     model="com.axelor.apps.account.db.InvoiceTerm">
     <view type="form" name="invoice-term-refusal-to-pay-wizard-form"/>
@@ -1088,12 +1098,10 @@
       if="reasonOfRefusalToPay == null || reasonOfRefusalToPay == 0"/>
   </action-condition>
 
-  <action-attrs name="action-invoice-term-attrs-bank-details-from-partner-domain">
-    <attribute name="domain" for="bankDetails" expr="eval: &quot; self.id = 0&quot;"/>
-    <attribute name="domain" for="bankDetails"
-      expr="eval: &quot; self.id IN (${partner?.bankDetailsList?.collect{it.id}?.join(',')}) AND self.active = true &quot;"
-      if="!partner?.bankDetailsList?.isEmpty() || !partner?.bankDetailsList?.isEmpty()"/>
-  </action-attrs>
+  <action-method name="action-invoice-term-method-bank-details-from-partner-domain">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="setBankDetailsDomain"/>
+  </action-method>
 
   <action-attrs name="action-invoice-term-attrs-set-initial-pfp-amount"
     model="com.axelor.apps.account.db.InvoiceTerm">

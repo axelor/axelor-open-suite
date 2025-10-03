@@ -25,7 +25,6 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.TempBomTree;
@@ -43,7 +42,6 @@ import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -111,15 +109,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     }
 
     productCompanyService.set(
-        product,
-        "costPrice",
-        billOfMaterial
-            .getCostPrice()
-            .divide(
-                costSheetService.getQtyRatio(billOfMaterial),
-                Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice(),
-                RoundingMode.HALF_UP),
-        billOfMaterial.getCompany());
+        product, "costPrice", billOfMaterial.getCostPrice(), billOfMaterial.getCompany());
 
     if ((Boolean)
         productCompanyService.get(product, "autoUpdateSalePrice", billOfMaterial.getCompany())) {

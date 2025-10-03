@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <!-- SALES MAN DASHBOARD -->
 
@@ -22,7 +22,7 @@
     model="com.axelor.apps.sale.db.SaleOrder">
     <view type="grid" name="sale-order-grid"/>
     <view type="form" name="sale-order-form"/>
-    <domain>self.salespersonUser = :__user__ and self.statusSelect in (1, 2) and self.company =
+    <domain>self.salespersonUser = :__user__ and self.statusSelect in (1, 2, 3) and self.company =
       :active_company</domain>
     <context name="active_company"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>

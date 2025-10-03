@@ -27,6 +27,7 @@ import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
 import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderComputeServiceSupplychainImpl;
 import com.google.inject.Inject;
 import java.util.List;
@@ -40,15 +41,17 @@ public class SaleOrderComputeServiceProductionImpl extends SaleOrderComputeServi
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
       SubSaleOrderLineComputeService subSaleOrderLineComputeService,
+      AppSaleService appSaleService,
       AdvancePaymentRefundService refundService,
-      AppSaleService appSaleService) {
+      SaleOrderAdvancePaymentFetchService saleOrderAdvancePaymentFetchService) {
     super(
         saleOrderLineCreateTaxLineService,
         saleOrderLineComputeService,
         saleOrderLinePackService,
         subSaleOrderLineComputeService,
+        appSaleService,
         refundService,
-        appSaleService);
+        saleOrderAdvancePaymentFetchService);
   }
 
   @Override

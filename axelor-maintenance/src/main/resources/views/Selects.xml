@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <selection name="maintenance.maintenance.create.mtn.select">
     <option value="0">First reached</option>
@@ -9,10 +9,10 @@
   </selection>
 
   <selection name="maintenance.maintenance.request.status.select">
-    <option value="0">maintenance.request.planned</option>
-    <option value="1">In progress</option>
-    <option value="2">Completed</option>
-    <option value="3">Canceled</option>
+    <option value="0" color="blue">maintenance.request.planned</option>
+    <option value="1" color="orange">In progress</option>
+    <option value="2" color="green">Completed</option>
+    <option value="3" color="red">Canceled</option>
   </selection>
 
   <selection name="maintenance.maintenance.request.action.select">

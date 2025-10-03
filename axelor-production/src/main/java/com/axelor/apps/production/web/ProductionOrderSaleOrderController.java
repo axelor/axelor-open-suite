@@ -22,9 +22,13 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.SaleOrderBlockingProductionService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderSaleOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.common.StringUtils;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -33,9 +37,18 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ProductionOrderSaleOrderController {
+
+  public void checkBlocking(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    if (Beans.get(SaleOrderBlockingProductionService.class).hasOnGoingBlocking(saleOrder)) {
+      response.setAlert(I18n.get(ProductionExceptionMessage.SALE_ORDER_LINES_CANNOT_PRODUCT));
+    }
+  }
 
   public void createProductionOrders(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -43,12 +56,26 @@ public class ProductionOrderSaleOrderController {
     try {
 
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+      List<SaleOrderLine> selectedSaleOrderLines =
+          saleOrder.getSaleOrderLineList().stream()
+              .filter(Model::isSelected)
+              .collect(Collectors.toList());
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
 
-      List<Long> productionOrderIdList =
-          Beans.get(ProductionOrderSaleOrderService.class).generateProductionOrder(saleOrder);
+      ProductionOrderSaleOrderService productionOrderSaleOrderService =
+          Beans.get(ProductionOrderSaleOrderService.class);
 
-      if (productionOrderIdList != null && productionOrderIdList.size() == 1) {
+      String infoMessage =
+          productionOrderSaleOrderService.generateProductionOrder(
+              saleOrder, selectedSaleOrderLines);
+
+      List<Long> productionOrderIds =
+          productionOrderSaleOrderService.getLinkedProductionOrders(saleOrder).stream()
+              .map(ProductionOrder::getId)
+              .collect(Collectors.toList());
+
+      if (productionOrderIds != null && productionOrderIds.size() == 1) {
         response.setView(
             ActionView.define(I18n.get("Production order"))
                 .model(ProductionOrder.class.getName())
@@ -56,19 +83,25 @@ public class ProductionOrderSaleOrderController {
                 .add("grid", "production-order-grid")
                 .param("search-filters", "production-order-filters")
                 .param("forceEdit", "true")
-                .context("_showRecord", String.valueOf(productionOrderIdList.get(0)))
+                .context(
+                    "_showRecord",
+                    String.valueOf(productionOrderIds.stream().findFirst().orElse(0L)))
                 .map());
-      } else if (productionOrderIdList != null && productionOrderIdList.size() > 1) {
+      } else if (productionOrderIds != null && productionOrderIds.size() > 1) {
         response.setView(
             ActionView.define(I18n.get("Production order"))
                 .model(ProductionOrder.class.getName())
                 .add("grid", "production-order-grid")
                 .add("form", "production-order-form")
                 .param("search-filters", "production-order-filters")
-                .domain("self.id in (" + Joiner.on(",").join(productionOrderIdList) + ")")
+                .domain("self.id in (" + Joiner.on(",").join(productionOrderIds) + ")")
                 .map());
-      } else {
+      } else if (!productionOrderSaleOrderService.areAllBlocked(selectedSaleOrderLines)) {
         response.setInfo(I18n.get(ProductionExceptionMessage.PRODUCTION_ORDER_NO_GENERATION));
+      }
+
+      if (StringUtils.notEmpty(infoMessage)) {
+        response.setInfo(infoMessage);
       }
 
     } catch (Exception e) {

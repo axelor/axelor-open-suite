@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -13,13 +13,21 @@
     <many-to-one name="logMetaFile" ref="com.axelor.meta.db.MetaFile" title="Log"/>
     <datetime name="backupDate" title="Backup On"/>
     <datetime name="restoreDate" title="Restored On"/>
-    <integer name="fetchLimit" title="CSV Backup Fetch Limit"/>
-    <boolean name="isRelativeDate" title="Relative Date"/>
-    <boolean name="updateImportId" title="Update Import Id"/>
+    <integer name="fetchLimit" title="CSV Backup Fetch Limit"
+      help="Batch size used when reading data. Allows you to optimize performance based on database volume."/>
+    <boolean name="isRelativeDate" title="Relative dates"
+      help="Allows exporting dates by calculating the difference with the export date. During import, the data will be updated based on the import date and the previously saved offset."/>
+    <boolean name="updateImportId" title="Update Import Id"
+      help="Can be used in order to keep a fixed reference to update the current existing database. Not required for loading into another database."/>
     <boolean name="checkAllErrorFirst" title="Check all error first"/>
     <boolean name="isProcessEmptyTable" title="Generate csv file for empty tables"/>
     <many-to-one name="anonymizer" ref="com.axelor.apps.base.db.Anonymizer"
       title="Pseudonymizer"/>
+    <boolean name="isExportApp" title="Export App configurations"/>
+    <boolean name="isTemplateWithDescription" title="Templates with description"/>
+    <string name="description" title="Description" large="true"/>
+    <integer name="maxLinesPerFile" title="Max number of lines per file" nullable="true"/>
+
     <extra-code>
       <![CDATA[
 				// DATABACKUP STATUS

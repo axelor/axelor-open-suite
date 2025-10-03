@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -16,7 +16,12 @@
       ref="com.axelor.apps.base.db.CompanyDepartment" mappedBy="company"/>
 
     <string name="notes" large="true" title="Notes"/>
-    <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo"/>
+    <many-to-one name="logo" ref="com.axelor.meta.db.MetaFile" title="Logo"
+      help="The default logo, used in BIRT printings."/>
+    <many-to-one name="lightLogo" ref="com.axelor.meta.db.MetaFile" title="Light logo"
+      help="If non empty, this alternative logo will be displayed for users using a light mode-based theme."/>
+    <many-to-one name="darkLogo" ref="com.axelor.meta.db.MetaFile" title="Dark logo"
+      help="If non empty, this alternative logo will be displayed for users using a dark mode-based theme."/>
 
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"
       massUpdate="true"/>
@@ -75,6 +80,8 @@
       <field name="parent" on="UPDATE"/>
       <field name="notes" on="UPDATE"/>
       <field name="logo" on="UPDATE"/>
+      <field name="lightLogo" on="UPDATE"/>
+      <field name="darkLogo" on="UPDATE"/>
       <field name="currency" on="UPDATE"/>
       <field name="customerPaymentDelay" on="UPDATE"/>
       <field name="supplierPaymentDelay" on="UPDATE"/>

@@ -19,7 +19,6 @@
 package com.axelor.apps.supplychain.service.saleorder;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -44,6 +43,7 @@ import org.slf4j.LoggerFactory;
 public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServiceImpl {
 
   protected AdvancePaymentRefundService refundService;
+  protected SaleOrderAdvancePaymentFetchService saleOrderAdvancePaymentFetchService;
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -52,8 +52,9 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
       SubSaleOrderLineComputeService subSaleOrderLineComputeService,
+      AppSaleService appSaleService,
       AdvancePaymentRefundService refundService,
-      AppSaleService appSaleService) {
+      SaleOrderAdvancePaymentFetchService saleOrderAdvancePaymentFetchService) {
     super(
         saleOrderLineCreateTaxLineService,
         saleOrderLineComputeService,
@@ -61,6 +62,7 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
         subSaleOrderLineComputeService,
         appSaleService);
     this.refundService = refundService;
+    this.saleOrderAdvancePaymentFetchService = saleOrderAdvancePaymentFetchService;
   }
 
   @Override
@@ -103,14 +105,7 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
     }
 
     List<Invoice> advancePaymentInvoiceList =
-        Beans.get(InvoiceRepository.class)
-            .all()
-            .filter(
-                "self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect AND self.operationTypeSelect = :operationTypeSelect")
-            .bind("saleOrderId", saleOrder.getId())
-            .bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
-            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-            .fetch();
+        saleOrderAdvancePaymentFetchService.getAdvancePayments(saleOrder);
     if (advancePaymentInvoiceList == null || advancePaymentInvoiceList.isEmpty()) {
       return total;
     }

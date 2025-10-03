@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="sale-batch-grid" title="Sale batches" model="com.axelor.apps.sale.db.SaleBatch">
     <field name="actionSelect"/>
@@ -32,8 +32,8 @@
       <panel name="descriptionPanel" title="Description">
         <field name="description" showTitle="false" colSpan="12"/>
       </panel>
-      <panel-related name="batchListPanel" field="batchList" colSpan="12"
-        form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+      <panel-dashlet name="batchListPanel" colSpan="12"
+        action="action-batch-method-show-batches" canSearch="true"/>
     </panel-tabs>
   </form>
 

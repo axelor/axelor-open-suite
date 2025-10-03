@@ -47,8 +47,11 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementValidateSe
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -131,12 +134,22 @@ public class BankReconciliationController {
   public void loadBankStatement(ActionRequest request, ActionResponse response) {
     try {
       Context context = request.getContext();
-      BankReconciliationService bankReconciliationService =
-          Beans.get(BankReconciliationService.class);
       BankReconciliationRepository bankReconciliationRepository =
           Beans.get(BankReconciliationRepository.class);
       BankReconciliation bankReconciliation =
           bankReconciliationRepository.find(context.asType(BankReconciliation.class).getId());
+      Currency currency = null;
+      if (bankReconciliation.getBankDetails() != null) {
+        currency = bankReconciliation.getBankDetails().getCurrency();
+      }
+      if (currency != null && !currency.equals(bankReconciliation.getCurrency())) {
+        throw new AxelorException(
+            bankReconciliation,
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(
+                BankPaymentExceptionMessage
+                    .BANK_RECONCILIATION_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE));
+      }
       Company company = bankReconciliation.getCompany();
       if (company != null) {
         bankReconciliation =
@@ -543,5 +556,24 @@ public class BankReconciliationController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void checkMultipleMoveLine(ActionRequest request, ActionResponse response) {
+    BankReconciliation bankReconciliation = request.getContext().asType(BankReconciliation.class);
+    List<MoveLine> moveLineList =
+        BankReconciliationToolService.getMoveLineOnMultipleReconciliationLine(bankReconciliation);
+    if (ObjectUtils.isEmpty(moveLineList)) {
+      return;
+    }
+
+    response.setError(
+        String.format(
+            I18n.get(
+                BankPaymentExceptionMessage
+                    .BANK_RECONCILIATION_MULTIPLE_MOVE_LINE_RECONCILIATION_ERROR),
+            moveLineList.stream()
+                .map(MoveLine::getName)
+                .distinct()
+                .collect(Collectors.joining(","))));
   }
 }

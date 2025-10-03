@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form id="account-trading-name-form" model="com.axelor.apps.base.db.TradingName"
     title="Trading name" name="trading-name-form" extension="true">
@@ -21,7 +21,7 @@
           <field name="analyticDistributionTemplate" showTitle="false"
             grid-view="analytic-distribution-template-grid"
             form-view="analytic-distribution-template-form"
-            onSelect="action-trading-name-method-domain-analytic-distribution-template"/>
+            onSelect="action-trading-name-method-set-domain-analytic-distribution-template"/>
           <field name="company.accountConfig" hidden="true"/>
           <field name="company.accountConfig.analyticDistributionTypeSelect" hidden="true"/>
         </panel>
@@ -48,5 +48,11 @@
     name="action-trading-name-method-domain-analytic-distribution-template">
     <call class="com.axelor.apps.account.web.TradingNameController"
       method="setAnalyticDistributionTemplate"/>
+  </action-method>
+
+  <action-method
+    name="action-trading-name-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.TradingNameController"
+      method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 </object-views>

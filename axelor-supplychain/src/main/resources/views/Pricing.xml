@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid model="com.axelor.apps.base.db.Pricing" title="Pricing"
+    name="freight-carrier-mode-pricing-grid" orderBy="company,startDate,name">
+    <field name="company"/>
+    <field name="startDate"/>
+    <field name="endDate"/>
+    <field name="name"/>
+  </grid>
+
+  <form model="com.axelor.apps.base.db.Pricing" title="Pricing"
+    name="freight-carrier-mode-pricing-form"
+    onNew="freight-carrier-mode-pricing-action-group-pricing-onnew"
+    onLoad="freight-carrier-mode-pricing-action-group-pricing-onload" width="large">
+    <panel-include view="pricing-form"/>
+  </form>
+
+  <action-group name="freight-carrier-mode-pricing-action-group-pricing-onnew">
+    <action name="action-group-pricing-onnew"/>
+    <action name="freight-carrier-mode-pricing-action-pricing-attrs-fill-concerned-model"/>
+    <action name="freight-carrier-mode-pricing-action-pricing-attrs-set-hidden-attrs"/>
+  </action-group>
+
+  <action-group name="freight-carrier-mode-pricing-action-group-pricing-onload">
+    <action name="action-pricing-group-attrs-pricing-line-list"/>
+    <action name="freight-carrier-mode-pricing-action-pricing-attrs-set-hidden-attrs"/>
+  </action-group>
+
+  <action-attrs
+    name="freight-carrier-mode-pricing-action-pricing-attrs-fill-concerned-model">
+    <attribute for="concernedModel" name="value"
+      expr="eval: __repo__(MetaModel).all().filter('self.name = \'FreightCarrierPricing\'').fetchOne()"/>
+  </action-attrs>
+
+  <action-attrs
+    name="freight-carrier-mode-pricing-action-pricing-attrs-set-hidden-attrs">
+    <attribute name="hidden" for="product"
+      expr="eval: (typeSelect == com.axelor.apps.base.db.repo.PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING)"/>
+    <attribute name="hidden" for="productCategory"
+      expr="eval: (typeSelect == com.axelor.apps.base.db.repo.PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING)"/>
+    <attribute name="hidden" for="concernedModel"
+      expr="eval: (typeSelect == com.axelor.apps.base.db.repo.PricingRepository.PRICING_TYPE_SELECT_FREIGHT_CARRIER_PRICING)"/>
+  </action-attrs>
+</object-views>

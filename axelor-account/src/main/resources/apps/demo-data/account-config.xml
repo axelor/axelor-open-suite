@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
   <input file="account_accountType.csv" separator=";"
     type="com.axelor.apps.account.db.AccountType"/>
@@ -60,8 +60,6 @@
   <input file="account_paymentMode.csv" separator=";"
     type="com.axelor.apps.account.db.PaymentMode" search="self.importId = :importId">
     <bind column="generateBankOrder" to="generateBankOrder" adapter="Boolean"/>
-    <bind column="generateMoveAutoFromBankOrder" to="generateMoveAutoFromBankOrder"
-      adapter="Boolean"/>
     <bind column="consoBankOrderLinePerPartner" to="consoBankOrderLinePerPartner"
       adapter="Boolean"/>
   </input>
@@ -329,8 +327,11 @@
     <bind to="name" column="name"/>
     <bind to="reportExportTypeSelect" eval="'1'"/>
     <bind to="reportTitle" column="name"/>
-    <bind to="company" column="company" search="self.importId = :company"/>
+    <bind to="company" column="company" search="self.importId = :company"
+      if="typeSelect != '3000'"/>
     <bind to="comparison" eval="typeSelect == '3000' ? '1' : '0'"/>
+    <bind to="companySet" column="companySet" search="self.importId in :companySet"
+      eval="companySet.split('\\|') as List" if="typeSelect == '3000'"/>
   </input>
 
   <input file="account_accountingReportConfigLine.csv" separator=";"
@@ -393,4 +394,7 @@
     <bind to="bankAccount" column="bankAccount_code" search="self.code = :bankAccount_code"/>
     <bind to="journal" column="journal_code" search="self.code=:journal_code" if="journal_code"/>
   </input>
+
+  <input file="account_taxNumber.csv" separator=";"
+    type="com.axelor.apps.account.db.TaxNumber" search="self.importId = :importId"/>
 </csv-inputs>

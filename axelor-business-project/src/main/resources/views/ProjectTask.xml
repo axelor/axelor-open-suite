@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="business-project-task-grid" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask" edit-icon="true"
@@ -73,7 +73,7 @@
     <field name="name"/>
     <field name="taskDate"/>
     <field name="status"/>
-    <field name="progress" widget="SelectProgress" if="isShowProgress"/>
+    <field name="progress" widget="Progress" if="isShowProgress"/>
     <field name="exTaxTotal"/>
     <field name="invoicingType"/>
     <field name="taskDuration" if="manageTimeSpent"/>
@@ -103,7 +103,7 @@
     <field name="taskDate"/>
     <field name="status"/>
     <field name="invoicingProgress"/>
-    <field name="progress"/>
+    <field name="progress" widget="Progress"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="quantity" aggregate="sum"/>
     <field name="toInvoice" readonly="true"
@@ -213,7 +213,8 @@
             onChange="action-project-task-group-unit-price-onchange"
             readonlyIf="saleOrderLine || frameworkCustomerContract"/>
           <field name="unitCost" colSpan="3"
-            readonlyIf="saleOrderLine || frameworkSupplierContract"/>
+            readonlyIf="saleOrderLine || frameworkSupplierContract"
+            onChange="action-project-task-method-compute"/>
           <field name="invoicingUnit" colSpan="3" domain="self.unitTypeSelect=3"
             form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"
             onChange="action-project-task-method-update-quantity"/>
@@ -486,11 +487,6 @@
       method="getProductData"/>
   </action-method>
 
-  <action-method name="action-project-task-method-update-sold-time">
-    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
-      method="updateSoldTime"/>
-  </action-method>
-
   <action-method name="action-project-task-method-update-updated-time">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="updateUpdatedTime"/>
@@ -560,6 +556,7 @@
     <action name="action-project-task-method-compute"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-task-attrs-onchange-invoice-type"/>
+    <action name="action-project-task-group-set-price-from-contract" if="isBusinessProject"/>
   </action-group>
 
   <action-group name="action-project-task-group-product-onchange">
@@ -579,7 +576,6 @@
 
   <action-group name="action-project-task-group-budgeted-time-onchange">
     <action name="action-project-task-group-sprint-onchange"/>
-    <action name="action-project-task-method-update-sold-time"/>
   </action-group>
 
   <action-attrs name="action-project-task-attrs-discountamount-title">
@@ -658,8 +654,8 @@
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_project" expr="eval:__this__.project"/>
-    <context name="_parentTask" expr="eval:__this__"/>
+    <context name="_project" expr="eval:__self__?.project"/>
+    <context name="_parentTask" expr="eval:__self__"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
   </action-view>

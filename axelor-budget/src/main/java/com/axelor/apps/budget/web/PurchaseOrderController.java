@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.date.BudgetInitDateService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
 import com.axelor.apps.budget.web.tool.BudgetControllerTool;
@@ -216,5 +217,13 @@ public class PurchaseOrderController {
         BudgetControllerTool.verifyMissingBudget(response);
       }
     }
+  }
+
+  public void initializeBudgetDates(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    Beans.get(BudgetInitDateService.class).initializeBudgetDates(purchaseOrder);
+
+    response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
   }
 }

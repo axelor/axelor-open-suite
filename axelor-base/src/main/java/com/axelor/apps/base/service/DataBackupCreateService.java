@@ -39,11 +39,15 @@ import com.axelor.db.internal.DBHelper;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.db.mapper.PropertyType;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.studio.db.App;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
@@ -80,6 +84,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.naming.NamingException;
 import javax.persistence.OneToOne;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,16 +158,18 @@ public class DataBackupCreateService {
     File tempDir = Files.createTempDirectory(null).toFile();
     String tempDirectoryPath = tempDir.getAbsolutePath();
     int fetchLimit = dataBackup.getFetchLimit();
+    boolean anonymizeData = dataBackup.getAnonymizer() != null;
+    boolean isExportApp = dataBackup.getIsExportApp();
     int errorsCount = 0;
     byte[] salt = null;
 
     fileNameList = new ArrayList<>();
-    List<MetaModel> metaModelList = getMetaModels(dataBackup.getAnonymizer() != null);
+    List<MetaModel> metaModelList = getMetaModels(anonymizeData, isExportApp);
 
     LinkedList<CSVInput> simpleCsvs = new LinkedList<>();
     LinkedList<CSVInput> refernceCsvs = new LinkedList<>();
     LinkedList<CSVInput> notNullReferenceCsvs = new LinkedList<>();
-    Map<String, List<String>> subClassesMap = getSubClassesMap(dataBackup.getAnonymizer() != null);
+    Map<String, List<String>> subClassesMap = getSubClassesMap(anonymizeData, isExportApp);
 
     if (dataBackup.getCheckAllErrorFirst()) {
       dataBackup.setFetchLimit(1);
@@ -173,7 +180,7 @@ public class DataBackupCreateService {
       fileNameList.clear();
     }
 
-    if (dataBackup.getAnonymizer() != null) {
+    if (anonymizeData) {
       salt = anonymizeService.getSalt();
     }
 
@@ -297,24 +304,28 @@ public class DataBackupCreateService {
   }
 
   /* Get All MetaModels */
-  protected List<MetaModel> getMetaModels(boolean anonymizeData) {
-    String filterStr = "";
+  protected List<MetaModel> getMetaModels(boolean anonymizeData, boolean isExportApp) {
+    StringBuilder filter =
+        new StringBuilder(
+            "self.packageName NOT LIKE '%meta%' AND self.name != 'DataBackup' AND self.tableName IS NOT NULL");
+    filter.append(" AND (self.packageName != 'com.axelor.studio.db'");
+    if (isExportApp) {
+      filter.append(" OR self.name LIKE 'App%'");
+    }
+    filter.append(")");
     if (anonymizeData) {
-      filterStr =
-          "self.packageName NOT LIKE '%meta%' AND (self.packageName != 'com.axelor.studio.db' OR self.name LIKE 'App%') AND self.name NOT IN ('DataBackup','MailMessage') AND self.tableName IS NOT NULL";
-    } else {
-      filterStr =
-          "self.packageName NOT LIKE '%meta%' AND (self.packageName != 'com.axelor.studio.db' OR self.name LIKE 'App%') AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
+      filter.append(" AND self.name != 'MailMessage'");
     }
 
-    List<MetaModel> metaModels = metaModelRepo.all().filter(filterStr).order("fullName").fetch();
+    List<MetaModel> metaModels =
+        metaModelRepo.all().filter(filter.toString()).order("fullName").fetch();
     metaModels.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModels.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
     return metaModels;
   }
 
-  protected Map<String, List<String>> getSubClassesMap(boolean anonymizeData) {
-    List<MetaModel> metaModels = getMetaModels(anonymizeData);
+  protected Map<String, List<String>> getSubClassesMap(boolean anonymizeData, boolean isExportApp) {
+    List<MetaModel> metaModels = getMetaModels(anonymizeData, isExportApp);
     List<String> subClasses;
     Map<String, List<String>> subClassMap = new HashMap<>();
     for (MetaModel metaModel : metaModels) {
@@ -437,8 +448,12 @@ public class DataBackupCreateService {
 
     CSVInput csvInput = new CSVInput();
     boolean headerFlag = true;
+    boolean templateFlag = true;
     List<String> dataArr;
     List<String> headerArr = new ArrayList<>();
+    List<String> titleArr = new ArrayList<>();
+    List<String> helpArr = new ArrayList<>();
+    List<String> attrsArr = new ArrayList<>();
     List<Model> dataList;
 
     try {
@@ -447,12 +462,15 @@ public class DataBackupCreateService {
       Integer fetchLimit = dataBackup.getFetchLimit();
       boolean isRelativeDate = dataBackup.getIsRelativeDate();
       boolean updateImportId = dataBackup.getUpdateImportId();
+      boolean isTemplateWithDescription = dataBackup.getIsTemplateWithDescription();
+      int count = 0;
+      Integer maxLinesPerFile = dataBackup.getMaxLinesPerFile();
 
       csvInput.setFileName(metaModel.getName() + ".csv");
       csvInput.setTypeName(metaModel.getFullName());
       csvInput.setBindings(new ArrayList<>());
 
-      if (totalRecord > 0) {
+      if (totalRecord > 0 && (maxLinesPerFile == null || maxLinesPerFile > 0)) {
         for (int i = 0; i < totalRecord; i = i + fetchLimit) {
 
           dataList = getMetaModelDataList(metaModel, i, fetchLimit, subClasses);
@@ -460,6 +478,9 @@ public class DataBackupCreateService {
           if (dataList != null && !dataList.isEmpty()) {
             dataBackup = dataBackupRepository.find(dataBackup.getId());
             for (Object dataObject : dataList) {
+              if (maxLinesPerFile != null && count >= maxLinesPerFile) {
+                break;
+              }
               dataArr = new ArrayList<>();
 
               for (Property property : pro) {
@@ -478,8 +499,14 @@ public class DataBackupCreateService {
                           isRelativeDate,
                           updateImportId,
                           dataBackup));
+                  if (templateFlag && isTemplateWithDescription) {
+                    titleArr.add(getFieldTitle(property));
+                    helpArr.add(getFieldHelp(property));
+                    attrsArr.add(getFieldAttrs(property));
+                  }
                 }
               }
+              templateFlag = false;
               if (headerFlag) {
                 if (byteArrFieldFlag) {
                   csvInput.setCallable(
@@ -500,15 +527,30 @@ public class DataBackupCreateService {
               }
 
               printer.printRecord(dataArr);
+              count++;
+            }
+            if (maxLinesPerFile != null && count >= maxLinesPerFile) {
+              break;
             }
           }
           JPA.clear();
+        }
+        if (isTemplateWithDescription) {
+          printer.println();
+          printer.printRecord(titleArr);
+          printer.printRecord(attrsArr);
+          printer.printRecord(helpArr);
         }
       } else {
         for (Property property : pro) {
           if (isPropertyExportable(property)) {
             String headerStr = getMetaModelHeader(property, csvInput, isRelativeDate);
             headerArr.add(headerStr);
+            if (isTemplateWithDescription) {
+              titleArr.add(getFieldTitle(property));
+              attrsArr.add(getFieldAttrs(property));
+              helpArr.add(getFieldHelp(property));
+            }
           }
         }
         if (byteArrFieldFlag) {
@@ -517,6 +559,12 @@ public class DataBackupCreateService {
           byteArrFieldFlag = false;
         }
         printer.printRecord(headerArr);
+        if (isTemplateWithDescription) {
+          printer.println();
+          printer.printRecord(titleArr);
+          printer.printRecord(attrsArr);
+          printer.printRecord(helpArr);
+        }
       }
 
       if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
@@ -910,5 +958,92 @@ public class DataBackupCreateService {
     } catch (NoSuchFieldException | SecurityException | ClassNotFoundException e) {
       return false;
     }
+  }
+
+  protected String getFieldTitle(Property property) {
+    return I18n.get(property.getTitle());
+  }
+
+  protected String getFieldHelp(Property property) {
+    return I18n.get(property.getHelp());
+  }
+
+  protected String getFieldAttrs(Property property) {
+    List<String> attributes = new ArrayList<>();
+    attributes.add(I18n.get(getPropertyTitle(property.getType())));
+    if (property.isRequired()) {
+      attributes.add(I18n.get("Required"));
+    }
+    if (property.isUnique()) {
+      attributes.add(I18n.get("Unique"));
+    }
+    String attrs = String.join(" | ", attributes);
+    if (property.getSelection() != null) {
+      String selectionInfo = getSelectionInformation(property.getSelection());
+      if (!StringUtils.isEmpty(selectionInfo)) {
+        return attrs + "\n" + selectionInfo;
+      }
+    }
+    return attrs;
+  }
+
+  protected String getPropertyTitle(PropertyType type) {
+    switch (type) {
+      case STRING:
+        return "String";
+      case TEXT:
+        return "Large text";
+      case BOOLEAN:
+        return "Boolean";
+      case INTEGER:
+        return "Integer";
+      case LONG:
+        return "Long";
+      case DOUBLE:
+        return "Double";
+      case DECIMAL:
+        return "Decimal";
+      case DATE:
+        return "Date";
+      case TIME:
+        return "Time";
+      case DATETIME:
+        return "Datetime";
+      case BINARY:
+        return "Binary";
+      case ENUM:
+        return "Enum";
+      case ONE_TO_ONE:
+        return "One to One";
+      case MANY_TO_ONE:
+        return "Many to One";
+      case ONE_TO_MANY:
+        return "One to Many";
+      case MANY_TO_MANY:
+        return "Many to Many";
+      default:
+        return type.toString();
+    }
+  }
+
+  protected String getSelectionInformation(String selectionName) {
+    List<MetaSelect> selections =
+        Beans.get(MetaSelectRepository.class).all().filter("self.name = ?", selectionName).fetch();
+    if (CollectionUtils.isEmpty(selections)) {
+      return "";
+    }
+    StringBuilder builder = new StringBuilder();
+    builder.append(I18n.get("Selection")).append(": ").append(selectionName);
+    selections.stream()
+        .flatMap(sel -> sel.getItems().stream())
+        .filter(item -> item.getValue() != null && item.getTitle() != null)
+        .forEach(
+            item ->
+                builder
+                    .append("\n")
+                    .append(item.getValue())
+                    .append(" : ")
+                    .append(I18n.get(item.getTitle())));
+    return builder.toString();
   }
 }

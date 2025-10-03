@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form name="bank-address-form" title="SWIFT address"
     model="com.axelor.apps.base.db.BankAddress" onNew="action-attrs-bank-address-form-bank"
     onLoad="action-attrs-bank-address-form-bank">
     <panel name="mainPanel">
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
-      <field name="address"/>
+      <field name="address" required="true"/>
       <field name="label"/>
       <field name="bank"/>
     </panel>

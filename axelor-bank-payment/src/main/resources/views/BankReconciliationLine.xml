@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine" editable="false"
@@ -98,6 +98,7 @@
     <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
     <field name="account" canEdit="false"
       onSelect="action-bank-reconciliation-line-method-account-domain" form-view="account-form"
+      onChange="action-bank-reconciliation-line-record-set-analytic-template"
       grid-view="account-grid"/>
     <field name="partner" canEdit="false" requiredIf="typeSelect != 1"
       onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"
@@ -107,6 +108,11 @@
       onChange="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected"
       onSelect="action-bank-reconciliation-line-method-move-line-domain" form-view="move-line-form"
       grid-view="move-line-grid"/>
+    <field name="analyticDistributionTemplate"
+      requiredIf="account.analyticDistributionRequiredOnMoveLines"
+      readonlyIf="!account.analyticDistributionAuthorized"/>
+    <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
+    <field name="account.analyticDistributionAuthorized" hidden="true"/>
     <field name="isPosted" readonly="true"/>
     <field name="isSelectedBankReconciliation" hidden="true"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
@@ -114,34 +120,45 @@
 
   <form name="bank-reconciliation-line-form" title="Bank reconciliation Line"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine" width="large" canNew="false">
-    <panel name="bankStatementPanel" title="Bank statement details">
-      <field name="bankStatementLine" canEdit="false"
-        onChange="action-bank-reconciliation-line-record-fill-bank-statement-details"/>
-      <field name="effectDate"/>
-      <field name="name"/>
-      <field name="reference"/>
-      <field name="debit" x-scale="$currencyNumberOfDecimals"/>
-      <field name="credit" x-scale="$currencyNumberOfDecimals"/>
-      <field name="bankStatementLine.amountRemainToReconcile"
-        x-scale="$currencyNumberOfDecimals"/>
-      <field name="$currencyNumberOfDecimals" hidden="true"/>
-    </panel>
-    <panel name="accountingPanel" title="Accounting details">
-      <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
-      <field name="account" canEdit="false"
-        onSelect="action-bank-reconciliation-line-method-account-domain" form-view="account-form"
-        grid-view="account-grid"/>
-      <field name="partner" canEdit="false"
-        onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"
-        onChange="action-bank-reconciliation-line-record-set-account" form-view="partner-form"
-        grid-view="partner-grid"/>
-    </panel>
-    <panel name="associatedMoveLinePanel" title="Associated MoveLine">
-      <field name="moveLine" canEdit="false"
-        onSelect="action-bank-reconciliation-line-method-move-line-domain"
-        form-view="move-line-form" grid-view="move-line-grid"/>
-      <field name="isPosted" readonly="true"/>
-    </panel>
+    <panel-tabs>
+      <panel name="bankStatementPanel" title="Bank statement details">
+        <field name="bankStatementLine" canEdit="false"
+          onChange="action-bank-reconciliation-line-record-fill-bank-statement-details"/>
+        <field name="effectDate"/>
+        <field name="name"/>
+        <field name="reference"/>
+        <field name="debit" x-scale="$currencyNumberOfDecimals"/>
+        <field name="credit" x-scale="$currencyNumberOfDecimals"/>
+        <field name="bankStatementLine.amountRemainToReconcile"
+          x-scale="$currencyNumberOfDecimals"/>
+        <field name="$currencyNumberOfDecimals" hidden="true"/>
+      </panel>
+      <panel name="accountingPanel" title="Accounting details">
+        <field name="typeSelect" onChange="action-bank-reconciliation-line-record-set-account"/>
+        <field name="account" canEdit="false"
+          onSelect="action-bank-reconciliation-line-method-account-domain"
+          onChange="action-bank-reconciliation-line-record-set-analytic-template"
+          form-view="account-form" grid-view="account-grid"/>
+        <field name="partner" canEdit="false"
+          onSelect="action-bank-payment-attrs-bank-reconciliation-line-partner-domain"
+          onChange="action-bank-reconciliation-line-group-partner-on-change"
+          form-view="partner-form" grid-view="partner-grid"/>
+      </panel>
+      <panel name="associatedMoveLinePanel" title="Associated MoveLine">
+        <field name="moveLine" canEdit="false"
+          onSelect="action-bank-reconciliation-line-method-move-line-domain"
+          form-view="move-line-form" grid-view="move-line-grid"/>
+        <field name="isPosted" readonly="true"/>
+      </panel>
+      <panel name="analyticPanel" title="Analytic"
+        showIf="account.analyticDistributionAuthorized">
+        <field name="analyticDistributionTemplate"
+          requiredIf="account.analyticDistributionRequiredOnMoveLines"
+          onSelect="action-bank-reconciliation-line-method-set-domain-analytic-distribution-template"/>
+        <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
+        <field name="account.analyticDistributionAuthorized" hidden="true"/>
+      </panel>
+    </panel-tabs>
   </form>
 
   <action-record
@@ -203,5 +220,22 @@
   <action-method name="action-bank-reconciliation-line-method-move-line-domain">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
       method="setMoveLineDomain"/>
+  </action-method>
+
+  <action-group name="action-bank-reconciliation-line-group-partner-on-change">
+    <action name="action-bank-reconciliation-line-record-set-account"/>
+    <action name="action-bank-reconciliation-line-record-set-analytic-template"/>
+  </action-group>
+
+  <action-method name="action-bank-reconciliation-line-record-set-analytic-template"
+    model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
+      method="setAnalyticDistributionTemplate"/>
+  </action-method>
+
+  <action-method
+    name="action-bank-reconciliation-line-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
+      method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 </object-views>

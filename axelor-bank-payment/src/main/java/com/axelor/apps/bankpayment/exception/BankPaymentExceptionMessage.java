@@ -231,7 +231,7 @@ public final class BankPaymentExceptionMessage {
   public static final String BATCH_DIRECT_DEBIT_UNKNOWN_DATA_TYPE = /*$$(*/
       "Unknown direct debit data type" /*)*/;
   public static final String DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR = /*$$(*/
-      "Please add an Active UMR to the partner." /*)*/;
+      "Please add an Active UMR to the partner %s for the bank details %s." /*)*/;
 
   /** Generate bank order from invoices */
   public static final String INVOICE_BANK_ORDER_ALREADY_EXIST = /*$$(*/
@@ -272,6 +272,8 @@ public final class BankPaymentExceptionMessage {
       "Selected bank reconciliation is validated and can not be deleted" /*)*/;
   public static final String BANK_RECONCILIATION_CANNOT_DELETE_UNDER_CORRECTION = /*$$(*/
       "Selected bank reconciliation is under correction and can not be deleted" /*)*/;
+  public static final String BANK_RECONCILIATION_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/
+      "The bank reconciliation currency is different from the bank details currency so the reconciliation cannot be initiated. Please select a currency which is equal to the bank statement currency." /*)*/;
 
   public static final String BANK_RECONCILIATION_NO_DISTRIBUTION_GENERATED_MOVE_LINE = /*$$(*/
       "The analytic distribution is required in the move lines for account %s but no template has been set in the account configuration" /*)*/;
@@ -327,4 +329,10 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_ACCOUNT_DIFFERENT_THAN_CASH_ACCOUNT = /*$$(*/
       "Your bank detail's bank account for bank details %s (%s) is different from the cash account of the account config for %s's bank statement rule (%s). Please fix it before auto accounting the bank statement." /*)*/;
+
+  public static final String BANK_RECONCILIATION_CREATING_MOVE_MISSING_JOURNAL = /*$$(*/
+      "Missing journal while creating a move from a bank reconciliation." /*)*/;
+
+  public static final String BANK_RECONCILIATION_MULTIPLE_MOVE_LINE_RECONCILIATION_ERROR = /*$$(*/
+      "The movelines %s are already reconciled with another bank statement line. Multiple bank statement lines can't be reconciled with the same move line." /*)*/;
 }

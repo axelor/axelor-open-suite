@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
@@ -321,4 +322,8 @@ public interface InvoiceService {
   Invoice computeEstimatedPaymentDate(Invoice invoice);
 
   void updateThirdPartyPayerPartner(Invoice invoice);
+
+  FiscalPosition manageFiscalPositionFromCompanyTaxNumber(Invoice invoice);
+
+  TaxNumber getDefaultCompanyTaxNumber(Invoice invoice);
 }

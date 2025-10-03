@@ -46,6 +46,17 @@ public interface ProdProcessLineComputationService {
   BigDecimal getMachineInstallingDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
       throws AxelorException;
 
+  BigDecimal computeMachineInstallingDuration(
+      BigDecimal nbCycles, long startingDuration, long endingDuration, long setupDuration);
+
+  /**
+   * Convert the result of {@link ProdProcessLineComputationService#getMachineDuration} in hour. The
+   * result of this method should be scaled before being saved.
+   *
+   * @param prodProcessLine
+   * @param nbCycles
+   * @return totalMachineDuration in hour
+   */
   BigDecimal getHourMachineDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
       throws AxelorException;
 
@@ -59,14 +70,31 @@ public interface ProdProcessLineComputationService {
   BigDecimal getMachineDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
       throws AxelorException;
 
+  BigDecimal computeMachineDuration(
+      BigDecimal nbCycle, long durationPerCycle, BigDecimal machineInstallingDuration);
+
   /**
    * Compute the total human duration for a given nbCycles
    *
    * @param prodProcessLine
    * @param nbCycles
-   * @return totalMachineDuration
+   * @return human duration
+   * @throws AxelorException
    */
-  BigDecimal getHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles);
+  BigDecimal getHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException;
+
+  /**
+   * Convert the result of {@link ProdProcessLineComputationService#getHumanDuration} in hour. The
+   * result of this method should be scaled before being saved.
+   *
+   * @param prodProcessLine
+   * @param nbCycles
+   * @return human duration in hour
+   * @throws AxelorException
+   */
+  BigDecimal getHourHumanDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException;
 
   /**
    * Compute the total duration for a given nbCycles
@@ -76,6 +104,17 @@ public interface ProdProcessLineComputationService {
    * @return total duration
    */
   BigDecimal getTotalDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
+      throws AxelorException;
+
+  /**
+   * Convert the result of {@link ProdProcessLineComputationService#getTotalDuration} in hour. The
+   * result of this method should be scaled before being saved.
+   *
+   * @param prodProcessLine
+   * @param nbCycles
+   * @return total duration in hour
+   */
+  BigDecimal getHourTotalDuration(ProdProcessLine prodProcessLine, BigDecimal nbCycles)
       throws AxelorException;
 
   /**
@@ -89,4 +128,6 @@ public interface ProdProcessLineComputationService {
   long computeEntireCycleDuration(
       OperationOrder operationOrder, ProdProcessLine prodProcessLine, BigDecimal qty)
       throws AxelorException;
+
+  BigDecimal getHourDurationPerCycle(ProdProcessLine prodProcessLine);
 }

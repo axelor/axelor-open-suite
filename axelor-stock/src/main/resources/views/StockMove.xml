@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="stock-move-grid" title="Stock moves" model="com.axelor.apps.stock.db.StockMove"
     orderBy="statusSelect,-estimatedDate">
@@ -268,7 +268,8 @@
         <item name="shipReceiveAllProductsItem" title="Ship/Receive all products"
           action="action-stock-move-group-save-and-update-stocks,action-stock-move-ship-recieve-all-products"/>
         <item name="refreshProductNetMassItem" showIf="typeSelect == 2 &amp;&amp; !isReversion"
-          title="Refresh the products net mass" action="action-stock-move-method-refresh-net-mass"/>
+          title="Refresh the products net mass"
+          action="save,action-stock-move-method-refresh-net-mass"/>
       </menu>
     </menubar>
 
@@ -341,7 +342,7 @@
 								]]></viewer>
               </field>
               <field name="$invoicingTags" showTitle="false" readonly="true"
-                showIf="statusSelect == 3" if-module="axelor-supplychain"
+                showIf="statusSelect == 3 &amp;&amp; typeSelect != 1" if-module="axelor-supplychain"
                 if="__config__.app.isApp('supplychain')">
                 <viewer depends="invoicingStatusSelect"><![CDATA[
 						<>
@@ -395,8 +396,10 @@
         <button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2"
           prompt="Are you sure you want to realize this stock move?"
           onClick="action-group-stock-stockmove-realize-click"/>
-        <button if-module="axelor-supplychain" name="generateInvoiceBtn"
-          title="Generate invoice" hidden="true" icon="fa-file-o"
+        <button
+          if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"
+          if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate control invoice"
+          hidden="true" icon="fa-file-o"
           onClick="save,action-supplychain-stock-move-validate-invoicing-block,action-supplychain-stock-move-method-invoicing-wizard"/>
         <button name="generateReversionBtn" title="Generate reversion" icon="fa-undo"
           onClick="save,action-stock-move-method-generate-reversion"

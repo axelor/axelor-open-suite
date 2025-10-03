@@ -26,10 +26,12 @@ import java.util.List;
 
 public interface ProductionOrderSaleOrderService {
 
-  List<Long> generateProductionOrder(SaleOrder saleOrder) throws AxelorException;
-
-  ProductionOrder generateManufOrders(ProductionOrder productionOrder, SaleOrderLine saleOrderLine)
+  String generateProductionOrder(SaleOrder saleOrder, List<SaleOrderLine> selectedSaleOrderLine)
       throws AxelorException;
 
-  ProductionOrder createProductionOrder(SaleOrder saleOrder) throws AxelorException;
+  boolean areAllBlocked(List<SaleOrderLine> saleOrderLineList);
+
+  ProductionOrder fetchOrCreateProductionOrder(SaleOrder saleOrder) throws AxelorException;
+
+  List<ProductionOrder> getLinkedProductionOrders(SaleOrder saleOrder) throws AxelorException;
 }

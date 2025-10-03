@@ -48,6 +48,8 @@ public final class SaleExceptionMessage {
       "The fiscal position must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_ERROR_TAX_NUMBER = /*$$(*/
       "The tax number must be the same for all sale orders" /*)*/;
+  public static final String SALE_ORDER_MERGE_ERROR_ATI_CONFIG = /*$$(*/
+      "The ATI configuration must be the same for all sale orders" /*)*/;
   public static final String SALE_ORDER_MERGE_LIST_EMPTY = /*$$(*/
       "List of sale orders to merge is empty" /*)*/;
 
@@ -127,7 +129,7 @@ public final class SaleExceptionMessage {
       "The selected price list is no longer valid, do you still want to continue?" /*)*/;
 
   public static final String SALE_ORDER_CONFIRM_TOTAL_AMOUNT_ZERO = /*$$(*/
-      "The total amount of quotation is zero. Do you want to proceed ?" /*)*/;
+      "The total amount of quotation is zero." /*)*/;
 
   public static final String PRODUCT_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS = /*$$(*/
       "You can not choose this product for this order: %s" /*)*/;
@@ -186,4 +188,25 @@ public final class SaleExceptionMessage {
 
   public static final String CONFIGURATOR_IS_NOT_ACTIVATED = /*$$(*/
       "Configurator is not activated." /*)*/;
+
+  public static final String SALE_ORDER_DO_YOU_WANT_TO_PROCEED = /*$$(*/
+      "Do you want to proceed ?" /*)*/;
+
+  public static final String SALE_QUOTATION_ALL_ALREADY_ORDERED = /*$$(*/
+      "Every lines have been completely ordered." /*)*/;
+
+  public static final String SALE_QUOTATION_WRONG_ORDER_QTY = /*$$(*/
+      "You can not order more than %s for the line with the product %s." /*)*/;
+
+  public static final String SALE_QUOTATION_NO_LINE_GENERATED = /*$$(*/
+      "No lines were generated. Please check that at least one line has a quantity to order." /*)*/;
+
+  public static final String SALE_QUOTATION_CHECK_ORDERED_QTY = /*$$(*/
+      "Quantity should not be less than the ordered quantity." /*)*/;
+
+  public static final String SALE_QUOTATION_CONFIRM_CHECK_ORDERED_QTY = /*$$(*/
+      "One of the lines has its quantity inferior to its ordered quantity." /*)*/;
+
+  public static final String SALE_QUOTATION_DELETE_LINE_WITH_ORDERED_QTY_ERROR = /*$$(*/
+      "You can not delete lines with an ordered quantity superior to 0." /*)*/;
 }

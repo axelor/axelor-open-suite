@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="kilometric-log-grid" title="Kilometrice log"
     model="com.axelor.apps.hr.db.KilometricLog">
@@ -16,8 +16,16 @@
       <field name="year"/>
       <field name="distanceTravelled"/>
     </panel>
-    <panel-related name="expenseLineListPanel" field="expenseLineList" readonly="true"
-      form-view="expense-line-kilometric-form" grid-view="expense-line-kilometric-grid"/>
+    <panel-dashlet action="action-view-kilometric-log-expense-line"/>
   </form>
+
+  <action-view name="action-view-kilometric-log-expense-line"
+    title="Kilometric allowance list" model="com.axelor.apps.hr.db.ExpenseLine">
+    <view type="grid" name="expense-line-kilometric-grid"/>
+    <view type="form" name="expense-line-kilometric-form"/>
+    <domain>self.id IN (:expenseLineListIdList)</domain>
+    <context name="expenseLineListIdList"
+      expr="call:com.axelor.apps.hr.service.KilometricLogService:getExpenseLineIdList(__this__)"/>
+  </action-view>
 
 </object-views>

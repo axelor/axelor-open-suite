@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="purchase-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.purchase.db.PurchaseOrder" orderBy="-orderDate,-purchaseOrderSeq">
@@ -175,7 +175,7 @@
         <field name="tradingName" canEdit="false" grid-view="trading-name-grid"
           form-view="trading-name-form"
           if="__config__.app.getApp('base')?.enableTradingNamesManagement" colSpan="3"
-          readonlyIf="(purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3"
+          readonlyIf="!createdByInterco &amp;&amp;((purchaseOrderLineList &amp;&amp; purchaseOrderLineList.length > 0) || statusSelect >= 3)"
           domain="self.company = :company"
           onChange="action-purchase-order-method-printing-settings-default-value,action-purchase-order-record-set-stock-location"
           requiredIf="company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0"/>
@@ -221,7 +221,7 @@
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab"
-      hideIf="supplierPartner == null || ($enablePurchasesProductByTradName &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0 &amp;&amp; tradingName == null)">
+      hideIf="supplierPartner == null || ($enableTradingNamesManagement &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0 &amp;&amp; tradingName == null)">
       <panel name="contentPanel" title="Content" colSpan="12">
         <panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList"
           canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3"
@@ -310,43 +310,55 @@
     </panel>
 
     <panel sidebar="true" name="actionsPanel" hideIf="supplierPartner == null">
-      <button name="draftBtn" title="Draft" showIf="statusSelect == 5"
-        onClick="save,action-purchase-order-method-draft,save"/>
-      <button name="requestedBtn" title="Requested" showIf="statusSelect == 1"
-        onClick="save,action-purchase-order-method-requested"/>
-      <button name="newVersionBtn" title="New version" showIf="statusSelect == 2"
-        onClick="save,action-purchase-record-newVersion,save"
-        if="__config__.app.getApp('purchase')?.getManagePurchaseOrderVersion()"/>
-      <button name="validateBtn" title="Validate" showIf="statusSelect == 2"
-        onClick="action-group-purchase-order-on-validate-actions"/>
-      <button name="generateSupplierStockMoveBtn" title="Generate supplier arrival"
-        showIf="statusSelect == 3 || statusSelect == 4"
-        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getSupplStockMoveMgtOnPO() &amp;&amp; !__config__.app.getApp('supplychain')?.getSupplierStockMoveGenerationAuto()"
-        onClick="save,action-purchase-order-create-stock-move" if-module="axelor-supplychain"/>
       <button name="generateInvoiceBtn" title="Generate control invoice"
         showIf="statusSelect == 3"
         onClick="save,action-purchase-order-method-generate-control-invoice"
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.generateInvoiceFromPurchaseOrder"
-        if-module="axelor-supplychain"/>
+        if-module="axelor-supplychain" icon="file-earmark"
+        readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
+      <button name="generateSupplierStockMoveBtn" title="Generate supplier arrival"
+        showIf="statusSelect == 3 || statusSelect == 4"
+        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getSupplStockMoveMgtOnPO() &amp;&amp; !__config__.app.getApp('supplychain')?.getSupplierStockMoveGenerationAuto()"
+        onClick="save,action-purchase-order-create-stock-move" if-module="axelor-supplychain"
+        icon="truck" readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
       <button name="showInvoiceBtn" title="Show invoice"
         showIf="statusSelect == 3 || statusSelect == 4" onClick="action-purchase-order-show-invoice"
-        if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
+        if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"
+        icon="file-earmark-fill"
+        readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
+      <button name="requestedBtn" title="Requested" showIf="statusSelect == 1"
+        onClick="save,action-purchase-order-method-requested" icon="send"
+        readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
+      <button name="validateBtn" title="Validate" showIf="statusSelect == 2"
+        onClick="action-group-purchase-order-on-validate-actions" icon="check" css="btn-success"
+        readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
       <button name="finishManuallyPurchaseOrderBtn" title="Finish the order"
         prompt="Warning, a completed order can't be changed anymore, do you want to continue?"
         showIf="statusSelect == 3"
         if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder) || (!__config__.app.isApp('supplychain'))"
         onClick="save,action-purchase-order-method-finish-purchase-order"
-        if-module="axelor-supplychain"/>
-      <button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times"
+        if-module="axelor-supplychain" icon="person-check-fill" css="btn-warning"
+        readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
+      <button name="cancelBtn" title="Cancel" css="btn-danger" icon="x"
         showIf="statusSelect &lt;= 3  || invoice.statusSelect &lt;= 2"
-        onClick="save,action-group-purchase-order-cancel"/>
+        onClick="save,action-group-purchase-order-cancel"
+        readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
       <button name="backToValidatedBtn" title="Back to validated order"
         showIf="statusSelect == 4" if-module="axelor-supplychain"
         onClick="save,action-purchase-order-method-set-status-to-validated"
-        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder"/>
+        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowFinishManuallyPurchaseOrder"
+        icon="reply-fill" readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
+      <button name="draftBtn" title="Draft" showIf="statusSelect == 5"
+        onClick="save,action-purchase-order-method-draft,save" icon="reply-all-fill"
+        readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
+      <button name="newVersionBtn" title="New version" showIf="statusSelect == 2"
+        onClick="save,action-purchase-record-newVersion,save"
+        if="__config__.app.getApp('purchase')?.getManagePurchaseOrderVersion()" icon="tag-fill"
+        readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
       <button name="separateInNewQuotationBtn" title="Separate in a new quotation"
         showIf="statusSelect == 1"
-        onClick="save,action-purchase-order-method-separate-in-new-quotation"/>
+        onClick="save,action-purchase-order-method-separate-in-new-quotation" icon="diagram-2-fill"
+        readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
     </panel>
 
     <panel name="intaxTotalPanel" sidebar="true" hideIf="supplierPartner == null">
@@ -606,6 +618,8 @@
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-purchase-order-record-update-info-company"/>
     <action name="action-purchase-order-record-display-price"/>
+    <action name="action-purchase-order-record-in-ati"/>
+    <action name="action-purchase-order-attrs-in-ati"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-on-validate-actions">
@@ -675,8 +689,8 @@
 
   <action-record name="action-purchase-order-record-load-trading-name-config"
     model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <field name="$enablePurchasesProductByTradName"
-      expr="eval: __config__.app.getApp('purchase')?.enablePurchasesProductByTradName"/>
+    <field name="$enableTradingNamesManagement"
+      expr="eval:__config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </action-record>
 
   <action-record name="action-purchase-order-record-in-ati"

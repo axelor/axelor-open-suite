@@ -250,9 +250,11 @@ public class BillOfMaterialController {
 
   public void setIsUsedInSaleOrder(ActionRequest request, ActionResponse response) {
     BillOfMaterial billOfMaterial = request.getContext().asType(BillOfMaterial.class);
-    billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
-    response.setValue(
-        "$isUsedInSaleOrder",
-        Beans.get(BillOfMaterialDummyService.class).getIsUsedInSaleOrder(billOfMaterial));
+    if (billOfMaterial.getId() != null) {
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
+      response.setValue(
+          "$isUsedInSaleOrder",
+          Beans.get(BillOfMaterialDummyService.class).getIsUsedInSaleOrder(billOfMaterial));
+    }
   }
 }
