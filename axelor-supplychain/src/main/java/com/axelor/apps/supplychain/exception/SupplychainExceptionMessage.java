@@ -437,6 +437,9 @@ public final class SupplychainExceptionMessage {
   public static final String SUPPLYCHAIN_PACKAGING_SEQUENCE_ERROR = /*$$(*/
       "There is no configured sequence for the Packaging" /*)*/;
 
+  public static final String MRP_GENERATE_PROPOSAL_NO_CALL_TENDER_NEEDED = /*$$(*/
+      "No call for tender can be generated from these lines." /*)*/;
+
   public static final String PURCHASE_ORDER_LINE_DELETE_NOT_ALLOWED_STOCK_MOVE = /*$$(*/
       "The purchase order line can't be deleted because it is linked to a realized stock move." /*)*/;
 

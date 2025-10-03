@@ -90,7 +90,6 @@ import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewServiceI
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
-import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineFetchServiceImpl;
@@ -143,8 +142,8 @@ import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
-import com.axelor.apps.supplychain.service.LogisticalFormSupplychainService;
-import com.axelor.apps.supplychain.service.LogisticalFormSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.MrpCallTenderService;
+import com.axelor.apps.supplychain.service.MrpCallTenderServiceImpl;
 import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
 import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpForecastService;
@@ -394,8 +393,6 @@ public class SupplychainModule extends AxelorModule {
     bind(WorkflowVentilationServiceImpl.class).to(WorkflowVentilationServiceSupplychainImpl.class);
     bind(WorkflowCancelServiceImpl.class).to(WorkflowCancelServiceSupplychainImpl.class);
     bind(IntercoService.class).to(IntercoServiceImpl.class);
-    bind(LogisticalFormServiceImpl.class).to(LogisticalFormSupplychainServiceImpl.class);
-    bind(LogisticalFormSupplychainService.class).to(LogisticalFormSupplychainServiceImpl.class);
     bind(StockLocationLineServiceImpl.class).to(StockLocationLineServiceSupplychainImpl.class);
     bind(SaleOrderLineServiceSupplyChain.class).to(SaleOrderLineServiceSupplyChainImpl.class);
     bind(SupplyChainConfigService.class).to(SupplyChainConfigServiceImpl.class);
@@ -567,6 +564,7 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderGeneratorSupplychainService.class)
         .to(SaleOrderGeneratorSupplychainServiceImpl.class);
     bind(PackagingRepository.class).to(PackagingSupplychainRepository.class);
+    bind(MrpCallTenderService.class).to(MrpCallTenderServiceImpl.class);
     bind(PurchaseOrderChangeValidationSupplychainService.class)
         .to(PurchaseOrderChangeValidationSupplychainServiceImpl.class);
     bind(PurchaseOrderEditStockMoveService.class).to(PurchaseOrderEditStockMoveServiceImpl.class);

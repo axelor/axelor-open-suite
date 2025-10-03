@@ -3,11 +3,17 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
-  <module name="stock" package="com.axelor.apps.stock.db"/>
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
-  <entity name="LogisticalFormLine">
-    <many-to-one name="saleOrder" ref="com.axelor.apps.sale.db.SaleOrder"
-      title="Sale Order"/>
+  <entity name="CallTenderNeed">
+
+    <extra-code><![CDATA[
+
+	   	// TYPE SELECT
+	   	public static final int MRP_TYPE = 2;
+
+
+	]]></extra-code>
 
   </entity>
 

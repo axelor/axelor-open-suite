@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="project-planning-time-grid" title="Planned time"
-    model="com.axelor.apps.project.db.ProjectPlanningTime">
+    model="com.axelor.apps.project.db.ProjectPlanningTime" groupBy="employee">
     <toolbar>
       <button name="addMultipleLinesBtn" title="Add multiple lines" icon="fa-plus"
         onClick="action-project-view-add-multiple-project-planning-time" hideIf="$popup()"/>

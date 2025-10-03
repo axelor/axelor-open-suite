@@ -1354,23 +1354,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     return result;
   }
 
-  @Override
-  @Transactional
-  public void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
-    stockMove.setFullySpreadOverLogisticalFormsFlag(
-        computeFullySpreadOverLogisticalFormsFlag(stockMove));
-  }
-
-  protected boolean computeFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
-    return stockMove.getStockMoveLineList() != null
-        ? stockMove.getStockMoveLineList().stream()
-            .allMatch(
-                stockMoveLine ->
-                    stockMoveLineService.computeFullySpreadOverLogisticalFormLinesFlag(
-                        stockMoveLine))
-        : true;
-  }
-
   @Transactional(rollbackOn = {Exception.class})
   protected void applyCancelReason(StockMove stockMove, CancelReason cancelReason)
       throws AxelorException {

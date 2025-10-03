@@ -214,4 +214,15 @@
     <option value="3">III</option>
   </selection>
 
+  <selection name="base.pricing.type.select" id="supplychain.base.pricing.type.select">
+    <option value="FreightCarrierPricing">Freight Carrier Pricing</option>
+    <option value="FreightCarrierDelay">Freight Carrier Delay</option>
+  </selection>
+
+
+  <selection id="supplychain.call.tender.need.type.select"
+    name="purchase.call.tender.need.type.select">
+    <option value="2">MRP</option>
+  </selection>
+
 </object-views>

@@ -1309,9 +1309,6 @@
     model="com.axelor.apps.stock.db.LogisticalForm">
     <view type="grid" name="logistical-form-stock-move-grid"/>
     <view type="form" name="logistical-form-form"/>
-    <domain>self.id IN (:logisticalFormIdList)</domain>
-    <context name="logisticalFormIdList"
-      expr="call: com.axelor.apps.stock.service.LogisticalFormService:getIdList(__this__)"/>
   </action-view>
 
   <action-view name="action-stock-move-view-reversion" title="Reversions"
