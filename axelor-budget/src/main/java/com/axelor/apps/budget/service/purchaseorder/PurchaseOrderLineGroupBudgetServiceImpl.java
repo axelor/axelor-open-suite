@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.budget.service.purchaseorder;
 
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -28,6 +29,7 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -51,7 +53,9 @@ public class PurchaseOrderLineGroupBudgetServiceImpl
       BudgetToolsService budgetToolsService,
       AppBudgetService appBudgetService,
       PublicHolidayService publicHolidayService,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      StockMoveLineRepository stockMoveLineRepository,
+      InvoiceLineRepository invoiceLineRepository) {
     super(
         analyticMoveLineService,
         unitConversionService,
@@ -59,7 +63,9 @@ public class PurchaseOrderLineGroupBudgetServiceImpl
         accountConfigService,
         analyticLineModelService,
         publicHolidayService,
-        appSupplychainService);
+        appSupplychainService,
+        stockMoveLineRepository,
+        invoiceLineRepository);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
   }
