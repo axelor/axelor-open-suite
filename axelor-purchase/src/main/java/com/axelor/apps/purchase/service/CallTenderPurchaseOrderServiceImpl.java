@@ -82,6 +82,7 @@ public class CallTenderPurchaseOrderServiceImpl implements CallTenderPurchaseOrd
     return purchaseOrderList;
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   protected PurchaseOrder createPurchaseOrderFromOffer(
       CallTender callTender,
       Partner partner,
