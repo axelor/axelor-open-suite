@@ -24,10 +24,10 @@
     <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
     <field name="move.company" form-view="company-form" grid-view="company-grid" width="120"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="debit" aggregate="sum" width="100" x-scale="companyCurrencyDecimals"/>
-    <field name="credit" aggregate="sum" width="100" x-scale="companyCurrencyDecimals"/>
+    <field name="debit" aggregate="sum" width="100" x-scale="move.company.numberOfDecimals"/>
+    <field name="credit" aggregate="sum" width="100" x-scale="move.company.numberOfDecimals"/>
     <field name="amountRemaining" aggregate="sum" width="100"
-      x-scale="companyCurrencyDecimals"/>
+      x-scale="move.company.numberOfDecimals"/>
     <field name="taxLineSet" domain="self.endDate > :date OR self.endDate IS NULL"
       readonlyIf="!account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
       requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
@@ -324,14 +324,15 @@
     <field name="account"/>
     <field name="description"/>
     <field name="move.statusSelect"/>
-    <field name="amountBeforeCutOffProrata"/>
+    <field name="amountBeforeCutOffProrata" x-scale="move.company.numberOfDecimals"/>
     <field name="durationCutOffProrata"/>
-    <field name="cutOffProrataAmount"/>
+    <field name="cutOffProrataAmount" x-scale="move.company.numberOfDecimals"/>
     <field name="cutOffStartDate"/>
     <field name="cutOffEndDate"/>
     <field name="move.cutOffMoveGenerated" hidden="true"/>
     <field name="move" hidden="true"/>
     <field name="id" hidden="true"/>
+    <field name="move.company" hidden="true"/>
   </grid>
 
   <grid name="move-line-doubtful-customer-grid" title="Move lines"
