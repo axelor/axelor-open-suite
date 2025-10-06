@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
@@ -272,9 +273,7 @@ public class AnalyticMoveLineQueryController {
       Company company = null;
 
       if (context.getParent() == null) {
-        domain =
-            String.format(
-                "self.statusSelect = %s", AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
+        domain = String.format("self.statusSelect = %s", AnalyticJournalRepository.STATUS_ACTIVE);
       } else {
         company =
             Optional.ofNullable(analyticMoveLine.getAnalyticAxis())

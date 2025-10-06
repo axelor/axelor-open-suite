@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
@@ -423,7 +424,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     }
     return String.format(
         "self.statusSelect = %s AND (self.company is null OR self.company.id = %s)",
-        AnalyticMoveLineRepository.STATUS_FORECAST_ORDER, company.getId());
+        AnalyticJournalRepository.STATUS_ACTIVE, company.getId());
   }
 
   @Override
