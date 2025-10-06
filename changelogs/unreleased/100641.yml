@@ -1,0 +1,6 @@
+---
+title: "AccountingBatch/CuttOff : fixed the analytic management in cut off batch."
+module: axelor-account
+developer:
+  Added AnalyticMoveLineRepository in MoveLineComputeAnalyticServiceImpl constructor.
+  Added copyAnalyticsDataFromMoveLine method in MoveLineComputeAnalyticService.
