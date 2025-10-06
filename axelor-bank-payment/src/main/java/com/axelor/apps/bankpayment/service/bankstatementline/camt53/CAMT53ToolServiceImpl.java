@@ -169,34 +169,26 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
 
   @Override
   public String getOrigin(ReportEntry2 ntry) {
-    String origin =
+    EntryDetails1 entryDetails =
         Optional.ofNullable(ntry)
             .map(ReportEntry2::getNtryDtls)
-            .flatMap(
-                ntryDtls ->
-                    ntryDtls.stream()
-                        .findFirst()) // Convert to Stream and get first element if present
+            .flatMap(ntryDtls -> ntryDtls.stream().findFirst())
+            .orElse(null);
+
+    String origin =
+        Optional.ofNullable(entryDetails) // Convert to Stream and get first element if present
             .map(EntryDetails1::getBtch)
             .map(BatchInformation2::getPmtInfId)
             .orElse(null);
     if (origin == null) {
       TransactionReferences2 refs =
-          Optional.ofNullable(ntry)
-              .map(ReportEntry2::getNtryDtls)
-              .flatMap(
-                  ntryDtls ->
-                      ntryDtls.stream()
-                          .findFirst()) // Convert to Stream and get first element if present
+          Optional.ofNullable(entryDetails) // Convert to Stream and get first element if present
               .map(EntryDetails1::getTxDtls)
               .flatMap(txDtls -> txDtls.stream().findFirst())
               .map(EntryTransaction2::getRefs)
               .orElse(null);
       if (ObjectUtils.notEmpty(refs)) {
-        origin = refs.getPmtInfId();
-
-        if (origin == null) {
-          origin = refs.getChqNb();
-        }
+        origin = Optional.ofNullable(refs.getPmtInfId()).orElse(refs.getChqNb());
       }
     }
     return origin;
@@ -273,11 +265,9 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
               .map(EntryTransaction2::getRmtInf)
               .map(RemittanceInformation5::getUstrd)
               .orElse(null);
-      String line1 = "";
       if (ustrdList != null && !ustrdList.isEmpty()) {
-        line1 = String.join(" ", ustrdList);
+        descriptionLines.add(String.join(" ", ustrdList));
       }
-      descriptionLines.add(line1);
 
       String strdStr =
           Optional.of(txDtl)
@@ -287,56 +277,45 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
               .map(StructuredRemittanceInformation7::getCdtrRefInf)
               .map(CreditorReferenceInformation2::getRef)
               .orElse(null);
-      String line2 = "";
       if (strdStr != null && !strdStr.isEmpty()) {
-        line2 = String.join(" ", strdStr);
+        descriptionLines.add(String.join(" ", strdStr));
       }
-      descriptionLines.add(line2);
 
-      String line3 = "";
       String addtlTxInf = Optional.of(txDtl).map(EntryTransaction2::getAddtlTxInf).orElse(null);
-      if (addtlTxInf != null && !addtlTxInf.isEmpty()) {
-        line3 = addtlTxInf.replace("/LIB/", "\n");
+      if (StringUtils.notEmpty(addtlTxInf)) {
+        descriptionLines.add(addtlTxInf.replace("/LIB/", "\n"));
       }
-      descriptionLines.add(line3);
 
-      String line4 = "";
       String cdtrNm =
           Optional.of(txDtl)
               .map(EntryTransaction2::getRltdPties)
               .map(TransactionParty2::getCdtr)
               .map(PartyIdentification32::getNm)
               .orElse(null);
-      if (cdtrNm != null && !cdtrNm.isEmpty()) {
-        line4 = cdtrNm;
+      if (StringUtils.notEmpty(cdtrNm)) {
+        descriptionLines.add(cdtrNm);
       }
-      descriptionLines.add(line4);
 
-      String line5 = "";
       String dbtrNm =
           Optional.of(txDtl)
               .map(EntryTransaction2::getRltdPties)
               .map(TransactionParty2::getDbtr)
               .map(PartyIdentification32::getNm)
               .orElse(null);
-      if (dbtrNm != null && !dbtrNm.isEmpty()) {
-        line5 = dbtrNm;
+      if (StringUtils.notEmpty(dbtrNm)) {
+        descriptionLines.add(dbtrNm);
       }
-      descriptionLines.add(line5);
 
-      String line6 = "";
       String ultmtDbtrNm =
           Optional.of(txDtl)
               .map(EntryTransaction2::getRltdPties)
               .map(TransactionParty2::getUltmtDbtr)
               .map(PartyIdentification32::getNm)
               .orElse(null);
-      if (ultmtDbtrNm != null && !ultmtDbtrNm.isEmpty()) {
-        line6 = ultmtDbtrNm;
+      if (StringUtils.notEmpty(ultmtDbtrNm)) {
+        descriptionLines.add(ultmtDbtrNm);
       }
-      descriptionLines.add(line6);
 
-      String line7 = "";
       String bicOrBEI =
           Optional.of(txDtl)
               .map(EntryTransaction2::getRltdPties)
@@ -345,38 +324,32 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
               .map(Party6Choice::getOrgId)
               .map(OrganisationIdentification4::getBICOrBEI)
               .orElse(null);
-      if (bicOrBEI != null && !bicOrBEI.isEmpty()) {
-        line7 = bicOrBEI;
+      if (StringUtils.notEmpty(bicOrBEI)) {
+        descriptionLines.add(bicOrBEI);
       }
-      descriptionLines.add(line7);
 
-      String line8 = "";
       String ultmtCdtrNm =
           Optional.of(txDtl)
               .map(EntryTransaction2::getRltdPties)
               .map(TransactionParty2::getUltmtCdtr)
               .map(PartyIdentification32::getNm)
               .orElse(null);
-      if (ultmtCdtrNm != null && !ultmtCdtrNm.isEmpty()) {
-        line8 = ultmtCdtrNm;
+      if (StringUtils.notEmpty(ultmtCdtrNm)) {
+        descriptionLines.add(ultmtCdtrNm);
       }
-      descriptionLines.add(line8);
     }
 
-    String line9 = "";
     String btchPmtInfId =
         Optional.ofNullable(ntryDtls)
             .map(EntryDetails1::getBtch)
             .map(BatchInformation2::getPmtInfId)
             .orElse(null);
-    if (btchPmtInfId != null && !btchPmtInfId.isEmpty()) {
-      line9 = btchPmtInfId;
+    if (StringUtils.notEmpty(btchPmtInfId)) {
+      descriptionLines.add(btchPmtInfId);
     }
-    descriptionLines.add(line9);
 
     if (txDtl != null) {
       // RltdPties -> CdtrAcct -> Id -> IBAN
-      String line10 = "";
       String cdtrAcctIBAN =
           Optional.of(txDtl)
               .map(EntryTransaction2::getRltdPties)
@@ -384,33 +357,27 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
               .map(CashAccount16::getId)
               .map(AccountIdentification4Choice::getIBAN)
               .orElse(null);
-      if (cdtrAcctIBAN != null && !cdtrAcctIBAN.isEmpty()) {
-        line10 = cdtrAcctIBAN;
+      if (StringUtils.notEmpty(cdtrAcctIBAN)) {
+        descriptionLines.add(cdtrAcctIBAN);
       }
-      descriptionLines.add(line10);
     }
 
-    String line11 = "";
     String chqNb =
         Optional.ofNullable(ntryDtls)
             .map(EntryDetails1::getBtch)
             .map(BatchInformation2::getNbOfTxs)
             .orElse(null);
-    if (chqNb != null && !chqNb.isEmpty()) {
-      line11 = String.format(I18n.get(ITranslation.CAMT053_CHQ_TRANSACTION_LABEL), chqNb);
+    if (StringUtils.notEmpty(chqNb)) {
+      descriptionLines.add(
+          String.format(I18n.get(ITranslation.CAMT053_CHQ_TRANSACTION_LABEL), chqNb));
     }
-    descriptionLines.add(line11);
 
-    StringBuilder descriptionSB = new StringBuilder();
-    for (int i = 0; i < descriptionLines.size() - 1; i++) {
-      String line = descriptionLines.get(i);
-      if (line != null && !line.isEmpty()) {
-        descriptionSB.append(line);
-        descriptionSB.append("\n");
-      }
+    String result = "";
+    if (ObjectUtils.notEmpty(descriptionLines)) {
+      result = String.join("\n", descriptionLines);
     }
-    descriptionSB.append(descriptionLines.get(descriptionLines.size() - 1));
-    return descriptionSB.toString();
+
+    return result;
   }
 
   protected String getIBANOrOtherAccountIdentification(CashAccount20 acct) {
