@@ -301,5 +301,15 @@
     <view type="grid" name="pricing-rule-grid"/>
     <view type="form" name="pricing-rule-form"/>
   </action-view>
+
+  <menuitem name="supplychain-un-code-all" parent="base-referential-root-product-settings"
+    title="UN codes" action="supplychain.un.code.all" order="1000"/>
+
+  <action-view name="supplychain.un.code.all" title="UN codes"
+    model="com.axelor.apps.supplychain.db.UNCode">
+    <view type="grid" name="un-code-grid"/>
+    <view type="form" name="un-code-form"/>
+  </action-view>
+
 </object-views>
 

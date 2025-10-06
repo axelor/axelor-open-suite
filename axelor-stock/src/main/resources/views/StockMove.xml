@@ -62,6 +62,8 @@
         onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
       <button name="mergeBtn" title="Merge stock moves" icon="fa-object-ungroup"
         onClick="action-stock-move-group-merge"/>
+      <button name="addToLogisticalFormBtn" title="Add stock move(s) to logistical form"
+        onClick="action-stock-move-validate-stock-moves,action-stock-move-view-add-stock-moves-to-logistical-form"/>
     </toolbar>
     <hilite
       if="invoiceBlockingReason &amp;&amp; (!invoiceBlockedToDate || $moment(invoiceBlockedToDate) &gt; $moment())"
@@ -270,6 +272,9 @@
         <item name="refreshProductNetMassItem" showIf="typeSelect == 2 &amp;&amp; !isReversion"
           title="Refresh the products net mass"
           action="save,action-stock-move-method-refresh-net-mass"/>
+        <item name="addToLogisticalFormBtn" title="Add stock move(s) to logistical form"
+          showIf="typeSelect == 2"
+          action="save,action-stock-move-view-add-stock-moves-to-logistical-form"/>
       </menu>
     </menubar>
 
@@ -1309,9 +1314,6 @@
     model="com.axelor.apps.stock.db.LogisticalForm">
     <view type="grid" name="logistical-form-stock-move-grid"/>
     <view type="form" name="logistical-form-form"/>
-    <domain>self.id IN (:logisticalFormIdList)</domain>
-    <context name="logisticalFormIdList"
-      expr="call: com.axelor.apps.stock.service.LogisticalFormService:getIdList(__this__)"/>
   </action-view>
 
   <action-view name="action-stock-move-view-reversion" title="Reversions"
@@ -1658,6 +1660,43 @@
   <action-method name="action-stock-move-method-send-notification">
     <call class="com.axelor.apps.stock.web.StockMoveController"
       method="sendSupplierArrivalCancellationMessage"/>
+  </action-method>
+
+  <form name="add-stock-moves-to-logistical-form" title="Add stock move(s) to logistical form"
+    model="com.axelor.utils.db.Wizard" onNew="action-stock-move-attrs-set-logistical-form-list">
+    <panel name="mainPanel">
+      <field name="$logisticalFormList" title="Logistical forms" type="one-to-many"
+        target="com.axelor.apps.stock.db.LogisticalForm" colSpan="12"
+        grid-view="logistical-form-grid" form-view="logistical-form-form" canNew="false"
+        canEdit="false"/>
+      <button name="addToLogisticalFormBtn" title="Add stock move(s) to logistical form"
+        onClick="action-stock-move-method-add-stock-moves-to-logistical-form"
+        readonlyIf="$logisticalFormList == null || $logisticalFormList.length == 0"/>
+    </panel>
+  </form>
+
+  <action-view name="action-stock-move-view-add-stock-moves-to-logistical-form"
+    title="Add stock move(s) to logistical form" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="add-stock-moves-to-logistical-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_stockMoveIds" expr="eval: _ids"/>
+  </action-view>
+
+  <action-validate name="action-stock-move-validate-stock-moves">
+    <error message="Please select at least one stock move." if="!_ids"/>
+  </action-validate>
+
+  <action-attrs name="action-stock-move-attrs-set-logistical-form-list">
+    <attribute for="$logisticalFormList" name="value"
+      expr="eval: __repo__(LogisticalForm).all().filter('self.statusSelect = ?', __repo__(LogisticalForm).STATUS_PROVISION).fetch()"/>
+  </action-attrs>
+
+  <action-method name="action-stock-move-method-add-stock-moves-to-logistical-form">
+    <call class="com.axelor.apps.stock.web.StockMoveController"
+      method="addStockMovesToLogisticalForm"/>
   </action-method>
 
 </object-views>

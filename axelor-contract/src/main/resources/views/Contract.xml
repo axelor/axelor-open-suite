@@ -5,7 +5,27 @@
               http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract"
-    orderBy="-contractId">
+    orderBy="-contractId" groupBy="statusSelect">
+    <hilite if="statusSelect == 1" color="info"/>
+    <field name="contractId" width="120"/>
+    <field name="name"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="partner"/>
+    <field name="startDate"/>
+    <field name="currentContractVersion.supposedEndDate"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <field name="statusSelect" widget="single-select"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="currentContractVersion.initialExTaxTotalPerYear"
+      x-scale="currency.numberOfDecimals"/>
+    <field name="currentContractVersion.yearlyExTaxTotalRevalued"
+      x-scale="currency.numberOfDecimals"/>
+  </grid>
+
+  <grid name="supplier-contract-grid" title="Contracts"
+    model="com.axelor.apps.contract.db.Contract" orderBy="-contractId" groupBy="partner">
     <hilite if="statusSelect == 1" color="info"/>
     <field name="contractId" width="120"/>
     <field name="name"/>

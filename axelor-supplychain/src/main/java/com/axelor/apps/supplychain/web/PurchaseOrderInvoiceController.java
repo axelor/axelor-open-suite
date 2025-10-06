@@ -29,6 +29,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -48,9 +49,14 @@ public class PurchaseOrderInvoiceController {
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 
     try {
+
+      BigDecimal amountToInvoice =
+          purchaseOrder
+              .getExTaxTotal()
+              .subtract(Beans.get(OrderInvoiceService.class).amountToBeInvoiced(purchaseOrder));
+
       Beans.get(PurchaseOrderInvoiceService.class)
-          .displayErrorMessageIfPurchaseOrderIsInvoiceable(
-              purchaseOrder, purchaseOrder.getExTaxTotal(), false);
+          .displayErrorMessageIfPurchaseOrderIsInvoiceable(purchaseOrder, amountToInvoice, false);
       Invoice invoice = Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
       if (invoice != null) {
         response.setReload(true);

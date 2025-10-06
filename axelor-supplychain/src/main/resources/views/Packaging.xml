@@ -7,7 +7,6 @@
     title="Packagings">
     <field name="packagingNumber"/>
     <field name="logisticalForm"/>
-    <field name="stockMove"/>
     <field name="saleOrder"/>
     <field name="parentPackaging"/>
     <field name="packageUsed"/>
@@ -21,8 +20,8 @@
       <field name="packagingNumber"/>
       <field name="logisticalForm" grid-view="logistical-form-grid"
         from-view="logistical-form-form"/>
-      <field name="stockMove" grid-view="stock-move-grid" from-view="stock-move-form"
-        domain="self.typeSelect = 2"/>
+      <field name="stockMoveSet" grid-view="stock-move-grid" from-view="stock-move-form"
+        domain="self.typeSelect = 2" widget="TagSelect"/>
       <field name="saleOrder" grid-view="sale-order-grid" from-view="sale-order-form"/>
       <field name="parentPackaging" grid-view="packaging-grid" from-view="packaging-form"/>
       <field name="packageUsed" grid-view="product-grid" from-view="product-form"

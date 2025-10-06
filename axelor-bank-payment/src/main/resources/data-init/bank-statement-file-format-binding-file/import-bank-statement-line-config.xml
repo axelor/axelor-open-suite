@@ -7,7 +7,9 @@
     type="com.axelor.apps.bankpayment.db.BankStatementLine"
     call="com.axelor.csv.script.ImportBankStatementLine:importBankStatementLine">
     <bind to="sequence" column="sequence"/>
-    <bind to="lineTypeSelect" column="lineTypeSelect"/>
+    <bind to="lineTypeSelect" column="lineTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.bankpayment.db.BankStatementLine', 'lineTypeSelect', lineTypeSelect)"
+      check-message="Invalid lineTypeSelect"/>
     <bind to="operationDate" column="operationDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(operationDate)"/>
     <bind to="valueDate" column="valueDate"

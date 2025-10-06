@@ -37,5 +37,6 @@ public interface SaleOrderProductPackagingService {
       List<Product> productsWithPackaging,
       List<Product> packedThisLevel,
       Map<Product, String> descMap,
-      Map<Product, BigDecimal[]> weightMap);
+      Map<Product, BigDecimal[]> weightMap)
+      throws AxelorException;
 }

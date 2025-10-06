@@ -309,7 +309,6 @@ public class MrpServiceImpl implements MrpService {
 
     for (int level = 0; level <= this.getMaxLevel(); level++) {
       this.currentLevel = level;
-      this.productMapToBeAssigned = new HashMap<>();
       for (Product product : this.getProductList(level)) {
         this.checkInsufficientCumulativeQty(product);
       }
@@ -1511,15 +1510,22 @@ public class MrpServiceImpl implements MrpService {
             I18n.get(SupplychainExceptionMessage.MRP_NO_PRODUCT_UNIT),
             product.getFullName());
       }
-      if (!this.productMap.containsKey(product.getId())) {
+      Long productId = product.getId();
+      if (!this.productMap.containsKey(productId)) {
+        if (currentLevel == null) {
+          currentLevel = 0;
+        }
         int nextLevel = currentLevel + 1;
-        this.productMap.put(product.getId(), nextLevel);
-        this.productMapToBeAssigned.put(product.getId(), nextLevel);
+        if (this.productMapToBeAssigned == null) {
+          this.productMapToBeAssigned = new HashMap<>();
+        }
+        this.productMap.put(productId, nextLevel);
+        this.productMapToBeAssigned.put(productId, nextLevel);
       }
       return mrpLineService.createMrpLine(
           mrp,
           product,
-          this.productMap.get(product.getId()),
+          this.productMap.get(productId),
           mrpLineType,
           qty,
           maturityDate,

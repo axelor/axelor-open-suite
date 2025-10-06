@@ -100,7 +100,8 @@ public class SaleOrderProductPackagingServiceImpl implements SaleOrderProductPac
       List<Product> productsWithPackaging,
       List<Product> packedThisLevel,
       Map<Product, String> descMap,
-      Map<Product, BigDecimal[]> weightMap) {
+      Map<Product, BigDecimal[]> weightMap)
+      throws AxelorException {
 
     for (Product nextProduct : productsWithPackaging) {
       while (productQtyMap.getOrDefault(nextProduct, BigDecimal.ZERO).signum() > 0) {

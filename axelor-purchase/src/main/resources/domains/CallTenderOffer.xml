@@ -37,7 +37,8 @@
     <many-to-one name="proposedUnit" ref="com.axelor.apps.base.db.Unit"
       title="Proposed unit"/>
     <date name="proposedDate" title="Proposed date"/>
-    <decimal name="proposedPrice" title="Proposed price" precision="20" scale="10" min="0"/>
+    <decimal name="proposedPrice" title="Proposed unit price" precision="20" scale="10"
+      min="0"/>
     <string name="offerComment" title="Comment"/>
     <integer name="statusSelect" selection="purchase.call.tender.offer.status.select"/>
     <many-to-one name="callTender" ref="com.axelor.apps.purchase.db.CallTender"/>

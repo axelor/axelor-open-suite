@@ -18,14 +18,9 @@
  */
 package com.axelor.apps.budget.service.purchaseorder;
 
-import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.config.AccountConfigService;
-import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
@@ -34,17 +29,9 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.supplychain.db.repo.TimetableRepository;
-import com.axelor.apps.supplychain.service.CommonInvoiceService;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
-import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
-import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
-import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
@@ -61,12 +48,11 @@ import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
-public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderInvoiceContractServiceImpl
-    implements PurchaseOrderBudgetService {
+public class PurchaseOrderBudgetServiceImpl implements PurchaseOrderBudgetService {
+
   protected BudgetRepository budgetRepository;
   protected PurchaseOrderLineBudgetService purchaseOrderLineBudgetService;
   protected BudgetDistributionService budgetDistributionService;
-
   protected BudgetService budgetService;
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected AppBudgetService appBudgetService;
@@ -76,51 +62,24 @@ public class PurchaseOrderBudgetServiceImpl extends PurchaseOrderInvoiceContract
 
   @Inject
   public PurchaseOrderBudgetServiceImpl(
-      InvoiceServiceSupplychain invoiceServiceSupplychain,
-      InvoiceService invoiceService,
-      InvoiceRepository invoiceRepo,
-      TimetableRepository timetableRepo,
-      AppSupplychainService appSupplychainService,
-      AccountConfigService accountConfigService,
-      CommonInvoiceService commonInvoiceService,
-      AddressService addressService,
-      InvoiceLineOrderService invoiceLineOrderService,
-      CurrencyService currencyService,
+      PurchaseOrderRepository purchaseOrderRepo,
       CurrencyScaleService currencyScaleService,
-      OrderInvoiceService orderInvoiceService,
-      InvoiceTaxService invoiceTaxService,
-      BudgetRepository budgetRepository,
-      PurchaseOrderLineBudgetService purchaseOrderLineBudgetService,
-      BudgetDistributionService budgetDistributionService,
-      BudgetService budgetService,
-      BudgetDistributionRepository budgetDistributionRepository,
-      AppBudgetService appBudgetService,
       BudgetToolsService budgetToolsService,
-      CurrencyScaleService currencyScaleService1,
-      PurchaseOrderRepository purchaseOrderRepo) {
-    super(
-        invoiceServiceSupplychain,
-        invoiceService,
-        invoiceRepo,
-        timetableRepo,
-        appSupplychainService,
-        accountConfigService,
-        commonInvoiceService,
-        addressService,
-        invoiceLineOrderService,
-        currencyService,
-        currencyScaleService,
-        orderInvoiceService,
-        invoiceTaxService);
-    this.budgetRepository = budgetRepository;
-    this.purchaseOrderLineBudgetService = purchaseOrderLineBudgetService;
-    this.budgetDistributionService = budgetDistributionService;
-    this.budgetService = budgetService;
-    this.budgetDistributionRepository = budgetDistributionRepository;
-    this.appBudgetService = appBudgetService;
-    this.budgetToolsService = budgetToolsService;
-    this.currencyScaleService = currencyScaleService1;
+      AppBudgetService appBudgetService,
+      BudgetDistributionRepository budgetDistributionRepository,
+      BudgetService budgetService,
+      BudgetDistributionService budgetDistributionService,
+      PurchaseOrderLineBudgetService purchaseOrderLineBudgetService,
+      BudgetRepository budgetRepository) {
     this.purchaseOrderRepo = purchaseOrderRepo;
+    this.currencyScaleService = currencyScaleService;
+    this.budgetToolsService = budgetToolsService;
+    this.appBudgetService = appBudgetService;
+    this.budgetDistributionRepository = budgetDistributionRepository;
+    this.budgetService = budgetService;
+    this.budgetDistributionService = budgetDistributionService;
+    this.purchaseOrderLineBudgetService = purchaseOrderLineBudgetService;
+    this.budgetRepository = budgetRepository;
   }
 
   @Override
