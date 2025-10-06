@@ -694,4 +694,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     valuesMap.put("taxEquiv", taxEquiv);
     return valuesMap;
   }
+
+  @Override
+  public void validateDeletion(PurchaseOrderLine purchaseOrderLine) throws AxelorException {}
 }

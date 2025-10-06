@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -26,6 +28,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -33,12 +36,19 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.service.PurchaseOrderLineServiceImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +65,8 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
   protected AnalyticLineModelService analyticLineModelService;
   protected final PublicHolidayService publicHolidayService;
   protected final AppSupplychainService appSupplychainService;
+  protected StockMoveLineRepository stockMoveLineRepository;
+  protected InvoiceLineRepository invoiceLineRepository;
 
   @Inject
   public PurchaseOrderLineServiceSupplyChainImpl(
@@ -64,7 +76,9 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
       AccountConfigService accountConfigService,
       AnalyticLineModelService analyticLineModelService,
       PublicHolidayService publicHolidayService,
-      AppSupplychainService appSupplychainService) {
+      AppSupplychainService appSupplychainService,
+      StockMoveLineRepository stockMoveLineRepository,
+      InvoiceLineRepository invoiceLineRepository) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.unitConversionService = unitConversionService;
     this.appAccountService = appAccountService;
@@ -72,9 +86,26 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
     this.analyticLineModelService = analyticLineModelService;
     this.publicHolidayService = publicHolidayService;
     this.appSupplychainService = appSupplychainService;
+    this.stockMoveLineRepository = stockMoveLineRepository;
+    this.invoiceLineRepository = invoiceLineRepository;
   }
 
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Override
+  public PurchaseOrderLine createPurchaseOrderLine(
+      PurchaseOrder purchaseOrder,
+      Product product,
+      String productName,
+      String description,
+      BigDecimal qty,
+      Unit unit)
+      throws AxelorException {
+    PurchaseOrderLine purchaseOrderLine =
+        super.createPurchaseOrderLine(purchaseOrder, product, productName, description, qty, unit);
+    purchaseOrderLine.setStockLocation(purchaseOrder.getStockLocation());
+    return purchaseOrderLine;
+  }
 
   public PurchaseOrderLine fill(PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder)
       throws AxelorException {
@@ -172,5 +203,92 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
       return undeliveryQty;
     }
     return BigDecimal.ZERO;
+  }
+
+  @Override
+  public void validateDeletion(PurchaseOrderLine purchaseOrderLine) throws AxelorException {
+    super.validateDeletion(purchaseOrderLine);
+    if (!isEditable(purchaseOrderLine.getPurchaseOrder())) {
+      return;
+    }
+    StockMoveLine stockMoveLine =
+        stockMoveLineRepository
+            .all()
+            .autoFlush(false)
+            .filter(
+                "self.purchaseOrderLine = :purchaseOrderLine AND self.stockMove.statusSelect = :realizedStatus")
+            .bind("purchaseOrderLine", purchaseOrderLine)
+            .bind("realizedStatus", StockMoveRepository.STATUS_REALIZED)
+            .fetchOne();
+    if (stockMoveLine != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_LINE_DELETE_NOT_ALLOWED_STOCK_MOVE));
+    }
+    List<InvoiceLine> invoiceLines = getInvoiceLines(purchaseOrderLine);
+    if (CollectionUtils.isNotEmpty(invoiceLines)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_LINE_DELETE_NOT_ALLOWED_INVOICE));
+    }
+  }
+
+  @Override
+  public boolean validateRealizedQty(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
+    if (!isEditable(purchaseOrder)) {
+      return true;
+    }
+
+    if (purchaseOrderLine.getId() == null) {
+      return true;
+    }
+    BigDecimal qtyRealized =
+        stockMoveLineRepository
+            .all()
+            .filter(
+                "self.purchaseOrderLine = :purchaseOrderLine AND self.stockMove.statusSelect = :realized")
+            .bind("purchaseOrderLine", purchaseOrderLine)
+            .bind("realized", StockMoveRepository.STATUS_REALIZED)
+            .fetch()
+            .stream()
+            .map(StockMoveLine::getRealQty)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    return purchaseOrderLine.getQty().compareTo(qtyRealized) >= 0;
+  }
+
+  @Override
+  public boolean validateInvoicedQty(
+      PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) {
+    if (!isEditable(purchaseOrder)) {
+      return true;
+    }
+
+    if (purchaseOrderLine.getId() == null) {
+      return true;
+    }
+
+    List<InvoiceLine> invoiceLines = getInvoiceLines(purchaseOrderLine);
+    return CollectionUtils.isEmpty(invoiceLines)
+        || purchaseOrderLine
+                .getQty()
+                .compareTo(
+                    invoiceLines.stream()
+                        .map(InvoiceLine::getQty)
+                        .reduce(BigDecimal.ZERO, BigDecimal::add))
+            >= 0;
+  }
+
+  protected boolean isEditable(PurchaseOrder purchaseOrder) {
+    return purchaseOrder != null && purchaseOrder.getOrderBeingEdited();
+  }
+
+  protected List<InvoiceLine> getInvoiceLines(PurchaseOrderLine purchaseOrderLine) {
+    return invoiceLineRepository
+        .all()
+        .autoFlush(false)
+        .filter("self.purchaseOrderLine = :purchaseOrderLine")
+        .bind("purchaseOrderLine", purchaseOrderLine)
+        .fetch();
   }
 }

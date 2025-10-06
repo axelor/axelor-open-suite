@@ -33,6 +33,8 @@
         onClick="save,action-call-tender-method-generate-call-tender-offers" colSpan="12"/>
       <button name="sendCallTendersBtn" title="Send call for tenders"
         onClick="save,action-call-tender-method-send-call-tender-offers" colSpan="12"/>
+      <button name="generatePurchaseOrderBtn" title="Generate purchase order"
+        onClick="action-call-tender-group-generate-purchase-order" colSpan="12"/>
     </panel>
     <panel-related field="callTenderNeedList" title="Product needs"
       form-view="call-tender-need-form" grid-view="call-tender-need-grid" colSpan="12"
@@ -42,6 +44,9 @@
       canSelect="false"/>
     <panel-related field="callTenderOfferList" form-view="call-tender-offer-form"
       grid-view="call-tender-offer-grid" colSpan="12" canSelect="false"/>
+
+    <panel-dashlet action="action-call-tender-view-purchase-order-dashlet"
+      colSpan="12"/>
 
     <panel-dashlet action="action-call-tender-view-mails" colSpan="12"/>
   </form>
@@ -65,5 +70,30 @@
     <call class="com.axelor.apps.purchase.web.CallTenderController"
       method="sendCallTenderOffers"/>
   </action-method>
+
+  <action-method name="action-call-tender-method-generate-purchase-order">
+    <call class="com.axelor.apps.purchase.web.CallTenderController"
+      method="generatePurchaseOrder"/>
+  </action-method>
+
+  <action-group name="action-call-tender-group-generate-purchase-order">
+    <action name="save"/>
+    <action name="action-call-tender-validate-check-related-purchase-order"/>
+    <action name="action-call-tender-method-generate-purchase-order"/>
+  </action-group>
+
+  <action-validate name="action-call-tender-validate-check-related-purchase-order">
+    <alert
+      message="A purchase order has already been created for this call for tenders, are you sure to generate a new one ?"
+      if="eval: __repo__(PurchaseOrder).all().filter('self.callTender = ?', __this__).count() > 0"/>
+  </action-validate>
+
+  <action-view name="action-call-tender-view-purchase-order-dashlet"
+    title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <view type="grid" name="purchase-order-grid"/>
+    <view type="form" name="purchase-order-form"/>
+    <domain>self.callTender.id = :_callTenderId</domain>
+    <context name="_callTenderId" expr="eval: id"/>
+  </action-view>
 
 </object-views>

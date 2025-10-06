@@ -18,8 +18,11 @@
  */
 package com.axelor.apps.purchase.service;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.purchase.db.CallTender;
+import com.axelor.apps.purchase.db.CallTenderNeed;
 import com.axelor.apps.purchase.db.repo.CallTenderOfferRepository;
+import com.axelor.apps.purchase.db.repo.CallTenderRepository;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.List;
@@ -29,13 +32,16 @@ public class CallTenderGenerateServiceImpl implements CallTenderGenerateService 
 
   protected final CallTenderOfferService callTenderOfferService;
   protected final CallTenderOfferRepository callTenderOfferRepository;
+  protected final CallTenderRepository callTenderRepository;
 
   @Inject
   public CallTenderGenerateServiceImpl(
       CallTenderOfferService callTenderOfferService,
-      CallTenderOfferRepository callTenderOfferRepository) {
+      CallTenderOfferRepository callTenderOfferRepository,
+      CallTenderRepository callTenderRepository) {
     this.callTenderOfferService = callTenderOfferService;
     this.callTenderOfferRepository = callTenderOfferRepository;
+    this.callTenderRepository = callTenderRepository;
   }
 
   @Override
@@ -62,5 +68,22 @@ public class CallTenderGenerateServiceImpl implements CallTenderGenerateService 
                 callTenderOfferRepository.save(resultOffer);
               }
             });
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public CallTender generateCallTender(
+      String name, Company company, List<CallTenderNeed> callTenderNeedList) {
+
+    Objects.requireNonNull(name);
+    Objects.requireNonNull(callTenderNeedList);
+
+    var callTender = new CallTender();
+
+    callTender.setName(name);
+    callTender.setCompany(company);
+    callTenderNeedList.stream().forEach(callTender::addCallTenderNeedListItem);
+
+    return callTenderRepository.save(callTender);
   }
 }

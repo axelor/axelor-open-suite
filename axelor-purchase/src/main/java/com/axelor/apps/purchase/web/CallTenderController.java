@@ -20,15 +20,23 @@ package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.CallTender;
+import com.axelor.apps.purchase.db.CallTenderOffer;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.CallTenderRepository;
 import com.axelor.apps.purchase.service.CallTenderGenerateService;
 import com.axelor.apps.purchase.service.CallTenderMailService;
+import com.axelor.apps.purchase.service.CallTenderPurchaseOrderService;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.google.common.base.Joiner;
 import jakarta.mail.MessagingException;
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CallTenderController {
 
@@ -53,5 +61,42 @@ public class CallTenderController {
       response.setInfo(I18n.get("Mails successfully planned for sending."));
     }
     response.setReload(true);
+  }
+
+  public void generatePurchaseOrder(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    var callTender = request.getContext().asType(CallTender.class);
+    List<CallTenderOffer> selectedCallTenderOfferList =
+        callTender.getCallTenderOfferList().stream()
+            .filter(Model::isSelected)
+            .collect(Collectors.toList());
+    callTender = Beans.get(CallTenderRepository.class).find(callTender.getId());
+    List<Long> purchaseOrderIds =
+        Beans.get(CallTenderPurchaseOrderService.class)
+            .generatePurchaseOrders(callTender, selectedCallTenderOfferList)
+            .stream()
+            .map(PurchaseOrder::getId)
+            .collect(Collectors.toList());
+
+    if (purchaseOrderIds.size() == 1) {
+      response.setView(
+          ActionView.define(I18n.get("Purchase order"))
+              .model(PurchaseOrder.class.getName())
+              .add("form", "purchase-order-form")
+              .add("grid", "purchase-order-grid")
+              .param("search-filters", "purchase-order-filters")
+              .param("forceEdit", "true")
+              .context("_showRecord", purchaseOrderIds.stream().findFirst().orElse(0L))
+              .map());
+    } else if (purchaseOrderIds.size() > 1) {
+      response.setView(
+          ActionView.define(I18n.get("Purchase order"))
+              .model(PurchaseOrder.class.getName())
+              .add("grid", "purchase-order-grid")
+              .add("form", "purchase-order-form")
+              .param("search-filters", "purchase-order-filters")
+              .domain("self.id in (" + Joiner.on(",").join(purchaseOrderIds) + ")")
+              .map());
+    }
   }
 }

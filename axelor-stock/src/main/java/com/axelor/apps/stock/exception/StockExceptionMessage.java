@@ -328,4 +328,13 @@ public final class StockExceptionMessage {
 
   public static final String STOCK_MOVE_MASS_NO_FROM_STOCK_LOCATION_SELECTED = /*$$(*/
       "No stock location has been selected." /*)*/;
+
+  public static final String LOGISTICAL_FORM_SELECT_ONLY_ONE = /*$$(*/
+      "Please select only one logistical form." /*)*/;
+
+  public static final String LOGISTICAL_FORM_PARTNER_MISMATCH = /*$$(*/
+      "Stock move(s) must belong to the same client as the logistical form." /*)*/;
+
+  public static final String LOGISTICAL_FORM_STATUS_MISMATCH = /*$$(*/
+      "Stock move(s) status must be planned." /*)*/;
 }

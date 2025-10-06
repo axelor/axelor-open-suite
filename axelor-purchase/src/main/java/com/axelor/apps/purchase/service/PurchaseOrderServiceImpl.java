@@ -359,4 +359,22 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       purchaseOrderRepo.save(purchaseOrder);
     }
   }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void enableEditOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_FINISHED) {
+      throw new AxelorException(
+          purchaseOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_FINISHED));
+    }
+    purchaseOrder.setOrderBeingEdited(true);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void validateChanges(PurchaseOrder purchaseOrder) throws AxelorException {
+    purchaseOrder.setOrderBeingEdited(false);
+  }
 }

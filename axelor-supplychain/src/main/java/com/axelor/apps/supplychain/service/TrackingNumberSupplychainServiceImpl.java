@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
@@ -40,6 +41,16 @@ public class TrackingNumberSupplychainServiceImpl implements TrackingNumberSuppl
         .all()
         .filter("self.originSaleOrderLine = :saleOrderLine")
         .bind("saleOrderLine", saleOrderLine)
+        .fetch()
+        .forEach(this::freeOriginSaleOrderLine);
+  }
+
+  @Override
+  public void freeOriginPurchaseOrderLine(PurchaseOrderLine purchaseOrderLine) {
+    trackingNumberRepository
+        .all()
+        .filter("self.originPurchaseOrderLine = :saleOrderLine")
+        .bind("purchaseOrderLine", purchaseOrderLine)
         .fetch()
         .forEach(this::freeOriginSaleOrderLine);
   }

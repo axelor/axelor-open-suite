@@ -25,9 +25,11 @@ import com.axelor.apps.base.db.TraceBack;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
@@ -56,12 +58,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -703,5 +707,57 @@ public class StockMoveController {
       gridViewName = "stock-move-in-grid";
     }
     return gridViewName;
+  }
+
+  public void addStockMovesToLogisticalForm(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    List<StockMove> stockMoveList = getStockMoveList(context);
+    LogisticalForm logisticalForm = getSelectedLogisticalForm(context, response);
+    if (CollectionUtils.isEmpty(stockMoveList) || logisticalForm == null) {
+      return;
+    }
+    Beans.get(StockMoveService.class).addStockMovesToLogisticalForm(logisticalForm, stockMoveList);
+    response.setCanClose(true);
+    response.setView(
+        ActionView.define(I18n.get("Logistical form"))
+            .model(LogisticalForm.class.getName())
+            .add("grid", "logistical-form-grid")
+            .add("form", "logistical-form-form")
+            .context("_showRecord", logisticalForm.getId())
+            .map());
+  }
+
+  @SuppressWarnings("unchecked")
+  protected List<StockMove> getStockMoveList(Context context) {
+    StockMoveRepository stockMoveRepository = Beans.get(StockMoveRepository.class);
+    if (context.get("_stockMoveIds") != null) {
+      List<Integer> stockMoveIds = (List<Integer>) context.get("_stockMoveIds");
+      return stockMoveIds.stream()
+          .map(id -> stockMoveRepository.find(id.longValue()))
+          .collect(Collectors.toList());
+    } else if (context.get("_id") != null) {
+      return List.of(stockMoveRepository.find(((Integer) context.get("_id")).longValue()));
+    }
+    return Collections.EMPTY_LIST;
+  }
+
+  @SuppressWarnings("unchecked")
+  protected LogisticalForm getSelectedLogisticalForm(Context context, ActionResponse response) {
+    List<HashMap<String, Object>> logisticalFormList =
+        (List<HashMap<String, Object>>) context.get("logisticalFormList");
+    if (CollectionUtils.isEmpty(logisticalFormList)) {
+      return null;
+    }
+    List<HashMap<String, Object>> selected =
+        logisticalFormList.stream()
+            .filter(map -> Boolean.TRUE.equals(map.get("selected")))
+            .collect(Collectors.toList());
+    if (selected.size() != 1) {
+      response.setError(I18n.get(StockExceptionMessage.LOGISTICAL_FORM_SELECT_ONLY_ONE));
+      return null;
+    }
+    Integer id = (Integer) selected.get(0).get("id");
+    return Beans.get(LogisticalFormRepository.class).find(id.longValue());
   }
 }

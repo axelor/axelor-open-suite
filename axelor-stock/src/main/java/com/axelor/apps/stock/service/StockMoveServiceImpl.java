@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.InventoryLine;
+import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
@@ -1595,5 +1596,32 @@ public class StockMoveServiceImpl implements StockMoveService {
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
 
     return stockConfig.getVirtualOutsourcingStockLocation();
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void addStockMovesToLogisticalForm(
+      LogisticalForm logisticalForm, List<StockMove> stockMoveList) throws AxelorException {
+    StockConfig stockConfig = stockConfigService.getStockConfig(logisticalForm.getCompany());
+    Partner deliverToCustomerPartner = logisticalForm.getDeliverToCustomerPartner();
+
+    for (StockMove stockMove : stockMoveList) {
+
+      if (!stockConfig.getIsLogisticalFormMultiClientsEnabled()
+          && deliverToCustomerPartner != null
+          && stockMove.getPartner() != null
+          && !stockMove.getPartner().equals(deliverToCustomerPartner)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(StockExceptionMessage.LOGISTICAL_FORM_PARTNER_MISMATCH));
+      }
+
+      if (stockMove.getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(StockExceptionMessage.LOGISTICAL_FORM_STATUS_MISMATCH));
+      }
+      logisticalForm.addStockMoveListItem(stockMove);
+    }
   }
 }

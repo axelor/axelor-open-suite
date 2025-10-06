@@ -20,14 +20,17 @@ package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.base.callable.ControllerCallableTool;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.supplychain.db.Mrp;
 import com.axelor.apps.supplychain.db.repo.MrpRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.MrpCallTenderService;
 import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
 import com.axelor.apps.supplychain.service.MrpProposalService;
 import com.axelor.apps.supplychain.service.MrpService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import jakarta.inject.Singleton;
@@ -107,6 +110,48 @@ public class MrpController {
       TraceBackService.trace(response, e);
     } finally {
       response.setReload(true);
+    }
+  }
+
+  public void generateAllCallForTenders(ActionRequest request, ActionResponse response) {
+
+    try {
+      Mrp mrp = request.getContext().asType(Mrp.class);
+      var callTender =
+          Beans.get(MrpCallTenderService.class)
+              .generateCallTenderForAllLines(Beans.get(MrpRepository.class).find(mrp.getId()));
+      if (callTender != null) {
+        response.setView(
+            ActionView.define(I18n.get("Call for tenders"))
+                .model(CallTender.class.getName())
+                .add("grid", "call-tender-grid")
+                .add("form", "call-tender-form")
+                .context("_showRecord", String.valueOf(callTender.getId()))
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void generateSelectedCallForTenders(ActionRequest request, ActionResponse response) {
+    try {
+      Mrp mrp = request.getContext().asType(Mrp.class);
+      var callTender =
+          Beans.get(MrpCallTenderService.class)
+              .generateCallTenderForSelectedLines(Beans.get(MrpRepository.class).find(mrp.getId()));
+
+      if (callTender != null) {
+        response.setView(
+            ActionView.define(I18n.get("Call for tenders"))
+                .model(CallTender.class.getName())
+                .add("grid", "call-tender-grid")
+                .add("form", "call-tender-form")
+                .context("_showRecord", String.valueOf(callTender.getId()))
+                .map());
+      }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 
