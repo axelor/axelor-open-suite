@@ -55,7 +55,6 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.db.Query;
-import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.inject.Inject;
@@ -474,8 +473,8 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         cutOffMoveLine.clearAnalyticMoveLineList();
 
         // Copy analytic move lines
-        Beans.get(MoveLineComputeAnalyticService.class)
-            .copyAnalyticsDataFromMoveLine(moveLine, cutOffMoveLine, amountInCurrency.abs());
+        moveLineComputeAnalyticService.copyAnalyticsDataFromMoveLine(
+            moveLine, cutOffMoveLine, amountInCurrency.abs());
       }
     }
 
