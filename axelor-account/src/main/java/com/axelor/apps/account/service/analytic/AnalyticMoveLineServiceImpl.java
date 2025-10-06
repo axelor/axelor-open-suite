@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
@@ -396,6 +397,16 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     String idList = StringHelper.getIdListString(analyticAxisList);
     domain.append(" AND self.id IN (").append(idList).append(")");
     return domain.toString();
+  }
+
+  @Override
+  public String getAnalyticJournalDomain(Company company) {
+    if (company == null) {
+      return "self.id IN (0)";
+    }
+    return String.format(
+        "self.statusSelect = %s AND (self.company is null OR self.company.id = %s)",
+        AnalyticJournalRepository.STATUS_ACTIVE, company.getId());
   }
 
   @Override
