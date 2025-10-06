@@ -48,6 +48,8 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   protected ListToolService listToolService;
   protected AnalyticToolService analyticToolService;
   protected AppAccountService appAccountService;
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
+
   private final int RETURN_SCALE = 2;
 
   @Inject
@@ -57,13 +59,15 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       AnalyticAccountRepository analyticAccountRepository,
       ListToolService listToolService,
       AnalyticToolService analyticToolService,
-      AppAccountService appAccountService) {
+      AppAccountService appAccountService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountConfigService = accountConfigService;
     this.analyticAccountRepository = analyticAccountRepository;
     this.listToolService = listToolService;
     this.analyticToolService = analyticToolService;
     this.appAccountService = appAccountService;
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   @Override
@@ -273,18 +277,38 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   }
 
   @Override
-  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine) {
-    if (moveLine.getCredit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getCredit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
-    } else if (moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0) {
-      return analyticMoveLine
-          .getPercentage()
-          .multiply(moveLine.getDebit())
-          .divide(new BigDecimal(100), RETURN_SCALE, RoundingMode.HALF_UP);
+  public void copyAnalyticsDataFromMoveLine(
+      MoveLine oldMoveLine, MoveLine newMoveLine, BigDecimal newAmount) {
+    clearAnalyticAccounting(newMoveLine);
+    initializeAnalyticFields(oldMoveLine, newMoveLine);
+
+    for (AnalyticMoveLine originalAnalyticMoveLine : oldMoveLine.getAnalyticMoveLineList()) {
+      AnalyticMoveLine analyticMoveLine =
+          analyticMoveLineRepository.copy(originalAnalyticMoveLine, false);
+
+      if (newAmount.signum() != 0 && analyticMoveLine.getPercentage().signum() != 0) {
+        BigDecimal amount =
+            newAmount.multiply(
+                analyticMoveLine
+                    .getPercentage()
+                    .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP));
+
+        analyticMoveLine.setAmount(amount);
+      }
+
+      analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
+      analyticMoveLine.setMoveLine(null);
+      newMoveLine.addAnalyticMoveLineListItem(analyticMoveLine);
     }
-    return BigDecimal.ZERO;
+  }
+
+  protected void initializeAnalyticFields(MoveLine oldMoveLine, MoveLine newMoveLine) {
+    newMoveLine.setAnalyticDistributionTemplate(oldMoveLine.getAnalyticDistributionTemplate());
+
+    newMoveLine.setAxis1AnalyticAccount(oldMoveLine.getAxis1AnalyticAccount());
+    newMoveLine.setAxis2AnalyticAccount(oldMoveLine.getAxis2AnalyticAccount());
+    newMoveLine.setAxis3AnalyticAccount(oldMoveLine.getAxis3AnalyticAccount());
+    newMoveLine.setAxis4AnalyticAccount(oldMoveLine.getAxis4AnalyticAccount());
+    newMoveLine.setAxis5AnalyticAccount(oldMoveLine.getAxis5AnalyticAccount());
   }
 }

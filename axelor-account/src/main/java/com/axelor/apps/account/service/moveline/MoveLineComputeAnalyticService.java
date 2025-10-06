@@ -45,9 +45,10 @@ public interface MoveLineComputeAnalyticService {
 
   MoveLine analyzeMoveLine(MoveLine moveLine, Company company) throws AxelorException;
 
-  public BigDecimal getAnalyticAmount(MoveLine moveLine, AnalyticMoveLine analyticMoveLine);
-
   MoveLine clearAnalyticAccounting(MoveLine moveLine);
 
   MoveLine clearAnalyticAccountingIfEmpty(MoveLine moveLine);
+
+  void copyAnalyticsDataFromMoveLine(
+      MoveLine oldMoveLine, MoveLine newMoveLine, BigDecimal newAmount);
 }
