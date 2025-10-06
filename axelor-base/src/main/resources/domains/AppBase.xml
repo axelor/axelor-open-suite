@@ -289,11 +289,8 @@
       <field name="enableTaxNumbers" on="UPDATE"/>
       <field name="defaultAddressTemplate" on="UPDATE"/>
       <field name="pfxCertificate" on="UPDATE"/>
-      <field name="sireneTokenGeneratorUrl" on="UPDATE"/>
       <field name="sireneUrl" on="UPDATE"/>
       <field name="sireneKey" on="UPDATE"/>
-      <field name="sireneSecret" on="UPDATE"/>
-      <field name="sireneAccessToken" on="UPDATE"/>
 
       <field name="clientSituationPrintTemplate" on="UPDATE"/>
       <field name="companyPhoneBookPrintTemplate" on="UPDATE"/>
