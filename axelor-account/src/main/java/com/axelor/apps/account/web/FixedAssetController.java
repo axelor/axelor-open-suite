@@ -587,7 +587,7 @@ public class FixedAssetController {
         "customer",
         Optional.ofNullable(context.get("customerId"))
             .map(Object::toString)
-            .filter(StringUtils::isEmpty)
+            .filter(StringUtils::notEmpty)
             .map(Long::valueOf)
             .map(partnerRepository::find)
             .orElse(null));
