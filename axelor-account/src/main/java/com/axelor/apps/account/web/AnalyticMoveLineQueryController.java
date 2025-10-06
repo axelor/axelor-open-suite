@@ -47,6 +47,7 @@ import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -267,32 +268,41 @@ public class AnalyticMoveLineQueryController {
     try {
       Context context = request.getContext();
       AnalyticMoveLine analyticMoveLine = context.asType(AnalyticMoveLine.class);
-      Company company = null;
       String domain = null;
-      if (analyticMoveLine.getAnalyticAxis() != null
-          && analyticMoveLine.getAnalyticAxis().getCompany() != null) {
-        company = analyticMoveLine.getAnalyticAxis().getCompany();
+      Company company = null;
+
+      if (context.getParent() == null) {
+        domain =
+            String.format(
+                "self.statusSelect = %s", AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
       } else {
-        if (context.getParent() == null) {
-          domain = "self.statusSelect = 1";
-        } else {
-          company = ContextHelper.getFieldFromContextParent(context, "company", Company.class);
-          if (company == null) {
-            Move move = ContextHelper.getFieldFromContextParent(context, "move", Move.class);
-            if (move != null) {
-              company = move.getCompany();
-            }
-          }
+        company =
+            Optional.ofNullable(analyticMoveLine.getAnalyticAxis())
+                .map(AnalyticAxis::getCompany)
+                .orElse(null);
+        if (company == null) {
+          company = getCompanyFromContextParent(context);
         }
       }
       if (domain == null) {
         domain = Beans.get(AnalyticMoveLineService.class).getAnalyticJournalDomain(company);
       }
 
-      response.setAttr("analyticAxis", "domain", domain);
+      response.setAttr("analyticJournal", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  protected Company getCompanyFromContextParent(Context context) {
+    Company company = ContextHelper.getFieldFromContextParent(context, "company", Company.class);
+    if (company == null) {
+      Move move = ContextHelper.getFieldFromContextParent(context, "move", Move.class);
+      if (move != null) {
+        company = move.getCompany();
+      }
+    }
+    return company;
   }
 
   public void refreshAxis(ActionRequest request, ActionResponse response) throws AxelorException {

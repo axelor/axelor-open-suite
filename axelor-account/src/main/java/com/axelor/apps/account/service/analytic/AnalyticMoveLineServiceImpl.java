@@ -417,13 +417,13 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
-  public String getAnalyticJournalDomain(Company company) throws AxelorException {
+  public String getAnalyticJournalDomain(Company company) {
     if (company == null) {
       return "self.id IN (0)";
     }
-    return "self.statusSelect = 1 AND (self.company is null OR self.company.id ="
-        + company.getId()
-        + ")";
+    return String.format(
+        "self.statusSelect = %s AND (self.company is null OR self.company.id = %s)",
+        AnalyticMoveLineRepository.STATUS_FORECAST_ORDER, company.getId());
   }
 
   @Override
