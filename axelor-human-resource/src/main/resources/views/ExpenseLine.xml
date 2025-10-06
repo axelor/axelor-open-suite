@@ -5,7 +5,7 @@
 
   <grid name="expense-line-grid" title="Expense lines"
     model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
-    onNew="action-expense-line-group-onnew, action-kilometric-allowance-record-default">
+    onNew="action-expense-line-group-onnew">
     <hilite if="untaxedAmount == 0" color="danger"/>
     <hilite
       if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"
