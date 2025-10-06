@@ -15,8 +15,7 @@
         onClick="action-method-general-remind-timesheet"/>
     </toolbar>
     <panel name="testingPanel" title="Testing" itemSpan="4">
-      <field name="todayDateT"
-        if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'"/>
+      <field name="todayDateT" if="__config__.get('application.mode') != 'prod'"/>
       <field name="isActivateInstanceInfoShortcut" widget="boolean-switch"/>
       <field name="shortcutMultiSelect" widget="MultiSelect"/>
     </panel>

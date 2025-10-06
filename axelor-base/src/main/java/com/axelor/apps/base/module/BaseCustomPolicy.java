@@ -1,0 +1,20 @@
+package com.axelor.apps.base.module;
+
+import com.axelor.app.AppSettings;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.script.ScriptPolicyConfigurator;
+import com.axelor.utils.helpers.date.DurationHelper;
+import java.util.List;
+
+public class BaseCustomPolicy implements ScriptPolicyConfigurator {
+  @Override
+  public void configure(
+      List<String> allowPackages,
+      List<Class<?>> allowClasses,
+      List<String> denyPackages,
+      List<Class<?>> denyClasses) {
+    allowClasses.add(AppBaseService.class);
+    allowClasses.add(DurationHelper.class);
+    allowClasses.add(AppSettings.class);
+  }
+}
