@@ -3629,6 +3629,7 @@
 "Warning, there are still reconcile group proposals pending that correspond to the filters you have entered.",,,
 "Warning, you have more than one configuration for company %s, so make sure you only have one.",,,
 "Warning, you're not authorized to edit moves on this journal.",,,
+"Warning: this payment is included in a cheque deposit slip that has already been submitted. Do you want to reverse the payment accounting entry ?",,,
 "Watch out, a record with same accounting voucher/reference (%s) already exists for the partner %s and the fiscal year %s. Please correct or provide a more specific accounting voucher/reference.",,,
 "Watch out, a record with same reference/accounting voucher (%s) already exists for the partner %s and the fiscal year %s.",,,
 "Watch out, an invoice already exist with same number (${supplierInvoiceNb}) and year for the supplier ${partner.fullName} . Do you want to proceed ?",,,

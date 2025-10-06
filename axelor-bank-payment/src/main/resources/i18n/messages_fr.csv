@@ -800,6 +800,7 @@
 "Validated On","Validé le",,
 "Validation date","Date de validation",,
 "Value date","Date de valeur",,
+"Warning: this payment is related to a carried out bank order. Do you want to reverse the payment accounting entry ?","Attention, ce paiement est lié à un ordre bancaire déjà réalisé. Souhaitez-vous extourner cette écriture comptable de paiement ?",,
 "With formula","Avec formule groovy",,
 "You can't validate this bank order. you need to fill at least one bank order line","Vous ne pouvez pas valider cet ordre bancaire. Aucune ligne d'ordre bancaire n'a encore été remplie",,
 "Your bank detail's bank account for bank details %s (%s) is different from the cash account of the account config for %s's bank statement rule (%s). Please fix it before auto accounting the bank statement.","Le compte comptable de banque de votre RIB pour le %s (%s) est différent du compte comptable de paiement de la configuration comptable pour la règle liée aux relevés %s (%s). Veuillez corriger ce problème avant de procéder à la comptabilisation automatique du rapprochement bancaire.",,

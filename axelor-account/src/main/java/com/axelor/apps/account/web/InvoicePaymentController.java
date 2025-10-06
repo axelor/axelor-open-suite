@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCustAccountService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentAlertService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentComputeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -41,6 +42,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -367,5 +369,18 @@ public class InvoicePaymentController {
     Beans.get(InvoicePaymentCancelService.class).reversePaymentMove(invoicePayment);
 
     response.setReload(true);
+  }
+
+  public void validateBeforeReversePaymentMove(ActionRequest request, ActionResponse response) {
+    InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+
+    String alert =
+        Beans.get(InvoicePaymentAlertService.class).validateBeforeReverse(invoicePayment);
+
+    if (StringUtils.isEmpty(alert)) {
+      return;
+    }
+
+    response.setAlert(I18n.get(alert));
   }
 }

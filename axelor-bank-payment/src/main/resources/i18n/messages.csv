@@ -800,6 +800,7 @@
 "Validated On",,,
 "Validation date",,,
 "Value date",,,
+"Warning: this payment is related to a carried out bank order. Do you want to reverse the payment accounting entry ?",,,
 "With formula",,,
 "You can't validate this bank order. you need to fill at least one bank order line",,,
 "Your bank detail's bank account for bank details %s (%s) is different from the cash account of the account config for %s's bank statement rule (%s). Please fix it before auto accounting the bank statement.",,,

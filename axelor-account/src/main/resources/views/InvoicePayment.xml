@@ -201,18 +201,13 @@
   </action-group>
 
   <action-group name="action-invoice-payment-group-reverse-move">
-    <action name="action-invoice-payment-validate-reverse-move"/>
+    <action name="action-invoice-payment-method-validate-reverse-move"/>
     <action name="action-invoice-payment-method-reverse-payment-move"/>
   </action-group>
 
   <action-validate name="action-invoice-payment-validate-mass-payment">
     <error message="Please fill in the company bank details." if="companyBankDetails == null"/>
     <error message="Please fill in the date." if="paymentDate == null"/>
-  </action-validate>
-
-  <action-validate name="action-invoice-payment-validate-reverse-move">
-    <alert
-      message="You are about to cancel the payment allocated to this invoice and its associated accounting entry. The payment accounting entry will be reversed. Do you wish to continue ?"/>
   </action-validate>
 
   <action-record name="action-invoice-payment-record-new"
@@ -335,6 +330,11 @@
   <action-method name="action-invoice-payment-method-reverse-payment-move">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="reversePaymentMove"/>
+  </action-method>
+
+  <action-method name="action-invoice-payment-method-validate-reverse-move">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="validateBeforeReversePaymentMove"/>
   </action-method>
 
   <action-record name="action-invoice-payment-record-manual-change"
