@@ -1,0 +1,5 @@
+---
+title: "ANALYTIC: Updated analytic journal select domain method."
+module: axelor-account
+developer: |
+  DELETE FROM meta_action where name ='action-attrs-domain-onselect-journal-analytic-move-line';
