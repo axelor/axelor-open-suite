@@ -252,6 +252,43 @@ public class ProductServiceImpl implements ProductService {
         productVariant, "managPriceCoef", productCompany.getManagPriceCoef(), company);
   }
 
+  protected void setPriceOfVariantProductCompanyWithExtra(
+      Product productVariant, ProductCompany productCompany, Company company)
+      throws AxelorException {
+    productCompanyService.set(
+        productVariant,
+        "costPrice",
+        productCompany
+            .getCostPrice()
+            .add(
+                this.getProductExtraPrice(
+                    productVariant.getProductVariant(),
+                    ProductVariantValueRepository.APPLICATION_COST_PRICE)),
+        company);
+    productCompanyService.set(
+        productVariant,
+        "purchasePrice",
+        productCompany
+            .getPurchasePrice()
+            .add(
+                this.getProductExtraPrice(
+                    productVariant.getProductVariant(),
+                    ProductVariantValueRepository.APPLICATION_PURCHASE_PRICE)),
+        company);
+    productCompanyService.set(
+        productVariant,
+        "salePrice",
+        productCompany
+            .getSalePrice()
+            .add(
+                this.getProductExtraPrice(
+                    productVariant.getProductVariant(),
+                    ProductVariantValueRepository.APPLICATION_SALE_PRICE)),
+        company);
+    productCompanyService.set(
+        productVariant, "managPriceCoef", productCompany.getManagPriceCoef(), company);
+  }
+
   public boolean hasActivePriceList(Product product) {
     return product.getPriceListLineList() != null
         && product.getPriceListLineList().stream()
@@ -322,6 +359,11 @@ public class ProductServiceImpl implements ProductService {
     generatedProduct.setProductVariant(productVariant);
 
     this.updateSalePrice(generatedProduct, null);
+
+    for (ProductCompany productCompany : generatedProduct.getProductCompanyList()) {
+      setPriceOfVariantProductCompanyWithExtra(
+          generatedProduct, productCompany, productCompany.getCompany());
+    }
 
     return generatedProduct;
   }
