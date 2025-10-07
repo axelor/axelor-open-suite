@@ -34,6 +34,7 @@ import com.axelor.text.GroovyTemplates;
 import com.axelor.text.StringTemplates;
 import com.axelor.text.Templates;
 import com.google.api.client.util.Maps;
+import com.google.common.base.CaseFormat;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -93,7 +94,9 @@ public class AddressTemplateServiceImpl implements AddressTemplateService {
       Map<String, Object> templatesContext = Maps.newHashMap();
       Class<?> klass = EntityHelper.getEntityClass(address);
       Context context = new Context(Mapper.toMap(address), klass);
-      templatesContext.put(klass.getSimpleName(), context.asType(klass));
+      templatesContext.put(
+          CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, klass.getSimpleName()),
+          context.asType(klass));
       String computedString = templates.fromText(content).make(templatesContext).render();
       if (computedString == null) {
         throw new AxelorException(

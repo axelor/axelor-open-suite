@@ -58,6 +58,7 @@ import com.axelor.text.StringTemplates;
 import com.axelor.text.Templates;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
@@ -435,7 +436,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     if (isDefaultTemplate) {
       templatesContext.put("entity", entity);
     } else {
-      templatesContext.put(klass.getSimpleName(), entity);
+      templatesContext.put(
+          CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, klass.getSimpleName()), entity);
     }
     templates = createTemplates(messageTemplate);
   }
