@@ -28,6 +28,7 @@ import com.axelor.auth.db.User;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaPermissionRule;
+import com.axelor.script.ScriptAllowed;
 import com.axelor.team.db.Team;
 import com.google.inject.persist.Transactional;
 import jakarta.mail.MessagingException;
@@ -38,6 +39,7 @@ import java.util.Optional;
 import wslite.json.JSONException;
 
 /** UserService is a class that implement all methods for user information */
+@ScriptAllowed
 public interface UserService {
 
   /**
