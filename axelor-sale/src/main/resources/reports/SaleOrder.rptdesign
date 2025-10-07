@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -1070,6 +1070,16 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                         <property name="name">listDisplayTypeSelect</property>
                         <property name="dataType">integer</property>
                     </structure>
+                    <structure>
+                        <property name="position">70</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
+                    <structure>
+                        <property name="position">71</property>
+                        <property name="name">salesperson_signature_id</property>
+                        <property name="dataType">decimal</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -1488,6 +1498,18 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty(
                     <property name="nativeName">listDisplayTypeSelect</property>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="position">70</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="position">71</property>
+                    <property name="name">salesperson_signature_id</property>
+                    <property name="nativeName">salesperson_signature_id</property>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH SO AS (
     select * from sale_order_proc(cast(? as bigint))
@@ -1680,6 +1702,12 @@ SELECT * FROM SO;
                     <text-property name="displayName">packHideUnitAmounts</text-property>
                     <text-property name="heading">packHideUnitAmounts</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">product_pic_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">product_pic_id</text-property>
+                    <text-property name="heading">product_pic_id</text-property>
+                </structure>
             </list-property>
             <list-property name="filter"/>
             <list-property name="parameters">
@@ -1825,6 +1853,11 @@ SELECT * FROM SO;
                         <property name="position">26</property>
                         <property name="name">packHideUnitAmounts</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">27</property>
+                        <property name="name">product_pic_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
             </structure>
@@ -2012,6 +2045,13 @@ SELECT * FROM SO;
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">-7</property>
                 </structure>
+                <structure>
+                    <property name="position">27</property>
+                    <property name="name">product_pic_id</property>
+                    <property name="nativeName">product_pic_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH SOL AS (
       select * from sale_order_line_proc(cast(? as bigint))
@@ -2043,7 +2083,8 @@ SELECT
     SOL."showTotal",
     SOL."hideUnitAmounts",
     SOL."UnitCode",
-	SOL."packHideUnitAmounts"
+	SOL."packHideUnitAmounts",
+	SOL."product_pic_id"
 FROM SOL
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL."SaleOrderId" = SaleOrder.id)
@@ -2082,7 +2123,8 @@ SELECT
     BOOL_AND(SOL."showTotal") as "showTotal",
     BOOL_OR(SOL."hideUnitAmounts") as "hideUnitAmounts",
     SOL."UnitCode",
-	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts"
+	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts",
+	SOL."product_pic_id"
 FROM SOL
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL."SaleOrderId" = SaleOrder.id)
@@ -2090,7 +2132,7 @@ WHERE AppBase.is_regroup_products_on_printings IS TRUE AND SaleOrder.group_produ
 AND AppBase.regroup_products_level_select = 'category'
 AND ((AppBase.regroup_products_type_select LIKE '%products%' AND SOL.product_type_select = 'storable')
     OR (AppBase.regroup_products_type_select LIKE '%services%' AND SOL.product_type_select = 'service'))
-group by product_category_name, product_category_code, product_type_select, "UnitCode", "CurrencyCode", "levelNo", "levelIndicator"
+group by product_category_name, product_category_code, product_type_select, "UnitCode", "CurrencyCode", "levelNo", "levelIndicator", "product_pic_id"
 
 UNION
 SELECT
@@ -2124,7 +2166,8 @@ SELECT
     BOOL_AND(SOL."showTotal") as "showTotal",
     BOOL_OR(SOL."hideUnitAmounts") as "hideUnitAmounts",
     SOL."UnitCode",
-	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts"
+	BOOL_AND(SOL."packHideUnitAmounts") as "packHideUnitAmounts",
+	SOL."product_pic_id"
 FROM SOL
 LEFT JOIN studio_app_base AppBase ON (AppBase.id = (SELECT max(id) FROM studio_app_base))
 LEFT JOIN sale_sale_order SaleOrder ON (SOL."SaleOrderId" = SaleOrder.id)
@@ -2132,7 +2175,7 @@ WHERE AppBase.is_regroup_products_on_printings IS TRUE AND SaleOrder.group_produ
 AND AppBase.regroup_products_level_select = 'global'
 AND ((AppBase.regroup_products_type_select LIKE '%products%' AND SOL.product_type_select = 'storable')
     OR (AppBase.regroup_products_type_select LIKE '%services%' AND SOL.product_type_select = 'service'))
-group by AppBase.regroup_products_label_products, AppBase.regroup_products_label_services, SOL.product_type_select, SOL."UnitCode", SOL."CurrencyCode", SOL."levelNo", SOL."levelIndicator";
+group by AppBase.regroup_products_label_products, AppBase.regroup_products_label_services, SOL.product_type_select, SOL."UnitCode", SOL."CurrencyCode", SOL."levelNo", SOL."levelIndicator", SOL."product_pic_id";
 ]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SaleOrderLineTaxDS" id="3422">
@@ -2638,7 +2681,7 @@ where SaleOrderLineTaxLine.sale_sale_order_line = ?;]]></xml-property>
             <list-property name="resultSet"/>
             <xml-property name="queryText"><![CDATA[DROP FUNCTION IF EXISTS sale_order_proc(bigint);
 CREATE OR REPLACE FUNCTION sale_order_proc(saleOrderId bigint)
-RETURNS table(id bigint, "saleOrderSeq" varchar, "CreationDate" date, "SalemanName" text, "SalemanPhone" varchar, "SalemanEmail" varchar, "DisplaySaleman" boolean, "ShipmentDate" date, "ClientBox" text, "LegalNote" text, "DisplayDeliveryCondition" boolean, "CompanyName" varchar, "logo_path" varchar, "logo_height" integer, "logo_width" integer, "CustomerCode" varchar, "partner_type_select" integer, "ClientPartName" varchar, "ClientPartFirstName" varchar, "ClientTitle" integer, "ContactName" varchar, "ContactFirstName" varchar, "invoicecountry" varchar, "DeliveryCountry" varchar, "invoicingAddress" text, "deliveryAddress" text, "PaymentCondName" varchar, "PaymentMode" varchar, "ex_tax_total" numeric, "tax_total" numeric, "in_tax_total" numeric, "bank_address" varchar, "iban" varchar, "bic" varchar, "CurrencyCode" varchar, "number_of_decimals" integer, "external_reference" varchar, "header" text, "footer" text, "description" text, "durationValue" integer, "durationType" integer, "estimatedShippingDate" date, "deliveryCondition" text, "hideDiscount" boolean, "displayProductCodeOnPrinting" boolean, "displayTaxDetailOnPrinting" boolean, "displayEstimShipDateOnPrinting" boolean, "sale_order_type_select" integer, "status_select" integer, "specific_notes" text, "versionNumber" integer, "logoPosition" integer, "salesperson_signature_path" varchar, "periodicity_type_select" integer, "number_of_periods" integer, "subscription_text" text, "end_of_validity_date" date, "in_ati" boolean, "isIspmRequired" boolean, "displayCustomerCodeOnPrinting" boolean, "displayProductPictureOnPrinting" boolean, "ProformaComments" text, "enablePackMangement" boolean, "useSignature" boolean, "contactPartnerTitleSelect" integer, "tableFontSize" numeric, "isDisplaySubLinesOnReport" boolean, "listDisplayTypeSelect" integer) as
+RETURNS table(id bigint, "saleOrderSeq" varchar, "CreationDate" date, "SalemanName" text, "SalemanPhone" varchar, "SalemanEmail" varchar, "DisplaySaleman" boolean, "ShipmentDate" date, "ClientBox" text, "LegalNote" text, "DisplayDeliveryCondition" boolean, "CompanyName" varchar, "logo_path" varchar, "logo_height" integer, "logo_width" integer, "CustomerCode" varchar, "partner_type_select" integer, "ClientPartName" varchar, "ClientPartFirstName" varchar, "ClientTitle" integer, "ContactName" varchar, "ContactFirstName" varchar, "invoicecountry" varchar, "DeliveryCountry" varchar, "invoicingAddress" text, "deliveryAddress" text, "PaymentCondName" varchar, "PaymentMode" varchar, "ex_tax_total" numeric, "tax_total" numeric, "in_tax_total" numeric, "bank_address" varchar, "iban" varchar, "bic" varchar, "CurrencyCode" varchar, "number_of_decimals" integer, "external_reference" varchar, "header" text, "footer" text, "description" text, "durationValue" integer, "durationType" integer, "estimatedShippingDate" date, "deliveryCondition" text, "hideDiscount" boolean, "displayProductCodeOnPrinting" boolean, "displayTaxDetailOnPrinting" boolean, "displayEstimShipDateOnPrinting" boolean, "sale_order_type_select" integer, "status_select" integer, "specific_notes" text, "versionNumber" integer, "logoPosition" integer, "salesperson_signature_path" varchar, "periodicity_type_select" integer, "number_of_periods" integer, "subscription_text" text, "end_of_validity_date" date, "in_ati" boolean, "isIspmRequired" boolean, "displayCustomerCodeOnPrinting" boolean, "displayProductPictureOnPrinting" boolean, "ProformaComments" text, "enablePackMangement" boolean, "useSignature" boolean, "contactPartnerTitleSelect" integer, "tableFontSize" numeric, "isDisplaySubLinesOnReport" boolean, "listDisplayTypeSelect" integer, "logo_id" decimal, "salesperson_signature_id" decimal) as
 $func$
 BEGIN
 IF (SELECT COUNT(to_regclass('account_payment_condition')) = 0) THEN
@@ -2683,7 +2726,9 @@ return query
   ContactPartner.title_select as "contactPartnerTitleSelect",
   PrintingSettings.table_font_size as "tableFontSize",
   SaleOrder.is_display_sub_lines_on_report as "isDisplaySubLinesOnReport",
-  AppSale.list_display_type_select as "listDisplayTypeSelect"
+  AppSale.list_display_type_select as "listDisplayTypeSelect",
+  coalesce(MetaFileTN.id, MetaFile.id)::decimal as logo_id,
+  SignatureFile.id::decimal as "salesperson_signature_id"
   from sale_sale_order as SaleOrder
   left outer join base_company as Company on (SaleOrder.company = Company.id)
   left outer join studio_app_sale as AppSale on true 
@@ -2753,7 +2798,9 @@ SalespersonUser.use_signature_for_sales_quotations as "useSignature",
 ContactPartner.title_select as "contactPartnerTitleSelect",
 PrintingSettings.table_font_size as "tableFontSize",
 SaleOrder.is_display_sub_lines_on_report as "isDisplaySubLinesOnReport",
-AppSale.list_display_type_select as "listDisplayTypeSelect"
+AppSale.list_display_type_select as "listDisplayTypeSelect",
+coalesce(MetaFileTN.id, MetaFile.id)::decimal as logo_id,
+SignatureFile.id::decimal as "salesperson_signature_id"
 from sale_sale_order as SaleOrder
 left outer join base_company as Company on (SaleOrder.company = Company.id)
 left outer join studio_app_sale as AppSale on true 
@@ -2870,7 +2917,8 @@ RETURNS table("SaleOrderId" bigint, id bigint, "levelNo" int, "levelIndicator" v
     "product_category_code" varchar, sale_order_type_select int,
     "CustomerProductCode" varchar, "CustomerProductName" varchar,
     "EstimatedShippingDate" date, price_discounted numeric, "showTotal" boolean,
-    "hideUnitAmounts" boolean, "UnitCode" varchar, "packHideUnitAmounts" boolean) as
+    "hideUnitAmounts" boolean, "UnitCode" varchar, "packHideUnitAmounts" boolean,
+    "product_pic_id" decimal) as
 $func$
 BEGIN
 IF (SELECT true FROM pg_attribute WHERE attrelid = 'sale_sale_order'::regclass AND attname = 'sale_order_type_select') THEN
@@ -2921,7 +2969,8 @@ SELECT
     SOLine.is_hide_unit_amounts as "hideUnitAmounts",
     Unit.label_to_printing as "UnitCode",
 	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
-	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
+	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts",
+	MetaFile.id::decimal as "product_pic_id"
 
 from sale_sale_order as SaleOrder
 left outer join studio_app_sale as AppSale on true
@@ -2989,7 +3038,8 @@ SELECT
     SOLine.is_hide_unit_amounts as "hideUnitAmounts",
     Unit.label_to_printing as "UnitCode",
 	(SELECT is_hide_unit_amounts from sale_sale_order_line as SOL
-	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts"
+	WHERE SOL.sale_order = SOLine.sale_order AND SOL.type_select IN (2, 3) AND SOL.sequence > SOLine.sequence order by SOL.sequence limit 1) as "packHideUnitAmounts",
+	MetaFile.id::decimal as "product_pic_id"
 
 from sale_sale_order as SaleOrder
 left outer join studio_app_sale as AppSale on true
@@ -3667,6 +3717,12 @@ $func$ LANGUAGE plpgsql;
                     <expression name="expression" type="javascript">dataSetRow["listDisplayTypeSelect"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <method name="onPrepare"><![CDATA[String.prototype.repeat = String.prototype.repeat ||
   function(n) {
@@ -3744,10 +3800,15 @@ if (logoPosition == 2) {
                                 <expression name="valueExpr" type="javascript">row["logoPosition"] == 0</expression>
                             </structure>
                         </list-property>
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
                         <method name="onRender"><![CDATA[this.width = row["logo_width"];
 this.height = row["logo_height"];]]></method>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value + row["logo_path"]</expression>
+                        <property name="source">expr</property>
                     </image>
                 </cell>
                 <cell id="5679">
@@ -3813,10 +3874,15 @@ this.height = row["logo_height"];]]></method>
                     <image id="5614">
                         <property name="display">block</property>
                         <structure name="toc"/>
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
                         <method name="onRender"><![CDATA[this.width = row["logo_width"];
 this.height = row["logo_height"];]]></method>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value + row["logo_path"]</expression>
+                        <property name="source">expr</property>
                     </image>
                 </cell>
             </row>
@@ -6497,6 +6563,12 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                                 <expression name="expression" type="javascript">dataSetRow["levelIndicator"]</expression>
                                 <property name="dataType">string</property>
                             </structure>
+                            <structure>
+                                <property name="name">product_pic_id</property>
+                                <text-property name="displayName">product_pic_id</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["product_pic_id"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
                         </list-property>
                         <column id="5830">
                             <property name="repeat">1</property>
@@ -7073,8 +7145,13 @@ else {
                                                     <expression name="valueExpr" type="javascript">!row["productPicture"]</expression>
                                                 </structure>
                                             </list-property>
-                                            <property name="source">file</property>
-                                            <expression name="uri" type="javascript">params["AttachmentPath"].value + row["productPicture"]</expression>
+                                            <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["product_pic_id"], true);
+
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                            <property name="source">expr</property>
                                         </image>
                                     </cell>
                                     <cell id="4556">
@@ -9328,8 +9405,13 @@ else {'SaleOrder.totalTaxes'}</value>
                                 <expression name="valueExpr" type="javascript">!row["useSignature"]</expression>
                             </structure>
                         </list-property>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["salesperson_signature_path"]</expression>
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["salesperson_signature_id"], true);
+
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                        <property name="source">expr</property>
                     </image>
                     <text-data id="4329">
                         <expression name="valueExpr">row["SalemanName"]</expression>

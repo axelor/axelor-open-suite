@@ -27,6 +27,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.Templates;
 import com.axelor.utils.service.translation.TranslationBaseService;
+import com.google.common.base.CaseFormat;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
@@ -60,7 +61,9 @@ public class PrintingTemplateComputeNameServiceImpl implements PrintingTemplateC
 
       if (model != null) {
         model = EntityHelper.getEntity(model);
-        templatesContext.put(model.getClass().getSimpleName(), model);
+        templatesContext.put(
+            CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, model.getClass().getSimpleName()),
+            model);
       }
     }
     FormatHelper formatHelper = new FormatHelper();
@@ -97,7 +100,7 @@ public class PrintingTemplateComputeNameServiceImpl implements PrintingTemplateC
     }
   }
 
-  class TranslationHelper {
+  public class TranslationHelper {
 
     public String get(String key) {
       return I18n.get(key);
