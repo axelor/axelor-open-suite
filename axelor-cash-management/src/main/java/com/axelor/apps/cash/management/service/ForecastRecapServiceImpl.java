@@ -407,7 +407,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND (0 in (:journalIds) OR self.journal.id in (:journalIds)) "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.operationTypeSelect = :operationTypeSelect "
-            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.invoice = self.id "
+            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.invoice.id = self.id "
             + "AND Inv.estimatedPaymentDate BETWEEN :fromDate AND :toDate "
             + "AND Inv.amountRemaining != 0) > 0";
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
@@ -464,7 +464,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                 : JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
             + " AND (0 in (:bankDetailsId) OR self.companyBankDetails.id in (:bankDetailsId)) "
             + " AND self.statusSelect IN (:statusSelectList) "
-            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.moveLine.move = self.id "
+            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.moveLine.move.id = self.id "
             + "AND Inv.dueDate BETWEEN :fromDate AND :toDate "
             + "AND Inv.amountRemaining != 0) > 0 ";
       default:
