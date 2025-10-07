@@ -2,6 +2,7 @@ package com.axelor.apps.base.module;
 
 import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.DateService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.VersionUtils;
 import com.axelor.meta.MetaFiles;
@@ -22,5 +23,6 @@ public class BaseCustomPolicy implements ScriptPolicyConfigurator {
     allowClasses.add(MetaFiles.class);
     allowClasses.add(VersionUtils.class);
     allowClasses.add(DateService.class);
+    allowClasses.add(ProductCompanyService.class);
   }
 }

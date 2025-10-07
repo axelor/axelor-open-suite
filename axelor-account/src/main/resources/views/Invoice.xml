@@ -2240,7 +2240,7 @@
 
   <action-validate name="action-invoice-validate-check-pfp-validator-user">
     <alert message="At least one pfp validator is missing, do you wish to continue ?"
-      if="com.axelor.inject.Beans.get(com.axelor.apps.account.service.invoice.InvoiceTermService.class).getPfpValidatorUserCondition(__this__, null)
+      if="__bean__(com.axelor.apps.account.service.invoice.InvoiceTermService.class).getPfpValidatorUserCondition(__this__, null)
           &amp;&amp; invoiceTermList.any{it -> !it.pfpValidatorUser}"/>
   </action-validate>
 
