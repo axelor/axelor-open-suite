@@ -77,10 +77,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       }
     }
 
-    domainList.add(
-        String.format(
-            "self.statusSelect in (%d, %d)",
-            StockMoveRepository.STATUS_PLANNED, StockMoveRepository.STATUS_REALIZED));
+    domainList.add(String.format("self.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
     domainList.add("COALESCE(self.fullySpreadOverLogisticalFormsFlag, FALSE) = FALSE");
     if (logisticalForm.getStockLocation() != null) {
       domainList.add("self.stockMoveLineList.fromStockLocation = :stockLocation");

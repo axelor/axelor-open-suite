@@ -830,6 +830,7 @@
 "Stock move line filters","Filtres Ligne de mvt de stock",,
 "Stock move line quantity availability.",,,
 "Stock move lines","Lignes mvt. de stock",,
+"Stock move lines to package","Lignes de mouvements de stock à coliser",,
 "Stock move lines to select","Lignes de mouvements à prendre en compte",,
 "Stock move printing settings","Paramêtres d'impression des mouvements de stock",,
 "Stock move with id %s successfully realized.","Le mouvement de stock d'id %s a été réalisé avec succès.",,

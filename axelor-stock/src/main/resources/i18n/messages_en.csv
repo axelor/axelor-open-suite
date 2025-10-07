@@ -830,6 +830,7 @@
 "Stock move line filters",,,
 "Stock move line quantity availability.",,,
 "Stock move lines",,,
+"Stock move lines to package",,,
 "Stock move lines to select",,,
 "Stock move printing settings",,,
 "Stock move with id %s successfully realized.",,,

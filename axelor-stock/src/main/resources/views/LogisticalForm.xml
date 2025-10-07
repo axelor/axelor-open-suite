@@ -95,7 +95,11 @@
         <panel name="stockMovePanel" colSpan="12">
           <field name="stockMoveList" grid-view="stock-move-out-grid"
             form-view="stock-move-form" colSpan="6" widget="TagSelect"
-            onSelect="action-logistical-form-method-stock-move-domain" canEdit="false"/>
+            onSelect="action-logistical-form-method-stock-move-domain" canEdit="false"
+            onChange="action-logistical-form-attrs-reload-stock-move-lines-panel"/>
+          <panel-dashlet name="stockMoveLinesPanel"
+            title="Stock move lines to package" colSpan="12"
+            action="action-logistical-form-view-stock-move-lines-to-package" canEdit="false"/>
         </panel>
       </panel>
     </panel-tabs>
@@ -182,6 +186,19 @@
     <attribute name="hidden" for="LinesPanel"
       expr="eval: !deliverToCustomerPartner &amp;&amp; !__repo__(StockConfig).all().filter('self.company = ?', company).fetchOne()?.isLogisticalFormMultiClientsEnabled"/>
   </action-attrs>
+
+  <action-attrs name="action-logistical-form-attrs-reload-stock-move-lines-panel">
+    <attribute name="refresh" for="stockMoveLinesPanel" expr="eval: true"/>
+  </action-attrs>
+
+  <action-view name="action-logistical-form-view-stock-move-lines-to-package"
+    title="Stock move lines to package" model="com.axelor.apps.stock.db.StockMoveLine">
+    <view type="grid" name="stock-move-line-grid"/>
+    <view type="form" name="stock-move-line-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.stockMove.id IN (:_stockMoveIds)</domain>
+    <context name="_stockMoveIds" expr="eval: stockMoveList?.collect{it.id}"/>
+  </action-view>
 
   <search-filters name="logistical-form-filters"
     model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form filters">
