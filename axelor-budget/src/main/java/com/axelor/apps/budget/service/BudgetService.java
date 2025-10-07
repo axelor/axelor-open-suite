@@ -88,14 +88,6 @@ public interface BudgetService {
   public BigDecimal computeToBeCommittedAmount(Budget budget);
 
   /**
-   * Compute all firm gap amount in budget lines, set the total firm gap on budget and return it
-   *
-   * @param budget
-   * @return BigDecimal
-   */
-  public BigDecimal computeFirmGap(Budget budget);
-
-  /**
    * Check if budget key are filled in all budgets if needed, validate budget and save it Throw an
    * exception if budget key is missing
    *
