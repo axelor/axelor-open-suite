@@ -241,16 +241,16 @@
 				                      CASE
 				                        WHEN move.from_stock_location = loc.id THEN -(
 				                          CASE
-				                            WHEN uc.start_unit = line.unit AND uc.end_unit = bp.unit THEN line.qty * uc.coef
-				                            WHEN uc.start_unit = bp.unit AND uc.end_unit = line.unit THEN line.qty / uc.coef
-				                            ELSE line.qty
+				                            WHEN uc.start_unit = line.unit AND uc.end_unit = bp.unit THEN line.real_qty * uc.coef
+				                            WHEN uc.start_unit = bp.unit AND uc.end_unit = line.unit THEN line.real_qty / uc.coef
+				                            ELSE line.real_qty
 				                          END
 				                        )
 				                        WHEN move.to_stock_location = loc.id THEN (
 				                          CASE
-				                            WHEN uc.start_unit = line.unit AND uc.end_unit = bp.unit THEN line.qty * uc.coef
-				                            WHEN uc.start_unit = bp.unit AND uc.end_unit = line.unit THEN line.qty / uc.coef
-				                            ELSE line.qty
+				                            WHEN uc.start_unit = line.unit AND uc.end_unit = bp.unit THEN line.real_qty * uc.coef
+				                            WHEN uc.start_unit = bp.unit AND uc.end_unit = line.unit THEN line.real_qty / uc.coef
+				                            ELSE line.real_qty
 				                          END
 				                        )
 				                      END
@@ -287,16 +287,16 @@
 				             CASE
 				               WHEN move.from_stock_location = location.id THEN -(
 				                 CASE
-				                   WHEN uc.start_unit = line.unit AND uc.end_unit = bp.unit THEN line.qty * uc.coef
-				                   WHEN uc.start_unit = bp.unit AND uc.end_unit = line.unit THEN line.qty / uc.coef
-				                   ELSE line.qty
+				                   WHEN uc.start_unit = line.unit AND uc.end_unit = bp.unit THEN line.real_qty * uc.coef
+				                   WHEN uc.start_unit = bp.unit AND uc.end_unit = line.unit THEN line.real_qty / uc.coef
+				                   ELSE line.real_qty
 				                 END
 				               )
 				               WHEN move.to_stock_location = location.id THEN (
 				                 CASE
-				                   WHEN uc.start_unit = line.unit AND uc.end_unit = bp.unit THEN line.qty * uc.coef
-				                   WHEN uc.start_unit = bp.unit AND uc.end_unit = line.unit THEN line.qty / uc.coef
-				                   ELSE line.qty
+				                   WHEN uc.start_unit = line.unit AND uc.end_unit = bp.unit THEN line.real_qty * uc.coef
+				                   WHEN uc.start_unit = bp.unit AND uc.end_unit = line.unit THEN line.real_qty / uc.coef
+				                   ELSE line.real_qty
 				                 END
 				               )
 				             END
@@ -317,6 +317,7 @@
 				      AND move.estimated_date > DATE(:todayDate)
 				      AND move.real_date IS NULL
 				      AND location.type_select = 1
+				      AND move.status_select IN (2, 3)
 				    GROUP BY move.estimated_date, location.name
 				  )
 				) location_stock
@@ -365,13 +366,36 @@
 			    loc.name AS loc,
 			    SUM(
 			      CASE
-			        WHEN mv.from_stock_location = loc.id THEN -ln.qty
-			        WHEN mv.to_stock_location = loc.id THEN ln.qty
+			        WHEN mv.from_stock_location = loc.id THEN -(
+			          CASE
+			            WHEN uc.start_unit = ln.unit AND uc.end_unit = bp.unit THEN ln.real_qty * uc.coef
+			            WHEN uc.start_unit = bp.unit AND uc.end_unit = ln.unit THEN ln.real_qty / uc.coef
+			            ELSE ln.real_qty
+			          END
+			        )
+			        WHEN mv.to_stock_location = loc.id THEN (
+			          CASE
+			            WHEN uc.start_unit = ln.unit AND uc.end_unit = bp.unit THEN ln.real_qty * uc.coef
+			            WHEN uc.start_unit = bp.unit AND uc.end_unit = ln.unit THEN ln.real_qty / uc.coef
+			            ELSE ln.real_qty
+			          END
+			        )
 			      END
 			    ) AS qty
 			  FROM stock_stock_move_line AS ln
 			  JOIN stock_stock_move AS mv ON ln.stock_move = mv.id
 			  JOIN stock_stock_location AS loc ON loc.id IN (mv.from_stock_location, mv.to_stock_location)
+			  JOIN base_product AS bp ON bp.id = ln.product
+			  LEFT JOIN LATERAL (
+				SELECT uc.start_unit, uc.end_unit, uc.coef
+				FROM base_unit_conversion AS uc
+				  WHERE
+				    (uc.start_unit = ln.unit AND uc.end_unit = bp.unit)
+				    OR
+				    (uc.start_unit = bp.unit AND uc.end_unit = ln.unit)
+				  ORDER BY CASE WHEN uc.start_unit = ln.unit THEN 0 ELSE 1 END
+				  LIMIT 1
+			  ) AS uc ON true
 			  WHERE ln.product = :id
 			    AND mv.real_date <= DATE(:fromDate)
 			    AND mv.status_select IN (2, 3)
@@ -384,16 +408,40 @@
 			    mv.real_date AS real_date,
 			    loc.name AS loc,
 			    CASE
-			      WHEN mv.from_stock_location = loc.id THEN -ln.qty
-			      WHEN mv.to_stock_location = loc.id THEN ln.qty
+			      WHEN mv.from_stock_location = loc.id THEN -(
+			        CASE
+			          WHEN uc.start_unit = ln.unit AND uc.end_unit = bp.unit THEN ln.real_qty * uc.coef
+			          WHEN uc.start_unit = bp.unit AND uc.end_unit = ln.unit THEN ln.real_qty / uc.coef
+			          ELSE ln.real_qty
+			        END
+			      )
+			      WHEN mv.to_stock_location = loc.id THEN (
+			        CASE
+			          WHEN uc.start_unit = ln.unit AND uc.end_unit = bp.unit THEN ln.real_qty * uc.coef
+			          WHEN uc.start_unit = bp.unit AND uc.end_unit = ln.unit THEN ln.real_qty / uc.coef
+			          ELSE ln.real_qty
+			        END
+			      )
 			    END AS qty
 			  FROM stock_stock_move_line AS ln
 			  JOIN stock_stock_move AS mv ON ln.stock_move = mv.id
 			  JOIN stock_stock_location AS loc ON loc.id IN (mv.from_stock_location, mv.to_stock_location)
+			  JOIN base_product AS bp ON bp.id = ln.product
+			  LEFT JOIN LATERAL (
+				SELECT uc.start_unit, uc.end_unit, uc.coef
+				FROM base_unit_conversion AS uc
+				  WHERE
+				    (uc.start_unit = ln.unit AND uc.end_unit = bp.unit)
+				    OR
+				    (uc.start_unit = bp.unit AND uc.end_unit = ln.unit)
+				  ORDER BY CASE WHEN uc.start_unit = ln.unit THEN 0 ELSE 1 END
+				  LIMIT 1
+			  ) AS uc ON true
 			  WHERE ln.product = :id
 			    AND mv.real_date > DATE(:fromDate)
 			    AND mv.real_date <= DATE(:toDate)
 			    AND loc.type_select = 1
+			     AND mv.status_select IN (2, 3)
 			) AS movs
 			ON movs.real_date = dates.d
 			AND movs.loc = locs.loc
