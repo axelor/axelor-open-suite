@@ -4,6 +4,8 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.printing.template.PrintingTemplateComputeNameServiceImpl;
+import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.VersionUtils;
 import com.axelor.meta.MetaFiles;
 import com.axelor.script.ScriptPolicyConfigurator;
@@ -24,5 +26,8 @@ public class BaseCustomPolicy implements ScriptPolicyConfigurator {
     allowClasses.add(VersionUtils.class);
     allowClasses.add(DateService.class);
     allowClasses.add(ProductCompanyService.class);
+    allowClasses.add(ReportSettings.class);
+    allowPackages.add("groovy.tmp.templates.*");
+    allowClasses.add(PrintingTemplateComputeNameServiceImpl.TranslationHelper.class);
   }
 }
