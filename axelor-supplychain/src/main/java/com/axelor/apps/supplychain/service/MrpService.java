@@ -23,9 +23,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.Mrp;
+import com.axelor.script.ScriptAllowed;
+
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
 
+@ScriptAllowed
 public interface MrpService extends Callable<Mrp> {
 
   /**

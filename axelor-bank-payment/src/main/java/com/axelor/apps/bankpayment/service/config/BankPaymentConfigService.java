@@ -30,8 +30,10 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.script.ScriptAllowed;
 import com.google.common.base.Strings;
 
+@ScriptAllowed
 public class BankPaymentConfigService {
 
   public BankPaymentConfig getBankPaymentConfig(Company company) throws AxelorException {
