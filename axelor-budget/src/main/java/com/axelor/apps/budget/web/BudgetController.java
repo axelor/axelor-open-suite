@@ -38,7 +38,6 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -50,9 +49,7 @@ public class BudgetController {
   public void computeTotalAmount(ActionRequest request, ActionResponse response) {
     try {
       Budget budget = request.getContext().asType(Budget.class);
-      BigDecimal totalAmount = Beans.get(BudgetService.class).computeTotalAmount(budget);
-      response.setValue("totalAmountExpected", totalAmount);
-      response.setValue("availableAmount", totalAmount);
+      response.setValues(Beans.get(BudgetToolsService.class).computeBudgetAmountMap(budget));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
