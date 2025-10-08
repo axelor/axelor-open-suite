@@ -53,6 +53,7 @@ public class BudgetController {
       BigDecimal totalAmount = Beans.get(BudgetService.class).computeTotalAmount(budget);
       response.setValue("totalAmountExpected", totalAmount);
       response.setValue("availableAmount", totalAmount);
+      response.setValue("availableAmountWithSimulated", totalAmount);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -62,16 +63,6 @@ public class BudgetController {
     try {
       Budget budget = request.getContext().asType(Budget.class);
       response.setValue("budgetLineList", Beans.get(BudgetService.class).generatePeriods(budget));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void computeToBeCommittedAndFirmGap(ActionRequest request, ActionResponse response) {
-    try {
-      Budget budget = request.getContext().asType(Budget.class);
-      BudgetService budgetService = Beans.get(BudgetService.class);
-      response.setValue("totalFirmGap", budgetService.computeFirmGap(budget));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

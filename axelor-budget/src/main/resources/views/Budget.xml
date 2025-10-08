@@ -334,8 +334,6 @@
     <action name="action-budget-validate-generate-period"/>
     <action name="action-budget-budget-method-generate-periods"/>
     <action name="action-budget-method-compute-total-amount"/>
-    <action name="action-budget-budget-compute-amounts"/>
-    <action name="save"/>
   </action-group>
 
   <action-view name="action-view-budget-budget-export" title="Budget level export"

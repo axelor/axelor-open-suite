@@ -31,7 +31,9 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
 public class BudgetLevelController {
 
@@ -93,8 +95,9 @@ public class BudgetLevelController {
 
   public void computeLevelAmounts(ActionRequest request, ActionResponse response) {
     BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
-    Beans.get(BudgetLevelService.class).computeTotals(budgetLevel);
-    response.setValue("totalAmountExpected", budgetLevel.getTotalAmountExpected());
-    response.setValue("totalAmountAvailable", budgetLevel.getTotalAmountAvailable());
+    Map<String, BigDecimal> amountByField =
+        Beans.get(BudgetToolsService.class)
+            .buildMapWithAmounts(budgetLevel.getBudgetList(), budgetLevel.getBudgetLevelList());
+    response.setValues(amountByField);
   }
 }
