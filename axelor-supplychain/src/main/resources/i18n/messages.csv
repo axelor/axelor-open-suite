@@ -727,6 +727,7 @@
 "The reservation for an availability requested stock move cannot be lowered.",,,
 "The sale order %s invoiced amount cannot be greater than its total amount.",,,
 "The stock location must be the same for all purchase orders.",,,
+"The stock location must be usable on sale order.",,,
 "The supplier is required and must be the same for all purchase orders",,,
 "The total of the order must be equal or superior than the advance payment total.",,,
 "The trading name must be the same for all purchase orders.",,,

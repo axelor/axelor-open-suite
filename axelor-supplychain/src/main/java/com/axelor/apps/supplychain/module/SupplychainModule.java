@@ -92,6 +92,7 @@ import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
+import com.axelor.apps.stock.service.LogisticalFormCreateServiceImpl;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineFetchServiceImpl;
@@ -148,6 +149,7 @@ import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogServiceImpl;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.LogisticalFormCreateServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.MrpCallTenderService;
 import com.axelor.apps.supplychain.service.MrpCallTenderServiceImpl;
 import com.axelor.apps.supplychain.service.MrpFilterSaleOrderLineService;
@@ -591,5 +593,7 @@ public class SupplychainModule extends AxelorModule {
     bind(PackagingService.class).to(PackagingServiceImpl.class);
     bind(PackagingSequenceService.class).to(PackagingSequenceServiceImpl.class);
     bind(LogisticalFormStockRepository.class).to(LogisticalFormSupplychainRepository.class);
+    bind(LogisticalFormCreateServiceImpl.class)
+        .to(LogisticalFormCreateServiceSupplychainImpl.class);
   }
 }
