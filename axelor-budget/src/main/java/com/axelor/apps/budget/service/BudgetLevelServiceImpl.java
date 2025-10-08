@@ -104,21 +104,12 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     budgetLevel.setRealizedWithPo(amountByField.get("realizedWithPo"));
     budgetLevel.setTotalAmountAvailable(
         currencyScaleService.getCompanyScaledValue(
-            budgetLevel,
-            amountByField
-                .get("totalAmountExpected")
-                .subtract(amountByField.get("realizedWithPo"))
-                .subtract(amountByField.get("realizedWithNoPo"))
-                .max(BigDecimal.ZERO)));
+            budgetLevel, amountByField.get("totalAmountAvailable")));
     budgetLevel.setTotalFirmGap(amountByField.get("totalFirmGap"));
     budgetLevel.setSimulatedAmount(amountByField.get("simulatedAmount"));
     budgetLevel.setAvailableAmountWithSimulated(
         currencyScaleService.getCompanyScaledValue(
-            budgetLevel,
-            budgetLevel
-                .getTotalAmountAvailable()
-                .subtract(amountByField.get("simulatedAmount"))
-                .max(BigDecimal.ZERO)));
+            budgetLevel, amountByField.get("availableAmountWithSimulated")));
   }
 
   @Override
