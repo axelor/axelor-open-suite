@@ -299,7 +299,7 @@
       <!-- <panel-include view="incl-wiki-panel-form"/> -->
 
       <panel title="Log Times" name="logTimesPanel" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')">
+        if="__config__.app.isApp('timesheet') &amp;&amp; __user__.group.code == 'admins'">
         <panel-include view="incl-log-times-panel-form"/>
       </panel>
       <panel-include view="incl-project-roadmap-panel-form"/>
