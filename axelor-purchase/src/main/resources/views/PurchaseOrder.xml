@@ -28,7 +28,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
@@ -58,7 +58,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
@@ -75,7 +75,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
@@ -142,6 +142,13 @@
       </menu>
     </menubar>
     <panel name="overviewPanel">
+      <field name="$viewerOrderBeingEdited" showTitle="false" readonly="true"
+        showIf="orderBeingEdited">
+        <viewer depends="orderBeingEdited">
+            <![CDATA[<>{orderBeingEdited && <Badge bg="danger">{_t('Order being edited')}</Badge>}</>]]>
+        </viewer>
+      </field>
+      <field name="orderBeingEdited" hidden="true"/>
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"
         readonly="true"/>
       <panel name="mainPanel" readonlyIf="statusSelect == 4" colSpan="12">
@@ -224,7 +231,8 @@
       hideIf="supplierPartner == null || ($enableTradingNamesManagement &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0 &amp;&amp; tradingName == null)">
       <panel name="contentPanel" title="Content" colSpan="12">
         <panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList"
-          canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3"
+          canNew="statusSelect &lt; 3 || orderBeingEdited"
+          canRemove="statusSelect &lt; 3 || orderBeingEdited"
           grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12"
           onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form"
           canMove="true" orderBy="sequence" height="30"/>
@@ -299,6 +307,15 @@
     </panel>
 
     <panel sidebar="true" name="actionsPanel" hideIf="supplierPartner == null">
+      <button name="editOrderBtn" title="Edit order"
+        if="__config__.app.getApp('purchase')?.allowValidatedOrderModification"
+        showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
+        onClick="action-purchase-order-method-edit-order" icon="pencil-square"
+        readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
+      <button name="validateChangesBtn" title="Validate changes"
+        showIf="statusSelect == 3 &amp;&amp; orderBeingEdited"
+        onClick="action-purchase-order-group-validate-changes" icon="bookmark-check"
+        readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
       <button name="generateInvoiceBtn" title="Generate control invoice"
         showIf="statusSelect == 3"
         onClick="save,action-purchase-order-method-generate-control-invoice"
@@ -644,6 +661,14 @@
   <action-group name="action-group-purchase-order-cancel">
     <action name="action-purchase-order-method-cancel-receipt" if="statusSelect==3"/>
     <action name="action-purchase-order-method-cancel"/>
+  </action-group>
+
+  <action-group name="action-purchase-order-group-validate-changes">
+    <action name="action-purchase-order-method-check-analytic-distribution-template"/>
+    <action name="action-purchase-order-validate-purchase-order-line"/>
+    <action name="action-purchase-order-validate-stock-location"/>
+    <action name="save"/>
+    <action name="action-purchase-order-method-validate-changes"/>
   </action-group>
 
   <action-method
@@ -1077,5 +1102,13 @@
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="typeSelect" expr="eval: 1" if="!supplierPartner"/>
   </action-record>
+
+  <action-method name="action-purchase-order-method-edit-order">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="enableEditOrder"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-validate-changes">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="validateChanges"/>
+  </action-method>
 
 </object-views>

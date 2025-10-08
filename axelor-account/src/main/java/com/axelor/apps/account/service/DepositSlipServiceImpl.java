@@ -235,15 +235,15 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     if (depositSlip.getFromDate() != null) {
       if (depositSlip.getToDate() != null) {
         queryBuilder.add(
-            "self.chequeDate IS NULL OR self.chequeDate BETWEEN :fromDate AND :toDate");
+            "self.chequeDueDate IS NULL OR self.chequeDueDate BETWEEN :fromDate AND :toDate");
         queryBuilder.bind("fromDate", depositSlip.getFromDate());
         queryBuilder.bind("toDate", depositSlip.getToDate());
       } else {
-        queryBuilder.add("self.chequeDate IS NULL OR self.chequeDate >= :fromDate");
+        queryBuilder.add("self.chequeDueDate IS NULL OR self.chequeDueDate >= :fromDate");
         queryBuilder.bind("fromDate", depositSlip.getFromDate());
       }
     } else if (depositSlip.getToDate() != null) {
-      queryBuilder.add("self.chequeDate IS NULL OR self.chequeDate <= :toDate");
+      queryBuilder.add("self.chequeDueDate IS NULL OR self.chequeDueDate <= :toDate");
       queryBuilder.bind("toDate", depositSlip.getToDate());
     }
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="Packaging">
+
+    <string name="packagingNumber" title="Packaging number" namecolumn="true" readonly="true"/>
+    <many-to-one name="logisticalForm" title="Logistical form"
+      ref="com.axelor.apps.stock.db.LogisticalForm"/>
+    <many-to-many name="stockMoveSet" title="Delivery notes"
+      ref="com.axelor.apps.stock.db.StockMove"/>
+    <many-to-one name="saleOrder" title="Sale order"
+      ref="com.axelor.apps.sale.db.SaleOrder"/>
+    <many-to-one name="parentPackaging" title="Parent packaging"
+      ref="com.axelor.apps.supplychain.db.Packaging"/>
+    <one-to-many name="childrenPackagingList" title="Children packaging"
+      ref="com.axelor.apps.supplychain.db.Packaging" mappedBy="parentPackaging"/>
+    <many-to-one name="packageUsed" title="Package used"
+      ref="com.axelor.apps.base.db.Product"/>
+    <integer name="packagingLevelSelect" title="Packaging level"
+      selection="base.product.packaging.level.select"/>
+    <decimal name="grossMass" title="Gross mass" default="0" scale="3" precision="20"/>
+    <one-to-many name="packagingLineList" title="Packaging lines"
+      ref="com.axelor.apps.supplychain.db.PackagingLine" mappedBy="packaging"/>
+
+  </entity>
+
+</domain-models>

@@ -52,6 +52,9 @@
       <field name="allowFinishManuallyPurchaseOrder" widget="boolean-switch" colSpan="4"/>
       <field name="isPurchaseOrderWithoutIncomingStockMove" widget="boolean-switch"
         colSpan="4" onChange="action-app-supply-chain-record-supplier-stock-move-generation-auto"/>
+      <field name="cancelReasonOnChangingPurchaseOrder"
+        domain="self.applicationType = 'com.axelor.apps.stock.db.StockMove'"
+        if="__config__.app.getApp('purchase')?.allowValidatedOrderModification" colSpan="4"/>
     </panel>
     <panel name="StockDetailsPanel" title="Stock details">
       <field name="sOFilterOnStockDetailStatusSelect" widget="MultiSelect" colSpan="4"
@@ -74,11 +77,12 @@
     <panel name="intercoPanel" title="Interco">
       <field name="intercoFromPurchase" widget="boolean-switch"/>
       <field name="intercoFromSale" widget="boolean-switch"/>
-      <field name="intercoPurchaseCreatingStatusSelect" selection-in="[2,3]"/>
+      <field name="intercoPurchaseCreatingStatusSelect" selection-in="[2,3]"
+        widget="single-select"/>
       <field name="intercoSaleCreatingStatusSelect" selection-in="[2,3]"
-        if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+        if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled" widget="single-select"/>
       <field name="intercoSaleCreatingStatusSelect" selection-in="[3]"
-        if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+        if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled" widget="single-select"/>
       <field name="intercoFromInvoice" widget="boolean-switch"/>
       <field name="intercoSaleOrderCreateFinalized" widget="boolean-switch"/>
       <field name="intercoPurchaseOrderCreateRequested" widget="boolean-switch"/>

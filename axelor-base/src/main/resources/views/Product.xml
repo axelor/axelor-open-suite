@@ -354,6 +354,8 @@
             onChange="action-product-record-set-control-on-receipt"/>
           <field name="productApproval.controlOnReceipt" hidden="true"/>
         </panel>
+        <field name="defaultStockLocationBySite" colSpan="12"
+          if="__config__.app.getApp('base')?.enableSiteManagementForStock &amp;&amp; __config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"/>
         <panel name="stockPanel" colSpan="12" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')">
           <field name="controlOnReceipt" readonlyIf="productApproval.controlOnReceipt"
@@ -374,6 +376,7 @@
           <panel-dashlet action="action-stock-view-stock-location-line-history"
             name="stockHistoryLinePanel" colSpan="12" showIf="productTypeSelect == 'storable'"/>
         </panel>
+
       </panel>
       <panel name="productionInformationsPanel" title="Production information"
         showTitle="false"
@@ -537,7 +540,7 @@
           <field name="countryOfOrigin" showIf="usedInDEB"/>
         </panel>
         <panel name="packagingPanel" title="Packaging details" colSpan="12">
-          <field name="isPackaging" colSpan="12"/>
+          <field name="isPackaging" colSpan="4"/>
           <panel name="dimensionPanel" colSpan="12" itemSpan="4" hidden="true"
             showIf="isPackaging">
             <field name="innerLength" requiredIf="isPackaging"/>
@@ -546,6 +549,9 @@
             <field name="outerLength" requiredIf="isPackaging"/>
             <field name="outerWidth" requiredIf="isPackaging"/>
             <field name="outerHeight" requiredIf="isPackaging"/>
+            <field name="minWeight"/>
+            <field name="maxWeight"/>
+            <field name="packagingLevelSelect"/>
           </panel>
           <panel-dashlet name="productPackagingPanel" colSpan="12" hidden="true"
             showIf="!isPackaging" action="action-product-view-product-packaging" canNew="true"

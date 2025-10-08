@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="packaging-grid" model="com.axelor.apps.supplychain.db.Packaging"
+    title="Packagings">
+    <field name="packagingNumber"/>
+    <field name="packageUsed" grid-view="product-grid" form-view="product-form"
+      domain="self.isPackaging = true"/>
+    <field name="grossMass" x-scale="$nbDecimalDigitForPrice" readonly="true"/>
+    <button name="addPackagingBtn" title="Add child packaging" icon="arrow-down-circle-fill"
+      onClick="action-packaging-method-add-child-packaging" readonlyIf="!id"/>
+    <button name="addStockMoveLineBtn" title="Add stock move lines" icon="wrench"
+      onClick="action-packaging-method-view-packaging-lines-from-stock-move-lines" readonlyIf="!id"/>
+    <field name="logisticalForm" hidden="true"/>
+    <field name="$nbDecimalDigitForPrice" hidden="true"/>
+  </grid>
+
+  <form name="packaging-form" model="com.axelor.apps.supplychain.db.Packaging"
+    title="Packaging" width="large">
+    <panel name="mainPanel">
+      <field name="packagingNumber"/>
+      <field name="packageUsed" grid-view="product-grid" form-view="product-form"
+        domain="self.isPackaging = true"/>
+      <field name="grossMass" x-scale="$nbDecimalDigitForPrice" readonly="true"/>
+      <panel-related field="packagingLineList" grid-view="packaging-line-grid"
+        form-view="packaging-line-form" colSpan="12"/>
+      <panel-related field="childrenPackagingList" grid-view="packaging-grid"
+        form-view="packaging-form" colSpan="12"/>
+    </panel>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="logisticalForm" hidden="true"/>
+      <field name="$nbDecimalDigitForPrice" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="packaging-packaging-lines-form" model="com.axelor.apps.supplychain.db.Packaging"
+    title="Packaging lines">
+    <panel-related field="packagingLineList"
+      showIf="packagingLineList.length || !$readonly()" editable="true">
+      <field name="stockMoveLine" grid-view="stock-move-line-grid"
+        form-view="stock-move-line-form"
+        onSelect="action-packaging-line-method-stock-move-line-domain"
+        onChange="action-packaging-line-record-stock-move-line-onchange"/>
+      <field name="stockMoveLine.product"/>
+      <field name="trackingNumber" grid-view="tracking-number-grid"
+        form-view="tracking-number-form" readonly="true"/>
+      <field name="qty" x-scale="$nbDecimalDigitForQty" readonlyIf="!stockMoveLine" min="0"/>
+      <field name="stockMoveLine.netMass" x-scale="$nbDecimalDigitForPrice"/>
+      <field name="$nbDecimalDigitForQty" hidden="true"/>
+      <field name="$nbDecimalDigitForPrice" hidden="true"/>
+    </panel-related>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="logisticalForm"/>
+    </panel>
+  </form>
+
+  <form name="packaging-lines-from-stock-move-lines-form"
+    title="Add packaging lines from selected stock move lines" model="com.axelor.utils.db.Wizard"
+    onNew="action-packaging-attrs-set-stock-move-line-list">
+    <panel name="mainPanel">
+      <field name="$stockMoveLineList" title="Select stock move lines" type="one-to-many"
+        target="com.axelor.apps.stock.db.StockMoveLine" colSpan="12"
+        grid-view="stock-move-line-grid" form-view="stock-move-line-form" canNew="false"
+        canEdit="false"/>
+      <button name="createPackagingLineBtn" title="Add packaging lines"
+        onClick="action-packaging-method-add-packaging-lines"
+        readonlyIf="$stockMoveLineList == null || $stockMoveLineList.length == 0"/>
+      <field name="$packaging" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-attrs name="action-packaging-attrs-set-stock-move-line-list">
+    <attribute for="$stockMoveLineList" name="value" expr="eval: _stockMoveLineList"/>
+    <attribute for="$packaging" name="value"
+      expr="eval: __repo__(Packaging).find(_packagingId)"/>
+  </action-attrs>
+
+  <action-method
+    name="action-packaging-method-view-packaging-lines-from-stock-move-lines">
+    <call class="com.axelor.apps.supplychain.web.PackagingController"
+      method="viewPackagingLinesFromStockMoveLines"/>
+  </action-method>
+
+  <action-method name="action-packaging-method-add-packaging-lines">
+    <call class="com.axelor.apps.supplychain.web.PackagingController"
+      method="addPackagingLines"/>
+  </action-method>
+
+  <action-method name="action-packaging-method-add-child-packaging">
+    <call class="com.axelor.apps.supplychain.web.PackagingController"
+      method="addChildPackaging"/>
+  </action-method>
+
+</object-views>

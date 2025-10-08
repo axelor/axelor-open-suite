@@ -48,7 +48,7 @@
         <field name="plannedStartDateT"/>
         <field name="plannedEndDateT"/>
         <field name="prioritySelect"/>
-        <field name="statusSelect"/>
+        <field name="statusSelect" widget="single-select"/>
         <field name="createdBy"/>
         <field name="createdOn"/>
       </panel-related>

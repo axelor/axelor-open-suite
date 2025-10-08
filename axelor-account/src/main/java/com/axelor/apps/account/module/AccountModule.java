@@ -63,6 +63,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateManagementRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.PartnerAccountRepository;
+import com.axelor.apps.account.db.repo.PaymentScheduleAccountRepository;
+import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionAccountRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherManagementRepository;
@@ -1017,5 +1019,7 @@ public class AccountModule extends AxelorModule {
     bind(BankDetailsServiceAccount.class).to(BankDetailsServiceAccountImpl.class);
 
     bind(AnalyticMoveLineParentService.class).to(AnalyticMoveLineParentServiceImpl.class);
+
+    bind(PaymentScheduleRepository.class).to(PaymentScheduleAccountRepository.class);
   }
 }

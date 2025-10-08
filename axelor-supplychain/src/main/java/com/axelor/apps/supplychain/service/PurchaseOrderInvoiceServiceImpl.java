@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -92,6 +93,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
   protected CurrencyScaleService currencyScaleService;
   protected OrderInvoiceService orderInvoiceService;
   protected InvoiceTaxService invoiceTaxService;
+  protected InvoiceLineRepository invoiceLineRepository;
 
   @Inject
   public PurchaseOrderInvoiceServiceImpl(
@@ -107,7 +109,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       CurrencyService currencyService,
       CurrencyScaleService currencyScaleService,
       OrderInvoiceService orderInvoiceService,
-      InvoiceTaxService invoiceTaxService) {
+      InvoiceTaxService invoiceTaxService,
+      InvoiceLineRepository invoiceLineRepository) {
     this.invoiceServiceSupplychain = invoiceServiceSupplychain;
     this.invoiceService = invoiceService;
     this.invoiceRepo = invoiceRepo;
@@ -121,6 +124,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     this.currencyScaleService = currencyScaleService;
     this.orderInvoiceService = orderInvoiceService;
     this.invoiceTaxService = invoiceTaxService;
+    this.invoiceLineRepository = invoiceLineRepository;
   }
 
   @Override
@@ -201,6 +205,15 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
       throws AxelorException {
 
     Product product = purchaseOrderLine.getProduct();
+    BigDecimal qtyAlreadyInvoiced =
+        invoiceLineRepository
+            .all()
+            .filter("self.purchaseOrderLine = :purchaseOrderLine")
+            .bind("purchaseOrderLine", purchaseOrderLine)
+            .fetch()
+            .stream()
+            .map(InvoiceLine::getQty)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
         new InvoiceLineGeneratorSupplyChain(
@@ -208,7 +221,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
             product,
             purchaseOrderLine.getProductName(),
             purchaseOrderLine.getDescription(),
-            purchaseOrderLine.getQty(),
+            purchaseOrderLine.getQty().subtract(qtyAlreadyInvoiced),
             purchaseOrderLine.getUnit(),
             purchaseOrderLine.getSequence(),
             false,

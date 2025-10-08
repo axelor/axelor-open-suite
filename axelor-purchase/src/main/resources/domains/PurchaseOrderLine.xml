@@ -85,6 +85,8 @@
       <field name="estimatedReceiptDate"/>
     </track>
 
+    <entity-listener
+      class="com.axelor.apps.purchase.db.repo.PurchaseOrderLineListener"/>
   </entity>
 
 </domain-models>

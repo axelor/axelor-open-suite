@@ -5,14 +5,72 @@
 
   <input file="bankpayment_bankOrderEconomicReason.csv" separator=";"
     type="com.axelor.apps.bankpayment.db.BankOrderEconomicReason">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
     <bind to="name" eval="label != null &amp;&amp; label != '' ? code + ' - ' + label : code"/>
   </input>
 
   <input file="bankpayment_bankPaymentConfig.csv" separator=";"
-    type="com.axelor.apps.bankpayment.db.BankPaymentConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.bankpayment.db.BankPaymentConfig" search="self.importId = :importId">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.bankpayment.db.BankPaymentConfig', 'importId', importId, 'company.importId', company_importId)"
+      check-message="Company must be unique"/>
+  </input>
 
   <input file="account_accountingBatch.csv" separator=";"
     type="com.axelor.apps.account.db.AccountingBatch" search="self.code = :code">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="actionSelect" to="actionSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'actionSelect', actionSelect)"
+      check-message="Invalid actionSelect"/>
+    <bind column="customerReimbursementTypeSelect" to="customerReimbursementTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'customerReimbursementTypeSelect', customerReimbursementTypeSelect)"
+      check-message="Invalid customerReimbursementTypeSelect"/>
+    <bind column="reimbursementTypeSelect" to="reimbursementTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'reimbursementTypeSelect', reimbursementTypeSelect)"
+      check-message="Invalid reimbursementTypeSelect"/>
+    <bind column="reimbursementExportTypeSelect" to="reimbursementExportTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'reimbursementExportTypeSelect', reimbursementExportTypeSelect)"
+      check-message="Invalid reimbursementExportTypeSelect"/>
+    <bind column="debtRecoveryTypeSelect" to="debtRecoveryTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'debtRecoveryTypeSelect', debtRecoveryTypeSelect)"
+      check-message="Invalid debtRecoveryTypeSelect"/>
+    <bind column="moveLineExportTypeSelect" to="moveLineExportTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'moveLineExportTypeSelect', moveLineExportTypeSelect)"
+      check-message="Invalid moveLineExportTypeSelect"/>
+    <bind column="creditTransferTypeSelect" to="creditTransferTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'creditTransferTypeSelect', creditTransferTypeSelect)"
+      check-message="Invalid creditTransferTypeSelect"/>
+    <bind column="billOfExchangeTypeSelect" to="billOfExchangeTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'billOfExchangeTypeSelect', billOfExchangeTypeSelect)"
+      check-message="Invalid billOfExchangeTypeSelect"/>
+    <bind column="accountingCutOffTypeSelect" to="accountingCutOffTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'accountingCutOffTypeSelect', accountingCutOffTypeSelect)"
+      check-message="Invalid accountingCutOffTypeSelect"/>
+    <bind column="generatedMoveStatusSelect" to="generatedMoveStatusSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'generatedMoveStatusSelect', generatedMoveStatusSelect)"
+      check-message="Invalid generatedMoveStatusSelect"/>
+    <bind column="orderBySelect" to="orderBySelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'orderBySelect', orderBySelect)"
+      check-message="Invalid orderBySelect"/>
+    <bind column="reconcileMethodSelect" to="reconcileMethodSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'reconcileMethodSelect', reconcileMethodSelect)"
+      check-message="Invalid reconcileMethodSelect"/>
+    <bind column="directDebitDataTypeSelect" to="directDebitDataTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'directDebitDataTypeSelect', directDebitDataTypeSelect)"
+      check-message="Invalid directDebitDataTypeSelect"/>
+    <bind column="billOfExchangeStepBatchSelect" to="billOfExchangeStepBatchSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'billOfExchangeStepBatchSelect', billOfExchangeStepBatchSelect)"
+      check-message="Invalid billOfExchangeStepBatchSelect"/>
+    <bind column="billOfExchangeDataTypeSelect" to="billOfExchangeDataTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingBatch', 'billOfExchangeDataTypeSelect', billOfExchangeDataTypeSelect)"
+      check-message="Invalid billOfExchangeDataTypeSelect"/>
     <bind to="dueDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(dueDate)"
       column="dueDate"/>
     <bind to="startDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(startDate)"
@@ -23,6 +81,18 @@
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind column="codeSelect" to="codeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
+      check-message="Invalid codeSelect"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check-message="Sequence type must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence', 'importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check-message="Company, code, prefixe and suffixe must be unique"/>
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
       if="yearlyResetOk"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
@@ -31,11 +101,25 @@
   </input>
 
   <input file="bankpayment_bankStatementRule.csv" separator=";"
-    type="com.axelor.apps.bankpayment.db.BankStatementRule" search="self.importId = :importId"/>
+    type="com.axelor.apps.bankpayment.db.BankStatementRule" search="self.importId = :importId">
+    <bind column="accountManagement_importId" to="accountManagement"
+      search="self.importId = :accountManagement_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.account.db.AccountManagement', 'importId', accountManagement_importId)"
+      check-message="Account management doesn't exist"/>
+    <bind column="ruleTypeSelect" to="ruleTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.bankpayment.db.BankStatementRule', 'ruleTypeSelect', ruleTypeSelect)"
+      check-message="Invalid ruleTypeSelect"/>
+    <bind column="partnerFetchMethodSelect" to="partnerFetchMethodSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.bankpayment.db.BankStatementRule', 'partnerFetchMethodSelect', partnerFetchMethodSelect)"
+      check-message="Invalid partnerFetchMethodSelect"/>
+  </input>
 
   <input file="bankpayment_bankStatement.csv" separator=";"
     type="com.axelor.apps.bankpayment.db.BankStatement" search="self.importId = :importId"
     call="com.axelor.csv.script.ImportBankStatement:importBankStatement">
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.bankpayment.db.BankStatement', 'statusSelect', statusSelect)"
+      check-message="Invalid statusSelect"/>
     <bind to="bankStatementFileFormat" column="bankStatementFileFormat_importId"
       search="self.importId = :bankStatementFileFormat_importId"/>
     <bind to="fromDate" eval="call:com.axelor.csv.script.ImportDateTime:importDate(fromDate)"
@@ -46,6 +130,19 @@
 
   <input file="account_accountingReportType.csv" separator=";"
     search="self.importId = :importId" type="com.axelor.apps.account.db.AccountingReportType"
-    update="true"/>
+    update="true">
+    <bind to="name" column="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind to="reportExportTypeSelect" column="reportExportTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'reportExportTypeSelect', reportExportTypeSelect)"
+      check-message="Invalid reportExportTypeSelect"/>
+    <bind to="typeSelect" column="typeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'typeSelect', typeSelect)"
+      check-message="Invalid typeSelect"/>
+    <bind to="comparison" column="comparison"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountingReportType', 'comparison', comparison)"
+      check-message="Invalid comparison"/>
+  </input>
 
 </csv-inputs>

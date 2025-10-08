@@ -126,6 +126,9 @@
     <many-to-one name="massStockMove" title="Mass move"
       ref="com.axelor.apps.stock.db.MassStockMove"/>
 
+    <many-to-one name="logisticalForm" title="Logistical form"
+      ref="com.axelor.apps.stock.db.LogisticalForm"/>
+
     <unique-constraint columns="stockMoveSeq,company"/>
 
     <extra-code><![CDATA[

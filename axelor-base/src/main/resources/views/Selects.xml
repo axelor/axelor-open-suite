@@ -826,4 +826,10 @@
     <option value="4">Powder retention</option>
   </selection>
 
+  <selection name="base.product.packaging.level.select">
+    <option value="0">Box</option>
+    <option value="1">Pallet</option>
+    <option value="2">Container</option>
+  </selection>
+
 </object-views>
