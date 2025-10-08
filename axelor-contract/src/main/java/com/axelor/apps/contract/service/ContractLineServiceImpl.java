@@ -389,7 +389,9 @@ public class ContractLineServiceImpl implements ContractLineService {
         && company != null
         && !CollectionUtils.isEmpty(company.getTradingNameList())) {
       domain +=
-          " AND " + contract.getTradingName().getId() + " member of self.tradingNameSellerSet";
+          " AND "
+              + contract.getTradingName().getId()
+              + " IN (SELECT tn.id FROM self.tradingNameSellerSet tn)";
     }
 
     int targetTypeSelect = contract.getTargetTypeSelect();
