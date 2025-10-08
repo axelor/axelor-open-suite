@@ -83,7 +83,7 @@ public class LogisticalFormCreateServiceImpl implements LogisticalFormCreateServ
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(StockExceptionMessage.LOGISTICAL_FORM_PARTNER_NOT_A_CARRIER));
     }
-    if (isMultiClientEnabled && deliverToCustomerPartner == null) {
+    if (!isMultiClientEnabled && deliverToCustomerPartner == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(StockExceptionMessage.LOGISTICAL_FORM_MISSING_DELIVER_TO_PARTNER_CUSTOMER));
