@@ -2223,6 +2223,7 @@
 "Max Amount to reconcile",,,
 "Max Nbr. for payment schedule rejection",,,
 "Max Nbr. of invoices rejection",,,
+"Maximum move line authorized on auto reconcile process",,,
 "Medium",,,
 "Merge Cust. Invoices",,,
 "Merge Suppl. Invoices",,,
