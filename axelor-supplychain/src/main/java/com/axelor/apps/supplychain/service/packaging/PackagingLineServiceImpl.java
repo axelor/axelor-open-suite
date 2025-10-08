@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service.packaging;
 
 import com.axelor.apps.stock.db.LogisticalForm;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.PackagingLine;
@@ -31,7 +32,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class PackagingLineServiceImpl implements PackagingLineService {
 
-  protected final PackagingLineRepository packagingLineRepository;
+  protected PackagingLineRepository packagingLineRepository;
 
   @Inject
   public PackagingLineServiceImpl(PackagingLineRepository packagingLineRepository) {
@@ -69,5 +70,91 @@ public class PackagingLineServiceImpl implements PackagingLineService {
     return String.format(
         "self.stockMove.typeSelect = 2 AND self.qtyRemainingToPackage > 0 AND self.stockMove.id IN (%s)",
         stockMoveIds);
+  }
+
+  @Override
+  public void updateStockMoveSet(PackagingLine packagingLine, boolean add) {
+    StockMoveLine stockMoveLine = packagingLine.getStockMoveLine();
+    Packaging packaging = packagingLine.getPackaging();
+    if (stockMoveLine == null || packaging == null) {
+      return;
+    }
+    StockMove stockMove = stockMoveLine.getStockMove();
+    if (stockMove == null) {
+      return;
+    }
+    if (add) {
+      addStockMove(packaging, stockMove);
+    } else {
+      Packaging root = getRootPackaging(packaging);
+      if (!isStockMoveReferenced(root, stockMove, packagingLine)) {
+        removeStockMove(packaging, stockMove);
+      }
+    }
+  }
+
+  protected Packaging getRootPackaging(Packaging packaging) {
+    while (packaging != null && packaging.getParentPackaging() != null) {
+      packaging = packaging.getParentPackaging();
+    }
+    return packaging;
+  }
+
+  protected void addStockMove(Packaging packaging, StockMove stockMove) {
+    while (packaging != null) {
+      if (!packaging.getStockMoveSet().contains(stockMove)) {
+        packaging.getStockMoveSet().add(stockMove);
+      }
+      packaging = packaging.getParentPackaging();
+    }
+  }
+
+  protected void removeStockMove(Packaging packaging, StockMove stockMove) {
+    while (packaging != null) {
+      if (packaging.getStockMoveSet().contains(stockMove)) {
+        packaging.getStockMoveSet().remove(stockMove);
+      }
+      packaging = packaging.getParentPackaging();
+    }
+  }
+
+  protected boolean isStockMoveReferenced(
+      Packaging packaging, StockMove stockMove, PackagingLine excludedLine) {
+    if (CollectionUtils.isNotEmpty(packaging.getPackagingLineList())) {
+      boolean found =
+          packaging.getPackagingLineList().stream()
+              .filter(line -> !line.equals(excludedLine))
+              .anyMatch(
+                  line ->
+                      line.getStockMoveLine() != null
+                          && line.getStockMoveLine().getStockMove() != null
+                          && line.getStockMoveLine().getStockMove().equals(stockMove));
+      if (found) {
+        return true;
+      }
+    }
+    if (CollectionUtils.isNotEmpty(packaging.getChildrenPackagingList())) {
+      for (Packaging childPackaging : packaging.getChildrenPackagingList()) {
+        if (isStockMoveReferenced(childPackaging, stockMove, excludedLine)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public void updateQtyRemainingToPackage(PackagingLine packagingLine, boolean add) {
+    StockMoveLine stockMoveLine = packagingLine.getStockMoveLine();
+    if (stockMoveLine == null) {
+      return;
+    }
+    if (add) {
+      stockMoveLine.setQtyRemainingToPackage(
+          stockMoveLine.getQtyRemainingToPackage().subtract(packagingLine.getQty()));
+    } else {
+      stockMoveLine.setQtyRemainingToPackage(
+          stockMoveLine.getQtyRemainingToPackage().add(packagingLine.getQty()));
+    }
   }
 }

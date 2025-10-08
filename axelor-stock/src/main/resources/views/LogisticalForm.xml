@@ -96,7 +96,7 @@
           <field name="stockMoveList" grid-view="stock-move-out-grid"
             form-view="stock-move-form" colSpan="6" widget="TagSelect"
             onSelect="action-logistical-form-method-stock-move-domain" canEdit="false"
-            onChange="action-logistical-form-attrs-reload-stock-move-lines-panel"/>
+            onChange="action-logistical-form-group-stock-move-list-change"/>
           <panel-dashlet name="stockMoveLinesPanel"
             title="Stock move lines to package" colSpan="12"
             action="action-logistical-form-view-stock-move-lines-to-package" canEdit="false"/>
@@ -199,6 +199,13 @@
     <domain>self.stockMove.id IN (:_stockMoveIds)</domain>
     <context name="_stockMoveIds" expr="eval: stockMoveList?.collect{it.id}"/>
   </action-view>
+
+  <action-group name="action-logistical-form-group-stock-move-list-change">
+    <action name="action-logistical-form-method-validate-and-update-stock-move-list"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="save" if="__config__.app.isApp('supplychain')"/>
+    <action name="action-logistical-form-attrs-reload-stock-move-lines-panel"/>
+  </action-group>
 
   <search-filters name="logistical-form-filters"
     model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form filters">

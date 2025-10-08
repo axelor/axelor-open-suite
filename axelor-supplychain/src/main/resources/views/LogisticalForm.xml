@@ -19,8 +19,14 @@
   </form>
 
   <action-method name="action-logistical-form-method-refresh-logistical-form">
-    <call class="com.axelor.apps.stock.web.LogisticalFormController"
+    <call class="com.axelor.apps.supplychain.web.LogisticalFormController"
       method="refreshLogisticalForm"/>
+  </action-method>
+
+  <action-method
+    name="action-logistical-form-method-validate-and-update-stock-move-list">
+    <call class="com.axelor.apps.supplychain.web.LogisticalFormController"
+      method="validateAndUpdateStockMoveList"/>
   </action-method>
 
   <action-group name="action-group-logistical-form-print-packing-list">

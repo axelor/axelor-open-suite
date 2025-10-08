@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class PackagingLineSupplychainRepository extends PackagingLineRepository {
 
-  protected final AppBaseService appBaseService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public PackagingLineSupplychainRepository(AppBaseService appBaseService) {

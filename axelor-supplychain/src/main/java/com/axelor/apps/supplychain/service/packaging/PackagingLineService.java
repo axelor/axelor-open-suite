@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service.packaging;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.Packaging;
+import com.axelor.apps.supplychain.db.PackagingLine;
 import java.util.List;
 
 public interface PackagingLineService {
@@ -28,4 +29,8 @@ public interface PackagingLineService {
   void addPackagingLines(Packaging packaging, List<StockMoveLine> stockMoveLineList);
 
   String getStockMoveLineDomain(LogisticalForm logisticalForm);
+
+  void updateStockMoveSet(PackagingLine packagingLine, boolean add);
+
+  void updateQtyRemainingToPackage(PackagingLine packagingLine, boolean add);
 }

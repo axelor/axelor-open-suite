@@ -8,7 +8,7 @@
   <entity name="LogisticalForm">
 
     <one-to-many name="packagingList" title="Packagings"
-      ref="com.axelor.apps.supplychain.db.Packaging" mappedBy="logisticalForm"/>
+      ref="com.axelor.apps.supplychain.db.Packaging" mappedBy="logisticalForm" orphanRemoval="false"/>
 
   </entity>
 

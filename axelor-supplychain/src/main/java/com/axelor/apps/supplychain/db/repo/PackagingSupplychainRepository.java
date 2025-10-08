@@ -22,32 +22,26 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.service.packaging.PackagingSequenceService;
-import com.axelor.apps.supplychain.service.packaging.PackagingStockMoveLineService;
 import com.google.inject.Inject;
 import java.util.Map;
 import javax.persistence.PersistenceException;
 
 public class PackagingSupplychainRepository extends PackagingRepository {
 
-  protected final AppBaseService appBaseService;
-  protected final PackagingSequenceService packagingSequenceService;
-  protected final PackagingStockMoveLineService packagingStockMoveLineService;
+  protected AppBaseService appBaseService;
+  protected PackagingSequenceService packagingSequenceService;
 
   @Inject
   public PackagingSupplychainRepository(
-      AppBaseService appBaseService,
-      PackagingSequenceService packagingSequenceService,
-      PackagingStockMoveLineService packagingStockMoveLineService) {
+      AppBaseService appBaseService, PackagingSequenceService packagingSequenceService) {
     this.appBaseService = appBaseService;
     this.packagingSequenceService = packagingSequenceService;
-    this.packagingStockMoveLineService = packagingStockMoveLineService;
   }
 
   @Override
   public Packaging save(Packaging packaging) {
     try {
       packagingSequenceService.generatePackagingNumber(packaging);
-      packagingStockMoveLineService.updateQtyRemainingToPackage(packaging);
       return super.save(packaging);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

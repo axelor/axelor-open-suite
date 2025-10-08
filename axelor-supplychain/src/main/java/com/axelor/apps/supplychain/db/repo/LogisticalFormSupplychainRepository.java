@@ -11,8 +11,8 @@ import javax.persistence.PersistenceException;
 
 public class LogisticalFormSupplychainRepository extends LogisticalFormStockRepository {
 
-  protected final PackagingSequenceService packagingSequenceService;
-  protected final PackagingStockMoveLineService packagingStockMoveLineService;
+  protected PackagingSequenceService packagingSequenceService;
+  protected PackagingStockMoveLineService packagingStockMoveLineService;
 
   @Inject
   public LogisticalFormSupplychainRepository(

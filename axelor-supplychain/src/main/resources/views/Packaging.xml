@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="packaging-grid" model="com.axelor.apps.supplychain.db.Packaging"
-    title="Packagings">
+    title="Packagings" onDelete="action-packaging-method-remove-packagings">
     <field name="packagingNumber"/>
     <field name="packageUsed" grid-view="product-grid" form-view="product-form"
       domain="self.isPackaging = true"/>
@@ -91,6 +91,10 @@
   <action-method name="action-packaging-method-add-child-packaging">
     <call class="com.axelor.apps.supplychain.web.PackagingController"
       method="addChildPackaging"/>
+  </action-method>
+
+  <action-method name="action-packaging-method-remove-packagings">
+    <call class="com.axelor.apps.supplychain.web.PackagingController" method="removePackagings"/>
   </action-method>
 
 </object-views>

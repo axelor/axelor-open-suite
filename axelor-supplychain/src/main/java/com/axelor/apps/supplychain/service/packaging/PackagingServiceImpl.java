@@ -22,10 +22,11 @@ import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.repo.PackagingRepository;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class PackagingServiceImpl implements PackagingService {
 
-  protected final PackagingRepository packagingRepository;
+  protected PackagingRepository packagingRepository;
 
   @Inject
   public PackagingServiceImpl(PackagingRepository packagingRepository) {
@@ -38,5 +39,13 @@ public class PackagingServiceImpl implements PackagingService {
     Packaging childPackaging = new Packaging();
     childPackaging.setParentPackaging(packaging);
     packagingRepository.save(childPackaging);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void removePackagings(List<Packaging> packagingList) {
+    for (Packaging packaging : packagingList) {
+      packagingRepository.remove(packaging);
+    }
   }
 }
