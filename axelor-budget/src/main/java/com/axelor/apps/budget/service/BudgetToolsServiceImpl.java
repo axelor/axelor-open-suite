@@ -374,6 +374,20 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
                 budget, amountByField.get("simulatedAmount").add(budget.getSimulatedAmount())));
       }
     }
+    amountByField.put(
+        "totalAmountAvailable",
+        amountByField
+            .get("totalAmountExpected")
+            .subtract(amountByField.get("realizedWithPo"))
+            .subtract(amountByField.get("realizedWithNoPo"))
+            .max(BigDecimal.ZERO));
+    amountByField.put(
+        "availableAmountWithSimulated",
+        amountByField
+            .get("totalAmountAvailable")
+            .subtract(amountByField.get("simulatedAmount"))
+            .max(BigDecimal.ZERO));
+
     return amountByField;
   }
 

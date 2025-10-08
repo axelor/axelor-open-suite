@@ -415,20 +415,6 @@ public class BudgetServiceImpl implements BudgetService {
     return total;
   }
 
-  @Override
-  public BigDecimal computeFirmGap(Budget budget) {
-    BigDecimal total = BigDecimal.ZERO;
-    if (budget.getBudgetLineList() != null) {
-      for (BudgetLine budgetLine : budget.getBudgetLineList()) {
-        total =
-            currencyScaleService.getCompanyScaledValue(budget, total.add(budgetLine.getFirmGap()));
-      }
-    }
-    budget.setTotalFirmGap(total);
-
-    return total;
-  }
-
   @Transactional
   @Override
   public void validateBudget(Budget budget, boolean checkBudgetKey) throws AxelorException {
