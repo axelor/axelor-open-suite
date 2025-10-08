@@ -198,8 +198,10 @@
         </panel-related>
         <panel-include view="incl-frequency-panel-task-form"/>
       </panel>
+      <!-- MGM-68 -->
       <panel name="financialDataPanel" title="Financial Data" colSpan="12"
-        if-module="axelor-business-project" if="__config__.app.isApp('business-project')">
+        if-module="axelor-business-project"
+        if="__config__.app.isApp('business-project') || __user__.group.code == admins">
         <field name="invoicingType" onChange="action-project-task-attrs-onchange-invoice-type"
           readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length > 0"/>
         <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true">
@@ -257,9 +259,10 @@
         </panel>
       </panel>
 
-      <panel-include view="incl-checklist-task-panel-form"/>
-
-      <panel-include view="incl-links-panel-form"/>
+      <!-- MGM-68 -->
+      <panel-include view="incl-checklist-task-panel-form"
+        if="__user__.group.code == admins"/>
+      <!--<panel-include view="incl-links-panel-form"/> -->
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -365,14 +368,13 @@
     <panel name="overviewPanel" title="Overview">
       <field name="ticketNumber"
         if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
-      <field name="project" colSpan="6" form-view="business-project-form"
+      <field name="project" colSpan="5" form-view="business-project-form"
         grid-view="business-project-grid"
         onChange="action-business-project-task-group-project-onchange"
         domain="self.projectStatus.isCompleted = false" required="true"/>
-      <field name="parentTask" readonlyIf="project == null" colSpan="6"
-        form-view="business-project-task-form" grid-view="business-project-task-grid"
-        onChange="action-project-task-record-get-parent-timeunit"
-        onSelect="action-project-task-attrs-project-parent-task-configurations"/>
+      <!-- MGM-68 -->
+      <!-- <field name="parentTask" readonlyIf="project == null" colSpan="6" form-view="business-project-task-form"
+        grid-view="business-project-task-grid" onChange="action-project-task-record-get-parent-timeunit" onSelect="action-project-task-attrs-project-parent-task-configurations"/> -->
       <field name="frameworkCustomerContract"
         onSelect="action-project-task-method-set-customer-contract-domain"
         showIf="project.allowToGetPricesFromFrameworkContract"
@@ -381,11 +383,8 @@
         onSelect="action-project-task-method-set-supplier-contract-domain"
         showIf="project.allowToGetPricesFromFrameworkContract"
         onChange="action-project-task-group-set-price-from-contract"/>
-      <field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false"
-        canView="false" canEdit="false"
-        onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true"
-        form-view="user-form" grid-view="user-grid"
-        onChange="action-project-task-group-assigned-to-on-change"/>
+      <!-- MGM-68 -->
+      <field name="assignedTo" hidden="true"/>
       <field name="saleOrderLine" readonly="true" showIf="saleOrderLine"
         form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
       <field name="project.allowToGetPricesFromFrameworkContract" hidden="true"/>
@@ -393,15 +392,19 @@
         form-view="site-form" grid-view="site-grid"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
 
-      <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
-        collapseIf="false" canCollapse="true">
-        <panel-include view="incl-characteristics-panel-form"/>
-        <field name="invoicingProgress" readonly="true" colSpan="4"
-          showIf="invoicingType == 4"/>
-        <field name="description" colSpan="12" widget="html"/>
-      </panel>
-
-      <panel-include view="incl-customized-field-panel-form"/>
+      <!-- MGM-68 -->
+      <!-- <panel name="characteristicsPanel" title="Characteristics" colSpan="12" collapseIf="false"
+        canCollapse="true"> -->
+      <panel-include view="incl-characteristics-panel-form"/>
+      <field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false"
+        canView="false" canEdit="false"
+        onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true"
+        form-view="user-form" grid-view="user-grid"
+        onChange="action-project-task-group-assigned-to-on-change"/>
+      <field name="invoicingProgress" readonly="true" colSpan="4" showIf="invoicingType == 4"/>
+      <field name="description" colSpan="12" widget="html"/>
+      <!-- </panel> -->
+      <!-- <panel-include view="incl-customized-field-panel-form"/> -->
     </panel>
   </form>
 

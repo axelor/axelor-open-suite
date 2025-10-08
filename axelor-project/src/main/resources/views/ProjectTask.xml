@@ -198,20 +198,22 @@
       <field name="priority" colSpan="4" showIf="project.isShowPriority"
         onSelect="action-project-task-atts-priority-on-select" requiredIf="project.isShowPriority"
         canView="false"/>
-      <field name="taskDate" colSpan="4"
+      <!-- MGM-68 -->
+      <field name="taskDate" colSpan="6"
         onChange="action-project-task-attrs-set-task-duration,action-project-task-record-set-date-or-frequency-changed"
         required="true"/>
-      <field name="taskEndDate" colSpan="4"
+      <field name="taskEndDate" colSpan="6"
         onChange="action-project-task-attrs-set-task-duration"/>
-      <field name="taskDeadline" title="Task deadline" colSpan="4"/>
-      <field name="tagSet" widget="TagSelect" x-color-field="color" form-view="tag-form"
-        grid-view="tag-simplified-grid" colSpan="4"
-        onSelect="action-project-task-method-set-tag-domain"/>
+      <field name="taskDeadline" title="Task deadline" colSpan="6"/>
+      <!-- MGM-68 -->
+      <!-- <field name="tagSet" widget="TagSelect" x-color-field="color" form-view="tag-form" grid-view="tag-simplified-grid"
+        colSpan="4" onSelect="action-project-task-method-set-tag-domain"/> -->
       <field name="progress" onChange="action-project-task-group-progress-onchange"
         showIf="project.isShowProgress" colSpan="4" min="0" max="100" widget="Slider" x-step="1"
         x-scale="0"/>
-      <field name="targetVersion" domain=":project member of self.projectSet" colSpan="4"
-        form-view="project-version-form" grid-view="project-version-grid"/>
+      <!-- MGM-68 -->
+      <!-- <field name="targetVersion" domain=":project member of self.projectSet" colSpan="4" form-view="project-version-form"
+        grid-view="project-version-grid"/> -->
       <field name="activeSprint"
         showIf="project.sprintManagementSelect == 'project' || (project.sprintManagementSelect == 'version' &amp;&amp; targetVersion)"
         onSelect="action-project-task-method-compute-sprint-domain" colSpan="4"
