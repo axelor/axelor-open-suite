@@ -7,7 +7,7 @@
     icon="list-task" if="__config__.app.isApp('project')" icon-background="#3f6bb9"/>
 
   <menuitem name="menu-project-project-root" parent="menu-project-root" order="0"
-    title="Projects" icon="fa-tasks" icon-background="#3f6bb9"/>
+    title="Projects" icon="fa-tasks" icon-background="#3f6bb9" hidden="true"/>
 
   <menuitem name="project-all" parent="menu-project-project-root" order="100"
     title="Projects" action="project.all"/>

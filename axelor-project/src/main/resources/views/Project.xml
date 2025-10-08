@@ -121,7 +121,7 @@
       <panel-include view="incl-checklist-panel-form"/>
 
       <panel title="Log Times" name="logTimesPanel" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')">
+        if="__config__.app.isApp('timesheet') &amp;&amp; __user__.group.code == 'admins'">
         <panel-include view="incl-log-times-panel-form"/>
       </panel>
       <panel-include view="incl-project-roadmap-panel-form"/>
@@ -130,7 +130,7 @@
         <panel-include view="incl-project-config-panel-form"/>
       </panel>
     </panel-tabs>
-    <panel-mail name="mailPanel">
+    <panel-mail name="mailPanel" if="__user__.group.code == 'admins'">
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>
@@ -248,7 +248,7 @@
     model="com.axelor.apps.project.db.Project">
     <panel-include view="incl-project-structure-panel-form"/>
     <panel title="General configuration" name="generalConfigurationsPanel" colSpan="12"
-      canCollapse="true" collapseIf="false">
+      canCollapse="true" collapseIf="false" if="__user__.group.code == 'admins'">
       <!-- MGM-66 -->
       <!-- <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="productSet"
         widget="TagSelect" canEdit="false" domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-activity-form"
@@ -264,7 +264,7 @@
       <!-- <field name="sprintManagementSelect" widget="RadioSelect"/> -->
     </panel>
     <panel name="taskConfigurationPanel" title="Task configuration" colSpan="12"
-      canCollapse="true" collapseIf="false">
+      canCollapse="true" collapseIf="true">
       <field name="taskStatusManagementSelect" widget="RadioSelect"
         readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
         onChange="action-project-record-manage-task-status-set, action-project-record-activate-task-status-by-category"/>
@@ -310,7 +310,7 @@
       <field name="projectTaskList" hidden="true"/>
     </panel>
     <panel title="View configuration" name="viewConfig" colSpan="12" canCollapse="true"
-      collapseIf="false">
+      collapseIf="true">
       <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"
         if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
@@ -363,7 +363,7 @@
 
   <form name="incl-checklist-panel-form" title="Check list"
     model="com.axelor.apps.project.db.Project">
-    <panel name="templatePanel" title="Check list">
+    <panel name="templatePanel" title="Check list" if="__user__.group.code == 'admins'">
       <field name="$projectCheckListTemplate" title="Check list template" type="Many-to-one"
         target="com.axelor.apps.project.db.ProjectCheckListTemplate"
         domain="self.typeSelect = 'project'"/>
