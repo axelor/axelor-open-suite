@@ -744,6 +744,7 @@
 "This option prevents adding by mistake too many products in carts from a stock location.",,,
 "This product is not stock managed.",,,
 "This quantity is not available in stock.",,,
+"This stock move cannot be removed from the logisticsal form, as it shares one of its packaging %s with another stock move.",,,
 "This stock move needs to be invoiced manually, manual intervention is needed : %s",,,
 "Timetable",,,
 "Timetable computation date",,,

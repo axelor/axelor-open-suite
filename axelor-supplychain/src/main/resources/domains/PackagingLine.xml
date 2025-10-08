@@ -17,6 +17,9 @@
       ref="com.axelor.apps.stock.db.TrackingNumber"/>
     <decimal name="qty" title="Qty" default="0" scale="3" precision="20"/>
 
+    <entity-listener
+      class="com.axelor.apps.supplychain.db.repo.listener.PackagingLineListener"/>
+
   </entity>
 
 </domain-models>

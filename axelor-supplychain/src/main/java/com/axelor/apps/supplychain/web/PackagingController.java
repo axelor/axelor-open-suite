@@ -27,7 +27,6 @@ import com.axelor.apps.supplychain.db.repo.PackagingRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.packaging.PackagingLineService;
 import com.axelor.apps.supplychain.service.packaging.PackagingService;
-import com.axelor.apps.supplychain.service.packaging.PackagingStockMoveLineService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -81,13 +80,12 @@ public class PackagingController {
       Long packagingId =
           Long.parseLong(((LinkedHashMap) context.get("packaging")).get("id").toString());
 
+      StockMoveLineRepository stockMoveLineRepository = Beans.get(StockMoveLineRepository.class);
+
       List<StockMoveLine> selectedStockMoveLineList =
           stockMoveLineList.stream()
               .filter(map -> Boolean.TRUE.equals(map.get("selected")))
-              .map(
-                  map ->
-                      Beans.get(StockMoveLineRepository.class)
-                          .find(((Integer) map.get("id")).longValue()))
+              .map(map -> stockMoveLineRepository.find(((Integer) map.get("id")).longValue()))
               .collect(Collectors.toList());
 
       if (CollectionUtils.isEmpty(selectedStockMoveLineList)) {
@@ -96,7 +94,6 @@ public class PackagingController {
       }
       Packaging packaging = Beans.get(PackagingRepository.class).find(packagingId);
       Beans.get(PackagingLineService.class).addPackagingLines(packaging, selectedStockMoveLineList);
-      Beans.get(PackagingStockMoveLineService.class).updateQtyRemainingToPackage(packaging);
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -108,5 +105,20 @@ public class PackagingController {
     packaging = Beans.get(PackagingRepository.class).find(packaging.getId());
     Beans.get(PackagingService.class).addChildPackaging(packaging);
     response.setReload(true);
+  }
+
+  @SuppressWarnings("unchecked")
+  public void removePackagings(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+    if (context.get("_ids") == null) {
+      return;
+    }
+    PackagingRepository packagingRepository = Beans.get(PackagingRepository.class);
+    List<Integer> packagingIds = (List<Integer>) context.get("_ids");
+    List<Packaging> packagingList =
+        packagingIds.stream()
+            .map(id -> packagingRepository.find(id.longValue()))
+            .collect(Collectors.toList());
+    Beans.get(PackagingService.class).removePackagings(packagingList);
   }
 }

@@ -457,4 +457,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String NO_ANY_STOCK_MOVE_LINE_SELECTED = /*$$(*/
       "At least one stock move line must be selected." /*)*/;
+
+  public static final String STOCK_MOVE_REMOVAL_NOT_ALLOWED = /*$$(*/
+      "This stock move cannot be removed from the logisticsal form, as it shares one of its packaging %s with another stock move." /*)*/;
 }
