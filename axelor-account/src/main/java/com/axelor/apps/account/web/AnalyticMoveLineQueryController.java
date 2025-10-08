@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
@@ -35,7 +34,6 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -47,7 +45,6 @@ import com.axelor.utils.ContextTool;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -297,9 +294,9 @@ public class AnalyticMoveLineQueryController {
   protected Company getCompanyFromContextParent(Context context) {
     Company company = (Company) context.get("company");
     if (company == null) {
-      if(context.getParent() != null){
+      if (context.getParent() != null) {
         company = getCompanyFromContextParent(context.getParent());
-      }else {
+      } else {
         return company;
       }
     }
@@ -309,9 +306,9 @@ public class AnalyticMoveLineQueryController {
   protected Move getMoveFromContextParent(Context context) {
     Move move = (Move) context.get("move");
     if (move == null) {
-      if(context.getParent() != null) {
+      if (context.getParent() != null) {
         move = getMoveFromContextParent(context.getParent());
-      }else {
+      } else {
         return move;
       }
     }
