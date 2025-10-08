@@ -357,28 +357,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     save(contract);
   }
 
-  public List<Contract> getContractToTerminate(LocalDate date) {
-    return all()
-        .filter(
-            "self.statusSelect = ?1 AND self.currentContractVersion.statusSelect = ?2 AND self.isTacitRenewal IS FALSE "
-                + "AND (self.toClosed IS TRUE OR self.currentContractVersion.supposedEndDate >= ?3)",
-            ACTIVE_CONTRACT,
-            ContractVersionRepository.ONGOING_VERSION,
-            date)
-        .fetch();
-  }
-
-  public List<Contract> getContractToRenew(LocalDate date) {
-    return all()
-        .filter(
-            "self.statusSelect = ?1 AND self.isTacitRenewal IS TRUE AND self.toClosed IS FALSE "
-                + "AND self.currentContractVersion.statusSelect = ?2 AND self.currentContractVersion.supposedEndDate >= ?3",
-            ACTIVE_CONTRACT,
-            ContractVersionRepository.ONGOING_VERSION,
-            date)
-        .fetch();
-  }
-
   @Transactional(rollbackOn = {Exception.class})
   public Contract copyFromTemplate(Contract contract, ContractTemplate template)
       throws AxelorException {
