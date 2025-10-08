@@ -211,10 +211,15 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
     MoveLine reverseMoveLine =
         super.generateReverseMoveLine(reverseMove, orgineMoveLine, dateOfReversion, isDebit);
     if (reverseMoveLine
-        .getAccount()
-        .getAccountType()
-        .getTechnicalTypeSelect()
-        .equals(AccountTypeRepository.TYPE_CASH)) {
+            .getAccount()
+            .getAccountType()
+            .getTechnicalTypeSelect()
+            .equals(AccountTypeRepository.TYPE_CASH)
+        && (bankReconciliationLineRepository
+                .all()
+                .filter("self.moveLine.id = ?", reverseMoveLine.getId())
+                .count()
+            > 0)) {
       reverseMoveLine.setBankReconciledAmount(
           reverseMoveLine
               .getCurrencyAmount()
@@ -233,12 +238,17 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   protected void fillBankReconciledAmount(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (Optional.of(moveLine)
-          .map(MoveLine::getAccount)
-          .map(Account::getAccountType)
-          .map(
-              accountType ->
-                  AccountTypeRepository.TYPE_CASH.equals(accountType.getTechnicalTypeSelect()))
-          .orElse(false)) {
+              .map(MoveLine::getAccount)
+              .map(Account::getAccountType)
+              .map(
+                  accountType ->
+                      AccountTypeRepository.TYPE_CASH.equals(accountType.getTechnicalTypeSelect()))
+              .orElse(false)
+          && (bankReconciliationLineRepository
+                  .all()
+                  .filter("self.moveLine.id = ?", moveLine.getId())
+                  .count()
+              > 0)) {
         moveLine.setBankReconciledAmount(moveLine.getCurrencyAmount().abs());
       }
     }
