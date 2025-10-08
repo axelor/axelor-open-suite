@@ -24,7 +24,9 @@ import com.axelor.apps.account.db.AnalyticMoveLineQuery;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
@@ -33,6 +35,7 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -44,7 +47,9 @@ import com.axelor.utils.ContextTool;
 import com.google.common.base.Joiner;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -254,5 +259,62 @@ public class AnalyticMoveLineQueryController {
 
     Beans.get(AnalyticMoveLineParentService.class).refreshAxisOnParent(analyticMoveLine);
     response.setReload(true);
+  }
+
+  public void setAnalyticJournalDomain(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      AnalyticMoveLine analyticMoveLine = context.asType(AnalyticMoveLine.class);
+      String domain = null;
+      Company company = null;
+
+      if (context.getParent() == null) {
+        domain = String.format("self.statusSelect = %s", AnalyticJournalRepository.STATUS_ACTIVE);
+      } else {
+        company =
+            Optional.ofNullable(analyticMoveLine.getAnalyticAxis())
+                .map(AnalyticAxis::getCompany)
+                .orElse(null);
+        if (company == null) {
+          company =
+              getCompanyFromContextParent(context) != null
+                  ? getCompanyFromContextParent(context)
+                  : Optional.ofNullable(getMoveFromContextParent(context))
+                      .map(Move::getCompany)
+                      .orElse(null);
+        }
+      }
+      if (domain == null) {
+        domain = Beans.get(AnalyticMoveLineService.class).getAnalyticJournalDomain(company);
+      }
+
+      response.setAttr("analyticJournal", "domain", domain);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  protected Company getCompanyFromContextParent(Context context) {
+    Company company = (Company) context.get("company");
+    if (company == null) {
+      if(context.getParent() != null){
+        company = getCompanyFromContextParent(context.getParent());
+      }else {
+        return company;
+      }
+    }
+    return company;
+  }
+
+  protected Move getMoveFromContextParent(Context context) {
+    Move move = (Move) context.get("move");
+    if (move == null) {
+      if(context.getParent() != null) {
+        move = getMoveFromContextParent(context.getParent());
+      }else {
+        return move;
+      }
+    }
+    return move;
   }
 }

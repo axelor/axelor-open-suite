@@ -85,7 +85,7 @@
     <panel name="mainPanel">
       <field name="analyticJournal" form-view="analytic-journal-form"
         grid-view="analytic-journal-grid"
-        onSelect="action-attrs-domain-onselect-journal-analytic-move-line"/>
+        onSelect="action-method-domain-onselect-journal-analytic-move-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onSelect="action-method-domain-onselect-axis-analytic-move-line"
         onChange="action-record-onchange-axis-analytic-move-line"/>
@@ -129,7 +129,7 @@
     <panel name="mainPanel">
       <field name="analyticJournal" grid-view="analytic-journal-grid"
         form-view="analytic-journal-form"
-        onSelect="action-attrs-domain-onselect-journal-analytic-move-line"/>
+        onSelect="action-method-domain-onselect-journal-analytic-move-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onSelect="action-method-domain-onselect-axis-analytic-move-line" required="true"/>
       <field name="analyticAccount" showIf="analyticAxis" grid-view="analytic-account-grid"
@@ -250,17 +250,10 @@
       method="setAnalyticAxisDomain"/>
   </action-method>
 
-  <action-attrs name="action-attrs-domain-onselect-journal-analytic-move-line">
-    <attribute name="domain" for="analyticJournal"
-      expr="eval: &quot;self.statusSelect = 1 AND (self.company is null OR self.company.id = ${analyticAxis.company.id} ) &quot;"
-      if="analyticAxis &amp;&amp; analyticAxis.company"/>
-    <attribute name="domain" for="analyticJournal"
-      expr="eval: &quot;self.statusSelect = 1 AND (self.company is null OR self.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id}) &quot;"
-      if="!(analyticAxis?.company) &amp;&amp; __parent__"/>
-    <attribute name="domain" for="analyticJournal"
-      expr="eval: &quot;self.statusSelect = 1 &quot;"
-      if="!(analyticAxis?.company) &amp;&amp; !__parent__"/>
-  </action-attrs>
+  <action-method name="action-method-domain-onselect-journal-analytic-move-line">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="setAnalyticJournalDomain"/>
+  </action-method>
 
   <action-group name="action-group-domain-onselect-analytic-account">
     <action name="action-method-domain-onselect-analytic-account-analytic-line"
