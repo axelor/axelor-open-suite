@@ -29,13 +29,17 @@ public class PackagingLineListener {
 
   @PrePersist
   public void onSave(PackagingLine packagingLine) throws AxelorException {
-    Beans.get(PackagingLineService.class).updateStockMoveSet(packagingLine, true);
-    Beans.get(PackagingLineService.class).updateQtyRemainingToPackage(packagingLine, true);
+    PackagingLineService packagingLineService = Beans.get(PackagingLineService.class);
+    packagingLineService.updateStockMoveSet(packagingLine, true);
+    packagingLineService.updateQtyRemainingToPackage(packagingLine, true);
+    packagingLineService.updatePackagingMass(packagingLine, true);
   }
 
   @PreRemove
   public void onRemove(PackagingLine packagingLine) throws AxelorException {
-    Beans.get(PackagingLineService.class).updateStockMoveSet(packagingLine, false);
-    Beans.get(PackagingLineService.class).updateQtyRemainingToPackage(packagingLine, false);
+    PackagingLineService packagingLineService = Beans.get(PackagingLineService.class);
+    packagingLineService.updateStockMoveSet(packagingLine, false);
+    packagingLineService.updateQtyRemainingToPackage(packagingLine, false);
+    packagingLineService.updatePackagingMass(packagingLine, false);
   }
 }

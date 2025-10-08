@@ -92,7 +92,7 @@ public class UnitConversionServiceImpl implements UnitConversionService {
       throws AxelorException {
     List<UnitConversion> unitConversionList = new ArrayList<>();
     if (startUnit != null && endUnit != null && startUnit != endUnit) {
-      unitConversionList = fetchUnitConversionList(startUnit, endUnit);
+      unitConversionList = fetchUnitConversionList(startUnit, endUnit, true);
     }
     return convert(unitConversionList, startUnit, endUnit, value, scale, product, "Product");
   }
@@ -164,7 +164,7 @@ public class UnitConversionServiceImpl implements UnitConversionService {
       throws AxelorException, CompilationFailedException, ClassNotFoundException, IOException {
     List<UnitConversion> unitConversionList = new ArrayList<>();
     if (startUnit != null && endUnit != null && startUnit != endUnit) {
-      unitConversionList = fetchUnitConversionList(startUnit, endUnit);
+      unitConversionList = fetchUnitConversionList(startUnit, endUnit, true);
     }
     return getCoefficient(unitConversionList, startUnit, endUnit, product, "Product");
   }
@@ -245,7 +245,8 @@ public class UnitConversionServiceImpl implements UnitConversionService {
         endUnit.getName());
   }
 
-  protected List<UnitConversion> fetchUnitConversionList(Unit startUnit, Unit endUnit) {
+  protected List<UnitConversion> fetchUnitConversionList(
+      Unit startUnit, Unit endUnit, boolean autoFlush) {
     String key = getKey(startUnit, endUnit);
     List<UnitConversion> unitConversionList = unitConversionCache.getIfPresent(key);
     if (unitConversionList != null) {
@@ -254,6 +255,7 @@ public class UnitConversionServiceImpl implements UnitConversionService {
     unitConversionList =
         unitConversionRepo
             .all()
+            .autoFlush(autoFlush)
             .filter(
                 "self.entitySelect = :entitySelect AND ((self.startUnit = :startUnit AND self.endUnit = :endUnit) OR (self.startUnit = :endUnit AND self.endUnit = :startUnit))")
             .bind("entitySelect", UnitConversionRepository.ENTITY_ALL)
@@ -269,5 +271,16 @@ public class UnitConversionServiceImpl implements UnitConversionService {
         .sorted()
         .map(String::valueOf)
         .collect(Collectors.joining("::"));
+  }
+
+  @Override
+  public BigDecimal convertWithAutoFlushFalse(
+      Unit startUnit, Unit endUnit, BigDecimal value, int scale, Product product)
+      throws AxelorException {
+    List<UnitConversion> unitConversionList = new ArrayList<>();
+    if (startUnit != null && endUnit != null && startUnit != endUnit) {
+      unitConversionList = fetchUnitConversionList(startUnit, endUnit, false);
+    }
+    return convert(unitConversionList, startUnit, endUnit, value, scale, product, "Product");
   }
 }

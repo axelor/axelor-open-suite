@@ -198,6 +198,7 @@
     <view-param name="popup" value="true"/>
     <domain>self.stockMove.id IN (:_stockMoveIds)</domain>
     <context name="_stockMoveIds" expr="eval: stockMoveList?.collect{it.id}"/>
+    <context name="_fromLogisticalForm" expr="eval: true"/>
   </action-view>
 
   <action-group name="action-logistical-form-group-stock-move-list-change">

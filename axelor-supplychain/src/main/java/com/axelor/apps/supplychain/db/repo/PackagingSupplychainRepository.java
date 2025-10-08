@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.supplychain.db.Packaging;
+import com.axelor.apps.supplychain.service.packaging.PackagingMassService;
 import com.axelor.apps.supplychain.service.packaging.PackagingSequenceService;
 import com.google.inject.Inject;
 import java.util.Map;
@@ -30,18 +31,23 @@ public class PackagingSupplychainRepository extends PackagingRepository {
 
   protected AppBaseService appBaseService;
   protected PackagingSequenceService packagingSequenceService;
+  protected PackagingMassService packagingMassService;
 
   @Inject
   public PackagingSupplychainRepository(
-      AppBaseService appBaseService, PackagingSequenceService packagingSequenceService) {
+      AppBaseService appBaseService,
+      PackagingSequenceService packagingSequenceService,
+      PackagingMassService packagingMassService) {
     this.appBaseService = appBaseService;
     this.packagingSequenceService = packagingSequenceService;
+    this.packagingMassService = packagingMassService;
   }
 
   @Override
   public Packaging save(Packaging packaging) {
     try {
       packagingSequenceService.generatePackagingNumber(packaging);
+      packagingMassService.updatePackagingMass(packaging);
       return super.save(packaging);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

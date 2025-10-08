@@ -946,6 +946,7 @@
 "This batch will recompute stock location quantities and reset all WAP history lines, are you sure you want to continue ?",,,
 "This field can have one of the following values (Purchase, Manufacturing, Inventory, Sale, Manual). The value is fixed when the tracking number is created.",,,
 "This stock move will have a huge impact (more than",,,
+"This value is the packed gross mass, that is, the total gross mass of all packaged products plus the gross mass of their packagings (as defined in its logistical form).",,,
 "Time before expiry (in days)",,,
 "Title",,,
 "Title of dimension name (0)",,,
