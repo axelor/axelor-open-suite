@@ -26,5 +26,6 @@ import wslite.json.JSONException;
 
 public interface MapGroupService {
 
-  List<Map<String, Object>> computeData(MapGroup mapGroup) throws AxelorException, JSONException;
+  List<Map<String, Object>> computeData(MapGroup mapGroup)
+      throws AxelorException, JSONException, ClassNotFoundException;
 }
