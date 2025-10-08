@@ -64,16 +64,6 @@ public class BudgetController {
     }
   }
 
-  public void computeToBeCommittedAndFirmGap(ActionRequest request, ActionResponse response) {
-    try {
-      Budget budget = request.getContext().asType(Budget.class);
-      BudgetService budgetService = Beans.get(BudgetService.class);
-      response.setValue("totalFirmGap", budgetService.computeFirmGap(budget));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   public void manageBudgetKey(ActionRequest request, ActionResponse response) {
     try {
       if (request.getContext() == null) {
