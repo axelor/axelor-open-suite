@@ -8,7 +8,7 @@
   <entity name="TaskReport">
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
-    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
+    <many-to-one name="employee" ref="com.axelor.auth.db.User" title="Employee"/>
     <many-to-one name="location" ref="com.axelor.apps.base.db.Address" title="Location"/>
     <many-to-one name="printedPdf" title="Printed PDF" ref="com.axelor.meta.db.MetaFile"/>
 
@@ -18,20 +18,20 @@
     <datetime name="endTime" title="End time"/>
     <decimal name="totalWorkHours" title="Total working time (hours)" precision="6"
       scale="2" readonly="true"/>
-    <many-to-many name="activities" ref="com.axelor.apps.base.db.Product"
-      title="Activities performed"/>
+    <many-to-many name="activities"
+      ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Activities performed"/>
 
     <boolean name="travelExpenses" title="Travel expenses"/>
     <boolean name="toolsUsage" title="Tools usage"/>
     <boolean name="emergencyService" title="Emergency service"/>
-    <string name="material" title="Material" large="true"/>
+    <boolean name="dirtAllowance" title="Dirt allowance"/>
+    <string name="material" title="Materials" large="true"/>
     <string name="otherServices" title="Other services" large="true"/>
 
     <string name="comments" title="Comments" large="true"/>
     <binary name="employeeSignature" title="Employee signature"/>
     <string name="customerName" title="Customer name"/>
     <binary name="customerSignature" title="Customer signature"/>
-    <datetime name="signedOn" title="Signed on"/>
   </entity>
 
 </domain-models>

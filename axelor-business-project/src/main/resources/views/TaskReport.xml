@@ -16,34 +16,36 @@
 
   <!-- Form View -->
   <form name="task-report-form" title="Task Reports"
-    model="com.axelor.apps.businessproject.db.TaskReport">
+    model="com.axelor.apps.businessproject.db.TaskReport" onNew="action-task-report-default">
 
     <panel title="General Information">
-      <field name="project" title="Order"/>
+      <field name="project" title="Order"
+        domain="self.membersUserSet.id = :__user__ OR self.assignedTo.id = :__user__"
+        onChange="action-task-report-on-change-project" required="true"/>
+      <field name="customer" hidden="true"/>
       <field name="customer"/>
-      <field name="employee"/>
-      <field name="location"/>
+      <field name="location" canEdit="true"/>
       <field name="taskDate"/>
     </panel>
 
     <panel title="Work Timing">
-      <field name="startTime"/>
-      <field name="breakTimeHours"/>
-      <field name="endTime"/>
+      <field name="startTime" onChange="action-task-report-on-change-time"/>
+      <field name="breakTimeHours" onChange="action-task-report-on-change-time"/>
+      <field name="endTime" onChange="action-task-report-on-change-time"/>
       <field name="totalWorkHours"/>
     </panel>
 
     <panel title="Work Details">
+      <field name="activities" colSpan="12" widget="TagSelect" canEdit="false"/>
       <panel colSpan="12">
-
-        <panel title="Additional Services" colSpan="8">
-          <field name="travelExpenses" colSpan="4" widget="checkbox"/>
-          <field name="toolsUsage" colSpan="4" widget="checkbox"/>
-          <field name="emergencyService" colSpan="4" widget="checkbox"/>
+        <panel title="Additional Services" colSpan="12">
+          <field name="travelExpenses" colSpan="3" widget="checkbox"/>
+          <field name="toolsUsage" colSpan="3" widget="checkbox"/>
+          <field name="emergencyService" colSpan="3" widget="checkbox"/>
+          <field name="dirtAllowance" colSpan="3" widget="checkbox"/>
         </panel>
 
         <panel title="Activity Details" colSpan="12">
-          <field name="activities" colSpan="12" widget="multiselect"/>
           <field name="material" colSpan="12" widget="textarea"/>
           <field name="otherServices" colSpan="12" widget="textarea"/>
           <field name="comments" title="Comments" colSpan="12" widget="textarea"/>
@@ -51,19 +53,19 @@
       </panel>
     </panel>
 
-    <panel title="Sign-Off" toolbar="true">
+    <panel title="Sign-Off">
       <panel colSpan="12">
-        <panel colSpan="6">
-          <field name="employeeSignature" title="Employee Signature" widget="drawing"
-            colSpan="12"/>
-        </panel>
-        <panel colSpan="6">
-          <field name="customerName" colSpan="12"/>
-          <field name="customerSignature" title="Customer Signature" widget="drawing"
-            colSpan="12"/>
-          <field name="signedOn" colSpan="12" align="right" widget="date"/>
-        </panel>
+        <field name="employee" title="Employee Name"/>
+        <field name="customerName" title="Customer Name" required="true"/>
+
+        <field name="employeeSignature" title="Employee Signature" widget="drawing"
+          colSpan="6"/>
+        <field name="customerSignature" title="Customer Signature" widget="drawing"
+          colSpan="6"/>
       </panel>
+    </panel>
+
+    <panel name="printreport">
       <button name="printTaskReport" title="Print Report" icon="fa-print"
         onClick="action-task-report-method-print" colSpan="12"/>
     </panel>
@@ -74,19 +76,29 @@
       method="printTaskReport"/>
   </action-method>
 
-  <menuitem name="menu-task-report" title="Task Reports" parent="menu-project"
-    action="task-report-view" icon="fa-tasks"/>
-
   <action-view name="task-report-view" title="Task Reports"
     model="com.axelor.apps.businessproject.db.TaskReport">
     <view type="grid" name="task-report-grid"/>
     <view type="form" name="task-report-form"/>
   </action-view>
 
-  <!-- <action-report name="action-report-task-report" -->
-  <!-- model="com.axelor.apps.businessproject.db.TaskReport" design="task-report.rptdesign" -->
-  <!-- output="task-report-${date}-${time}" format="pdf" attachment="true"> -->
-  <!-- <param name="reportId" expr="self.id"/> -->
-  <!-- </action-report> -->
+  <!-- Action when project changes - auto-fill all related fields -->
+  <action-record name="action-task-report-on-change-project"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <field name="customer" expr="eval: project?.clientPartner"/>
+    <field name="location" expr="eval: project?.customerAddress"/>
+  </action-record>
+
+  <action-view name="action-task-report-dashlet" title="Task Reports"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <view type="grid" name="task-report-grid"/>
+    <view type="form" name="task-report-form"/>
+  </action-view>
+
+  <action-record name="action-task-report-on-change-time"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <field name="totalWorkHours"
+      expr="eval: (startTime != null &amp;&amp; endTime != null) ? ( (java.time.Duration.between(startTime.toLocalTime(), endTime.toLocalTime()).toMinutes() / 60.0) - (breakTimeHours ?: 0) ) : 0"/>
+  </action-record>
 
 </object-views>

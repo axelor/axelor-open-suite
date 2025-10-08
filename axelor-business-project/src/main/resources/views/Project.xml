@@ -185,6 +185,17 @@
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
+      <!-- MGM-66 task reports -->
+      <panel title="Task Reports" name="taskReportsPanel">
+        <button name="addTaskReportBtn" onClick="action-business-project-add-task-report"
+          title="New Task Report" css="btn btn-sm btn-primary float-right" icon="fa-plus"
+          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+          showIf="id &amp;&amp; isBusinessProject"/>
+
+        <panel-dashlet name="taskReportsDashlet" title="Task Reports"
+          action="action-task-report-dashlet" colSpan="12" canNew="true" canEdit="true"
+          canRemove="true" domain="self.project.id = :id"/>
+      </panel>
 
       <panel-include view="incl-checklist-panel-form"/>
       <!--- MGM-66: display panel to only selected group e.g admins -->
@@ -1054,6 +1065,13 @@
       expr="eval:[id]"/>
     <context if="id != null &amp;&amp; isShowPhasesElements" name="_projectIds"
       expr="eval:[id] + childProjectList.collect{it->it.id}"/>
+  </action-view>
+  <!-- MGM-66 -->
+  <action-view name="action-business-project-add-task-report" title="New Task Report"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <view type="form" name="task-report-form"/>
+    <view-param name="popup" value="reload"/>
+    <context name="project" expr="eval: _self"/>
   </action-view>
 
   <action-attrs name="action-project-attrs-expense-line-select-lines">
