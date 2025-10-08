@@ -713,4 +713,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       }
     }
   }
+
+  @Override
+  @Transactional
+  public void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
+    stockMove.setFullySpreadOverLogisticalFormsFlag(true);
+  }
 }

@@ -460,4 +460,10 @@ public final class SupplychainExceptionMessage {
 
   public static final String STOCK_MOVE_REMOVAL_NOT_ALLOWED = /*$$(*/
       "This stock move cannot be removed from the logisticsal form, as it shares one of its packaging %s with another stock move." /*)*/;
+
+  public static final String LOGISTICAL_FORM_COLLECT_WRONG_STATUS = /*$$(*/
+      "Can only be collected if validated." /*)*/;
+
+  public static final String STOCK_MOVE_NOT_FULLY_PACKAGED = /*$$(*/
+      "One or several stock move lines are not fully packaged." /*)*/;
 }

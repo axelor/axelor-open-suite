@@ -19,8 +19,10 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
+import com.axelor.apps.supplychain.service.LogisticalFormSupplychainService;
 import com.axelor.apps.supplychain.service.packaging.PackagingStockMoveLineService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
@@ -51,6 +53,17 @@ public class LogisticalFormController {
       response.setValue("packagingList", logisticalForm.getPackagingList());
     } else {
       response.setValue("packagingList", savedLogisticalForm.getPackagingList());
+    }
+  }
+
+  public void processCollected(ActionRequest request, ActionResponse response) {
+    try {
+      LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+      logisticalForm = Beans.get(LogisticalFormRepository.class).find(logisticalForm.getId());
+      Beans.get(LogisticalFormSupplychainService.class).processCollected(logisticalForm);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }
