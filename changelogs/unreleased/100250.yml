@@ -1,0 +1,4 @@
+---
+title: "Move : fixed bank reconciled amount set when we don't have a linked bank reconciliation."
+module: axelor-bank-payment
+
