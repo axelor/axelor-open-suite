@@ -1,0 +1,3 @@
+---
+title: "Map group: fixed some context values are not bound inside the JPQL rule."
+module: axelor-base
