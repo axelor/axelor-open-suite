@@ -27,7 +27,7 @@
   </grid>
 
   <form model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form"
-    name="logistical-form-form" width="large" onNew="action-group-logistical-form-onnew"
+    name="logistical-form-form" width="*" onNew="action-group-logistical-form-onnew"
     onLoad="action-group-logistical-form-onload"
     onSave="action-logistical-form-validate-mass-on-save">
     <toolbar>

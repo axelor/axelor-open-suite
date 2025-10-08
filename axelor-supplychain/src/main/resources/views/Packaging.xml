@@ -37,8 +37,8 @@
 
   <form name="packaging-packaging-lines-form" model="com.axelor.apps.supplychain.db.Packaging"
     title="Packaging lines">
-    <panel-related field="packagingLineList"
-      showIf="packagingLineList.length || !$readonly()" editable="true">
+    <panel-related field="packagingLineList" showIf="packagingLineList.length"
+      editable="true">
       <field name="stockMoveLine" grid-view="stock-move-line-grid"
         form-view="stock-move-line-form"
         onSelect="action-packaging-line-method-stock-move-line-domain"
