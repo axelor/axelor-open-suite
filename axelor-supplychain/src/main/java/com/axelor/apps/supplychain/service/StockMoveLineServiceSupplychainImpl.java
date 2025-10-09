@@ -238,20 +238,21 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       } else {
         unitPriceUntaxed = purchaseOrderLine.getPriceDiscounted();
         unitPriceTaxed = purchaseOrderLine.getInTaxPrice();
-  if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
-              && stockMove.getIsReversion())
-          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
-              && !stockMove.getIsReversion())) {
-        BigDecimal shippingCoef =
-            shippingCoefService.getShippingCoef(
-                stockMoveLine.getProduct(),
-                stockMove.getPartner(),
-                stockMove.getCompany(),
-                stockMoveLine.getRealQty());
+        if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+                && stockMove.getIsReversion())
+            || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+                && !stockMove.getIsReversion())) {
+          BigDecimal shippingCoef =
+              shippingCoefService.getShippingCoef(
+                  stockMoveLine.getProduct(),
+                  stockMove.getPartner(),
+                  stockMove.getCompany(),
+                  stockMoveLine.getRealQty());
 
-        unitPriceUntaxed = unitPriceUntaxed.multiply(shippingCoef);
-        unitPriceTaxed = unitPriceTaxed.multiply(shippingCoef);
-      }      orderUnit = purchaseOrderLine.getUnit();
+          unitPriceUntaxed = unitPriceUntaxed.multiply(shippingCoef);
+          unitPriceTaxed = unitPriceTaxed.multiply(shippingCoef);
+        }
+        orderUnit = purchaseOrderLine.getUnit();
       }
     }
 
