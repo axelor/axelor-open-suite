@@ -175,7 +175,13 @@ public class BankOrderCheckServiceImpl implements BankOrderCheckService {
   }
 
   @Override
-  public void checkPreconditions(PaymentMode paymentMode, Integer partnerType, LocalDate bankOrderDate, Company senderCompany, BankDetails senderBankDetails) throws AxelorException {
+  public void checkPreconditions(
+      PaymentMode paymentMode,
+      Integer partnerType,
+      LocalDate bankOrderDate,
+      Company senderCompany,
+      BankDetails senderBankDetails)
+      throws AxelorException {
 
     if (bankOrderDate == null) {
       throw new AxelorException(
@@ -184,13 +190,15 @@ public class BankOrderCheckServiceImpl implements BankOrderCheckService {
     }
     if (paymentMode == null) {
       throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_PAYMENT_MODE_MISSING));
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_PAYMENT_MODE_MISSING));
     }
-    if (paymentMode.getBankOrderFileFormat() == null){
+    if (paymentMode.getBankOrderFileFormat() == null) {
       throw new AxelorException(
-              TraceBackRepository.CATEGORY_INCONSISTENCY,
-              String.format(I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_FORMAT_MISSING), paymentMode.getName()));
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(
+              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_FORMAT_MISSING),
+              paymentMode.getName()));
     }
     if (paymentMode.getOrderTypeSelect() == null || paymentMode.getOrderTypeSelect() == 0) {
       throw new AxelorException(

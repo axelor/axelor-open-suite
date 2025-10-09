@@ -25,7 +25,6 @@ import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
-
 import java.time.LocalDate;
 import java.util.List;
 
@@ -42,9 +41,15 @@ public interface BankOrderCheckService {
 
   BankDetails getDefaultBankDetails(BankOrder bankOrder);
 
-    void checkPreconditions(PaymentMode paymentMode, Integer partnerType, LocalDate bankOrderDate, Company senderCompany, BankDetails senderBankDetails) throws AxelorException;
+  void checkPreconditions(
+      PaymentMode paymentMode,
+      Integer partnerType,
+      LocalDate bankOrderDate,
+      Company senderCompany,
+      BankDetails senderBankDetails)
+      throws AxelorException;
 
-    void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder, BankOrderLine bankOrderLine)
+  void checkBankDetails(BankDetails bankDetails, BankOrder bankOrder, BankOrderLine bankOrderLine)
       throws AxelorException;
 
   List<BankOrderLine> checkBankOrderLineBankDetails(BankOrder bankOrder);

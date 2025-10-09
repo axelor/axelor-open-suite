@@ -63,10 +63,11 @@ public final class BankPaymentExceptionMessage {
       "%s : Please configure an ICS number for the company %s." /*)*/;
 
   /** BankOrder service */
-
   public static final String BANK_ORDER_DATE_MISSING = /*$$(*/ "Please fill bank order date" /*)*/;
+
   public static final String BANK_ORDER_TYPE_MISSING = /*$$(*/ "Please fill bank order type" /*)*/;
-  public static final String BANK_ORDER_FILE_FORMAT_MISSING = /*$$(*/ "Please fill the bank order file format on the payment mode %s" /*)*/;
+  public static final String BANK_ORDER_FILE_FORMAT_MISSING = /*$$(*/
+      "Please fill the bank order file format on the payment mode %s" /*)*/;
   public static final String BANK_ORDER_PARTNER_TYPE_MISSING = /*$$(*/
       "Please fill partner type for the bank order" /*)*/;
   public static final String BANK_ORDER_COMPANY_MISSING = /*$$(*/
