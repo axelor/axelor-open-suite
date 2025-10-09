@@ -77,6 +77,8 @@ import com.axelor.apps.budget.service.ReconcileInvoiceTermComputationBudgetServi
 import com.axelor.apps.budget.service.ReconcileToolBudgetService;
 import com.axelor.apps.budget.service.ReconcileToolBudgetServiceImpl;
 import com.axelor.apps.budget.service.UnreconcileBudgetServiceImpl;
+import com.axelor.apps.budget.service.compute.BudgetComputeService;
+import com.axelor.apps.budget.service.compute.BudgetComputeServiceImpl;
 import com.axelor.apps.budget.service.compute.BudgetDistributionComputeService;
 import com.axelor.apps.budget.service.compute.BudgetDistributionComputeServiceImpl;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
@@ -228,5 +230,6 @@ public class BudgetModule extends AxelorModule {
     bind(MoveBudgetDistributionService.class).to(MoveBudgetDistributionServiceImpl.class);
     bind(BudgetDistributionComputeService.class).to(BudgetDistributionComputeServiceImpl.class);
     bind(MoveLineToolBudgetService.class).to(MoveLineToolBudgetServiceImpl.class);
+    bind(BudgetComputeService.class).to(BudgetComputeServiceImpl.class);
   }
 }
