@@ -1,0 +1,3 @@
+---
+title: "Batch stock rules: fixed an issue where data could be skipped."
+module: axelor-supplychain
