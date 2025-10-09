@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="userProperties">
         <structure>
             <property name="name">test</property>
@@ -7006,7 +7006,7 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                             <property name="hideDetail">false</property>
                             <list-property name="sort">
                                 <structure>
-                                    <expression name="key" type="javascript">var levels = row["levelIndicator"].split(".");
+                                    <expression name="key" type="javascript">var levels = row["levelIndicator"] ? row["levelIndicator"].split(".") : row["sequence"] ? row["sequence"] : row["levelNo"];
 var levelScalingFactor = 10000;
 var value = 0;
 for (var i = 0; i &lt; levels.length; i++) {
