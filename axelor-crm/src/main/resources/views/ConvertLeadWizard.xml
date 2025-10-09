@@ -14,7 +14,7 @@
         type="integer" selection="crm.convert.lead.wizard.lead.to.partner.select"/>
       <field name="$selectPartner" showIf="$leadToPartnerSelect == 2"
         requiredIf="$leadToPartnerSelect == 2" title="Select Partner" widget="ManyToOne"
-        domain="self.isContact = 'false'" form-view="partner-form" grid-view="partner-grid"
+        domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"
         target="com.axelor.apps.base.db.Partner"/>
       <field name="$leadToContactSelect" showIf="$selectPartner.partnerTypeSelect != 2"
         title="Convert lead into contact" type="integer"
@@ -22,7 +22,7 @@
       <field name="$selectContactSet"
         showIf="$leadToContactSelect == 2 &amp;&amp; $selectPartner.partnerTypeSelect != 2"
         requiredIf="$leadToContactSelect == 2" title="Select Contact" widget="ManyToMany"
-        domain="self.isContact = 'true'" grid-view="partner-contact-grid"
+        domain="self.isContact = true" grid-view="partner-contact-grid"
         form-view="partner-contact-form" target="com.axelor.apps.base.db.Partner"/>
       <button name="validateBtn"
         hideIf="($crmProcessOnPartner &amp;&amp; $partnerStatus == null)|| !$leadToPartnerSelect || $leadToPartnerSelect == 2 &amp;&amp; $selectPartner == null || $leadToContactSelect == 2 &amp;&amp; ($selectContactSet == null || $selectContactSet.length == 0)"

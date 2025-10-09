@@ -136,19 +136,23 @@
     title="Recently created opportunities" model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.createdOn &gt;= date(now())-15</domain>
+    <domain>self.createdOn &gt;= :_dateTime</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_dateTime" expr="eval: __datetime__.minusDays(15)"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.lost.deals" title="Recent lost deals"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.updatedOn &gt; date(now())-30 and self.opportunityStatus.id =
-      :_closedLostOpportunityStatusId</domain>
+    <domain> self.updatedOn &gt; :_dateTime AND
+      self.opportunityStatus.id =
+      :_closedLostOpportunityStatusId
+    </domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
     <context name="_closedLostOpportunityStatusId"
       expr="eval: __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
+    <context name="_dateTime" expr="eval: __datetime__.minusDays(30)"/>
   </action-view>
 
   <action-view title="My Closed Opportunities"

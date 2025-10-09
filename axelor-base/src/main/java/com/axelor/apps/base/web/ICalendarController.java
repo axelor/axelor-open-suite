@@ -132,9 +132,9 @@ public class ICalendarController {
             .domain(
                 "self.user.id = :_userId"
                     + " OR self.calendar.user.id = :_userId"
-                    + " OR :_userId IN (SELECT attendee.user FROM self.attendees attendee)"
+                    + " OR :_userId IN (SELECT attendee.user.id FROM self.attendees attendee)"
                     + " OR self.organizer.user.id = :_userId"
-                    + " OR :_userId IN (SELECT setting.sharedWith FROM self.calendar.sharingSettingList setting WHERE setting.visible = TRUE)")
+                    + " OR :_userId IN (SELECT setting.sharedWith.id FROM self.calendar.sharingSettingList setting WHERE setting.visible = TRUE)")
             .context("_userId", user.getId())
             .map());
   }

@@ -58,7 +58,7 @@
 
   <action-attrs name="action-partner-attrs-set-trading-name-domain">
     <attribute name="domain" for="tradingNameSet"
-      expr="eval: &quot; self.company IS NULL OR self.company IN (${((companySet ?: [])*.id+[0]).join(',')})&quot;"/>
+      expr="eval: &quot; self.company IS NULL OR self.company.id IN (${((companySet ?: [])*.id+[0]).join(',')})&quot;"/>
   </action-attrs>
 
 </object-views>

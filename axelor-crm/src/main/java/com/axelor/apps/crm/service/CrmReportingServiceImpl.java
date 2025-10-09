@@ -78,12 +78,17 @@ public class CrmReportingServiceImpl implements CrmReportingService {
       }
 
       this.prepareQuery(crmReporting, isPartner, model);
+      String idList = null;
+      Query<Model> q = Query.of((Class<Model>) klass).filter(query);
 
-      String idList =
-          StringHelper.getIdListString(
-              !Strings.isNullOrEmpty(query)
-                  ? Query.of((Class<Model>) klass).filter(query).fetch()
-                  : null);
+      if (crmReporting.getFromDate() != null) {
+        q.bind("fromDate", crmReporting.getFromDate());
+      }
+      if (crmReporting.getToDate() != null) {
+        q.bind("toDate", crmReporting.getToDate());
+      }
+
+      idList = StringHelper.getIdListString(q.fetch());
 
       ActionViewBuilder actionViewBuilder = ActionView.define(I18n.get(className));
       actionViewBuilder.model(klass.getName());
@@ -129,7 +134,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
       this.addParams(
           "self."
               + model
-              + "agency IN ("
+              + "agency.id IN ("
               + StringHelper.getIdListString(crmReporting.getAgencySet())
               + ")");
 
@@ -137,34 +142,30 @@ public class CrmReportingServiceImpl implements CrmReportingService {
       this.addParams(
           "self."
               + model
-              + "industrySector IN ("
+              + "industrySector.id IN ("
               + StringHelper.getIdListString(crmReporting.getIndustrySectorSet())
               + ")");
 
     if (appBaseService.getAppBase().getTeamManagement() && !crmReporting.getTeamSet().isEmpty())
       this.addParams(
-          "self.team IN (" + StringHelper.getIdListString(crmReporting.getTeamSet()) + ")");
+          "self.team.id IN (" + StringHelper.getIdListString(crmReporting.getTeamSet()) + ")");
 
-    if (crmReporting.getFromDate() != null)
-      this.addParams("date(self.createdOn) >= '" + crmReporting.getFromDate() + "'");
+    if (crmReporting.getFromDate() != null) this.addParams("date(self.createdOn) >= :fromDate");
 
-    if (crmReporting.getToDate() != null)
-      this.addParams("date(self.createdOn) <= '" + crmReporting.getToDate() + "'");
+    if (crmReporting.getToDate() != null) this.addParams("date(self.createdOn) <= :toDate");
   }
 
   private void partnerQuery(CrmReporting crmReporting, String model) {
     if (appBaseService.getAppBase().getEnableMultiCompany()
         && !crmReporting.getCompanySet().isEmpty())
       this.addParams(
-          "("
-              + companyQuery("MEMBER OF self." + model + "companySet", crmReporting.getCompanySet())
-              + ")");
+          "(" + companyQuery("self." + model + "companySet", crmReporting.getCompanySet()) + ")");
 
     if (!crmReporting.getCategorySet().isEmpty())
       this.addParams(
           "self."
               + model
-              + "partnerCategory "
+              + "partnerCategory.id "
               + "IN ("
               + StringHelper.getIdListString(crmReporting.getCategorySet())
               + ")");
@@ -173,7 +174,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
       this.addParams(
           "self."
               + model
-              + "partnerAddressList.address.country "
+              + "partnerAddressList.address.country.id "
               + "IN ("
               + StringHelper.getIdListString(crmReporting.getCountrySet())
               + ")");
@@ -185,7 +186,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
       this.addParams(
           "self."
               + model
-              + "company IN ("
+              + "company.id IN ("
               + StringHelper.getIdListString(crmReporting.getCompanySet())
               + ")");
 
@@ -193,7 +194,7 @@ public class CrmReportingServiceImpl implements CrmReportingService {
       this.addParams(
           "self."
               + model
-              + "type "
+              + "type.id "
               + "IN ("
               + StringHelper.getIdListString(crmReporting.getCategorySet())
               + ")");
@@ -202,23 +203,14 @@ public class CrmReportingServiceImpl implements CrmReportingService {
       this.addParams(
           "self."
               + model
-              + "address.country "
+              + "address.country.id "
               + "IN ("
               + StringHelper.getIdListString(crmReporting.getCountrySet())
               + ")");
   }
 
   protected String companyQuery(String queryStr, Set<Company> companies) {
-    int count = 0;
-    StringBuilder comQuery = new StringBuilder();
-    for (Company company : companies) {
-      comQuery.append("(" + company.getId() + ") " + queryStr);
-      count++;
-      if (count < companies.size()) {
-        comQuery.append(" OR ");
-      }
-    }
-    return comQuery.toString();
+    return queryStr + ".id IN (" + StringHelper.getIdListString(companies) + ")";
   }
 
   protected void addParams(String paramQuery) {

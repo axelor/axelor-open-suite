@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.common.collect.Lists;
@@ -61,7 +62,8 @@ public class CalendarService extends ICalendarService {
   @Override
   public List<ICalendarEvent> getICalendarEvents(ICalendar calendar) {
 
-    if (calendar.getSynchronizationSelect().contentEquals(ICalendarRepository.CRM_SYNCHRO)) {
+    if (StringUtils.notEmpty(calendar.getSynchronizationSelect())
+        && calendar.getSynchronizationSelect().contentEquals(ICalendarRepository.CRM_SYNCHRO)) {
       LocalDateTime lastSynchro = calendar.getLastSynchronizationDateT();
       if (lastSynchro != null) {
         return new ArrayList<ICalendarEvent>(

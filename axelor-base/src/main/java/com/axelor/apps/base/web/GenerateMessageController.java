@@ -60,7 +60,7 @@ public class GenerateMessageController {
               + model
               + "' and self.isSystem != true and "
               + localization.getId()
-              + " MEMBER OF self.localizationSet ";
+              + " IN (self.localizationSet.id)";
     }
 
     response.setAttr("_xTemplate", "domain", domain);

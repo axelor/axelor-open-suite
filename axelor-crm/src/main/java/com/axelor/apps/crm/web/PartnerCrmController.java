@@ -56,7 +56,7 @@ public class PartnerCrmController {
       long count =
           Beans.get(PartnerRepository.class)
               .all()
-              .filter("self.parentPartner = :id")
+              .filter("self.parentPartner.id = :id")
               .bind("id", partner.getId())
               .count();
       response.setValue("$subsidiaryCount", count);
