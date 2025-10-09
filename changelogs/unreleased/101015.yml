@@ -1,4 +1,0 @@
-title: "GlobalBudget/BudgetLevel/Budget : update all amounts when updating budget lines values"
-module: axelor-budget
-developer:
-  DELETE FROM meta_action WHERE name = 'action-budget-budget-compute-amounts';

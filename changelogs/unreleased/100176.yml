@@ -1,3 +1,0 @@
----
-title: "Move: fixed issues where generating a counterpart without saving caused ghost lines, errors, or lost move lines."
-module: axelor-account

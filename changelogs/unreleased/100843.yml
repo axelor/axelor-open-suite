@@ -1,3 +1,0 @@
----
-title: "Stock location line: fixed last inventory data not getting updated in details stock location line while validating inventory."
-module: axelor-stock
