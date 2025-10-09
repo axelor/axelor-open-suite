@@ -1822,6 +1822,35 @@ this.height=row["logo_height"];]]></method>
     <Visible>true</Visible>
   </Block>
   <Dimension>Two_Dimensional</Dimension>
+  <Script>importPackage(Packages.org.eclipse.birt.chart.model.attribute.impl);
+
+var colorMap = {
+  &quot;A&quot;: ColorDefinitionImpl.create(71, 191, 219),   // light blue
+  &quot;B&quot;: ColorDefinitionImpl.create(232, 172, 57),   // orange
+  &quot;C&quot;: ColorDefinitionImpl.create(242, 88, 106)    // red
+};
+
+function beforeGeneration(chart, icsc) {
+  var xAxis = chart.getPrimaryBaseAxes()[0];
+  var yAxis = chart.getPrimaryOrthogonalAxis(xAxis);
+
+  var seriesDef = yAxis.getSeriesDefinitions().get(0);
+  seriesDef.getSeriesPalette().getEntries().clear();
+
+  var allSeries = seriesDef.getRunTimeSeries();
+  for (var i = 0; i &lt; allSeries.size(); i++) {
+    var series = allSeries.get(i);
+    var seriesIdentifier = series.getSeriesIdentifier();
+
+    var color = colorMap[seriesIdentifier] || ColorDefinitionImpl.create(80, 166, 218);
+
+    series.getLineAttributes().setVisible(true);
+    series.getLineAttributes().setColor(color);
+
+    seriesDef.getSeriesPalette().getEntries().add(color);
+  }
+}
+</Script>
   <Units>Points</Units>
   <SeriesThickness>10.0</SeriesThickness>
   <ExtendedProperties>
