@@ -1,3 +1,0 @@
----
-title: "Budget : fixed the missing compute of all fields after budget line changes"
-module: axelor-budget

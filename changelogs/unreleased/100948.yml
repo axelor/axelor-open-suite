@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed broken sale order printing when level is not set in sale order lines."
-module: axelor-sale
