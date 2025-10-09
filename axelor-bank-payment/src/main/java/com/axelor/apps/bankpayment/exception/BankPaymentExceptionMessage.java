@@ -347,4 +347,7 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_STATEMENT_BANK_DETAILS_NOT_EXIST_ERROR = /*$$(*/
       "Error: The bank details doesn't exist." /*)*/;
+
+  public static final String INVOICE_PAYMENT_ALERT_BANK_ORDER_REVERSE = /*$$(*/
+      "Warning: this payment is related to a carried out bank order. Do you want to reverse the payment accounting entry ?" /*)*/;
 }

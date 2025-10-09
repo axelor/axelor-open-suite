@@ -99,9 +99,20 @@
       <field name="statusSelect" widget="single-select"
         hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"
         selection-in="[0,1,2]"/>
+      <spacer/>
       <button name="cancelBtn" title="Remove this payment" icon="fa-times-circle"
         showIf="statusSelect != 2" onClick="action-invoice-payment-group-cancel"/>
       <field name="move.statusSelect" hidden="true" readonly="true"/>
+      <panel name="reversePaymentMovePanel"
+        showIf="move &amp;&amp; statusSelect != 2 &amp;&amp; (typeSelect &lt; 3 || typeSelect &gt; 9)"
+        colSpan="12">
+        <field name="cancelReason" title="Cancel reason (Required to execute the process)"/>
+        <button name="reversePaymentMoveBtn"
+          onClick="action-invoice-payment-group-reverse-move" title="Cancel the payment entry"
+          readonlyIf="!cancelReason"/>
+      </panel>
+      <field name="cancelReason" readonly="true"
+        showIf="statusSelect == 2 &amp;&amp; cancelReason"/>
     </panel>
     <panel name="newInvoicePaymentPanel" hideIf="id">
       <button name="saveBtn" title="OK" colOffset="11" colspan="1" width="50"
@@ -187,6 +198,11 @@
   <action-group name="action-invoice-payment-group-cancel">
     <action name="action-invoice-payment-method-validate-before-unlink"/>
     <action name="action-invoice-payment-method-cancel"/>
+  </action-group>
+
+  <action-group name="action-invoice-payment-group-reverse-move">
+    <action name="action-invoice-payment-method-validate-reverse-move"/>
+    <action name="action-invoice-payment-method-reverse-payment-move"/>
   </action-group>
 
   <action-validate name="action-invoice-payment-validate-mass-payment">
@@ -309,6 +325,16 @@
   <action-method name="action-invoice-payment-method-set-is-multi-currency">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="setIsMultiCurrency"/>
+  </action-method>
+
+  <action-method name="action-invoice-payment-method-reverse-payment-move">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="reversePaymentMove"/>
+  </action-method>
+
+  <action-method name="action-invoice-payment-method-validate-reverse-move">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="validateBeforeReversePaymentMove"/>
   </action-method>
 
   <action-record name="action-invoice-payment-record-manual-change"
