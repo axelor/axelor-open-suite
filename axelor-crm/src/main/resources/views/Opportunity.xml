@@ -205,9 +205,13 @@
         if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">
         <field name="customerDescription" showTitle="false" colSpan="12" widget="html"/>
       </panel>
-      <panel-related name="saleOrderListPanel" if="__config__.app.isApp('sale')"
-        if-module="axelor-sale" title="Sale quotations/orders" field="saleOrderList"
-        form-view="sale-order-form" grid-view="sale-order-opportunity-grid" canNew="false"/>
+      <panel if="__config__.app.isApp('sale')" if-module="axelor-sale"
+        name="saleOrderListPanel" title="Sale quotations/orders">
+        <button name="convertIntoQuotationItemBtn" title="Create a quotation" link=""
+          icon="fa-file-earmark-text" onClick="save,action-sale-group-generate-sale-order"/>
+        <field name="saleOrderList" form-view="sale-order-form"
+          grid-view="sale-order-opportunity-grid" canNew="false" colSpan="12"/>
+      </panel>
     </panel-tabs>
 
     <panel name="otherDetailsPanel" sidebar="true">
