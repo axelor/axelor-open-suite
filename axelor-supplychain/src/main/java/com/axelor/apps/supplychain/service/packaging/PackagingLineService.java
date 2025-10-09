@@ -18,10 +18,12 @@
  */
 package com.axelor.apps.supplychain.service.packaging;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.PackagingLine;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface PackagingLineService {
@@ -30,7 +32,11 @@ public interface PackagingLineService {
 
   String getStockMoveLineDomain(LogisticalForm logisticalForm);
 
-  void updateStockMoveSet(PackagingLine packagingLine, boolean add);
+  void updateStockMoveSet(PackagingLine packagingLine, boolean add) throws AxelorException;
 
   void updateQtyRemainingToPackage(PackagingLine packagingLine, boolean add);
+
+  void updatePackagingMass(PackagingLine packagingLine, boolean add) throws AxelorException;
+
+  BigDecimal[] computePackagingLineMass(PackagingLine packagingLine) throws AxelorException;
 }

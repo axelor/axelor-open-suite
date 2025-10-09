@@ -20,13 +20,11 @@ package com.axelor.apps.supplychain.service.packaging;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.LogisticalForm;
+import com.axelor.apps.supplychain.db.Packaging;
 
-public interface PackagingStockMoveLineService {
+public interface PackagingMassService {
 
-  void updateQtyRemainingToPackage(LogisticalForm logisticalForm) throws AxelorException;
+  void updatePackagingMass(LogisticalForm logisticalForm) throws AxelorException;
 
-  String validateAndUpdateStockMoveList(
-      LogisticalForm savedLogisticalForm, LogisticalForm currentForm) throws AxelorException;
-
-  void updateStockMovePackagingInfo(LogisticalForm logisticalForm) throws AxelorException;
+  void updatePackagingMass(Packaging packaging) throws AxelorException;
 }

@@ -50,7 +50,8 @@
     <string name="trackingNumber" title="Tracking number"/>
     <integer name="numOfPackages" title="Number Of Packages"/>
     <integer name="numOfPalettes" title="Number Of Palettes"/>
-    <decimal name="grossMass" title="Gross Mass"/>
+    <decimal name="grossMass" title="Gross Mass"
+      help="This value is the packed gross mass, that is, the total gross mass of all packaged products plus the gross mass of their packagings (as defined in its logistical form)."/>
 
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2"/>
 

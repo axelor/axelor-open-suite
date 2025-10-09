@@ -7,8 +7,15 @@
     title="Packagings" onDelete="action-packaging-method-remove-packagings">
     <field name="packagingNumber"/>
     <field name="packageUsed" grid-view="product-grid" form-view="product-form"
-      domain="self.isPackaging = true"/>
+      domain="self.isPackaging = true" onChange="action-packaging-record-set-packaging-level-select"/>
+    <field name="netMass" x-scale="$nbDecimalDigitForPrice" readonly="true"/>
     <field name="grossMass" x-scale="$nbDecimalDigitForPrice" readonly="true"/>
+    <field name="totalNetMass" x-scale="$nbDecimalDigitForPrice" readonly="true">
+      <hilite if="true" color="default" strong="true"/>
+    </field>
+    <field name="totalGrossMass" x-scale="$nbDecimalDigitForPrice" readonly="true">
+      <hilite if="true" color="default" strong="true"/>
+    </field>
     <button name="addPackagingBtn" title="Add child packaging" icon="arrow-down-circle-fill"
       onClick="action-packaging-method-add-child-packaging" readonlyIf="!id"/>
     <button name="addStockMoveLineBtn" title="Add stock move lines" icon="wrench"
@@ -22,8 +29,16 @@
     <panel name="mainPanel">
       <field name="packagingNumber"/>
       <field name="packageUsed" grid-view="product-grid" form-view="product-form"
-        domain="self.isPackaging = true"/>
+        domain="self.isPackaging = true"
+        onChange="action-packaging-record-set-packaging-level-select"/>
+      <field name="netMass" x-scale="$nbDecimalDigitForPrice" readonly="true"/>
       <field name="grossMass" x-scale="$nbDecimalDigitForPrice" readonly="true"/>
+      <field name="totalNetMass" x-scale="$nbDecimalDigitForPrice" readonly="true">
+        <hilite if="true" color="default" strong="true"/>
+      </field>
+      <field name="totalGrossMass" x-scale="$nbDecimalDigitForPrice" readonly="true">
+        <hilite if="true" color="default" strong="true"/>
+      </field>
       <panel-related field="packagingLineList" grid-view="packaging-line-grid"
         form-view="packaging-line-form" colSpan="12"/>
       <panel-related field="childrenPackagingList" grid-view="packaging-grid"
@@ -70,6 +85,13 @@
       <field name="$packaging" hidden="true"/>
     </panel>
   </form>
+
+
+  <action-record name="action-packaging-record-set-packaging-level-select"
+    model="com.axelor.apps.supplychain.db.Packaging">
+    <field name="packagingLevelSelect" expr="eval: packageUsed.packagingLevelSelect"
+      if="packageUsed"/>
+  </action-record>
 
   <action-attrs name="action-packaging-attrs-set-stock-move-line-list">
     <attribute for="$stockMoveLineList" name="value" expr="eval: _stockMoveLineList"/>

@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service.packaging;
 
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.repo.PackagingRepository;
+import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.List;
@@ -42,10 +43,9 @@ public class PackagingServiceImpl implements PackagingService {
   }
 
   @Override
-  @Transactional(rollbackOn = Exception.class)
   public void removePackagings(List<Packaging> packagingList) {
     for (Packaging packaging : packagingList) {
-      packagingRepository.remove(packaging);
+      JPA.remove(packaging);
     }
   }
 }

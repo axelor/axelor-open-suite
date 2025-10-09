@@ -21,11 +21,12 @@
 
     <extend target="/">
       <insert position="before">
-        <hilite strong="true" color="green" if="$number(qtyRemainingToPackage) == 0"/>
+        <hilite strong="true" color="green"
+          if="_fromLogisticalForm &amp;&amp; $number(qtyRemainingToPackage) == 0"/>
         <hilite strong="true" color="orange"
-          if="$number(qtyRemainingToPackage) > 0 &amp;&amp; $number(qtyRemainingToPackage) &lt; $number(realQty)"/>
+          if="_fromLogisticalForm &amp;&amp; $number(qtyRemainingToPackage) > 0 &amp;&amp; $number(qtyRemainingToPackage) &lt; $number(realQty)"/>
         <hilite strong="true" color="grey"
-          if="$number(qtyRemainingToPackage) == $number(realQty)"/>
+          if="_fromLogisticalForm &amp;&amp; $number(qtyRemainingToPackage) == $number(realQty)"/>
       </insert>
     </extend>
   </grid>
