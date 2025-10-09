@@ -30,9 +30,12 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class FixedAssetValidateServiceImpl implements FixedAssetValidateService {
 
@@ -96,23 +99,7 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
       } else {
         fixedAsset.setNumberOfDepreciation(0);
       }
-
-      Optional<FixedAssetLine> lastRealizedLine =
-          fixedAssetLineService.findNewestFixedAssetLine(
-              fixedAsset, FixedAssetLineRepository.STATUS_REALIZED, 0);
-      if (lastRealizedLine.isPresent()) {
-        fixedAsset.setAccountingValue(lastRealizedLine.get().getAccountingValue());
-      } else if (fixedAsset.getIsEqualToFiscalDepreciation()) {
-        fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
-      } else if (fixedAsset.getDepreciationPlanSelect().isEmpty()
-          || fixedAsset
-              .getDepreciationPlanSelect()
-              .equals(FixedAssetRepository.DEPRECIATION_PLAN_NONE)) {
-        fixedAsset.setAccountingValue(fixedAsset.getGrossValue());
-      } else {
-        fixedAsset.setAccountingValue(
-            fixedAsset.getGrossValue().subtract(fixedAsset.getResidualValue()));
-      }
+      setAccountingValue(fixedAsset);
     }
     if (fixedAsset.getStatusSelect() == FixedAssetRepository.STATUS_DRAFT) {
       fixedAsset.setStatusSelect(FixedAssetRepository.STATUS_VALIDATED);
@@ -142,5 +129,56 @@ public class FixedAssetValidateServiceImpl implements FixedAssetValidateService 
       }
     }
     return count;
+  }
+
+  protected void setAccountingValue(FixedAsset fixedAsset) {
+
+    Optional<FixedAssetLine> lastRealizedLine =
+        fixedAssetLineService.findNewestFixedAssetLine(
+            fixedAsset, FixedAssetLineRepository.STATUS_REALIZED, 0);
+
+    if (lastRealizedLine.isPresent()) {
+      BigDecimal lineValue = lastRealizedLine.get().getAccountingValue();
+      fixedAsset.setAccountingValue(lineValue);
+      return;
+    }
+
+    BigDecimal gross = fixedAsset.getGrossValue();
+    BigDecimal residual = fixedAsset.getResidualValue();
+
+    List<String> depreciationPlans = getDepreciationPlans(fixedAsset);
+    boolean noDepreciationPlan =
+        CollectionUtils.isEmpty(depreciationPlans)
+            || (depreciationPlans.size() == 1
+                && depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_NONE));
+
+    BigDecimal base;
+    if (noDepreciationPlan) {
+      base = gross;
+    } else {
+      base = gross.subtract(residual);
+    }
+
+    fixedAsset.setAccountingValue(base);
+  }
+
+  protected List<String> getDepreciationPlans(FixedAsset fixedAsset) {
+    return Optional.ofNullable(fixedAsset)
+        .map(FixedAsset::getDepreciationPlanSelect)
+        .map(plans -> Arrays.asList(plans.replace(" ", "").split(",")))
+        .orElse(List.of());
+  }
+
+  protected boolean isFiscal(List<String> depreciationPlans) {
+    return depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL);
+  }
+
+  protected boolean isEconomic(List<String> depreciationPlans) {
+    return depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)
+        || depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION);
+  }
+
+  protected boolean isIfrs(List<String> depreciationPlans) {
+    return depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS);
   }
 }
