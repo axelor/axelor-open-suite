@@ -100,12 +100,12 @@ public class ImportMove {
                 .getTodayDateTime(company)
                 .format(DateTimeFormatter.ofPattern("yyyyMMddHH:mm:ss"));
       }
-      String importReference = String.format("#%s-%s", csvReference, lastImportDate);
+      String importReference = String.format("#%s@%s", csvReference, lastImportDate);
 
       MoveLine mvLine =
           moveLineRepo
               .all()
-              .filter("self.name LIKE '" + importReference + "-%'")
+              .filter("self.name LIKE '" + importReference + "@%'")
               .order("-counter")
               .fetchOne();
       if (mvLine != null) {

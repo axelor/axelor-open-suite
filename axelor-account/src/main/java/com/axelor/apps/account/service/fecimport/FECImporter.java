@@ -286,7 +286,15 @@ public class FECImporter extends Importer {
   }
 
   protected String extractCSVMoveReference(String reference) {
-    return reference.replaceFirst("#", "");
+    if (reference != null) {
+      int indexOfSeparator = reference.indexOf("@");
+      if (indexOfSeparator < 0) {
+        return reference.replaceFirst("#", "");
+      } else {
+        return reference.substring(0, indexOfSeparator).replaceFirst("#", "");
+      }
+    }
+    return reference;
   }
 
   public Company getCompany() {
