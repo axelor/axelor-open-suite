@@ -359,15 +359,15 @@
         onClick="action-fixed-asset-group-disposal-asset"
         readonlyIf="disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0 &amp;&amp; $generateSaleMove &amp;&amp; !saleTaxLineSet"/>
       <field name="$generateSaleMove" title="Generate Sale Move" widget="boolean"
-        showIf="_moveGenerationException != 2 &amp;&amp; disposalTypeSelect == 2"/>
+        showIf="_moveGenerationException != 2 &amp;&amp; disposalTypeSelect == 2" colSpan="4"/>
       <field name="$customer" title="Customer" type="many-to-one"
         target="com.axelor.apps.base.db.Partner" showIf="$generateSaleMove" hidden="true"
-        onChange="action-fixed-asset-wizard-record-on-customer-change"/>
-      <field name="$customerId" type="Integer" hidden="true"/>
+        onChange="action-fixed-asset-wizard-record-on-customer-change" colSpan="4"/>
       <field name="saleTaxLineSet" requiredIf="$generateSaleMove" title="Tax lines"
         canNew="false" type="many-to-many" target="com.axelor.apps.account.db.TaxLine"
         showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove" hidden="true"
-        widget="TagSelect"/>
+        widget="TagSelect" colSpan="4"/>
+      <field name="$customerId" type="Integer" hidden="true"/>
       <field name="comments" colSpan="12" widget="html" x-lite="true"
         showIf="disposalTypeSelect == 2" hidden="true"/>
       <field name="$originalQty" type="decimal" hidden="true"/>
