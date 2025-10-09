@@ -16,24 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.talent.service;
+package com.axelor.apps.talent.db.repo;
 
+import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.talent.db.JobApplication;
+import com.axelor.inject.Beans;
+import javax.persistence.PreRemove;
 
-public class JobApplicationComputeNameServiceImpl implements JobApplicationComputeNameService {
+public class JobApplicationEntityListener {
 
-  @Override
-  public String computeFullName(JobApplication jobApplication) {
-    String fullName = null;
-
-    if (jobApplication.getFirstName() != null) {
-      fullName = jobApplication.getFirstName();
-    }
-    if (fullName == null) {
-      fullName = jobApplication.getLastName();
-    } else if (jobApplication.getLastName() != null) {
-      fullName += " " + jobApplication.getLastName();
-    }
-    return fullName;
+  @PreRemove
+  protected void onJobApplicationPreRemove(JobApplication jobApplication) {
+    Beans.get(EventRepository.class)
+        .all()
+        .filter(
+            "relatedToSelect = ?1 AND self.relatedToSelectId = ?2",
+            JobApplication.class.getName(),
+            jobApplication.getId())
+        .autoFlush(false)
+        .remove();
   }
 }

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <action-group name="action-group-crm-event-onnew"
+    id="talent-action-group-crm-event-onnew">
+    <action name="action-icalendar-event-default-record"/>
+    <action name="action-event-new-record"/>
+    <action name="action-event-record-current-user"/>
+    <action name="action-event-record-event-from-job-application"/>
+  </action-group>
+
+  <action-record name="action-event-record-event-from-job-application"
+    model="com.axelor.apps.crm.db.Event">
+    <field name="relatedToSelect" expr="eval: 'com.axelor.apps.talent.db.JobApplication'"/>
+    <field name="relatedToSelectId" expr="eval: _eventJobApplication.id"/>
+    <field name="typeSelect" expr="eval: 1" if="_call"/>
+    <field name="typeSelect" expr="eval: 2" if="_meeting"/>
+    <field name="typeSelect" expr="eval: 3" if="_task"/>
+    <field name="typeSelect" expr="eval: 5" if="_note"/>
+  </action-record>
+
+</object-views>
