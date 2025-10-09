@@ -25,19 +25,21 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.compute.BudgetDistributionComputeService;
 import com.axelor.apps.businessproject.service.PurchaseOrderLineServiceProjectImpl;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
+import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
 import java.util.Map;
 
 public class PurchaseOrderLineGroupBudgetServiceImpl extends PurchaseOrderLineServiceProjectImpl {
 
   protected BudgetToolsService budgetToolsService;
   protected AppBudgetService appBudgetService;
+  protected BudgetDistributionComputeService budgetDistributionComputeService;
 
   @Inject
   public PurchaseOrderLineGroupBudgetServiceImpl(
@@ -48,7 +50,8 @@ public class PurchaseOrderLineGroupBudgetServiceImpl extends PurchaseOrderLineSe
       AnalyticLineModelService analyticLineModelService,
       PurchaseOrderLineRepository purchaseOrderLineRepo,
       BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetDistributionComputeService budgetDistributionComputeService) {
     super(
         analyticMoveLineService,
         unitConversionService,
@@ -58,15 +61,25 @@ public class PurchaseOrderLineGroupBudgetServiceImpl extends PurchaseOrderLineSe
         purchaseOrderLineRepo);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
+    this.budgetDistributionComputeService = budgetDistributionComputeService;
   }
 
   @Override
-  public Map<String, BigDecimal> compute(
+  public Map<String, Object> compute(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
 
-    Map<String, BigDecimal> map = super.compute(purchaseOrderLine, purchaseOrder);
+    Map<String, Object> map = super.compute(purchaseOrderLine, purchaseOrder);
 
     if (appBudgetService.isApp("budget")) {
+
+      if (purchaseOrder != null
+          && purchaseOrder.getStatusSelect() <= PurchaseOrderRepository.STATUS_REQUESTED) {
+        budgetDistributionComputeService.updateMonoBudgetAmounts(
+            purchaseOrderLine.getBudgetDistributionList(),
+            purchaseOrderLine.getCompanyExTaxTotal());
+        map.put("budgetDistributionList", purchaseOrderLine.getBudgetDistributionList());
+      }
+
       map.put(
           "budgetRemainingAmountToAllocate",
           budgetToolsService.getBudgetRemainingAmountToAllocate(

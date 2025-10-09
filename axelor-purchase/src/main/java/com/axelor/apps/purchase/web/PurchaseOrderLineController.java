@@ -59,13 +59,13 @@ public class PurchaseOrderLineController {
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
 
-      Map<String, BigDecimal> map =
+      Map<String, Object> map =
           Beans.get(PurchaseOrderLineService.class).compute(purchaseOrderLine, purchaseOrder);
       response.setValues(map);
       response.setAttr(
           "priceDiscounted",
           "hidden",
-          map.getOrDefault("priceDiscounted", BigDecimal.ZERO)
+          new BigDecimal(String.valueOf(map.getOrDefault("priceDiscounted", BigDecimal.ZERO)))
                   .compareTo(
                       purchaseOrder.getInAti()
                           ? purchaseOrderLine.getInTaxPrice()
