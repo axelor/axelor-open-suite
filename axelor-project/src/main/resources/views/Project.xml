@@ -268,13 +268,16 @@
       <field name="taskStatusManagementSelect" widget="RadioSelect"
         readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
         onChange="action-project-record-manage-task-status-set, action-project-record-activate-task-status-by-category"/>
+      <!-- <field name="projectTaskStatusSet" widget="TagSelect" readonlyIf="projectTaskList.length &gt;
+        0" showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2" canEdit="false"
+        onChange="action-project-method-manage-completed-task-status"/> -->
       <field name="projectTaskStatusSet" widget="TagSelect"
         readonlyIf="projectTaskList.length &gt; 0" showIf="taskStatusManagementSelect == 2"
-        requiredIf="taskStatusManagementSelect == 2" canEdit="false"
-        onChange="action-project-method-manage-completed-task-status"/>
+        canEdit="false" onChange="action-project-method-manage-completed-task-status"/>
+      <!-- <field name="completedTaskStatus" grid-view="task-status-grid" form-view="task-status-form"
+        showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2" onSelect="action-project-attrs-set-completed-task-status-domain"/> -->
       <field name="completedTaskStatus" grid-view="task-status-grid"
         form-view="task-status-form" showIf="taskStatusManagementSelect == 2"
-        requiredIf="taskStatusManagementSelect == 2"
         onSelect="action-project-attrs-set-completed-task-status-domain"/>
       <panel name="taskStatusManagementPanel" colSpan="12"
         showIf="projectTaskList.length &gt; 0 &amp;&amp; taskStatusManagementSelect == 2 &amp;&amp; !$readonly()">
@@ -293,14 +296,17 @@
       </panel>
       <field name="isShowPriority" widget="inline-checkbox"
         onChange="action-project-record-priority-reset-values"/>
+      <!-- <field name="projectTaskPrioritySet" widget="TagSelect" showIf="isShowPriority" requiredIf="isShowPriority"
+        canEdit="false"/> -->
       <field name="projectTaskPrioritySet" widget="TagSelect" showIf="isShowPriority"
-        requiredIf="isShowPriority" canEdit="false"/>
+        canEdit="false"/>
       <field name="isShowTaskCategory" widget="inline-checkbox"
         onChange="action-project-record-change-show-task-category, action-project-record-manage-task-status-set"
         canEdit="false"/>
+      <!-- <field name="projectTaskCategorySet" widget="TagSelect" showIf="isShowTaskCategory" canEdit="false"
+        requiredIf="taskStatusManagementSelect == 4 || enableStatusProgressByCategory"/> -->
       <field name="projectTaskCategorySet" widget="TagSelect" showIf="isShowTaskCategory"
-        canEdit="false"
-        requiredIf="taskStatusManagementSelect == 4 || enableStatusProgressByCategory"/>
+        canEdit="false"/>
       <field name="isShowProgress" widget="inline-checkbox"/>
       <field name="enableStatusProgressByCategory"
         if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask"
@@ -597,7 +603,7 @@
     <attribute name="value" for="numberHoursADay"
       expr="eval: __config__.app.getApp('base')?.dailyWorkHours"/>
     <attribute name="value" for="projectTimeUnit"
-      expr="eval: __config__.app.getApp('base')?.unitDays"/>
+      expr="eval: __config__.app.getApp('base')?.unitHours"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-completed-task-status-domain">
@@ -626,7 +632,7 @@
 
   <action-attrs name="action-project-attrs-set-time-unit-domain">
     <attribute name="domain" for="projectTimeUnit"
-      expr="eval: &quot; self.id = ${__config__.app.getApp('base')?.unitDays?.id} OR self.id = ${__config__.app.getApp('base')?.unitHours?.id}&quot;"/>
+      expr="eval: &quot; self.id = ${__config__.app.getApp('base')?.unitHours?.id} OR self.id = ${__config__.app.getApp('base')?.unitDays?.id}&quot;"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-status-to-add-domain">

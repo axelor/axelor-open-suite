@@ -191,13 +191,6 @@
   <form name="incl-characteristics-panel-form" title="Characteristics"
     model="com.axelor.apps.project.db.ProjectTask">
     <panel name="mainPanel" colSpan="12">
-      <field name="projectTaskCategory" colSpan="4" showIf="project.isShowTaskCategory"
-        requiredIf="project.isShowTaskCategory &amp;&amp; project.taskStatusManagementSelect == 4"
-        onSelect="action-project-task-attrs-project-task-category-configurations"
-        onChange="action-project-task-group-project-category-onchange"/>
-      <field name="priority" colSpan="4" showIf="project.isShowPriority"
-        onSelect="action-project-task-atts-priority-on-select" requiredIf="project.isShowPriority"
-        canView="false"/>
       <!-- MGM-68 -->
       <field name="taskDate" colSpan="6"
         onChange="action-project-task-attrs-set-task-duration,action-project-task-record-set-date-or-frequency-changed"
@@ -208,9 +201,15 @@
       <!-- MGM-68 -->
       <!-- <field name="tagSet" widget="TagSelect" x-color-field="color" form-view="tag-form" grid-view="tag-simplified-grid"
         colSpan="4" onSelect="action-project-task-method-set-tag-domain"/> -->
-      <field name="progress" onChange="action-project-task-group-progress-onchange"
-        showIf="project.isShowProgress" colSpan="4" min="0" max="100" widget="Slider" x-step="1"
-        x-scale="0"/>
+      <field name="priority" colSpan="6" showIf="project.isShowPriority"
+        onSelect="action-project-task-atts-priority-on-select" canView="false"/><!--requiredIf="project.isShowPriority" -->
+      <field name="projectTaskCategory" colSpan="6" showIf="project.isShowTaskCategory"
+        requiredIf="project.isShowTaskCategory &amp;&amp; project.taskStatusManagementSelect == 4"
+        onSelect="action-project-task-attrs-project-task-category-configurations"
+        onChange="action-project-task-group-project-category-onchange"/>
+
+      <!-- <field name="progress" onChange="action-project-task-group-progress-onchange" showIf="project.isShowProgress"
+        colSpan="4" min="0" max="100" widget="Slider" x-step="1" x-scale="0"/> -->
       <!-- MGM-68 -->
       <!-- <field name="targetVersion" domain=":project member of self.projectSet" colSpan="4" form-view="project-version-form"
         grid-view="project-version-grid"/> -->
