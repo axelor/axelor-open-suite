@@ -170,8 +170,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
     LOG.debug("Stock move realization: {} ", stockMove.getStockMoveSeq());
     String newStockSeq = super.realizeStockMove(stockMove, check);
-    AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
+    stockMove = stockMoveRepo.find(stockMove.getId());
 
+    AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
     Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
     if (ObjectUtils.notEmpty(saleOrderSet)) {
       SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
