@@ -1,3 +1,0 @@
----
-title: "Product: fixed Stock and Stock history charts to exclude cancelled stock moves and take real qty into account."
-module: axelor-stock

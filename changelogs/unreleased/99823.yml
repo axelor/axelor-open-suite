@@ -1,3 +1,0 @@
----
-title: "BANKRECONCILIATION / BANKRECONCILIATIONLINE / BANKSTATEMENT : Now includeOtherBankStatements option only retrieve unreconciled statement lines from the past."
-module: axelor-bank-payment
