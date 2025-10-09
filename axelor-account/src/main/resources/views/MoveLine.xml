@@ -317,14 +317,15 @@
     <field name="account"/>
     <field name="description"/>
     <field name="move.statusSelect"/>
-    <field name="amountBeforeCutOffProrata"/>
+    <field name="amountBeforeCutOffProrata" x-scale="companyCurrencyDecimals"/>
     <field name="durationCutOffProrata"/>
-    <field name="cutOffProrataAmount"/>
+    <field name="cutOffProrataAmount" x-scale="companyCurrencyDecimals"/>
     <field name="cutOffStartDate"/>
     <field name="cutOffEndDate"/>
     <field name="move.cutOffMoveGenerated" hidden="true"/>
     <field name="move" hidden="true"/>
     <field name="id" hidden="true"/>
+    <field name="move.company" hidden="true"/>
   </grid>
 
   <grid name="move-line-doubtful-customer-grid" title="Move lines"

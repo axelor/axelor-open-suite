@@ -411,6 +411,11 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     Currency currency = move.getCurrency();
     Currency companyCurrency = move.getCompanyCurrency();
 
+    if (companyCurrency == null) {
+      companyCurrency =
+          Optional.ofNullable(move).map(Move::getCompany).map(Company::getCurrency).orElse(null);
+    }
+
     if (currency != null && companyCurrency != null) {
       moveLine.setCurrencyDecimals(currency.getNumberOfDecimals());
       moveLine.setCompanyCurrencyDecimals(companyCurrency.getNumberOfDecimals());
