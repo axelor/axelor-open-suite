@@ -1,3 +1,61 @@
+## [7.2.50] (2025-10-09)
+
+### Fixes
+#### Base
+
+* Product: fixed prices of generated company product variant .
+* Abc analysis: fixed color on chart same as table.
+* Price list: fixed price list filter in grid views.
+
+#### Account
+
+* AnalyticMoveLine: Fixed the amount recompute when changing percentage.
+* FEC Import : No longer remove test after '-' from move reference.
+* Move: fixed issues where generating a counterpart without saving caused ghost lines, errors, or lost move lines.
+* Fixed asset: corrected accounting value calculation with imported depreciation amounts.
+* Invoice: Advanced invoice are not generated twice anymore when isVentilationSkipped is activated.
+* AccountingBatch/CuttOff : fixed the analytic management in cut off batch.
+* ANALYTIC: Updated analytic journal select domain method.
+
+#### Bank Payment
+
+* Move : fixed bank reconciled amount set when we don't have a linked bank reconciliation.
+
+#### Human Resource
+
+* ExpenseLine : Remove action who doesn't exist
+
+#### Mobile Settings
+
+* App mobile settings: fixed deleted modules in web are bugged in mobile.
+
+#### Production
+
+* Manuf order: managed partial consumption in manuf order from consumption button too.
+* Bill of material line: correct domain of product field in bill of material line grid.
+* Operation order: fixed display condition of 'To invoice' to show only when 'Manage business production' is enable in app manufacturing.
+
+#### Quality
+
+* Quality: fixed French translation in Quality improvement form view.
+
+#### Stock
+
+* Product: fixed Stock and Stock history charts to exclude cancelled stock moves and take real qty into account.
+* Stock move: fixed shipping coef not working on supplier arrival having purchase order.
+* Product: fixed quantity in stock report with correctly converted unit.
+
+
+### Developer
+
+#### Account
+
+Added AnalyticMoveLineRepository in MoveLineComputeAnalyticServiceImpl constructor. Added copyAnalyticsDataFromMoveLine method in MoveLineComputeAnalyticService.
+
+---
+
+DELETE FROM meta_action where name ='action-attrs-domain-onselect-journal-analytic-move-line';
+
 ## [7.2.49] (2025-09-25)
 
 ### Fixes
@@ -2122,6 +2180,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.50]: https://github.com/axelor/axelor-open-suite/compare/v7.2.49...v7.2.50
 [7.2.49]: https://github.com/axelor/axelor-open-suite/compare/v7.2.48...v7.2.49
 [7.2.48]: https://github.com/axelor/axelor-open-suite/compare/v7.2.47...v7.2.48
 [7.2.47]: https://github.com/axelor/axelor-open-suite/compare/v7.2.46...v7.2.47
