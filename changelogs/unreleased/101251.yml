@@ -1,4 +1,4 @@
 ---
-title: "FEC Import : No longer remove date from generated move reference."
+title: "FEC Import : No longer remove test after '-' from move reference."
 module: axelor-account
 
