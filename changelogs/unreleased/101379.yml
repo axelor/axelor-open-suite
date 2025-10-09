@@ -1,0 +1,9 @@
+---
+title: "Budget/Invoice/Move/Order : change the budget distribution amount in mono budget when changing line price"
+module: axelor-budget
+developer:
+  Added BudgetDistributionComputeService in PurchaseOrderLineGroupBudgetServiceImpl constructor.
+  Added BudgetDistributionComputeService in BudgetInvoiceLineComputeServiceImpl constructor.
+  Added BudgetDistributionComputeService in MoveLineGroupBudgetServiceImpl constructor.
+  Added BudgetDistributionComputeService in SaleOrderLineComputeBudgetServiceImpl constructor.
+  Change the PurchaseOrderLineService.compute to return a Map<String, Object> and not a Map<String, BigDecimal> anymore
