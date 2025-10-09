@@ -9,7 +9,6 @@
     <panel name="mainPanel">
       <panel name="applicationsPanel" title="Mobile apps" colSpan="10" itemSpan="2">
         <field name="isStockAppEnabled" widget="boolean-switch"
-          readonlyIf="isProductionAppEnabled"
           onChange="action-app-mobile-settings-boolean-group-on-change"/>
         <field name="isProductionAppEnabled" widget="boolean-switch"
           onChange="action-app-mobile-settings-production-boolean-group-on-change"/>
@@ -164,14 +163,15 @@
 
   <action-attrs name="action-app-mobile-settings-config-attrs-boolean-readonly">
     <attribute for="isStockAppEnabled" name="readonly"
-      expr="!__config__.app.isApp('stock')"/>
+      expr="(!__config__.app.isApp('stock') &amp;&amp; !__repo__(MobileConfig).findBySequence('app-stock')?.isAppEnabled) || isProductionAppEnabled"/>
     <attribute for="isProductionAppEnabled" name="readonly"
-      expr="!__config__.app.isApp('production')"/>
-    <attribute for="isCrmAppEnabled" name="readonly" expr="!__config__.app.isApp('crm')"/>
+      expr="!__config__.app.isApp('production') &amp;&amp; !__repo__(MobileConfig).findBySequence('app-manufacturing')?.isAppEnabled"/>
+    <attribute for="isCrmAppEnabled" name="readonly"
+      expr="!__config__.app.isApp('crm') &amp;&amp; !__repo__(MobileConfig).findBySequence('app-crm')?.isAppEnabled"/>
     <attribute for="isHelpdeskAppEnabled" name="readonly"
-      expr="!__config__.app.isApp('helpdesk')"/>
+      expr="!__config__.app.isApp('helpdesk') &amp;&amp; !__repo__(MobileConfig).findBySequence('app-helpdesk')?.isAppEnabled"/>
     <attribute for="isHRAppEnabled" name="readonly"
-      expr="!__config__.app.isApp('expense')"/>
+      expr="!__config__.app.isApp('expense') &amp;&amp; !__repo__(MobileConfig).findBySequence('app-hr')?.isAppEnabled"/>
   </action-attrs>
 
   <action-group name="action-app-mobile-settings-config-group-on-load">
@@ -191,6 +191,7 @@
   <action-group name="action-app-mobile-settings-boolean-group-on-change">
     <action name="save"/>
     <action name="action-app-mobile-settings-config-method-update-boolean-config"/>
+    <action name="action-app-mobile-settings-config-attrs-boolean-readonly"/>
   </action-group>
 
   <action-method name="action-app-mobile-settings-config-method-update-boolean-config">
