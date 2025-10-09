@@ -121,7 +121,7 @@
       <panel-include view="incl-checklist-panel-form"/>
 
       <panel title="Log Times" name="logTimesPanel" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet') &amp;&amp; __user__.group.code == 'admins'">
+        if="__config__.app.isApp('timesheet')">
         <panel-include view="incl-log-times-panel-form"/>
       </panel>
       <panel-include view="incl-project-roadmap-panel-form"/>

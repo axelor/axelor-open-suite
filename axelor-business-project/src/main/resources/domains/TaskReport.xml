@@ -9,6 +9,9 @@
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
     <many-to-one name="employee" ref="com.axelor.auth.db.User" title="Employee"/>
+    <many-to-many name="projectMembers" ref="com.axelor.auth.db.User"
+      title="Team Members"/>
+    <many-to-many name="tasks" ref="com.axelor.apps.project.db.ProjectTask"/>
     <many-to-one name="location" ref="com.axelor.apps.base.db.Address" title="Location"/>
     <many-to-one name="printedPdf" title="Printed PDF" ref="com.axelor.meta.db.MetaFile"/>
 

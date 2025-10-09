@@ -25,7 +25,14 @@
       <field name="customer" hidden="true"/>
       <field name="customer"/>
       <field name="location" canEdit="true"/>
-      <field name="taskDate"/>
+    </panel>
+    <panel colSpan="12" canCollapse="true" collapseIf="true" title="Members">
+      <field name="projectMembers" title="Team Members" widget="TagSelect" colSpan="12"
+        canEdit="false"/>
+    </panel>
+    <panel colSpan="12" canCollapse="true" collapseIf="true" title="Tasks">
+      <field name="tasks" title="Tasks" widget="TagSelect" colSpan="12" canEdit="false"
+        domain="project.id = :project"/>
     </panel>
 
     <panel title="Work Timing">
@@ -54,6 +61,9 @@
     </panel>
 
     <panel title="Sign-Off">
+      <panel colSpan="12">
+        <field name="taskDate" colSpan="4"/>
+      </panel>
       <panel colSpan="12">
         <field name="employee" title="Employee Name"/>
         <field name="customerName" title="Customer Name" required="true"/>
@@ -87,12 +97,15 @@
     model="com.axelor.apps.businessproject.db.TaskReport">
     <field name="customer" expr="eval: project?.clientPartner"/>
     <field name="location" expr="eval: project?.customerAddress"/>
+    <field name="projectMembers" expr="eval: project?.membersUserSet"/>
+    <field name="tasks" expr="eval: project?.projectTaskList"/>
   </action-record>
 
   <action-view name="action-task-report-dashlet" title="Task Reports"
     model="com.axelor.apps.businessproject.db.TaskReport">
     <view type="grid" name="task-report-grid"/>
     <view type="form" name="task-report-form"/>
+    <domain>self.project.id = :project</domain>
   </action-view>
 
   <action-record name="action-task-report-on-change-time"
