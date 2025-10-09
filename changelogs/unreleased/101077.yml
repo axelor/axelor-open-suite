@@ -1,0 +1,3 @@
+---
+title: "Stock move: fixed shipping coef not working on supplier arrival having purchase order."
+module: axelor-stock
