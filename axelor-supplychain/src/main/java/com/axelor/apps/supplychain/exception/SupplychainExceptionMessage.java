@@ -466,4 +466,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String STOCK_MOVE_NOT_FULLY_PACKAGED = /*$$(*/
       "One or several stock move lines are not fully packaged." /*)*/;
+
+  public static final String LOGISTICAL_FORM_STOCK_MOVE_NOT_VALID = /*$$(*/
+      "This stock move is not valid for this logistical form." /*)*/;
 }
