@@ -331,6 +331,18 @@ import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingViewS
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnChangeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.opportunity.OpportunitySaleOrderSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingCreateService;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingCreateServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingDimensionService;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingDimensionServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingOrientationService;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingOrientationServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingPlanService;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingPlanServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingService;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderProductPackagingService;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderProductPackagingServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderConfirmSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderConfirmSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderFinalizeSupplychainServiceImpl;
@@ -600,5 +612,12 @@ public class SupplychainModule extends AxelorModule {
     bind(PackagingMassService.class).to(PackagingMassServiceImpl.class);
     bind(LogisticalFormSupplychainService.class).to(LogisticalFormSupplychainServiceImpl.class);
     bind(SaleOrderMarginServiceImpl.class).to(SaleOrderMarginSupplychainServiceImpl.class);
+    bind(SaleOrderPackagingService.class).to(SaleOrderPackagingServiceImpl.class);
+    bind(SaleOrderPackagingPlanService.class).to(SaleOrderPackagingPlanServiceImpl.class);
+    bind(SaleOrderPackagingDimensionService.class).to(SaleOrderPackagingDimensionServiceImpl.class);
+    bind(SaleOrderPackagingOrientationService.class)
+        .to(SaleOrderPackagingOrientationServiceImpl.class);
+    bind(SaleOrderPackagingCreateService.class).to(SaleOrderPackagingCreateServiceImpl.class);
+    bind(SaleOrderProductPackagingService.class).to(SaleOrderProductPackagingServiceImpl.class);
   }
 }

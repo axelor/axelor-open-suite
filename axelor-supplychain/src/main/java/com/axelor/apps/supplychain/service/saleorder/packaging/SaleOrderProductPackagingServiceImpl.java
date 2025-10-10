@@ -16,13 +16,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.supplychain.service.saleorder.packaging;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductPackaging;
 import com.axelor.apps.base.db.repo.ProductPackagingRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
@@ -35,27 +37,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class SaleOrderProductPackagingServiceImpl implements SaleOrderProductPackagingService {
 
-  protected SaleOrderPackagingMessageService saleOrderPackagingMessageService;
+  protected SaleOrderPackagingCreateService saleOrderPackagingMessageService;
   protected ProductPackagingRepository productPackagingRepository;
 
   @Inject
   public SaleOrderProductPackagingServiceImpl(
-      SaleOrderPackagingMessageService saleOrderPackagingMessageService,
+      SaleOrderPackagingCreateService saleOrderPackagingMessageService,
       ProductPackagingRepository productPackagingRepository) {
     this.saleOrderPackagingMessageService = saleOrderPackagingMessageService;
     this.productPackagingRepository = productPackagingRepository;
   }
 
   @Override
-  public void checkMultipleQty(Map<Product, BigDecimal> productQtyMap) throws AxelorException {
+  public void checkMultipleQty(Map<Product, Pair<SaleOrderLine, BigDecimal>> productQtyMap)
+      throws AxelorException {
     List<String> invalidProducts = new ArrayList<>();
 
-    for (Map.Entry<Product, BigDecimal> entry : productQtyMap.entrySet()) {
+    for (Map.Entry<Product, Pair<SaleOrderLine, BigDecimal>> entry : productQtyMap.entrySet()) {
       Product product = entry.getKey();
-      BigDecimal qty = entry.getValue();
+      BigDecimal qty = entry.getValue().getRight();
 
       List<ProductPackaging> packagingList = getProductPackagings(product);
 
@@ -95,24 +99,23 @@ public class SaleOrderProductPackagingServiceImpl implements SaleOrderProductPac
 
   @Override
   public void packWithProductPackaging(
-      Map<Product, BigDecimal> productQtyMap,
-      List<String> messages,
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> productQtyMap,
       List<Product> productsWithPackaging,
       List<Product> packedThisLevel,
-      Map<Product, String> descMap,
-      Map<Product, BigDecimal[]> weightMap)
+      SaleOrder saleOrder)
       throws AxelorException {
 
     for (Product nextProduct : productsWithPackaging) {
-      while (productQtyMap.getOrDefault(nextProduct, BigDecimal.ZERO).signum() > 0) {
-        Map<Product, BigDecimal> boxContents = new HashMap<>();
+      Pair<SaleOrderLine, BigDecimal> pair = productQtyMap.get(nextProduct);
+
+      while (pair.getRight().compareTo(BigDecimal.ZERO) > 0) {
+        Map<Product, Pair<SaleOrderLine, BigDecimal>> boxContents = new HashMap<>();
         Product selectedBox = chooseBestPackaging(nextProduct, productQtyMap, boxContents);
         if (selectedBox == null) {
           break;
         }
-        saleOrderPackagingMessageService.updatePackagingMessage(
-            selectedBox, boxContents, productQtyMap, messages, descMap, weightMap);
-
+        saleOrderPackagingMessageService.createPackaging(
+            selectedBox, boxContents, productQtyMap, saleOrder);
         packedThisLevel.add(selectedBox);
       }
     }
@@ -120,10 +123,10 @@ public class SaleOrderProductPackagingServiceImpl implements SaleOrderProductPac
 
   protected Product chooseBestPackaging(
       Product product,
-      Map<Product, BigDecimal> productQtyMap,
-      Map<Product, BigDecimal> boxContents) {
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> productQtyMap,
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> boxContents) {
 
-    Map<Product, BigDecimal> qtyMap = new HashMap<>(productQtyMap);
+    Map<Product, Pair<SaleOrderLine, BigDecimal>> qtyMap = new HashMap<>(productQtyMap);
     List<ProductPackaging> productPackagings =
         getProductPackagings(product).stream()
             .sorted(Comparator.comparing(ProductPackaging::getQty))
@@ -132,7 +135,9 @@ public class SaleOrderProductPackagingServiceImpl implements SaleOrderProductPac
     if (CollectionUtils.isEmpty(productPackagings)) {
       return null;
     }
-    BigDecimal qtyLeft = qtyMap.getOrDefault(product, BigDecimal.ZERO);
+    Pair<SaleOrderLine, BigDecimal> pair = qtyMap.get(product);
+    SaleOrderLine saleOrderLine = pair.getLeft();
+    BigDecimal qtyLeft = pair.getRight();
     if (qtyLeft.compareTo(BigDecimal.ZERO) <= 0) {
       return null;
     }
@@ -147,8 +152,12 @@ public class SaleOrderProductPackagingServiceImpl implements SaleOrderProductPac
     }
     if (bestPackaging != null) {
       BigDecimal packagingQty = BigDecimal.valueOf(bestPackaging.getQty());
-      qtyMap.put(product, qtyLeft.subtract(packagingQty));
-      boxContents.merge(product, packagingQty, BigDecimal::add);
+      productQtyMap.put(product, Pair.of(saleOrderLine, qtyLeft.subtract(packagingQty)));
+      boxContents.merge(
+          product,
+          Pair.of(saleOrderLine, packagingQty),
+          (oldPair, newPair) ->
+              Pair.of(oldPair.getLeft(), oldPair.getRight().add(newPair.getRight())));
       return bestPackaging.getPackaging();
     }
     return null;

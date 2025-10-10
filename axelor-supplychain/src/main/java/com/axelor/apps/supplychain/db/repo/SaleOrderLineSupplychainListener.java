@@ -16,20 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Set;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCheckSupplychainService;
+import com.axelor.inject.Beans;
+import javax.persistence.PreRemove;
 
-public interface SaleOrderPackagingOrientationService {
+public class SaleOrderLineSupplychainListener {
 
-  boolean canFit(Product product, Product box) throws AxelorException;
-
-  BigDecimal[][] getOrientations(BigDecimal[] dimensions);
-
-  void validateProductsForPackaging(Set<Product> products, List<Product> packagings)
-      throws AxelorException;
+  @PreRemove
+  public void preRemove(SaleOrderLine saleOrderLine) throws AxelorException {
+    Beans.get(SaleOrderLineCheckSupplychainService.class).checkLinkedPackagingLine(saleOrderLine);
+  }
 }

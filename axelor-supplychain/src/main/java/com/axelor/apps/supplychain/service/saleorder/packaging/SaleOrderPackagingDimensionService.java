@@ -16,16 +16,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service.saleorderline;
+package com.axelor.apps.supplychain.service.saleorder.packaging;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.base.db.Product;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 
-public interface SaleOrderLineCheckSupplychainService {
+public interface SaleOrderPackagingDimensionService {
 
-  void saleSupplySelectOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException;
+  List<Product> getProductsOrderedByVolume(Set<Product> products) throws AxelorException;
 
-  void checkLinkedPackagingLine(SaleOrderLine saleOrderLine) throws AxelorException;
+  BigDecimal getBoxInnerVolume(Product box);
+
+  BigDecimal getSpaceVolume(BigDecimal[] space);
+
+  BigDecimal[] getDimensions(Product product, boolean isBox) throws AxelorException;
+
+  BigDecimal[] getProductDimensions(Product product) throws AxelorException;
+
+  BigDecimal getConvertedWeight(BigDecimal value, Product product) throws AxelorException;
 }

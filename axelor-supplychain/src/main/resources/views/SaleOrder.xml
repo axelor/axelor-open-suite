@@ -39,6 +39,22 @@
       <attribute name="onChange"
         value="action-sale-order-record-freight-carrier,supplychain-action-update-shipment-cost-line"/>
     </extend>
+    <extend target="//panel[@name='deliveryInformationPanel']">
+      <insert position="after">
+        <panel name="packagingPanel" title="Packaging" colSpan="12">
+          <button name="estimatePackagingBtn" title="Estimate packaging" icon="fa-envelope"
+            onClick="save,action-sale-order-method-estimate-packaging"
+            readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
+          <help colSpan="12"><![CDATA[This packaging is different from real packagings defined during shipping process. Design for only shipping cost estimation.]]></help>
+          <panel-related name="packagingPanel" field="estimatedPackagingList"
+            grid-view="packaging-sale-order-grid" form-view="packaging-sale-order-form" colSpan="12"
+            widget="tree-grid" x-tree-field="childrenPackagingList"
+            summary-view="packaging-sale-order-packaging-lines-form"
+            orderBy="-packagingLevelSelect,packagingNumber" x-expand-all="true" canNew="false"
+            canEdit="false" canRemove="true"/>
+        </panel>
+      </insert>
+    </extend>
   </form>
 
   <form name="sale-order-form-partner" title="Sale order"
@@ -458,6 +474,11 @@
     name="action-supplychain-sale-order-method-notify-estimated-delivery-date-update">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="notifyEstimatedDeliveryDateUpdate"/>
+  </action-method>
+
+  <action-method name="action-sale-order-method-estimate-packaging">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="estimatePackaging"/>
   </action-method>
 
 </object-views>
