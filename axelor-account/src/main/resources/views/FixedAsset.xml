@@ -361,8 +361,9 @@
       <field name="$generateSaleMove" title="Generate Sale Move" widget="boolean"
         showIf="_moveGenerationException != 2 &amp;&amp; disposalTypeSelect == 2" colSpan="4"/>
       <field name="$customer" title="Customer" type="many-to-one"
-        target="com.axelor.apps.base.db.Partner" showIf="$generateSaleMove" hidden="true"
-        onChange="action-fixed-asset-wizard-record-on-customer-change" colSpan="4"/>
+        target="com.axelor.apps.base.db.Partner" showIf="$generateSaleMove"
+        onChange="action-fixed-asset-wizard-record-on-customer-change"
+        domain="self.isCustomer = true" colSpan="4"/>
       <field name="saleTaxLineSet" requiredIf="$generateSaleMove" title="Tax lines"
         canNew="false" type="many-to-many" target="com.axelor.apps.account.db.TaxLine"
         showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove" hidden="true"
@@ -1058,8 +1059,7 @@
 
   <action-record name="action-fixed-asset-wizard-record-on-customer-change"
     model="com.axelor.utils.db.Wizard">
-    <field name="$customerId" expr="eval: customer.id" if="customer != null"/>
-    <field name="$customerId" expr="null" if="customer == null"/>
+    <field name="$customerId" expr="eval: customer?.id"/>
   </action-record>
 </object-views>
 
