@@ -16,6 +16,16 @@
           height="800"/>
       </insert>
     </extend>
+
+    <extend target="//button[@name='carrierValidatedBtn']">
+      <insert position="after">
+        <button name="collectedBtn" title="Collected" showIf="statusSelect == 2"
+          readonlyIf="!(packagingList &amp;&amp; packagingList.length > 0)"
+          onClick="action-logistical-form-method-process-collected" icon="fa-truck"
+          css="btn btn-success" colSpan="12"
+          prompt="Are you sure you want to change status to &quot;Collected&quot; ?"/>
+      </insert>
+    </extend>
   </form>
 
   <action-method name="action-logistical-form-method-refresh-logistical-form">
@@ -27,6 +37,11 @@
     name="action-logistical-form-method-validate-and-update-stock-move-list">
     <call class="com.axelor.apps.supplychain.web.LogisticalFormController"
       method="validateAndUpdateStockMoveList"/>
+  </action-method>
+
+  <action-method name="action-logistical-form-method-process-collected">
+    <call class="com.axelor.apps.supplychain.web.LogisticalFormController"
+      method="processCollected"/>
   </action-method>
 
   <action-group name="action-group-logistical-form-print-packing-list">
