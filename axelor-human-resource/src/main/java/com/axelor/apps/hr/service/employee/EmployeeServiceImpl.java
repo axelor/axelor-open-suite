@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.DPAE;
@@ -36,7 +37,6 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -149,7 +149,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
     duration =
         duration.subtract(
-            Beans.get(PublicHolidayHrService.class)
+            Beans.get(PublicHolidayService.class)
                 .computePublicHolidayDays(fromDate, toDate, weeklyPlanning, publicHolidayPlanning));
 
     return duration;

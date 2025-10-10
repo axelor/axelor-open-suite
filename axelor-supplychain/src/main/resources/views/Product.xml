@@ -71,9 +71,28 @@
         </panel>
       </panel>
       <panel-dashlet name="dashlet-views-stock-location-line-view-by-product"
-        colSpan="12" action="action-stock-location-line-view-by-product" height="150"
-        showIf="$product" readonly="true"/>
+        colSpan="12" action="action-stock-location-line-view-by-product" showIf="$product"
+        readonly="true"/>
     </panel>
+  </form>
+
+  <form id="supplychain-product-form" name="product-form" title="Product"
+    model="com.axelor.apps.base.db.Product" extension="true">
+    <extend target="//panel[@name='packagingPanel']">
+      <insert position="after">
+        <panel name="adrPanel" title="ADR" colSpan="12">
+          <field name="isAdr"/>
+          <field name="limitedQty"/>
+          <field name="unCode"/>
+          <field name="packagingGroupSelect" requiredIf="isAdr"/>
+        </panel>
+      </insert>
+    </extend>
+    <extend target="//field[@name='isPackaging']">
+      <insert position="after">
+        <field name="isReturnable" hidden="true" showIf="isPackaging" colSpan="4"/>
+      </insert>
+    </extend>
   </form>
 
   <action-group name="action-group-supplychain-update-indicators">

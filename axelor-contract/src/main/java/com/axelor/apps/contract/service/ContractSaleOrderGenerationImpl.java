@@ -66,7 +66,7 @@ public class ContractSaleOrderGenerationImpl implements ContractSaleOrderGenerat
 
     SaleOrder saleOrder =
         saleOrderGeneratorService.createSaleOrder(
-            clientPartner, contract.getCompany(), null, contract.getCurrency(), null);
+            clientPartner, null, contract.getCompany(), null, contract.getCurrency(), null);
 
     saleOrder.setInvoicedPartner(contract.getInvoicedPartner());
     saleOrder.setPaymentMode(contract.getCurrentContractVersion().getPaymentMode());

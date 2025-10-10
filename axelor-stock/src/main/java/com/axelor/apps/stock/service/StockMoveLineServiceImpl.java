@@ -34,8 +34,6 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.CustomsCodeNomenclature;
-import com.axelor.apps.stock.db.LogisticalForm;
-import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockLocationLineHistory;
@@ -1227,79 +1225,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public boolean computeFullySpreadOverLogisticalFormLinesFlag(StockMoveLine stockMoveLine) {
-    return computeSpreadableQtyOverLogisticalFormLines(stockMoveLine).signum() <= 0;
-  }
-
-  @Override
-  public BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine) {
-    return stockMoveLine != null
-        ? computeSpreadableQtyOverLogisticalFormLines(
-            stockMoveLine, stockMoveLine.getLogisticalFormLineList())
-        : BigDecimal.ZERO;
-  }
-
-  @Override
-  public BigDecimal computeSpreadableQtyOverLogisticalFormLines(
-      StockMoveLine stockMoveLine, LogisticalForm logisticalForm) {
-
-    if (logisticalForm == null && stockMoveLine != null) {
-      return computeSpreadableQtyOverLogisticalFormLines(
-          stockMoveLine, stockMoveLine.getLogisticalFormLineList());
-    }
-
-    List<LogisticalFormLine> updatedLogisticalFormLineList = new ArrayList<>();
-
-    if (stockMoveLine != null && stockMoveLine.getLogisticalFormLineList() != null) {
-      for (LogisticalFormLine logisticalFormLine : stockMoveLine.getLogisticalFormLineList()) {
-        if (!logisticalForm.equals(logisticalFormLine.getLogisticalForm())) {
-          updatedLogisticalFormLineList.add(logisticalFormLine);
-        }
-      }
-    }
-
-    if (logisticalForm.getLogisticalFormLineList() != null) {
-      for (LogisticalFormLine logisticalFormLine : logisticalForm.getLogisticalFormLineList()) {
-        if (stockMoveLine != null && stockMoveLine.equals(logisticalFormLine.getStockMoveLine())) {
-          updatedLogisticalFormLineList.add(logisticalFormLine);
-        }
-      }
-    }
-
-    return computeSpreadableQtyOverLogisticalFormLines(
-        stockMoveLine, updatedLogisticalFormLineList);
-  }
-
-  protected BigDecimal computeSpreadableQtyOverLogisticalFormLines(
-      StockMoveLine stockMoveLine, List<LogisticalFormLine> logisticalFormLineList) {
-
-    if (stockMoveLine == null) {
-      return null;
-    }
-
-    if (stockMoveLine.getProduct() == null
-        || !ProductRepository.PRODUCT_TYPE_STORABLE.equals(
-            stockMoveLine.getProduct().getProductTypeSelect())) {
-      return BigDecimal.ZERO;
-    }
-
-    if (logisticalFormLineList == null) {
-      return stockMoveLine.getRealQty();
-    }
-
-    BigDecimal qtySpreadOverLogisticalMoveLines =
-        logisticalFormLineList.stream()
-            .map(
-                logisticalFormLine ->
-                    logisticalFormLine.getQty() != null
-                        ? logisticalFormLine.getQty()
-                        : BigDecimal.ZERO)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-    return stockMoveLine.getRealQty().subtract(qtySpreadOverLogisticalMoveLines);
-  }
-
-  @Override
   public void setProductInfo(StockMove stockMove, StockMoveLine stockMoveLine, Company company)
       throws AxelorException {
     Preconditions.checkNotNull(stockMoveLine);
@@ -1394,12 +1319,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     //      draft = false;
     //    }
     BigDecimal totalSplitQty = BigDecimal.ZERO;
+    boolean isAlreadyExceeded = false;
     for (LinkedHashMap<String, Object> trackingNumberItem : trackingNumbers) {
       BigDecimal counter = new BigDecimal(trackingNumberItem.get("counter").toString());
       if (counter.compareTo(BigDecimal.ZERO) == 0) {
         continue;
       }
-      totalSplitQty = totalSplitQty.add(counter);
 
       TrackingNumber trackingNumber =
           trackingNumberRepo
@@ -1470,11 +1395,21 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       }
 
       StockMoveLine newStockMoveLine = stockMoveLineRepository.copy(stockMoveLine, true);
-      //      if (draft) {
-      newStockMoveLine.setQty(counter);
-      //      } else {
+      boolean isExceeded = totalSplitQty.add(counter).compareTo(stockMoveLine.getQty()) > 0;
+      BigDecimal remainder = stockMoveLine.getQty().subtract(totalSplitQty);
+      totalSplitQty = totalSplitQty.add(counter);
+      if (!isAlreadyExceeded) {
+        if (isExceeded) {
+          newStockMoveLine.setQty(remainder);
+          isAlreadyExceeded = true;
+        } else {
+          newStockMoveLine.setQty(counter);
+        }
+      } else {
+        newStockMoveLine.setQty(BigDecimal.ZERO);
+      }
+
       newStockMoveLine.setRealQty(counter);
-      //      }
       newStockMoveLine.setTrackingNumber(trackingNumber);
       newStockMoveLine.setStockMove(stockMoveLine.getStockMove());
       stockMoveLineRepository.save(newStockMoveLine);
@@ -1672,14 +1607,15 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       Unit unit,
       Integer conformitySelect,
       StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      StockLocation toStockLocation,
+      String description)
       throws AxelorException {
 
     StockMoveLine line =
         createStockMoveLine(
             product,
             product.getName(),
-            "",
+            description,
             qty,
             null,
             null,
@@ -1708,7 +1644,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       Integer conformity,
       Unit unit,
       StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      StockLocation toStockLocation,
+      String description)
       throws AxelorException {
     if (stockMoveLine.getStockMove() == null) {
       throw new AxelorException(
@@ -1727,6 +1664,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         }
         if (toStockLocation != null) {
           stockMoveLine.setToStockLocation(toStockLocation);
+        }
+        if (description != null) {
+          stockMoveLine.setDescription(description);
         }
       }
     }
@@ -1779,7 +1719,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setName(null);
       stockMoveLine.setCustomsCodeNomenclature(null);
       stockMoveLine.setCustomsCode(null);
-      stockMoveLine.setLogisticalFormLineList(null);
       stockMoveLine.setLineTypeSelect(null);
       stockMoveLine.setRegime(null);
       stockMoveLine.setNatureOfTransaction(null);

@@ -29,4 +29,7 @@ public interface PartnerLinkService {
    * @return the computed filter to be used as a JPQL domain attribute
    */
   String computePartnerFilter(Partner partner, String strFilter);
+
+  boolean isDeliveredPartnerCompatible(
+      Partner deliveredPartner, Partner clientPartner, String strFilter);
 }

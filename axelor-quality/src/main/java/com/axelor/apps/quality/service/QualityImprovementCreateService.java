@@ -19,11 +19,16 @@
 package com.axelor.apps.quality.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.quality.db.ControlEntry;
+import com.axelor.apps.quality.db.QIDetection;
 import com.axelor.apps.quality.db.QIIdentification;
 import com.axelor.apps.quality.db.QIResolution;
 import com.axelor.apps.quality.db.QualityImprovement;
 
 public interface QualityImprovementCreateService {
+
+  QualityImprovement createQualityImprovementFromControlEntry(
+      ControlEntry controlEntry, QIDetection qiDetection) throws AxelorException;
 
   QualityImprovement createQualityImprovement(
       QualityImprovement qualityImprovement,

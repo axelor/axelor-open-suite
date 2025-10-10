@@ -403,6 +403,9 @@ public final class ProductionExceptionMessage {
   public static final String BILL_OF_MATERIAL_WRONG_CALCULATION_QTY = /*$$(*/
       "Calculation quantity should not be zero." /*)*/;
 
+  public static final String BILL_OF_MATERIAL_WRONG_CALCULATION_QTY_WITH_NAME = /*$$(*/
+      "The Calculation quantity of the bill of material %s is equal to zero." /*)*/;
+
   public static final String BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR = /*$$(*/
       "The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s" /*)*/;
 
@@ -438,4 +441,10 @@ public final class ProductionExceptionMessage {
 
   public static final String SALE_ORDER_SELECT_WRONG_LINE = /*$$(*/
       "There is no production or manufacturing order to generate for one of the selected lines." /*)*/;
+
+  public static final String SALE_ORDER_LINES_CANNOT_PRODUCT = /*$$(*/
+      "Warning : One or more lines are blocked for production" /*)*/;
+
+  public static final String OPERATION_ORDER_CANNOT_ADD_PRODUCT = /*$$(*/
+      "Phase consumption is not enabled for this operation. Please add the consumed products directly to the manufacturing order." /*)*/;
 }

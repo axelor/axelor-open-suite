@@ -22,6 +22,7 @@ import com.axelor.apps.quality.db.QIDefault;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class QIResolutionDefaultRequest extends RequestStructure {
 
@@ -29,6 +30,7 @@ public class QIResolutionDefaultRequest extends RequestStructure {
   protected Long qiDefaultId;
   protected BigDecimal quantity;
   protected String description;
+  protected List<Long> metaFiles;
 
   public Long getId() {
     return id;
@@ -60,6 +62,14 @@ public class QIResolutionDefaultRequest extends RequestStructure {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public List<Long> getMetaFiles() {
+    return metaFiles;
+  }
+
+  public void setMetaFiles(List<Long> metaFiles) {
+    this.metaFiles = metaFiles;
   }
 
   public QIDefault fetchQiDefault() {

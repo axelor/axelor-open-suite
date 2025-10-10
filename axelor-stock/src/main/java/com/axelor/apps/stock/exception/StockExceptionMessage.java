@@ -207,37 +207,16 @@ public final class StockExceptionMessage {
    */
   public static final String LOGISTICAL_FORM_MISSING_SEQUENCE = /*$$(*/
       "Missing logistical form sequence for company %s" /*)*/;
-  public static final String LOGISTICAL_FORM_PARTNER_MISMATCH = /*$$(*/
-      "Partner mismatch: %s" /*)*/;
-  public static final String LOGISTICAL_FORM_LINE_INVALID_DIMENSIONS = /*$$(*/
-      "Invalid dimensions on packing line No. %d" /*)*/;
-  public static final String LOGISTICAL_FORM_LINE_REQUIRED_TYPE = /*$$(*/
-      "Type is required on line %d." /*)*/;
-  public static final String LOGISTICAL_FORM_LINE_REQUIRED_STOCK_MOVE_LINE = /*$$(*/
-      "Stock move line is required on line %d." /*)*/;
-  public static final String LOGISTICAL_FORM_LINE_REQUIRED_QUANTITY = /*$$(*/
-      "Quantity is required on line %d." /*)*/;
-  public static final String LOGISTICAL_FORM_LINES_INCONSISTENT_QUANTITY = /*$$(*/
-      "Total quantity for %s: %s (expected: %s)" /*)*/;
-  public static final String LOGISTICAL_FORM_LINES_EMPTY_PARCEL = /*$$(*/
-      "Parcel %d is empty." /*)*/;
-  public static final String LOGISTICAL_FORM_LINES_EMPTY_PALLET = /*$$(*/
-      "Pallet %d is empty." /*)*/;
-  public static final String LOGISTICAL_FORM_LINES_ORPHAN_DETAIL = /*$$(*/
-      "Detail line(s) not inside a parcel/pallet" /*)*/;
+
   public static final String LOGISTICAL_FORM_UNKNOWN_ACCOUNT_SELECTION = /*$$(*/
       "Unknown account selection" /*)*/;
 
   public static final String LOGISTICAL_FORM_MISSING_TEMPLATE = /*$$(*/
       "The template to send message on save is missing." /*)*/;
 
-  public static final String LOGISTICAL_FORM_INVALID_DIMENSIONS = /*$$(*/
-      "Invalid field dimensions" /*)*/;
-
   public static final String LOGISTICAL_FORM_CARRIER_VALIDATE_WRONG_STATUS = /*$$(*/
       "Can only be validated if provisioned" /*)*/;
-  public static final String LOGISTICAL_FORM_COLLECT_WRONG_STATUS = /*$$(*/
-      "Can only be collected if validated" /*)*/;
+
   public static final String LOGISTICAL_FORM_PROVISION_WRONG_STATUS = /*$$(*/
       "Can only return to provision if was validated or collected" /*)*/;
 
@@ -349,4 +328,13 @@ public final class StockExceptionMessage {
 
   public static final String STOCK_MOVE_MASS_NO_FROM_STOCK_LOCATION_SELECTED = /*$$(*/
       "No stock location has been selected." /*)*/;
+
+  public static final String LOGISTICAL_FORM_SELECT_ONLY_ONE = /*$$(*/
+      "Please select only one logistical form." /*)*/;
+
+  public static final String LOGISTICAL_FORM_PARTNER_MISMATCH = /*$$(*/
+      "Stock move(s) must belong to the same client as the logistical form." /*)*/;
+
+  public static final String LOGISTICAL_FORM_STATUS_MISMATCH = /*$$(*/
+      "Stock move(s) status must be planned." /*)*/;
 }

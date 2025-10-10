@@ -33,10 +33,21 @@ import com.axelor.apps.quality.rest.dto.QIResolutionRequest;
 import com.axelor.apps.quality.rest.dto.QualityImprovementRequest;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.meta.db.repo.MetaFileRepository;
+import com.google.inject.Inject;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class QualityImprovementParseServiceImpl implements QualityImprovementParseService {
+
+  protected final MetaFileRepository metaFileRepository;
+
+  @Inject
+  public QualityImprovementParseServiceImpl(MetaFileRepository metaFileRepository) {
+    this.metaFileRepository = metaFileRepository;
+  }
 
   @Override
   public QualityImprovement getQualityImprovementFromRequestBody(
@@ -144,7 +155,12 @@ public class QualityImprovementParseServiceImpl implements QualityImprovementPar
     qiResolutionDefault.setQuantity(qiResolutionDefaultRequest.getQuantity());
     qiResolutionDefault.setDescription(qiResolutionDefaultRequest.getDescription());
     qiResolutionDefault.setName(qiDefault.getName());
-
+    if (CollectionUtils.isNotEmpty(qiResolutionDefaultRequest.getMetaFiles())) {
+      qiResolutionDefaultRequest.getMetaFiles().stream()
+          .map(metaFileRepository::find)
+          .filter(Objects::nonNull)
+          .forEach(qiResolutionDefault::addMetaFileListItem);
+    }
     return qiResolutionDefault;
   }
 

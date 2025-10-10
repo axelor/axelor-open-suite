@@ -1,4 +1,4 @@
-"product.importId";"supplierPartner.importId";"productSupplierName";"productSupplierCode";"price";"updateDate";"description";"minQty";"maxQty"
+"product_importId";"supplierPartner_importId";"productSupplierName";"productSupplierCode";"price";"updateDate";"description";"minQty";"maxQty"
 120;148;"InkJet Printer PRINTO";"IP-PRINTQ";"279.65";"2013-02-01";;5;5
 120;170;"PRINTO Inkjet";6541241;"293.6325";"2013-03-15";;1;1
 121;148;"Laser Printer PROPRINT";"LP-PROPRINT";"343.2";"2013-02-01";;5;5

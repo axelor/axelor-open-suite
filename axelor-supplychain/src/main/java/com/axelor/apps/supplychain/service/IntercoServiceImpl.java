@@ -41,6 +41,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -57,10 +58,12 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -84,6 +87,9 @@ public class IntercoServiceImpl implements IntercoService {
   protected TaxService taxService;
   protected SaleOrderStockLocationService saleOrderStockLocationService;
   protected final PurchaseOrderTypeSelectService purchaseOrderTypeSelectService;
+  protected final SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
+  protected final AppBaseService appBaseService;
+  protected SaleOrderSupplychainService saleOrderSupplychainService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
@@ -93,12 +99,18 @@ public class IntercoServiceImpl implements IntercoService {
       AnalyticLineModelService analyticLineModelService,
       TaxService taxService,
       SaleOrderStockLocationService saleOrderStockLocationService,
-      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService) {
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
+      AppBaseService appBaseService,
+      SaleOrderSupplychainService saleOrderSupplychainService) {
     this.purchaseConfigService = purchaseConfigService;
     this.analyticLineModelService = analyticLineModelService;
     this.taxService = taxService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
     this.purchaseOrderTypeSelectService = purchaseOrderTypeSelectService;
+    this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
+    this.appBaseService = appBaseService;
+    this.saleOrderSupplychainService = saleOrderSupplychainService;
   }
 
   @Override
@@ -127,6 +139,10 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             clientPartner.getFiscalPosition());
 
+    if (appBaseService.getAppBase().getActivatePartnerRelations()) {
+      saleOrder.setInvoicedPartner(clientPartner);
+      saleOrder.setDeliveredPartner(clientPartner);
+    }
     // in ati
     saleOrder.setInAti(purchaseOrder.getInAti());
 
@@ -151,6 +167,11 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrder.setExpectedRealisationDate(purchaseOrder.getExpectedRealisationDate());
     saleOrder.setAmountToBeSpreadOverTheTimetable(
         purchaseOrder.getAmountToBeSpreadOverTheTimetable());
+
+    // Set default invoiced and delivered partners and address in case of partner delegations
+    if (appBaseService.getAppBase().getActivatePartnerRelations()) {
+      saleOrderSupplychainService.setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder);
+    }
 
     // create lines
     List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
@@ -311,6 +332,7 @@ public class IntercoServiceImpl implements IntercoService {
 
     saleOrderLine.setSaleOrder(saleOrder);
     saleOrderLine.setProduct(purchaseOrderLine.getProduct());
+    saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
     saleOrderLine.setProductName(purchaseOrderLine.getProductName());
 
     saleOrderLine.setDescription(purchaseOrderLine.getDescription());

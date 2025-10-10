@@ -27,7 +27,6 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.businessproject.service.ProjectStockMoveInvoiceServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -38,6 +37,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingSupplychainService;
+import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
@@ -48,7 +48,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
-public class StockMoveInvoiceBudgetServiceImpl extends ProjectStockMoveInvoiceServiceImpl {
+public class StockMoveInvoiceBudgetServiceImpl extends StockMoveInvoiceServiceImpl {
 
   protected BudgetInvoiceService budgetInvoiceService;
   protected AppBudgetService appBudgetService;

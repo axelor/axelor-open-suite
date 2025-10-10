@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Incoterm;
+import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
@@ -194,13 +195,6 @@ public interface StockMoveService {
    */
   Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException;
 
-  /**
-   * Update fully spread over logistical forms flag on stock move.
-   *
-   * @param stockMove
-   */
-  void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
-
   void setAvailableStatus(StockMove stockMove) throws AxelorException;
 
   /**
@@ -258,4 +252,7 @@ public interface StockMoveService {
   StockLocation getToStockLocationOutsource(StockMove stockMove) throws AxelorException;
 
   void planWithNoSplit(StockMove stockMove) throws AxelorException;
+
+  public void addStockMovesToLogisticalForm(
+      LogisticalForm logisticalForm, List<StockMove> stockMoveList) throws AxelorException;
 }

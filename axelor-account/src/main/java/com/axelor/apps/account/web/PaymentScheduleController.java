@@ -21,27 +21,21 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.PaymentSchedule;
 import com.axelor.apps.account.db.repo.PaymentScheduleRepository;
-import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.BankDetailsDomainServiceAccount;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.PaymentScheduleService;
 import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
-import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -72,37 +66,6 @@ public class PaymentScheduleController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  // Called on onSave event
-  public void paymentScheduleScheduleId(ActionRequest request, ActionResponse response) {
-    try {
-      PaymentSchedule paymentSchedule = request.getContext().asType(PaymentSchedule.class);
-      Beans.get(PaymentScheduleService.class).checkTotalLineAmount(paymentSchedule);
-
-      if (Strings.isNullOrEmpty(paymentSchedule.getPaymentScheduleSeq())) {
-
-        String num =
-            Beans.get(SequenceService.class)
-                .getSequenceNumber(
-                    SequenceRepository.PAYMENT_SCHEDULE,
-                    paymentSchedule.getCompany(),
-                    PaymentSchedule.class,
-                    "paymentScheduleSeq",
-                    paymentSchedule);
-
-        if (Strings.isNullOrEmpty(num)) {
-          response.setError(
-              String.format(
-                  I18n.get(AccountExceptionMessage.PAYMENT_SCHEDULE_5),
-                  paymentSchedule.getCompany().getName()));
-        } else {
-          response.setValue("paymentScheduleSeq", num);
-        }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

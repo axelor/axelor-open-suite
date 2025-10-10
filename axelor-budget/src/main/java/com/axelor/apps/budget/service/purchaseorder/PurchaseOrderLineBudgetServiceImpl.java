@@ -37,7 +37,6 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -138,11 +137,6 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
       }
       if (purchaseOrder.getOrderDate() != null) {
         date = purchaseOrder.getOrderDate();
-      }
-
-      if (purchaseOrder.getProject() != null
-          && !ObjectUtils.isEmpty(purchaseOrder.getProject().getGlobalBudgetSet())) {
-        globalBudgetSet = purchaseOrder.getProject().getGlobalBudgetSet();
       }
     }
 

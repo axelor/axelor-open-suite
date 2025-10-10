@@ -29,7 +29,7 @@
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="origin" width="120"/>
     <field name="availableStatusSelect" showIf="statusSelect == 2">
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
@@ -62,6 +62,8 @@
         onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
       <button name="mergeBtn" title="Merge stock moves" icon="fa-object-ungroup"
         onClick="action-stock-move-group-merge"/>
+      <button name="addToLogisticalFormBtn" title="Add stock move(s) to logistical form"
+        onClick="action-stock-move-validate-stock-moves,action-stock-move-view-add-stock-moves-to-logistical-form"/>
     </toolbar>
     <hilite
       if="invoiceBlockingReason &amp;&amp; (!invoiceBlockedToDate || $moment(invoiceBlockedToDate) &gt; $moment())"
@@ -81,7 +83,7 @@
     <field name="estimatedDate"/>
     <field name="realDate"/>
     <field name="origin" width="120"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="fromAddressStr" hidden="true"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
@@ -146,7 +148,7 @@
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
       x-image-field="picture"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="origin" width="120"/>
     <field name="availableStatusSelect">
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
@@ -185,7 +187,7 @@
     <field name="realDate"/>
     <field name="supplierShipmentRef"/>
     <field name="origin" width="120"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="toAddressStr" hidden="true"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
@@ -268,7 +270,11 @@
         <item name="shipReceiveAllProductsItem" title="Ship/Receive all products"
           action="action-stock-move-group-save-and-update-stocks,action-stock-move-ship-recieve-all-products"/>
         <item name="refreshProductNetMassItem" showIf="typeSelect == 2 &amp;&amp; !isReversion"
-          title="Refresh the products net mass" action="action-stock-move-method-refresh-net-mass"/>
+          title="Refresh the products net mass"
+          action="save,action-stock-move-method-refresh-net-mass"/>
+        <item name="addToLogisticalFormBtn" title="Add stock move(s) to logistical form"
+          showIf="typeSelect == 2"
+          action="save,action-stock-move-view-add-stock-moves-to-logistical-form"/>
       </menu>
     </menubar>
 
@@ -341,7 +347,7 @@
 								]]></viewer>
               </field>
               <field name="$invoicingTags" showTitle="false" readonly="true"
-                showIf="statusSelect == 3" if-module="axelor-supplychain"
+                showIf="statusSelect == 3 &amp;&amp; typeSelect != 1" if-module="axelor-supplychain"
                 if="__config__.app.isApp('supplychain')">
                 <viewer depends="invoicingStatusSelect"><![CDATA[
 						<>
@@ -397,7 +403,7 @@
           onClick="action-group-stock-stockmove-realize-click"/>
         <button
           if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"
-          if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice"
+          if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate control invoice"
           hidden="true" icon="fa-file-o"
           onClick="save,action-supplychain-stock-move-validate-invoicing-block,action-supplychain-stock-move-method-invoicing-wizard"/>
         <button name="generateReversionBtn" title="Generate reversion" icon="fa-undo"
@@ -692,6 +698,12 @@
       <panel name="datesPanel" title="Dates">
         <field name="realDate" colSpan="4"/>
         <field name="pickingEditDate" hidden="true" showIf="pickingEditDate" readonly="true"/>
+      </panel>
+
+      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')">
+        <button name="addControlEntryBtn" title="Add a control entry"
+          onClick="save,action-stock-move-view-add-control-entry" colOffset="6"/>
+        <panel-dashlet action="action-stock-move-view-control-entry" colSpan="12"/>
       </panel>
 
       <panel name="configPanel" title="Configuration" itemSpan="6">
@@ -1302,9 +1314,6 @@
     model="com.axelor.apps.stock.db.LogisticalForm">
     <view type="grid" name="logistical-form-stock-move-grid"/>
     <view type="form" name="logistical-form-form"/>
-    <domain>self.id IN (:logisticalFormIdList)</domain>
-    <context name="logisticalFormIdList"
-      expr="call: com.axelor.apps.stock.service.LogisticalFormService:getIdList(__this__)"/>
   </action-view>
 
   <action-view name="action-stock-move-view-reversion" title="Reversions"
@@ -1630,9 +1639,64 @@
     <view-param name="popup-save" value="false"/>
   </action-view>
 
+  <action-view name="action-stock-move-view-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="grid" name="control-entry-grid"/>
+    <view type="form" name="control-entry-form"/>
+    <domain>self.relatedToSelectId = :stockMoveId AND self.relatedToSelect =
+      'com.axelor.apps.stock.db.StockMove'</domain>
+    <context name="stockMoveId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-stock-move-view-add-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="form" name="control-entry-form"/>
+    <view type="grid" name="control-entry-grid"/>
+    <view-param name="popup" value="reload"/>
+    <context name="relatedTo" expr="eval: 'com.axelor.apps.stock.db.StockMove'"/>
+    <context name="relatedToId" expr="eval:__self__?.id"/>
+  </action-view>
+
   <action-method name="action-stock-move-method-send-notification">
     <call class="com.axelor.apps.stock.web.StockMoveController"
       method="sendSupplierArrivalCancellationMessage"/>
+  </action-method>
+
+  <form name="add-stock-moves-to-logistical-form" title="Add stock move(s) to logistical form"
+    model="com.axelor.utils.db.Wizard" onNew="action-stock-move-attrs-set-logistical-form-list">
+    <panel name="mainPanel">
+      <field name="$logisticalFormList" title="Logistical forms" type="one-to-many"
+        target="com.axelor.apps.stock.db.LogisticalForm" colSpan="12"
+        grid-view="logistical-form-grid" form-view="logistical-form-form" canNew="false"
+        canEdit="false"/>
+      <button name="addToLogisticalFormBtn" title="Add stock move(s) to logistical form"
+        onClick="action-stock-move-method-add-stock-moves-to-logistical-form"
+        readonlyIf="$logisticalFormList == null || $logisticalFormList.length == 0"/>
+    </panel>
+  </form>
+
+  <action-view name="action-stock-move-view-add-stock-moves-to-logistical-form"
+    title="Add stock move(s) to logistical form" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="add-stock-moves-to-logistical-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_stockMoveIds" expr="eval: _ids"/>
+  </action-view>
+
+  <action-validate name="action-stock-move-validate-stock-moves">
+    <error message="Please select at least one stock move." if="!_ids"/>
+  </action-validate>
+
+  <action-attrs name="action-stock-move-attrs-set-logistical-form-list">
+    <attribute for="$logisticalFormList" name="value"
+      expr="eval: __repo__(LogisticalForm).all().filter('self.statusSelect = ?', __repo__(LogisticalForm).STATUS_PROVISION).fetch()"/>
+  </action-attrs>
+
+  <action-method name="action-stock-move-method-add-stock-moves-to-logistical-form">
+    <call class="com.axelor.apps.stock.web.StockMoveController"
+      method="addStockMovesToLogisticalForm"/>
   </action-method>
 
 </object-views>

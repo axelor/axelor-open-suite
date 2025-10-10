@@ -16,7 +16,9 @@
       <field name="manageSupplierCatalog" widget="boolean-switch"/>
       <field name="isDisplayPurchaseOrderLineNumber" widget="boolean-switch"/>
       <field name="enablePurchasesProductByTradName" widget="boolean-switch"/>
+      <field name="manageCallForTender" widget="boolean-switch"/>
       <field name="purchaseUnit" form-view="unit-form" grid-view="unit-grid"/>
+      <field name="allowValidatedOrderModification" widget="boolean-switch"/>
     </panel>
     <panel name="actionsPanel">
       <button name="generatePurchaseConfigurationsBtn" colSpan="4"

@@ -16,7 +16,7 @@
   </grid>
 
   <form name="wiki-form" title="Wiki" model="com.axelor.apps.project.db.Wiki" width="large"
-    onNew="action-business-support-attrs-project-default,action-wiki-record-on-new">
+    onNew="action-wiki-attrs-hide-project,action-wiki-record-on-new">
     <panel name="mainPanel">
       <field name="title" colSpan="6" required="true"/>
       <field name="project" colSpan="6" canEdit="false"/>
@@ -35,5 +35,10 @@
     model="com.axelor.apps.project.db.Wiki">
     <field name="project" expr="eval: _project" if="_project"/>
   </action-record>
+
+  <action-attrs name="action-wiki-attrs-hide-project">
+    <attribute name="hidden" for="project" expr="eval:true"
+      if="_parent &amp;&amp; (_parent?._model == 'com.axelor.apps.project.db.Project' || _parent?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
+  </action-attrs>
 
 </object-views>

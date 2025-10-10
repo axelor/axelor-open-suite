@@ -7,8 +7,9 @@
 
   <entity name="CallTender">
 
-    <string name="name"/>
-    <string name="description" title="Description"/>
+    <string name="callTenderSeq" title="Sequence" unique="true"/>
+    <string name="name" title="Call tender name"/>
+    <string name="description" title="Description" large="true"/>
     <one-to-many name="callTenderNeedList"
       ref="com.axelor.apps.purchase.db.CallTenderNeed" title="Product needs" mappedBy="callTender"/>
     <one-to-many name="callTenderSupplierList"
@@ -17,6 +18,7 @@
       ref="com.axelor.apps.purchase.db.CallTenderOffer" title="Offers" mappedBy="callTender"/>
     <many-to-one name="callForTenderMailTemplate" title="Call for tender mail template"
       ref="com.axelor.message.db.Template"/>
+    <many-to-one name="company" title="Company" ref="com.axelor.apps.base.db.Company"/>
 
 
     <track on="UPDATE">

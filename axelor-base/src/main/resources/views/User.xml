@@ -100,10 +100,12 @@
           </field>
         </panel>
         <field name="activeCompany" onSelect="action-user-attrs-domain-active-company"
-          widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+          widget="SuggestBox" form-view="company-form" grid-view="company-grid"
+          onChange="action-user-record-change-trading-name"/>
         <field name="tradingName"
           if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
-          form-view="trading-name-form" grid-view="trading-name-grid"/>
+          form-view="trading-name-form" grid-view="trading-name-grid"
+          domain="self.company = :activeCompany"/>
         <field name="activeTeam" canEdit="false" form-view="team-form" grid-view="team-grid"
           onSelect="action-user-attrs-domain-active-team"/>
         <panel-related name="companySetPanel" title="Internal companies"
@@ -135,11 +137,13 @@
 
     <panel name="mainPanel" sidebar="true" showIf="stepStatusSelect == 5">
       <field name="activeCompany" onSelect="action-user-attrs-domain-active-company"
-        widget="SuggestBox" form-view="company-form" grid-view="company-grid"/>
+        widget="SuggestBox" form-view="company-form" grid-view="company-grid"
+        onChange="action-user-record-change-trading-name"/>
       <!-- <field name="timesheetPeriodConfig"/> -->
       <field name="tradingName"
         if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
-        form-view="trading-name-form" grid-view="trading-name-grid"/>
+        form-view="trading-name-form" grid-view="trading-name-grid"
+        domain="self.company = :activeCompany"/>
       <field name="defaultStockLocation" form-view="stock-location-form"
         grid-view="stock-location-grid" domain="self.company = :activeCompany"
         if="__config__.app.isApp('supplychain')"/>
@@ -575,6 +579,11 @@
     model="com.axelor.auth.db.User">
     <field name="language"
       expr="eval:__this__.localization?.code.replace('_','-').toLowerCase()"/>
+  </action-record>
+
+  <action-record name="action-user-record-change-trading-name"
+    model="com.axelor.auth.db.User">
+    <field name="tradingName" expr="eval: null"/>
   </action-record>
 
   <search-filters name="user-filters" model="com.axelor.auth.db.User"

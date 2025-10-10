@@ -42,6 +42,7 @@
         <field name="checkExistingSequenceOnGeneration" widget="boolean-switch" colSpan="3"/>
         <field name="draftPrefix" colSpan="3"/>
         <field name="defaultBatchFetchLimit"/>
+        <field name="importErrorPath"/>
         <field name="isRegistrationCodeCheckBlocking" widget="boolean-switch"/>
         <field name="isGlobalDiscountEnabled" widget="boolean-switch"
           if="['sale','invoice'].any{module -> __config__.app.isApp(module)}"/>
@@ -122,11 +123,8 @@
         </panel>
         <panel name="apiSirenePanel" title="API Sirene configuration" colSpan="12">
           <help colSpan="12"><![CDATA[Calling the Sirene API will fill following partner fields: Name, First name, Title, Type, Tax number, Category, Main activity, Address.]]></help>
-          <field name="sireneTokenGeneratorUrl"/>
           <field name="sireneUrl" widget="url"/>
-          <field name="sireneKey"/>
-          <field name="sireneSecret"/>
-          <field name="sireneAccessToken" widget="password" hidden="true"/>
+          <field name="sireneKey" widget="password"/>
         </panel>
 
 

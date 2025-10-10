@@ -33,6 +33,9 @@ public class SaleOrderPostRequest extends RequestPostStructure {
   @Min(0)
   private Long clientPartnerId;
 
+  @Min(0)
+  private Long deliveredPartnerId;
+
   private Long companyId;
   private Long contactId;
   private Long currencyId;
@@ -63,6 +66,10 @@ public class SaleOrderPostRequest extends RequestPostStructure {
     return clientPartnerId;
   }
 
+  public Long getDeliveredPartnerId() {
+    return deliveredPartnerId;
+  }
+
   public void setCompanyId(Long companyId) {
     this.companyId = companyId;
   }
@@ -79,6 +86,10 @@ public class SaleOrderPostRequest extends RequestPostStructure {
     this.clientPartnerId = clientPartnerId;
   }
 
+  public void setDeliveredPartnerId(Long deliveredPartnerId) {
+    this.deliveredPartnerId = deliveredPartnerId;
+  }
+
   public Boolean getInAti() {
     return inAti;
   }
@@ -92,6 +103,13 @@ public class SaleOrderPostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(Partner.class, clientPartnerId, ObjectFinder.NO_VERSION);
+  }
+
+  public Partner fetchDeliveredPartner() {
+    if (deliveredPartnerId == null || deliveredPartnerId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(Partner.class, deliveredPartnerId, ObjectFinder.NO_VERSION);
   }
 
   public Partner fetchContact() {

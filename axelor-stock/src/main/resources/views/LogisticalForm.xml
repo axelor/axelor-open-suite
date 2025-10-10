@@ -16,26 +16,24 @@
       grid-view="partner-customer-grid" canEdit="false"/>
     <field name="carrierPartner"/>
     <field name="collectionDate"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <grid model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical forms"
     name="logistical-form-stock-move-grid" orderBy="-deliveryNumberSeq,-collectionDate">
     <field name="deliveryNumberSeq" width="120"/>
     <field name="collectionDate"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form"
-    name="logistical-form-form" width="large" onNew="action-logistical-form-record-on-new"
-    onSave="action-group-logistical-form-save,action-logistical-form-validate-mass-on-save">
+    name="logistical-form-form" width="*" onNew="action-group-logistical-form-onnew"
+    onLoad="action-group-logistical-form-onload"
+    onSave="action-logistical-form-validate-mass-on-save">
     <toolbar>
       <button name="printBtn" title="Print packing list"
-        readonlyIf="!(logisticalFormLineList &amp;&amp; logisticalFormLineList.length > 0)"
         onClick="action-group-logistical-form-print-packing-list" icon="fa-print"
         if="__config__.app.isApp('supplychain')"/>
-      <button name="refreshProductNetMassBtn" title="Refresh the products net mass"
-        onClick="action-logistical-form-method-refresh-net-mass,save"/>
     </toolbar>
     <panel colSpan="12" name="mainPanel">
       <panel name="statusSelectPanel" colSpan="4" itemSpan="12">
@@ -50,24 +48,17 @@
         <field name="deliverToCustomerPartner"
           domain="self.isCustomer = TRUE AND :company MEMBER OF self.companySet"
           onChange="action-group-logistical-form-partner-change" form-view="partner-customer-form"
-          grid-view="partner-customer-grid" canEdit="false" readonlyIf="statusSelect > 1"/>
-        <field name="stockLocation"
-          onChange="action-logistical-form-record-stock-location-change"
-          form-view="stock-location-form" grid-view="stock-location-grid" canEdit="false"
-          readonlyIf="statusSelect > 1"
+          grid-view="partner-customer-grid" canEdit="false" readonlyIf="statusSelect > 1"
+          hidden="true"/>
+        <field name="stockLocation" form-view="stock-location-form"
+          grid-view="stock-location-grid" canEdit="false" readonlyIf="statusSelect > 1"
           domain="self.company = :company and self.typeSelect != 3 and self.usableOnSaleOrder = true"/>
       </panel>
       <panel name="actionsPanel" colSpan="4">
         <button name="carrierValidatedBtn" title="Carrier validated"
-          showIf="statusSelect == 1"
-          readonlyIf="!(logisticalFormLineList &amp;&amp; logisticalFormLineList.length > 0)"
-          onClick="action-group-logistical-form-carrier-validated" icon="fa-check"
-          css="btn btn-success" colSpan="12" prompt="Are you sure you want to validate the carrier?"/>
-        <button name="collectedBtn" title="Collected" showIf="statusSelect == 2"
-          readonlyIf="!(logisticalFormLineList &amp;&amp; logisticalFormLineList.length > 0)"
-          onClick="action-logistical-form-method-process-collected" icon="fa-truck"
-          css="btn btn-success" colSpan="12"
-          prompt="Are you sure you want to change status to  &quot;Collected &quot; ?"/>
+          showIf="statusSelect == 1" onClick="action-group-logistical-form-carrier-validated"
+          icon="fa-check" css="btn btn-success" colSpan="12"
+          prompt="Are you sure you want to validate the carrier?"/>
         <button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1"
           icon="fa-cubes" onClick="action-logistical-form-method-back-to-provision" colSpan="12"
           prompt="Are you sure you want to go back to provision ?"/>
@@ -100,24 +91,16 @@
         <field name="internalDeliveryComment" readonlyIf="statusSelect == 3" colSpan="4"/>
         <field name="externalDeliveryComment" readonlyIf="statusSelect > 1" colSpan="4"/>
       </panel>
-      <panel name="LinesPanel" title="Lines" showIf="deliverToCustomerPartner"
-        readonlyIf="statusSelect == 3">
-        <panel name="stockMovePanel" colSpan="12" hideIf="$readonly()">
-          <field name="$stockMove" title="Stock move" type="reference" widget="many-to-one"
-            target="com.axelor.apps.stock.db.StockMove" grid-view="stock-move-out-grid"
-            form-view="stock-move-form" colSpan="4"
-            onSelect="action-logistical-form-method-stock-move-domain" canEdit="false"/>
-          <button name="addAllStockMoveBtn" title="Add all the move"
-            onClick="action-group-logistical-form-add-all-stock-move" colSpan="2"
-            readonlyIf="!$stockMove"/>
-          <button name="addConcernedStockMoveBtn" title="Add concerned move lines"
-            onClick="action-group-logistical-form-add-concerned-stock-move" colSpan="2"
-            if="__config__.app.getApp('stock')?.isManageStockLocationOnStockMoveLine"
-            readonlyIf="!stockLocation || !$stockMove"/>
+      <panel name="LinesPanel" title="Lines" readonlyIf="statusSelect == 3" hidden="true">
+        <panel name="stockMovePanel" colSpan="12">
+          <field name="stockMoveList" grid-view="stock-move-out-grid"
+            form-view="stock-move-form" colSpan="6" widget="TagSelect"
+            onSelect="action-logistical-form-method-stock-move-domain" canEdit="false"
+            onChange="action-logistical-form-group-stock-move-list-change"/>
+          <panel-dashlet name="stockMoveLinesPanel"
+            title="Stock move lines to package" colSpan="12"
+            action="action-logistical-form-view-stock-move-lines-to-package" canEdit="false"/>
         </panel>
-        <panel-related name="logisticalFormLineList" field="logisticalFormLineList"
-          grid-view="logistical-form-line-grid" form-view="logistical-form-line-form" colSpan="12"
-          canMove="true" orderBy="sequence" editable="true" height="17"/>
       </panel>
     </panel-tabs>
 
@@ -134,7 +117,6 @@
   </action-record>
 
   <action-group name="action-group-logistical-form-carrier-validated">
-    <action name="action-group-logistical-form-save"/>
     <action name="save"/>
     <action name="action-logistical-form-validate-mass"/>
     <action name="action-logistical-form-method-carrier-validate"/>
@@ -154,78 +136,24 @@
   <action-record name="action-logistical-form-record-company-change"
     model="com.axelor.apps.stock.db.LogisticalForm">
     <field name="deliverToCustomerPartner" expr="eval: null"/>
-    <field name="logisticalFormLineList" expr="eval: null"/>
     <field name="customerAccountNumberToCarrier" expr="eval: null"/>
     <field name="stockLocation" expr="eval: null"/>
-  </action-record>
-
-  <action-record name="action-logistical-form-record-stock-location-change"
-    model="com.axelor.apps.stock.db.LogisticalForm">
-    <field name="logisticalFormLineList" expr="eval: null"/>
   </action-record>
 
   <action-group name="action-group-logistical-form-partner-change">
     <action name="action-logistical-form-record-partner-change"/>
     <action name="action-logistical-form-method-set-customer-account-number"/>
+    <action name="action-logistical-form-attrs-show-stock-move-panel"/>
   </action-group>
-
-  <action-record name="action-logistical-form-record-partner-change"
-    model="com.axelor.apps.stock.db.LogisticalForm">
-    <field name="logisticalFormLineList" expr="eval: null"/>
-    <field name="$stockMove" expr="eval: null"/>
-  </action-record>
-
-  <action-group name="action-group-logistical-form-add-all-stock-move">
-    <action name="save"/>
-    <action name="action-logistical-form-method-add-all-stock-move"/>
-    <action name="save"/>
-  </action-group>
-
-  <action-group name="action-group-logistical-form-add-concerned-stock-move">
-    <action name="save"/>
-    <action name="action-logistical-form-method-add-concerned-stock-move"/>
-    <action name="save"/>
-  </action-group>
-
-  <action-method name="action-logistical-form-method-add-all-stock-move">
-    <call class="com.axelor.apps.stock.web.LogisticalFormController" method="addAllStockMove"/>
-  </action-method>
-
-  <action-method name="action-logistical-form-method-add-concerned-stock-move">
-    <call class="com.axelor.apps.stock.web.LogisticalFormController"
-      method="addConcernedStockMove"/>
-  </action-method>
-
-  <action-group name="action-group-logistical-form-save">
-    <action name="action-logistical-form-method-check-lines"/>
-    <action name="action-logistical-form-method-compute-totals"/>
-  </action-group>
-
-  <action-method name="action-logistical-form-method-compute-totals">
-    <call class="com.axelor.apps.stock.web.LogisticalFormController" method="computeTotals"/>
-  </action-method>
-
-  <action-method name="action-logistical-form-method-check-lines">
-    <call class="com.axelor.apps.stock.web.LogisticalFormController" method="checkLines"/>
-  </action-method>
 
   <action-method name="action-logistical-form-method-stock-move-domain">
     <call class="com.axelor.apps.stock.web.LogisticalFormController"
       method="setStockMoveDomain"/>
   </action-method>
 
-  <action-method name="action-logistical-form-method-process-collected">
-    <call class="com.axelor.apps.stock.web.LogisticalFormController" method="processCollected"/>
-  </action-method>
-
   <action-method name="action-logistical-form-method-set-customer-account-number">
     <call class="com.axelor.apps.stock.web.LogisticalFormController"
       method="setCustomerAccountNumberToCarrier"/>
-  </action-method>
-
-  <action-method name="action-logistical-form-method-refresh-net-mass">
-    <call class="com.axelor.apps.stock.web.LogisticalFormController"
-      method="refreshProductNetMass"/>
   </action-method>
 
   <action-method name="action-logistical-form-method-carrier-validate">
@@ -235,6 +163,49 @@
   <action-method name="action-logistical-form-method-back-to-provision">
     <call class="com.axelor.apps.stock.web.LogisticalFormController" method="backToProvision"/>
   </action-method>
+
+  <action-group name="action-group-logistical-form-onnew">
+    <action name="action-logistical-form-record-on-new"/>
+    <action name="action-logistical-form-attrs-deliver-to-customer-partner"/>
+    <action name="action-logistical-form-attrs-show-stock-move-panel"/>
+  </action-group>
+
+  <action-group name="action-group-logistical-form-onload">
+    <action name="action-logistical-form-attrs-deliver-to-customer-partner"/>
+    <action name="action-logistical-form-attrs-show-stock-move-panel"/>
+  </action-group>
+
+  <action-attrs name="action-logistical-form-attrs-deliver-to-customer-partner">
+    <attribute name="hidden" for="deliverToCustomerPartner"
+      expr="eval: __repo__(StockConfig).all().filter('company.id = ?', company?.id).fetchOne()?.isLogisticalFormMultiClientsEnabled"/>
+    <attribute name="required" for="deliverToCustomerPartner"
+      expr="eval: !__repo__(StockConfig).all().filter('company.id = ?', company?.id).fetchOne()?.isLogisticalFormMultiClientsEnabled"/>
+  </action-attrs>
+
+  <action-attrs name="action-logistical-form-attrs-show-stock-move-panel">
+    <attribute name="hidden" for="LinesPanel"
+      expr="eval: !deliverToCustomerPartner &amp;&amp; !__repo__(StockConfig).all().filter('self.company = ?', company).fetchOne()?.isLogisticalFormMultiClientsEnabled"/>
+  </action-attrs>
+
+  <action-attrs name="action-logistical-form-attrs-reload-stock-move-lines-panel">
+    <attribute name="refresh" for="stockMoveLinesPanel" expr="eval: true"/>
+  </action-attrs>
+
+  <action-view name="action-logistical-form-view-stock-move-lines-to-package"
+    title="Stock move lines to package" model="com.axelor.apps.stock.db.StockMoveLine">
+    <view type="grid" name="stock-move-line-grid"/>
+    <view type="form" name="stock-move-line-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.stockMove.id IN (:_stockMoveIds)</domain>
+    <context name="_stockMoveIds" expr="eval: stockMoveList?.collect{it.id}"/>
+  </action-view>
+
+  <action-group name="action-logistical-form-group-stock-move-list-change">
+    <action name="action-logistical-form-method-validate-and-update-stock-move-list"
+      if="__config__.app.isApp('supplychain')"/>
+    <action name="save" if="__config__.app.isApp('supplychain')"/>
+    <action name="action-logistical-form-attrs-reload-stock-move-lines-panel"/>
+  </action-group>
 
   <search-filters name="logistical-form-filters"
     model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical form filters">

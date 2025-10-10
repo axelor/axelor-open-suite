@@ -20,6 +20,12 @@ package com.axelor.apps.purchase.module;
 
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.base.service.ProductServiceImpl;
+import com.axelor.apps.purchase.db.repo.CallTenderManagementRepository;
+import com.axelor.apps.purchase.db.repo.CallTenderNeedManagementRepository;
+import com.axelor.apps.purchase.db.repo.CallTenderNeedRepository;
+import com.axelor.apps.purchase.db.repo.CallTenderOfferManagementRepository;
+import com.axelor.apps.purchase.db.repo.CallTenderOfferRepository;
+import com.axelor.apps.purchase.db.repo.CallTenderRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderManagementRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
@@ -33,8 +39,12 @@ import com.axelor.apps.purchase.service.CallTenderGenerateService;
 import com.axelor.apps.purchase.service.CallTenderGenerateServiceImpl;
 import com.axelor.apps.purchase.service.CallTenderMailService;
 import com.axelor.apps.purchase.service.CallTenderMailServiceImpl;
+import com.axelor.apps.purchase.service.CallTenderNeedService;
+import com.axelor.apps.purchase.service.CallTenderNeedServiceImpl;
 import com.axelor.apps.purchase.service.CallTenderOfferService;
 import com.axelor.apps.purchase.service.CallTenderOfferServiceImpl;
+import com.axelor.apps.purchase.service.CallTenderPurchaseOrderService;
+import com.axelor.apps.purchase.service.CallTenderPurchaseOrderServiceImpl;
 import com.axelor.apps.purchase.service.ProductServicePurchaseImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateServiceImpl;
@@ -117,5 +127,10 @@ public class PurchaseModule extends AxelorModule {
     bind(CallTenderOfferService.class).to(CallTenderOfferServiceImpl.class);
     bind(CallTenderMailService.class).to(CallTenderMailServiceImpl.class);
     bind(CallTenderCsvService.class).to(CallTenderCsvServiceImpl.class);
+    bind(CallTenderNeedRepository.class).to(CallTenderNeedManagementRepository.class);
+    bind(CallTenderOfferRepository.class).to(CallTenderOfferManagementRepository.class);
+    bind(CallTenderRepository.class).to(CallTenderManagementRepository.class);
+    bind(CallTenderNeedService.class).to(CallTenderNeedServiceImpl.class);
+    bind(CallTenderPurchaseOrderService.class).to(CallTenderPurchaseOrderServiceImpl.class);
   }
 }

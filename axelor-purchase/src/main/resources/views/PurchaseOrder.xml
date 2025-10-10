@@ -28,7 +28,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
@@ -58,7 +58,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
@@ -75,7 +75,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-purchase-order-method-show-purchase-order"/>
     <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
@@ -142,6 +142,13 @@
       </menu>
     </menubar>
     <panel name="overviewPanel">
+      <field name="$viewerOrderBeingEdited" showTitle="false" readonly="true"
+        showIf="orderBeingEdited">
+        <viewer depends="orderBeingEdited">
+            <![CDATA[<>{orderBeingEdited && <Badge bg="danger">{_t('Order being edited')}</Badge>}</>]]>
+        </viewer>
+      </field>
+      <field name="orderBeingEdited" hidden="true"/>
       <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"
         readonly="true"/>
       <panel name="mainPanel" readonlyIf="statusSelect == 4" colSpan="12">
@@ -224,7 +231,8 @@
       hideIf="supplierPartner == null || ($enableTradingNamesManagement &amp;&amp; company.tradingNameList != null &amp;&amp; company.tradingNameList.length != 0 &amp;&amp; tradingName == null)">
       <panel name="contentPanel" title="Content" colSpan="12">
         <panel-related name="purchaseOrderLineListPanel" field="purchaseOrderLineList"
-          canNew="statusSelect &lt; 3" canRemove="statusSelect &lt; 3"
+          canNew="statusSelect &lt; 3 || orderBeingEdited"
+          canRemove="statusSelect &lt; 3 || orderBeingEdited"
           grid-view="purchase-order-line-purchase-order-grid" title="PO lines detail" colSpan="12"
           onChange="action-purchase-order-method-compute" form-view="purchase-order-line-form"
           canMove="true" orderBy="sequence" height="30"/>
@@ -259,17 +267,6 @@
           grid-view="freight-carrier-mode-grid" if="__config__.app.isApp('stock')"/>
         <panel-dashlet name="POStockMovesPanel" colSpan="12"
           action="action-purchase-order-view-stock-moves" height="178" showIf="statusSelect >= 3"/>
-      </panel>
-      <panel name="projectPanel"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
-        title="Business project" colSpan="12" if-module="axelor-business-project">
-        <field name="contract" readonly="true" hidden="true" showIf="contract"
-          form-view="contract-form" grid-view="contract-grid"/>
-        <field name="project" domain="self.isBusinessProject = true"
-          form-view="business-project-form" grid-view="project-grid" colSpan="6"
-          onChange="action-business-project-purchase-order-method-update-lines"/>
-        <field name="projectTask" domain="self.project = :project"
-          form-view="business-project-task-form" grid-view="business-project-task-grid" colSpan="6"/>
       </panel>
       <panel name="POManagementPanel" title="PO Management"
         if-module="axelor-supplier-management" colSpan="12"
@@ -310,6 +307,15 @@
     </panel>
 
     <panel sidebar="true" name="actionsPanel" hideIf="supplierPartner == null">
+      <button name="editOrderBtn" title="Edit order"
+        if="__config__.app.getApp('purchase')?.allowValidatedOrderModification"
+        showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
+        onClick="action-purchase-order-method-edit-order" icon="pencil-square"
+        readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
+      <button name="validateChangesBtn" title="Validate changes"
+        showIf="statusSelect == 3 &amp;&amp; orderBeingEdited"
+        onClick="action-purchase-order-group-validate-changes" icon="bookmark-check"
+        readonlyIf="!purchaseOrderLineList || purchaseOrderLineList.length == 0"/>
       <button name="generateInvoiceBtn" title="Generate control invoice"
         showIf="statusSelect == 3"
         onClick="save,action-purchase-order-method-generate-control-invoice"
@@ -618,6 +624,8 @@
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-purchase-order-record-update-info-company"/>
     <action name="action-purchase-order-record-display-price"/>
+    <action name="action-purchase-order-record-in-ati"/>
+    <action name="action-purchase-order-attrs-in-ati"/>
   </action-group>
 
   <action-group name="action-group-purchase-order-on-validate-actions">
@@ -653,6 +661,14 @@
   <action-group name="action-group-purchase-order-cancel">
     <action name="action-purchase-order-method-cancel-receipt" if="statusSelect==3"/>
     <action name="action-purchase-order-method-cancel"/>
+  </action-group>
+
+  <action-group name="action-purchase-order-group-validate-changes">
+    <action name="action-purchase-order-method-check-analytic-distribution-template"/>
+    <action name="action-purchase-order-validate-purchase-order-line"/>
+    <action name="action-purchase-order-validate-stock-location"/>
+    <action name="save"/>
+    <action name="action-purchase-order-method-validate-changes"/>
   </action-group>
 
   <action-method
@@ -967,8 +983,6 @@
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="versionNumber" hidden="true"
       if="!__config__.app.getApp('purchase')?.getManagePurchaseOrderVersion()"/>
-    <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <field name="tradingName" hidden="true"
       if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
@@ -1088,5 +1102,13 @@
     model="com.axelor.apps.purchase.db.PurchaseOrder">
     <field name="typeSelect" expr="eval: 1" if="!supplierPartner"/>
   </action-record>
+
+  <action-method name="action-purchase-order-method-edit-order">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="enableEditOrder"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-validate-changes">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="validateChanges"/>
+  </action-method>
 
 </object-views>

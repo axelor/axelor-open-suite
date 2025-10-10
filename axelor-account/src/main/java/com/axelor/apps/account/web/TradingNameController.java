@@ -18,13 +18,17 @@
  */
 package com.axelor.apps.account.web;
 
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.TradingNameAnalyticService;
 import com.axelor.apps.account.service.analytic.TradingNameAnalyticServiceImpl;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.TradingName;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 
 public class TradingNameController {
 
@@ -67,5 +71,24 @@ public class TradingNameController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  @ErrorException
+  public void setDomainAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    TradingName tradingName = context.asType(TradingName.class);
+
+    response.setAttr(
+        "analyticDistributionTemplate",
+        "domain",
+        Beans.get(AnalyticAttrsService.class)
+            .getAnalyticDistributionTemplateDomain(
+                tradingName.getPartner(),
+                null,
+                tradingName.getCompany(),
+                tradingName,
+                null,
+                false));
   }
 }

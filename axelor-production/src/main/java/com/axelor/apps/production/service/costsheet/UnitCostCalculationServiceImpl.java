@@ -288,7 +288,6 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     CostSheet costSheet =
         costSheetService.computeCostPrice(billOfMaterial, origin, unitCostCalculation);
-
     UnitCostCalcLine unitCostCalcLine =
         unitCostCalcLineService.createUnitCostCalcLine(
             product, billOfMaterial.getCompany(), level, costSheet);

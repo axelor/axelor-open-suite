@@ -228,7 +228,7 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
       return saleOrderLineMap;
     }
-    saleOrderLinePackService.fillPriceFromPackLine(saleOrderLine, saleOrder);
+    saleOrderLinePackService.fillPriceFromPackLine(saleOrderLine, saleOrder, null);
     saleOrderLineMap.putAll(computeValues(saleOrder, saleOrderLine));
     return saleOrderLineMap;
   }

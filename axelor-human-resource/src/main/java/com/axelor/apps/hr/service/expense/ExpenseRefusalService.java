@@ -21,14 +21,11 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.message.db.Message;
-import java.io.IOException;
-import wslite.json.JSONException;
 
 public interface ExpenseRefusalService {
   public void refuse(Expense expense) throws AxelorException;
 
   void refuseWithReason(Expense expense, String groundForRefusal) throws AxelorException;
 
-  public Message sendRefusalEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+  public Message sendRefusalEmail(Expense expense) throws AxelorException;
 }

@@ -107,7 +107,15 @@
         </panel>
         <field name="workCenter.workCenterTypeSelect" hidden="true"/>
       </panel>
+      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
+        colSpan="12">
 
+        <button name="addControlPlanBtn" title="Add a control plan"
+          onClick="save,action-prod-process-line-view-add-control-plan" colOffset="6"/>
+        <panel-dashlet action="action-prod-process-line-view-control-plan"
+          colSpan="12"/>
+
+      </panel>
       <panel name="descriptionPanel" title="Description" colSpan="12">
         <field name="description" showTitle="false" height="5" colSpan="12"/>
       </panel>
@@ -146,13 +154,9 @@
       if="workCenter?.workCenterTypeSelect == 2 || workCenter?.workCenterTypeSelect == 3"/>
     <field name="humanDuration" expr="eval: workCenter?.hrDurationPerCycle"
       if="workCenter?.workCenterTypeSelect == 1 || workCenter?.workCenterTypeSelect == 3"/>
-    <field name="product" expr="eval: workCenter?.product"
-      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
     <field name="costTypeSelect" expr="eval: workCenter?.costTypeSelect"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
     <field name="costAmount" expr="eval: workCenter?.costAmount"
-      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
-    <field name="hrProduct" expr="eval: workCenter?.hrProduct"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
     <field name="hrCostTypeSelect" expr="eval: workCenter?.hrCostTypeSelect"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
@@ -251,6 +255,23 @@
       if="__config__.app.getApp('production')?.getManageWorkCenterGroup() &amp;&amp; (!workCenterGroup || !workCenterGroup.workCenterSet  || workCenterGroup.workCenterSet.isEmpty())"/>
   </action-attrs>
 
+  <action-view name="action-prod-process-line-view-control-plan"
+    model="com.axelor.apps.quality.db.ControlPlan" title="Control plans">
+    <view type="grid" name="control-plan-grid"/>
+    <view type="form" name="control-plan-form"/>
+    <domain>self.relatedToSelectId = :prodProcessLineId AND self.relatedToSelect =
+      'com.axelor.apps.production.db.ProdProcessLine'</domain>
+    <context name="prodProcessLineId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-prod-process-line-view-add-control-plan"
+    model="com.axelor.apps.quality.db.ControlPlan" title="Control plans">
+    <view type="form" name="control-plan-form"/>
+    <view type="grid" name="control-plan-grid"/>
+    <view-param name="popup" value="reload"/>
+    <context name="relatedTo" expr="eval: 'com.axelor.apps.production.db.ProdProcessLine'"/>
+    <context name="relatedToId" expr="eval:__self__?.id"/>
+  </action-view>
 
 </object-views>
 

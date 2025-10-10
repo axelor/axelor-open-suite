@@ -28,5 +28,5 @@ public interface MassEntryMoveCreateService {
 
   List<Move> createMoveListFromMassEntryList(Move parentMove);
 
-  Move createMoveFromMassEntryList(Long parentMoveId, int temporaryMoveNumber);
+  Move createMoveFromMassEntryList(Move parentMove, int temporaryMoveNumber);
 }

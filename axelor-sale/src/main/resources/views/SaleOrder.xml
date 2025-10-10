@@ -36,7 +36,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="lastReminderDate"/>
     <field name="lastReminderComments"/>
     <button name="printBtn" title="Print" icon="fa-print"
@@ -79,7 +79,7 @@
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="deliveryState" if="__config__.app.isApp('supplychain')"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="salespersonUser"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
@@ -110,7 +110,7 @@
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -132,7 +132,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="inTaxTotalRemainingToOrder" aggregate="sum"
       x-scale="currency.numberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -152,7 +152,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -279,6 +279,9 @@
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
       <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
         onClick="action-send-by-email-with-template" hidden="true" showIf="id"/>
+      <button name="estimatePackagingBtn" title="Estimate packaging" icon="fa-envelope"
+        onClick="save,action-sale-order-method-estimate-packaging"
+        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button name="recomputePricesBtn" title="Recompute prices"
         onClick="action-sale-order-group-recompute-prices-btn" showIf="statusSelect == 1"
         icon="fa-calculator"
@@ -781,11 +784,11 @@
         onClick="save,action-sale-order-view-add-pack"
         if="__config__.app.getApp('sale')?.enablePackManagement"
         hideIf="clientPartner == null || [2,4,5].indexOf(statusSelect) != -1 || (statusSelect == 3 &amp;&amp; !orderBeingEdited)"
-        icon="box-seam-fill" readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
+        icon="box-seam-fill"/>
       <button if="__config__.app.getApp('sale')?.getEnableConfigurator()"
         name="addLineFromConfiguratorBtn" title="Add Line from Configurator"
         showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"
-        icon="ui-checks" readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
+        icon="ui-checks"/>
       <button
         if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto"
         name="generateCustomerStockMoveBtn" title="Generate customer deliveries"
@@ -797,7 +800,7 @@
         !__config__.app.getApp('production')?.productionOrderGenerationAuto"
         name="generateProductionOrderBtn" title="Generate production order"
         if-module="axelor-production" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
-        colSpan="12" onClick="save,action-sale-order-method-create-production-order"
+        colSpan="12" onClick="save,action-sale-order-group-create-production-order"
         icon="house-gear-fill" readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button
         if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain')?.getPurchaseOrderGenerationAuto()"
@@ -1077,14 +1080,6 @@
           <field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
         </panel>
       </panel>
-
-      <panel name="projectPanel"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
-        title="Business project" colSpan="12" if-module="axelor-business-project">
-        <field name="project" form-view="business-project-form" grid-view="project-grid"
-          colSpan="12"/>
-      </panel>
-
     </panel-tabs>
 
     <panel sidebar="true" name="actionsPanel" title="Actions">
@@ -1167,7 +1162,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
   </grid>
@@ -1390,10 +1385,13 @@
     <view-param name="show-confirm" value="false"/>
     <context name="_printedPDF" expr="eval: printedPDF"/>
     <context name="_saleOrderId" expr="eval: id"/>
+    <context name="_company" expr="eval: company"/>
   </action-view>
 
   <action-attrs name="action-sale-order-reports-wizard-attrs">
     <attribute name="value" for="$reportType" expr="eval: 1"/>
+    <attribute name="value" for="$saleOrderPrintTemplate"
+      expr="eval: __repo__(SaleConfig).all().filter('self.company = ?', _company).fetchOne()?.saleOrderPrintTemplate"/>
   </action-attrs>
 
   <cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
@@ -1587,15 +1585,11 @@
     <action name="action-sale-order-attrs-collapse-specific-settings-group"/>
     <action name="action-sale-order-attrs-in-ati"/>
     <action name="action-sale-order-attrs-hidden-bank-details"/>
-    <action name="action-sale-order-record-project-default-fields"
-      if="__config__.app.isApp('business-project')"/>
     <action name="action-sale-order-attrs-external-reference"/>
     <action name="action-sale-order-attrs-availability"/>
-    <action name="action-sale-order-attrs-set-required"/>
     <action name="action-sale-order-attrs-set-discounts-need-review"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-method-is-incoterm-required"/>
-    <action name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product"/>
     <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
     <action name="action-sale-order-attrs-list-selection-in-type-select"/>
@@ -1606,8 +1600,6 @@
     <action name="action-sale-order-method-fill-incoterm-if-required"
       if="!incoterm &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
     <action name="save"/>
-    <action name="action-business-project-method-generate-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     <action name="action-sale-order-method-confirm"/>
   </action-group>
 
@@ -1947,8 +1939,6 @@
       if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowSusbcriptionSaleOrder())"/>
     <field name="versionNumber" hidden="true"
       if="!__config__.app.getApp('sale')?.getManageSaleOrderVersion()"/>
-    <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="timetableTemplate" hidden="true"
       if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing())"/>
     <field name="computationDate" hidden="true"
@@ -2196,11 +2186,6 @@
     <field name="manualUnblock" expr="true"/>
   </action-record>
 
-  <action-attrs name="action-sale-order-record-project-default-fields"
-    if-module="axelor-business-project">
-    <attribute for="$_elementStartDate" name="value" expr="#{__datetime__}"/>
-  </action-attrs>
-
   <action-attrs name="action-sale-order-attrs-external-reference">
     <attribute name="hidden" for="duplicateReferenceLabel"
       expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
@@ -2270,18 +2255,6 @@
       if="_clientPartnerCurrency"/>
   </action-attrs>
 
-  <action-attrs name="action-sale-order-attrs-set-required">
-    <attribute name="required" for="$_projectGeneratorType"
-      expr="eval: statusSelect == com.axelor.apps.sale.db.repo.SaleOrderRepository.STATUS_FINALIZED_QUOTATION &amp;&amp; __config__.app.getApp('business-project')?.getAutomaticProject()"/>
-  </action-attrs>
-
-  <action-attrs
-    name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product">
-    <attribute name="selection-in" for="$_projectGeneratorType"
-      if="!__config__.app.getApp('business-project')?.getEnableTaskTemplatesByProduct()"
-      expr="['PROJECT_ALONE', 'SUB_PROJECT_BY_LINE', 'TASK_BY_LINE']"/>
-  </action-attrs>
-
   <action-method name="action-sale-order-method-generate-advance-payment">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="generateAdvancePaymentInvoice"/>
@@ -2320,16 +2293,6 @@
     <field name="stockLocation"
       expr="eval: tradingName?.shippingDefaultStockLocation != null ? tradingName?.shippingDefaultStockLocation : stockLocation"/>
   </action-record>
-
-  <action-attrs name="action-sale-order-attrs-incoterm-required">
-    <attribute for="incoterm" name="required"
-      expr="eval: __config__.app.isApp('supplychain')
-                      &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled
-          &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'}
-          &amp;&amp; (
-          (stockLocation != null &amp;&amp; deliveryAddress?.country?.alpha2Code != stockLocation?.address?.country?.alpha2Code)
-          || (stockLocation == null &amp;&amp; deliveryAddress?.country?.alpha2Code != company.address?.country?.alpha2Code)) &amp;&amp; statusSelect == 2"/>
-  </action-attrs>
 
   <action-attrs name="action-sale-order-attrs-list-selection-in-type-select">
     <attribute name="selection-in" for="saleOrderLineList.typeSelect"
@@ -2390,5 +2353,9 @@
     <view type="form" name="sale-order-form"/>
     <domain>self.originSaleQuotation.id = :id</domain>
   </action-view>
+
+  <action-method name="action-sale-order-method-estimate-packaging">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="estimatePackaging"/>
+  </action-method>
 
 </object-views>

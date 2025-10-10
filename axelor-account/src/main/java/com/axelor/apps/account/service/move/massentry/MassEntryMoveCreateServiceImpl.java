@@ -203,7 +203,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
             .distinct()
             .collect(Collectors.toList());
     for (Integer i : uniqueIdList) {
-      moveToAdd = this.createMoveFromMassEntryList(parentMove.getId(), i);
+      moveToAdd = this.createMoveFromMassEntryList(parentMove, i);
       moveList.add(moveToAdd);
     }
 
@@ -211,9 +211,16 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
   }
 
   @Override
-  public Move createMoveFromMassEntryList(Long parentMoveId, int temporaryMoveNumber) {
+  public Move createMoveFromMassEntryList(Move parentMove, int temporaryMoveNumber) {
+    if (parentMove == null) {
+      return null;
+    }
+
     Move moveResult = new Move();
-    Move parentMove = moveRepository.find(parentMoveId);
+
+    if (parentMove.getId() != null) {
+      parentMove = moveRepository.find(parentMove.getId());
+    }
 
     moveResult.setJournal(parentMove.getJournal());
     moveResult.setFunctionalOriginSelect(parentMove.getFunctionalOriginSelect());

@@ -100,9 +100,11 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder) {
+  public Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder)
+      throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     MapTools.addMap(attrs, hideContactPartner(saleOrder));
+    MapTools.addMap(attrs, inAti(saleOrder));
     return attrs;
   }
 

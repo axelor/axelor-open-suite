@@ -22,8 +22,11 @@ import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AccountingReportTypeRepository;
+import com.axelor.apps.base.db.Company;
+import com.axelor.db.Query;
 import com.google.inject.Inject;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.commons.collections.CollectionUtils;
@@ -63,26 +66,28 @@ public class AccountingReportToolServiceImpl implements AccountingReportToolServ
             "self.reportExportTypeSelect = :reportType AND self.typeSelect %s :typeCustom",
             isCustom ? "=" : "<>");
 
-    Stream<AccountingReportType> accountingReportTypeStream =
+    Query<AccountingReportType> query =
         accountingReportTypeRepository
             .all()
             .filter(queryStr)
             .bind("reportType", AccountingReportTypeRepository.REPORT)
-            .bind("typeCustom", AccountingReportRepository.REPORT_CUSTOM_STATE)
-            .fetch()
-            .stream();
+            .bind("typeCustom", AccountingReportRepository.REPORT_CUSTOM_STATE);
 
-    if (isCustom) {
+    Stream<AccountingReportType> accountingReportTypeStream = query.fetch().stream();
+
+    Company company = accountingReport.getCompany();
+    if (!isCustom && company != null) {
+      accountingReportTypeStream =
+          accountingReportTypeStream.filter(it -> company.equals(it.getCompany()));
+    }
+
+    Set<Company> companySet = accountingReport.getCompanySet();
+    if (isCustom && CollectionUtils.isNotEmpty(companySet)) {
       accountingReportTypeStream =
           accountingReportTypeStream.filter(
-              it -> {
-                if (CollectionUtils.isNotEmpty(it.getCompanySet())) {
-                  return it.getCompanySet().equals(accountingReport.getCompanySet());
-                } else if (it.getCompany() != null) {
-                  return accountingReport.getCompanySet().contains(it.getCompany());
-                }
-                return true;
-              });
+              it ->
+                  CollectionUtils.isNotEmpty(it.getCompanySet())
+                      && it.getCompanySet().stream().anyMatch(companySet::contains));
     }
 
     return accountingReportTypeStream

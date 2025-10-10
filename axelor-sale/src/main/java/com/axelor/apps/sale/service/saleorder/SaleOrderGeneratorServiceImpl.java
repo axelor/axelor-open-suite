@@ -71,6 +71,7 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   @Override
   public SaleOrder createSaleOrder(
       Partner clientPartner,
+      Partner deliveredPartner,
       Company company,
       Partner contactPartner,
       Currency currency,

@@ -1456,6 +1456,9 @@ public final class AccountExceptionMessage {
   public static final String IMPORT_FEC_JOURNAL_NOT_FOUND = /*$$(*/
       "The journal with the code %s cannot be found. The move cannot be created." /*)*/;
 
+  public static final String IMPORT_FEC_COMPANY_NOT_FOUND = /*$$(*/
+      "No company found. The move cannot be created." /*)*/;
+
   public static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
       "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
 
@@ -1773,6 +1776,18 @@ public final class AccountExceptionMessage {
   public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT = /*$$(*/
       "Block customer with late payment issues batch's reporting :" /*)*/;
 
+  public static final String FEC_IMPORT_ANALYTIC_MISSING_REQUIRED = /*$$(*/
+      "The analytic accounting is required on the financial account %s. There should be a template or analytic accounts associated with such account and respecting the number of defined analytic axis. Accounting entry %s can't be imported." /*)*/;
+
+  public static final String FEC_IMPORT_ANALYTIC_NOT_AUTHORIZED = /*$$(*/
+      "The financial account %s doesn't support the analytic accounting. There shouldn't be any template or analytic account associated with such account. Accounting entry %s can't be imported." /*)*/;
+
+  public static final String FEC_IMPORT_ANALYTIC_DISTRIBUTION_EMPTY = /*$$(*/
+      "The analytic distribution template %s can't be found for company %s. Accounting entry %s can't be imported." /*)*/;
+
+  public static final String FEC_IMPORT_ANALYTIC_ACCOUNT_EMPTY = /*$$(*/
+      "The analytic account %s can't be found for company %s and analytic axis %s. Accounting entry %s can't be imported." /*)*/;
+
   public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_GAINS_ACCOUNT = /*$$(*/
       "Please select a foreign exchange gain account config for company %s." /*)*/;
 
@@ -1829,4 +1844,7 @@ public final class AccountExceptionMessage {
 
   public static final String ACCOUNT_ALREADY_EXISTS = /*$$(*/
       "The account with code %s and company %s already exists." /*)*/;
+
+  public static final String INVOICE_PAYMENT_UNLINK_ALERT = /*$$(*/
+      "You are about to cancel the payment allocated to this invoice. The payment accounting entry will remain posted in the journal, only the reconciliation will be cancelled. Do you wish to continue ?" /*)*/;
 }
