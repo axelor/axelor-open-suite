@@ -48,7 +48,7 @@ public class MessageController extends com.axelor.message.web.MessageController 
    * @throws BirtException
    * @throws IOException
    */
-  public void printMessage(ActionRequest request, ActionResponse response) throws Exception {
+  public void printMessage(ActionRequest request, ActionResponse response) {
 
     Message message = request.getContext().asType(Message.class);
     message = Beans.get(MessageRepository.class).find(message.getId());
