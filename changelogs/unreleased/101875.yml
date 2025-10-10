@@ -1,0 +1,3 @@
+---
+title: "Execute MailMessageActionService before sending MailMessage"
+module: axelor-base
