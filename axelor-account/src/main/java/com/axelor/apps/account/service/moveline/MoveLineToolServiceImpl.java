@@ -419,7 +419,11 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
 
   @Override
   public List<MoveLine> getMoveExcessDueList(
-      boolean excessPayment, Company company, Partner partner, Invoice originInvoice) {
+      boolean excessPayment,
+      Company company,
+      Partner partner,
+      Invoice originInvoice,
+      Integer maxMoveLineOnAutoReconcile) {
     String filter = "";
     int operationTypeSelect = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
     if (excessPayment) {
@@ -443,7 +447,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
             " AND self.move.company = :company AND (self.move.statusSelect = :statusAccounted OR self.move.statusSelect = :statusDaybook) "
                 + " AND self.move.ignoreInAccountingOk IN (false,null)"
                 + " AND self.account.accountType.technicalTypeSelect not in (:technicalTypesToExclude)"
-                + " AND self.account.useForPartnerBalance = true AND self.amountRemaining > 0 "
+                + " AND self.account.useForPartnerBalance = true AND self.amountRemaining != 0 "
                 + " AND self.partner = :partner AND (self.move.invoice IS NULL OR self.move.invoice.id != :invoiceId) ORDER BY self.date ASC ");
 
     Map<String, Object> bindings = new HashMap<>();
@@ -457,7 +461,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
     bindings.put("invoiceId", originInvoice.getId());
     bindings.put("operationTypeSelect", operationTypeSelect);
 
-    return moveLineRepository.all().filter(filter).bind(bindings).fetch();
+    return moveLineRepository.all().filter(filter).bind(bindings).fetch(maxMoveLineOnAutoReconcile);
   }
 
   @Override

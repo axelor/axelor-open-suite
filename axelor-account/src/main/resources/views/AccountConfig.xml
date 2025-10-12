@@ -225,8 +225,9 @@
             form-view="account-form"/>
         </panel>
         <panel name="authorizeAutoReconcilePanel" title="Authorize auto reconcile"
-          colSpan="12">
+          colSpan="12" itemSpan="4">
           <field name="autoReconcileOnInvoice"/>
+          <field name="maxMoveLineOnAutoReconcile" showIf="autoReconcileOnInvoice"/>
           <field name="autoReconcileOnPayment"/>
         </panel>
         <panel name="exportsPanel" title="Exports" colSpan="12">

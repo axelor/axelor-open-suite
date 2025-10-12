@@ -265,7 +265,10 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
 
     // Recuperation of due
     List<MoveLine> debitMoveLines =
-        moveDueService.getInvoiceDue(invoice, accountConfig.getAutoReconcileOnInvoice());
+        moveDueService.getInvoiceDue(
+            invoice,
+            accountConfig.getAutoReconcileOnInvoice(),
+            accountConfigService.getMaxMoveLineOnAutoReconcile(accountConfig));
 
     if (!debitMoveLines.isEmpty()) {
       MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
