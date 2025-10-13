@@ -4,9 +4,11 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 public class LogisticalFormStockMovePutRequest extends RequestStructure {
 
+  @NotNull
   @Min(0)
   private Long stockMoveId;
 
