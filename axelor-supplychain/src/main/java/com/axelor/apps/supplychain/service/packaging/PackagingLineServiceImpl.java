@@ -22,65 +22,24 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingDimensionService;
-import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.PackagingLine;
-import com.axelor.apps.supplychain.db.repo.PackagingLineRepository;
-import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class PackagingLineServiceImpl implements PackagingLineService {
 
-  protected PackagingLineRepository packagingLineRepository;
   protected SaleOrderPackagingDimensionService saleOrderPackagingDimensionService;
 
   @Inject
   public PackagingLineServiceImpl(
-      PackagingLineRepository packagingLineRepository,
       SaleOrderPackagingDimensionService saleOrderPackagingDimensionService) {
-    this.packagingLineRepository = packagingLineRepository;
     this.saleOrderPackagingDimensionService = saleOrderPackagingDimensionService;
-  }
-
-  @Override
-  public void addPackagingLines(Packaging packaging, List<StockMoveLine> stockMoveLineList) {
-    if (packaging == null || CollectionUtils.isEmpty(stockMoveLineList)) {
-      return;
-    }
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      createPackagingLine(packaging, stockMoveLine);
-    }
-  }
-
-  @Transactional(rollbackOn = Exception.class)
-  protected void createPackagingLine(Packaging packaging, StockMoveLine stockMoveLine) {
-    PackagingLine packagingLine = new PackagingLine();
-    packagingLine.setPackaging(packaging);
-    packagingLine.setStockMoveLine(stockMoveLine);
-    packagingLine.setQty(stockMoveLine.getQtyRemainingToPackage());
-    packagingLineRepository.save(packagingLine);
-  }
-
-  @Override
-  public String getStockMoveLineDomain(LogisticalForm logisticalForm) {
-    if (logisticalForm == null) {
-      return "self.stockMove.typeSelect = 2 AND self.qtyRemainingToPackage > 0";
-    }
-    String stockMoveIds = StringHelper.getIdListString(logisticalForm.getStockMoveList());
-    if (stockMoveIds.isEmpty()) {
-      return "self.id = 0";
-    }
-    return String.format(
-        "self.stockMove.typeSelect = 2 AND self.qtyRemainingToPackage > 0 AND self.stockMove.id IN (%s)",
-        stockMoveIds);
   }
 
   @Override
