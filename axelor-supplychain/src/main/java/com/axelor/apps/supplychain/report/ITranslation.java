@@ -97,4 +97,8 @@ public class ITranslation {
   public static final String
       DECLARATION_OF_EXCHANGES_OF_GOODS_BETWEEN_MEMBER_STATES_OF_THE_EUROPEAN_COMMUNITY = /*$$(*/
           "DECLARATION OF EXCHANGES OF GOODS BETWEEN MEMBER STATES OF THE EUROPEAN COMMUNITY"; /*)*/
+
+  public static final String PACKAGING_UPDATED = /*$$(*/ "Packaging successfully updated."; /*)*/
+
+  public static final String PACKAGING_DELETED = /*$$(*/ "Packaging successfully removed."; /*)*/
 }
