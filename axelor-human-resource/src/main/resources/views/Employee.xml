@@ -105,18 +105,19 @@
       <field name="sexSelect" colSpan="4"/>
       <field name="countryOfBirth" colSpan="4"
         onChange="action-employee-attrs-country-of-birth-on-change"/>
-      <field name="departmentOfBirth" colSpan="4" grid-view="hr-department-grid"
-        onChange="action-employee-attrs-department-of-birth-on-change"
-        onSelect="action-employee-attrs-department-of-birth-on-select"/>
-      <field name="cityOfBirth" colSpan="4"
+      <!-- MGM-80: Not relevant according to stakeholder -->
+      <!-- <field name="departmentOfBirth" colSpan="4" grid-view="hr-department-grid" onChange="action-employee-attrs-department-of-birth-on-change"
+        onSelect="action-employee-attrs-department-of-birth-on-select"/> -->
+      <field name="cityOfBirth" colSpan="4" canNew="true" canEdit="true"
         onSelect="action-employee-attrs-city-of-birth-on-select"/>
       <field name="citizenship" colSpan="4"/>
-      <field name="maritalName" colSpan="4"/>
-      <field name="dependentChildren" colSpan="4"/>
-      <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
+      <!-- MGM-80: Not relevant according to stakeholder -->
+      <!-- <field name="maritalName" colSpan="4"/> -->
       <!-- KAPSIKI Customization: MGM38 -->
       <field name="personalNumber" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
+      <field name="dependentChildren" colSpan="4"/>
+      <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
       <field name="$employeeStatus" hidden="true"/>
       <panel colSpan="12">
         <!-- KAPSIKI Customization: MGM34 MGM60 -->
