@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="map-view-grid" title="Map views" model="com.axelor.apps.base.db.MapView">
+    <field name="name"/>
+    <field name="metaMenu"/>
+  </grid>
+
+  <form name="map-view-form" title="Map view" model="com.axelor.apps.base.db.MapView"
+    width="large">
+    <panel name="mainPanel">
+      <field name="name"/>
+      <field name="metaMenu" grid-view="meta-menu-grid" form-view="meta-menu-form"
+        colSpan="12" canSelect="false" canRemove="false">
+        <editor>
+          <field name="name"/>
+          <field name="parent" domain="self.name != :name" form-view="meta-menu-form"
+            grid-view="meta-menu-grid"/>
+          <field name="title"/>
+          <field name="icon"/>
+          <field name="order"/>
+          <field name="priority"/>
+          <field name="conditionToCheck"/>
+          <field name="moduleToCheck"/>
+          <field name="groups"/>
+          <field name="roles"/>
+        </editor>
+      </field>
+    </panel>
+    <panel-related name="mapGroupPanel" field="mapGroupList"
+      grid-view="map-group-grid" form-view="map-group-form" colSpan="12"/>
+  </form>
+
+</object-views>

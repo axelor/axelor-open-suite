@@ -44,6 +44,12 @@ public class PartnerLinkServiceImpl implements PartnerLinkService {
     return "self.id IN (" + Joiner.on(",").join(partnerIds) + ")";
   }
 
+  @Override
+  public boolean isDeliveredPartnerCompatible(
+      Partner deliveredPartner, Partner clientPartner, String strFilter) {
+    return getPartnerIds(clientPartner, strFilter).contains(deliveredPartner.getId());
+  }
+
   public List<Long> getPartnerIds(Partner partner, String strFilter) {
     List<Long> partnerIds = new ArrayList<>();
 

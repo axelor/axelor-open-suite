@@ -229,40 +229,98 @@
     </search-fields>
     <dataset type="sql">
 	    <![CDATA[
-  			SELECT estimatedate,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,estimatedate) AS qty
-			FROM (
-				(SELECT DATE(:todayDate) AS estimatedate,location.name AS locat,
-	               		(SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*qty
-	                           WHEN move.to_stock_location = loc.id THEN qty
-	                           END) AS qty
-               			FROM 	stock_stock_move_line line,
-	                    		stock_stock_move move,
-	                    		stock_stock_location loc
-	               		WHERE line.stock_move = move.id
-							AND move.real_date <= DATE(:todayDate)
-							AND move.status_select in (2,3)
-							AND line.product = :id
-							AND loc.id = location.id
-							AND (move.from_stock_location = loc.id OR move.to_stock_location = loc.id)
-							AND loc.type_select = 1) AS qty
-				FROM stock_stock_location_line loc_line, stock_stock_location location
-				WHERE loc_line.stock_location = location.id
-					AND location.type_select != 3
-					AND loc_line.product = :id
-				GROUP BY location.id)
-		   		UNION ALL
-		   		(SELECT estimated_date AS dt,locat,sum(qty)
-		                FROM (SELECT location.name AS locat,move.estimated_date AS estimated_date,
-		         	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.qty
-		                        WHEN move.to_stock_location = location.id THEN line.qty
-		                        END AS qty
-		                     FROM stock_stock_move_line line
-		                     LEFT JOIN stock_stock_move move ON (line.stock_move = move.id)
-		                     LEFT JOIN stock_stock_location location ON (move.from_stock_location = location.id OR move.to_stock_location = location.id)
-      	             		 WHERE  line.product = :id
-			                     AND move.estimated_date > DATE(:todayDate)
-			                     AND location.type_select = 1) location
-						 GROUP BY estimated_date,locat) ORDER BY locat,estimatedate) location_stock;
+  			SELECT estimatedate,
+		       locat,
+		       SUM(qty) OVER (PARTITION BY locat ORDER BY locat, estimatedate) AS qty
+				FROM (
+				  (
+				    SELECT DATE(:todayDate) AS estimatedate,
+				           location.name AS locat,
+				           (
+				             SELECT SUM(
+				                      CASE
+				                        WHEN move.from_stock_location = loc.id THEN -(
+				                          CASE
+				                            WHEN uc.start_unit = line.unit AND uc.end_unit = bp.unit THEN line.qty * uc.coef
+				                            WHEN uc.start_unit = bp.unit AND uc.end_unit = line.unit THEN line.qty / uc.coef
+				                            ELSE line.qty
+				                          END
+				                        )
+				                        WHEN move.to_stock_location = loc.id THEN (
+				                          CASE
+				                            WHEN uc.start_unit = line.unit AND uc.end_unit = bp.unit THEN line.qty * uc.coef
+				                            WHEN uc.start_unit = bp.unit AND uc.end_unit = line.unit THEN line.qty / uc.coef
+				                            ELSE line.qty
+				                          END
+				                        )
+				                      END
+				                    ) AS qty
+				             FROM stock_stock_move_line line
+				             JOIN stock_stock_move move ON line.stock_move = move.id
+				             JOIN stock_stock_location loc ON (move.from_stock_location = loc.id OR move.to_stock_location = loc.id)
+				             JOIN base_product bp ON bp.id = :id
+				             LEFT JOIN LATERAL (
+				               SELECT uc.start_unit, uc.end_unit, uc.coef
+				               FROM base_unit_conversion uc
+				               WHERE (uc.start_unit = line.unit AND uc.end_unit = bp.unit)
+				                  OR (uc.start_unit = bp.unit AND uc.end_unit = line.unit)
+				               ORDER BY CASE WHEN uc.start_unit = line.unit THEN 0 ELSE 1 END
+				               LIMIT 1
+				             ) uc ON true
+				             WHERE move.real_date <= DATE(:todayDate)
+				               AND move.status_select in (2,3)
+				               AND line.product = :id
+				               AND loc.id = location.id
+				               AND loc.type_select = 1
+				           ) AS qty
+				    FROM stock_stock_location_line loc_line
+				    JOIN stock_stock_location location ON loc_line.stock_location = location.id
+				    WHERE location.type_select != 3
+				      AND loc_line.product = :id
+				    GROUP BY location.id, location.name
+				  )
+				  UNION ALL
+				  (
+				    SELECT estimated_date AS dt,
+				           location.name AS locat,
+				           SUM(
+				             CASE
+				               WHEN move.from_stock_location = location.id THEN -(
+				                 CASE
+				                   WHEN uc.start_unit = line.unit AND uc.end_unit = bp.unit THEN line.qty * uc.coef
+				                   WHEN uc.start_unit = bp.unit AND uc.end_unit = line.unit THEN line.qty / uc.coef
+				                   ELSE line.qty
+				                 END
+				               )
+				               WHEN move.to_stock_location = location.id THEN (
+				                 CASE
+				                   WHEN uc.start_unit = line.unit AND uc.end_unit = bp.unit THEN line.qty * uc.coef
+				                   WHEN uc.start_unit = bp.unit AND uc.end_unit = line.unit THEN line.qty / uc.coef
+				                   ELSE line.qty
+				                 END
+				               )
+				             END
+				           ) AS qty
+				    FROM stock_stock_move_line line
+				    LEFT JOIN stock_stock_move move ON (line.stock_move = move.id)
+				    LEFT JOIN stock_stock_location location ON (move.from_stock_location = location.id OR move.to_stock_location = location.id)
+				    LEFT JOIN base_product bp ON bp.id = :id
+				    LEFT JOIN LATERAL (
+				      SELECT uc.start_unit, uc.end_unit, uc.coef
+				      FROM base_unit_conversion uc
+				      WHERE (uc.start_unit = line.unit AND uc.end_unit = bp.unit)
+				         OR (uc.start_unit = bp.unit AND uc.end_unit = line.unit)
+				      ORDER BY CASE WHEN uc.start_unit = line.unit THEN 0 ELSE 1 END
+				      LIMIT 1
+				    ) uc ON true
+				    WHERE line.product = :id
+				      AND move.estimated_date > DATE(:todayDate)
+				      AND move.real_date IS NULL
+				      AND location.type_select = 1
+				    GROUP BY move.estimated_date, location.name
+				  )
+				) location_stock
+				ORDER BY locat, estimatedate;
 	    ]]>
     </dataset>
     <category key="estimatedate" type="date" title="Estimated Date"/>
@@ -277,53 +335,117 @@
     </search-fields>
     <dataset type="sql">
 		 <![CDATA[
-		    SELECT
-		         real_date,locat,SUM(qty) OVER (PARTITION BY locat ORDER BY locat,real_date) AS qty
-			FROM
-				 ((SELECT DATE(:fromDate) AS real_date,location.name AS locat,
-			     (SELECT SUM(CASE WHEN move.from_stock_location = loc.id THEN -1*qty WHEN move.to_stock_location = loc.id THEN qty END) AS qty
-       		FROM
-       			stock_stock_move_line line,
-       			stock_stock_move move,
-       			stock_stock_location loc
-      		WHERE
-      		    line.stock_move = move.id
-			    AND move.real_date <= DATE(:fromDate)
-				AND move.status_select in (2,3)
-				AND line.product = :id
-				AND loc.id = location.id
-				AND (move.from_stock_location = loc.id OR move.to_stock_location = loc.id)
-				AND loc.type_select = 1) AS qty
-		    FROM
-		   		stock_stock_location_line loc_line, stock_stock_location location
-		    WHERE
-		        loc_line.stock_location = location.id
-				AND location.type_select != 3
-				AND loc_line.product = :id
-		    GROUP BY
-		   		location.id)
-		    UNION ALL
-		   	    (SELECT real_date AS dt,locat,sum(qty)
-		    FROM
-		        (SELECT location.name AS locat,move.real_date AS real_date,
-     	           	CASE WHEN move.from_stock_location = location.id THEN -1*line.qty
-                    	 WHEN move.to_stock_location = location.id THEN line.qty
-                    END AS qty
-		    FROM
-		     	stock_stock_move_line line
-            LEFT JOIN
-             	stock_stock_move move ON (line.stock_move = move.id)
-            LEFT JOIN
-             	stock_stock_location location ON (move.from_stock_location = location.id OR move.to_stock_location = location.id)
-		    WHERE
-		    	line.product = :id
-	            AND move.real_date > DATE(:fromDate)
-			    AND move.real_date <= DATE(:toDate)
-	            AND location.type_select = 1) location
-      	     GROUP BY
-      	          real_date,locat)
-      	     ORDER BY
-      	          locat,real_date) location_stock;
+			SELECT
+			  dates.d AS real_date,
+			  locs.loc AS locat,
+			  SUM(COALESCE(movs.qty, 0))
+			    OVER (PARTITION BY locs.loc ORDER BY dates.d) AS qty
+			FROM (
+			  SELECT DATE(:fromDate) AS d
+			  UNION
+			  SELECT real_date
+			  FROM stock_stock_move
+			  WHERE real_date > DATE(:fromDate)
+			    AND real_date <= DATE(:toDate)
+			  GROUP BY real_date
+			) AS dates
+
+			CROSS JOIN (
+			  SELECT loc.name AS loc
+			  FROM stock_stock_location_line AS line
+			  JOIN stock_stock_location AS loc ON line.stock_location = loc.id
+			  WHERE line.product = :id
+			    AND loc.type_select <> 3
+			  GROUP BY loc.name
+			) AS locs
+
+			LEFT JOIN (
+			  SELECT
+			    DATE(:fromDate) AS real_date,
+			    loc.name AS loc,
+			    SUM(
+			      CASE
+			        WHEN mv.from_stock_location = loc.id THEN -(
+			          CASE
+			            WHEN uc.start_unit = ln.unit AND uc.end_unit = bp.unit THEN ln.qty * uc.coef
+			            WHEN uc.start_unit = bp.unit AND uc.end_unit = ln.unit THEN ln.qty / uc.coef
+			            ELSE ln.qty
+			          END
+			        )
+			        WHEN mv.to_stock_location = loc.id THEN (
+			          CASE
+			            WHEN uc.start_unit = ln.unit AND uc.end_unit = bp.unit THEN ln.qty * uc.coef
+			            WHEN uc.start_unit = bp.unit AND uc.end_unit = ln.unit THEN ln.qty / uc.coef
+			            ELSE ln.qty
+			          END
+			        )
+			      END
+			    ) AS qty
+			  FROM stock_stock_move_line AS ln
+			  JOIN stock_stock_move AS mv ON ln.stock_move = mv.id
+			  JOIN stock_stock_location AS loc ON loc.id IN (mv.from_stock_location, mv.to_stock_location)
+			  JOIN base_product AS bp ON bp.id = ln.product
+			  LEFT JOIN LATERAL (
+				SELECT uc.start_unit, uc.end_unit, uc.coef
+				FROM base_unit_conversion AS uc
+				  WHERE
+				    (uc.start_unit = ln.unit AND uc.end_unit = bp.unit)
+				    OR
+				    (uc.start_unit = bp.unit AND uc.end_unit = ln.unit)
+				  ORDER BY CASE WHEN uc.start_unit = ln.unit THEN 0 ELSE 1 END
+				  LIMIT 1
+			  ) AS uc ON true
+			  WHERE ln.product = :id
+			    AND mv.real_date <= DATE(:fromDate)
+			    AND mv.status_select IN (2, 3)
+			    AND loc.type_select = 1
+			  GROUP BY loc.name
+
+			  UNION ALL
+
+			  SELECT
+			    mv.real_date AS real_date,
+			    loc.name AS loc,
+			    CASE
+			      WHEN mv.from_stock_location = loc.id THEN -(
+			        CASE
+			          WHEN uc.start_unit = ln.unit AND uc.end_unit = bp.unit THEN ln.qty * uc.coef
+			          WHEN uc.start_unit = bp.unit AND uc.end_unit = ln.unit THEN ln.qty / uc.coef
+			          ELSE ln.qty
+			        END
+			      )
+			      WHEN mv.to_stock_location = loc.id THEN (
+			        CASE
+			          WHEN uc.start_unit = ln.unit AND uc.end_unit = bp.unit THEN ln.qty * uc.coef
+			          WHEN uc.start_unit = bp.unit AND uc.end_unit = ln.unit THEN ln.qty / uc.coef
+			          ELSE ln.qty
+			        END
+			      )
+			    END AS qty
+			  FROM stock_stock_move_line AS ln
+			  JOIN stock_stock_move AS mv ON ln.stock_move = mv.id
+			  JOIN stock_stock_location AS loc ON loc.id IN (mv.from_stock_location, mv.to_stock_location)
+			  JOIN base_product AS bp ON bp.id = ln.product
+			  LEFT JOIN LATERAL (
+				SELECT uc.start_unit, uc.end_unit, uc.coef
+				FROM base_unit_conversion AS uc
+				  WHERE
+				    (uc.start_unit = ln.unit AND uc.end_unit = bp.unit)
+				    OR
+				    (uc.start_unit = bp.unit AND uc.end_unit = ln.unit)
+				  ORDER BY CASE WHEN uc.start_unit = ln.unit THEN 0 ELSE 1 END
+				  LIMIT 1
+			  ) AS uc ON true
+			  WHERE ln.product = :id
+			    AND mv.real_date > DATE(:fromDate)
+			    AND mv.real_date <= DATE(:toDate)
+			    AND loc.type_select = 1
+			) AS movs
+			ON movs.real_date = dates.d
+			AND movs.loc = locs.loc
+			ORDER BY
+			  locs.loc,
+			  dates.d;
       	    ]]>
     </dataset>
     <category key="real_date" type="date" title="Date"/>

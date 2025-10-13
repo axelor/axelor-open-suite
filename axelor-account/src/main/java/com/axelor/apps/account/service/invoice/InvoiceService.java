@@ -303,7 +303,7 @@ public interface InvoiceService {
 
   boolean checkManageCutOffDates(Invoice invoice);
 
-  void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+  void applyCutOffDates(Invoice invoice);
 
   boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice);
 

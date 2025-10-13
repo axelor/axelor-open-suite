@@ -1,4 +1,4 @@
-"importId";"typeSelect";"product_importId";"tax_code";"productFamily_importId";"paymentMode.code";"saleAccount_code";"saleTaxVatSystem1Account_code";"saleTaxVatSystem2Account_code";"saleTax_code";"purchaseAccount_code";"purchaseTaxVatSystem1Account_code";"purchaseTaxVatSystem2Account_code";"purchaseTax_code";"cashAccount_code";"journal_code";"sequence_importId";"bankDetails_importId";"purchFixedAssetsAccount_code";"purchFixedAssetsTaxVatSystem1Account_code";"purchFixedAssetsTaxVatSystem2Account_code";"fixedAssetCategory_importId";"interbankCodeLine_importId";"allowedFinDiscountTaxVatSystem1Account_code";"allowedFinDiscountTaxVatSystem2Account_code";"obtainedFinDiscountTaxVatSystem1Account_code";"obtainedFinDiscountTaxVatSystem2Account_code";"purchVatRegulationAccount_code";"saleVatRegulationAccount_code";"globalAccountingCashAccount_code";"chequeDepositJournal_code";"financialDiscountAccount_code"
+"importId";"typeSelect";"product_importId";"tax_code";"productFamily_importId";"paymentMode_code";"saleAccount_code";"saleTaxVatSystem1Account_code";"saleTaxVatSystem2Account_code";"saleTax_code";"purchaseAccount_code";"purchaseTaxVatSystem1Account_code";"purchaseTaxVatSystem2Account_code";"purchaseTax_code";"cashAccount_code";"journal_code";"sequence_importId";"bankDetails_importId";"purchFixedAssetsAccount_code";"purchFixedAssetsTaxVatSystem1Account_code";"purchFixedAssetsTaxVatSystem2Account_code";"fixedAssetCategory_importId";"interbankCodeLine_importId";"allowedFinDiscountTaxVatSystem1Account_code";"allowedFinDiscountTaxVatSystem2Account_code";"obtainedFinDiscountTaxVatSystem1Account_code";"obtainedFinDiscountTaxVatSystem2Account_code";"purchVatRegulationAccount_code";"saleVatRegulationAccount_code";"globalAccountingCashAccount_code";"chequeDepositJournal_code";"financialDiscountAccount_code"
 "FRA_PCG1";2;;"N_C";;;445711;445711;445711;"N_C";;;;;;;;;;;;;;445600;445600;445600;445600;;445870;;;
 "FRA_PCG2";2;;"R1_C";;;445712;445712;445712;"R1_C";;;;;;;;;;;;;;;;;;;445870;;;
 "FRA_PCG3";2;;"R2_C";;;445713;445713;445713;"R2_C";;;;;;;;;;;;;;;;;;;445870;;;
@@ -31,6 +31,6 @@
 "FRA_PCG30";3;;;;"DEC_VIR";;;;;;;;;512100;"BNQ";6200;;;;;;6;;;;;;;;;
 "FRA_PCG31";3;;;;"DEC_CHQ";;;;;;;;;512100;"BNQ";6210;;;;;;1;;;;;;;;;
 "FRA_PCG32";3;;;;"DEC_CB";;;;;;;;;512100;"BNQ";6220;;;;;;11;;;;;;;;;
-"FRA_PCG33";3;;;;"DEC_PRE";;;;;;;;;512100;"BNQ";6230;;;;;;89;;;;;;;;;
+"FRA_PCG33";3;;;;"DEC_PRE";;;;;;;;;512100;"BNQ";6230;;;;;;95;;;;;;;;;
 "FRA_PCG34";3;;;;"DEC_ESP";;;;;;;;;512100;"BNQ";6240;;;;;;23;;;;;;;;;
 "FRA_PCG35";3;;;;"DEC_OTH";;;;;;;;;512100;"BNQ";6260;;;;;;86;;;;;;;;;

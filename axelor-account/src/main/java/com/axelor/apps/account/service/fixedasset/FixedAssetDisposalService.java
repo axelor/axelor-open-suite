@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AssetDisposalReason;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -40,7 +41,8 @@ public interface FixedAssetDisposalService {
       Integer disposalTypeSelect,
       BigDecimal disposalAmount,
       AssetDisposalReason assetDisposalReason,
-      String comments)
+      String comments,
+      Partner partner)
       throws AxelorException;
 
   FixedAsset fullDisposal(
@@ -53,6 +55,7 @@ public interface FixedAssetDisposalService {
       Integer disposalTypeSelect,
       BigDecimal disposalAmount,
       AssetDisposalReason assetDisposalReason,
-      String comments)
+      String comments,
+      Partner partner)
       throws AxelorException;
 }

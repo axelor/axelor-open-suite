@@ -7,7 +7,7 @@
 
   <entity name="BankStatementQuery">
 
-    <string name="name" required="true" title="Name"/>
+    <string name="name" required="true" title="Name" translatable="true"/>
     <string name="query" title="Test function" required="true" large="true"
       help="Legend for dynamic parameter manage in bank payment config : %amt+ for a tolerance of +X% on amount, %amt- for -X%, %date for a tolerance of + or - X days"/>
     <integer name="ruleTypeSelect" title="Rule type"

@@ -34,9 +34,6 @@
             <button name="initBudgetDatesBtn" title="Init budget dates"
               onClick="action-purchase-order-method-initialize-budget-dates"/>
           </panel>
-          <field name="project" colSpan="3"
-            onChange="action-business-project-purchase-order-method-update-lines"
-            hideIf="orderTypeSelect == 4"/>
           <field name="companyDepartment" colSpan="3"
             onChange="action-budget-purchase-order-attrs-company-dept-onchange"/>
           <field name="budget" showIf="statusSelect &lt;= 2" title="Budget line"

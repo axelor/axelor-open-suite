@@ -6,7 +6,8 @@
   <grid name="call-tender-offer-grid" title="Supplier offers"
     model="com.axelor.apps.purchase.db.CallTenderOffer"
     onNew="action-call-tender-offer-record-init-dummy-fields">
-    <field name="statusSelect"/>
+    <field name="callTenderOfferSeq"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="product"/>
     <field name="supplierPartner"/>
     <field name="requestedQty" x-scale="$nbDecimalDigitForQty"/>
@@ -20,13 +21,15 @@
   </grid>
 
   <form name="call-tender-offer-form" model="com.axelor.apps.purchase.db.CallTenderOffer"
-    title="Supplier offer" onNew="action-call-tender-offer-record-init-dummy-fields">
+    title="Supplier offer"
+    onNew="action-call-tender-offer-record-init-dummy-fields,action-call-tender-offer-method-init-counter">
     <panel name="sidePanel" showTitle="false" sidebar="true">
       <field name="requestedDate" colSpan="12"/>
       <field name="proposedDate" colSpan="12"/>
       <field name="offerMail" readonly="true" showIf="offerMail != null"/>
     </panel>
     <panel name="mainPanel" showTitle="false">
+      <field name="callTenderOfferSeq" readonly="true"/>
       <field name="statusSelect" colSpan="12" widget="NavSelect"/>
     </panel>
     <panel name="requestPanel" title="Requested">
@@ -58,4 +61,8 @@
     <field name="$nbDecimalDigitForQty"
       expr="eval:  __config__.app.getApp('base')?.getNbDecimalDigitForQty()"/>
   </action-record>
+
+  <action-method name="action-call-tender-offer-method-init-counter">
+    <call class="com.axelor.apps.purchase.web.CallTenderOfferController" method="initCounter"/>
+  </action-method>
 </object-views>

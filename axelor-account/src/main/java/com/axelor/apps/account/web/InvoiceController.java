@@ -265,7 +265,7 @@ public class InvoiceController {
             I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_DELETION_PROHIBITED));
         return;
       }
-      if (invoiceTermService.checkIfCustomizedInvoiceTerms(invoice)) {
+      if (invoiceTermService.checkIfCustomizedInvoiceTerms(invoice.getInvoiceTermList())) {
         if (!invoiceTermService.checkInvoiceTermsSum(invoice)) {
           response.setError(I18n.get(AccountExceptionMessage.INVOICE_INVOICE_TERM_AMOUNT_MISMATCH));
           return;
@@ -964,12 +964,8 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       InvoiceService invoiceService = Beans.get(InvoiceService.class);
 
-      LocalDate cutOffStartDate =
-          LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
-      LocalDate cutOffEndDate = LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
-
       if (invoiceService.checkManageCutOffDates(invoice)) {
-        invoiceService.applyCutOffDates(invoice, cutOffStartDate, cutOffEndDate);
+        invoiceService.applyCutOffDates(invoice);
 
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       } else {

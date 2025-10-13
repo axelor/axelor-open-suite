@@ -29,8 +29,10 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.cart.CartProductService;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.PurchaseOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -161,6 +163,34 @@ public class PurchaseOrderLineController {
     }
   }
 
+  public void setDomainAnalyticDistributionTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder =
+          ContextHelper.getContextParent(request.getContext(), PurchaseOrder.class, 1);
+
+      if (purchaseOrder == null || purchaseOrder.getCompany() == null) {
+        return;
+      }
+
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+
+      response.setAttr(
+          "analyticDistributionTemplate",
+          "domain",
+          Beans.get(AnalyticAttrsService.class)
+              .getAnalyticDistributionTemplateDomain(
+                  purchaseOrder.getSupplierPartner(),
+                  purchaseOrderLine.getProduct(),
+                  purchaseOrder.getCompany(),
+                  purchaseOrder.getTradingName(),
+                  null,
+                  true));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder =
@@ -205,6 +235,40 @@ public class PurchaseOrderLineController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void validateRealizedQty(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder =
+        ContextHelper.getContextParent(request.getContext(), PurchaseOrder.class, 1);
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+
+    boolean qtyValid =
+        Beans.get(PurchaseOrderLineServiceSupplyChain.class)
+            .validateRealizedQty(purchaseOrder, purchaseOrderLine);
+
+    response.setValue("$qtyValid", qtyValid);
+    if (!qtyValid) {
+      response.setError(
+          I18n.get(
+              SupplychainExceptionMessage.PURCHASE_ORDER_LINE_QTY_UPDATE_NOT_ALLOWED_REALIZED));
+    }
+  }
+
+  public void validateInvoicedQty(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder =
+        ContextHelper.getContextParent(request.getContext(), PurchaseOrder.class, 1);
+    PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+
+    boolean qtyValid =
+        Beans.get(PurchaseOrderLineServiceSupplyChain.class)
+            .validateInvoicedQty(purchaseOrder, purchaseOrderLine);
+
+    response.setValue("$qtyValid", qtyValid);
+    if (!qtyValid) {
+      response.setError(
+          I18n.get(
+              SupplychainExceptionMessage.PURCHASE_ORDER_LINE_QTY_UPDATE_NOT_ALLOWED_INVOICED));
     }
   }
 }

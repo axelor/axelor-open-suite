@@ -133,6 +133,24 @@
           onClick="save,action-hrbatch-method-hr-batch"/>
       </panel>
 
+      <panel name="leaveRequestPanel" title="Leave request" hidden="true"
+        showIf="actionSelect == 9" itemSpan="4">
+        <field name="leaveReason"/>
+        <field name="startDate" onChange="action-hr-batch-leave-request-validate-dates"/>
+        <field name="startOnSelect" onChange="action-hr-batch-leave-request-validate-dates"
+          requiredIf="actionSelect == 9"/>
+        <field name="leaveReason.unitSelect" readonly="true"/>
+        <field name="endDate" onChange="action-hr-batch-leave-request-validate-dates"/>
+        <field name="endOnSelect" onChange="action-hr-batch-leave-request-validate-dates"
+          requiredIf="actionSelect == 9"/>
+        <panel-related name="employeeSetPanel" field="employeeSet"
+          target="com.axelor.apps.hr.db.Employee"
+          onSelect="action-hr-batch-attrs-employee-set-domain" grid-view="employee-lite-grid"
+          form-view="employee-form" canNew="false" colSpan="12"/>
+        <button name="leaveRequestBatchBtn" title="Leave request batch"
+          onClick="action-hrbatch-group-leave-request"/>
+      </panel>
+
       <panel name="informationsPanel" title="Information">
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"
@@ -143,6 +161,12 @@
       </panel>
     </panel-tabs>
   </form>
+
+  <action-group name="action-hrbatch-group-leave-request">
+    <action name="save"/>
+    <action name="action-hr-batch-leave-request-validate-dates"/>
+    <action name="action-hrbatch-method-hr-batch"/>
+  </action-group>
 
   <action-method name="action-hrbatch-method-hr-batch">
     <call class="com.axelor.apps.hr.web.HrBatchController" method="launchHrBatch"/>
@@ -181,4 +205,11 @@
     <call class="com.axelor.apps.hr.web.HrBatchController"
       method="getIncrementLeaveReasonTypeSelects"/>
   </action-method>
+
+  <action-validate name="action-hr-batch-leave-request-validate-dates">
+    <error
+      if="( endDate &lt; startDate || (endDate == startDate &amp;&amp; startOnSelect > endOnSelect)) &amp;&amp; startDate != null &amp;&amp; endDate != null"
+      message="Invalid dates"/>
+  </action-validate>
+
 </object-views>

@@ -30,6 +30,9 @@ import com.axelor.apps.account.service.AccountingReportPrintService;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.account.service.AccountingReportToolService;
 import com.axelor.apps.account.service.MoveLineExportService;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
@@ -39,6 +42,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.axelor.studio.db.App;
 import com.google.common.base.Joiner;
 import com.google.inject.Singleton;
@@ -315,19 +319,39 @@ public class AccountingReportController {
     AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
     boolean isCustom =
         Optional.ofNullable((Boolean) request.getContext().get("_isCustom")).orElse(false);
-    String accountingReportTypeIds = "0";
-
-    if (!isCustom || CollectionUtils.isNotEmpty(accountingReport.getCompanySet())) {
-      accountingReportTypeIds =
-          Beans.get(AccountingReportToolService.class)
-              .getAccountingReportTypeIds(accountingReport, isCustom);
-    }
-
+    String accountingReportTypeIds =
+        Beans.get(AccountingReportToolService.class)
+            .getAccountingReportTypeIds(accountingReport, isCustom);
     response.setAttr(
         "reportType",
         "domain",
         String.format(
             "self.id IN (%s)",
             StringUtils.notEmpty(accountingReportTypeIds) ? accountingReportTypeIds : "0"));
+  }
+
+  @ErrorException
+  public void setDomainAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    AccountingReport accountingReport = context.asType(AccountingReport.class);
+
+    response.setAttr(
+        "analyticDistributionTemplate",
+        "domain",
+        Beans.get(AnalyticAttrsService.class)
+            .getAnalyticDistributionTemplateDomain(
+                null, null, accountingReport.getCompany(), null, null, false));
+  }
+
+  public void emptyReportTypeField(ActionRequest request, ActionResponse response) {
+    AccountingReport accountingReport = request.getContext().asType(AccountingReport.class);
+    boolean isCustom =
+        Optional.ofNullable((Boolean) request.getContext().get("_isCustom")).orElse(false);
+
+    response.setValue(
+        "reportType",
+        Beans.get(AccountingReportService.class)
+            .resolveReportTypeForCompany(accountingReport, isCustom));
   }
 }

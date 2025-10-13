@@ -5,6 +5,20 @@
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind column="codeSelect" to="codeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
+      check-message="Invalid codeSelect"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check-message="Sequence type must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence','importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check-message="Company, code, prefixe and suffixe must be unique"/>
+    <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
+      if="yearlyResetOk"/>
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
       if="yearlyResetOk"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
@@ -15,51 +29,199 @@
   </input>
 
   <input file="quality_qualityConfig.csv" separator=";"
-    type="com.axelor.apps.quality.db.QualityConfig" search="self.importId = :importId"/>
+    type="com.axelor.apps.quality.db.QualityConfig" search="self.importId = :importId">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.quality.db.QualityConfig', 'importId', importId, 'company.importId', company_importId)"
+      check-message="Company must be unique"/>
+  </input>
 
   <input file="quality_qiAction.csv" separator=";" type="com.axelor.apps.quality.db.QIAction"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+  </input>
 
   <input file="quality_qiDefault.csv" separator=";"
-    type="com.axelor.apps.quality.db.QIDefault" search="self.importId = :importId"/>
+    type="com.axelor.apps.quality.db.QIDefault" search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+  </input>
 
   <input file="quality_qiDetection.csv" separator=";"
-    type="com.axelor.apps.quality.db.QIDetection" search="self.importId = :importId"/>
+    type="com.axelor.apps.quality.db.QIDetection" search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="origin" to="origin"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.quality.db.QIDetection', 'origin', origin)"
+      check-message="Invalid origin"/>
+  </input>
 
   <input file="quality_qiProcess.csv" separator=";"
-    type="com.axelor.apps.quality.db.QIProcess" search="self.importId = :importId"/>
+    type="com.axelor.apps.quality.db.QIProcess" search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="manager_importId" to="manager" search="self.importId = :manager_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.auth.db.User', 'importId', manager_importId)"
+      check-message="User doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+  </input>
 
   <input file="quality_qiStatus.csv" separator=";" type="com.axelor.apps.quality.db.QIStatus"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="quality_qiAnalysisMethod.csv" separator=";"
-    type="com.axelor.apps.quality.db.QIAnalysisMethod" search="self.importId = :importId"/>
+    type="com.axelor.apps.quality.db.QIAnalysisMethod" search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+  </input>
 
   <input file="quality_qiAnalysisMethodItem.csv" separator=";"
-    type="com.axelor.apps.quality.db.QIAnalysisMethodItem" search="self.importId = :importId"/>
+    type="com.axelor.apps.quality.db.QIAnalysisMethodItem" search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+  </input>
 
   <input file="quality_qiCause.csv" separator=";" type="com.axelor.apps.quality.db.QICause"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="branch_importId" to="branch" search="self.importId = :branch_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QIAnalysisMethodItem', 'importId', branch_importId)"
+      check-message="Branch doesn't exist"/>
+  </input>
 
   <input file="quality_qiDecision.csv" separator=";"
-    type="com.axelor.apps.quality.db.QIDecision" search="self.importId = :importId"/>
+    type="com.axelor.apps.quality.db.QIDecision" search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.quality.db.QIDecision', 'importId', importId, 'code', code)"
+      check-message="Code must be unique"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
 
   <input file="quality_qiDecisionConfigCompany.csv" separator=";"
-    type="com.axelor.apps.quality.db.QIDecisionConfigCompany" search="self.importId = :importId"/>
+    type="com.axelor.apps.quality.db.QIDecisionConfigCompany" search="self.importId = :importId">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="qiDecision_importId" to="qiDecision"
+      search="self.importId = :qiDecision_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QIDecision', 'importId', qiDecision_importId)"
+      check-message="Decision doesn't exist"/>
+    <bind column="fixedAmount" to="fixedAmount"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(fixedAmount)"
+      check-message="Fixed amount must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.quality.db.QIDecisionConfigCompany', 'importId', importId, 'company.importId, qiDecision.importId', company_importId, qiDecision_importId)"
+      check-message="Company and QIDecision must be unique"/>
+  </input>
 
   <input file="quality_qualityImprovement.csv" separator=";"
     type="com.axelor.apps.quality.db.QualityImprovement" search="self.importId = :importId"
     call="com.axelor.csv.script.ImportQualityImprovement:importQualityImprovement">
+    <bind column="technicalSeq" to="technicalSeq"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(technicalSeq)"
+      check-message="Technical sequence must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="qiDetection_importId" to="qiDetection"
+      search="self.importId = :qiDetection_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QIDetection', 'importId', qiDetection_importId)"
+      check-message="Detection doesn't exist"/>
+    <bind column="qiStatus_importId" to="qiStatus" search="self.importId = :qiStatus_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QIStatus', 'importId', qiStatus_importId)"
+      check-message="Status doesn't exist"/>
+    <bind column="type" to="type"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.quality.db.QualityImprovement', 'type', type)"
+      check-message="Invalid type"/>
+    <bind column="gravityTypeSelect" to="gravityTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.quality.db.QualityImprovement', 'gravityTypeSelect', gravityTypeSelect)"
+      check-message="Invalid gravityTypeSelect"/>
+    <bind column="qiIdentification_importId" to="qiIdentification"
+      search="self.importId = :qiIdentification_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.quality.db.QualityImprovement', 'qiIdentification.importId', qiIdentification_importId)"
+      check-message="Identification must be unique"/>
+    <bind column="qiResolution_importId" to="qiResolution"
+      search="self.importId = :qiResolution_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.quality.db.QualityImprovement', 'qiResolution.importId', qiResolution_importId)"
+      check-message="Resolution must be unique"/>
+    <bind column="qiAnalysis_importId" to="qiAnalysis"
+      search="self.importId = :qiAnalysis_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.quality.db.QualityImprovement', 'qiAnalysis.importId', qiAnalysis_importId)"
+      check-message="Analysis must be unique"/>
   </input>
 
   <input file="quality_qiIdentification.csv" separator=";"
     type="com.axelor.apps.quality.db.QIIdentification" search="self.importId = :importId">
+    <bind column="qi_importId" to="qi" search="self.importId = :qi_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QualityImprovement', 'importId', qi_importId)"
+      check-message="Quality improvement doesn't exist"/>
     <bind to="writtenOn"
       eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(writtenOn)" column="writtenOn"/>
   </input>
 
   <input file="quality_qiResolution.csv" separator=";"
     type="com.axelor.apps.quality.db.QIResolution" search="self.importId = :importId">
+    <bind column="qi_importId" to="qi" search="self.importId = :qi_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QualityImprovement', 'importId', qi_importId)"
+      check-message="Quality improvement doesn't exist"/>
     <bind to="defaultWrittenOn"
       eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(defaultWrittenOn)"
       column="defaultWrittenOn"/>
@@ -70,20 +232,78 @@
 
   <input file="quality_qiResolutionDefault.csv" separator=";"
     type="com.axelor.apps.quality.db.QIResolutionDefault" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="qiResolution_importId" to="qiResolution"
+      search="self.importId = :qiResolution_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QIResolution', 'importId', qiResolution_importId)"
+      check-message="Resolution doesn't exist"/>
+    <bind column="qiDefault_importId" to="qiDefault"
+      search="self.importId = :qiDefault_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QIDefault', 'importId', qiDefault_importId)"
+      check-message="Defect doesn't exist"/>
+    <bind column="identification" to="identification"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.quality.db.QIResolutionDefault', 'identification', identification)"
+      check-message="Invalid identification"/>
     <bind column="trackingNumbersSet" to="trackingNumbersSet"
       search="self.trackingNumberSeq in :trackingNumbersSet"
       eval="(trackingNumbersSet != null ? trackingNumbersSet.split('\\|') : []) as List"/>
   </input>
 
   <input file="quality_qiResolutionDecision.csv" separator=";"
-    type="com.axelor.apps.quality.db.QIResolutionDecision" search="self.importId = :importId"/>
+    type="com.axelor.apps.quality.db.QIResolutionDecision" search="self.importId = :importId">
+    <bind column="qiResolution_importId" to="qiResolution"
+      search="self.importId = :qiResolution_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QIResolution', 'importId', qiResolution_importId)"
+      check-message="Resolution doesn't exist"/>
+    <bind column="qiDecision_importId" to="qiDecision"
+      search="self.importId = :qiDecision_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QIDecision', 'importId', qiDecision_importId)"
+      check-message="Decision doesn't exist"/>
+    <bind column="qiResolutionDefault_importId" to="qiResolutionDefault"
+      search="self.importId = :qiResolutionDefault_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QIResolutionDefault', 'importId', qiResolutionDefault_importId)"
+      check-message="Defect doesn't exist"/>
+    <bind column="responsiblePartner_importId" to="responsiblePartner"
+      search="self.importId = :responsiblePartner_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner','importId', responsiblePartner_importId)"
+      check-message="Responsible partner doesn't exist"/>
+    <bind column="responsible" to="responsible"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.quality.db.QIResolutionDecision', 'responsible', responsible)"
+      check-message="Invalid responsible"/>
+    <bind column="acceptance" to="acceptance"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.quality.db.QIResolutionDecision', 'acceptance', acceptance)"
+      check-message="Invalid acceptance"/>
+  </input>
 
   <input file="quality_qiAnalysisCause.csv" separator=";"
     type="com.axelor.apps.quality.db.QIAnalysisCause" search="self.importId = :importId">
+    <bind column="qiCause_importId" to="qiCause" search="self.importId = :qiCause_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QICause', 'importId', qiCause_importId)"
+      check-message="Cause doesn't exist"/>
+    <bind column="qiProcess_importId" to="qiProcess"
+      search="self.importId = :qiProcess_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QIProcess', 'importId', qiProcess_importId)"
+      check-message="Process doesn't exist"/>
+    <bind column="responsiblePartner_importId" to="responsiblePartner"
+      search="self.importId = :responsiblePartner_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner','importId', responsiblePartner_importId)"
+      check-message="Responsible partner doesn't exist"/>
+    <bind column="responsiblePartnerTypeSelect" to="responsiblePartnerTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.quality.db.QIAnalysisCause', 'responsiblePartnerTypeSelect', responsiblePartnerTypeSelect)"
+      check-message="Invalid responsiblePartnerTypeSelect"/>
   </input>
 
   <input file="quality_qiTask.csv" separator=";" type="com.axelor.apps.quality.db.QITask"
     search="self.importId = :importId">
+    <bind column="responsiblePartner_importId" to="responsiblePartner"
+      search="self.importId = :responsiblePartner_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Partner','importId', responsiblePartner_importId)"
+      check-message="Responsible partner doesn't exist"/>
+    <bind column="responsiblePartnerTypeSelect" to="responsiblePartnerTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.quality.db.QITask', 'responsiblePartnerTypeSelect', responsiblePartnerTypeSelect)"
+      check-message="Invalid responsiblePartnerTypeSelect"/>
     <bind to="startDateTime"
       eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(startDateTime)"
       column="startDateTime"/>

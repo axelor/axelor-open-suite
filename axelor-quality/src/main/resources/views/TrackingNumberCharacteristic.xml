@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="tracking-number-characteristic-grid" title="Tracking number characteristics"
+    model="com.axelor.apps.quality.db.TrackingNumberCharacteristic">
+    <field name="trackingNumber"/>
+    <field name="product"/>
+    <field name="characteristic"/>
+    <field name="measuredValue" x-scale="3"/>
+    <field name="observedValue"/>
+    <field name="conforms"/>
+  </grid>
+
+  <form name="tracking-number-characteristic-form" title="Tracking number characteristic"
+    model="com.axelor.apps.quality.db.TrackingNumberCharacteristic"
+    onNew="action-tracking-number-characteristic-record-onnew">
+    <panel name="mainPanel">
+      <field name="trackingNumber"/>
+      <field name="product"/>
+      <field name="characteristic"
+        onChange="action-tracking-number-method-characteristic-assign-conforms"/>
+      <field name="conforms" hideIf="characteristic.characteristicTypeSelect == 3"/>
+      <field name="characteristic.characteristicTypeSelect" hidden="true" colSpan="12"/>
+      <panel name="measurablePanel" colSpan="12"
+        showIf="characteristic.characteristicTypeSelect == 1">
+        <field name="measuredValue" x-scale="3"
+          onChange="action-tracking-number-characteristic-method-assign-conforms"/>
+        <field name="characteristic.unit"/>
+      </panel>
+      <panel name="listPanel" colSpan="12"
+        showIf="characteristic.characteristicTypeSelect == 2">
+        <field name="observedValue"
+          onChange="action-tracking-number-characteristic-method-assign-conforms"/>
+      </panel>
+      <panel name="commentPanel" colSpan="12">
+        <field name="trackingNumberComment" colSpan="12"
+          onChange="action-tracking-number-characteristic-method-assign-conforms"/>
+      </panel>
+    </panel>
+  </form>
+
+  <action-method name="action-tracking-number-characteristic-method-assign-conforms">
+    <call class="com.axelor.apps.quality.web.TrackingNumberCharacteristicController"
+      method="assignConforms"/>
+  </action-method>
+
+  <action-record name="action-tracking-number-characteristic-record-onnew"
+    model="com.axelor.apps.quality.db.TrackingNumberCharacteristic">
+    <field name="trackingNumber" expr="eval: __parent__"
+      if="_parent?._model == 'com.axelor.apps.stock.db.TrackingNumber'"/>
+  </action-record>
+
+</object-views>

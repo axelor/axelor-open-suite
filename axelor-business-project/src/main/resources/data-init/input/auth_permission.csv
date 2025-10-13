@@ -1,2 +1,0 @@
-"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
-"perm.businessproject.all";"com.axelor.apps.businessproject.db.*";"x";"x";"x";"x";"x";;;"Admin"

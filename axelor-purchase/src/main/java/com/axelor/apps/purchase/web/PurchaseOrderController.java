@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.PartnerPriceListService;
+import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -46,6 +47,7 @@ import com.axelor.apps.purchase.service.attributes.PurchaseOrderAttrsService;
 import com.axelor.apps.purchase.service.print.PurchaseOrderPrintService;
 import com.axelor.apps.purchase.service.split.PurchaseOrderSplitService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -317,6 +319,13 @@ public class PurchaseOrderController {
         domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
       }
 
+      List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+      if (!(purchaseOrderLineList == null || purchaseOrderLineList.isEmpty())) {
+        domain =
+            Beans.get(PricedOrderDomainService.class)
+                .getPartnerDomain(purchaseOrder, domain, PriceListRepository.TYPE_PURCHASE);
+      }
+
       response.setAttr("supplierPartner", "domain", domain);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -421,5 +430,24 @@ public class PurchaseOrderController {
             .param("forceEdit", "true")
             .context("_showRecord", copiePO.getId())
             .map());
+  }
+
+  public void enableEditOrder(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder =
+          JPA.find(PurchaseOrder.class, request.getContext().asType(PurchaseOrder.class).getId());
+      Beans.get(PurchaseOrderService.class).enableEditOrder(purchaseOrder);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void validateChanges(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PurchaseOrder purchaseOrder =
+        JPA.find(PurchaseOrder.class, request.getContext().asType(PurchaseOrder.class).getId());
+    Beans.get(PurchaseOrderService.class).validateChanges(purchaseOrder);
+    response.setReload(true);
   }
 }

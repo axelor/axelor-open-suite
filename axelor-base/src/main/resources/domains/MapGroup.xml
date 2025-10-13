@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="MapGroup">
+
+    <string name="name" title="Name" required="true"/>
+    <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel" title="Model"
+      required="true"
+      help="Model on which to apply the filter to obtain the elements to be displayed on the map."/>
+    <string name="filter" title="Filter (JPQL)"
+      help="JPQL filter to be applied to the defined model."/>
+    <many-to-one name="addressField" ref="com.axelor.meta.db.MetaField" required="true"
+      title="Address field" help="Address field to be used to obtain the entity's address details."/>
+    <string name="markerColor" title="Marker color"
+      help="Set the marker color for items in this group."/>
+    <string name="cardContent" title="Card content" large="true" multiline="true"
+      help="Use a Groovy expression to define the information to be displayed when a user clicks on a point on the map."/>
+    <many-to-one name="mapView" ref="com.axelor.apps.base.db.MapView" title="Map view"/>
+    <many-to-one name="formViewToUse" title="Form view to use"
+      help="Define the form view to open when a user double-clicks on a record’s popup in the map."
+      ref="com.axelor.meta.db.MetaView"/>
+
+  </entity>
+
+</domain-models>

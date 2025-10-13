@@ -767,14 +767,16 @@ public class FixedAssetLineMoveServiceImpl implements FixedAssetLineMoveService 
       FixedAsset fixedAsset,
       Set<TaxLine> saleTaxLineSet,
       BigDecimal disposalAmount,
-      LocalDate disposalDate)
+      LocalDate disposalDate,
+      Partner givenPartner)
       throws AxelorException {
     if (fixedAsset.getMoveGenerationException() == FixedAssetRepository.MOVE_GENERATION_NO_MOVES) {
       return;
     }
     Company company = fixedAsset.getCompany();
     Journal journal = company.getAccountConfig().getCustomerSalesJournal();
-    Partner partner = fixedAsset.getPartner();
+
+    Partner partner = givenPartner != null ? givenPartner : fixedAsset.getPartner();
     String origin =
         fixedAsset.getFixedAssetSeq() != null
             ? fixedAsset.getFixedAssetSeq()

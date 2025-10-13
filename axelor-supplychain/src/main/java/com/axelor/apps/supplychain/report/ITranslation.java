@@ -84,19 +84,10 @@ public class ITranslation {
   public static final String PACKING_LIST_ITEM = /*$$(*/ "LogisticalForm.item"; /*)*/
   public static final String PACKING_LIST_ITEM_DESCRIPTION = /*$$(*/
       "LogisticalForm.itemDescription"; /*)*/
-  public static final String PACKING_LIST_PARCEL_LINE_FORMAT = /*$$(*/
-      "LogisticalFormLine.parcelNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>" /*)*/;
-  public static final String PACKING_LIST_PALLET_LINE_FORMAT = /*$$(*/
-      "LogisticalFormLine.palletNo <strong>{0}</strong> - LogisticalFormLine.dimensions <strong>{1}</strong> - LogisticalFormLine.grossMass ({2}): <strong>{3}</strong>" /*)*/;
-  public static final String PACKING_LIST_DETAIL_LINE_FORMAT = /*$$(*/
-      "LogisticalFormLine.stockMoveNo {0} / LogisticalFormLine.refNo {1}" /*)*/;
   public static final String PACKING_LIST_TOTAL_NET_MASS = /*$$(*/
       "LogisticalForm.totalNetMass" /*)*/;
-  public static final String PACKING_LIST_TOTAL_FORMAT = /*$$(*/
-      "LogisticalFormLine.numberOfParcels/Pallets: {0} - LogisticalForm.totalGrossMass ({1}): {2}" /*)*/;
   public static final String PACKING_LIST_SHIPPING_COMMENTS = /*$$(*/
       "LogisticalForm.shippingComments"; /*)*/
-  public static final String PACKING_LIST_QTY = /*$$(*/ "LogisticalFormLine.qty"; /*)*/
 
   /*
    * Declaration of Exchanges

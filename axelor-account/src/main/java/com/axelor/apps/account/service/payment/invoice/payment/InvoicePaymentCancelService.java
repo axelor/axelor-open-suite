@@ -34,5 +34,9 @@ public interface InvoicePaymentCancelService {
    */
   public void cancel(InvoicePayment invoicePayment) throws AxelorException;
 
+  void reversePaymentMove(InvoicePayment invoicePayment) throws AxelorException;
+
+  void validateBeforeUnlink(InvoicePayment invoicePayment) throws AxelorException;
+
   public void updateCancelStatus(InvoicePayment invoicePayment) throws AxelorException;
 }

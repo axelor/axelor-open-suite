@@ -18,23 +18,42 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineComputeService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Singleton
 public class ExpenseComputationServiceImpl implements ExpenseComputationService {
 
   protected ExpenseLineService expenseLineService;
+  protected ExpenseLineComputeService expenseLineComputeService;
+  protected CurrencyService currencyService;
 
   @Inject
-  public ExpenseComputationServiceImpl(ExpenseLineService expenseLineService) {
+  public ExpenseComputationServiceImpl(
+      ExpenseLineService expenseLineService,
+      ExpenseLineComputeService expenseLineComputeService,
+      CurrencyService currencyService) {
     this.expenseLineService = expenseLineService;
+    this.expenseLineComputeService = expenseLineComputeService;
+    this.currencyService = currencyService;
+  }
+
+  @Override
+  public void recomputeAmountsUsingLines(Expense expense) throws AxelorException {
+    computeCompanyAmounts(expense);
+    expense = compute(expense);
   }
 
   @Override
@@ -100,7 +119,7 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
   }
 
   @Override
-  public BigDecimal computeAdvanceAmount(Expense expense) {
+  public BigDecimal computeAdvanceAmount(Expense expense) throws AxelorException {
 
     BigDecimal advanceAmount = new BigDecimal("0.00");
 
@@ -111,6 +130,28 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
       }
     }
 
-    return advanceAmount;
+    Currency companyCurrency =
+        Optional.of(expense).map(Expense::getCompany).map(Company::getCurrency).orElse(null);
+
+    return currencyService.getAmountCurrencyConvertedAtDate(
+        companyCurrency, expense.getCurrency(), advanceAmount, expense.getPaymentDate());
+  }
+
+  protected void computeCompanyAmounts(Expense expense) throws AxelorException {
+    if (expense == null) {
+      return;
+    }
+    if (ObjectUtils.notEmpty(expense.getGeneralExpenseLineList())) {
+      for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
+        expenseLineComputeService.setCompanyAmounts(expenseLine, expense);
+      }
+    }
+    if (ObjectUtils.notEmpty(expense.getKilometricExpenseLineList())) {
+      for (ExpenseLine expenseLine : expense.getKilometricExpenseLineList()) {
+        expenseLineComputeService.setCompanyAmounts(expenseLine, expense);
+      }
+    }
+
+    return;
   }
 }
