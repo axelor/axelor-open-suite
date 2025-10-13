@@ -523,21 +523,6 @@
         <panel-dashlet name="invoiceLinesFromSOLinePanel"
           action="action-sale-order-line-view-show-invoice-lines" colSpan="12"/>
       </panel>
-      <panel name="projectPanel"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
-        title="Business Project" readonlyIf="$isReadOnly !== false"
-        if-module="axelor-business-project">
-        <field name="project" title="Business Project" canEdit="false"
-          onSelect="action-sale-order-line-method-set-project-domain"
-          form-view="business-project-form" grid-view="project-grid"/>
-        <field name="invoicingModeSelect" title="Invoicing mode" colSpan="3"
-          if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
-          if-module="axelor-business-project"
-          onChange="action-sale-order-line-group-invoicing-mode-select-onchange"/>
-        <field name="toInvoice" hidden="true"/>
-        <panel-dashlet name="projectTaskListPanel" title="Related tasks"
-          action="action-sale-order-line-view-project-tasks" colSpan="12"/>
-      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -629,14 +614,6 @@
           target="com.axelor.apps.base.db.Currency"/>
         <field name="$companyCurrency.numberOfDecimals" hidden="true"/>
       </panel>
-      <panel name="projectPanel"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getProjectSaleOrderLines()"
-        title="Project/Task" if-module="axelor-business-project">
-        <field name="project" title="Business Project" canEdit="false"
-          onSelect="action-sale-order-line-method-set-project-domain"
-          form-view="business-project-form" grid-view="project-grid"/>
-        <field name="progress" readonly="true" widget="SelectProgress"/>
-      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
@@ -686,13 +663,6 @@
     <view type="grid" name="stock-move-line-sale-order-line-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.saleOrderLine.id = :id</domain>
-  </action-view>
-
-  <action-view name="action-sale-order-line-view-project-tasks" title="Related tasks"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <view type="grid" name="business-project-task-grid"/>
-    <view type="form" name="business-project-task-form"/>
-    <domain>self.saleOrderLine = :id</domain>
   </action-view>
 
   <search-filters title="Sale order lines filter" name="sale-order-lines-filter"
@@ -818,28 +788,6 @@
     <attribute name="hidden" for="allPanelTab" if="eval: __user__.group?.isClient"
       expr="true"/>
   </action-attrs>
-
-  <action-validate name="action-sale-order-line-validate-check-coefficient-config">
-    <error message="Coefficient on invoice line must be enabled for progress billing."
-      if="eval: !__repo__(AccountConfig).findByCompany(__parent__.company)?.isInvoiceCoefficientEnabled &amp;&amp; invoicingModeSelect == __repo__(SaleOrderLine).INVOICING_MODE_PROGRESS_BILLING"
-      action="action-sale-order-line-attrs-reset-invoicing-mode"/>
-  </action-validate>
-
-  <action-attrs name="action-sale-order-line-attrs-reset-invoicing-mode">
-    <attribute for="invoicingModeSelect" name="value"
-      expr="eval: __repo__(SaleOrderLine).INVOICING_MODE_STANDARD"/>
-    <attribute for="toInvoice" name="value" expr="eval: false"/>
-  </action-attrs>
-
-  <action-attrs name="action-sale-order-line-attrs-to-invoice">
-    <attribute for="toInvoice" name="value"
-      expr="eval: invoicingModeSelect == __repo__(SaleOrderLine).INVOICING_MODE_DIRECTLY || invoicingModeSelect == __repo__(SaleOrderLine).INVOICING_MODE_ON_DELIVERY"/>
-  </action-attrs>
-
-  <action-group name="action-sale-order-line-group-invoicing-mode-select-onchange">
-    <action name="action-sale-order-line-validate-check-coefficient-config"/>
-    <action name="action-sale-order-line-attrs-to-invoice"/>
-  </action-group>
 
   <action-method name="action-sale-order-line-method-add-to-cart">
     <call class="com.axelor.apps.sale.web.SaleOrderLineController" method="addToCart"/>

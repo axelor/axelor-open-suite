@@ -18,11 +18,15 @@
  */
 package com.axelor.apps.account.service.fixedasset.attributes;
 
+import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -100,5 +104,28 @@ public class FixedAssetAttrsServiceImpl implements FixedAssetAttrsService {
   public void addGrossValueScale(Company company, Map<String, Map<String, Object>> attrsMap) {
     this.addAttr(
         "grossValue", "scale", currencyScaleService.getCompanyCurrencyScale(company), attrsMap);
+  }
+
+  @Override
+  public String addCurrentAnalyticDistributionTemplateInDomain(FixedAsset fixedAsset)
+      throws AxelorException {
+    String domain =
+        Beans.get(AnalyticAttrsService.class)
+            .getAnalyticDistributionTemplateDomain(
+                fixedAsset.getPartner(),
+                null,
+                fixedAsset.getCompany(),
+                null,
+                fixedAsset.getPurchaseAccount(),
+                false);
+
+    AnalyticDistributionTemplate analyticDistributionTemplate =
+        fixedAsset.getAnalyticDistributionTemplate();
+
+    if (analyticDistributionTemplate != null) {
+      domain += " OR self.id IN (" + analyticDistributionTemplate.getId() + ")";
+    }
+
+    return domain;
   }
 }

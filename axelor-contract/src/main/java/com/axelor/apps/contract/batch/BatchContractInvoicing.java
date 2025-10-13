@@ -115,16 +115,29 @@ public class BatchContractInvoicing extends BatchStrategy {
     int offset = 0;
     for (List<Long> idList : getIdsGroupedBy()) {
       ++offset;
-      List<Contract> contractsList = findContractsInList(idList);
-      try {
-        Invoice invoice = invoiceContracts(contractsList);
-        if (invoice != null) {
-          invoice.addBatchSetItem(batchRepo.find(batch.getId()));
-          incrementDone(contractsList);
+      List<Contract> allContractsList = findContractsInList(idList);
+
+      if (allContractsList.isEmpty()) {
+        return;
+      }
+
+      Boolean isGroupedInvoicing = allContractsList.get(0).getIsGroupedInvoicing();
+      List<List<Contract>> contractsToInvoice =
+          isGroupedInvoicing
+              ? List.of(allContractsList)
+              : allContractsList.stream().map(List::of).collect(Collectors.toList());
+
+      for (List<Contract> contractsList : contractsToInvoice) {
+        try {
+          Invoice invoice = invoiceContracts(contractsList);
+          if (invoice != null) {
+            invoice.addBatchSetItem(batchRepo.find(batch.getId()));
+            incrementDone(contractsList);
+          }
+        } catch (Exception e) {
+          incrementAnomaly(contractsList);
+          TraceBackService.trace(e, "Contract invoicing batch", batch.getId());
         }
-      } catch (Exception e) {
-        incrementAnomaly(contractsList);
-        TraceBackService.trace(e, "Contract invoicing batch", batch.getId());
       }
       if (offset % getFetchLimit() == 0) {
         JPA.clear();

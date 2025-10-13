@@ -66,6 +66,20 @@
     <context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SENDER"/>
   </action-view>
 
+  <menuitem name="stock-root-packagings" parent="stock-root-deliveries" order="600"
+    title="Packagings" action="stock.root.packagings"/>
+
+  <action-view name="stock.root.packagings" title="Packagings"
+    model="com.axelor.apps.base.db.Product">
+    <view type="cards" name="product-cards"/>
+    <view type="grid" name="product-production-stock-grid"/>
+    <view type="form" name="product-form"/>
+    <view-param name="search-filters" value="products-filters"/>
+    <domain>self.isModel = false AND self.productTypeSelect = 'storable' AND self.dtype = 'Product'
+      AND self.isPackaging = true</domain>
+    <context name="_fromStock" expr="eval: true"/>
+  </action-view>
+
   <menuitem name="stock-root-arrivals" parent="stock-root" title="Arrivals" order="200"/>
 
   <menuitem name="stock-root-suparrivals" parent="stock-root-arrivals"
@@ -303,8 +317,8 @@
     <view type="form" name="stock-correction-reason-form"/>
   </action-view>
 
-  <menuitem name="stock-root-all-line" parent="stock-root-conf" title="Stock move lines"
-    action="stock.root.all.line" order="1100"/>
+  <menuitem name="stock-root-all-line" parent="stock-root" title="Stock move lines"
+    action="stock.root.all.line" order="375"/>
 
   <action-view name="stock.root.all.line" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine">

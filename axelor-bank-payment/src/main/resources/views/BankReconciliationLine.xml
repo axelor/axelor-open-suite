@@ -153,7 +153,8 @@
       <panel name="analyticPanel" title="Analytic"
         showIf="account.analyticDistributionAuthorized">
         <field name="analyticDistributionTemplate"
-          requiredIf="account.analyticDistributionRequiredOnMoveLines"/>
+          requiredIf="account.analyticDistributionRequiredOnMoveLines"
+          onSelect="action-bank-reconciliation-line-method-set-domain-analytic-distribution-template"/>
         <field name="account.analyticDistributionRequiredOnMoveLines" hidden="true"/>
         <field name="account.analyticDistributionAuthorized" hidden="true"/>
       </panel>
@@ -230,5 +231,11 @@
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
       method="setAnalyticDistributionTemplate"/>
+  </action-method>
+
+  <action-method
+    name="action-bank-reconciliation-line-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
+      method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 </object-views>

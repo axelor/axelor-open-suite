@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="MapView">
+
+    <string name="name" title="Name" required="true"/>
+    <one-to-one name="metaMenu" ref="com.axelor.meta.db.MetaMenu" title="Menu"/>
+    <one-to-many name="mapGroupList" ref="com.axelor.apps.base.db.MapGroup"
+      title="Groups of points to be displayed on the map" mappedBy="mapView"
+      help="Defines the set of points to be displayed on the map. A map can contain several models simultaneously, and each group can define its own display color to differentiate them."/>
+
+    <entity-listener class="com.axelor.apps.base.db.repo.MapViewListener"/>
+
+  </entity>
+
+</domain-models>

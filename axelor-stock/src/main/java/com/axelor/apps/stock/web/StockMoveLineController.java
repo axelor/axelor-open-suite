@@ -36,8 +36,8 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveLineStockLocationService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -323,11 +323,17 @@ public class StockMoveLineController {
       map.put("trackingNumberSeq", trackingNumber.getTrackingNumberSeq());
       map.put("counter", BigDecimal.ZERO);
       map.put("warrantyExpirationDate", trackingNumber.getWarrantyExpirationDate());
+
       map.put("$availableQty", availableQty);
       map.put("$moveTypeSelect", stockMove.getTypeSelect());
       map.put("origin", trackingNumber.getOrigin());
       map.put("note", trackingNumber.getNote());
-
+      map.put("perishableExpirationDate", trackingNumber.getPerishableExpirationDate());
+      map.put("isPerishable", trackingNumber.getIsPerishable());
+      map.put("hasWarranty", trackingNumber.getHasWarranty());
+      map.put(
+          "checkExpirationDateAtStockMoveRealization",
+          trackingNumber.getCheckExpirationDateAtStockMoveRealization());
       trackingNumbers.add(map);
     }
     response.setValue("$trackingNumbers", trackingNumbers);
@@ -371,8 +377,9 @@ public class StockMoveLineController {
     response.setAttr(
         "fromStockLocation",
         "domain",
-        Beans.get(StockLocationService.class)
-            .computeStockLocationChildren(stockMove.getFromStockLocation()));
+        Beans.get(StockMoveLineStockLocationService.class)
+            .getStockLocationDomainWithDefaultLocation(
+                stockMoveLine, stockMove, stockMove.getFromStockLocation()));
   }
 
   public void getToStockLocationDomain(ActionRequest request, ActionResponse response) {
@@ -381,8 +388,9 @@ public class StockMoveLineController {
     response.setAttr(
         "toStockLocation",
         "domain",
-        Beans.get(StockLocationService.class)
-            .computeStockLocationChildren(stockMove.getToStockLocation()));
+        Beans.get(StockMoveLineStockLocationService.class)
+            .getStockLocationDomainWithDefaultLocation(
+                stockMoveLine, stockMove, stockMove.getToStockLocation()));
   }
 
   protected StockMove getStockMove(ActionRequest request, StockMoveLine stockMoveLine) {
@@ -435,5 +443,15 @@ public class StockMoveLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void fillStockLocation(ActionRequest request, ActionResponse response) {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    Beans.get(StockMoveLineStockLocationService.class)
+        .fillStockLocationWithDefaultStockLocation(stockMoveLine, stockMove);
+
+    response.setValue("fromStockLocation", stockMoveLine.getFromStockLocation());
+    response.setValue("toStockLocation", stockMoveLine.getToStockLocation());
   }
 }

@@ -7,11 +7,11 @@
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
   <selection name="purchase.purchase.order.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Requested</option>
-    <option value="3">Validated</option>
-    <option value="4">Finished</option>
-    <option value="5">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="orange">Requested</option>
+    <option value="3" color="green">Validated</option>
+    <option value="4" color="teal">Finished</option>
+    <option value="5" color="red">Canceled</option>
   </selection>
 
   <selection name="purchase.order.receipt.state">
@@ -21,12 +21,12 @@
   </selection>
 
   <selection name="purchase.request.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Requested</option>
-    <option value="3">Accepted</option>
-    <option value="4">Purchased</option>
-    <option value="5">Refused</option>
-    <option value="6">Canceled</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="orange">Requested</option>
+    <option value="3" color="green">Accepted</option>
+    <option value="4" color="purple">Purchased</option>
+    <option value="5" color="red">Refused</option>
+    <option value="6" color="grey">Canceled</option>
   </selection>
 
   <selection name="base.blocking.select" id="purchase.blocking.select">
@@ -37,6 +37,7 @@
     id="purchase.sequence.generic.code.select">
     <option value="purchaseOrder">Purchase order</option>
     <option value="PurchaseRequest">Purchase request</option>
+    <option value="CallTender">Call for tender</option>
   </selection>
 
   <selection name="abc.analysis.type.select" id="purchase.abc.analysis.type.select">
@@ -49,15 +50,16 @@
 
   <selection name="purchase.call.tender.need.type.select">
     <option value="1">Manual</option>
+    <option value="2">MRP</option>
   </selection>
 
 
   <selection name="purchase.call.tender.offer.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Sent</option>
-    <option value="3">Replied</option>
-    <option value="4">Selected</option>
-    <option value="5">Rejected</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="orange">Sent</option>
+    <option value="3" color="green">Replied</option>
+    <option value="4" color="teal">Selected</option>
+    <option value="5" color="red">Rejected</option>
   </selection>
 
 </object-views>

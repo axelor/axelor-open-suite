@@ -21,8 +21,7 @@
   <form name="payment-schedule-form" title="Payment schedule"
     model="com.axelor.apps.account.db.PaymentSchedule"
     onNew="action-account-payment-schedule-onnew-group"
-    onLoad="action-payment-schedule-attrs-collapse-irrecoverable-group"
-    onSave="action-payment-schedule-payment-schedule-id">
+    onLoad="action-payment-schedule-attrs-collapse-irrecoverable-group">
 
     <panel name="mainPanel">
       <field name="statusSelect" widget="NavSelect" colSpan="12"/>
@@ -106,8 +105,6 @@
 
   <action-group name="action-group-account-payment-schedule-validate-click">
     <action name="save"/>
-    <action name="action-payment-schedule-payment-schedule-id"/>
-    <action name="save"/>
     <action name="action-payment-schedule-method-validate"/>
     <action name="save"/>
   </action-group>
@@ -171,11 +168,6 @@
   <action-method name="action-payment-schedule-create-payment-schedule-lines">
     <call class="com.axelor.apps.account.web.PaymentScheduleController"
       method="createPaymentScheduleLines"/>
-  </action-method>
-
-  <action-method name="action-payment-schedule-payment-schedule-id">
-    <call class="com.axelor.apps.account.web.PaymentScheduleController"
-      method="paymentScheduleScheduleId"/>
   </action-method>
 
   <action-method name="action-payment-schedule-method-cancel">

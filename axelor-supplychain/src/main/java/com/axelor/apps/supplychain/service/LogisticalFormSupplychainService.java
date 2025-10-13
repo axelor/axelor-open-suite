@@ -18,6 +18,10 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.stock.service.LogisticalFormService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.stock.db.LogisticalForm;
 
-public interface LogisticalFormSupplychainService extends LogisticalFormService {}
+public interface LogisticalFormSupplychainService {
+
+  void processCollected(LogisticalForm logisticalForm) throws AxelorException;
+}

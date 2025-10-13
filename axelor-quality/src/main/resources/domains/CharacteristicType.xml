@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="CharacteristicType">
+
+    <string name="name" title="Characteristic" required="true"/>
+    <integer name="characteristicTypeSelect" title="Characteristic type"
+      selection="quality.characteristic.type.characteristic.type.select" required="true"/>
+    <many-to-one name="unit" title="Unit" ref="com.axelor.apps.base.db.Unit"/>
+    <many-to-many name="characteristicSet"
+      ref="com.axelor.apps.quality.db.CharacteristicProperty" title="Characteristics properties"/>
+
+    <extra-code>
+			<![CDATA[
+				public static final int TYPE_MEASURABLE = 1;
+				public static final int TYPE_LIST = 2;
+				public static final int TYPE_COMMENT = 3;
+			]]>
+    </extra-code>
+
+
+  </entity>
+
+</domain-models>

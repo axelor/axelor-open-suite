@@ -38,6 +38,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Incoterm;
 import com.axelor.apps.stock.db.InventoryLine;
+import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockConfig;
@@ -333,6 +334,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (stockMoveLine.getToStockLocation() == null) {
       stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
     }
+
     if (stockMoveLine.getFromStockLocation() == null) {
       stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
     }
@@ -889,18 +891,21 @@ public class StockMoveServiceImpl implements StockMoveService {
       return Optional.empty();
     }
 
-    reverseStockMoveLineStockLocation(stockMove, newStockMoveLineList);
+    reverseStockMoveLineStockLocation(newStockMoveLineList);
 
     fillNewStockMoveFields(newStockMove, stockMove);
 
     return Optional.of(stockMoveRepo.save(newStockMove));
   }
 
-  protected void reverseStockMoveLineStockLocation(
-      StockMove stockMove, List<StockMoveLine> newStockMoveLineList) {
+  protected void reverseStockMoveLineStockLocation(List<StockMoveLine> newStockMoveLineList) {
     for (StockMoveLine stockMoveLine : newStockMoveLineList) {
-      stockMoveLine.setFromStockLocation(stockMove.getToStockLocation());
-      stockMoveLine.setToStockLocation(stockMove.getFromStockLocation());
+
+      StockLocation toStockLocation = stockMoveLine.getToStockLocation();
+      StockLocation fromStockLocation = stockMoveLine.getFromStockLocation();
+
+      stockMoveLine.setFromStockLocation(toStockLocation);
+      stockMoveLine.setToStockLocation(fromStockLocation);
     }
   }
 
@@ -1350,23 +1355,6 @@ public class StockMoveServiceImpl implements StockMoveService {
     return result;
   }
 
-  @Override
-  @Transactional
-  public void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
-    stockMove.setFullySpreadOverLogisticalFormsFlag(
-        computeFullySpreadOverLogisticalFormsFlag(stockMove));
-  }
-
-  protected boolean computeFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
-    return stockMove.getStockMoveLineList() != null
-        ? stockMove.getStockMoveLineList().stream()
-            .allMatch(
-                stockMoveLine ->
-                    stockMoveLineService.computeFullySpreadOverLogisticalFormLinesFlag(
-                        stockMoveLine))
-        : true;
-  }
-
   @Transactional(rollbackOn = {Exception.class})
   protected void applyCancelReason(StockMove stockMove, CancelReason cancelReason)
       throws AxelorException {
@@ -1608,5 +1596,32 @@ public class StockMoveServiceImpl implements StockMoveService {
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
 
     return stockConfig.getVirtualOutsourcingStockLocation();
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void addStockMovesToLogisticalForm(
+      LogisticalForm logisticalForm, List<StockMove> stockMoveList) throws AxelorException {
+    StockConfig stockConfig = stockConfigService.getStockConfig(logisticalForm.getCompany());
+    Partner deliverToCustomerPartner = logisticalForm.getDeliverToCustomerPartner();
+
+    for (StockMove stockMove : stockMoveList) {
+
+      if (!stockConfig.getIsLogisticalFormMultiClientsEnabled()
+          && deliverToCustomerPartner != null
+          && stockMove.getPartner() != null
+          && !stockMove.getPartner().equals(deliverToCustomerPartner)) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(StockExceptionMessage.LOGISTICAL_FORM_PARTNER_MISMATCH));
+      }
+
+      if (stockMove.getStatusSelect() != StockMoveRepository.STATUS_PLANNED) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(StockExceptionMessage.LOGISTICAL_FORM_STATUS_MISMATCH));
+      }
+      logisticalForm.addStockMoveListItem(stockMove);
+    }
   }
 }

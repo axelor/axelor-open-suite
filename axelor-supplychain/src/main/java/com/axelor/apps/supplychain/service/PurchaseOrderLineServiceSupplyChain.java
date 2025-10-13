@@ -27,4 +27,8 @@ public interface PurchaseOrderLineServiceSupplyChain {
 
   PurchaseOrderLine createPurchaseOrderLine(
       PurchaseOrder purchaseOrder, SaleOrderLine saleOrderLine) throws AxelorException;
+
+  boolean validateRealizedQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
+
+  boolean validateInvoicedQty(PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine);
 }

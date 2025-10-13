@@ -6,7 +6,7 @@
   <grid name="project-version-grid" title="Project.version"
     model="com.axelor.apps.project.db.ProjectVersion">
     <field name="title"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="testingServerDate"/>
   </grid>
 
@@ -16,7 +16,7 @@
     onSave="action-project-version-method-check-if-project-or-version-conflicts">
     <panel name="mainPanel">
       <field name="title" required="true"/>
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <field name="testingServerDate"/>
       <field name="productionServerDate"/>
       <field name="content" widget="HTML" colSpan="12"/>
@@ -28,10 +28,6 @@
       <panel-dashlet name="sprintDashletPanel" title="Sprints" x-show-bars="true"
         colSpan="12" action="action-project-version-method-show-sprint-list" height="200%"
         canSearch="true" editable="true" canNew="id" canDelete="true"/>
-    </panel>
-    <panel if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-      <panel-dashlet name="taskDashletPanel" title="Ticket associated"
-        action="action-dashlet-version-view-show-task" colSpan="12"/>
     </panel>
   </form>
 

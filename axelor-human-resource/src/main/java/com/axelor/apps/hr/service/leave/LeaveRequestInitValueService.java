@@ -18,8 +18,10 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveRequest;
+import com.axelor.auth.db.User;
 
 public interface LeaveRequestInitValueService {
-  void initLeaveRequest(LeaveRequest leaveRequest);
+  void initLeaveRequest(LeaveRequest leaveRequest, User user, Employee employee);
 }

@@ -16,7 +16,7 @@
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="inTaxTotal" aggregate="sum"/>
-    <field name="currency" colSpan="2" required="true"/>
+    <field name="currency" colSpan="2"/>
     <field name="statusSelect" widget="single-select"/>
     <field name="ventilated"/>
   </grid>
@@ -90,9 +90,7 @@
             canEdit="false" canView="false"
             onChange="action-expense-record-employee-onchange,action-expense-method-update-general-and-kilometric-expense-line-employee"
             required="true"/>
-          <field name="currency" canEdit="false" colSpan="6" required="true"
-            readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
-            onChange="action-expense-attrs-kilometric-panel-visibility"/>
+          <field name="currency" canEdit="false" colSpan="6" readonly="true"/>
           <field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management"
             onSelect="action-accounting-batch-attrs-bank-details-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"
@@ -449,8 +447,7 @@
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="refuseBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; user?.employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
-    <attribute name="hidden" for="cancelBtn"
-      expr="eval: period?.toDate?.isAfter(__config__.date) || statusSelect == 6 || ventilated"/>
+    <attribute name="hidden" for="cancelBtn" expr="eval: statusSelect == 6 || ventilated"/>
     <attribute name="readonly" for="period" expr="eval: true"
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="period" expr="eval: ventilated"

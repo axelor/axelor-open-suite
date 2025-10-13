@@ -26,9 +26,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.servlet.RequestScoped;
 
-@RequestScoped
 public class AccountConfigHRService extends AccountConfigService {
 
   public Journal getExpenseJournal(AccountConfig accountConfig) throws AxelorException {

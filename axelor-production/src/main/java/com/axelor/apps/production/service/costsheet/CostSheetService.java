@@ -49,4 +49,8 @@ public interface CostSheetService {
       throws AxelorException;
 
   BigDecimal getQtyRatio(BillOfMaterial billOfMaterial) throws AxelorException;
+
+  BigDecimal getQtyRatio(
+      BillOfMaterial billOfMaterial, BigDecimal bomQty, BigDecimal calculationQty)
+      throws AxelorException;
 }

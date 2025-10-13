@@ -11,6 +11,7 @@
   	  <![CDATA[
   	  public static final String REMINDER = "reminder";
   	  public static final String LEAVE_MANAGEMENT = "leaveManagement";
+  	  public static final String LEAVE_REQUEST = "leaveRequest";
   	  ]]>
     </extra-code>
   </entity>

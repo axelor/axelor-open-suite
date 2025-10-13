@@ -21,8 +21,6 @@ package com.axelor.apps.budget.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.budget.db.BudgetDistribution;
-import java.time.LocalDate;
 import java.util.List;
 
 public interface BudgetInvoiceService {
@@ -55,23 +53,6 @@ public interface BudgetInvoiceService {
    * @return boolean
    */
   public boolean isBudgetInLines(Invoice invoice);
-
-  public void updateBudgetLinesFromInvoice(Invoice invoice) throws AxelorException;
-
-  /**
-   * Select budget line linked to the budget distribution at invoice's date or invoice's created on
-   * if date is null and modify totals (realized with po, realized without po, realized, to be
-   * committed, firm gap and available) as a without purchase order line
-   *
-   * @param budgetDistribution, invoice
-   */
-  void updateLineAmounts(
-      BudgetDistribution budgetDistribution,
-      Invoice invoice,
-      InvoiceLine invoiceLine,
-      LocalDate fromDate,
-      LocalDate toDate)
-      throws AxelorException;
 
   public void generateBudgetDistribution(Invoice invoice);
 

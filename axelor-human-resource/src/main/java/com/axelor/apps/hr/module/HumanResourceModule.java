@@ -34,6 +34,7 @@ import com.axelor.apps.bankpayment.service.move.MoveReverseServiceBankPaymentImp
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.service.PartnerConvertServiceImpl;
 import com.axelor.apps.base.service.batch.MailBatchService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayServiceImpl;
 import com.axelor.apps.hr.db.repo.AllocationLineManagementRepository;
 import com.axelor.apps.hr.db.repo.AllocationLineRepository;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
@@ -271,6 +272,8 @@ import com.axelor.apps.hr.service.project.ProjectTaskPPTGenerateServiceImpl;
 import com.axelor.apps.hr.service.project.ProjectTaskSprintService;
 import com.axelor.apps.hr.service.project.ProjectTaskSprintServiceImpl;
 import com.axelor.apps.hr.service.project.TaskTemplateHrServiceImpl;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetAttrsService;
 import com.axelor.apps.hr.service.timesheet.TimesheetAttrsServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseService;
@@ -512,8 +515,9 @@ public class HumanResourceModule extends AxelorModule {
         .to(ProjectPlanningTimeCreateUpdateServiceImpl.class);
     bind(KilometricLogService.class).to(KilometricLogServiceImpl.class);
     bind(KilometricExpenseService.class).to(KilometricExpenseServiceImpl.class);
-
     bind(ExpenseRecordService.class).to(ExpenseRecordServiceImpl.class);
     bind(ExpenseLineComputeService.class).to(ExpenseLineComputeServiceImpl.class);
+    bind(PublicHolidayServiceImpl.class).to(PublicHolidayHrServiceImpl.class);
+    bind(PublicHolidayHrService.class).to(PublicHolidayHrServiceImpl.class);
   }
 }

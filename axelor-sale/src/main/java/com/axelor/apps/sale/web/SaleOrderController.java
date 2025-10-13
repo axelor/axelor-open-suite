@@ -63,6 +63,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeService;
+import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
@@ -691,6 +692,7 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     SaleOrder copiedSO =
         Beans.get(SaleOrderService.class).separateInNewQuotation(saleOrder, saleOrderLines);
+    response.setReload(true);
     response.setView(
         ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
@@ -895,5 +897,18 @@ public class SaleOrderController {
             .param("forceTitle", "true")
             .context("_showRecord", String.valueOf(copySaleOrder.getId()))
             .map());
+  }
+
+  public void estimatePackaging(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      String message = Beans.get(SaleOrderPackagingService.class).estimatePackaging(saleOrder);
+      if (StringUtils.isEmpty(message)) {
+        return;
+      }
+      response.setInfo(message);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ProductPackaging">
+
+    <many-to-one name="productToPackage" ref="com.axelor.apps.base.db.Product"
+      title="Product to package"/>
+    <many-to-one name="packaging" ref="com.axelor.apps.base.db.Product"
+      title="Packaging"/>
+    <integer name="qty" title="Quantity"/>
+    <decimal name="packagingMaxTotalWeight" title="Packaging max total weight (kg)"
+      default="0" scale="3" precision="20"/>
+
+  </entity>
+
+</domain-models>

@@ -21,6 +21,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationGroupService;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -29,6 +30,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 
@@ -141,5 +143,21 @@ public class AccountingSituationController {
     }
 
     return ContextHelper.getContextParent(request.getContext(), Partner.class, 1);
+  }
+
+  @ErrorException
+  public void setDomainAnalyticDistributionTemplate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    AccountingSituation accountingSituation = context.asType(AccountingSituation.class);
+
+    Partner partner = getPartner(request, accountingSituation);
+
+    response.setAttr(
+        "analyticDistributionTemplate",
+        "domain",
+        Beans.get(AnalyticAttrsService.class)
+            .getAnalyticDistributionTemplateDomain(
+                partner, null, accountingSituation.getCompany(), null, null, false));
   }
 }

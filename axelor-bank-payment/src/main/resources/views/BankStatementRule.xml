@@ -71,7 +71,8 @@
     <panel name="analyticPanel" title="Analytic"
       showIf="counterpartAccount.analyticDistributionAuthorized">
       <field name="analyticDistributionTemplate"
-        requiredIf="counterpartAccount.analyticDistributionRequiredOnMoveLines"/>
+        requiredIf="counterpartAccount.analyticDistributionRequiredOnMoveLines"
+        onSelect="action-bank-statement-rule-method-set-domain-analytic-distribution-template"/>
       <field name="counterpartAccount.analyticDistributionRequiredOnMoveLines" hidden="true"/>
       <field name="counterpartAccount.analyticDistributionAuthorized" hidden="true"/>
     </panel>
@@ -117,5 +118,11 @@
     <field name="analyticDistributionTemplate"
       expr="eval: counterpartAccount?.analyticDistributionTemplate"/>
   </action-record>
+
+  <action-method
+    name="action-bank-statement-rule-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.bankpayment.web.BankStatementRuleController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 
 </object-views>

@@ -100,7 +100,7 @@
           if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
           name="analyticDistributionTemplate" canEdit="analyticDistributionTemplate.isSpecific"
           onChange="action-fixed-asset-method-create-analytic-distribution,action-method-fixed-asset-change-button-title"
-          domain="self.company = :company AND self.isSpecific = false"
+          onSelect="action-fixed-asset-method-set-domain-analytic-distribution-template"
           form-view="analytic-distribution-template-form"
           grid-view="analytic-distribution-template-grid"/>
         <button
@@ -359,11 +359,16 @@
         onClick="action-fixed-asset-group-disposal-asset"
         readonlyIf="disposalTypeSelect == 2 &amp;&amp; _fixedAsset.grossValue >= 0 &amp;&amp; $generateSaleMove &amp;&amp; !saleTaxLineSet"/>
       <field name="$generateSaleMove" title="Generate Sale Move" widget="boolean"
-        showIf="_moveGenerationException != 2 &amp;&amp; disposalTypeSelect == 2"/>
+        showIf="_moveGenerationException != 2 &amp;&amp; disposalTypeSelect == 2" colSpan="4"/>
+      <field name="$customer" title="Customer" type="many-to-one"
+        target="com.axelor.apps.base.db.Partner" showIf="$generateSaleMove"
+        onChange="action-fixed-asset-wizard-record-on-customer-change"
+        domain="self.isCustomer = true" colSpan="4"/>
       <field name="saleTaxLineSet" requiredIf="$generateSaleMove" title="Tax lines"
         canNew="false" type="many-to-many" target="com.axelor.apps.account.db.TaxLine"
         showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove" hidden="true"
-        widget="TagSelect"/>
+        widget="TagSelect" colSpan="4"/>
+      <field name="$customerId" type="Integer" hidden="true"/>
       <field name="comments" colSpan="12" widget="html" x-lite="true"
         showIf="disposalTypeSelect == 2" hidden="true"/>
       <field name="$originalQty" type="decimal" hidden="true"/>
@@ -472,6 +477,8 @@
     <field name="$originalQty" expr="eval: _fixedAsset?.qty"/>
     <field name="_moveGenerationException" expr="eval: _fixedAsset?.moveGenerationException"/>
     <field name="_fixedAssetId" expr="eval: _fixedAsset?.id"/>
+    <field name="$customer" expr="eval: _fixedAsset?.partner"/>
+    <field name="$customerId" expr="eval: _fixedAsset?.partner?.id"/>
   </action-record>
 
   <action-record name="action-fixed-asset-record-default"
@@ -939,7 +946,7 @@
   <action-attrs
     name="action-attrs-account-fixed-asset-depreciation-plan-override-if-none">
     <attribute name="value" for="depreciationPlanSelect" expr="eval:'0'"
-      if="depreciationPlanSelect.contains(&quot;0&quot;)"/>
+      if="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.contains(&quot;0&quot;)"/>
   </action-attrs>
 
   <action-group name="action-group-account-fixed-asset-failover-control">
@@ -1043,5 +1050,16 @@
     <call class="com.axelor.apps.account.web.FixedAssetController"
       method="checkDepreciationPlans"/>
   </action-method>
+
+  <action-method
+    name="action-fixed-asset-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.FixedAssetController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
+
+  <action-record name="action-fixed-asset-wizard-record-on-customer-change"
+    model="com.axelor.utils.db.Wizard">
+    <field name="$customerId" expr="eval: customer?.id"/>
+  </action-record>
 </object-views>
 

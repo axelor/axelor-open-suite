@@ -34,10 +34,14 @@ import java.util.Optional;
 public class ProjectTimeUnitServiceImpl implements ProjectTimeUnitService {
 
   protected AppBaseService appBaseService;
+  protected UnitConversionForProjectService unitConversionForProjectService;
 
   @Inject
-  public ProjectTimeUnitServiceImpl(AppBaseService appBaseService) {
+  public ProjectTimeUnitServiceImpl(
+      AppBaseService appBaseService,
+      UnitConversionForProjectService unitConversionForProjectService) {
     this.appBaseService = appBaseService;
+    this.unitConversionForProjectService = unitConversionForProjectService;
   }
 
   @Override
@@ -109,5 +113,22 @@ public class ProjectTimeUnitServiceImpl implements ProjectTimeUnitService {
 
   protected Unit getProjectDefaultTimeUnit(Project project, Unit defaultUnit) {
     return Optional.ofNullable(project).map(Project::getProjectTimeUnit).orElse(defaultUnit);
+  }
+
+  @Override
+  public BigDecimal convertInProjectTaskUnit(
+      ProjectTask projectTask, Unit startUnit, BigDecimal duration) throws AxelorException {
+    if (projectTask == null || startUnit == null || duration.signum() == 0) {
+      return BigDecimal.ZERO;
+    }
+
+    Unit projectTaskUnit = getTaskDefaultTimeUnit(projectTask, startUnit);
+
+    return unitConversionForProjectService.convert(
+        startUnit,
+        projectTaskUnit,
+        duration,
+        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+        projectTask.getProject());
   }
 }

@@ -623,13 +623,13 @@
       <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
         <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
           readonlyIf="statusSelect == 3" if="__config__.app.getApp('account').manageCutOffPeriod">
-          <field name="$cutOffStartDate" type="date" title="From date"
-            validIf="!$cutOffEndDate || $cutOffStartDate &lt;= $cutOffEndDate"/>
-          <field name="$cutOffEndDate" type="date" title="To date"
-            validIf="!$cutOffStartDate || $cutOffEndDate &gt;= $cutOffStartDate"/>
+          <field name="cutOffStartDate"
+            validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"/>
+          <field name="cutOffEndDate"
+            validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
             onClick="action-invoice-method-apply-cut-off-dates,save"
-            readonlyIf="!id || $cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"/>
+            readonlyIf="!id || cutOffStartDate == null || cutOffEndDate == null || cutOffStartDate > cutOffEndDate"/>
         </panel>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
@@ -679,15 +679,6 @@
           onSelect="action-invoice-attrs-domain-stock-move"
           domain="self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect &gt; 1"
           canNew="false" canSelect="false"/>
-      </panel>
-      <panel name="projectPanel"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
-        title="Business project" colSpan="12" if-module="axelor-business-project">
-        <field name="project" onSelect="action-invoice-attrs-domain-project"
-          form-view="business-project-form" grid-view="project-grid" colSpan="6"/>
-        <button name="updateLinesBtn" title="Update lines with selected project"
-          onClick="save,action-invoice-business-project-method-update-lines,save" colSpan="6"
-          readonlyIf="!project"/>
       </panel>
       <panel name="accountingPanel" title="Accounting" showTitle="false">
         <panel name="accountingDetailsPanel" title="Accounting details" colSpan="12">
@@ -772,16 +763,6 @@
         <field name="headOfficeAddress"
           if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"/>
         <field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
-        <field name="displayTimesheetOnPrinting" if-module="axelor-business-project"
-          hidden="true"/>
-        <field name="displayExpenseOnPrinting" if-module="axelor-business-project"
-          hidden="true"/>
-        <field name="isExpenseLineOnInvoiceGrouped" if-module="axelor-business-project"
-          if="__config__.app.getApp('business-project')?.getEnableToInvoiceExpense()"
-          showIf="displayExpenseOnPrinting"/>
-        <field name="groupingPeriodSelect" if-module="axelor-business-project"
-          if="__config__.app.getApp('business-project')?.getEnableToInvoiceExpense()"
-          showIf="isExpenseLineOnInvoiceGrouped &amp;&amp; displayExpenseOnPrinting"/>
         <field name="displayStockMoveOnInvoicePrinting" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')" showIf="[3,4].includes(operationTypeSelect)"/>
         <field name="$localization" title="Localization" type="many-to-one"
@@ -1201,9 +1182,6 @@
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
         onClick="save,action-invoice-method-show-invoice"/>
-      <button name="showAnnexBtn" title="Print annex" icon="fa-print"
-        onClick="action-business-project-group-print-annex" if-module="axelor-business-project"
-        showIf="partner != null &amp;&amp; (displayTimesheetOnPrinting || displayExpenseOnPrinting)"/>
     </toolbar>
 
     <panel name="mainPanel">
@@ -1239,9 +1217,6 @@
       <field name="currency" canEdit="false"
         onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1"
         form-view="currency-form" grid-view="currency-grid"/>
-      <field name="project" if-module="axelor-business-project"
-        onSelect="action-invoice-attrs-domain-project" form-view="business-project-form"
-        grid-view="project-grid" if="__config__.app.isApp('project')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"/>
     </panel>
 
@@ -1624,8 +1599,6 @@
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-record-interco-supplychain"/>
     <action name="action-invoice-method-manage-refund-titles"/>
-    <action name="action-invoice-record-printing-fields"
-      if="__config__.app.isApp('business-project')"/>
     <action name="action-invoice-record-set-dummy-field-localization"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
     <action name="action-invoice-record-set-display-stock-move-on-invoice-printing"
@@ -1937,15 +1910,6 @@
 
   </action-attrs>
 
-  <action-attrs name="action-invoice-attrs-domain-project">
-    <attribute name="domain" for="project"
-      expr="eval: &quot; self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;"
-      if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-    <attribute name="domain" for="project"
-      expr="eval: &quot; self.isBusinessProject = true &quot;"
-      if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
-  </action-attrs>
-
   <action-attrs name="action-invoice-attrs-domain-stock-move">
     <attribute name="domain" for="stockMoveSet"
       expr="eval: &quot;self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect = 2&quot;"
@@ -2031,7 +1995,6 @@
       expr="eval: partner?.contactPartnerSet?.size() == 1 ? partner?.contactPartnerSet[0] : null"/>
     <field name="invoicesCopySelect"
       expr="eval: partner?.invoicesCopySelect != 0 ? partner?.invoicesCopySelect :1"/>
-    <field name="project" expr="eval: null"/>
     <field name="purchaseOrder" expr="eval: null"/>
     <field name="partnerTaxNbr" expr="eval: partner?.taxNbr"/>
     <field name="proformaComments" expr="eval: partner?.proformaComments"/>
@@ -2162,21 +2125,6 @@
       expr="eval: 'Totaux en devise de la facture (${:self.partner.currency.symbol})'"/>
   </action-attrs>
 
-  <action-attrs name="action-invoice-attrs-printing-fields"
-    if-module="axelor-business-project">
-    <attribute name="hidden" for="displayTimesheetOnPrinting"
-      if="__config__.app.isApp('business-project')"
-      expr="eval: __repo__(InvoicingProject).all().filter('self.invoice.id = :id').bind('id',id).fetch().isEmpty() &amp;&amp; !__user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting"/>
-    <attribute name="value" for="displayTimesheetOnPrinting"
-      if="__config__.app.isApp('business-project') &amp;&amp; __repo__(InvoicingProject).all().filter('self.invoice.id = :id').bind('id',id).fetch().isEmpty() &amp;&amp; !__user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting"
-      expr="eval: false"/>
-    <attribute name="hidden" for="displayExpenseOnPrinting"
-      if="__config__.app.isApp('business-project')"
-      expr="eval: __repo__(InvoicingProject).all().filter('self.invoice.id = :id').bind('id',id).fetch().isEmpty() &amp;&amp; !__user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"/>
-    <attribute name="value" for="displayExpenseOnPrinting"
-      if="__config__.app.isApp('business-project') &amp;&amp; __repo__(InvoicingProject).all().filter('self.invoice.id = :id').bind('id',id).fetch().isEmpty() &amp;&amp; !__user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"
-      expr="eval: false"/>
-  </action-attrs>
 
   <action-attrs name="action-invoice-attrs-interco-supplychain"
     if-module="axelor-supplychain">
@@ -2696,8 +2644,6 @@
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-    <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
@@ -2761,8 +2707,6 @@
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-    <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
@@ -2816,8 +2760,6 @@
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-    <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
@@ -2874,8 +2816,6 @@
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-    <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
@@ -2932,10 +2872,7 @@
 
   <action-record name="action-record-invoice-set-discount-values"
     model="com.axelor.apps.account.db.Invoice">
-    <field name="financialDiscount" expr="eval: partner.financialDiscount"
-      if="partner &amp;&amp; financialDiscount == null"/>
-    <field name="financialDiscount" expr="eval: null"
-      if="!partner &amp;&amp; financialDiscount == null"/>
+    <field name="financialDiscount" expr="eval: partner?.financialDiscount"/>
     <field name="financialDiscountRate" expr="eval: partner.financialDiscount.discountRate"
       if="partner &amp;&amp; partner.financialDiscount"/>
     <field name="financialDiscountTotalAmount"

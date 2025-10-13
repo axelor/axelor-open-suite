@@ -189,4 +189,6 @@ public interface ITranslation {
 
   public static final String BILL_OF_EXCHANGE_CANCELLATION = /*$$(*/
       "Cancellation of Bill of Exchange for invoice %s"; /*)*/
+
+  public static final String CAMT053_CHQ_TRANSACTION_LABEL = /*$$(*/ "Nbt:%s"; /*)*/
 }

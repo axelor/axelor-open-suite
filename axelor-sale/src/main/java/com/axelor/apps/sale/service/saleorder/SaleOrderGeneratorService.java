@@ -28,6 +28,7 @@ public interface SaleOrderGeneratorService {
 
   SaleOrder createSaleOrder(
       Partner clientPartner,
+      Partner deliveredPartner,
       Company company,
       Partner contactPartner,
       Currency currency,

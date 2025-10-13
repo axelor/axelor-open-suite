@@ -17,6 +17,7 @@
     <option value="app-project">Project</option>
     <option value="app-dms">DMS</option>
     <option value="app-purchase">Purchase</option>
+    <option value="app-maintenance">Maintenance</option>
   </selection>
 
   <selection name='trace.back.origin.select' id="trace.back.origin.select.mobilesettings">
@@ -46,7 +47,6 @@
   </selection>
 
   <selection name="mobilesettings.reporting.type.display.select">
-    <option value="indicators">Indicators</option>
     <option value="activities">Activities</option>
     <option value="none">None</option>
   </selection>

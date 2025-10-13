@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="product-packaging-grid" model="com.axelor.apps.base.db.ProductPackaging"
+    title="Product packaging" canNew="true">
+    <field name="productToPackage"/>
+    <field name="packaging"/>
+    <field name="qty"/>
+    <field name="packagingMaxTotalWeight"/>
+  </grid>
+
+  <form name="product-packaging-form" model="com.axelor.apps.base.db.ProductPackaging"
+    title="Product packaging" onNew="action-product-packaging-record-default"
+    onSave="action-product-packaging-method-compute-packaging-max-total-weight,action-product-packaging-method-compute-validate-total-weight">
+    <panel name="mainPanel">
+      <field name="productToPackage" grid-view="product-grid" form-view="product-form"
+        domain="self.isPackaging = false"
+        onChange="action-product-packaging-method-compute-packaging-max-total-weight"/>
+      <field name="packaging" grid-view="product-grid" form-view="product-form"
+        domain="self.isPackaging = true AND self.packagingLevelSelect = 0"
+        onChange="action-product-packaging-method-compute-packaging-max-total-weight"/>
+      <field name="qty"
+        onChange="action-product-packaging-method-compute-packaging-max-total-weight"/>
+      <field name="packagingMaxTotalWeight" readonly="true"/>
+    </panel>
+  </form>
+
+  <action-record name="action-product-packaging-record-default"
+    model="com.axelor.apps.base.db.ProductPackaging">
+    <field name="productToPackage" expr="eval: __parent__" if="__parent__"/>
+  </action-record>
+
+  <action-method
+    name="action-product-packaging-method-compute-packaging-max-total-weight">
+    <call class="com.axelor.apps.base.web.ProductPackagingController"
+      method="computePackagingMaxTotalWeight"/>
+  </action-method>
+
+  <action-method name="action-product-packaging-method-compute-validate-total-weight">
+    <call class="com.axelor.apps.base.web.ProductPackagingController"
+      method="validateTotalWeight"/>
+  </action-method>
+
+</object-views>

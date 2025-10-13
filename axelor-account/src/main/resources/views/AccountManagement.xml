@@ -136,6 +136,10 @@
           if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
       </insert>
     </extend>
+    <extend target="//field[@name='analyticDistributionTemplate']">
+      <attribute name="onSelect"
+        value="action-account-management-method-set-domain-analytic-distribution-template"/>
+    </extend>
   </form>
 
   <action-attrs
@@ -210,5 +214,11 @@
     model="com.axelor.apps.account.db.AccountManagement">
     <field name="typeSelect" expr="eval: 3"/>
   </action-record>
+
+  <action-method
+    name="action-account-management-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.AccountManagementController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 
 </object-views>

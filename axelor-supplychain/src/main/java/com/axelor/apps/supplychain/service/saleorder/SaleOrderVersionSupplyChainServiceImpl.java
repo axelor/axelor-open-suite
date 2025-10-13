@@ -22,6 +22,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionServiceImpl;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeService;
@@ -36,9 +37,14 @@ public class SaleOrderVersionSupplyChainServiceImpl extends SaleOrderVersionServ
       SaleOrderRepository saleOrderRepository,
       SaleOrderLineRepository saleOrderLineRepository,
       AppBaseService appBaseService,
-      SaleOrderOnLineChangeService saleOrderOnLineChangeService) {
+      SaleOrderOnLineChangeService saleOrderOnLineChangeService,
+      AppSaleService appSaleService) {
     super(
-        saleOrderRepository, saleOrderLineRepository, appBaseService, saleOrderOnLineChangeService);
+        saleOrderRepository,
+        saleOrderLineRepository,
+        appBaseService,
+        saleOrderOnLineChangeService,
+        appSaleService);
   }
 
   @Override

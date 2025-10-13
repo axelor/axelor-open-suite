@@ -20,6 +20,7 @@
     <boolean name="isProjectAppEnabled" title="Project" default="false"/>
     <boolean name="isDMSAppEnabled" title="DMS" default="false"/>
     <boolean name="isPurchaseAppEnabled" title="Purchase" default="false"/>
+    <boolean name="isMaintenanceAppEnabled" title="Maintenance" default="false"/>
 
     <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
 
@@ -173,6 +174,7 @@
       <field name="isProjectAppEnabled" on="UPDATE"/>
       <field name="isDMSAppEnabled" on="UPDATE"/>
       <field name="isPurchaseAppEnabled" on="UPDATE"/>
+      <field name="isMaintenanceAppEnabled" on="UPDATE"/>
       <field name="isLoginUserQrcodeEnabled" on="UPDATE"/>
       <field name="isTrackerMessageEnabled" on="UPDATE"/>
       <field name="isInboxAccessEnabled" on="UPDATE"/>
