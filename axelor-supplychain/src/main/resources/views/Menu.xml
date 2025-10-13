@@ -86,7 +86,8 @@
   </action-view>
 
   <menuitem name="invoice-root-subscription-invoice" parent="invoice-root"
-    title="Subscription invoices to validate" action="invoice.root.subscription.invoice" order="900"/>
+    title="Subscription invoices to validate" action="invoice.root.subscription.invoice" order="900"
+    hidden="true"/>
 
   <action-view name="invoice.root.subscription.invoice"
     title="Subscription invoices to validate" model="com.axelor.apps.account.db.Invoice">
@@ -183,7 +184,7 @@
 
   <menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale" order="800"
     if="__config__.app.isApp('supplychain')" title="Mass Cust. Stock Move Invoicing"
-    action="stock.root.multi.sale.invoicing"/>
+    action="stock.root.multi.sale.invoicing" hidden="true"/>
 
   <action-view name="stock.root.multi.sale.invoicing"
     title="Mass Cust. Stock Move Invoicing" model="com.axelor.apps.stock.db.StockMove">
@@ -218,7 +219,7 @@
 
   <menuitem name="stock-root-custdeliveries-invoicing-block" parent="stock-root-deliveries"
     tag-count="true" title="Invoicing blocked customer deliveries"
-    action="stock.root.custdeliveries.invoicing.block" order="400"/>
+    action="stock.root.custdeliveries.invoicing.block" order="400" hidden="true"/>
 
   <action-view name="stock.root.custdeliveries.invoicing.block"
     title="Invoicing blocked customer deliveries" model="com.axelor.apps.stock.db.StockMove">
@@ -246,7 +247,7 @@
 
   <menuitem name="sc-root-sale-order-lines-to-invoice"
     title="Mass sale order line invoicing" parent="sc-root-sale" order="601"
-    action="sc.root.sale.order.lines.to.invoice"/>
+    action="sc.root.sale.order.lines.to.invoice" hidden="true"/>
 
   <action-view name="sc.root.sale.order.lines.to.invoice"
     title="Mass sale order line invoicing" model="com.axelor.apps.sale.db.SaleOrderLine">
