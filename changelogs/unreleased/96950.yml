@@ -1,0 +1,3 @@
+---
+title: "Manuf Order: fixed issue where parent mo was not filled correctly on multi level planning."
+module: axelor-production
