@@ -14,6 +14,8 @@
     <many-to-many name="tasks" ref="com.axelor.apps.project.db.ProjectTask"/>
     <many-to-one name="location" ref="com.axelor.apps.base.db.Address" title="Location"/>
     <many-to-one name="printedPdf" title="Printed PDF" ref="com.axelor.meta.db.MetaFile"/>
+    <one-to-many name="taskMemberReports"
+      ref="com.axelor.apps.businessproject.db.TaskMemberReport"/>
 
     <date name="taskDate" title="Date"/>
     <datetime name="startTime" title="Start time"/>
