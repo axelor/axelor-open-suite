@@ -83,20 +83,22 @@
           <spacer/>
           <field name="company" canEdit="false" form-view="company-form"
             grid-view="company-grid"
-            onChange="action-expense-record-company-onchange,action-expense-attrs-kilometric-panel-visibility"
+            onChange="action-expense-record-company-onchange,action-expense-attrs-kilometric-panel-visibility,action-expense-group-recompute-company-amounts"
             required="true"/>
           <field name="employee" form-view="employee-form"
             onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
             canEdit="false" canView="false"
             onChange="action-expense-record-employee-onchange,action-expense-method-update-general-and-kilometric-expense-line-employee"
             required="true"/>
-          <field name="currency" canEdit="false" colSpan="6" readonly="true"/>
+          <field name="currency" canEdit="false" colSpan="6"
+            onChange="action-expense-group-recompute-company-amounts"/>
           <field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management"
             onSelect="action-accounting-batch-attrs-bank-details-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"
             if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
           <field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period"
-            form-view="period-form" grid-view="period-grid" canView="false"/>
+            onChange="action-expense-group-recompute-company-amounts" form-view="period-form"
+            grid-view="period-grid" canView="false"/>
           <field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb"
             readonlyIf="statusSelect != 1"/>
           <field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1"
@@ -357,6 +359,17 @@
     <action name="action-expense-method-check-analytic-axis"/>
   </action-group>
 
+  <action-group name="action-expense-group-recompute-company-amounts">
+    <action name="action-expense-method-compute-line-company-amounts"/>
+    <action name="action-expense-method-compute-dummy-amounts"/>
+  </action-group>
+
+  <action-group name="action-expense-group-company-onchange">
+    <action name="action-expense-record-company-onchange"/>
+    <action name="action-expense-attrs-kilometric-panel-visibility"/>
+    <action name="action-expense-group-recompute-company-amounts"/>
+  </action-group>
+
   <action-record name="action-expense-record-default"
     model="com.axelor.apps.hr.db.Expense">
     <field name="employee" expr="eval:__user__.employee"/>
@@ -440,6 +453,11 @@
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeDummyAmounts"/>
   </action-method>
 
+  <action-method name="action-expense-method-compute-line-company-amounts">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController"
+      method="computeLineCompanyAmounts"/>
+  </action-method>
+
   <action-attrs name="action-expense-attrs-hide-button-readonly-field">
     <attribute name="hidden" for="ventilateBtn"
       expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated || _isExpenseDeclaration"/>
@@ -459,6 +477,10 @@
     <attribute name="readonly" for="company" expr="eval: true"
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2"
+      if="__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="currency" expr="eval: true"
+      if="!__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="currency" expr="eval: statusSelect &gt; 2"
       if="__user__.employee?.hrManager"/>
     <attribute name="readonly" for="employee"
       expr="eval: statusSelect &gt; 2 || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0) || _isEmployeeReadOnly"/>

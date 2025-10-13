@@ -782,4 +782,11 @@ public class ExpenseController {
     Expense expense = request.getContext().asType(Expense.class);
     response.setValues(Beans.get(ExpenseRecordService.class).computeDummyAmounts(expense));
   }
+
+  public void computeLineCompanyAmounts(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Expense expense = request.getContext().asType(Expense.class);
+    Beans.get(ExpenseComputationService.class).recomputeAmountsUsingLines(expense);
+    response.setValues(expense);
+  }
 }

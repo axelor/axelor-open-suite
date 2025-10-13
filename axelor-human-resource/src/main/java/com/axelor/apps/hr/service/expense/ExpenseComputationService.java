@@ -23,6 +23,8 @@ import com.axelor.apps.hr.db.Expense;
 import java.math.BigDecimal;
 
 public interface ExpenseComputationService {
+  void recomputeAmountsUsingLines(Expense expense) throws AxelorException;
+
   public Expense compute(Expense expense);
 
   public BigDecimal computePersonalExpenseAmount(Expense expense);

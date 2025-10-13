@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.hr.db.EmployeeAdvanceUsage;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineComputeService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -36,13 +37,23 @@ import java.util.Optional;
 public class ExpenseComputationServiceImpl implements ExpenseComputationService {
 
   protected ExpenseLineService expenseLineService;
+  protected ExpenseLineComputeService expenseLineComputeService;
   protected CurrencyService currencyService;
 
   @Inject
   public ExpenseComputationServiceImpl(
-      ExpenseLineService expenseLineService, CurrencyService currencyService) {
+      ExpenseLineService expenseLineService,
+      ExpenseLineComputeService expenseLineComputeService,
+      CurrencyService currencyService) {
     this.expenseLineService = expenseLineService;
+    this.expenseLineComputeService = expenseLineComputeService;
     this.currencyService = currencyService;
+  }
+
+  @Override
+  public void recomputeAmountsUsingLines(Expense expense) throws AxelorException {
+    computeCompanyAmounts(expense);
+    expense = compute(expense);
   }
 
   @Override
@@ -124,5 +135,23 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
 
     return currencyService.getAmountCurrencyConvertedAtDate(
         companyCurrency, expense.getCurrency(), advanceAmount, expense.getPaymentDate());
+  }
+
+  protected void computeCompanyAmounts(Expense expense) throws AxelorException {
+    if (expense == null) {
+      return;
+    }
+    if (ObjectUtils.notEmpty(expense.getGeneralExpenseLineList())) {
+      for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
+        expenseLineComputeService.setCompanyAmounts(expenseLine, expense);
+      }
+    }
+    if (ObjectUtils.notEmpty(expense.getKilometricExpenseLineList())) {
+      for (ExpenseLine expenseLine : expense.getKilometricExpenseLineList()) {
+        expenseLineComputeService.setCompanyAmounts(expenseLine, expense);
+      }
+    }
+
+    return;
   }
 }
