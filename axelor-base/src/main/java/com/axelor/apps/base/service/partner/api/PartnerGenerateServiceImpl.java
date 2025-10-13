@@ -215,11 +215,13 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     }
 
     String cityName = adresseEtablissement.getLibelleCommuneEtablissement();
-    City currentCity = cityRepository.findByName(cityName);
-    if (currentCity != null) {
-      address.setCity(currentCity);
-    } else {
-      createCity(address, cityName, currentCountry);
+    if (cityName != null) {
+      City currentCity = cityRepository.findByName(cityName);
+      if (currentCity != null) {
+        address.setCity(currentCity);
+      } else {
+        createCity(address, cityName, currentCountry);
+      }
     }
 
     String numeroVoieEtablissement = adresseEtablissement.getNumeroVoieEtablissement();
