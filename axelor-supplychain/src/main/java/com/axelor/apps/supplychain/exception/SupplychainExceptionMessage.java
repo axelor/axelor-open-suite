@@ -466,4 +466,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String STOCK_MOVE_NOT_FULLY_PACKAGED = /*$$(*/
       "One or several stock move lines are not fully packaged." /*)*/;
+
+  public static final String PACKAGING_PARENT_ERROR = /*$$(*/
+      "Logistical form or parent packaging must be provided." /*)*/;
 }

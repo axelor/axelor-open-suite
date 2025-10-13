@@ -6,6 +6,7 @@ import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 public class PackagingPostRequest extends RequestPostStructure {
 
@@ -15,6 +16,7 @@ public class PackagingPostRequest extends RequestPostStructure {
   @Min(0)
   private Long parentPackagingId;
 
+  @NotNull
   @Min(0)
   private Long packageUsedId;
 
