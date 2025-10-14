@@ -79,7 +79,7 @@ public class PackagingLineRestController {
         .check();
 
     PackagingLine packagingLine =
-        ObjectFinder.find(PackagingLine.class, packagingLineId, ObjectFinder.NO_VERSION);
+        ObjectFinder.find(PackagingLine.class, packagingLineId, requestBody.getVersion());
 
     Beans.get(PackagingLineCreationService.class)
         .updateQuantity(packagingLine, requestBody.getQuantity());
