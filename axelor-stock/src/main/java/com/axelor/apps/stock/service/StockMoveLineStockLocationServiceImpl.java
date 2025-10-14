@@ -135,9 +135,9 @@ public class StockMoveLineStockLocationServiceImpl implements StockMoveLineStock
         stockLocationService.getAllLocationAndSubLocation(stockLocation, false);
 
     // add default stockLocation if options are enabled
-    if (!appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()
-        || !appBaseService.getAppBase().getEnableSiteManagementForStock()
-        || stockMoveLine.getProduct() != null) {
+    if (appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()
+        && appBaseService.getAppBase().getEnableSiteManagementForStock()
+        && stockMoveLine.getProduct() != null) {
 
       StockLocation stockLocationForMoveLine = null;
 

@@ -317,16 +317,6 @@
 
   <input file="quality_qiAnalysis.csv" separator=";"
     type="com.axelor.apps.quality.db.QIAnalysis" search="self.importId = :importId">
-    <bind column="qi_importId" to="qi" search="self.importId = :qi_importId"
-      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.quality.db.QualityImprovement', 'importId', qi_importId)"
-      check-message="Quality improvement doesn't exist"/>
-    <bind column="planOwner_importId" to="planOwner"
-      search="self.importId = :planOwner_importId"
-      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.auth.db.User', 'importId', planOwner_importId)"
-      check-message="Plan owner doesn't exist"/>
-    <bind column="efficiencySelect" to="efficiencySelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.quality.db.QIAnalysis', 'efficiencySelect', efficiencySelect)"
-      check-message="Invalid efficiencySelect"/>
     <bind to="causesWrittenOn"
       eval="call:com.axelor.csv.script.ImportDateTime:importDateTime(causesWrittenOn)"
       column="causesWrittenOn"/>

@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.message.service.MailAccountService;
+import com.axelor.message.service.MailMessageActionService;
 import com.axelor.studio.app.service.AppService;
 import jakarta.inject.Inject;
 import jakarta.mail.MessagingException;
@@ -35,8 +36,10 @@ public class MailServiceHelpDeskImpl extends MailServiceBaseImpl {
 
   @Inject
   public MailServiceHelpDeskImpl(
-      MailAccountService mailAccountService, AppBaseService appBaseService) {
-    super(mailAccountService, appBaseService);
+      MailAccountService mailAccountService,
+      AppBaseService appBaseService,
+      MailMessageActionService mailMessageActionService) {
+    super(mailAccountService, appBaseService, mailMessageActionService);
   }
 
   @Override

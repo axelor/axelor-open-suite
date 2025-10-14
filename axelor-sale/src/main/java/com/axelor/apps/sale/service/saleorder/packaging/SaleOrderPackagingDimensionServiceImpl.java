@@ -124,7 +124,7 @@ public class SaleOrderPackagingDimensionServiceImpl implements SaleOrderPackagin
     Unit targetUnit = getKilogramUnit();
     if (unit != null && !unit.equals(targetUnit)) {
       value =
-          unitConversionService.convert(
+          unitConversionService.convertWithAutoFlushFalse(
               unit, targetUnit, value, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, product);
     }
     return value;
@@ -133,6 +133,7 @@ public class SaleOrderPackagingDimensionServiceImpl implements SaleOrderPackagin
   protected Unit getKilogramUnit() {
     return unitRepository
         .all()
+        .autoFlush(false)
         .filter("self.labelToPrinting = :labelToPrinting")
         .bind("labelToPrinting", UNIT_KG)
         .fetchOne();

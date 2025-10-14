@@ -92,10 +92,6 @@
     <bind column="titleSelect" to="titleSelect"
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.Partner', 'titleSelect', titleSelect)"
       check-message="Invalid titleSelect"/>
-    <bind to="partnerSeq"
-      eval="call:com.axelor.apps.base.service.administration.SequenceService:getSequenceNumber(com.axelor.apps.base.db.repo.SequenceRepository.PARTNER,com.axelor.apps.base.db.Partner,'partnerSeq')"
-      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Partner', 'importId', importId, 'partnerSeq', partnerSeq)"
-      check-message="Reference must be unique"/>
     <bind to="emailAddress" if="email &amp;&amp; email.trim() != ''"
       search="self.partner.importId = :importId"
       check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Partner', 'importId', importId, 'emailAddress.address', email)"

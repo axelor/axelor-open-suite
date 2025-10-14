@@ -29,9 +29,15 @@ import java.util.Map;
 
 public class ImportService {
 
-  @Inject private FactoryImporter factoryImporter;
+  protected FactoryImporter factoryImporter;
+  protected ImportConfigurationRepository importConfigRepo;
 
-  @Inject private ImportConfigurationRepository importConfigRepo;
+  @Inject
+  public ImportService(
+      FactoryImporter factoryImporter, ImportConfigurationRepository importConfigRepo) {
+    this.factoryImporter = factoryImporter;
+    this.importConfigRepo = importConfigRepo;
+  }
 
   public ImportHistory run(ImportConfiguration configuration) throws AxelorException, IOException {
 

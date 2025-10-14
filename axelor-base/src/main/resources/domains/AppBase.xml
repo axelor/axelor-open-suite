@@ -197,6 +197,8 @@
     <string name="sireneUrl" title="Sirene url"/>
     <string name="sireneKey" title="Sirene API key" encrypted="true"/>
 
+    <string name="importErrorPath" title="Import error directory path"/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -289,16 +291,14 @@
       <field name="enableTaxNumbers" on="UPDATE"/>
       <field name="defaultAddressTemplate" on="UPDATE"/>
       <field name="pfxCertificate" on="UPDATE"/>
-      <field name="sireneTokenGeneratorUrl" on="UPDATE"/>
       <field name="sireneUrl" on="UPDATE"/>
       <field name="sireneKey" on="UPDATE"/>
-      <field name="sireneSecret" on="UPDATE"/>
-      <field name="sireneAccessToken" on="UPDATE"/>
 
       <field name="clientSituationPrintTemplate" on="UPDATE"/>
       <field name="companyPhoneBookPrintTemplate" on="UPDATE"/>
       <field name="contactPhoneBookPrintTemplate" on="UPDATE"/>
       <field name="productCatalogPGQLPrintTemplate" on="UPDATE"/>
+      <field name="importErrorPath" on="UPDATE"/>
       <!-- 32 fields -->
     </track>
 

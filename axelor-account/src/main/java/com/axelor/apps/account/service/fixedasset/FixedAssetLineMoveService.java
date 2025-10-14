@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
+import com.axelor.apps.base.db.Partner;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Set;
@@ -68,7 +69,8 @@ public interface FixedAssetLineMoveService {
       FixedAsset fixedAsset,
       Set<TaxLine> saleTaxLineSet,
       BigDecimal disposalAmount,
-      LocalDate disposalDate)
+      LocalDate disposalDate,
+      Partner partner)
       throws AxelorException;
 
   /**

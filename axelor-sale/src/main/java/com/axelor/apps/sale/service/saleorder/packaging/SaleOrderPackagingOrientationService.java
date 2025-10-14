@@ -21,10 +21,15 @@ package com.axelor.apps.sale.service.saleorder.packaging;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Set;
 
 public interface SaleOrderPackagingOrientationService {
 
   boolean canFit(Product product, Product box) throws AxelorException;
 
   BigDecimal[][] getOrientations(BigDecimal[] dimensions);
+
+  void validateProductsForPackaging(Set<Product> products, List<Product> packagings)
+      throws AxelorException;
 }

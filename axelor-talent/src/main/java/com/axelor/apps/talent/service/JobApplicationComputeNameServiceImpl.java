@@ -31,7 +31,7 @@ public class JobApplicationComputeNameServiceImpl implements JobApplicationCompu
     }
     if (fullName == null) {
       fullName = jobApplication.getLastName();
-    } else {
+    } else if (jobApplication.getLastName() != null) {
       fullName += " " + jobApplication.getLastName();
     }
     return fullName;

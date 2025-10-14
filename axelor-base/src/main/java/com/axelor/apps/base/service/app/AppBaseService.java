@@ -120,4 +120,6 @@ public interface AppBaseService extends AppService {
   int getProcessTimeout();
 
   String getSireneUrl() throws AxelorException;
+
+  String getImportErrorPath();
 }

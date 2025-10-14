@@ -58,6 +58,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     List<String> domainList = new ArrayList<>();
 
     domainList.add("self.company = :company");
+    domainList.add("self.logisticalForm = :id OR self.logisticalForm IS NULL");
     if (stockConfig.getAllowInternalStockMoveOnLogisticalForm()) {
       if (!stockConfig.getIsLogisticalFormMultiClientsEnabled()) {
         domainList.add(
@@ -77,10 +78,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       }
     }
 
-    domainList.add(
-        String.format(
-            "self.statusSelect in (%d, %d)",
-            StockMoveRepository.STATUS_PLANNED, StockMoveRepository.STATUS_REALIZED));
+    domainList.add(String.format("self.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
     domainList.add("COALESCE(self.fullySpreadOverLogisticalFormsFlag, FALSE) = FALSE");
     if (logisticalForm.getStockLocation() != null) {
       domainList.add("self.stockMoveLineList.fromStockLocation = :stockLocation");

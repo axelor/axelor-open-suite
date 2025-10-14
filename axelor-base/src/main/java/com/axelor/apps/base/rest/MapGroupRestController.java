@@ -46,7 +46,8 @@ public class MapGroupRestController {
   @Path("/compute/{id}")
   @GET
   @HttpExceptionHandler
-  public Response computeData(@PathParam("id") Long id) throws AxelorException, JSONException {
+  public Response computeData(@PathParam("id") Long id)
+      throws AxelorException, JSONException, ClassNotFoundException {
     new SecurityCheck().readAccess(MapGroup.class, id).check();
     MapGroup mapGroup = ObjectFinder.find(MapGroup.class, id, ObjectFinder.NO_VERSION);
 

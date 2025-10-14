@@ -21,7 +21,9 @@ package com.axelor.apps.production.service.bomimport;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.imports.importer.ExcelToCSV;
 import com.axelor.apps.base.service.imports.importer.Importer;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.apps.production.db.BillOfMaterialImport;
@@ -31,6 +33,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialImportRepository;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.meta.MetaFiles;
 import com.google.common.base.Throwables;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -51,19 +54,24 @@ public class BillOfMaterialImporter extends Importer {
 
   @Inject
   public BillOfMaterialImporter(
+      ExcelToCSV excelToCSV,
+      MetaFiles metaFiles,
+      AppBaseService appBaseService,
       BillOfMaterialImportLineService billOfMaterialImportLineService,
       BillOfMaterialImportRepository billOfMaterialImportRepository,
       BillOfMaterialImportLineRepository billOfMaterialImportLineRepository) {
+    super(excelToCSV, metaFiles, appBaseService);
     this.billOfMaterialImportLineService = billOfMaterialImportLineService;
     this.billOfMaterialImportRepository = billOfMaterialImportRepository;
     this.billOfMaterialImportLineRepository = billOfMaterialImportLineRepository;
   }
 
   @Override
-  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
-      throws IOException {
+  protected ImportHistory process(
+      String bind, String data, String errorDir, Map<String, Object> importContext)
+      throws IOException, AxelorException {
 
-    CSVImporter importer = new CSVImporter(bind, data);
+    CSVImporter importer = new CSVImporter(bind, data, errorDir);
 
     ImporterListener listener =
         new ImporterListener(getConfiguration().getName()) {
@@ -106,7 +114,7 @@ public class BillOfMaterialImporter extends Importer {
     importContext.put("BillOfMaterialImport", billOfMaterialImport);
     importer.setContext(importContext);
     importer.run();
-    return addHistory(listener);
+    return addHistory(listener, errorDir);
   }
 
   protected void addBillOfMaterialImportLine(Model bean) {
@@ -121,8 +129,20 @@ public class BillOfMaterialImporter extends Importer {
   }
 
   @Override
-  protected ImportHistory process(String bind, String data) throws IOException {
-    return process(bind, data, null);
+  protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
+    return process(bind, data, getErrorDirectory());
+  }
+
+  @Override
+  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
+      throws IOException, AxelorException {
+    return process(bind, data, getErrorDirectory(), importContext);
+  }
+
+  @Override
+  protected ImportHistory process(String bind, String data, String errorDir)
+      throws IOException, AxelorException {
+    return process(bind, data, errorDir, null);
   }
 
   protected void linkLineToBillOfMaterialImport(

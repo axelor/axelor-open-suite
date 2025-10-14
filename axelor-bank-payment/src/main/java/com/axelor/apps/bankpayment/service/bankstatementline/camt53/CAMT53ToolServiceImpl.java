@@ -7,6 +7,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRepository;
+import com.axelor.apps.bankpayment.report.ITranslation;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.AccountIdentification4Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.AccountStatement2;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ActiveOrHistoricCurrencyAndAmount;
@@ -14,27 +15,39 @@ import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.BalanceType12;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.BalanceType12Code;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.BalanceType5Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.BankTransactionCodeStructure4;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.BatchInformation2;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CashAccount16;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CashAccount20;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CashBalance3;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CreditDebitCode;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.CreditorReferenceInformation2;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.DateAndDateTimeChoice;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.DateTimePeriodDetails;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.EntryDetails1;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.EntryTransaction2;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.GenericAccountIdentification1;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.OrganisationIdentification4;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.Party6Choice;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.PartyIdentification32;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ProprietaryBankTransactionCodeStructure1;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.RemittanceInformation5;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ReportEntry2;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ReturnReason5Choice;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.ReturnReasonInformation10;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.StructuredRemittanceInformation7;
+import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.TransactionParty2;
 import com.axelor.apps.bankpayment.xsd.sepa.camt_053_001_02.TransactionReferences2;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankDetailsRepository;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppAccount;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -155,6 +168,33 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
   }
 
   @Override
+  public String getOrigin(ReportEntry2 ntry) {
+    EntryDetails1 entryDetails =
+        Optional.ofNullable(ntry)
+            .map(ReportEntry2::getNtryDtls)
+            .flatMap(ntryDtls -> ntryDtls.stream().findFirst())
+            .orElse(null);
+
+    String origin =
+        Optional.ofNullable(entryDetails) // Convert to Stream and get first element if present
+            .map(EntryDetails1::getBtch)
+            .map(BatchInformation2::getPmtInfId)
+            .orElse(null);
+    if (origin == null) {
+      TransactionReferences2 refs =
+          Optional.ofNullable(entryDetails) // Convert to Stream and get first element if present
+              .map(EntryDetails1::getTxDtls)
+              .flatMap(txDtls -> txDtls.stream().findFirst())
+              .map(EntryTransaction2::getRefs)
+              .orElse(null);
+      if (ObjectUtils.notEmpty(refs)) {
+        origin = Optional.ofNullable(refs.getPmtInfId()).orElse(refs.getChqNb());
+      }
+    }
+    return origin;
+  }
+
+  @Override
   public Integer getCommissionExemptionIndexSelect(ReportEntry2 ntry) {
     if (ntry == null) {
       return null;
@@ -188,6 +228,156 @@ public class CAMT53ToolServiceImpl implements CAMT53ToolService {
       bankDetails = bankDetailsRepository.all().filter("self.iban = ?1", ibanOrOthers).fetchOne();
     }
     return bankDetails;
+  }
+
+  @Override
+  public String constructDescriptionFromNtry(ReportEntry2 ntry) {
+    /*
+    * get the following tag values:
+    * 1. TxDtls -> RmtInf -> Ustrd : as the first line
+    * 2. TxDtls -> RmtInf -> Strd -> CdtrRefInf -> Ref
+    * 3. TxDtls -> AddtlTxInf : remove "/LIB/"
+    * 4. RltdPties -> Cdtr -> Nm
+    * 5. RltdPties -> Dbtr -> Nm
+    * 6. RltdPties -> UltmtDbtr -> Nm
+    * 7. RltdPties -> UltmtDbtr -> Id -> OrgId -> BICOrBEI
+    * 8. RltdPties -> UltmtCdtr -> Nm
+    * 9. NtryDtls -> Btch -> PmtInfId
+    * 10. RltdPties -> CdtrAcct -> Id -> IBAN
+    * 11. NtryDtls -> Btch -> NbOfTxs
+
+    */
+    EntryDetails1 ntryDtls =
+        Optional.of(ntry)
+            .map(ReportEntry2::getNtryDtls)
+            .flatMap(ntryDtlsList -> ntryDtlsList.stream().findFirst())
+            .orElse(null);
+    EntryTransaction2 txDtl =
+        Optional.ofNullable(ntryDtls)
+            .map(EntryDetails1::getTxDtls)
+            .flatMap(txDtls -> txDtls.stream().findFirst())
+            .orElse(null);
+
+    List<String> descriptionLines = new ArrayList<>();
+    if (txDtl != null) {
+      List<String> ustrdList =
+          Optional.of(txDtl)
+              .map(EntryTransaction2::getRmtInf)
+              .map(RemittanceInformation5::getUstrd)
+              .orElse(null);
+      if (ustrdList != null && !ustrdList.isEmpty()) {
+        descriptionLines.add(String.join(" ", ustrdList));
+      }
+
+      String strdStr =
+          Optional.of(txDtl)
+              .map(EntryTransaction2::getRmtInf)
+              .map(RemittanceInformation5::getStrd)
+              .flatMap(strd -> strd.stream().findFirst())
+              .map(StructuredRemittanceInformation7::getCdtrRefInf)
+              .map(CreditorReferenceInformation2::getRef)
+              .orElse(null);
+      if (strdStr != null && !strdStr.isEmpty()) {
+        descriptionLines.add(String.join(" ", strdStr));
+      }
+
+      String addtlTxInf = Optional.of(txDtl).map(EntryTransaction2::getAddtlTxInf).orElse(null);
+      if (StringUtils.notEmpty(addtlTxInf)) {
+        descriptionLines.add(addtlTxInf.replace("/LIB/", "\n"));
+      }
+
+      String cdtrNm =
+          Optional.of(txDtl)
+              .map(EntryTransaction2::getRltdPties)
+              .map(TransactionParty2::getCdtr)
+              .map(PartyIdentification32::getNm)
+              .orElse(null);
+      if (StringUtils.notEmpty(cdtrNm)) {
+        descriptionLines.add(cdtrNm);
+      }
+
+      String dbtrNm =
+          Optional.of(txDtl)
+              .map(EntryTransaction2::getRltdPties)
+              .map(TransactionParty2::getDbtr)
+              .map(PartyIdentification32::getNm)
+              .orElse(null);
+      if (StringUtils.notEmpty(dbtrNm)) {
+        descriptionLines.add(dbtrNm);
+      }
+
+      String ultmtDbtrNm =
+          Optional.of(txDtl)
+              .map(EntryTransaction2::getRltdPties)
+              .map(TransactionParty2::getUltmtDbtr)
+              .map(PartyIdentification32::getNm)
+              .orElse(null);
+      if (StringUtils.notEmpty(ultmtDbtrNm)) {
+        descriptionLines.add(ultmtDbtrNm);
+      }
+
+      String bicOrBEI =
+          Optional.of(txDtl)
+              .map(EntryTransaction2::getRltdPties)
+              .map(TransactionParty2::getUltmtDbtr)
+              .map(PartyIdentification32::getId)
+              .map(Party6Choice::getOrgId)
+              .map(OrganisationIdentification4::getBICOrBEI)
+              .orElse(null);
+      if (StringUtils.notEmpty(bicOrBEI)) {
+        descriptionLines.add(bicOrBEI);
+      }
+
+      String ultmtCdtrNm =
+          Optional.of(txDtl)
+              .map(EntryTransaction2::getRltdPties)
+              .map(TransactionParty2::getUltmtCdtr)
+              .map(PartyIdentification32::getNm)
+              .orElse(null);
+      if (StringUtils.notEmpty(ultmtCdtrNm)) {
+        descriptionLines.add(ultmtCdtrNm);
+      }
+    }
+
+    String btchPmtInfId =
+        Optional.ofNullable(ntryDtls)
+            .map(EntryDetails1::getBtch)
+            .map(BatchInformation2::getPmtInfId)
+            .orElse(null);
+    if (StringUtils.notEmpty(btchPmtInfId)) {
+      descriptionLines.add(btchPmtInfId);
+    }
+
+    if (txDtl != null) {
+      // RltdPties -> CdtrAcct -> Id -> IBAN
+      String cdtrAcctIBAN =
+          Optional.of(txDtl)
+              .map(EntryTransaction2::getRltdPties)
+              .map(TransactionParty2::getCdtrAcct)
+              .map(CashAccount16::getId)
+              .map(AccountIdentification4Choice::getIBAN)
+              .orElse(null);
+      if (StringUtils.notEmpty(cdtrAcctIBAN)) {
+        descriptionLines.add(cdtrAcctIBAN);
+      }
+    }
+
+    String chqNb =
+        Optional.ofNullable(ntryDtls)
+            .map(EntryDetails1::getBtch)
+            .map(BatchInformation2::getNbOfTxs)
+            .orElse(null);
+    if (StringUtils.notEmpty(chqNb)) {
+      descriptionLines.add(
+          String.format(I18n.get(ITranslation.CAMT053_CHQ_TRANSACTION_LABEL), chqNb));
+    }
+
+    String result = "";
+    if (ObjectUtils.notEmpty(descriptionLines)) {
+      result = String.join("\n", descriptionLines);
+    }
+
+    return result;
   }
 
   protected String getIBANOrOtherAccountIdentification(CashAccount20 acct) {

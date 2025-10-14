@@ -18,6 +18,17 @@
         <field name="qtyRemainingToPackage" readonly="true" x-scale="$nbDecimalDigitForQty"/>
       </insert>
     </extend>
+
+    <extend target="/">
+      <insert position="before">
+        <hilite strong="true" color="green"
+          if="_fromLogisticalForm &amp;&amp; $number(qtyRemainingToPackage) == 0"/>
+        <hilite strong="true" color="orange"
+          if="_fromLogisticalForm &amp;&amp; $number(qtyRemainingToPackage) > 0 &amp;&amp; $number(qtyRemainingToPackage) &lt; $number(realQty)"/>
+        <hilite strong="true" color="grey"
+          if="_fromLogisticalForm &amp;&amp; $number(qtyRemainingToPackage) == $number(realQty)"/>
+      </insert>
+    </extend>
   </grid>
 
   <grid name="stock-move-line-sale-order-line-grid" title="Stock move lines"
@@ -195,6 +206,11 @@
       <field name="$nbDecimalDigitForQty" hidden="true"/>
     </panel>
   </form>
+
+  <action-record name="action-stock-move-line-record-set-qty-remaining-to-package"
+    model="com.axelor.apps.stock.db.StockMoveLine">
+    <field name="qtyRemainingToPackage" expr="eval: realQty"/>
+  </action-record>
 
   <action-view name="action-stock-move-line-product-reserved-planned"
     title="${fullName} plan. st. move" model="com.axelor.apps.stock.db.StockMoveLine">

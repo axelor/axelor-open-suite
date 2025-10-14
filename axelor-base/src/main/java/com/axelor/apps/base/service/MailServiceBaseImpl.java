@@ -47,6 +47,7 @@ import com.axelor.message.db.EmailAccount;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.message.service.MailAccountService;
+import com.axelor.message.service.MailMessageActionService;
 import com.axelor.message.service.MailServiceMessageImpl;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
@@ -98,11 +99,16 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   protected static final String RECIPIENTS_SPLIT_REGEX = "\\s*(;|,|\\|)\\s*|\\s+";
 
   protected final AppBaseService appBaseService;
+  protected final MailMessageActionService mailMessageActionService;
 
   @Inject
-  public MailServiceBaseImpl(MailAccountService mailAccountService, AppBaseService appBaseService) {
+  public MailServiceBaseImpl(
+      MailAccountService mailAccountService,
+      AppBaseService appBaseService,
+      MailMessageActionService mailMessageActionService) {
     super(mailAccountService);
     this.appBaseService = appBaseService;
+    this.mailMessageActionService = mailMessageActionService;
   }
 
   @Override
@@ -312,6 +318,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
     final Model related = findEntity(message);
     final MailSender sender = getMailSender(emailAccount);
+
+    mailMessageActionService.executePreMailMessageActions(message, related);
 
     final Set<String> recipients = recipients(message, related);
     if (recipients.isEmpty()) {

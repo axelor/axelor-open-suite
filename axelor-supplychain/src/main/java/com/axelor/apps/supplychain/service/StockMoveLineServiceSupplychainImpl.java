@@ -682,9 +682,11 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
               && appSupplychain.getAutoFillReceiptRealQty())
           || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL)) {
         stockMoveLine.setRealQty(qty);
+        stockMoveLine.setQtyRemainingToPackage(qty.setScale(3, RoundingMode.HALF_UP));
         stockMoveLine.setTotalNetMass(qty.multiply(stockMoveLine.getNetMass()));
       } else {
         stockMoveLine.setRealQty(BigDecimal.ZERO);
+        stockMoveLine.setQtyRemainingToPackage(BigDecimal.ZERO);
         stockMoveLine.setTotalNetMass(BigDecimal.ZERO);
       }
     } else {

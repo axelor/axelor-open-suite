@@ -3,10 +3,50 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
+  <form id="logistical-form-supplychain-form" name="logistical-form-form"
+    title="Logistical form" model="com.axelor.apps.stock.db.LogisticalForm" extension="true">
+    <extend target="//panel[@name='stockMovePanel']">
+      <insert position="after">
+        <panel-related name="packagingPanel" field="packagingList"
+          grid-view="packaging-grid" form-view="packaging-form" colSpan="12" widget="tree-grid"
+          x-tree-field="childrenPackagingList" x-tree-field-title="Add child packaging"
+          summary-view="packaging-packaging-lines-form" editable="true"
+          orderBy="-packagingLevelSelect,packagingNumber"
+          onChange="save,action-logistical-form-method-refresh-logistical-form" x-expand-all="true"
+          height="800"/>
+      </insert>
+    </extend>
+
+    <extend target="//button[@name='carrierValidatedBtn']">
+      <insert position="after">
+        <button name="collectedBtn" title="Collected" showIf="statusSelect == 2"
+          readonlyIf="!(packagingList &amp;&amp; packagingList.length > 0)"
+          onClick="action-logistical-form-method-process-collected" icon="fa-truck"
+          css="btn btn-success" colSpan="12"
+          prompt="Are you sure you want to change status to &quot;Collected&quot; ?"/>
+      </insert>
+    </extend>
+  </form>
+
+  <action-method name="action-logistical-form-method-refresh-logistical-form">
+    <call class="com.axelor.apps.supplychain.web.LogisticalFormController"
+      method="refreshLogisticalForm"/>
+  </action-method>
+
+  <action-method
+    name="action-logistical-form-method-validate-and-update-stock-move-list">
+    <call class="com.axelor.apps.supplychain.web.LogisticalFormController"
+      method="validateAndUpdateStockMoveList"/>
+  </action-method>
+
+  <action-method name="action-logistical-form-method-process-collected">
+    <call class="com.axelor.apps.supplychain.web.LogisticalFormController"
+      method="processCollected"/>
+  </action-method>
+
   <action-group name="action-group-logistical-form-print-packing-list">
     <action name="save"/>
     <action name="action-method-print-template"/>
   </action-group>
-
 
 </object-views>

@@ -7,6 +7,7 @@
     model="com.axelor.studio.db.AppRecruitment" canDelete="false" canNew="false" width="large">
     <panel name="mainPanel">
       <field name="hiringStatus"/>
+      <field name="defaultHiringStatus"/>
     </panel>
 
     <panel-mail name="mailPanel">

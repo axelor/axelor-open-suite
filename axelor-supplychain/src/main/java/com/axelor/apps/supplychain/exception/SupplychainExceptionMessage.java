@@ -451,4 +451,19 @@ public final class SupplychainExceptionMessage {
 
   public static final String PURCHASE_ORDER_LINE_QTY_UPDATE_NOT_ALLOWED_INVOICED = /*$$(*/
       "The purchase order line qty can't be lower than the qty already invoiced." /*)*/;
+
+  public static final String INVALID_PACKAGING_LINE_QTY = /*$$(*/
+      "The packaging line qty can not be greater than the stock move line's qty remaining to package." /*)*/;
+
+  public static final String NO_ANY_STOCK_MOVE_LINE_SELECTED = /*$$(*/
+      "At least one stock move line must be selected." /*)*/;
+
+  public static final String STOCK_MOVE_REMOVAL_NOT_ALLOWED = /*$$(*/
+      "This stock move cannot be removed from the logisticsal form, as it shares one of its packaging %s with another stock move." /*)*/;
+
+  public static final String LOGISTICAL_FORM_COLLECT_WRONG_STATUS = /*$$(*/
+      "Can only be collected if validated." /*)*/;
+
+  public static final String STOCK_MOVE_NOT_FULLY_PACKAGED = /*$$(*/
+      "One or several stock move lines are not fully packaged." /*)*/;
 }
