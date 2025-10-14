@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerLinkService;
@@ -58,7 +59,6 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.message.exception.MessageExceptionMessage;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -126,7 +126,7 @@ public class SaleOrderController {
                   traceback ->
                       response.setNotify(
                           String.format(
-                              I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
+                              I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
         } else if (stockMoveList != null && stockMoveList.size() > 1) {
           response.setView(
@@ -152,7 +152,7 @@ public class SaleOrderController {
                   traceback ->
                       response.setNotify(
                           String.format(
-                              I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
+                              I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
         } else {
           response.setInfo(

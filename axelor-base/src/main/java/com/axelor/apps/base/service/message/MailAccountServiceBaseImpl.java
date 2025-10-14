@@ -42,14 +42,16 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
 
   @Inject
   public MailAccountServiceBaseImpl(
-      EmailAccountRepository mailAccountRepo,
+      EmailAccountRepository emailAccountRepo,
       CipherService cipherService,
       EmailAddressRepository emailAddressRepo,
       MessageRepository messageRepo,
       MetaFiles metaFiles,
-      UserService userService) {
-    super(mailAccountRepo, cipherService, emailAddressRepo, messageRepo, metaFiles);
+      UserService userService,
+      AppBaseService appBaseService) {
+    super(emailAccountRepo, cipherService, emailAddressRepo, messageRepo, metaFiles);
     this.userService = userService;
+    this.appBaseService = appBaseService;
   }
 
   @Override
@@ -74,7 +76,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
                       ? ".id = " + mailAccount.getCompany().getId()
                       : " IS NULL");
         }
-        Long count = mailAccountRepo.all().filter(query).count();
+        Long count = emailAccountRepo.all().filter(query).count();
 
         if (count > 0) {
           throw new IllegalStateException(I18n.get(MessageExceptionMessage.MAIL_ACCOUNT_5));
@@ -126,7 +128,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
     User user = userService.getUser();
     if (appBase.getEmailAccountByUser() && user != null) {
       emailAccount =
-          mailAccountRepo
+          emailAccountRepo
               .all()
               .filter(
                   "self.user = ?1 AND self.isDefault = true AND self.serverTypeSelect = ?2",
@@ -140,7 +142,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
         && user != null
         && user.getActiveCompany() != null) {
       emailAccount =
-          mailAccountRepo
+          emailAccountRepo
               .all()
               .filter(
                   "self.company = ?1 AND self.isDefault = true AND self.serverTypeSelect = ?2",
@@ -164,7 +166,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
     EmailAccount emailAccount = null;
     if (appBase.getEmailAccountByUser() && user != null) {
       emailAccount =
-          mailAccountRepo
+          emailAccountRepo
               .all()
               .filter(
                   "self.user = ?1 AND self.isDefault = true"
@@ -180,7 +182,7 @@ public class MailAccountServiceBaseImpl extends MailAccountServiceImpl {
         && user != null
         && user.getActiveCompany() != null) {
       emailAccount =
-          mailAccountRepo
+          emailAccountRepo
               .all()
               .filter(
                   "self.company = ?1 AND self.isDefault = true"

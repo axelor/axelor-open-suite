@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.talent.service;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.inject.Beans;
@@ -40,13 +41,23 @@ public class MailAccountServiceTalentImpl extends MailAccountServiceBaseImpl {
 
   @Inject
   public MailAccountServiceTalentImpl(
-      EmailAccountRepository mailAccountRepo,
+      EmailAccountRepository emailAccountRepo,
       CipherService cipherService,
       EmailAddressRepository emailAddressRepo,
       MessageRepository messageRepo,
       MetaFiles metaFiles,
-      UserService userService) {
-    super(mailAccountRepo, cipherService, emailAddressRepo, messageRepo, metaFiles, userService);
+      UserService userService,
+      AppBaseService appBaseService,
+      AppRecruitmentRepository appRecruitmentRepo) {
+    super(
+        emailAccountRepo,
+        cipherService,
+        emailAddressRepo,
+        messageRepo,
+        metaFiles,
+        userService,
+        appBaseService);
+    this.appRecruitmentRepo = appRecruitmentRepo;
   }
 
   @Inject private AppRecruitmentRepository appRecruitmentRepo;

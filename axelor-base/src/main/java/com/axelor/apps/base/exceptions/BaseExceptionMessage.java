@@ -746,4 +746,6 @@ public final class BaseExceptionMessage {
 
   public static final String PACKAGING_MAX_WEIGHT_EXCEEDED = /*$$(*/
       "The products' total weight exceeds the maximum weight carried by the packaging." /*)*/;
+
+  public static final String SEND_EMAIL_EXCEPTION = /*$$(*/ "Error when sending email: %s" /*)*/;
 }

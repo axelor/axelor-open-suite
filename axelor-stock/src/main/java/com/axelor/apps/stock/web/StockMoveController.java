@@ -23,6 +23,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TraceBack;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.LogisticalForm;
@@ -46,7 +47,6 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.repo.TemplateRepository;
-import com.axelor.message.exception.MessageExceptionMessage;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -90,7 +90,7 @@ public class StockMoveController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
+                            I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
     } catch (Exception e) {
@@ -152,7 +152,7 @@ public class StockMoveController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
+                            I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
       Optional<TraceBack> lastTracebackAfterOptional =

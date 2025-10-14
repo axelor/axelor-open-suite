@@ -60,7 +60,6 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.message.exception.MessageExceptionMessage;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -167,7 +166,7 @@ public class ManufOrderController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
+                            I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
 
@@ -195,7 +194,7 @@ public class ManufOrderController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
+                            I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
       response.setReload(true);

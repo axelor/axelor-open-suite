@@ -8,7 +8,7 @@ import com.axelor.apps.supplychain.service.packaging.PackagingMassService;
 import com.axelor.apps.supplychain.service.packaging.PackagingSequenceService;
 import com.axelor.apps.supplychain.service.packaging.PackagingStockMoveLineService;
 import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class LogisticalFormSupplychainRepository extends LogisticalFormStockRepository {
 

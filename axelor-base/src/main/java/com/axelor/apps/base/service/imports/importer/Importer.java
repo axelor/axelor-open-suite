@@ -27,11 +27,13 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.FileUtils;
+import com.axelor.file.store.FileStoreFactory;
+import com.axelor.file.store.Store;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Preconditions;
-import com.google.common.io.Files;
 import jakarta.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -256,7 +258,7 @@ public abstract class Importer {
   private static File createDefaultWorkspace() {
     File file = null;
     try {
-      file = Files.createTempDirectory(null).toFile();
+      file = TempFiles.createTempDir(null).toFile();
       file.deleteOnExit();
     } catch (IOException e) {
       LOG.error(e.getMessage());
@@ -317,7 +319,8 @@ public abstract class Importer {
   protected MetaFile getDataMetaFile() throws IOException {
     MetaFile dataMetaFile = configuration.getDataMetaFile();
     Path path = MetaFiles.getPath(dataMetaFile);
-    if (!Files.exists(path)) {
+    Store store = FileStoreFactory.getStore();
+    if (!store.hasFile(path.toString())) {
       return null;
     }
     try (FileInputStream in = new FileInputStream(path.toFile())) {

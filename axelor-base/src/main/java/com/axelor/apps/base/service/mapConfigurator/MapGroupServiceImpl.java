@@ -31,6 +31,7 @@ import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
+import jakarta.persistence.Query;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -61,7 +62,7 @@ public class MapGroupServiceImpl implements MapGroupService {
     if (!Strings.isNullOrEmpty(mapGroup.getFilter())) {
       queryStr += " WHERE " + mapGroup.getFilter();
     }
-    javax.persistence.Query query = JPA.em().createQuery(queryStr);
+    Query query = JPA.em().createQuery(queryStr);
 
     QueryBinder.of(query)
         .bind(new ScriptBindings(new Context(Class.forName(metaModel))))
