@@ -136,7 +136,7 @@ public interface StockMoveService {
 
   public String realize(StockMove stockMove, boolean check) throws AxelorException;
 
-  public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList);
+  public boolean mustBeSplit(StockMove stockMove);
 
   public Optional<StockMove> copyAndSplitStockMove(StockMove stockMove) throws AxelorException;
 

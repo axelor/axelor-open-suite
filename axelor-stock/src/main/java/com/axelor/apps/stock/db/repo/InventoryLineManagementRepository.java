@@ -20,7 +20,7 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.service.InventoryLineService;
+import com.axelor.apps.stock.service.inventory.InventoryLineService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 

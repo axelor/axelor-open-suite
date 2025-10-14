@@ -24,7 +24,7 @@ import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.rest.dto.InventoryLinePostRequest;
 import com.axelor.apps.stock.rest.dto.InventoryLinePutRequest;
 import com.axelor.apps.stock.rest.dto.InventoryLineResponse;
-import com.axelor.apps.stock.service.InventoryLineService;
+import com.axelor.apps.stock.service.inventory.InventoryLineService;
 import com.axelor.apps.stock.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;

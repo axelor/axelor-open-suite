@@ -33,6 +33,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface StockMoveLineService {
 
@@ -213,10 +214,10 @@ public interface StockMoveLineService {
   /**
    * Store customs code information on each stock move line from its product.
    *
-   * @param stockMoveLineList List of StockMoveLines on which to operate
+   * @param stockMoveLine StockMoveLine on which to operate
    * @throws AxelorException
    */
-  public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList) throws AxelorException;
+  public void storeCustomsCodes(StockMoveLine stockMoveLine) throws AxelorException;
 
   /**
    * Set product information.
@@ -290,6 +291,15 @@ public interface StockMoveLineService {
       String description)
       throws AxelorException;
 
+  void updateLocations(
+      int fromStatus,
+      int toStatus,
+      Set<Long> stockMoveLineIds,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      boolean generateOrder)
+      throws AxelorException;
+
   /**
    * Same as {@link #updateLocations(StockLocation, StockLocation, int, int, List, LocalDate,
    * boolean)} But instead of creating wap history at with today date,they will be created at date
@@ -309,6 +319,17 @@ public interface StockMoveLineService {
       int fromStatus,
       int toStatus,
       List<StockMoveLine> stockMoveLineList,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      LocalDate date,
+      String origin,
+      boolean generateOrder)
+      throws AxelorException;
+
+  void updateLocations(
+      int fromStatus,
+      int toStatus,
+      Set<Long> stockMoveLineIds,
       LocalDate lastFutureStockMoveDate,
       boolean realQty,
       LocalDate date,
