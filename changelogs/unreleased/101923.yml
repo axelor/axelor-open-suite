@@ -1,0 +1,3 @@
+---
+title: "ACCOUNT : Correct display condition on vatSystemSelect and isTaxRequireOnMoveLine for tax type accounts."
+module: axelor-account
