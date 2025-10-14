@@ -145,7 +145,7 @@
           <field name="toDate" colSpan="6"/>
           <field name="company" form-view="company-form" grid-view="company-grid" colSpan="6"
             canEdit="false" if-module="axelor-business-project"/>
-          <field name="clientPartner"
+          <field name="clientPartner" canNew="true"
             domain="self.isCustomer = true AND :company member of self.companySet"
             onChange="action-project-method-get-partner-data" required="true"
             form-view="partner-form" grid-view="partner-grid" colSpan="6"
@@ -173,6 +173,11 @@
           <field name="numberHoursADay"/>
           <field name="spentTimeCostComputationMethod"/>
           <field name="allowToGetPricesFromFrameworkContract"/>
+          <!-- MGM-69: adding the allow to invoice time spent to business configuration while hidding
+            general configuration -->
+          <field name="manageTimeSpent" widget="inline-checkbox"
+            onChange="action-project-record-manage-timespent-reset-values, action-attrs-project-show-log-time-panel"
+            if="__config__.app.isApp('timesheet')"/>
         </panel>
         <panel-include view="incl-project-config-panel-form"/>
       </panel>

@@ -334,41 +334,62 @@
       form-view="partner-role-form" grid-view="partner-role-grid"
       showIf="isContact || partnerTypeSelect == 2" canNew="false"/>
     <panel name="partnerDetailsPanel" title="Partner Details" hideIf="isEmployee" colSpan="12">
-      <panel colSpan="6" name="partnerCategoryPanel">
-        <field name="partnerCategory" widget="SuggestBox" colSpan="6"
+      <panel colSpan="12" name="partnerCategoryPanel">
+        <!-- MGM-77: customerNumber added as custom attr. -->
+        <field name="customerNumber" colSpan="4"/>
+        <!-- MGM-77: registrationCode, taxNbr moved from other partner details up here -->
+        <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
+          onChange="action-group-partner-registration-code-onChange"/>
+        <field name="taxNbr" hidden="true" colSpan="4" hideIf="partnerTypeSelect== 2"/>
+        <field name="partnerCategory" widget="SuggestBox" colSpan="4"
           form-view="partner-category-form" grid-view="partner-category-grid"/>
-        <field name="industrySector" colSpan="6" widget="SuggestBox"
+        <field name="industrySector" colSpan="4" widget="SuggestBox"
           hideIf="partnerTypeSelect== 2"/>
-
+        <!-- MGM-77: mainActivity moved from other partner details up here -->
+        <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
+          form-view="main-activity-form" colSpan="4"/>
+        <!--MGM-77: Adding currency directly to the Partner Detail section for customers, since it is
+          a required field -->
+        <field name="currency" expr="eval: __user__.activeCompany?.currency"
+          if="#{!isContact}" colSpan="4"/>
+        <!-- MGM-77: parentPartner moved from other partner details up here -->
+        <field name="parentPartner" hideIf="partnerTypeSelect != 1"
+          if="__config__.app.getApp('base')?.getManageSubsidiaryPartner()" form-view="partner-form"
+          grid-view="partner-grid" onSelect="action-partner-method-set-parent-partner-domain"
+          colSpan="4"/>
+        <!-- MGM-77: Source is not relevant for MGM Sales Process -->
         <field name="source" canEdit="false" colSpan="6" widget="SuggestBox"
-          form-view="source-form" grid-view="source-grid"/>
-        <field name="department" colSpan="6" hideIf="partnerTypeSelect== 2"/>
-        <panel name="functionPanel" colSpan="12" showIf="isContact || partnerTypeSelect == 2">
+          form-view="source-form" grid-view="source-grid" hideIf="isCustomer"/>
+        <field name="department" colSpan="6" hideIf="partnerTypeSelect== 2 || isCustomer"/>
+        <panel name="functionPanel" colSpan="12" showIf="isContact || partnerTypeSelect == 2"
+          hideIf="isCustomer">
           <field name="jobTitleFunction"
             onChange="action-record-base-partner-set-business-card"/>
           <field name="functionBusinessCard"/>
         </panel>
-        <field name="tagSet" widget="TagSelect" x-color-field="color"
-          grid-view="tag-simplified-grid" form-view="tag-form"
-          onSelect="action-partner-attrs-set-partner-tag-domain"/>
+        <!-- MGM-77: TagSet is not required for MGM Sales Process -->
+        <!-- <field name="tagSet" widget="TagSelect" x-color-field="color" grid-view="tag-simplified-grid"
+          form-view="tag-form" onSelect="action-partner-attrs-set-partner-tag-domain"/> -->
       </panel>
-      <panel name="otherPartnerDetailsPanel">
-        <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
-          onChange="action-group-partner-registration-code-onChange"/>
-        <field name="siren" colSpan="4" readonly="true" hidden="true"/>
-        <field name="nic" colSpan="4" readonly="true" hidden="true"/>
+      <panel name="otherPartnerDetailsPanel" colSpan="12">
+        <!-- MGM-77: registration code moved up to Partner Details -->
+        <!-- <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4" onChange="action-group-partner-registration-code-onChange"/> -->
+        <!-- MGM-77: siren and nic are not required for MGM Sales Process -->
+        <!-- <field name="siren" colSpan="4" readonly="true" hidden="true"/> <field name="nic" colSpan="4"
+          readonly="true" hidden="true"/> -->
         <label name="isValidRegistrationCode" type="string" showTitle="false" x-dirty="false"
           hidden="true" css="label-danger"/>
         <spacer colSpan="8"/>
-        <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/>
-        <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
-          form-view="main-activity-form"/>
-        <field name="taxNbr" hidden="true"/>
+        <!-- MGM-77: turnOver not relevant for MGM Sales Process -->
+        <!-- <field name="saleTurnover" hideIf="partnerTypeSelect== 2"/> <field name="mainActivity" hideIf="partnerTypeSelect==
+          2" domain="self.isFinal = true" form-view="main-activity-form"/> -->
+        <!-- MGM-77: taxNbr moved up to Partner Details -->
+        <!-- <field name="taxNbr" hidden="true"/> -->
         <field name="paymentDelay" if-module="axelor-cash-management"
           if="__config__.app.isApp('cash-management')"/>
-        <field name="parentPartner" hideIf="partnerTypeSelect != 1"
-          if="__config__.app.getApp('base')?.getManageSubsidiaryPartner()" form-view="partner-form"
-          grid-view="partner-grid" onSelect="action-partner-method-set-parent-partner-domain"/>
+        <!-- MGM-77: parentPartner moved up to Partner Details -->
+        <!-- <field name="parentPartner" hideIf="partnerTypeSelect != 1" if="__config__.app.getApp('base')?.getManageSubsidiaryPartner()"
+          form-view="partner-form" grid-view="partner-grid" onSelect="action-partner-method-set-parent-partner-domain"/> -->
         <field name="sellerCode" showIf="isFactor"
           if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageFactors()"
           if-module="axelor-account"/>
@@ -432,9 +453,9 @@
             colSpan="12"/>
         </panel>
         <panel name="generalContactDetailsPanel" title="General contact details" colSpan="12">
+          <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" widget="phone"/>
           <field name="fixedPhone" colSpan="3" widget="phone"
             x-placeholder-number-type="FIXED_LINE"/>
-          <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" widget="phone"/>
           <field name="emailAddress" canSelect="false" colSpan="6"
             form-view="email-address-simple-form" x-show-icons="false">
             <editor x-show-titles="false" x-viewer="true">
@@ -472,8 +493,18 @@
           <field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
         </panel>
       </panel>
-      <panel name="eventPanel" title="Events" showIf="id != null &amp;&amp; !isEmployee"
-        if-module="axelor-crm" hidden="true" if="__config__.app.isApp('crm')">
+      <!-- MGM-77: moved the project panel tab up here to be displayed right after the information panel -->
+      <panel name="projectPanel" title="Projects"
+        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
+        <panel-dashlet name="projectPanel" title="Projects"
+          action="action-partner-view-related-projects" colSpan="12"/>
+        <panel-dashlet name="invoicingProjectPanel" title="Invoicing projects"
+          action="action-partner-view-related-invoicing-projects" colSpan="12"/>
+      </panel>
+      <!-- MGM-77: Events must not be displayed in the customer form, not relevant for MGM sales process -->
+      <panel name="eventPanel" title="Events"
+        showIf="id != null &amp;&amp; !isEmployee &amp;&amp; !isCustomer" if-module="axelor-crm"
+        hidden="true" if="__config__.app.isApp('crm')">
         <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
           onClick="save,action-partner-view-meeting-event" colSpan="3"/>
         <button name="callBtn" title="Create a call" link="" icon="fa-phone"
@@ -486,8 +517,9 @@
           icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null"/>
         <panel-include view="incl-activities-partner-form"/>
       </panel>
+      <!-- MGM-77: Opportunities must not be displayed in the customer form -->
       <panel name="opportunitiesPanel" title="Opportunities"
-        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        showIf="id != null &amp;&amp; !isEmployee &amp;&amp; !isCustomer" if-module="axelor-crm"
         if="__config__.app.isApp('crm')">
         <button name="createOpportunityBtn" title="Create opportunity"
           onClick="save,action-partner-view-create-opportunity" link="" colSpan="3"/>
@@ -502,13 +534,17 @@
         <panel-dashlet name="receivedEmailsPanel" title="Received emails"
           action="action-partner-method-view-received-emails" colSpan="12" height="550"/>
       </panel>
+      <!-- MGM-77: Marketing Campaings must not be displayed in the customer form -->
       <panel name="marketingCampaignPanel" title="Marketing campaigns"
-        showIf="id != null &amp;&amp; !isEmployee" if-module="axelor-crm"
+        showIf="id != null &amp;&amp; !isEmployee &amp;&amp; !isCustomer" if-module="axelor-crm"
         if="__config__.app.isApp('marketing')">
         <panel-dashlet name="marketingCampaignsPanel"
           action="action-partner-view-marketing-campaigns" colSpan="12" height="800"/>
       </panel>
-      <panel name="customerPanel" title="Customer" if-module="axelor-sale" showIf="isCustomer"
+      <!-- MGM-77: Customer panel must not be displayed in the customer form hence hideIf instead of
+        showIf="isCustomer" -->
+      <!-- <panel name="customerPanel" title="Customer" if-module="axelor-sale" showIf="isCustomer" if="__config__.app.isApp('sale')"> -->
+      <panel name="customerPanel" title="Customer" if-module="axelor-sale" hideIf="isCustomer"
         if="__config__.app.isApp('sale')">
         <field name="saleOrderInformation"/>
         <field name="payerQuality" if-module="axelor-account"
@@ -585,8 +621,11 @@
           form-view="freight-carrier-mode-freight-carrier-form"
           grid-view="freight-carrier-mode-freight-carrier-grid" colSpan="12"/>
       </panel>
+      <!-- MGM-77: Delivery must not be displayed in the customer form, not relevant for MGM Sales Process -->
+      <!-- <panel name="deliveryPanel" title="Delivery" showIf="isSupplier || isCustomer || isSubcontractor"
+        if="__config__.app.isApp('stock')" if-module="axelor-stock"> -->
       <panel name="deliveryPanel" title="Delivery"
-        showIf="isSupplier || isCustomer || isSubcontractor" if="__config__.app.isApp('stock')"
+        showIf="isSupplier || !isCustomer || isSubcontractor" if="__config__.app.isApp('stock')"
         if-module="axelor-stock">
         <field name="deliveryDelay" showIf="isSupplier || isSubcontractor"/>
         <spacer name="deliveryDelaySpacer"/>
@@ -613,13 +652,11 @@
           <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
       </panel>
-      <panel name="projectPanel" title="Projects"
-        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-        <panel-dashlet name="projectPanel" title="Projects"
-          action="action-partner-view-related-projects" colSpan="12"/>
-        <panel-dashlet name="invoicingProjectPanel" title="Invoicing projects"
-          action="action-partner-view-related-invoicing-projects" colSpan="12"/>
-      </panel>
+      <!-- Moving the project panel up to be displayed right after the information panel -->
+      <!-- <panel name="projectPanel" title="Projects" if="__config__.app.isApp('business-project')"
+        if-module="axelor-business-project"> <panel-dashlet name="projectPanel" title="Projects" action="action-partner-view-related-projects"
+        colSpan="12"/> <panel-dashlet name="invoicingProjectPanel" title="Invoicing projects" action="action-partner-view-related-invoicing-projects"
+        colSpan="12"/> </panel> -->
     </panel-tabs>
     <panel name="partnerAttrsPanel">
       <field name="partnerAttrs" colSpan="12"/>
@@ -714,8 +751,8 @@
         <field name="jobTitleFunction" onChange="action-record-base-partner-set-business-card"/>
         <field name="functionBusinessCard"/>
         <field name="reportsTo" domain="self.isContact = true"/>
-        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
         <field name="mobilePhone" widget="phone"/>
+        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
           <editor x-show-titles="false" x-viewer="true">
@@ -810,6 +847,7 @@
     </toolbar>
     <field name="fullName"/>
     <field name="picture"/>
+    <field name="mobilePhone"/>
     <field name="fixedPhone"/>
     <field name="emailAddress.address" title="Email"/>
     <field name="partnerCategory"/>
@@ -867,8 +905,8 @@
     </toolbar>
     <field name="fullName"/>
     <field name="picture"/>
-    <field name="fixedPhone"/>
     <field name="mobilePhone"/>
+    <field name="fixedPhone"/>
     <field name="emailAddress.address" title="Email"/>
     <field name="mainPartner.simpleFullName"/>
     <field name="partnerCategory"/>
@@ -906,8 +944,8 @@
 			                            };
 			                            return (
 			                                <>
-			                                    {renderItem("telephone", fixedPhone)}
 			                                    {renderItem("phone", mobilePhone)}
+			                                    {renderItem("telephone", fixedPhone)}
 			                                    {renderItem("envelope-fill", emailAddress.address)}
 			                                    {renderItem("building", mainPartner.simpleFullName)}
 			                                    {renderItem("house-fill", mainAddress.fullName)}
@@ -930,8 +968,8 @@
     <!-- name/firstName/fixedPhone/mobilePhone/emailAddress.address -->
     <field name="name"/>
     <field name="firstName"/>
-    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
+    <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="emailAddress.address" title="Email"/>
   </grid>
 
@@ -990,8 +1028,8 @@
       <panel name="contactDetailsPanel" title="Contact details">
         <field name="jobTitleFunction"/>
         <field name="reportsTo" domain="self.isContact = true"/>
-        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
         <field name="mobilePhone" widget="phone"/>
+        <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
           x-show-icons="false">
           <editor x-show-titles="false" x-viewer="true">
