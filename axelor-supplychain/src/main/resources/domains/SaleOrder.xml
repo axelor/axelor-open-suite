@@ -58,6 +58,10 @@
       ref="com.axelor.apps.base.db.Partner"/>
     <many-to-one name="deliveredPartner" title="Delivery partner"
       ref="com.axelor.apps.base.db.Partner"/>
+
+    <decimal name="shippingCost" title="Shipping cost" precision="20" scale="3"
+      help="The shipping cost is accounted for in the sale order's total cost and affects the margin."/>
+
     <extra-code>
             <![CDATA[
                 // INVOICE

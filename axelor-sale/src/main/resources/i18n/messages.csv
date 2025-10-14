@@ -566,6 +566,7 @@
 "SaleOrder.salemanName",,,
 "SaleOrder.salemanPhone",,,
 "SaleOrder.shipmentDate",,,
+"SaleOrder.shippingCost",,,
 "SaleOrder.subscriptionContract",,,
 "SaleOrder.supplier",,,
 "SaleOrder.supplyRef",,,
