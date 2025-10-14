@@ -899,8 +899,6 @@
 "Error in import: %s. Please check the server log","Erreur dans l'import : %s. Veuillez verifier le journal du serveur",,
 "Error in method name. Please check.","Erreur dans le nom de la méthode. Veuillez vérifier.",,
 "Error in print template line with sequence %s and title %s.","Erreur dans la ligne du modèle d'impression de séquence %s et de titre %s.",,
-"Error in print. Please check report configuration and print setting.","Erreur d’impression. Veuillez vérifiez les paramètres d’impression et la configuration des rapports.",,
-"Error in print. Please check report configuration and print settings.","Erreur d’impression. Veuillez vérifiez les paramètres d’impression et la configuration des rapports.",,
 "Error logs","Fichier des erreurs",,
 "Error when closing period %s","Erreur pendant la fermeture de la période %s",,
 "Error when computing the printing filename, using template %s: %s","Erreur lors du calcul du nom du fichier, modèle %s: %s",,
