@@ -1,21 +1,26 @@
 package com.axelor.apps.supplychain.service.packaging;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.stock.db.LogisticalForm;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.PackagingLine;
 import com.axelor.apps.supplychain.db.repo.PackagingLineRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.LogisticalFormComputeService;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class PackagingLineCreationServiceImpl implements PackagingLineCreationService {
@@ -23,15 +28,18 @@ public class PackagingLineCreationServiceImpl implements PackagingLineCreationSe
   protected final PackagingLineRepository packagingLineRepository;
   protected final StockMoveLineRepository stockMoveLineRepository;
   protected final LogisticalFormComputeService logisticalFormComputeService;
+  protected final StockConfigService stockConfigService;
 
   @Inject
   public PackagingLineCreationServiceImpl(
       PackagingLineRepository packagingLineRepository,
       StockMoveLineRepository stockMoveLineRepository,
-      LogisticalFormComputeService logisticalFormComputeService) {
+      LogisticalFormComputeService logisticalFormComputeService,
+      StockConfigService stockConfigService) {
     this.packagingLineRepository = packagingLineRepository;
     this.stockMoveLineRepository = stockMoveLineRepository;
     this.logisticalFormComputeService = logisticalFormComputeService;
+    this.stockConfigService = stockConfigService;
   }
 
   @Override
@@ -46,16 +54,26 @@ public class PackagingLineCreationServiceImpl implements PackagingLineCreationSe
   }
 
   @Override
-  public String getStockMoveLineDomain(LogisticalForm logisticalForm) {
+  public String getStockMoveLineDomain(LogisticalForm logisticalForm) throws AxelorException {
+    Company company =
+        Optional.ofNullable(logisticalForm)
+            .map(LogisticalForm::getCompany)
+            .orElse(AuthUtils.getUser().getActiveCompany());
+    StockConfig stockConfig = stockConfigService.getStockConfig(company);
+    boolean allowInternalStockMove = stockConfig.getAllowInternalStockMoveOnLogisticalForm();
+    String typeSelectFilter =
+        allowInternalStockMove
+            ? "(self.stockMove.typeSelect = 2 OR self.stockMove.typeSelect = 1)"
+            : "self.stockMove.typeSelect = 2";
     if (logisticalForm == null) {
-      return "self.stockMove.typeSelect = 2 AND self.qtyRemainingToPackage > 0";
+      return typeSelectFilter + " AND self.qtyRemainingToPackage > 0";
     }
     String stockMoveIds = StringHelper.getIdListString(logisticalForm.getStockMoveList());
     if (stockMoveIds.isEmpty()) {
       return "self.id = 0";
     }
     return String.format(
-        "self.stockMove.typeSelect = 2 AND self.qtyRemainingToPackage > 0 AND self.stockMove.id IN (%s)",
+        typeSelectFilter + " AND self.qtyRemainingToPackage > 0 AND self.stockMove.id IN (%s)",
         stockMoveIds);
   }
 

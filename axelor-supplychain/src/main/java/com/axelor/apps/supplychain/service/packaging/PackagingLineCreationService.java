@@ -13,7 +13,7 @@ public interface PackagingLineCreationService {
   void addPackagingLines(Packaging packaging, List<StockMoveLine> stockMoveLineList)
       throws AxelorException;
 
-  String getStockMoveLineDomain(LogisticalForm logisticalForm);
+  String getStockMoveLineDomain(LogisticalForm logisticalForm) throws AxelorException;
 
   PackagingLine createPackagingLine(
       Packaging packaging, StockMoveLine stockMoveLine, BigDecimal quantity) throws AxelorException;

@@ -14,6 +14,7 @@ public class PackagingLinePostRequest extends RequestPostStructure {
   @Min(0)
   private Long packagingId;
 
+  @NotNull
   @Min(0)
   private Long stockMoveLineId;
 
