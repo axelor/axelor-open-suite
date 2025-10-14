@@ -105,6 +105,9 @@
 
     <boolean name="imputable" title="Imputable" default="true"/>
 
+    <many-to-many name="watcherUserSet" ref="com.axelor.auth.db.User"
+      title="User watchers"/>
+
     <extra-code>
 
       // TYPE SELECT

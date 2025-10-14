@@ -21,6 +21,22 @@
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="allProjectTasks"/>
   </action-method>
 
+  <menuitem name="project-fav-project-tree" parent="menu-project-root" order="200"
+    title="Favourite projects" icon="fa-star" icon-background="#3f6bb9"
+    action="project.fav.project.tree"
+    if="__config__.app.isApp('project') &amp;&amp; __user__?.favouriteProjectSet"/>
+  <action-method name="project.fav.project.tree">
+    <call class="com.axelor.apps.project.web.ProjectMenuController"
+      method="allFavouriteProjects"/>
+  </action-method>
+
+  <menuitem name="project-task-all-filtered" parent="menu-project-root" order="250"
+    title="Tasks" action="project.task.all.filtered"/>
+  <action-method name="project.task.all.filtered">
+    <call class="com.axelor.apps.project.web.ProjectMenuController"
+      method="allProjectTasksFiltered"/>
+  </action-method>
+
   <menuitem name="project-template" parent="menu-project-root" order="500"
     title="Templates"/>
 
