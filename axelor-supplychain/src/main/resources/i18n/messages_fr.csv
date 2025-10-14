@@ -358,7 +358,7 @@
 "Line numberNomenclatureSource or destination countryFiscal valueRegimeNet massSupplementary unitNature of transactionMode of transportDepartmentCountry of originAcquirerProduct codeProduct namePartnerInvoice",,,
 "Lines to invoice","Lignes à facturer",,
 "Logistical form","Fiche logistique",,
-"Logistical form or a parent packaging must be provided.","Une fiche logistique ou un emballage parent doit être renseigné.",,
+"Logistical form or parent packaging must be provided.","Une fiche logistique ou un emballage parent doit être renseigné.",,
 "LogisticalForm.customerCode","Code client :",,
 "LogisticalForm.customerName","Nom client :",,
 "LogisticalForm.date","Date :",,

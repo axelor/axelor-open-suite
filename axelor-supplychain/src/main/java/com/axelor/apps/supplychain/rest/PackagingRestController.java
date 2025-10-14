@@ -70,7 +70,7 @@ public class PackagingRestController {
     RequestValidator.validateBody(requestBody);
     new SecurityCheck().writeAccess(Packaging.class).readAccess(Product.class).check();
 
-    Packaging packaging = ObjectFinder.find(Packaging.class, packagingId, ObjectFinder.NO_VERSION);
+    Packaging packaging = ObjectFinder.find(Packaging.class, packagingId, requestBody.getVersion());
 
     Beans.get(PackagingCreateService.class)
         .updatePackageUsed(requestBody.fetchPackageUsed(), packaging);
