@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.supplychain.service.saleorder.packaging;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
@@ -29,6 +29,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SaleOrderPackagingDimensionServiceImpl implements SaleOrderPackagingDimensionService {
@@ -48,17 +49,16 @@ public class SaleOrderPackagingDimensionServiceImpl implements SaleOrderPackagin
   }
 
   @Override
-  public List<Product> getProductsOrderedByVolume(Map<Product, BigDecimal> productQtyMap)
-      throws AxelorException {
+  public List<Product> getProductsOrderedByVolume(Set<Product> products) throws AxelorException {
     Map<Product, BigDecimal> map = new HashMap<>();
-    for (Product product : productQtyMap.keySet()) {
+    for (Product product : products) {
       BigDecimal volume =
           getConvertedDimension(product.getLength(), product)
               .multiply(getConvertedDimension(product.getWidth(), product))
               .multiply(getConvertedDimension(product.getHeight(), product));
       map.put(product, volume);
     }
-    return productQtyMap.keySet().stream()
+    return products.stream()
         .sorted((p1, p2) -> map.get(p2).compareTo(map.get(p1)))
         .collect(Collectors.toList());
   }

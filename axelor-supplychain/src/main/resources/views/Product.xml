@@ -85,6 +85,8 @@
           <field name="limitedQty"/>
           <field name="unCode"/>
           <field name="packagingGroupSelect" requiredIf="isAdr"/>
+          <field name="labelNumber"/>
+          <field name="tunnelCode"/>
         </panel>
       </insert>
     </extend>

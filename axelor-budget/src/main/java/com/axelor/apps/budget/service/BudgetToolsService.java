@@ -87,6 +87,8 @@ public interface BudgetToolsService {
   Map<String, BigDecimal> buildMapWithAmounts(
       List<Budget> budgetList, List<BudgetLevel> budgetLevelList);
 
+  Map<String, BigDecimal> computeBudgetAmountMap(Budget budget);
+
   BigDecimal getBudgetRemainingAmountToAllocate(
       List<BudgetDistribution> budgetDistributionList, BigDecimal maxAmount);
 }

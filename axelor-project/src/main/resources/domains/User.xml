@@ -12,6 +12,10 @@
     <many-to-one name="activeProject" title="Active project"
       ref="com.axelor.apps.project.db.Project"/>
     <boolean name="isIncludeSubProjects" title="Include sub projects"/>
+    <many-to-many name="favouriteProjectSet" title="Favourite projects"
+      ref="com.axelor.apps.project.db.Project" mappedBy="favouriteProjectUserSet"/>
+    <many-to-many name="watchedProjectTaskSet" title="Watched tasks"
+      ref="com.axelor.apps.project.db.ProjectTask" mappedBy="watcherUserSet"/>
 
     <track>
       <field name="activeProject" on="UPDATE"/>

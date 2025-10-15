@@ -279,9 +279,6 @@
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
       <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
         onClick="action-send-by-email-with-template" hidden="true" showIf="id"/>
-      <button name="estimatePackagingBtn" title="Estimate packaging" icon="fa-envelope"
-        onClick="save,action-sale-order-method-estimate-packaging"
-        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button name="recomputePricesBtn" title="Recompute prices"
         onClick="action-sale-order-group-recompute-prices-btn" showIf="statusSelect == 1"
         icon="fa-calculator"
@@ -602,6 +599,9 @@
           form-view="partner-form" grid-view="partner-grid"/>
         <field name="incoterm" canEdit="false" form-view="incoterm-form"
           grid-view="incoterm-grid" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
+        <field name="shippingCost" title="SaleOrder.shippingCost"
+          x-scale="company.currency.numberOfDecimals"
+          onChange="action-sale-order-method-compute-margin"/>
         <field name="isNeedingConformityCertificate" colSpan="3"/>
         <field name="isIspmRequired" readonly="true" colSpan="3"/>
         <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details"
@@ -2354,8 +2354,8 @@
     <domain>self.originSaleQuotation.id = :id</domain>
   </action-view>
 
-  <action-method name="action-sale-order-method-estimate-packaging">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="estimatePackaging"/>
+  <action-method name="action-sale-order-method-compute-margin">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="computeMargin"/>
   </action-method>
 
 </object-views>

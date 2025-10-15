@@ -16,24 +16,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.supplychain.service.saleorder.packaging;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
-public interface SaleOrderPackagingMessageService {
+public interface SaleOrderPackagingCreateService {
 
-  String formatPackagingMessage(String title, List<String> messages);
-
-  void updatePackagingMessage(
+  void createPackaging(
       Product selectedBox,
-      Map<Product, BigDecimal> boxContents,
-      Map<Product, BigDecimal> productQtyMap,
-      List<String> messages,
-      Map<Product, String> descMap,
-      Map<Product, BigDecimal[]> weightMap)
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> boxContents,
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> lineQtyMap,
+      SaleOrder saleOrder)
       throws AxelorException;
 }

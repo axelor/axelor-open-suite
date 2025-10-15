@@ -16,27 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.supplychain.service.saleorder.packaging;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.ProductPackaging;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
-public interface SaleOrderProductPackagingService {
+public interface SaleOrderPackagingOrientationService {
 
-  void checkMultipleQty(Map<Product, BigDecimal> productQtyMap) throws AxelorException;
+  boolean canFit(Product product, Product box) throws AxelorException;
 
-  List<ProductPackaging> getProductPackagings(Product product);
+  BigDecimal[][] getOrientations(BigDecimal[] dimensions);
 
-  void packWithProductPackaging(
-      Map<Product, BigDecimal> productQtyMap,
-      List<String> messages,
-      List<Product> productsWithPackaging,
-      List<Product> packedThisLevel,
-      Map<Product, String> descMap,
-      Map<Product, BigDecimal[]> weightMap)
+  void validateProductsForPackaging(Set<Product> products, List<Product> packagings)
       throws AxelorException;
 }

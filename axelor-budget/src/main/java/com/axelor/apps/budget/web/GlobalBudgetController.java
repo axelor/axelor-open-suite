@@ -31,6 +31,7 @@ import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.export.ExportBudgetCallableService;
 import com.axelor.apps.budget.service.BudgetComputeHiddenDateService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetResetToolService;
@@ -45,6 +46,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class GlobalBudgetController {
@@ -277,8 +279,9 @@ public class GlobalBudgetController {
 
   public void computeAmounts(ActionRequest request, ActionResponse response) {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
-    Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
-    response.setValue("totalAmountExpected", globalBudget.getTotalAmountExpected());
-    response.setValue("totalAmountAvailable", globalBudget.getTotalAmountAvailable());
+    Map<String, BigDecimal> amountByField =
+        Beans.get(BudgetToolsService.class)
+            .buildMapWithAmounts(globalBudget.getBudgetList(), globalBudget.getBudgetLevelList());
+    response.setValues(amountByField);
   }
 }

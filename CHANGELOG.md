@@ -1,3 +1,103 @@
+## [8.4.8] (2025-10-09)
+
+### Fixes
+#### Base
+
+* Product: fixed prices of generated company product variant .
+* Abc analysis: fixed color on chart same as table.
+* Price list: fixed price list filter in grid views.
+* API SIRENE: removed tracking for non-existent fields.
+* Update axelor utils dependency to 3.4.4
+
+#### Account
+
+* AnalyticMoveLine: Fixed the amount recompute when changing percentage.
+* FEC Import : No longer remove test after '-' from move reference.
+* Move: fixed issues where generating a counterpart without saving caused ghost lines, errors, or lost move lines.
+* Fixed asset: corrected accounting value calculation with imported depreciation amounts.
+* Invoice: Advanced invoice are not generated twice anymore when isVentilationSkipped is activated.
+* ANALYTIC: Updated analytic journal select domain method.
+* AccountingBatch/CuttOff : fixed the analytic management in cut off batch.
+
+#### Bank Payment
+
+* Move : fixed bank reconciled amount set when we don't have a linked bank reconciliation.
+* BANKRECONCILIATION / BANKRECONCILIATIONLINE / BANKSTATEMENT : Now includeOtherBankStatements option only retrieve unreconciled statement lines from the past.
+
+#### Budget
+
+* Budget : fixed the missing compute of all fields after budget line changes
+* GlobalBudget/BudgetLevel/Budget : update all amounts when updating budget lines values
+* Budget/Invoice/Move/Order : change the budget distribution amount in mono budget when changing line price
+
+#### Human Resource
+
+* Leave Request: Fixed the duration when the 'To Date' field is empty.
+* ExpenseLine : Remove action who doesn't exist
+
+#### Mobile Settings
+
+* App mobile settings: fixed deleted modules in web are bugged in mobile.
+
+#### Production
+
+* Manuf order: managed partial consumption in manuf order from consumption button too.
+* Bill of material line: correct domain of product field in bill of material line grid.
+* Operation order: fixed display condition of 'To invoice' to show only when 'Manage business production' is enable in app manufacturing.
+
+#### Purchase
+
+* Purchase order: fixed error when the supplier is cleared.
+
+#### Quality
+
+* Quality: fixed French translation in Quality improvement form view.
+
+#### Sale
+
+* Sale order: fixed error when customer is cleared.
+* Sale order: fixed broken sale order printing when level is not set in sale order lines.
+
+#### Stock
+
+* Product: fixed Stock and Stock history charts to exclude cancelled stock moves and take real qty into account.
+* Stock move: fixed shipping coef not working on supplier arrival having purchase order.
+* Product: fixed quantity in stock report with correctly converted unit.
+* Stock location line: fixed last inventory data not getting updated in details stock location line while validating inventory.
+
+#### Supply Chain
+
+* Pricing: added Freight Carrier Pricing and Freight Carrier Delay in pricing type selection.
+* SaleOrder/Analytic : fixed the blocking of sale order when analytic template is required and there is no values
+* Batch stock rules: fixed an issue where data could be skipped.
+
+#### Intervention
+
+* Duration: added missing intervention application type in selection.
+
+
+### Developer
+
+#### Account
+
+DELETE FROM meta_action where name ='action-attrs-domain-onselect-journal-analytic-move-line';
+
+---
+
+Added AnalyticMoveLineRepository in MoveLineComputeAnalyticServiceImpl constructor. Added copyAnalyticsDataFromMoveLine method in MoveLineComputeAnalyticService.
+
+#### Budget
+
+DELETE FROM meta_action WHERE name = 'action-budget-budget-compute-amounts';
+
+---
+
+Added BudgetDistributionComputeService in PurchaseOrderLineGroupBudgetServiceImpl constructor. Added BudgetDistributionComputeService in BudgetInvoiceLineComputeServiceImpl constructor. Added BudgetDistributionComputeService in MoveLineGroupBudgetServiceImpl constructor. Added BudgetDistributionComputeService in SaleOrderLineComputeBudgetServiceImpl constructor. Change the PurchaseOrderLineService.compute to return a Map<String, Object> and not a Map<String, BigDecimal> anymore
+
+#### Supply Chain
+
+Added AnalyticToolSupplychainService in SaleOrderFinalizeSupplychainServiceImpl constructor. Added AnalyticToolSupplychainService in SaleOrderFinalizeBudgetServiceImpl constructor.
+
 ## [8.4.7] (2025-09-25)
 
 ### Fixes
@@ -791,6 +891,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.8]: https://github.com/axelor/axelor-open-suite/compare/v8.4.7...v8.4.8
 [8.4.7]: https://github.com/axelor/axelor-open-suite/compare/v8.4.6...v8.4.7
 [8.4.6]: https://github.com/axelor/axelor-open-suite/compare/v8.4.5...v8.4.6
 [8.4.5]: https://github.com/axelor/axelor-open-suite/compare/v8.4.4...v8.4.5
