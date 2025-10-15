@@ -108,4 +108,6 @@ public class ITranslation {
   public static final String PACKAGING_UPDATED = /*$$(*/ "Packaging successfully updated."; /*)*/
 
   public static final String PACKAGING_DELETED = /*$$(*/ "Packaging successfully removed."; /*)*/
+  public static final String LOGISTICAL_FORM_UPDATED = /*$$(*/
+      "Logistical form successfully updated."; /*)*/
 }

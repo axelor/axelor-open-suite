@@ -472,4 +472,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String PACKAGING_PARENT_ERROR = /*$$(*/
       "Logistical form or parent packaging must be provided." /*)*/;
+
+  public static final String LOGISTICAL_FORM_STOCK_MOVE_NOT_VALID = /*$$(*/
+      "This stock move is not valid for this logistical form." /*)*/;
 }
