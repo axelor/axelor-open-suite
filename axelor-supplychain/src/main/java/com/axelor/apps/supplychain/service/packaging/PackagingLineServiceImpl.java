@@ -21,13 +21,14 @@ package com.axelor.apps.supplychain.service.packaging;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingDimensionService;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.PackagingLine;
 import com.axelor.apps.supplychain.db.repo.PackagingLineRepository;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingDimensionService;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -182,11 +183,10 @@ public class PackagingLineServiceImpl implements PackagingLineService {
 
   @Override
   public BigDecimal[] computePackagingLineMass(PackagingLine packagingLine) throws AxelorException {
-    if (packagingLine.getStockMoveLine() == null
-        || packagingLine.getStockMoveLine().getProduct() == null) {
+    Product product = getPackagingLineProduct(packagingLine);
+    if (product == null) {
       return new BigDecimal[] {BigDecimal.ZERO, BigDecimal.ZERO};
     }
-    Product product = packagingLine.getStockMoveLine().getProduct();
     BigDecimal qty = packagingLine.getQty();
 
     BigDecimal grossMass =
@@ -202,6 +202,20 @@ public class PackagingLineServiceImpl implements PackagingLineService {
             .setScale(3, RoundingMode.HALF_UP);
 
     return new BigDecimal[] {grossMass, netMass};
+  }
+
+  protected Product getPackagingLineProduct(PackagingLine packagingLine) {
+    Product product =
+        Optional.ofNullable(packagingLine.getStockMoveLine())
+            .map(StockMoveLine::getProduct)
+            .orElse(null);
+    if (product == null) {
+      product =
+          Optional.ofNullable(packagingLine.getSaleOrderLine())
+              .map(SaleOrderLine::getProduct)
+              .orElse(null);
+    }
+    return product;
   }
 
   protected void updatePackagingMass(
