@@ -144,6 +144,8 @@
 
    			public static final String SEX_F = "F";
    			public static final String SEX_M = "M";
+   			public static final String SEX_D = "D";
+   			public static final String SEX_X = "X";
 
             public static final int LUNCH_VOUCHER_MGT_FORMAT_PAPER = 1;
             public static final int LUNCH_VOUCHER_MGT_FORMAT_CARD = 2;

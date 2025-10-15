@@ -11,9 +11,10 @@
     </toolbar>
     <field name="contactPartner.partnerSeq" width="120"/>
     <field name="contactPartner.simpleFullName"/>
+    <!-- MGM-80: Changed order fixedphone and mobile phone based upon stakeholder feedback -->
+    <field name="contactPartner.mobilePhone" widget="phone"/>
     <field name="contactPartner.fixedPhone" widget="phone"
       x-placeholder-number-type="FIXED_LINE"/>
-    <field name="contactPartner.mobilePhone" widget="phone"/>
     <field name="managerUser" form-view="user-form" grid-view="user-grid"/>
     <field name="mainEmploymentContract.companyDepartment" form-view="company-department-form"
       grid-view="company-department-grid"/>
@@ -83,20 +84,19 @@
             <field name="webSite" placeholder="http://www.url.com" widget="url"
               pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$"/>
 
-            <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
+            <!-- MGM-80: Mobile Phone before fixPhone as per stakeholder requirement -->
             <field name="mobilePhone" widget="phone"/>
+            <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
           </panel>
         </editor>
       </field>
     </panel>
 
     <!-- Basic info -->
-    <panel name="phoneProSBSPanel" title="Work phones" showIf="stepByStepSelect == 1">
-      <field name="fixedProPhone" widget="phone" colSpan="4"
-        x-placeholder-number-type="FIXED_LINE"/>
-      <field name="mobileProPhone" widget="phone" colSpan="4"/>
-      <field name="phoneAtCustomer" widget="phone" colSpan="4"/>
-    </panel>
+    <!-- MGM-80: Not relevant according to stakeholder -->
+    <!-- <panel name="phoneProSBSPanel" title="Work phones" showIf="stepByStepSelect == 1"> <field name="mobileProPhone"
+      widget="phone" colSpan="4"/> <field name="fixedProPhone" widget="phone" colSpan="4" x-placeholder-number-type="FIXED_LINE"/>
+      <field name="phoneAtCustomer" widget="phone" colSpan="4"/> </panel> -->
 
     <panel name="personalInfoSBSPanel" title="Personal information"
       showIf="stepByStepSelect == 1">
@@ -111,13 +111,14 @@
       <field name="cityOfBirth" colSpan="4" canNew="true" canEdit="true"
         onSelect="action-employee-attrs-city-of-birth-on-select"/>
       <field name="citizenship" colSpan="4"/>
-      <!-- MGM-80: Not relevant according to stakeholder -->
-      <!-- <field name="maritalName" colSpan="4"/> -->
       <!-- KAPSIKI Customization: MGM38 -->
       <field name="personalNumber" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
       <field name="dependentChildren" colSpan="4"/>
-      <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
+      <!-- MGM-80: Always display maidenname as per stakeholder requirement -->
+      <!-- <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/> -->
+      <field name="maidenName" colSpan="4"/>
+      <field name="maritalName" colSpan="4"/>
       <field name="$employeeStatus" hidden="true"/>
       <panel colSpan="12">
         <!-- KAPSIKI Customization: MGM34 MGM60 -->
@@ -204,9 +205,9 @@
       showIf="stepByStepSelect == 3">
       <field name="timeLoggingPreferenceSelect" colSpan="3"
         validIf="(timesheetImputationSelect == 2 &amp;&amp; timeLoggingPreferenceSelect != 'days') || timesheetImputationSelect != 2"/>
-      <field name="product" canEdit="false" colSpan="3"
-        domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
-        grid-view="product-grid"/>
+      <!-- MGM-80: Not relevant for MGM HR Processes as per Stakeholder feedback -->
+      <!-- <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true AND self.dtype
+        = 'Product'" form-view="product-form" grid-view="product-grid"/> -->
       <field name="timesheetReminder" colSpan="3"/>
       <field name="timesheetImputationSelect" colSpan="3"
         if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"
@@ -268,10 +269,10 @@
       </panel>
 
       <panel name="contactInformationPanel" title="Contact details" itemSpan="12"
-        showIf="$readonly() &amp;&amp; (contactPartner.emailAddress.address || contactPartner.mobilePhone || contactPartner.fixedPhone || fixedProPhone || mobileProPhone || phoneAtCustomer)">
+        showIf="$readonly() &amp;&amp; (contactPartner.emailAddress.address || contactPartner.mobilePhone || contactPartner.fixedPhone || mobileProPhone || fixedProPhone || phoneAtCustomer)">
         <field name="$contactDetails" showIf="$readonly()" showTitle="false">
           <viewer
-            depends="contactPartner.emailAddress.address, contactPartner.mobilePhone, contactPartner.fixedPhone, fixedProPhone, mobileProPhone, phoneAtCustomer">
+            depends="contactPartner.emailAddress.address, contactPartner.mobilePhone, contactPartner.fixedPhone, mobileProPhone, fixedProPhone, phoneAtCustomer">
             <![CDATA[
             <>
             	{contactPartner.emailAddress.address &&
@@ -292,16 +293,16 @@
             			<Link href={`tel:${contactPartner.fixedPhone}`}> {contactPartner.fixedPhone} </Link>
             		</Box>
             	}
+                {mobileProPhone &&
+            		<Box d="flex" alignItems="center">
+            			<Icon icon="telephone" fontSize="15px"/>
+            			<Link href={`tel:${mobileProPhone}`}> {mobileProPhone} </Link>
+            		</Box>
+            	}
             	{fixedProPhone &&
             		<Box d="flex" alignItems="center">
             			<Icon icon="telephone" fontSize="15px"/>
             			<Link href={`tel:${fixedProPhone}`}> {fixedProPhone} </Link>
-            		</Box>
-            	}
-            	{mobileProPhone &&
-            		<Box d="flex" alignItems="center">
-            			<Icon icon="telephone" fontSize="15px"/>
-            			<Link href={`tel:${mobileProPhone}`}> {mobileProPhone} </Link>
             		</Box>
             	}
             	{phoneAtCustomer &&
@@ -383,12 +384,10 @@
           </panel>
         </editor>
       </field>
-      <panel name="phoneProPanel" title="Work phones" colSpan="12" itemSpan="12"
-        canCollapse="true" collapseIf="true">
-        <field name="fixedProPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
-        <field name="mobileProPhone" widget="phone"/>
-        <field name="phoneAtCustomer" widget="phone"/>
-      </panel>
+      <!-- MGM-80: Panel not relevant for MGM according to stakeholder feedback -->
+      <!-- <panel name="phoneProPanel" title="Work phones" colSpan="12" itemSpan="12" canCollapse="true"
+        collapseIf="true"> <field name="mobileProPhone" widget="phone"/> <field name="fixedProPhone" widget="phone"
+        x-placeholder-number-type="FIXED_LINE"/> <field name="phoneAtCustomer" widget="phone"/> </panel> -->
     </panel>
 
     <panel name="personalInfoPanel" title="Personal information" colSpan="12"
@@ -398,18 +397,20 @@
       <field name="sexSelect" colSpan="4"/>
       <field name="countryOfBirth" colSpan="4"
         onChange="action-employee-attrs-country-of-birth-on-change"/>
-      <field name="departmentOfBirth" colSpan="4" grid-view="hr-department-grid"
-        onChange="action-employee-attrs-department-of-birth-on-change"
-        onSelect="action-employee-attrs-department-of-birth-on-select"/>
+      <!-- MGM-80: Panel not relevant for MGM according to stakeholder feedback -->
+      <!-- <field name="departmentOfBirth" colSpan="4" grid-view="hr-department-grid" onChange="action-employee-attrs-department-of-birth-on-change"
+        onSelect="action-employee-attrs-department-of-birth-on-select"/> -->
       <field name="cityOfBirth" colSpan="4"
         onSelect="action-employee-attrs-city-of-birth-on-select"/>
       <field name="citizenship" colSpan="4"/>
-      <field name="maritalName" colSpan="4"/>
       <field name="dependentChildren" colSpan="4"/>
-      <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/>
       <!-- KAPSIKI Cutomization: MGM38 -->
       <field name="personalNumber" colSpan="4"/>
       <field name="socialSecurityNumber" colSpan="4" max="15" min="12"/>
+      <!-- MGM-80: Always display Maiden Name as per Stakeholder Feedback -->
+      <!-- <field name="maidenName" colSpan="4" hideIf="sexSelect!='F'"/> -->
+      <field name="maidenName" colSpan="4"/>
+      <field name="maritalName" colSpan="4"/>
       <panel colSpan="12">
         <!-- KAPSIKI Cutomization: MGM34 MGM60 -->
         <field name="address" colSpan="6"/>
@@ -483,9 +484,9 @@
       <panel name="timesheetsPanel" title="Timesheets" if="__config__.app.isApp('timesheet')">
         <field name="timeLoggingPreferenceSelect" colSpan="3"
           validIf="(timesheetImputationSelect == 2 &amp;&amp; timeLoggingPreferenceSelect != 'days') || timesheetImputationSelect != 2"/>
-        <field name="product" canEdit="false" colSpan="3"
-          domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
-          grid-view="product-grid"/>
+        <!-- MGM-80: Not relevant for MGM HR Process as per Stakeholder feedback -->
+        <!-- <field name="product" canEdit="false" colSpan="3" domain="self.isActivity = true AND self.dtype
+          = 'Product'" form-view="product-form" grid-view="product-grid"/> -->
         <field name="timesheetReminder" colSpan="3"/>
         <field name="timesheetImputationSelect" colSpan="3"
           if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"
@@ -673,8 +674,9 @@
     <field name="contactPartner.picture"/>
     <field name="contactPartner.firstName"/>
     <field name="contactPartner.name"/>
-    <field name="contactPartner.fixedPhone"/>
+    <!--MGM-80: mobilePhone before fixedPhone as per stakeholder requirement -->
     <field name="contactPartner.mobilePhone"/>
+    <field name="contactPartner.fixedPhone"/>
     <field name="mainEmploymentContract.payCompany"/>
     <field name="mainEmploymentContract.employment"/>
     <field name="mainEmploymentContract.companyDepartment"/>
@@ -706,8 +708,8 @@
 			                            };
 			                            return (
 			                                <>
-			                                    {renderItem("telephone", contactPartner.fixedPhone)}
 			                                    {renderItem("phone", contactPartner.mobilePhone)}
+			                                    {renderItem("telephone", contactPartner.fixedPhone)}
 			                                    {renderItem("house-fill", mainEmploymentContract.payCompany.name, "Company")}
 			                                    {renderItem("house-fill", mainEmploymentContract.employment.name, "Employment")}
 			                                    {renderItem("house-fill", mainEmploymentContract.companyDepartment.name, "Department")}
