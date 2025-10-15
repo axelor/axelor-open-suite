@@ -167,7 +167,7 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
     List<Project> projectList =
         projectRepository
             .all()
-            .filter(":userId IN self.membersUserSet.id")
+            .filter(":userId IN (SELECT memberUser.id FROM self.membersUserSet memberUser)")
             .bind("userId", expenseLine.getEmployee().getUser().getId())
             .fetch();
     return "self.id IN ("

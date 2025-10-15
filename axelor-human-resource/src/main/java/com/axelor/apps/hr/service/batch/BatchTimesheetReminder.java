@@ -108,7 +108,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
         employeeRepository
             .all()
             .filter(
-                "self.timesheetReminder = 't' AND self.mainEmploymentContract.payCompany = :companyId")
+                "self.timesheetReminder = true AND self.mainEmploymentContract.payCompany = :companyId")
             .bind("companyId", batch.getHrBatch().getCompany().getId())
             .fetch();
 

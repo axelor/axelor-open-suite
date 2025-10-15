@@ -111,7 +111,7 @@ public class EmployeeFetchServiceImpl implements EmployeeFetchService {
     return QueryBuilder.of(Employee.class)
         .add(
             "self.user.blocked = false AND self.hireDate <= :expenseDate"
-                + " AND (self.leavingDate=null OR self.leavingDate >= :expenseDate)"
+                + " AND (self.leavingDate IS null OR self.leavingDate >= :expenseDate)"
                 + " AND (self.user.expiresOn is null OR self.user.expiresOn> :currentDate)"
                 + " AND self.mainEmploymentContract.payCompany IN :companySet")
         .bind("expenseDate", expenseDate)
