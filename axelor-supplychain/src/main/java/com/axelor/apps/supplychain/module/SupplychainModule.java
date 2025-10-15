@@ -93,6 +93,7 @@ import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineStockRepository;
 import com.axelor.apps.stock.db.repo.StockMoveManagementRepository;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
+import com.axelor.apps.stock.service.LogisticalFormCreateServiceImpl;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineFetchServiceImpl;
@@ -151,6 +152,9 @@ import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.LogisticalFormComputeService;
 import com.axelor.apps.supplychain.service.LogisticalFormComputeServiceImpl;
+import com.axelor.apps.supplychain.service.LogisticalFormCreateServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.LogisticalFormStockMoveService;
+import com.axelor.apps.supplychain.service.LogisticalFormStockMoveServiceImpl;
 import com.axelor.apps.supplychain.service.LogisticalFormSupplychainService;
 import com.axelor.apps.supplychain.service.LogisticalFormSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.MrpCallTenderService;
@@ -276,6 +280,10 @@ import com.axelor.apps.supplychain.service.observer.SaleOrderLineSupplychainObse
 import com.axelor.apps.supplychain.service.observer.SaleOrderSupplychainObserver;
 import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.apps.supplychain.service.order.OrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.packaging.PackagingCreateService;
+import com.axelor.apps.supplychain.service.packaging.PackagingCreateServiceImpl;
+import com.axelor.apps.supplychain.service.packaging.PackagingDeleteService;
+import com.axelor.apps.supplychain.service.packaging.PackagingDeleteServiceImpl;
 import com.axelor.apps.supplychain.service.packaging.PackagingLineCreationService;
 import com.axelor.apps.supplychain.service.packaging.PackagingLineCreationServiceImpl;
 import com.axelor.apps.supplychain.service.packaging.PackagingLineService;
@@ -623,6 +631,11 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderPackagingOrientationServiceImpl.class);
     bind(SaleOrderPackagingCreateService.class).to(SaleOrderPackagingCreateServiceImpl.class);
     bind(SaleOrderProductPackagingService.class).to(SaleOrderProductPackagingServiceImpl.class);
+    bind(PackagingCreateService.class).to(PackagingCreateServiceImpl.class);
+    bind(PackagingDeleteService.class).to(PackagingDeleteServiceImpl.class);
+    bind(LogisticalFormStockMoveService.class).to(LogisticalFormStockMoveServiceImpl.class);
+    bind(LogisticalFormCreateServiceImpl.class)
+        .to(LogisticalFormCreateServiceSupplychainImpl.class);
     bind(LogisticalFormComputeService.class).to(LogisticalFormComputeServiceImpl.class);
     bind(PackagingLineCreationService.class).to(PackagingLineCreationServiceImpl.class);
   }

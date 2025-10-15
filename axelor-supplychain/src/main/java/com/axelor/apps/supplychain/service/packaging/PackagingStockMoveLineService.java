@@ -25,8 +25,5 @@ public interface PackagingStockMoveLineService {
 
   void updateQtyRemainingToPackage(LogisticalForm logisticalForm) throws AxelorException;
 
-  String validateAndUpdateStockMoveList(
-      LogisticalForm savedLogisticalForm, LogisticalForm currentForm) throws AxelorException;
-
   void updateStockMovePackagingInfo(LogisticalForm logisticalForm) throws AxelorException;
 }

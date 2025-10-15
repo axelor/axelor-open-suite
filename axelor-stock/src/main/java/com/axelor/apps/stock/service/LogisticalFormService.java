@@ -20,6 +20,7 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.LogisticalForm;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -35,6 +36,8 @@ public interface LogisticalFormService {
    * @throws AxelorException
    */
   String getStockMoveDomain(LogisticalForm logisticalForm) throws AxelorException;
+
+  Map<String, Object> getStockMoveDomainParam(LogisticalForm logisticalForm) throws AxelorException;
 
   /**
    * Get customer account number to carrier.
