@@ -92,7 +92,7 @@ public class ExpenseCreateWizardServiceImpl implements ExpenseCreateWizardServic
     Long employeeId = getEmployeeId();
     return "self.statusSelect = "
         + ExpenseRepository.STATUS_DRAFT
-        + " AND self.employee = "
+        + " AND self.employee.id = "
         + employeeId
         + " AND self.currency.id = "
         + currencyId;

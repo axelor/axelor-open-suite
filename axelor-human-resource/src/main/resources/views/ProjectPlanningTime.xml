@@ -179,10 +179,10 @@
       expr="eval:&quot;self.id in (${([0]+__repo__(Project).find(project.id).membersUserSet.collect{it->it.employee?.id}).join(',')})&quot;"
       for="employee" if="project != null"/>
     <attribute name="domain"
-      expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).find(project.id).membersUserSet.collect{it->it.id}).join(',')})&quot;"
+      expr="eval:&quot;self.employee IS NOT null and self.id in (${([0]+__repo__(Project).find(project.id).membersUserSet.collect{it->it.id}).join(',')})&quot;"
       for="userSet" if="project != null"/>
     <attribute name="domain"
-      expr="eval:&quot;self.employee != null and self.id in (${([0]+__repo__(Project).all().filter('self.projectStatus.isCompleted = false').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;"
+      expr="eval:&quot;self.employee IS NOT null and self.id in (${([0]+__repo__(Project).all().filter('self.projectStatus.isCompleted = false').fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;"
       for="userSet" if="project == null"/>
   </action-attrs>
 

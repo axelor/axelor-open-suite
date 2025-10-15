@@ -186,7 +186,7 @@ public class PayrollPreparationService {
         Beans.get(ExtraHoursLineRepository.class)
             .all()
             .filter(
-                "self.employee = ?1 AND self.extraHours.statusSelect = 3 AND self.date BETWEEN ?2 AND ?3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?4)",
+                "self.employee = ?1 AND self.extraHours.statusSelect = 3 AND self.date BETWEEN ?2 AND ?3 AND (self.payrollPreparation IS null OR self.payrollPreparation.id = ?4)",
                 payrollPreparation.getEmployee(),
                 fromDate,
                 toDate,
@@ -235,7 +235,7 @@ public class PayrollPreparationService {
         Beans.get(LunchVoucherMgtLineRepository.class)
             .all()
             .filter(
-                "self.employee = ?1 AND self.lunchVoucherMgt.statusSelect = 3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?2) AND self.lunchVoucherMgt.payPeriod = ?3",
+                "self.employee = ?1 AND self.lunchVoucherMgt.statusSelect = 3 AND (self.payrollPreparation IS null OR self.payrollPreparation.id = ?2) AND self.lunchVoucherMgt.payPeriod = ?3",
                 payrollPreparation.getEmployee(),
                 payrollPreparation.getId(),
                 payrollPreparation.getPeriod())

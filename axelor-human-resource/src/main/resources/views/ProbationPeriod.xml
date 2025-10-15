@@ -46,7 +46,7 @@
 
   <action-attrs name="action-probation-period-attrs-qualification-set-on-select">
     <attribute name="domain"
-      expr="eval: (collectiveAgreementSet !=  null &amp;&amp; collectiveAgreementSet?.size() &gt; 0) ? &quot;self.collectiveAgreement.id IN (${collectiveAgreementSet?.collect{it.id}?.join(',')})&quot; : &quot;self.collectiveAgreement.id IN (null)&quot;"
+      expr="eval: (collectiveAgreementSet IS NOT null &amp;&amp; collectiveAgreementSet?.size() &gt; 0) ? &quot;self.collectiveAgreement.id IN (${collectiveAgreementSet?.collect{it.id}?.join(',')})&quot; : &quot;self.collectiveAgreement.id IN (null)&quot;"
       for="qualificationSet"/>
   </action-attrs>
 

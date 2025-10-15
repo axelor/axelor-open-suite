@@ -99,7 +99,7 @@ public class TimesheetProjectPlanningTimeServiceImpl
                       + "AND self.startDateTime >= ?2 "
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
-                      + "WHERE timesheetLine.projectPlanningTime != null "
+                      + "WHERE timesheetLine.projectPlanningTime IS NOT null "
                       + "AND timesheetLine.timesheet = ?3) ",
                   timesheet.getEmployee().getId(),
                   timesheet.getFromDate(),
@@ -115,7 +115,7 @@ public class TimesheetProjectPlanningTimeServiceImpl
                       + "AND self.startDateTime >= ?2 AND self.endDateTime < ?3 "
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
-                      + "WHERE timesheetLine.projectPlanningTime != null "
+                      + "WHERE timesheetLine.projectPlanningTime IS NOT null "
                       + "AND timesheetLine.timesheet = ?4) ",
                   timesheet.getEmployee().getId(),
                   timesheet.getFromDate(),

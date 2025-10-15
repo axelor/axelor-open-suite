@@ -64,7 +64,7 @@ public class TimesheetQueryServiceImpl implements TimesheetQueryService {
     return timesheetRepository
         .all()
         .filter(
-            "self.employee = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
+            "self.employee = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate IS null))",
             employee,
             company,
             date);
