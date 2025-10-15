@@ -24,15 +24,21 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.mail.db.repo.MailFollowerRepository;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,6 +106,8 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
     }
 
     projectTask.setDescription(projectTaskService.getTaskLink(projectTask.getDescription()));
+
+    updateMailFollowers(projectTask);
 
     return super.save(projectTask);
   }
@@ -170,5 +178,17 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
     task.setTaskEndDate(null);
     task.setMetaFile(null);
     return task;
+  }
+
+  protected void updateMailFollowers(ProjectTask projectTask) {
+    MailFollowerRepository followers = Beans.get(MailFollowerRepository.class);
+
+    Stream<User> assignedTo = Stream.ofNullable(projectTask.getAssignedTo());
+    Stream<User> watchers =
+        Optional.ofNullable(projectTask.getWatcherUserSet()).stream().flatMap(Collection::stream);
+    Stream.concat(assignedTo, watchers)
+        .filter(Objects::nonNull)
+        .distinct()
+        .forEach(user -> followers.follow(projectTask, user));
   }
 }

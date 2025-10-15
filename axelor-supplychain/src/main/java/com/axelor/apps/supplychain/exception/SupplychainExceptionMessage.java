@@ -467,6 +467,9 @@ public final class SupplychainExceptionMessage {
   public static final String STOCK_MOVE_NOT_FULLY_PACKAGED = /*$$(*/
       "One or several stock move lines are not fully packaged." /*)*/;
 
+  public static final String SALE_ORDER_LINE_LINKED_WITH_PACKAGING_LINE = /*$$(*/
+      "This sale order line is linked to a packaging line, please remove it first from the sale order's packaging." /*)*/;
+
   public static final String PACKAGING_LINE_STOCK_MOVE_LINE_NOT_VALID = /*$$(*/
       "This stock move line can not be chosen." /*)*/;
 }

@@ -24,6 +24,21 @@
     <field name="$nbDecimalDigitForPrice" hidden="true"/>
   </grid>
 
+  <grid name="packaging-sale-order-grid" model="com.axelor.apps.supplychain.db.Packaging"
+    title="Packagings">
+    <field name="packagingNumber"/>
+    <field name="packageUsed" grid-view="product-grid" form-view="product-form"
+      domain="self.isPackaging = true"/>
+    <field name="grossMass" x-scale="$nbDecimalDigitForPrice" readonly="true"/>
+    <field name="totalNetMass" x-scale="$nbDecimalDigitForPrice" readonly="true">
+      <hilite if="true" color="default" strong="true"/>
+    </field>
+    <field name="totalGrossMass" x-scale="$nbDecimalDigitForPrice" readonly="true">
+      <hilite if="true" color="default" strong="true"/>
+    </field>
+    <field name="$nbDecimalDigitForPrice" hidden="true"/>
+  </grid>
+
   <form name="packaging-form" model="com.axelor.apps.supplychain.db.Packaging"
     title="Packaging" width="large">
     <panel name="mainPanel">
@@ -39,15 +54,30 @@
       <field name="totalGrossMass" x-scale="$nbDecimalDigitForPrice" readonly="true">
         <hilite if="true" color="default" strong="true"/>
       </field>
-      <panel-related field="packagingLineList" grid-view="packaging-line-grid"
-        form-view="packaging-line-form" colSpan="12"/>
-      <panel-related field="childrenPackagingList" grid-view="packaging-grid"
-        form-view="packaging-form" colSpan="12"/>
     </panel>
+  </form>
+
+  <form name="packaging-logistical-form" model="com.axelor.apps.supplychain.db.Packaging"
+    title="Packaging" width="large">
+    <panel-include view="packaging-form"/>
+    <panel-related field="packagingLineList" grid-view="packaging-line-grid"
+      form-view="packaging-line-form" colSpan="12"/>
+    <panel-related field="childrenPackagingList" grid-view="packaging-grid"
+      form-view="packaging-form" colSpan="12"/>
     <panel name="hiddenPanel" hidden="true">
       <field name="logisticalForm" hidden="true"/>
       <field name="$nbDecimalDigitForPrice" hidden="true"/>
     </panel>
+  </form>
+
+  <form name="packaging-sale-order-form" model="com.axelor.apps.supplychain.db.Packaging"
+    title="Packaging" width="large">
+    <panel-include view="packaging-form"/>
+    <panel-related field="packagingLineList"
+      grid-view="packaging-line-sale-order-grid" form-view="packaging-line-sale-order-form"
+      colSpan="12"/>
+    <panel-related field="childrenPackagingList" grid-view="packaging-grid"
+      form-view="packaging-sale-order-form" colSpan="12"/>
   </form>
 
   <form name="packaging-packaging-lines-form" model="com.axelor.apps.supplychain.db.Packaging"
@@ -59,8 +89,7 @@
         onSelect="action-packaging-line-method-stock-move-line-domain"
         onChange="action-packaging-line-record-stock-move-line-onchange"/>
       <field name="stockMoveLine.product"/>
-      <field name="trackingNumber" grid-view="tracking-number-grid"
-        form-view="tracking-number-form" readonly="true"/>
+      <field name="stockMoveLine.trackingNumber"/>
       <field name="qty" x-scale="$nbDecimalDigitForQty" readonlyIf="!stockMoveLine" min="0"/>
       <field name="stockMoveLine.netMass" x-scale="$nbDecimalDigitForPrice"/>
       <field name="$nbDecimalDigitForQty" hidden="true"/>
@@ -69,6 +98,17 @@
     <panel name="hiddenPanel" hidden="true">
       <field name="logisticalForm"/>
     </panel>
+  </form>
+
+  <form name="packaging-sale-order-packaging-lines-form"
+    model="com.axelor.apps.supplychain.db.Packaging" title="Packaging lines">
+    <panel-related field="packagingLineList" showIf="packagingLineList.length">
+      <field name="saleOrderLine" grid-view="sale-order-line-grid"
+        form-view="sale-order-line-form"/>
+      <field name="saleOrderLine.product"/>
+      <field name="qty" x-scale="$nbDecimalDigitForQty"/>
+      <field name="$nbDecimalDigitForQty" hidden="true"/>
+    </panel-related>
   </form>
 
   <form name="packaging-lines-from-stock-move-lines-form"
@@ -85,7 +125,6 @@
       <field name="$packaging" hidden="true"/>
     </panel>
   </form>
-
 
   <action-record name="action-packaging-record-set-packaging-level-select"
     model="com.axelor.apps.supplychain.db.Packaging">

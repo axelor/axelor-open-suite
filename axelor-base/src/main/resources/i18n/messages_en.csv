@@ -899,8 +899,6 @@
 "Error in import: %s. Please check the server log",,,
 "Error in method name. Please check.",,,
 "Error in print template line with sequence %s and title %s.",,,
-"Error in print. Please check report configuration and print setting.",,,
-"Error in print. Please check report configuration and print settings.",,,
 "Error logs",,,
 "Error when closing period %s",,,
 "Error when computing the printing filename, using template %s: %s",,,

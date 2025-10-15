@@ -8,10 +8,10 @@
     <extend target="//panel[@name='stockMovePanel']">
       <insert position="after">
         <panel-related name="packagingPanel" field="packagingList"
-          grid-view="packaging-grid" form-view="packaging-form" colSpan="12" widget="tree-grid"
-          x-tree-field="childrenPackagingList" x-tree-field-title="Add child packaging"
-          summary-view="packaging-packaging-lines-form" editable="true"
-          orderBy="-packagingLevelSelect,packagingNumber"
+          grid-view="packaging-grid" form-view="packaging-logistical-form" colSpan="12"
+          widget="tree-grid" x-tree-field="childrenPackagingList"
+          x-tree-field-title="Add child packaging" summary-view="packaging-packaging-lines-form"
+          editable="true" orderBy="-packagingLevelSelect,packagingNumber"
           onChange="save,action-logistical-form-method-refresh-logistical-form" x-expand-all="true"
           height="800"/>
       </insert>

@@ -16,10 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.supplychain.service.saleorder.packaging;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -28,6 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class SaleOrderPackagingPlanServiceImpl implements SaleOrderPackagingPlanService {
 
@@ -43,8 +45,8 @@ public class SaleOrderPackagingPlanServiceImpl implements SaleOrderPackagingPlan
   }
 
   @Override
-  public boolean hasQtyRemaining(Map<Product, BigDecimal> productQtyMap) {
-    return productQtyMap.values().stream().anyMatch(qty -> qty.signum() > 0);
+  public boolean hasQtyRemaining(Map<Product, Pair<SaleOrderLine, BigDecimal>> productQtyMap) {
+    return productQtyMap.values().stream().map(Pair::getRight).anyMatch(qty -> qty.signum() > 0);
   }
 
   @Override
@@ -52,8 +54,8 @@ public class SaleOrderPackagingPlanServiceImpl implements SaleOrderPackagingPlan
       Product product,
       List<Product> boxes,
       List<Product> products,
-      Map<Product, BigDecimal> productQtyMap,
-      Map<Product, BigDecimal> boxContents)
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> productQtyMap,
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> boxContents)
       throws AxelorException {
     Product bestBox = null;
     BigDecimal maxPlacedQty = BigDecimal.ZERO;
@@ -63,8 +65,8 @@ public class SaleOrderPackagingPlanServiceImpl implements SaleOrderPackagingPlan
       if (!saleOrderPackagingOrientationService.canFit(product, box)) {
         continue;
       }
-      Map<Product, BigDecimal> contents = new HashMap<>();
-      Map<Product, BigDecimal> qtyMap = new HashMap<>(productQtyMap);
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> contents = new HashMap<>();
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> qtyMap = new HashMap<>(productQtyMap);
 
       BigDecimal totalWeight = fillBox(box, products, qtyMap, contents);
 
@@ -73,7 +75,8 @@ public class SaleOrderPackagingPlanServiceImpl implements SaleOrderPackagingPlan
         continue;
       }
 
-      BigDecimal placedQty = contents.values().stream().reduce(BigDecimal.ZERO, BigDecimal::add);
+      BigDecimal placedQty =
+          contents.values().stream().map(Pair::getRight).reduce(BigDecimal.ZERO, BigDecimal::add);
       BigDecimal boxVolume = saleOrderPackagingDimensionService.getBoxInnerVolume(box);
 
       boolean better =
@@ -94,8 +97,8 @@ public class SaleOrderPackagingPlanServiceImpl implements SaleOrderPackagingPlan
   protected BigDecimal fillBox(
       Product box,
       List<Product> products,
-      Map<Product, BigDecimal> productQtyMap,
-      Map<Product, BigDecimal> boxContents)
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> productQtyMap,
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> boxContents)
       throws AxelorException {
     List<BigDecimal[]> freeSpaces = new ArrayList<>();
     freeSpaces.add(
@@ -118,7 +121,9 @@ public class SaleOrderPackagingPlanServiceImpl implements SaleOrderPackagingPlan
         BigDecimal[] space = freeSpaces.get(i);
 
         for (Product product : products) {
-          BigDecimal qtyLeft = productQtyMap.getOrDefault(product, BigDecimal.ZERO);
+          Pair<SaleOrderLine, BigDecimal> pair = productQtyMap.get(product);
+          SaleOrderLine saleOrderLine = pair.getLeft();
+          BigDecimal qtyLeft = pair.getRight();
           if (qtyLeft.compareTo(BigDecimal.ZERO) <= 0) {
             continue;
           }
@@ -146,8 +151,12 @@ public class SaleOrderPackagingPlanServiceImpl implements SaleOrderPackagingPlan
                   .multiply(placeQty);
           totalWeight = totalWeight.add(productWeight);
 
-          boxContents.merge(product, placeQty, BigDecimal::add);
-          productQtyMap.put(product, qtyLeft.subtract(placeQty));
+          productQtyMap.put(product, Pair.of(saleOrderLine, qtyLeft.subtract(placeQty)));
+          boxContents.merge(
+              product,
+              Pair.of(saleOrderLine, placeQty),
+              (oldPair, newPair) ->
+                  Pair.of(oldPair.getLeft(), oldPair.getRight().add(newPair.getRight())));
 
           List<BigDecimal[]> residualSpaces = splitSpace(space, usedLength, usedWidth, usedHeight);
           freeSpaces.remove(i);

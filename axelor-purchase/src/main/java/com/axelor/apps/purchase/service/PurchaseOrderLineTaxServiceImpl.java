@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.TaxService;
@@ -103,7 +104,9 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
         customerSpecificNote,
         purchaseOrder,
         specificNotes,
-        purchaseOrder.getSupplierPartner().getSpecificTaxNote());
+        Optional.ofNullable(purchaseOrder.getSupplierPartner())
+            .map(Partner::getSpecificTaxNote)
+            .orElse(""));
 
     return purchaseOrderLineTaxList;
   }
