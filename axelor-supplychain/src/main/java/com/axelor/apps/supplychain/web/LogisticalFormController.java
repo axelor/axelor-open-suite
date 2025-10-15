@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
+import com.axelor.apps.supplychain.service.LogisticalFormStockMoveService;
 import com.axelor.apps.supplychain.service.LogisticalFormSupplychainService;
-import com.axelor.apps.supplychain.service.packaging.PackagingStockMoveLineService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -42,7 +42,7 @@ public class LogisticalFormController {
       savedLogisticalForm = Beans.get(LogisticalFormRepository.class).find(logisticalForm.getId());
     }
     String error =
-        Beans.get(PackagingStockMoveLineService.class)
+        Beans.get(LogisticalFormStockMoveService.class)
             .validateAndUpdateStockMoveList(savedLogisticalForm, logisticalForm);
     if (!error.isEmpty()) {
       response.setError(error);

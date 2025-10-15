@@ -33,7 +33,9 @@ import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -87,6 +89,33 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     return domainList.stream()
         .map(domain -> String.format("(%s)", domain))
         .collect(Collectors.joining(" AND "));
+  }
+
+  @Override
+  public Map<String, Object> getStockMoveDomainParam(LogisticalForm logisticalForm)
+      throws AxelorException {
+    Map<String, Object> params = new HashMap<>();
+
+    Company company = logisticalForm.getCompany();
+    if (company == null) {
+      return params;
+    }
+
+    StockConfig stockConfig = stockConfigService.getStockConfig(company);
+
+    params.put("company", company);
+    params.put("id", logisticalForm.getId());
+    if ((stockConfig.getAllowInternalStockMoveOnLogisticalForm()
+            && !stockConfig.getIsLogisticalFormMultiClientsEnabled())
+        || !stockConfig.getIsLogisticalFormMultiClientsEnabled()) {
+      params.put("deliverToCustomerPartner", logisticalForm.getDeliverToCustomerPartner());
+    }
+
+    if (logisticalForm.getStockLocation() != null) {
+      params.put("stockLocation", logisticalForm.getStockLocation());
+    }
+
+    return params;
   }
 
   @Override
