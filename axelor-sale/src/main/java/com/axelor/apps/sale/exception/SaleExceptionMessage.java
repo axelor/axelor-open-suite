@@ -215,4 +215,10 @@ public final class SaleExceptionMessage {
 
   public static final String SALE_ORDER_INVALID_PACKAGING_QTY = /*$$(*/
       "Unable to start the simulation because one or more products in the order have a sold quantity that is not a multiple of the default packaging defined in their product form." /*)*/;
+
+  public static final String SALE_ORDER_OVERSIZED_ITEMS = /*$$(*/
+      "Unable to start the simulation. One or more items are too large to fit into the existing packagings." /*)*/;
+
+  public static final String SALE_ORDER_OVERWEIGHT_ITEMS = /*$$(*/
+      "Unable to start the simulation. One or more items are too heavy to be carried by the existing packagings." /*)*/;
 }

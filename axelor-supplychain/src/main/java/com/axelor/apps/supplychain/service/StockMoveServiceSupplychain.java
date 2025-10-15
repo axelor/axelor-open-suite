@@ -44,4 +44,6 @@ public interface StockMoveServiceSupplychain {
   public void setInvoicingStatusInvoicedValidated(StockMove stockMove);
 
   void fillRealQuantities(StockMove stockMove);
+
+  void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
 }

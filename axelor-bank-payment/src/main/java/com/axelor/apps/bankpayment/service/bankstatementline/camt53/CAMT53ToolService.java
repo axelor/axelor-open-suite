@@ -29,9 +29,13 @@ public interface CAMT53ToolService {
 
   String getReference(ReportEntry2 ntry);
 
+  String getOrigin(ReportEntry2 ntry);
+
   Integer getCommissionExemptionIndexSelect(ReportEntry2 ntry);
 
   BankDetails findBankDetailsByIBAN(CashAccount20 acct);
+
+  String constructDescriptionFromNtry(ReportEntry2 ntry);
 
   InterbankCodeLine getOperationCodeInterBankCodeLineCode(ReportEntry2 ntry);
 

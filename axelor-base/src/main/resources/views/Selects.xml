@@ -832,4 +832,10 @@
     <option value="2">Container</option>
   </selection>
 
+  <selection name="import.export.translation.history.status.select">
+    <option value="0">Draft</option>
+    <option value="1">In Progress</option>
+    <option value="2">Completed</option>
+  </selection>
+
 </object-views>

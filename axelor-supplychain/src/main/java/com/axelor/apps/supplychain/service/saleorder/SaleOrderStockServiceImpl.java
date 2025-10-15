@@ -167,6 +167,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       Optional<StockMove> stockMove =
           createStockMove(saleOrder, deliveryAddressStr, estimatedDeliveryDate, saleOrderLineList);
 
+      stockMove.ifPresent(saleOrder::addStockMoveListItem);
+
       stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
     }
     return stockMoveList;
@@ -531,7 +533,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               fromStockLocation,
               toStockLocation);
 
-      stockMoveLine.setQtyRemainingToPackage(qty.setScale(3, RoundingMode.HALF_UP));
+      stockMoveLine.setQtyRemainingToPackage(
+          stockMoveLine.getRealQty().setScale(3, RoundingMode.HALF_UP));
 
       if (saleOrderLine.getDeliveryState() == 0) {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);

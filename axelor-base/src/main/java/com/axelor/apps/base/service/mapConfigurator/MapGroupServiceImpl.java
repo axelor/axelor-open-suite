@@ -23,8 +23,10 @@ import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.MapGroup;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.db.JPA;
+import com.axelor.db.QueryBinder;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.db.MetaField;
+import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
@@ -50,15 +52,21 @@ public class MapGroupServiceImpl implements MapGroupService {
 
   @Override
   public List<Map<String, Object>> computeData(MapGroup mapGroup)
-      throws AxelorException, JSONException {
+      throws AxelorException, JSONException, ClassNotFoundException {
     if (mapGroup.getMetaModel() == null) {
       return Collections.emptyList();
     }
-    String query = "SELECT self FROM " + mapGroup.getMetaModel().getFullName() + " self";
+    String metaModel = mapGroup.getMetaModel().getFullName();
+    String queryStr = "SELECT self FROM " + metaModel + " self";
     if (!Strings.isNullOrEmpty(mapGroup.getFilter())) {
-      query += " WHERE " + mapGroup.getFilter();
+      queryStr += " WHERE " + mapGroup.getFilter();
     }
-    List<?> records = JPA.em().createQuery(query).getResultList();
+    javax.persistence.Query query = JPA.em().createQuery(queryStr);
+
+    QueryBinder.of(query)
+        .bind(new ScriptBindings(new Context(Class.forName(metaModel))))
+        .setCacheable();
+    List<?> records = query.getResultList();
     List<Map<String, Object>> data = new ArrayList<>();
 
     for (Object record : records) {

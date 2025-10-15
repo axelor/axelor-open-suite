@@ -16,23 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.talent.db.repo;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
+import com.axelor.apps.crm.db.repo.EventRepository;
+import com.axelor.apps.talent.db.JobApplication;
+import com.axelor.inject.Beans;
+import javax.persistence.PreRemove;
 
-public interface SaleOrderPackagingPlanService {
+public class JobApplicationEntityListener {
 
-  boolean hasQtyRemaining(Map<Product, BigDecimal> productQtyMap);
-
-  Product chooseBestBox(
-      Product product,
-      List<Product> boxes,
-      List<Product> products,
-      Map<Product, BigDecimal> productQtyMap,
-      Map<Product, BigDecimal> boxContents)
-      throws AxelorException;
+  @PreRemove
+  protected void onJobApplicationPreRemove(JobApplication jobApplication) {
+    Beans.get(EventRepository.class)
+        .all()
+        .filter(
+            "relatedToSelect = ?1 AND self.relatedToSelectId = ?2",
+            JobApplication.class.getName(),
+            jobApplication.getId())
+        .autoFlush(false)
+        .remove();
+  }
 }

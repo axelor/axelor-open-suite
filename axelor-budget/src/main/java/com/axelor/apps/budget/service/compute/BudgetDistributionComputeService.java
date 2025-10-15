@@ -16,26 +16,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.budget.service.compute;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
+import com.axelor.apps.budget.db.BudgetDistribution;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
-public interface SaleOrderPackagingDimensionService {
-
-  List<Product> getProductsOrderedByVolume(Map<Product, BigDecimal> productQtyMap)
-      throws AxelorException;
-
-  BigDecimal getBoxInnerVolume(Product box);
-
-  BigDecimal getSpaceVolume(BigDecimal[] space);
-
-  BigDecimal[] getDimensions(Product product, boolean isBox) throws AxelorException;
-
-  BigDecimal[] getProductDimensions(Product product) throws AxelorException;
-
-  BigDecimal getConvertedWeight(BigDecimal value, Product product) throws AxelorException;
+public interface BudgetDistributionComputeService {
+  void updateMonoBudgetAmounts(
+      List<BudgetDistribution> budgetDistributionList, BigDecimal newAmount);
 }

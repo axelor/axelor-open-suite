@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.supplychain.service.saleorder.packaging;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
@@ -25,8 +25,11 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.supplychain.db.Packaging;
+import com.axelor.apps.supplychain.db.repo.PackagingRepository;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,67 +38,70 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService {
 
   protected ProductRepository productRepository;
   protected SaleOrderPackagingPlanService saleOrderPackagingPlanService;
   protected SaleOrderPackagingDimensionService saleOrderPackagingDimensionService;
-  protected SaleOrderPackagingMessageService saleOrderPackagingMessageService;
+  protected SaleOrderPackagingCreateService saleOrderPackagingCreateService;
   protected SaleOrderProductPackagingService saleOrderProductPackagingService;
+  protected SaleOrderPackagingOrientationService saleOrderPackagingOrientationService;
+  protected PackagingRepository packagingRepository;
 
   @Inject
   public SaleOrderPackagingServiceImpl(
       ProductRepository productRepository,
       SaleOrderPackagingPlanService saleOrderPackagingPlanService,
       SaleOrderPackagingDimensionService saleOrderPackagingDimensionService,
-      SaleOrderPackagingMessageService saleOrderPackagingMessageService,
-      SaleOrderProductPackagingService saleOrderProductPackagingService) {
+      SaleOrderPackagingCreateService saleOrderPackagingCreateService,
+      SaleOrderProductPackagingService saleOrderProductPackagingService,
+      SaleOrderPackagingOrientationService saleOrderPackagingOrientationService,
+      PackagingRepository packagingRepository) {
     this.productRepository = productRepository;
     this.saleOrderPackagingPlanService = saleOrderPackagingPlanService;
     this.saleOrderPackagingDimensionService = saleOrderPackagingDimensionService;
-    this.saleOrderPackagingMessageService = saleOrderPackagingMessageService;
+    this.saleOrderPackagingCreateService = saleOrderPackagingCreateService;
     this.saleOrderProductPackagingService = saleOrderProductPackagingService;
+    this.saleOrderPackagingOrientationService = saleOrderPackagingOrientationService;
+    this.packagingRepository = packagingRepository;
   }
 
   @Override
-  public String estimatePackaging(SaleOrder saleOrder) throws AxelorException {
+  @Transactional(rollbackOn = Exception.class)
+  public void estimatePackaging(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLines = saleOrder.getSaleOrderLineList();
-    Map<Product, BigDecimal> productQtyMap =
+    Map<Product, Pair<SaleOrderLine, BigDecimal>> productQtyMap =
         saleOrderLines.stream()
-            .filter(line -> line.getQty().compareTo(BigDecimal.ZERO) > 0)
+            .filter(
+                line ->
+                    line.getProduct()
+                            .getProductTypeSelect()
+                            .equals(ProductRepository.PRODUCT_TYPE_STORABLE)
+                        && line.getProduct().getDtype().equals("Product")
+                        && line.getQty().compareTo(BigDecimal.ZERO) > 0)
             .collect(
-                Collectors.toMap(
-                    SaleOrderLine::getProduct, SaleOrderLine::getQty, BigDecimal::add));
+                Collectors.toMap(SaleOrderLine::getProduct, line -> Pair.of(line, line.getQty())));
 
     saleOrderProductPackagingService.checkMultipleQty(productQtyMap);
 
-    List<String> messages = new ArrayList<>();
     List<Product> packagingOptions =
         productRepository.all().filter("self.isPackaging = true").fetch();
 
-    Map<Integer, Map<Product, String>> levelDescriptions = new HashMap<>();
-    Map<Integer, Map<Product, BigDecimal[]>> levelWeights = new HashMap<>();
+    saleOrderPackagingOrientationService.validateProductsForPackaging(
+        productQtyMap.keySet(), packagingOptions);
 
-    packByLevel(
-        ProductRepository.PACKAGING_LEVEL_BOX,
-        packagingOptions,
-        productQtyMap,
-        messages,
-        levelDescriptions,
-        levelWeights);
+    removePackagings(saleOrder);
 
-    return saleOrderPackagingMessageService.formatPackagingMessage(
-        saleOrder.getFullName(), messages);
+    packByLevel(ProductRepository.PACKAGING_LEVEL_BOX, packagingOptions, productQtyMap, saleOrder);
   }
 
   protected void packByLevel(
       int level,
       List<Product> packagingOptions,
-      Map<Product, BigDecimal> productQtyMap,
-      List<String> messages,
-      Map<Integer, Map<Product, String>> levelDescriptions,
-      Map<Integer, Map<Product, BigDecimal[]>> levelWeights)
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> productQtyMap,
+      SaleOrder saleOrder)
       throws AxelorException {
 
     List<Product> currentLevelBoxes =
@@ -108,12 +114,8 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
       return;
     }
     List<Product> products =
-        saleOrderPackagingDimensionService.getProductsOrderedByVolume(productQtyMap);
+        saleOrderPackagingDimensionService.getProductsOrderedByVolume(productQtyMap.keySet());
     List<Product> packedThisLevel = new ArrayList<>();
-
-    Map<Product, String> descMap = levelDescriptions.computeIfAbsent(level, l -> new HashMap<>());
-    Map<Product, BigDecimal[]> weightMap =
-        levelWeights.computeIfAbsent(level, l -> new HashMap<>());
 
     if (level == ProductRepository.PACKAGING_LEVEL_BOX) {
       List<Product> productsWithPackaging = new ArrayList<>();
@@ -128,47 +130,31 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
         }
       }
       saleOrderProductPackagingService.packWithProductPackaging(
-          productQtyMap, messages, productsWithPackaging, packedThisLevel, descMap, weightMap);
+          productQtyMap, productsWithPackaging, packedThisLevel, saleOrder);
 
       processPackaging(
-          productQtyMap,
-          messages,
-          currentLevelBoxes,
-          productsWithoutPackaging,
-          packedThisLevel,
-          descMap,
-          weightMap);
+          productQtyMap, currentLevelBoxes, productsWithoutPackaging, packedThisLevel, saleOrder);
     } else {
-      processPackaging(
-          productQtyMap,
-          messages,
-          currentLevelBoxes,
-          products,
-          packedThisLevel,
-          descMap,
-          weightMap);
+      processPackaging(productQtyMap, currentLevelBoxes, products, packedThisLevel, saleOrder);
     }
 
     int nextLevel = level + 1;
     if (nextLevel <= ProductRepository.PACKAGING_LEVEL_CONTAINER
         && !CollectionUtils.isEmpty(packedThisLevel)) {
-      Map<Product, BigDecimal> nextLevelMap = new HashMap<>();
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> nextLevelMap = new HashMap<>();
       for (Product box : packedThisLevel) {
-        nextLevelMap.merge(box, BigDecimal.ONE, BigDecimal::add);
+        nextLevelMap.put(box, Pair.of(null, BigDecimal.ONE));
       }
-      packByLevel(
-          nextLevel, packagingOptions, nextLevelMap, messages, levelDescriptions, levelWeights);
+      packByLevel(nextLevel, packagingOptions, nextLevelMap, saleOrder);
     }
   }
 
   protected void processPackaging(
-      Map<Product, BigDecimal> productQtyMap,
-      List<String> messages,
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> productQtyMap,
       List<Product> currentLevelBoxes,
       List<Product> products,
       List<Product> packedThisLevel,
-      Map<Product, String> descMap,
-      Map<Product, BigDecimal[]> weightMap)
+      SaleOrder saleOrder)
       throws AxelorException {
 
     final int MAX_ITERATION = 1000;
@@ -182,22 +168,43 @@ public class SaleOrderPackagingServiceImpl implements SaleOrderPackagingService 
       }
       Product nextProduct =
           products.stream()
-              .filter(p -> productQtyMap.get(p).compareTo(BigDecimal.ZERO) > 0)
+              .filter(p -> productQtyMap.get(p).getRight().compareTo(BigDecimal.ZERO) > 0)
               .findFirst()
               .orElse(null);
       if (nextProduct == null) {
         break;
       }
-      Map<Product, BigDecimal> boxContents = new HashMap<>();
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> boxContents = new HashMap<>();
       Product selectedBox =
           saleOrderPackagingPlanService.chooseBestBox(
               nextProduct, currentLevelBoxes, products, productQtyMap, boxContents);
       if (selectedBox == null) {
         break;
       }
-      saleOrderPackagingMessageService.updatePackagingMessage(
-          selectedBox, boxContents, productQtyMap, messages, descMap, weightMap);
+      saleOrderPackagingCreateService.createPackaging(
+          selectedBox, boxContents, productQtyMap, saleOrder);
       packedThisLevel.add(selectedBox);
+    }
+  }
+
+  protected void removePackagings(SaleOrder saleOrder) {
+    List<Packaging> packagingList =
+        packagingRepository
+            .all()
+            .filter("self.saleOrder = :saleOrder")
+            .bind("saleOrder", saleOrder)
+            .fetch();
+    if (CollectionUtils.isEmpty(packagingList)) {
+      return;
+    }
+    for (Packaging packaging : packagingList) {
+      Packaging pack = packagingRepository.find(packaging.getId());
+      if (pack != null) {
+        if (CollectionUtils.isNotEmpty(pack.getPackagingLineList())) {
+          pack.getPackagingLineList().clear();
+        }
+        packagingRepository.remove(pack);
+      }
     }
   }
 }

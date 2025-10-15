@@ -29,7 +29,7 @@ import com.axelor.message.db.repo.EmailAddressRepository;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.message.service.MailAccountService;
-import com.axelor.message.service.MailMessageActionService;
+import com.axelor.message.service.MessageActionService;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateContextService;
 import com.axelor.message.service.TemplateMessageServiceImpl;
@@ -64,7 +64,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
       MailAccountService mailAccountService,
       MessageService messageService,
       TemplateContextService templateContextService,
-      MailMessageActionService mailMessageActionService,
+      MessageActionService messageActionService,
       PrintingTemplatePrintService printTemplatePrintService) {
     super(
         emailAddressRepository,
@@ -74,7 +74,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
         mailAccountService,
         messageService,
         templateContextService,
-        mailMessageActionService);
+        messageActionService);
     this.printTemplatePrintService = printTemplatePrintService;
   }
 

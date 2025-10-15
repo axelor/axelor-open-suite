@@ -20,12 +20,14 @@ package com.axelor.apps.supplychain.service.packaging;
 
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.repo.PackagingRepository;
+import com.axelor.db.JPA;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.List;
 
 public class PackagingServiceImpl implements PackagingService {
 
-  protected final PackagingRepository packagingRepository;
+  protected PackagingRepository packagingRepository;
 
   @Inject
   public PackagingServiceImpl(PackagingRepository packagingRepository) {
@@ -38,5 +40,12 @@ public class PackagingServiceImpl implements PackagingService {
     Packaging childPackaging = new Packaging();
     childPackaging.setParentPackaging(packaging);
     packagingRepository.save(childPackaging);
+  }
+
+  @Override
+  public void removePackagings(List<Packaging> packagingList) {
+    for (Packaging packaging : packagingList) {
+      JPA.remove(packaging);
+    }
   }
 }

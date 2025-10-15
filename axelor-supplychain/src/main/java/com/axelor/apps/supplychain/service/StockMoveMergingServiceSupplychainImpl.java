@@ -32,6 +32,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -87,10 +88,12 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
       List<StockMove> stockMoveList, StockMove stockMove, StockMove mergedStockMove) {
     super.fillStockMoveFields(stockMoveList, stockMove, mergedStockMove);
     mergedStockMove.setDeliveryCondition(stockMove.getDeliveryCondition());
-    mergedStockMove.setSaleOrderSet(
+    Set<SaleOrder> saleOrderSet =
         stockMoveList.stream()
             .flatMap(s -> s.getSaleOrderSet().stream())
-            .collect(Collectors.toSet()));
+            .collect(Collectors.toSet());
+    mergedStockMove.setSaleOrderSet(saleOrderSet);
+    saleOrderSet.forEach(saleOrder -> saleOrder.addStockMoveListItem(mergedStockMove));
     mergedStockMove.setPurchaseOrderSet(
         stockMoveList.stream()
             .flatMap(p -> p.getPurchaseOrderSet().stream())

@@ -19,8 +19,11 @@
 package com.axelor.apps.supplychain.service.packaging;
 
 import com.axelor.apps.supplychain.db.Packaging;
+import java.util.List;
 
 public interface PackagingService {
 
   void addChildPackaging(Packaging packaging);
+
+  void removePackagings(List<Packaging> packagingList);
 }

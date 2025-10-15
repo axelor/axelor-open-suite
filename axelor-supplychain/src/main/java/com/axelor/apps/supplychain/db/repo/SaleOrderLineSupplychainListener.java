@@ -16,24 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
+import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCheckSupplychainService;
+import com.axelor.inject.Beans;
+import javax.persistence.PreRemove;
 
-public interface SaleOrderPackagingMessageService {
+public class SaleOrderLineSupplychainListener {
 
-  String formatPackagingMessage(String title, List<String> messages);
-
-  void updatePackagingMessage(
-      Product selectedBox,
-      Map<Product, BigDecimal> boxContents,
-      Map<Product, BigDecimal> productQtyMap,
-      List<String> messages,
-      Map<Product, String> descMap,
-      Map<Product, BigDecimal[]> weightMap)
-      throws AxelorException;
+  @PreRemove
+  public void preRemove(SaleOrderLine saleOrderLine) throws AxelorException {
+    Beans.get(SaleOrderLineCheckSupplychainService.class).checkLinkedPackagingLine(saleOrderLine);
+  }
 }

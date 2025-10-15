@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="talent" package="com.axelor.apps.talent.db"/>
+
+  <entity name="Certification">
+    <string name="certificationName" namecolumn="true"/>
+    <date name="issueDate" title="Date of issue"/>
+
+    <many-to-one ref="com.axelor.apps.talent.db.JobApplication" name="jobApplicant"/>
+  </entity>
+
+</domain-models>

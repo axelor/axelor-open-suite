@@ -16,12 +16,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.supplychain.service.saleorder.packaging;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.i18n.I18n;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderPackagingOrientationServiceImpl
     implements SaleOrderPackagingOrientationService {
@@ -59,5 +68,52 @@ public class SaleOrderPackagingOrientationServiceImpl
       {dimensions[2], dimensions[0], dimensions[1]},
       {dimensions[2], dimensions[1], dimensions[0]}
     };
+  }
+
+  @Override
+  public void validateProductsForPackaging(Set<Product> products, List<Product> packagings)
+      throws AxelorException {
+    Product biggestBox =
+        packagings.stream()
+            .filter(p -> p.getPackagingLevelSelect() == ProductRepository.PACKAGING_LEVEL_BOX)
+            .max(
+                (b1, b2) ->
+                    saleOrderPackagingDimensionService
+                        .getBoxInnerVolume(b1)
+                        .compareTo(saleOrderPackagingDimensionService.getBoxInnerVolume(b2)))
+            .orElse(null);
+
+    if (biggestBox == null) {
+      return;
+    }
+    List<String> oversizedProducts = new ArrayList<>();
+    List<String> overweightProducts = new ArrayList<>();
+
+    for (Product product : products) {
+      if (!canFit(product, biggestBox)) {
+        oversizedProducts.add(I18n.get(product.getName()));
+      }
+      if (isOverweight(product, biggestBox)) {
+        overweightProducts.add(I18n.get(product.getName()));
+      }
+    }
+    if (CollectionUtils.isNotEmpty(oversizedProducts)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          StringHtmlListBuilder.formatMessage(
+              I18n.get(SaleExceptionMessage.SALE_ORDER_OVERSIZED_ITEMS), oversizedProducts));
+    }
+    if (CollectionUtils.isNotEmpty(overweightProducts)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          StringHtmlListBuilder.formatMessage(
+              I18n.get(SaleExceptionMessage.SALE_ORDER_OVERWEIGHT_ITEMS), overweightProducts));
+    }
+  }
+
+  protected boolean isOverweight(Product product, Product box) throws AxelorException {
+    BigDecimal productWeight =
+        saleOrderPackagingDimensionService.getConvertedWeight(product.getGrossMass(), product);
+    return productWeight.compareTo(box.getMaxWeight()) > 0;
   }
 }

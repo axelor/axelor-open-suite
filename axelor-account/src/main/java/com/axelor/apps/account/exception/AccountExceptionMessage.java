@@ -1847,4 +1847,10 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_PAYMENT_UNLINK_ALERT = /*$$(*/
       "You are about to cancel the payment allocated to this invoice. The payment accounting entry will remain posted in the journal, only the reconciliation will be cancelled. Do you wish to continue ?" /*)*/;
+
+  public static final String INVOICE_PAYMENT_ALERT_DEFAULT_REVERSE = /*$$(*/
+      "You are about to cancel the payment allocated to this invoice and its associated accounting entry. The payment accounting entry will be reversed. Do you wish to continue ?" /*)*/;
+
+  public static final String INVOICE_PAYMENT_ALERT_VOUCHER_DEPOSIT_REVERSE = /*$$(*/
+      "Warning: this payment is included in a cheque deposit slip that has already been submitted. Do you want to reverse the payment accounting entry ?" /*)*/;
 }

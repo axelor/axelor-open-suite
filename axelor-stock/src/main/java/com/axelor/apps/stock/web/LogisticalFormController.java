@@ -88,9 +88,4 @@ public class LogisticalFormController {
       TraceBackService.trace(response, e);
     }
   }
-
-  public void refreshLogisticalForm(ActionRequest request, ActionResponse response) {
-    LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
-    response.setSignal("refresh-tab", logisticalForm);
-  }
 }

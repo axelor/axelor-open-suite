@@ -16,15 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
-import java.math.BigDecimal;
+import com.axelor.apps.stock.db.LogisticalForm;
 
-public interface SaleOrderPackagingOrientationService {
+public interface LogisticalFormSupplychainService {
 
-  boolean canFit(Product product, Product box) throws AxelorException;
-
-  BigDecimal[][] getOrientations(BigDecimal[] dimensions);
+  void processCollected(LogisticalForm logisticalForm) throws AxelorException;
 }
