@@ -539,7 +539,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     accountingReportRepo.save(accountingReport);
   }
 
-  /** @return */
+  /**
+   * @return
+   */
   public BigDecimal getDebitBalance() {
 
     Query q =
@@ -563,7 +565,9 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
   }
 
-  /** @return */
+  /**
+   * @return
+   */
   public BigDecimal getCreditBalance() {
 
     Query q =

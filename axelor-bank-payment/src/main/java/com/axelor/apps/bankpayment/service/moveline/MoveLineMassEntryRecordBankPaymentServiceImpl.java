@@ -74,7 +74,8 @@ public class MoveLineMassEntryRecordBankPaymentServiceImpl
         && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD
         && partner != null
         && company != null) {
-      bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
+      bankDetailsBankPaymentService
+          .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
           .stream()
           .findAny()
           .ifPresent(moveLine::setMovePartnerBankDetails);

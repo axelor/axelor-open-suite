@@ -83,12 +83,15 @@ public class UnitConversionForProjectServiceImpl extends UnitConversionServiceIm
   }
 
   protected List<UnitConversion> fetchUnitConversionForProjectList() {
-    return unitConversionRepo.all()
+    return unitConversionRepo
+        .all()
         .filter(
             "self.entitySelect = :entitySelectProject or (self.entitySelect = :entitySelectAll and self.typeSelect = :typeSelect)")
         .bind("entitySelectProject", UnitConversionRepository.ENTITY_PROJECT)
         .bind("entitySelectAll", UnitConversionRepository.ENTITY_ALL)
-        .bind("typeSelect", UnitConversionRepository.TYPE_COEFF).fetch().stream()
+        .bind("typeSelect", UnitConversionRepository.TYPE_COEFF)
+        .fetch()
+        .stream()
         .sorted(Comparator.comparing(UnitConversion::getEntitySelect).reversed())
         .collect(Collectors.toList());
   }

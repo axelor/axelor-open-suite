@@ -358,17 +358,23 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     }
     units.add(unit);
     units.addAll(
-        unitConversionRepository.all()
+        unitConversionRepository
+            .all()
             .filter("self.entitySelect = :entitySelect AND self.startUnit = :startUnit")
-            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT).bind("startUnit", unit)
-            .fetch().stream()
+            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT)
+            .bind("startUnit", unit)
+            .fetch()
+            .stream()
             .map(UnitConversion::getEndUnit)
             .collect(Collectors.toList()));
     units.addAll(
-        unitConversionRepository.all()
+        unitConversionRepository
+            .all()
             .filter("self.entitySelect = :entitySelect AND self.endUnit = :endUnit")
-            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT).bind("endUnit", unit)
-            .fetch().stream()
+            .bind("entitySelect", UnitConversionRepository.ENTITY_PROJECT)
+            .bind("endUnit", unit)
+            .fetch()
+            .stream()
             .map(UnitConversion::getStartUnit)
             .collect(Collectors.toList()));
     return units;
@@ -424,7 +430,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   public List<ProjectPlanningTime> getProjectPlanningTimeIdList(
       Employee employee, LocalDate fromDate, LocalDate toDate) {
 
-    return planningTimeRepo.all()
+    return planningTimeRepo
+        .all()
         .filter(
             "self.project IS NOT NULL and self.project.manageTimeSpent is true "
                 + "and self.employee = :employee "
@@ -432,7 +439,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
         .bind("employee", employee)
         .bind("fromDate", Optional.ofNullable(fromDate).map(LocalDate::atStartOfDay).orElse(null))
         .bind("toDate", Optional.ofNullable(toDate).map(date -> date.atTime(23, 59)).orElse(null))
-        .fetch().stream()
+        .fetch()
+        .stream()
         .filter(
             distinctByTask(
                 (it ->

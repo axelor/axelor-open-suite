@@ -41,6 +41,10 @@ public interface QIAnalysisService {
   void sendQIActionDistributions(
       List<QIActionDistribution> qiActionDistributionList,
       Template qiActionDistributionMessageTemplate)
-      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
-          AxelorException, IOException, MessagingException;
+      throws ClassNotFoundException,
+          InstantiationException,
+          IllegalAccessException,
+          AxelorException,
+          IOException,
+          MessagingException;
 }

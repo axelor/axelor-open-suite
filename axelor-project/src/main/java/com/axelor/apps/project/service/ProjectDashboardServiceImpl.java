@@ -69,10 +69,13 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
     List<Map<String, Object>> categoryList = new ArrayList<>();
 
     Map<ProjectTaskCategory, List<ProjectTask>> categoryTaskMap =
-        projectTaskRepo.all()
+        projectTaskRepo
+            .all()
             .filter("self.typeSelect = :_typeSelect AND self.project.id IN :_projectIds")
             .bind("_typeSelect", ProjectTaskRepository.TYPE_TASK)
-            .bind("_projectIds", projectToolService.getRelatedProjectIds(project)).fetch().stream()
+            .bind("_projectIds", projectToolService.getRelatedProjectIds(project))
+            .fetch()
+            .stream()
             .sorted(getTaskComparator())
             .collect(
                 Collectors.toMap(
@@ -126,8 +129,11 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
 
   protected Set<User> getMembers(Project project) {
     Set<User> membersSet = new HashSet<>();
-    projectRepo.all().filter("self.id IN ?1", projectToolService.getRelatedProjectIds(project))
-        .fetch().stream()
+    projectRepo
+        .all()
+        .filter("self.id IN ?1", projectToolService.getRelatedProjectIds(project))
+        .fetch()
+        .stream()
         .forEach(subProject -> membersSet.addAll(subProject.getMembersUserSet()));
     return membersSet;
   }

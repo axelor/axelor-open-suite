@@ -246,7 +246,9 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     return remainingAmount.compareTo(pendingAmount) <= 0;
   }
 
-  /** @inheritDoc */
+  /**
+   * @inheritDoc
+   */
   @Override
   public List<BankDetails> findCompatibleBankDetails(
       Company company, InvoicePayment invoicePayment) {

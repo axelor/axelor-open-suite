@@ -244,11 +244,14 @@ public class PurchaseOrderLineServiceSupplyChainImpl extends PurchaseOrderLineSe
       return true;
     }
     BigDecimal qtyRealized =
-        stockMoveLineRepository.all()
+        stockMoveLineRepository
+            .all()
             .filter(
                 "self.purchaseOrderLine = :purchaseOrderLine AND self.stockMove.statusSelect = :realized")
             .bind("purchaseOrderLine", purchaseOrderLine)
-            .bind("realized", StockMoveRepository.STATUS_REALIZED).fetch().stream()
+            .bind("realized", StockMoveRepository.STATUS_REALIZED)
+            .fetch()
+            .stream()
             .map(StockMoveLine::getRealQty)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     return purchaseOrderLine.getQty().compareTo(qtyRealized) >= 0;

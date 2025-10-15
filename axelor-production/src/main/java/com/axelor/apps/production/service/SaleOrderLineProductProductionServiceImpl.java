@@ -196,7 +196,8 @@ public class SaleOrderLineProductProductionServiceImpl
       if (!solDetailsBomUpdateService.isSolDetailsUpdated(
           saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList())) {
         saleOrderLineDetailsBomService
-            .createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder, saleOrderLine).stream()
+            .createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder, saleOrderLine)
+            .stream()
             .filter(Objects::nonNull)
             .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
       }

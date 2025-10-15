@@ -260,14 +260,18 @@ public class TimesheetProjectPlanningTimeServiceImpl
   }
 
   protected List<UnitConversion> fetchUnitConversionForProjectList(Unit startUnit, Unit endUnit) {
-    return unitConversionRepository.all()
+    return unitConversionRepository
+        .all()
         .filter(
             "(self.entitySelect = :entitySelectProject or (self.entitySelect = :entitySelectAll and self.typeSelect = :typeSelect))"
                 + "AND ((self.startUnit = :startUnit AND self.endUnit = :endUnit) OR (self.startUnit = :endUnit AND self.endUnit = :startUnit))")
         .bind("entitySelectProject", UnitConversionRepository.ENTITY_PROJECT)
         .bind("entitySelectAll", UnitConversionRepository.ENTITY_ALL)
-        .bind("typeSelect", UnitConversionRepository.TYPE_COEFF).bind("startUnit", startUnit)
-        .bind("endUnit", endUnit).fetch().stream()
+        .bind("typeSelect", UnitConversionRepository.TYPE_COEFF)
+        .bind("startUnit", startUnit)
+        .bind("endUnit", endUnit)
+        .fetch()
+        .stream()
         .sorted(Comparator.comparing(UnitConversion::getEntitySelect).reversed())
         .collect(Collectors.toList());
   }

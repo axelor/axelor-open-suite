@@ -25,7 +25,9 @@ import java.math.BigDecimal;
 
 public interface StockMoveUpdateService {
 
-  /** @deprecated To update status of a stock move (API AOS) */
+  /**
+   * @deprecated To update status of a stock move (API AOS)
+   */
   @Deprecated
   void updateStatus(StockMove stockMove, Integer status) throws AxelorException;
 

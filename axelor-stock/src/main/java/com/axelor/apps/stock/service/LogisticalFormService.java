@@ -22,7 +22,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.LogisticalForm;
 import java.util.Optional;
 
-/** @author axelor */
+/**
+ * @author axelor
+ */
 public interface LogisticalFormService {
 
   /**

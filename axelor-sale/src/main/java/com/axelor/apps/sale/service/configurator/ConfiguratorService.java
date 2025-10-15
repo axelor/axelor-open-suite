@@ -114,8 +114,11 @@ public interface ConfiguratorService {
       SaleOrder saleOrder,
       JsonContext jsonAttributes,
       JsonContext jsonIndicators)
-      throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
-          InvocationTargetException, AxelorException;
+      throws ClassNotFoundException,
+          NoSuchMethodException,
+          IllegalAccessException,
+          InvocationTargetException,
+          AxelorException;
 
   /**
    * Check if the calculated value type is the same as the indicator type.

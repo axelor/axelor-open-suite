@@ -73,7 +73,8 @@ public class CallTenderController {
     callTender = Beans.get(CallTenderRepository.class).find(callTender.getId());
     List<Long> purchaseOrderIds =
         Beans.get(CallTenderPurchaseOrderService.class)
-            .generatePurchaseOrders(callTender, selectedCallTenderOfferList).stream()
+            .generatePurchaseOrders(callTender, selectedCallTenderOfferList)
+            .stream()
             .map(PurchaseOrder::getId)
             .collect(Collectors.toList());
 
