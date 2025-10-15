@@ -30,8 +30,7 @@
         onSelect="action-packaging-line-method-stock-move-line-domain"
         onChange="action-packaging-line-record-stock-move-line-onchange"/>
       <field name="stockMoveLine.product"/>
-      <field name="trackingNumber" grid-view="tracking-number-grid"
-        form-view="tracking-number-form" readonly="true"/>
+      <field name="stockMoveLine.trackingNumber"/>
       <field name="qty" x-scale="$nbDecimalDigitForQty" readonlyIf="!stockMoveLine" min="0"/>
       <field name="stockMoveLine.netMass" x-scale="$nbDecimalDigitForPrice"/>
       <field name="$nbDecimalDigitForQty" hidden="true"/>
@@ -53,7 +52,6 @@
   <action-record name="action-packaging-line-record-stock-move-line-onchange"
     model="com.axelor.apps.supplychain.db.PackagingLine">
     <field name="qty" expr="eval: stockMoveLine?.qtyRemainingToPackage"/>
-    <field name="trackingNumber" expr="eval: stockMoveLine?.trackingNumber"/>
   </action-record>
 
   <action-method name="action-packaging-line-method-stock-move-line-domain">
