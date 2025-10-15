@@ -64,13 +64,9 @@ public class MassEntryMoveUpdateServiceImpl implements MassEntryMoveUpdateServic
   @Transactional(rollbackOn = {Exception.class})
   public void updateMassEntryMoveStatus(Long moveId) {
     List<Long> moveLineIds =
-        moveLineMassEntryRepository
-            .all()
-            .filter("self.moveMassEntry = ? AND self.isGenerated IS FALSE", moveId)
-            .order("id")
-            .select("id")
-            .fetch(0, 0)
-            .stream()
+        moveLineMassEntryRepository.all()
+            .filter("self.moveMassEntry = ? AND self.isGenerated IS FALSE", moveId).order("id")
+            .select("id").fetch(0, 0).stream()
             .map(m -> (Long) m.get("id"))
             .collect(Collectors.toList());
     if (ObjectUtils.isEmpty(moveLineIds)) {
@@ -81,14 +77,10 @@ public class MassEntryMoveUpdateServiceImpl implements MassEntryMoveUpdateServic
   }
 
   protected List<Long> getMoveLineMassEntryIds(int temporaryMoveNumber, Long moveId) {
-    return moveLineMassEntryRepository
-        .all()
+    return moveLineMassEntryRepository.all()
         .filter(
             "self.temporaryMoveNumber = ? AND self.moveMassEntry = ?", temporaryMoveNumber, moveId)
-        .order("id")
-        .select("id")
-        .fetch(0, 0)
-        .stream()
+        .order("id").select("id").fetch(0, 0).stream()
         .map(m -> (Long) m.get("id"))
         .collect(Collectors.toList());
   }

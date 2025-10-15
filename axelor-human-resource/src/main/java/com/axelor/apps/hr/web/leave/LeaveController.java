@@ -429,9 +429,7 @@ public class LeaveController {
                 .createQuery(
                     LeaveRequest.class,
                     security.getFilter(JpaSecurity.CAN_READ, LeaveRequest.class))
-                .select("id")
-                .fetch(0, 0)
-                .stream()
+                .select("id").fetch(0, 0).stream()
                 .map(m -> (Long) m.get("id"))
                 .collect(Collectors.toList());
       } else {

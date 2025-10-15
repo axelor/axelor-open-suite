@@ -270,22 +270,14 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
   public String checkInvoiceTermInPaymentVoucher(List<InvoiceTerm> invoiceTermList) {
     if (!CollectionUtils.isEmpty(invoiceTermList)) {
       List<String> paymentVoucherRefList =
-          payVoucherElementToPayRepository
-              .all()
-              .filter("self.invoiceTerm in (:invoiceTermList)")
-              .bind("invoiceTermList", invoiceTermList)
-              .fetch()
-              .stream()
+          payVoucherElementToPayRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
+              .bind("invoiceTermList", invoiceTermList).fetch().stream()
               .map(PayVoucherElementToPay::getPaymentVoucher)
               .map(PaymentVoucher::getRef)
               .collect(Collectors.toList());
       paymentVoucherRefList.addAll(
-          payVoucherDueElementRepository
-              .all()
-              .filter("self.invoiceTerm in (:invoiceTermList)")
-              .bind("invoiceTermList", invoiceTermList)
-              .fetch()
-              .stream()
+          payVoucherDueElementRepository.all().filter("self.invoiceTerm in (:invoiceTermList)")
+              .bind("invoiceTermList", invoiceTermList).fetch().stream()
               .map(PayVoucherDueElement::getPaymentVoucher)
               .map(PaymentVoucher::getRef)
               .collect(Collectors.toList()));

@@ -89,8 +89,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
         BillOfMaterial lineBom = saleOrderLine.getBillOfMaterial();
         if (saleOrderLine.getIsToProduce()) {
           saleOrderLineDetailsBomService
-              .createSaleOrderLineDetailsFromBom(lineBom, saleOrder, saleOrderLine)
-              .stream()
+              .createSaleOrderLineDetailsFromBom(lineBom, saleOrder, saleOrderLine).stream()
               .filter(Objects::nonNull)
               .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
           saleOrderLineDetailsProdProcessService

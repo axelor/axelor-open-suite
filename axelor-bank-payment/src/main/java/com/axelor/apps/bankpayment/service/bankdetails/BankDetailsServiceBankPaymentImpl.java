@@ -51,8 +51,7 @@ public class BankDetailsServiceBankPaymentImpl extends BankDetailsServiceAccount
             appBankPaymentService.getAppBankPayment().getManageDirectDebitPayment())) {
       defaultBankDetails =
           bankDetailsBankPaymentService
-              .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
-              .stream()
+              .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company).stream()
               .findFirst()
               .orElse(null);
     }

@@ -100,8 +100,7 @@ public class MoveCreateBankPaymentServiceImpl extends MoveCreateServiceImpl {
             description,
             companyBankDetails);
 
-    bankDetailsBankPaymentService
-        .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
+    bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
         .stream()
         .findAny()
         .ifPresent(move::setPartnerBankDetails);

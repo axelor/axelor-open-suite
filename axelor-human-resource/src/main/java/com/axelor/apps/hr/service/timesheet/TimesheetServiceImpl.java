@@ -32,9 +32,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 
-/**
- * @author axelor
- */
+/** @author axelor */
 public class TimesheetServiceImpl implements TimesheetService {
   protected EmployeeComputeDaysLeaveBonusService employeeComputeDaysLeaveService;
   protected PublicHolidayService publicHolidayService;

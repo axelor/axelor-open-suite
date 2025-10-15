@@ -170,13 +170,9 @@ public class BankReconciliationDomainServiceImpl implements BankReconciliationDo
       throws AxelorException {
     String domain = "";
     String idList =
-        moveLineRepository
-            .all()
-            .filter(bankReconciliationQueryService.getRequestMoveLines())
+        moveLineRepository.all().filter(bankReconciliationQueryService.getRequestMoveLines())
             .bind(bankReconciliationQueryService.getBindRequestMoveLine(bankReconciliation))
-            .select("id")
-            .fetch(0, 0)
-            .stream()
+            .select("id").fetch(0, 0).stream()
             .map(m -> (Long) m.get("id"))
             .map(String::valueOf)
             .collect(Collectors.joining(","));

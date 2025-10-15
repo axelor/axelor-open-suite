@@ -172,12 +172,8 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
   @Override
   public Set<BirtTemplate> getBirtTemplates(String modelName) throws AxelorException {
     Set<BirtTemplate> birtTemplatSet =
-        birtTemplateRepository
-            .all()
-            .filter("self.metaModel.fullName = :metaModel")
-            .bind("metaModel", modelName)
-            .fetch()
-            .stream()
+        birtTemplateRepository.all().filter("self.metaModel.fullName = :metaModel")
+            .bind("metaModel", modelName).fetch().stream()
             .collect(Collectors.toSet());
 
     if (CollectionUtils.isEmpty(birtTemplatSet)) {

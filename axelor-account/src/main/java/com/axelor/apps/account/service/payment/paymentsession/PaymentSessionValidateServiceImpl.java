@@ -1080,12 +1080,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   @Override
   public boolean isEmpty(PaymentSession paymentSession) {
-    return invoiceTermRepo
-        .all()
-        .filter("self.paymentSession = :paymentSession")
-        .bind("paymentSession", paymentSession)
-        .fetch()
-        .stream()
+    return invoiceTermRepo.all().filter("self.paymentSession = :paymentSession")
+        .bind("paymentSession", paymentSession).fetch().stream()
         .noneMatch(this::shouldBeProcessed);
   }
 

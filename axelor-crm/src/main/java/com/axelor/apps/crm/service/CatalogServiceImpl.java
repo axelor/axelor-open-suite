@@ -48,12 +48,8 @@ public class CatalogServiceImpl implements CatalogService {
 
   @Override
   public void sendEmail(Catalog catalog, Template template, List<Partner> contactList)
-      throws ClassNotFoundException,
-          InstantiationException,
-          IllegalAccessException,
-          AxelorException,
-          IOException,
-          MessagingException {
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException, MessagingException {
 
     Message message = templateMessageService.generateMessage(catalog, template);
 

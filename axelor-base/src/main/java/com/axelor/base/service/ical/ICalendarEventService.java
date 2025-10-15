@@ -31,12 +31,6 @@ import javax.mail.MessagingException;
 public interface ICalendarEventService {
 
   List<ICalendarUser> addEmailGuest(EmailAddress email, ICalendarEvent event)
-      throws ClassNotFoundException,
-          InstantiationException,
-          IllegalAccessException,
-          AxelorException,
-          MessagingException,
-          IOException,
-          ICalendarException,
-          ParseException;
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, MessagingException, IOException, ICalendarException, ParseException;
 }

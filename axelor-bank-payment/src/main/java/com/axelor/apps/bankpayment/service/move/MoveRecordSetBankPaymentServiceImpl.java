@@ -74,8 +74,7 @@ public class MoveRecordSetBankPaymentServiceImpl extends MoveRecordSetServiceImp
     Company company = move.getCompany();
 
     if (paymentMode != null && partner != null && company != null) {
-      bankDetailsBankPaymentService
-          .getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
+      bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(paymentMode, partner, company)
           .stream()
           .findAny()
           .ifPresent(move::setPartnerBankDetails);

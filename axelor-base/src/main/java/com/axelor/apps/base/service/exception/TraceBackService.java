@@ -262,9 +262,7 @@ public class TraceBackService {
     trace(response, e, null, responseMessageType);
   }
 
-  /**
-   * @return "Axelor Exception"
-   */
+  /** @return "Axelor Exception" */
   public String toString() {
     return "Axelor Exception";
   }

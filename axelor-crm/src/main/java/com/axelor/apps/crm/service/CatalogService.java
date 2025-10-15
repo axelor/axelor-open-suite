@@ -29,10 +29,6 @@ import javax.mail.MessagingException;
 public interface CatalogService {
 
   void sendEmail(Catalog catalog, Template template, List<Partner> contactList)
-      throws ClassNotFoundException,
-          InstantiationException,
-          IllegalAccessException,
-          AxelorException,
-          IOException,
-          MessagingException;
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, IOException, MessagingException;
 }

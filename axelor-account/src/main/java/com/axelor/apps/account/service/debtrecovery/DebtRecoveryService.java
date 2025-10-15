@@ -428,12 +428,8 @@ public class DebtRecoveryService {
    */
   @Transactional(rollbackOn = {Exception.class})
   public boolean debtRecoveryGenerate(Partner partner, Company company, TradingName tradingName)
-      throws AxelorException,
-          ClassNotFoundException,
-          InstantiationException,
-          IllegalAccessException,
-          IOException,
-          JSONException {
+      throws AxelorException, ClassNotFoundException, InstantiationException,
+          IllegalAccessException, IOException, JSONException {
     boolean remindedOk = false;
 
     DebtRecovery debtRecovery =

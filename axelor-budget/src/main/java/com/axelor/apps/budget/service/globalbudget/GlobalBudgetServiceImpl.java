@@ -136,19 +136,12 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     globalBudget.setRealizedWithPo(amountByField.get("realizedWithPo"));
     globalBudget.setTotalAmountAvailable(
         currencyScaleService.getCompanyScaledValue(
-            globalBudget,
-            (amountByField
-                    .get("totalAmountExpected")
-                    .subtract(amountByField.get("realizedWithPo"))
-                    .subtract(amountByField.get("realizedWithNoPo")))
-                .max(BigDecimal.ZERO)));
+            globalBudget, (amountByField.get("totalAmountAvailable"))));
     globalBudget.setTotalFirmGap(amountByField.get("totalFirmGap"));
     globalBudget.setSimulatedAmount(amountByField.get("simulatedAmount"));
     globalBudget.setAvailableAmountWithSimulated(
         currencyScaleService.getCompanyScaledValue(
-            globalBudget,
-            (globalBudget.getTotalAmountAvailable().subtract(amountByField.get("simulatedAmount")))
-                .max(BigDecimal.ZERO)));
+            globalBudget, amountByField.get("availableAmountWithSimulated")));
   }
 
   @Override

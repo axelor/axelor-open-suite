@@ -89,17 +89,12 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     List<Long> stockLocationIdList = new ArrayList<>();
     if (stockLocationId == null) {
       stockLocationIdList.addAll(
-          stockLocationRepository
-              .all()
+          stockLocationRepository.all()
               .filter(
                   "self.typeSelect != :typeSelect AND self.company.id = :company "
                       + "AND self.stockLocationLineList.product = :product")
-              .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL)
-              .bind("company", companyId)
-              .bind("product", productId)
-              .select("id")
-              .fetch(0, 0)
-              .stream()
+              .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL).bind("company", companyId)
+              .bind("product", productId).select("id").fetch(0, 0).stream()
               .map(m -> (Long) m.get("id"))
               .collect(Collectors.toList()));
     } else {

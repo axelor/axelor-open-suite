@@ -44,12 +44,10 @@ public class LeaveReasonServiceImpl implements LeaveReasonService {
 
   @Override
   public List<Integer> getIncrementLeaveReasonTypeSelects() {
-    return Beans.get(MetaSelectItemRepository.class)
-        .all()
+    return Beans.get(MetaSelectItemRepository.class).all()
         .filter("self.select.name = :selectName AND self.value != :exceptionalSelect")
         .bind("selectName", "hr.leave.reason.type.select")
-        .bind("exceptionalSelect", LeaveReasonRepository.TYPE_SELECT_EXCEPTIONAL_DAYS)
-        .fetch()
+        .bind("exceptionalSelect", LeaveReasonRepository.TYPE_SELECT_EXCEPTIONAL_DAYS).fetch()
         .stream()
         .map(MetaSelectItem::getValue)
         .collect(Collectors.toList())

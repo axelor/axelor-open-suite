@@ -206,12 +206,8 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
 
     Product product = purchaseOrderLine.getProduct();
     BigDecimal qtyAlreadyInvoiced =
-        invoiceLineRepository
-            .all()
-            .filter("self.purchaseOrderLine = :purchaseOrderLine")
-            .bind("purchaseOrderLine", purchaseOrderLine)
-            .fetch()
-            .stream()
+        invoiceLineRepository.all().filter("self.purchaseOrderLine = :purchaseOrderLine")
+            .bind("purchaseOrderLine", purchaseOrderLine).fetch().stream()
             .map(InvoiceLine::getQty)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
 

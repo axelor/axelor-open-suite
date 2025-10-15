@@ -37,14 +37,8 @@ public class ICalendarEventController {
 
   @SuppressWarnings("unchecked")
   public void addEmailGuest(ActionRequest request, ActionResponse response)
-      throws ClassNotFoundException,
-          InstantiationException,
-          IllegalAccessException,
-          AxelorException,
-          MessagingException,
-          IOException,
-          ICalendarException,
-          ParseException {
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException,
+          AxelorException, MessagingException, IOException, ICalendarException, ParseException {
     ICalendarEvent event = request.getContext().asType(ICalendarEvent.class);
     try {
       Map<String, Object> guestEmail = (Map<String, Object>) request.getContext().get("guestEmail");
