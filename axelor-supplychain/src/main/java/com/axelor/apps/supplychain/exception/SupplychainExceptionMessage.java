@@ -475,4 +475,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String LOGISTICAL_FORM_STOCK_MOVE_NOT_VALID = /*$$(*/
       "This stock move is not valid for this logistical form." /*)*/;
+
+  public static final String LOGISTICAL_FORM_STOCK_LOCATION_MUST_BE_USABLE_ON_SO = /*$$(*/
+      "The stock location must be usable on sale order." /*)*/;
 }

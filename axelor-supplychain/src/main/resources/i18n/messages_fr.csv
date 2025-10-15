@@ -745,6 +745,7 @@
 "The sale order %s invoiced amount cannot be greater than its total amount.","Le montant facturé de la commande %s ne peut pas être plus grand que son montant total.",,
 "The shipping cost is accounted for in the sale order's total cost and affects the margin.","Le prix du transport est comptabilisé dans le coût total de la commande et impacte la marge.",,
 "The stock location must be the same for all purchase orders.",,,
+"The stock location must be usable on sale order.","L'emplacement de stock doit être utilisable pour les ventes.",,
 "The supplier is required and must be the same for all purchase orders","Le fournisseur est obligatoire et doit être identique pour toutes les cmdes d'achat",,
 "The total of the order must be equal or superior than the advance payment total.","Le montant total de la commande doit être égal ou supérieur au montant total des acomptes.",,
 "The trading name must be the same for all purchase orders.",,,
