@@ -45,7 +45,7 @@
     title="List of Wastes Per Product" model="com.axelor.apps.production.db.ProdProduct">
     <view type="grid" name="prod-product-detailed-grid"/>
     <view type="form" name="prod-product-form"/>
-    <domain>self.wasteManufOrder != null</domain>
+    <domain>self.wasteManufOrder IS NOT null</domain>
   </action-view>
 
   <action-view name="dashlet.wastes.by.product" title="Quantity Wasted per Product">

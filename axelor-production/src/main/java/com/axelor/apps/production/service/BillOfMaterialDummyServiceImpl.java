@@ -52,7 +52,7 @@ public class BillOfMaterialDummyServiceImpl implements BillOfMaterialDummyServic
             .map(Object::toString)
             .collect(Collectors.joining(","));
     String filter =
-        "self.billOfMaterialLine IS NOT NULL AND self.billOfMaterialLine IN (" + idList + ")";
+        "self.billOfMaterialLine IS NOT NULL AND self.billOfMaterialLine.id IN (" + idList + ")";
     return CollectionUtils.isNotEmpty(saleOrderLineRepository.all().filter(filter).fetch())
         || CollectionUtils.isNotEmpty(saleOrderLineDetailsRepository.all().filter(filter).fetch());
   }

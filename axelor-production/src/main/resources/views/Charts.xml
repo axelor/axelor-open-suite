@@ -77,9 +77,9 @@
 					ProdProduct self,
 					Product prod
 				WHERE
-					self.wasteManufOrder != null
+					self.wasteManufOrder IS NOT null
 				AND
-					prod.id = self.product
+					prod.id = self.product.id
 				AND
 					self.product = :name
 				GROUP BY
@@ -94,7 +94,7 @@
             <![CDATA[
                 SELECT
                     TO_CHAR(self.stoppingDateTime, 'YYYY-MM-DD') AS _date,
-                    EXTRACT(EPOCH FROM SUM(self.stoppingDateTime - self.startingDateTime))/3600 AS _hours
+                    SUM(EXTRACT(EPOCH FROM self.stoppingDateTime) - EXTRACT(EPOCH FROM self.startingDateTime))/3600 AS _hours
                 FROM
                     OperationOrderDuration self
                 WHERE
