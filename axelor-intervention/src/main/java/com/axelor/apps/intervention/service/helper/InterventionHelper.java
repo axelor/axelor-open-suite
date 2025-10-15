@@ -55,7 +55,7 @@ public class InterventionHelper {
                 .orElse(null)));
     domain.add(
         String.format(
-            "%s in self.exclusiveInterventionSet.id",
+            "%s in (SELECT exclusiveIntervention.id FROM self.exclusiveInterventionSet exclusiveIntervention)",
             Optional.ofNullable(intervention).map(Intervention::getId).orElse(null)));
 
     return domain.toString();

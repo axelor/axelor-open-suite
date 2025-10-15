@@ -242,7 +242,7 @@
   <action-record name="action-customer-request-record-emptying-trading-name"
     model="com.axelor.apps.intervention.db.CustomerRequest">
     <field name="tradingName"
-      expr="eval: __repo__(TradingName).all().filter('self.company.id = ? AND (self.archived = null OR self.archived = false)', company?.id).count() == 1 ? __repo__(TradingName).all().filter('self.company.id = ? AND (self.archived = null OR self.archived = false)', company?.id).fetchOne() : null"
+      expr="eval: __repo__(TradingName).all().filter('self.company.id = ? AND (self.archived IS null OR self.archived = false)', company?.id).count() == 1 ? __repo__(TradingName).all().filter('self.company.id = ? AND (self.archived IS null OR self.archived = false)', company?.id).fetchOne() : null"
       if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </action-record>
 

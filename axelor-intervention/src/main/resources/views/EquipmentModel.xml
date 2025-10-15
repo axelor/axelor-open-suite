@@ -58,7 +58,7 @@
     <column name="newBtn" type="button"/>
     <column name="deleteBtn" type="button"/>
     <node model="com.axelor.apps.intervention.db.EquipmentModel"
-      domain="self.parentEquipmentModel = null" onClick="action-equipment-model-view-from-tree">
+      domain="self.parentEquipmentModel IS null" onClick="action-equipment-model-view-from-tree">
       <field as="code" name="code"/>
       <field as="name" name="name"/>
       <field as="type" name="typeSelect" selection="equipment.type.select"/>
