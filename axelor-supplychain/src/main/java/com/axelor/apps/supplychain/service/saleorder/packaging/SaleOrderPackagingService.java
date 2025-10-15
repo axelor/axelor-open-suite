@@ -16,23 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.supplychain.service.saleorder.packaging;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Map;
+import com.axelor.apps.sale.db.SaleOrder;
 
-public interface SaleOrderPackagingPlanService {
+public interface SaleOrderPackagingService {
 
-  boolean hasQtyRemaining(Map<Product, BigDecimal> productQtyMap);
-
-  Product chooseBestBox(
-      Product product,
-      List<Product> boxes,
-      List<Product> products,
-      Map<Product, BigDecimal> productQtyMap,
-      Map<Product, BigDecimal> boxContents)
-      throws AxelorException;
+  void estimatePackaging(SaleOrder saleOrder) throws AxelorException;
 }

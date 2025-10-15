@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface MoveLineComputeAnalyticService {
@@ -47,4 +48,7 @@ public interface MoveLineComputeAnalyticService {
   MoveLine clearAnalyticAccounting(MoveLine moveLine);
 
   MoveLine clearAnalyticAccountingIfEmpty(MoveLine moveLine);
+
+  void copyAnalyticsDataFromMoveLine(
+      MoveLine oldMoveLine, MoveLine newMoveLine, BigDecimal newAmount);
 }

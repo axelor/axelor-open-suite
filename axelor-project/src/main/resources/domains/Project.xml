@@ -32,6 +32,8 @@
 
     <string name="code" title="Code" unique="true"/>
     <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
+    <many-to-many name="favouriteProjectUserSet" ref="com.axelor.auth.db.User"
+      title="Favourite project users"/>
     <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner"
       title="Customer"/>
     <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner"
@@ -110,6 +112,9 @@
     <many-to-one name="completedTaskStatus" title="Completed task status"
       ref="com.axelor.apps.project.db.TaskStatus"
       help="This task status will be used to define which status is flagged as completed for tasks."/>
+    <boolean name="isAllowTaskToBeAssignedToAnyUser"
+      title="Allow task to be assigned to any user?" default="true"
+      help="When this option is active, any active user can be assigned to the tasks of this project. Otherwise, only members of the project can be assigned."/>
 
     <many-to-many name="projectTaskLinkTypeSet"
       ref="com.axelor.apps.project.db.ProjectTaskLinkType" title="Project task relation types"/>

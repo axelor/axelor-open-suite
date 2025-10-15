@@ -160,18 +160,6 @@ import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeServ
 import com.axelor.apps.sale.service.saleorder.opportunity.OpportunitySaleOrderService;
 import com.axelor.apps.sale.service.saleorder.opportunity.OpportunitySaleOrderServiceImpl;
 import com.axelor.apps.sale.service.saleorder.opportunity.OpportunityServiceSaleImpl;
-import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingDimensionService;
-import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingDimensionServiceImpl;
-import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingMessageService;
-import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingMessageServiceImpl;
-import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingOrientationService;
-import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingOrientationServiceImpl;
-import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingPlanService;
-import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingPlanServiceImpl;
-import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingService;
-import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderPackagingServiceImpl;
-import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderProductPackagingService;
-import com.axelor.apps.sale.service.saleorder.packaging.SaleOrderProductPackagingServiceImpl;
 import com.axelor.apps.sale.service.saleorder.pricing.PricingObserverSaleImpl;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingService;
 import com.axelor.apps.sale.service.saleorder.pricing.SaleOrderLinePricingServiceImpl;
@@ -354,12 +342,5 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderOrderingStatusService.class).to(SaleOrderOrderingStatusServiceImpl.class);
     bind(SaleOrderSequenceService.class).to(SaleOrderSequenceServiceImpl.class);
     bind(SaleOrderSplitDummyService.class).to(SaleOrderSplitDummyServiceImpl.class);
-    bind(SaleOrderPackagingService.class).to(SaleOrderPackagingServiceImpl.class);
-    bind(SaleOrderPackagingPlanService.class).to(SaleOrderPackagingPlanServiceImpl.class);
-    bind(SaleOrderPackagingDimensionService.class).to(SaleOrderPackagingDimensionServiceImpl.class);
-    bind(SaleOrderPackagingOrientationService.class)
-        .to(SaleOrderPackagingOrientationServiceImpl.class);
-    bind(SaleOrderPackagingMessageService.class).to(SaleOrderPackagingMessageServiceImpl.class);
-    bind(SaleOrderProductPackagingService.class).to(SaleOrderProductPackagingServiceImpl.class);
   }
 }

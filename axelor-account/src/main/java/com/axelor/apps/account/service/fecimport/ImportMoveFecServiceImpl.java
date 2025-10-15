@@ -161,7 +161,7 @@ public class ImportMoveFecServiceImpl implements ImportMoveFecService {
     MoveLine mvLine =
         moveLineRepository
             .all()
-            .filter("self.name LIKE '" + importReference + "-%'")
+            .filter("self.name LIKE '" + importReference + "@%'")
             .order("-counter")
             .fetchOne();
 

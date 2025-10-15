@@ -72,6 +72,7 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
           freightCarrierModeRepository.find(freightCarrierPricing.getFreightCarrierMode().getId()));
       saleOrder.setCarrierPartner(
           partnerRepository.find(freightCarrierPricing.getCarrierPartner().getId()));
+      saleOrder.setShippingCost(freightCarrierPricing.getPricingAmount());
 
       if (saleOrder.getEstimatedShippingDate() != null) {
         saleOrder.setEstimatedDeliveryDate(

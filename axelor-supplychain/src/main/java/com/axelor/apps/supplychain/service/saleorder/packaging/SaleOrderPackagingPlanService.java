@@ -16,26 +16,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.packaging;
+package com.axelor.apps.supplychain.service.saleorder.packaging;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
-public interface SaleOrderPackagingDimensionService {
+public interface SaleOrderPackagingPlanService {
 
-  List<Product> getProductsOrderedByVolume(Map<Product, BigDecimal> productQtyMap)
+  boolean hasQtyRemaining(Map<Product, Pair<SaleOrderLine, BigDecimal>> productQtyMap);
+
+  Product chooseBestBox(
+      Product product,
+      List<Product> boxes,
+      List<Product> products,
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> productQtyMap,
+      Map<Product, Pair<SaleOrderLine, BigDecimal>> boxContents)
       throws AxelorException;
-
-  BigDecimal getBoxInnerVolume(Product box);
-
-  BigDecimal getSpaceVolume(BigDecimal[] space);
-
-  BigDecimal[] getDimensions(Product product, boolean isBox) throws AxelorException;
-
-  BigDecimal[] getProductDimensions(Product product) throws AxelorException;
-
-  BigDecimal getConvertedWeight(BigDecimal value, Product product) throws AxelorException;
 }

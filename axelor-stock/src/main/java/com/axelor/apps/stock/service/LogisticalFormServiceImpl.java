@@ -60,6 +60,7 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
     List<String> domainList = new ArrayList<>();
 
     domainList.add("self.company = :company");
+    domainList.add("self.logisticalForm = :id OR self.logisticalForm IS NULL");
     if (stockConfig.getAllowInternalStockMoveOnLogisticalForm()) {
       if (!stockConfig.getIsLogisticalFormMultiClientsEnabled()) {
         domainList.add(

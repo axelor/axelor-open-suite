@@ -279,9 +279,6 @@
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
       <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
         onClick="action-send-by-email-with-template" hidden="true" showIf="id"/>
-      <button name="estimatePackagingBtn" title="Estimate packaging" icon="fa-envelope"
-        onClick="save,action-sale-order-method-estimate-packaging"
-        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button name="recomputePricesBtn" title="Recompute prices"
         onClick="action-sale-order-group-recompute-prices-btn" showIf="statusSelect == 1"
         icon="fa-calculator"
@@ -602,12 +599,16 @@
           form-view="partner-form" grid-view="partner-grid"/>
         <field name="incoterm" canEdit="false" form-view="incoterm-form"
           grid-view="incoterm-grid" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
+        <field name="shippingCost" title="SaleOrder.shippingCost"
+          x-scale="company.currency.numberOfDecimals"
+          onChange="action-sale-order-method-compute-margin"/>
         <field name="isNeedingConformityCertificate" colSpan="3"/>
         <field name="isIspmRequired" readonly="true" colSpan="3"/>
         <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details"
           showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
-        <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries"
-          showIf="statusSelect >= 3" colSpan="12" action="action-sale-order-view-stock-moves"/>
+        <panel-related name="stockMovesPanel" field="stockMoveList"
+          grid-view="stock-move-sale-order-grid" form-view="stock-move-form"
+          showIf="statusSelect >= 3" colSpan="12" readonly="true"/>
         <panel name="deliveryCommentsPanel" title="Comment to display on delivery"
           colSpan="12">
           <field name="deliveryComments" widget="html" colSpan="12" showTitle="false"/>
@@ -2038,16 +2039,6 @@
     <context name="saleOrder" expr="eval: __self__.id"/>
   </action-view>
 
-  <action-view name="action-sale-order-view-stock-moves" title="Stock moves"
-    model="com.axelor.apps.stock.db.StockMove">
-    <view type="grid" name="stock-move-sale-order-grid"/>
-    <view type="form" name="stock-move-form"/>
-    <domain>:saleOrder MEMBER OF self.saleOrderSet</domain>
-    <context name="saleOrder" expr="eval: __this__.id"/>
-    <context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
-  </action-view>
-
-
   <action-view name="action-view-open-quotation-lines" title="Quotation lines"
     model="com.axelor.apps.sale.db.SaleOrderLine">
     <view type="grid" name="sale-order-line-menu-grid"/>
@@ -2354,8 +2345,8 @@
     <domain>self.originSaleQuotation.id = :id</domain>
   </action-view>
 
-  <action-method name="action-sale-order-method-estimate-packaging">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="estimatePackaging"/>
+  <action-method name="action-sale-order-method-compute-margin">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="computeMargin"/>
   </action-method>
 
 </object-views>

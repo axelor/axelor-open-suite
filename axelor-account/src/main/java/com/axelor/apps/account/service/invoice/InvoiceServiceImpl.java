@@ -235,7 +235,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   public void validateAndVentilate(Invoice invoice) throws AxelorException {
     validate(invoice);
-    ventilate(invoice);
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      ventilate(invoice);
+    }
   }
 
   /**
