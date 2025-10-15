@@ -469,4 +469,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String SALE_ORDER_LINE_LINKED_WITH_PACKAGING_LINE = /*$$(*/
       "This sale order line is linked to a packaging line, please remove it first from the sale order's packaging." /*)*/;
+
+  public static final String PACKAGING_PARENT_ERROR = /*$$(*/
+      "Logistical form or parent packaging must be provided." /*)*/;
 }

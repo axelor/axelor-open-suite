@@ -274,6 +274,10 @@ import com.axelor.apps.supplychain.service.observer.SaleOrderLineSupplychainObse
 import com.axelor.apps.supplychain.service.observer.SaleOrderSupplychainObserver;
 import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.apps.supplychain.service.order.OrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.packaging.PackagingCreateService;
+import com.axelor.apps.supplychain.service.packaging.PackagingCreateServiceImpl;
+import com.axelor.apps.supplychain.service.packaging.PackagingDeleteService;
+import com.axelor.apps.supplychain.service.packaging.PackagingDeleteServiceImpl;
 import com.axelor.apps.supplychain.service.packaging.PackagingLineService;
 import com.axelor.apps.supplychain.service.packaging.PackagingLineServiceImpl;
 import com.axelor.apps.supplychain.service.packaging.PackagingMassService;
@@ -619,5 +623,7 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderPackagingOrientationServiceImpl.class);
     bind(SaleOrderPackagingCreateService.class).to(SaleOrderPackagingCreateServiceImpl.class);
     bind(SaleOrderProductPackagingService.class).to(SaleOrderProductPackagingServiceImpl.class);
+    bind(PackagingCreateService.class).to(PackagingCreateServiceImpl.class);
+    bind(PackagingDeleteService.class).to(PackagingDeleteServiceImpl.class);
   }
 }
