@@ -36,6 +36,7 @@ import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainServi
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderWorkflowServiceSupplychainImpl;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -59,7 +60,8 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
       AnalyticToolSupplychainService analyticToolSupplychainService,
-      AnalyticMoveLineRepository analyticMoveLineRepository) {
+      AnalyticMoveLineRepository analyticMoveLineRepository,
+      SaleOrderSupplychainService saleOrderSupplychainService) {
     super(
         partnerRepo,
         saleOrderRepo,
@@ -72,7 +74,8 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
         appSupplychainService,
         accountingSituationSupplychainService,
         partnerSupplychainService,
-        analyticToolSupplychainService);
+        analyticToolSupplychainService,
+        saleOrderSupplychainService);
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 

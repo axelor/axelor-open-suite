@@ -1,0 +1,5 @@
+---
+title: "Sale order : fixed to clear timetable lines automatically upon sale order cancellation."
+module: axelor-sale
+developer: |
+  - SaleOrderWorkflowServiceSupplychainImpl consturctor is updated to introduce SaleOrderSupplychainService
