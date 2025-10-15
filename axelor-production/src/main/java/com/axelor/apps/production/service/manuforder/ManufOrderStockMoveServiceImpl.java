@@ -486,7 +486,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
     return stockMoveLineRepository
         .all()
-        .filter("self.saleOrderLine = :saleOrderLine AND self.stockMove != null")
+        .filter("self.saleOrderLine = :saleOrderLine AND self.stockMove IS NOT null")
         .bind("saleOrderLine", manufOrder.getSaleOrderLine())
         .fetchStream()
         .map(l -> l.getStockMove().getId())

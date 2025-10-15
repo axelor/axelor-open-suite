@@ -30,7 +30,7 @@
 
   <action-attrs name="action-workshop-sequence-config-line-attrs-workshop-domain">
     <attribute for="workshopStockLocation" name="domain"
-      expr="eval: &quot; self.company = ${__parent__.company.id} and self.typeSelect = 1 AND self.usableOnProduction = true AND self.isWorkshop = true&quot;"/>
+      expr="eval: &quot; self.company.id = ${__parent__.company.id} and self.typeSelect = 1 AND self.usableOnProduction = true AND self.isWorkshop = true&quot;"/>
   </action-attrs>
 
 </object-views>

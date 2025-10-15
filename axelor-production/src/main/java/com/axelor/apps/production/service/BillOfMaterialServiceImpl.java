@@ -258,7 +258,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     TempBomTree bomTree;
     if (parentBom == null) {
       bomTree =
-          tempBomTreeRepo.all().filter("self.bom = ?1 and self.parentBom = null", bom).fetchOne();
+          tempBomTreeRepo.all().filter("self.bom = ?1 and self.parentBom IS null", bom).fetchOne();
     } else {
       bomTree =
           tempBomTreeRepo
