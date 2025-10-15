@@ -18,8 +18,9 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.LogisticalForm;
-import com.axelor.apps.supplychain.service.packaging.PackagingLineService;
+import com.axelor.apps.supplychain.service.packaging.PackagingLineCreationService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -27,12 +28,13 @@ import com.axelor.utils.helpers.ContextHelper;
 
 public class PackagingLineController {
 
-  public void setStockMoveLineDomain(ActionRequest request, ActionResponse response) {
+  public void setStockMoveLineDomain(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     LogisticalForm logisticalForm =
         ContextHelper.getOriginParent(request.getContext(), LogisticalForm.class);
     response.setAttr(
         "stockMoveLine",
         "domain",
-        Beans.get(PackagingLineService.class).getStockMoveLineDomain(logisticalForm));
+        Beans.get(PackagingLineCreationService.class).getStockMoveLineDomain(logisticalForm));
   }
 }

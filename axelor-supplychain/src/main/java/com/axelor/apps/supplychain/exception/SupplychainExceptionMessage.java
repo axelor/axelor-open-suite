@@ -478,4 +478,7 @@ public final class SupplychainExceptionMessage {
 
   public static final String LOGISTICAL_FORM_STOCK_LOCATION_MUST_BE_USABLE_ON_SO = /*$$(*/
       "The stock location must be usable on sale order." /*)*/;
+
+  public static final String PACKAGING_LINE_STOCK_MOVE_LINE_NOT_VALID = /*$$(*/
+      "This stock move line can not be chosen." /*)*/;
 }
