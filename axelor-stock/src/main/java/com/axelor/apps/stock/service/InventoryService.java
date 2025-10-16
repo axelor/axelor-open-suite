@@ -81,6 +81,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.commons.lang3.LocaleUtils;
@@ -788,9 +789,9 @@ public class InventoryService {
       stockLocations.add(inventory.getStockLocation());
       stockLocations = this.getStockLocations(stockLocations);
       if (CollectionUtils.isNotEmpty(stockLocations)) {
-        query = "(self.stockLocation IN (?) OR self.detailsStockLocation IN (?))";
-        params.add(stockLocations);
-        params.add(stockLocations);
+        query = "(self.stockLocation.id IN (?) OR self.detailsStockLocation.id IN (?))";
+        params.add(stockLocations.stream().map(StockLocation::getId).collect(Collectors.toList()));
+        params.add(stockLocations.stream().map(StockLocation::getId).collect(Collectors.toList()));
       }
     } else {
       query = "(self.stockLocation = ? OR self.detailsStockLocation = ?)";
@@ -843,7 +844,11 @@ public class InventoryService {
       stockLocationList =
           stockLocationRepository
               .all()
-              .filter("self.parentStockLocation IN (?)", newStockLocationSet)
+              .filter(
+                  "self.parentStockLocation.id IN (?)",
+                  newStockLocationSet.stream()
+                      .map(StockLocation::getId)
+                      .collect(Collectors.toSet()))
               .fetch();
     }
     if (CollectionUtils.isNotEmpty(stockLocationList)) {

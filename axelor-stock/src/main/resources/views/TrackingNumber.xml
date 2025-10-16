@@ -359,7 +359,7 @@
 
   <action-attrs name="action-tracking-number-attrs-set-product-readonly">
     <attribute name="readonly" for="product"
-      expr="eval: __repo__(StockLocationLine).all().filter('self.trackingNumber = ?',id).count() > 0"
+      expr="eval: __repo__(StockLocationLine).all().filter('self.trackingNumber.id = ?',id).count() > 0"
       if="id != null"/>
   </action-attrs>
 

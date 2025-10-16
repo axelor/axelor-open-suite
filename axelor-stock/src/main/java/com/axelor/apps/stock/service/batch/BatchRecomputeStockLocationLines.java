@@ -214,8 +214,8 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
     StringBuilder query =
         new StringBuilder(
-            "self.fromStockLocation.id = :fromStockLocation"
-                + " AND self.toStockLocation.id = :toStockLocation"
+            "self.fromStockLocation = :fromStockLocation"
+                + " AND self.toStockLocation = :toStockLocation"
                 + " AND self.statusSelect = :status");
 
     if (stockMoveGroup.getRealDate() == null) {
@@ -238,8 +238,8 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
     StringBuilder query =
         new StringBuilder(
-            "self.fromStockLocation.id = :fromStockLocation"
-                + " AND self.toStockLocation.id = :toStockLocation"
+            "self.fromStockLocation = :fromStockLocation"
+                + " AND self.toStockLocation = :toStockLocation"
                 + " AND self.stockMove.statusSelect = :status");
 
     if (stockMoveGroup.getRealDate() == null) {

@@ -667,12 +667,16 @@ public class StockMoveServiceImpl implements StockMoveService {
             .all()
             .filter(
                 "self.inventory.statusSelect BETWEEN :startStatus AND :endStatus\n"
-                    + "AND self.inventory.stockLocation IN (:stockLocationList)\n"
-                    + "AND self.product IN (:productList)")
+                    + "AND self.inventory.stockLocation.id IN (:stockLocationList)\n"
+                    + "AND self.product.id IN (:productList)")
             .bind("startStatus", InventoryRepository.STATUS_IN_PROGRESS)
             .bind("endStatus", InventoryRepository.STATUS_COMPLETED)
-            .bind("stockLocationList", stockLocationList)
-            .bind("productList", productList)
+            .bind(
+                "stockLocationListId",
+                stockLocationList.stream().map(StockLocation::getId).collect(Collectors.toList()))
+            .bind(
+                "productList",
+                productList.stream().map(Product::getId).collect(Collectors.toList()))
             .fetchOne();
 
     if (inventoryLine != null) {

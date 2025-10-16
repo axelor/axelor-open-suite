@@ -110,8 +110,10 @@
     <view type="grid" name="stock-move-grid"/>
     <view type="form" name="stock-move-form"/>
     <domain>self.stockMoveLineList.toStockLocation.typeSelect = 3 AND (self.estimatedDate between
-      CURRENT_DATE and
-      CURRENT_DATE + 5) AND self.statusSelect = 2</domain>
+      :todayDate and
+      :_newDate) AND self.statusSelect = 2</domain>
+    <context name="todayDate" expr="__config__.date"/>
+    <context name="_newDate" expr="eval: __config__.date.plusDays(5)"/>
   </action-view>
 
   <action-view title="Late customer deliveries"
@@ -130,10 +132,12 @@
     <view type="grid" name="stock-move-grid"/>
     <view type="form" name="stock-move-form"/>
     <domain>self.stockMoveLineList.fromStockLocation.typeSelect = 3 AND (self.estimatedDate between
-      CURRENT_DATE and
-      CURRENT_DATE + 5) AND self.statusSelect = 2 AND self.company=:active_company</domain>
+      :todayDate and
+      :_newDate) AND self.statusSelect = 2 AND self.company=:active_company</domain>
     <context name="active_company"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
+    <context name="todayDate" expr="__config__.date"/>
+    <context name="_newDate" expr="eval: __config__.date.plusDays(5)"/>
   </action-view>
 
   <action-view title="Late supplier arrivals" model="com.axelor.apps.stock.db.StockMove"
