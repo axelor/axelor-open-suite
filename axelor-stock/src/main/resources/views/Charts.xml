@@ -67,8 +67,9 @@
       stockMove.statusSelect = 3 AND
       stockMove.company = :activeCompany
       AND
-      stockMove.realDate BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
-      self.stockMove = stockMove
+      DATE(stockMove.realDate) BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
+      self.stockMove =
+      stockMove
       AND
       self.toStockLocation = stockLocation AND
       stockLocation.typeSelect = 2
@@ -108,8 +109,9 @@
       stockMove.statusSelect = 3 AND
       stockMove.company = :activeCompany
       AND
-      stockMove.realDate BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
-      self.stockMove = stockMove
+      DATE(stockMove.realDate) BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
+      self.stockMove =
+      stockMove
       AND
       self.toStockLocation = stockLocation AND
       stockLocation.typeSelect = 2
@@ -117,7 +119,8 @@
       stockMove.toAddress
       = address AND
       address.country = country AND
-      self.product.productFamily = productFamily
+      self.product.productFamily =
+      productFamily
       GROUP BY
       country.name, productFamily.name
     </dataset>

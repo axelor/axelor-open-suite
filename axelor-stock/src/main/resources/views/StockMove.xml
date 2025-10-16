@@ -1320,7 +1320,7 @@
     model="com.axelor.apps.stock.db.StockMove">
     <view type="grid" name="stock-move-grid"/>
     <view type="form" name="stock-move-form"/>
-    <domain>self.reversionOriginStockMove =:id</domain>
+    <domain>self.reversionOriginStockMove.id =:id</domain>
   </action-view>
 
   <search-filters name="customer-deliveries-filters"

@@ -180,7 +180,7 @@ public class MassStockMovableProductRealizeServiceImpl
                 "self.stockLocation = :fromStockLocation AND self.product = :product AND self.currentQty = :qty"
                     + (movableProduct.getTrackingNumber() != null
                         ? " AND self.trackingNumber = :trackingNumber"
-                        : " AND self.detailsStockLocation = null"))
+                        : " AND self.detailsStockLocation IS null"))
             .bind("fromStockLocation", fromStockLocation)
             .bind("product", movableProduct.getProduct())
             .bind("qty", BigDecimal.ZERO)

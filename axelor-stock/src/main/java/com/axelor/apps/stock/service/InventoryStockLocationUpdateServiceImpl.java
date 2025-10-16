@@ -72,10 +72,12 @@ public class InventoryStockLocationUpdateServiceImpl
             .all()
             .filter(
                 "self.stockLocation = :stockLocation"
-                    + " AND self.product IN :productList"
+                    + " AND self.product.id IN :productList"
                     + " AND self.trackingNumber IS NULL")
             .bind("stockLocation", stockLocation)
-            .bind("productList", productList)
+            .bind(
+                "productList",
+                productList.stream().map(Product::getId).collect(Collectors.toList()))
             .fetch();
 
     if (stockLocationLineList != null) {
@@ -101,10 +103,12 @@ public class InventoryStockLocationUpdateServiceImpl
             .all()
             .filter(
                 "self.stockLocation = :stockLocation"
-                    + " AND self.product IN :productList"
+                    + " AND self.product.id IN :productList"
                     + " AND self.trackingNumber IS NOT NULL")
             .bind("stockLocation", stockLocation)
-            .bind("productList", productList)
+            .bind(
+                "productList",
+                productList.stream().map(Product::getId).collect(Collectors.toList()))
             .fetch();
 
     if (detailsStockLocationLineList != null) {
