@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
+import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
@@ -25,6 +26,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
@@ -167,51 +169,52 @@ public class BankOrderCheckServiceImpl implements BankOrderCheckService {
     return candidateBankDetails;
   }
 
-  public void checkPreconditions(BankOrder bankOrder) throws AxelorException {
+  @Override
+  public void checkPreconditions(
+      PaymentMode paymentMode,
+      Integer partnerType,
+      LocalDate bankOrderDate,
+      Company senderCompany,
+      BankDetails senderBankDetails)
+      throws AxelorException {
 
-    LocalDate brankOrderDate = bankOrder.getBankOrderDate();
-
-    if (brankOrderDate != null) {
-      if (brankOrderDate.isBefore(appBaseService.getTodayDate(bankOrder.getSenderCompany()))) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_INCONSISTENCY,
-            I18n.get(BankPaymentExceptionMessage.BANK_ORDER_DATE));
-      }
-    } else {
+    if (bankOrderDate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_DATE_MISSING));
     }
-
-    if (bankOrder.getOrderTypeSelect() == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_TYPE_MISSING));
-    }
-    if (bankOrder.getPartnerTypeSelect() == 0) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING));
-    }
-    if (bankOrder.getPaymentMode() == null) {
+    if (paymentMode == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_PAYMENT_MODE_MISSING));
     }
-    if (bankOrder.getSenderCompany() == null) {
+    if (paymentMode.getBankOrderFileFormat() == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          String.format(
+              I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_FORMAT_MISSING),
+              paymentMode.getName()));
+    }
+    if (paymentMode.getOrderTypeSelect() == null || paymentMode.getOrderTypeSelect() == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_TYPE_MISSING));
+    }
+    if (partnerType == null || partnerType == 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_PARTNER_TYPE_MISSING));
+    }
+
+    if (senderCompany == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_COMPANY_MISSING));
     }
-    if (bankOrder.getSenderBankDetails() == null) {
+    if (senderBankDetails == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_BANK_DETAILS_MISSING));
-    }
-    if (!bankOrder.getIsMultiCurrency() && bankOrder.getBankOrderCurrency() == null) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_CURRENCY_MISSING));
     }
   }
 
