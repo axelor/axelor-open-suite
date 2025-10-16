@@ -35,9 +35,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -160,20 +158,19 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
   public String computeProjectTaskDomain(ExpenseLine expenseLine) {
     Project project = expenseLine.getProject();
     if (project != null) {
-      return "self.id IN (" + StringHelper.getIdListString(project.getProjectTaskList()) + ")";
+      return "self.project.projectStatus.isCompleted = false AND self.project.id = "
+          + project.getId();
     }
+
     List<Project> projectList =
         projectRepository
             .all()
-            .filter(":userId IN self.membersUserSet.id")
+            .filter("self.projectStatus.isCompleted = false AND :userId IN self.membersUserSet.id")
             .bind("userId", expenseLine.getEmployee().getUser().getId())
             .fetch();
-    return "self.id IN ("
-        + StringHelper.getIdListString(
-            projectList.stream()
-                .map(Project::getProjectTaskList)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList()))
+
+    return "self.project.projectStatus.isCompleted = false AND self.project.id IN ("
+        + StringHelper.getIdListString(projectList)
         + ")";
   }
 }
