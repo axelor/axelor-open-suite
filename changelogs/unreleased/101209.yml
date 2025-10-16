@@ -1,0 +1,8 @@
+---
+title: "BankOrder: fixed the technical error when the bank order is not created with all fields due to wrong import."
+module: axelor-bank-payment
+developer:
+  Added BankOrderCheckService in the BankOrderCreateService constructor.
+  Added BankOrderCheckService in the BankOrderCreateServiceHr constructor.
+  Changed the BankOrderCheckService.checkPreconditions(BankOrder bankOrder) in 
+        checkPreconditions(PaymentMode paymentMode, Integer partnerType, LocalDate bankOrderDate, Company senderCompany, BankDetails senderBankDetails)

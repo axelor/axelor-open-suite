@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.base.AxelorException;
@@ -49,8 +50,9 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
       BankOrderRepository bankOrderRepository,
       BankOrderLineService bankOrderLineService,
       InvoiceService invoiceService,
+      BankOrderCheckService bankOrderCheckService,
       AppBaseService appBaseService) {
-    super(bankOrderRepository, bankOrderLineService, invoiceService);
+    super(bankOrderRepository, bankOrderLineService, invoiceService, bankOrderCheckService);
     this.appBaseService = appBaseService;
   }
 
