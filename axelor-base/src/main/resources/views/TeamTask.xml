@@ -92,8 +92,6 @@
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="budgetedTime" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="plannedProgress" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="metaFile" hidden="true"
-      if="!__config__.app.getApp('project')?.isEnableSignature"/>
     <field name="totalRealHrs" hidden="true" if="!__config__.app.isApp('timesheet')"/>
   </search-filters>
 

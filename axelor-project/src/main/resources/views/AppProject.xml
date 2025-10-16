@@ -11,7 +11,6 @@
       <field name="resourceManagement" widget="boolean-switch"/>
       <field name="checkResourceAvailibility" widget="boolean-switch"
         showIf="resourceManagement"/>
-      <field name="isEnableSignature" widget="boolean-switch"/>
       <field name="isEnablePerProjectTaskSequence" widget="boolean-switch"/>
       <field name="defaultPrioritySet" widget="TagSelect" canEdit="false"/>
       <field name="selectAutoProgressOnProjectTask"/>

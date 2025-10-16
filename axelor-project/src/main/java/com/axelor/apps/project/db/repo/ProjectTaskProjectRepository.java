@@ -176,7 +176,6 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
     task.setPriority(null);
     task.setProgress(null);
     task.setTaskEndDate(null);
-    task.setMetaFile(null);
     return task;
   }
 
