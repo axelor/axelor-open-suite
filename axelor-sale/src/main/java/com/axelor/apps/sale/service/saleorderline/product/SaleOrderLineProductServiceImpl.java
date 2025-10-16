@@ -154,16 +154,22 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     return saleOrderLineMap;
   }
 
-  protected Map<String, Object> fillCostPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  @Override
+  public Map<String, Object> fillCostPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
 
     Product product = saleOrderLine.getProduct();
+    if (product == null) {
+      saleOrderLine.setSubTotalCostPrice(BigDecimal.ZERO);
+      saleOrderLineMap.put("subTotalCostPrice", saleOrderLine.getSubTotalCostPrice());
+      return saleOrderLineMap;
+    }
     BigDecimal costPrice =
         ((BigDecimal)
             productCompanyService.get(
                 saleOrderLine.getProduct(), "costPrice", saleOrder.getCompany()));
-    if (product != null && costPrice.compareTo(BigDecimal.ZERO) != 0) {
+    if (costPrice.compareTo(BigDecimal.ZERO) != 0) {
       saleOrderLine.setSubTotalCostPrice(
           currencyScaleService.getCompanyScaledValue(
               saleOrder, costPrice.multiply(saleOrderLine.getQty())));
