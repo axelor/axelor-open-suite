@@ -1320,6 +1320,12 @@ group by
                     <text-property name="displayName">unit_label</text-property>
                     <text-property name="heading">unit_label</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">is_display_packaging_line_detail_in_printing</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">is_display_packaging_line_detail_in_printing</text-property>
+                    <text-property name="heading">is_display_packaging_line_detail_in_printing</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -1385,6 +1391,11 @@ group by
                         <property name="name">unit_label</property>
                         <property name="dataType">string</property>
                     </structure>
+                    <structure>
+                        <property name="position">9</property>
+                        <property name="name">is_display_packaging_line_detail_in_printing</property>
+                        <property name="dataType">integer</property>
+                    </structure>
                 </list-property>
             </structure>
             <property name="dataSource">Data Source</property>
@@ -1445,6 +1456,13 @@ group by
                     <property name="dataType">string</property>
                     <property name="nativeDataType">12</property>
                 </structure>
+                <structure>
+                    <property name="position">9</property>
+                    <property name="name">is_display_packaging_line_detail_in_printing</property>
+                    <property name="nativeName">is_display_packaging_line_detail_in_printing</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[WITH RECURSIVE packaging_hierarchy AS (
     SELECT
@@ -1454,6 +1472,7 @@ group by
         Packaging.total_net_mass,
         Packaging.total_gross_mass,
         Packaging.parent_packaging,
+        Packaging.logistical_form,
         ARRAY[Packaging.id] AS path
     FROM supplychain_packaging Packaging
     WHERE Packaging.logistical_form = ?
@@ -1467,6 +1486,7 @@ group by
         ChildPackaging.total_net_mass,
         ChildPackaging.total_gross_mass,
         ChildPackaging.parent_packaging,
+        Pack.logistical_form AS logistical_form,
         Pack.path || ChildPackaging.id AS path
     FROM supplychain_packaging ChildPackaging
     INNER JOIN packaging_hierarchy Pack ON ChildPackaging.parent_packaging = Pack.packaging_id
@@ -1479,7 +1499,8 @@ SELECT
     Pack.total_gross_mass,
     Pack.parent_packaging,
     COALESCE(NULLIF(Translate.message_value, ''), Translate.message_key) AS line_format,
-    Unit.label_to_printing AS unit_label
+    Unit.label_to_printing AS unit_label,
+    StockConfig.is_display_packaging_line_detail_in_printing
 FROM packaging_hierarchy Pack
 LEFT JOIN base_unit AS Unit ON Unit.label_to_printing = 'kg'
 LEFT JOIN meta_translation AS Translate ON Translate.language = substring(?, '^[a-zA-Z]+')
@@ -1488,6 +1509,9 @@ LEFT JOIN meta_translation AS Translate ON Translate.language = substring(?, '^[
        WHEN 0 THEN 'Packaging.parcelNo <strong>{0}</strong> - Packaging.totalGrossMass ({1}): <strong>{2}</strong> - Packaging.totalNetMass ({3}): <strong>{4}</strong>'
        ELSE ''
    END
+LEFT JOIN stock_logistical_form AS LogisticalForm ON LogisticalForm.id = Pack.logistical_form
+LEFT JOIN base_company AS Company ON Company.id = LogisticalForm.company
+LEFT JOIN stock_stock_config AS StockConfig ON Company.id = StockConfig.company
 ORDER BY Pack.path;
 ]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
@@ -2841,6 +2865,12 @@ if (String.myFormat === undefined) {
                     <expression name="expression" type="javascript">dataSetRow["total_net_mass"]</expression>
                     <property name="dataType">decimal</property>
                 </structure>
+                <structure>
+                    <property name="name">is_display_packaging_line_detail_in_printing</property>
+                    <text-property name="displayName">is_display_packaging_line_detail_in_printing</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["is_display_packaging_line_detail_in_printing"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
             </list-property>
             <column id="5171"/>
             <header>
@@ -2948,15 +2978,39 @@ default:
                             </list-property>
                             <column id="5191"/>
                             <column id="5192">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">!row._outer["is_display_packaging_line_detail_in_printing"]</expression>
+                                    </structure>
+                                </list-property>
                                 <property name="width">9%</property>
                             </column>
                             <column id="5193">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">!row._outer["is_display_packaging_line_detail_in_printing"]</expression>
+                                    </structure>
+                                </list-property>
                                 <property name="width">25%</property>
                             </column>
                             <column id="5194">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">!row._outer["is_display_packaging_line_detail_in_printing"]</expression>
+                                    </structure>
+                                </list-property>
                                 <property name="width">8%</property>
                             </column>
                             <column id="5195">
+                                <list-property name="visibility">
+                                    <structure>
+                                        <property name="format">all</property>
+                                        <expression name="valueExpr" type="javascript">!row._outer["is_display_packaging_line_detail_in_printing"]</expression>
+                                    </structure>
+                                </list-property>
                                 <property name="width">7%</property>
                             </column>
                             <header>
