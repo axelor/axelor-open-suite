@@ -7,6 +7,13 @@
   <!-- Grid View -->
   <grid name="task-report-grid" title="Task Reports"
     model="com.axelor.apps.businessproject.db.TaskReport">
+    <toolbar>
+      <button name="btnTaskReportPrint" title="Print Task Reports"
+        onClick="action-task-report-method-print"/>
+      <button name="addTaskReportBtn" onClick="action-business-project-add-task-report"
+        title="New Task Report" if="__config__.app.isApp('business-project')"
+        if-module="axelor-business-project" showIf="id &amp;&amp; isBusinessProject"/>
+    </toolbar>
     <field name="project" title="Order "/>
     <field name="customer.simpleFullName" title="Customer"/>
     <field name="taskDate" title="Date"/>
@@ -42,14 +49,14 @@
         form="task-member-report-form"/>
     </panel>
 
-    <!-- <panel colSpan="12" canCollapse="true" collapseIf="true" title="Members"> -->
-    <!-- <field name="projectMembers" title="Team Members" widget="TagSelect" colSpan="12" -->
-    <!-- canEdit="false"/> -->
-    <!-- </panel> -->
-    <!-- <panel colSpan="12" canCollapse="true" collapseIf="true" title="Tasks"> -->
-    <!-- <field name="tasks" title="Tasks" widget="TagSelect" colSpan="12" canEdit="false" -->
-    <!-- domain="project.id = :project"/> -->
-    <!-- </panel> -->
+    <panel colSpan="12" canCollapse="true" collapseIf="true" title="Members">
+      <field name="projectMembers" title="Team Members" widget="TagSelect" colSpan="12"
+        canEdit="false"/>
+    </panel>
+    <panel colSpan="12" canCollapse="true" collapseIf="true" title="Tasks">
+      <field name="tasks" title="Tasks" widget="TagSelect" colSpan="12" canEdit="false"
+        domain="project.id = :project"/>
+    </panel>
 
     <panel title="Work Timing">
       <field name="startTime" onChange="action-task-report-on-change-time"/>
@@ -58,21 +65,23 @@
       <field name="totalWorkHours"/>
     </panel>
 
-    <panel title="Work Details">
+    <panel title="Work Details" canCollapse="true" collapseIf="true">
       <field name="activities" colSpan="12" widget="TagSelect" canEdit="false"/>
-      <panel colSpan="12">
-        <panel title="Additional Services" colSpan="12">
-          <field name="travelExpenses" colSpan="3" widget="checkbox"/>
-          <field name="toolsUsage" colSpan="3" widget="checkbox"/>
-          <field name="emergencyService" colSpan="3" widget="checkbox"/>
-          <field name="dirtAllowance" colSpan="3" widget="checkbox"/>
-        </panel>
+    </panel>
 
-        <panel title="Activity Details" colSpan="12">
-          <field name="material" colSpan="12" widget="textarea"/>
-          <field name="otherServices" colSpan="12" widget="textarea"/>
-          <field name="comments" title="Comments" colSpan="12" widget="textarea"/>
-        </panel>
+    <panel colSpan="12">
+      <panel title="Extra charges" colSpan="6" showFrame="true">
+        <field name="travelExpenses" colSpan="6" widget="checkbox"/>
+        <field name="toolsUsage" colSpan="6" widget="checkbox"/>
+      </panel>
+      <panel title="Additional Services" colSpan="6" showFrame="true">
+        <field name="emergencyService" colSpan="6" widget="checkbox"/>
+        <field name="dirtAllowance" colSpan="6" widget="checkbox"/>
+      </panel>
+      <panel title="Activity Details" colSpan="12" showTitle="false">
+        <field name="material" colSpan="12" widget="textarea"/>
+        <field name="otherServices" colSpan="12" widget="textarea"/>
+        <field name="comments" title="Comments" colSpan="12" widget="textarea"/>
       </panel>
     </panel>
 
@@ -90,19 +99,14 @@
           colSpan="6"/>
       </panel>
     </panel>
-
-    <panel name="printreport">
-      <button name="printTaskReport" title="Print Report" icon="fa-print"
-        onClick="action-task-report-method-print" colSpan="12"/>
-    </panel>
   </form>
 
   <!-- Define the form view for Task Member Report -->
   <form name="task-member-report-form" title="Team Member Report"
-    model="com.axelor.apps.businessproject.db.TaskMemberReport">
+    model="com.axelor.apps.businessproject.db.TaskMemberReport" onLoad="member-task-report">
     <panel colSpan="12" canCollapse="true" collapseIf="false">
       <field name="employee" title="Employee"/>
-      <field name="task" title="Tasks" widget="TagSelect" colSpan="12" canEdit="false"
+      <field name="tasks" title="Tasks" widget="TagSelect" colSpan="12" canEdit="false"
         domain="project.id = :project"/>
       <field name="startTime" onChange="action-task-report-on-change-time"/>
       <field name="breakTimeHours" onChange="action-task-report-on-change-time"/>
@@ -137,7 +141,16 @@
     model="com.axelor.apps.businessproject.db.TaskReport">
     <view type="grid" name="task-report-grid"/>
     <view type="form" name="task-report-form"/>
-    <domain>self.project.id = :project</domain>
+    <!-- <domain>self.project.id = :project</domain> -->
+  </action-view>
+
+  <action-view name="member-task-report" title="Member Task Reports"
+    model="com.axelor.apps.businessproject.db.TaskMemberReport">
+    <view type="form" name="task-member-report-form"/>
+    <view-param name="popup" value="reload"/>
+    <context name="project" expr="eval: _self"/>
+    <context name="tasks" expr="eval: project?.projectTaskList"/>
+    <context name="projectMembers" expr="eval: project?.membersUserSet"/>
   </action-view>
 
   <action-record name="action-task-report-on-change-time"

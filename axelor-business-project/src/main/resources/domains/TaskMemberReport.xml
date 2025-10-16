@@ -8,13 +8,14 @@
   <entity name="TaskMemberReport">
     <many-to-one name="taskReport" ref="com.axelor.apps.businessproject.db.TaskReport"
       title="Task Report"/>
-    <many-to-one name="employee" ref="com.axelor.auth.db.User" title="Employee"
-      required="true"/>
-    <many-to-one name="task" ref="com.axelor.apps.project.db.ProjectTask" title="Task"/>
+    <many-to-one name="employee" ref="com.axelor.auth.db.User" title="Employee"/>
+    <many-to-one name="tasks" ref="com.axelor.apps.project.db.ProjectTask" title="Task"/>
     <datetime name="startTime" title="Start Time"/>
     <datetime name="endTime" title="End Time"/>
-    <decimal name="breakTime" title="Break Time (hours)" precision="5" scale="2"/>
-    <decimal name="totalWorkHours" title="Work Hours" precision="6" scale="2"/>
+    <decimal name="breakTimeHours" title="Break Time (hours)" precision="5" scale="2"/>
+    <decimal name="totalWorkHours" title="Total working time (hours)" precision="6"
+      scale="2" readonly="true"/>
+    <!-- Activities -->
     <many-to-many name="activities"
       ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Activities"/>
   </entity>
