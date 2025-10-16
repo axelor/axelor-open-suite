@@ -128,6 +128,7 @@
     <boolean name="isDisplayPackagingLineDetailInPrinting"
       title="Logistical form printing detailed" default="true"
       help="Show or hide the products in the logistical form impression"/>
+    <boolean name="isDisplayAdrDetailInPrinting" title="Show ADR details" default="false"/>
 
     <extra-code><![CDATA[
 		public static final int VALUATION_TYPE_WAP_VALUE = 1;
@@ -200,6 +201,7 @@
       <field name="isLogisticalFormMultiClientsEnabled" on="UPDATE"/>
       <field name="allowInternalStockMoveOnLogisticalForm" on="UPDATE"/>
       <field name="isDisplayPackagingLineDetailInPrinting" on="UPDATE"/>
+      <field name="isDisplayAdrDetailInPrinting" on="UPDATE"/>
     </track>
   </entity>
 

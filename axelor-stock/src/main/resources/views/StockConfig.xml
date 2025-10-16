@@ -145,6 +145,7 @@
       <field name="displayOrderReferenceAndOrderDate" widget="boolean-switch"/>
       <field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
       <field name="displayPriceOnPrinting" widget="boolean-switch"/>
+      <field name="isDisplayAdrDetailInPrinting" widget="boolean-switch"/>
     </panel>
     <panel name="logisticalFormPrintSettingsPanel" title="Logistical form printing settings">
       <field name="isDisplayPackagingLineDetailInPrinting" widget="boolean-switch"/>
