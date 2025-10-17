@@ -3,10 +3,10 @@ name: Java CI
 on:
   push:
     branches:
-      - dev
+      - 8.4-dev
   pull_request:
     branches:
-      - dev
+      - 8.4-dev
 
 jobs:
   build:
