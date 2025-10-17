@@ -25,9 +25,8 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
-import java.util.HashMap;
 import java.util.Map;
 
 public class SaleOrderLineCostPriceComputeServiceImpl
@@ -36,24 +35,23 @@ public class SaleOrderLineCostPriceComputeServiceImpl
   protected final AppSaleService appSaleService;
   protected final ProductCompanyService productCompanyService;
   protected final CurrencyScaleService currencyScaleService;
+  protected final SaleOrderLineProductService saleOrderLineProductService;
 
   @Inject
   public SaleOrderLineCostPriceComputeServiceImpl(
       AppSaleService appSaleService,
       ProductCompanyService productCompanyService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      SaleOrderLineProductService saleOrderLineProductService) {
     this.appSaleService = appSaleService;
     this.productCompanyService = productCompanyService;
     this.currencyScaleService = currencyScaleService;
+    this.saleOrderLineProductService = saleOrderLineProductService;
   }
 
   @Override
   public Map<String, Object> computeSubTotalCostPrice(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, Product product) throws AxelorException {
-    Map<String, Object> map = new HashMap<>();
-    BigDecimal subTotalCostPrice = saleOrderLine.getSubTotalCostPrice();
-    saleOrderLine.setSubTotalCostPrice(subTotalCostPrice);
-    map.put("subTotalCostPrice", saleOrderLine.getSubTotalCostPrice());
-    return map;
+    return saleOrderLineProductService.fillCostPrice(saleOrderLine, saleOrder);
   }
 }
