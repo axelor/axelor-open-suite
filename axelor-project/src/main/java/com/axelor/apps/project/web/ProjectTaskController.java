@@ -47,6 +47,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.helpers.StringHelper;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -346,5 +347,16 @@ public class ProjectTaskController {
 
     response.setValues(
         Beans.get(ProjectTaskGroupService.class).updateBudgetedTime(projectTask, oldTimeUnit));
+  }
+
+  @ErrorException
+  public void statusOnSelect(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    Project project = projectTask.getProject();
+
+    Set<TaskStatus> taskStatusSet =
+        Beans.get(TaskStatusToolService.class).getTaskStatusSet(project, projectTask);
+    String filter = String.format("self.id IN (%s)", StringHelper.getIdListString(taskStatusSet));
+    response.setAttr("status", "domain", filter);
   }
 }

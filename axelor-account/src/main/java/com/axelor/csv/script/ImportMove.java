@@ -79,7 +79,7 @@ public class ImportMove {
                 .getTodayDateTime(company)
                 .format(DateTimeFormatter.ofPattern("yyyyMMddHH:mm:ss"));
       }
-      String importReference = String.format("#%s-%s", csvReference, lastImportDate);
+      String importReference = String.format("#%s@%s", csvReference, lastImportDate);
 
       if (values.get("EcritureDate") != null) {
         moveLine.setDate(parseDate(values.get("EcritureDate").toString()));

@@ -102,7 +102,7 @@ public class InventoryStockLocationUpdateServiceImpl
         stockLocationLineRepository
             .all()
             .filter(
-                "self.stockLocation = :stockLocation"
+                "self.detailsStockLocation = :stockLocation"
                     + " AND self.product.id IN :productList"
                     + " AND self.trackingNumber IS NOT NULL")
             .bind("stockLocation", stockLocation)

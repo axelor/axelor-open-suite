@@ -167,6 +167,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       Optional<StockMove> stockMove =
           createStockMove(saleOrder, deliveryAddressStr, estimatedDeliveryDate, saleOrderLineList);
 
+      stockMove.ifPresent(saleOrder::addStockMoveListItem);
+
       stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
     }
     return stockMoveList;

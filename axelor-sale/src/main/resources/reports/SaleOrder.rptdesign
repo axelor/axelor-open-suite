@@ -7078,7 +7078,7 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                             <property name="hideDetail">false</property>
                             <list-property name="sort">
                                 <structure>
-                                    <expression name="key" type="javascript">var levels = row["levelIndicator"].split(".");
+                                    <expression name="key" type="javascript">var levels = row["levelIndicator"] ? row["levelIndicator"].split(".") : row["sequence"] ? row["sequence"] : row["levelNo"];
 var levelScalingFactor = 10000;
 var value = 0;
 for (var i = 0; i &lt; levels.length; i++) {

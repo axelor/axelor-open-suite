@@ -307,7 +307,7 @@ public class FECImporter extends Importer {
 
   protected String extractCSVMoveReference(String reference) {
     if (reference != null) {
-      int indexOfSeparator = reference.indexOf("-");
+      int indexOfSeparator = reference.indexOf("@");
       if (indexOfSeparator < 0) {
         return reference.replaceFirst("#", "");
       } else {

@@ -66,6 +66,7 @@ import com.axelor.apps.hr.service.expense.ExpenseKilometricService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.apps.hr.service.expense.ExpensePrintService;
+import com.axelor.apps.hr.service.expense.ExpenseRecordService;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
@@ -774,5 +775,18 @@ public class ExpenseController {
       throws AxelorException {
     Expense expense = request.getContext().asType(Expense.class);
     Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
+  }
+
+  public void computeDummyAmounts(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Expense expense = request.getContext().asType(Expense.class);
+    response.setValues(Beans.get(ExpenseRecordService.class).computeDummyAmounts(expense));
+  }
+
+  public void computeLineCompanyAmounts(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Expense expense = request.getContext().asType(Expense.class);
+    Beans.get(ExpenseComputationService.class).recomputeAmountsUsingLines(expense);
+    response.setValues(expense);
   }
 }

@@ -94,6 +94,16 @@
     <domain>self.sharedWith = :__user__</domain>
   </action-view>
 
+  <menuitem name="admin-root-indicator-config" parent="admin-root"
+    if="__config__.app.isApp('base')" title="Indicator configuration" order="2000"
+    action="admin.root.indicator.config"/>
+
+  <action-view name="admin.root.indicator.config" title="Indicator configuration"
+    model="com.axelor.apps.base.db.IndicatorConfig">
+    <view type="grid" name="indicator-config-grid"/>
+    <view type="form" name="indicator-config-form"/>
+  </action-view>
+
   <menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100"
     icon="wrench-adjustable-circle" icon-background="#2fa042"/>
 

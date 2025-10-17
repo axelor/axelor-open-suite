@@ -28,8 +28,10 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.compute.BudgetDistributionComputeService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
@@ -45,6 +47,7 @@ public class SaleOrderLineComputeBudgetServiceImpl
 
   protected BudgetToolsService budgetToolsService;
   protected AppBudgetService appBudgetService;
+  protected BudgetDistributionComputeService budgetDistributionComputeService;
 
   @Inject
   public SaleOrderLineComputeBudgetServiceImpl(
@@ -62,7 +65,8 @@ public class SaleOrderLineComputeBudgetServiceImpl
       AnalyticLineModelService analyticLineModelService,
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
       BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetDistributionComputeService budgetDistributionComputeService) {
     super(
         taxService,
         currencyScaleService,
@@ -79,6 +83,7 @@ public class SaleOrderLineComputeBudgetServiceImpl
         saleOrderLineServiceSupplyChain);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
+    this.budgetDistributionComputeService = budgetDistributionComputeService;
   }
 
   @Override
@@ -87,6 +92,13 @@ public class SaleOrderLineComputeBudgetServiceImpl
     Map<String, Object> saleOrderLineMap = super.computeValues(saleOrder, saleOrderLine);
 
     if (appBudgetService.isApp("budget")) {
+
+      if (saleOrder.getStatusSelect() <= SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+        budgetDistributionComputeService.updateMonoBudgetAmounts(
+            saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal());
+        saleOrderLineMap.put("budgetDistributionList", saleOrderLine.getBudgetDistributionList());
+      }
+
       saleOrderLine.setBudgetRemainingAmountToAllocate(
           budgetToolsService.getBudgetRemainingAmountToAllocate(
               saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));

@@ -19,9 +19,10 @@
       <field name="code" x-bind="{{code|unaccent|uppercase}}"
         onChange="action-base-batch-condition-check-unique-code"/>
       <field name="company" widget="SuggestBox" form-view="company-form"
-        grid-view="company-grid"/>
+        grid-view="company-grid" hideIf="actionSelect == 5"/>
       <field name="fetchLimit"
-        help="Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used."/>
+        help="Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used."
+        hideIf="actionSelect == 5"/>
       <field name="synchronizationDuration" widget="Integer" readonlyIf="allEvents"
         showIf="actionSelect == 2"/>
       <field name="allEvents" widget="boolean-switch" showIf="actionSelect == 2"/>

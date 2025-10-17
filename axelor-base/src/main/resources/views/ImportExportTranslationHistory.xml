@@ -8,6 +8,7 @@
     <button name="traceBackHistoryBtn" title="Tracebacks"
       onClick="import-export-translation-history-view-trace-back-history" icon="fa-wrench"
       help="Show tracebacks"/>
+    <field name="statusSelect"/>
     <field name="actionType"/>
     <field name="recordNumber"/>
     <field name="errorNumber"/>
@@ -18,6 +19,8 @@
     model="com.axelor.apps.base.db.ImportExportTranslationHistory" canNew="false">
     <panel name="importExportTranslationHistoryPanel" showTitle="false" title="History"
       colSpan="12">
+      <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
+        colSpan="12"/>
       <field name="actionType" colSpan="4"/>
       <field name="recordNumber" colSpan="4"/>
       <field name="errorNumber" colSpan="4"/>

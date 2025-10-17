@@ -452,6 +452,7 @@
     <option value="com.axelor.apps.base.job.MailJob">com.axelor.apps.base.job.MailJob</option>
     <option value="com.axelor.apps.base.job.BatchJob">com.axelor.apps.base.job.BatchJob</option>
     <option value="com.axelor.apps.base.job.CurrencyConversionJob">com.axelor.apps.base.job.CurrencyConversionJob</option>
+    <option value="com.axelor.apps.base.job.IndicatorComputeJob">com.axelor.apps.base.job.IndicatorComputeJob</option>
   </selection>
 
   <selection name="meta.schedule.batch.service.select"
@@ -830,6 +831,34 @@
     <option value="0">Box</option>
     <option value="1">Pallet</option>
     <option value="2">Container</option>
+  </selection>
+
+  <selection name="import.export.translation.history.status.select">
+    <option value="0">Draft</option>
+    <option value="1">In Progress</option>
+    <option value="2">Completed</option>
+  </selection>
+
+  <selection name="base.indicator.config.expression.type.select">
+    <option value="1">Groovy</option>
+    <option value="2">Javascript</option>
+    <option value="3">Jpql</option>
+  </selection>
+
+  <selection name="base.indicator.config.target.expression.type.select">
+    <option value="1">Groovy</option>
+    <option value="2">Javascript</option>
+  </selection>
+
+  <selection name="base.indicator.config.display.in.rec.view.type.select">
+    <option value="0">None</option>
+    <option value="1">Button in top menu</option>
+    <option value="2">Panel at the end of view</option>
+  </selection>
+
+  <selection name="base.indicator.alert.status.select">
+    <option value="1">New</option>
+    <option value="2">Checked</option>
   </selection>
 
 </object-views>

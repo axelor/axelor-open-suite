@@ -677,8 +677,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   @Override
   public void setOrigin(StockMove oldStockMove, StockMove newStockMove) {
-    if (ObjectUtils.notEmpty(oldStockMove.getSaleOrderSet())) {
-      newStockMove.setSaleOrderSet(Sets.newHashSet(oldStockMove.getSaleOrderSet()));
+    Set<SaleOrder> saleOrderSet = oldStockMove.getSaleOrderSet();
+    if (ObjectUtils.notEmpty(saleOrderSet)) {
+      newStockMove.setSaleOrderSet(Sets.newHashSet(saleOrderSet));
+      saleOrderSet.forEach(saleOrder -> saleOrder.addStockMoveListItem(newStockMove));
     } else if (oldStockMove.getPurchaseOrderSet() != null) {
       newStockMove.setPurchaseOrderSet(Sets.newHashSet(oldStockMove.getPurchaseOrderSet()));
     } else {

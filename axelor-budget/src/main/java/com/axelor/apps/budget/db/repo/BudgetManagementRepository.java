@@ -19,6 +19,7 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.service.compute.BudgetComputeService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
 import com.axelor.inject.Beans;
 
@@ -28,6 +29,9 @@ public class BudgetManagementRepository extends BudgetRepository {
   public Budget save(Budget entity) {
 
     GlobalBudgetService globalBudgetService = Beans.get(GlobalBudgetService.class);
+    BudgetComputeService budgetComputeService = Beans.get(BudgetComputeService.class);
+
+    budgetComputeService.computeBudgetFieldsWithLines(entity);
     globalBudgetService.computeBudgetLevelTotals(entity);
 
     entity = super.save(entity);

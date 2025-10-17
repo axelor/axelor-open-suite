@@ -107,6 +107,7 @@ public class BankReconciliationLoadBankStatementAFB120Service
     String queryFilter =
         bankStatementLineFilterService.getBankStatementLinesAFB120FilterWithAmountToReconcile(
             bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement);
+
     Query<BankStatementLineAFB120> bankStatementLinesQuery =
         JPA.all(BankStatementLineAFB120.class)
             .bind("bankDetails", bankReconciliation.getBankDetails())
@@ -117,6 +118,12 @@ public class BankReconciliationLoadBankStatementAFB120Service
             .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_MOVEMENT)
             .order("valueDate")
             .order("sequence");
+
+    if (bankReconciliation.getIncludeOtherBankStatements()) {
+      queryFilter += " AND self.operationDate <= (:bankReconciliationToDate)";
+      bankStatementLinesQuery.bind("bankReconciliationToDate", bankReconciliation.getToDate());
+    }
+
     List<Long> existingBankStatementLineIds = getExistingBankStatementLines(bankReconciliation);
     if (!CollectionUtils.isEmpty(existingBankStatementLineIds)) {
       queryFilter += " AND self.id NOT IN (:existingBankStatementLines)";

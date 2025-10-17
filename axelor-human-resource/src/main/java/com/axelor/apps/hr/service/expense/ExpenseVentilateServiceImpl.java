@@ -265,18 +265,30 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
       }
     }
 
-    BigDecimal totalMoveLines =
-        moveLines.stream().map(MoveLine::getDebit).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+    BigDecimal totalAmount =
+        expenseLineList.stream()
+            .map(ExpenseLine::getTotalAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
 
     Account employeeAccount = accountingSituationService.getEmployeeAccount(partner, company);
+
+    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
+    BigDecimal currencyRate =
+        currencyService.getCurrencyConversionRate(move.getCurrency(), companyCurrency, moveDate);
+
+    BigDecimal amountConvertedInCompanyCurrency =
+        currencyService.getAmountCurrencyConvertedUsingExchangeRate(
+            totalAmount, currencyRate, companyCurrency);
+
     moveLines.add(
         moveLineCreateService.createMoveLine(
             move,
             partner,
             employeeAccount,
-            totalMoveLines,
-            totalMoveLines,
-            BigDecimal.ONE,
+            totalAmount,
+            amountConvertedInCompanyCurrency,
+            currencyRate,
             false,
             moveDate,
             moveDate,
@@ -351,17 +363,13 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
         currencyService.getCurrencyConversionRate(
             currency, companyCurrency, expenseLine.getExpenseDate());
 
-    BigDecimal amountConvertedInCompanyCurrency =
-        currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-            expenseLine.getUntaxedAmount(), currencyRate, companyCurrency);
-
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
             move,
             partner,
             productAccount,
             expenseLine.getUntaxedAmount(),
-            amountConvertedInCompanyCurrency,
+            expenseLine.getCompanyUntaxedAmount(),
             currencyRate,
             true,
             moveDate,

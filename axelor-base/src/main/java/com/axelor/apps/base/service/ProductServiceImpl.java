@@ -252,6 +252,32 @@ public class ProductServiceImpl implements ProductService {
         productVariant, "managPriceCoef", productCompany.getManagPriceCoef(), company);
   }
 
+  protected void setPriceOfVariantProductCompanyWithExtra(Product productVariant, Company company)
+      throws AxelorException {
+    updateProductCompanyPrice(
+        "costPrice", productVariant, company, ProductVariantValueRepository.APPLICATION_COST_PRICE);
+
+    updateProductCompanyPrice(
+        "purchasePrice",
+        productVariant,
+        company,
+        ProductVariantValueRepository.APPLICATION_PURCHASE_PRICE);
+
+    updateProductCompanyPrice(
+        "salePrice", productVariant, company, ProductVariantValueRepository.APPLICATION_SALE_PRICE);
+  }
+
+  protected void updateProductCompanyPrice(
+      String fieldName, Product productVariant, Company company, int applicationCostPrice)
+      throws AxelorException {
+    if (productCompanyService.isCompanySpecificProductFields(fieldName)) {
+      BigDecimal price = (BigDecimal) productCompanyService.get(productVariant, fieldName, company);
+      BigDecimal extraPrice =
+          this.getProductExtraPrice(productVariant.getProductVariant(), applicationCostPrice);
+      productCompanyService.set(productVariant, fieldName, price.add(extraPrice), company);
+    }
+  }
+
   public boolean hasActivePriceList(Product product) {
     return product.getPriceListLineList() != null
         && product.getPriceListLineList().stream()
@@ -322,6 +348,10 @@ public class ProductServiceImpl implements ProductService {
     generatedProduct.setProductVariant(productVariant);
 
     this.updateSalePrice(generatedProduct, null);
+
+    for (ProductCompany productCompany : generatedProduct.getProductCompanyList()) {
+      setPriceOfVariantProductCompanyWithExtra(generatedProduct, productCompany.getCompany());
+    }
 
     return generatedProduct;
   }

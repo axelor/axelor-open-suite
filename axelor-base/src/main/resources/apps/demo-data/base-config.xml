@@ -1071,4 +1071,25 @@
       column="blockingToDate"/>
   </input>
 
+  <input file="base_indicatorConfig.csv" separator=";"
+    type="com.axelor.apps.base.db.IndicatorConfig" search="self.importId = :importId">
+    <bind column="targetModelFullName" to="targetModel"
+      search="self.fullName = :targetModelFullName"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaModel', 'fullName', targetModelFullName)"
+      check-message="Target model doesn't exist"/>
+    <bind column="metaModelTargetName" to="metaModelTargetName"/>
+    <bind column="expressionTypeSelect" to="expressionTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.IndicatorConfig', 'expressionTypeSelect', expressionTypeSelect)"
+      check-message="Invalid expressionTypeSelect"/>
+    <bind column="targetExpressionTypeSelect" to="targetExpressionTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.IndicatorConfig', 'targetExpressionTypeSelect', targetExpressionTypeSelect)"
+      check-message="Invalid targetExpressionTypeSelect"/>
+    <bind column="alertExpressionTypeSelect" to="alertExpressionTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.IndicatorConfig', 'alertExpressionTypeSelect', alertExpressionTypeSelect)"
+      check-message="Invalid alertExpressionTypeSelect"/>
+    <bind column="displayInRecordViewTypeSelect" to="displayInRecordViewTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.IndicatorConfig', 'displayInRecordViewTypeSelect', displayInRecordViewTypeSelect)"
+      check-message="Invalid displayInRecordViewTypeSelect"/>
+  </input>
+
 </csv-inputs>

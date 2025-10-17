@@ -261,10 +261,6 @@ public final class BaseExceptionMessage {
   public static final String GENERAL_10 = /*$$(*/ "No duplicate finder field configured." /*)*/;
   public static final String GENERAL_11 = /*$$(*/ "Please select original object." /*)*/;
 
-  /** Messsage controller */
-  public static final String MESSAGE_1 = /*$$(*/
-      "Error in print. Please check report configuration and print setting." /*)*/;
-
   /** Partner controller */
   public static final String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
 
@@ -472,8 +468,6 @@ public final class BaseExceptionMessage {
   /* Print template */
   public static final String PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN = /*$$(*/
       "The groovy condition result must be a boolean" /*)*/;
-  public static final String PRINT_ERROR = /*$$(*/
-      "Error in print. Please check report configuration and print settings." /*)*/;
   public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
       "Error in print template line with sequence %s and title %s." /*)*/;
 
