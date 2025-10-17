@@ -117,8 +117,6 @@ public class QualityImprovementParseServiceImpl implements QualityImprovementPar
       }
     }
 
-    qiIdentification.setManufOrder(qiIdentificationRequest.fetchManufOrder());
-    qiIdentification.setOperationOrder(qiIdentificationRequest.fetchOperationOrder());
     qiIdentification.setProduct(qiIdentificationRequest.fetchProduct());
     qiIdentification.setNonConformingQuantity(qiIdentificationRequest.getNonConformingQuantity());
 

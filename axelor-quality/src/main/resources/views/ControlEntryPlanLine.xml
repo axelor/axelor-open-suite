@@ -10,7 +10,6 @@
     <field name="reference"/>
     <field name="typeSelect"/>
     <field name="characteristic"/>
-    <field name="machineType"/>
     <field name="isCustomFrequency"/>
   </grid>
 
@@ -22,7 +21,6 @@
       <field name="controlType" colSpan="3" required="true"/>
       <field name="characteristic" colSpan="6"/>
       <field name="name" required="true" colSpan="6"/>
-      <field name="machineType" colSpan="6"/>
       <field name="isCustomFrequency" colSpan="3"/>
       <field name="controlPlanFrequency" colSpan="9" showIf="isCustomFrequency"/>
       <field name="description" widget="html" colSpan="12"/>
