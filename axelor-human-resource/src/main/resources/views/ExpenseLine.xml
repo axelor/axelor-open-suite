@@ -36,7 +36,7 @@
     <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
       aggregate="sum"
       readonlyIf="expenseProduct.blockExpenseTax || $get('expense.statusSelect') &gt; 1" width="80"
-      onChange="action-expense-on-change-tax-untaxt-amount,action-expense-line-method-compute-analytic-distribution"/>
+      onChange="action-expense-line-method-compute-untaxed-and-company-amounts,action-expense-line-method-compute-analytic-distribution"/>
     <field name="toInvoice" readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="justificationMetaFile" widget="binary-link"
       onChange="action-expense-line-group-justification-line-onchange"
@@ -86,7 +86,7 @@
       onChange="action-kilometric-allowance-method-compute-distance" width="150"
       readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="totalAmount" title="Total A.T.I" width="85" readonly="true"
-      onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
+      onChange="action-expense-line-method-compute-untaxed-and-company-amounts, action-expense-line-method-compute-analytic-distribution"
       readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="comments" width="250" readonlyIf="$get('expense.statusSelect') &gt; 1"/>
     <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
@@ -156,7 +156,7 @@
             if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"/>
         </field>
         <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
-          onChange="action-expense-on-change-tax-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
+          onChange="action-expense-line-method-compute-untaxed-and-company-amounts, action-expense-line-method-compute-analytic-distribution"
           readonlyIf="expenseProduct.blockExpenseTax"/>
         <field name="untaxedAmount"/>
         <field name="toInvoice" colSpan="3"/>
@@ -246,7 +246,7 @@
             onChange="action-kilometric-allowance-method-compute-distance"/>
         </panel>
         <field name="totalAmount"
-          onChange="action-expense-on-change-untaxt-amount, action-expense-line-method-compute-analytic-distribution"
+          onChange="action-expense-line-method-compute-untaxed-and-company-amounts, action-expense-line-method-compute-analytic-distribution"
           readonly="true"/>
         <field name="comments" colSpan="12"/>
         <field name="employee" hidden="true" form-view="employee-form"
@@ -330,6 +330,11 @@
       method="computeDistanceAndKilometricExpense"/>
   </action-method>
 
+  <action-method name="action-expense-line-method-compute-untaxed-and-company-amounts">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseLineController"
+      method="computeUntaxedAndCompanyAmounts"/>
+  </action-method>
+
   <action-attrs name="action-expense-line-attrs-read-only-analytic-distribution">
     <attribute name="readonly" for="analyticDistributionPanel"
       expr="eval: __parent__?.employee?.analyticDistributionTemplate != null"
@@ -371,16 +376,6 @@
 
     <field name="employee" expr="eval: __user__?.employee" if="!__parent__"/>
     <field name="currency" expr="eval: __user__?.activeCompany?.currency" if="!__parent__"/>
-  </action-record>
-
-  <action-record name="action-expense-on-change-tax-untaxt-amount"
-    model="com.axelor.apps.hr.db.ExpenseLine">
-    <field name="untaxedAmount" expr="eval:totalAmount-totalTax"/>
-  </action-record>
-
-  <action-record name="action-expense-on-change-untaxt-amount"
-    model="com.axelor.apps.hr.db.ExpenseLine">
-    <field name="untaxedAmount" expr="eval: totalAmount-totalTax"/>
   </action-record>
 
   <action-validate name="action-expense-line-validate-expenseDate"
@@ -466,7 +461,7 @@
   </action-attrs>
 
   <action-group name="action-expense-line-group-total-grid-amount-on-change">
-    <action name="action-expense-on-change-tax-untaxt-amount"/>
+    <action name="action-expense-line-method-compute-untaxed-and-company-amounts"/>
     <action name="action-expense-line-validate-totalAmount"/>
   </action-group>
 
@@ -476,7 +471,7 @@
   </action-group>
 
   <action-group name="action-expense-line-group-total-amount-on-change">
-    <action name="action-expense-on-change-untaxt-amount"/>
+    <action name="action-expense-line-method-compute-untaxed-and-company-amounts"/>
     <action name="action-expense-line-method-compute-analytic-distribution"/>
     <action name="action-expense-line-validate-totalAmount"/>
   </action-group>
