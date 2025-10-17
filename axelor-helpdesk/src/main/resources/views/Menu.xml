@@ -59,7 +59,7 @@
     <view type="form" name="ticket-form"/>
     <view type="calendar" name="ticket-calendar"/>
     <view-param name="search-filters" value="ticket-filters"/>
-    <domain>self.assignedToUser = null</domain>
+    <domain>self.assignedToUser IS null</domain>
     <context name="_user" expr="eval: __user__"/>
   </action-view>
 
@@ -73,7 +73,8 @@
     <view type="form" name="ticket-form"/>
     <view type="calendar" name="ticket-calendar"/>
     <view-param name="search-filters" value="ticket-filters"/>
-    <domain>(self.endDateT != null and self.endDateT &gt; self.deadlineDateT) or (self.endDateT =
+    <domain>(self.endDateT IS NOT null and self.endDateT &gt; self.deadlineDateT) or (self.endDateT
+      IS
       null and self.deadlineDateT &lt; :_date)</domain>
     <context name="_date" expr="eval: __datetime__"/>
     <context name="_user" expr="eval: __user__"/>
