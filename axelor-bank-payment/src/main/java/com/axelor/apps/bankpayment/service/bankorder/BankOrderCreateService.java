@@ -49,16 +49,19 @@ public class BankOrderCreateService {
   protected BankOrderRepository bankOrderRepository;
   protected BankOrderLineService bankOrderLineService;
   protected InvoiceService invoiceService;
+  protected BankOrderCheckService bankOrderCheckService;
 
   @Inject
   public BankOrderCreateService(
       BankOrderRepository bankOrderRepository,
       BankOrderLineService bankOrderLineService,
-      InvoiceService invoiceService) {
+      InvoiceService invoiceService,
+      BankOrderCheckService bankOrderCheckService) {
 
     this.bankOrderRepository = bankOrderRepository;
     this.bankOrderLineService = bankOrderLineService;
     this.invoiceService = invoiceService;
+    this.bankOrderCheckService = bankOrderCheckService;
   }
 
   /**
@@ -81,6 +84,9 @@ public class BankOrderCreateService {
       int functionalOriginSelect,
       int accountingTriggerSelect)
       throws AxelorException {
+
+    bankOrderCheckService.checkPreconditions(
+        paymentMode, partnerType, bankOrderDate, senderCompany, senderBankDetails);
 
     BankOrderFileFormat bankOrderFileFormat = paymentMode.getBankOrderFileFormat();
 

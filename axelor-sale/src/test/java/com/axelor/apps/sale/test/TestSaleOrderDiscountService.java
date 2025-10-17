@@ -43,6 +43,7 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImp
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
@@ -121,7 +122,10 @@ class TestSaleOrderDiscountService extends BaseTest {
   protected SaleOrderLineCostPriceComputeService createSaleOrderLineCostPriceComputeService(
       AppSaleService appSaleService) {
     return new SaleOrderLineCostPriceComputeServiceImpl(
-        appSaleService, mock(ProductCompanyService.class), currencyScaleService);
+        appSaleService,
+        mock(ProductCompanyService.class),
+        currencyScaleService,
+        mock(SaleOrderLineProductService.class));
   }
 
   protected SubSaleOrderLineComputeService createSubSaleOrderLineComputeService(

@@ -29,7 +29,7 @@
       AND
       stockMoveLine.stockMove = self
       AND
-      stockLocation.typeSelect = 2 AND
+      stockLocation.typeSelect = 3 AND
       self.toAddress = address AND
       address.country =
       country
@@ -72,7 +72,7 @@
       stockMove
       AND
       self.toStockLocation = stockLocation AND
-      stockLocation.typeSelect = 2
+      stockLocation.typeSelect = 3
       AND
       stockMove.toAddress
       = address AND
@@ -114,7 +114,7 @@
       stockMove
       AND
       self.toStockLocation = stockLocation AND
-      stockLocation.typeSelect = 2
+      stockLocation.typeSelect = 3
       AND
       stockMove.toAddress
       = address AND

@@ -27,6 +27,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -42,8 +43,9 @@ public class SaleOrderLineCostPriceComputeProductionServiceImpl
   public SaleOrderLineCostPriceComputeProductionServiceImpl(
       AppSaleService appSaleService,
       ProductCompanyService productCompanyService,
-      CurrencyScaleService currencyScaleService) {
-    super(appSaleService, productCompanyService, currencyScaleService);
+      CurrencyScaleService currencyScaleService,
+      SaleOrderLineProductService saleOrderLineProductService) {
+    super(appSaleService, productCompanyService, currencyScaleService, saleOrderLineProductService);
   }
 
   @Override
