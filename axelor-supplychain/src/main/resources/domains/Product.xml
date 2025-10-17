@@ -21,7 +21,7 @@
     <boolean name="limitedQty" title="Limited qty"/>
     <boolean name="isReturnable" title="Returnable"/>
     <string name="labelNumber" title="Label number"/>
-    <string name="tunnelCode" title="Tunnel code"/>
+    <string name="hazardNumber" title="Hazard number"/>
 
     <extra-code>
     	<![CDATA[
