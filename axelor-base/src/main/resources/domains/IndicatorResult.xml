@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="IndicatorResult">
+
+    <many-to-one name="indicatorConfig" ref="com.axelor.apps.base.db.IndicatorConfig"/>
+    <datetime name="dateT" title="Date time" readonly="true"/>
+    <string name="queryLog" title="Log error query" multiline="true" large="true"
+      readonly="true"/>
+    <one-to-many ref="com.axelor.apps.base.db.IndicatorResultLine" name="resultLineList"
+      mappedBy="indicatorResult"/>
+
+  </entity>
+
+</domain-models>

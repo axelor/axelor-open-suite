@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="IndicatorConfig">
+
+    <string name="name" title="Name" namecolumn="true" required="true"/>
+    <string name="recordQuery" required="true" title="Query" multiline="true" large="true"
+      formula="true" help="Query in JPQL"/>
+    <many-to-one name="targetModel" title="Related object"
+      ref="com.axelor.meta.db.MetaModel" required="true"/>
+
+    <integer name="expressionTypeSelect" title="Expression type"
+      selection="base.indicator.config.expression.type.select" required="true" default="1"/>
+    <string name="expression" title="Indicator expression" large="true" required="true"
+      help="Expression written in expression type used to generate indicator value"/>
+
+    <integer name="targetExpressionTypeSelect" title="Target expression type"
+      selection="base.indicator.config.target.expression.type.select" required="true" default="1"/>
+    <string name="targetExpression" title="Indicator target expression" large="true"
+      help="Expression written in target expression type used to generate target value"/>
+
+    <integer name="alertExpressionTypeSelect" title="Alert expression type"
+      selection="base.indicator.config.target.expression.type.select" required="true" default="1"/>
+    <string name="alertExpression" title="Indicator alert expression" large="true"
+      help="Condition expression written in alert expression type used to generate alert"/>
+
+    <string name="metaModelTargetName" title="Model target field" readonly="true"/>
+    <string name="recordTitle" title="Record title" readonly="true"/>
+    <string name="recordValue" title="Record value"/>
+
+    <string name="queryResult" title="Query result" multiline="true" large="true"
+      readonly="true"/>
+
+    <boolean name="displayBarChart" title="Display bar chart" default="false"/>
+    <integer name="displayInRecordViewTypeSelect"
+      selection="base.indicator.config.display.in.rec.view.type.select"
+      title="Display in record view ?" default="0"/>
+
+    <integer name="forLastNResults" title="For the last N results" default="40" min="1"/>
+
+
+    <finder-method name="findByMetaModelNameActiveForDisplay" using="String:modelName"
+      filter="self.targetModel.fullName = :modelName AND self.displayInRecordViewTypeSelect != 0"
+      all="true"/>
+
+    <extra-code><![CDATA[
+
+		public static final int EXPRESSION_TYPE_GROOVY = 1;
+		public static final int EXPRESSION_TYPE_JS = 2;
+		public static final int EXPRESSION_TYPE_JPQL = 3;
+
+		public static final int DISPLAY_TYPE_NONE = 0;
+		public static final int DISPLAY_TYPE_BUTTON = 1;
+		public static final int DISPLAY_TYPE_VIEW = 2;
+
+	]]></extra-code>
+
+  </entity>
+
+</domain-models>

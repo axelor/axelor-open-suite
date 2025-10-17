@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="indicator-alert-grid" title="Indicator alerts"
+    model="com.axelor.apps.base.db.IndicatorAlert">
+    <field name="statusSelect"/>
+    <field name="resultLine.indicator"/>
+    <field name="resultLine.target"/>
+    <button name="openRelatedRecord" title="Open related record"
+      onClick="action-indicator-result-line-method-open-related-record" icon="open_in_new"/>
+    <field name="resultLine" hidden="true"/>
+  </grid>
+
+  <form name="indicator-alert-form" title="Indicator alert"
+    model="com.axelor.apps.base.db.IndicatorAlert">
+    <panel name="mainPanel">
+      <field name="statusSelect" widget="NavSelect"/>
+      <field name="resultLine.indicator"/>
+      <field name="resultLine.target"/>
+      <button title="Checked" showIf="statusSelect != 2"
+        onClick="save,action-indicator-alert-record-mark-checked,save" name="checkedBtn"/>
+      <field name="resultLine" hidden="true"/>
+    </panel>
+  </form>
+
+  <action-record name="action-indicator-alert-record-mark-checked"
+    model="com.axelor.apps.base.db.IndicatorAlert">
+    <field name="statusSelect" expr="eval: __repo__(IndicatorAlert).STATUS_CHECKED"/>
+  </action-record>
+
+</object-views>
