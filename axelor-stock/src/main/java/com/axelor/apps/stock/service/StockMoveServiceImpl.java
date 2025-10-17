@@ -672,7 +672,7 @@ public class StockMoveServiceImpl implements StockMoveService {
             .bind("startStatus", InventoryRepository.STATUS_IN_PROGRESS)
             .bind("endStatus", InventoryRepository.STATUS_COMPLETED)
             .bind(
-                "stockLocationListId",
+                "stockLocationList",
                 stockLocationList.stream().map(StockLocation::getId).collect(Collectors.toList()))
             .bind(
                 "productList",
