@@ -36,10 +36,10 @@
 
   <action-attrs name="action-qi-resolution-default-attrs-set-qi-default-domain">
     <attribute name="domain" for="qiDefault"
-      expr="eval: &quot; self.isProductDefault = true AND self.company = ${__parent__?.qi?.company?.id} &quot;"
+      expr="eval: &quot; self.isProductDefault = true AND self.company.id = ${__parent__?.qi?.company?.id} &quot;"
       if="__parent__?._model == 'com.axelor.apps.quality.db.QIResolution'"/>
     <attribute name="domain" for="qiDefault"
-      expr="eval: &quot; self.isProductDefault = true AND self.company = ${qiResolution?.qi?.company?.id} &quot;"
+      expr="eval: &quot; self.isProductDefault = true AND self.company.id = ${qiResolution?.qi?.company?.id} &quot;"
       if="qiResolution &amp;&amp; __parent__?._model != 'com.axelor.apps.quality.db.QIResolution'"/>
   </action-attrs>
 

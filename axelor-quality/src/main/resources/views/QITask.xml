@@ -69,19 +69,19 @@
 
   <action-attrs name="action-qi-task-attrs-set-qi-action-domain">
     <attribute name="domain" for="qiAction"
-      expr="eval: &quot; self.company = ${__parent__?.qi?.company?.id} &quot;"
+      expr="eval: &quot; self.company.id = ${__parent__?.qi?.company?.id} &quot;"
       if="__parent__?._model == 'com.axelor.apps.quality.db.QIAnalysis'"/>
     <attribute name="domain" for="qiAction"
-      expr="eval: &quot; self.company = ${qiAnalysis?.qi?.company?.id} &quot;"
+      expr="eval: &quot; self.company.id = ${qiAnalysis?.qi?.company?.id} &quot;"
       if="qiAnalysis &amp;&amp; __parent__?._model != 'com.axelor.apps.quality.db.QIAnalysis'"/>
   </action-attrs>
 
   <action-attrs name="action-qi-task-attrs-set-qi-process-domain">
     <attribute name="domain" for="qiProcess"
-      expr="eval: &quot; self.company = ${__parent__?.qi?.company?.id} &quot;"
+      expr="eval: &quot; self.company.id = ${__parent__?.qi?.company?.id} &quot;"
       if="__parent__?._model == 'com.axelor.apps.quality.db.QIAnalysis'"/>
     <attribute name="domain" for="qiProcess"
-      expr="eval: &quot; self.company = ${qiAnalysis?.qi?.company?.id} &quot;"
+      expr="eval: &quot; self.company.id = ${qiAnalysis?.qi?.company?.id} &quot;"
       if="qiAnalysis &amp;&amp; __parent__?._model != 'com.axelor.apps.quality.db.QIAnalysis'"/>
   </action-attrs>
 
