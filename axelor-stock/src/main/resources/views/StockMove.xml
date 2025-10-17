@@ -1033,6 +1033,9 @@
 
   <action-attrs name="action-stock-move-generate-invoice-button">
     <attribute name="title" for="generateInvoiceBtn"
+      expr="eval: com.axelor.i18n.I18n.get('Generate invoice')"
+      if="eval: typeSelect == __repo__(StockMove).TYPE_OUTGOING &amp;&amp; !isReversion"/>
+    <attribute name="title" for="generateInvoiceBtn"
       expr="eval: com.axelor.i18n.I18n.get('Generate credit note')" if="isReversion"/>
   </action-attrs>
 
