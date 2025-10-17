@@ -3,8 +3,8 @@ package com.axelor.apps.supplychain.rest.dto;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 public class LogisticalFormStockMovePutRequest extends RequestStructure {
 

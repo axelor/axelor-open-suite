@@ -1,9 +1,9 @@
 package com.axelor.apps.supplychain.rest.dto;
 
 import com.axelor.utils.api.RequestStructure;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 public class PackagingLinePutRequest extends RequestStructure {
 

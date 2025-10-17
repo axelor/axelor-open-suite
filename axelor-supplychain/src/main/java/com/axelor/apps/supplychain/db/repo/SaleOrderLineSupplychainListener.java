@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCheckSupplychainService;
 import com.axelor.inject.Beans;
-import javax.persistence.PreRemove;
+import jakarta.persistence.PreRemove;
 
 public class SaleOrderLineSupplychainListener {
 

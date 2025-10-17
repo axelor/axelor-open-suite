@@ -4,8 +4,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
+import jakarta.validation.constraints.Min;
 import java.time.LocalDate;
-import javax.validation.constraints.Min;
 
 public class LogisticalFormPostRequest extends RequestPostStructure {
 

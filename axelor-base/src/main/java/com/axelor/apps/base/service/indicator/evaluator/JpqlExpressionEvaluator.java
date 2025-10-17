@@ -23,14 +23,14 @@ import com.axelor.common.Inflector;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.google.inject.Singleton;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.NonUniqueResultException;
+import jakarta.persistence.Parameter;
+import jakarta.persistence.Query;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
-import javax.persistence.Parameter;
-import javax.persistence.Query;
 
 @Singleton
 public class JpqlExpressionEvaluator implements ExpressionEvaluator {

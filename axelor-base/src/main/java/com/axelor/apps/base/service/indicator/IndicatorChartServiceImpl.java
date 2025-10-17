@@ -30,8 +30,8 @@ import com.axelor.meta.schema.views.ChartView.ChartSeries;
 import com.axelor.meta.schema.views.DataSet;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.persistence.Query;
 import java.util.*;
-import javax.persistence.Query;
 
 public class IndicatorChartServiceImpl implements IndicatorChartService {
 

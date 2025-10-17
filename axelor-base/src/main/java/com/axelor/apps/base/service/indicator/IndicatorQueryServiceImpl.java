@@ -25,8 +25,8 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaModel;
 import com.google.inject.Singleton;
+import jakarta.persistence.Query;
 import java.util.List;
-import javax.persistence.Query;
 
 @Singleton
 public class IndicatorQueryServiceImpl implements IndicatorQueryService {

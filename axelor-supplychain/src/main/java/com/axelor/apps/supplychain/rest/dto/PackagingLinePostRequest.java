@@ -4,9 +4,9 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 public class PackagingLinePostRequest extends RequestPostStructure {
 
