@@ -1476,7 +1476,7 @@
       <field name="paymentConditionToCheck" hidden="true" colOffset="3"/>
       <field name="$contactPartner" title="Contact partner" type="many-to-one"
         target="com.axelor.apps.base.db.Partner" x-image-field="picture"
-        domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
+        domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT cp.id FROM part.contactPartnerSet cp))"
         colOffset="3" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <field name="$priceList" title="Price List" type="many-to-one"
@@ -1530,7 +1530,7 @@
       <field name="originDateToCheck" hidden="true" colOffset="3"/>
       <field name="$contactPartner" title="Contact partner" type="many-to-one"
         target="com.axelor.apps.base.db.Partner"
-        domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
+        domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT cp.id FROM part.contactPartnerSet cp))"
         widget="SuggestBox" showIf="contactPartnerToCheck" colOffset="3"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <field name="$priceList" title="Price List" type="many-to-one"

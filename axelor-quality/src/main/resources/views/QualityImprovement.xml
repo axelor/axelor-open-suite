@@ -419,7 +419,7 @@
 
   <action-attrs name="action-qi-identification-attrs-set-detected-by-internal-domain">
     <attribute name="domain" for="detectedByInternal"
-      expr="eval: &quot; self.isContact = true AND ${qi?.company?.id} IN (SELECT id FROM self.companySet) &quot;"
+      expr="eval: &quot; self.isContact = true AND ${qi?.company?.id} IN (SELECT c.id FROM self.companySet c) &quot;"
       if="qi"/>
   </action-attrs>
 

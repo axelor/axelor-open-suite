@@ -123,10 +123,10 @@
     <attribute name="domain" for="responsiblePartner"
       expr="eval: &quot; self.isSupplier = true &quot;" if="responsible == 3"/>
     <attribute name="domain" for="responsiblePartner"
-      expr="eval: &quot; self.isContact = true AND EXISTS (SELECT p FROM Partner p WHERE p.isCustomer = true AND self.id IN (SELECT id FROM p.contactPartnerSet)) &quot;"
+      expr="eval: &quot; self.isContact = true AND EXISTS (SELECT p FROM Partner p WHERE p.isCustomer = true AND self.id IN (SELECT cp.id FROM p.contactPartnerSet cp)) &quot;"
       if="responsible == 4"/>
     <attribute name="domain" for="responsiblePartner"
-      expr="eval: &quot; self.isContact = true AND EXISTS (SELECT p FROM Partner p WHERE p.isSupplier = true AND self.id IN (SELECT id FROM p.contactPartnerSet)) &quot;"
+      expr="eval: &quot; self.isContact = true AND EXISTS (SELECT p FROM Partner p WHERE p.isSupplier = true AND self.id IN (SELECT cp.id FROM p.contactPartnerSet cp)) &quot;"
       if="responsible == 5"/>
   </action-attrs>
 
