@@ -70,7 +70,7 @@
       <field name="endDate" colSpan="6"/>
       <field name="stockLocation" form-view="stock-location-form"
         grid-view="stock-location-grid" colSpan="6"
-        domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null)"
+        domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp IS null)"
         canEdit="false"/>
       <field name="stockLocation.company"/>
       <field name="displayProductWithoutProposal" widget="boolean-switch"/>
@@ -162,10 +162,12 @@
     <domain>
       (self.mrp.displayProductWithoutProposal = true AND self.mrp.id = :_mrpId)
       OR
-      (self.mrp.displayProductWithoutProposal = false AND self.mrp.id = :_mrpId AND self.product.id
-      IN (select m.product from MrpLine as m
+      (self.mrp.displayProductWithoutProposal = false AND self.mrp.id = :_mrpId AND self.product
+      IN
+      (select m.product from MrpLine as m
       where m.mrp.id = :_mrpId AND m.mrpLineType.elementSelect
-      in (:_proposalElementSelect)))
+      in
+      (:_proposalElementSelect)))
     </domain>
     <context name="_mrpId" expr="eval: __this__.id"/>
     <context name="_proposalElementSelect"

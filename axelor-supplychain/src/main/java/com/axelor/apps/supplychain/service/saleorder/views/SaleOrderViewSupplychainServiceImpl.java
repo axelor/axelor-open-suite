@@ -95,7 +95,7 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
         stockMoveRepository
                 .all()
                 .filter(
-                    ":saleOrderId MEMBER OF self.saleOrderSet AND self.availabilityRequest IS TRUE AND self.statusSelect = :plannedStatus")
+                    ":saleOrderId IN (SELECT so.id FROM self.saleOrderSet so) AND self.availabilityRequest IS TRUE AND self.statusSelect = :plannedStatus")
                 .bind("saleOrderId", saleOrder.getId())
                 .bind("plannedStatus", StockMoveRepository.STATUS_PLANNED)
                 .count()

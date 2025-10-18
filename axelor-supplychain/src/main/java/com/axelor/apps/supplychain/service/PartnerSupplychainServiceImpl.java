@@ -62,7 +62,7 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
             .filter(
                 "self.operationTypeSelect = :operationTypeSelect "
                     + "AND self.amountRemaining > 0 "
-                    + "AND self.partner = :partner "
+                    + "AND self.partner.id = :partner "
                     + "AND self.statusSelect = :invoiceStatusVentilated "
                     + "AND self.dueDate < "
                     + "(SELECT DATE(:todayDate) + config.numberOfDaysBeforeAccountBlocking "
