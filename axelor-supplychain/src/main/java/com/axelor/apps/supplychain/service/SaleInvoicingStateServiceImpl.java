@@ -79,7 +79,7 @@ public class SaleInvoicingStateServiceImpl implements SaleInvoicingStateService 
     return invoiceLineRepository
             .all()
             .filter(
-                "self.saleOrderLine = :saleOrderLine AND self.invoice.statusSelect = :statusSelect")
+                "self.saleOrderLine.id = :saleOrderLine AND self.invoice.statusSelect = :statusSelect")
             .bind("saleOrderLine", saleOrderLine.getId())
             .bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
             .count()

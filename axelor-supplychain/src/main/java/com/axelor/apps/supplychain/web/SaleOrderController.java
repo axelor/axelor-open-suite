@@ -547,7 +547,7 @@ public class SaleOrderController {
         stockMoveRepo
             .all()
             .filter(
-                ":saleOrderId MEMBER OF self.saleOrderSet AND self.statusSelect = :statusSelect")
+                ":saleOrderId IN (SELECT so.id FROM self.saleOrderSet so) AND self.statusSelect = :statusSelect")
             .bind("saleOrderId", saleOrder.getId())
             .bind("statusSelect", StockMoveRepository.STATUS_PLANNED)
             .fetchOne();

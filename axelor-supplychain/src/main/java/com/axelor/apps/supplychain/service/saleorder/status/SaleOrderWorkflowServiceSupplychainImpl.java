@@ -111,7 +111,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     List<StockMove> stockMoves =
         Beans.get(StockMoveRepository.class)
             .all()
-            .filter("? MEMBER OF self.saleOrderSet", saleOrder.getId())
+            .filter("? IN (SELECT so.id FROM self.saleOrderSet so)", saleOrder.getId())
             .fetch();
     if (!stockMoves.isEmpty()) {
       for (StockMove stockMove : stockMoves) {
