@@ -209,7 +209,8 @@ public class SaleOrderLineController {
     }
 
     if (saleOrder.getCompany() != null) {
-      domain += " AND " + saleOrder.getCompany().getId() + " in (SELECT id FROM self.companySet)";
+      domain +=
+          " AND " + saleOrder.getCompany().getId() + " in (SELECT c.id FROM self.companySet c)";
     }
 
     response.setAttr("supplierPartner", "domain", domain);

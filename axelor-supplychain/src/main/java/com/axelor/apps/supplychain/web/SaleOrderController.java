@@ -467,7 +467,8 @@ public class SaleOrderController {
       if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
         domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
       }
-      domain += " AND " + saleOrder.getCompany().getId() + " in (SELECT id FROM self.companySet)";
+      domain +=
+          " AND " + saleOrder.getCompany().getId() + " in (SELECT c.id FROM self.companySet c)";
     }
     response.setAttr("supplierPartnerSelect", "domain", domain);
   }

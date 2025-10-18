@@ -210,7 +210,7 @@
         grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')"/>
       <field name="$contactPartner" title="Contact partner" type="many-to-one"
         target="com.axelor.apps.base.db.Partner" x-image-field="picture"
-        domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
+        domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT cp.id FROM part.contactPartnerSet cp))"
         colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <field name="$tradingName"

@@ -158,7 +158,7 @@
         widget="SuggestBox" showIf="paymentModeToCheck"/>
       <field name="$contactPartner" title="Contact partner"
         target="com.axelor.apps.base.db.Partner"
-        domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
+        domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT cp.id FROM part.contactPartnerSet cp))"
         colSpan="12" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"/>
       <button name="confirmBtn" title="Confirm"
         onClick="action-supplychain-stock-move-method-generate-concat-cust-invoice" colSpan="12"
@@ -179,7 +179,7 @@
         widget="SuggestBox" showIf="paymentModeToCheck"/>
       <field name="$contactPartner" title="Contact partner"
         target="com.axelor.apps.base.db.Partner"
-        domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
+        domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT cp.id FROM part.contactPartnerSet cp))"
         colSpan="12" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"/>
       <button name="confirm" title="Confirm"
         onClick="action-supplychain-stock-move-confirm-concat-invoice-check, action-supplychain-stock-move-method-generate-concat-suppl-invoice"
