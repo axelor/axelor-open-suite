@@ -29,6 +29,7 @@ import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppCrm;
@@ -111,7 +112,7 @@ public class OpportunityServiceImpl implements OpportunityService {
     setOpportunityStatusStagedClosedWon(opportunity);
 
     Partner partner = opportunity.getPartner();
-
+    partner = EntityHelper.getEntity(partner);
     partner.setIsCustomer(map.get("isCustomer"));
     partner.setIsProspect(map.get("isProspect"));
     partner.setIsSupplier(map.get("isSupplier"));
