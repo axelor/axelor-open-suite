@@ -19,21 +19,15 @@
 package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CommonInvoiceServiceImpl implements CommonInvoiceService {
@@ -65,56 +59,6 @@ public class CommonInvoiceServiceImpl implements CommonInvoiceService {
     }
 
     return amount;
-  }
-
-  @Override
-  public List<InvoiceLine> createInvoiceLinesFromOrder(
-      Invoice invoice, BigDecimal inTaxTotal, Product invoicingProduct, BigDecimal percentToInvoice)
-      throws AxelorException {
-
-    List<InvoiceLine> invoiceLineList = new ArrayList<>();
-    BigDecimal lineAmountToInvoice =
-        percentToInvoice
-            .multiply(inTaxTotal)
-            .divide(new BigDecimal("100"), 4, BigDecimal.ROUND_HALF_UP);
-
-    InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
-        new InvoiceLineGeneratorSupplyChain(
-            invoice,
-            invoicingProduct,
-            invoicingProduct.getName(),
-            lineAmountToInvoice,
-            lineAmountToInvoice,
-            lineAmountToInvoice,
-            invoicingProduct.getDescription(),
-            BigDecimal.ONE,
-            invoicingProduct.getUnit(),
-            null,
-            InvoiceLineGenerator.DEFAULT_SEQUENCE,
-            BigDecimal.ZERO,
-            PriceListLineRepository.AMOUNT_TYPE_NONE,
-            lineAmountToInvoice,
-            null,
-            false,
-            null,
-            null,
-            null) {
-          @Override
-          public List<InvoiceLine> creates() throws AxelorException {
-
-            InvoiceLine invoiceLine = this.createInvoiceLine();
-
-            List<InvoiceLine> invoiceLines = new ArrayList<>();
-            invoiceLines.add(invoiceLine);
-
-            return invoiceLines;
-          }
-        };
-
-    List<InvoiceLine> invoiceOneLineList = invoiceLineGenerator.creates();
-    invoiceLineList.addAll(invoiceOneLineList);
-
-    return invoiceLineList;
   }
 
   public BigDecimal computeSumInvoices(List<Invoice> invoices) {

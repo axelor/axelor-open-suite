@@ -1,0 +1,15 @@
+---
+title: "Order/AvancePayment: fixed the advance payment amount from sale/purchase order"
+module: axelor-supplychain
+developer:
+  Removed CommonInvoiceService.createInvoiceLinesFromOrder
+  Changed the parameter of PurchaseOrderInvoiceService.createInvoiceAndLines from 
+    (PurchaseOrder,List<PurchaseOrderLineTax>,Product,BigDecimal,int,Account) to (PurchaseOrder,Product,BigDecimal,int,Account)
+  Changed the parameter of PurchaseOrderInvoiceService.createInvoiceLines from
+    (Invoice,List<PurchaseOrderLineTax>,Product,BigDecimal) to (Invoice,List<PurchaseOrderLine>,Product,BigDecimal)
+  Changed the parameter of InvoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice from
+    (Invoice,Product,BigDecimal,OrderLineTax,SaleOrderLine,PurchaseOrderLine) to (Invoice,Product,BigDecimal,SaleOrderLine,PurchaseOrderLine,BigDecimal,Set<TaxLine>)
+  Changed the parameter of SaleOrderInvoiceService.createInvoiceAndLines from
+    (SaleOrder,List<SaleOrderLineTax>,Product,BigDecimal,int,Account) to (SaleOrder,Product,BigDecimal,int,Account)
+  Changed the parameter of SaleOrderInvoiceService.createInvoiceLines from
+    (Invoice,List<SaleOrderLineTax>,Product,BigDecimal) to (Invoice,List<SaleOrderLine>,Product,BigDecimal)
