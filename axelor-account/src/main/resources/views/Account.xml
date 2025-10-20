@@ -117,12 +117,13 @@
           hideIf="accountType.technicalTypeSelect == 'view'">
           <field name="isTaxAuthorizedOnMoveLine" colSpan="4" widget="boolean-switch"
             onChange="action-group-account-is-tax-authorized-onchange"/>
-          <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
-            widget="boolean-switch" onChange="action-account-validate-check-move-tax-required"/>
+          <field name="isTaxRequiredOnMoveLine"
+            showIf="isTaxAuthorizedOnMoveLine &amp;&amp; accountType.technicalTypeSelect != 'tax'"
+            colSpan="4" widget="boolean-switch"
+            onChange="action-account-validate-check-move-tax-required"/>
           <field name="defaultTaxSet" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
             widget="TagSelect" onChange="action-account-method-check-default-tax-set"/>
-          <field name="vatSystemSelect" colSpan="4"
-            showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"/>
+          <field name="vatSystemSelect" colSpan="4" showIf="isTaxAuthorizedOnMoveLine"/>
         </panel>
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12">
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
