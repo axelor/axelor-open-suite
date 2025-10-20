@@ -1526,6 +1526,8 @@
     model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
     <field name="paymentCondition"
       expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
+    <field name="outPaymentCondition"
+      expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
   </action-record>
 
   <action-method name="action-print-company-phonebook">
