@@ -678,6 +678,8 @@
       expr="eval: __config__.app.getApp('project')?.getDefaultPrioritySet()"/>
     <field name="completedTaskStatus"
       expr="eval: __config__.app.getApp('project')?.completedTaskStatus"/>
+    <field name="projectTaskCategorySet"
+      expr="eval: __repo__(ProjectTaskCategory).all().fetch()"/>
   </action-record>
 
   <action-record name="action-project-record-priority-reset-values"
