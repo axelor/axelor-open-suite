@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceGenerator;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
@@ -146,6 +147,17 @@ public abstract class InvoiceGeneratorSupplyChain extends InvoiceGenerator {
       AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
       invoice.setDisplayStockMoveOnInvoicePrinting(
           accountConfig.getDisplayStockMoveOnInvoicePrinting());
+    }
+
+    boolean isIntercoFromInvoice =
+        Beans.get(AppSupplychainService.class).getAppSupplychain().getIntercoFromInvoice();
+
+    if (isIntercoFromInvoice
+        && !invoice.getCreatedByInterco()
+        && partner != null
+        && (Beans.get(CompanyRepository.class).all().filter("self.partner = ?", partner).count()
+            > 0)) {
+      invoice.setInterco(true);
     }
 
     return invoice;
