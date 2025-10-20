@@ -198,7 +198,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     if (pfpService.isManagePassedForPayment(move.getCompany())) {
       moveRecordSetService.setPfpStatus(move);
-      valuesMap.put("pfpValidateStatusSelect", move.getOriginDate());
+      valuesMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());
     }
 
     if (isMassEntry) {
