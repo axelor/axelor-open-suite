@@ -341,17 +341,18 @@
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
           onChange="action-group-partner-registration-code-onChange"/>
         <field name="taxNbr" hidden="true" colSpan="4" hideIf="partnerTypeSelect== 2"/>
+        <!-- MGM-80: Add a customer Cost Center to Partner of type Customer as per stakeholder feedback -->
+        <field name="customerCostCenter" colSpan="4" showIf="isCustomer"/>
         <field name="partnerCategory" widget="SuggestBox" colSpan="4"
           form-view="partner-category-form" grid-view="partner-category-grid"/>
         <field name="industrySector" colSpan="4" widget="SuggestBox"
           hideIf="partnerTypeSelect== 2"/>
+        <!--MGM-77: display currency directly here for customers, since it is a required field -->
+        <field name="currency" expr="eval: __user__.activeCompany?.currency"
+          if="#{!isContact}" colSpan="4"/>
         <!-- MGM-77: mainActivity moved from other partner details up here -->
         <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
           form-view="main-activity-form" colSpan="4"/>
-        <!--MGM-77: Adding currency directly to the Partner Detail section for customers, since it is
-          a required field -->
-        <field name="currency" expr="eval: __user__.activeCompany?.currency"
-          if="#{!isContact}" colSpan="4"/>
         <!-- MGM-77: parentPartner moved from other partner details up here -->
         <field name="parentPartner" hideIf="partnerTypeSelect != 1"
           if="__config__.app.getApp('base')?.getManageSubsidiaryPartner()" form-view="partner-form"
@@ -455,10 +456,10 @@
         <panel name="generalContactDetailsPanel" title="General contact details" colSpan="12">
           <!-- MGM-80: Do not hide general phone number for companies if available -->
           <!-- <field name="mobilePhone" colSpan="3" hideIf="partnerTypeSelect == 1" widget="phone"/> -->
-          <field name="mobilePhone" colSpan="4" widget="phone"/>
-          <field name="fixedPhone" colSpan="4" widget="phone"
+          <field name="mobilePhone" colSpan="6" widget="phone"/>
+          <field name="fixedPhone" colSpan="6" widget="phone"
             x-placeholder-number-type="FIXED_LINE"/>
-          <field name="emailAddress" canSelect="false" colSpan="4"
+          <field name="emailAddress" canSelect="false" colSpan="6"
             form-view="email-address-simple-form" x-show-icons="false">
             <editor x-show-titles="false" x-viewer="true">
               <field name="address" colSpan="4" placeholder="whatever@example.com"
@@ -466,7 +467,7 @@
             </editor>
           </field>
           <field name="webSite" placeholder="http://www.url.com" widget="url"
-                 pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" colSpan="4"/>
+            pattern="^(?:http(?:s)?://)?\S+(?:\.\S+)+$" colSpan="6"/>
         </panel>
 
         <panel name="employeePanel" hidden="true">
@@ -480,16 +481,18 @@
           <!-- MGM-80: Group Product setting not relevant for MGM processes -->
           <!-- <field name="groupProductsOnPrintings" showIf="(isCustomer || isSupplier)" if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"
             widget="boolean-switch" colSpan="12"/> -->
+          <field name="groupProductsOnPrintings" showIf="isSupplier"
+            if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"
+            widget="boolean-switch" colSpan="6"/>
           <panel name="assignedToPanel" title="Assigned to" colSpan="12">
-            <!-- MGM-80: changed the order to display, starting with company first -->
-            <field name="companySet" colSpan="4" widget="TagSelect" canNew="false"
-              form-view="company-form" grid-view="company-grid"/>
-            <field name="user" colSpan="4" form-view="user-form"
+            <field name="user" colSpan="6" form-view="user-form"
               onSelect="action-partner-attrs-user-group" grid-view="user-grid" hideIf="isEmployee"
               canNew="false" canEdit="false" canView="false"/>
-            <field name="team" canEdit="false" colSpan="4" form-view="team-form"
+            <field name="team" canEdit="false" colSpan="6" form-view="team-form"
               grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"
               hideIf="isEmployee"/>
+            <field name="companySet" colSpan="6" widget="TagSelect" canNew="false"
+              form-view="company-form" grid-view="company-grid"/>
           </panel>
         </panel>
         <panel name="notesPanel" title="Notes" colSpan="12">
@@ -812,13 +815,12 @@
       <field name="localization" canEdit="false" grid-view="localization-grid"
         form-view="localization-form"/>
       <panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
-        <!-- MGM-80: Changed the order for displaying, now starting with company set -->
-        <field name="companySet" colSpan="4" widget="TagSelect" canNew="false"
-          form-view="company-form" grid-view="company-grid"/>
-        <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"
+        <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
           canNew="false" canEdit="false" canView="false"/>
-        <field name="team" canEdit="false" colSpan="4" form-view="team-form"
+        <field name="team" canEdit="false" colSpan="6" form-view="team-form"
           grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"/>
+        <field name="companySet" colSpan="6" widget="TagSelect" canNew="false"
+          form-view="company-form" grid-view="company-grid"/>
       </panel>
     </panel>
     <panel name="notesPanel" title="Notes" colSpan="12" sidebar="true">
@@ -1067,13 +1069,12 @@
       <field name="localization" grid-view="localization-grid" form-view="localization-form"
         canEdit="false"/>
       <panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
-        <!-- MGM-80: changed the order to display, starting with company first -->
-        <field name="companySet" colSpan="4" widget="TagSelect" canNew="false"
-          form-view="company-form" grid-view="company-grid"/>
-        <field name="user" colSpan="4" form-view="user-form" grid-view="user-grid"
+        <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
           canNew="false" canEdit="false" canView="false"/>
-        <field name="team" canEdit="false" colSpan="4" form-view="team-form"
+        <field name="team" canEdit="false" colSpan="6" form-view="team-form"
           grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"/>
+        <field name="companySet" colSpan="6" widget="TagSelect" canNew="false"
+          form-view="company-form" grid-view="company-grid"/>
       </panel>
     </panel>
     <panel name="notesPanel" title="Notes" colSpan="12" sidebar="true">

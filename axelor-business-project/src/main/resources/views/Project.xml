@@ -159,8 +159,6 @@
             colSpan="6"/>
           <field name="currency" colSpan="6" if="__config__.app.isApp('business-project')"
             if-module="axelor-business-project" canEdit="false"/>
-          <!-- <field name="priceList" colSpan="3" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-            canEdit="false"/> -->
         </panel>
         <panel-include view="incl-project-overview-panel-form"/>
       </panel>
@@ -173,7 +171,7 @@
           <field name="numberHoursADay"/>
           <field name="spentTimeCostComputationMethod"/>
           <field name="allowToGetPricesFromFrameworkContract"/>
-          <!-- MGM-69: adding the allow to invoice time spent to business configuration while hidding
+          <!-- MGM-69: adding the allow to invoice time spent to business configuration while hiding
             general configuration -->
           <field name="manageTimeSpent" widget="inline-checkbox"
             onChange="action-project-record-manage-timespent-reset-values, action-attrs-project-show-log-time-panel"
