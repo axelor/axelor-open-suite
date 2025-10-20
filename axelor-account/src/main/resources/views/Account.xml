@@ -114,8 +114,7 @@
           <field name="isTaxRequiredOnMoveLine" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
             widget="boolean-switch" onChange="action-account-validate-check-move-tax-required"/>
           <field name="defaultTax" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"/>
-          <field name="vatSystemSelect" colSpan="4"
-            showIf="isTaxAuthorizedOnMoveLine &amp;&amp; (accountType.technicalTypeSelect == 'immobilisation' || accountType.technicalTypeSelect == 'charge' || accountType.technicalTypeSelect == 'income')"/>
+          <field name="vatSystemSelect" colSpan="4" showIf="isTaxAuthorizedOnMoveLine"/>
         </panel>
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12">
           <field name="analyticDistributionAuthorized" colSpan="4" widget="boolean-switch"
