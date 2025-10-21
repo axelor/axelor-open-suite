@@ -5,38 +5,35 @@
 
   <module name="business-project" package="com.axelor.apps.businessproject.db"/>
 
+  <!-- ===== Task Report ===== -->
   <entity name="TaskReport">
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
-    <many-to-one name="employee" ref="com.axelor.auth.db.User" title="Employee"/>
-    <many-to-many name="projectMembers" ref="com.axelor.auth.db.User"
-      title="Team Members"/>
-    <many-to-many name="tasks" ref="com.axelor.apps.project.db.ProjectTask"/>
     <many-to-one name="location" ref="com.axelor.apps.base.db.Address" title="Location"/>
-    <many-to-one name="printedPdf" title="Printed PDF" ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="employee" ref="com.axelor.auth.db.User" title="Report Created By"/>
     <one-to-many name="taskMemberReports"
       ref="com.axelor.apps.businessproject.db.TaskMemberReport"/>
-
-    <date name="taskDate" title="Date"/>
-    <datetime name="startTime" title="Start time"/>
-    <decimal name="breakTimeHours" title="Break time (hours)" precision="5" scale="2"/>
-    <datetime name="endTime" title="End time"/>
     <decimal name="totalWorkHours" title="Total working time (hours)" precision="6"
       scale="2" readonly="true"/>
-    <many-to-many name="activities"
-      ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Activities performed"/>
-
+    <date name="taskDate" title="Report Date"/>
     <boolean name="travelExpenses" title="Travel expenses"/>
     <boolean name="toolsUsage" title="Tools usage"/>
-    <boolean name="emergencyService" title="Emergency service"/>
-    <boolean name="dirtAllowance" title="Dirt allowance"/>
+    <enum name="additionalServices" title="Additional Services"
+      ref="com.axelor.apps.businessproject.db.AdditionalService"/>
     <string name="material" title="Materials" large="true"/>
     <string name="otherServices" title="Other services" large="true"/>
-
     <string name="comments" title="Comments" large="true"/>
-    <binary name="employeeSignature" title="Employee signature"/>
     <string name="customerName" title="Customer name"/>
+    <binary name="employeeSignature" title="Employee signature"/>
     <binary name="customerSignature" title="Customer signature"/>
   </entity>
 
+  <enum name="AdditionalService">
+    <item name="EMERGENCY_SERVICE" title="Emergency Service"/>
+    <item name="DIRT_ALLOWANCE" title="Dirt Allowance"/>
+    <item name="SUNDAY_WORK" title="Sunday Work"/>
+    <item name="SATURDAY_WORK" title="Saturday Work"/>
+    <item name="HOLIDAY_WORK" title="Holiday Work"/>
+    <item name="NIGHT_SHIFT" title="Night Shift"/>
+  </enum>
 </domain-models>
