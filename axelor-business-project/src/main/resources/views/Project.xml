@@ -5,16 +5,24 @@
 
   <grid name="business-project-grid" title="Projects"
     model="com.axelor.apps.project.db.Project">
+
     <toolbar>
       <button name="logTimeBtn" icon="clock-history"
         onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
     </toolbar>
+
+    <!-- MGM-84: highlighting priority in project grid view -->
+    <hilite if="priority.name == 'High'" color="warning"/>
+    <hilite if="priority.name == 'Low'" color="grey"/>
+    <hilite if="priority.name == 'Urgent'" color="danger"/>
+
     <field name="fullName"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="fromDate"/>
     <field name="toDate"/>
+    <field name="priority"/>
     <button name="openTasks" onClick="action-business-project-view-show-related-tasks"
       icon="list-task"/>
   </grid>
@@ -159,6 +167,9 @@
             colSpan="6"/>
           <field name="currency" colSpan="6" if="__config__.app.isApp('business-project')"
             if-module="axelor-business-project" canEdit="false"/>
+          <!-- MGM-84 adding priority on the project level -->
+          <field name="priority"/>
+          <field name="priority.technicalTypeSelect" hidden="true"/>
         </panel>
         <panel-include view="incl-project-overview-panel-form"/>
       </panel>
