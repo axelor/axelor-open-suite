@@ -828,7 +828,8 @@ public final class AccountExceptionMessage {
   /** Debt recovery service */
   public static final String DEBT_RECOVERY_1 = /*$$(*/ "There's no accounting situation." /*)*/;
 
-  public static final String DEBT_RECOVERY_2 = /*$$(*/ "Reference date undefined." /*)*/;
+  public static final String DEBT_RECOVERY_2 = /*$$(*/
+      "The move on the invoice is ignored when calculating debt recovery." /*)*/;
   public static final String DEBT_RECOVERY_3 = /*$$(*/
       "%s : No debt recovery method has been found for the company %s and the category %s %s (Partner %s)" /*)*/;
   public static final String DEBT_RECOVERY_4 = /*$$(*/
