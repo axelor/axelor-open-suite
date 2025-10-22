@@ -19,16 +19,15 @@
 package com.axelor.apps.purchase.service.app;
 
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseConfig;
 import com.axelor.apps.purchase.db.repo.PurchaseConfigRepository;
+import com.axelor.db.Query;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.meta.loader.AppVersionService;
 import com.axelor.studio.db.AppPurchase;
-import com.axelor.studio.db.repo.AppPurchaseRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.Inject;
@@ -38,10 +37,6 @@ import java.util.List;
 
 @Singleton
 public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPurchaseService {
-
-  protected AppPurchaseRepository appPurchaseRepo;
-
-  protected CompanyRepository companyRepo;
 
   protected PurchaseConfigRepository purchaseConfigRepo;
 
@@ -53,25 +48,21 @@ public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPur
       AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
       MetaFileRepository metaFileRepo,
-      AppPurchaseRepository appPurchaseRepo,
-      CompanyRepository companyRepo,
       PurchaseConfigRepository purchaseConfigRepo) {
     super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
-    this.appPurchaseRepo = appPurchaseRepo;
-    this.companyRepo = companyRepo;
     this.purchaseConfigRepo = purchaseConfigRepo;
   }
 
   @Override
   public AppPurchase getAppPurchase() {
-    return appPurchaseRepo.all().fetchOne();
+    return Query.of(AppPurchase.class).fetchOne();
   }
 
   @Override
   @Transactional
   public void generatePurchaseConfigurations() {
 
-    List<Company> companies = companyRepo.all().filter("self.purchaseConfig is null").fetch();
+    List<Company> companies = Query.of(Company.class).filter("self.purchaseConfig is null").fetch();
 
     for (Company company : companies) {
       PurchaseConfig purchaseConfig = new PurchaseConfig();
