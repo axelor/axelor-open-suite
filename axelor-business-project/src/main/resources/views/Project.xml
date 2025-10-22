@@ -171,26 +171,16 @@
           <field name="priority"/>
           <field name="priority.technicalTypeSelect" hidden="true"/>
         </panel>
+        <!-- MGM-80: Adding team member selection to the overview -->
+        <field name="membersUserSet" colSpan="9" widget="TagSelect" canNew="false"
+          form-view="user-form" grid-view="user-grid" canEdit="false"/>
+        <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
+          canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
+          grid-view="user-grid" colSpan="3"/>
         <panel-include view="incl-project-overview-panel-form"/>
       </panel>
 
-      <panel title="Configurations" name="configurationsPanel">
-        <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
-          canCollapse="true" collapseIf="false">
-          <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
-          <field name="projectTimeUnit" onSelect="action-project-attrs-set-time-unit-domain"/>
-          <field name="numberHoursADay"/>
-          <field name="spentTimeCostComputationMethod"/>
-          <field name="allowToGetPricesFromFrameworkContract"/>
-          <!-- MGM-69: adding the allow to invoice time spent to business configuration while hiding
-            general configuration -->
-          <field name="manageTimeSpent" widget="inline-checkbox"
-            onChange="action-project-record-manage-timespent-reset-values, action-attrs-project-show-log-time-panel"
-            if="__config__.app.isApp('timesheet')"/>
-        </panel>
-        <panel-include view="incl-project-config-panel-form"/>
-      </panel>
-
+      <!-- MGM-80: Moving task panel next to overview to get configs done faster -->
       <panel title="Tasks" name="taskTreePanel">
         <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
           height="200%" colSpan="12" action="action-view-show-business-project-task"
@@ -209,6 +199,23 @@
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
           action="action-task-report-dashlet" colSpan="12" canNew="true" canEdit="true"
           canRemove="true"/>
+      </panel>
+
+      <panel title="Configurations" name="configurationsPanel">
+        <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
+          canCollapse="true" collapseIf="false">
+          <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
+          <field name="projectTimeUnit" onSelect="action-project-attrs-set-time-unit-domain"/>
+          <field name="numberHoursADay"/>
+          <field name="spentTimeCostComputationMethod"/>
+          <field name="allowToGetPricesFromFrameworkContract"/>
+          <!-- MGM-69: adding the allow to invoice time spent to business configuration while hiding
+            general configuration -->
+          <field name="manageTimeSpent" widget="inline-checkbox"
+            onChange="action-project-record-manage-timespent-reset-values, action-attrs-project-show-log-time-panel"
+            if="__config__.app.isApp('timesheet')"/>
+        </panel>
+        <panel-include view="incl-project-config-panel-form"/>
       </panel>
 
       <panel-include view="incl-checklist-panel-form"/>

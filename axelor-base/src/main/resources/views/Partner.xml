@@ -667,7 +667,8 @@
     <panel name="partnerAttrsPanel">
       <field name="partnerAttrs" colSpan="12"/>
     </panel>
-    <panel-mail name="mailsPanel">
+    <!-- MGM-80: removing followers panel, only show if admin -->
+    <panel-mail name="mailsPanel" if="__user__.group.code == admins">
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>

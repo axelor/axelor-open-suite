@@ -299,34 +299,36 @@
     </panel>
   </form>
   <form name="timesheet-line-timesheet-project-task-form" title="Timesheet Line"
-          model="com.axelor.apps.hr.db.TimesheetLine"
-          onLoad="action-timesheet-line-attrs-overview-readonly-for-project-task"
-          onSave="action-timesheet-line-group-project-task-form-on-save"
-          onNew="action-timesheet-line-group-project-task-form-on-new">
+    model="com.axelor.apps.hr.db.TimesheetLine"
+    onLoad="action-timesheet-line-attrs-overview-readonly-for-project-task"
+    onSave="action-timesheet-line-group-project-task-form-on-save"
+    onNew="action-timesheet-line-group-project-task-form-on-new">
     <panel name="overviewPanel" title="Overview">
       <field name="date" colSpan="6" onChange="action-timesheet-line-method-set-timesheet"/>
       <field name="project" readonlyIf="_project" colSpan="6"
-                   onChange="action-timesheet-line-record-set-project-task"
-                   onSelect="action-timesheet-line-attrs-domain-project"
-                   required="true" form-view="project-form" grid-view="project-grid"/>
+        onChange="action-timesheet-line-record-set-project-task"
+        onSelect="action-timesheet-line-attrs-domain-project" required="true"
+        form-view="project-form" grid-view="project-grid"/>
       <field name="projectTask" readonlyIf="_projectTask" colSpan="6"
-                   onChange="action-timesheet-line-method-set-product,action-timesheet-line-record-set-project"
-                   domain="(:project IS NULL OR self.project = :project) AND self.project.manageTimeSpent = true"
-                   form-view="project-task-form" grid-view="project-task-grid"/>
+        onChange="action-timesheet-line-method-set-product,action-timesheet-line-record-set-project"
+        domain="(:project IS NULL OR self.project = :project) AND self.project.manageTimeSpent = true"
+        form-view="project-task-form" grid-view="project-task-grid"/>
       <field name="projectTask.projectTaskCategory" colSpan="6"
-                   form-view="project-task-category-form" grid-view="project-task-category-grid"/>
-      <field if="__config__.app.getApp('timesheet')?.enableActivity" name="product" colSpan="6"
-                   widget="SuggestBox" canEdit="false" onSelect="action-hr-timesheet-line-attrs-domain-product"
-                   form-view="product-activity-form" grid-view="product-activity-grid"/>
+        form-view="project-task-category-form" grid-view="project-task-category-grid"/>
+      <field if="__config__.app.getApp('timesheet')?.enableActivity" name="product"
+        colSpan="6" widget="SuggestBox" canEdit="false"
+        onSelect="action-hr-timesheet-line-attrs-domain-product" form-view="product-activity-form"
+        grid-view="product-activity-grid"/>
       <field name="duration" title="Duration" colSpan="4" width="62%"
-                   onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
+        onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
       <label name="durationLabel" colSpan="2"/>
       <field name="employee" readonly="false" colSpan="6" canNew="false" canView="false"
-                   canEdit="false" onChange="action-timesheet-line-method-set-timesheet"
-                   onSelect="action-timesheet-line-attrs-domain-employee" required="true"
-                   form-view="employee-form" grid-view="employee-grid"/>
-      <field name="timesheet" readonly="false" colSpan="6" onSelect="action-timesheet-line-method-set-timesheet-domain"
-                   validIf="timesheet.employee.id == employee.id"/>
+        canEdit="false" onChange="action-timesheet-line-method-set-timesheet"
+        onSelect="action-timesheet-line-attrs-domain-employee" required="true"
+        form-view="employee-form" grid-view="employee-grid"/>
+      <field name="timesheet" readonly="false" colSpan="6"
+        onSelect="action-timesheet-line-method-set-timesheet-domain"
+        validIf="timesheet.employee.id == employee.id"/>
       <field name="comments" colSpan="12"/>
     </panel>
   </form>
