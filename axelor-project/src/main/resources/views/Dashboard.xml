@@ -5,7 +5,7 @@
 
   <dashboard name="project-my-projects" title="My projects">
     <!-- [ MGM-85 - @fwagni ] START dashlet - feature/homeAction/ongoingProjects -->
-    <dashlet action="action.business.project.my.ongoing.projects"/>
+    <dashlet action="business.project.mine"/>
     <!-- [ MGM-85 - @fwagni ] END dashlet - feature/homeAction/ongoingProjects -->
     <dashlet action="action-project-db-my-tasks-to-do"/>
     <dashlet action="action-project-db-my-tasks-due"/>

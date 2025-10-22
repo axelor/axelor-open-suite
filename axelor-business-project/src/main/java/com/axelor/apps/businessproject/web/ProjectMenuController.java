@@ -47,7 +47,8 @@ public class ProjectMenuController {
             .add("form", "business-project-form")
             .add("kanban", "project-kanban")
             .domain(
-                "(self.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.membersUserSet AND self.isBusinessProject = true")
+              // MGM-85: Only display uncompleted projects - @fwagni
+                "(self.id IN :_projectIds OR :_project is null) AND :__user__ MEMBER OF self.membersUserSet AND self.isBusinessProject = true AND self.projectStatus.isCompleted = false")
             .context("_project", activeProject)
             .context("_projectIds", Beans.get(ProjectToolService.class).getActiveProjectIds())
             .context("_fromBusinessProject", true)
