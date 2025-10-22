@@ -7,7 +7,7 @@
 
   <entity name="Project">
 
-    <string name="name"/>
+    <string name="name" title="Project name"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <string name="description" multiline="true" large="true"/>
     <many-to-one name="team" ref="com.axelor.team.db.Team"/>
@@ -33,7 +33,7 @@
     <one-to-many name="taskCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField"
       title="Task fields" mappedBy="project"/>
 
-    <string name="code" title="Code" unique="true"/>
+    <string name="code" title="Project code" unique="true"/>
     <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
     <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner"
       title="Customer"/>

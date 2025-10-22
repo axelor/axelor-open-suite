@@ -174,13 +174,14 @@
   <form name="incl-log-times-projec-task-panel-form" title="Project task"
     model="com.axelor.apps.project.db.ProjectTask">
     <panel title="Log Times" name="logTimesPanel" showTitle="false" colSpan="12" itemSpan="12">
+      <!-- MGM-80: Inverted wating timesheet and validated timesheet to improve user experience -->
+      <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
+        action="action-project-task-dashlet-waiting-timesheet-lines" title="Waiting Timesheet lines"
+        colSpan="12" canSearch="true" if="__config__.app.getApp('timesheet')?.needValidation"/>
       <panel-dashlet name="validatedTimesheetLinesPanel" x-show-bars="true"
         action="action-project-task-dashlet-validated-timesheet-lines"
         title="Validated Timesheet lines" colSpan="12" canSearch="true"
         if="__config__.app.getApp('timesheet')?.needValidation"/>
-      <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
-        action="action-project-task-dashlet-waiting-timesheet-lines" title="Waiting Timesheet lines"
-        colSpan="12" canSearch="true" if="__config__.app.getApp('timesheet')?.needValidation"/>
       <panel-dashlet name="allTimesheetLinesPanel" x-show-bars="true"
         action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
         colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
