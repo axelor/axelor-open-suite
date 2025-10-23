@@ -1577,6 +1577,7 @@
     model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-grid"/>
     <view type="form" name="move-line-form"/>
+    <view-param name="search-filters" value="move-line-filters"/>
     <domain>self.partner.id = :partnerId AND self.account.useForPartnerBalance = true</domain>
     <context name="partnerId" expr="eval: id"/>
   </action-view>
