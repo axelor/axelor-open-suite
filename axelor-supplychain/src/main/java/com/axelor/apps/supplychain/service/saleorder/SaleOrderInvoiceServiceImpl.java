@@ -44,7 +44,6 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
@@ -293,7 +292,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   @Transactional(rollbackOn = {Exception.class})
   public Invoice generateAdvancePayment(
       SaleOrder saleOrder, BigDecimal amountToInvoice, boolean isPercent) throws AxelorException {
-    List<SaleOrderLineTax> taxLineList = saleOrder.getSaleOrderLineTaxList();
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
 
     BigDecimal percentToInvoice =
@@ -319,7 +317,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     Invoice invoice =
         createInvoiceAndLines(
             saleOrder,
-            taxLineList,
             invoicingProduct,
             percentToInvoice,
             InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE,
@@ -335,7 +332,6 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
   public Invoice createInvoiceAndLines(
       SaleOrder saleOrder,
-      List<SaleOrderLineTax> taxLineList,
       Product invoicingProduct,
       BigDecimal percentToInvoice,
       int operationSubTypeSelect,
@@ -346,11 +342,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     Invoice invoice = invoiceGenerator.generate();
 
     List<InvoiceLine> invoiceLinesList =
-        (taxLineList != null && !taxLineList.isEmpty())
-            ? this.createInvoiceLinesFromTax(
-                invoice, taxLineList, invoicingProduct, percentToInvoice)
-            : commonInvoiceService.createInvoiceLinesFromOrder(
-                invoice, saleOrder.getInTaxTotal(), invoicingProduct, percentToInvoice);
+        this.createInvoiceLines(
+            invoice, saleOrder.getSaleOrderLineList(), invoicingProduct, percentToInvoice);
 
     invoiceGenerator.populate(invoice, invoiceLinesList);
 
@@ -377,23 +370,31 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Override
-  public List<InvoiceLine> createInvoiceLinesFromTax(
+  public List<InvoiceLine> createInvoiceLines(
       Invoice invoice,
-      List<SaleOrderLineTax> taxLineList,
+      List<SaleOrderLine> saleOrderLineList,
       Product invoicingProduct,
       BigDecimal percentToInvoice)
       throws AxelorException {
 
     List<InvoiceLine> createdInvoiceLineList = new ArrayList<>();
-    if (taxLineList != null) {
-      for (SaleOrderLineTax saleOrderLineTax : taxLineList) {
-        SaleOrderLine saleOrderLine = saleOrderLineTax.getSaleOrder().getSaleOrderLineList().get(0);
-        InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
-            invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
-                invoice, invoicingProduct, percentToInvoice, saleOrderLineTax, saleOrderLine, null);
-        createdInvoiceLineList.addAll(invoiceLineGenerator.creates());
-      }
+    if (ObjectUtils.isEmpty(saleOrderLineList)) {
+      return createdInvoiceLineList;
     }
+
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
+          invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
+              invoice,
+              invoicingProduct,
+              percentToInvoice,
+              saleOrderLine,
+              null,
+              saleOrderLine.getExTaxTotal(),
+              saleOrderLine.getTaxLineSet());
+      createdInvoiceLineList.addAll(invoiceLineGenerator.creates());
+    }
+
     return createdInvoiceLineList;
   }
 
