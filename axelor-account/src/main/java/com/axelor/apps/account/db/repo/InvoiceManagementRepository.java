@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.SubrogationRelease;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -63,7 +64,11 @@ public class InvoiceManagementRepository extends InvoiceRepository {
                 .orElse(null);
         invoice.setPaymentDate(latestPaymentDate);
       }
-      invoice.setNextDueDate(Beans.get(InvoiceToolService.class).getNextDueDate(invoice));
+      LocalDate nextDueDate = Beans.get(InvoiceToolService.class).getNextDueDate(invoice);
+      invoice.setNextDueDate(nextDueDate);
+      invoice.setDueDate(
+          Beans.get(InvoiceTermService.class)
+              .getDueDate(invoice.getInvoiceTermList(), nextDueDate));
       invoice = super.save(invoice);
 
       InvoiceService invoiceService = Beans.get(InvoiceService.class);

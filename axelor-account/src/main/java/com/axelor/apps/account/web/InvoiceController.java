@@ -40,6 +40,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -1455,5 +1456,17 @@ public class InvoiceController {
   public void setDiscountDummies(ActionRequest request, ActionResponse response) {
     Invoice invoice = request.getContext().asType(Invoice.class);
     response.setAttrs(Beans.get(InvoiceGlobalDiscountService.class).setDiscountDummies(invoice));
+  }
+
+  public void changeInvoiceTermDatesWithInvoiceDueDate(
+      ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      Beans.get(InvoiceTermDateComputeService.class).fillWithInvoiceDueDate(invoice);
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

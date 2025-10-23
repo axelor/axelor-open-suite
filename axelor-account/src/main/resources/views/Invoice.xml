@@ -1134,7 +1134,7 @@
           readonlyIf="ventilatedByUser || ventilatedDateTime"/>
         <spacer/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"
-          onChange="action-invoice-method-estimated-payment-date,action-invoice-method-compute-invoice-terms-due-dates"/>
+          onChange="action-invoice-method-estimated-payment-date,action-invoice-method-change-invoice-terms-due-dates-with-invoice-due-date"/>
         <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="paymentDelay" readonly="true" colSpan="12"/>
@@ -2489,6 +2489,12 @@
   <action-method name="action-invoice-method-compute-invoice-terms-due-dates">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="computeInvoiceTermsDueDates"/>
+  </action-method>
+
+  <action-method
+    name="action-invoice-method-change-invoice-terms-due-dates-with-invoice-due-date">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="changeInvoiceTermDatesWithInvoiceDueDate"/>
   </action-method>
 
   <action-method name="action-invoice-method-validate-invoice-terms-before-save">
