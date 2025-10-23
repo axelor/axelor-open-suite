@@ -18,11 +18,13 @@
  */
 package com.axelor.apps.base.tracking;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.GlobalTrackingConfigurationLine;
 import com.axelor.apps.base.db.GlobalTrackingLog;
 import com.axelor.apps.base.db.GlobalTrackingLogLine;
 import com.axelor.apps.base.db.TraceBack;
 import com.axelor.apps.base.db.repo.GlobalTrackingLogRepository;
+import com.axelor.apps.base.listener.DateConstraintListener;
 import com.axelor.auth.AuditInterceptor;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
@@ -106,6 +108,12 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
   public boolean onSave(
       Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
 
+    try {
+      DateConstraintListener.validateDateConstraint(entity);
+    } catch (AxelorException e) {
+      throw new RuntimeException(e);
+    }
+
     if (!super.onSave(entity, id, state, propertyNames, types)
         || Arrays.asList(BACKLISTED_CLASSES).contains(entity.getClass())
         || !(entity instanceof AuditableModel)) {
@@ -165,6 +173,12 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
       Object[] previousState,
       String[] propertyNames,
       Type[] types) {
+
+    try {
+      DateConstraintListener.validateDateConstraint(entity);
+    } catch (AxelorException e) {
+      throw new RuntimeException(e);
+    }
 
     if (!super.onFlushDirty(entity, id, currentState, previousState, propertyNames, types)
         || Arrays.asList(BACKLISTED_CLASSES).contains(entity.getClass())
