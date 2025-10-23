@@ -498,7 +498,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
           saleOrder.getPaymentCondition().getAdvancePaymentNeeded().compareTo(BigDecimal.ZERO) > 0);
       saleOrder.setAdvancePaymentAmountNeeded(
           saleOrder
-              .getInTaxTotal()
+              .getExTaxTotal()
               .multiply(
                   saleOrder
                       .getPaymentCondition()
