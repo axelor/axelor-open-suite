@@ -1,3 +1,18 @@
+## [8.1.33] (2025-10-23)
+
+### Fixes
+#### Account
+
+* Invoice : fixed unpaid filter for advance payment invoices.
+
+#### Business Project
+
+* BUSINESSPROJECT : Fixed NPE when emptying the partner on a business project.
+
+#### Purchase
+
+* Mrp: fixed notes to display on the purchase order are not automatically filled.
+
 ## [8.1.32] (2025-10-09)
 
 ### Fixes
@@ -1739,6 +1754,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.33]: https://github.com/axelor/axelor-open-suite/compare/v8.1.32...v8.1.33
 [8.1.32]: https://github.com/axelor/axelor-open-suite/compare/v8.1.31...v8.1.32
 [8.1.31]: https://github.com/axelor/axelor-open-suite/compare/v8.1.30...v8.1.31
 [8.1.30]: https://github.com/axelor/axelor-open-suite/compare/v8.1.29...v8.1.30
