@@ -1,3 +1,51 @@
+## [7.2.51] (2025-10-23)
+
+### Fixes
+#### Account
+
+* Move group: Fixed incorrect assignment to pfpValidateStatusSelect.
+* Invoice : fixed unpaid filter for advance payment invoices.
+* INVOICE / DEBTRECOVERY : Invoice linked to a move having ignoreInDebtRecoveryOk as true are now ignored.
+* MOVE/MOVELINE:fixed advanced filter not displayed unless the whole page is refreshed
+* PARTNER/PAYMENTCONDITION : Set accounting config default payment condition on partners.
+* ACCOUNT : Correct display condition on vatSystemSelect and isTaxRequireOnMoveLine for tax type accounts.
+
+#### Bank Payment
+
+* BANKRECONCILIATION / BANKRECONCILIATIONLINE / BANKSTATEMENT : Now includeOtherBankStatements option only retrieve unreconciled statement lines from the past.
+
+#### CRM
+
+* Opportunity : set a default value for team and company and add filter for the team and the assignee user
+
+#### Production
+
+* Manuf Order: fixed issue where parent mo was not filled correctly on multi level planning.
+
+#### Purchase
+
+* Mrp: fixed notes to display on the purchase order are not automatically filled.
+
+#### Sale
+
+* Sale order : fixed an issue where timetable lines were not automatically emptied on sale order cancellation.
+
+#### Stock
+
+* Stock dashboard: deliveries dashboards are now filtered on virtual stock location.
+
+#### Supply Chain
+
+* Sale order / Advance payment: fixed the advance payment amount at wizard opening.
+* INVOICE : Set interco as true when generating invoice from an interco saleOrder / purchaseOrder.
+
+
+### Developer
+
+#### Sale
+
+- SaleOrderWorkflowServiceSupplychainImpl constructor is updated to introduce SaleOrderSupplychainService
+
 ## [7.2.50] (2025-10-09)
 
 ### Fixes
@@ -2180,6 +2228,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.51]: https://github.com/axelor/axelor-open-suite/compare/v7.2.50...v7.2.51
 [7.2.50]: https://github.com/axelor/axelor-open-suite/compare/v7.2.49...v7.2.50
 [7.2.49]: https://github.com/axelor/axelor-open-suite/compare/v7.2.48...v7.2.49
 [7.2.48]: https://github.com/axelor/axelor-open-suite/compare/v7.2.47...v7.2.48
