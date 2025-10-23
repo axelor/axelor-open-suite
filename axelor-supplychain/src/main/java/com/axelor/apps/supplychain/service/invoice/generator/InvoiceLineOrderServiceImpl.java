@@ -25,15 +25,16 @@ import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
-import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.google.common.collect.Sets;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
 
@@ -50,22 +51,22 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
       Invoice invoice,
       Product invoicingProduct,
       BigDecimal percentToInvoice,
-      OrderLineTax orderLineTax) {
-
-    TaxLine taxLine = orderLineTax.getTaxLine();
+      SaleOrderLine saleOrderLine,
+      PurchaseOrderLine purchaseOrderLine,
+      BigDecimal exTaxTotal,
+      Set<TaxLine> taxLineSet) {
     int scale = appBaseService.getNbDecimalDigitForUnitPrice();
 
     BigDecimal price =
         percentToInvoice
-            .multiply(orderLineTax.getExTaxBase())
+            .multiply(exTaxTotal)
             .divide(
                 new BigDecimal("100"), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
 
     BigDecimal lineAmountToInvoice = price.setScale(scale, RoundingMode.HALF_UP);
 
     BigDecimal lineAmountToInvoiceInclTax =
-        taxService.convertUnitPrice(
-            invoicingProduct.getInAti(), Sets.newHashSet(orderLineTax.getTaxLine()), price, scale);
+        taxService.convertUnitPrice(invoicingProduct.getInAti(), taxLineSet, price, scale);
 
     return new InvoiceLineGenerator(
         invoice,
@@ -77,7 +78,7 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
         invoicingProduct.getDescription(),
         BigDecimal.ONE,
         invoicingProduct.getUnit(),
-        Sets.newHashSet(taxLine),
+        taxLineSet,
         InvoiceLineGenerator.DEFAULT_SEQUENCE,
         BigDecimal.ZERO,
         PriceListLineRepository.AMOUNT_TYPE_NONE,
