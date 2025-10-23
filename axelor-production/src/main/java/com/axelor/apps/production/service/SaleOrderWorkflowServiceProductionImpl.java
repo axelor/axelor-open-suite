@@ -36,6 +36,7 @@ import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderWorkflowServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -67,7 +68,8 @@ public class SaleOrderWorkflowServiceProductionImpl
       ProductionOrderSaleOrderService productionOrderSaleOrderService,
       AppProductionService appProductionService,
       BirtTemplateService birtTemplateService,
-      SaleOrderService saleOrderService) {
+      SaleOrderService saleOrderService,
+      SaleOrderSupplychainService saleOrderSupplychainService) {
     super(
         sequenceService,
         partnerRepo,
@@ -84,7 +86,8 @@ public class SaleOrderWorkflowServiceProductionImpl
         saleConfigService,
         analyticToolSupplychainService,
         birtTemplateService,
-        saleOrderService);
+        saleOrderService,
+        saleOrderSupplychainService);
     this.productionOrderSaleOrderService = productionOrderSaleOrderService;
     this.appProductionService = appProductionService;
   }

@@ -1,0 +1,5 @@
+---
+title: "Sale order : fixed an issue where timetable lines were not automatically emptied on sale order cancellation."
+module: axelor-sale
+developer: |
+  - SaleOrderWorkflowServiceSupplychainImpl constructor is updated to introduce SaleOrderSupplychainService

@@ -56,6 +56,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
   protected PartnerSupplychainService partnerSupplychainService;
   protected AnalyticToolSupplychainService analyticToolSupplychainService;
+  protected SaleOrderSupplychainService saleOrderSupplychainService;
 
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
@@ -74,7 +75,8 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       SaleConfigService saleConfigService,
       AnalyticToolSupplychainService analyticToolSupplychainService,
       BirtTemplateService birtTemplateService,
-      SaleOrderService saleOrderService) {
+      SaleOrderService saleOrderService,
+      SaleOrderSupplychainService saleOrderSupplychainService) {
     super(
         sequenceService,
         partnerRepo,
@@ -92,6 +94,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
     this.analyticToolSupplychainService = analyticToolSupplychainService;
+    this.saleOrderSupplychainService = saleOrderSupplychainService;
   }
 
   @Override
@@ -138,6 +141,8 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     if (!appSupplychainService.isApp("supplychain")) {
       return;
     }
+    saleOrder.getTimetableList().clear();
+    saleOrderSupplychainService.updateAmountToBeSpreadOverTheTimetable(saleOrder);
     try {
       accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
     } catch (Exception e) {

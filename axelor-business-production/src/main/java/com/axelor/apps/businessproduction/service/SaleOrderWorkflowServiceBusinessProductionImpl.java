@@ -41,6 +41,7 @@ import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.google.inject.Inject;
@@ -71,7 +72,8 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
       AppProductionService appProductionService,
       AnalyticMoveLineRepository analyticMoveLineRepository,
       BirtTemplateService birtTemplateService,
-      SaleOrderService saleOrderService) {
+      SaleOrderService saleOrderService,
+      SaleOrderSupplychainService saleOrderSupplychainService) {
     super(
         sequenceService,
         partnerRepo,
@@ -90,7 +92,8 @@ public class SaleOrderWorkflowServiceBusinessProductionImpl
         productionOrderSaleOrderService,
         appProductionService,
         birtTemplateService,
-        saleOrderService);
+        saleOrderService,
+        saleOrderSupplychainService);
     this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
