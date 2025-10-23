@@ -59,11 +59,12 @@
           <field name="$isValidAnalyticMoveLineList" type="boolean" hidden="true"/>
         </panel>
         <panel name="blockingsPanel" title="Blockings">
-          <field name="isDeliveryBlocking" colSpan="3"/>
+          <field name="isDeliveryBlocking" colSpan="3"
+            onChange="action-sale-order-line-record-set-delivery-blocking-user"/>
           <panel name="deliveryBlockingGroupPanel" title="Delivery blocking"
             showIf="isDeliveryBlocking" colSpan="12">
             <field name="deliveryBlockingByUser" canNew="false" canEdit="false"
-              canView="false" form-view="user-form" grid-view="user-grid"/>
+              canView="false" form-view="user-form" grid-view="user-grid" readonly="true"/>
             <field name="deliveryBlockingToDate"/>
             <field name="deliveryBlockingReason" form-view="stop-reason-form"
               grid-view="stop-reason-grid"/>
@@ -398,5 +399,10 @@
     <call class="com.axelor.apps.supplychain.web.SaleOrderLineController"
       method="setDistributionLineReadonly"/>
   </action-method>
+
+  <action-record name="action-sale-order-line-record-set-delivery-blocking-user"
+    model="com.axelor.apps.sale.db.SaleOrderLine">
+    <field name="deliveryBlockingByUser" expr="eval: isDeliveryBlocking ? __user__ : null"/>
+  </action-record>
 
 </object-views>
