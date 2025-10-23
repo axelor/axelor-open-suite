@@ -1,3 +1,84 @@
+## [8.4.9] (2025-10-23)
+
+### Fixes
+#### Base
+
+* Data backup: fixed field type for 'importId'.
+* API SIREN : Fixed error encountered during the data retrieval process for a specific SIRET.
+* API SIREN : Change the default sireneUrl.
+
+#### Account
+
+* Invoice/InvoiceTerm: Fixed the change of invoice term's due date after invoice's due date change on a free payment condition.
+* Move line: correct number of currency decimal scale in move line grid.
+* Accounting report: fixed Aged balance report to use invoice payments instead of invoice terms for accurate balance.
+* Move group: Fixed incorrect assignment to pfpValidateStatusSelect.
+* Invoice : fixed unpaid filter for advance payment invoices.
+* INVOICE / DEBTRECOVERY : Invoice linked to a move having ignoreInDebtRecoveryOk as true are now ignored.
+* MOVE/MOVELINE:fixed advanced filter not displayed unless the whole page is refreshed
+* PARTNER/PAYMENTCONDITION : Set accounting config default payment condition on partners.
+* ACCOUNT : Correct display condition on vatSystemSelect and isTaxRequireOnMoveLine for tax type accounts.
+
+#### Bank Payment
+
+* BankOrder: fixed the technical error when the bank order is not created with all fields due to wrong import.
+
+#### Business Project
+
+* BUSINESSPROJECT : Fixed NPE when emptying the partner on a business project.
+
+#### CRM
+
+* Opportunity : set a default value for team and company and add filter for the team and the assignee user
+
+#### Human Resource
+
+* Expense Line: restrict displayed tasks to 'In progress' projects only.
+
+#### Production
+
+* Manuf Order: fixed issue where parent mo was not filled correctly on multi level planning.
+
+#### Purchase
+
+* Mrp: fixed notes to display on the purchase order are not automatically filled.
+
+#### Sale
+
+* Sale order : fixed end of pack line placement in sale order report.
+* Sale order : fixed SubTotal cost price doesn't take into account the qty.
+* Sale order line: automatically fill the user on delivery and production blocking.
+
+#### Stock
+
+* Stock move: fixed display issue in form view.
+* Stock dashboard: deliveries dashboards are now filtered on virtual stock location.
+
+#### Supply Chain
+
+* Sale order / Advance payment: fixed the advance payment amount at wizard opening.
+* Order/AvancePayment: fixed the advance payment amount from sale/purchase order
+* INVOICE : Set interco as true when generating invoice from an interco saleOrder / purchaseOrder.
+
+
+### Developer
+
+#### Base
+
+UPDATE studio_app_base SET sirene_url = 'https://api.insee.fr/api-sirene/3.11';
+
+#### Bank Payment
+
+Added BankOrderCheckService in the BankOrderCreateService constructor. Added BankOrderCheckService in the BankOrderCreateServiceHr constructor. Changed the BankOrderCheckService.checkPreconditions(BankOrder bankOrder) in checkPreconditions(PaymentMode paymentMode, Integer partnerType, LocalDate bankOrderDate, Company senderCompany, BankDetails senderBankDetails)
+
+#### Sale
+
+- SaleOrderLineCostPriceComputeServiceImpl consturctor is updated to introduce SaleOrderLineProductService
+
+#### Supply Chain
+
+Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter of PurchaseOrderInvoiceService.createInvoiceAndLines from (PurchaseOrder,List<PurchaseOrderLineTax>,Product,BigDecimal,int,Account) to (PurchaseOrder,Product,BigDecimal,int,Account) Changed the parameter of PurchaseOrderInvoiceService.createInvoiceLines from (Invoice,List<PurchaseOrderLineTax>,Product,BigDecimal) to (Invoice,List<PurchaseOrderLine>,Product,BigDecimal) Changed the parameter of InvoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice from (Invoice,Product,BigDecimal,OrderLineTax,SaleOrderLine,PurchaseOrderLine) to (Invoice,Product,BigDecimal,SaleOrderLine,PurchaseOrderLine,BigDecimal,Set<TaxLine>) Changed the parameter of SaleOrderInvoiceService.createInvoiceAndLines from (SaleOrder,List<SaleOrderLineTax>,Product,BigDecimal,int,Account) to (SaleOrder,Product,BigDecimal,int,Account) Changed the parameter of SaleOrderInvoiceService.createInvoiceLines from (Invoice,List<SaleOrderLineTax>,Product,BigDecimal) to (Invoice,List<SaleOrderLine>,Product,BigDecimal)
+
 ## [8.4.8] (2025-10-09)
 
 ### Fixes
@@ -891,6 +972,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.9]: https://github.com/axelor/axelor-open-suite/compare/v8.4.8...v8.4.9
 [8.4.8]: https://github.com/axelor/axelor-open-suite/compare/v8.4.7...v8.4.8
 [8.4.7]: https://github.com/axelor/axelor-open-suite/compare/v8.4.6...v8.4.7
 [8.4.6]: https://github.com/axelor/axelor-open-suite/compare/v8.4.5...v8.4.6
