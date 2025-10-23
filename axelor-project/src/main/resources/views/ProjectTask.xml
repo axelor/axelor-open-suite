@@ -5,52 +5,53 @@
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
-    <toolbar>
-      <button name="logTimeBtn" icon="clock-history"
-        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
-    </toolbar>
-    <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
+    <hilite if="$get('status.isCompleted') &amp;&amp; $get('status.isDefaultCompleted')"
+      color="success"/>
     <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
-    <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
-    <field name="ticketNumber"
-      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
+    <field name="ticketNumber"/>
     <field name="name"/>
     <field name="project"/>
     <field name="taskDate"/>
     <field name="status"/>
     <field name="priority"/>
     <field name="projectTaskCategory"/>
+    <field name="targetVersion" if-module="axelor-business-support"
+      if="__config__.app.isApp('business-support')"/>
     <field name="taskEndDate" hidden="true"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
-    <field name="project.completedTaskStatus.id" hidden="true"/>
+    <field name="status.isCompleted" hidden="true"/>
+    <field name="status.isDefaultCompleted" hidden="true"/>
   </grid>
   <!-- MGM-68: commented out to use old specific behaviour of task highlighth based on selected priority -->
-  <!-- <grid name="project-task-project-grid" title="Tasks" -->
-  <!-- model="com.axelor.apps.project.db.ProjectTask" edit-icon="true" -->
-  <!-- orderBy="-priority.technicalTypeSelect"> -->
-  <!-- <toolbar> -->
-  <!-- <button name="newLineBtn" title="New line" icon="fa-plus" -->
-  <!-- onClick="action-project-add-task"/> -->
-  <!-- <button name="removeLineBtn" title="Remove lines" icon="fa-trash" -->
-  <!-- onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/> -->
-  <!-- <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left" -->
-  <!-- icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/> -->
-  <!-- </toolbar> -->
-  <!-- <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/> -->
-  <!-- <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/> -->
-  <!-- <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/> -->
-  <!-- <field name="ticketNumber" -->
-  <!-- if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()" width="200"/> -->
-  <!-- <field name="name" width="680"/> -->
-  <!-- <field name="projectTaskCategory" width="200"/> -->
-  <!-- <field name="taskDate" width="100"/> -->
-  <!-- <field name="status" width="100"/> -->
-  <!-- <field name="priority.technicalTypeSelect" hidden="true"/> -->
-  <!-- <button name="createSubtaskBtn" icon="fa-plus" -->
-  <!-- onClick="save, action-project-view-add-subtask"/> -->
-  <!-- <button name="deleteTaskBtn" icon="fa-times-circle" -->
-  <!-- onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/> -->
-  <!-- </grid> -->
+  <grid name="project-task-project-grid" title="Tasks"
+    model="com.axelor.apps.project.db.ProjectTask" edit-icon="true"
+    orderBy="-priority.technicalTypeSelect">
+    <toolbar>
+      <button name="newLineBtn" title="New line" icon="fa-plus"
+        onClick="action-project-add-task"/>
+      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/>
+      <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
+        icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
+    </toolbar>
+    <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
+    <field name="ticketNumber"
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()" width="200"/>
+    <field name="name" width="680"/>
+    <field name="projectTaskCategory" width="200"/>
+    <field name="taskDate" width="100"/>
+    <field name="status" width="100"/>
+    <field name="priority.technicalTypeSelect" hidden="true"/>
+    <button name="createSubtaskBtn" icon="fa-plus"
+      onClick="save, action-project-view-add-subtask"/>
+    <button name="deleteTaskBtn" icon="fa-times-circle"
+      onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
+  </grid>
 
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"

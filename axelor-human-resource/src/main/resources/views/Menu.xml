@@ -262,8 +262,8 @@
     <view type="form" name="employment-contract-type-form"/>
   </action-view>
 
-  <menuitem name="hr-conf-payroll-year" parent="hr-root-emp-mgt-conf" title="Payroll years"
-    action="hr.conf.payroll.year" order="600" hidden="true"/>
+  <menuitem name="hr-conf-payroll-year" parent="plannings-all" title="Payroll years"
+    action="hr.conf.payroll.year" order="600"/>
 
   <action-view name="hr.conf.payroll.year" title="Payroll years"
     model="com.axelor.apps.base.db.Year">
@@ -273,8 +273,8 @@
     <domain>self.typeSelect = 2</domain>
   </action-view>
 
-  <menuitem name="hr-conf-payroll-period" parent="hr-root-emp-mgt-conf"
-    title="Payroll periods" action="hr.conf.payroll.period" order="700" hidden="true"/>
+  <menuitem name="hr-conf-payroll-period" parent="plannings-all" title="Payroll periods"
+    action="hr.conf.payroll.period" order="700"/>
 
   <action-view name="hr.conf.payroll.period" title="Payroll periods"
     model="com.axelor.apps.base.db.Period">
@@ -283,8 +283,8 @@
     <domain>self.year.typeSelect = 2</domain>
   </action-view>
 
-  <menuitem name="hr-conf-fiscal-period" parent="hr-root-emp-mgt-conf"
-    title="Fiscal periods" action="hr.conf.fiscal.period" order="800" hidden="true"/>
+  <menuitem name="hr-conf-fiscal-period" parent="plannings-all" title="Fiscal periods"
+    action="hr.conf.fiscal.period" order="800"/>
 
   <action-view name="hr.conf.fiscal.period" title="Fiscal periods"
     model="com.axelor.apps.base.db.Period">
