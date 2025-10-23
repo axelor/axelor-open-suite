@@ -46,6 +46,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceNoteService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -1528,5 +1529,17 @@ public class InvoiceController {
             .getDefaultBankDetails(
                 invoice.getPartner(), invoice.getCompany(), invoice.getPaymentMode());
     response.setValue("bankDetails", bankDetails);
+  }
+
+  public void changeInvoiceTermDatesWithInvoiceDueDate(
+      ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      Beans.get(InvoiceTermDateComputeService.class).fillWithInvoiceDueDate(invoice);
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }
