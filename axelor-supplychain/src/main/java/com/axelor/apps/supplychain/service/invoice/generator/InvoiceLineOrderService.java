@@ -19,18 +19,20 @@
 package com.axelor.apps.supplychain.service.invoice.generator;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.interfaces.OrderLineTax;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import java.math.BigDecimal;
+import java.util.Set;
 
 public interface InvoiceLineOrderService {
   InvoiceLineGeneratorSupplyChain getInvoiceLineGeneratorWithComputedTaxPrice(
       Invoice invoice,
       Product invoicingProduct,
       BigDecimal percentToInvoice,
-      OrderLineTax orderLineTax,
       SaleOrderLine saleOrderLine,
-      PurchaseOrderLine purchaseOrderLine);
+      PurchaseOrderLine purchaseOrderLine,
+      BigDecimal exTaxTotal,
+      Set<TaxLine> taxLineSet);
 }
