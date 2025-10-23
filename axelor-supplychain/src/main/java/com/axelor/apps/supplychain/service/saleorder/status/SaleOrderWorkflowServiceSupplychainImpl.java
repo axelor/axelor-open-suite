@@ -38,6 +38,7 @@ import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainServi
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderPurchaseService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -52,6 +53,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
   protected PartnerSupplychainService partnerSupplychainService;
   protected AnalyticToolSupplychainService analyticToolSupplychainService;
+  protected SaleOrderSupplychainService saleOrderSupplychainService;
 
   @Inject
   public SaleOrderWorkflowServiceSupplychainImpl(
@@ -66,7 +68,8 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
       AppSupplychainService appSupplychainService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       PartnerSupplychainService partnerSupplychainService,
-      AnalyticToolSupplychainService analyticToolSupplychainService) {
+      AnalyticToolSupplychainService analyticToolSupplychainService,
+      SaleOrderSupplychainService saleOrderSupplychainService) {
     super(
         partnerRepo,
         saleOrderRepo,
@@ -80,6 +83,7 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
     this.analyticToolSupplychainService = analyticToolSupplychainService;
+    this.saleOrderSupplychainService = saleOrderSupplychainService;
   }
 
   @Override
@@ -92,6 +96,8 @@ public class SaleOrderWorkflowServiceSupplychainImpl extends SaleOrderWorkflowSe
     if (!appSupplychainService.isApp("supplychain")) {
       return;
     }
+    saleOrder.getTimetableList().clear();
+    saleOrderSupplychainService.updateAmountToBeSpreadOverTheTimetable(saleOrder);
     try {
       accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
     } catch (Exception e) {
