@@ -270,7 +270,7 @@
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
     </panel>
-      <panel-mail name="mailPanel" if="__user__.group.code == 'admins'">
+    <panel-mail name="mailPanel" if="__user__.group.code == 'admins'">
       <mail-messages/>
       <mail-followers/>
     </panel-mail>

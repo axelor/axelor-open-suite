@@ -172,7 +172,10 @@
               if="!__config__.app.getApp('project')?.generateProjectSequence"
               css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
           </panel>
-          <field name="name" showTitle="false" colSpan="6" required="true"
+          <!-- MGM-80: making project name not required so MGM may skip it. -->
+          <!-- <field name="name" showTitle="false" colSpan="6" required="true" css="label-bold bold
+            large"/> -->
+          <field name="name" showTitle="false" colSpan="6" required="false"
             css="label-bold bold large"/>
         </editor>
       </field>
