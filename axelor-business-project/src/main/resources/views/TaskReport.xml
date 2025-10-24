@@ -39,7 +39,7 @@
     </panel>
 
     <!-- Panel for Task Member Reports -->
-    <panel title="Team Members' Reports" canCollapse="true" collapseIf="true">
+    <panel title="Team Members Reports" canCollapse="true" collapseIf="true">
       <field name="taskMemberReports" widget="list" colSpan="12" readonly="false"
         form="task-member-report-form" context="taskReport:__self__,project:project"
         onChange="action-update-total-work-hours-from-task-report"/>

@@ -129,8 +129,8 @@
         onClick="save,action-business-project-task-view-show-planning"
         if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
         showIf="project.isShowPlanning"/>
-      <button name="showFinancialDatas" icon="clipboard-data" title="Show financial datas"
-        onClick="save,action-project-task-view-show-financial-datas-panel"/>
+      <!-- MGM-80, @gkouete: Show financial data is not relevant for MGM -->
+      <!-- <button name="showFinancialDatas" icon="clipboard-data" title="Show financial datas" onClick="save,action-project-task-view-show-financial-datas-panel"/> -->
     </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
@@ -184,12 +184,14 @@
         <panel-include view="incl-log-times-projec-task-panel-form"/>
         <field name="project.manageTimeSpent" hidden="true"/>
       </panel>
-
-      <panel name="timeFollowUpPanel" title="Time follow-up">
+      <!-- MGM-80: @gkouete - Time follow up, tree view not relevant for MGM, adding show if admin -->
+      <panel name="timeFollowUpPanel" title="Time follow-up"
+        if="__user__.group.code == admins">
         <panel-include view="incl-time-follow-task-panel-form"/>
       </panel>
 
-      <panel name="treeViewPanel" title="Tree view" colSpan="12" showIf="id">
+      <panel name="treeViewPanel" title="Tree view" colSpan="12" showIf="id"
+        if="__user__.group.code == admins">
         <panel-dashlet name="taskTreePanel" title="Task Tree" colSpan="12"
           action="action-business-view-show-task-tree"/>
         <panel-related name="finishToStartSetPanel" field="finishToStartSet"
@@ -199,65 +201,34 @@
         <panel-include view="incl-frequency-panel-task-form"/>
       </panel>
       <!-- MGM-68 -->
-      <panel name="financialDataPanel" title="Financial Data" colSpan="12"
-        if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project') || __user__.group.code == admins">
-        <field name="invoicingType" onChange="action-project-task-attrs-onchange-invoice-type"
-          readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length > 0"/>
-        <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true">
-          <field name="product" colSpan="3" canEdit="false"
-            onChange="action-business-project-project-task-group-product-onchange"
-            onSelect="action-project-task-attrs-set-product-domain" form-view="product-form"
-            grid-view="product-grid"/>
-          <field name="quantity" colSpan="3"
-            onChange="action-project-task-method-update-financial-datas" readonlyIf="saleOrderLine"/>
-          <field name="unitPrice" colSpan="3"
-            onChange="action-project-task-group-unit-price-onchange"
-            readonlyIf="saleOrderLine || frameworkCustomerContract"/>
-          <field name="unitCost" colSpan="3"
-            readonlyIf="saleOrderLine || frameworkSupplierContract"
-            onChange="action-project-task-method-compute"/>
-          <field name="invoicingUnit" colSpan="3" domain="self.unitTypeSelect=3"
-            form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="saleOrderLine"
-            onChange="action-project-task-method-update-quantity"/>
-          <field name="currency" colSpan="3" grid-view="currency-grid"
-            form-view="currency-form" canEdit="false" readonlyIf="saleOrderLine"/>
-          <field name="exTaxTotal" readonly="true" colSpan="3"/>
-          <field name="totalCosts" colSpan="3"/>
-          <field name="toInvoice" colSpan="2" readonly="true"
-            if="__config__.app.getApp('business-project').automaticInvoicing"/>
-          <field name="toInvoice" colSpan="2" readonlyIf="invoiced"
-            if="!__config__.app.getApp('business-project').automaticInvoicing"/>
-          <field name="isPaid" showIf="project.invoicingSequenceSelect == 1" colSpan="2"/>
-          <field name="isTaskRefused" colSpan="2"/>
-          <field name="invoiced" hidden="true" showIf="id &amp;&amp; !($readonly())"
-            colSpan="1"/>
-          <field name="invoiced" hidden="true" showIf="id &amp;&amp; $readonly()"
-            showTitle="false" colSpan="1">
-            <viewer><![CDATA[
-                     <>
-                     	<Box d="flex" justifyContent="flex-end">
-                     		<Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge>
-                     	</Box>
-                     </>
-					]]></viewer>
-          </field>
-          <panel name="discountPanel" readonly="true" colSpan="12"
-            hideIf="discountTypeSelect == 3 || discountTypeSelect == 0"
-            if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-            <field name="discountTypeSelect" colSpan="3"
-              onChange="action-project-task-attrs-discountamount-title"/>
-            <field name="discountAmount" colSpan="3"/>
-            <field name="priceDiscounted" colSpan="3"/>
-          </panel>
-          <field name="project.invoicingSequenceSelect" hidden="true"
-            if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-          <field name="invoiceLineSet" readonly="true" showIf="invoiceLineSet"
-            form-view="invoice-line-form" grid-view="invoice-line-grid" colSpan="12"/>
-          <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile"
-            width="120" widget="drawing"/>
-        </panel>
-      </panel>
+      <!-- MGM-80: @gkouete - financial data not hidden using show if admin, commenting it out -->
+      <!-- <panel name="financialDataPanel" title="Financial Data" colSpan="12" if-module="axelor-business-project"
+        if="__config__.app.isApp('business-project') || __user__.group.code == admins"> <field name="invoicingType"
+        onChange="action-project-task-attrs-onchange-invoice-type" readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length
+        > 0"/> <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true"> <field name="product"
+        colSpan="3" canEdit="false" onChange="action-business-project-project-task-group-product-onchange" onSelect="action-project-task-attrs-set-product-domain"
+        form-view="product-form" grid-view="product-grid"/> <field name="quantity" colSpan="3" onChange="action-project-task-method-update-financial-datas"
+        readonlyIf="saleOrderLine"/> <field name="unitPrice" colSpan="3" onChange="action-project-task-group-unit-price-onchange"
+        readonlyIf="saleOrderLine || frameworkCustomerContract"/> <field name="unitCost" colSpan="3" readonlyIf="saleOrderLine
+        || frameworkSupplierContract" onChange="action-project-task-method-compute"/> <field name="invoicingUnit"
+        colSpan="3" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"
+        readonlyIf="saleOrderLine" onChange="action-project-task-method-update-quantity"/> <field name="currency"
+        colSpan="3" grid-view="currency-grid" form-view="currency-form" canEdit="false" readonlyIf="saleOrderLine"/>
+        <field name="exTaxTotal" readonly="true" colSpan="3"/> <field name="totalCosts" colSpan="3"/> <field
+        name="toInvoice" colSpan="2" readonly="true" if="__config__.app.getApp('business-project').automaticInvoicing"/>
+        <field name="toInvoice" colSpan="2" readonlyIf="invoiced" if="!__config__.app.getApp('business-project').automaticInvoicing"/>
+        <field name="isPaid" showIf="project.invoicingSequenceSelect == 1" colSpan="2"/> <field name="isTaskRefused"
+        colSpan="2"/> <field name="invoiced" hidden="true" showIf="id &amp;&amp; !($readonly())" colSpan="1"/>
+        <field name="invoiced" hidden="true" showIf="id &amp;&amp; $readonly()" showTitle="false" colSpan="1">
+        <viewer><![CDATA[ <> <Box d="flex" justifyContent="flex-end"> <Badge bg={invoiced ? "success" : "danger"}>{invoiced
+        ? _t('Invoiced') : _t('Not invoiced')}</Badge> </Box> </> ]]></viewer> </field> <panel name="discountPanel"
+        readonly="true" colSpan="12" hideIf="discountTypeSelect == 3 || discountTypeSelect == 0" if="__config__.app.isApp('business-project')"
+        if-module="axelor-business-project"> <field name="discountTypeSelect" colSpan="3" onChange="action-project-task-attrs-discountamount-title"/>
+        <field name="discountAmount" colSpan="3"/> <field name="priceDiscounted" colSpan="3"/> </panel> <field
+        name="project.invoicingSequenceSelect" hidden="true" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+        <field name="invoiceLineSet" readonly="true" showIf="invoiceLineSet" form-view="invoice-line-form" grid-view="invoice-line-grid"
+        colSpan="12"/> <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile" width="120"
+        widget="drawing"/> </panel> </panel> -->
 
       <!-- MGM-68 -->
       <panel-include view="incl-checklist-task-panel-form"
