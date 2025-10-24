@@ -229,37 +229,14 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  public Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
-    if (CollectionUtils.isEmpty(invoiceTermList)) {
-      return null;
-    }
-    InvoiceTerm firstInvoiceTerm = invoiceTermList.get(0);
-    int pfpStatus = invoiceTermPfpToolService.getPfpValidateStatusSelect(firstInvoiceTerm);
-    int otherPfpStatus;
-    for (InvoiceTerm otherInvoiceTerm : invoiceTermList) {
-      if (otherInvoiceTerm.getId() != null
-          && firstInvoiceTerm.getId() != null
-          && !otherInvoiceTerm.getId().equals(firstInvoiceTerm.getId())) {
-        otherPfpStatus = invoiceTermPfpToolService.getPfpValidateStatusSelect(otherInvoiceTerm);
-
-        if (otherPfpStatus != pfpStatus) {
-          pfpStatus = InvoiceTermRepository.PFP_STATUS_AWAITING;
-          break;
-        }
-      }
-    }
-
-    return pfpStatus;
-  }
-
-  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void refreshInvoicePfpStatus(Invoice invoice) {
     if (invoice == null || ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
       return;
     }
 
-    Integer pfpStatus = checkOtherInvoiceTerms(invoice.getInvoiceTermList());
+    Integer pfpStatus =
+        invoiceTermPfpToolService.checkOtherInvoiceTerms(invoice.getInvoiceTermList());
 
     if (pfpStatus != null && pfpStatus != invoice.getPfpValidateStatusSelect()) {
       invoice.setPfpValidateStatusSelect(pfpStatus);

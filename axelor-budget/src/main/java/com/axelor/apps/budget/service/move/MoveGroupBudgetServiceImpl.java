@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MovePfpToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
@@ -72,6 +73,7 @@ public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {
       AnalyticAttrsService analyticAttrsService,
       MoveLineRecordService moveLineRecordService,
       MoveLineService moveLineService,
+      MovePfpToolService movePfpToolService,
       BudgetDateService budgetDateService) {
     super(
         moveDefaultService,
@@ -93,7 +95,8 @@ public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {
         pfpService,
         analyticAttrsService,
         moveLineRecordService,
-        moveLineService);
+        moveLineService,
+        movePfpToolService);
     this.budgetDateService = budgetDateService;
   }
 
