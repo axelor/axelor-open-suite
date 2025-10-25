@@ -35,7 +35,7 @@
 					        <Table striped>
 					            <TableHead>
 					              	<TableRow>
-						                <TableCell as="th"></TableCell>
+						                <TableCell as="th">Category</TableCell>
 						                <TableCell as="th">{_t('Open')}</TableCell>
 						                <TableCell as="th">{_t('Closed')}</TableCell>
 						                <TableCell as="th">{_t('Total')}</TableCell>

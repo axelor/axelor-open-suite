@@ -11,18 +11,12 @@
         onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
     </toolbar>
 
-    <!-- MGM-84: highlighting priority in project grid view -->
-    <hilite if="priority.name == 'High'" color="warning"/>
-    <hilite if="priority.name == 'Low'" color="grey"/>
-    <hilite if="priority.name == 'Urgent'" color="danger"/>
-
     <field name="fullName"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="fromDate"/>
     <field name="toDate"/>
-    <field name="priority"/>
     <button name="openTasks" onClick="action-business-project-view-show-related-tasks"
       icon="list-task"/>
   </grid>
@@ -54,14 +48,11 @@
     model="com.axelor.apps.project.db.Project" width="large"
     onLoad="action-business-project-project-group-on-load"
     onNew="action-business-project-project-group-on-new" onSave="action-project-group-on-save">
-    <toolbar>
-      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-project-view-show-planning-panel"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
-        showIf="isShowPlanning"/>
-      <button name="showFinancialDatas" icon="clipboard-data" title="Show financial datas"
-        onClick="save,action-project-view-show-financial-datas-panel"/>
-    </toolbar>
+    <!-- MGM-80 @gkouete- showing planning and financial data not required -->
+    <!-- <toolbar> <button name="showPlanningBtn" icon="calendar-week" title="Show planning" onClick="save,action-project-view-show-planning-panel"
+      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
+      showIf="isShowPlanning"/> <button name="showFinancialDatas" icon="clipboard-data" title="Show financial
+      datas" onClick="save,action-project-view-show-financial-datas-panel"/> </toolbar> -->
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"
@@ -74,19 +65,23 @@
           action="save,action-project-method-all-open-tasks" showIf="id"/>
         <item name="allTasks" title="All tasks" action="save,action-project-method-all-tasks"
           showIf="id"/>
-        <item name="allTasksTree" title="All tasks (tree)"
-          action="save, action-view-show-business-project-task-tree" showIf="id"/>
+        <!-- MGM-80 @gkouete- showing task tree not required -->
+        <!-- <item name="allTasksTree" title="All tasks (tree)" action="save, action-view-show-business-project-task-tree"
+          showIf="id"/> -->
       </menu>
+      <!-- MGM 8- @gkouete - added log time button in the project menu to improve user experience -->
+      <!-- <toolbar> <button name="logTimeBtn" icon="clock-history" onClick="action-timesheet-line-method-log-time"
+        if="__config__.app.isApp('timesheet')"/> </toolbar> -->
       <menu name="projectToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
-        <item title="Compute project totals"
-          action="save,action-project-method-compute-project-totals"
-          if="__config__.app.isApp('business-project')" showIf="id"/>
+        <!-- MGM-80 @gkouete- Compute project totals not required -->
+        <!-- <item title="Compute project totals" action="save,action-project-method-compute-project-totals"
+          if="__config__.app.isApp('business-project')" showIf="id"/> -->
         <item name="ganttItem" title="Gantt" showIf="id &amp;&amp; isShowGantt"
           action="save,action-project-open-gantt"/>
         <item name="bookResourceItem" title="Book resource"
           if=" __config__.app.getApp('project')?.resourceManagement"
           action="save,action-project-book-resource"/>
-        <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/>
+        <!-- <item name="wiki" title="Wiki" action="save,project.wiki.all" showIf="id"/> -->
         <item name="topic" title="Topic" action="save,project.topic.all"
           showIf="id &amp;&amp; isShowTopic"/>
         <item name="perStatusKanban" title="Per status kanban"
@@ -167,16 +162,13 @@
             colSpan="6"/>
           <field name="currency" colSpan="6" if="__config__.app.isApp('business-project')"
             if-module="axelor-business-project" canEdit="false"/>
-          <!-- MGM-84 adding priority on the project level -->
-          <field name="priority"/>
-          <field name="priority.technicalTypeSelect" hidden="true"/>
         </panel>
         <!-- MGM-80: Adding team member selection to the overview -->
-        <field name="membersUserSet" colSpan="9" widget="TagSelect" canNew="false"
+        <field name="membersUserSet" colSpan="6" widget="TagSelect" canNew="false"
           form-view="user-form" grid-view="user-grid" canEdit="false"/>
         <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
           canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
-          grid-view="user-grid" colSpan="3"/>
+          grid-view="user-grid" colSpan="6"/>
         <panel-include view="incl-project-overview-panel-form"/>
       </panel>
 
@@ -318,12 +310,12 @@
       </panel>
       <!-- MGM-66 -->
       <!-- <panel-include view="incl-wiki-panel-form"/> -->
-
-      <panel title="Log Times" name="logTimesPanel" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')">
-        <panel-include view="incl-log-times-panel-form"/>
-      </panel>
-      <panel-include view="incl-project-roadmap-panel-form"/>
+      <!-- MGM-80 @gkouete: No need to show the log time panel -->
+      <!-- <panel title="Log Times" name="logTimesPanel" if-module="axelor-human-resource" if="__config__.app.isApp('timesheet')">
+        <panel-include view="incl-log-times-panel-form"/> </panel> -->
+      <!--- MGM-66: display panel to only selected group e.g admins -->
+      <panel-include view="incl-project-roadmap-panel-form"
+        if="__user__.group.code == 'admins'"/>
       <!--- MGM-66: display panel to only selected group e.g admins -->
       <panel title="Invoicing" name="invoicingPanel" if="__user__.group.code == 'admins'">
         <!-- MGM-80: No need to show this help message -->

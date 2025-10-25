@@ -141,8 +141,9 @@
     <panel colSpan="12">
       <field name="description" colSpan="12" widget="html"/>
     </panel>
+    <!-- MGM-80: dashboard not relevant for common users, admin only -->
     <panel name="dashboardPanel" title="Dashboard" showTitle="false" colSpan="12"
-      canCollapse="true" collapseIf="false">
+      canCollapse="true" collapseIf="false" if="__user__.group.code == admins">
       <panel-include view="project-dashboard-form"/>
     </panel>
     <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
@@ -153,8 +154,9 @@
           OR (self.typeSelect = 2 AND self.isUsableOnProject = true AND self.company = :company AND self.partner = :clientPartner)"
         canEdit="false"/>
     </panel>
+    <!-- MGM-80: Activities and audit trail not relevant for common users, admin only -->
     <panel title="Activities" name="activityPanel" canCollapse="true" collapseIf="true"
-      colSpan="12" showIf="id">
+      colSpan="12" showIf="id" if="__user__.group.code == admins">
       <panel-include view="project-activity-dashboard-form"/>
     </panel>
   </form>
@@ -162,21 +164,21 @@
   <form name="incl-information-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
     <panel name="informationPanel">
-      <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
+      <field name="fullName" showTitle="false" placeholder="Auftragsnummer" colSpan="12"
+        css="label-bold bold large">
         <editor x-show-titles="false">
           <panel name="seq" colSpan="3">
             <field name="code" showTitle="false" colSpan="12" readonly="true"
+              placeholder="Auftragsnummer"
               if="__config__.app.getApp('project')?.generateProjectSequence"
               css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
-            <field name="code" showTitle="false" colSpan="12" required="true"
-              if="!__config__.app.getApp('project')?.generateProjectSequence"
+            <field name="code" showTitle="false" placeholder="Auftragsnummer" colSpan="12"
+              required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
               css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
           </panel>
-          <!-- MGM-80: making project name not required so MGM may skip it. -->
-          <!-- <field name="name" showTitle="false" colSpan="6" required="true" css="label-bold bold
-            large"/> -->
-          <field name="name" showTitle="false" colSpan="6" required="false"
-            css="label-bold bold large"/>
+          <field name="name" showTitle="false" colSpan="6" required="true"
+            placeholder="Bezeichnung" css="label-bold bold
+            large"/>
         </editor>
       </field>
     </panel>
