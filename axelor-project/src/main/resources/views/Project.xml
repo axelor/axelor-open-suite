@@ -107,7 +107,7 @@
         <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"/>
         <field name="company" form-view="company-form" grid-view="company-grid" colSpan="2"/>
         <field name="fromDate" colSpan="2"/>
-        <field name="toDate" colSpan="2"/>
+        <field name="toDate" onChange="action-project-group-to-date-onchange" colSpan="2"/>
         <panel-include view="incl-project-overview-panel-form"/>
       </panel>
 
@@ -535,6 +535,10 @@
     <action name="action-attrs-project-show-log-time-panel"/>
   </action-group>
 
+    <action-group name="action-project-group-to-date-onchange">
+        <action name="action-project-validate-toDate"/>
+    </action-group>
+
   <action-group name="action-project-group-on-new-project">
     <action name="action-project-defaults"/>
     <action name="action-project-record-status-new"/>
@@ -545,6 +549,7 @@
   <action-group name="action-project-group-on-save">
     <action name="action-project-method-check-resource-availibility"/>
     <action name="action-project-method-check-sprint-overlap"/>
+    <action name="action-project-validate-toDate"/>
   </action-group>
 
   <action-group name="action-project-group-finish-project">
@@ -729,6 +734,11 @@
   <action-record name="action-project-record-activate-task-status-by-category"
     model="com.axelor.apps.project.db.Project">
     <field name="isShowTaskCategory" expr="eval: true" if="taskStatusManagementSelect == 4"/>
+  </action-record>
+
+  <action-record name="action-project-null-toDate"
+    model="com.axelor.apps.project.db.Project">
+    <field name="toDate" expr="eval: null"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -943,6 +953,12 @@
     <alert message="Your current check list will be erased, do you want to continue ?"
       if="projectCheckListItemList &amp;&amp; !projectCheckListItemList.isEmpty()"/>
   </action-validate>
+
+    <action-validate name="action-project-validate-toDate">
+        <error message="Invalid date." if="fromDate != null &amp;&amp; toDate != null &amp;&amp; toDate &lt; fromDate"
+                action="action-project-null-toDate"/>
+    </action-validate>
+
 
 
   <search-filters name="project-project-filters"

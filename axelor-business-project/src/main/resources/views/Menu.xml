@@ -34,6 +34,15 @@
     <context name="_typeSelect" expr="eval: __repo__(ProjectTask).TYPE_TASK"/>
   </action-view>
 
+  <menuitem name="menu-task-report" title="Task Reports" parent="menu-project-root"
+    action="task-report-view" hidden="true"/>
+
+  <action-view name="task-report-view" title="Task Reports"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <view type="grid" name="task-report-grid"/>
+    <view type="form" name="task-report-form"/>
+  </action-view>
+
   <menuitem name="business-project-folder" parent="project-configurations"
     title="Project Folders" action="business.project.folder" order="1200"
     if="__config__.app.isApp('business-project')"/>
