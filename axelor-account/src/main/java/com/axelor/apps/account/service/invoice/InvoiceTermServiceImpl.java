@@ -1744,7 +1744,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     PaymentCondition paymentCondition =
         Optional.ofNullable(move).map(Move::getPaymentCondition).orElse(null);
-    if (paymentCondition == null || !paymentCondition.getIsFree()) {
+    if (paymentCondition == null) {
       return;
     }
 
