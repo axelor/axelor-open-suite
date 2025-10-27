@@ -30,6 +30,8 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckServiceImpl;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.supplychain.db.PackagingLine;
+import com.axelor.apps.supplychain.db.repo.PackagingLineRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
@@ -42,17 +44,20 @@ public class SaleOrderLineCheckSupplychainServiceImpl extends SaleOrderLineCheck
   protected StockLocationLineService stockLocationLineService;
   protected AppSupplychainService appSupplychainService;
   protected TaxAccountService taxAccountService;
+  protected PackagingLineRepository packagingLineRepository;
 
   @Inject
   public SaleOrderLineCheckSupplychainServiceImpl(
       AppSaleService appSaleService,
       StockLocationLineService stockLocationLineService,
       AppSupplychainService appSupplychainService,
-      TaxAccountService taxAccountService) {
+      TaxAccountService taxAccountService,
+      PackagingLineRepository packagingLineRepository) {
     super(appSaleService);
     this.stockLocationLineService = stockLocationLineService;
     this.appSupplychainService = appSupplychainService;
     this.taxAccountService = taxAccountService;
+    this.packagingLineRepository = packagingLineRepository;
   }
 
   @Override
@@ -112,6 +117,22 @@ public class SaleOrderLineCheckSupplychainServiceImpl extends SaleOrderLineCheck
           I18n.get(
               SupplychainExceptionMessage
                   .SALE_ORDER_LINE_PRODUCT_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED));
+    }
+  }
+
+  @Override
+  public void checkLinkedPackagingLine(SaleOrderLine saleOrderLine) throws AxelorException {
+    PackagingLine packagingLine =
+        packagingLineRepository
+            .all()
+            .autoFlush(false)
+            .filter("self.saleOrderLine = :saleOrderLine")
+            .bind("saleOrderLine", saleOrderLine)
+            .fetchOne();
+    if (packagingLine != null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_LINE_LINKED_WITH_PACKAGING_LINE));
     }
   }
 }

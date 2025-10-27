@@ -13,7 +13,6 @@
     <boolean name="resourceManagement" title="Resource management"
       help="This option enables resource reservation on projects. You can create resources that can be booked on projects."/>
     <boolean name="checkResourceAvailibility" title="Check availability of resources"/>
-    <boolean name="isEnableSignature" title="Enable task signature"/>
     <boolean name="isEnablePerProjectTaskSequence" title="Enable per project task sequence"/>
     <one-to-many name="taskCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField"
       title="Task fields" mappedBy="appProject"/>
@@ -43,7 +42,6 @@
       <field name="projectLabel" on="UPDATE"/>
       <field name="resourceManagement" on="UPDATE"/>
       <field name="checkResourceAvailibility" on="UPDATE"/>
-      <field name="isEnableSignature" on="UPDATE"/>
       <field name="isEnablePerProjectTaskSequence" on="UPDATE"/>
       <field name="generateProjectSequence" on="UPDATE"/>
       <field name="completedProjectStatus" on="UPDATE"/>

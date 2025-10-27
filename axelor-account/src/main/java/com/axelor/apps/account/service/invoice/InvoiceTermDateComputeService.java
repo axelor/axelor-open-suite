@@ -29,4 +29,6 @@ public interface InvoiceTermDateComputeService {
   void computeDueDateValues(InvoiceTerm invoiceTerm, LocalDate invoiceDate);
 
   void resetDueDate(InvoiceTerm invoiceTerm) throws AxelorException;
+
+  void fillWithInvoiceDueDate(Invoice invoice);
 }

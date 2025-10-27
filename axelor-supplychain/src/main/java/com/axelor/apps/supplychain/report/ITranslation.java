@@ -84,10 +84,17 @@ public class ITranslation {
   public static final String PACKING_LIST_ITEM = /*$$(*/ "LogisticalForm.item"; /*)*/
   public static final String PACKING_LIST_ITEM_DESCRIPTION = /*$$(*/
       "LogisticalForm.itemDescription"; /*)*/
-  public static final String PACKING_LIST_TOTAL_NET_MASS = /*$$(*/
-      "LogisticalForm.totalNetMass" /*)*/;
   public static final String PACKING_LIST_SHIPPING_COMMENTS = /*$$(*/
       "LogisticalForm.shippingComments"; /*)*/
+  public static final String PACKING_LIST_TOTAL_FORMAT = /*$$(*/
+      "LogisticalForm.numberOfParcels: {0} - LogisticalForm.numberOfPallets: {1} - LogisticalForm.totalGrossMass ({2}): {3} - LogisticalForm.totalNetMass ({4}): {5}" /*)*/;
+  public static final String PACKING_LIST_PARCEL_LINE_FORMAT = /*$$(*/
+      "Packaging.parcelNo <strong>{0}</strong> - Packaging.totalGrossMass ({1}): <strong>{2}</strong> - Packaging.totalNetMass ({3}): <strong>{4}</strong>" /*)*/;
+  public static final String PACKING_LIST_PALLET_LINE_FORMAT = /*$$(*/
+      "Packaging.palletNo <strong>{0}</strong> - Packaging.totalGrossMass ({1}): <strong>{2}</strong> - Packaging.totalNetMass ({3}): <strong>{4}</strong>" /*)*/;
+  public static final String PACKING_LIST_DETAIL_LINE_FORMAT = /*$$(*/
+      "PackagingLine.stockMoveNo {0} / PackagingLine.refNo {1}" /*)*/;
+  public static final String PACKING_LIST_QTY = /*$$(*/ "PackagingLine.qty"; /*)*/
 
   /*
    * Declaration of Exchanges
@@ -97,4 +104,16 @@ public class ITranslation {
   public static final String
       DECLARATION_OF_EXCHANGES_OF_GOODS_BETWEEN_MEMBER_STATES_OF_THE_EUROPEAN_COMMUNITY = /*$$(*/
           "DECLARATION OF EXCHANGES OF GOODS BETWEEN MEMBER STATES OF THE EUROPEAN COMMUNITY"; /*)*/
+
+  public static final String PACKAGING_UPDATED = /*$$(*/ "Packaging successfully updated."; /*)*/
+
+  public static final String PACKAGING_DELETED = /*$$(*/ "Packaging successfully removed."; /*)*/
+  public static final String LOGISTICAL_FORM_UPDATED = /*$$(*/
+      "Logistical form successfully updated."; /*)*/
+
+  public static final String PACKAGING_LINE_UPDATE = /*$$(*/
+      "Packaging line successfully updated."; /*)*/
+
+  public static final String PACKAGING_LINE_DELETE = /*$$(*/
+      "Packaging line successfully deleted."; /*)*/
 }

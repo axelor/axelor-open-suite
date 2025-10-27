@@ -1,0 +1,63 @@
+"importId";"name";"recordQuery";"targetModelFullName";"metaModelTargetName";"expressionTypeSelect";"expression";"targetExpressionTypeSelect";"targetExpression";"alertExpressionTypeSelect";"alertExpression";"displayBarChart";"displayInRecordViewTypeSelect";"forLastNResults"
+"1";"Amount invoiced vs Amount paid";"SELECT self FROM Partner self WHERE self.id IN (SELECT inv.partner.id FROM Invoice inv) ORDER BY self.id";"com.axelor.apps.base.db.Partner";"fullName";"2";"var BigDecimal = Java.type(""java.math.BigDecimal"");
+var ZERO = BigDecimal.ZERO;
+
+var results = __repo__(Invoice).all()
+  .filter(""self.operationTypeSelect = 3 AND self.partner = :partner"")
+  .bind(""partner"", partner)
+  .fetch();
+
+var arr = Java.from(results);
+
+var total = arr.reduce(function (acc, inv) {
+  var amt = inv.amountPaid != null ? inv.amountPaid : ZERO;
+  return acc.add(amt);
+}, ZERO);
+
+total;
+";"2";"var BigDecimal = Java.type(""java.math.BigDecimal"");
+var ZERO = BigDecimal.ZERO;
+
+var lines = __repo__(SaleOrder).all()
+  .filter(""self.clientPartner = :partner AND self.statusSelect IN (3,4)"")
+  .bind(""partner"", partner)
+  .fetch();
+
+var arr = Java.from(lines);
+
+var target = arr.reduce(function (acc, so) {
+  var amt = so.amountInvoiced != null ? so.amountInvoiced : ZERO;
+  return acc.add(amt);
+}, ZERO);
+
+target;
+";"2";"indicator < target";"true";"2";"40"
+"2";"% margin per orders";"SELECT self FROM User self WHERE self.id IN (SELECT so.salespersonUser.id FROM SaleOrder so) ORDER BY self.id";"com.axelor.auth.db.User";"fullName";"3";"SELECT (100.0 - (SUM(line.subTotalCostPrice) / SUM(line.exTaxTotal) * 100.0)) AS margin
+FROM SaleOrderLine line
+WHERE line.saleOrder.salespersonUser = :user
+  AND line.saleOrder.statusSelect IN (3, 4)
+GROUP BY line.saleOrder.salespersonUser
+";"1";"def lines = __repo__(SaleOrderLine).all()
+    .filter(""self.saleOrder.salespersonUser = :user AND self.saleOrder.statusSelect IN (3,4)"")
+    .bind(""user"", user)
+    .fetch()
+
+def totalCost = lines.sum { it.subTotalCostPrice ?: 0.0 }
+def totalExTax = lines.sum { it.exTaxTotal ?: 0.0 }
+
+def margin = totalExTax > 0 ? (100.0 - (totalCost / totalExTax * 100.0)) : 0.0
+margin
+";"1";"indicator.compareTo(target) == 0";"false";"0";"40"
+"3";"Opportunity won per commercial per year";"SELECT self FROM User self WHERE self.id IN (SELECT opp.user.id FROM Opportunity opp) ORDER BY self.id";"com.axelor.auth.db.User";"fullName";"1";"import java.time.Year
+
+LocalDateTime now = LocalDateTime.now();
+int year = now.getYear();
+
+def results = __repo__(Opportunity).all()
+    .filter(""self.opportunityStatus.name = 'Closed won' AND self.user = :user"")
+    .bind(""user"", user)
+    .fetch()
+
+def total = results.sum { it.expectedCloseDate.getYear() == year ? it.amount : 0.0 }
+total
+";"1";"100000";"1";"indicator < target";"false";"1";"2000"

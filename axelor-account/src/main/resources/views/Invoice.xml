@@ -1133,7 +1133,7 @@
           readonlyIf="ventilatedByUser || ventilatedDateTime"/>
         <spacer/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"
-          onChange="action-invoice-method-estimated-payment-date,action-invoice-method-compute-invoice-terms-due-dates"/>
+          onChange="action-invoice-method-estimated-payment-date,action-invoice-method-change-invoice-terms-due-dates-with-invoice-due-date"/>
         <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="paymentDelay" readonly="true" colSpan="12"/>
@@ -2463,6 +2463,12 @@
       method="computeInvoiceTermsDueDates"/>
   </action-method>
 
+  <action-method
+    name="action-invoice-method-change-invoice-terms-due-dates-with-invoice-due-date">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="changeInvoiceTermDatesWithInvoiceDueDate"/>
+  </action-method>
+
   <action-method name="action-invoice-method-validate-invoice-terms-before-save">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="validateInvoiceTermsBeforeSave"/>
@@ -2680,10 +2686,10 @@
       <domain>self.statusSelect = 3</domain>
     </filter>
     <filter name="customer-invoices-filters-unpaid" title="Unpaid">
-      <domain>self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="customer-invoices-filters-unpaid-due" title="Unpaid Due">
-      <domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="customer-invoices-filters-with-payment-rejected"
       title="With Payment Rejected">
@@ -2743,10 +2749,10 @@
       <domain>self.statusSelect = 3</domain>
     </filter>
     <filter name="customer-refunds-filters-unpaid" title="Unpaid">
-      <domain>self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="customer-refunds-filters-unpaid-due" title="Unpaid Due">
-      <domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt; 0</domain>
     </filter>
   </search-filters>
 
@@ -2799,10 +2805,10 @@
       <domain>self.statusSelect = 3</domain>
     </filter>
     <filter name="supplier-invoices-filters-unpaid" title="Unpaid">
-      <domain>self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="supplier-invoices-filters-unpaid-due" title="Unpaid Due">
-      <domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt; 0</domain>
     </filter>
   </search-filters>
 
@@ -2855,10 +2861,10 @@
       <domain>self.statusSelect = 3</domain>
     </filter>
     <filter name="supplier-refunds-filters-unpaid" title="Unpaid">
-      <domain>self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="supplier-refunds-filters-unpaid-due" title="Unpaid Due">
-      <domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt; 0</domain>
     </filter>
   </search-filters>
 

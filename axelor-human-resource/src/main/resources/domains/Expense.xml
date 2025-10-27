@@ -26,6 +26,14 @@
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="taxTotal" title="Total tax" scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
+
+    <decimal name="companyExTaxTotal" title="Total W.T." scale="3" precision="20"
+      readonly="true"/>
+    <decimal name="companyTaxTotal" title="Total Tax" scale="3" precision="20"
+      readonly="true"/>
+    <decimal name="companyInTaxTotal" title="Total A.T.I." scale="3" precision="20"
+      readonly="true"/>
+
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
     <date name="moveDate" title="Move Date"/>
     <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by"
