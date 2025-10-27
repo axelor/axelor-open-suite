@@ -27,7 +27,9 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.google.inject.Inject;
+import javax.inject.Singleton;
 
+@Singleton
 public class PurchaseOrderLineWarningServiceImpl implements PurchaseOrderLineWarningService {
 
   protected final SupplierCatalogService supplierCatalogService;

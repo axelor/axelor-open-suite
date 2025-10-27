@@ -34,12 +34,14 @@ import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.db.repo.SupplierCatalogRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -49,9 +51,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
+@Singleton
 public class SupplierCatalogServiceImpl implements SupplierCatalogService {
 
   protected AppBaseService appBaseService;
@@ -129,6 +131,22 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
     return info;
   }
 
+  private List<SupplierCatalog> getSupplierCatalogList(Partner partner, Product product) {
+    var builder = JPA.em().getCriteriaBuilder();
+
+    var query = builder.createQuery(SupplierCatalog.class);
+    var self = query.from(SupplierCatalog.class);
+
+    query.select(self);
+
+    var belongToPartner = builder.equal(self.get("supplierPartner"), partner);
+    var belongToProduct = builder.equal(self.get("product"), product);
+
+    query.where(builder.and(belongToPartner, belongToProduct));
+
+    return JPA.em().createQuery(query).getResultList();
+  }
+
   @Override
   public SupplierCatalog getSupplierCatalog(
       Product product, Partner supplierPartner, Company company) throws AxelorException {
@@ -137,13 +155,13 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
       return null;
     }
 
-    List<SupplierCatalog> supplierCatalogList =
-        supplierPartner.getSupplierCatalogList().stream()
-            .filter(catalog -> catalog.getProduct().equals(product))
-            .collect(Collectors.toList());
+    List<SupplierCatalog> supplierCatalogList = null;
 
-    if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()
-        && CollectionUtils.isNotEmpty(supplierCatalogList)) {
+    if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()) {
+      supplierCatalogList = getSupplierCatalogList(supplierPartner, product);
+    }
+
+    if (CollectionUtils.isNotEmpty(supplierCatalogList)) {
       if (supplierCatalogList.stream().anyMatch(catalog -> catalog.getUpdateDate() != null)) {
         return supplierCatalogList.stream()
             .filter(catalog -> catalog.getUpdateDate() != null)
