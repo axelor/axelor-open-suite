@@ -1,0 +1,3 @@
+---
+title: "Sale order import: fixed NPE when imported lines have no tax lines"
+module: axelor-sale
