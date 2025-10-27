@@ -1,3 +1,0 @@
----
-title: "Production/Manuf order: fixed missing mappedBy in M2M relation between manuf order and production order."
-module: axelor-production

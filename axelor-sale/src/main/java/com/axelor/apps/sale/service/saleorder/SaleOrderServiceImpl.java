@@ -208,7 +208,8 @@ public class SaleOrderServiceImpl implements SaleOrderService {
     }
 
     if (soLines != null && !soLines.isEmpty()) {
-      saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null);
+      soLines.sort(Comparator.comparing(SaleOrderLine::getSequence));
+      saleOrderLineComputeService.computeLevels(soLines, null);
       saleOrder = saleOrderComputeService.computeSaleOrder(saleOrder);
       saleOrderMarginService.computeMarginSaleOrder(saleOrder);
       saleOrderRepo.save(saleOrder);

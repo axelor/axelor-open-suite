@@ -269,7 +269,7 @@ public class DebtRecoveryService {
         "WHERE (paymentsession.id IS NULL OR paymentsession.statusSelect != :paymentSessionStatus) ");
     query.append("AND invoiceterm.amountRemaining > 0 ");
     query.append("AND invoiceterm.isPaid IS FALSE ");
-    query.append("AND invoiceterm.debtRecoveryBlockingOk IS FALSE ");
+    query.append("AND move.ignoreInDebtRecoveryOk IS FALSE ");
     query.append("AND moveline.id IS NOT NULL ");
     query.append("AND moveline.partner = :partner ");
     query.append("AND move.company = :company ");

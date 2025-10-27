@@ -1532,6 +1532,8 @@
     model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
     <field name="paymentCondition"
       expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
+    <field name="outPaymentCondition"
+      expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
   </action-record>
 
   <action-method name="action-print-company-phonebook">
@@ -1582,6 +1584,7 @@
     model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-grid"/>
     <view type="form" name="move-line-form"/>
+    <view-param name="search-filters" value="move-line-filters"/>
     <domain>self.partner.id = :partnerId AND self.account.useForPartnerBalance = true</domain>
     <context name="partnerId" expr="eval: id"/>
   </action-view>

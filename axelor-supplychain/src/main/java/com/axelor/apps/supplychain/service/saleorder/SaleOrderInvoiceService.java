@@ -33,7 +33,6 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
@@ -158,14 +157,14 @@ public interface SaleOrderInvoiceService {
    * #generatePartialInvoice} and {@link #generateAdvancePayment}
    *
    * @param invoice
-   * @param taxLineList
+   * @param saleOrderLineList
    * @param invoicingProduct
    * @param percentToInvoice
    * @return
    */
-  List<InvoiceLine> createInvoiceLinesFromTax(
+  List<InvoiceLine> createInvoiceLines(
       Invoice invoice,
-      List<SaleOrderLineTax> taxLineList,
+      List<SaleOrderLine> saleOrderLineList,
       Product invoicingProduct,
       BigDecimal percentToInvoice)
       throws AxelorException;

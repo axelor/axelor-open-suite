@@ -1,3 +1,0 @@
----
-title: "PurchaseOrderLine : Invoiced must only be enabled if invoice generated InvoicingProject"
-module: axelor-supplychain

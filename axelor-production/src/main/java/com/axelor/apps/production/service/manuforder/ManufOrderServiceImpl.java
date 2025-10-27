@@ -1125,6 +1125,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
+  @Transactional
   public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
       throws AxelorException {
     List<Long> ids = new ArrayList<>();
