@@ -426,6 +426,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       throws AxelorException {
 
     productMap = Maps.newHashMap();
+    productList.stream().forEach(prd -> productMap.put(prd.getId(), 0));
 
     for (Product product : productList) {
 
@@ -517,9 +518,10 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
         Product subProduct = billOfMaterialLines.getProduct();
 
-        if (this.productMap.containsKey(subProduct.getId())
-            && billOfMaterialLines.getBillOfMaterial() != null) {
-          this.assignProductLevel(billOfMaterialLines.getBillOfMaterial(), level, company);
+        if (this.productMap.containsKey(subProduct.getId())) {
+          if (billOfMaterialLines.getBillOfMaterial() != null) {
+            this.assignProductLevel(billOfMaterialLines.getBillOfMaterial(), level, company);
+          }
 
           if (hasValidBillOfMaterial(subProduct, company)) {
             this.assignProductLevel(
