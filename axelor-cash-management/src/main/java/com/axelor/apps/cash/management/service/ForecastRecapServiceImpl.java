@@ -674,7 +674,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     LocalDate baseDate = (estimatedDate != null) ? estimatedDate : orderDate;
     LocalDate newEstimatedDate = baseDate.plusDays(forecastRecapLineType.getEstimatedDuration());
 
-    return PaymentConditionToolService.getMaxDueDate(paymentCondition, newEstimatedDate, baseDate);
+    return PaymentConditionToolService.getMaxDueDate(paymentCondition, newEstimatedDate);
   }
 
   /** Returns the name used in generated forecast line */
