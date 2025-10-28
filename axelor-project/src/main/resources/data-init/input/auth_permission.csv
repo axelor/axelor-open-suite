@@ -1,4 +1,4 @@
-"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
-"perm.project.all";"com.axelor.apps.project.db.*";"x";"x";"x";"x";"x";;;"Admin"
-"perm.projectTask.rwc";"com.axelor.apps.project.db.ProjectTask";"x";"x";"x";;;;;
-"perm.projectVersion.r";"com.axelor.apps.project.db.ProjectVersion";"x";;;;;;;"role.customer"
+"importId";"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+19;"perm.project.all";"com.axelor.apps.project.db.*";"x";"x";"x";"x";"x";;;"Admin"
+20;"perm.projectTask.rwc";"com.axelor.apps.project.db.ProjectTask";"x";"x";"x";;;;;
+21;"perm.projectVersion.r";"com.axelor.apps.project.db.ProjectVersion";"x";;;;;;;"role.customer"
