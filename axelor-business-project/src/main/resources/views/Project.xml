@@ -179,15 +179,23 @@
           x-show-bars="true" canSearch="true"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
-          if="__config__.app.isApp('business-project')" canSearch="true"/>
+          if="__config__.app.isApp('business-project') &amp;&amp; __user__.group.code != 'CUSTOM-PT'"
+          canSearch="true"/>
       </panel>
       <!-- MGM-66 task reports -->
-      <panel title="Task Reports" name="taskReportsPanel">
+      <panel title="Task Reports" name="taskReportsPanel"
+        if="__user__.group.code != 'CUSTOM-PM'">
+        <button name="addTaskReportBtn" onClick="action-business-project-add-task-report"
+          title="New Task Report" css="btn btn-sm btn-primary float-right" icon="fa-plus"
+          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
+          showIf="id &amp;&amp; isBusinessProject"/>
+
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
           action="action-task-report-dashlet" colSpan="12" canNew="true" x-show-bars="true"/>
       </panel>
 
-      <panel title="Configurations" name="configurationsPanel">
+      <panel title="Configurations" name="configurationsPanel"
+        if="__user__.group.code != 'CUSTOM-PT'">
         <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
           canCollapse="true" collapseIf="false">
           <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>

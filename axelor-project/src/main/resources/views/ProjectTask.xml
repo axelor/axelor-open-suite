@@ -11,9 +11,10 @@
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
-    <field name="ticketNumber"/>
+    <!-- <field name="ticketNumber"/> -->
     <field name="name"/>
     <field name="project"/>
+    <field name="assignedTo"/>
     <field name="taskDate"/>
     <field name="status"/>
     <field name="priority"/>
@@ -34,15 +35,16 @@
         onClick="action-project-add-task"/>
       <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
         onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/>
-      <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-        icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
+      <!-- MGM-80 - @gkouete: all task button within task grid not best for user experience -->
+      <!-- <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left" icon="fa-tasks"
+        onClick="save,action-project-view-show-related-tasks"/> -->
     </toolbar>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
     <field name="ticketNumber"
-      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()" width="200"/>
-    <field name="name" width="680"/>
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="name"/>
     <field name="projectTaskCategory" width="200"/>
     <field name="taskDate" width="100"/>
     <field name="status" width="100"/>
@@ -115,11 +117,13 @@
         <field name="project.manageTimeSpent" hidden="true"/>
       </panel>
 
-      <panel name="timeFollowUpPanel" title="Time follow-up">
+      <panel name="timeFollowUpPanel" title="Time follow-up"
+        if="__user__.group.code == 'admins'">
         <panel-include view="incl-time-follow-task-panel-form"/>
       </panel>
 
-      <panel name="taskPanel" title="Tasks" colSpan="12" showIf="id">
+      <panel name="taskPanel" title="Tasks" colSpan="12" showIf="id"
+        if="__user__.group.code == 'admins'">
         <panel-dashlet name="taskTreePanel" title="Task Tree" colSpan="12"
           action="action-view-show-task-tree" canSearch="true" height="200%"/>
         <panel-related name="finishToStartSetPanel" field="finishToStartSet"
@@ -130,12 +134,13 @@
       </panel>
 
 
-      <panel-include view="incl-checklist-task-panel-form"/>
+      <panel-include view="incl-checklist-task-panel-form"
+        if="__user__.group.code == 'admins'"/>
 
-      <panel-include view="incl-links-panel-form"/>
+      <panel-include view="incl-links-panel-form" if="__user__.group.code == 'admins'"/>
     </panel-tabs>
 
-    <panel-mail name="mailPanel">
+    <panel-mail name="mailPanel" if="__user__.group.code == 'admins'">
       <mail-messages/>
       <mail-followers/>
     </panel-mail>
@@ -150,25 +155,23 @@
       <field name="project" colSpan="6" onChange="action-project-task-group-project-onchange"
         domain="self.projectStatus.isCompleted = false" required="true" form-view="project-form"
         grid-view="project-grid"/>
-      <field name="parentTask" readonlyIf="project == null" colSpan="6"
-        form-view="project-task-form" grid-view="project-task-grid"
-        onChange="action-project-task-record-get-parent-timeunit"
-        onSelect="action-project-task-attrs-project-parent-task-configurations"/>
+      <!-- MGM-68 - @gkouete: parent task not required -->
+      <!-- <field name="parentTask" readonlyIf="project == null" colSpan="6" form-view="project-task-form"
+        grid-view="project-task-grid" onChange="action-project-task-record-get-parent-timeunit" onSelect="action-project-task-attrs-project-parent-task-configurations"/> -->
+      <field name="site" onSelect="action-project-task-attrs-set-site-domain"
+        form-view="site-form" grid-view="site-grid"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+      <!-- <panel name="characteristicsPanel" title="Characteristics" colSpan="12" collapseIf="false"
+        canCollapse="true"> <panel-include view="incl-characteristics-panel-form"/> <field name="description"
+        colSpan="12" widget="html"/> </panel> -->
+      <panel-include view="incl-characteristics-panel-form"/>
       <field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false"
         canView="false" canEdit="false"
         onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true"
         form-view="user-form" grid-view="user-grid"
         onChange="action-project-task-attrs-hide-time-spent-button"/>
-      <field name="site" onSelect="action-project-task-attrs-set-site-domain"
-        form-view="site-form" grid-view="site-grid"
-        if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
-
-      <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
-        collapseIf="false" canCollapse="true">
-        <panel-include view="incl-characteristics-panel-form"/>
-        <field name="description" colSpan="12" widget="html"/>
-      </panel>
-      <panel-include view="incl-customized-field-panel-form"/>
+      <field name="description" colSpan="12" widget="html"/>
+      <!-- <panel-include view="incl-customized-field-panel-form"/> -->
     </panel>
   </form>
 

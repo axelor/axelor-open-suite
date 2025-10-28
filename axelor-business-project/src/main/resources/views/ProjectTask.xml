@@ -40,48 +40,62 @@
         if="__config__.app.isApp('business-support')"/>
       <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
         onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/>
-      <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-        icon="fa-tasks" onClick="save,action-business-project-view-show-related-tasks"/>
+      <!-- MGM-80 - @gkouete: all task button within task grid not best for user experience -->
+      <!-- <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left" icon="fa-tasks"
+        onClick="save,action-business-project-view-show-related-tasks"/> -->
     </toolbar>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
     <field name="ticketNumber"
       if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()" width="100"/>
-    <field name="name" width="550"/>
-    <field name="taskDate" width="120"/>
-    <field name="initial" width="120"/>
-    <field name="forecast" width="120"/>
-    <field name="real" width="120"/>
+    <!-- @gkouete, adapting the view to be similar to task grid view for technicians -->
+    <field name="name"/>
+    <field name="project"/>
     <field name="assignedTo" width="120"/>
+    <field name="taskDate" width="120"/>
+    <field name="status"/>
+    <field name="projectTaskCategory"/>
+    <field name="taskDuration" if="manageTimeSpent"/>
+    <field name="$durationForCustomer" title="Duration adjust for customer" type="decimal"
+      if="manageTimeSpent"/>
+    <field name="toInvoice"
+      if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
+    <field name="toInvoice" readonly="true"
+      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
+    <!-- MGM-80, @gkouete, following data are irrelevant for MGM processes -->
+    <!-- <field name="initial" width="120"/> <field name="forecast" width="120"/> <field name="real"
+      width="120"/> -->
+    <field name="priority"/>
     <field name="typeSelect" hidden="true"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
-    <button name="createSubtaskBtn" icon="fa-plus"
-      onClick="save, action-business-project-view-add-subtask"/>
-    <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart"
-      onClick="save, action-project-task-method-generate-purchase-order"/>
+    <!-- MGM-80, @gkouete, following data are irrelevant for MGM processes -->
+    <!-- <button name="createSubtaskBtn" icon="fa-plus" onClick="save, action-business-project-view-add-subtask"/>
+      <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart" onClick="save, action-project-task-method-generate-purchase-order"/> -->
     <button name="deleteTaskBtn" icon="fa-times-circle"
       onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
   </grid>
 
+  <!-- MGM-80, @gkouete, won't display invoicing data to technicians -->
   <grid model="com.axelor.apps.project.db.ProjectTask" title="Tasks"
     name="business-project-project-task-grid" orderBy="-taskDate">
     <toolbar>
       <button name="logTimeBtn" icon="clock-history"
         onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
     </toolbar>
-    <field name="project"/>
-    <field name="ticketNumber"
-      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <!-- <field name="ticketNumber" if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/> -->
     <field name="name"/>
+    <field name="project"/>
+    <field name="assignedTo"/>
     <field name="taskDate"/>
     <field name="status"/>
-    <field name="progress" widget="Progress" if="isShowProgress"/>
-    <field name="exTaxTotal"/>
-    <field name="invoicingType"/>
+    <field name="projectTaskCategory"/>
     <field name="taskDuration" if="manageTimeSpent"/>
     <field name="$durationForCustomer" title="Duration adjust for customer" type="decimal"
       if="manageTimeSpent"/>
+    <!-- <field name="progress" widget="Progress" if="isShowProgress"/> -->
+    <field name="exTaxTotal"/>
+    <!-- <field name="invoicingType"/> -->
     <field name="toInvoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" readonly="true"
@@ -99,10 +113,10 @@
       <button name="logTimeBtn" icon="clock-history"
         onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
     </toolbar>
-    <field name="project"/>
-    <field name="ticketNumber"
-      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <!-- <field name="ticketNumber" if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/> -->
     <field name="name"/>
+    <field name="project"/>
+    <field name="assignedTo"/>
     <field name="taskDate"/>
     <field name="status"/>
     <field name="invoicingProgress"/>
@@ -414,10 +428,9 @@
   <tree name="business-project-project-task-tree" title="Task">
     <column name="name" type="string"/>
     <column name="taskDate" type="date"/>
-    <column name="initial" type="decimal"/>
-    <column name="forecast" type="decimal"/>
-    <column name="real" type="decimal"/>
-    <column name="landing" type="decimal"/>
+    <!-- MGM-80, @gkouete: not relevant for MGM processes -->
+    <!-- <column name="initial" type="decimal"/> <column name="forecast" type="decimal"/> <column name="real"
+      type="decimal"/> <column name="landing" type="decimal"/> -->
     <column name="assignedTo" type="reference"/>
     <column name="openTaskBtn" type="button"/>
     <node model="com.axelor.apps.project.db.ProjectTask"
