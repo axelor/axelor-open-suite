@@ -164,7 +164,7 @@
 
   <action-attrs name="action-budget-purchase-order-attrs-budget-level-domain">
     <attribute name="domain" for="globalBudget"
-      expr="eval: &quot;self.companyDepartment IS NOT NULL AND self.companyDepartment = ${companyDepartment?.id} AND self.company = :company AND self.statusSelect = 2&quot;"/>
+      expr="eval: &quot;self.companyDepartment IS NOT NULL AND self.companyDepartment.id = ${companyDepartment?.id} AND self.company = :company AND self.statusSelect = 2&quot;"/>
   </action-attrs>
 
   <action-record name="action-budget-purchase-order-record-budget-level-onchange"

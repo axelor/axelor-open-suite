@@ -270,7 +270,7 @@ public class BudgetServiceImpl implements BudgetService {
 
     String query = "self.budget.id = ?1 AND self.moveLine.move.statusSelect = ?2";
     if (excludeMoveInSimulated) {
-      query += " AND self.moveLine.move != " + move.getId();
+      query += " AND self.moveLine.move.id != " + move.getId();
     }
     List<BudgetDistribution> budgetDistributionList =
         budgetDistributionRepository
