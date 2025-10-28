@@ -1,7 +1,7 @@
-"name";"metaModel.name";"localizationSet.importId";"target";"printTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect";"localization.importId"
-"Confirmation coordonnées";"Partner";"2";;;;"true";;"Mise à jour de vos coordonnées";"<p>Madame, Monsieur,<br/>
-Nous sommes actuellement en phase de mise à jour de notre répertoire de contacts.<br/> 
-A ce jour voici les informations dont nous disposons : </p>
+"importId";"name";"metaModel.name";"localizationSet.importId";"target";"printTemplateSet_importId";"filePath";"isDefault";"templateContext";"subject";"content";"toRecipients";"ccRecipients";"bccRecipients";"mediaTypeSelect";"localization.importId"
+1;"Confirmation coordonnées";"Partner";"2";;;;"true";;"Mise à jour de vos coordonnées";"<p>Madame, Monsieur,<br/>
+2;Nous sommes actuellement en phase de mise à jour de notre répertoire de contacts.<br/> 
+3;A ce jour voici les informations dont nous disposons : </p>
  
 <p>Téléphone fixe : $Partner.fixedPhone$<br/>
 Mobile : $Partner.mobilePhone$<br/>
