@@ -40,6 +40,4 @@ public interface MoveInvoiceTermService {
   void updateSingleInvoiceTermDueDate(Move move, LocalDate dueDate);
 
   String checkIfInvoiceTermInPayment(Move move);
-
-  Integer checkOtherInvoiceTerms(Move move);
 }
