@@ -388,7 +388,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     // Check if field constraints are respected
     for (StockMove stockMove : stockMoveList) {
       completeInvoiceInMultiOutgoingStockMove(dummyInvoice, stockMove);
-      if (stockMove.getToAddressStr() != null) {
+      if (stockMove.getToAddress() != null) {
         deliveryAddressSet.add(stockMove.getToAddress());
       }
     }
