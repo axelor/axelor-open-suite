@@ -1287,7 +1287,7 @@ public class InvoiceController {
         return;
       }
       Integer pfpStatus =
-          Beans.get(InvoiceTermPfpService.class)
+          Beans.get(InvoiceTermPfpToolService.class)
               .checkOtherInvoiceTerms(invoice.getInvoiceTermList());
       if (pfpStatus != null) {
         response.setValue("pfpValidateStatusSelect", pfpStatus);
