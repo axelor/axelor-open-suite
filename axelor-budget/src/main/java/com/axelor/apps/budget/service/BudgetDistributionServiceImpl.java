@@ -331,7 +331,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     }
 
     if (account != null && budgetToolsService.checkBudgetKeyInConfig(company)) {
-      query = query.concat(String.format(" AND %d MEMBER OF self.accountSet ", account.getId()));
+      query = query.concat(String.format(" AND %d IN (self.accountSet.id) ", account.getId()));
     }
 
     return query;

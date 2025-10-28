@@ -401,7 +401,7 @@
     model="com.axelor.apps.budget.db.BudgetDistribution" title="Committed lines">
     <view name="budget-budget-distribution-purchase-order-line-global-dashlet-grid" type="grid"/>
     <view name="budget-budget-distribution-purchase-order-line-dashlet-form" type="form"/>
-    <domain>self.budget.id = :_budgetId and self.purchaseOrderLine != null and
+    <domain>self.budget.id = :_budgetId and self.purchaseOrderLine IS NOT null and
       self.purchaseOrderLine.purchaseOrder.statusSelect in (2,3,4)</domain>
     <context name="_budgetId" expr="eval: __this__.id"/>
   </action-view>
@@ -410,7 +410,7 @@
     model="com.axelor.apps.budget.db.BudgetDistribution" title="Committed lines">
     <view name="budget-budget-distribution-sale-order-line-global-dashlet-grid" type="grid"/>
     <view name="sale-order-budget-distribution-form" type="form"/>
-    <domain>self.budget.id = :_budgetId and self.saleOrderLine != null and
+    <domain>self.budget.id = :_budgetId and self.saleOrderLine IS NOT null and
       self.saleOrderLine.saleOrder.statusSelect in (3,4)</domain>
     <context name="_budgetId" expr="eval: __this__.id"/>
   </action-view>
