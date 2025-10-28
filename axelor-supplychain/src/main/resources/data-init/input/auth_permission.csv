@@ -1,2 +1,2 @@
-"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
-"perm.supplychain.all";"com.axelor.apps.supplychain.db.*";"x";"x";"x";"x";"x";;;"Admin"
+"importId";"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+28;"perm.supplychain.all";"com.axelor.apps.supplychain.db.*";"x";"x";"x";"x";"x";;;"Admin"
