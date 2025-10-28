@@ -38,7 +38,14 @@ public class QIIdentificationServiceImpl implements QIIdentificationService {
   @Override
   public void updateQIIdentification(QIIdentification qiIdentification) {
     Company company = qiIdentification.getQi().getCompany();
-    if (qiIdentification.getCustomerPartner() != null
+    if (requiresIdentificationUpdate(qiIdentification)) {
+      qiIdentification.setWrittenBy(AuthUtils.getUser());
+      qiIdentification.setWrittenOn(appBaseService.getTodayDateTime(company).toLocalDateTime());
+    }
+  }
+
+  protected boolean requiresIdentificationUpdate(QIIdentification qiIdentification) {
+    return qiIdentification.getCustomerPartner() != null
         || qiIdentification.getSupplierPartner() != null
         || qiIdentification.getContact() != null
         || qiIdentification.getDetectedByInternal() != null
@@ -48,17 +55,10 @@ public class QIIdentificationServiceImpl implements QIIdentificationService {
         || qiIdentification.getSupplierPurchaseOrderLine() != null
         || qiIdentification.getStockMove() != null
         || qiIdentification.getStockMoveLine() != null
-        || qiIdentification.getManufOrder() != null
-        || qiIdentification.getOperationOrder() != null
-        || qiIdentification.getToConsumeProdProduct() != null
-        || qiIdentification.getConsumedProdProduct() != null
         || qiIdentification.getProduct() != null
         || qiIdentification.getQualityControl() != null
         || qiIdentification.getQuantity().compareTo(BigDecimal.ZERO) != 0
         || qiIdentification.getNonConformingQuantity().compareTo(BigDecimal.ZERO) != 0
-        || StringUtils.notBlank(qiIdentification.getDocumentReference())) {
-      qiIdentification.setWrittenBy(AuthUtils.getUser());
-      qiIdentification.setWrittenOn(appBaseService.getTodayDateTime(company).toLocalDateTime());
-    }
+        || StringUtils.notBlank(qiIdentification.getDocumentReference());
   }
 }
