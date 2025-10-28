@@ -130,7 +130,7 @@
           readonlyIf="technicalOriginSelect == 1"/>
         <field name="bankOrderFileFormat" form-view="bank-order-file-format-form"
           grid-view="bank-order-file-format-grid" canView="false"
-          domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'"
+          domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = true"
           colSpan="6" onChange="action-bank-order-group-bank-order-file-format-onchange"
           readonlyIf="technicalOriginSelect == 1"/>
         <field name="partnerTypeSelect" css="label-bold bold" colSpan="6"

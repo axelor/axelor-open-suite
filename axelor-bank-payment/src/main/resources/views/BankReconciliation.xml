@@ -331,7 +331,7 @@
     title="Reconciled move lines" model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-bank-reconciliation-grid"/>
     <view type="form" name="move-line-form"/>
-    <domain>self.move.id in (select ML.move from BankReconciliationLine as BRL left join
+    <domain>self.move.id in (select ML.move.id from BankReconciliationLine as BRL left join
       BRL.moveLine as ML where BRL.bankReconciliation.id = :bankReconciliationId)</domain>
     <context name="bankReconciliationId" expr="eval: id"/>
   </action-view>

@@ -103,12 +103,13 @@
     <view type="grid" name="move-line-grid"/>
     <view type="form" name="move-line-form"/>
     <domain>self.id IN
-      (SELECT brl.moveLine
+      (SELECT brl.moveLine.id
       FROM BankReconciliationLine AS brl
-      JOIN BankReconciliation
+      JOIN
+      BankReconciliation
       as br
-      ON brl.bankReconciliation = br.id
-      WHERE br.bankStatement = :_id)</domain>
+      ON brl.bankReconciliation.id = br.id
+      WHERE br.bankStatement.id = :_id)</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 
