@@ -45,8 +45,7 @@
     <!-- Panel for Task Member Reports -->
     <panel title="Team Members Reports" canCollapse="true" collapseIf="true">
       <field name="taskMemberReports" title="Task member reports" widget="list" colSpan="12"
-        form="task-member-report-form" context="taskReport:__self__,project:eval:__self__.project"
-        onChange="action-update-total-work-hours-from-task-report"/>
+        form="task-member-report-form" onChange="action-update-total-work-hours"/>
       <panel>
         <field name="totalWorkHours"/>
       </panel>
@@ -85,12 +84,13 @@
 
   <!-- Define the form view for Task Member Report -->
   <form name="task-member-report-form" title="Team Member Report"
-    model="com.axelor.apps.businessproject.db.TaskMemberReport" onLoad="member-task-report"
-    onSave="action-update-total-work-hours-from-task-member">
+    model="com.axelor.apps.businessproject.db.TaskMemberReport" onLoad="member-task-report">
     <panel colSpan="12" canCollapse="true" collapseIf="false">
       <field name="employee" title="Employee" default=":__user__"/>
-      <field name="task" title="Tasks" hidden="true"/>
-      <field name="task" title="Task" widget="Select" colSpan="12"/>
+      <field name="task" title="Tasks" hidden="true"
+        domain-function="eval: 'self.project.id = ' + parent.project.id"/>
+      <field name="task" title="Task" widget="Select" colSpan="12"
+        domain-function="eval: 'self.project.id = ' + parent.project.id"/>
       <field name="startTime" onChange="action-task-report-on-change-time"/>
       <field name="breakTimeHours" onChange="action-task-report-on-change-time"/>
       <field name="endTime" onChange="action-task-report-on-change-time"/>
@@ -137,37 +137,18 @@
     <view-param name="popup" value="reload"/>
     <context name="employee" expr="eval: project?.membersUserSet"/>
     <context name="project" expr="eval: __parent__.project"/>
-    <context name="projectId" expr="eval: __parent__.project?.id"/>
   </action-view>
 
   <action-record name="action-task-report-on-change-time"
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <field name="workHours"
       expr="eval: (startTime != null &amp;&amp; endTime != null) ? ( (java.time.Duration.between(startTime.toLocalTime(), endTime.toLocalTime()).toMinutes() / 60.0) - (breakTimeHours ?: 0) ) : 0"/>
-
-    <!-- <field name="totalWorkHours" -->
-    <!-- expr="eval: taskReport?.taskMemberReports?.stream()?.map(r -> r?.workHours != null ? r.workHours
-      : java.math.BigDecimal.ZERO)?.reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add)"/> -->
   </action-record>
-
-  <action-method name="action-task-member-end-time-check">
-    <call class="com.axelor.apps.businessproject.web.TaskReportController"
-      method="validateEndTime"/>
-  </action-method>
-
-  <action-method name="action-update-total-work-hours">
-    <call class="com.axelor.apps.businessproject.web.TaskReportController"
-      method="updateTotalWorkHours"/>
-  </action-method>
-
-  <action-method name="action-update-total-work-hours-from-task-report">
-    <call class="com.axelor.apps.businessproject.web.TaskReportController"
-      method="updateTotalWorkHoursFromTaskReport"/>
-  </action-method>
-
-  <action-method name="action-update-total-work-hours-from-task-member">
-    <call class="com.axelor.apps.businessproject.web.TaskReportController"
-      method="updateTotalWorkHoursFromTaskMember"/>
-  </action-method>
+  <action-record name="action-update-total-work-hours"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <field name="totalWorkHours"
+      expr="eval: (taskMemberReports != null) ? taskMemberReports.stream().filter(r -> r.workHours != null).map(r -> r.workHours)
+          .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add) : 0"/>
+  </action-record>
 
 </object-views>
