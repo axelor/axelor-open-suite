@@ -6,7 +6,11 @@
 
   <!-- Grid View -->
   <grid name="task-report-grid" title="Task Reports"
-    model="com.axelor.apps.businessproject.db.TaskReport">
+    model="com.axelor.apps.businessproject.db.TaskReport" canEdit="false" editable="false">
+    <toolbar>
+      <button name="addNewTaskReport" title="New Task Report" css="btn-custom text-left"
+        icon="fa-plus" onClick="action-task-report-new"/>
+    </toolbar>
     <field name="project" title="Order "/>
     <field name="customer.simpleFullName" title="Customer"/>
     <field name="taskDate" title="Date"/>
@@ -27,8 +31,8 @@
 
   <!-- Form View -->
   <form name="task-report-form" title="Task Reports"
-    model="com.axelor.apps.businessproject.db.TaskReport" onNew="action-task-report-default">
-
+    model="com.axelor.apps.businessproject.db.TaskReport" onNew="action-task-report-default"
+    width="large">
     <panel title="General Information">
       <field name="project" title="Order"
         domain="self.membersUserSet.id = :__user__ OR self.assignedTo.id = :__user__"
@@ -69,12 +73,12 @@
       </panel>
       <panel colSpan="12">
         <field name="employee" title="Employee Name"/>
-        <field name="customerName" title="Customer Name" required="true"/>
+        <field name="customerName" title="Customer Name" readonly="false"/>
 
         <field name="employeeSignature" title="Employee Signature" widget="drawing"
           colSpan="6"/>
         <field name="customerSignature" title="Customer Signature" widget="drawing"
-          colSpan="6"/>
+          readonly="false" colSpan="6"/>
       </panel>
     </panel>
   </form>
@@ -119,6 +123,12 @@
       self.project.membersUserSet
     </domain>
     <context name="project" expr="eval:__parent__"/>
+  </action-view>
+
+  <action-view name="action-task-report-new" title="New Task Report"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <view type="form" name="task-report-form"/>
+    <context name="project" expr="eval: __parent__.project"/>
   </action-view>
 
   <action-view name="member-task-report" title="Member Task Reports"

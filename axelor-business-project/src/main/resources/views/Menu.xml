@@ -35,7 +35,8 @@
   </action-view>
 
   <menuitem name="menu-task-report" title="Task Reports" parent="menu-project-root"
-    action="task-report-view" hidden="true"/>
+    if="[ 'admins','CUSTOM-ACCOUNTANT','CUSTOM-PM' ].any(g -> __user__.group.code.contains(g))"
+    order="350" action="task-report-view"/>
 
   <action-view name="task-report-view" title="Task Reports"
     model="com.axelor.apps.businessproject.db.TaskReport">

@@ -191,8 +191,7 @@
           showIf="id &amp;&amp; isBusinessProject"/>
 
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
-          action="action-task-report-dashlet" colSpan="12" canNew="true" canEdit="true"
-          canRemove="true"/>
+          action="action-task-report-dashlet" colSpan="12" canNew="true" x-show-bars="true"/>
       </panel>
 
       <panel title="Configurations" name="configurationsPanel"
