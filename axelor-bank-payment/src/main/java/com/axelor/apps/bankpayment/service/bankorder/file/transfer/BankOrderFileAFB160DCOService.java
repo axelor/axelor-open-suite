@@ -176,7 +176,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       senderRecordBuilder.append(
           cfonbToolService.createZone(
               I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D3),
-              "30004",
+              senderBankDetails.getBankCode(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
               5));
