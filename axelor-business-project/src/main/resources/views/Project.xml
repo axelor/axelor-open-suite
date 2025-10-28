@@ -182,7 +182,8 @@
           if="__config__.app.isApp('business-project')" canSearch="true"/>
       </panel>
       <!-- MGM-66 task reports -->
-      <panel title="Task Reports" name="taskReportsPanel">
+      <panel title="Task Reports" name="taskReportsPanel"
+        if="__user__.group.code != 'CUSTOM-PM'">
         <button name="addTaskReportBtn" onClick="action-business-project-add-task-report"
           title="New Task Report" css="btn btn-sm btn-primary float-right" icon="fa-plus"
           if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
@@ -193,7 +194,8 @@
           canRemove="true"/>
       </panel>
 
-      <panel title="Configurations" name="configurationsPanel">
+      <panel title="Configurations" name="configurationsPanel"
+        if="__user__.group.code != 'CUSTOM-PT'">
         <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
           canCollapse="true" collapseIf="false">
           <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
@@ -680,7 +682,8 @@
   </action-validate>
 
   <action-validate name="action-project-validate-toDate">
-    <error message="Invalid date." if="fromDate != null &amp;&amp; toDate != null &amp;&amp; toDate &lt; fromDate"
+    <error message="Invalid date."
+      if="fromDate != null &amp;&amp; toDate != null &amp;&amp; toDate &lt; fromDate"
       action="action-project-null-toDate"/>
   </action-validate>
 
@@ -1364,9 +1367,9 @@
       if="__config__.app.isApp('business-project') &amp;&amp; projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus.id"/>
   </action-group>
 
-    <action-group name="action-project-group-to-date-onchange">
-        <action name="action-project-validate-toDate"/>
-    </action-group>
+  <action-group name="action-project-group-to-date-onchange">
+    <action name="action-project-validate-toDate"/>
+  </action-group>
 
   <action-method name="action-business-project-method-check-project-state">
     <call class="com.axelor.apps.businessproject.web.ProjectController"

@@ -17,7 +17,7 @@
           action="action-project-open-popup-select-projects"/>
       </menu>
     </menubar>
-    <field name="name"/>
+    <field name="name" required="false"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="code"/>
@@ -535,9 +535,9 @@
     <action name="action-attrs-project-show-log-time-panel"/>
   </action-group>
 
-    <action-group name="action-project-group-to-date-onchange">
-        <action name="action-project-validate-toDate"/>
-    </action-group>
+  <action-group name="action-project-group-to-date-onchange">
+    <action name="action-project-validate-toDate"/>
+  </action-group>
 
   <action-group name="action-project-group-on-new-project">
     <action name="action-project-defaults"/>
@@ -954,10 +954,11 @@
       if="projectCheckListItemList &amp;&amp; !projectCheckListItemList.isEmpty()"/>
   </action-validate>
 
-    <action-validate name="action-project-validate-toDate">
-        <error message="Invalid date." if="fromDate != null &amp;&amp; toDate != null &amp;&amp; toDate &lt; fromDate"
-                action="action-project-null-toDate"/>
-    </action-validate>
+  <action-validate name="action-project-validate-toDate">
+    <error message="Invalid date."
+      if="fromDate != null &amp;&amp; toDate != null &amp;&amp; toDate &lt; fromDate"
+      action="action-project-null-toDate"/>
+  </action-validate>
 
 
 

@@ -7,7 +7,7 @@
 
   <entity name="Project">
 
-    <string name="name" title="Project name"/>
+    <string name="name" title="Project name" required="false" default=""/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"/>
     <string name="description" multiline="true" large="true"/>
     <many-to-one name="team" ref="com.axelor.team.db.Team"/>

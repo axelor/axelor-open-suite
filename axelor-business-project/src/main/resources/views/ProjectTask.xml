@@ -40,8 +40,9 @@
         if="__config__.app.isApp('business-support')"/>
       <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
         onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/>
-      <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-        icon="fa-tasks" onClick="save,action-business-project-view-show-related-tasks"/>
+      <!-- MGM-80 - @gkouete: all task button within task grid not best for user experience -->
+      <!-- <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left" icon="fa-tasks"
+        onClick="save,action-business-project-view-show-related-tasks"/> -->
     </toolbar>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
@@ -414,10 +415,13 @@
   <tree name="business-project-project-task-tree" title="Task">
     <column name="name" type="string"/>
     <column name="taskDate" type="date"/>
+    <!-- MGM-80, @gkouete: not relevant for MGM processes -->
+    <!--
     <column name="initial" type="decimal"/>
     <column name="forecast" type="decimal"/>
     <column name="real" type="decimal"/>
     <column name="landing" type="decimal"/>
+    -->
     <column name="assignedTo" type="reference"/>
     <column name="openTaskBtn" type="button"/>
     <node model="com.axelor.apps.project.db.ProjectTask"
