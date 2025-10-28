@@ -474,15 +474,13 @@
 		<>
 			<Box>
 				<strong>{fullName}</strong>
-				<Box d="grid" gridTemplateColumns="33% 67%" mt={2}>
-					<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
-						{picture && <Image src={$image('picture', 'content')} w={100} h={100}></Image>}
-		     			{!picture && partnerTypeSelect != 2 && <Image src="img/company-default.jpg"></Image>}
-		     			{!picture && partnerTypeSelect == 2 && titleSelect == 1 && <Image src="img/partner-m-default.png"></Image>}
-		     			{!picture && partnerTypeSelect == 2 && titleSelect == 2 && <Image src="img/partner-w-default.png"></Image>}
-		     			{!picture && partnerTypeSelect == 2 && (titleSelect > 2 || !titleSelect) && <Image src="img/partner-default.png"></Image>}
-					</Box>
-					<Box>
+				<Box d="grid" gridTemplateColumns={picture ? "33% 67%" : "100%"} mt={2}>
+					{picture && (
+						<Box d="flex" flexDirection="column" alignItems="center" style={{ width: 128, height: 64 }}>
+							<Image src={$image('picture', 'content')} w={100} h={100}></Image>
+						</Box>
+					)}
+					<Box style={{ width: picture ? '67%' : '100%' }}>
 						{mainAddress.fullName} <Box/>
 						{fixedPhone} <Box/>
 						{emailAddress.address} <Box/>
