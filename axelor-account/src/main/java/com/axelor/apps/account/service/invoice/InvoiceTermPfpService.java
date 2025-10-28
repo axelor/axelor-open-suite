@@ -46,10 +46,6 @@ public interface InvoiceTermPfpService {
       PfpPartialReason partialReason)
       throws AxelorException;
 
-  Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList);
-
-  int getPfpValidateStatusSelect(InvoiceTerm invoiceTerm);
-
   boolean getUserCondition(User pfpValidatorUser, User user);
 
   boolean getInvoiceTermsCondition(List<InvoiceTerm> invoiceTermList);

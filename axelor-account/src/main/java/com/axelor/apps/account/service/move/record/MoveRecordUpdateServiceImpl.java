@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MovePfpToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -44,6 +45,7 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected MoveValidateService moveValidateService;
   protected MoveLineCurrencyService moveLineCurrencyService;
+  protected MovePfpToolService movePfpToolService;
 
   @Inject
   public MoveRecordUpdateServiceImpl(
@@ -52,13 +54,15 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
       MoveRepository moveRepository,
       MoveInvoiceTermService moveInvoiceTermService,
       MoveValidateService moveValidateService,
-      MoveLineCurrencyService moveLineCurrencyService) {
+      MoveLineCurrencyService moveLineCurrencyService,
+      MovePfpToolService movePfpToolService) {
     this.appBaseService = appBaseService;
     this.moveLineService = moveLineService;
     this.moveRepository = moveRepository;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.moveValidateService = moveValidateService;
     this.moveLineCurrencyService = moveLineCurrencyService;
+    this.movePfpToolService = movePfpToolService;
   }
 
   @Override
@@ -93,10 +97,7 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
       }
     }
 
-    Integer pfpStatus = moveInvoiceTermService.checkOtherInvoiceTerms(move);
-    if (pfpStatus != null) {
-      move.setPfpValidateStatusSelect(pfpStatus);
-    }
+    movePfpToolService.fillMovePfpValidateStatus(move);
 
     return flashMessage;
   }

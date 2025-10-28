@@ -37,6 +37,7 @@ import com.axelor.apps.account.service.invoice.InvoiceFinancialDiscountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintService;
@@ -1294,7 +1295,7 @@ public class InvoiceController {
         return;
       }
       Integer pfpStatus =
-          Beans.get(InvoiceTermPfpService.class)
+          Beans.get(InvoiceTermPfpToolService.class)
               .checkOtherInvoiceTerms(invoice.getInvoiceTermList());
       if (pfpStatus != null) {
         response.setValue("pfpValidateStatusSelect", pfpStatus);

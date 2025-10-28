@@ -310,40 +310,6 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  public Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
-    if (CollectionUtils.isEmpty(invoiceTermList)) {
-      return null;
-    }
-    InvoiceTerm firstInvoiceTerm = invoiceTermList.get(0);
-    int pfpStatus = this.getPfpValidateStatusSelect(firstInvoiceTerm);
-    int otherPfpStatus;
-    for (InvoiceTerm otherInvoiceTerm : invoiceTermList) {
-      if (otherInvoiceTerm.getId() != null
-          && firstInvoiceTerm.getId() != null
-          && !otherInvoiceTerm.getId().equals(firstInvoiceTerm.getId())) {
-        otherPfpStatus = this.getPfpValidateStatusSelect(otherInvoiceTerm);
-
-        if (otherPfpStatus != pfpStatus) {
-          pfpStatus = InvoiceTermRepository.PFP_STATUS_AWAITING;
-          break;
-        }
-      }
-    }
-
-    return pfpStatus;
-  }
-
-  @Override
-  public int getPfpValidateStatusSelect(InvoiceTerm invoiceTerm) {
-    if (invoiceTerm.getPfpValidateStatusSelect()
-        == InvoiceTermRepository.PFP_STATUS_PARTIALLY_VALIDATED) {
-      return InvoiceTermRepository.PFP_STATUS_VALIDATED;
-    } else {
-      return invoiceTerm.getPfpValidateStatusSelect();
-    }
-  }
-
-  @Override
   public boolean getUserCondition(User pfpValidatorUser, User user) {
     return user.equals(pfpValidatorUser) || user.getIsSuperPfpUser();
   }

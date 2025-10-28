@@ -302,21 +302,4 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
     }
     return "";
   }
-
-  @Override
-  public Integer checkOtherInvoiceTerms(Move move) {
-    if (move == null || CollectionUtils.isEmpty(move.getMoveLineList())) {
-      return null;
-    }
-    List<InvoiceTerm> invoiceTermList =
-        move.getMoveLineList().stream()
-            .map(MoveLine::getInvoiceTermList)
-            .filter(Objects::nonNull)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toList());
-    if (!CollectionUtils.isEmpty(invoiceTermList)) {
-      return invoiceTermPfpService.checkOtherInvoiceTerms(invoiceTermList);
-    }
-    return null;
-  }
 }

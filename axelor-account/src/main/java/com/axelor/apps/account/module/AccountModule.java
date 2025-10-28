@@ -167,6 +167,8 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -205,6 +207,8 @@ import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigServiceImpl;
 import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MovePfpServiceImpl;
+import com.axelor.apps.account.service.move.MovePfpToolService;
+import com.axelor.apps.account.service.move.MovePfpToolServiceImpl;
 import com.axelor.apps.account.service.move.MoveRemoveService;
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.move.MoveReverseService;
@@ -717,5 +721,8 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticMoveLineParentService.class).to(AnalyticMoveLineParentServiceImpl.class);
 
     bind(PaymentScheduleRepository.class).to(PaymentScheduleAccountRepository.class);
+
+    bind(MovePfpToolService.class).to(MovePfpToolServiceImpl.class);
+    bind(InvoiceTermPfpToolService.class).to(InvoiceTermPfpToolServiceImpl.class);
   }
 }

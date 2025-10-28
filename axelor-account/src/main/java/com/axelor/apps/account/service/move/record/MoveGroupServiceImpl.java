@@ -27,6 +27,7 @@ import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
+import com.axelor.apps.account.service.move.MovePfpToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
@@ -69,6 +70,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
   protected PfpService pfpService;
   protected AnalyticAttrsService analyticAttrsService;
+  protected MovePfpToolService movePfpToolService;
 
   @Inject
   public MoveGroupServiceImpl(
@@ -90,7 +92,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MassEntryVerificationService massEntryVerificationService,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService,
       PfpService pfpService,
-      AnalyticAttrsService analyticAttrsService) {
+      AnalyticAttrsService analyticAttrsService,
+      MovePfpToolService movePfpToolService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodAccountService = periodAccountService;
@@ -110,6 +113,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
     this.pfpService = pfpService;
     this.analyticAttrsService = analyticAttrsService;
+    this.movePfpToolService = movePfpToolService;
   }
 
   protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
@@ -406,7 +410,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
                 MoveRepository.STATUS_SIMULATED)
             .contains(move.getStatusSelect())
         && pfpService.isManagePassedForPayment(move.getCompany())) {
-      Integer pfpStatus = moveInvoiceTermService.checkOtherInvoiceTerms(move);
+      Integer pfpStatus = movePfpToolService.checkOtherInvoiceTerms(move);
       if (pfpStatus != null) {
         valuesMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());
       }
