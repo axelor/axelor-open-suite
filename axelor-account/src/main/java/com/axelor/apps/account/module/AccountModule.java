@@ -294,6 +294,8 @@ import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigServiceImpl;
 import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MovePfpServiceImpl;
+import com.axelor.apps.account.service.move.MovePfpToolService;
+import com.axelor.apps.account.service.move.MovePfpToolServiceImpl;
 import com.axelor.apps.account.service.move.MovePfpValidateService;
 import com.axelor.apps.account.service.move.MovePfpValidateServiceImpl;
 import com.axelor.apps.account.service.move.MoveRemoveService;
@@ -1013,5 +1015,7 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticMoveLineParentService.class).to(AnalyticMoveLineParentServiceImpl.class);
 
     bind(PaymentScheduleRepository.class).to(PaymentScheduleAccountRepository.class);
+
+    bind(MovePfpToolService.class).to(MovePfpToolServiceImpl.class);
   }
 }

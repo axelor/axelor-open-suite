@@ -47,8 +47,6 @@ public interface InvoiceTermPfpService {
   InvoiceTerm createPfpInvoiceTerm(
       InvoiceTerm originalInvoiceTerm, Invoice invoice, BigDecimal amount) throws AxelorException;
 
-  Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList);
-
   void refreshInvoicePfpStatus(Invoice invoice);
 
   boolean getUserCondition(User pfpValidatorUser, User user);
