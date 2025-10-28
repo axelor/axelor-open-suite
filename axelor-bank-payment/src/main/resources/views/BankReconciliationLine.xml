@@ -179,7 +179,7 @@
   <action-attrs
     name="action-bank-payment-attrs-bank-reconciliation-line-partner-domain">
     <attribute name="domain" for="partner"
-      expr="eval: &quot;self.isContact = false AND ${__parent__?.company?.id} member of self.companySet&quot;"
+      expr="eval: &quot;self.isContact = false AND ${__parent__?.company?.id} IN (self.companySet.id)&quot;"
       if="__parent__ != null"/>
     <attribute name="domain" for="partner"
       expr="eval: &quot;self.isContact = false &quot;" if="__parent__ == null"/>

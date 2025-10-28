@@ -70,9 +70,9 @@
 
   <action-attrs name="action-payment-mode-attrs-set-bank-order-file-format-domain">
     <attribute name="domain" for="bankOrderFileFormat"
-      expr="eval: &quot; self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true' &quot;"/>
+      expr="eval: &quot; self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = true &quot;"/>
     <attribute name="domain" for="bankOrderFileFormat"
-      expr="eval: &quot; self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true' AND self.isMultiDate = 'true' &quot;"
+      expr="eval: &quot; self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = true AND self.isMultiDate = true &quot;"
       if="moveAccountingDateSelect == 2 &amp;&amp; accountingTriggerSelect == 1"/>
   </action-attrs>
 
