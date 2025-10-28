@@ -179,7 +179,8 @@
           x-show-bars="true" canSearch="true"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
-          if="__config__.app.isApp('business-project')" canSearch="true"/>
+          if="__config__.app.isApp('business-project') &amp;&amp; __user__.group.code != 'CUSTOM-PT'"
+          canSearch="true"/>
       </panel>
       <!-- MGM-66 task reports -->
       <panel title="Task Reports" name="taskReportsPanel"
