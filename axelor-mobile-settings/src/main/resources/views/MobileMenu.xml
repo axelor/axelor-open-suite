@@ -8,7 +8,7 @@
     canMove="true">
     <field name="technicalName"/>
     <field name="name" readonly="true"/>
-    <field name="authorizedRoles" widget="TagSelect"/>
+    <field name="authorizedRoles" widget="Tags"/>
     <field name="menuOrder"/>
     <button name="viewMenuTranslationBtn" title="Menu translation"
       onClick="action-mobile-menu-view-menu-translation" icon="fa-language"/>
@@ -20,7 +20,7 @@
       <field name="name"/>
       <field name="technicalName"/>
       <field name="authorizedRoles" placeholder="All" colSpan="12" canNew="false"
-        canEdit="false" widget="TagSelect"/>
+        canEdit="false" widget="Tags"/>
       <field name="menuOrder"/>
       <field name="menuType" readonly="true"/>
       <field name="parentApplication" readonly="true"/>

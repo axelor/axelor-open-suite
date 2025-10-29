@@ -78,8 +78,8 @@
         <field name="evaluation" colSpan="12" widget="htmls"/>
       </panel>
       <panel title="Career" name="carerrPanel" itemSpan="12">
-        <field name="skillSet" widget="TagSelect"/>
-        <field name="languageSet" widget="TagSelect"/>
+        <field name="skillSet" widget="Tags"/>
+        <field name="languageSet" widget="Tags"/>
         <field name="educationList"/>
         <field name="experienceList"/>
         <field name="certificationList"/>

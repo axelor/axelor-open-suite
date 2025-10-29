@@ -212,7 +212,7 @@
         <button name="importMemberBtn" title="Import all members" showIf="team != null"
           readonlyIf="extendsMembersFromParent" colSpan="3"
           onClick="action-project-method-import-members"/>
-        <field name="membersUserSet" colSpan="9" widget="TagSelect" canNew="false"
+        <field name="membersUserSet" colSpan="9" widget="Tags" canNew="false"
           form-view="user-form" grid-view="user-grid" canEdit="false"/>
         <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
           canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
@@ -267,7 +267,7 @@
     <panel title="General configuration" name="generalConfigurationsPanel" colSpan="12"
       canCollapse="true" collapseIf="false">
       <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
-        name="productSet" widget="TagSelect" canEdit="false"
+        name="productSet" widget="Tags" canEdit="false"
         domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-activity-form"
         grid-view="product-activity-grid"/>
       <field name="projectTimeUnit" onSelect="action-project-attrs-set-time-unit-domain"/>
@@ -284,7 +284,7 @@
       <field name="taskStatusManagementSelect" widget="RadioSelect"
         readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
         onChange="action-project-record-manage-task-status-set, action-project-record-activate-task-status-by-category"/>
-      <field name="projectTaskStatusSet" widget="TagSelect"
+      <field name="projectTaskStatusSet" widget="Tags"
         readonlyIf="projectTaskList.length &gt; 0" showIf="taskStatusManagementSelect == 2"
         requiredIf="taskStatusManagementSelect == 2" canEdit="false"
         onChange="action-project-method-manage-completed-task-status"/>
@@ -294,13 +294,13 @@
         onSelect="action-project-attrs-set-completed-task-status-domain"/>
       <panel name="taskStatusManagementPanel" colSpan="12"
         showIf="projectTaskList.length &gt; 0 &amp;&amp; taskStatusManagementSelect == 2 &amp;&amp; !$readonly()">
-        <field name="$statusToAddSet" type="many-to-many" widget="TagSelect"
-          title="Status to add" onSelect="action-project-attrs-status-to-add-domain" colSpan="3"
+        <field name="$statusToAddSet" type="many-to-many" widget="Tags" title="Status to add"
+          onSelect="action-project-attrs-status-to-add-domain" colSpan="3"
           target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
         <button name="addStatusBtn"
           onClick="action-project-attrs-add-task-status,action-project-method-manage-completed-task-status"
           title="Add status" showIf="$statusToAddSet.length &gt; 0" colSpan="3"/>
-        <field name="$statusToRemoveSet" type="many-to-many" widget="TagSelect"
+        <field name="$statusToRemoveSet" type="many-to-many" widget="Tags"
           title="Status to remove" onSelect="action-project-attrs-status-to-remove-domain"
           colSpan="3" target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
         <button name="removeStatusBtn"
@@ -309,19 +309,19 @@
       </panel>
       <field name="isShowPriority" widget="inline-checkbox"
         onChange="action-project-record-priority-reset-values"/>
-      <field name="projectTaskPrioritySet" widget="TagSelect" showIf="isShowPriority"
+      <field name="projectTaskPrioritySet" widget="Tags" showIf="isShowPriority"
         requiredIf="isShowPriority" canEdit="false"/>
       <field name="isShowTaskCategory" widget="inline-checkbox"
         onChange="action-project-record-change-show-task-category, action-project-record-manage-task-status-set"
         canEdit="false"/>
-      <field name="projectTaskCategorySet" widget="TagSelect" showIf="isShowTaskCategory"
+      <field name="projectTaskCategorySet" widget="Tags" showIf="isShowTaskCategory"
         canEdit="false"
         requiredIf="taskStatusManagementSelect == 4 || enableStatusProgressByCategory"/>
       <field name="isShowProgress" widget="inline-checkbox"/>
       <field name="enableStatusProgressByCategory"
         if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask"
         showIf="isShowTaskCategory"/>
-      <field name="projectTaskLinkTypeSet" colSpan="12" widget="TagSelect" canEdit="false"
+      <field name="projectTaskLinkTypeSet" colSpan="12" widget="Tags" canEdit="false"
         placeholder="All"/>
       <field name="projectTaskList" hidden="true"/>
     </panel>

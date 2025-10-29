@@ -23,7 +23,7 @@
       <panel name="familyTypePanel" hidden="true" showIf="rangeTypeSelect === 'family'"
         colSpan="12">
         <field name="equipmentFamilySet" grid-view="equipment-family-grid"
-          form-view="equipment-family-form" widget="TagSelect" canNew="false"
+          form-view="equipment-family-form" widget="Tags" canNew="false"
           requiredIf="rangeTypeSelect === 'family'" colSpan="12"/>
       </panel>
     </panel>

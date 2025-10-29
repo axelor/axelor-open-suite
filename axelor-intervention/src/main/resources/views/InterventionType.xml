@@ -25,9 +25,9 @@
         <field name="interventionCategory" grid-view="intervention-category-grid"
           form-view="intervention-category-form"/>
         <field name="companySet" grid-view="company-grid" form-view="company-form"
-          widget="TagSelect" canNew="false"/>
+          widget="Tags" canNew="false"/>
         <field name="tradingNameSet" grid-view="trading-name-grid"
-          form-view="trading-name-form" widget="TagSelect" canNew="false"
+          form-view="trading-name-form" widget="Tags" canNew="false"
           if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
       </panel>
       <panel name="configsPanel" colSpan="4" itemSpan="12">
@@ -35,7 +35,7 @@
       </panel>
       <field name="exclusiveInterventionSet"
         domain="self.isContact = false AND self.isCustomer = true" grid-view="partner-grid"
-        form-view="partner-form" colSpan="12" canNew="false" widget="TagSelect"/>
+        form-view="partner-form" colSpan="12" canNew="false" widget="Tags"/>
     </panel>
     <panel name="rangesPanel" title="Ranges" itemSpan="12">
       <field name="advancedStartupMonitoringRange" grid-view="range-grid"

@@ -28,7 +28,7 @@
     <field name="fiscalPosition.code" title="Fiscal position"/>
     <field name="registrationCode"/>
     <field name="mainAddress"/>
-    <field name="companySet" widget="TagSelect"
+    <field name="companySet" widget="Tags"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
@@ -61,7 +61,7 @@
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
     <field name="user"/>
-    <field name="companySet" widget="TagSelect"
+    <field name="companySet" widget="Tags"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
@@ -96,7 +96,7 @@
     <field name="fiscalPosition.code" title="Fiscal position"/>
     <field name="registrationCode"/>
     <field name="mainAddress"/>
-    <field name="companySet" widget="TagSelect"
+    <field name="companySet" widget="Tags"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="das2Activity" hidden="true" if="__config__.app.isApp('account')"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
@@ -348,7 +348,7 @@
             onChange="action-record-base-partner-set-business-card"/>
           <field name="functionBusinessCard"/>
         </panel>
-        <field name="tagSet" widget="TagSelect" x-color-field="color"
+        <field name="tagSet" widget="Tags" x-color-field="color"
           grid-view="tag-simplified-grid" form-view="tag-form"
           onSelect="action-method-init-meta-model-field,action-partner-attrs-set-partner-tag-domain"/>
       </panel>
@@ -464,7 +464,7 @@
             <field name="team" canEdit="false" colSpan="6" form-view="team-form"
               grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"
               hideIf="isEmployee"/>
-            <field name="companySet" colSpan="12" widget="TagSelect" canNew="false"
+            <field name="companySet" colSpan="12" widget="Tags" canNew="false"
               form-view="company-form" grid-view="company-grid"/>
           </panel>
         </panel>
@@ -773,7 +773,7 @@
           canNew="false" canEdit="false" canView="false"/>
         <field name="team" canEdit="false" colSpan="6" form-view="team-form"
           grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"/>
-        <field name="companySet" colSpan="12" widget="TagSelect" canNew="false"
+        <field name="companySet" colSpan="12" widget="Tags" canNew="false"
           form-view="company-form" grid-view="company-grid"/>
       </panel>
     </panel>
@@ -1025,7 +1025,7 @@
           canNew="false" canEdit="false" canView="false"/>
         <field name="team" canEdit="false" colSpan="6" form-view="team-form"
           grid-view="team-grid" if="__config__.app.getApp('base')?.getTeamManagement()"/>
-        <field name="companySet" colSpan="12" widget="TagSelect" canNew="false"
+        <field name="companySet" colSpan="12" widget="Tags" canNew="false"
           form-view="company-form" grid-view="company-grid"/>
       </panel>
     </panel>

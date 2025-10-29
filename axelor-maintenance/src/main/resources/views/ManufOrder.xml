@@ -111,7 +111,7 @@
           onChange="action-manuf-order-atts-sale-order-onchange-client-partner"
           domain="self.isCustomer=true AND :company member of self.companySet"
           form-view="partner-form" grid-view="partner-grid" hidden="true" colSpan="6"/>
-        <field name="saleOrderSet" widget="TagSelect" canEdit="false"
+        <field name="saleOrderSet" widget="Tags" canEdit="false"
           onSelect="action-manuf-order-attrs-sale-order-onselect" form-view="sale-order-form"
           grid-view="sale-order-grid" hidden="true" colSpan="6"/>
         <field name="manufOrderMergeResult" showIf="manufOrderMergeResult" canNew="false"

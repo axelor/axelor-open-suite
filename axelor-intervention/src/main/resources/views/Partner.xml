@@ -11,7 +11,7 @@
           colSpan="12">
           <field name="tradingNameSet" requiredIf="isContact != true &amp;&amp; isCustomer"
             colSpan="6" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
-            widget="TagSelect" onSelect="action-partner-attrs-set-trading-name-domain"/>
+            widget="Tags" onSelect="action-partner-attrs-set-trading-name-domain"/>
         </panel>
       </insert>
     </extend>

@@ -24,12 +24,12 @@
       <field name="fromDate" required="true"/>
       <field name="toDate" required="true"/>
       <field name="company" canEdit="false" required="true"/>
-      <field name="partnerSet" colSpan="12" widget="TagSelect" title="Customers"
+      <field name="partnerSet" colSpan="12" widget="Tags" title="Customers"
         domain="self.isContact = false AND self.isCustomer = true AND :company member of self.companySet"/>
-      <field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"
+      <field name="productSet" canEdit="false" colSpan="12" widget="Tags"
         domain="self.dtype = 'Product'"/>
       <label name="orLabel" title="OR"/>
-      <field name="productCategorySet" colSpan="12" widget="TagSelect"
+      <field name="productCategorySet" colSpan="12" widget="Tags"
         domain="self.dtype = 'Product'"/>
     </panel>
     <panel name="optionsPanel" title="Options" sidebar="true">
@@ -49,12 +49,12 @@
       <field name="fromDate" required="true"/>
       <field name="toDate" required="true"/>
       <field name="company" canEdit="false" required="true"/>
-      <field name="partnerSet" colSpan="12" widget="TagSelect" title="Suppliers"
+      <field name="partnerSet" colSpan="12" widget="Tags" title="Suppliers"
         domain="self.isContact = false AND self.isSupplier = true AND :company member of self.companySet"/>
-      <field name="productSet" canEdit="false" colSpan="12" widget="TagSelect"
+      <field name="productSet" canEdit="false" colSpan="12" widget="Tags"
         domain="self.dtype = 'Product'"/>
       <label name="orLabel" title="OR"/>
-      <field name="productCategorySet" colSpan="12" widget="TagSelect"
+      <field name="productCategorySet" colSpan="12" widget="Tags"
         domain="self.dtype = 'Product'"/>
     </panel>
     <panel name="optionsPanel" title="Options" sidebar="true">

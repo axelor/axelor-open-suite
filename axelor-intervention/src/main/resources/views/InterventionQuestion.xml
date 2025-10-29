@@ -97,11 +97,11 @@
       <field name="defaultTextValue"/>
       <field name="checkboxName"/>
       <field name="answerValueList" grid-view="answer-value-grid"
-        form-view="answer-value-form" widget="TagSelect"/>
+        form-view="answer-value-form" widget="Tags"/>
       <field name="conditionalInterventionQuestion" grid-view="intervention-question-grid"
         form-view="intervention-question-form"/>
       <field name="conditionalAnswerValueSet" grid-view="answer-value-grid"
-        form-view="answer-value-form" widget="TagSelect"/>
+        form-view="answer-value-form" widget="Tags"/>
       <field name="advancedMonitoringAddress"/>
       <field name="intervention"/>
     </panel>

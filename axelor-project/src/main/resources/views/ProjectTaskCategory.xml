@@ -16,7 +16,7 @@
     <panel name="mainPanel">
       <field name="name"/>
       <spacer/>
-      <field name="projectTaskStatusSet" widget="TagSelect"
+      <field name="projectTaskStatusSet" widget="Tags"
         requiredIf="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
         if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory" readonly="true"/>
       <field name="completedTaskStatus"
@@ -26,12 +26,12 @@
         onSelect="action-project-task-category-attrs-set-completed-task-status-domain"/>
       <panel name="taskStatusManagementPanel" colSpan="12" showIf="!$readonly()"
         if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory">
-        <field name="$statusToAddSet" type="many-to-many" widget="TagSelect"
-          title="Status to add" onSelect="action-category-attrs-status-to-add-domain" colSpan="3"
+        <field name="$statusToAddSet" type="many-to-many" widget="Tags" title="Status to add"
+          onSelect="action-category-attrs-status-to-add-domain" colSpan="3"
           target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
         <button name="addStatusBtn" onClick="action-category-group-add-status"
           title="Add status" showIf="$statusToAddSet.length &gt; 0" colSpan="3"/>
-        <field name="$statusToRemoveSet" type="many-to-many" widget="TagSelect"
+        <field name="$statusToRemoveSet" type="many-to-many" widget="Tags"
           title="Status to remove" onSelect="action-category-attrs-status-to-remove-domain"
           colSpan="3" target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
         <button name="removeStatusBtn" onClick="action-category-group-remove-status"

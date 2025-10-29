@@ -198,12 +198,11 @@
 
         </panel>
         <panel name="managePeriodPanel" title="Period closure" colSpan="12">
-          <field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"
+          <field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="Tags"
             placeholder="None"/>
-          <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"
+          <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="Tags"
             placeholder="None"/>
-          <field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"
-            placeholder="None"/>
+          <field name="closureAuthorizedRoleList" colSpan="6" widget="Tags" placeholder="None"/>
         </panel>
         <panel name="reconcileDifferencesPanel" title="Reconcile differences" colSpan="12">
           <field name="thresholdDistanceFromRegulation"/>

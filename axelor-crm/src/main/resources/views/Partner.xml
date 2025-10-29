@@ -148,7 +148,7 @@
             <field if="__config__.app.getApp('base').getTeamManagement()" name="team"
               hideIf="isEmployee" colSpan="6" canEdit="false" form-view="team-form"
               grid-view="team-grid"/>
-            <field name="companySet" colSpan="12" widget="TagSelect" canNew="false"
+            <field name="companySet" colSpan="12" widget="Tags" canNew="false"
               form-view="company-form" grid-view="company-grid"/>
             <field if="__config__.app.getApp('crm')?.getAgenciesManagement()" name="agency"/>
           </panel>
@@ -207,8 +207,8 @@
         <panel name="corporatePanel" title="Corporate partner" showIf="isCorporatePartner">
           <panel name="mainInformationPanel" title="General information"
             showIf="isCorporatePartner" colSpan="6">
-            <field name="corporatePartnerDomainSet" widget="TagSelect"/>
-            <field name="workAreaSet" widget="TagSelect"/>
+            <field name="corporatePartnerDomainSet" widget="Tags"/>
+            <field name="workAreaSet" widget="Tags"/>
             <panel-related name="fidelityListPanel" field="fidelityList"
               form-view="fidelity-form" grid-view="fidelity-grid" colSpan="12"/>
             <field name="corporatePartnerSince"/>
@@ -421,7 +421,7 @@
       grid-view="partner-category-grid"/>
     <field name="user"/>
     <field if="__config__.app.getApp('base').getEnableMultiCompany()" name="companySet"
-      widget="TagSelect"/>
+      widget="Tags"/>
     <field name="leadScoringSelect" widget="Rating"/>
     <button if="__config__.app.isApp('crm')" if-module="axelor-crm" name="scheduleEventBtn"
       title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event"/>

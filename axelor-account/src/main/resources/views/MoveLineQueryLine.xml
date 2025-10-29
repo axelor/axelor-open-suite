@@ -56,7 +56,7 @@
       <field name="moveLine.amountRemaining" aggregate="sum"
         x-scale="moveLine.companyCurrencyDecimals"/>
       <field name="moveLine.taxLineSet" domain="self.endDate > :date OR self.endDate IS NULL"
-        widget="TagSelect"/>
+        widget="Tags"/>
       <field name="moveLine.analyticDistributionTemplate"
         if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         grid-view="analytic-distribution-template-grid"

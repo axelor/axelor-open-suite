@@ -89,7 +89,7 @@
       showIf="isSupplier || isCustomer || isSubcontractor">
       <field name="blockingList" colSpan="12" title="Blockings" showIf="$readonly()">
         <editor colSpan="12" x-viewer="true" x-show-on-new="false">
-          <field name="companySet" colSpan="3" widget="TagSelect"/>
+          <field name="companySet" colSpan="3" widget="Tags"/>
           <field name="blockingSelect" colSpan="2" selection="base.blocking.select"/>
           <field name="blockingToDate" colSpan="2">
             <hilite if="$moment(blockingToDate) &gt; $moment()" color="danger" strong="true"/>
@@ -103,7 +103,7 @@
         <editor x-show-on-new="false"
           onNew="action-blocking-record-default-companies,action-blocking-record-realized-by"
           colSpan="12">
-          <field name="companySet" colSpan="12" widget="TagSelect"
+          <field name="companySet" colSpan="12" widget="Tags"
             onSelect="action-blocking-attrs-domain-companySet" canNew="false"/>
           <field name="blockingSelect" colSpan="12" selection="base.blocking.select"
             widget="RadioSelect" required="true"/>

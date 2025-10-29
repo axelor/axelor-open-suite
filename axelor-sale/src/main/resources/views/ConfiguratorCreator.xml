@@ -61,9 +61,9 @@
       form-view="configurator-soline-formula-form" grid-view="configurator-soline-formula-grid"/>
 
     <panel name="authorizationsPanel" title="Authorizations" hideIf="id == null">
-      <field name="authorizedUserSet" widget="TagSelect" canEdit="false" canNew="false"
+      <field name="authorizedUserSet" widget="Tags" canEdit="false" canNew="false"
         form-view="user-form" grid-view="user-grid" colSpan="12"/>
-      <field name="authorizedGroupSet" widget="TagSelect" canEdit="false" canNew="false"
+      <field name="authorizedGroupSet" widget="Tags" canEdit="false" canNew="false"
         form-view="group-form" grid-view="group-grid" colSpan="12"/>
     </panel>
 

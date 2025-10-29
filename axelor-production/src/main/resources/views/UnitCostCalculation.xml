@@ -25,7 +25,7 @@
       <field name="name" colSpan="8" required="true"/>
     </panel>
     <panel name="startFilterPanel" colSpan="12" showIf="statusSelect == 1">
-      <field name="companySet" widget="TagSelect" required="true"
+      <field name="companySet" widget="Tags" required="true"
         if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
       <field name="$company" title="Company" required="true" type="many-to-one"
         target="com.axelor.apps.base.db.Company"
@@ -33,11 +33,11 @@
       <field name="productSubTypeSelect" widget="MultiSelect" selection-in="1,2"
         required="true"/>
       <field name="allBomLevels"/>
-      <field name="productSet" widget="TagSelect"
+      <field name="productSet" widget="Tags"
         onSelect="action-unit-cost-calculation-method-create-product-domain" canNew="false"
         colSpan="12"/>
-      <field name="productCategorySet" widget="TagSelect" colSpan="12"/>
-      <field name="productFamilySet" widget="TagSelect" colSpan="12"/>
+      <field name="productCategorySet" widget="Tags" colSpan="12"/>
+      <field name="productFamilySet" widget="Tags" colSpan="12"/>
     </panel>
     <panel-tabs name="mainPanelTabs" colSpan="12">
       <panel name="descriptionPanel" title="Description">
@@ -45,7 +45,7 @@
       </panel>
       <panel name="filtersPanel" title="Filters" showIf="statusSelect != 1"
         readonlyIf="statusSelect == 3">
-        <field name="companySet" widget="TagSelect" required="true"
+        <field name="companySet" widget="Tags" required="true"
           if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
         <field name="$company" title="Company" required="true" type="many-to-one"
           target="com.axelor.apps.base.db.Company"
@@ -53,11 +53,11 @@
         <field name="productSubTypeSelect" widget="MultiSelect" selection-in="1,2"
           required="true"/>
         <field name="allBomLevels"/>
-        <field name="productSet" widget="TagSelect"
+        <field name="productSet" widget="Tags"
           onSelect="action-unit-cost-calculation-method-create-product-domain" canNew="false"
           colSpan="12"/>
-        <field name="productCategorySet" widget="TagSelect" colSpan="12"/>
-        <field name="productFamilySet" widget="TagSelect" colSpan="12"/>
+        <field name="productCategorySet" widget="Tags" colSpan="12"/>
+        <field name="productFamilySet" widget="Tags" colSpan="12"/>
       </panel>
       <panel-related name="resultPanel" field="unitCostCalcLineList"
         grid-view="unit-cost-calc-line-grid" form-view="unit-cost-calc-line-form" height="20"

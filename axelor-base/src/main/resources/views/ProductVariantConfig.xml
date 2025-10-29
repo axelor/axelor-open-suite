@@ -33,35 +33,35 @@
       <field name="productVariantAttr1" canNew="true"
         onChange="action-product-variant-config-record-reset-variant-value1"
         grid-view="product-variant-attr-grid" form-view="product-variant-attr-form"/>
-      <field name="productVariantValue1Set" widget="TagSelect" canNew="false"
+      <field name="productVariantValue1Set" widget="Tags" canNew="false"
         showIf="productVariantAttr1" colSpan="12" form-view="product-variant-value-form"
         grid-view="product-variant-value-grid" onSelect="action-product-variant-config-attrs-domain"/>
       <field name="productVariantAttr2" canNew="true"
         onChange="action-product-variant-config-record-reset-variant-value2"
         showIf="productVariantAttr1" grid-view="product-variant-attr-grid"
         form-view="product-variant-attr-form"/>
-      <field name="productVariantValue2Set" widget="TagSelect" canNew="false"
+      <field name="productVariantValue2Set" widget="Tags" canNew="false"
         showIf="productVariantAttr2" colSpan="12" form-view="product-variant-value-form"
         grid-view="product-variant-value-grid" onSelect="action-product-variant-config-attrs-domain"/>
       <field name="productVariantAttr3" canNew="true"
         onChange="action-product-variant-config-record-reset-variant-value3"
         showIf="productVariantAttr2" grid-view="product-variant-attr-grid"
         form-view="product-variant-attr-form"/>
-      <field name="productVariantValue3Set" widget="TagSelect" canNew="false"
+      <field name="productVariantValue3Set" widget="Tags" canNew="false"
         showIf="productVariantAttr3" colSpan="12" form-view="product-variant-value-form"
         grid-view="product-variant-value-grid" onSelect="action-product-variant-config-attrs-domain"/>
       <field name="productVariantAttr4" canNew="true"
         onChange="action-product-variant-config-record-reset-variant-value4"
         showIf="productVariantAttr3" grid-view="product-variant-attr-grid"
         form-view="product-variant-attr-form"/>
-      <field name="productVariantValue4Set" widget="TagSelect" canNew="false"
+      <field name="productVariantValue4Set" widget="Tags" canNew="false"
         showIf="productVariantAttr4" colSpan="12" form-view="product-variant-value-form"
         grid-view="product-variant-value-grid" onSelect="action-product-variant-config-attrs-domain"/>
       <field name="productVariantAttr5" canNew="true"
         onChange="action-product-variant-config-record-reset-variant-value5"
         showIf="productVariantAttr4" grid-view="product-variant-attr-grid"
         form-view="product-variant-attr-form"/>
-      <field name="productVariantValue5Set" widget="TagSelect" canNew="false"
+      <field name="productVariantValue5Set" widget="Tags" canNew="false"
         showIf="productVariantAttr5" colSpan="12" form-view="product-variant-value-form"
         grid-view="product-variant-value-grid" onSelect="action-product-variant-config-attrs-domain"/>
     </panel>

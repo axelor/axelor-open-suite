@@ -200,7 +200,7 @@
           <field name="taxLineSet" canEdit="false" canNew="false"
             onChange="action-group-purchase-purchase-orderline-taxline-onchange"
             domain="self.endDate IS null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
-            form-view="tax-line-form" widget="TagSelect"/>
+            form-view="tax-line-form" widget="Tags"/>
           <field name="exTaxTotal" colSpan="3" readonly="true"
             x-scale="$currency.numberOfDecimals"/>
           <field name="inTaxTotal" colSpan="3" readonly="true"

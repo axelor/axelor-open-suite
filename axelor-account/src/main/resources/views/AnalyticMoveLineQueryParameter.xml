@@ -11,7 +11,7 @@
       onSelect="action-attrs-domain-axis-distribution-line"/>
     <field name="analyticAccountSet" grid-view="analytic-account-grid"
       form-view="analytic-account-info-form"
-      onSelect="action-method-domain-account-distribution-line" widget="TagSelect"/>
+      onSelect="action-method-domain-account-distribution-line" widget="Tags"/>
   </grid>
 
   <grid name="analytic-move-line-query-parameter-reverse-grid"

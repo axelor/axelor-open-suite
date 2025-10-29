@@ -28,15 +28,15 @@
     onNew="action-crm-reporting-method-prefill-companySet">
     <panel colSpan="12">
       <field name="typeSelect"/>
-      <field name="companySet" widget="TagSelect"
+      <field name="companySet" widget="Tags"
         if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-      <field name="agencySet" widget="TagSelect"
+      <field name="agencySet" widget="Tags"
         if="__config__.app.getApp('crm').getAgenciesManagement()"/>
-      <field name="teamSet" widget="TagSelect"
+      <field name="teamSet" widget="Tags"
         if="__config__.app.getApp('base').getTeamManagement()"/>
-      <field name="countrySet" widget="TagSelect"/>
-      <field name="industrySectorSet" widget="TagSelect"/>
-      <field name="categorySet" widget="TagSelect"/>
+      <field name="countrySet" widget="Tags"/>
+      <field name="industrySectorSet" widget="Tags"/>
+      <field name="categorySet" widget="Tags"/>
       <field name="fromDate" colSpan="3" requiredIf="toDate == null"/>
       <field name="toDate" colSpan="3" requiredIf="fromDate == null"/>
     </panel>

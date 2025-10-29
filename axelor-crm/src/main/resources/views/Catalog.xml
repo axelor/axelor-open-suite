@@ -69,7 +69,7 @@
         title="Template" form-view="template-form" grid-view="template-grid"
         domain="self.metaModel.fullName = 'com.axelor.apps.crm.db.Catalog' AND self.isSystem != true"
         colSpan="4" required="true"/>
-      <field name="$contactSet" title="Contact list" type="many-to-many" widget="TagSelect"
+      <field name="$contactSet" title="Contact list" type="many-to-many" widget="Tags"
         target="com.axelor.apps.base.db.Partner" form-view="partner-contact-form"
         grid-view="partner-contact-grid" colSpan="8" domain="self.isContact = true"/>
       <button name="validateBtn" colSpan="4" title="Validate"

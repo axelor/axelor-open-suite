@@ -8,7 +8,7 @@
     <field name="name"/>
     <field name="characteristicTypeSelect"/>
     <field name="unit"/>
-    <field name="characteristicSet" widget="TagSelect"/>
+    <field name="characteristicSet" widget="Tags"/>
   </grid>
 
   <form name="characteristic-type-form" title="Characteristic type"
@@ -17,8 +17,7 @@
       <field name="name"/>
       <field name="characteristicTypeSelect"/>
       <field name="unit"/>
-      <field name="characteristicSet" widget="TagSelect"
-        showIf="characteristicTypeSelect == 2"/>
+      <field name="characteristicSet" widget="Tags" showIf="characteristicTypeSelect == 2"/>
     </panel>
   </form>
 </object-views>

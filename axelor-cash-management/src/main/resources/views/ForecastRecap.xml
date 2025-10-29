@@ -25,7 +25,7 @@
       <field name="fromDate" onChange="action-forecast-recap-validate-dates" colSpan="4"/>
       <field name="toDate" onChange="action-forecast-recap-validate-dates" colSpan="4"/>
       <field if="__config__.app.getApp('base')?.getManageMultiBanks()" name="bankDetailsSet"
-        colSpan="4" widget="TagSelect" canNew="false"
+        colSpan="4" widget="Tags" canNew="false"
         onChange="action-forecast-recap-method-starting-balance"
         onSelect="action-forecast-recap-attrs-bank-details-domain"/>
       <field name="isReport"/>
@@ -65,7 +65,7 @@
         onChange="action-forecast-record-bank, action-forecast-recap-record-currency" colSpan="4"
         required="true"/>
       <field name="bankDetailsSet" onChange="action-forecast-recap-method-starting-balance"
-        onSelect="action-forecast-recap-attrs-bank-details-domain" widget="tagSelect"
+        onSelect="action-forecast-recap-attrs-bank-details-domain" widget="Tags"
         if="__config__.app.getApp('base')?.getManageMultiBanks()" colSpan="4" canNew="false"/>
       <field name="salesMan" canNew="false" canEdit="false" canView="false" colSpan="4"/>
       <field name="fromDate" onChange="action-forecast-recap-validate-dates" required="true"/>

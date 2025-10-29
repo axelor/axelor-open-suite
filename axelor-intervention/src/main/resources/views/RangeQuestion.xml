@@ -24,7 +24,7 @@
             onSelect="action-range-question-attrs-set-conditional-question-domain"/>
           <field name="conditionalAnswerValueSet" grid-view="answer-value-grid"
             form-view="answer-value-form" hidden="true" showIf="conditionalRangeQuestion"
-            requiredIf="isConditional" canNew="false" widget="TagSelect" colSpan="12"
+            requiredIf="isConditional" canNew="false" widget="Tags" colSpan="12"
             onSelect="action-range-question-attrs-set-conditional-answer-domain"
             validIf="isConditional === null || isConditional === false || conditionalAnswerValueSet.length > 0"/>
         </panel>

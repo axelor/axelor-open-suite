@@ -13,7 +13,7 @@
     <field name="fiscalPosition.code" title="Fiscal position"/>
     <field name="registrationCode"/>
     <field name="mainAddress"/>
-    <field name="companySet" widget="TagSelect"/>
+    <field name="companySet" widget="Tags"/>
     <button name="partnerPresentAtEventBtn" title="Present at the event" icon="fa-check"
       onClick="action-campaign-method-mark-partner-present" hidden="true"/>
   </grid>

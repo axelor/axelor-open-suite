@@ -5,8 +5,8 @@
 
   <grid name="tax-equiv-grid" title="Taxes equivalences"
     model="com.axelor.apps.account.db.TaxEquiv">
-    <field name="fromTaxSet" form-view="tax-form" grid-view="tax-grid" widget="TagSelect"/>
-    <field name="toTaxSet" form-view="tax-form" grid-view="tax-grid" widget="TagSelect"/>
+    <field name="fromTaxSet" form-view="tax-form" grid-view="tax-grid" widget="Tags"/>
+    <field name="toTaxSet" form-view="tax-form" grid-view="tax-grid" widget="Tags"/>
     <field name="reverseCharge" width="125px"/>
   </grid>
 
@@ -14,13 +14,13 @@
     model="com.axelor.apps.account.db.TaxEquiv" onLoad="action-tax-equiv-group-onload">
     <panel name="mainPanel">
       <field name="fromTaxSet" form-view="tax-form" grid-view="tax-grid" required="true"
-        onSelect="action-tax-equiv-attrs-from-tax-domain" widget="TagSelect"/>
+        onSelect="action-tax-equiv-attrs-from-tax-domain" widget="Tags"/>
       <field name="toTaxSet" form-view="tax-form" grid-view="tax-grid" required="true"
-        onSelect="action-tax-equiv-attrs-to-tax-domain" widget="TagSelect"/>
+        onSelect="action-tax-equiv-attrs-to-tax-domain" widget="Tags"/>
       <field name="reverseCharge" onChange="action-tax-equiv-record-empty-taxes"/>
       <field name="reverseChargeTaxSet" form-view="tax-form" grid-view="tax-grid"
         showIf="reverseCharge" requiredIf="reverseCharge"
-        onSelect="action-tax-equiv-attrs-reverse-charge-tax-domain" widget="TagSelect"/>
+        onSelect="action-tax-equiv-attrs-reverse-charge-tax-domain" widget="Tags"/>
       <field name="specificNote" colSpan="12" hidden="true"/>
     </panel>
   </form>

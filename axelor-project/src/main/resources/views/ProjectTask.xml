@@ -226,7 +226,7 @@
       <field name="site" onSelect="action-project-task-attrs-set-site-domain"
         form-view="site-form" grid-view="site-grid"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
-      <field name="watcherUserSet" widget="TagSelect" canNew="false" colSpan="6"
+      <field name="watcherUserSet" widget="Tags" canNew="false" colSpan="6"
         form-view="user-form" grid-view="user-grid" canEdit="false"/>
 
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
@@ -271,7 +271,7 @@
       <field name="taskEndDate" colSpan="4"
         onChange="action-project-task-attrs-set-task-duration"/>
       <field name="taskDeadline" title="Task deadline" colSpan="4"/>
-      <field name="tagSet" widget="TagSelect" x-color-field="color" form-view="tag-form"
+      <field name="tagSet" widget="Tags" x-color-field="color" form-view="tag-form"
         grid-view="tag-simplified-grid" colSpan="4"
         onSelect="action-project-task-method-set-tag-domain"/>
       <field name="progress" onChange="action-project-task-group-progress-onchange"

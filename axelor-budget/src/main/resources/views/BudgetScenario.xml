@@ -29,7 +29,7 @@
       <field name="name" title="Name" requiredIf="statusSelect == 0"/>
       <field name="code" title="Code" requiredIf="statusSelect == 0"/>
       <field name="company" requiredIf="statusSelect == 0"/>
-      <field name="yearSet" widget="TagSelect" showIf="company"
+      <field name="yearSet" widget="Tags" showIf="company"
         domain="self.company = :company AND self.typeSelect = 1"
         onChange="action-budget-scenario-group-year-onchange" canNew="false"/>
       <field name="budgetScenarioLineList" title="Budget Scenario Lines" height="550"
