@@ -59,6 +59,8 @@
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'shortcutMultiSelect', shortcutMultiSelect)"
       check-message="Invalid shortcutMultiSelect"/>
     <bind to="app" column="code" search="self.code = :code"/>
+    <bind to="barcodeTypeConfig" column="barcodeTypeConfig_name"
+      search="self.name = :barcodeTypeConfig_name"/>
   </input>
 
   <input file="base_fakerApiField.csv" type="com.axelor.apps.base.db.FakerApiField"
