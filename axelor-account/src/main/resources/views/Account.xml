@@ -116,10 +116,10 @@
           hideIf="accountType.technicalTypeSelect == 'view'" readonlyIf="isRegulatoryAccount"
           onChange="action-account-group-reconcile-onChange"/>
         <field name="accountType.technicalTypeSelect" hidden="true"/>
-        <field name="compatibleAccountSet" widget="TagSelect"
+        <field name="compatibleAccountSet" widget="Tags"
           showIf="reconcileOk  &amp;&amp; accountType.technicalTypeSelect != 'view'"
           domain="self.company = :company"/>
-        <field name="tagSet" widget="TagSelect" x-color-field="color"
+        <field name="tagSet" widget="Tags" x-color-field="color"
           grid-view="tag-simplified-grid" form-view="tag-form"
           onSelect="action-account-attrs-set-account-tag-domain"/>
         <panel name="taxSettingsPanel" title="Taxes" colSpan="12"
@@ -131,7 +131,7 @@
             colSpan="4" widget="boolean-switch"
             onChange="action-account-validate-check-move-tax-required"/>
           <field name="defaultTaxSet" showIf="isTaxAuthorizedOnMoveLine" colSpan="4"
-            widget="TagSelect" onChange="action-account-method-check-default-tax-set"/>
+            widget="Tags" onChange="action-account-method-check-default-tax-set"/>
           <field name="vatSystemSelect" colSpan="4" showIf="isTaxAuthorizedOnMoveLine"/>
         </panel>
         <panel name="analyticSettingsPanel" title="Analytic" colSpan="12">
@@ -228,7 +228,7 @@
       <spacer name="parentAccountSpacer" colSpan="6"/>
       <field name="useForPartnerBalance" colSpan="3"/>
       <field name="reconcileOk" colSpan="3"/>
-      <field name="compatibleAccountSet" widget="TagSelect" showIf="reconcileOk"/>
+      <field name="compatibleAccountSet" widget="Tags" showIf="reconcileOk"/>
     </panel>
   </form>
 

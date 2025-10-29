@@ -34,8 +34,8 @@
         <field name="computedAttendeeList" hidden="true"/>
       </panel>
       <panel panel="qiPanel" title="QI" colSpan="12">
-        <field name="qiResolutionDefaultsSet" widget="TagSelect" canNew="false"
-          canEdit="false" onSelect="action-qi-task-attrs-set-qi-resolution-defaults-set-domain"
+        <field name="qiResolutionDefaultsSet" widget="Tags" canNew="false" canEdit="false"
+          onSelect="action-qi-task-attrs-set-qi-resolution-defaults-set-domain"
           form-view="qi-resolution-default-form" grid-view="qi-resolution-default-grid"/>
         <field name="qiDecision" onChange="action-qi-task-group-qi-decision-on-change"
           domain="self.isProductDecision = true AND self.isPreventive = true"

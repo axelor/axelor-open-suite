@@ -60,7 +60,7 @@
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
       <field name="reconcile" form-view="reconcile-form" grid-view="reconcile-grid"/>
       <field name="taxLineSet" form-view="tax-line-form" grid-view="tax-line-grid"
-        widget="TagSelect"/>
+        widget="Tags"/>
       <field name="inTaxProratedAmount"/>
       <field name="exTaxProratedAmount"/>
       <field name="taxProratedAmount"/>

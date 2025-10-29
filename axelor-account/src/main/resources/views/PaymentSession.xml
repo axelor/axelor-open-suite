@@ -132,7 +132,7 @@
         onSelect="action-payment-session-method-set-journal-domain"/>
       <field name="currency" form-view="currency-form" grid-view="currency-grid"
         readonly="true"/>
-      <field name="partnerSet" widget="TagSelect" canNew="false" canEdit="false"
+      <field name="partnerSet" widget="Tags" canNew="false" canEdit="false"
         onSelect="action-payment-session-attrs-set-partner-domain" form-view="partner-form"
         readonlyIf="!company || !partnerTypeSelect"/>
     </panel>

@@ -166,7 +166,7 @@
         <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"
           domain="self.isCustomer=true AND :company member of self.companySet"
           onChange="action-manuf-order-attrs-sale-order-onchange-client-partner" canEdit="false"/>
-        <field name="saleOrderSet" widget="TagSelect" form-view="sale-order-form"
+        <field name="saleOrderSet" widget="Tags" form-view="sale-order-form"
           grid-view="sale-order-grid" onSelect="action-manuf-order-attrs-sale-order-onselect"
           canEdit="false"/>
         <field name="manufOrderMergeResult" showIf="manufOrderMergeResult"

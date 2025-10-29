@@ -105,7 +105,7 @@
             x-scale="$nbDecimalDigitForUnitPrice"/>
         </panel>
         <field name="taxLineSet" canEdit="false" canNew="false"
-          onChange="action-method-contract-line-compute-total" widget="TagSelect"/>
+          onChange="action-method-contract-line-compute-total" widget="Tags"/>
         <field name="unit" canEdit="false" onChange="action-contract-line-validate-unit-type"
           required="true"/>
         <field name="exTaxTotal" readonly="true"/>
@@ -188,7 +188,7 @@
         <field name="price" x-scale="$nbDecimalDigitForUnitPrice"
           onChange="action-method-contract-line-compute-total"/>
         <field name="taxLineSet" canEdit="false" canNew="false"
-          onChange="action-method-contract-line-compute-total" widget="TagSelect"/>
+          onChange="action-method-contract-line-compute-total" widget="Tags"/>
         <field name="unit" canEdit="false" required="true"/>
         <field name="exTaxTotal" readonly="true"/>
         <field name="inTaxTotal" readonly="true"/>
@@ -240,7 +240,7 @@
       <field name="productName"/>
       <field name="qty" readonlyIf="isConsumptionLine" x-scale="$nbDecimalDigitForQty"/>
       <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
-      <field name="taxLineSet" canEdit="false" widget="TagSelect" canNew="false"/>
+      <field name="taxLineSet" canEdit="false" widget="Tags" canNew="false"/>
       <field name="unit" canEdit="false" required="true"/>
       <field name="isConsumptionLine"
         onChange="action-method-contract-line-change-is-consumption-line"/>
@@ -259,7 +259,7 @@
       <field name="productName"/>
       <field name="qty" x-scale="$nbDecimalDigitForQty"/>
       <field name="price" x-scale="$nbDecimalDigitForUnitPrice"/>
-      <field name="taxLineSet" canEdit="false" widget="TagSelect" canNew="false"/>
+      <field name="taxLineSet" canEdit="false" widget="Tags" canNew="false"/>
       <field name="unit" canEdit="false" required="true"/>
       <field name="description" colSpan="12" widget="html"/>
     </panel>

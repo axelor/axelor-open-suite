@@ -147,8 +147,8 @@
       onChange="action-budget-method-compute-total-amount" readonlyIf="statusSelect != 1"
       colSpan="12"/>
     <panel name="budgetKeyPanel" colSpan="12" readonlyIf="statusSelect != 1">
-      <field name="accountSet" widget="TagSelect" canSelect="true" canNew="false"
-        canEdit="false" colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
+      <field name="accountSet" widget="Tags" canSelect="true" canNew="false" canEdit="false"
+        colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onChange="action-axis-change-remove-account"
         onSelect="action-method-budget-analytic-axis-set-domain"/>
@@ -182,8 +182,8 @@
       <field name="category" required="true" colSpan="3"/>
     </panel>
     <panel colSpan="12" name="keyPanel">
-      <field name="accountSet" widget="TagSelect" canSelect="true" canNew="false"
-        canEdit="false" colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
+      <field name="accountSet" widget="Tags" canSelect="true" canNew="false" canEdit="false"
+        colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onChange="action-axis-change-remove-account"
         onSelect="action-method-budget-analytic-axis-set-domain"/>

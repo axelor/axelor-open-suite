@@ -8,7 +8,7 @@
     <field name="name"/>
     <field name="reportExportTypeSelect"/>
     <field name="typeSelect"/>
-    <field name="companySet" widget="TagSelect"/>
+    <field name="companySet" widget="Tags"/>
     <field name="company" hidden="true"/>
   </grid>
 
@@ -26,7 +26,7 @@
         <field name="company" onChange="action-accounting-report-type-record-company-onchange"
           showIf="typeSelect != 3000" requiredIf="typeSelect != 3000"/>
         <field name="companySet" showIf="typeSelect == 3000" requiredIf="typeSelect == 3000"
-          widget="TagSelect"/>
+          widget="Tags"/>
       </panel>
       <field name="reportExportTypeSelect" validIf="reportExportTypeSelect > 0"
         onChange="action-accounting-report-type-record-typeselect-onchange"/>

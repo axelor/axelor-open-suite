@@ -176,7 +176,7 @@
           form-view="employee-form"
           onSelect="action-expense-line-method-set-invited-collaborators-domain" hidden="true"
           showIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal"
-          requiredIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal" widget="TagSelect"/>
+          requiredIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal" widget="Tags"/>
         <field name="comments" colSpan="12"/>
         <field name="expense" hidden="true"/>
         <field name="expense.companyCbSelect" hidden="true"/>

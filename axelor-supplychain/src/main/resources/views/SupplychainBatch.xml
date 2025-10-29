@@ -43,7 +43,7 @@
           if="__config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()"/>
         <panel name="subInvoiceOrderConfig1Panel" showIf="invoiceOrdersTypeSelect == 1"
           colSpan="12">
-          <field name="salespersonOrBuyerSet" widget="TagSelect" title="Salespersons"/>
+          <field name="salespersonOrBuyerSet" widget="Tags" title="Salespersons"/>
           <field name="team"/>
           <field name="orderUpToDate"/>
           <field name="deliveryOrReceiptState" widget="MultiSelect"
@@ -53,7 +53,7 @@
         </panel>
         <panel name="subInvoiceOrderConfig2Panel" showIf="invoiceOrdersTypeSelect == 2"
           colSpan="12">
-          <field name="salespersonOrBuyerSet" widget="TagSelect" title="Buyers"/>
+          <field name="salespersonOrBuyerSet" widget="Tags" title="Buyers"/>
           <field name="team"/>
           <field name="orderUpToDate"/>
           <field name="deliveryOrReceiptState" widget="MultiSelect"

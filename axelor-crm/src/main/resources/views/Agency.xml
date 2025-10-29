@@ -11,7 +11,7 @@
 
     <panel colSpan="12">
       <field name="name"/>
-      <field name="memberSet" widget="TagSelect" colSpan="12"/>
+      <field name="memberSet" widget="Tags" colSpan="12"/>
     </panel>
 
   </form>

@@ -13,7 +13,7 @@
   <form name="qi-analysis-cause-form" title="QI Analysis Cause"
     model="com.axelor.apps.quality.db.QIAnalysisCause">
     <panel name="mainPanel">
-      <field name="qiResolutionDefaultsSet" widget="TagSelect" canNew="false" canEdit="false"
+      <field name="qiResolutionDefaultsSet" widget="Tags" canNew="false" canEdit="false"
         onSelect="action-qi-analysis-cause-attrs-set-qi-resolution-defaults-set-domain"
         form-view="qi-resolution-default-form" grid-view="qi-resolution-default-grid"/>
       <field name="causeLevel"/>

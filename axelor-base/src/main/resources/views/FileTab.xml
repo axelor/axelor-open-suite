@@ -22,7 +22,7 @@
       <field name="searchCall"
         onChange="action-file-tab-method-on-change-validate-search-call"
         showIf="(importType == 1 || importType == 2) &amp;&amp; metaModel != null &amp;&amp; (searchFieldSet.length === 0 || !searchFieldSet)"/>
-      <field name="searchFieldSet" domain="self.fileTab = :id" widget="TagSelect"
+      <field name="searchFieldSet" domain="self.fileTab = :id" widget="Tags"
         form-view="file-field-form" grid-view="file-field-grid" colSpan="12" canNew="false"
         showIf="(importType == 1 || importType == 2) &amp;&amp; metaModel != null &amp;&amp; !searchCall"/>
       <panel-related field="fileFieldList" onChange="action-file-tab-method-compute"

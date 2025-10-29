@@ -25,7 +25,7 @@
         domain="self.isScenario IS TRUE AND self.company = :company" showIf="company"/>
       <field name="budgetScenario" domain="self.company = :company AND self.statusSelect = 1"
         showIf="company"/>
-      <field name="yearSet" widget="TagSelect" hideIf="!budgetScenario" canNew="false"
+      <field name="yearSet" widget="Tags" hideIf="!budgetScenario" canNew="false"
         canEdit="false" onSelect="action-budget-generator-attrs-set-year-domain"
         domain="self.company = :budgetScenario.company AND self.typeSelect = 1"/>
     </panel>

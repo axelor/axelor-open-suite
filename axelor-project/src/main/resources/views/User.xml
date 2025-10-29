@@ -24,8 +24,8 @@
         <field name="isIncludeSubProjects" showIf="activeProject"/>
         <field name="favouriteProjectSet" colSpan="12"
           domain=":__self__ member of self.membersUserSet" if-module="axelor-project"
-          if="__config__.app.isApp('project')" widget="TagSelect" canNew="false"
-          form-view="project-form" grid-view="project-grid"/>
+          if="__config__.app.isApp('project')" widget="Tags" canNew="false" form-view="project-form"
+          grid-view="project-grid"/>
       </insert>
     </extend>
 
@@ -49,7 +49,7 @@
           if-module="axelor-project" if="__config__.app.isApp('project')"/>
         <field name="isIncludeSubProjects" showIf="activeProject"/>
         <field name="favouriteProjectSet" domain=":__self__ member of self.membersUserSet"
-          if-module="axelor-project" if="__config__.app.isApp('project')" widget="TagSelect"
+          if-module="axelor-project" if="__config__.app.isApp('project')" widget="Tags"
           canNew="false" form-view="project-form" grid-view="project-grid"/>
       </insert>
     </extend>

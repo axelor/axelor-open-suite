@@ -33,7 +33,7 @@
         </editor>
       </field>
       <field name="mediaTypeSelect"/>
-      <field name="localizationSet" widget="TagSelect" canEdit="false" canNew="false"
+      <field name="localizationSet" widget="Tags" canEdit="false" canNew="false"
         form-view="localization-form" grid-view="localization-grid"/>
       <field name="templateEngineSelect"/>
       <field name="isJson" onChange="action-template-record-is-json-change"/>
@@ -82,7 +82,7 @@
         <panel-related name="templateContextPanel" field="templateContextList"
           colSpan="12"/>
         <panel name="attachedFilesPanel" title="Attached files" colSpan="12">
-          <field name="printTemplateSet" colSpan="12" widget="TagSelect" canEdit="false"
+          <field name="printTemplateSet" colSpan="12" widget="Tags" canEdit="false"
             form-view="printing-template-form" grid-view="printing-template-grid"/>
         </panel>
       </panel>

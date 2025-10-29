@@ -87,7 +87,7 @@
         form-view="partner-contact-form"/>
       <separator title="Request details" colSpan="12"/>
       <field name="equipmentSet" grid-view="equipment-grid" form-view="equipment-form"
-        widget="TagSelect" canNew="false"
+        widget="Tags" canNew="false"
         domain="self.partner = :deliveredPartner AND self.typeSelect = 'equipment'"
         onChange="action-customer-request-group-equipments-change"/>
       <field name="contract" grid-view="contract-grid" form-view="contract-form"

@@ -54,7 +54,7 @@
       <panel-related name="printTemplateLineListPanel" field="printTemplateLineList"
         grid-view="print-template-line-grid" form-view="print-template-line-form" colSpan="12"
         orderBy="sequence" canMove="true"/>
-      <field name="printingTemplateSet" widget="TagSelect" grid-view="printing-template-grid"
+      <field name="printingTemplateSet" widget="Tags" grid-view="printing-template-grid"
         form-view="printing-template-form" colSpan="12"/>
       <panel-related name="printTemplateSetPanel" field="printTemplateSet"
         grid-view="print-template-grid" form-view="print-template-form" colSpan="12"/>

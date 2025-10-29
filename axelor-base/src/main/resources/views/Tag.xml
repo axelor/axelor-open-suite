@@ -6,9 +6,9 @@
   <grid title="Tag" name="tag-grid" model="com.axelor.apps.base.db.Tag">
     <field name="name"/>
     <field name="color" widget="ColorPicker"/>
-    <field name="concernedModelSet" widget="TagSelect" canNew="false"/>
-    <field name="companySet" widget="TagSelect" canNew="false"/>
-    <field name="tradingNameSet" widget="TagSelect" canNew="false"
+    <field name="concernedModelSet" widget="Tags" canNew="false"/>
+    <field name="companySet" widget="Tags" canNew="false"/>
+    <field name="tradingNameSet" widget="Tags" canNew="false"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </grid>
 
@@ -16,8 +16,8 @@
   <grid title="Tag" name="tag-simplified-grid" model="com.axelor.apps.base.db.Tag">
     <field name="name"/>
     <field name="color" widget="ColorPicker"/>
-    <field name="companySet" widget="TagSelect" canNew="false"/>
-    <field name="tradingNameSet" widget="TagSelect" canNew="false"
+    <field name="companySet" widget="Tags" canNew="false"/>
+    <field name="tradingNameSet" widget="Tags" canNew="false"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </grid>
 
@@ -26,16 +26,15 @@
     <panel name="mainPanel" colSpan="12">
       <field name="name"/>
       <field name="concernedModelSet" placeholder="All" form-view="meta-model-form"
-        grid-view="meta-model-grid" widget="TagSelect" canNew="false"
+        grid-view="meta-model-grid" widget="Tags" canNew="false"
         onSelect="action-tag-method-concerned-model-onselect"/>
       <field name="color" widget="ColorPicker"/>
       <field name="companySet" if="__config__.app.getApp('base')?.getEnableMultiCompany()"
-        colSpan="6" canNew="false" widget="TagSelect" placeholder="All" form-view="company-form"
+        colSpan="6" canNew="false" widget="Tags" placeholder="All" form-view="company-form"
         grid-view="company-grid"/>
       <field name="tradingNameSet"
         if="__config__.app.getApp('base')?.enableTradingNamesManagement" colSpan="6" canNew="false"
-        widget="TagSelect" placeholder="All" grid-view="trading-name-grid"
-        form-view="trading-name-form"/>
+        widget="Tags" placeholder="All" grid-view="trading-name-grid" form-view="trading-name-form"/>
     </panel>
   </form>
 

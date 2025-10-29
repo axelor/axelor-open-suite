@@ -29,7 +29,7 @@
         <field name="leaveReasonSet" colSpan="3"
           onChange="action-hr-batch-record-reset-leave-reason-type-select"
           requiredIf="actionSelect == 1 &amp;&amp; !leaveReasonTypeSelect"
-          readonlyIf="leaveReasonTypeSelect" widget="TagSelect"/>
+          readonlyIf="leaveReasonTypeSelect" widget="Tags"/>
         <field name="leaveReasonTypeSelect" colSpan="3"
           requiredIf="actionSelect == 1 &amp;&amp; !leaveReasonSet"
           onChange="action-hr-batch-record-reset-leave-reasons"
@@ -38,7 +38,7 @@
         <field name="dayNumber" colSpan="3" requiredIf="actionSelect == 1"/>
         <field name="useWeeklyPlanningCoef" colSpan="3"/>
         <field name="planningSet" grid-view="weekly-planning-grid"
-          form-view="weekly-planning-form" widget="TagSelect"/>
+          form-view="weekly-planning-form" widget="Tags"/>
         <field name="startDate" colSpan="3"/>
         <field name="endDate" colSpan="3"/>
         <panel-related name="employeeSetPanel" field="employeeSet"
@@ -51,7 +51,7 @@
 
       <panel name="seniorityLeaveManagementPanel" title="Seniority leave management page"
         hidden="true" showIf="actionSelect == 2">
-        <field name="leaveReasonSet" colSpan="4" widget="TagSelect"/>
+        <field name="leaveReasonSet" colSpan="4" widget="Tags"/>
         <field name="comments" colSpan="8"/>
         <field name="startDate" colSpan="4"/>
         <field name="endDate" colSpan="4"/>
@@ -66,7 +66,7 @@
           domain="self.year.company = :company AND self.year.typeSelect = 2" colSpan="4"
           canEdit="false" canView="false"/>
         <field name="planningSet" grid-view="weekly-planning-grid"
-          form-view="weekly-planning-form" widget="TagSelect" colSpan="8"/>
+          form-view="weekly-planning-form" widget="Tags" colSpan="8"/>
         <field name="comments" colSpan="12"/>
         <panel-related name="employeeSetPanel" field="employeeSet"
           target="com.axelor.apps.hr.db.Employee"
@@ -92,7 +92,7 @@
       <panel name="leaveManagementResetPanel" title="Leave counter reset" hidden="true"
         showIf="actionSelect == 5">
         <field name="leaveReasonSet" colSpan="3"
-          onChange="action-hr-batch-record-reset-leave-reason-type-select" widget="TagSelect"
+          onChange="action-hr-batch-record-reset-leave-reason-type-select" widget="Tags"
           domain="self.leaveReasonTypeSelect != 2 AND self.isToBeResetYearly = true"
           placeholder="All"/>
         <field name="comments" colSpan="9"/>
@@ -100,7 +100,7 @@
         <field name="endDate" colSpan="3"/>
         <panel-related name="planningSetPanel" field="planningSet"
           target="com.axelor.apps.base.db.WeeklyPlanning" grid-view="weekly-planning-grid"
-          form-view="weekly-planning-form" widget="TagSelect" colSpan="12"/>
+          form-view="weekly-planning-form" widget="Tags" colSpan="12"/>
         <panel-related name="employeeSetPanel" field="employeeSet"
           target="com.axelor.apps.hr.db.Employee"
           onSelect="action-hr-batch-attrs-employee-set-domain" grid-view="employee-lite-grid"

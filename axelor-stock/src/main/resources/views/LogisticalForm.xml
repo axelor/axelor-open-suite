@@ -94,7 +94,7 @@
       <panel name="LinesPanel" title="Lines" readonlyIf="statusSelect == 3" hidden="true">
         <panel name="stockMovePanel" colSpan="12">
           <field name="stockMoveList" grid-view="stock-move-out-grid"
-            form-view="stock-move-form" colSpan="6" widget="TagSelect"
+            form-view="stock-move-form" colSpan="6" widget="Tags"
             onSelect="action-logistical-form-method-stock-move-domain" canEdit="false"
             onChange="action-logistical-form-group-stock-move-list-change"/>
           <panel-dashlet name="stockMoveLinesPanel"

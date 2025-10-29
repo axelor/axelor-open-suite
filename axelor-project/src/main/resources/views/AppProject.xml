@@ -12,7 +12,7 @@
       <field name="checkResourceAvailibility" widget="boolean-switch"
         showIf="resourceManagement"/>
       <field name="isEnablePerProjectTaskSequence" widget="boolean-switch"/>
-      <field name="defaultPrioritySet" widget="TagSelect" canEdit="false"/>
+      <field name="defaultPrioritySet" widget="Tags" canEdit="false"/>
       <field name="selectAutoProgressOnProjectTask"/>
       <field name="fullNameGroovyFormula"/>
       <panel title="Custom fields" name="customFieldConfigPanel" colSpan="12" showIf="id">
@@ -31,7 +31,7 @@
     </panel>
 
     <panel name="taskStatusMgtPanel" title="Task status management">
-      <field name="defaultTaskStatusSet" canEdit="false" widget="TagSelect" colSpan="12"
+      <field name="defaultTaskStatusSet" canEdit="false" widget="Tags" colSpan="12"
         onChange="action-app-project-method-manage-completed-task-status"/>
       <field name="completedTaskStatus" grid-view="task-status-grid"
         form-view="task-status-form"

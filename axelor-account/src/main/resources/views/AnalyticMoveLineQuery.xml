@@ -41,7 +41,7 @@
               onChange="action-analytic-move-line-search-query-attrs-axis-onchange"/>
             <field name="analyticAccountSet" grid-view="analytic-account-grid"
               form-view="analytic-account-info-form" canNew="false" canEdit="false"
-              onSelect="action-method-domain-account-distribution-line" widget="TagSelect"/>
+              onSelect="action-method-domain-account-distribution-line" widget="Tags"/>
           </editor>
         </field>
       </panel>

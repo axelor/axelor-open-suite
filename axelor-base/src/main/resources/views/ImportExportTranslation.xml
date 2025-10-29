@@ -6,7 +6,7 @@
   <grid name="import-export-translation-grid" title="Import/Export translation"
     model="com.axelor.apps.base.db.ImportExportTranslation">
     <field name="name" title="Name"/>
-    <field name="languageSet" title="Languages" widget="tagSelect"/>
+    <field name="languageSet" title="Languages" widget="Tags"/>
     <field name="uploadFile" title="Uploaded File"/>
 
   </grid>
@@ -15,8 +15,7 @@
     model="com.axelor.apps.base.db.ImportExportTranslation">
     <panel name="infoPanel" colSpan="12">
       <field name="name" title="Name" required="true"/>
-      <field name="languageSet" title="Languages" widget="tagSelect" required="true"
-        canNew="false"/>
+      <field name="languageSet" title="Languages" widget="Tags" required="true" canNew="false"/>
     </panel>
     <panel sidebar="true" name="importExportPanel" title="Import/Export" showTitle="false"
       colSpan="12">

@@ -7,7 +7,7 @@
     canDelete="false" canNew="false" width="large">
     <panel name="mainPanel">
       <field name="assignableUsers"/>
-      <field name="groupsAssignable" showIf="assignableUsers == 1" widget="TagSelect"
+      <field name="groupsAssignable" showIf="assignableUsers == 1" widget="Tags"
         requiredIf="assignableUsers == 1"/>
       <field name="displayCustomerDescriptionInOpportunity" widget="boolean-switch"/>
       <field name="isManageRecurrent" widget="boolean-switch" colSpan="3"/>

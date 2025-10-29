@@ -14,12 +14,12 @@
     <panel name="mainPanel">
       <field name="typeSelect"/>
       <field name="name"/>
-      <field name="contractTypeSet" colSpan="5" widget="TagSelect"
+      <field name="contractTypeSet" colSpan="5" widget="Tags"
         form-view="employment-contract-type-form" grid-view="employment-contract-type-grid"
         onChange="action-employment-amendment-type-method-contract-type-set-on-change"/>
-      <field name="companySet" widget="TagSelect" colSpan="5"/>
+      <field name="companySet" widget="Tags" colSpan="5"/>
       <field name="allCompanies" colSpan="2"/>
-      <field name="employmentContractSubTypeSet" widget="TagSelect"
+      <field name="employmentContractSubTypeSet" widget="Tags"
         form-view="employment-contract-sub-type-form" grid-view="employment-contract-sub-type-grid"
         onSelect="action-employment-amendment-type-method-set-employment-contract-sub-type-set-domain"
         canNew="false"/>

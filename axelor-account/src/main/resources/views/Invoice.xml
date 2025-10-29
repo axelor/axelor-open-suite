@@ -749,8 +749,8 @@
         showIf="((operationSubTypeSelect != 2 &amp;&amp; $contains([1, 3], operationTypeSelect)) || (operationSubTypeSelect != 1 &amp;&amp; $contains([2, 4], operationTypeSelect)))
         &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp; InvoiceSet.length > 0))"
         if="__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()">
-        <field name="advancePaymentInvoiceSet" widget="TagSelect" canNew="false"
-          canEdit="false" onSelect="action-invoice-method-create-advance-payment-domain"
+        <field name="advancePaymentInvoiceSet" widget="Tags" canNew="false" canEdit="false"
+          onSelect="action-invoice-method-create-advance-payment-domain"
           readonlyIf="statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)"
           form-view="invoice-form" grid-view="invoice-grid"/>
       </panel>

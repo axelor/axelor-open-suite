@@ -38,7 +38,7 @@
 
     <panel-tabs name="mainPanelTab">
       <panel title="Task template" name="taskPanel">
-        <field name="taskTemplateSet" widget="TagSelect" canNew="false" canEdit="false"
+        <field name="taskTemplateSet" widget="Tags" canNew="false" canEdit="false"
           colSpan="12" onChange="action-project-template-method-add-parent-task-template,save"/>
       </panel>
 
@@ -46,7 +46,7 @@
         <field name="team" title="Team" readonlyIf="synchronize" colSpan="6" canNew="false"
           canEdit="false"/>
         <field name="synchronize" colSpan="2" widget="boolean-switch"/>
-        <field name="membersUserSet" colSpan="12" widget="TagSelect" canNew="false"
+        <field name="membersUserSet" colSpan="12" widget="Tags" canNew="false"
           form-view="user-form" grid-view="user-grid" hideIf="synchronize" canEdit="false"/>
       </panel>
 
@@ -54,15 +54,15 @@
 
       <panel title="Configurations" name="configurationsPanel">
         <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
-          name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
+          name="productSet" colSpan="12" widget="Tags" canEdit="false"
           domain="self.isActivity = true AND self.dtype = 'Product'"
           form-view="product-activity-form" grid-view="product-activity-grid"/>
         <field name="taskStatusManagementSelect" widget="RadioSelect" colSpan="12"
           onChange="action-project-template-record-manage-task-status-set"/>
-        <field name="projectTaskStatusSet" widget="TagSelect" colSpan="12"
+        <field name="projectTaskStatusSet" widget="Tags" colSpan="12"
           showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2"
           canEdit="false"/>
-        <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect" canEdit="false"
+        <field name="projectTaskCategorySet" colSpan="12" widget="Tags" canEdit="false"
           requiredIf="taskStatusManagementSelect == 4"/>
       </panel>
     </panel-tabs>

@@ -25,9 +25,9 @@
       <field name="contractSubType"
         onSelect="action-probation-period-attrs-contract-sub-type-set-domain"
         showIf="contractType != null &amp;&amp; contractType.employmentContractSubTypeList != null &amp;&amp; contractType.employmentContractSubTypeList.length &gt; 0"/>
-      <field name="collectiveAgreementSet" widget="TagSelect"
-        form-view="collective-agreement-form" grid-view="collective-agreement-grid" colSpan="12"/>
-      <field name="qualificationSet" widget="TagSelect" form-view="qualification-form"
+      <field name="collectiveAgreementSet" widget="Tags" form-view="collective-agreement-form"
+        grid-view="collective-agreement-grid" colSpan="12"/>
+      <field name="qualificationSet" widget="Tags" form-view="qualification-form"
         grid-view="qualification-grid"
         onSelect="action-probation-period-attrs-qualification-set-on-select" colSpan="12"/>
       <field name="isPreviouslyHired"/>

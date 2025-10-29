@@ -10,7 +10,7 @@
         <separator title="Project" colSpan="12"/>
         <field name="enableSiteManagementForProject" widget="boolean-switch"
           if="__config__.app.isApp('project')"/>
-        <field name="defaultSitesSet" widget="TagSelect" hidden="true"
+        <field name="defaultSitesSet" widget="Tags" hidden="true"
           showIf="enableSiteManagementForProject" if="__config__.app.isApp('project')"
           domain="self.isUsableOnProject = true"/>
       </insert>

@@ -18,7 +18,7 @@
         showIf="isCustomizeMenuEnabled" onClick="action-mobile-config-method-select-all-menus"
         colSpan="3"/>
       <field name="authorizedRoles" placeholder="All" colSpan="6" canNew="false"
-        canEdit="false" widget="TagSelect"/>
+        canEdit="false" widget="Tags"/>
     </panel>
     <panel-tabs hidden="true" hideIf="!isCustomizeMenuEnabled">
       <panel name="menusConfig" title="Menus config" hidden="true"
