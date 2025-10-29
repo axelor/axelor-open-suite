@@ -29,4 +29,6 @@ public interface TrackingNumberSupplychainService {
   void freeOriginSaleOrderLine(TrackingNumber trackingNumber);
 
   void freeOriginPurchaseOrderLine(PurchaseOrderLine purchaseOrderLine);
+
+  void freeOriginPurchaseOrderLine(TrackingNumber trackingNumber);
 }

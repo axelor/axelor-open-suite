@@ -49,10 +49,10 @@ public class TrackingNumberSupplychainServiceImpl implements TrackingNumberSuppl
   public void freeOriginPurchaseOrderLine(PurchaseOrderLine purchaseOrderLine) {
     trackingNumberRepository
         .all()
-        .filter("self.originPurchaseOrderLine = :saleOrderLine")
+        .filter("self.originPurchaseOrderLine = :purchaseOrderLine")
         .bind("purchaseOrderLine", purchaseOrderLine)
         .fetch()
-        .forEach(this::freeOriginSaleOrderLine);
+        .forEach(this::freeOriginPurchaseOrderLine);
   }
 
   @Override
@@ -61,5 +61,13 @@ public class TrackingNumberSupplychainServiceImpl implements TrackingNumberSuppl
     Objects.requireNonNull(trackingNumber);
 
     trackingNumber.setOriginSaleOrderLine(null);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void freeOriginPurchaseOrderLine(TrackingNumber trackingNumber) {
+    Objects.requireNonNull(trackingNumber);
+
+    trackingNumber.setOriginPurchaseOrderLine(null);
   }
 }

@@ -1,0 +1,3 @@
+---
+title: "Tracking number: fixed the value of origin purchase order line when cancelling the stock moves."
+module: axelor-supplychain
