@@ -1,0 +1,3 @@
+---
+title: "SALEORDER/INVOICE/MOVE : Add a consistency check on fiscal position"
+module: axelor-supplychain

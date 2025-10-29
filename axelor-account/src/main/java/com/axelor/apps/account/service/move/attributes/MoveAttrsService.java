@@ -75,4 +75,6 @@ public interface MoveAttrsService {
   void addCompanyDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
   void addCompanyBankDetailsDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+
+  void addFiscalPositionWarningHidden(Move move, Map<String, Map<String, Object>> attrsMap);
 }
