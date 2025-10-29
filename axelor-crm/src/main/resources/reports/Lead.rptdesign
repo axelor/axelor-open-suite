@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -164,8 +164,8 @@
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">logopath</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -290,9 +290,9 @@
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">logopath</property>
-                    <property name="nativeName">logopath</property>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
@@ -428,7 +428,7 @@
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select
-Lead.id as id,MetaFile.file_path as logopath,
+Lead.id as id,MetaFile.id as logo_id,
 Company.height as logo_height,
 Company.width as logo_width,
 Lead.description,Lead.created_on, Lead.updated_on, Lead.created_by, Lead.updated_by, Lead.title_select,
@@ -2600,12 +2600,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">logopath</property>
-                    <text-property name="displayName">logopath</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logopath"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">logo_height</property>
                     <text-property name="displayName">logo_height</text-property>
                     <expression name="expression" type="javascript">dataSetRow["logo_height"]</expression>
@@ -2737,6 +2731,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <expression name="expression" type="javascript">dataSetRow["full_name"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <property name="pageBreakInterval">40</property>
             <column id="3819">
@@ -2777,15 +2777,20 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
-                                                <expression name="valueExpr" type="javascript">row["logopath"] == null</expression>
+                                                <expression name="valueExpr" type="javascript">row["logo_id"] == null</expression>
                                             </structure>
                                         </list-property>
+                                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
                                         <method name="onRender"><![CDATA[if(row["logo_width"] &amp;&amp; row["logo_height"]){
     this.width=row["logo_width"]+'px';
     this.height=row["logo_height"]+'px';
 }]]></method>
-                                        <property name="source">file</property>
-                                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logopath"]</expression>
+                                        <property name="source">expr</property>
                                     </image>
                                 </cell>
                                 <cell id="3353"/>
