@@ -43,3 +43,4 @@
 "perm.stock.rules.r";"com.axelor.apps.stock.db.StockRules";"true";"false";"false";"false";"false";;
 "perm.bill.of.material.r";"com.axelor.apps.production.db.BillOfMaterial";"true";"false";"false";"false";"false";;
 "perm.base.Wizard.r";"com.axelor.utils.db.Wizard";"true";"false";"false";"false";"false";;
+"perm.base.Wizard.rwc";"com.axelor.utils.db.Wizard";"true";"true";"true";"false";"false";;
