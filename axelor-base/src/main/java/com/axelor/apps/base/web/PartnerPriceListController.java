@@ -63,6 +63,7 @@ public class PartnerPriceListController {
     response.setAttr(
         "priceListSet",
         "domain",
-        String.format("self.typeSelect = %d AND self.currency = %d", typeSelect, currency.getId()));
+        String.format(
+            "self.typeSelect = %d AND self.currency.id = %d", typeSelect, currency.getId()));
   }
 }
