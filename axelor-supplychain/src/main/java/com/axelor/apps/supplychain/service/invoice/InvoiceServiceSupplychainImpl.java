@@ -393,4 +393,11 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       }
     }
   }
+
+  @Override
+  public boolean hasFiscalPositionMismatch(Invoice invoice) {
+    SaleOrder saleOrder = invoice.getSaleOrder();
+    return saleOrder != null
+        && !Objects.equals(saleOrder.getFiscalPosition(), invoice.getFiscalPosition());
+  }
 }

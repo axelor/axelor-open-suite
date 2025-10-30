@@ -518,4 +518,13 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         + StringHelper.getIdListString(bankDetailsList)
         + ") AND self.active = true";
   }
+
+  @Override
+  public void addFiscalPositionWarningHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+    boolean hidden = true;
+    if (move != null && move.getInvoice() != null) {
+      hidden = Objects.equals(move.getFiscalPosition(), move.getInvoice().getFiscalPosition());
+    }
+    this.addAttr("fiscalPositionWarningPanel", "hidden", hidden, attrsMap);
+  }
 }

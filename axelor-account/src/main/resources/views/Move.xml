@@ -146,6 +146,19 @@
             colSpan="3" onChange="action-move-method-payment-mode-onchange"
             form-view="payment-mode-form" grid-view="payment-mode-grid"
             onSelect="action-move-method-payment-mode-onselect"/>
+          <panel name="fiscalPositionWarningPanel" colSpan="12" hidden="true">
+            <field name="$fiscalPositionWarning" showTitle="false" colSpan="6" colOffset="6"
+              readonly="true">
+              <viewer>
+              <![CDATA[
+                      <>
+                        <Box as="span" style={{ color: "red", fontStyle: 'italic', fontWeight: 'bold'}}>
+                          {_t('Please pay attention, the fiscal position used on this move is different from the one on the invoice. The fiscal position should typically be that of the delivered partner.')}
+                        </Box>
+                      </>
+                ]]></viewer>
+            </field>
+          </panel>
           <field name="paymentCondition" showIf="journal.journalType.technicalTypeSelect != 4"
             readonlyIf="$validatePeriod || statusSelect == 3" colSpan="4"
             onChange="action-account-move-method-payment-condition-onchange"
