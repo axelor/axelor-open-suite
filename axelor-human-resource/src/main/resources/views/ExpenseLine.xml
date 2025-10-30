@@ -152,14 +152,14 @@
         <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
         <field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)"
           onChange="action-expense-line-group-total-amount-on-change"
-          x-currency="expense.currency.symbol">
+          x-currency="currency.symbol">
           <hilite color="danger"
             if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"/>
         </field>
         <field name="totalTax" validIf="$number(totalAmount) &gt;= $number(totalTax)"
           onChange="action-expense-line-method-compute-untaxed-and-company-amounts, action-expense-line-method-compute-analytic-distribution"
-          readonlyIf="expenseProduct.blockExpenseTax" x-currency="expense.currency.symbol"/>
-        <field name="untaxedAmount" x-currency="expense.currency.symbol"/>
+          readonlyIf="expenseProduct.blockExpenseTax" x-currency="currency.symbol"/>
+        <field name="untaxedAmount" x-currency="currency.symbol"/>
         <field name="toInvoice" colSpan="3"/>
         <field name="invoiced" colSpan="3"
           showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" showTitle="false">
@@ -179,6 +179,7 @@
           requiredIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal" widget="TagSelect"/>
         <field name="comments" colSpan="12"/>
         <field name="expense" hidden="true"/>
+        <field name="currency" hidden="true"/>
         <field name="expense.companyCbSelect" hidden="true"/>
         <field name="expenseProduct.deductLunchVoucher" hidden="true"/>
         <field name="expenseProduct.blockExpenseTax" hidden="true"/>
@@ -378,7 +379,7 @@
     <field name="analyticDistributionTemplate"
       expr="eval: __parent__?.employee?.analyticDistributionTemplate"
       if="__parent__ &amp;&amp; __config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
-    <field name="currency" expr="eval: __parent__?.company?.currency" if="__parent__"/>
+    <field name="currency" expr="eval: __parent__?.currency" if="__parent__"/>
 
     <field name="employee" expr="eval: __user__?.employee" if="!__parent__"/>
     <field name="currency" expr="eval: __user__?.activeCompany?.currency" if="!__parent__"/>
