@@ -1,3 +1,41 @@
+## [8.4.10] (2025-10-30)
+
+### Fixes
+#### Account
+
+* InvoiceTerm/PfpValidateStatus : fixed a technical error by changing the Listener.
+* Invoice: fixed the invoice generation.
+
+#### Bank Payment
+
+* BankOrder : fixed the bank code on the cfonb160 format
+* Bank reconciliation: improved global performance and UX.
+* Bank reconciliation: fixed balances compute takes a lot of time to finish.
+
+#### Supply Chain
+
+* Fiscal position: added a consistency control on fiscal position for sale order, move and invoice.
+
+
+### Developer
+
+#### Account
+
+Changed the checkOtherInvoiceTerms function from InvoiceTermPfpService to InvoiceTermPfpToolService.
+Changed the checkOtherInvoiceTerms function from MoveInvoiceTermService to MovePfpToolService.
+
+Added MovePfpToolService in MoveGroupServiceImpl constructor.
+Added MovePfpToolService in MoveGroupBudgetServiceImpl constructor.
+Added MovePfpToolService in MoveRecordUpdateServiceImpl constructor.
+
+#### Bank Payment
+
+- Removed 'action-bank-reconciliation-line-method-set-selected' action and setSelected() method from controller and service and replaced it with 'action-bank-reconciliation-line-record-set-selected' to select/unselect bank reconciliation lines.
+
+---
+
+- `getMoveLines(), computeMovesReconciledLineBalance() and computeMovesUnreconciledLineBalance()` methods from `BankReconciliationBalanceComputationServiceImpl` have been replaced by `computeBalances(Account)` method to compute moves reconciled/unreconciled balance.
+
 ## [8.4.9] (2025-10-23)
 
 ### Fixes
@@ -972,6 +1010,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.10]: https://github.com/axelor/axelor-open-suite/compare/v8.4.9...v8.4.10
 [8.4.9]: https://github.com/axelor/axelor-open-suite/compare/v8.4.8...v8.4.9
 [8.4.8]: https://github.com/axelor/axelor-open-suite/compare/v8.4.7...v8.4.8
 [8.4.7]: https://github.com/axelor/axelor-open-suite/compare/v8.4.6...v8.4.7
