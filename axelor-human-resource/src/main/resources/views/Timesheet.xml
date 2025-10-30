@@ -149,11 +149,12 @@
         <button name="continueBtn" onClick="action-timesheet-group-continue,close"
           title="Continue"
           showIf="statusSelect == 2 &amp;&amp; employee != null &amp;&amp; employee.user != null &amp;&amp; employee.user.code == $user"
-          icon="fa-arrow-right" if="__config__.app.getApp('timesheet')?.needValidation"/>
+          icon="fa-arrow-right"
+          if="__config__.app.getApp('timesheet')?.needValidation &amp;&amp; __user__.group.code == 'admins'"/>
         <button name="confirmContinueBtn"
           onClick="action-timesheet-group-confirm-continue,close" title="Confirm &amp; Continue"
           hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation &amp;&amp; __user__.group.code == 'admins'"/>
         <button name="validateBtn" hidden="true" onClick="action-timesheet-group-validate"
           title="Validate" icon="fa-check" css="btn-success"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
