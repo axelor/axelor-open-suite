@@ -16,38 +16,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service.invoice;
+package com.axelor.apps.supplychain.service.saleorder.onchange;
 
-import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.base.AxelorException;
-import java.util.List;
+import com.axelor.apps.sale.db.SaleOrder;
+import java.util.Map;
 
-public interface InvoiceServiceSupplychain {
+public interface SaleOrderOnChangeSupplychainService {
 
-  /**
-   * Calculate pack total in invoice lines.
-   *
-   * @param invoice
-   */
-  public void computePackTotal(Invoice invoice);
+  Map<String, Object> getDeliveredPartnerOnChangeValues(SaleOrder saleOrder) throws AxelorException;
 
-  /**
-   * Reset pack total in invoice lines.
-   *
-   * @param invoice
-   */
-  public void resetPackTotal(Invoice invoice);
-
-  /**
-   * To update product qty with pack header qty.
-   *
-   * @param invoice
-   * @return {@link Invoice}
-   * @throws AxelorException
-   */
-  public Invoice updateProductQtyWithPackHeaderQty(Invoice invoice) throws AxelorException;
-
-  public void swapStockMoveInvoices(List<Invoice> invoiceList, Invoice newInvoice);
-
-  boolean hasFiscalPositionMismatch(Invoice invoice);
+  Map<String, Object> getInvoicedPartnerOnChangeValues(SaleOrder saleOrder) throws AxelorException;
 }

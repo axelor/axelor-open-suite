@@ -2688,6 +2688,8 @@
 "Please make sure that the customer account for the invoice is configured to be reconcilable and that it can be used for partner balance.",,,
 "Please pay attention that invoice terms will be updated except the terms already reconciled.",,,
 "Please pay attention to the fact that Fiscal and Economic depreciation plan are not identical, we advise you to add a derogatory depreciation plan.",,,
+"Please pay attention, the fiscal position used on this invoice is different from the one on the sale order. The fiscal position should typically be that of the delivered partner.",,,
+"Please pay attention, the fiscal position used on this move is different from the one on the invoice. The fiscal position should typically be that of the delivered partner.",,,
 "Please save this invoice term first.",,,
 "Please select 'Draft' or 'Accounted' or 'Canceled' moves",,,
 "Please select 'Draft' or 'Simulated' moves",,,

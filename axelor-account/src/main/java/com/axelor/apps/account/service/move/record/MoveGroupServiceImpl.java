@@ -268,6 +268,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveAttrsService.addDueDateHidden(move, attrsMap);
     moveAttrsService.addThirdPartyPayerPartnerReadonly(move, attrsMap);
+    moveAttrsService.addFiscalPositionWarningHidden(move, attrsMap);
 
     return attrsMap;
   }
@@ -625,6 +626,14 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("moveLineList", move.getMoveLineList());
 
     return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getFiscalPositionOnChangeAttrsMap(Move move)
+      throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+    moveAttrsService.addFiscalPositionWarningHidden(move, attrsMap);
+    return attrsMap;
   }
 
   @Override

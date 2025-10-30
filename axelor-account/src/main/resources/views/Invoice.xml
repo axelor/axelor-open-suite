@@ -500,9 +500,22 @@
           onSelect="action-invoice-method-domain-company-tax-number"
           onChange="action-invoice-method-on-change-company-tax-number-set-fiscal-position"/>
         <field name="fiscalPosition" readonlyIf="statusSelect > 1" colSpan="4"
-          onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"
+          onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change,action-supplychain-invoice-refresh-fiscal-position-warning"
           onSelect="action-invoice-method-domain-fiscal-position" form-view="fiscal-position-form"
           grid-view="fiscal-position-grid"/>
+        <spacer colSpan="4"/>
+        <field name="$fiscalPositionWarning" showTitle="false" colSpan="8" colOffset="4"
+          hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"
+          readonly="true">
+          <viewer>
+            <![CDATA[
+                    <>
+	                    <Box as="span" style={{ color: "red", fontStyle: 'italic', fontWeight: 'bold'}}>
+	                    	{_t('Please pay attention, the fiscal position used on this invoice is different from the one on the sale order. The fiscal position should typically be that of the delivered partner.')}
+	                   </Box>
+                    </>
+              ]]></viewer>
+        </field>
       </panel>
       <panel name="invoiceMainThirdPanel" colSpan="12">
         <field name="companyBankDetails" colSpan="4"
@@ -1639,6 +1652,7 @@
     <action name="action-invoice-method-set-invoice-line-list-scale"/>
     <action name="action-invoice-attrs-display-line-coefficient"/>
     <action name="action-invoice-method-set-discount-dummies"/>
+    <action name="action-supplychain-invoice-refresh-fiscal-position-warning"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
@@ -2570,6 +2584,12 @@
   <action-method name="action-invoice-method-domain-fiscal-position">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="setFiscalPositionDomain"/>
+  </action-method>
+
+  <action-method name="action-supplychain-invoice-refresh-fiscal-position-warning"
+    if-module="axelor-supplychain">
+    <call class="com.axelor.apps.supplychain.web.InvoiceController"
+      method="refreshFiscalPositionWarning"/>
   </action-method>
 
   <action-view name="action-invoice-view-register-payment" title="Register a payment"

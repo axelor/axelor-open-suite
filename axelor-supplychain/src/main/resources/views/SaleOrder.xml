@@ -147,11 +147,13 @@
   <action-group name="action-group-sale-order-supplychain-set-main-invoicing-address">
     <action name="action-sale-order-supplychain-record-main-invoicing-address"/>
     <action name="action-sale-order-method-address-str"/>
+    <action name="action-supplychain-sale-order-invoiced-partner-onchange"/>
   </action-group>
 
   <action-group name="action-group-sale-order-supplychain-set-delivery-address">
     <action name="action-sale-order-supplychain-record-delivery-address"/>
     <action name="action-sale-order-method-address-str"/>
+    <action name="action-supplychain-sale-order-delivery-partner-onchange"/>
   </action-group>
 
   <action-group name="action-group-supplychain-saleorder-onload">
@@ -169,6 +171,16 @@
 
   <action-method name="action-supplychain-saleorder-onsave">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave"/>
+  </action-method>
+
+  <action-method name="action-supplychain-sale-order-delivery-partner-onchange">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="deliveredPartnerChange"/>
+  </action-method>
+
+  <action-method name="action-supplychain-sale-order-invoiced-partner-onchange">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="invoicedPartnerChange"/>
   </action-method>
 
   <action-method name="action-supplychain-sale-order-method-generate-invoice">
