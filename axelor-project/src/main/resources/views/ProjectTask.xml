@@ -112,7 +112,8 @@
       <panel-include view="incl-overview-project-task-panel-form"/>
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')" showIf="project.manageTimeSpent">
+        if="__config__.app.isApp('timesheet') &amp;&amp; __user__.group.code != 'CUSTOM-PM'"
+        showIf="project.manageTimeSpent">
         <panel-include view="incl-log-times-projec-task-panel-form"/>
         <field name="project.manageTimeSpent" hidden="true"/>
       </panel>

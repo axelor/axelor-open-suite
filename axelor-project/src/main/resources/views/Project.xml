@@ -176,7 +176,7 @@
               required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
               css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
           </panel>
-          <field name="name" showTitle="false" colSpan="6" required="true"
+          <field name="name" showTitle="false" colSpan="6" required="false"
             placeholder="Bezeichnung" css="label-bold bold
             large"/>
         </editor>

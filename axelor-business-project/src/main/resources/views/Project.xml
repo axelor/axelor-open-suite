@@ -103,7 +103,8 @@
     </menubar>
     <panel name="mainPanel">
       <panel-include view="incl-information-panel-form"/>
-      <field name="$viewerProjectTags" showTitle="false" colSpan="2" readonly="true">
+      <field name="$viewerProjectTags" showTitle="false" colSpan="2" readonly="true"
+        if="__user__.group.code == 'admins' || __user__.group.code == 'accounting'">
         <viewer depends="isBusinessProject,$toInvoiceCounter,id">
             <![CDATA[
 								<>
@@ -121,7 +122,8 @@
 							]]>
         </viewer>
       </field>
-      <panel name="statusChangeBtn" colSpan="4">
+      <panel name="statusChangeBtn" colSpan="4"
+        if="__user__.group.code == 'admins' || __user__.group.code == 'accounting'">
         <button name="finishBtn" icon="check-circle" title="Finish"
           showIf="id &amp;&amp; !projectStatus.isCompleted"
           onClick="action-business-project-group-finish-project"/>
@@ -175,11 +177,11 @@
       <!-- MGM-80: Moving task panel next to overview to get configs done faster -->
       <panel title="Tasks" name="taskTreePanel">
         <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
-          height="200%" colSpan="12" action="action-view-show-business-project-task"
-          x-show-bars="true" canSearch="true"/>
+          showTitle="false" height="200%" colSpan="12"
+          action="action-view-show-business-project-task" x-show-bars="true" canSearch="true"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
-          if="__config__.app.isApp('business-project') &amp;&amp; __user__.group.code != 'CUSTOM-PT'"
+          if="__config__.app.isApp('business-project') &amp;&amp; __user__.group.code != 'CUSTOM-PM' &amp;&amp; __user__.group.code != 'CUSTOM-PT'"
           canSearch="true"/>
       </panel>
       <!-- MGM-66 task reports -->

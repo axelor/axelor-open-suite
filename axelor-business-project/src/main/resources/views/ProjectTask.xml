@@ -11,11 +11,10 @@
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
-
-    <field name="ticketNumber"
-      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <!-- <field name="ticketNumber" if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/> -->
     <field name="name"/>
     <field name="project"/>
+    <field name="assignedTo"/>
     <field name="taskDate"/>
     <field name="status"/>
     <field name="priority"/>
@@ -28,45 +27,38 @@
     <button name="showFinancialReport" title="Show financial reports" icon="bar-chart-fill"
       onClick="action-project-task-view-show-financial-datas-panel"/>
   </grid>
-
+  <!-- <grid name="business-project-task-project-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
+    edit-icon="true" groupBy="typeSelect" orderBy="-priority.technicalTypeSelect"> -->
   <grid name="business-project-task-project-grid" title="Tasks"
-    model="com.axelor.apps.project.db.ProjectTask" edit-icon="true" groupBy="typeSelect"
+    model="com.axelor.apps.project.db.ProjectTask" edit-icon="true"
     orderBy="-priority.technicalTypeSelect">
     <toolbar>
       <button name="addTaskBtn" title="New task" colSpan="2" css="btn-custom text-left"
         icon="fa-plus" onClick="action-business-project-add-task"/>
-      <button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left"
-        icon="fa-plus" onClick="action-project-add-ticket" if-module="axelor-business-support"
-        if="__config__.app.isApp('business-support')"/>
+      <!-- <button name="addTicketBtn" title="New ticket" colSpan="2" css="btn-custom text-left" icon="fa-plus"
+        onClick="action-project-add-ticket" if-module="axelor-business-support" if="__config__.app.isApp('business-support')"/> -->
       <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
         onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/>
-      <!-- MGM-80 - @gkouete: all task button within task grid not best for user experience -->
-      <!-- <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left" icon="fa-tasks"
-        onClick="save,action-business-project-view-show-related-tasks"/> -->
+      <!-- MGM-80 - @gkouete: all task button within task grid might not best for user experience -->
+      <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
+        icon="fa-tasks" onClick="save,action-business-project-view-show-related-tasks"/>
     </toolbar>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
-    <field name="ticketNumber"
-      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()" width="100"/>
+    <!-- <field name="ticketNumber" if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"
+      width="100"/> -->
     <!-- @gkouete, adapting the view to be similar to task grid view for technicians -->
     <field name="name"/>
     <field name="project"/>
-    <field name="assignedTo" width="120"/>
-    <field name="taskDate" width="120"/>
+    <field name="assignedTo"/>
+    <field name="taskDate"/>
     <field name="status"/>
+    <field name="priority"/>
     <field name="projectTaskCategory"/>
-    <field name="taskDuration" if="manageTimeSpent"/>
-    <field name="$durationForCustomer" title="Duration adjust for customer" type="decimal"
-      if="manageTimeSpent"/>
-    <field name="toInvoice"
-      if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
-    <field name="toInvoice" readonly="true"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <!-- MGM-80, @gkouete, following data are irrelevant for MGM processes -->
     <!-- <field name="initial" width="120"/> <field name="forecast" width="120"/> <field name="real"
       width="120"/> -->
-    <field name="priority"/>
     <field name="typeSelect" hidden="true"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
     <!-- MGM-80, @gkouete, following data are irrelevant for MGM processes -->
@@ -89,6 +81,7 @@
     <field name="assignedTo"/>
     <field name="taskDate"/>
     <field name="status"/>
+    <field name="priority"/>
     <field name="projectTaskCategory"/>
     <field name="taskDuration" if="manageTimeSpent"/>
     <field name="$durationForCustomer" title="Duration adjust for customer" type="decimal"
@@ -197,7 +190,8 @@
       <panel-include view="incl-overview-business-project-task-panel-form"/>
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')" showIf="project.manageTimeSpent">
+        if="__config__.app.isApp('timesheet') &amp;&amp; __user__.group.code != 'CUSTOM-PM'"
+        showIf="project.manageTimeSpent">
         <panel-include view="incl-log-times-projec-task-panel-form"/>
         <field name="project.manageTimeSpent" hidden="true"/>
       </panel>
