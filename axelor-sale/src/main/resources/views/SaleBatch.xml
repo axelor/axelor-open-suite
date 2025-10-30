@@ -32,7 +32,7 @@
       <panel name="descriptionPanel" title="Description">
         <field name="description" showTitle="false" colSpan="12"/>
       </panel>
-      <panel-dashlet name="batchListPanel" colSpan="12"
+      <panel-dashlet name="batchListPanel" title="Batchs" colSpan="12"
         action="action-batch-method-show-batches" canSearch="true"/>
     </panel-tabs>
   </form>

@@ -19,12 +19,15 @@
 package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.inject.Beans;
+import java.util.Optional;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
@@ -71,10 +74,10 @@ public abstract class BatchStrategy extends AbstractBatch {
 
   @Override
   protected Integer getFetchLimit() {
-    Integer batchFetchLimit = this.batch.getSupplychainBatch().getFetchLimit();
-    if (batchFetchLimit == 0) {
-      batchFetchLimit = super.getFetchLimit();
-    }
-    return batchFetchLimit;
+    return Optional.ofNullable(batch)
+        .map(Batch::getSupplychainBatch)
+        .map(SupplychainBatch::getFetchLimit)
+        .filter(v -> v > 0)
+        .orElseGet(super::getFetchLimit);
   }
 }
