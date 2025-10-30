@@ -296,6 +296,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderVersionSupplyChain
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingViewServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnChangeSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnChangeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.opportunity.OpportunitySaleOrderSupplychainServiceImpl;
@@ -483,6 +484,8 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineOnChangeSupplychainServiceImpl.class);
     bind(SaleOrderInitValueServiceImpl.class).to(SaleOrderInitValueSupplychainServiceImpl.class);
     bind(SaleOrderViewServiceImpl.class).to(SaleOrderViewSupplychainServiceImpl.class);
+    bind(SaleOrderOnChangeSupplychainService.class)
+        .to(SaleOrderOnChangeSupplychainServiceImpl.class);
     bind(SaleOrderOnChangeServiceImpl.class).to(SaleOrderOnChangeSupplychainServiceImpl.class);
     bind(SaleOrderIntercoService.class).to(SaleOrderIntercoServiceImpl.class);
     bind(SaleOrderProductPrintingService.class).to(SaleOrderProductPrintingServiceImpl.class);
