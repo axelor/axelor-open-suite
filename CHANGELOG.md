@@ -1,3 +1,36 @@
+## [8.3.19] (2025-10-30)
+
+### Fixes
+#### Account
+
+* InvoiceTerm/PfpValidateStatus : fixed a technical error by changing the Listener.
+* Invoice: fixed the invoice generation.
+
+#### Bank Payment
+
+* BankOrder : fixed the bank code on the cfonb160 format
+* Bank reconciliation: fixed balances compute takes a lot of time to finish.
+
+#### Supply Chain
+
+* Fiscal position: added a consistency control on fiscal position for sale order, move and invoice.
+
+
+### Developer
+
+#### Account
+
+Changed the checkOtherInvoiceTerms function from InvoiceTermPfpService to InvoiceTermPfpToolService.
+Changed the checkOtherInvoiceTerms function from MoveInvoiceTermService to MovePfpToolService.
+
+Added MovePfpToolService in MoveGroupServiceImpl constructor.
+Added MovePfpToolService in MoveGroupBudgetServiceImpl constructor.
+Added MovePfpToolService in MoveRecordUpdateServiceImpl constructor.
+
+#### Bank Payment
+
+- `getMoveLines(), computeMovesReconciledLineBalance() and computeMovesUnreconciledLineBalance()` methods from `BankReconciliationBalanceComputationServiceImpl` have been replaced by `computeBalances(Account)` method to compute moves reconciled/unreconciled balance.
+
 ## [8.3.18] (2025-10-23)
 
 ### Fixes
@@ -1639,6 +1672,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.19]: https://github.com/axelor/axelor-open-suite/compare/v8.3.18...v8.3.19
 [8.3.18]: https://github.com/axelor/axelor-open-suite/compare/v8.3.17...v8.3.18
 [8.3.17]: https://github.com/axelor/axelor-open-suite/compare/v8.3.16...v8.3.17
 [8.3.16]: https://github.com/axelor/axelor-open-suite/compare/v8.3.15...v8.3.16
