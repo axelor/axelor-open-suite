@@ -1,0 +1,3 @@
+---
+title: "Project: fixed project generation when the partner name contains an apostrophe."
+module: axelor-project
