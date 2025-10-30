@@ -1,0 +1,10 @@
+---
+title: "InvoiceTerm/PfpValidateStatus : fixed a technical error by changing the Listener."
+module: axelor-account
+developer: |
+  Changed the checkOtherInvoiceTerms function from InvoiceTermPfpService to InvoiceTermPfpToolService.
+  Changed the checkOtherInvoiceTerms function from MoveInvoiceTermService to MovePfpToolService.
+  
+  Added MovePfpToolService in MoveGroupServiceImpl constructor.
+  Added MovePfpToolService in MoveGroupBudgetServiceImpl constructor.
+  Added MovePfpToolService in MoveRecordUpdateServiceImpl constructor.

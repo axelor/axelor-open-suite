@@ -33,6 +33,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermPfpToolServiceImpl implements InvoiceTermPfpToolService {
 
@@ -136,5 +137,29 @@ public class InvoiceTermPfpToolServiceImpl implements InvoiceTermPfpToolService 
             || (invoiceTerm != null
                 && invoiceTerm.getPfpValidatorUser() != null
                 && user.equals(invoiceTerm.getPfpValidatorUser())));
+  }
+
+  @Override
+  public Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return null;
+    }
+    InvoiceTerm firstInvoiceTerm = invoiceTermList.get(0);
+    int pfpStatus = getPfpValidateStatusSelect(firstInvoiceTerm);
+    int otherPfpStatus;
+    for (InvoiceTerm otherInvoiceTerm : invoiceTermList) {
+      if (otherInvoiceTerm.getId() != null
+          && firstInvoiceTerm.getId() != null
+          && !otherInvoiceTerm.getId().equals(firstInvoiceTerm.getId())) {
+        otherPfpStatus = getPfpValidateStatusSelect(otherInvoiceTerm);
+
+        if (otherPfpStatus != pfpStatus) {
+          pfpStatus = InvoiceTermRepository.PFP_STATUS_AWAITING;
+          break;
+        }
+      }
+    }
+
+    return pfpStatus;
   }
 }

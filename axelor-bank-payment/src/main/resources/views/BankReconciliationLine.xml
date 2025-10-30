@@ -72,9 +72,10 @@
   <grid name="bank-reconciliation-line-bank-reconciliation-grid"
     title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine"
     canDelete="false" editable="false" canNew="false">
-    <button onClick="save,action-bank-reconciliation-line-method-set-selected" name="select"
-      title="Select / Unselect" icon="fa-check-circle" showIf="!isSelectedBankReconciliation"/>
-    <button onClick="save,action-bank-reconciliation-line-method-set-selected"
+    <button onClick="save,action-bank-reconciliation-line-record-set-selected,save"
+      name="select" title="Select / Unselect" icon="fa-check-circle"
+      showIf="!isSelectedBankReconciliation"/>
+    <button onClick="save,action-bank-reconciliation-line-record-set-selected,save"
       name="unselect" title="Select / Unselect" icon="fa-minus-circle"
       showIf="isSelectedBankReconciliation"/>
     <field name="postedNbr"/>
@@ -205,11 +206,6 @@
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
     <field name="isSelectedBankReconciliation" expr="eval: !isSelectedBankReconciliation"/>
   </action-record>
-
-  <action-method name="action-bank-reconciliation-line-method-set-selected">
-    <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
-      method="setSelected"/>
-  </action-method>
 
   <action-method
     name="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected">

@@ -21,10 +21,11 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
+import com.axelor.apps.account.service.move.MovePfpToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
@@ -46,8 +47,8 @@ public class InvoiceTermListener {
   @PostUpdate
   protected void updateMovePfpValidateStatus(InvoiceTerm invoiceTerm) throws AxelorException {
     if (invoiceTerm.getMoveLine() != null) {
-      Beans.get(MoveRecordUpdateService.class)
-          .updateInvoiceTerms(invoiceTerm.getMoveLine().getMove(), false, false);
+      Move move = invoiceTerm.getMoveLine().getMove();
+      Beans.get(MovePfpToolService.class).fillMovePfpValidateStatus(move);
     }
   }
 

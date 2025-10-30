@@ -1,0 +1,5 @@
+---
+title: "Bank reconciliation: improved global performance and UX."
+module: axelor-bank-payment
+developer: |
+  - Removed 'action-bank-reconciliation-line-method-set-selected' action and setSelected() method from controller and service and replaced it with 'action-bank-reconciliation-line-record-set-selected' to select/unselect bank reconciliation lines.
