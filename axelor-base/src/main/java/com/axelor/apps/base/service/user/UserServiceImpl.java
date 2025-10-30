@@ -186,12 +186,12 @@ public class UserServiceImpl implements UserService {
     ThemeLogoMode logoMode = metaThemeFetchService.getCurrentThemeLogoMode(user);
     switch (logoMode) {
       case DARK:
+      case NONE:
         logo = company.getDarkLogo();
         break;
       case LIGHT:
         logo = company.getLightLogo();
         break;
-      case NONE:
       default:
         logo = company.getLogo();
         break;
