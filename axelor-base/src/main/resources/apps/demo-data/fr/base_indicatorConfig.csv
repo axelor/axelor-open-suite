@@ -31,7 +31,7 @@ var target = arr.reduce(function (acc, so) {
 }, ZERO);
 
 target;
-";"2";"indicator < target";"true";"2";"40"
+";"2";"indicator < target";"true";"1";"40"
 "2";"% de marge par commande";"SELECT self FROM User self WHERE self.id IN (SELECT so.salespersonUser.id FROM SaleOrder so) ORDER BY self.id";"com.axelor.auth.db.User";"fullName";"3";"SELECT (100.0 - (SUM(line.subTotalCostPrice) / SUM(line.exTaxTotal) * 100.0)) AS margin
 FROM SaleOrderLine line
 WHERE line.saleOrder.salespersonUser = :user

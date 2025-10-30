@@ -96,5 +96,6 @@ public class IndicatorServiceImpl implements IndicatorService {
     }
 
     lineService.createLines(config, parent, records, evaluator, iterationDateT);
+    configRepo.save(config);
   }
 }
