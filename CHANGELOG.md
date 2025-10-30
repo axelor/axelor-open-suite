@@ -1,3 +1,21 @@
+## [8.1.34] (2025-10-30)
+
+### Fixes
+#### Account
+
+* InvoiceTerm/PfpValidateStatus : fixed a technical error by changing the Listener.
+
+
+### Developer
+
+#### Account
+
+Changed the checkOtherInvoiceTerms function from InvoiceTermPfpService to InvoiceTermPfpToolService.
+Changed the checkOtherInvoiceTerms function from MoveInvoiceTermService to MovePfpToolService.
+
+Added MovePfpToolService in MoveGroupServiceImpl constructor.
+Added MovePfpToolService in MoveRecordUpdateServiceImpl constructor.
+
 ## [8.1.33] (2025-10-23)
 
 ### Fixes
@@ -1754,6 +1772,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.34]: https://github.com/axelor/axelor-open-suite/compare/v8.1.33...v8.1.34
 [8.1.33]: https://github.com/axelor/axelor-open-suite/compare/v8.1.32...v8.1.33
 [8.1.32]: https://github.com/axelor/axelor-open-suite/compare/v8.1.31...v8.1.32
 [8.1.31]: https://github.com/axelor/axelor-open-suite/compare/v8.1.30...v8.1.31
