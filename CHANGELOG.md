@@ -1,3 +1,25 @@
+## [7.2.52] (2025-10-30)
+
+### Fixes
+#### Account
+
+* InvoiceTerm/PfpValidateStatus : fixed a technical error by changing the Listener.
+
+#### Bank Payment
+
+* BankOrder : fixed the bank code on the cfonb160 format
+
+
+### Developer
+
+#### Account
+
+Changed the checkOtherInvoiceTerms function from InvoiceTermPfpService to InvoiceTermPfpToolService.
+Changed the checkOtherInvoiceTerms function from MoveInvoiceTermService to MovePfpToolService.
+
+Added MovePfpToolService in MoveGroupServiceImpl constructor.
+Added MovePfpToolService in MoveRecordUpdateServiceImpl constructor.
+
 ## [7.2.51] (2025-10-23)
 
 ### Fixes
@@ -2228,6 +2250,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.52]: https://github.com/axelor/axelor-open-suite/compare/v7.2.51...v7.2.52
 [7.2.51]: https://github.com/axelor/axelor-open-suite/compare/v7.2.50...v7.2.51
 [7.2.50]: https://github.com/axelor/axelor-open-suite/compare/v7.2.49...v7.2.50
 [7.2.49]: https://github.com/axelor/axelor-open-suite/compare/v7.2.48...v7.2.49
