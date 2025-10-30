@@ -1516,6 +1516,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return defaultDate;
     }
     return invoiceTermList.stream()
+        .filter(it -> it.getDueDate() != null)
         .map(InvoiceTerm::getDueDate)
         .max(LocalDate::compareTo)
         .orElse(defaultDate);
