@@ -1,5 +1,0 @@
----
-title: "Bank reconciliation: fixed balances compute takes a lot of time to finish."
-module: axelor-bank-payment
-developer: |
-  - `getMoveLines(), computeMovesReconciledLineBalance() and computeMovesUnreconciledLineBalance()` methods from `BankReconciliationBalanceComputationServiceImpl` have been replaced by `computeBalances(Account)` method to compute moves reconciled/unreconciled balance.

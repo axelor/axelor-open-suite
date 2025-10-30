@@ -1,3 +1,32 @@
+## [8.2.28] (2025-10-30)
+
+### Fixes
+#### Account
+
+* InvoiceTerm/PfpValidateStatus : fixed a technical error by changing the Listener.
+* Invoice: fixed the invoice generation.
+
+#### Bank Payment
+
+* BankOrder : fixed the bank code on the cfonb160 format
+* Bank reconciliation: fixed balances compute takes a lot of time to finish.
+
+
+### Developer
+
+#### Account
+
+Changed the checkOtherInvoiceTerms function from InvoiceTermPfpService to InvoiceTermPfpToolService.
+Changed the checkOtherInvoiceTerms function from MoveInvoiceTermService to MovePfpToolService.
+
+Added MovePfpToolService in MoveGroupServiceImpl constructor.
+Added MovePfpToolService in MoveGroupBudgetServiceImpl constructor.
+Added MovePfpToolService in MoveRecordUpdateServiceImpl constructor.
+
+#### Bank Payment
+
+- `getMoveLines(), computeMovesReconciledLineBalance() and computeMovesUnreconciledLineBalance()` methods from `BankReconciliationBalanceComputationServiceImpl` have been replaced by `computeBalances(Account)` method to compute moves reconciled/unreconciled balance.
+
 ## [8.2.27] (2025-10-23)
 
 ### Fixes
@@ -1984,6 +2013,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.28]: https://github.com/axelor/axelor-open-suite/compare/v8.2.27...v8.2.28
 [8.2.27]: https://github.com/axelor/axelor-open-suite/compare/v8.2.26...v8.2.27
 [8.2.26]: https://github.com/axelor/axelor-open-suite/compare/v8.2.25...v8.2.26
 [8.2.25]: https://github.com/axelor/axelor-open-suite/compare/v8.2.24...v8.2.25
