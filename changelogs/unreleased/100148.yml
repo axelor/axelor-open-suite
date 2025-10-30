@@ -1,3 +1,3 @@
 ---
-title: "SALEORDER/INVOICE/MOVE : Add a consistency check on fiscal position"
+title: "Fiscal position: added a consistency control on fiscal position for sale order, move and invoice."
 module: axelor-supplychain
