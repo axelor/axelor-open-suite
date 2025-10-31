@@ -25,7 +25,6 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
-import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
@@ -359,11 +358,6 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
             || !moveLine.getAccount().getIsTaxAuthorizedOnMoveLine()
             || !Lists.newArrayList(MoveRepository.STATUS_NEW, MoveRepository.STATUS_SIMULATED)
                 .contains(move.getStatusSelect());
-    if (!vatSystemSelectReadonly) {
-      vatSystemSelectReadonly =
-          move.getJournal().getJournalType().getTechnicalTypeSelect()
-              == JournalTypeRepository.TECHNICAL_TYPE_SELECT_CREDIT_NOTE;
-    }
 
     this.addAttr("vatSystemSelect", "readonly", vatSystemSelectReadonly, attrsMap);
   }
