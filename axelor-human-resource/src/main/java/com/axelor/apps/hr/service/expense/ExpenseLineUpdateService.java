@@ -56,5 +56,5 @@ public interface ExpenseLineUpdateService {
       List<Long> invitedCollaboratorList)
       throws AxelorException;
 
-    void updateCurrencyOnLines(Expense expense);
+  void updateCurrencyOnLines(Expense expense);
 }

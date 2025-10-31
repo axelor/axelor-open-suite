@@ -461,7 +461,7 @@
 
   <action-method name="action-expense-method-change-currency-on-lines">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController"
-          method="updateCurrencyOnLine"/>
+      method="updateCurrencyOnLine"/>
   </action-method>
 
   <action-attrs name="action-expense-attrs-hide-button-readonly-field">

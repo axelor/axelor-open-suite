@@ -792,7 +792,7 @@ public class ExpenseController {
   }
 
   public void updateCurrencyOnLine(ActionRequest request, ActionResponse response)
-          throws AxelorException {
+      throws AxelorException {
     Expense expense = request.getContext().asType(Expense.class);
     Beans.get(ExpenseLineUpdateService.class).updateCurrencyOnLines(expense);
     response.setValue("generalExpenseLineList", expense.getGeneralExpenseLineList());

@@ -151,8 +151,7 @@
           onChange="action-expense-line-group-expense-product-on-change"/>
         <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
         <field name="totalAmount" validIf="$number(totalAmount) &gt;= $number(totalTax)"
-          onChange="action-expense-line-group-total-amount-on-change"
-          x-currency="currency.symbol">
+          onChange="action-expense-line-group-total-amount-on-change" x-currency="currency.symbol">
           <hilite color="danger"
             if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"/>
         </field>

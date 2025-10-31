@@ -378,20 +378,20 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
   }
 
   @Override
-  public void updateCurrencyOnLines(Expense expense){
-    if (expense == null || expense.getCurrency() == null){
+  public void updateCurrencyOnLines(Expense expense) {
+    if (expense == null || expense.getCurrency() == null) {
       return;
     }
 
     Currency currency = expense.getCurrency();
-    if (ObjectUtils.notEmpty(expense.getGeneralExpenseLineList())){
-      for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()){
+    if (ObjectUtils.notEmpty(expense.getGeneralExpenseLineList())) {
+      for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
         expenseLine.setCurrency(currency);
       }
     }
 
-    if (ObjectUtils.notEmpty(expense.getKilometricExpenseLineList())){
-      for (ExpenseLine expenseLine : expense.getKilometricExpenseLineList()){
+    if (ObjectUtils.notEmpty(expense.getKilometricExpenseLineList())) {
+      for (ExpenseLine expenseLine : expense.getKilometricExpenseLineList()) {
         expenseLine.setCurrency(currency);
       }
     }
