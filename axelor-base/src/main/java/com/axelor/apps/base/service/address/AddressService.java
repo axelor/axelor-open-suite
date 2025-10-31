@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
-import wslite.json.JSONException;
 
 public interface AddressService {
 
@@ -45,8 +44,7 @@ public interface AddressService {
    * @return
    * @throws AxelorException
    */
-  Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
-      throws AxelorException, JSONException;
+  Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address) throws AxelorException;
 
   /**
    * Update latitude and longitude.
@@ -54,8 +52,7 @@ public interface AddressService {
    * @param address
    * @throws AxelorException
    */
-  Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address)
-      throws AxelorException, JSONException;
+  Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address) throws AxelorException;
 
   /**
    * Reset latitude and longitude.

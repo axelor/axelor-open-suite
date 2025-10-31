@@ -127,8 +127,16 @@ import com.axelor.apps.base.service.ImportExportTranslationServiceImpl;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.InternationalServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
+import com.axelor.apps.base.service.MapGoogleService;
+import com.axelor.apps.base.service.MapGoogleServiceImpl;
+import com.axelor.apps.base.service.MapOsmService;
+import com.axelor.apps.base.service.MapOsmServiceImpl;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
+import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.MapServiceImpl;
+import com.axelor.apps.base.service.MapToolService;
+import com.axelor.apps.base.service.MapToolServiceImpl;
 import com.axelor.apps.base.service.MetaFileService;
 import com.axelor.apps.base.service.MetaFileServiceImpl;
 import com.axelor.apps.base.service.ModelEmailLinkService;
@@ -617,5 +625,9 @@ public class BaseModule extends AxelorModule {
     bind(IndicatorMetaService.class).to(IndicatorMetaServiceImpl.class);
     bind(ExportObserver.class);
     addHibernateListenerConfigurator(AosHibernateConfigurator.class);
+    bind(MapService.class).to(MapServiceImpl.class);
+    bind(MapOsmService.class).to(MapOsmServiceImpl.class);
+    bind(MapGoogleService.class).to(MapGoogleServiceImpl.class);
+    bind(MapToolService.class).to(MapToolServiceImpl.class);
   }
 }
