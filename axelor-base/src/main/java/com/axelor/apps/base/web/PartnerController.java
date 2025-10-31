@@ -33,7 +33,8 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.MapGoogleService;
+import com.axelor.apps.base.service.MapOsmService;
 import com.axelor.apps.base.service.PartnerConvertService;
 import com.axelor.apps.base.service.PartnerPriceListDomainService;
 import com.axelor.apps.base.service.PartnerService;
@@ -395,8 +396,8 @@ public class PartnerController {
                   "html",
                   Beans.get(AppBaseService.class).getAppBase().getMapApiSelect()
                           == AppBaseRepository.MAP_API_GOOGLE
-                      ? Beans.get(MapService.class).getMapURI("partner", partner.getId())
-                      : Beans.get(MapService.class).getOsmMapURI("partner", partner.getId()))
+                      ? Beans.get(MapGoogleService.class).getMapURI("partner", partner.getId())
+                      : Beans.get(MapOsmService.class).getOsmMapURI("partner", partner.getId()))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(e);

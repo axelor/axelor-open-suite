@@ -22,7 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import wslite.json.JSONException;
 
 public interface MapRestService {
 
@@ -33,7 +32,7 @@ public interface MapRestService {
    * @param arrayNode
    * @throws AxelorException
    */
-  void setData(ObjectNode mainNode, ArrayNode arrayNode) throws AxelorException, JSONException;
+  void setData(ObjectNode mainNode, ArrayNode arrayNode) throws AxelorException;
 
   /**
    * Set error response.
@@ -51,6 +50,5 @@ public interface MapRestService {
    * @return
    * @throws AxelorException
    */
-  String makeAddressString(Address address, ObjectNode objectNode)
-      throws AxelorException, JSONException;
+  String makeAddressString(Address address, ObjectNode objectNode) throws AxelorException;
 }

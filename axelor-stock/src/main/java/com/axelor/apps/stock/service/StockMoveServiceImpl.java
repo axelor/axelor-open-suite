@@ -28,7 +28,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.MapGoogleService;
+import com.axelor.apps.base.service.MapOsmService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -1342,10 +1343,11 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (appBaseService.getAppBase().getMapApiSelect()
         == AppBaseRepository.MAP_API_OPEN_STREET_MAP) {
       result =
-          Beans.get(MapService.class).getDirectionMapOsm(dString, dLat, dLon, aString, aLat, aLon);
+          Beans.get(MapOsmService.class)
+              .getDirectionMapOsm(dString, dLat, dLon, aString, aLat, aLon);
     } else {
       result =
-          Beans.get(MapService.class)
+          Beans.get(MapGoogleService.class)
               .getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
     }
     if (result == null) {

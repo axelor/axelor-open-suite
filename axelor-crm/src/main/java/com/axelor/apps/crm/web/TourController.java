@@ -18,7 +18,8 @@
  */
 package com.axelor.apps.crm.web;
 
-import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.MapGoogleService;
+import com.axelor.apps.base.service.MapOsmService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.crm.db.Tour;
@@ -44,14 +45,13 @@ public class TourController {
     try {
       Tour tour = request.getContext().asType(Tour.class);
       AppBaseService appBaseService = Beans.get(AppBaseService.class);
-      MapService mapService = Beans.get(MapService.class);
       response.setView(
           ActionView.define(I18n.get(Tour.class.getSimpleName()))
               .add(
                   "html",
                   appBaseService.getAppBase().getMapApiSelect() == AppBaseRepository.MAP_API_GOOGLE
-                      ? mapService.getMapURI("tour", tour.getId())
-                      : mapService.getOsmMapURI("tour", tour.getId()))
+                      ? Beans.get(MapGoogleService.class).getMapURI("tour", tour.getId())
+                      : Beans.get(MapOsmService.class).getOsmMapURI("tour", tour.getId()))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(e);

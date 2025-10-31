@@ -22,6 +22,7 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.MapGoogleService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.administration.ExportDbObjectService;
 import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
@@ -62,7 +63,7 @@ public class AppBaseController {
       Integer apiType = appBase.getMapApiSelect();
 
       if (apiType == 1) {
-        Beans.get(MapService.class).testGMapService();
+        Beans.get(MapGoogleService.class).testGMapService();
         response.setInfo(BaseExceptionMessage.GENERAL_6);
       }
     } catch (Exception e) {
