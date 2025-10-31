@@ -35,7 +35,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
-import wslite.json.JSONException;
 
 public class ExtraHoursServiceImpl implements ExtraHoursService {
 
@@ -65,7 +64,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
   }
 
   public Message sendCancellationEmail(ExtraHours extraHours)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
 
@@ -88,7 +87,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
   }
 
   public Message sendConfirmationEmail(ExtraHours extraHours)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
 
@@ -112,7 +111,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
   }
 
   public Message sendValidationEmail(ExtraHours extraHours)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
 
@@ -136,7 +135,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
   }
 
   public Message sendRefusalEmail(ExtraHours extraHours)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(extraHours.getCompany());
 

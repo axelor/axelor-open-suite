@@ -146,13 +146,13 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
 
   @Override
   public BigDecimal convert(Currency currencyFrom, Currency currencyTo)
-      throws MalformedURLException, JSONException, AxelorException {
+      throws MalformedURLException, AxelorException {
     return this.getRateWithDate(currencyFrom, currencyTo).getRight();
   }
 
   @Override
   public Pair<LocalDate, BigDecimal> getRateWithDate(Currency currencyFrom, Currency currencyTo)
-      throws MalformedURLException, JSONException, AxelorException {
+      throws MalformedURLException, AxelorException {
 
     LocalDate todayDate =
         appBaseService.getTodayDate(

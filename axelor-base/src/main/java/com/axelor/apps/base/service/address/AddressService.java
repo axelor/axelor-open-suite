@@ -43,7 +43,6 @@ public interface AddressService {
    *
    * @param address
    * @return
-   * @throws JSONException
    * @throws AxelorException
    */
   Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
@@ -54,7 +53,6 @@ public interface AddressService {
    *
    * @param address
    * @throws AxelorException
-   * @throws JSONException
    */
   Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address)
       throws AxelorException, JSONException;

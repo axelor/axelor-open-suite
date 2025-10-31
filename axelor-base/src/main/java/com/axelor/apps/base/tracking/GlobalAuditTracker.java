@@ -241,6 +241,9 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
     String metaFieldName = metaField.getName();
     Object currentValue = values.get(metaFieldName);
     Object oldValue = oldValues.get(metaFieldName);
+    if (currentValue == null || oldValue == null) {
+      return null;
+    }
     if (currentValue.equals(oldValue)) {
       return null;
     }

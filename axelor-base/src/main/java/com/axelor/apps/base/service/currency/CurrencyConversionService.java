@@ -35,7 +35,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import wslite.http.HTTPResponse;
-import wslite.json.JSONException;
 
 public abstract class CurrencyConversionService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -66,11 +65,10 @@ public abstract class CurrencyConversionService {
    * @param currencyTo
    * @return
    * @throws MalformedURLException
-   * @throws JSONException
    * @throws AxelorException
    */
   public abstract BigDecimal convert(Currency currencyFrom, Currency currencyTo)
-      throws MalformedURLException, JSONException, AxelorException;
+      throws MalformedURLException, AxelorException;
 
   /**
    * Validate the response and get the rate.
@@ -179,8 +177,7 @@ public abstract class CurrencyConversionService {
    * @return Pair of rate with the respective date.
    */
   public abstract Pair<LocalDate, BigDecimal> getRateWithDate(
-      Currency currencyFrom, Currency currencyTo)
-      throws MalformedURLException, JSONException, AxelorException;
+      Currency currencyFrom, Currency currencyTo) throws MalformedURLException, AxelorException;
 
   /**
    * Validate the response and get the rate.

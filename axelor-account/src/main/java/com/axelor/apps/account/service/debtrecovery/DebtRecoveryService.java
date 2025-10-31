@@ -68,7 +68,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
 
 public class DebtRecoveryService {
 
@@ -432,8 +431,7 @@ public class DebtRecoveryService {
           ClassNotFoundException,
           InstantiationException,
           IllegalAccessException,
-          IOException,
-          JSONException {
+          IOException {
     boolean remindedOk = false;
 
     DebtRecovery debtRecovery =

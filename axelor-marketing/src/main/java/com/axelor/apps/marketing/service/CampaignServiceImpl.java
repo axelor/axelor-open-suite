@@ -44,7 +44,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Set;
-import wslite.json.JSONException;
 
 public class CampaignServiceImpl implements CampaignService {
 
@@ -123,7 +122,7 @@ public class CampaignServiceImpl implements CampaignService {
 
       try {
         generateAndSendMessage(campaign, partner, template);
-      } catch (ClassNotFoundException | IOException | JSONException | MessagingException e) {
+      } catch (ClassNotFoundException | IOException | MessagingException e) {
         errors.append(partner.getName()).append("\n");
         TraceBackService.trace(e);
       }
@@ -140,7 +139,7 @@ public class CampaignServiceImpl implements CampaignService {
 
       try {
         generateAndSendMessage(campaign, lead, template);
-      } catch (ClassNotFoundException | IOException | JSONException | MessagingException e) {
+      } catch (ClassNotFoundException | IOException | MessagingException e) {
         errors.append(lead.getName()).append("\n");
         TraceBackService.trace(e);
       }
@@ -151,7 +150,7 @@ public class CampaignServiceImpl implements CampaignService {
 
   @Transactional(rollbackOn = {Exception.class})
   protected void generateAndSendMessage(Campaign campaign, Model model, Template template)
-      throws ClassNotFoundException, IOException, JSONException, MessagingException {
+      throws ClassNotFoundException, IOException, MessagingException {
     Message message = templateMessageService.generateMessage(model, template);
     message.setMailAccount(campaign.getEmailAccount());
 

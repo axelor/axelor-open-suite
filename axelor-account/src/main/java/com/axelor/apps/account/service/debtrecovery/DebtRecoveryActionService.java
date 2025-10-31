@@ -51,7 +51,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
 
 public class DebtRecoveryActionService {
 
@@ -195,8 +194,7 @@ public class DebtRecoveryActionService {
           ClassNotFoundException,
           IOException,
           InstantiationException,
-          IllegalAccessException,
-          JSONException {
+          IllegalAccessException {
 
     log.debug("Begin runManualAction service ...");
     DebtRecoveryMethodLine debtRecoveryMethodLine = debtRecovery.getWaitDebtRecoveryMethodLine();
@@ -268,8 +266,7 @@ public class DebtRecoveryActionService {
           ClassNotFoundException,
           IOException,
           InstantiationException,
-          IllegalAccessException,
-          JSONException {
+          IllegalAccessException {
     Set<Message> messageSet = this.runStandardMessage(debtRecovery);
 
     for (Message message : messageSet) {

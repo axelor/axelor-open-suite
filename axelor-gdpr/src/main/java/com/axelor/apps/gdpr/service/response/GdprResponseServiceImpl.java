@@ -32,7 +32,6 @@ import jakarta.persistence.Query;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import wslite.json.JSONException;
 
 public class GdprResponseServiceImpl implements GdprResponseService {
 
@@ -85,7 +84,7 @@ public class GdprResponseServiceImpl implements GdprResponseService {
 
   @Override
   public void generateResponse(GDPRRequest gdprRequest)
-      throws AxelorException, IOException, ClassNotFoundException, JSONException {
+      throws AxelorException, IOException, ClassNotFoundException {
     if (gdprRequest.getTypeSelect() == GDPRRequestRepository.REQUEST_TYPE_ACCESS) {
       gdprResponseAccessService.generateAccessResponseDataFile(gdprRequest);
 

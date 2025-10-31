@@ -25,7 +25,6 @@ import com.axelor.meta.db.MetaField;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import wslite.json.JSONException;
 
 public interface GdprResponseService {
 
@@ -40,7 +39,7 @@ public interface GdprResponseService {
       throws ClassNotFoundException;
 
   void generateResponse(GDPRRequest gdprRequest)
-      throws AxelorException, IOException, ClassNotFoundException, JSONException;
+      throws AxelorException, IOException, ClassNotFoundException;
 
   void sendResponse(GDPRRequest gdprRequest) throws AxelorException;
 }

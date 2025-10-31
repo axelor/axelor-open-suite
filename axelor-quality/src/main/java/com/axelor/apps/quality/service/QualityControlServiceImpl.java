@@ -37,7 +37,6 @@ import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.List;
-import wslite.json.JSONException;
 
 public class QualityControlServiceImpl implements QualityControlService {
 
@@ -127,8 +126,7 @@ public class QualityControlServiceImpl implements QualityControlService {
   }
 
   @Override
-  public void sendEmail(QualityControl qualityControl)
-      throws ClassNotFoundException, IOException, JSONException {
+  public void sendEmail(QualityControl qualityControl) throws ClassNotFoundException, IOException {
     Template template =
         Beans.get(AppQualityService.class).getAppQuality().getQualityControlTemplate();
 
