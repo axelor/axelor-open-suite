@@ -60,7 +60,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
-import wslite.json.JSONException;
 
 public class SaleOrderServiceImpl implements SaleOrderService {
 
@@ -163,7 +162,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   @Override
   @Transactional(rollbackOn = Exception.class)
   public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty)
-      throws AxelorException, MalformedURLException, JSONException {
+      throws AxelorException, MalformedURLException {
 
     List<PackLine> packLineList = pack.getComponents();
     if (ObjectUtils.isEmpty(packLineList)) {

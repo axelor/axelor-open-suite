@@ -53,7 +53,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
-import wslite.json.JSONException;
 
 @Path("/aos/timesheet")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -122,7 +121,7 @@ public class TimesheetRestController {
   @HttpExceptionHandler
   public Response updateTimesheetStatus(
       @PathParam("timesheetId") Long timesheetId, TimesheetPutRequest requestBody)
-      throws AxelorException, JSONException, IOException, ClassNotFoundException {
+      throws AxelorException, IOException, ClassNotFoundException {
     new SecurityCheck().writeAccess(Timesheet.class, timesheetId).check();
     RequestValidator.validateBody(requestBody);
 

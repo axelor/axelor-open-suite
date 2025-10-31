@@ -71,7 +71,6 @@ import org.apache.commons.math3.exception.TooManyIterationsException;
 import org.apache.shiro.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
 
 /** UserService is a class that implement all methods for user information */
 public class UserServiceImpl implements UserService {
@@ -351,7 +350,7 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void processChangedPassword(User user)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException {
     Preconditions.checkNotNull(user, I18n.get("User cannot be null."));
 
     try {

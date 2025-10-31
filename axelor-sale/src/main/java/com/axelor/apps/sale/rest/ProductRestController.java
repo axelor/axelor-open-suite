@@ -43,7 +43,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
-import wslite.json.JSONException;
 
 @Path("/aos/product")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -56,8 +55,7 @@ public class ProductRestController {
   @Path("/price")
   @POST
   @HttpExceptionHandler
-  public Response getProductsPrice(ProductPostRequest requestBody)
-      throws JSONException, AxelorException {
+  public Response getProductsPrice(ProductPostRequest requestBody) throws AxelorException {
     RequestValidator.validateBody(requestBody);
     for (ProductResquest unitProductPostRequest : requestBody.getProductList()) {
       new SecurityCheck()

@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import wslite.json.JSONException;
 
 /** UserService is a class that implement all methods for user information */
 @ScriptAllowed
@@ -167,7 +166,7 @@ public interface UserService {
    * @throws AxelorException
    */
   void processChangedPassword(User user)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   /**
    * Match password with configured pattern.

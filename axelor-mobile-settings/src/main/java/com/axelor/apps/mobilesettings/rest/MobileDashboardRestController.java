@@ -38,7 +38,6 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.util.Optional;
-import wslite.json.JSONException;
 
 @Path("/aos/mobiledashboard")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -51,7 +50,7 @@ public class MobileDashboardRestController {
   @GET
   @HttpExceptionHandler
   public Response getMobileDashboard(@PathParam("mobileDashboardId") Long mobileDashboardId)
-      throws AxelorException, JSONException {
+      throws AxelorException {
     new SecurityCheck().readAccess(MobileDashboard.class, mobileDashboardId).check();
     MobileDashboard mobileDashboard =
         ObjectFinder.find(MobileDashboard.class, mobileDashboardId, ObjectFinder.NO_VERSION);

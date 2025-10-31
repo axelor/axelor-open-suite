@@ -32,7 +32,6 @@ public interface MapRestService {
    * @param mainNode
    * @param arrayNode
    * @throws AxelorException
-   * @throws JSONException
    */
   void setData(ObjectNode mainNode, ArrayNode arrayNode) throws AxelorException, JSONException;
 
@@ -51,7 +50,6 @@ public interface MapRestService {
    * @param objectNode
    * @return
    * @throws AxelorException
-   * @throws JSONException
    */
   String makeAddressString(Address address, ObjectNode objectNode)
       throws AxelorException, JSONException;

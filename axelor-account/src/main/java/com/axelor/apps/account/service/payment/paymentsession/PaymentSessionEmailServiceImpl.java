@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
-import wslite.json.JSONException;
 
 public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailService {
   protected TemplateMessageService templateMessageService;
@@ -64,8 +63,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public int sendEmails(PaymentSession paymentSession)
-      throws ClassNotFoundException, JSONException, IOException {
+  public int sendEmails(PaymentSession paymentSession) throws ClassNotFoundException, IOException {
     if (this.getEmailTemplate(paymentSession) == null) {
       return 0;
     }
@@ -137,7 +135,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
   @Transactional(rollbackOn = {Exception.class})
   protected void sendEmailToPartner(
       PaymentSession paymentSession, Partner partner, List<Long> partnerIdList)
-      throws ClassNotFoundException, JSONException, IOException {
+      throws ClassNotFoundException, IOException {
     if (partner == null || partnerIdList.contains(partner.getId())) {
       return;
     }
