@@ -47,14 +47,16 @@ public class SaleOrderLineOnProductChangeServiceImpl
   @Override
   public Map<String, Object> computeLineFromProduct(SaleOrderLine saleOrderLine)
       throws AxelorException {
-    return computeLineFromProduct(saleOrderLine.getSaleOrder(), saleOrderLine);
+    return computeLineFromProduct(
+        saleOrderLine.getSaleOrder(), saleOrderLine, saleOrderLine.getParentSaleOrderLine());
   }
 
   @Override
   public Map<String, Object> computeLineFromProduct(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException {
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSaleOrderLine)
+      throws AxelorException {
     SaleOrderLineProductOnChange saleOrderLineProductOnChange =
-        new SaleOrderLineProductOnChange(saleOrderLine, saleOrder);
+        new SaleOrderLineProductOnChange(saleOrderLine, saleOrder, parentSaleOrderLine);
     try {
       saleOrderLineProductOnChangeEvent.fire(saleOrderLineProductOnChange);
     } catch (ObserverException e) {
