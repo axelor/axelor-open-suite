@@ -70,7 +70,8 @@ public class SaleOrderLineComplementaryProductServiceImpl
     complementarySOLine.setIsComplementaryPartnerProductsHandled(
         complementaryProduct.getGenerationTypeSelect()
             == ComplementaryProductRepository.GENERATION_TYPE_SALE_ORDER);
-    saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, complementarySOLine);
+    saleOrderLineOnProductChangeService.computeLineFromProduct(
+        saleOrder, complementarySOLine, null);
     saleOrderLineRepository.save(complementarySOLine);
     return newComplementarySOLines;
   }

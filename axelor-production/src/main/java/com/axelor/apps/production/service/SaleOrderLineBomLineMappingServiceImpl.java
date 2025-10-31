@@ -62,7 +62,8 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
               .map(priority -> priority / 10)
               .orElse(0));
       // computing the line will generate sub lines.
-      saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
+      saleOrderLineOnProductChangeService.computeLineFromProduct(
+          saleOrder, saleOrderLine, saleOrderLine.getParentSaleOrderLine());
 
       BillOfMaterial billOfMaterial = billOfMaterialLine.getBillOfMaterial();
       if (billOfMaterial != null) {
