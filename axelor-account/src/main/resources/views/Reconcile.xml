@@ -82,7 +82,8 @@
         onClick="save,action-reconcile-method-unreconcile"/>
     </panel>
     <panel sidebar="true" name="infoPanel" title="Info">
-      <field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
+      <field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"
+        validIf="amount > 0"/>
       <field name="statusSelect" widget="single-select"/>
       <field name="reconciliationDateTime"/>
       <field name="effectiveDate"/>
