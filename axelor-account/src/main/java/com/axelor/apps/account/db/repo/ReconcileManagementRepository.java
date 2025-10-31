@@ -60,9 +60,9 @@ public class ReconcileManagementRepository extends ReconcileRepository {
     MoveLine creditMoveLine = reconcile.getCreditMoveLine();
 
     BigDecimal debitAmountRemaining =
-        debitMoveLine == null ? BigDecimal.ZERO : debitMoveLine.getAmountRemaining();
+        debitMoveLine == null ? BigDecimal.ZERO : debitMoveLine.getAmountRemaining().abs();
     BigDecimal creditAmountRemaining =
-        creditMoveLine == null ? BigDecimal.ZERO : creditMoveLine.getAmountRemaining();
+        creditMoveLine == null ? BigDecimal.ZERO : creditMoveLine.getAmountRemaining().abs();
 
     if (debitAmountRemaining.compareTo(BigDecimal.ZERO) == 0) {
       copy.setDebitMoveLine(null);
