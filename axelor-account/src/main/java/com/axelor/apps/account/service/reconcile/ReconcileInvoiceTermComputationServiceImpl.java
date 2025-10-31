@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -41,6 +42,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -250,19 +252,27 @@ public class ReconcileInvoiceTermComputationServiceImpl
         .orElse(null);
   }
 
-  protected Map<InvoiceTerm, Integer> getInvoiceTermPfpStatus(Invoice invoice) {
+  protected Map<InvoiceTerm, Integer> getInvoiceTermPfpStatus(Invoice invoice)
+      throws AxelorException {
     Map<InvoiceTerm, Integer> map = new HashMap<>();
 
-    if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
-      List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+    if (invoice == null || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return map;
+    }
 
-      for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        if (invoiceTerm.getPfpValidateStatusSelect()
-            != InvoiceTermRepository.PFP_STATUS_LITIGATION) {
-          invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
-        }
-        map.put(invoiceTerm, invoiceTerm.getPfpValidateStatusSelect());
+    boolean shouldAutoValidate =
+        Beans.get(PfpService.class).getPfpCondition(invoice)
+            && invoice.getOperationTypeSelect()
+                == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
+
+    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      int status = invoiceTerm.getPfpValidateStatusSelect();
+      if (shouldAutoValidate && status == InvoiceTermRepository.PFP_STATUS_AWAITING) {
+        status = InvoiceTermRepository.PFP_STATUS_VALIDATED;
       }
+      map.put(invoiceTerm, status);
     }
 
     return map;
