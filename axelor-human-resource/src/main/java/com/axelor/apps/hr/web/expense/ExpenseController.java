@@ -64,6 +64,7 @@ import com.axelor.apps.hr.service.expense.ExpenseComputationService;
 import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
 import com.axelor.apps.hr.service.expense.ExpenseKilometricService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.ExpenseLineUpdateService;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.apps.hr.service.expense.ExpensePrintService;
 import com.axelor.apps.hr.service.expense.ExpenseRecordService;
@@ -788,5 +789,13 @@ public class ExpenseController {
     Expense expense = request.getContext().asType(Expense.class);
     Beans.get(ExpenseComputationService.class).recomputeAmountsUsingLines(expense);
     response.setValues(expense);
+  }
+
+  public void updateCurrencyOnLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Expense expense = request.getContext().asType(Expense.class);
+    Beans.get(ExpenseLineUpdateService.class).updateCurrencyOnLines(expense);
+    response.setValue("generalExpenseLineList", expense.getGeneralExpenseLineList());
+    response.setValue("kilometricExpenseLineList", expense.getKilometricExpenseLineList());
   }
 }
