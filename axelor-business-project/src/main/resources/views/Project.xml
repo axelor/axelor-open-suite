@@ -187,10 +187,10 @@
       <!-- MGM-66 task reports -->
       <panel title="Task Reports" name="taskReportsPanel"
         if="__user__.group.code != 'CUSTOM-PM'">
-        <button name="addTaskReportBtn" onClick="action-business-project-add-task-report"
-          title="New Task Report" css="btn btn-sm btn-primary float-right" icon="fa-plus"
-          if="__config__.app.isApp('business-project')" if-module="axelor-business-project"
-          showIf="id &amp;&amp; isBusinessProject"/>
+        <!-- <button name="addTaskReportBtn" onClick="action-business-project-add-task-report" -->
+        <!-- title="New Task Report" css="btn btn-sm btn-primary float-right" icon="fa-plus" -->
+        <!-- if="__config__.app.isApp('business-project')" if-module="axelor-business-project" -->
+        <!-- showIf="id &amp;&amp; isBusinessProject"/> -->
 
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
           action="action-task-report-dashlet" colSpan="12" canNew="true" x-show-bars="true"/>

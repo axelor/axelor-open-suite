@@ -33,63 +33,89 @@
   <form name="task-report-form" title="Task Reports"
     model="com.axelor.apps.businessproject.db.TaskReport" onNew="action-task-report-default"
     width="large">
-    <panel title="General Information">
-      <field name="project" title="Order"
-        domain="self.membersUserSet.id = :__user__ OR self.assignedTo.id = :__user__"
-        onChange="action-task-report-on-change-project" required="true"/>
-      <field name="customer" hidden="true"/>
-      <field name="customer"/>
-      <field name="location" canEdit="true"/>
-    </panel>
+    <panel colSpan="12" name="parentPanel" showFrame="true">
+      <panel title="General Information" showFrame="false">
+        <field name="project" title="Order"
+          domain="self.membersUserSet.id = :__user__ OR self.assignedTo.id = :__user__"
+          onChange="action-task-report-on-change-project" required="true"/>
+        <field name="customer" hidden="true"/>
+        <field name="customer"/>
+        <field name="location" canEdit="true"/>
+      </panel>
 
-    <!-- Panel for Task Member Reports -->
-    <panel title="Team Members Reports" canCollapse="true" collapseIf="true">
-      <field name="taskMemberReports" title="Task member reports" widget="list" colSpan="12"
-        form="task-member-report-form" onChange="action-update-total-work-hours"/>
-      <panel>
-        <field name="totalWorkHours"/>
+      <!-- Panel for Task Member Reports -->
+      <panel title="Team Members Reports" canCollapse="true" collapseIf="true" colSpan="12">
+        <field name="taskMemberReports" widget="list" colSpan="12"
+          form="task-member-report-form" onChange="action-update-total-work-hours"/>
+        <panel>
+          <field name="totalWorkHours"/>
+        </panel>
       </panel>
-    </panel>
+      <panel title="Team Lead Reports" canCollapse="true" collapseIf="true" colSpan="12">
+        <field name="teamLeadReports" widget="list" colSpan="12"
+          form="task-member-report-form-lead" onChange="action-update-total-work-hours"/>
+        <panel>
+          <field name="totalWorkHours"/>
+        </panel>
+      </panel>
 
-    <panel colSpan="12">
-      <panel title="Extra charges" colSpan="6" showFrame="true">
-        <field name="travelExpenses" colSpan="6" widget="checkbox"/>
-        <field name="toolsUsage" colSpan="6" widget="checkbox"/>
+      <panel colSpan="12" showFrame="false">
+        <panel title="Extra charges" colSpan="6" showFrame="true">
+          <field name="travelExpenses" colSpan="6" widget="checkbox"/>
+          <field name="toolsUsage" colSpan="6" widget="checkbox"/>
+        </panel>
+        <panel title="Additional Services" colSpan="6" showFrame="true">
+          <field name="additionalServices" colSpan="12" widget="MultiSelect"/>
+        </panel>
+        <panel title="Activity Details" colSpan="12" showTitle="false">
+          <field name="material" colSpan="12" widget="textarea"/>
+          <field name="otherServices" colSpan="12" widget="textarea"/>
+          <field name="comments" title="Comments" colSpan="12" widget="textarea"/>
+        </panel>
       </panel>
-      <panel title="Additional Services" colSpan="6" showFrame="true">
-        <field name="additionalServices" colSpan="12" widget="MultiSelect"/>
-      </panel>
-      <panel title="Activity Details" colSpan="12" showTitle="false">
-        <field name="material" colSpan="12" widget="textarea"/>
-        <field name="otherServices" colSpan="12" widget="textarea"/>
-        <field name="comments" title="Comments" colSpan="12" widget="textarea"/>
-      </panel>
-    </panel>
 
-    <panel title="Sign-Off">
-      <panel colSpan="12">
-        <field name="taskDate" colSpan="4"/>
-      </panel>
-      <panel colSpan="12">
-        <field name="employee" title="Employee Name"/>
-        <field name="customerName" title="Customer Name" readonly="false"/>
+      <panel title="Sign-Off" showFrame="false">
+        <panel colSpan="12">
+          <field name="taskDate" colSpan="4"/>
+        </panel>
+        <panel colSpan="12">
+          <field name="employee" title="Employee Name"/>
+          <field name="customerName" title="Customer Name" readonly="false"/>
 
-        <field name="employeeSignature" title="Employee Signature" widget="drawing"
-          colSpan="6"/>
-        <field name="customerSignature" title="Customer Signature" widget="drawing"
-          readonly="false" colSpan="6"/>
+          <field name="employeeSignature" title="Employee Signature" widget="drawing"
+            colSpan="6"/>
+          <field name="customerSignature" title="Customer Signature" widget="drawing"
+            readonly="false" colSpan="6"/>
+        </panel>
+      </panel>
+      <panel colSpan="12" showFrame="false">
+        <button name="btnPreviewTaskReport" title="Preview" icon="fa-eye" colSpan="12"
+          onClick="save, action-task-report-method-preview-for-customer"/>
       </panel>
     </panel>
   </form>
 
   <!-- Define the form view for Task Member Report -->
   <form name="task-member-report-form" title="Team Member Report"
-    model="com.axelor.apps.businessproject.db.TaskMemberReport" onLoad="member-task-report">
+    model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <panel colSpan="12" canCollapse="true" collapseIf="false">
       <field name="task" title="Task" widget="Select"
         domain-function="eval: 'self.project.id = ' + parent.project.id"
         onChange="action-task-member-report-on-change-task"/>
       <field name="employee" title="Employee"/>
+      <field name="startTime" onChange="action-task-report-on-change-time"/>
+      <field name="breakTimeHours" onChange="action-task-report-on-change-time"/>
+      <field name="endTime" onChange="action-task-report-on-change-time"/>
+      <field name="task.projectTaskCategory" title="Task Category" readonly="true"/>
+      <field name="workHours"/>
+    </panel>
+  </form>
+  <form name="task-member-report-form-lead" title="Team Lead Member Report"
+    model="com.axelor.apps.businessproject.db.TaskMemberReportLead">
+    <panel colSpan="12" canCollapse="true" collapseIf="false">
+      <field name="employee" title="Employee" domain-function="eval: project?.membersUserSet"/>
+      <field name="task" title="Task" widget="Select" colSpan="12"
+        domain-function="eval: 'self.project.id = ' + parent.project.id + ' AND self.assignedTo.id = ' + parent.employee.id"/>
       <field name="startTime" onChange="action-task-report-on-change-time"/>
       <field name="breakTimeHours" onChange="action-task-report-on-change-time"/>
       <field name="endTime" onChange="action-task-report-on-change-time"/>
@@ -129,15 +155,22 @@
     <context name="project" expr="eval:__parent__"/>
   </action-view>
 
-  <action-view name="action-task-report-new" title="New Task Report"
-    model="com.axelor.apps.businessproject.db.TaskReport">
-    <view type="form" name="task-report-form"/>
-    <context name="project" expr="eval: __parent__.project"/>
-  </action-view>
+  <!-- <action-view name="action-task-report-new" title="New Task Report" -->
+  <!-- model="com.axelor.apps.businessproject.db.TaskReport"> -->
+  <!-- <view type="form" name="task-report-form"/> -->
+  <!-- <context name="project" expr="eval: __parent__.project"/> -->
+  <!-- </action-view> -->
 
   <action-view name="member-task-report" title="Member Task Reports"
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <view type="form" name="task-member-report-form"/>
+    <view-param name="popup" value="reload"/>
+    <context name="employee" expr="eval: project?.membersUserSet"/>
+    <context name="project" expr="eval: __parent__.project"/>
+  </action-view>
+  <action-view name="member-task-report-lead" title="Member Task Reports"
+    model="com.axelor.apps.businessproject.db.TaskMemberReport">
+    <view type="form" name="task-member-report-form-lead"/>
     <view-param name="popup" value="reload"/>
     <context name="employee" expr="eval: project?.membersUserSet"/>
     <context name="project" expr="eval: __parent__.project"/>

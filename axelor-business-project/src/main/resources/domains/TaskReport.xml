@@ -13,6 +13,8 @@
     <many-to-one name="employee" ref="com.axelor.auth.db.User" title="Report Created By"/>
     <one-to-many name="taskMemberReports"
       ref="com.axelor.apps.businessproject.db.TaskMemberReport"/>
+    <one-to-many name="teamLeadReports"
+      ref="com.axelor.apps.businessproject.db.TaskMemberReportLead"/>
     <decimal name="totalWorkHours" title="Total working time (hours)" precision="6"
       scale="2" readonly="true"/>
     <date name="taskDate" title="Report Date"/>
