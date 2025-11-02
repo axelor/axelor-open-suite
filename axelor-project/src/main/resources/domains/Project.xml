@@ -57,7 +57,7 @@
     <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
       title="Type of authorized activities"/>
 
-    <string name="fullName" namecolumn="true" title="Name"/>
+    <string name="fullName" namecolumn="true" title="Full Name"/>
 
     <boolean name="isShowPhasesElements" title="Show sub-projects"/>
     <enum name="genProjTypePerOrderLine" ref="GenProjTypePerOrderLine"

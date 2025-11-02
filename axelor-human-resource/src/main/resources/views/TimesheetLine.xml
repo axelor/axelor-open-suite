@@ -11,9 +11,9 @@
       <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
         onClick="action-timesheet-line-method-remove-timesheet-lines"/>
     </toolbar>
-    <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
+    <field name="employee" form-view="employee-form" grid-view="employee-grid" canView="false"/>
     <field name="projectTask" onChange="action-timesheet-line-method-set-product"
-      form-view="project-task-form" grid-view="project-task-grid"/>
+      form-view="project-task-form" grid-view="project-task-grid" canView="false" canEdit="false"/>
     <field name="date"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product"
@@ -48,7 +48,8 @@
       requiredIf="toInvoice &amp;&amp; !projectTask.frameworkCustomerContract"
       onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
       onChange="action-timesheet-line-method-set-product" form-view="product-activity-form"
-      grid-view="product-activity-grid" readonlyIf="projectTask.frameworkCustomerContract"/>
+      grid-view="product-activity-grid" readonlyIf="projectTask.frameworkCustomerContract"
+      canEdit="false" canView="false"/>
     <field name="hoursDuration" width="62%" min="0.01" title="TimesheetLine.duration"/>
     <field name="durationForCustomer" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project')"/>
@@ -77,7 +78,7 @@
       form-view="business-project-form" grid-view="project-grid"/>
     <field name="projectTask" width="200" form-view="project-task-form"
       grid-view="project-task-grid" onSelect="action-timesheet-line-attrs-domain-project-task"
-      onChange="action-timesheet-line-group-project-task-on-change"/>
+      onChange="action-timesheet-line-group-project-task-on-change" canEdit="false" canView="false"/>
     <field name="site" width="200" form-view="site-form" grid-view="site-grid"
       onSelect="action-timesheet-line-attrs-set-site-domain"
       if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
@@ -85,7 +86,7 @@
       requiredIf="toInvoice &amp;&amp; !projectTask.frameworkCustomerContract" width="200"
       onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
       form-view="product-activity-form" grid-view="product-activity-grid"
-      readonlyIf="projectTask.frameworkCustomerContract"/>
+      readonlyIf="projectTask.frameworkCustomerContract" canEdit="false" canView="false"/>
     <field name="date" width="100"
       onChange="action-timesheet-line-validate-date,action-timesheet-line-method-check-daily-limit"/>
     <field name="duration" width="100"
@@ -107,7 +108,8 @@
         showIf="_showLogTime" if="__user__.activeProject"/>
     </toolbar>
     <field name="timesheet.company"/>
-    <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
+    <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"
+      canEdit="false" canView="false"/>
     <field name="timesheet.employee"/>
     <field name="project"/>
     <field name="date"/>
@@ -137,13 +139,14 @@
       requiredIf="toInvoice &amp;&amp; !projectTask.frameworkCustomerContract"
       onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
       form-view="product-activity-form" grid-view="product-activity-grid"
-      readonlyIf="projectTask.frameworkCustomerContract"/>
+      readonlyIf="projectTask.frameworkCustomerContract" canView="false" canEdit="false"/>
     <field name="duration" width="62%"
       onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
     <field name="durationForCustomer" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project')"/>
     <field name="hoursDuration" hidden="true"/>
-    <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
+    <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"
+      canEdit="false" canView="false"/>
     <field name="toInvoice" readonly="true" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
@@ -164,7 +167,8 @@
       form-view="business-project-form" grid-view="project-grid"/>
     <field name="projectTask" width="200" form-view="project-task-form"
       grid-view="project-task-grid" onSelect="action-timesheet-line-attrs-domain-project-task"
-      onChange="action-timesheet-line-method-set-default-to-invoice,action-timesheet-line-method-set-product"/>
+      onChange="action-timesheet-line-method-set-default-to-invoice,action-timesheet-line-method-set-product"
+      canEdit="false" canView="false"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
       form-view="product-activity-form" grid-view="product-activity-grid"/>
@@ -185,7 +189,8 @@
     <panel name="overviewPanel" title="Overview">
       <field name="employee" form-view="employee-form" grid-view="employee-grid"
         canNew="false" canEdit="false" canView="false"/>
-      <field name="projectTask" onChange="action-timesheet-line-method-set-product"/>
+      <field name="projectTask" onChange="action-timesheet-line-method-set-product"
+        canEdit="false" canView="false"/>
       <field name="date" onChange="action-timesheet-line-method-check-daily-limit"/>
       <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
         requiredIf="toInvoice" canEdit="false"
@@ -199,7 +204,8 @@
       <label name="durationLabel" colSpan="1" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project')"/>
       <field name="hoursDuration" hidden="true"/>
-      <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
+      <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"
+        canEdit="false" canView="false"/>
       <field name="toInvoice" readonly="true" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
       <field name="toInvoice" if-module="axelor-business-project"
@@ -216,10 +222,11 @@
     <panel name="overviewPanel" title="Overview">
       <field name="project" onChange="action-timesheet-line-group-project-onchange"
         onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
-        grid-view="project-grid"/>
+        grid-view="project-grid" canEdit="false" canView="false"/>
       <field name="projectTask" form-view="project-task-form" grid-view="project-task-grid"
         onSelect="action-timesheet-line-attrs-domain-project-task"
-        onChange="action-timesheet-line-group-project-task-on-change"/>
+        onChange="action-timesheet-line-group-project-task-on-change" canEdit="false"
+        canView="false"/>
       <field name="site" form-view="site-form" grid-view="site-grid"
         onSelect="action-timesheet-line-attrs-set-site-domain"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
@@ -253,7 +260,8 @@
     onSave="action-timesheet-line-method-update-operation-order">
     <panel name="mainPanel">
       <field name="timesheet.company"/>
-      <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
+      <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"
+        canEdit="false" canView="false"/>
       <field name="timesheet.employee"/>
       <field name="timesheet.statusSelect"
         if="__config__.app.getApp('timesheet')?.needValidation"/>
@@ -271,11 +279,12 @@
     <panel name="overviewPanel" title="Overview">
       <field name="project" onChange="action-timesheet-line-group-project-onchange"
         onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
-        grid-view="project-grid"/>
-      <field name="projectTask" onChange="action-timesheet-line-method-set-product"/>
+        grid-view="project-grid" canEdit="false" canView="false"/>
+      <field name="projectTask" onChange="action-timesheet-line-method-set-product"
+        canView="false"/>
       <field name="date" onChange="action-timesheet-line-method-check-daily-limit"/>
       <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
-        requiredIf="toInvoice" canEdit="false"
+        requiredIf="toInvoice" canView="false" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
       <field name="duration" width="62%" colSpan="2" min="0.01"
@@ -285,7 +294,8 @@
         if="__config__.app.isApp('business-project')"/>
       <label name="durationLabel" colSpan="1" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project')"/>
-      <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"/>
+      <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"
+        canEdit="false" canView="false"/>
       <field name="timer" form-view="ts-timer-form" grid-view="ts-timer-grid" showIf="timer"/>
       <field name="toInvoice" readonly="true" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
@@ -308,11 +318,11 @@
       <field name="project" readonlyIf="_project" colSpan="6"
         onChange="action-timesheet-line-record-set-project-task"
         onSelect="action-timesheet-line-attrs-domain-project" required="true"
-        form-view="project-form" grid-view="project-grid"/>
+        form-view="project-form" grid-view="project-grid" canEdit="false" canView="false"/>
       <field name="projectTask" readonlyIf="_projectTask" colSpan="6"
         onChange="action-timesheet-line-method-set-product,action-timesheet-line-record-set-project"
         domain="(:project IS NULL OR self.project = :project) AND self.project.manageTimeSpent = true"
-        form-view="project-task-form" grid-view="project-task-grid"/>
+        form-view="project-task-form" grid-view="project-task-grid" canEdit="false" canView="false"/>
       <field name="projectTask.projectTaskCategory" colSpan="6"
         form-view="project-task-category-form" grid-view="project-task-category-grid"/>
       <field if="__config__.app.getApp('timesheet')?.enableActivity" name="product"
@@ -328,7 +338,7 @@
         form-view="employee-form" grid-view="employee-grid"/>
       <field name="timesheet" readonly="false" colSpan="6"
         onSelect="action-timesheet-line-method-set-timesheet-domain"
-        validIf="timesheet.employee.id == employee.id"/>
+        validIf="timesheet.employee.id == employee.id" canEdit="false" canView="false"/>
       <field name="comments" colSpan="12"/>
     </panel>
   </form>

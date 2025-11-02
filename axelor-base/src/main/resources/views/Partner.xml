@@ -57,7 +57,8 @@
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName" width="300"/>
     <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
-    <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
+    <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"
+      canView="false"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
     <field name="user"/>
@@ -90,7 +91,8 @@
     <field name="partnerSeq" width="120"/>
     <field name="simpleFullName"/>
     <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
-    <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
+    <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"
+      canView="false"/>
     <field name="partnerCategory" grid-view="partner-category-grid"
       form-view="partner-category-form"/>
     <field name="fiscalPosition.code" title="Fiscal position"/>
@@ -118,7 +120,8 @@
     <field name="simpleFullName"/>
     <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
-    <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
+    <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"
+      canView="false"/>
     <field name="mainPartner.simpleFullName" title="Main company"/>
     <field name="jobTitleFunction"/>
     <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
@@ -135,7 +138,7 @@
     <field name="simpleFullName"/>
     <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
-    <field name="emailAddress.address" title="Email"/>
+    <field name="emailAddress.address" title="Email" canView="false"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
   </grid>
 
@@ -349,7 +352,7 @@
           hideIf="partnerTypeSelect== 2"/>
         <!--MGM-77: display currency directly here for customers, since it is a required field -->
         <field name="currency" expr="eval: __user__.activeCompany?.currency"
-          if="#{!isContact}" colSpan="4"/>
+          if="#{!isContact}" colSpan="4" canView="false"/>
         <!-- MGM-77: mainActivity moved from other partner details up here -->
         <field name="mainActivity" hideIf="partnerTypeSelect== 2" domain="self.isFinal = true"
           form-view="main-activity-form" colSpan="4"/>
@@ -459,7 +462,7 @@
           <field name="mobilePhone" colSpan="6" widget="phone"/>
           <field name="fixedPhone" colSpan="6" widget="phone"
             x-placeholder-number-type="FIXED_LINE"/>
-          <field name="emailAddress" canSelect="false" colSpan="6"
+          <field name="emailAddress" canSelect="false" canView="false" colSpan="6"
             form-view="email-address-simple-form" x-show-icons="false">
             <editor x-show-titles="false" x-viewer="true">
               <field name="address" colSpan="4" placeholder="whatever@example.com"
@@ -476,14 +479,13 @@
         </panel>
 
         <panel name="settingsPanel" title="Settings" colSpan="12">
-          <field name="localization" colSpan="4" canEdit="false" grid-view="localization-grid"
-            form-view="localization-form"/>
+          <field name="localization" colSpan="4" canEdit="false" canView="false" canNew="true"
+            grid-view="localization-grid" form-view="localization-form"/>
           <!-- MGM-80: Group Product setting not relevant for MGM processes -->
           <!-- <field name="groupProductsOnPrintings" showIf="(isCustomer || isSupplier)" if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"
             widget="boolean-switch" colSpan="12"/> -->
-          <field name="groupProductsOnPrintings" showIf="isSupplier"
-            if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"
-            widget="boolean-switch" colSpan="6"/>
+          <!-- <field name="groupProductsOnPrintings" showIf="isSupplier" if="__config__.app.getApp('base')?.getIsRegroupProductsOnPrintings()"
+            widget="boolean-switch" colSpan="6"/> -->
           <panel name="assignedToPanel" title="Assigned to" colSpan="12">
             <field name="user" colSpan="6" form-view="user-form"
               onSelect="action-partner-attrs-user-group" grid-view="user-grid" hideIf="isEmployee"
@@ -760,8 +762,8 @@
         <field name="reportsTo" domain="self.isContact = true"/>
         <field name="mobilePhone" widget="phone"/>
         <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
-        <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
-          x-show-icons="false">
+        <field name="emailAddress" canSelect="false" canView="false"
+          form-view="email-address-simple-form" x-show-icons="false">
           <editor x-show-titles="false" x-viewer="true">
             <field name="address" placeholder="whatever@example.com"
               pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"
@@ -813,7 +815,7 @@
 
     <panel name="settingsPanel" sidebar="true" title="Settings">
       <field name="partnerSeq"/>
-      <field name="localization" canEdit="false" grid-view="localization-grid"
+      <field name="localization" canEdit="false" canView="false" grid-view="localization-grid"
         form-view="localization-form"/>
       <panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
         <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
@@ -856,7 +858,7 @@
     <field name="picture"/>
     <field name="mobilePhone"/>
     <field name="fixedPhone"/>
-    <field name="emailAddress.address" title="Email"/>
+    <field name="emailAddress.address" title="Email" canView="false"/>
     <field name="partnerCategory"/>
     <field name="partnerTypeSelect"/>
     <field name="titleSelect"/>
@@ -914,7 +916,7 @@
     <field name="picture"/>
     <field name="mobilePhone"/>
     <field name="fixedPhone"/>
-    <field name="emailAddress.address" title="Email"/>
+    <field name="emailAddress.address" title="Email" canView="false"/>
     <field name="mainPartner.simpleFullName"/>
     <field name="partnerCategory"/>
     <field name="mainAddress"/>
@@ -977,7 +979,7 @@
     <field name="firstName"/>
     <field name="mobilePhone" widget="phone"/>
     <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
-    <field name="emailAddress.address" title="Email"/>
+    <field name="emailAddress.address" title="Email" canView="false"/>
   </grid>
 
   <form name="partner-employee-form" title="Employee" model="com.axelor.apps.base.db.Partner"
@@ -1038,7 +1040,7 @@
         <field name="mobilePhone" widget="phone"/>
         <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
         <field name="emailAddress" canSelect="false" form-view="email-address-simple-form"
-          x-show-icons="false">
+          x-show-icons="false" canView="false">
           <editor x-show-titles="false" x-viewer="true">
             <field name="address" placeholder="whatever@example.com"
               pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$"/>
@@ -1068,7 +1070,7 @@
     <panel name="settingsPanel" sidebar="true" title="Settings">
       <field name="partnerSeq"/>
       <field name="localization" grid-view="localization-grid" form-view="localization-form"
-        canEdit="false"/>
+        canEdit="false" canView="false"/>
       <panel name="assignedToPanel" title="Assigned to" canCollapse="true" colSpan="12">
         <field name="user" colSpan="6" form-view="user-form" grid-view="user-grid"
           canNew="false" canEdit="false" canView="false"/>

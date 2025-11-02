@@ -21,21 +21,21 @@
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="code"/>
-    <field name="parentProject"/>
+    <!-- MGM-80, @gkouete: Parent Project, gant view not relevant for MGM -->
+    <!-- <field name="parentProject"/> -->
     <field name="clientPartner"/>
     <field name="assignedTo"/>
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="projectStatus"/>
-    <button name="openGanttBtn" title="Gantt" icon="bar-chart-steps"
-      onClick="action-project-open-gantt"/>
+    <!-- <button name="openGanttBtn" title="Gantt" icon="bar-chart-steps" onClick="action-project-open-gantt"/> -->
     <button name="openTasks" onClick="action-project-view-show-related-tasks"
       icon="list-task"/>
   </grid>
 
   <grid name="project-child-grid" title="Projects" model="com.axelor.apps.project.db.Project"
     orderBy="projectStatus, name">
-    <field name="name"/>
+    <field name="name" required="false"/>
     <field name="code"/>
   </grid>
 
@@ -164,20 +164,19 @@
   <form name="incl-information-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
     <panel name="informationPanel">
-      <field name="fullName" showTitle="false" placeholder="Auftragsnummer" colSpan="12"
+      <field name="fullName" showTitle="false" colSpan="12"
         css="label-bold bold large">
         <editor x-show-titles="false">
           <panel name="seq" colSpan="3">
-            <field name="code" showTitle="false" colSpan="12" readonly="true"
+            <field name="code" showTitle="true" colSpan="12" readonly="true"
               placeholder="Auftragsnummer"
               if="__config__.app.getApp('project')?.generateProjectSequence"
               css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
-            <field name="code" showTitle="false" placeholder="Auftragsnummer" colSpan="12"
+            <field name="code" showTitle="true" placeholder="Auftragsnummer" colSpan="12"
               required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
               css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
           </panel>
-          <field name="name" showTitle="false" colSpan="6" required="false"
-            placeholder="Bezeichnung" css="label-bold bold
+          <field name="name" showTitle="false" colSpan="6" placeholder="Bezeichnung" css="label-bold bold
             large"/>
         </editor>
       </field>

@@ -12,7 +12,7 @@
     </toolbar>
 
     <field name="fullName"/>
-    <field name="company" form-view="company-form" grid-view="company-grid"
+    <field name="company" form-view="company-form" grid-view="company-grid" canView="false"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="fromDate"/>
@@ -149,8 +149,8 @@
           <field name="fromDate" colSpan="6"/>
           <field name="toDate" onChange="action-project-group-to-date-onchange" colSpan="6"/>
           <field name="company" form-view="company-form" grid-view="company-grid" colSpan="6"
-            canEdit="false" if-module="axelor-business-project"/>
-          <field name="clientPartner" canNew="true"
+            canEdit="false" canView="false" if-module="axelor-business-project"/>
+          <field name="clientPartner" canNew="true" canView="false"
             domain="self.isCustomer = true AND :company member of self.companySet"
             onChange="action-project-method-get-partner-data" required="true"
             form-view="partner-form" grid-view="partner-grid" colSpan="6"
@@ -163,7 +163,7 @@
             domain="self IN (SELECT address FROM PartnerAddress where partner = :clientPartner)"
             colSpan="6"/>
           <field name="currency" colSpan="6" if="__config__.app.isApp('business-project')"
-            if-module="axelor-business-project" canEdit="false"/>
+            if-module="axelor-business-project" canEdit="false" canView="false"/>
         </panel>
         <!-- MGM-80: Adding team member selection to the overview -->
         <field name="membersUserSet" colSpan="6" widget="TagSelect" canNew="false"

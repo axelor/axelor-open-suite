@@ -155,7 +155,7 @@
         if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
       <field name="project" colSpan="6" onChange="action-project-task-group-project-onchange"
         domain="self.projectStatus.isCompleted = false" required="true" form-view="project-form"
-        grid-view="project-grid"/>
+        grid-view="project-grid" canView="false"/>
       <!-- MGM-68 - @gkouete: parent task not required -->
       <!-- <field name="parentTask" readonlyIf="project == null" colSpan="6" form-view="project-task-form"
         grid-view="project-task-grid" onChange="action-project-task-record-get-parent-timeunit" onSelect="action-project-task-attrs-project-parent-task-configurations"/> -->
@@ -212,7 +212,7 @@
       <field name="projectTaskCategory" colSpan="6" showIf="project.isShowTaskCategory"
         requiredIf="project.isShowTaskCategory &amp;&amp; project.taskStatusManagementSelect == 4"
         onSelect="action-project-task-attrs-project-task-category-configurations"
-        onChange="action-project-task-group-project-category-onchange"/>
+        onChange="action-project-task-group-project-category-onchange" canView="false"/>
 
       <!-- <field name="progress" onChange="action-project-task-group-progress-onchange" showIf="project.isShowProgress"
         colSpan="4" min="0" max="100" widget="Slider" x-step="1" x-scale="0"/> -->
