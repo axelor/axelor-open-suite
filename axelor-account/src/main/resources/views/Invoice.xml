@@ -1836,7 +1836,7 @@
     <action name="action-invoice-method-check-analytic-axis"/>
     <action name="save"/>
     <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
-    <action name="action-invoice-method-generate-invoice-terms"/>
+    <action name="action-invoice-method-generate-invoice-terms" if="!invoiceTermList"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="save"/>
     <action name="action-record-invoice-set-discount-values"

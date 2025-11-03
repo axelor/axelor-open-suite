@@ -1204,8 +1204,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   protected void updateUnpaidInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm) {
-    invoiceTerm.setPaymentMode(invoice.getPaymentMode());
-    invoiceTerm.setBankDetails(invoice.getBankDetails());
+    if (invoiceTerm.getPaymentMode() == null) {
+      invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+    }
+    if (invoiceTerm.getBankDetails() == null) {
+      invoiceTerm.setBankDetails(invoice.getBankDetails());
+    }
   }
 
   @Override
