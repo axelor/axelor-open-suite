@@ -93,10 +93,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Deprecated private int sequence = 0;
 
   @Override
-  public Map<String, BigDecimal> compute(
+  public Map<String, Object> compute(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
 
-    HashMap<String, BigDecimal> map = new HashMap<>();
+    HashMap<String, Object> map = new HashMap<>();
     if (purchaseOrder == null
         || purchaseOrderLine.getPrice() == null
         || purchaseOrderLine.getInTaxPrice() == null
@@ -694,4 +694,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     valuesMap.put("taxEquiv", taxEquiv);
     return valuesMap;
   }
+
+  @Override
+  public void validateDeletion(PurchaseOrderLine purchaseOrderLine) throws AxelorException {}
 }

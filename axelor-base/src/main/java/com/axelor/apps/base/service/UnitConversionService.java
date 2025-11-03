@@ -58,4 +58,8 @@ public interface UnitConversionService {
    */
   public BigDecimal getCoefficient(Unit startUnit, Unit endUnit, Product product)
       throws AxelorException, CompilationFailedException, ClassNotFoundException, IOException;
+
+  BigDecimal convertWithAutoFlushFalse(
+      Unit startUnit, Unit endUnit, BigDecimal value, int scale, Product product)
+      throws AxelorException;
 }

@@ -4,31 +4,73 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
-    search="self.name = :name" update="true"/>
+    search="self.name = :name" update="true">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="title" to="title"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(title)"
+      check-message="Title must not be null"/>
+    <bind column="xmlId" to="xmlId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name', name, 'xmlId', xmlId)"
+      check-message="Xml id must be unique"/>
+    <bind column="tagStyle" to="tagStyle"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaMenu', 'tagStyle', tagStyle)"
+      check-message="Invalid tagStyle"/>
+  </input>
 
   <input file="budget_advanced_export.csv" search="self.importId = :importId"
     type="com.axelor.apps.base.db.AdvancedExport" separator=";">
+    <bind column="metaModel_name" to="metaModel" search="self.name = :metaModel_name"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaModel', 'name', metaModel_name)"
+      check-message="Meta model doesn't exist"/>
   </input>
 
   <input file="budget_advanced_export_line.csv" search="self.importId = :importId"
     type="com.axelor.apps.base.db.AdvancedExportLine" separator=";">
+    <bind column="orderByType" to="orderByType"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.AdvancedExportLine', 'orderByType', orderByType)"
+      check-message="Invalid orderByType"/>
   </input>
 
   <input file="base_birtTemplate.csv" separator=";"
     type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="format" to="format"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplate', 'format', format)"
+      check-message="Invalid format"/>
+    <bind column="templateEngineSelect" to="templateEngineSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplate', 'templateEngineSelect', templateEngineSelect)"
+      check-message="Invalid templateEngineSelect"/>
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
 
   <input file="base_birtTemplateParameter.csv" separator=";"
-    type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
+    type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="type" to="type"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplateParameter', 'type', type)"
+      check-message="Invalid type"/>
+  </input>
 
   <input file="base_printingTemplate.csv" type="com.axelor.apps.base.db.PrintingTemplate"
     separator=";" search="self.importId = :importId">
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.PrintingTemplate', 'statusSelect', statusSelect)"
+      check-message="Invalid statusSelect"/>
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
 
   <input file="base_printingTemplateLine.csv"
     type="com.axelor.apps.base.db.PrintingTemplateLine" separator=";"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.PrintingTemplateLine', 'typeSelect', typeSelect)"
+      check-message="Invalid typeSelect"/>
+  </input>
 
 </csv-inputs>

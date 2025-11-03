@@ -53,6 +53,8 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnChangeSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
@@ -296,6 +298,30 @@ public class SaleOrderController {
                     Beans.get(AppSupplychainService.class).getTodayDate(saleOrder.getCompany()))
                 .map());
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void deliveredPartnerChange(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Map<String, Object> values =
+          Beans.get(SaleOrderOnChangeSupplychainService.class)
+              .getDeliveredPartnerOnChangeValues(saleOrder);
+      response.setValues(values);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void invoicedPartnerChange(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Map<String, Object> values =
+          Beans.get(SaleOrderOnChangeSupplychainService.class)
+              .getInvoicedPartnerOnChangeValues(saleOrder);
+      response.setValues(values);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -875,6 +901,17 @@ public class SaleOrderController {
           response.setNotify(message);
         }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void estimatePackaging(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      Beans.get(SaleOrderPackagingService.class).estimatePackaging(saleOrder);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -74,12 +74,14 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.naming.NamingException;
@@ -101,7 +103,6 @@ public class DataBackupCreateService {
   protected List<String> fileNameList;
   protected static Set<String> exceptColumnNameList =
       ImmutableSet.of(
-          "importOrigin",
           "importId",
           "updatedBy",
           "createdBy",
@@ -112,6 +113,9 @@ public class DataBackupCreateService {
           "attrs");
 
   StringBuilder sb = new StringBuilder();
+
+  protected static List<String> headerList =
+      Arrays.asList("importId", "importOrigin", "code", "name");
 
   protected static Map<Object, Object> AutoImportModelMap =
       ImmutableMap.builder()
@@ -465,6 +469,8 @@ public class DataBackupCreateService {
       boolean isTemplateWithDescription = dataBackup.getIsTemplateWithDescription();
       int count = 0;
       Integer maxLinesPerFile = dataBackup.getMaxLinesPerFile();
+      LocalDateTime relativeDateTime = dataBackup.getRelativeDateTime();
+      List<String> sortedHeaderArr = new ArrayList<>();
 
       csvInput.setFileName(metaModel.getName() + ".csv");
       csvInput.setTypeName(metaModel.getFullName());
@@ -498,7 +504,8 @@ public class DataBackupCreateService {
                           dirPath,
                           isRelativeDate,
                           updateImportId,
-                          dataBackup));
+                          dataBackup,
+                          relativeDateTime));
                   if (templateFlag && isTemplateWithDescription) {
                     titleArr.add(getFieldTitle(property));
                     helpArr.add(getFieldHelp(property));
@@ -513,7 +520,8 @@ public class DataBackupCreateService {
                       "com.axelor.apps.base.service.DataBackupRestoreService:importObjectWithByteArray");
                   byteArrFieldFlag = false;
                 }
-                printer.printRecord(headerArr);
+                sortedHeaderArr = sortHeader(headerArr);
+                printer.printRecord(sortedHeaderArr);
                 headerFlag = false;
               }
 
@@ -526,7 +534,7 @@ public class DataBackupCreateService {
                 dataBackupAnonymizeService.csvAnonymizeImportId(dataArr, headerArr, salt);
               }
 
-              printer.printRecord(dataArr);
+              printer.printRecord(sortData(headerArr, dataArr, sortedHeaderArr));
               count++;
             }
             if (maxLinesPerFile != null && count >= maxLinesPerFile) {
@@ -537,9 +545,9 @@ public class DataBackupCreateService {
         }
         if (isTemplateWithDescription) {
           printer.println();
-          printer.printRecord(titleArr);
-          printer.printRecord(attrsArr);
-          printer.printRecord(helpArr);
+          printer.printRecord(sortData(headerArr, titleArr, sortedHeaderArr));
+          printer.printRecord(sortData(headerArr, attrsArr, sortedHeaderArr));
+          printer.printRecord(sortData(headerArr, helpArr, sortedHeaderArr));
         }
       } else {
         for (Property property : pro) {
@@ -558,12 +566,13 @@ public class DataBackupCreateService {
               "com.axelor.apps.base.service.DataBackupRestoreService:importObjectWithByteArray");
           byteArrFieldFlag = false;
         }
-        printer.printRecord(headerArr);
+        sortedHeaderArr = sortHeader(headerArr);
+        printer.printRecord(sortedHeaderArr);
         if (isTemplateWithDescription) {
           printer.println();
-          printer.printRecord(titleArr);
-          printer.printRecord(attrsArr);
-          printer.printRecord(helpArr);
+          printer.printRecord(sortData(headerArr, titleArr, sortedHeaderArr));
+          printer.printRecord(sortData(headerArr, attrsArr, sortedHeaderArr));
+          printer.printRecord(sortData(headerArr, helpArr, sortedHeaderArr));
         }
       }
 
@@ -689,7 +698,8 @@ public class DataBackupCreateService {
       String dirPath,
       boolean isRelativeDate,
       boolean updateImportId,
-      DataBackup dataBackup)
+      DataBackup dataBackup,
+      LocalDateTime relativeDateTime)
       throws AxelorException {
     String id = metaModelMapper.get(dataObject, "id").toString();
     Object value = metaModelMapper.get(dataObject, property.getName());
@@ -717,16 +727,17 @@ public class DataBackupCreateService {
         return value.toString();
       case "DATE":
         if (isRelativeDate) {
-          return createRelativeDate((LocalDate) value);
+          return createRelativeDate((LocalDate) value, relativeDateTime);
         }
         return value.toString();
 
       case "DATETIME":
         if (isRelativeDate) {
           if (property.getJavaType() == ZonedDateTime.class) {
-            return createRelativeDateTime(((ZonedDateTime) value).toLocalDateTime());
+            return createRelativeDateTime(
+                ((ZonedDateTime) value).toLocalDateTime(), relativeDateTime);
           }
-          return createRelativeDateTime((LocalDateTime) value);
+          return createRelativeDateTime((LocalDateTime) value, relativeDateTime);
         }
         return property.getJavaType() == ZonedDateTime.class
             ? ((ZonedDateTime) value).toLocalDateTime().toString()
@@ -754,8 +765,9 @@ public class DataBackupCreateService {
     }
   }
 
-  public String createRelativeDateTime(LocalDateTime dateT) {
-    LocalDateTime currentDateTime = LocalDateTime.now();
+  public String createRelativeDateTime(LocalDateTime dateT, LocalDateTime relativeDateTime) {
+    LocalDateTime currentDateTime =
+        relativeDateTime != null ? relativeDateTime : LocalDateTime.now();
 
     long years = currentDateTime.until(dateT, ChronoUnit.YEARS);
     currentDateTime = currentDateTime.plusYears(years);
@@ -793,8 +805,12 @@ public class DataBackupCreateService {
         + "]";
   }
 
-  public String createRelativeDate(LocalDate date) {
-    LocalDate currentDate = LocalDateHelper.getTodayDate(null);
+  public String createRelativeDate(LocalDate date, LocalDateTime relativeDateTime) {
+    LocalDate currentDate =
+        relativeDateTime != null
+            ? relativeDateTime.toLocalDate()
+            : LocalDateHelper.getTodayDate(null);
+
     long years = currentDate.until(date, ChronoUnit.YEARS);
     currentDate = currentDate.plusYears(years);
 
@@ -961,20 +977,31 @@ public class DataBackupCreateService {
   }
 
   protected String getFieldTitle(Property property) {
+    if ("id".equalsIgnoreCase(property.getName())) {
+      return I18n.get("Import ID");
+    }
     return I18n.get(property.getTitle());
   }
 
   protected String getFieldHelp(Property property) {
+    if ("id".equalsIgnoreCase(property.getName())) {
+      return "";
+    }
     return I18n.get(property.getHelp());
   }
 
   protected String getFieldAttrs(Property property) {
+    boolean isIdProperty = "id".equalsIgnoreCase(property.getName());
+    PropertyType type = property.getType();
     List<String> attributes = new ArrayList<>();
-    attributes.add(I18n.get(getPropertyTitle(property.getType())));
-    if (property.isRequired()) {
+    if (isIdProperty) {
+      type = PropertyType.STRING;
+    }
+    attributes.add(I18n.get(getPropertyTitle(type)));
+    if (property.isRequired() && !isIdProperty) {
       attributes.add(I18n.get("Required"));
     }
-    if (property.isUnique()) {
+    if (property.isUnique() || isIdProperty) {
       attributes.add(I18n.get("Unique"));
     }
     String attrs = String.join(" | ", attributes);
@@ -1045,5 +1072,32 @@ public class DataBackupCreateService {
                     .append(" : ")
                     .append(I18n.get(item.getTitle())));
     return builder.toString();
+  }
+
+  protected List<String> sortHeader(List<String> headerArr) {
+    List<String> sortedHeaderArr = new ArrayList<>();
+    for (String header : headerList) {
+      if (headerArr.contains(header)) {
+        sortedHeaderArr.add(header);
+      }
+    }
+    List<String> remainingHeaderArr =
+        headerArr.stream()
+            .filter(h -> !sortedHeaderArr.contains(h))
+            .sorted()
+            .collect(Collectors.toList());
+    sortedHeaderArr.addAll(remainingHeaderArr);
+    return sortedHeaderArr;
+  }
+
+  protected List<String> sortData(
+      List<String> headerArr, List<String> dataArr, List<String> sortedHeaderArr) {
+    Map<String, String> map = new HashMap<>();
+    for (int i = 0; i < headerArr.size(); i++) {
+      map.put(headerArr.get(i), dataArr.get(i));
+    }
+    return sortedHeaderArr.stream()
+        .map(header -> map.getOrDefault(header, ""))
+        .collect(Collectors.toList());
   }
 }

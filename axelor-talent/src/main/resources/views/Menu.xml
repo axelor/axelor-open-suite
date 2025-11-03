@@ -20,10 +20,10 @@
   </action-view>
 
   <menuitem name="recruitment-job-application-all" parent="recruitment-root"
-    title="Applications" action="recruitment.job.application.all" order="200"/>
+    title="Applicants" action="recruitment.job.application.all" order="200"/>
 
   <action-view name="recruitment.job.application.all"
-    model="com.axelor.apps.talent.db.JobApplication" title="Applications">
+    model="com.axelor.apps.talent.db.JobApplication" title="Applicants">
     <view name="job-application-kanban" type="kanban"/>
     <view name="job-application-grid" type="grid"/>
     <view name="job-application-form" type="form"/>

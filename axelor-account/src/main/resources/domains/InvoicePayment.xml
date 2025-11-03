@@ -59,6 +59,9 @@
       ref="com.axelor.apps.account.db.InvoiceTermPayment" mappedBy="invoicePayment"
       title="Invoice term payments"/>
 
+    <many-to-one name="cancelReason" title="Cancel reason"
+      ref="com.axelor.apps.base.db.CancelReason"/>
+
     <many-to-one name="companyCurrency" transient="true"
       ref="com.axelor.apps.base.db.Currency">
       <![CDATA[

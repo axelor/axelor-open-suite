@@ -223,6 +223,9 @@ public final class SupplychainExceptionMessage {
   public static final String SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_SALE_ORDER = /*$$(*/
       "You must configure a cancel reason on changing sale order in app supplychain." /*)*/;
 
+  public static final String SUPPLYCHAIN_MISSING_CANCEL_REASON_ON_CHANGING_PURCHASE_ORDER = /*$$(*/
+      "You must configure a cancel reason on changing purchase order in app supplychain." /*)*/;
+
   /** Subscription invoice */
   public static final String TOTAL_SUBSCRIPTION_INVOICE_GENERATED = /*$$(*/
       "Total subscription invoice(s) generated: %s" /*)*/;
@@ -430,4 +433,52 @@ public final class SupplychainExceptionMessage {
 
   public static final String SALE_ORDER_ESTIMATED_SHIPPING_DATE_NOT_UPDATED = /*$$(*/
       "Warning : Estimated shipping date isn't updated due to pricing set on sale order." /*)*/;
+
+  public static final String SUPPLYCHAIN_PACKAGING_SEQUENCE_ERROR = /*$$(*/
+      "There is no configured sequence for the Packaging" /*)*/;
+
+  public static final String MRP_GENERATE_PROPOSAL_NO_CALL_TENDER_NEEDED = /*$$(*/
+      "No call for tender can be generated from these lines." /*)*/;
+
+  public static final String PURCHASE_ORDER_LINE_DELETE_NOT_ALLOWED_STOCK_MOVE = /*$$(*/
+      "The purchase order line can't be deleted because it is linked to a realized stock move." /*)*/;
+
+  public static final String PURCHASE_ORDER_LINE_DELETE_NOT_ALLOWED_INVOICE = /*$$(*/
+      "The purchase order line can't be deleted because it is linked to an invoice." /*)*/;
+
+  public static final String PURCHASE_ORDER_LINE_QTY_UPDATE_NOT_ALLOWED_REALIZED = /*$$(*/
+      "The purchase order line qty can't be lower than the qty already realized." /*)*/;
+
+  public static final String PURCHASE_ORDER_LINE_QTY_UPDATE_NOT_ALLOWED_INVOICED = /*$$(*/
+      "The purchase order line qty can't be lower than the qty already invoiced." /*)*/;
+
+  public static final String INVALID_PACKAGING_LINE_QTY = /*$$(*/
+      "The packaging line qty can not be greater than the stock move line's qty remaining to package." /*)*/;
+
+  public static final String NO_ANY_STOCK_MOVE_LINE_SELECTED = /*$$(*/
+      "At least one stock move line must be selected." /*)*/;
+
+  public static final String STOCK_MOVE_REMOVAL_NOT_ALLOWED = /*$$(*/
+      "This stock move cannot be removed from the logisticsal form, as it shares one of its packaging %s with another stock move." /*)*/;
+
+  public static final String LOGISTICAL_FORM_COLLECT_WRONG_STATUS = /*$$(*/
+      "Can only be collected if validated." /*)*/;
+
+  public static final String STOCK_MOVE_NOT_FULLY_PACKAGED = /*$$(*/
+      "One or several stock move lines are not fully packaged." /*)*/;
+
+  public static final String SALE_ORDER_LINE_LINKED_WITH_PACKAGING_LINE = /*$$(*/
+      "This sale order line is linked to a packaging line, please remove it first from the sale order's packaging." /*)*/;
+
+  public static final String PACKAGING_PARENT_ERROR = /*$$(*/
+      "Logistical form or parent packaging must be provided." /*)*/;
+
+  public static final String LOGISTICAL_FORM_STOCK_MOVE_NOT_VALID = /*$$(*/
+      "This stock move is not valid for this logistical form." /*)*/;
+
+  public static final String LOGISTICAL_FORM_STOCK_LOCATION_MUST_BE_USABLE_ON_SO = /*$$(*/
+      "The stock location must be usable on sale order." /*)*/;
+
+  public static final String PACKAGING_LINE_STOCK_MOVE_LINE_NOT_VALID = /*$$(*/
+      "This stock move line can not be chosen." /*)*/;
 }

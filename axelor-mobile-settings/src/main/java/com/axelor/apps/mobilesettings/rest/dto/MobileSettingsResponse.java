@@ -65,6 +65,7 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isFolderCreationAllowed;
   protected final Boolean isFileCreationAllowed;
   protected final Boolean isFileDeletionAllowed;
+  protected final Long defaultQiDetectionId;
 
   public MobileSettingsResponse(
       Integer version,
@@ -106,7 +107,8 @@ public class MobileSettingsResponse extends ResponseStructure {
       Boolean isRenamingAllowed,
       Boolean isFolderCreationAllowed,
       Boolean isFileCreationAllowed,
-      Boolean isFileDeletionAllowed) {
+      Boolean isFileDeletionAllowed,
+      Long defaultQiDetectionId) {
     super(version);
     this.apps = apps;
     this.isLoginUserQrcodeEnabled = isLoginUserQrcodeEnabled;
@@ -147,6 +149,7 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.isFolderCreationAllowed = isFolderCreationAllowed;
     this.isFileCreationAllowed = isFileCreationAllowed;
     this.isFileDeletionAllowed = isFileDeletionAllowed;
+    this.defaultQiDetectionId = defaultQiDetectionId;
   }
 
   public List<MobileConfigResponse> getApps() {
@@ -339,5 +342,10 @@ public class MobileSettingsResponse extends ResponseStructure {
   @JsonProperty(value = "isFileDeletionAllowed")
   public Boolean getIsFileDeletionAllowed() {
     return isFileDeletionAllowed;
+  }
+
+  @JsonProperty(value = "defaultQiDetectionId")
+  public Long getDefaultQiDetectionId() {
+    return defaultQiDetectionId;
   }
 }

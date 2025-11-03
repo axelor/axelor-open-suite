@@ -260,10 +260,6 @@ public final class BaseExceptionMessage {
   public static final String GENERAL_10 = /*$$(*/ "No duplicate finder field configured." /*)*/;
   public static final String GENERAL_11 = /*$$(*/ "Please select original object." /*)*/;
 
-  /** Messsage controller */
-  public static final String MESSAGE_1 = /*$$(*/
-      "Error in print. Please check report configuration and print setting." /*)*/;
-
   /** Partner controller */
   public static final String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
 
@@ -471,8 +467,6 @@ public final class BaseExceptionMessage {
   /* Print template */
   public static final String PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN = /*$$(*/
       "The groovy condition result must be a boolean" /*)*/;
-  public static final String PRINT_ERROR = /*$$(*/
-      "Error in print. Please check report configuration and print settings." /*)*/;
   public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
       "Error in print template line with sequence %s and title %s." /*)*/;
 
@@ -655,6 +649,9 @@ public final class BaseExceptionMessage {
   public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_XML_MESSAGE = /*$$(*/
       "The data file should be only an XML or ZIP file." /*)*/;
 
+  public static final String IMPORT_CONFIGURATION_TYPE_MISSING = /*$$(*/
+      "The import configuration type is missing." /*)*/;
+
   public static final String MISSING_ADDRESS_FIELD = /*$$(*/ "Address Field is missing : %s" /*)*/;
 
   public static final String FACTORY_NO_FOUND = /*$$(*/
@@ -730,4 +727,16 @@ public final class BaseExceptionMessage {
       "Signature certificate is expired. Please change to a new certificate." /*)*/;
 
   public static final String DATABACKUP_ERROR_1 = /*$$(*/ "The entry file %s is not secured." /*)*/;
+
+  public static final String PARTNER_BOOLEAN_MISSING = /*$$(*/
+      "At least one of isContact, isCustomer, isSupplier or isProspect must be true." /*)*/;
+
+  public static final String PARTNER_INVALID_BOOLEAN_1 = /*$$(*/
+      "A partner cannot be both a contact and a customer, supplier, or prospect." /*)*/;
+
+  public static final String PARTNER_INVALID_BOOLEAN_2 = /*$$(*/
+      "A partner cannot be both a customer and a prospect." /*)*/;
+
+  public static final String PACKAGING_MAX_WEIGHT_EXCEEDED = /*$$(*/
+      "The products' total weight exceeds the maximum weight carried by the packaging." /*)*/;
 }

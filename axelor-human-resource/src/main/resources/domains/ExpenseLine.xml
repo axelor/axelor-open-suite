@@ -17,6 +17,9 @@
     <decimal name="untaxedAmount" title="Untaxed amount" readonly="true"/>
     <decimal name="totalTax" title="Total tax" min="0"/>
     <decimal name="totalAmount" title="Total amount with tax" min="0" required="true"/>
+    <decimal name="companyUntaxedAmount" title="Untaxed amount" readonly="true"/>
+    <decimal name="companyTotalTax" title="Total tax" min="0" readonly="true"/>
+    <decimal name="companyTotalAmount" title="Total amount with tax" min="0" readonly="true"/>
     <string name="comments" title="Comments" large="true"/>
     <boolean name="toInvoice"/>
     <boolean name="invoiced" readonly="true"/>

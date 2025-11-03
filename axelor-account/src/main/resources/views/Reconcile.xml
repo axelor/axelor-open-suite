@@ -5,6 +5,7 @@
 
   <grid name="reconcile-grid" title="Reconcile" model="com.axelor.apps.account.db.Reconcile">
     <field name="reconcileSeq" width="120"/>
+    <field name="reconcileGroup"/>
     <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="debitMoveLine" form-view="move-line-form" grid-view="move-line-grid"/>
     <field name="debitMoveLine.amountRemaining" title="Debit remaining"/>
@@ -13,6 +14,19 @@
     <field name="amount" aggregate="sum"/>
     <field name="reconciliationDateTime"/>
     <field name="statusSelect" widget="single-select"/>
+    <field name="reconcileGroup.statusSelect" hidden="true"/>
+    <field name="debitMoveLine.move" hidden="true" title="Move (Debit)"/>
+    <field name="debitMoveLine.partner" hidden="true" title="Partner (Debit)"/>
+    <field name="debitMoveLine.move.invoice" hidden="true" title="Invoice (Debit)"/>
+    <field name="debitMoveLine.origin" hidden="true" title="Origin (Debit)"/>
+    <field name="debitMoveLine.amountRemaining" hidden="true"
+      title="Amount remaining to reconcile (Debit)"/>
+    <field name="creditMoveLine.move" hidden="true" title="Move (Credit)"/>
+    <field name="creditMoveLine.partner" hidden="true" title="Partner (Credit)"/>
+    <field name="creditMoveLine.move.invoice" hidden="true" title="Invoice (Credit)"/>
+    <field name="creditMoveLine.origin" hidden="true" title="Origin (Credit)"/>
+    <field name="creditMoveLine.amountRemaining" hidden="true"
+      title="Amount remaining to reconcile (Credit)"/>
   </grid>
 
   <grid name="move-line-reconcile-grid" title="Reconcile"
@@ -68,7 +82,8 @@
         onClick="save,action-reconcile-method-unreconcile"/>
     </panel>
     <panel sidebar="true" name="infoPanel" title="Info">
-      <field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"/>
+      <field name="amount" readonlyIf="statusSelect == 2 || statusSelect == 3"
+        validIf="amount > 0"/>
       <field name="statusSelect" widget="single-select"/>
       <field name="reconciliationDateTime"/>
       <field name="effectiveDate"/>
@@ -131,6 +146,18 @@
     model="com.axelor.apps.account.db.Reconcile" title="Reconcile filters">
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="reconcileGroup.statusSelect" title="Reconcilation status"/>
+    <field name="debitMoveLine.move" title="Move (Debit)"/>
+    <field name="debitMoveLine.partner" title="Partner (Debit)"/>
+    <field name="debitMoveLine.move.invoice" title="Invoice (Debit)"/>
+    <field name="debitMoveLine.origin" title="Origin (Debit)"/>
+    <field name="debitMoveLine.amountRemaining" title="Amount remaining to reconcile (Debit)"/>
+    <field name="creditMoveLine.move" title="Move (Credit)"/>
+    <field name="creditMoveLine.partner" title="Partner (Credit)"/>
+    <field name="creditMoveLine.move.invoice" title="Invoice (Credit)"/>
+    <field name="creditMoveLine.origin" title="Origin (Credit)"/>
+    <field name="creditMoveLine.amountRemaining"
+      title="Amount remaining to reconcile (Credit)"/>
     <filter name="reconcile-filters-draft" title="Draft">
       <domain>self.statusSelect = 1</domain>
     </filter>

@@ -44,7 +44,7 @@ public class BankReconciliationQueryServiceImpl implements BankReconciliationQue
             + " AND self.move.company = :company"
             + " AND self.account.accountType.technicalTypeSelect = :accountType"
             + " AND abs(self.currencyAmount) > 0"
-            + " AND (:includeOtherBankStatements IS TRUE OR (self.date BETWEEN :fromDate AND :toDate OR self.dueDate BETWEEN :fromDate AND :toDate))"
+            + " AND (:includeOtherBankStatements IS TRUE AND (self.date BETWEEN :fromDate AND :toDate OR self.dueDate BETWEEN :fromDate AND :toDate))"
             + " AND (:journal IS NULL OR self.move.journal = :journal)"
             + " AND (:cashAccount IS NULL OR self.account = :cashAccount)"
             + " AND ((self.move.currency = :bankReconciliationCurrency AND self.bankReconciledAmount < abs(self.currencyAmount)) OR (self.move.currency != :bankReconciliationCurrency AND (self.bankReconciledAmount < (self.debit + self.credit))))";

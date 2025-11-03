@@ -23,7 +23,10 @@ import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.apps.project.db.repo.TaskStatusRepository;
 import com.axelor.apps.project.service.ProjectMenuService;
 import com.axelor.apps.project.service.ProjectToolService;
 import com.axelor.apps.project.service.roadmap.SprintGetService;
@@ -33,12 +36,18 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
+import com.axelor.utils.helpers.StringHelper;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectMenuController {
 
@@ -68,6 +77,20 @@ public class ProjectMenuController {
 
   public void allProjectTasks(ActionRequest request, ActionResponse response) {
     response.setView(Beans.get(ProjectMenuService.class).getAllProjectTasks());
+  }
+
+  public void allProjectTasksFiltered(ActionRequest request, ActionResponse response) {
+    ActionViewBuilder builder =
+        ActionView.define(I18n.get("Tasks"))
+            .model(ProjectTask.class.getName())
+            .add("grid", "project-task-editable-grid")
+            .add("kanban", "project-task-kanban")
+            .add("form", "project-task-form")
+            .domain("self.typeSelect = :_typeSelect")
+            .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
+            .param("search-filters", "project-task-filters")
+            .param("default-search-filters", "my-tasks");
+    response.setView(builder.map());
   }
 
   public void myProjects(ActionRequest request, ActionResponse response) {
@@ -146,5 +169,122 @@ public class ProjectMenuController {
     actionViewBuilder.context("sprintManagementSelect", project.getSprintManagementSelect());
 
     response.setView(actionViewBuilder.map());
+  }
+
+  public void allFavouriteProjects(ActionRequest request, ActionResponse response) {
+
+    Set<Project> favouriteProjectSet = AuthUtils.getUser().getFavouriteProjectSet();
+    ActionViewBuilder actionView =
+        ActionView.define(I18n.get("Favourite projects"))
+            .model(Project.class.getName())
+            .add("tree", "project-phase-tree")
+            .context("idList", getFavouriteProjectIdSet(favouriteProjectSet));
+    response.setView(actionView.map());
+  }
+
+  public void allProjectTasksTree(ActionRequest request, ActionResponse response) {
+    final String signal =
+        Optional.ofNullable(request.getContext().get("_signal")).map(String::valueOf).orElse(null);
+    if (signal == null) {
+      return;
+    }
+    final boolean isTree = signal.endsWith("treeBtn");
+    final boolean isList = signal.endsWith("listBtn");
+    if (!isTree && !isList) {
+      return;
+    }
+
+    Project project = request.getContext().asType(Project.class);
+    ProjectRepository projectRepository = Beans.get(ProjectRepository.class);
+    project = projectRepository.find(project.getId());
+
+    final ActionViewBuilder viewBuilder =
+        isTree ? buildTreeView(project) : buildTaskListView(project, projectRepository);
+    response.setView(viewBuilder.map());
+  }
+
+  protected Set<Long> getFavouriteProjectIdSet(Set<Project> favouriteProjectSet) {
+    Set<Long> idSet = new HashSet<>();
+
+    for (Project project : favouriteProjectSet) {
+      if (project == null) {
+        continue;
+      }
+
+      if (project.getParentProject() == null) {
+        idSet.add(project.getId());
+      } else {
+        if (!isParentAlreadyInSet(project, idSet)) {
+          idSet.add(project.getId());
+        }
+      }
+    }
+
+    return idSet;
+  }
+
+  protected boolean isParentAlreadyInSet(Project project, Set<Long> idSet) {
+    Project current = project.getParentProject();
+    while (current != null) {
+      if (idSet.contains(current.getId())) {
+        return true;
+      }
+      current = current.getParentProject();
+    }
+    return false;
+  }
+
+  protected ActionViewBuilder buildTreeView(final Project project) {
+    return ActionView.define(project.getName())
+        .model(Project.class.getName())
+        .add("grid", "project-tree-grid")
+        .add("form", "project-form")
+        .domain("self.id = :projectId")
+        .context("projectId", project.getId());
+  }
+
+  protected ActionViewBuilder buildTaskListView(
+      final Project project, final ProjectRepository projectRepository) {
+    final List<Long> ids = new ArrayList<>();
+    final List<Long> leafIds = new ArrayList<>();
+    final List<TaskStatus> statusToExclude = Beans.get(TaskStatusRepository.class).all().fetch();
+    getAllProjectIds(project, ids, leafIds, statusToExclude);
+    final String excludedStatus =
+        CollectionUtils.isEmpty(statusToExclude)
+            ? ""
+            : StringHelper.getIdListString(statusToExclude);
+
+    final Project singleLeaf = leafIds.size() == 1 ? projectRepository.find(leafIds.get(0)) : null;
+    return ActionView.define(project.getName())
+        .model(ProjectTask.class.getName())
+        .add("grid", "project-task-editable-grid")
+        .add("kanban", "project-task-kanban")
+        .add("form", "project-task-form")
+        .domain("self.project.id IN :_projectIdList AND self.typeSelect = :_typeSelect")
+        .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
+        .context("_projectIdList", ids)
+        .context("_project", singleLeaf)
+        .param("search-filters", "project-task-filters")
+        .param("kanban-hide-columns", excludedStatus);
+  }
+
+  protected void getAllProjectIds(
+      Project project, List<Long> allIds, List<Long> leafIds, List<TaskStatus> statusToExclude) {
+    if (project == null) {
+      return;
+    }
+
+    allIds.add(project.getId());
+    if (CollectionUtils.isNotEmpty(project.getProjectTaskStatusSet())) {
+      project.getProjectTaskStatusSet().forEach(statusToExclude::remove);
+    }
+
+    if (CollectionUtils.isEmpty(project.getChildProjectList())) {
+      leafIds.add(project.getId());
+    } else {
+      for (Project child : project.getChildProjectList()) {
+        getAllProjectIds(child, allIds, leafIds, statusToExclude);
+      }
+    }
   }
 }

@@ -29,12 +29,14 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.meta.loader.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppRepository;
@@ -315,5 +317,15 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_URL_MISSING));
     }
+  }
+
+  @Override
+  public String getImportErrorPath() {
+    String importErrorPath = AppService.getFileUploadDir();
+    AppBase appBase = getAppBase();
+    if (appBase != null && StringUtils.notEmpty(appBase.getImportErrorPath())) {
+      return importErrorPath + appBase.getImportErrorPath();
+    }
+    return importErrorPath;
   }
 }

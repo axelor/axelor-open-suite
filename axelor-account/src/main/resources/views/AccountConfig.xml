@@ -328,12 +328,6 @@
           <field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
           <field name="displayTaxDetailOnPrinting" widget="boolean-switch"/>
           <field name="displayPartnerSeqOnPrinting" widget="boolean-switch"/>
-          <field name="displayTimesheetOnPrinting" widget="boolean-switch"
-            if-module="axelor-business-project"
-            if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('timesheet')"/>
-          <field name="displayExpenseOnPrinting" widget="boolean-switch"
-            if-module="axelor-business-project"
-            if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
           <field name="isPrintInvoicesInCompanyLanguage" widget="boolean-switch"/>
           <field name="displayHeadOfficeAddrOnInvoicePrinting" widget="boolean-switch"/>
           <field name="displayStockMoveOnInvoicePrinting" widget="boolean-switch"

@@ -5,6 +5,12 @@
 
   <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
     search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="object" to="object"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(object)"
+      check-message="Object must not be null"/>
     <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
     <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
     <bind to="canCreate" eval="can_create == 'x' ? 'true' : 'false'"/>
@@ -12,39 +18,100 @@
     <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
   </input>
 
-  <input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";"/>
+  <input file="hr_leaveReason.csv" type="com.axelor.apps.hr.db.LeaveReason" separator=";">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="unitSelect" to="unitSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.LeaveReason', 'unitSelect', unitSelect)"
+      check-message="Invalid unitSelect"/>
+    <bind column="leaveReasonTypeSelect" to="leaveReasonTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.LeaveReason', 'leaveReasonTypeSelect', leaveReasonTypeSelect)"
+      check-message="Invalid leaveReasonTypeSelect"/>
+  </input>
 
-  <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
-    <bind to="language" eval="'en'"/>
-    <bind to="type" eval="'tooltip'"/>
+  <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp"
+    search="self.importId = :importId">
+    <bind to="help" check="com.axelor.utils.helpers.ImportHelper.isValuePresent(help)"
+      check-message="Help value must not be null"/>
+    <bind to="language" eval="'en'"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'language', 'en')"
+      check-message="Invalid language"/>
+    <bind to="type" eval="'tooltip'"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'type', 'tooltip')"
+      check-message="Invalid help type"/>
     <bind to="model" eval="__repo__(MetaModel).findByName(object)?.getFullName()"
       column="object"/>
   </input>
 
-  <input file="meta_helpFR.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
-    <bind to="language" eval="'fr'"/>
-    <bind to="type" eval="'tooltip'"/>
+  <input file="meta_helpFR.csv" separator=";" type="com.axelor.meta.db.MetaHelp"
+    search="self.importId = :importId">
+    <bind to="help" check="com.axelor.utils.helpers.ImportHelper.isValuePresent(help)"
+      check-message="Help value must not be null"/>
+    <bind to="language" eval="'fr'"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'language', 'fr')"
+      check-message="Invalid language"/>
+    <bind to="type" eval="'tooltip'"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'type', 'tooltip')"
+      check-message="Invalid help type"/>
     <bind to="model" eval="__repo__(MetaModel).findByName(object)?.getFullName()"
       column="object"/>
   </input>
 
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
-    search="self.name = :name" update="true"/>
+    search="self.name = :name" update="true">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="title" to="title"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(title)"
+      check-message="Title must not be null"/>
+    <bind column="xmlId" to="xmlId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name', name, 'xmlId', xmlId)"
+      check-message="Xml id must be unique"/>
+    <bind column="tagStyle" to="tagStyle"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaMenu', 'tagStyle', tagStyle)"
+      check-message="Invalid tagStyle"/>
+  </input>
 
   <input file="base_birtTemplate.csv" separator=";"
     type="com.axelor.apps.base.db.BirtTemplate" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="format" to="format"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplate', 'format', format)"
+      check-message="Invalid format"/>
+    <bind column="templateEngineSelect" to="templateEngineSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplate', 'templateEngineSelect', templateEngineSelect)"
+      check-message="Invalid templateEngineSelect"/>
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
 
   <input file="base_birtTemplateParameter.csv" separator=";"
-    type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId"/>
+    type="com.axelor.apps.base.db.BirtTemplateParameter" search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="type" to="type"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.BirtTemplateParameter', 'type', type)"
+      check-message="Invalid type"/>
+  </input>
 
   <input file="base_printingTemplate.csv" type="com.axelor.apps.base.db.PrintingTemplate"
     separator=";" search="self.importId = :importId">
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.PrintingTemplate', 'statusSelect', statusSelect)"
+      check-message="Invalid statusSelect"/>
     <bind to="metaModel" search="self.fullName = :modelName"/>
   </input>
 
   <input file="base_printingTemplateLine.csv"
     type="com.axelor.apps.base.db.PrintingTemplateLine" separator=";"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.PrintingTemplateLine', 'typeSelect', typeSelect)"
+      check-message="Invalid typeSelect"/>
+  </input>
+
 </csv-inputs>

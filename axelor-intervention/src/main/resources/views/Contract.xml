@@ -10,6 +10,9 @@
         <button name="generateEquipmentsBtn" title="Generate equipments"
           onClick="save,action-park-model-show-confirmation-from-contract"
           if="__config__.app.isApp('intervention')"/>
+        <button name="createInterventionBtn" title="Create intervention" icon="fa-calendar"
+          onClick="save,action-create-intervention-from-contract"
+          if="__config__.app.isApp('intervention')" if-module="axelor-intervention"/>
       </insert>
     </extend>
 
@@ -82,5 +85,20 @@
     <view-param name="popup" value="reload"/>
     <context expr="eval: id" name="_contractId"/>
     <context expr="eval: partner?.id" name="_partnerId"/>
+  </action-view>
+
+  <action-view name="action-create-intervention-from-contract"
+    model="com.axelor.apps.intervention.db.Intervention" title="Intervention">
+    <view name="intervention-form" type="form"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup.maximized" value="true"/>
+    <view-param name="show-toolbar" value="true"/>
+    <view-param name="reload-dotted" value="true"/>
+    <context name="contract" expr="eval:__this__"/>
+    <context name="invoicedPartner" expr="eval:__this__.partner"/>
+    <context name="deliveredPartner" expr="eval:__this__.partner"/>
+    <context name="company" expr="eval:__this__.company"/>
+    <context name="address" expr="eval:__this__.partner.mainAddress"/>
   </action-view>
 </object-views>

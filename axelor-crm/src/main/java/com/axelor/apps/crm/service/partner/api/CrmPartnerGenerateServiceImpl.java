@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.rest.dto.sirene.PartnerDataResponse;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
 import com.axelor.apps.base.service.partner.api.PartnerGenerateServiceImpl;
 import com.google.inject.Inject;
@@ -72,13 +73,23 @@ public class CrmPartnerGenerateServiceImpl extends PartnerGenerateServiceImpl {
     String trancheEffectif = partnerData.getTrancheEffectifsEtablissement();
 
     if (trancheEffectif != null) {
-      sizeSelect = getEmployeeCountCode(Integer.parseInt(trancheEffectif));
+      try {
+        sizeSelect = getEmployeeCountCode(Integer.parseInt(trancheEffectif));
+      } catch (NumberFormatException e) {
+        TraceBackService.trace(e);
+        sizeSelect = null;
+      }
     }
 
     if (sizeSelect == null
         && partnerData.getUniteLegale() != null
         && partnerData.getUniteLegale().getTrancheEffectifsUniteLegale() != null) {
-      sizeSelect = Integer.valueOf(partnerData.getUniteLegale().getTrancheEffectifsUniteLegale());
+      try {
+        sizeSelect = Integer.valueOf(partnerData.getUniteLegale().getTrancheEffectifsUniteLegale());
+      } catch (NumberFormatException e) {
+        TraceBackService.trace(e);
+        sizeSelect = null;
+      }
     }
 
     if (sizeSelect != null) {

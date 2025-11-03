@@ -130,6 +130,8 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     importExportTranslationHistory.setErrorNumber(errorNumber);
     importExportTranslation.addImportExportTranslationHistoryListItem(
         importExportTranslationHistory);
+    importExportTranslationHistory.setStatusSelect(
+        ImportExportTranslationHistoryRepository.DATA_BACKUP_STATUS_IN_PROGRESS);
     importExportTranslationRepository.save(importExportTranslation);
     return importExportTranslationHistory;
   }
@@ -138,6 +140,8 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
   protected void saveHistory(ImportExportTranslationHistory importExportTranslationHistory) {
     importExportTranslationHistory.setRecordNumber(countRecords);
     importExportTranslationHistory.setErrorNumber(errorNumber);
+    importExportTranslationHistory.setStatusSelect(
+        ImportExportTranslationHistoryRepository.DATA_BACKUP_STATUS_COMPLETED);
     importExportTranslationHistoryRepository.save(importExportTranslationHistory);
   }
 
@@ -342,7 +346,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     if (data == null) {
       return null;
     }
-    for (int i = 1; i < data.size(); i++) {
+    for (int i = 0; i < data.size(); i++) {
       if (i % FETCH_LIMIT == 0) {
         JPA.clear();
       }

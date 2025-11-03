@@ -63,18 +63,17 @@ public final class BankPaymentExceptionMessage {
       "%s : Please configure an ICS number for the company %s." /*)*/;
 
   /** BankOrder service */
-  public static final String BANK_ORDER_DATE = /*$$(*/ "Bank Order date can't be in the past" /*)*/;
-
   public static final String BANK_ORDER_DATE_MISSING = /*$$(*/ "Please fill bank order date" /*)*/;
+
   public static final String BANK_ORDER_TYPE_MISSING = /*$$(*/ "Please fill bank order type" /*)*/;
+  public static final String BANK_ORDER_FILE_FORMAT_MISSING = /*$$(*/
+      "Please fill the bank order file format on the payment mode %s" /*)*/;
   public static final String BANK_ORDER_PARTNER_TYPE_MISSING = /*$$(*/
       "Please fill partner type for the bank order" /*)*/;
   public static final String BANK_ORDER_COMPANY_MISSING = /*$$(*/
       "Please fill the sender company" /*)*/;
   public static final String BANK_ORDER_BANK_DETAILS_MISSING = /*$$(*/
       "Please fill the bank details" /*)*/;
-  public static final String BANK_ORDER_CURRENCY_MISSING = /*$$(*/
-      "Please fill currency for the bank order" /*)*/;
   public static final String BANK_ORDER_AMOUNT_NEGATIVE = /*$$(*/
       "Amount value of the bank order is not valid" /*)*/;
   public static final String BANK_ORDER_PAYMENT_MODE_MISSING = /*$$(*/
@@ -335,4 +334,19 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_RECONCILIATION_MULTIPLE_MOVE_LINE_RECONCILIATION_ERROR = /*$$(*/
       "The movelines %s are already reconciled with another bank statement line. Multiple bank statement lines can't be reconciled with the same move line." /*)*/;
+
+  public static final String BANK_STATEMENT_XML_FILE_READ_ERROR = /*$$(*/
+      "Error while reading the input XML file." /*)*/;
+
+  public static final String BANK_STATEMENT_XML_FILE_NO_BANK_STATEMENT_FOUND_ERROR = /*$$(*/
+      "Error: No bank statement found." /*)*/;
+
+  public static final String BANK_STATEMENT_XML_FILE_UNMARSHAL_ERROR = /*$$(*/
+      "Error: File format unmarshalling process failed." /*)*/;
+
+  public static final String BANK_STATEMENT_BANK_DETAILS_NOT_EXIST_ERROR = /*$$(*/
+      "Error: The bank details doesn't exist." /*)*/;
+
+  public static final String INVOICE_PAYMENT_ALERT_BANK_ORDER_REVERSE = /*$$(*/
+      "Warning: this payment is related to a carried out bank order. Do you want to reverse the payment accounting entry ?" /*)*/;
 }

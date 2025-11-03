@@ -16,6 +16,9 @@
       mappedBy="controlPlan"/>
     <integer name="statusSelect" selection="quality.control.plan.status.select"
       title="Status" default="1"/>
+    <string name="relatedToSelect" title="Related to"
+      selection="quality.control.plan.related.to.select"/>
+    <long name="relatedToSelectId"/>
 
     <extra-code>
 			<![CDATA[

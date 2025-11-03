@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
+
+  <entity name="PackagingLine">
+
+    <many-to-one name="packaging" title="Packaging"
+      ref="com.axelor.apps.supplychain.db.Packaging"/>
+    <many-to-one name="stockMoveLine" title="Delivery line"
+      ref="com.axelor.apps.stock.db.StockMoveLine"/>
+    <many-to-one name="saleOrderLine" title="Sale order line"
+      ref="com.axelor.apps.sale.db.SaleOrderLine"/>
+    <decimal name="qty" title="Qty" default="0" scale="3" precision="20"/>
+
+    <entity-listener
+      class="com.axelor.apps.supplychain.db.repo.listener.PackagingLineListener"/>
+
+  </entity>
+
+</domain-models>

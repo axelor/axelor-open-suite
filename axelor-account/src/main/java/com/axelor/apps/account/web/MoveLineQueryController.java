@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineQuery;
 import com.axelor.apps.account.db.MoveLineQueryLine;
 import com.axelor.apps.account.db.Reconcile;
-import com.axelor.apps.account.db.repo.MoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.MoveLineQueryService;
@@ -128,7 +127,6 @@ public class MoveLineQueryController {
   public void massUnreconcile(ActionRequest request, ActionResponse response) {
     try {
       MoveLineQuery moveLineQuery = request.getContext().asType(MoveLineQuery.class);
-      moveLineQuery = Beans.get(MoveLineQueryRepository.class).find(moveLineQuery.getId());
       List<Reconcile> reconcileList = new ArrayList<>();
       if (!ObjectUtils.isEmpty(moveLineQuery.getMoveLineQueryLineList())) {
         List<MoveLine> moveLineSelectedList =

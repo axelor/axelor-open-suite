@@ -37,4 +37,6 @@ public interface InvoiceTermPfpToolService {
   User getPfpValidatorUser(Partner partner, Company company);
 
   boolean isPfpValidatorUser(InvoiceTerm invoiceTerm, User user);
+
+  Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList);
 }

@@ -56,4 +56,7 @@ public interface SaleOrderLineProductService {
       throws AxelorException;
 
   Unit getSaleUnit(Product product);
+
+  Map<String, Object> fillCostPrice(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+      throws AxelorException;
 }

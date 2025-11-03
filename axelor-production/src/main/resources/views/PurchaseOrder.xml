@@ -65,8 +65,6 @@
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="versionNumber" hidden="true"
       if="!__config__.app.getApp('purchase')?.getManagePurchaseOrderVersion()"/>
-    <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="team" hidden="true" if="!__config__.app.getApp('base')?.getTeamManagement()"/>
     <field name="tradingName" hidden="true"
       if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>

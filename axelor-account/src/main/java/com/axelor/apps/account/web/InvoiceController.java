@@ -46,6 +46,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineService;
 import com.axelor.apps.account.service.invoice.InvoiceNoteService;
 import com.axelor.apps.account.service.invoice.InvoicePfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
+import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -964,12 +965,8 @@ public class InvoiceController {
       Invoice invoice = request.getContext().asType(Invoice.class);
       InvoiceService invoiceService = Beans.get(InvoiceService.class);
 
-      LocalDate cutOffStartDate =
-          LocalDate.parse((String) request.getContext().get("cutOffStartDate"));
-      LocalDate cutOffEndDate = LocalDate.parse((String) request.getContext().get("cutOffEndDate"));
-
       if (invoiceService.checkManageCutOffDates(invoice)) {
-        invoiceService.applyCutOffDates(invoice, cutOffStartDate, cutOffEndDate);
+        invoiceService.applyCutOffDates(invoice);
 
         response.setValue("invoiceLineList", invoice.getInvoiceLineList());
       } else {
@@ -1292,7 +1289,7 @@ public class InvoiceController {
         return;
       }
       Integer pfpStatus =
-          Beans.get(InvoiceTermPfpService.class)
+          Beans.get(InvoiceTermPfpToolService.class)
               .checkOtherInvoiceTerms(invoice.getInvoiceTermList());
       if (pfpStatus != null) {
         response.setValue("pfpValidateStatusSelect", pfpStatus);
@@ -1528,5 +1525,17 @@ public class InvoiceController {
             .getDefaultBankDetails(
                 invoice.getPartner(), invoice.getCompany(), invoice.getPaymentMode());
     response.setValue("bankDetails", bankDetails);
+  }
+
+  public void changeInvoiceTermDatesWithInvoiceDueDate(
+      ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    try {
+      Beans.get(InvoiceTermDateComputeService.class).fillWithInvoiceDueDate(invoice);
+      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

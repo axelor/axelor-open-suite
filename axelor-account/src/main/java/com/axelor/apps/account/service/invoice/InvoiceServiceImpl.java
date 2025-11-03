@@ -235,7 +235,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   public void validateAndVentilate(Invoice invoice) throws AxelorException {
     validate(invoice);
-    ventilate(invoice);
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      ventilate(invoice);
+    }
   }
 
   /**
@@ -1172,15 +1174,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public void applyCutOffDates(
-      Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
+  public void applyCutOffDates(Invoice invoice) {
     if (CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
       invoice
           .getInvoiceLineList()
-          .forEach(
-              invoiceLine ->
-                  invoiceLineService.applyCutOffDates(
-                      invoiceLine, invoice, cutOffStartDate, cutOffEndDate));
+          .forEach(invoiceLine -> invoiceLineService.applyCutOffDates(invoiceLine, invoice));
     }
   }
 
@@ -1202,8 +1200,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   protected void updateUnpaidInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm) {
-    invoiceTerm.setPaymentMode(invoice.getPaymentMode());
-    invoiceTerm.setBankDetails(invoice.getBankDetails());
+    if (invoiceTerm.getPaymentMode() == null) {
+      invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+    }
+    if (invoiceTerm.getBankDetails() == null) {
+      invoiceTerm.setBankDetails(invoice.getBankDetails());
+    }
   }
 
   @Override

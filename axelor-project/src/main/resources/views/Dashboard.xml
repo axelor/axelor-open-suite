@@ -89,27 +89,6 @@
           </viewer>
         </field>
       </panel>
-      <panel name="announcementPanel" title="Latest announcement" icon="fa-newspaper-o"
-        if="__config__.app.isApp('business-support')" if-module="axelor-business-support"
-        hideIf="$announcementList.length == 0">
-        <field name="$announcementList" showTitle="false" colSpan="12">
-          <viewer>
-            <![CDATA[
-						 <>
-						 	 {$announcementList.map((item,index) => (
-								 <p key={index}>
-                                     <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("project.announcement", {announcementId : item.id})}>{item.title}</Button><br/>
-							         <span>{_t('Added by')}</span>
-                                     <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-auth-users", {userId : item.createdById})}>{item.createdBy}</Button>
-							         <Button variant="link" p={0} style={{verticalAlign: "unset"}} title="{$moment(item.announcementDate).format('MM/DD/YYYY')}" onClick={$action("com.axelor.apps.businesssupport.service.ProjectActivityDashboardBusinessSupportService:getProjectActivityView("+item.id+")")}>{$moment(item.announcementDate).fromNow()}</Button>
-							     </p>
-						     ))}
-						 <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("project.announcement")}>View all announcement</Button>
-					     </>
-				        ]]>
-          </viewer>
-        </field>
-      </panel>
       <panel name="subprojectPanel" title="Suprojects" icon="fa-gg-circle"
         hideIf="$subprojectList.length == 0">
         <field name="$subprojectList" showTitle="false" colSpan="12">

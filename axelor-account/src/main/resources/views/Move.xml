@@ -57,6 +57,32 @@
     <field name="createdBy" title="Created by"/>
   </grid>
 
+  <grid name="move-fec-grid" orderBy="-date" canArchive="false" title="Account moves"
+    model="com.axelor.apps.account.db.Move" canDelete="false">
+    <toolbar>
+      <button name="viewImportedMovesBtn" title="View entries" icon="fa-external-link"
+        onClick="action-view-account-fec-import-moves-panel-dashlet"/>
+      <button name="viewImportedMoveLinesBtn" title="View entry lines"
+        icon="fa-external-link" onClick="action-move-method-show-move-lines"/>
+    </toolbar>
+    <hilite color="info" if="statusSelect == 1"/>
+    <hilite color="danger" if="statusSelect == 4"/>
+    <field name="reference" width="200"/>
+    <field name="journal" form-view="journal-form" grid-view="journal-grid" width="200"/>
+    <field name="functionalOriginSelect"/>
+    <field name="period" form-view="period-form" grid-view="period-grid" width="120"
+      canEdit="false" canView="false"/>
+    <field name="date" width="90"/>
+    <field name="partner" form-view="partner-form" grid-view="partner-grid"/>
+    <field name="company" form-view="company-form" grid-view="company-grid" width="140"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="invoice" form-view="invoice-form" grid-view="invoice-grid" width="140"/>
+    <field name="tradingName"
+      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
+      form-view="trading-name-form" grid-view="trading-name-grid" width="140"/>
+    <field name="statusSelect" width="90" widget="single-select"/>
+  </grid>
+
   <form name="move-form" title="Account move" canArchive="false"
     model="com.axelor.apps.account.db.Move" canDelete="false" width="large"
     onNew="action-account-group-onnew" onLoad="action-account-move-method-onLoad"
@@ -132,6 +158,19 @@
             colSpan="3" onChange="action-move-method-payment-mode-onchange"
             form-view="payment-mode-form" grid-view="payment-mode-grid"
             onSelect="action-move-method-payment-mode-onselect"/>
+          <panel name="fiscalPositionWarningPanel" colSpan="12" hidden="true">
+            <field name="$fiscalPositionWarning" showTitle="false" colSpan="6" colOffset="6"
+              readonly="true">
+              <viewer>
+              <![CDATA[
+                      <>
+                        <Box as="span" style={{ color: "red", fontStyle: 'italic', fontWeight: 'bold'}}>
+                          {_t('Please pay attention, the fiscal position used on this move is different from the one on the invoice. The fiscal position should typically be that of the delivered partner.')}
+                        </Box>
+                      </>
+                ]]></viewer>
+            </field>
+          </panel>
           <field name="paymentCondition" showIf="journal.journalType.technicalTypeSelect != 4"
             readonlyIf="$validatePeriod || statusSelect == 3" colSpan="4"
             onChange="action-account-move-method-payment-condition-onchange"
@@ -544,6 +583,7 @@
   </action-group>
 
   <action-group name="action-move-group-generate-counterpart">
+    <action name="action-account-move-group-onsave"/>
     <action name="action-move-method-generate-counterpart"/>
     <action name="save" if="statusSelect != 4 &amp;&amp; statusSelect &gt;= 2"/>
   </action-group>

@@ -21,11 +21,11 @@ package com.axelor.apps.hr.service.leave.compute;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.service.leave.LeaveRequestPlanningService;
-import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,13 +35,13 @@ public class LeaveRequestComputeHourDurationServiceImpl
     implements LeaveRequestComputeHourDurationService {
 
   protected final LeaveRequestPlanningService leaveRequestPlanningService;
-  protected final PublicHolidayHrService publicHolidayHrService;
+  protected final PublicHolidayService publicHolidayHrService;
   protected final WeeklyPlanningService weeklyPlanningService;
 
   @Inject
   public LeaveRequestComputeHourDurationServiceImpl(
       LeaveRequestPlanningService leaveRequestPlanningService,
-      PublicHolidayHrService publicHolidayHrService,
+      PublicHolidayService publicHolidayHrService,
       WeeklyPlanningService weeklyPlanningService) {
     this.leaveRequestPlanningService = leaveRequestPlanningService;
     this.publicHolidayHrService = publicHolidayHrService;

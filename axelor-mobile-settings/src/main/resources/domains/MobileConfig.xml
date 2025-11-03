@@ -19,6 +19,8 @@
       title="Authorized roles"
       help="List of roles that have access to this application. If the field is empty then everyone has access to the application. If it contains at least one role then only users with one of the roles present have access to the application."/>
 
+    <finder-method name="findBySequence" using="sequence"/>
+
     <extra-code><![CDATA[
 
 		// APP SEQUENCE
@@ -33,6 +35,7 @@
 		public static final String APP_SEQUENCE_PROJECT = "app-project";
 		public static final String APP_SEQUENCE_DMS = "app-dms";
 		public static final String APP_SEQUENCE_PURCHASE = "app-purchase";
+        public static final String APP_SEQUENCE_MAINTENANCE = "app-maintenance";
 
 	]]></extra-code>
 

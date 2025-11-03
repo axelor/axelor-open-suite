@@ -33,7 +33,6 @@
 6260;"paymentVoucher";"N° for payments executed by other means";"NUMBERS";"UPPERCASE";1;4;"PO_OTH_%YY_";;1;1
 6300;"paymentVoucherReceiptNo";"Voucher Receipt N°";"NUMBERS";"UPPERCASE";1;4;"RECPT_%YY_";;1;1
 7000;"debit";"Direct debit (invoice and installments)";"NUMBERS";"UPPERCASE";1;4;"DDINV_%YY_";;1;1
-7100;"debitReject";"Direct debit reject";"NUMBERS";"UPPERCASE";1;4;"REJDD%YY";;1;1
 8000;"depositSlip";"Deposit slip";"NUMBERS";"UPPERCASE";1;4;"DS%YY%FM";;1;1
 8100;"chequeReject";"Cheque reject";"NUMBERS";"UPPERCASE";1;4;"CHQREJ_%YY_";;1;1
 8300;"paymentSchedule";"Installment N° ";"NUMBERS";"UPPERCASE";1;4;"INSTAL_%YY_";;1;1

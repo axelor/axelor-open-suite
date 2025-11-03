@@ -84,6 +84,9 @@ public interface MoveGroupService {
 
   Map<String, Object> getFiscalPositionOnChangeValuesMap(Move move) throws AxelorException;
 
+  Map<String, Map<String, Object>> getFiscalPositionOnChangeAttrsMap(Move move)
+      throws AxelorException;
+
   Map<String, Map<String, Object>> getCurrencyOnChangeAttrsMap(Move move);
 
   Map<String, Object> getDateOfReversionSelectOnChangeValuesMap(

@@ -1516,6 +1516,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return defaultDate;
     }
     return invoiceTermList.stream()
+        .filter(it -> it.getDueDate() != null)
         .map(InvoiceTerm::getDueDate)
         .max(LocalDate::compareTo)
         .orElse(defaultDate);
@@ -1744,7 +1745,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     PaymentCondition paymentCondition =
         Optional.ofNullable(move).map(Move::getPaymentCondition).orElse(null);
-    if (paymentCondition == null || !paymentCondition.getIsFree()) {
+    if (paymentCondition == null) {
       return;
     }
 
@@ -1769,7 +1770,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return;
     }
 
-    invoice = computeInvoiceTerms(invoice);
+    computeInvoiceTerms(invoice);
   }
 
   @Override

@@ -166,6 +166,23 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
   }
 
   @Override
+  public List<ManufOrderProductResponse> getConsumedProductList(OperationOrder operationOrder)
+      throws AxelorException {
+    List<Product> checkProducts = new ArrayList<>();
+    ManufOrder manufOrder = operationOrder.getManufOrder();
+    List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
+    List<ManufOrderProductResponse> result =
+        new ArrayList<>(
+            getPlannedProductList(
+                manufOrder,
+                checkProducts,
+                operationOrder.getToConsumeProdProductList(),
+                consumedStockMoveLineList));
+    result.addAll(getAdditionalProductList(manufOrder, checkProducts, consumedStockMoveLineList));
+    return result;
+  }
+
+  @Override
   public List<ManufOrderProductResponse> getProducedProductList(ManufOrder manufOrder)
       throws AxelorException {
     List<Product> checkProducts = new ArrayList<>();
@@ -324,7 +341,8 @@ public class ManufOrderProductRestServiceImpl implements ManufOrderProductRestSe
             null,
             null,
             stockMove.getFromStockLocation(),
-            stockMove.getToStockLocation());
+            stockMove.getToStockLocation(),
+            "");
 
     addProductInManufOrder(manufOrder, stockMoveLine, productType);
 

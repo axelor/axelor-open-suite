@@ -27,6 +27,7 @@
     <boolean name="isTemplateWithDescription" title="Templates with description"/>
     <string name="description" title="Description" large="true"/>
     <integer name="maxLinesPerFile" title="Max number of lines per file" nullable="true"/>
+    <datetime name="relativeDateTime" title="Relative date to take into account"/>
 
     <extra-code>
       <![CDATA[

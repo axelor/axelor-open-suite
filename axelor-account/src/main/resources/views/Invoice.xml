@@ -500,9 +500,22 @@
           onSelect="action-invoice-method-domain-company-tax-number"
           onChange="action-invoice-method-on-change-company-tax-number-set-fiscal-position"/>
         <field name="fiscalPosition" readonlyIf="statusSelect > 1" colSpan="4"
-          onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"
+          onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change,action-supplychain-invoice-refresh-fiscal-position-warning"
           onSelect="action-invoice-method-domain-fiscal-position" form-view="fiscal-position-form"
           grid-view="fiscal-position-grid"/>
+        <spacer colSpan="4"/>
+        <field name="$fiscalPositionWarning" showTitle="false" colSpan="8" colOffset="4"
+          hidden="true" if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"
+          readonly="true">
+          <viewer>
+            <![CDATA[
+                    <>
+	                    <Box as="span" style={{ color: "red", fontStyle: 'italic', fontWeight: 'bold'}}>
+	                    	{_t('Please pay attention, the fiscal position used on this invoice is different from the one on the sale order. The fiscal position should typically be that of the delivered partner.')}
+	                   </Box>
+                    </>
+              ]]></viewer>
+        </field>
       </panel>
       <panel name="invoiceMainThirdPanel" colSpan="12">
         <field name="companyBankDetails" colSpan="4"
@@ -623,13 +636,13 @@
       <panel name="invoiceContentPanel" title="Content" showTitle="false" itemSpan="12">
         <panel name="cutOffPanel" title="Cut off period" itemSpan="4"
           readonlyIf="statusSelect == 3" if="__config__.app.getApp('account').manageCutOffPeriod">
-          <field name="$cutOffStartDate" type="date" title="From date"
-            validIf="!$cutOffEndDate || $cutOffStartDate &lt;= $cutOffEndDate"/>
-          <field name="$cutOffEndDate" type="date" title="To date"
-            validIf="!$cutOffStartDate || $cutOffEndDate &gt;= $cutOffStartDate"/>
+          <field name="cutOffStartDate"
+            validIf="!cutOffEndDate || cutOffStartDate &lt;= cutOffEndDate"/>
+          <field name="cutOffEndDate"
+            validIf="!cutOffStartDate || cutOffEndDate &gt;= cutOffStartDate"/>
           <button name="applyCutOffDatesBtn" title="Apply Cut off dates"
             onClick="action-invoice-method-apply-cut-off-dates,save"
-            readonlyIf="!id || $cutOffStartDate == null || $cutOffEndDate == null || $cutOffStartDate > $cutOffEndDate"/>
+            readonlyIf="!id || cutOffStartDate == null || cutOffEndDate == null || cutOffStartDate > cutOffEndDate"/>
         </panel>
         <panel-related name="invoiceLineListPanel" field="invoiceLineList"
           canNew="statusSelect == 1" canRemove="statusSelect == 1"
@@ -679,15 +692,6 @@
           onSelect="action-invoice-attrs-domain-stock-move"
           domain="self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect &gt; 1"
           canNew="false" canSelect="false"/>
-      </panel>
-      <panel name="projectPanel"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
-        title="Business project" colSpan="12" if-module="axelor-business-project">
-        <field name="project" onSelect="action-invoice-attrs-domain-project"
-          form-view="business-project-form" grid-view="project-grid" colSpan="6"/>
-        <button name="updateLinesBtn" title="Update lines with selected project"
-          onClick="save,action-invoice-business-project-method-update-lines,save" colSpan="6"
-          readonlyIf="!project"/>
       </panel>
       <panel name="accountingPanel" title="Accounting" showTitle="false">
         <panel name="accountingDetailsPanel" title="Accounting details" colSpan="12">
@@ -772,16 +776,6 @@
         <field name="headOfficeAddress"
           if="__user__.activeCompany?.accountConfig?.displayHeadOfficeAddrOnInvoicePrinting"/>
         <field name="specificNotes" colSpan="12" readonly="true" showIf="specificNotes"/>
-        <field name="displayTimesheetOnPrinting" if-module="axelor-business-project"
-          hidden="true"/>
-        <field name="displayExpenseOnPrinting" if-module="axelor-business-project"
-          hidden="true"/>
-        <field name="isExpenseLineOnInvoiceGrouped" if-module="axelor-business-project"
-          if="__config__.app.getApp('business-project')?.getEnableToInvoiceExpense()"
-          showIf="displayExpenseOnPrinting"/>
-        <field name="groupingPeriodSelect" if-module="axelor-business-project"
-          if="__config__.app.getApp('business-project')?.getEnableToInvoiceExpense()"
-          showIf="isExpenseLineOnInvoiceGrouped &amp;&amp; displayExpenseOnPrinting"/>
         <field name="displayStockMoveOnInvoicePrinting" if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain')" showIf="[3,4].includes(operationTypeSelect)"/>
         <field name="$localization" title="Localization" type="many-to-one"
@@ -1152,7 +1146,7 @@
           readonlyIf="ventilatedByUser || ventilatedDateTime"/>
         <spacer/>
         <field name="dueDate" readonlyIf="!paymentCondition.isFree"
-          onChange="action-invoice-method-estimated-payment-date,action-invoice-method-compute-invoice-terms-due-dates"/>
+          onChange="action-invoice-method-estimated-payment-date,action-invoice-method-change-invoice-terms-due-dates-with-invoice-due-date"/>
         <field name="nextDueDate" showIf="invoiceTermList.length > 1"/>
         <field name="paymentCondition.isFree" hidden="true"/>
         <field name="paymentDelay" readonly="true" colSpan="12"/>
@@ -1201,9 +1195,6 @@
     <toolbar>
       <button name="printBtn" title="Print" icon="fa-print"
         onClick="save,action-invoice-method-show-invoice"/>
-      <button name="showAnnexBtn" title="Print annex" icon="fa-print"
-        onClick="action-business-project-group-print-annex" if-module="axelor-business-project"
-        showIf="partner != null &amp;&amp; (displayTimesheetOnPrinting || displayExpenseOnPrinting)"/>
     </toolbar>
 
     <panel name="mainPanel">
@@ -1239,9 +1230,6 @@
       <field name="currency" canEdit="false"
         onChange="action-invoice-attrs-change-total-title" readonlyIf="statusSelect != 1"
         form-view="currency-form" grid-view="currency-grid"/>
-      <field name="project" if-module="axelor-business-project"
-        onSelect="action-invoice-attrs-domain-project" form-view="business-project-form"
-        grid-view="project-grid" if="__config__.app.isApp('project')"/>
       <field name="inAti" onChange="action-invoice-attrs-in-ati"/>
     </panel>
 
@@ -1624,8 +1612,6 @@
     <action name="action-invoice-attrs-interco-supplychain"/>
     <action name="action-invoice-record-interco-supplychain"/>
     <action name="action-invoice-method-manage-refund-titles"/>
-    <action name="action-invoice-record-printing-fields"
-      if="__config__.app.isApp('business-project')"/>
     <action name="action-invoice-record-set-dummy-field-localization"/>
     <action name="action-invoice-method-set-default-group-products-on-printings"/>
     <action name="action-invoice-record-set-display-stock-move-on-invoice-printing"
@@ -1666,6 +1652,7 @@
     <action name="action-invoice-method-set-invoice-line-list-scale"/>
     <action name="action-invoice-attrs-display-line-coefficient"/>
     <action name="action-invoice-method-set-discount-dummies"/>
+    <action name="action-supplychain-invoice-refresh-fiscal-position-warning"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
@@ -1822,7 +1809,7 @@
     <action name="action-invoice-method-check-analytic-axis"/>
     <action name="save"/>
     <action name="action-validate-invoice-ckeck-invoice-line-tax-list"/>
-    <action name="action-invoice-method-generate-invoice-terms"/>
+    <action name="action-invoice-method-generate-invoice-terms" if="!invoiceTermList"/>
     <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="save"/>
     <action name="action-record-invoice-set-discount-values"
@@ -1937,15 +1924,6 @@
 
   </action-attrs>
 
-  <action-attrs name="action-invoice-attrs-domain-project">
-    <attribute name="domain" for="project"
-      expr="eval: &quot; self.clientPartner.id = ${partner?.id} AND self.isBusinessProject = true &quot;"
-      if="operationTypeSelect == 3 || operationTypeSelect == 4"/>
-    <attribute name="domain" for="project"
-      expr="eval: &quot; self.isBusinessProject = true &quot;"
-      if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
-  </action-attrs>
-
   <action-attrs name="action-invoice-attrs-domain-stock-move">
     <attribute name="domain" for="stockMoveSet"
       expr="eval: &quot;self.partner = :partner AND self.company = :company AND self.statusSelect = 3 AND self.typeSelect = 2&quot;"
@@ -2031,7 +2009,6 @@
       expr="eval: partner?.contactPartnerSet?.size() == 1 ? partner?.contactPartnerSet[0] : null"/>
     <field name="invoicesCopySelect"
       expr="eval: partner?.invoicesCopySelect != 0 ? partner?.invoicesCopySelect :1"/>
-    <field name="project" expr="eval: null"/>
     <field name="purchaseOrder" expr="eval: null"/>
     <field name="partnerTaxNbr" expr="eval: partner?.taxNbr"/>
     <field name="proformaComments" expr="eval: partner?.proformaComments"/>
@@ -2162,21 +2139,6 @@
       expr="eval: 'Totaux en devise de la facture (${:self.partner.currency.symbol})'"/>
   </action-attrs>
 
-  <action-attrs name="action-invoice-attrs-printing-fields"
-    if-module="axelor-business-project">
-    <attribute name="hidden" for="displayTimesheetOnPrinting"
-      if="__config__.app.isApp('business-project')"
-      expr="eval: __repo__(InvoicingProject).all().filter('self.invoice.id = :id').bind('id',id).fetch().isEmpty() &amp;&amp; !__user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting"/>
-    <attribute name="value" for="displayTimesheetOnPrinting"
-      if="__config__.app.isApp('business-project') &amp;&amp; __repo__(InvoicingProject).all().filter('self.invoice.id = :id').bind('id',id).fetch().isEmpty() &amp;&amp; !__user__.activeCompany?.accountConfig?.displayTimesheetOnPrinting"
-      expr="eval: false"/>
-    <attribute name="hidden" for="displayExpenseOnPrinting"
-      if="__config__.app.isApp('business-project')"
-      expr="eval: __repo__(InvoicingProject).all().filter('self.invoice.id = :id').bind('id',id).fetch().isEmpty() &amp;&amp; !__user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"/>
-    <attribute name="value" for="displayExpenseOnPrinting"
-      if="__config__.app.isApp('business-project') &amp;&amp; __repo__(InvoicingProject).all().filter('self.invoice.id = :id').bind('id',id).fetch().isEmpty() &amp;&amp; !__user__.activeCompany?.accountConfig?.displayExpenseOnPrinting"
-      expr="eval: false"/>
-  </action-attrs>
 
   <action-attrs name="action-invoice-attrs-interco-supplychain"
     if-module="axelor-supplychain">
@@ -2515,6 +2477,12 @@
       method="computeInvoiceTermsDueDates"/>
   </action-method>
 
+  <action-method
+    name="action-invoice-method-change-invoice-terms-due-dates-with-invoice-due-date">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="changeInvoiceTermDatesWithInvoiceDueDate"/>
+  </action-method>
+
   <action-method name="action-invoice-method-validate-invoice-terms-before-save">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="validateInvoiceTermsBeforeSave"/>
@@ -2618,6 +2586,12 @@
       method="setFiscalPositionDomain"/>
   </action-method>
 
+  <action-method name="action-supplychain-invoice-refresh-fiscal-position-warning"
+    if-module="axelor-supplychain">
+    <call class="com.axelor.apps.supplychain.web.InvoiceController"
+      method="refreshFiscalPositionWarning"/>
+  </action-method>
+
   <action-view name="action-invoice-view-register-payment" title="Register a payment"
     model="com.axelor.apps.account.db.InvoicePayment">
     <view type="form" name="invoice-payment-form"/>
@@ -2696,8 +2670,6 @@
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-    <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
@@ -2734,10 +2706,10 @@
       <domain>self.statusSelect = 3</domain>
     </filter>
     <filter name="customer-invoices-filters-unpaid" title="Unpaid">
-      <domain>self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="customer-invoices-filters-unpaid-due" title="Unpaid Due">
-      <domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="customer-invoices-filters-with-payment-rejected"
       title="With Payment Rejected">
@@ -2761,8 +2733,6 @@
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-    <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
@@ -2799,10 +2769,10 @@
       <domain>self.statusSelect = 3</domain>
     </filter>
     <filter name="customer-refunds-filters-unpaid" title="Unpaid">
-      <domain>self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="customer-refunds-filters-unpaid-due" title="Unpaid Due">
-      <domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt; 0</domain>
     </filter>
   </search-filters>
 
@@ -2816,8 +2786,6 @@
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-    <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
@@ -2857,10 +2825,10 @@
       <domain>self.statusSelect = 3</domain>
     </filter>
     <filter name="supplier-invoices-filters-unpaid" title="Unpaid">
-      <domain>self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="supplier-invoices-filters-unpaid-due" title="Unpaid Due">
-      <domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt; 0</domain>
     </filter>
   </search-filters>
 
@@ -2874,8 +2842,6 @@
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="pfpValidatorUser" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-    <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="decisionPfpTakenDateTime" hidden="true"
       if="!__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="company.accountConfig" hidden="true"
@@ -2915,10 +2881,10 @@
       <domain>self.statusSelect = 3</domain>
     </filter>
     <filter name="supplier-refunds-filters-unpaid" title="Unpaid">
-      <domain>self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>self.amountRemaining &gt; 0</domain>
     </filter>
     <filter name="supplier-refunds-filters-unpaid-due" title="Unpaid Due">
-      <domain>CURRENT_DATE &gt; self.dueDate and self.companyInTaxTotalRemaining &gt; 0</domain>
+      <domain>CURRENT_DATE &gt; self.dueDate and self.amountRemaining &gt; 0</domain>
     </filter>
   </search-filters>
 

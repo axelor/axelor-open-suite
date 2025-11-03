@@ -123,6 +123,8 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.analytic.AnalyticToolServiceImpl;
+import com.axelor.apps.account.service.analytic.ImportAnalyticInMoveService;
+import com.axelor.apps.account.service.analytic.ImportAnalyticInMoveServiceImpl;
 import com.axelor.apps.account.service.analytic.TradingNameAnalyticService;
 import com.axelor.apps.account.service.analytic.TradingNameAnalyticServiceImpl;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -147,6 +149,8 @@ import com.axelor.apps.account.service.fecimport.FECImportService;
 import com.axelor.apps.account.service.fecimport.FECImportServiceImpl;
 import com.axelor.apps.account.service.fecimport.ImportFECTypeService;
 import com.axelor.apps.account.service.fecimport.ImportFECTypeServiceImpl;
+import com.axelor.apps.account.service.fecimport.ImportMoveFecService;
+import com.axelor.apps.account.service.fecimport.ImportMoveFecServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryService;
 import com.axelor.apps.account.service.fixedasset.FixedAssetCategoryServiceImpl;
 import com.axelor.apps.account.service.fixedasset.FixedAssetDateService;
@@ -294,6 +298,8 @@ import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigServiceImpl;
 import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MovePfpServiceImpl;
+import com.axelor.apps.account.service.move.MovePfpToolService;
+import com.axelor.apps.account.service.move.MovePfpToolServiceImpl;
 import com.axelor.apps.account.service.move.MovePfpValidateService;
 import com.axelor.apps.account.service.move.MovePfpValidateServiceImpl;
 import com.axelor.apps.account.service.move.MoveRemoveService;
@@ -386,6 +392,8 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentModeServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.account.service.payment.PaymentServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentAlertService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentAlertServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentComputeService;
@@ -928,6 +936,8 @@ public class AccountModule extends AxelorModule {
 
     bind(ImportFECTypeService.class).to(ImportFECTypeServiceImpl.class);
 
+    bind(ImportMoveFecService.class).to(ImportMoveFecServiceImpl.class);
+
     bind(FixedAssetLineRepository.class).to(FixedAssetLineManagementRepository.class);
 
     bind(FixedAssetGroupService.class).to(FixedAssetGroupServiceImpl.class);
@@ -940,6 +950,8 @@ public class AccountModule extends AxelorModule {
         .to(FixedAssetDerogatoryLineManagementRepository.class);
 
     bind(FindFixedAssetService.class).to(FindFixedAssetServiceImpl.class);
+
+    bind(ImportAnalyticInMoveService.class).to(ImportAnalyticInMoveServiceImpl.class);
 
     bind(PeriodCheckService.class).to(PeriodCheckServiceImpl.class);
 
@@ -1011,7 +1023,9 @@ public class AccountModule extends AxelorModule {
     bind(BankDetailsServiceAccount.class).to(BankDetailsServiceAccountImpl.class);
 
     bind(AnalyticMoveLineParentService.class).to(AnalyticMoveLineParentServiceImpl.class);
-
     bind(PaymentScheduleRepository.class).to(PaymentScheduleAccountRepository.class);
+    bind(InvoicePaymentAlertService.class).to(InvoicePaymentAlertServiceImpl.class);
+
+    bind(MovePfpToolService.class).to(MovePfpToolServiceImpl.class);
   }
 }

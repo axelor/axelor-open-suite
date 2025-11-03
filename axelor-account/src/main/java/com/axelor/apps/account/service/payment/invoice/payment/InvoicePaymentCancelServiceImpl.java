@@ -19,17 +19,25 @@
 package com.axelor.apps.account.service.payment.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTermPayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
-import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCancelService;
+import com.axelor.apps.account.service.move.MoveReverseService;
+import com.axelor.apps.account.service.reconcile.ReconcileToolService;
+import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.CancelReason;
+import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +47,9 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
   protected MoveCancelService moveCancelService;
   protected InvoicePaymentToolService invoicePaymentToolService;
   protected InvoiceTermService invoiceTermService;
+  protected ReconcileToolService reconcileToolService;
+  protected UnreconcileService unreconcileService;
+  protected MoveReverseService moveReverseService;
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -47,11 +58,17 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
       InvoicePaymentRepository invoicePaymentRepository,
       MoveCancelService moveCancelService,
       InvoicePaymentToolService invoicePaymentToolService,
-      InvoiceTermService invoiceTermService) {
+      InvoiceTermService invoiceTermService,
+      ReconcileToolService reconcileToolService,
+      UnreconcileService unreconcileService,
+      MoveReverseService moveReverseService) {
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.moveCancelService = moveCancelService;
     this.invoicePaymentToolService = invoicePaymentToolService;
     this.invoiceTermService = invoiceTermService;
+    this.reconcileToolService = reconcileToolService;
+    this.unreconcileService = unreconcileService;
+    this.moveReverseService = moveReverseService;
   }
 
   /**
@@ -63,19 +80,50 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
    * @param invoicePayment An invoice payment
    * @throws AxelorException
    */
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void cancel(InvoicePayment invoicePayment) throws AxelorException {
     Move paymentMove = invoicePayment.getMove();
 
     if (paymentMove != null) {
-      if (paymentMove.getStatusSelect() == MoveRepository.STATUS_NEW) {
-        invoicePayment.setMove(null);
-      }
-      moveCancelService.cancel(paymentMove);
+      unlinkPaymentMoveLine(invoicePayment);
     } else {
       cancelImputedInvoicePayment(invoicePayment);
     }
     updateCancelStatus(invoicePayment);
+  }
+
+  @Override
+  public void reversePaymentMove(InvoicePayment invoicePayment) throws AxelorException {
+    Move paymentMove = invoicePayment.getMove();
+    if (paymentMove == null) {
+      return;
+    }
+
+    Map<String, Object> reverseMap = buildReverseMap(paymentMove);
+    moveReverseService.generateReverse(paymentMove, reverseMap);
+
+    invoicePayment = findInvoicePayment(invoicePayment);
+    updateCancelStatus(invoicePayment);
+  }
+
+  @Override
+  public void validateBeforeUnlink(InvoicePayment invoicePayment) throws AxelorException {
+    if (invoicePayment == null || invoicePayment.getMove() == null) {
+      return;
+    }
+
+    moveCancelService.checkBeforeCancel(invoicePayment.getMove());
+  }
+
+  protected void unlinkPaymentMoveLine(InvoicePayment invoicePayment) throws AxelorException {
+    if (invoicePayment == null
+        || invoicePayment.getReconcile() == null
+        || invoicePayment.getMove() == null) {
+      return;
+    }
+
+    unreconcileService.unreconcile(invoicePayment.getReconcile());
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -83,9 +131,22 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);
 
     invoicePaymentToolService.updateAmountPaid(invoicePayment.getInvoice());
-    invoicePayment.getInvoiceTermPaymentList().forEach(it -> it.setInvoiceTerm(null));
+    removeAllLinks(invoicePayment);
 
     invoicePaymentRepository.save(invoicePayment);
+  }
+
+  protected void removeAllLinks(InvoicePayment invoicePayment) {
+    if (ObjectUtils.notEmpty(invoicePayment.getInvoiceTermPaymentList())) {
+      invoicePayment.getInvoiceTermPaymentList().stream()
+          .map(InvoiceTermPayment::getInvoiceTerm)
+          .filter(Objects::nonNull)
+          .forEach(it -> it.setPaymentSession(null));
+      invoicePayment.getInvoiceTermPaymentList().forEach(it -> it.setInvoiceTerm(null));
+    }
+    invoicePayment.setMove(null);
+    invoicePayment.setPaymentSession(null);
+    invoicePayment.setReconcile(null);
   }
 
   protected void cancelImputedInvoicePayment(InvoicePayment invoicePayment) throws AxelorException {
@@ -102,5 +163,23 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
       invoiceTermService.updateInvoiceTermsAmountRemaining(imputedBy.getInvoiceTermPaymentList());
       updateCancelStatus(imputedBy);
     }
+  }
+
+  protected Map<String, Object> buildReverseMap(Move move) {
+    Map<String, Object> reverseMap = new HashMap<String, Object>();
+    reverseMap.put("dateOfReversion", move.getDate());
+    reverseMap.put("isAutomaticReconcile", true);
+    reverseMap.put("isAutomaticAccounting", true);
+    reverseMap.put("isUnreconcileOriginalMove", true);
+
+    return reverseMap;
+  }
+
+  protected InvoicePayment findInvoicePayment(InvoicePayment invoicePayment) {
+    CancelReason cancelReason = invoicePayment.getCancelReason();
+    invoicePayment = invoicePaymentRepository.find(invoicePayment.getId());
+    invoicePayment.setCancelReason(cancelReason);
+
+    return invoicePayment;
   }
 }

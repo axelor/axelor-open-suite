@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.purchase.web;
 
+import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderSupplier;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -29,6 +30,24 @@ public class CallTenderSupplierController {
     var callTenderSupplier = request.getContext().asType(CallTenderSupplier.class);
     if (callTenderSupplier != null && callTenderSupplier.getContactPartnerSet() != null) {
       response.setValue("contactPartnerSet", null);
+    }
+  }
+
+  public void setSupplierDomain(ActionRequest request, ActionResponse response) {
+
+    var callTenderSupplier = request.getContext().asType(CallTenderSupplier.class);
+
+    if (request.getContext().getParent() != null) {
+      var callTender = request.getContext().getParent().asType(CallTender.class);
+      if (callTender.getCompany() != null) {
+        var domain =
+            String.format(
+                "self.isSupplier IS true and %s MEMBER OF self.companySet",
+                callTender.getCompany().getId());
+        response.setAttr("supplierPartner", "domain", domain);
+      } else {
+        response.setAttr("supplierPartner", "domain", null);
+      }
     }
   }
 }

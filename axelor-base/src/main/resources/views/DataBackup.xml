@@ -23,7 +23,9 @@
       <field name="description" colSpan="12"/>
       <field name="fetchLimit" widget="Integer" required="true" min="1" colSpan="4"/>
       <field name="checkAllErrorFirst" widget="boolean-switch" colSpan="4"/>
-      <field name="isRelativeDate" widget="boolean-switch" colSpan="4"/>
+      <field name="isRelativeDate" widget="boolean-switch"
+        onChange="action-data-backup-attrs-onchange-relativedate" colSpan="4"/>
+      <field name="relativeDateTime" widget="datetime" colSpan="4" showIf="isRelativeDate"/>
       <field name="updateImportId" widget="boolean-switch" colSpan="4"/>
       <field name="isExportApp" widget="boolean-switch" colSpan="4"/>
       <field name="anonymizer" colSpan="4" canRemove="true"/>
@@ -110,5 +112,10 @@
   <action-method name="action.data.backup.call.restorebackup">
     <call class="com.axelor.apps.base.web.DataBackupController" method="restoreBackup"/>
   </action-method>
+
+  <action-attrs name="action-data-backup-attrs-onchange-relativedate">
+    <attribute name="value" for="relativeDateTime"
+      expr="eval: isRelativeDate ? __datetime__ : null"/>
+  </action-attrs>
 
 </object-views>

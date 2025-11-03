@@ -20,6 +20,8 @@
     <string name="manualIdentification" title="Manual Identification"/>
     <many-to-many name="trackingNumbersSet" title="Tracking Numbers"
       ref="com.axelor.apps.stock.db.TrackingNumber"/>
+    <one-to-many name="metaFileList" title="Meta files" transient="true"
+      ref="com.axelor.meta.db.MetaFile"/>
 
     <extra-code><![CDATA[
 	    public static final int IDENTIFICATION_MANUAL = 1;

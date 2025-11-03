@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="indicator-result-line-indicator-result-grid" title="Indicator result lines"
+    model="com.axelor.apps.base.db.IndicatorResultLine" orderBy="-indicatorResult.dateT">
+    <field name="target"/>
+    <field name="indicator"/>
+    <field name="metaModel"/>
+    <field name="relatedId"/>
+    <button name="openRelatedRecord" title="Open related record"
+      onClick="action-indicator-result-line-method-open-related-record" icon="open_in_new"/>
+  </grid>
+
+  <grid name="indicator-result-line-grid" title="Indicator result lines"
+    model="com.axelor.apps.base.db.IndicatorResultLine" orderBy="-indicatorResult.dateT"
+    groupBy="indicatorResult.indicatorConfig.name">
+    <field name="indicatorResult.dateT"/>
+    <field name="target"/>
+    <field name="indicator"/>
+    <field name="indicatorResult.indicatorConfig.name" hidden="true"/>
+  </grid>
+
+  <form name="indicator-result-line-form" title="Indicator result line"
+    model="com.axelor.apps.base.db.IndicatorResultLine"
+    onLoad="action-indicator-result-line-attrs-onload">
+    <panel name="mainPanel">
+
+      <panel name="relatedToPanel" colSpan="12">
+        <field name="$related" title="Related to" selection="all.model.reference.select"
+          widget="RefSelect" x-related="relatedId" colSpan="6" readonly="true"/>
+      </panel>
+
+      <panel name="indicatorPanel" colSpan="12">
+        <field name="indicator" colSpan="3"/>
+        <field name="target" colSpan="3"/>
+        <field name="expressionLog" showIf="expressionLog" colSpan="12"/>
+        <field name="targetExpressionLog" showIf="targetExpressionLog" colSpan="12"/>
+      </panel>
+
+    </panel>
+    <panel-dashlet action="action-indicator-result-line-view-indicator-alert"
+      colSpan="12"/>
+  </form>
+
+  <action-method name="action-indicator-result-line-method-open-related-record">
+    <call class="com.axelor.apps.base.web.IndicatorResultLineController"
+      method="openRelatedRecord"/>
+  </action-method>
+
+  <action-view name="action-indicator-result-line-view-indicator-result-line"
+    title="Indicators" model="com.axelor.apps.base.db.IndicatorResultLine">
+    <view type="grid" name="indicator-result-line-grid"/>
+    <view type="form" name="indicator-result-line-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.metaModel.fullName = :_relatedTo AND self.relatedId = :_relatedId</domain>
+    <context name="_relatedTo" expr="eval: _model"/>
+    <context name="_relatedId" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-indicator-result-line-view-indicator-alert"
+    title="Indicator alerts" model="com.axelor.apps.base.db.IndicatorAlert">
+    <view type="grid" name="indicator-alert-grid"/>
+    <view type="form" name="indicator-alert-form"/>
+    <domain>self.resultLine.id = :_resultLineId</domain>
+    <context name="_resultLineId" expr="eval: id"/>
+  </action-view>
+
+  <action-attrs name="action-indicator-result-line-attrs-onload">
+    <attribute name="value" for="$related" expr="eval: metaModel?.fullName"/>
+  </action-attrs>
+
+</object-views>

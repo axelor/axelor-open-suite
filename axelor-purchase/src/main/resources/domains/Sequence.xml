@@ -12,6 +12,7 @@
         //SEQUENCE SELECT
         public static final String PURCHASE_ORDER = "purchaseOrder";
         public static final String PURCHASE_REQUEST = "PurchaseRequest";
+         public static final String CALL_FOR_TENDER = "CallTender";
 
      ]]></extra-code>
 

@@ -3,15 +3,50 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
-  <input file="hr_expense.csv" separator=";" type="com.axelor.apps.hr.db.Expense"/>
+  <input file="hr_expense.csv" separator=";" type="com.axelor.apps.hr.db.Expense"
+    search="self.importId = :importId">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="employee_importId" to="employee" search="self.importId = :employee_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.hr.db.Employee', 'importId', employee_importId)"
+      check-message="Employee doesn't exist"/>
+    <bind column="typeSelect" to="typeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Expense', 'typeSelect', typeSelect)"
+      check-message="Invalid typeSelect"/>
+    <bind column="statusSelect" to="statusSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Expense', 'statusSelect', statusSelect)"
+      check-message="Invalid statusSelect"/>
+    <bind column="companyCbSelect" to="companyCbSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Expense', 'companyCbSelect', companyCbSelect)"
+      check-message="Invalid companyCbSelect"/>
+    <bind column="paymentStatusSelect" to="paymentStatusSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.Expense', 'paymentStatusSelect', paymentStatusSelect)"
+      check-message="Invalid paymentStatusSelect"/>
+    <bind column="expenseSeq" to="expenseSeq"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.hr.db.Expense', 'importId', importId, 'expenseSeq, company.importId', expenseSeq, company_importId)"
+      check-message="Expense N° and company must be unique"/>
+  </input>
 
   <input file="hr_expenseLine.csv" separator=";" type="com.axelor.apps.hr.db.ExpenseLine"
     search="self.importId = :importId">
+    <bind column="expenseProduct_importId" to="expenseProduct"
+      search="self.importId = :expenseProduct_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Product', 'importId', expenseProduct_importId)"
+      check-message="Expense type doesn't exist"/>
+    <bind column="totalAmount" to="totalAmount"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(totalAmount)"
+      check-message="Total amount with tax must not be null"/>
+    <bind column="kilometricTypeSelect" to="kilometricTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.ExpenseLine', 'kilometricTypeSelect', kilometricTypeSelect)"
+      check-message="Invalid kilometricTypeSelect"/>
     <bind to="expense" column="expense_importId" search="self.importId = :expense_importId"/>
     <bind to="generalExpense" column="generalExpense_importId"
       search="self.importId = :expense_importId"/>
     <bind to="expenseDate"
-      eval="call:com.axelor.csv.script.ImportDateTime:importDate(expenseDate)" column="expenseDate"/>
+      eval="call:com.axelor.csv.script.ImportDateTime:importDate(expenseDate)" column="expenseDate"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(expenseDate)"
+      check-message="Expense date must not be null"/>
   </input>
 
   <input file="hr_employeeBonusType.csv" separator=";"
@@ -19,6 +54,18 @@
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
+    <bind column="codeSelect" to="codeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
+      check-message="Invalid codeSelect"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check-message="Sequence type must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence', 'importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check-message="Company, code, prefixe and suffixe must be unique"/>
     <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
       if="yearlyResetOk"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
@@ -27,13 +74,58 @@
   </input>
 
   <input file="base_expenseTemplate.csv" separator=";" type="com.axelor.message.db.Template"
-    search="self.importId = :importId"/>
+    search="self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="mediaTypeSelect" to="mediaTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'mediaTypeSelect', mediaTypeSelect)"
+      check-message="Invalid mediaTypeSelect"/>
+    <bind column="templateEngineSelect" to="templateEngineSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'templateEngineSelect', templateEngineSelect)"
+      check-message="Invalid templateEngineSelect"/>
+    <bind column="language" to="language"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.message.db.Template', 'language', language)"
+      check-message="Invalid language"/>
+  </input>
 
   <input file="account_accountConfig.csv" separator=";"
-    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true"/>
+    type="com.axelor.apps.account.db.AccountConfig" search="self.importId = :importId" update="true">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.account.db.AccountConfig', 'importId', importId, 'company.importId', company_importId)"
+      check-message="Company must be unique"/>
+    <bind column="accountCodeNbrCharSelect" to="accountCodeNbrCharSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountConfig', 'accountCodeNbrCharSelect', accountCodeNbrCharSelect)"
+      check-message="Invalid accountCodeNbrCharSelect"/>
+    <bind column="partnerAccountGenerationModeSelect" to="partnerAccountGenerationModeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountConfig', 'partnerAccountGenerationModeSelect', partnerAccountGenerationModeSelect)"
+      check-message="Invalid partnerAccountGenerationModeSelect"/>
+    <bind column="invoiceInAtiSelect" to="invoiceInAtiSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountConfig', 'invoiceInAtiSelect', invoiceInAtiSelect)"
+      check-message="Invalid invoiceInAtiSelect"/>
+    <bind column="nbrOfAnalyticAxisSelect" to="nbrOfAnalyticAxisSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountConfig', 'nbrOfAnalyticAxisSelect', nbrOfAnalyticAxisSelect)"
+      check-message="Invalid nbrOfAnalyticAxisSelect"/>
+    <bind column="analyticDistributionTypeSelect" to="analyticDistributionTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountConfig', 'analyticDistributionTypeSelect', analyticDistributionTypeSelect)"
+      check-message="Invalid analyticDistributionTypeSelect"/>
+  </input>
 
   <input file="hr_hrConfig.csv" type="com.axelor.apps.hr.db.HRConfig" separator=";"
-    search="self.importId = :importId" update="true"/>
+    search="self.importId = :importId" update="true">
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.hr.db.HRConfig', 'importId', importId, 'company.importId', company_importId)"
+      check-message="Company must be unique"/>
+    <bind column="lunchVoucherFormatSelect" to="lunchVoucherFormatSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.hr.db.HRConfig', 'lunchVoucherFormatSelect', lunchVoucherFormatSelect)"
+      check-message="Invalid lunchVoucherFormatSelect"/>
+  </input>
 
 </csv-inputs>
 
