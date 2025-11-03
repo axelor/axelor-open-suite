@@ -65,6 +65,15 @@
    			public static final int SELECT_AFTERNOON = 2;
    		]]>
     </extra-code>
+
+    <track on="UPDATE">
+      <field name="leaveReason"/>
+      <field name="fromDateT"/>
+      <field name="toDateT"/>
+      <field name="startOnSelect"/>
+      <field name="endOnSelect"/>
+      <field name="statusSelect"/>
+    </track>
   </entity>
 
 </domain-models>
