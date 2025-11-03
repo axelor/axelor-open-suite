@@ -124,6 +124,7 @@
     <option value='2'>Calendar synchronization</option>
     <option value='3'>Password change</option>
     <option value='4'>Recompute all addresses</option>
+    <option value='5'>Fetch partner data from Sirene API</option>
   </selection>
 
   <selection name="base.routing.rule.type.select">
