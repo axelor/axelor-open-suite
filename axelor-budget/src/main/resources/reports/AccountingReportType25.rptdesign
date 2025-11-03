@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -225,12 +225,9 @@
                     <text-property name="heading">report_date_edition</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="alias">logo_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">logo_path</text-property>
+                    <property name="columnName">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <text-property name="heading">logo_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">report_type</property>
@@ -324,8 +321,8 @@
                     </structure>
                     <structure>
                         <property name="position">9</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">10</property>
@@ -407,9 +404,10 @@
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
@@ -452,7 +450,7 @@ AccountingReport.date_from,
 AccountingReport.date_to, 
 AccountingReport.date_val as report_date,
 AccountingReport.publication_date_time as report_date_edition, 
-MetaFile.file_path as logo_path,
+MetaFile.id as logo_id,
 ReportType.type_select as report_type,
 min_amount_excl as min_amount,
 AccountingReport.ref,
@@ -2222,12 +2220,6 @@ GlobalBudget.status_select IN (1,2) AND
                     <property name="dataSet">AccountingReportDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
-                            <property name="name">logo_path</property>
-                            <text-property name="displayName">logo_path</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
                             <property name="name">logo_height</property>
                             <text-property name="displayName">logo_height</text-property>
                             <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'35px'}</expression>
@@ -2253,6 +2245,12 @@ GlobalBudget.status_select IN (1,2) AND
                             <expression name="expression" type="javascript">dataSetRow["report_date_edition"]</expression>
                             <property name="dataType">date-time</property>
                         </structure>
+                        <structure>
+                            <property name="name">logo_id</property>
+                            <text-property name="displayName">logo_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                            <property name="dataType">decimal</property>
+                        </structure>
                     </list-property>
                     <column id="4732">
                         <property name="width">1.6041666666666667in</property>
@@ -2276,13 +2274,18 @@ GlobalBudget.status_select IN (1,2) AND
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                        <expression name="valueExpr" type="javascript">row["logo_id"] == null</expression>
                                     </structure>
                                 </list-property>
                                 <method name="onCreate"><![CDATA[this.width=row["logo_width"];
-this.height=row["logo_height"];]]></method>
-                                <property name="source">file</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+this.height=row["logo_height"];
+
+var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                <property name="source">expr</property>
                             </image>
                         </cell>
                         <cell id="4636">
