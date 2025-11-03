@@ -519,7 +519,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         Opportunity opportunity = (Opportunity) forecastModel;
         return getCompanyAmountForOpportunity(forecastRecap, forecastRecapLineType, opportunity);
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
-        // this element is not supported by this method.
+      // this element is not supported by this method.
       case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
         Move move = (Move) forecastModel;
         return journalService.computeBalance(move.getJournal()).get("debit");
@@ -648,7 +648,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         Opportunity opportunity = (Opportunity) forecastModel;
         return opportunity.getExpectedCloseDate();
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
-        // this element is not supported by this method.
+      // this element is not supported by this method.
       case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
         Move move = (Move) forecastModel;
         return move.getDate();
