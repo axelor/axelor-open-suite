@@ -1799,7 +1799,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return;
     }
 
-    invoice = computeInvoiceTerms(invoice);
+    computeInvoiceTerms(invoice);
   }
 
   @Override
