@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-                                  http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <!-- Grid View -->
   <grid name="task-report-grid" title="Task Reports"
@@ -46,15 +45,15 @@
       <!-- Panel for Task Member Reports -->
       <panel title="Team Members Reports" canCollapse="true" collapseIf="true" colSpan="12">
         <field name="taskMemberReports" widget="list" colSpan="12"
-          actionView="member-task-report" form="task-member-report-form"
-          onChange="action-update-total-work-hours"/>
+          canNew="true" canEdit="true"
+          form-view="task-member-report-form" onChange="action-update-total-work-hours"/>
         <panel>
           <field name="totalWorkHours"/>
         </panel>
       </panel>
       <panel title="Team Lead Reports" canCollapse="true" collapseIf="true" colSpan="12">
         <field name="teamLeadReports" widget="list" colSpan="12"
-          actionView="member-task-report-lead" form="task-member-report-form-lead"
+          form-view="task-member-report-form-lead" canNew="true" canEdit="true"
           onChange="action-update-total-work-hours-lead"/>
         <panel>
           <field name="totalWorkHours"/>
@@ -156,12 +155,6 @@
     </domain>
     <context name="project" expr="eval:__parent__"/>
   </action-view>
-
-  <!-- <action-view name="action-task-report-new" title="New Task Report" -->
-  <!-- model="com.axelor.apps.businessproject.db.TaskReport"> -->
-  <!-- <view type="form" name="task-report-form"/> -->
-  <!-- <context name="project" expr="eval: __parent__.project"/> -->
-  <!-- </action-view> -->
 
   <action-view name="member-task-report" title="Member Task Reports"
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
