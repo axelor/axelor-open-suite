@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.db.mapper.Property;
 import com.axelor.meta.db.MetaJsonField;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
-import wslite.json.JSONObject;
 
 public interface AnonymizeService {
   /**
@@ -56,7 +56,7 @@ public interface AnonymizeService {
    * @return
    * @throws AxelorException
    */
-  JSONObject createAnonymizedJson(Object object, HashMap<MetaJsonField, FakerApiField> fakerMap)
+  ObjectNode createAnonymizedJson(Object object, HashMap<MetaJsonField, FakerApiField> fakerMap)
       throws AxelorException;
 
   /**
