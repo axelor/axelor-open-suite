@@ -45,16 +45,17 @@
       <!-- Panel for Task Member Reports -->
       <panel title="Team Members Reports" canCollapse="true" collapseIf="true" colSpan="12">
         <field name="taskMemberReports" widget="list" colSpan="12"
-          actionView="member-task-report" form="task-member-report-form"
+               canNew="true" canEdit="true"
+               form-view="task-member-report-form"
           onChange="action-update-total-work-hours"/>
         <panel>
           <field name="totalWorkHours"/>
         </panel>
       </panel>
       <panel title="Team Lead Reports" canCollapse="true" collapseIf="true" colSpan="12">
-        <field name="teamLeadReports" widget="list" colSpan="12"
-          actionView="member-task-report-lead" form="task-member-report-form-lead"
-          onChange="action-update-total-work-hours-lead"/>
+        <field name="taskMemberReports" widget="list" colSpan="12"
+               form-view="task-member-report-form-lead" canNew="true" canEdit="true"
+          onChange="action-update-total-work-hours"/>
         <panel>
           <field name="totalWorkHours"/>
         </panel>
