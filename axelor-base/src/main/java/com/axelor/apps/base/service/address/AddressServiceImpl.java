@@ -44,7 +44,6 @@ import java.util.function.Function;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
 
 @Singleton
 public class AddressServiceImpl implements AddressService {
@@ -99,7 +98,7 @@ public class AddressServiceImpl implements AddressService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
-      throws AxelorException, JSONException {
+      throws AxelorException {
     Preconditions.checkNotNull(address, I18n.get(BaseExceptionMessage.ADDRESS_CANNOT_BE_NULL));
     Optional<Pair<BigDecimal, BigDecimal>> latLong = getLatLong(address);
 
@@ -113,7 +112,7 @@ public class AddressServiceImpl implements AddressService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address)
-      throws AxelorException, JSONException {
+      throws AxelorException {
     Preconditions.checkNotNull(address, I18n.get(BaseExceptionMessage.ADDRESS_CANNOT_BE_NULL));
 
     if (mapService.isConfigured() && StringUtils.notBlank(address.getFullName())) {

@@ -27,6 +27,8 @@ import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.MapGoogleService;
+import com.axelor.apps.base.service.MapOsmService;
 import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressAttrsService;
@@ -222,11 +224,10 @@ public class AddressController {
   public void viewDirection(ActionRequest request, ActionResponse response) {
     AddressRepository addressRepository = Beans.get(AddressRepository.class);
     try {
-      MapService mapService = Beans.get(MapService.class);
       String key = null;
       if (Beans.get(AppBaseService.class).getAppBase().getMapApiSelect()
           == AppBaseRepository.MAP_API_GOOGLE) {
-        key = mapService.getGoogleMapsApiKey();
+        key = Beans.get(MapGoogleService.class).getGoogleMapsApiKey();
       }
 
       Company company =
@@ -267,7 +268,8 @@ public class AddressController {
       mapView.put("title", "Map");
       mapView.put(
           "resource",
-          mapService.getDirectionUrl(key, departureLatLong.get(), arrivalLatLong.get()));
+          Beans.get(MapOsmService.class)
+              .getDirectionUrl(key, departureLatLong.get(), arrivalLatLong.get()));
       mapView.put("viewType", "html");
       response.setView(mapView);
       response.setReload(true);
