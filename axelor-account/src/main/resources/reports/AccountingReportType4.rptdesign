@@ -385,98 +385,72 @@
             <xml-property name="queryText"><![CDATA[Select MoveLine.partner_full_name as partner_name,
 MoveLine.partner_seq,
 COALESCE(Invoice.invoice_id,MoveLine.name) as invoice_name,
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date  <= 0
-then
-(CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.company_amount_remaining * -1
-ELSE InvoiceTerm.company_amount_remaining
-END)
+SUM(Case when AccountingReport.date_val - Invoice.due_date  <= 0
+then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
 else 0
 END) as "nonDue",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date  <= 30
-	AND AccountingReport.date_val - InvoiceTerm.due_date  > 0
-then
-(CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.company_amount_remaining * -1
-ELSE InvoiceTerm.company_amount_remaining
-END)
+SUM(Case when AccountingReport.date_val - Invoice.due_date  <= 30
+	AND AccountingReport.date_val - Invoice.due_date  > 0
+then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
 else 0
 END) as "<30days",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 30
-	AND AccountingReport.date_val - InvoiceTerm.due_date <= 60
-then
-(CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.company_amount_remaining * -1
-ELSE InvoiceTerm.company_amount_remaining
-END)
+SUM(Case when AccountingReport.date_val - Invoice.due_date > 30
+	AND AccountingReport.date_val - Invoice.due_date <= 60
+then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
 else 0
 END) as "30<days<60",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 60
-	AND AccountingReport.date_val - InvoiceTerm.due_date <= 90
-then
-(CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.company_amount_remaining * -1
-ELSE InvoiceTerm.company_amount_remaining
-END)
+SUM(Case when AccountingReport.date_val - Invoice.due_date > 60
+	AND AccountingReport.date_val - Invoice.due_date <= 90
+then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
 else 0
 END) as "60<days<90",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 90
-	AND AccountingReport.date_val - InvoiceTerm.due_date <= 120
-then
-(CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.company_amount_remaining * -1
-ELSE InvoiceTerm.company_amount_remaining
-END)
+SUM(Case when AccountingReport.date_val - Invoice.due_date > 90
+	AND AccountingReport.date_val - Invoice.due_date <= 120
+then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
 else 0
 END) as "90<days<120",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 120
-	AND AccountingReport.date_val - InvoiceTerm.due_date <= 150
-then
-(CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.company_amount_remaining * -1
-ELSE InvoiceTerm.company_amount_remaining
-END)
+SUM(Case when AccountingReport.date_val - Invoice.due_date > 120
+	AND AccountingReport.date_val - Invoice.due_date <= 150
+then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
 else 0
 END) as "120<days<150",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 150
-	AND AccountingReport.date_val - InvoiceTerm.due_date <= 180
-then
-(CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.company_amount_remaining * -1
-ELSE InvoiceTerm.company_amount_remaining
-END)
+SUM(Case when AccountingReport.date_val - Invoice.due_date > 150
+	AND AccountingReport.date_val - Invoice.due_date <= 180
+then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
 else 0
 END) as "150<days<180",
-SUM(Case when AccountingReport.date_val - InvoiceTerm.due_date > 180
-then
-(CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.company_amount_remaining * -1
-ELSE InvoiceTerm.company_amount_remaining
-END)
+SUM(Case when AccountingReport.date_val - Invoice.due_date > 180
+then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
 else 0
 END) as "180<days",
-SUM(CASE WHEN MoveLine.debit - MoveLine.credit < 0
-THEN InvoiceTerm.company_amount_remaining * -1
-ELSE InvoiceTerm.company_amount_remaining
-END)
+SUM(Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
 as "SoldeClient",
 CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle"
 from public.account_accounting_report as AccountingReport 
 left outer join public.account_move_line as MoveLine on (AccountingReport.id = ?)
-left outer join public.account_invoice_term as InvoiceTerm on (InvoiceTerm.move_line = MoveLine.id)
-left outer join public.account_invoice as Invoice on (InvoiceTerm.invoice = Invoice.id)
+left outer join account_invoice as Invoice on (Invoice.invoice_id = MoveLine.origin)
+left outer join (
+	SELECT
+        InvoicePayment.invoice,
+        Report.id AS report_id,
+        SUM(CASE WHEN InvoicePayment.payment_date <= Report.date_val THEN InvoicePayment.amount ELSE 0 END) AS paid_amount
+    FROM account_invoice_payment InvoicePayment
+    CROSS JOIN account_accounting_report Report
+    GROUP BY InvoicePayment.invoice, Report.id
+	) AS Paid
+    ON Paid.invoice = Invoice.id
+    AND Paid.report_id = AccountingReport.id
 left outer join public.account_move as Move on (MoveLine.move = Move.id)
 left outer join public.account_account as Account on (MoveLine.account  = Account.id )
 left outer join public.account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
 left outer join public.account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
 where
 (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
-(AccountingReport.date_from IS NULL OR InvoiceTerm.due_date >= AccountingReport.date_from) AND
-(AccountingReport.date_to IS NULL OR InvoiceTerm.due_date <= AccountingReport.date_to) AND
+(Invoice.invoice_date <= AccountingReport.date_val) AND 
 Move.company = AccountingReport.company AND
 (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
 (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
-Account.reconcile_ok = true AND InvoiceTerm.amount_remaining != 0
+Account.reconcile_ok = true AND (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0)) != 0
 AND Move.ignore_in_accounting_ok is not true AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
 AND (CASE
     WHEN AccountingReport.display_closing_accounting_moves IS TRUE AND AccountingReport.display_opening_accounting_moves IS TRUE THEN Move.functional_origin_select IN (1,2,3,4)
