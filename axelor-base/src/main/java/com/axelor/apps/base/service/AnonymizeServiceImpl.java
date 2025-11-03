@@ -25,6 +25,9 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaJsonField;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -36,12 +39,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
 
 public class AnonymizeServiceImpl implements AnonymizeService {
 
@@ -79,19 +81,41 @@ public class AnonymizeServiceImpl implements AnonymizeService {
   }
 
   @Override
-  public JSONObject createAnonymizedJson(
+  public ObjectNode createAnonymizedJson(
       Object object, HashMap<MetaJsonField, FakerApiField> fakerMap) throws AxelorException {
-    JSONObject anonymizedJson = new JSONObject();
+    ObjectMapper mapper = new ObjectMapper();
+    ObjectNode anonymizedJson = mapper.createObjectNode();
     List<String> metaJsonFieldsNameToAnonymize = getMetaJsonFieldsNameToAnonymize(fakerMap);
     try {
-      JSONObject jsonObject = new JSONObject(object.toString());
-      for (Object field : jsonObject.keySet()) {
+      JsonNode jsonObject;
+      if (object instanceof String) {
+        jsonObject = mapper.readTree((String) object);
+      } else {
+        jsonObject = mapper.valueToTree(object);
+      }
+      for (Iterator<String> it = jsonObject.fieldNames(); it.hasNext(); ) {
+        String fieldName = it.next();
         fillJsonWithAnonymizedValues(
-            fakerMap, anonymizedJson, metaJsonFieldsNameToAnonymize, jsonObject, field);
+            fakerMap, anonymizedJson, metaJsonFieldsNameToAnonymize, jsonObject, fieldName);
       }
       return anonymizedJson;
-    } catch (JSONException e) {
+    } catch (Exception e) {
       throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, e.getMessage());
+    }
+  }
+
+  protected void fillJsonWithAnonymizedValues(
+      HashMap<MetaJsonField, FakerApiField> fakerMap,
+      ObjectNode anonymizedJson,
+      List<String> metaJsonFieldsNameToAnonymize,
+      JsonNode jsonObject,
+      String field)
+      throws AxelorException {
+    if (metaJsonFieldsNameToAnonymize.contains(field)) {
+      anonymizedJson.put(
+          field, anonymizeJsonValue(fakerMap, field, jsonObject.get(field).asText()).toString());
+    } else {
+      anonymizedJson.set(field, jsonObject.get(field));
     }
   }
 
@@ -103,23 +127,6 @@ public class AnonymizeServiceImpl implements AnonymizeService {
       metaJsonFieldsNameToAnonymize.add(metaJsonField.getName());
     }
     return metaJsonFieldsNameToAnonymize;
-  }
-
-  protected void fillJsonWithAnonymizedValues(
-      HashMap<MetaJsonField, FakerApiField> fakerMap,
-      JSONObject anonymizedJson,
-      List<String> metaJsonFieldsNameToAnonymize,
-      JSONObject jsonObject,
-      Object field)
-      throws JSONException, AxelorException {
-    if (metaJsonFieldsNameToAnonymize.contains(field.toString())) {
-      anonymizedJson.put(
-          field.toString(),
-          anonymizeJsonValue(
-              fakerMap, field.toString(), jsonObject.get(field.toString()).toString()));
-    } else {
-      anonymizedJson.put(field.toString(), jsonObject.get(field.toString()).toString());
-    }
   }
 
   protected Object anonymizeJsonValue(
