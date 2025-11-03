@@ -29,13 +29,20 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.HashMap;
@@ -47,13 +54,6 @@ import java.util.Set;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.http.HTTPClient;
-import wslite.http.HTTPMethod;
-import wslite.http.HTTPRequest;
-import wslite.http.HTTPResponse;
-import wslite.json.JSONArray;
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
 
 @Singleton
 public class ECBCurrencyConversionService extends CurrencyConversionService {
@@ -67,7 +67,7 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected static final String WSURL =
-      "https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s&endPeriod=%s";
+      "https://data-api.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s&endPeriod=%s";
 
   @Override
   public void updateCurrencyConverion() throws AxelorException {
@@ -185,30 +185,28 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
   public Pair<LocalDate, Float> validateAndGetRateWithDate(
       int dayCount, Currency currencyFrom, Currency currencyTo, LocalDate date)
       throws AxelorException {
-
-    HTTPResponse response = null;
-
+    HttpResponse<String> response = null;
     if (dayCount < 8) {
       try {
-        HTTPClient httpclient = new HTTPClient();
-        HTTPRequest request = new HTTPRequest();
-        Map<String, Object> headers = new HashMap<>();
-        headers.put("Accept", "application/json");
-        request.setHeaders(headers);
-        URL url =
-            new URL(this.getUrlString(date, currencyFrom.getCodeISO(), currencyTo.getCodeISO()));
-        // URL url = new URL(String.format(WSURL,currencyFrom.getCode()));
-        LOG.trace("Currency conversion webservice URL: {}", new Object[] {url.toString()});
-        request.setUrl(url);
-        request.setMethod(HTTPMethod.GET);
-        response = httpclient.execute(request);
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofMillis(5000)).build();
+
+        HttpRequest request =
+            HttpRequest.newBuilder()
+                .uri(
+                    URI.create(
+                        this.getUrlString(
+                            date, currencyFrom.getCodeISO(), currencyTo.getCodeISO())))
+                .header("Accept", "application/json")
+                .GET()
+                .build();
+
+        response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // JSONObject json = new JSONObject(response.getContentAsString());
         LOG.trace(
-            "Webservice response code: {}, response message: {}",
-            response.getStatusCode(),
-            response.getStatusMessage());
-        if (response.getStatusCode() != 200) return Pair.of(date, -1f);
+            "Webservice response code: {}, response message: {}", response.statusCode()
+            /*response.getStatusMessage()*/ );
+        if (response.statusCode() != 200) return Pair.of(date, -1f);
 
       } catch (Exception e) {
         throw new AxelorException(
@@ -217,7 +215,7 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
             currencyFrom.getName(),
             currencyTo.getName());
       }
-      if (response.getContentAsString().isEmpty()) {
+      if (response.body().isEmpty()) {
         return this.validateAndGetRateWithDate(
             (dayCount + 1), currencyFrom, currencyTo, date.minus(Period.ofDays(1)));
       } else {
@@ -234,49 +232,53 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
   }
 
   @Override
-  public Float getRateFromJson(Currency currencyFrom, Currency currencyTo, HTTPResponse response)
+  public Float getRateFromJson(
+      Currency currencyFrom, Currency currencyTo, HttpResponse<String> response)
       throws AxelorException {
 
     try {
-      Float rt = null;
 
       int compareCode = currencyFrom.getCodeISO().compareTo(currencyTo.getCodeISO());
-      String[] currencyRateArr = new String[2];
 
-      JSONObject jsonResult = new JSONObject(response.getContentAsString());
-      JSONObject dataSets = new JSONObject(jsonResult.getJSONArray("dataSets").get(0).toString());
-      JSONObject series = new JSONObject(dataSets.getJSONObject("series").toString());
-      JSONObject seriesOf = null;
-      JSONObject observations = null;
-      JSONArray rateValue = null;
+      String jsonString = response.body();
+      ObjectMapper objectMapper = new ObjectMapper();
+
+      JsonNode jsonResult = objectMapper.readTree(jsonString);
+      JsonNode dataSets = jsonResult.get("dataSets");
+      JsonNode firstDataSet = dataSets.get(0);
+      JsonNode series = firstDataSet.get("series");
+
+      float rt = 0.0f;
+      String[] currencyRateArr = new String[series.size()];
 
       if (series.size() > 1) {
         for (int i = 0; i < series.size(); i++) {
-          seriesOf = new JSONObject(series.getJSONObject("0:" + i + ":0:0:0").toString());
-          observations = new JSONObject(seriesOf.getJSONObject("observations").toString());
-          rateValue = new JSONArray(observations.get(observations.length() - 1).toString());
-          currencyRateArr[i] = rateValue.get(0).toString();
+          JsonNode seriesOf = series.get("0:" + i + ":0:0:0");
+          JsonNode observations = seriesOf.get("observations");
+          String index = String.valueOf(observations.size() - 1);
+          JsonNode lastObservation = observations.get(index);
+          currencyRateArr[i] = lastObservation.get(0).asText();
         }
         if (compareCode > 0) {
           rt = Float.parseFloat(currencyRateArr[0]) / Float.parseFloat(currencyRateArr[1]);
         } else {
           rt = Float.parseFloat(currencyRateArr[1]) / Float.parseFloat(currencyRateArr[0]);
         }
-
       } else {
-        seriesOf = new JSONObject(series.getJSONObject("0:0:0:0:0").toString());
-        observations = new JSONObject(seriesOf.getJSONObject("observations").toString());
-        rateValue = new JSONArray(observations.get(observations.length() - 1).toString());
+        JsonNode seriesOf = series.get("0:0:0:0:0");
+        JsonNode observations = seriesOf.get("observations");
+        String index = String.valueOf(observations.size() - 1);
+        JsonNode lastObservation = observations.get(index);
 
         if (currencyTo.getCodeISO().equals("EUR")) {
-          rt = 1.0f / Float.parseFloat(rateValue.get(0).toString());
+          rt = 1.0f / Float.parseFloat(lastObservation.get(0).asText());
         } else {
-          rt = Float.parseFloat(rateValue.get(0).toString());
+          rt = Float.parseFloat(lastObservation.get(0).asText());
         }
       }
 
       return rt;
-    } catch (JSONException e) {
+    } catch (JsonProcessingException e) {
       throw new AxelorException(
           e.getCause(), TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
     }
