@@ -98,8 +98,6 @@ public class QualityImprovementUpdateServiceImpl implements QualityImprovementUp
     baseQiIdentification.setSupplierPurchaseOrderLine(
         newQiIdentification.getSupplierPurchaseOrderLine());
 
-    baseQiIdentification.setManufOrder(newQiIdentification.getManufOrder());
-    baseQiIdentification.setOperationOrder(newQiIdentification.getOperationOrder());
     baseQiIdentification.setProduct(newQiIdentification.getProduct());
     baseQiIdentification.setNonConformingQuantity(newQiIdentification.getNonConformingQuantity());
   }
