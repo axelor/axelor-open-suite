@@ -55,7 +55,7 @@
         x-order="fromDate"/>
       <field name="allocated" hideIf="$initWithPlanningTime"/>
       <field name="$initWithPlanningTime" title="Init with planning time" type="boolean"
-        showIf="$project.allowAllocatedInit"/>
+        showIf="project.allowAllocatedInit"/>
       <spacer/>
       <field name="$plannedTime" colSpan="3" readonly="true" title="Planned time" x-scale="2"
         if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
@@ -65,7 +65,7 @@
       <field name="$availableAllocation" readonly="true" colSpan="3" title="Available"
         x-scale="2"/>
       <field name="description" colSpan="12"/>
-      <field name="$project.allowAllocatedInit" hidden="true"/>
+      <field name="project.allowAllocatedInit" hidden="true"/>
     </panel>
   </form>
 
@@ -94,7 +94,7 @@
   </form>
 
   <action-attrs name="action-allocation-line-attrs-set-default-values">
-    <attribute for="project" name="value" expr="eval: _project" if="_project"/>
+    <attribute for="project" name="value" expr="eval: _project ? _project : _parent"/>
     <attribute for="employee" name="value" expr="eval: __user__?.employee"/>
   </action-attrs>
 
