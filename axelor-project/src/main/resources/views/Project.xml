@@ -164,8 +164,7 @@
   <form name="incl-information-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
     <panel name="informationPanel">
-      <field name="fullName" showTitle="false" colSpan="12"
-        css="label-bold bold large">
+      <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
         <editor x-show-titles="false">
           <panel name="seq" colSpan="3">
             <field name="code" showTitle="true" colSpan="12" readonly="true"
@@ -176,7 +175,8 @@
               required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
               css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
           </panel>
-          <field name="name" showTitle="false" colSpan="6" placeholder="Bezeichnung" css="label-bold bold
+          <field name="name" showTitle="false" colSpan="6" placeholder="Bezeichnung"
+            css="label-bold bold
             large"/>
         </editor>
       </field>
