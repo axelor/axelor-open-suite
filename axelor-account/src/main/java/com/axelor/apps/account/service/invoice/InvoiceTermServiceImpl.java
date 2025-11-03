@@ -537,18 +537,10 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
   }
 
   protected void computeDueDateValues(InvoiceTerm invoiceTerm, LocalDate invoiceDate) {
-    LocalDate dueDate;
 
     Invoice invoice = invoiceTerm.getInvoice();
-    if (invoice != null
-        && invoice.getPaymentCondition() != null
-        && invoice.getPaymentCondition().getIsFree()) {
-      dueDate = invoiceDate;
-    } else {
-      dueDate =
-          PaymentConditionToolService.getDueDate(
-              invoiceTerm.getPaymentConditionLine(), invoiceDate);
-    }
+    LocalDate dueDate =
+        PaymentConditionToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
 
     invoiceTerm.setDueDate(dueDate);
 
@@ -1749,7 +1741,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return;
     }
     if (InvoiceToolService.isPurchase(invoice)) {
-      if (PaymentConditionToolService.isFreePaymentCondition(invoice)
+      if (invoice.getPaymentCondition() != null
+          && invoice.getPaymentCondition().getIsFree()
           && invoice.getDueDate() != null) {
         invoice = setDueDates(invoice, invoice.getDueDate());
       } else if (invoice.getOriginDate() != null) {
@@ -1781,7 +1774,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     PaymentCondition paymentCondition =
         Optional.ofNullable(move).map(Move::getPaymentCondition).orElse(null);
-    if (paymentCondition == null || !paymentCondition.getIsFree()) {
+    if (paymentCondition == null) {
       return;
     }
 
