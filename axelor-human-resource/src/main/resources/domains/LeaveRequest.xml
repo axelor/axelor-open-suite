@@ -72,7 +72,7 @@
       <field name="toDateT"/>
       <field name="startOnSelect"/>
       <field name="endOnSelect"/>
-      <field name="status"/>
+      <field name="statusSelect"/>
     </track>
   </entity>
 
