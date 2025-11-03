@@ -30,29 +30,28 @@ import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
+import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.http.HTTPClient;
-import wslite.http.HTTPMethod;
-import wslite.http.HTTPRequest;
-import wslite.http.HTTPResponse;
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
 
 public class FixerCurrencyConversionService extends CurrencyConversionService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -72,13 +71,13 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
   public void updateCurrencyConverion() throws AxelorException {
     AppBase appBase = appBaseService.getAppBase();
     try {
-      HTTPResponse response = null;
+      HttpResponse<String> response = null;
       LocalDate today =
           appBaseService.getTodayDate(
               Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null));
 
       response = callApiBaseEuru(null, null, today);
-      if (response.getStatusCode() != 200) {
+      if (response.statusCode() != 200) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BaseExceptionMessage.CURRENCY_6));
@@ -194,18 +193,16 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
   public Pair<LocalDate, Float> validateAndGetRateWithDate(
       int dayCount, Currency currencyFrom, Currency currencyTo, LocalDate date)
       throws AxelorException {
-    HTTPResponse response = null;
+    HttpResponse<String> response = null;
 
     if (dayCount < 8) {
       try {
         response = callApiBaseEuru(currencyFrom, currencyTo, date);
-        LOG.trace(
-            "Webservice response code: {}, response message: {}",
-            response.getStatusCode(),
-            response.getStatusMessage());
-        if (response.getStatusCode() != 200) return Pair.of(date, -1f);
+        LOG.trace("Webservice response code: {}, response message: {}", response.statusCode() /*,
+            response.getStatusMessage()*/);
+        if (response.statusCode() != 200) return Pair.of(date, -1f);
 
-        if (response.getContentAsString().isEmpty()) {
+        if (response.body().isEmpty()) {
           return this.validateAndGetRateWithDate(
               (dayCount + 1), currencyFrom, currencyTo, date.minus(Period.ofDays(1)));
         } else {
@@ -226,16 +223,22 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
   }
 
   @Override
-  public Float getRateFromJson(Currency currencyFrom, Currency currencyTo, HTTPResponse response)
+  public Float getRateFromJson(
+      Currency currencyFrom, Currency currencyTo, HttpResponse<String> response)
       throws AxelorException {
-    try {
-      JSONObject jsonResult = new JSONObject(response.getContentAsString());
+    String jsonString = response.body();
+    ObjectMapper objectMapper = new ObjectMapper();
 
-      if (jsonResult.containsKey("rates")) {
+    try {
+      JsonNode jsonResult = objectMapper.readTree(jsonString);
+
+      if (jsonResult.has("rates")) {
+        JsonNode ratesNode = jsonResult.get("rates");
 
         if (isRelatedConversion) {
-          String fromRate = jsonResult.getJSONObject("rates").optString(currencyFrom.getCodeISO());
-          String toRate = jsonResult.getJSONObject("rates").optString(currencyTo.getCodeISO());
+          String fromRate = ratesNode.path(currencyFrom.getCodeISO()).asText(null);
+          String toRate = ratesNode.path(currencyTo.getCodeISO()).asText(null);
+
           if (StringUtils.isEmpty(toRate)) {
             throw new AxelorException(
                 TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -246,30 +249,29 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
           isRelatedConversion = false;
           return Float.parseFloat(toRate) / Float.parseFloat(fromRate);
         } else {
-          String rate = jsonResult.getJSONObject("rates").optString(currencyTo.getCodeISO());
-          return Float.parseFloat((rate));
+          String rate = ratesNode.path(currencyTo.getCodeISO()).asText();
+          return Float.parseFloat(rate);
         }
-      } else if (jsonResult.containsKey("error")
-          && currencyTo.getCodeISO().equals(EURO_CURRENCY_CODE)) {
-        int code = jsonResult.getJSONObject("error").getInt("code");
+      } else if (jsonResult.has("error") && currencyTo.getCodeISO().equals(EURO_CURRENCY_CODE)) {
+        JsonNode errorNode = jsonResult.get("error");
+        int code = errorNode.path("code").asInt();
         if (code == 105 || code == 201) {
           return null;
         }
-      } else if (jsonResult.containsKey("error")
-          && jsonResult.getJSONObject("error").getInt("code") == 202) {
+      } else if (jsonResult.has("error") && jsonResult.get("error").path("code").asInt() == 202) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BaseExceptionMessage.CURRENCY_7),
             currencyFrom.getName(),
             currencyTo.getName());
-      } else if (jsonResult.containsKey("error")) {
+      } else if (jsonResult.has("error")) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            jsonResult.getJSONObject("error").getString("info"));
+            jsonResult.get("error").path("info").asText());
       }
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, response.getContentAsString());
-    } catch (JSONException | NumberFormatException e) {
+      throw new AxelorException(TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, jsonString);
+
+    } catch (Exception e) {
       throw new AxelorException(
           e.getCause(), TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
     }
@@ -294,29 +296,32 @@ public class FixerCurrencyConversionService extends CurrencyConversionService {
     return url;
   }
 
-  protected HTTPResponse callApiBaseEuru(Currency currencyFrom, Currency currencyTo, LocalDate date)
-      throws MalformedURLException {
-    HTTPClient httpclient = new HTTPClient();
-    HTTPRequest request = new HTTPRequest();
-    URL url = null;
-    Map<String, Object> headers = new HashMap<>();
-    headers.put("Accept", "application/json");
-    request.setHeaders(headers);
+  protected HttpResponse<String> callApiBaseEuru(
+      Currency currencyFrom, Currency currencyTo, LocalDate date)
+      throws IOException, InterruptedException {
+
+    String url;
     if (currencyFrom != null && currencyTo != null) {
       if (isRelatedConversion) {
         url =
-            new URL(
-                this.getUrlString(
-                    date, EURO_CURRENCY_CODE, currencyFrom.getCodeISO(), currencyTo.getCodeISO()));
+            this.getUrlString(
+                date, EURO_CURRENCY_CODE, currencyFrom.getCodeISO(), currencyTo.getCodeISO());
       } else {
-        url = new URL(this.getUrlString(date, currencyFrom.getCodeISO(), currencyTo.getCodeISO()));
+        url = this.getUrlString(date, currencyFrom.getCodeISO(), currencyTo.getCodeISO());
       }
     } else {
-      url = new URL(this.getUrlString(date, EURO_CURRENCY_CODE));
+      url = this.getUrlString(date, EURO_CURRENCY_CODE);
     }
     LOG.trace("Currency conversion webservice URL: {}", new Object[] {url.toString()});
-    request.setUrl(url);
-    request.setMethod(HTTPMethod.GET);
-    return httpclient.execute(request);
+    HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofMillis(5000)).build();
+
+    HttpRequest request =
+        HttpRequest.newBuilder()
+            .uri(URI.create(url))
+            .header("Accept", "application/json")
+            .GET()
+            .build();
+
+    return client.send(request, HttpResponse.BodyHandlers.ofString());
   }
 }

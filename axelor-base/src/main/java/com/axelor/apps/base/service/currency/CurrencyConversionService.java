@@ -30,11 +30,11 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
+import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.http.HTTPResponse;
 
 public abstract class CurrencyConversionService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -94,7 +94,8 @@ public abstract class CurrencyConversionService {
    * @throws AxelorException
    */
   public abstract Float getRateFromJson(
-      Currency currencyFrom, Currency currencyTo, HTTPResponse response) throws AxelorException;
+      Currency currencyFrom, Currency currencyTo, HttpResponse<String> response)
+      throws AxelorException;
 
   /**
    * Returns the URL to which request is to be sent.
