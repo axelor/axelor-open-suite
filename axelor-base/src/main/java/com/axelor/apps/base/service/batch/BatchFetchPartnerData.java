@@ -80,6 +80,11 @@ public class BatchFetchPartnerData extends BatchStrategy {
   @Transactional(rollbackOn = {AxelorException.class, RuntimeException.class})
   public void processOneElement(Long partnerId) throws AxelorException {
     Partner partner = partnerRepository.find(partnerId);
-    partnerGenerateService.configurePartner(partner, partner.getRegistrationCode());
+    partnerGenerateService.configurePartner(
+        partner,
+        partner.getRegistrationCode(),
+        batch.getBaseBatch().getUpdateSirenAndVatNumber(),
+        batch.getBaseBatch().getUpdateCategoryAndType(),
+        batch.getBaseBatch().getUpdateAddress());
   }
 }

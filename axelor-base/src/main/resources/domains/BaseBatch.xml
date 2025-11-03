@@ -37,6 +37,16 @@
     <integer name="nbOfDaySinceLastUpdate" title="Number of days since last update" min="0"
       help="Only the users for which the password has not been updated since this number of days will be taken into account."/>
 
+    <!-- SIRENE API BATCH -->
+    <boolean name="updateSirenAndVatNumber" title="SIREN and VAT number"
+      help="By enabling this option, the batch will update the SIREN and the VAT number."
+      default="true"/>
+    <boolean name="updateCategoryAndType" title="Category and type"
+      help="By enabling this option, the batch will update the name (or company name), the title, the category, the main activity and the NIC number."
+      default="true"/>
+    <boolean name="updateAddress" title="Address"
+      help="By enabling this option, the batch will update the address." default="true"/>
+
     <extra-code>
 		<![CDATA[
 		public static final int ACTION_SYNCHRONIZE_CALENDARS = 2;
