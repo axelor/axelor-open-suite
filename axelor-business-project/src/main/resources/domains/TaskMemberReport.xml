@@ -17,6 +17,4 @@
       readonly="true"/>
   </entity>
 
-  <entity name="TaskMemberReportLead" extends="TaskMemberReport"/>
-
 </domain-models>
