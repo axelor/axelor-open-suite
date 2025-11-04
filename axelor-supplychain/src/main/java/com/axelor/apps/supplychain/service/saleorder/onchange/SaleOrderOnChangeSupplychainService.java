@@ -16,12 +16,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service.move;
+package com.axelor.apps.supplychain.service.saleorder.onchange;
 
-import com.axelor.apps.account.db.Move;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.sale.db.SaleOrder;
+import java.util.Map;
 
-public interface MovePfpToolService {
-  Integer checkOtherInvoiceTerms(Move move);
+public interface SaleOrderOnChangeSupplychainService {
 
-  void fillMovePfpValidateStatus(Move move);
+  Map<String, Object> getDeliveredPartnerOnChangeValues(SaleOrder saleOrder) throws AxelorException;
+
+  Map<String, Object> getInvoicedPartnerOnChangeValues(SaleOrder saleOrder) throws AxelorException;
 }

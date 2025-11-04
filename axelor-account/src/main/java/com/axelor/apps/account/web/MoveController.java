@@ -655,8 +655,9 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
 
-      response.setValues(
-          Beans.get(MoveGroupService.class).getFiscalPositionOnChangeValuesMap(move));
+      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
+      response.setValues(moveGroupService.getFiscalPositionOnChangeValuesMap(move));
+      response.setAttrs(moveGroupService.getFiscalPositionOnChangeAttrsMap(move));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

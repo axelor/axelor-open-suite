@@ -29,7 +29,8 @@
       check-message="Invalid applicationType"/>
   </input>
 
-  <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
+  <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp"
+    search="self.importId = :importId">
     <bind to="help" check="com.axelor.utils.helpers.ImportHelper.isValuePresent(help)"
       check-message="Help value must not be null"/>
     <bind to="language" eval="'en'"
@@ -42,7 +43,8 @@
       column="object"/>
   </input>
 
-  <input file="meta_helpFR.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
+  <input file="meta_helpFR.csv" separator=";" type="com.axelor.meta.db.MetaHelp"
+    search="self.importId = :importId">
     <bind to="help" check="com.axelor.utils.helpers.ImportHelper.isValuePresent(help)"
       check-message="Help value must not be null"/>
     <bind to="language" eval="'fr'"

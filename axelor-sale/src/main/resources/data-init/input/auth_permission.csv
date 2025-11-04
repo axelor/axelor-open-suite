@@ -1,2 +1,2 @@
-"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
-"perm.sale.all";"com.axelor.apps.sale.db.*";"x";"x";"x";"x";"x";;;"Admin"
+"importId";"name";"object";"can_read";"can_write";"can_create";"can_remove";"can_export";"condition";"conditionParams";"roleName"
+24;"perm.sale.all";"com.axelor.apps.sale.db.*";"x";"x";"x";"x";"x";;;"Admin"

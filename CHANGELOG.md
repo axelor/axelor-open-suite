@@ -1,3 +1,46 @@
+## [8.5.2] (2025-10-30)
+
+### Fixes
+#### Base
+
+* Import history : the error file field is now hidden if empty and its title has been improved.
+
+#### Account
+
+* InvoiceTerm/PfpValidateStatus : fixed a technical error by changing the Listener.
+* Invoice: fixed the invoice generation.
+
+#### Bank Payment
+
+* BankOrder : fixed the bank code on the cfonb160 format
+* Bank reconciliation: improved global performance and UX.
+* Bank reconciliation: fixed balances compute takes a lot of time to finish.
+
+#### Supply Chain
+
+* Purchase order: correclty clear the origin of a tracking number linked to purchase order when cancelling one.
+* Fiscal position: added a consistency control on fiscal position for sale order, move and invoice.
+
+
+### Developer
+
+#### Account
+
+Changed the checkOtherInvoiceTerms function from InvoiceTermPfpService to InvoiceTermPfpToolService.
+Changed the checkOtherInvoiceTerms function from MoveInvoiceTermService to MovePfpToolService.
+
+Added MovePfpToolService in MoveGroupServiceImpl constructor.
+Added MovePfpToolService in MoveGroupBudgetServiceImpl constructor.
+Added MovePfpToolService in MoveRecordUpdateServiceImpl constructor.
+
+#### Bank Payment
+
+- Removed 'action-bank-reconciliation-line-method-set-selected' action and setSelected() method from controller and service and replaced it with 'action-bank-reconciliation-line-record-set-selected' to select/unselect bank reconciliation lines.
+
+---
+
+- `getMoveLines(), computeMovesReconciledLineBalance() and computeMovesUnreconciledLineBalance()` methods from `BankReconciliationBalanceComputationServiceImpl` have been replaced by `computeBalances(Account)` method to compute moves reconciled/unreconciled balance.
+
 ## [8.5.1] (2025-10-23)
 
 ### Fixes
@@ -274,5 +317,6 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.2]: https://github.com/axelor/axelor-open-suite/compare/v8.5.1...v8.5.2
 [8.5.1]: https://github.com/axelor/axelor-open-suite/compare/v8.5.0...v8.5.1
 [8.5.0]: https://github.com/axelor/axelor-open-suite/compare/v8.4.8...v8.5.0

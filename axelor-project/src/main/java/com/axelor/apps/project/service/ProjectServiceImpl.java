@@ -142,7 +142,11 @@ public class ProjectServiceImpl implements ProjectService {
   protected String getUniqueProjectName(Partner partner) {
     String baseName = String.format(I18n.get("%s project"), partner.getName());
     long count =
-        projectRepository.all().filter(String.format("self.name LIKE '%s%%'", baseName)).count();
+        projectRepository
+            .all()
+            .filter("self.name LIKE :baseName")
+            .bind("baseName", baseName + "%")
+            .count();
 
     if (count == 0) {
       return baseName;

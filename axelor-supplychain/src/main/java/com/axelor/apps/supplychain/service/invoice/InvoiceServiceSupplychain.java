@@ -48,4 +48,6 @@ public interface InvoiceServiceSupplychain {
   public Invoice updateProductQtyWithPackHeaderQty(Invoice invoice) throws AxelorException;
 
   public void swapStockMoveInvoices(List<Invoice> invoiceList, Invoice newInvoice);
+
+  boolean hasFiscalPositionMismatch(Invoice invoice);
 }
