@@ -44,7 +44,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import wslite.json.JSONObject;
 
 @Path("/aos/translation")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -55,7 +54,7 @@ public class TranslationRestController {
   @POST
   @HttpExceptionHandler
   @Transactional(rollbackOn = {Exception.class})
-  public Response setTranslationJSON(@PathParam("lng") String language, JSONObject translationJson)
+  public Response setTranslationJSON(@PathParam("lng") String language, String translationJson)
       throws AxelorException {
     try {
       Beans.get(LanguageCheckerService.class).check(language);
