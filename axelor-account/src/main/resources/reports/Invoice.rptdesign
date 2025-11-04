@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202201280001</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -7149,13 +7149,18 @@ row["partnerFirstName"]
                         <detail>
                             <row id="6121">
                                 <cell id="6122">
+                                    <data id="6270">
+                                        <structure name="dateTimeFormat">
+                                            <property name="category">Short Date</property>
+                                            <property name="pattern">Short Date</property>
+                                        </structure>
+                                        <property name="display">inline</property>
+                                        <property name="resultSetColumn">StockMoveRealDate</property>
+                                    </data>
                                     <text id="6126">
+                                        <property name="display">inline</property>
                                         <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF format="MM/dd/yyyy">
-if(params["__locale"].value.substring(0, 2) == 'en')row["StockMoveRealDate"]</VALUE-OF>
-<VALUE-OF format="dd/MM/yyyy">if(params["__locale"].value.substring(0, 2) != 'en')row["StockMoveRealDate"]</VALUE-OF> - 
-<VALUE-OF>row["StockMoveSeq"]</VALUE-OF>
-]]></text-property>
+                                        <text-property name="content"><![CDATA[ - <VALUE-OF>row["StockMoveSeq"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                             </row>
