@@ -40,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
-import wslite.json.JSONException;
 
 public class MapGroupServiceImpl implements MapGroupService {
 
@@ -53,7 +52,7 @@ public class MapGroupServiceImpl implements MapGroupService {
 
   @Override
   public List<Map<String, Object>> computeData(MapGroup mapGroup)
-      throws AxelorException, JSONException, ClassNotFoundException {
+      throws AxelorException, ClassNotFoundException {
     if (mapGroup.getMetaModel() == null) {
       return Collections.emptyList();
     }
@@ -87,7 +86,7 @@ public class MapGroupServiceImpl implements MapGroupService {
   }
 
   protected Pair<BigDecimal, BigDecimal> getLatLong(Map<String, Object> map, MetaField addressField)
-      throws AxelorException, JSONException {
+      throws AxelorException {
     if (addressField != null) {
       Address address = (Address) map.get(addressField.getName());
       if (address != null) {
