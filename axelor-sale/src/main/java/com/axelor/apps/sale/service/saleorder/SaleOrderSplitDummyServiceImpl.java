@@ -27,6 +27,7 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SaleOrderSplitDummyServiceImpl implements SaleOrderSplitDummyService {
 
@@ -49,7 +50,11 @@ public class SaleOrderSplitDummyServiceImpl implements SaleOrderSplitDummyServic
     List<Map<String, Object>> saleOrderLineMapList = new ArrayList<>();
     int nbOfDecimalForQty = appBaseService.getNbDecimalDigitForQty();
     int nbOfDecimalForPrice = appBaseService.getNbDecimalDigitForUnitPrice();
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    List<SaleOrderLine> filteredSaleOrderLineList =
+        saleOrder.getSaleOrderLineList().stream()
+            .filter(line -> line.getOrderedQty().compareTo(line.getQty()) != 0)
+            .collect(Collectors.toList());
+    for (SaleOrderLine saleOrderLine : filteredSaleOrderLineList) {
       Map<String, Object> saleOrderLineMap =
           Mapper.toMap(saleOrderLineRepository.copy(saleOrderLine, true));
       saleOrderLineMap.put("$solId", saleOrderLine.getId());
