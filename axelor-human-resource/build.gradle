@@ -31,17 +31,16 @@ ext {
 }
 
 node {
-	version = '16.17.0'
+	version = '24.5.0'
 	yarnVersion = '1.22.19'
     download = true
     distBaseUrl = null
-    nodeModulesDir = file(reactDir)
 }
 
 task buildFront(type: YarnTask) {
     group = 'axelor'
     description = 'Build Front-end'
-
+    workingDir = file(reactDir)
     inputs.files("${reactDir}/package.json", "${reactDir}/yarn.lock")
     inputs.dir("${reactDir}/src")
     inputs.dir("${reactDir}/public")
@@ -55,7 +54,7 @@ task buildFront(type: YarnTask) {
 task installFrontDeps(type: YarnTask) {
     group = 'axelor'
     description = 'Install Front-end dependencies'
-
+    workingDir = file(reactDir)
     args = ['install']
 }
 
