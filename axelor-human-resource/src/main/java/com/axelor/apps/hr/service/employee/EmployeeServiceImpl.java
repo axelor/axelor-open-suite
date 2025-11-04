@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.base.service.theme.MetaThemeFetchService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.DPAE;
@@ -65,11 +66,12 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
   public EmployeeServiceImpl(
       UserRepository userRepo,
       MetaFiles metaFiles,
+      MetaThemeFetchService metaThemeFetchService,
       WeeklyPlanningService weeklyPlanningService,
       HRConfigService hrConfigService,
       AppBaseService appBaseService,
       EmployeeRepository employeeRepository) {
-    super(userRepo, metaFiles);
+    super(userRepo, metaFiles, metaThemeFetchService);
     this.weeklyPlanningService = weeklyPlanningService;
     this.hrConfigService = hrConfigService;
     this.appBaseService = appBaseService;

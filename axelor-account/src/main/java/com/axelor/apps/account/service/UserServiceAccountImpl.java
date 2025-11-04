@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
+import com.axelor.apps.base.service.theme.MetaThemeFetchService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
@@ -30,8 +31,9 @@ import com.google.inject.persist.Transactional;
 public class UserServiceAccountImpl extends UserServiceImpl {
 
   @Inject
-  public UserServiceAccountImpl(UserRepository userRepo, MetaFiles metaFiles) {
-    super(userRepo, metaFiles);
+  public UserServiceAccountImpl(
+      UserRepository userRepo, MetaFiles metaFiles, MetaThemeFetchService metaThemeFetchService) {
+    super(userRepo, metaFiles, metaThemeFetchService);
   }
 
   @Transactional

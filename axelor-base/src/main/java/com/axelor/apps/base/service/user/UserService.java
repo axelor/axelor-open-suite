@@ -40,21 +40,21 @@ import java.util.Optional;
 public interface UserService {
 
   /**
-   * Method that return the current connected user
+   * Return the current connected user.
    *
    * @return user the current connected user
    */
   User getUser();
 
   /**
-   * Method that return the id of the current connected user
+   * Return the id of the current connected user.
    *
    * @return user the id of current connected user
    */
   Long getUserId();
 
   /**
-   * Method that return the active company of the current connected user
+   * Return the active company of the current connected user.
    *
    * @return Company the active company
    */
@@ -62,14 +62,14 @@ public interface UserService {
   Company getUserActiveCompany();
 
   /**
-   * Method that return the Trading name of the current connected user
+   * Return the trading name of the current connected user.
    *
    * @return Company the active company
    */
   TradingName getTradingName();
 
   /**
-   * Method that return the active company id of the current connected user
+   * Return the active company id of the current connected user.
    *
    * @return Company the active company id
    */
@@ -99,7 +99,7 @@ public interface UserService {
   String getUserActiveCompanyLogoLink(String mode);
 
   /**
-   * Method that return the active team of the current connected user
+   * Return the active team of the current connected user.
    *
    * @return Team the active team
    */
@@ -107,7 +107,7 @@ public interface UserService {
   Team getUserActiveTeam();
 
   /**
-   * Method that return the active team of the current connected user
+   * Return the active team ID of the current connected user.
    *
    * @return Team the active team id
    */
@@ -115,7 +115,7 @@ public interface UserService {
   Long getUserActiveTeamId();
 
   /**
-   * Method that return the partner of the current connected user
+   * Return the partner of the current connected user.
    *
    * @return Partner the user partner
    */
@@ -127,7 +127,7 @@ public interface UserService {
   String getLocalizationCode();
 
   /**
-   * Get user's active company address.
+   * Get the active company address of the user.
    *
    * @return
    */
@@ -143,7 +143,7 @@ public interface UserService {
   User changeUserPassword(User user, Map<String, Object> values);
 
   /**
-   * Processs changed user password.
+   * Trigger post processes after a change of the user password.
    *
    * @param user
    * @throws AxelorException
@@ -154,7 +154,8 @@ public interface UserService {
       throws AxelorException, ClassNotFoundException, IOException;
 
   /**
-   * Match password with configured pattern.
+   * Return whether the password matches the pattern in {@code user.password.pattern} property, with
+   * a fallback to the default password pattern if property is not set.
    *
    * @param password
    * @return
@@ -177,7 +178,7 @@ public interface UserService {
   String getPasswordPatternDescription();
 
   /**
-   * Setting user's partner
+   * Set the partner of the user.
    *
    * @param partner
    * @param user

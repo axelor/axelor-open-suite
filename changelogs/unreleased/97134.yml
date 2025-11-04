@@ -1,8 +1,8 @@
 ---
-title: "UserService: Follow coding good practices"
+title: "`UserService`: Follow coding good practices"
 module: axelor-base
 developer: |
   The service `UserService` and its implementation `UserServiceImpl` have been refactored to follow good practices:
-    * Deprecate `UserServiceImpl.DEFAULT_LOCALE` constant which was unused.
+    * Remove `UserServiceImpl.DEFAULT_LOCALE` constant which was unused.
     * Introduce a constructor `UserServiceImpl` to inject services. Affects child classes `UserServiceAccountImpl` and `EmployeeServiceImpl` too.
     * Remove unthrowable exceptions from method signatures.
