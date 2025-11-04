@@ -100,6 +100,9 @@ public class GlobalAuditTracker implements BeforeTransactionCompletionProcess {
 
     final Long id = entity.getId();
     final String key = EntityHelper.getEntityClass(entity).getName();
+    if (!(entity instanceof AuditableModel)) {
+      return;
+    }
     final Map<Long, EntityState> entityStates = store.computeIfAbsent(key, key_ -> new HashMap<>());
 
     final EntityState entityState =

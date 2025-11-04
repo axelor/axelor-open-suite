@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="GlobalTrackingLog" cacheable="true">
+  <entity name="GlobalTrackingLog" cacheable="true" logUpdates="false">
 
     <many-to-one name="user" column="user_id" title="User" ref="com.axelor.auth.db.User"
       readonly="true"/>
