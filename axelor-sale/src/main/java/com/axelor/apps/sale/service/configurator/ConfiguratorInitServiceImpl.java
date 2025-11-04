@@ -22,10 +22,11 @@ import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
 import com.axelor.meta.db.MetaJsonField;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.List;
-import wslite.json.JSONObject;
 
 public class ConfiguratorInitServiceImpl implements ConfiguratorInitService {
 
@@ -39,22 +40,29 @@ public class ConfiguratorInitServiceImpl implements ConfiguratorInitService {
   @Override
   @Transactional
   public Configurator create(ConfiguratorCreator configuratorCreator) {
+    ObjectMapper mapper = new ObjectMapper();
+
     Configurator configurator = new Configurator();
     configurator.setConfiguratorCreator(configuratorCreator);
     configurator.setConfiguratorCreatorName(configuratorCreator.getName());
-    JSONObject attributesJson = getJsonDefaultValues(configuratorCreator);
+
+    // Generate default attributes JSON
+    ObjectNode attributesJson = getDefaultValuesAsJson(configuratorCreator, mapper);
     configurator.setAttributes(attributesJson.toString());
+
     return configuratorRepository.save(configurator);
   }
 
-  protected JSONObject getJsonDefaultValues(ConfiguratorCreator configuratorCreator) {
+  protected ObjectNode getDefaultValuesAsJson(
+      ConfiguratorCreator configuratorCreator, ObjectMapper mapper) {
     List<MetaJsonField> attributes = configuratorCreator.getAttributes();
-    JSONObject attributesJson = new JSONObject();
+    ObjectNode attributesJson = mapper.createObjectNode();
+
     for (MetaJsonField attribute : attributes) {
       try {
         attributesJson.put(attribute.getName(), attribute.getDefaultValue());
       } catch (Exception e) {
-        // Just ignore
+        // Ignore exceptions
       }
     }
     return attributesJson;
