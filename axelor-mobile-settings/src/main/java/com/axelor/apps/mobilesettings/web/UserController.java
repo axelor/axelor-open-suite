@@ -27,7 +27,8 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import wslite.json.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class UserController {
 
@@ -35,9 +36,12 @@ public class UserController {
     try {
       User user = request.getContext().asType(User.class);
       String url = AppSettings.get().getBaseURL();
-      JSONObject json = new JSONObject();
+
+      ObjectMapper mapper = new ObjectMapper();
+      ObjectNode json = mapper.createObjectNode();
       json.put("url", url);
       json.put("username", user.getCode());
+
       MetaFile qrCode =
           Beans.get(BarcodeGeneratorService.class)
               .createBarCode(
