@@ -23,6 +23,8 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.MediaType;
 import java.net.http.HttpResponse;
@@ -30,8 +32,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.http.HttpHeaders;
 import org.eclipse.birt.report.model.api.util.StringUtil;
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
 
 public class PartnerApiFetchServiceImpl extends GenericApiFetchService
     implements PartnerApiFetchService {
@@ -83,12 +83,12 @@ public class PartnerApiFetchServiceImpl extends GenericApiFetchService
 
   @Override
   protected String treatResponse(HttpResponse<String> response, String siretNumber)
-      throws JSONException {
+      throws JsonProcessingException {
     int statusCode = response.statusCode();
 
     switch (statusCode) {
       case 200:
-        return new JSONObject(response.body()).get("etablissement").toString();
+        return new ObjectMapper().readTree(response.body()).get("etablissement").toString();
       case 400:
       case 404:
         return I18n.get(BaseExceptionMessage.API_BAD_REQUEST);
