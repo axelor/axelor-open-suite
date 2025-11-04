@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -183,11 +183,11 @@ else row["last_modified_by"]</expression>
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="alias">logo_path</property>
+                    <property name="columnName">logo_id</property>
+                    <property name="alias">logo_id</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <text-property name="heading">logo_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
@@ -432,8 +432,8 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -596,7 +596,7 @@ else row["last_modified_by"]</expression>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">37</property>
+                        <property name="position">35</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -613,9 +613,9 @@ else row["last_modified_by"]</expression>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
@@ -845,7 +845,7 @@ else row["last_modified_by"]</expression>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 StockMove.id,
-MetaFile.file_path as logo_path,
+MetaFile.id as logo_id,
 Company.height as logo_height,
 Company.width as logo_width,
 StockMove.real_date,
@@ -1210,7 +1210,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <structure>
                         <property name="position">5</property>
                         <property name="name">barcode_picture</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
@@ -1293,7 +1293,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <property name="position">5</property>
                     <property name="name">barcode_picture</property>
                     <property name="nativeName">barcode_picture</property>
-                    <property name="dataType">string</property>
+                    <property name="dataType">decimal</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
@@ -1361,7 +1361,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select StockMove.id as stock_move_id, StockMoveLine.id, Product.code as product_code, StockMoveLine.product_name as product_name,
-BarCodeFile.file_path as barcode_picture,Product.bar_code as bar_code,
+BarCodeFile.id as barcode_picture,Product.bar_code as bar_code,
 StockMoveLine.real_qty, Unit.label_to_printing as unit_code, TrackingNumber.tracking_number_seq,
 StockMoveLine.description, StockLocationLine.rack, SaleOrderLine.picking_order_info,
 StockMoveLine.sequence,
@@ -1465,10 +1465,10 @@ order by StockMoveLine.sequence]]></xml-property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                    <property name="dataType">decimal</property>
                 </structure>
                 <structure>
                     <property name="name">real_date</property>
@@ -1727,13 +1727,17 @@ order by StockMoveLine.sequence]]></xml-property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row["logo_id"] == null</expression>
                             </structure>
                         </list-property>
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
                         <method name="onRender"><![CDATA[this.width=row["logo_width"];
 this.height=row["logo_height"];]]></method>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                        <property name="source">expr</property>
                     </image>
                 </cell>
                 <cell id="4221">
@@ -2545,7 +2549,7 @@ row._outer["first_name"]
                                 <property name="name">barcode_picture</property>
                                 <text-property name="displayName">barcode_picture</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["barcode_picture"]</expression>
-                                <property name="dataType">string</property>
+                                <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
@@ -3054,8 +3058,12 @@ rowNumD=0;]]></method>
                                         <property name="textAlign">center</property>
                                         <image id="4110">
                                             <expression name="altText">""</expression>
-                                            <property name="source">file</property>
-                                            <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                            <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["barcode_picture"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                            <property name="source">expr</property>
                                         </image>
                                     </cell>
                                     <cell id="3807">
@@ -3942,8 +3950,12 @@ rowNumD=0;]]></method>
                                     <property name="textAlign">center</property>
                                     <image id="4375">
                                         <expression name="altText">""</expression>
-                                        <property name="source">file</property>
-                                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["barcode_picture"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                        <property name="source">expr</property>
                                     </image>
                                 </cell>
                                 <cell id="4290">
