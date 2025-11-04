@@ -5,7 +5,7 @@
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
-  <entity name="GlobalTrackingLogLine" cacheable="true">
+  <entity name="GlobalTrackingLogLine" cacheable="true" logUpdates="false">
 
     <many-to-one name="metaField" title="Meta field" ref="com.axelor.meta.db.MetaField"
       readonly="true"/>
