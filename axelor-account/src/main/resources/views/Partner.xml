@@ -51,8 +51,9 @@
         ]]></viewer>
         <editor onNew="action-set-default-partner" x-show-on-new="false">
           <field name="ownerName"/>
-          <field name="iban"/>
-          <field name="bank" canNew="true"/>
+          <field name="iban" onChange="action-bank-details-method-set-iban-information"/>
+          <field name="bank" canNew="true"
+            onChange="action-bank-details-method-set-iban-information"/>
           <field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
             onSelect="action-attrs-account-bankdetails-bank-set-address-domain" canNew="true"
             form-view="bank-address-form"/>
@@ -61,6 +62,12 @@
             x-exclusive="true"/>
           <field name="active" widget="boolean-switch"/>
           <field name="ibanBic" hidden="true" x-bind="{{iban + ' ' + bank.code}}"/>
+          <panel name="bbanPanel" hidden="true">
+            <field name="bankCode"/>
+            <field name="sortCode"/>
+            <field name="accountNbr"/>
+            <field name="bbanKey"/>
+          </panel>
         </editor>
       </field>
     </panel>
