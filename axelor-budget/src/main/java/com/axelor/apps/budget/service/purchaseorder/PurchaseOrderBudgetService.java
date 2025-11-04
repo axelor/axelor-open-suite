@@ -74,4 +74,6 @@ public interface PurchaseOrderBudgetService {
   public void updateBudgetDistributionAmountAvailable(PurchaseOrder purchaseOrder);
 
   void autoComputeBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException;
+
+  void fillBudgetStrOnLine(PurchaseOrder purchaseOrder);
 }
