@@ -27,7 +27,6 @@ import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.date.BudgetInitDateService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
-import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
 import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -101,17 +100,7 @@ public class PurchaseOrderController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      if (purchaseOrder != null
-          && !CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
-        PurchaseOrderLineBudgetService purchaseOrderLineBudgetService =
-            Beans.get(PurchaseOrderLineBudgetService.class);
-        boolean multiBudget =
-            Beans.get(AppBudgetRepository.class).all().fetchOne().getManageMultiBudget();
-        for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-          purchaseOrderLineBudgetService.fillBudgetStrOnLine(purchaseOrderLine, multiBudget);
-        }
-        response.setReload(true);
-      }
+      Beans.get(PurchaseOrderBudgetService.class).fillBudgetStrOnLine(purchaseOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

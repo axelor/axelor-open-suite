@@ -38,4 +38,6 @@ public interface SaleOrderBudgetService {
   String getBudgetExceedAlert(SaleOrder saleOrder);
 
   void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException;
+
+  void fillBudgetStrOnLine(SaleOrder saleOrder);
 }

@@ -305,6 +305,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
   }
 
   @Override
+  @Transactional
   public void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException {
     LocalDate date =
         saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
@@ -326,5 +327,22 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
               saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));
       saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, true);
     }
+    saleOrderRepo.save(saleOrder);
+  }
+
+  @Override
+  @Transactional
+  public void fillBudgetStrOnLine(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return;
+    }
+    boolean multiBudget =
+        appBudgetService.getAppBudget() != null
+            && appBudgetService.getAppBudget().getManageMultiBudget();
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, multiBudget);
+    }
+    saleOrderRepo.save(saleOrder);
   }
 }
