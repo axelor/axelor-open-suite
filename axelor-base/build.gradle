@@ -80,24 +80,23 @@ ext.reactDir = 'map-viewer'
 ext.reactOutputDir = 'webapp/base/map-viewer'
 
 node {
-  	version = '22.17.1'
+  	version = '24.5.0'
 	yarnVersion = '1.22.19'
 	download = true
 	distBaseUrl = null
-	nodeModulesDir = file(reactDir)
 }
 
 task installFrontDeps(type: YarnTask) {
 	group = 'axelor'
 	description = 'Install Front-end dependencies'
-
+	workingDir = file(reactDir)
 	args = ['install']
 }
 
 task buildFront(type: YarnTask) {
 	group = 'axelor'
 	description = 'Build Front-end'
-
+	workingDir = file(reactDir)
 	inputs.files("${reactDir}/package.json", "${reactDir}/yarn.lock")
 	inputs.dir("${reactDir}/src")
 	outputs.dir("${reactDir}/dist")
