@@ -27,4 +27,4 @@
 322;45;"Timezone";"$lunchVoucherAdvance.employee?.user?.activeCompany?.timezone";"string"
 325;46;"lunchVoucherMgtId";"$lunchVoucherMgt.id";"decimal"
 326;46;"Timezone";"$lunchVoucherMgt.company?.timezone";"string"
-327;46;"__locale";"${__bean__(com.axelor.apps.base.service.user.UserService.class).getLanguage()}";"string"
+327;46;"__locale";"${__bean__(com.axelor.apps.base.service.user.UserService.class).getLocalizationCode()}";"string"
