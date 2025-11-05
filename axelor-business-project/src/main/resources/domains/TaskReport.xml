@@ -5,7 +5,6 @@
 
   <module name="business-project" package="com.axelor.apps.businessproject.db"/>
 
-  <!-- ===== Task Report ===== -->
   <entity name="TaskReport">
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
@@ -18,22 +17,14 @@
     <date name="taskDate" title="Report Date"/>
     <boolean name="travelExpenses" title="Travel expenses"/>
     <boolean name="toolsUsage" title="Tools usage"/>
-    <enum name="additionalServices" title="Additional Services"
-      ref="com.axelor.apps.businessproject.db.AdditionalService"/>
+    <boolean name="dirtAllowance" title="Dirt Allowance"/>
     <string name="material" title="Materials" large="true"/>
     <string name="otherServices" title="Other services" large="true"/>
     <string name="comments" title="Comments" large="true"/>
+    <boolean name="customerAvailable" title="Customer Available"/>
     <string name="customerName" title="Customer name"/>
     <binary name="employeeSignature" title="Employee signature"/>
     <binary name="customerSignature" title="Customer signature"/>
   </entity>
 
-  <enum name="AdditionalService">
-    <item name="EMERGENCY_SERVICE" title="Emergency Service"/>
-    <item name="DIRT_ALLOWANCE" title="Dirt Allowance"/>
-    <item name="SUNDAY_WORK" title="Sunday Work"/>
-    <item name="SATURDAY_WORK" title="Saturday Work"/>
-    <item name="HOLIDAY_WORK" title="Holiday Work"/>
-    <item name="NIGHT_SHIFT" title="Night Shift"/>
-  </enum>
 </domain-models>

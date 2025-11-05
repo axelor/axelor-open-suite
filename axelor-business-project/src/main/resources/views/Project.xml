@@ -11,12 +11,16 @@
         onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
     </toolbar>
 
+    <!-- MGM-84: highlighting priority in project grid view -->
+    <hilite if="priority.name == 'Urgent'" color="danger"/>
+
     <field name="fullName"/>
     <field name="company" form-view="company-form" grid-view="company-grid" canView="false"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="clientPartner" form-view="partner-form" grid-view="partner-grid"/>
     <field name="fromDate"/>
     <field name="toDate"/>
+    <field name="priority"/>
     <button name="openTasks" onClick="action-business-project-view-show-related-tasks"
       icon="list-task"/>
   </grid>
@@ -171,6 +175,9 @@
         <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
           canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
           grid-view="user-grid" colSpan="6"/>
+        <!-- MGM-84 adding priority on the project level -->
+        <field name="priority"/>
+        <field name="priority.technicalTypeSelect" hidden="true"/>
         <panel-include view="incl-project-overview-panel-form"/>
       </panel>
 
@@ -187,10 +194,15 @@
       <!-- MGM-66 task reports -->
       <panel title="Task Reports" name="taskReportsPanel"
         if="__user__.group.code != 'CUSTOM-PM'">
-        <!-- <button name="addTaskReportBtn" onClick="action-business-project-add-task-report" -->
-        <!-- title="New Task Report" css="btn btn-sm btn-primary float-right" icon="fa-plus" -->
-        <!-- if="__config__.app.isApp('business-project')" if-module="axelor-business-project" -->
-        <!-- showIf="id &amp;&amp; isBusinessProject"/> -->
+        <panel colSpan="12">
+          <button name="addTaskReportBtn" onClick="action-business-project-add-task-report"
+            colSpan="8" hidden="true" title="New Task Report"
+            css="btn btn-sm btn-primary float-right" icon="fa-plus"/>
+          <button name="addTaskReportBtn" onClick="action-business-project-add-task-report"
+            colSpan="4" title="New Task Report" css="btn btn-sm btn-primary float-right"
+            icon="fa-plus" if="__config__.app.isApp('business-project')"
+            if-module="axelor-business-project" showIf="id &amp;&amp; isBusinessProject"/>
+        </panel>
 
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
           action="action-task-report-dashlet" colSpan="12" canNew="true" x-show-bars="true"/>
