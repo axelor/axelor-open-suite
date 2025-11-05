@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed issue where duplicated lines were not visible in mass invoicing"
+module: axelor-supplychain
