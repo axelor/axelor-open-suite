@@ -108,4 +108,13 @@ public interface ManufOrderStockMoveService {
       throws AxelorException;
 
   public List<Long> getOutgoingStockMoves(ManufOrder manufOrder);
+
+  /**
+   * Update price in stock move line: if the product price is configured to be real, then we use the
+   * cost price from costsheet. Else, we do nothing as the planned price is already filled.
+   *
+   * @param manufOrder
+   * @param stockMove
+   */
+  void updateRealPrice(ManufOrder manufOrder);
 }

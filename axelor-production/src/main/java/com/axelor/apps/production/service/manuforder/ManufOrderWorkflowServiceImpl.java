@@ -235,6 +235,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
           product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
     }
 
+    manufOrderStockMoveService.updateRealPrice(manufOrder);
+
     manufOrder.setRealEndDateT(
         Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_FINISHED);
@@ -298,6 +300,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
             manufOrder,
             CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
             Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
+    manufOrderStockMoveService.updateRealPrice(manufOrder);
     return sendPartialFinishMail(manufOrder);
   }
 
