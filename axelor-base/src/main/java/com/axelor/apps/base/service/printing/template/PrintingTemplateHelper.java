@@ -32,8 +32,6 @@ import com.axelor.utils.helpers.file.PdfHelper;
 import com.axelor.utils.service.translation.TranslationBaseService;
 import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -109,14 +107,7 @@ public class PrintingTemplateHelper {
           I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
     }
 
-    return getFileLinkFromPdfFile(file, originalName);
-  }
-
-  public static String getFileLinkFromPdfFile(File file, String fileName) {
-
-    String fileLink = "ws/files/report?link=" + file.getName();
-    fileLink += "&?name=" + URLEncoder.encode(fileName, StandardCharsets.UTF_8);
-    return fileLink;
+    return PdfHelper.getFileLinkFromPdfFile(file, originalName);
   }
 
   protected static String translateFileName(String originalName) {

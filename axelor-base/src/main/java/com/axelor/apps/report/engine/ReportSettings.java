@@ -29,15 +29,14 @@ import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.helpers.StringHelper;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.common.collect.Maps;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
-import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -101,17 +100,7 @@ public class ReportSettings {
       return null;
     }
 
-    String fileLink = "ws/files/report/" + output.getName();
-
-    try {
-      fileLink += "?name=" + URLEncoder.encode(fileName, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      logger.error(e.getLocalizedMessage());
-    }
-
-    logger.debug("URL : {}", fileLink);
-
-    return fileLink;
+    return PdfHelper.getFileLinkFromPdfFile(output, fileName);
   }
 
   public String getOutputName() {
