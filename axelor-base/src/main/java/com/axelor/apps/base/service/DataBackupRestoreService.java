@@ -26,7 +26,6 @@ import com.axelor.common.StringUtils;
 import com.axelor.common.csv.CSVFile;
 import com.axelor.data.Listener;
 import com.axelor.data.csv.CSVImporter;
-import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.meta.MetaFiles;
@@ -157,12 +156,6 @@ public class DataBackupRestoreService {
       }
       return true;
     }
-  }
-
-  public boolean sequencesOrMrpLineTypesExist() {
-    long total = (long) JPA.em().createQuery("SELECT count(*) FROM Sequence").getSingleResult();
-    long total1 = (long) JPA.em().createQuery("SELECT count(*) FROM MrpLineType").getSingleResult();
-    return total > 0 || total1 > 0 ? true : false;
   }
 
   public Object importObjectWithByteArray(Object bean, Map<String, Object> values)
