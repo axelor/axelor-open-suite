@@ -29,6 +29,7 @@ public class BaseCustomPolicy implements ScriptPolicyConfigurator {
     allowClasses.add(ReportSettings.class);
     allowPackages.add("groovy.tmp.templates.*");
     allowPackages.add("com.axelor.apps.base.service.printing.template");
+    allowPackages.add("com.axelor.utils.helpers.*");
     allowClasses.add(PrintingTemplateComputeNameServiceImpl.class);
     allowClasses.add(PrintingTemplateComputeNameServiceImpl.TranslationHelper.class);
   }
