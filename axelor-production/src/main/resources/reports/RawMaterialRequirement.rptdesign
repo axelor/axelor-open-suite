@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaDriverClass</property>
@@ -560,8 +560,8 @@ GROUP BY
                     </structure>
                     <structure>
                         <property name="position">4</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">5</property>
@@ -607,9 +607,9 @@ GROUP BY
                 </structure>
                 <structure>
                     <property name="position">4</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
@@ -640,7 +640,7 @@ GROUP BY
     RawMaterialRequirement.code,
     RawMaterialRequirement.name,
     Company.name as "company",
-    Metafile.file_path AS "logo_path",
+    Metafile.id AS "logo_id",
     string_agg(StockLocation.name, ', ') AS "stockLocationNames",
     RawMaterialRequirement.duration,
     RawMaterialRequirement.show_all_requirements,
@@ -661,7 +661,7 @@ LEFT JOIN
     ON StockLocation.id = StockLocationSet.stock_location_set
 WHERE
     RawMaterialRequirement.id = ?
-GROUP BY RawMaterialRequirement.code,RawMaterialRequirement.name, Metafile.file_path, RawMaterialRequirement.duration, Company.name,
+GROUP BY RawMaterialRequirement.code,RawMaterialRequirement.name, Metafile.id, RawMaterialRequirement.duration, Company.name,
          RawMaterialRequirement.show_all_requirements, RawMaterialRequirement.show_requirements_bymo
 ]]></xml-property>
         </oda-data-set>
@@ -855,20 +855,24 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                        <expression name="valueExpr" type="javascript">row["logo_id"] == null</expression>
                                     </structure>
                                 </list-property>
                                 <list-property name="boundDataColumns">
                                     <structure>
-                                        <property name="name">logo_path</property>
-                                        <text-property name="displayName">logo_path</text-property>
-                                        <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                        <property name="dataType">string</property>
+                                        <property name="name">logo_id</property>
+                                        <text-property name="displayName">logo_id</text-property>
+                                        <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                                        <property name="dataType">decimal</property>
                                     </structure>
                                 </list-property>
-                                <property name="source">file</property>
+                                <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                <property name="source">expr</property>
                                 <property name="proportionalScale">true</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
                             </image>
                         </cell>
                         <cell id="4246">
@@ -942,12 +946,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
             <property name="width">11.135416666666666in</property>
             <property name="dataSet">RawMaterialDS</property>
             <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
                 <structure>
                     <property name="name">stockLocationNames</property>
                     <text-property name="displayName">stockLocationNames</text-property>

@@ -26,6 +26,6 @@
 474;65;"locationId";"${productionBatch.workshopStockLocation?.id ?: 0}";"decimal"
 475;65;"editionDate";"${java.time.format.DateTimeFormatter.ofPattern(""MMM d, yyyy, hh:mm a"").format(productionBatch.updatedOn)}";"string"
 481;66;"mpsId";"${mpsCharge.id}";"decimal"
-482;66;"logoPath";"${__user__?.activeCompany?.logo?.filePath}";"string"
+482;66;"logoId";"${__user__?.activeCompany?.logo?.id}";"decimal"
 483;66;"startMonthDate";"${mpsCharge.startMonthDate?.format(java.time.format.DateTimeFormatter.ofPattern(""dd/MM/YYYY""))}";"string"
 484;66;"endMonthDate";"${mpsCharge.endMonthDate?.format(java.time.format.DateTimeFormatter.ofPattern(""dd/MM/YYYY""))}";"string"

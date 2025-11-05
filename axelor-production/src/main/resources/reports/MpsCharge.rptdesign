@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <property name="units">in</property>
     <property name="iconFile">/templates/blank_report.gif</property>
     <property name="bidiLayoutOrientation">ltr</property>
@@ -55,9 +55,9 @@
                 <property name="category">Unformatted</property>
             </structure>
         </scalar-parameter>
-        <scalar-parameter name="logoPath" id="4079">
+        <scalar-parameter name="logoId" id="4079">
             <property name="valueType">static</property>
-            <property name="dataType">string</property>
+            <property name="dataType">decimal</property>
             <property name="distinct">true</property>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
@@ -482,8 +482,12 @@ return false;]]></method>
                                 <property name="overflow">hidden</property>
                                 <property name="height">48px</property>
                                 <property name="width">140px</property>
-                                <property name="source">file</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+params["logoPath"].value</expression>
+                                <method name="onRender"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(params["logoId"].value, true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                <property name="source">expr</property>
                             </image>
                         </cell>
                         <cell id="4241">
@@ -569,7 +573,7 @@ return false;]]></method>
                 </structure>
                 <structure>
                     <property name="name">Column Binding_2</property>
-                    <expression name="expression" type="javascript">params["logoPath"].value</expression>
+                    <expression name="expression" type="javascript">params["logoId"].value</expression>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
