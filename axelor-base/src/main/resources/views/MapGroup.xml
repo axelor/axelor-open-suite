@@ -29,7 +29,7 @@
 
   <action-attrs name="action-map-group-attrs-set-form-view-domain">
     <attribute name="domain" for="formViewToUse"
-      expr="eval: &quot;self.type = 'form' AND self.model = '${metaModel?.fullName}' AND self.priority IN (SELECT MAX(priority) FROM MetaView WHERE name = self.name GROUP BY name) &quot;"/>
+      expr="eval: &quot;self.type = 'form' AND self.model = '${metaModel?.fullName}' AND self.priority IN (SELECT MAX(mv.priority) FROM MetaView mv WHERE name = self.name GROUP BY mv.name) &quot;"/>
   </action-attrs>
 
   <action-method name="action-map-group-method-preview-records">
