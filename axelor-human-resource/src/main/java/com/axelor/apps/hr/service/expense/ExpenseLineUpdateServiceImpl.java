@@ -32,6 +32,7 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
@@ -373,6 +374,26 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_EXPENSE_NOT_DRAFT));
+    }
+  }
+
+  @Override
+  public void updateCurrencyOnLines(Expense expense) {
+    if (expense == null || expense.getCurrency() == null) {
+      return;
+    }
+
+    Currency currency = expense.getCurrency();
+    if (ObjectUtils.notEmpty(expense.getGeneralExpenseLineList())) {
+      for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
+        expenseLine.setCurrency(currency);
+      }
+    }
+
+    if (ObjectUtils.notEmpty(expense.getKilometricExpenseLineList())) {
+      for (ExpenseLine expenseLine : expense.getKilometricExpenseLineList()) {
+        expenseLine.setCurrency(currency);
+      }
     }
   }
 }

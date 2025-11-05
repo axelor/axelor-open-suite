@@ -55,4 +55,6 @@ public interface ExpenseLineUpdateService {
       ProjectTask projectTask,
       List<Long> invitedCollaboratorList)
       throws AxelorException;
+
+  void updateCurrencyOnLines(Expense expense);
 }

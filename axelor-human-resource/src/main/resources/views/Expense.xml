@@ -360,6 +360,7 @@
   </action-group>
 
   <action-group name="action-expense-group-recompute-company-amounts">
+    <action name="action-expense-method-change-currency-on-lines"/>
     <action name="action-expense-method-compute-line-company-amounts"/>
     <action name="action-expense-method-compute-dummy-amounts"/>
   </action-group>
@@ -456,6 +457,11 @@
   <action-method name="action-expense-method-compute-line-company-amounts">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController"
       method="computeLineCompanyAmounts"/>
+  </action-method>
+
+  <action-method name="action-expense-method-change-currency-on-lines">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController"
+      method="updateCurrencyOnLine"/>
   </action-method>
 
   <action-attrs name="action-expense-attrs-hide-button-readonly-field">
