@@ -59,4 +59,6 @@ public interface ProjectService {
   public ProjectStatus getDefaultProjectStatus();
 
   boolean checkIfResourceBooked(Project project);
+
+  void setPartnerData(Project project, Partner clientPartner);
 }
