@@ -67,7 +67,7 @@ public class ECBCurrencyConversionService extends CurrencyConversionService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected static final String WSURL =
-      "https://sdw-wsrest.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s&endPeriod=%s";
+      "https://data-api.ecb.europa.eu/service/data/EXR/D.%s+%s.EUR.SP00.A?startPeriod=%s&endPeriod=%s";
 
   @Override
   public void updateCurrencyConverion() throws AxelorException {
