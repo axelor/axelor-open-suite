@@ -198,7 +198,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     Invoice invoice1 = invoiceGenerator.generate();
     Map<String, Object> invoiceMap = this.getComputeInvoiceMap(invoice1);
 
-    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        && invoice1.getAdvancePaymentInvoiceSet() == null) {
       invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
       invoiceMap.put("advancePaymentInvoiceSet", invoice1.getAdvancePaymentInvoiceSet());
     }
