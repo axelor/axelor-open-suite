@@ -62,7 +62,6 @@ dependencies {
 
 	implementation libs.faker
 	api libs.commons_csv
-	api libs.wslite
 
 	implementation libs.logback
 
