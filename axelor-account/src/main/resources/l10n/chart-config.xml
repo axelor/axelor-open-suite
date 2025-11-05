@@ -489,7 +489,7 @@
   <input file="account_accountManagement.csv" separator=";"
     type="com.axelor.apps.account.db.AccountManagement" search="self.importId = :importId">
     <bind column="typeSelect" to="typeSelect"
-      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountManagement', 'typeSelect,' typeSelect,)"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountManagement', 'typeSelect', typeSelect)"
       check-message="Invalid typeSelect"/>
     <bind column="interbankCodeLine_importId" to="interbankCodeLine" update="true"
       search="self.importId = :interbankCodeLine_importId"
