@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectServiceImpl implements ProjectService {
 
@@ -106,6 +107,9 @@ public class ProjectServiceImpl implements ProjectService {
     project.setClientPartner(clientPartner);
     project.setAssignedTo(assignedTo);
     project.setProjectStatus(getDefaultProjectStatus());
+    if (clientPartner != null) {
+      setPartnerData(project, clientPartner);
+    }
     project.setProjectTaskStatusSet(
         new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
     project.setProjectTaskPrioritySet(
@@ -260,13 +264,13 @@ public class ProjectServiceImpl implements ProjectService {
     project.setImputable(projectTemplate.getImputable());
     project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
     project.setProjectStatus(getDefaultProjectStatus());
+    if (clientPartner != null) {
+      setPartnerData(project, clientPartner);
+    }
     project.setProjectTaskStatusSet(
         new HashSet<>(appProjectService.getAppProject().getDefaultTaskStatusSet()));
     project.setProjectTaskPrioritySet(
         new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
-    if (clientPartner != null && ObjectUtils.notEmpty(clientPartner.getContactPartnerSet())) {
-      project.setContactPartner(clientPartner.getContactPartnerSet().iterator().next());
-    }
     return project;
   }
 
@@ -387,5 +391,13 @@ public class ProjectServiceImpl implements ProjectService {
     return contextProjectIds.contains(0l)
         ? null
         : contextProjectIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+  }
+
+  @Override
+  public void setPartnerData(Project project, Partner clientPartner) {
+    Set<Partner> contactPartnerSet = clientPartner.getContactPartnerSet();
+    if (CollectionUtils.isNotEmpty(contactPartnerSet)) {
+      project.setContactPartner(contactPartnerSet.iterator().next());
+    }
   }
 }

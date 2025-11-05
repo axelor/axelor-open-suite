@@ -71,4 +71,6 @@ public interface ProjectService {
 
   @CallMethod
   public String getContextProjectIdsString();
+
+  void setPartnerData(Project project, Partner clientPartner);
 }
