@@ -1,3 +1,58 @@
+## [8.2.29] (2025-11-06)
+
+### Fixes
+#### Base
+
+* Currency conversion: updated old API for currency conversion.
+* Bank details: fixed some iban fields when adding bank details from partner view.
+
+#### Account
+
+* Invoice: correct due dates with multi‑term payment conditions when Free is enabled on payment conditions
+* Reconcile: avoid negative amount when duplicating a reconcile.
+* Invoice: fixed an issue where Payment mode on invoice term is changed after the ventiation
+* FixedAsset: fixed lines amount's after split
+* Move line query: fixed selected move lines unreconcilation.
+
+
+### Developer
+
+#### Base
+
+-- migration script to update bank_code, sort_code, account_nbr and bban_key in bank details table
+
+UPDATE base_bank_details BankDetails
+SET bank_code = SUBSTRING(BankDetails.iban FROM 5 FOR 5)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.bank_code IS NULL OR BankDetails.bank_code = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET sort_code = SUBSTRING(BankDetails.iban FROM 10 FOR 5)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.sort_code IS NULL OR BankDetails.sort_code = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET account_nbr = SUBSTRING(BankDetails.iban FROM 15 FOR 11)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.account_nbr IS NULL OR BankDetails.account_nbr = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET bban_key = RIGHT(BankDetails.iban, 2)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.bban_key IS NULL OR BankDetails.bban_key = '')
+  AND BankDetails.iban IS NOT NULL;
+
 ## [8.2.28] (2025-10-30)
 
 ### Fixes
@@ -2013,6 +2068,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.29]: https://github.com/axelor/axelor-open-suite/compare/v8.2.28...v8.2.29
 [8.2.28]: https://github.com/axelor/axelor-open-suite/compare/v8.2.27...v8.2.28
 [8.2.27]: https://github.com/axelor/axelor-open-suite/compare/v8.2.26...v8.2.27
 [8.2.26]: https://github.com/axelor/axelor-open-suite/compare/v8.2.25...v8.2.26
