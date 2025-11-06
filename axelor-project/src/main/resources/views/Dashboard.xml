@@ -24,7 +24,7 @@
     canNew="false" canEdit="false" canDelete="false">
     <panel name="overviewPanel" title="Dashboard" readonly="true" colSpan="12"
       canCollapse="true">
-      <panel name="issueTrackingPanel" title="Task tracking" icon="fa-sticky-note">
+      <panel name="issueTrackingPanel" title="Task tracking" icon="sticky-fill">
         <field name="$categoryList" showTitle="false" hideIf="$categoryList.length == 0">
           <viewer>
             <![CDATA[
@@ -59,7 +59,7 @@
           </viewer>
         </field>
       </panel>
-      <panel name="membersPanel" title="Members" icon="fa-users"
+      <panel name="membersPanel" title="Members" icon="people-fill"
         hideIf="$membersList.length == 0">
         <field name="$membersList" showTitle="false">
           <viewer>
@@ -75,7 +75,7 @@
           </viewer>
         </field>
       </panel>
-      <panel name="spentTimePanel" title="Spent time" icon="fa-clock-o"
+      <panel name="spentTimePanel" title="Spent time" icon="clock"
         if="__config__.app.isApp('timesheet')" if-module="axelor-human-resource"
         hideIf="$spentTime == 0" showIf="manageTimeSpent">
         <field name="$spentTime" showTitle="false" colSpan="12">
@@ -89,7 +89,7 @@
           </viewer>
         </field>
       </panel>
-      <panel name="subprojectPanel" title="Suprojects" icon="fa-gg-circle"
+      <panel name="subprojectPanel" title="Suprojects" icon="account_tree"
         hideIf="$subprojectList.length == 0">
         <field name="$subprojectList" showTitle="false" colSpan="12">
           <viewer>

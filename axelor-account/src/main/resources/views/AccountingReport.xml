@@ -60,11 +60,11 @@
       <button name="searchBtn" title="Search"
         hideIf="([19,20].indexOf(reportType.typeSelect) == -1)"
         onClick="save,action-accounting-report-method-search-move-line,save"/>
-      <button name="exportBtn" title="Print" icon="fa-print"
+      <button name="exportBtn" title="Print" icon="printer"
         onClick="action-account-report-alert-typeselect,action-group-account-accounting-report-export-click"
         readonlyIf="!reportType"/>
-      <button name="createAccountingExportBtn" title="Create accounting export"
-        icon="fa-cogs" showIf="statusSelect == 2 &amp;&amp; reportType.typeSelect == 19"
+      <button name="createAccountingExportBtn" title="Create accounting export" icon="gear"
+        showIf="statusSelect == 2 &amp;&amp; reportType.typeSelect == 19"
         onClick="save,action-accounting-report-method-create-export-from-report"/>
       <field name="statusSelect" widget="single-select"/>
       <field name="publicationDateTime" hideIf="[23,24].includes(reportType.typeSelect)"/>

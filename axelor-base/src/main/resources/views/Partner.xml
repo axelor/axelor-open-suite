@@ -6,9 +6,9 @@
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
     <toolbar>
-      <button name="printPhoneBookBtn" title="Contact PhoneBook" icon="fa-print"
+      <button name="printPhoneBookBtn" title="Contact PhoneBook" icon="printer"
         onClick="action-print-phonebook"/>
-      <button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="fa-print"
+      <button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="printer"
         onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
       <button name="checkDuplicateBtn" title="Check Duplicate"
         onClick="action-general-check-duplicate-records"/>
@@ -30,10 +30,10 @@
     <field name="mainAddress"/>
     <field name="companySet" widget="Tags"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+    <button name="scheduleEventBtn" title="Schedule Event" icon="people-fill"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
   </grid>
@@ -41,13 +41,13 @@
   <grid name="partner-customer-grid" title="Customers" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
     <menubar>
-      <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+      <menu name="partnerReportsMenu" title="Reports" icon="files" showTitle="true">
         <item name="contactPhoneBookItem" title="Contact PhoneBook"
           action="action-print-phonebook"/>
         <item name="companyPhoneBookItem" title="Company phoneBook"
           action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
       </menu>
-      <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="partnerToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="checkDuplicateItem" title="Check Duplicate"
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"
@@ -63,10 +63,10 @@
     <field name="user"/>
     <field name="companySet" widget="Tags"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+    <button name="scheduleEventBtn" title="Schedule Event" icon="people-fill"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
   </grid>
@@ -74,13 +74,13 @@
   <grid name="partner-supplier-grid" title="Suppliers" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
     <menubar>
-      <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+      <menu name="partnerReportsMenu" title="Reports" icon="files" showTitle="true">
         <item name="contactPhoneBookItem" title="Contact PhoneBook"
           action="action-print-phonebook"/>
         <item name="companyPhoneBookItem" title="Company phoneBook"
           action="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
       </menu>
-      <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="partnerToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="checkDuplicateItem" title="Check Duplicate"
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"
@@ -99,10 +99,10 @@
     <field name="companySet" widget="Tags"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="das2Activity" hidden="true" if="__config__.app.isApp('account')"/>
-    <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+    <button name="scheduleEventBtn" title="Schedule Event" icon="people-fill"
       onClick="action-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
   </grid>
@@ -121,10 +121,10 @@
     <field name="emailAddress.address" placeholder="whatever@example.com" title="Email"/>
     <field name="mainPartner.simpleFullName" title="Main company"/>
     <field name="jobTitleFunction"/>
-    <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+    <button name="scheduleEventBtn" title="Schedule Event" icon="people-fill"
       onClick="action-contact-partner-view-schedule-event" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template" if-module="axelor-crm"
       if="__config__.app.isApp('crm')"/>
   </grid>
@@ -154,7 +154,7 @@
   <form name="incl-event-actions-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" id="incl-event-actions-base-partner-form">
     <menubar>
-      <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="partnerToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="sendEmailItem" title="Send email"
           action="save,action-send-by-email-with-template" readonlyIf="id == null"
           if-module="axelor-message"/>
@@ -169,13 +169,13 @@
     onSave="action-partner-group-onsave" width="large">
     <toolbar>
       <button name="convertToContactPartnerBtn" title="Convert into a contact partner"
-        icon="fa-user" onClick="save,action-partner-method-change-employee-type"
+        icon="person-fill" onClick="save,action-partner-method-change-employee-type"
         showIf="id != null &amp;&amp; !isContact &amp;&amp; isEmployee &amp;&amp; partnerTypeSelect == 2"/>
-      <button name="showMapBtn" title="Map" icon="fa-map-marker"
+      <button name="showMapBtn" title="Map" icon="geo-alt-fill"
         onClick="action-partner-method-show-on-map" readonlyIf="!id"/>
     </toolbar>
     <menubar>
-      <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+      <menu name="partnerReportsMenu" title="Reports" icon="files" showTitle="true">
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="!id"
           showIf="isCustomer" if-module="axelor-account"/>
@@ -416,11 +416,11 @@
                     grid-view="address-grid" canSelect="false" required="true"
                     if="!__config__.app.getApp('base')?.getIsSharedAddress()"/>
                   <field name="isInvoicingAddr" widget="toggle" hideIf="$readonly()"
-                    x-icon="fa-list-alt"/>
+                    x-icon="card-list"/>
                   <field name="isDeliveryAddr" widget="toggle" hideIf="$readonly()"
-                    x-icon="fa-shopping-cart"/>
+                    x-icon="cart-fill"/>
                   <field name="isDefaultAddr" widget="toggle" hideIf="$readonly()"
-                    x-icon="fa-star-o"/>
+                    x-icon="star"/>
                   <field name="address.addressL4" hidden="true"/>
                 </panel>
               </panel>
@@ -474,16 +474,16 @@
       </panel>
       <panel name="eventPanel" title="Events" showIf="id != null &amp;&amp; !isEmployee"
         if-module="axelor-crm" hidden="true" if="__config__.app.isApp('crm')">
-        <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
+        <button name="meetingBtn" title="Create a meeting" link="" icon="pencil-square"
           onClick="save,action-partner-view-meeting-event" colSpan="3"/>
-        <button name="callBtn" title="Create a call" link="" icon="fa-phone"
+        <button name="callBtn" title="Create a call" link="" icon="telephone"
           onClick="save,action-partner-view-call-event" colSpan="3"/>
-        <button name="taskBtn" title="Create a task" link="" icon="fa-tasks"
+        <button name="taskBtn" title="Create a task" link="" icon="list-task"
           onClick="save,action-partner-view-task-event" colSpan="3"/>
-        <button name="noteBtn" title="Create a note" link="" icon="fa-sticky-note-o"
+        <button name="noteBtn" title="Create a note" link="" icon="sticky"
           onClick="save,action-partner-view-note-event" colSpan="3"/>
         <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
-          icon="fa-tasks" onClick="action-partner-view-events" readonlyIf="id == null"/>
+          icon="list-task" onClick="action-partner-view-events" readonlyIf="id == null"/>
         <panel-include view="incl-activities-partner-form"/>
       </panel>
       <panel name="opportunitiesPanel" title="Opportunities"
@@ -495,7 +495,7 @@
       </panel>
       <panel name="emailPanel" title="Emails" showIf="id != null &amp;&amp; !isEmployee"
         if-module="axelor-crm" if="__config__.app.isApp('crm')">
-        <button name="emailBtn" title="Create an email" icon="fa-envelope-o" link=""
+        <button name="emailBtn" title="Create an email" icon="envelope" link=""
           onClick="save,action-send-by-email-with-template" colSpan="3"/>
         <panel-dashlet name="sentEmailsPanel" title="Sent emails"
           action="action-partner-method-view-sent-emails" colSpan="12" height="550"/>
@@ -634,11 +634,11 @@
     onSave="save,action-partner-method-set-user-partner,action-partner-method-add-contact-partner">
     <toolbar>
       <button name="convertToIndividualPartnerBtn" title="Convert into an individual partner"
-        icon="fa-user" onClick="save,action-convert-into-individual-partner,close"
+        icon="person-fill" onClick="save,action-convert-into-individual-partner,close"
         showIf="id != null &amp;&amp; isContact == true &amp;&amp; mainPartner == null"/>
     </toolbar>
     <menubar>
-      <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+      <menu name="partnerReportsMenu" title="Reports" icon="files" showTitle="true">
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>
@@ -726,16 +726,16 @@
       </panel>
       <panel name="eventPanel" title="Events" showIf="id != null" if-module="axelor-crm"
         if="__config__.app.isApp('crm')">
-        <button name="meetingBtn" title="Create a meeting" icon="fa-pencil-square-o" link=""
+        <button name="meetingBtn" title="Create a meeting" icon="pencil-square" link=""
           onClick="save,action-partner-view-meeting-event" colSpan="3"/>
-        <button name="callBtn" title="Create a call" icon="fa-phone" link=""
+        <button name="callBtn" title="Create a call" icon="telephone" link=""
           onClick="save,action-partner-view-call-event" colSpan="3"/>
-        <button name="taskBtn" title="Create a task" icon="fa-tasks" link=""
+        <button name="taskBtn" title="Create a task" icon="list-task" link=""
           onClick="save,action-partner-view-task-event" colSpan="3"/>
-        <button name="noteBtn" title="Create a note" icon="fa-sticky-note-o" link=""
+        <button name="noteBtn" title="Create a note" icon="sticky" link=""
           onClick="save,action-partner-view-note-event" colSpan="3"/>
         <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
-          icon="fa-tasks" onClick="action-contact-view-events" readonlyIf="id == null"/>
+          icon="list-task" onClick="action-contact-view-events" readonlyIf="id == null"/>
         <panel-include view="incl-activities-contact-form"/>
       </panel>
       <panel-dashlet name="contactOpportunitiesPanel" title="Opportunity" colSpan="12"
@@ -748,7 +748,7 @@
       </panel>
       <panel name="emailPanel" title="Emails" showIf="id != null" if-module="axelor-crm"
         if="__config__.app.isApp('crm')">
-        <button name="emailBtn" title="Create an email" icon="fa-envelope-o" link=""
+        <button name="emailBtn" title="Create an email" icon="envelope" link=""
           onClick="save,action-send-by-email-with-template" colSpan="3"/>
         <panel-dashlet name="sentEmailsPanel" title="Sent emails"
           action="action-partner-method-view-sent-emails" colSpan="12" height="550"/>
@@ -792,9 +792,9 @@
   <cards name="partner-cards" model="com.axelor.apps.base.db.Partner" title="Partners"
     css="rect-image">
     <toolbar>
-      <button name="printPhoneBookBtn" title="Contact PhoneBook" icon="fa-print"
+      <button name="printPhoneBookBtn" title="Contact PhoneBook" icon="printer"
         onClick="action-print-phonebook"/>
-      <button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="fa-print"
+      <button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="printer"
         onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
       <button name="checkDuplicateBtn" title="Check Duplicate"
         onClick="action-general-check-duplicate-records"/>
@@ -937,7 +937,7 @@
     onLoad="action-group-base-partner-employee-onload"
     onSave="save,action-partner-method-set-user-partner">
     <menubar>
-      <menu name="partnerReportsMenu" title="Reports" icon="fa-files-o" showTitle="true">
+      <menu name="partnerReportsMenu" title="Reports" icon="files" showTitle="true">
         <item name="customerSituationItem" title="Customer Situation"
           action="save,action-partner-view-customer-situation-filters" readonlyIf="id == null"
           showIf="isContact == false" if-module="axelor-account"/>

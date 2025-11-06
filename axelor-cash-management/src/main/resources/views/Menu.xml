@@ -28,7 +28,7 @@
   </action-view>
 
   <menuitem name="forecast-root-forecast-report" order="300" parent="forecast-root"
-    title="Forecast Reports" action="forecast.root.forecast.report" icon="fa-bar-chart"/>
+    title="Forecast Reports" action="forecast.root.forecast.report" icon="bar-chart"/>
 
   <action-view name="forecast.root.forecast.report" title="Forecast Reports"
     model="com.axelor.apps.cash.management.db.ForecastRecap">
@@ -39,7 +39,7 @@
   </action-view>
 
   <menuitem name="forecast-conf" title="Configuration" order="400" parent="forecast-root"
-    icon="fa-cog"/>
+    icon="gear"/>
 
   <menuitem name="forecast-conf-forecast-generator" order="200" parent="forecast-conf"
     title="Forecast Assistants" action="forecast.conf.forecast.generator"/>

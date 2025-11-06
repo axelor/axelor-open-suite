@@ -76,7 +76,7 @@ public class PrintingTemplateMetaServiceImpl implements PrintingTemplateMetaServ
     if (isFormView) {
       printBtn.setShowIf("id");
     }
-    printBtn.setIcon("fa-print");
+    printBtn.setIcon("printer");
     return printBtn;
   }
 

@@ -6,7 +6,7 @@
 
   <grid name="ticket-grid" title="All tickets" model="com.axelor.apps.helpdesk.db.Ticket">
     <toolbar>
-      <button name="takeChargeBtn" title="Assign to me" icon="fa-suitcase"
+      <button name="takeChargeBtn" title="Assign to me" icon="briefcase-fill"
         onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"/>
     </toolbar>
 
@@ -22,18 +22,18 @@
     <field name="timerState" hidden="true"/>
     <field name="$isClosed" hidden="true"/>
     <field name="progressSelect" widget="SelectProgress"/>
-    <button name="takeChargeBtn" icon="fa-suitcase" hideIf="assignedToUser.id == _user.id"
+    <button name="takeChargeBtn" icon="briefcase-fill" hideIf="assignedToUser.id == _user.id"
       help="Take charge" onClick="com.axelor.apps.helpdesk.web.TicketController:assignToMeTicket"
       readonlyIf="$isClosed"/>
-    <button name="startTicketBtn" icon="fa-play" onClick="action-ticket-group-on-start"
+    <button name="startTicketBtn" icon="play-fill" onClick="action-ticket-group-on-start"
       readonlyIf="timerState == true || $isClosed"
       if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
-    <button name="pauseBtn" icon="fa-pause" onClick="action-ticket-group-on-pause"
+    <button name="pauseBtn" icon="pause-fill" onClick="action-ticket-group-on-pause"
       readonlyIf="timerState == false || $isClosed"
       if="__config__.app.getApp('helpdesk')?.getManageTimer()"/>
-    <button name="validateTicketBtn" icon="fa-check"
-      onClick="action-ticket-group-on-validate" readonlyIf="$isClosed"/>
-    <button name="finishTicketBtn" icon="fa-power-off" onClick="action-ticket-group-on-close"
+    <button name="validateTicketBtn" icon="check" onClick="action-ticket-group-on-validate"
+      readonlyIf="$isClosed"/>
+    <button name="finishTicketBtn" icon="power" onClick="action-ticket-group-on-close"
       readonlyIf="$isClosed"/>
     <field name="$isClosed" type="boolean" hidden="true"/>
     <field name="$isInProgress" type="boolean" hidden="true"/>
@@ -96,11 +96,11 @@
 
       <panel name="timerPanel" title="Timer" showIf="id" hidden="true" sidebar="true"
         if="__config__.app.getApp('helpdesk')?.getManageTimer()">
-        <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="4" hidden="true"
+        <button name="startTimerBtn" title="Start" icon="play-fill" colSpan="4" hidden="true"
           onClick="action-ticket-method-start-timer, action-ticket-group-timer-process"/>
-        <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="4" hidden="true"
+        <button name="stopTimerBtn" title="Stop" icon="pause-fill" colSpan="4" hidden="true"
           onClick="action-ticket-method-stop-timer, action-ticket-group-timer-process"/>
-        <button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="4"
+        <button name="cancelTimerBtn" title="Cancel" icon="x-circle-fill" colSpan="4"
           hidden="true"
           onClick="action-ticket-method-cancel-timer, action-ticket-group-timer-process"
           css="btn-danger"/>
@@ -113,12 +113,12 @@
     </panel-tabs>
 
     <panel name="actionsPanel" sidebar="true">
-      <button name="startTicketBtn" title="Start" icon="fa-play"
+      <button name="startTicketBtn" title="Start" icon="play-fill"
         hideIf="$isClosed || $isInProgress || $isResolved"
         onClick="save,action-ticket-group-on-start"/>
-      <button name="validateTicketBtn" title="Resolve" icon="fa-check"
+      <button name="validateTicketBtn" title="Resolve" icon="check"
         hideIf="$isResolved || $isClosed" onClick="save,action-ticket-group-on-validate"/>
-      <button name="finishTicketBtn" title="Close" icon="fa-power-off" css="btn-danger"
+      <button name="finishTicketBtn" title="Close" icon="power" css="btn-danger"
         hideIf="$isClosed" onClick="save,action-ticket-group-on-close"/>
     </panel>
 

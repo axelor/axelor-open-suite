@@ -15,7 +15,7 @@
     <field name="comments" readonlyIf="invoiced" width="300%"/>
     <field name="invoiced" readonly="true"/>
     <button name="generateInvoiceBtn" readonlyIf="!id || invoiced" help="Generate Invoice"
-      icon="fa-credit-card" onClick="save, action-timetable-method-generate-invoice"
+      icon="credit-card-fill" onClick="save, action-timetable-method-generate-invoice"
       if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
     <field name="invoice" width="120" hidden="true"/>
     <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
@@ -66,7 +66,7 @@
     <field name="comments" readonlyIf="invoiced" width="300%"/>
     <field name="invoiced" readonly="true"/>
     <button name="generateInvoiceBtn" readonlyIf="!id || invoiced" help="Generate Invoice"
-      icon="fa-credit-card"
+      icon="credit-card-fill"
       onClick="save, action-timetable-method-generate-invoice, action-timetable-attrs-readonly"
       if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"/>
     <field name="invoice" width="120" hidden="true"/>

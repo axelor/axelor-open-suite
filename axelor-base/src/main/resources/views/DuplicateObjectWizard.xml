@@ -12,7 +12,7 @@
           colSpan="12"/>
       </panel>
       <panel name="actionsPanel">
-        <button name="addOriginalBtn" icon="fa-arrow-right" colSpan="2"
+        <button name="addOriginalBtn" icon="arrow-right" colSpan="2"
           onClick="action-method-add-original" colOffset="1"/>
         <field name="$originalObject" title="Original" readonly="true" colSpan="8"
           type="many-to-one" canView="false" target="com.axelor.utils.db.Wizard" colOffset="1"/>

@@ -14,7 +14,7 @@
     <field name="sopRealManuf" onChange="action-sop-line-record-compute-sop-manuf-gap"/>
     <field name="sopRealStock" onChange="action-sop-line-record-compute-sop-stock-gap"/>
     <field name="currency" hidden="true"/>
-    <button name="generateMpsForecastsBtn" icon="fa-gear" title="Generate MPS forecasts"
+    <button name="generateMpsForecastsBtn" icon="gear" title="Generate MPS forecasts"
       onClick="action-sop-line-view-open-wizard"/>
   </grid>
 

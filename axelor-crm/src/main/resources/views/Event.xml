@@ -108,13 +108,13 @@
     onLoad="action-group-crm-event-onload" onNew="action-group-crm-event-onnew"
     onSave="action-event-group-on-save">
     <toolbar>
-      <button name="grabEventBtn" icon="fa-suitcase" help="Assign to me"
+      <button name="grabEventBtn" icon="briefcase-fill" help="Assign to me"
         onClick="save,action-method-crm-event-assign-tome"/>
-      <button name="viewOnMapBtn" icon="fa-map-marker"
+      <button name="viewOnMapBtn" icon="geo-alt-fill"
         onClick="com.axelor.apps.crm.web.EventController:viewMap" showIf="typeSelect == 2"/>
     </toolbar>
     <menubar>
-      <menu name="eventToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="eventToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="createOpportunityItem" title="Create opportunity"
           action="save,action-event-view-create-opportunity"/>
         <item name="createEventItem" title="Create event"
@@ -214,7 +214,7 @@
         <field name="location" css="highlight" height="5px"/>
         <panel name="mapPanel">
           <field name="geo" colSpan="10"/>
-          <button name="viewOnMapBtn" colSpan="2" icon="fa-map-marker"
+          <button name="viewOnMapBtn" colSpan="2" icon="geo-alt-fill"
             onClick="com.axelor.apps.crm.web.EventController:viewMap"/>
           <field name="organizer" colSpan="12"/>
         </panel>

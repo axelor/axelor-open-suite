@@ -27,8 +27,8 @@
     <field name="lunchVoucherFormatSelect" width="200"/>
     <field name="statusSelect" widget="single-select"/>
     <button name="statusToCalculateBtn"
-      onClick="action-lunch-voucher-mgt-line-method-set-status-to-calculate" icon="fa-check-circle"
-      help="To calculate"/>
+      onClick="action-lunch-voucher-mgt-line-method-set-status-to-calculate"
+      icon="check-circle-fill" help="To calculate"/>
     <field name="lunchVoucherMgt" hidden="true"/>
     <field name="lunchVoucherMgt.statusSelect" hidden="true"/>
     <field name="daysWorkedNbr" hidden="true"/>

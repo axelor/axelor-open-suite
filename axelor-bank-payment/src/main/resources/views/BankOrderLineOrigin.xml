@@ -10,7 +10,7 @@
     <field name="relatedToSelectDate"/>
     <field name="relatedToSelectDueDate"/>
     <button name="displayInvoiceBtn"
-      onClick="action-bank-order-line-origin-group-display-invoice-btn" icon="fa-file-pdf-o"
+      onClick="action-bank-order-line-origin-group-display-invoice-btn" icon="file-pdf"
       showIf="(relatedToSelect==&quot;com.axelor.apps.account.db.InvoiceTerm&quot;) || (relatedToSelect==&quot;com.axelor.apps.account.db.Invoice&quot;)"/>
   </grid>
 
@@ -24,7 +24,7 @@
       <field name="relatedToSelectDate" colSpan="4"/>
       <field name="relatedToSelectDueDate" colSpan="4"/>
       <button name="displayInvoiceBtn" title="Display the invoice"
-        onClick="action-bank-order-line-origin-group-display-invoice-btn" icon="fa-file-pdf-o"
+        onClick="action-bank-order-line-origin-group-display-invoice-btn" icon="file-pdf"
         showIf="(relatedToSelect==&quot;com.axelor.apps.account.db.InvoiceTerm&quot;) || (relatedToSelect==&quot;com.axelor.apps.account.db.Invoice&quot;)"
         hidden="true"/>
     </panel>

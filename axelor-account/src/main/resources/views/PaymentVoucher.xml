@@ -52,7 +52,7 @@
         showIf="statusSelect == 1 || !id"
         readonlyIf="paidAmount == 0 || (moveLine != null &amp;&amp; payVoucherElementToPayList.length == 0)"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
-        icon="fa-print" onClick="action-payment-voucher-group-print-template"/>
+        icon="printer" onClick="action-payment-voucher-group-print-template"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info" readonly="true">

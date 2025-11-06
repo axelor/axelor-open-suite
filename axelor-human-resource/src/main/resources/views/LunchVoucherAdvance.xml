@@ -11,7 +11,7 @@
     <field name="lunchVoucherWageShare"/>
     <field name="lunchVoucherEmployersShare"/>
     <field name="comments"/>
-    <button name="printLunchVoucherAdvanceBtn" title="Print" icon="fa-print"
+    <button name="printLunchVoucherAdvanceBtn" title="Print" icon="printer"
       onClick="action-method-print-template"/>
   </grid>
 

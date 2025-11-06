@@ -17,7 +17,7 @@
     onLoad="action-subrogation-release-onLoad">
 
     <menubar>
-      <menu name="subrogationReleasePrintExportMenu" title="Print/Export" icon="fa-print">
+      <menu name="subrogationReleasePrintExportMenu" title="Print/Export" icon="printer">
         <item name="exportToCSVItem" action="action-subrogation-release-method-export-to-csv"
           title="Export to CSV" readonlyIf="statusSelect &lt; 2"/>
       </menu>

@@ -10,7 +10,7 @@
         onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
     </toolbar>
     <menubar>
-      <menu name="projectToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="projectToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="ganttWithUserItem" title="Gantt with user"
           action="action-project-open-popup-select-users"/>
         <item name="ganttWithProjectItem" title="Gantt with project"
@@ -62,7 +62,7 @@
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-group-on-save" width="large">
     <menubar>
-      <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
+      <menu name="taskMenu" title="Tasks" showTitle="true" icon="list-task">
         <item name="myOpenTasks" title="My open tasks"
           action="save,action-project-method-my-open-tasks"
           showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
@@ -76,7 +76,7 @@
         <item name="allTasksTree" title="All tasks (tree)"
           action="save, action-view-show-project-task-tree" showIf="id"/>
       </menu>
-      <menu name="projectToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+      <menu name="projectToolsMenu" title="Tools" showTitle="true" icon="wrench">
         <item name="ganttItem" title="Gantt" showIf="id &amp;&amp; isShowGantt"
           action="save,action-project-open-gantt"/>
         <item name="bookResourceItem" title="Book resource"
@@ -497,7 +497,7 @@
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
-      <button name="openTaskBtn" icon="fa-external-link"
+      <button name="openTaskBtn" icon="box-arrow-up-right"
         onClick="action-project-task-open-task"/>
     </node>
 
@@ -507,7 +507,7 @@
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
-      <button name="openTaskBtn" icon="fa-external-link"
+      <button name="openTaskBtn" icon="box-arrow-up-right"
         onClick="action-project-task-open-task"/>
     </node>
   </tree>
@@ -522,9 +522,9 @@
       onClick="action-project-view-show-project">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
-      <button name="treeBtn" icon="fa-sitemap" onClick="action-project-view-show-tasks-tree"
-        title="Open projects tree"/>
-      <button name="listBtn" title="Open tasks list" icon="fa-list"
+      <button name="treeBtn" icon="diagram-3-fill"
+        onClick="action-project-view-show-tasks-tree" title="Open projects tree"/>
+      <button name="listBtn" title="Open tasks list" icon="list-task"
         onClick="action-project-view-show-tasks-tree"/>
     </node>
 
@@ -533,9 +533,9 @@
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
-      <button name="treeBtn" title="Open projects tree" icon="fa-sitemap"
+      <button name="treeBtn" title="Open projects tree" icon="diagram-3-fill"
         onClick="action-project-view-show-tasks-tree"/>
-      <button name="listBtn" icon="fa-list" title="Open tasks list"
+      <button name="listBtn" icon="list-task" title="Open tasks list"
         onClick="action-project-view-show-tasks-tree"/>
     </node>
   </tree>

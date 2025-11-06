@@ -15,12 +15,12 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <button name="openResultButton" help="Open the list of results"
-      onClick="action-crm-reporting-method-show-results" icon="fa-list"/>
+      onClick="action-crm-reporting-method-show-results" icon="list-task"/>
     <button name="showOpportunitiesButton" help="Show the opportunities"
       onClick="action-crm-reporting-method-show-opportunities"
-      hideIf="typeSelect == 'com.axelor.apps.crm.db.Lead'" icon="fa-list"/>
+      hideIf="typeSelect == 'com.axelor.apps.crm.db.Lead'" icon="list-task"/>
     <button name="showEventsButton" help="Show the events"
-      onClick="action-crm-reporting-method-show-events" icon="fa-list"/>
+      onClick="action-crm-reporting-method-show-events" icon="list-task"/>
   </grid>
 
   <form name="crm-reporting-form" title="Crm reporting"

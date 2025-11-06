@@ -27,10 +27,10 @@
             <field name="stepStatusSelect" showTitle="false" widget="NavSelect" colSpan="12"
               readonly="true"/>
             <panel name="buttonPanel" colSpan="12">
-              <button name="previousBtn" icon="fa-caret-left"
+              <button name="previousBtn" icon="caret-left-fill"
                 onClick="action-user-group-previous-button" readonlyIf="stepStatusSelect &lt; 1"
                 colSpan="1"/>
-              <button name="nextBtn" icon="fa-caret-right"
+              <button name="nextBtn" icon="caret-right-fill"
                 onClick="action-user-group-next-button" readonlyIf="stepStatusSelect &gt; 3"
                 colSpan="1"/>
               <button name="validateBtn" title="Validate"

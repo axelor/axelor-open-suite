@@ -189,7 +189,8 @@
     <field name="estimatedShippingDate"/>
     <field name="estimatedDeliveryDate"/>
     <field name="deliveredQty" x-scale="$nbDecimalDigitForQty"/>
-    <button name="openSalorderBtn" icon="fa-line-chart" onClick="action-open-sale-order-view"/>
+    <button name="openSalorderBtn" icon="graph-up-arrow"
+      onClick="action-open-sale-order-view"/>
   </grid>
 
   <grid name="sale-order-line-to-invoice-popup-grid" title="Lines to invoice" edit-icon="false"

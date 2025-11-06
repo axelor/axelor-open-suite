@@ -79,7 +79,7 @@
   </action-view>
 
   <menuitem name="maintenance-root-config" parent="maintenance-root" title="Configuration"
-    order="700" icon="fa-cog"/>
+    order="700" icon="gear"/>
 
   <menuitem name="maintenance-root-config-maintenance-category"
     parent="maintenance-root-config" title="Maintenance Category"

@@ -19,11 +19,11 @@
     <hilite color="info" strong="true"
       if="[5,8,9,11].indexOf($get('mrpLineType.elementSelect')) != -1"/>
     <field name="product" hidden="true"/>
-    <button name="toggleBtn" icon="fa-exchange" onClick="action-mrp-line-method-toggle"
+    <button name="toggleBtn" icon="arrow-left-right" onClick="action-mrp-line-method-toggle"
       showIf="!proposalGenerated &amp;&amp; [5,8].indexOf($get('mrpLineType.elementSelect')) != -1"/>
     <field name="proposalToProcess" showIf="!proposalGenerated"/>
     <button name="errorIconButton" showIf="warnDelayFromSupplier" onClick="refresh"
-      readonlyIf="true" icon="fa-exclamation-triangle"/>
+      readonlyIf="true" icon="exclamation-triangle"/>
     <field name="mrpLineType" width="300"/>
     <field name="qty" x-scale="2"/>
     <field name="maturityDate" width="100">
@@ -47,7 +47,7 @@
     <field name="supplierPartner" onSelect="action-mrp-line-attrs-domain-supplier-partner"
       readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
     <field name="proposalGenerated" hidden="true"/>
-    <button name="generateProposalBtn" icon="fa-calendar"
+    <button name="generateProposalBtn" icon="calendar"
       onClick="action-mrp-line-method-generate-proposal"
       readonlyIf="proposalGenerated || [5,8].indexOf($get('mrpLineType.elementSelect')) == -1"/>
     <field name="mrpLineType.elementSelect" hidden="true"/>

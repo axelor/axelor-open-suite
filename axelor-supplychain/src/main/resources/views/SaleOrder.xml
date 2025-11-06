@@ -42,7 +42,7 @@
     <extend target="//panel[@name='deliveryInformationPanel']">
       <insert position="after">
         <panel name="packagingPanel" title="Packaging" colSpan="12">
-          <button name="estimatePackagingBtn" title="Estimate packaging" icon="fa-envelope"
+          <button name="estimatePackagingBtn" title="Estimate packaging" icon="envelope-fill"
             onClick="save,action-sale-order-method-estimate-packaging"
             readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
           <help colSpan="12"><![CDATA[This packaging is different from real packagings defined during shipping process. Design for only shipping cost estimation.]]></help>
