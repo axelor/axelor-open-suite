@@ -1,3 +1,0 @@
----
-title: "Invoice: keep advance payments empty on validate if user cleared them in draft."
-module: axelor-account

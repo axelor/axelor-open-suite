@@ -1,3 +1,63 @@
+## [7.2.53] (2025-11-06)
+
+### Fixes
+#### Base
+
+* Currency conversion: updated old API for currency conversion.
+* Bank details: fixed some iban fields when adding bank details from partner view.
+
+#### Account
+
+* Invoice: keep advance payments empty on validate if user cleared them in draft.
+* Reconcile: avoid negative amount when duplicating a reconcile.
+* Invoice: fixed an issue where Payment mode on invoice term is changed after the ventiation
+* Accounting report: fixed Aged balance report to use invoice payments instead of invoice terms for accurate balance.
+* Move line query: fixed selected move lines unreconcilation.
+
+#### Project
+
+* Project: fixed partner informations when generating a project from a sale order.
+* Project: fixed project generation when the partner name contains an apostrophe.
+
+
+### Developer
+
+#### Base
+
+-- migration script to update bank_code, sort_code, account_nbr and bban_key in bank details table
+
+UPDATE base_bank_details BankDetails
+SET bank_code = SUBSTRING(BankDetails.iban FROM 5 FOR 5)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.bank_code IS NULL OR BankDetails.bank_code = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET sort_code = SUBSTRING(BankDetails.iban FROM 10 FOR 5)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.sort_code IS NULL OR BankDetails.sort_code = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET account_nbr = SUBSTRING(BankDetails.iban FROM 15 FOR 11)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.account_nbr IS NULL OR BankDetails.account_nbr = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET bban_key = RIGHT(BankDetails.iban, 2)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.bban_key IS NULL OR BankDetails.bban_key = '')
+  AND BankDetails.iban IS NOT NULL;
+
 ## [7.2.52] (2025-10-30)
 
 ### Fixes
@@ -2250,6 +2310,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.53]: https://github.com/axelor/axelor-open-suite/compare/v7.2.52...v7.2.53
 [7.2.52]: https://github.com/axelor/axelor-open-suite/compare/v7.2.51...v7.2.52
 [7.2.51]: https://github.com/axelor/axelor-open-suite/compare/v7.2.50...v7.2.51
 [7.2.50]: https://github.com/axelor/axelor-open-suite/compare/v7.2.49...v7.2.50
