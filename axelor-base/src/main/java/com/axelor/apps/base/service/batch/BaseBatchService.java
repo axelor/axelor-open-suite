@@ -48,6 +48,8 @@ public class BaseBatchService extends AbstractBatchService {
         return passwordChange(baseBatch);
       case BaseBatchRepository.ACTION_COUNTRY_RECOMPUTE_ADDRESS:
         return recomputeAddressForCountries(baseBatch);
+      case BaseBatchRepository.ACTION_FETCH_PARTNER_DATA:
+        return fetchPartnerData(baseBatch);
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -67,5 +69,9 @@ public class BaseBatchService extends AbstractBatchService {
 
   public Batch recomputeAddressForCountries(BaseBatch baseBatch) {
     return Beans.get(BatchCountryAddressRecompute.class).run(baseBatch);
+  }
+
+  public Batch fetchPartnerData(BaseBatch baseBatch) {
+    return Beans.get(BatchFetchPartnerData.class).run(baseBatch);
   }
 }

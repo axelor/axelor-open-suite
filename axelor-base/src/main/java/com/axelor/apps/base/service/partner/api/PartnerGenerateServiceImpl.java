@@ -85,14 +85,34 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
   @Transactional(rollbackOn = Exception.class)
   @Override
   public void configurePartner(Partner partner, String siret) throws AxelorException {
+    configurePartner(partner, siret, true, true, true);
+  }
+
+  @Transactional(rollbackOn = Exception.class)
+  @Override
+  public void configurePartner(
+      Partner partner,
+      String siret,
+      boolean updateSirenAndVatNumber,
+      boolean updateCategoryAndType,
+      boolean updateAddress)
+      throws AxelorException {
     String result = partnerApiFetchService.fetch(siret);
     try {
       ObjectMapper objectMapper = new ObjectMapper();
       PartnerDataResponse partnerData = objectMapper.readValue(result, PartnerDataResponse.class);
 
-      setPartnerBasicDetails(partner, partnerData);
-      setPartnerCategoryAndType(partner, partnerData.getUniteLegale());
-      setPartnerAddress(partner, partnerData.getAdresseEtablissement());
+      if (updateSirenAndVatNumber) {
+        setPartnerBasicDetails(partner, partnerData);
+      }
+
+      if (updateCategoryAndType) {
+        setPartnerCategoryAndType(partner, partnerData.getUniteLegale());
+      }
+
+      if (updateAddress) {
+        setPartnerAddress(partner, partnerData.getAdresseEtablissement());
+      }
 
       partnerRepository.save(partner);
     } catch (JsonProcessingException e) {

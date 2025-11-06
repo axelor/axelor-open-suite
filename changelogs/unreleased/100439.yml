@@ -1,0 +1,5 @@
+---
+title: Add batch to fetch partner data from Sirene API
+module: axelor-base
+developer: |
+  Mass import of partner data with the provided SIRET numbers using the Sirene API.

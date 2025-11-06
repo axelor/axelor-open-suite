@@ -43,6 +43,13 @@
       <field name="countrySet" canNew="false" canEdit="false" form-view="country-form"
         grid-view="country-grid" colSpan="12" hideIf="allCountries"/>
     </panel>
+    <panel name="partnerInformationPanel" title="Partner information to update"
+      showIf="actionSelect == 5">
+      <field name="updateSirenAndVatNumber" widget="boolean-switch"/>
+      <field name="updateCategoryAndType" widget="boolean-switch"/>
+      <field name="updateAddress" widget="boolean-switch"/>
+      <label css="label-danger" title="Warning: not selecting anything will result to no update being made." colSpan="12" showIf="!updateSirenAndVatNumber &amp;&amp; !updateCategoryAndType &amp;&amp; !updateAddress"/>
+    </panel>
 
     <panel name="informationPanel" title="Information">
       <field name="createdOn" title="Created on"/>
