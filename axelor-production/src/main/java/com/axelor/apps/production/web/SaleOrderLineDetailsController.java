@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.service.SaleOrderLineDetailsPriceService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsService;
+import com.axelor.apps.production.service.SolDetailsDurationService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
@@ -46,13 +47,31 @@ public class SaleOrderLineDetailsController {
         saleOrderLineDetailsService.productOnChange(saleOrderLineDetails, saleOrder));
   }
 
+  public void priceOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
+    SaleOrderLineDetailsPriceService saleOrderLineDetailsPriceService =
+        Beans.get(SaleOrderLineDetailsPriceService.class);
+    SaleOrder saleOrder = getSaleOrder(context);
+    Map<String, Object> values = new HashMap<>();
+    values.putAll(
+        saleOrderLineDetailsPriceService.computeTotalPrice(saleOrderLineDetails, saleOrder));
+    values.putAll(saleOrderLineDetailsPriceService.computeMarginCoef(saleOrderLineDetails));
+    response.setValues(values);
+  }
+
   public void computePrices(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
+    Context parentContext = context.getParent();
+    SaleOrderLine parentSol = null;
+    if (parentContext != null && parentContext.getContextClass() == SaleOrderLine.class) {
+      parentSol = parentContext.asType(SaleOrderLine.class);
+    }
     SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
     SaleOrder saleOrder = getSaleOrder(context);
     response.setValues(
         Beans.get(SaleOrderLineDetailsPriceService.class)
-            .computePrices(saleOrderLineDetails, saleOrder));
+            .computePrices(saleOrderLineDetails, saleOrder, parentSol));
   }
 
   public void marginCoefOnChange(ActionRequest request, ActionResponse response)
@@ -67,6 +86,33 @@ public class SaleOrderLineDetailsController {
     values.putAll(
         saleOrderLineDetailsPriceService.computeTotalPrice(saleOrderLineDetails, saleOrder));
     response.setValues(values);
+  }
+
+  public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
+    Context context = request.getContext();
+    SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
+    SaleOrderLineDetailsPriceService saleOrderLineDetailsPriceService =
+        Beans.get(SaleOrderLineDetailsPriceService.class);
+    SaleOrder saleOrder = getSaleOrder(context);
+    Map<String, Object> values = new HashMap<>();
+    values.putAll(
+        saleOrderLineDetailsPriceService.computeTotalPrice(saleOrderLineDetails, saleOrder));
+    response.setValues(values);
+  }
+
+  public void computeTotalDuration(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    Context parentContext = context.getParent();
+    SaleOrderLineDetails saleOrderLineDetails = context.asType(SaleOrderLineDetails.class);
+    SaleOrderLine parentSol = null;
+    if (parentContext != null && parentContext.getContextClass() == SaleOrderLine.class) {
+      parentSol = parentContext.asType(SaleOrderLine.class);
+    }
+    response.setValue(
+        "$totalDuration",
+        Beans.get(SolDetailsDurationService.class)
+            .computeSolDetailsDuration(saleOrderLineDetails, parentSol));
   }
 
   protected SaleOrder getSaleOrder(Context context) {

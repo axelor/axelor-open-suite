@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
   <input file="studio_appMobileSettings.csv" separator=";"
     type="com.axelor.studio.db.AppMobileSettings" search="self.app.code = :code">
+    <bind column="fieldsToShowOnTimesheet" to="fieldsToShowOnTimesheet"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppMobileSettings', 'fieldsToShowOnTimesheet', fieldsToShowOnTimesheet)"
+      check-message="Invalid fieldsToShowOnTimesheet"/>
+    <bind column="productTypesToDisplaySelect" to="productTypesToDisplaySelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppMobileSettings', 'productTypesToDisplaySelect', productTypesToDisplaySelect)"
+      check-message="Invalid productTypesToDisplaySelect"/>
+    <bind column="reportingTypesToDisplaySelect" to="reportingTypesToDisplaySelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppMobileSettings', 'reportingTypesToDisplaySelect', reportingTypesToDisplaySelect)"
+      check-message="Invalid reportingTypesToDisplaySelect"/>
     <bind to="app" column="code" search="self.code = :code"/>
   </input>
 
   <input file="mobilesettings_mobileConfig.csv" separator=";"
-    search="self.importId = :importId" type="com.axelor.apps.mobilesettings.db.MobileConfig"/>
+    search="self.importId = :importId" type="com.axelor.apps.mobilesettings.db.MobileConfig">
+    <bind column="sequence" to="sequence"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.mobilesettings.db.MobileConfig', 'sequence', sequence)"
+      check-message="Invalid sequence"/>
+    <bind column="sequence" to="sequence"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.mobilesettings.db.MobileConfig', 'importId', importId, 'sequence', sequence)"
+      check-message="Sequence must be unique"/>
+  </input>
 
 </csv-inputs>

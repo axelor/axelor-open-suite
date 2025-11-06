@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="quality-improvement-grid" title="Quality improvements"
     model="com.axelor.apps.quality.db.QualityImprovement" orderBy="sequence">
@@ -11,6 +11,18 @@
     <field name="qiStatus"/>
     <field name="gravityTypeSelect"/>
     <field name="analysisMethod"/>
+  </grid>
+
+  <grid name="quality-improvement-partner-grid" title="Quality improvements"
+    model="com.axelor.apps.quality.db.QualityImprovement" orderBy="sequence">
+    <field name="sequence"/>
+    <field name="company"/>
+    <field name="type"/>
+    <field name="qiStatus"/>
+    <field name="gravityTypeSelect"/>
+    <field name="analysisMethod"/>
+    <button name="openInNewTabBtn" onClick="action-quality-improvement-view-open-in-new-tab"
+      title="Open in new tab" icon="tab"/>
   </grid>
 
   <form name="quality-improvement-form" title="Quality improvement"
@@ -72,6 +84,14 @@
                 onChange="action-quality-improvement-group-supplier-purchase-order-line-on-change"
                 domain="self.purchaseOrder = :supplierPurchaseOrder"/>
             </panel>
+            <panel name="controlPanel" title="Control" colSpan="12">
+              <field name="qualityControl" hideIf="$get('qi.type') == 2"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+              <field name="sourceQIList" widget="tag-select" canNew="false" colSpan="6"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by "/>
+              <field name="controlEntry" colSpan="6"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+            </panel>
             <panel title="Interne" name="intPanel" colSpan="12">
               <field name="detectedByInternal"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"
@@ -101,10 +121,6 @@
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
               <field name="nonConformingQuantity" hideIf="$get('qi.type') == 2"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-              <field name="qualityControl" hideIf="$get('qi.type') == 2"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-              <field name="sourceQIList" widget="tag-select" canNew="false" colSpan="6"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by "/>
             </panel>
             <panel name="hiddenPanel" hidden="true">
               <field name="qi"/>
@@ -249,6 +265,21 @@
       <button name="sendDistributionBtn" title="Send the distributions"
         onClick="action-quality-improvement-method-send-qi-decision-distributions"
         showIf="$qiDecisionDistributionMessageTemplate"/>
+    </panel>
+  </form>
+
+  <form name="qi-create-wizard-form" title="Create quality improvement"
+    model="com.axelor.utils.db.Wizard" canNew="false" canSave="false" canDelete="false"
+    canArchive="false">
+    <panel name="mainPanel" colSpan="12">
+      <field name="type" type="integer" title="Type" selection="quality.qi.type.select"
+        required="true" x-dirty="false"/>
+      <field name="qiDetection" title="Detection"
+        target="com.axelor.apps.quality.db.QIDetection" type="many-to-one"
+        form-view="qi-detection-form" grid-view="qi-detection-grid" showIf="type" required="true"/>
+      <spacer colSpan="6" x-dirty="false"/>
+      <button name="createQiBtn" title="Create quality improvement"
+        onClick="action-method-quality-improvement-create-qi" showIf="type &amp;&amp; qiDetection"/>
     </panel>
   </form>
 
@@ -861,6 +892,11 @@
       method="generateQIDecisionDistributions"/>
   </action-method>
 
+  <action-method name="action-method-quality-improvement-create-qi">
+    <call class="com.axelor.apps.quality.web.QualityImprovementController"
+      method="createQualityImprovement"/>
+  </action-method>
+
   <action-validate
     name="action-quality-improvement-validate-lines-selected-for-send">
     <error message="Please select at least a line to send a distribution."
@@ -890,5 +926,12 @@
     <attribute name="value" for="$qiDecisionDistributionList"
       expr="eval: _qiDecisionDistributionList"/>
   </action-attrs>
+
+  <action-view name="action-quality-improvement-view-open-in-new-tab"
+    title="Quality Improvement" model="com.axelor.apps.quality.db.QualityImprovement">
+    <view type="form" name="quality-improvement-form"/>
+    <view-param name="popup" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
 
 </object-views>

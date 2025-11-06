@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
 
   <grid name="partner-price-list-grid" title="Partner price lists"
@@ -14,19 +14,28 @@
   <form name="partner-price-list-form" title="Partner price lists"
     model="com.axelor.apps.base.db.PartnerPriceList"
     onNew="action-record-partner-price-list-record-on-new"
-    onLoad="action-partner-price-list-attrs-set-currency-readonly" width="large">
+    onLoad="action-partner-price-list-attrs-set-currency-readonly"
+    onSave="action-partner-price-list-validate-exclusive-and-partner-list-onsave" width="large">
     <panel name="mainPanel">
       <field name="label"/>
       <field name="typeSelect" readonly="true" colSpan="4"/>
-      <field name="isExclusive"/>
+      <field name="isExclusive" onChange="action-partner-price-list-validate-partner-list"/>
       <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
       <field name="priceListSet" grid-view="price-list-grid" form-view="price-list-form"
         onChange="action-method-partner-price-list-check-dates,action-partner-price-list-attrs-set-currency-readonly"
         onSelect="action-partner-price-list-method-compute-price-list-domain" colSpan="12"
         showIf="currency"/>
     </panel>
-    <panel-dashlet name="partnersDashletPanel" title="Partners"
-      action="action-partner-price-list-view-dashlet-partners" colSpan="12"/>
+    <panel-related name="customersPanel" field="salePartnerList"
+      grid-view="partner-customer-grid" form-view="partner-customer-form" colSpan="12" hidden="true"
+      showIf="typeSelect == 1" canSelect="true"
+      domain="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true) AND self.salePartnerPriceList IS NULL AND self.currency = :currency"
+      onChange="action-partner-price-list-validate-exclusive"/>
+    <panel-related name="suppliersPanel" field="purchasePartnerList"
+      grid-view="partner-supplier-grid" form-view="partner-supplier-form" colSpan="12" hidden="true"
+      showIf="typeSelect == 2" canSelect="true"
+      domain="self.isContact = false AND self.isSupplier = true AND self.purchasePartnerPriceList IS NULL AND self.currency = :currency"
+      onChange="action-partner-price-list-validate-exclusive"/>
   </form>
 
   <action-record name="action-record-partner-price-list-record-on-new"
@@ -43,22 +52,37 @@
       method="computePriceListDomain"/>
   </action-method>
 
-  <action-view name="action-partner-price-list-view-dashlet-partners" title="Partners"
-    model="com.axelor.apps.base.db.Partner">
-    <view type="grid" name="partner-customer-grid" if="typeSelect == 1"/>
-    <view type="form" name="partner-customer-form" if="typeSelect == 1"/>
-    <view type="grid" name="partner-supplier-grid" if="typeSelect == 2"/>
-    <view type="form" name="partner-supplier-form" if="typeSelect == 2"/>
-    <domain>(self.purchasePartnerPriceList = :partnerPriceListId AND
-      self.purchasePartnerPriceList.typeSelect = :typeSelect) OR (self.salePartnerPriceList =
-      :partnerPriceListId AND self.salePartnerPriceList.typeSelect = :typeSelect)</domain>
-    <context name="partnerPriceListId" expr="eval: id"/>
-    <context name="typeSelect" expr="eval: typeSelect"/>
-  </action-view>
-
   <action-attrs name="action-partner-price-list-attrs-set-currency-readonly">
     <attribute name="readonly" for="currency"
       expr="eval: (id &amp;&amp;__repo__(Partner).all().filter('self.salePartnerPriceList = ?1 OR self.purchasePartnerPriceList = ?1',id).count() > 0) || (priceListSet &amp;&amp; !priceListSet.isEmpty())"/>
   </action-attrs>
+
+  <action-validate name="action-partner-price-list-validate-partner-list">
+    <error
+      message="This partner price list is linked to multiple clients and can't be exclusive. Please update first the clients list by keeping one client."
+      if="isExclusive &amp;&amp; typeSelect == 1 &amp;&amp; salePartnerList != null &amp;&amp; !salePartnerList.isEmpty() &amp;&amp; salePartnerList.size() > 1"/>
+    <error
+      message="This partner price list is linked to multiple suppliers and can't be exclusive. Please update first the suppliers list by keeping one supplier."
+      if="isExclusive &amp;&amp; typeSelect == 2 &amp;&amp; purchasePartnerList != null &amp;&amp; !purchasePartnerList.isEmpty() &amp;&amp; purchasePartnerList.size() > 1"/>
+  </action-validate>
+
+  <action-validate name="action-partner-price-list-validate-exclusive">
+    <error
+      message="This partner price list is exclusive and can't be linked to multiple clients. Please uncheck the option Exclusive first."
+      if="isExclusive &amp;&amp; typeSelect == 1 &amp;&amp; salePartnerList != null &amp;&amp; !salePartnerList.isEmpty() &amp;&amp; salePartnerList.size() > 1"/>
+    <error
+      message="This partner price list is exclusive and can't be linked to multiple suppliers. Please uncheck the option Exclusive first."
+      if="isExclusive &amp;&amp; typeSelect == 2 &amp;&amp; purchasePartnerList != null &amp;&amp; !purchasePartnerList.isEmpty() &amp;&amp; purchasePartnerList.size() > 1"/>
+  </action-validate>
+
+  <action-validate
+    name="action-partner-price-list-validate-exclusive-and-partner-list-onsave">
+    <error
+      message="The partner price list can't be exclusive and related to multiple clients. Please fix it before saving."
+      if="isExclusive &amp;&amp; typeSelect == 1 &amp;&amp; salePartnerList != null &amp;&amp; !salePartnerList.isEmpty() &amp;&amp; salePartnerList.size() > 1"/>
+    <error
+      message="The partner price list can't be exclusive and related to multiple suppliers. Please fix it before saving."
+      if="isExclusive &amp;&amp; typeSelect == 2 &amp;&amp; purchasePartnerList != null &amp;&amp; !purchasePartnerList.isEmpty() &amp;&amp; purchasePartnerList.size() > 1"/>
+  </action-validate>
 
 </object-views>

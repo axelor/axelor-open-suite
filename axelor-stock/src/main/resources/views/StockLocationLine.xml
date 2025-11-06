@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="stock-location-line-grid" title="Stock Locations content"
     model="com.axelor.apps.stock.db.StockLocationLine" orderBy="product">
@@ -19,6 +19,8 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="avgPrice" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="rack"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <button name="stockCorrectionBtn" icon="fa-pencil-square-o"
       onClick="action-stock-location-line-view-open-stock-correction-form"/>
   </grid>
@@ -41,7 +43,7 @@
       <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
       <field name="avgPrice" colSpan="3"
         onChange="action-stock-location-line-group-avg-price-onchange"
-        readonlyIf="!$isAvgPriceEditable"/>
+        readonlyIf="!$isAvgPriceEditable" x-scale="$nbDecimalDigitForUnitPrice"/>
       <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
       <button name="updateAvgPriceBtn" title="Update average price"
         onClick="action-stock-location-line-attrs-update-avg-price" colSpan="3"
@@ -49,9 +51,11 @@
       <field name="rack"/>
       <field name="stockLocation"/>
       <field name="stockLocation.typeSelect" hidden="true"/>
+      <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+      <field name="$nbDecimalDigitForQty" hidden="true"/>
     </panel>
     <panel name="lastInventoryPanel" title="Last inventory">
-      <field name="lastInventoryRealQty" title="Real Qty"/>
+      <field name="lastInventoryRealQty" title="Real Qty" x-scale="$nbDecimalDigitForQty"/>
       <field name="lastInventoryDateT" title="Date"/>
     </panel>
     <panel name="actionPanel">

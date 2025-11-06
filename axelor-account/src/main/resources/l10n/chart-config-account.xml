@@ -1,15 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
   <input file="account_accountType.csv" separator=";"
     type="com.axelor.apps.account.db.AccountType"
-    search="self.name = :name AND self.importId = :importId"/>
+    search="self.name = :name AND self.importId = :importId">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="technicalTypeSelect" to="technicalTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.AccountType', 'technicalTypeSelect', technicalTypeSelect)"
+      check-message="Invalid technicalTypeSelect"/>
+  </input>
 
   <input file="account_account.csv" separator=";" type="com.axelor.apps.account.db.Account"
     search="self.code = :code AND self.company.id = :_companyId"
     call="com.axelor.csv.script.ImportAccount:importAccount">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="commonPosition" to="commonPosition"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.account.db.Account', 'commonPosition', commonPosition)"
+      check-message="Invalid commonPosition"/>
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.account.db.Account', 'code, company.id', code, _companyId, 'code, company.id', code, _companyId)"
+      check-message="Code and company must be unique"/>
     <bind to="company" search="self.id = :_companyId" update="true"/>
     <bind to="parentAccount"
       search="self.code = :parent_code AND self.company.id = :_companyId" update="true"/>

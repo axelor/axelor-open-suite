@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="budget-grid" title="Budget Line" model="com.axelor.apps.budget.db.Budget"
     orderBy="budgetLevel.id,code">
@@ -334,8 +334,6 @@
     <action name="action-budget-validate-generate-period"/>
     <action name="action-budget-budget-method-generate-periods"/>
     <action name="action-budget-method-compute-total-amount"/>
-    <action name="action-budget-budget-compute-amounts"/>
-    <action name="save"/>
   </action-group>
 
   <action-view name="action-view-budget-budget-export" title="Budget level export"
@@ -356,13 +354,8 @@
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <domain><![CDATA[self.budget.id= :_budgetId AND
-      (self.invoiceLine.invoice.purchaseOrder is null AND
-      self.invoiceLine.invoice.saleOrder is null AND
-      self.invoiceLine.invoice.statusSelect = 3)
-      OR
-      (self.moveLine IS NOT NULL AND
-      self.moveLine.move.statusSelect in (2,3) AND
-      self.moveLine.move.invoice IS NULL)]]></domain>
+      self.moveLine IS NOT NULL AND self.moveLine.move.statusSelect in (2,3) AND
+      (self.moveLine.move.invoice IS NULL OR (self.moveLine.move.invoice.purchaseOrder is null AND self.moveLine.move.invoice.saleOrder is null))]]></domain>
     <context name="_budgetId" expr="eval: id"/>
   </action-view>
   <action-view
@@ -373,10 +366,9 @@
     <view-param name="show-toolbar" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <domain><![CDATA[self.budget.id= :_budgetId AND
-      (self.invoiceLine.invoice.purchaseOrder is not null OR
-      self.invoiceLine.invoice.saleOrder is not null)
-      AND
-      self.invoiceLine.invoice.statusSelect = 3]]>
+      self.moveLine IS NOT NULL AND self.moveLine.move.statusSelect in (2,3) AND
+      (self.moveLine.move.invoice.purchaseOrder is not null OR
+      self.moveLine.move.invoice.saleOrder is not null)]]>
     </domain>
     <context name="_budgetId" expr="eval: id"/>
   </action-view>

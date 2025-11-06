@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -13,9 +13,10 @@
     <integer name="saleOrderInAtiSelect" title="Sale orders ATI/WT"
       selection="base.in.ati.select" default="1"/>
     <string name="saleOrderClientBox" large="true" multiline="true"
-      title="Client box in sale order"/>
+      title="Client box in sale order" translatable="true"/>
     <string name="saleOrderLegalNote" large="true" multiline="true"
-      title="Legal note on sale order" help="Short legal note to be displayed on sales order"/>
+      title="Legal note on sale order" help="Short legal note to be displayed on sales order"
+      translatable="true"/>
     <boolean name="displaySalemanOnPrinting" title="Display saleman on printing"/>
     <boolean name="displayDelCondOnPrinting" title="Display delivery condition on printing"/>
     <boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
@@ -68,6 +69,8 @@
       <field name="saleOrderLegalNote" on="UPDATE"/>
       <field name="isAnalyticDistributionRequired" on="UPDATE"/>
       <field name="saleOrderPrintTemplate" on="UPDATE"/>
+      <field name="defaultHoldBackPercentage" on="UPDATE"/>
+      <field name="cartOrderCreationModeSelect" on="UPDATE"/>
     </track>
   </entity>
 

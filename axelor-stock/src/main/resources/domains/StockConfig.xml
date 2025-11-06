@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -121,6 +121,15 @@
     <many-to-one name="cartStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Transition location (cart)"/>
 
+    <boolean name="isLogisticalFormMultiClientsEnabled"
+      title="Multi clients logistical form" default="false"/>
+    <boolean name="allowInternalStockMoveOnLogisticalForm"
+      title="Allow internal stock move on logistical form" default="false"/>
+    <boolean name="isDisplayPackagingLineDetailInPrinting"
+      title="Logistical form printing detailed" default="true"
+      help="Show or hide the products in the logistical form impression"/>
+    <boolean name="isDisplayAdrDetailInPrinting" title="Show ADR details" default="false"/>
+
     <extra-code><![CDATA[
 		public static final int VALUATION_TYPE_WAP_VALUE = 1;
 		public static final int VALUATION_TYPE_ACCOUNTING_VALUE = 2;
@@ -187,6 +196,12 @@
       <field name="inventoryPrintTemplate" on="UPDATE"/>
       <field name="stockLocationPrintTemplate" on="UPDATE"/>
       <field name="cartStockLocation" on="UPDATE"/>
+      <field name="supplierArrivalCancellationAutomaticMail" on="UPDATE"/>
+      <field name="supplierArrivalCancellationMessageTemplate" on="UPDATE"/>
+      <field name="isLogisticalFormMultiClientsEnabled" on="UPDATE"/>
+      <field name="allowInternalStockMoveOnLogisticalForm" on="UPDATE"/>
+      <field name="isDisplayPackagingLineDetailInPrinting" on="UPDATE"/>
+      <field name="isDisplayAdrDetailInPrinting" on="UPDATE"/>
     </track>
   </entity>
 

@@ -1,4 +1,4 @@
-"importId";"typeSelect";"product_importId";"tax_code";"productFamily_importId";"paymentMode.code";"saleAccount_code";"saleTaxVatSystem1Account_code";"saleTaxVatSystem2Account_code";"saleTax_code";"purchaseAccount_code";"purchaseTaxVatSystem1Account_code";"purchaseTaxVatSystem2Account_code";"purchaseTax_code";"cashAccount_code";"journal_code";"sequence_importId";"bankDetails_importId";"purchFixedAssetsAccount_code";"purchFixedAssetsTaxVatSystem1Account_code";"purchFixedAssetsTaxVatSystem2Account_code";"fixedAssetCategory_importId";"interbankCodeLine_importId";"allowedFinDiscountTaxVatSystem1Account_code";"allowedFinDiscountTaxVatSystem2Account_code";"obtainedFinDiscountTaxVatSystem1Account_code";"obtainedFinDiscountTaxVatSystem2Account_code";"purchVatRegulationAccount_code";"saleVatRegulationAccount_code";"globalAccountingCashAccount_code";"chequeDepositJournal_code";"financialDiscountAccount_code";"vatPendingAccount_code"
+"importId";"typeSelect";"product_importId";"tax_code";"productFamily_importId";"paymentMode_code";"saleAccount_code";"saleTaxVatSystem1Account_code";"saleTaxVatSystem2Account_code";"saleTax_code";"purchaseAccount_code";"purchaseTaxVatSystem1Account_code";"purchaseTaxVatSystem2Account_code";"purchaseTax_code";"cashAccount_code";"journal_code";"sequence_importId";"bankDetails_importId";"purchFixedAssetsAccount_code";"purchFixedAssetsTaxVatSystem1Account_code";"purchFixedAssetsTaxVatSystem2Account_code";"fixedAssetCategory_importId";"interbankCodeLine_importId";"allowedFinDiscountTaxVatSystem1Account_code";"allowedFinDiscountTaxVatSystem2Account_code";"obtainedFinDiscountTaxVatSystem1Account_code";"obtainedFinDiscountTaxVatSystem2Account_code";"purchVatRegulationAccount_code";"saleVatRegulationAccount_code";"globalAccountingCashAccount_code";"chequeDepositJournal_code";"financialDiscountAccount_code";"vatPendingAccount_code"
 "GBR_COA200";2;;"UK_SRT";;;;;;;;2202;2202;;;;;;2202;2202;2202;;;;;;;2550;;;;;2550
 "GBR_COA205";2;;"UK_SRS_20";;;2201;2201;2201;;;;;;;;;;2202;2202;2202;;;;;;;;2560;;;;2560
 "GBR_COA210";2;;"UK_ZRP_EC";;;;;;;;2204;2204;;;;;;;;;;;;;;;2550;;;;;2550
@@ -21,6 +21,6 @@
 "GBR_COA335";3;;;;"OUT_WT";;;;;;;;;1240;"BNK";6200;;;;;;6;;;;;;;;;;
 "GBR_COA340";3;;;;"OUT_CHQ";;;;;;;;;1240;"BNK";6210;;;;;;1;;;;;;;;;;
 "GBR_COA345";3;;;;"OUT_CC";;;;;;;;;1240;"BNK";6220;;;;;;11;;;;;;;;;;
-"GBR_COA350";3;;;;"OUT_DBT";;;;;;;;;1240;"BNK";6230;;;;;;89;;;;;;;;;;
+"GBR_COA350";3;;;;"OUT_DBT";;;;;;;;;1240;"BNK";6230;;;;;;95;;;;;;;;;;
 "GBR_COA355";3;;;;"OUT_CSH";;;;;;;;;1201;"BNK";6240;;;;;;23;;;;;;;;;;
 "GBR_COA360";3;;;;"OUT_OTH";;;;;;;;;1240;"BNK";6260;;;;;;86;;;;;;;;;;

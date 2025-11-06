@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="partner-grid" title="Partners" model="com.axelor.apps.base.db.Partner"
     orderBy="name">
@@ -168,6 +168,9 @@
     onNew="action-group-base-partner-onnew" onLoad="action-group-partner-onload"
     onSave="action-partner-group-onsave" width="large">
     <toolbar>
+      <button name="convertToContactPartnerBtn" title="Convert into a contact partner"
+        icon="fa-user" onClick="save,action-partner-method-change-employee-type"
+        showIf="id != null &amp;&amp; !isContact &amp;&amp; isEmployee &amp;&amp; partnerTypeSelect == 2"/>
       <button name="showMapBtn" title="Map" icon="fa-map-marker"
         onClick="action-partner-method-show-on-map" readonlyIf="!id"/>
     </toolbar>
@@ -511,12 +514,8 @@
         <field name="payerQuality" if-module="axelor-account"
           if="__config__.app.isApp('account')" hideIf="isEmployee"/>
         <field name="salePartnerPriceList" canEdit="false"
-          domain="self.typeSelect = 1 AND self.currency = :currency"
+          onSelect="action-partner-method-sale-partner-price-list-domain"
           form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
-        <field name="chargeBackPurchaseSelect" colSpan="3" if-module="axelor-business-project"
-          if="__config__.app.isApp('business-project')"/>
-        <field name="chargeBackPurchase" colSpan="3" showIf="chargeBackPurchaseSelect == 3"
-          if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
         <panel name="clientPortalAccessPanel" title="Client portal access"
           if-module="axelor-client-portal"
           if="__config__.app.isApp('portal') &amp;&amp; __config__.app.getApp('portal')?.getPortalSelect() == 2">
@@ -550,7 +549,7 @@
         showIf="isSupplier || isSubcontractor" if="__config__.app.isApp('purchase')">
         <field name="purchaseOrderInformation"/>
         <field name="purchasePartnerPriceList" canEdit="false"
-          domain="self.typeSelect = 2 AND self.currency = :currency"
+          onSelect="action-partner-method-purchase-partner-price-list-domain"
           form-view="partner-price-list-form" grid-view="partner-price-list-grid"/>
         <field name="supplierCatalogList" colSpan="12" x-can-copy="true"
           form-view="supplier-catalog-partner-form" grid-view="supplier-catalog-partner-grid"
@@ -610,12 +609,14 @@
           <field name="pickingOrderComments" widget="html" colSpan="12" showTitle="false"/>
         </panel>
       </panel>
-      <panel name="projectPanel" title="Projects"
-        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-        <panel-dashlet name="projectPanel" title="Projects"
-          action="action-partner-view-related-projects" colSpan="12"/>
-        <panel-dashlet name="invoicingProjectPanel" title="Invoicing projects"
-          action="action-partner-view-related-invoicing-projects" colSpan="12"/>
+      <panel name="qualityPanel" title="Quality" showIf="isSupplier || isCustomer"
+        if="__config__.app.isApp('quality')">
+        <panel-dashlet action="action-partner-view-supplier-quality-improvements"
+          showIf="isSupplier" colSpan="12"/>
+        <panel-dashlet action="action-partner-view-customer-quality-improvements"
+          showIf="isCustomer" colSpan="12"/>
+        <panel-dashlet action="action-partner-view-quality-controls"
+          showIf="isSupplier" colSpan="12"/>
       </panel>
     </panel-tabs>
     <panel name="partnerAttrsPanel">
@@ -1525,6 +1526,8 @@
     model="com.axelor.apps.base.db.Partner" if-module="axelor-account">
     <field name="paymentCondition"
       expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
+    <field name="outPaymentCondition"
+      expr="eval: __user__?.activeCompany?.accountConfig?.defPaymentCondition"/>
   </action-record>
 
   <action-method name="action-print-company-phonebook">
@@ -1575,6 +1578,7 @@
     model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-grid"/>
     <view type="form" name="move-line-form"/>
+    <view-param name="search-filters" value="move-line-filters"/>
     <domain>self.partner.id = :partnerId AND self.account.useForPartnerBalance = true</domain>
     <context name="partnerId" expr="eval: id"/>
   </action-view>
@@ -1654,10 +1658,6 @@
     <field name="saleOrderInformation" hidden="true" if="!__config__.app.isApp('sale')"/>
     <field name="payerQuality" hidden="true" if="!__config__.app.isApp('account')"/>
     <field name="salePartnerPriceList" hidden="true" if="!__config__.app.isApp('sale')"/>
-    <field name="chargeBackPurchaseSelect" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="chargeBackPurchase" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
     <field name="saleOrderComments" hidden="true" if="!__config__.app.isApp('sale')"/>
     <field name="purchaseOrderInformation" hidden="true"
       if="!__config__.app.isApp('purchase')"/>
@@ -1729,10 +1729,6 @@
     <field name="saleOrderInformation" hidden="true" if="!__config__.app.isApp('sale')"/>
     <field name="payerQuality" hidden="true" if="!__config__.app.isApp('account')"/>
     <field name="salePartnerPriceList" hidden="true" if="!__config__.app.isApp('sale')"/>
-    <field name="chargeBackPurchaseSelect" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="chargeBackPurchase" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
     <field name="saleOrderComments" hidden="true" if="!__config__.app.isApp('sale')"/>
     <field name="purchaseOrderInformation" hidden="true"
       if="!__config__.app.isApp('purchase')"/>
@@ -1800,19 +1796,7 @@
       expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} MEMBER OF self.concernedModelSet OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
   </action-attrs>
 
-  <action-view name="action-partner-view-related-projects" title="Projects"
-    model="com.axelor.apps.project.db.Project">
-    <view type="grid" name="project-grid"/>
-    <view type="form" name="project-form"/>
-    <domain>self.clientPartner = :id</domain>
-  </action-view>
 
-  <action-view name="action-partner-view-related-invoicing-projects"
-    title="Invoicing projects" model="com.axelor.apps.businessproject.db.InvoicingProject">
-    <view type="grid" name="invoicing-project-grid"/>
-    <view type="form" name="invoicing-project-form"/>
-    <domain>self.project.clientPartner = :id</domain>
-  </action-view>
 
   <action-view name="action-partner-view-wizard-api-sirene-configuration"
     title="Sirene API call" model="com.axelor.utils.db.Wizard">
@@ -1825,4 +1809,38 @@
     <context name="_parentSiret" expr="eval: __this__.registrationCode"/>
   </action-view>
 
+  <action-method name="action-partner-method-sale-partner-price-list-domain">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="getSalePartnerPriceListDomain"/>
+  </action-method>
+
+  <action-method name="action-partner-method-purchase-partner-price-list-domain">
+    <call class="com.axelor.apps.base.web.PartnerController"
+      method="getPurchasePartnerPriceListDomain"/>
+  </action-method>
+
+  <action-view name="action-partner-view-supplier-quality-improvements"
+    model="com.axelor.apps.quality.db.QualityImprovement" title="Supplier quality improvements">
+    <view type="grid" name="quality-improvement-partner-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <domain>self.qiIdentification.supplierPartner = :partner</domain>
+    <context name="partner" expr="eval:__self__"/>
+  </action-view>
+
+  <action-view name="action-partner-view-customer-quality-improvements"
+    model="com.axelor.apps.quality.db.QualityImprovement" title="Customer quality improvements">
+    <view type="grid" name="quality-improvement-partner-grid"/>
+    <view type="form" name="quality-improvement-form"/>
+    <domain>self.qiIdentification.customerPartner = :partner</domain>
+    <context name="partner" expr="eval:__self__"/>
+  </action-view>
+
+  <action-view name="action-partner-view-quality-controls"
+    model="com.axelor.apps.quality.db.QualityControl" title="Quality audits">
+    <view type="grid" name="quality-control-grid"/>
+    <view type="form" name="quality-control-form"/>
+    <domain>self.relatedToSelectId = :partnerId AND self.relatedToSelect =
+      'com.axelor.apps.base.db.Partner'</domain>
+    <context name="partnerId" expr="eval:__self__?.id"/>
+  </action-view>
 </object-views>

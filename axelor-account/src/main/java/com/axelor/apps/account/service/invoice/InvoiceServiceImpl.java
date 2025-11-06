@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -66,6 +67,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -198,7 +200,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     Invoice invoice1 = invoiceGenerator.generate();
     Map<String, Object> invoiceMap = this.getComputeInvoiceMap(invoice1);
 
-    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        && invoice1.getAdvancePaymentInvoiceSet() == null) {
       invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
       invoiceMap.put("advancePaymentInvoiceSet", invoice1.getAdvancePaymentInvoiceSet());
     }
@@ -233,7 +236,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   public void validateAndVentilate(Invoice invoice) throws AxelorException {
     validate(invoice);
-    ventilate(invoice);
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      ventilate(invoice);
+    }
   }
 
   /**
@@ -281,7 +286,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public void ventilate(Invoice invoice) throws AxelorException {
     ventilateProcess(invoice);
-    if (invoice.getInvoiceAutomaticMail()) {
+    int operationTypeSelect = invoice.getOperationTypeSelect();
+    if (invoice.getInvoiceAutomaticMail()
+        && operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        && operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
       sendMail(invoice, invoice.getInvoiceMessageTemplate());
     }
   }
@@ -451,7 +459,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public String checkNotImputedRefunds(Invoice invoice) throws AxelorException {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
-    if (!accountConfig.getAutoReconcileOnInvoice()) {
+    if (!accountConfig.getAutoReconcileOnInvoice()
+        || !Optional.of(invoice)
+            .map(Invoice::getPartner)
+            .map(Partner::getIsCompensation)
+            .orElse(true)) {
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
         long clientRefundsAmount =
             getRefundsAmount(
@@ -602,6 +614,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             null,
             null,
             tradingName,
+            null,
             null) {
 
           @Override
@@ -701,6 +714,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             null,
             null,
             tradingName,
+            null,
             null) {
 
           @Override
@@ -1161,15 +1175,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public void applyCutOffDates(
-      Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
+  public void applyCutOffDates(Invoice invoice) {
     if (CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
       invoice
           .getInvoiceLineList()
-          .forEach(
-              invoiceLine ->
-                  invoiceLineService.applyCutOffDates(
-                      invoiceLine, invoice, cutOffStartDate, cutOffEndDate));
+          .forEach(invoiceLine -> invoiceLineService.applyCutOffDates(invoiceLine, invoice));
     }
   }
 
@@ -1191,8 +1201,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   protected void updateUnpaidInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm) {
-    invoiceTerm.setPaymentMode(invoice.getPaymentMode());
-    invoiceTerm.setBankDetails(invoice.getBankDetails());
+    if (invoiceTerm.getPaymentMode() == null) {
+      invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+    }
+    if (invoiceTerm.getBankDetails() == null) {
+      invoiceTerm.setBankDetails(invoice.getBankDetails());
+    }
   }
 
   @Override
@@ -1266,5 +1280,39 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           .filter(it -> it.getAmount().compareTo(it.getAmountRemaining()) == 0)
           .forEach(it -> it.setThirdPartyPayerPartner(invoice.getThirdPartyPayerPartner()));
     }
+  }
+
+  @Override
+  public FiscalPosition manageFiscalPositionFromCompanyTaxNumber(Invoice invoice) {
+    FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+    TaxNumber companyTaxNumber = invoice.getCompanyTaxNumber();
+
+    if (companyTaxNumber != null) {
+      Set<FiscalPosition> fiscalPositionSet = companyTaxNumber.getFiscalPositionSet();
+      fiscalPosition = (fiscalPositionSet.size() == 1) ? fiscalPositionSet.iterator().next() : null;
+    }
+
+    return fiscalPosition;
+  }
+
+  @Override
+  public TaxNumber getDefaultCompanyTaxNumber(Invoice invoice) {
+    TaxNumber taxNumber = null;
+    Company company = invoice.getCompany();
+
+    if (company != null) {
+      Partner partner = company.getPartner();
+      if (partner != null) {
+        String partnerTaxNumber = partner.getTaxNbr();
+        if (StringUtils.notEmpty(partnerTaxNumber)) {
+          taxNumber =
+              company.getTaxNumberList().stream()
+                  .filter(taxNb -> partnerTaxNumber.equals(taxNb.getTaxNbr()))
+                  .findFirst()
+                  .orElse(null);
+        }
+      }
+    }
+    return taxNumber;
   }
 }

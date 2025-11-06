@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="advance-payment-grid" title="Advance Payments"
     model="com.axelor.apps.sale.db.AdvancePayment" orderBy="advancePaymentDate">
@@ -10,7 +10,7 @@
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="paymentMode" if-module="axelor-supplychain" form-view="payment-mode-form"
       grid-view="payment-mode-grid" if="__config__.app.isApp('supplychain')"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="cancelBtn" icon="fa-times-circle"
       onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
   </grid>
@@ -30,7 +30,7 @@
     </panel>
     <panel showIf="id" name="otherDetailsPanel">
       <field name="move" form-view="move-form" grid-view="move-grid"/>
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <button name="cancelBtn" icon="fa-times-circle"
         onClick="action-advance-payment-method-cancel" readonlyIf="statusSelect == 2"/>
     </panel>

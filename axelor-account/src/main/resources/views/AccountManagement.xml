@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="account-management-payment-mode-grid" title="Account Managements"
     model="com.axelor.apps.account.db.AccountManagement" editable="true"
@@ -72,8 +72,6 @@
       target="//panel[@name='paymentConfigPanel']/field[@name='globalAccountingCashAccount']">
       <attribute name="showIf"
         value="paymentMode.canSelectInPaymentSession || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5)"/>
-      <attribute name="requiredIf"
-        value="typeSelect == 3 &amp;&amp; (paymentMode.canSelectInPaymentSession || (paymentMode.typeSelect == 7 &amp;&amp; paymentMode.inOutSelect == 1 &amp;&amp; paymentMode.accountingTriggerSelect == 5))"/>
       <insert position="after">
         <field name="chequeDepositJournal"
           domain="self.company = :company AND self.statusSelect = 1 AND self.journalType.technicalTypeSelect = 4"
@@ -137,6 +135,10 @@
           if-module="axelor-account" form-view="account-form" grid-view="account-grid"
           if="__config__.app.isApp('account')" canEdit="false" showIf="tax != null" colSpan="6"/>
       </insert>
+    </extend>
+    <extend target="//field[@name='analyticDistributionTemplate']">
+      <attribute name="onSelect"
+        value="action-account-management-method-set-domain-analytic-distribution-template"/>
     </extend>
   </form>
 
@@ -212,5 +214,11 @@
     model="com.axelor.apps.account.db.AccountManagement">
     <field name="typeSelect" expr="eval: 3"/>
   </action-record>
+
+  <action-method
+    name="action-account-management-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.AccountManagementController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 
 </object-views>

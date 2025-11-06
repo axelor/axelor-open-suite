@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="bank-statement-rule-grid" title="Bank statement rules"
     model="com.axelor.apps.bankpayment.db.BankStatementRule" edit-icon="true"
@@ -54,7 +54,8 @@
         form-view="bank-statement-query-form" grid-view="bank-statement-query-grid"
         hideIf="partnerFetchMethodSelect == 3"/>
       <field name="counterpartAccount" hideIf="partnerFetchMethodSelect == 3"
-        onSelect="action-bank-statement-rule-attrs-set-counterpart-account-domain"/>
+        onSelect="action-bank-statement-rule-attrs-set-counterpart-account-domain"
+        onChange="action-bank-statement-rule-record-counterpart-account-on-change"/>
       <field name="searchLabel" hideIf="partnerFetchMethodSelect == 3"/>
       <field name="letterToInvoice" readonlyIf="partnerFetchMethodSelect == 3"/>
       <field name="specificTax"/>
@@ -66,6 +67,14 @@
         height="80" x-code-theme="groovy" colSpan="12"/>
       <field name="entryDescriptionComputation" widget="code-editor" x-code-syntax="groovy"
         height="150" x-code-theme="groovy" colSpan="12"/>
+    </panel>
+    <panel name="analyticPanel" title="Analytic"
+      showIf="counterpartAccount.analyticDistributionAuthorized">
+      <field name="analyticDistributionTemplate"
+        requiredIf="counterpartAccount.analyticDistributionRequiredOnMoveLines"
+        onSelect="action-bank-statement-rule-method-set-domain-analytic-distribution-template"/>
+      <field name="counterpartAccount.analyticDistributionRequiredOnMoveLines" hidden="true"/>
+      <field name="counterpartAccount.analyticDistributionAuthorized" hidden="true"/>
     </panel>
   </form>
 
@@ -102,5 +111,18 @@
     <field name="partnerFetchMethodSelect" expr="eval: ruleTypeSelect == 3 ? 3 : 1"/>
     <field name="letterToInvoice" expr="eval: true" if="ruleTypeSelect == 3"/>
   </action-record>
+
+  <action-record
+    name="action-bank-statement-rule-record-counterpart-account-on-change"
+    model="com.axelor.apps.bankpayment.db.BankStatementRule">
+    <field name="analyticDistributionTemplate"
+      expr="eval: counterpartAccount?.analyticDistributionTemplate"/>
+  </action-record>
+
+  <action-method
+    name="action-bank-statement-rule-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.bankpayment.web.BankStatementRuleController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 
 </object-views>

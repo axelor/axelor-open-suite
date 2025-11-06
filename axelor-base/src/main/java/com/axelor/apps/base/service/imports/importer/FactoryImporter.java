@@ -18,36 +18,38 @@
  */
 package com.axelor.apps.base.service.imports.importer;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import java.io.File;
 
 public class FactoryImporter {
 
-  public Importer createImporter(ImportConfiguration importConfiguration) {
-
-    Importer importer;
-
-    if (importConfiguration.getTypeSelect().equals(ImportConfigurationRepository.TYPE_XML)) {
-      importer = Beans.get(ImporterXML.class);
-    } else {
-      importer = Beans.get(ImporterCSV.class);
-    }
-
+  public Importer createImporter(ImportConfiguration importConfiguration) throws AxelorException {
+    Importer importer = getImporter(importConfiguration);
     return importer.init(importConfiguration);
   }
 
-  public Importer createImporter(ImportConfiguration importConfiguration, File workspace) {
-
-    Importer importer;
-
-    if (importConfiguration.getTypeSelect().equals(ImportConfigurationRepository.TYPE_XML)) {
-      importer = Beans.get(ImporterXML.class);
-    } else {
-      importer = Beans.get(ImporterCSV.class);
-    }
-
+  public Importer createImporter(ImportConfiguration importConfiguration, File workspace)
+      throws AxelorException {
+    Importer importer = getImporter(importConfiguration);
     return importer.init(importConfiguration, workspace);
+  }
+
+  protected Importer getImporter(ImportConfiguration importConfiguration) throws AxelorException {
+    switch (importConfiguration.getTypeSelect()) {
+      case ImportConfigurationRepository.TYPE_XML:
+        return Beans.get(ImporterXML.class);
+      case ImportConfigurationRepository.TYPE_CSV:
+        return Beans.get(ImporterCSV.class);
+      default:
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_NO_VALUE,
+            I18n.get(BaseExceptionMessage.IMPORT_CONFIGURATION_TYPE_MISSING));
+    }
   }
 }

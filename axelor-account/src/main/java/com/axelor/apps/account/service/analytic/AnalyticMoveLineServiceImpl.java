@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
@@ -166,8 +167,10 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
               ? accountingSituation.getAnalyticDistributionTemplate()
               : null;
 
-    } else if (accountConfig.getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+    } else if (List.of(
+            AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT,
+            AccountConfigRepository.DISTRIBUTION_TYPE_FREE)
+        .contains(accountConfig.getAnalyticDistributionTypeSelect())) {
       if (product != null) {
         analyticDistributionTemplate =
             accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(
@@ -338,8 +341,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
-  public AnalyticMoveLine reverse(
-      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
+  public AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine) {
 
     MoveLine moveLine = analyticMoveLine.getMoveLine();
     AnalyticMoveLine reverse = analyticMoveLineRepository.copy(analyticMoveLine, false);
@@ -355,17 +357,34 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   @Transactional
-  public AnalyticMoveLine reverseAndPersist(
-      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
-    return analyticMoveLineRepository.save(reverse(analyticMoveLine, analyticAccount));
+  public AnalyticMoveLine reverseAndPersist(AnalyticMoveLine analyticMoveLine) {
+    return analyticMoveLineRepository.save(reverse(analyticMoveLine));
   }
 
   @Override
   @Transactional
   public AnalyticMoveLine generateAnalyticMoveLine(
-      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount, BigDecimal percentage) {
 
     AnalyticMoveLine newAnalyticmoveLine = analyticMoveLineRepository.copy(analyticMoveLine, false);
+    if (percentage.compareTo(new BigDecimal(100)) != 0) {
+      newAnalyticmoveLine.setPercentage(
+          newAnalyticmoveLine
+              .getPercentage()
+              .multiply(percentage)
+              .divide(
+                  new BigDecimal(100),
+                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                  RoundingMode.HALF_UP));
+      newAnalyticmoveLine.setAmount(
+          newAnalyticmoveLine
+              .getAmount()
+              .multiply(percentage)
+              .divide(
+                  new BigDecimal(100),
+                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                  RoundingMode.HALF_UP));
+    }
 
     MoveLine moveLine = analyticMoveLine.getMoveLine();
     newAnalyticmoveLine.setOriginAnalyticMoveLine(analyticMoveLine);
@@ -396,6 +415,16 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     String idList = StringHelper.getIdListString(analyticAxisList);
     domain.append(" AND self.id IN (").append(idList).append(")");
     return domain.toString();
+  }
+
+  @Override
+  public String getAnalyticJournalDomain(Company company) {
+    if (company == null) {
+      return "self.id IN (0)";
+    }
+    return String.format(
+        "self.statusSelect = %s AND (self.company is null OR self.company.id = %s)",
+        AnalyticJournalRepository.STATUS_ACTIVE, company.getId());
   }
 
   @Override

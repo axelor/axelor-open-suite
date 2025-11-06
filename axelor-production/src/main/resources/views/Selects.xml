@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
   <selection name="production.manuf.order.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Canceled</option>
-    <option value="3">Planned</option>
-    <option value="4">In progress</option>
-    <option value="5">Standby</option>
-    <option value="6">Finished</option>
-    <option value="7">Merged</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="red">Canceled</option>
+    <option value="3" color="purple">Planned</option>
+    <option value="4" color="orange">In progress</option>
+    <option value="5" color="grey">Standby</option>
+    <option value="6" color="green">Finished</option>
+    <option value="7" color="teal">Merged</option>
   </selection>
 
   <selection name="production.manuf.operation.continuity.select">
@@ -22,17 +22,17 @@
     <option value="2">Continuity by default</option>
   </selection>
   <selection name="production.bill.of.material.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
-    <option value="3">Applicable</option>
-    <option value="4">Obsolete</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="purple">Validated</option>
+    <option value="3" color="green">Applicable</option>
+    <option value="4" color="red">Obsolete</option>
   </selection>
 
   <selection name="production.prod.process.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Validated</option>
-    <option value="3">Applicable</option>
-    <option value="4">Obsolete</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="purple">Validated</option>
+    <option value="3" color="green">Applicable</option>
+    <option value="4" color="red">Obsolete</option>
   </selection>
 
   <selection name="production.manuf.order.stock.move.realize.order.select">
@@ -130,6 +130,7 @@
   <selection name="production.batch.action.select">
     <option value="1">Compute work in progress valuation</option>
     <option value="2">Fill SOP real values</option>
+    <option value="3">Generate production order for sale orders</option>
   </selection>
 
   <selection name="production.cost.sheet.calculation.type.select">
@@ -145,9 +146,9 @@
   </selection>
 
   <selection name="production.cost.calculations.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Costs computed</option>
-    <option value="3">Costs updated</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Costs computed</option>
+    <option value="3" color="brown">Costs updated</option>
   </selection>
 
   <selection name='trace.back.origin.select' id="trace.back.origin.select.production">
@@ -155,11 +156,11 @@
   </selection>
 
   <selection name="production.order.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Planned</option>
-    <option value="3">Started</option>
-    <option value="4">Canceled</option>
-    <option value="5">Completed</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="purple">Planned</option>
+    <option value="3" color="green">Started</option>
+    <option value="4" color="red">Canceled</option>
+    <option value="5" color="teal">Completed</option>
   </selection>
 
   <selection name="batch.batch.type.select" id="production.batch.batch.type.select">
@@ -177,9 +178,9 @@
   </selection>
 
   <selection name="production.bill.of.material.import.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Imported</option>
-    <option value="3">Validated</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="indigo">Imported</option>
+    <option value="3" color="green">Validated</option>
   </selection>
 
   <selection name="stock.tracking.number.origin.move.type.select"
@@ -190,6 +191,7 @@
   <selection name="production.sale.order.line.details.type.select">
     <option value="1" icon="fa-cpu-fill">Component</option>
     <option value="2" icon="fa-cash-coin">Budget item</option>
+    <option value="3" icon="fa-stopwatch-fill">Operation</option>
   </selection>
 
   <selection name="purchase.purchase.order.type.select"

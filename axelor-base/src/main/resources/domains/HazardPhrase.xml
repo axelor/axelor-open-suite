@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="HazardPhrase">
+
+    <string name="phraseCode" title="Phrase code" required="true"/>
+    <string name="phrase" title="Hazard phrase" large="true"/>
+    <string name="clpDesignation" title="Designation" large="true"/>
+    <many-to-many name="productSet" ref="com.axelor.apps.base.db.Product"
+      title="Products"/>
+  </entity>
+
+</domain-models>

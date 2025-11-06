@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form id="user-form-project" name="user-form" title="User" model="com.axelor.auth.db.User"
     extension="true">
@@ -23,6 +23,10 @@
           domain=":__self__ member of self.membersUserSet AND (self.archived = false OR self.archived is null) AND (:activeCompany IS NULL OR self.company IS NULL OR self.company = :activeCompany)"
           if-module="axelor-project" if="__config__.app.isApp('project')"/>
         <field name="isIncludeSubProjects" showIf="activeProject"/>
+        <field name="favouriteProjectSet" colSpan="12"
+          domain=":__self__ member of self.membersUserSet" if-module="axelor-project"
+          if="__config__.app.isApp('project')" widget="TagSelect" canNew="false"
+          form-view="project-form" grid-view="project-grid"/>
       </insert>
     </extend>
 
@@ -37,6 +41,9 @@
           domain=":__self__ member of self.membersUserSet AND (self.archived = false OR self.archived is null) AND (:activeCompany IS NULL OR self.company IS NULL OR self.company = :activeCompany)"
           if-module="axelor-project" if="__config__.app.isApp('project')"/>
         <field name="isIncludeSubProjects" showIf="activeProject"/>
+        <field name="favouriteProjectSet" domain=":__self__ member of self.membersUserSet"
+          if-module="axelor-project" if="__config__.app.isApp('project')" widget="TagSelect"
+          canNew="false" form-view="project-form" grid-view="project-grid"/>
       </insert>
     </extend>
 

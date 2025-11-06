@@ -46,11 +46,12 @@ import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.service.KilometricService;
+import com.axelor.apps.hr.service.KilometricExpenseService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseComputationService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineComputeService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDurationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateService;
@@ -144,9 +145,11 @@ public class HumanResourceMobileController {
                 Long.valueOf(request.getData().get("kilometricAllowParam").toString())));
 
         expenseLine.setTotalAmount(
-            Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
+            Beans.get(KilometricExpenseService.class)
+                .computeKilometricExpense(expenseLine, employee));
 
         expenseLine.setUntaxedAmount(expenseLine.getTotalAmount());
+        Beans.get(ExpenseLineComputeService.class).setCompanyAmounts(expenseLine, expense);
       }
 
       expense.addKilometricExpenseLineListItem(expenseLine);
@@ -318,6 +321,7 @@ public class HumanResourceMobileController {
           }
         }
         expense.addGeneralExpenseLineListItem(expenseLine);
+        Beans.get(ExpenseLineComputeService.class).setCompanyAmounts(expenseLine, expense);
         expense = expenseComputationService.compute(expense);
 
         Beans.get(ExpenseRepository.class).save(expense);

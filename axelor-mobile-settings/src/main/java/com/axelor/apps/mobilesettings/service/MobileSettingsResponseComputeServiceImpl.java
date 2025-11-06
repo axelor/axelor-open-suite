@@ -66,6 +66,7 @@ public class MobileSettingsResponseComputeServiceImpl
         getApps(appMobileSettings),
         appMobileSettings.getIsLoginUserQrcodeEnabled(),
         appMobileSettings.getIsTrackerMessageEnabled(),
+        appMobileSettings.getIsInboxAccessEnabled(),
         checkConfigWithRoles(
             appMobileSettings.getIsInventoryValidationEnabled(),
             appMobileSettings.getInventoryValidationRoleSet()),
@@ -116,7 +117,8 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsRenamingAllowed(),
         appMobileSettings.getIsFolderCreationAllowed(),
         appMobileSettings.getIsFileCreationAllowed(),
-        appMobileSettings.getIsFileDeletionAllowed());
+        appMobileSettings.getIsFileDeletionAllowed(),
+        appMobileSettings.getDefaultQiDetectionId());
   }
 
   protected List<Long> getAuthorizedDashboardIdList(AppMobileSettings appMobileSettings) {
@@ -268,7 +270,16 @@ public class MobileSettingsResponseComputeServiceImpl
                     .getAuthorizedRoles()),
             getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_PURCHASE)
                 .getIsCustomizeMenuEnabled(),
-            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_PURCHASE)));
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_PURCHASE)),
+        new MobileConfigResponse(
+            MobileConfigRepository.APP_SEQUENCE_MAINTENANCE,
+            checkConfigWithRoles(
+                appMobileSettings.getIsMaintenanceAppEnabled(),
+                getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_MAINTENANCE)
+                    .getAuthorizedRoles()),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_MAINTENANCE)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_MAINTENANCE)));
   }
 
   protected List<MobileMenuResponse> getAccessibleMenusFromApp(String appSequence) {

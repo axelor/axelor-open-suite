@@ -54,6 +54,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
@@ -437,7 +438,7 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
     try {
-      saleOrder = Beans.get(SaleOrderService.class).computeEndOfValidityDate(saleOrder);
+      saleOrder = Beans.get(SaleOrderDateService.class).computeEndOfValidityDate(saleOrder);
       response.setValue("endOfValidityDate", saleOrder.getEndOfValidityDate());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -690,6 +691,7 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     SaleOrder copiedSO =
         Beans.get(SaleOrderService.class).separateInNewQuotation(saleOrder, saleOrderLines);
+    response.setReload(true);
     response.setView(
         ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="opportunity-grid" title="Opportunities"
     model="com.axelor.apps.crm.db.Opportunity"
@@ -205,9 +205,13 @@
         if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">
         <field name="customerDescription" showTitle="false" colSpan="12" widget="html"/>
       </panel>
-      <panel-related name="saleOrderListPanel" if="__config__.app.isApp('sale')"
-        if-module="axelor-sale" title="Sale quotations/orders" field="saleOrderList"
-        form-view="sale-order-form" grid-view="sale-order-opportunity-grid" canNew="false"/>
+      <panel if="__config__.app.isApp('sale')" if-module="axelor-sale"
+        name="saleOrderListPanel" title="Sale quotations/orders">
+        <button name="convertIntoQuotationItemBtn" title="Create a quotation" link=""
+          icon="fa-file-earmark-text" onClick="save,action-sale-group-generate-sale-order"/>
+        <field name="saleOrderList" form-view="sale-order-form"
+          grid-view="sale-order-opportunity-grid" canNew="false" colSpan="12"/>
+      </panel>
     </panel-tabs>
 
     <panel name="otherDetailsPanel" sidebar="true">
@@ -217,11 +221,14 @@
         readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
         canCollapse="true">
         <field name="user" canNew="false" canView="false" canEdit="false"
-          form-view="user-form" grid-view="user-grid"/>
+          form-view="user-form" grid-view="user-grid"
+          onChange="action-opportunity-group-set-default-values"
+          onSelect="action-opportunity-attrs-set-user-domain"/>
         <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form"
           grid-view="company-grid" required="true"/>
         <field if="__config__.app.getApp('base')?.getTeamManagement()" name="team"
-          canEdit="false" form-view="team-form" grid-view="team-grid"/>
+          canEdit="false" form-view="team-form" grid-view="team-grid"
+          onSelect="action-opportunity-attrs-set-team-domain"/>
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" canEdit="false" domain="self.company = :company"
           form-view="trading-name-form" grid-view="trading-name-grid"/>
@@ -730,5 +737,34 @@
     model="com.axelor.apps.crm.db.Opportunity">
     <field name="partner" expr="eval: contact?.mainPartner" if="!partner"/>
   </action-record>
+
+  <action-group name="action-opportunity-group-set-default-values">
+    <action name="action-opportunity-record-set-team"/>
+    <action name="action-opportunity-record-set-company"/>
+  </action-group>
+
+  <action-record name="action-opportunity-record-set-team"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="team" expr="eval: user?.activeTeam"/>
+  </action-record>
+
+  <action-record name="action-opportunity-record-set-company"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="company" expr="eval: user?.activeCompany"/>
+  </action-record>
+
+  <action-attrs name="action-opportunity-attrs-set-team-domain">
+    <attribute for="team" if="user" name="domain"
+      expr="eval: &quot; :user member of self.members &quot;"/>
+    <attribute for="team" if="!user" name="domain" expr="eval: &quot; self.id != 0 &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-opportunity-attrs-set-user-domain">
+    <attribute for="user" if="team &amp;&amp; !team?.members?.empty" name="domain"
+      expr="eval: &quot; self.id IN (${team?.members?.collect{it.id}.join(',')}) &quot;"/>
+    <attribute for="user" if="team &amp;&amp; team?.members?.empty" name="domain"
+      expr="eval: &quot; self.id IN (0) &quot;"/>
+    <attribute for="user" if="!team" name="domain" expr="eval: &quot; self.id != 0 &quot;"/>
+  </action-attrs>
 
 </object-views>

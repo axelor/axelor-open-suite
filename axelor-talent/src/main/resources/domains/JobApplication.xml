@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="talent" package="com.axelor.apps.talent.db"/>
 
@@ -36,9 +36,9 @@
     <date name="availabilityFrom" title="Availability from"/>
     <string name="description" title="Description" large="true"/>
     <many-to-one name="hiringStage" ref="com.axelor.apps.talent.db.HiringStage"
-      title="Hiring stage"/>
+      title="Stage"/>
     <string name="reasonNotHired" title="Reason not hired" large="true"/>
-    <many-to-many name="skillSet" title="Skills tag" ref="Skill"/>
+    <many-to-many name="skillSet" title="Skills" ref="Skill"/>
     <many-to-one name="picture" ref="com.axelor.meta.db.MetaFile" title="Photo"
       initParam="true"/>
     <date name="creationDate" title="Date of application"/>
@@ -46,17 +46,56 @@
     <string name="fax" title="Fax"/>
     <many-to-one name="employeeAddress" title="Address"
       ref="com.axelor.apps.base.db.Address"/>
-    <many-to-one name="resume" title="JobApplication.resume"
-      ref="com.axelor.meta.db.MetaFile"/>
+    <many-to-one name="resume" title="CV" ref="com.axelor.meta.db.MetaFile"/>
     <many-to-one name="dmsFile" ref="com.axelor.dms.db.DMSFile"/>
+
+    <string name="title"/>
+    <string name="function" column="function_id"/>
+    <string name="evaluation" large="true"/>
+    <string name="commentary" large="true"/>
+    <string name="currentSalary" title="Current salary"/>
+
+    <integer name="familyStatusSelect" selection="job.application.family.status.select"
+      title="Family status"/>
+    <date name="dateOfBirth"/>
+    <many-to-one ref="com.axelor.apps.base.db.Citizenship" name="citizenship"/>
+    <many-to-one name="hrManager" ref="com.axelor.apps.hr.db.Employee"
+      title="HR Manager"/>
+    <many-to-one name="company" ref="com.axelor.apps.base.db.Company"/>
+    <many-to-one name="service" ref="com.axelor.apps.base.db.CompanyDepartment"
+      title="Company Department"/>
+    <many-to-one ref="com.axelor.apps.base.db.Currency" name="currency"/>
+    <many-to-one ref="com.axelor.meta.db.MetaFile" name="cv"/>
+    <one-to-many ref="com.axelor.apps.talent.db.Education" name="educationList"
+      title="Education" mappedBy="jobApplicant"/>
+    <one-to-many ref="com.axelor.apps.talent.db.Experience" name="experienceList"
+      title="Experiences" mappedBy="jobApplicant"/>
+    <one-to-many ref="com.axelor.apps.talent.db.Certification" name="certificationList"
+      title="Certifications" mappedBy="jobApplicant"/>
+    <one-to-many ref="com.axelor.apps.hr.db.EmploymentContract"
+      name="proposedContractList" title="Proposed contracts"/>
+    <many-to-many name="languageSet" title="Languages"
+      ref="com.axelor.apps.base.db.Language"/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final Integer STATUS_OPEN = 0;
 	   			public static final Integer STATUS_HIRED = 1;
 	   			public static final Integer STATUS_REJECTED = 2;
 	   			public static final Integer STATUS_CANCELLED = 3;
+
+	   			public static final Integer FAMILY_STATUS_SINGLE = 0;
+	   			public static final Integer FAMILY_STATUS_MARRIED = 1;
+	   			public static final Integer FAMILY_STATUS_PARTNERSHIP = 2;
+	   			public static final Integer FAMILY_STATUS_LIVING_TOGETHER = 3;
+	   			public static final Integer FAMILY_STATUS_DIVORCED = 4;
+	   			public static final Integer FAMILY_STATUS_WIDOW = 5;
+	   			public static final Integer FAMILY_STATUS_SEPARATED = 6;
 	   		]]>
     </extra-code>
+
+    <entity-listener
+      class="com.axelor.apps.talent.db.repo.JobApplicationEntityListener"/>
   </entity>
 
 </domain-models>

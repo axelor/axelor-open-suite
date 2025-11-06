@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="analytic-move-line-grid" title="Analytic Move Lines"
     model="com.axelor.apps.account.db.AnalyticMoveLine">
@@ -41,8 +41,6 @@
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="date"/>
-    <field name="project" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project')"/>
     <field name="typeSelect"/>
   </grid>
 
@@ -76,7 +74,7 @@
     <panel name="mainPanel">
       <field name="analyticAxis"
         onSelect="action-method-domain-onselect-axis-analytic-move-line"
-        onChange="action-record-onchange-axis-analytic-move-line"/>
+        onChange="action-record-onchange-axis-analytic-move-line" required="true"/>
       <field name="analyticAccount" onSelect="action-group-domain-onselect-analytic-account"
         readonlyIf="!analyticAxis"/>
       <field name="percentage" min="0" max="100"
@@ -87,28 +85,24 @@
 
   <form name="analytic-move-line-form" title="Analytic Move Line"
     model="com.axelor.apps.account.db.AnalyticMoveLine"
-    onNew="action-analytic-move-line-record-currency,action-analytic-move-line-attrs-title-project"
-    onLoad="action-analytic-move-line-attrs-title-project" width="large">
+    onNew="action-analytic-move-line-record-currency"
+    onSave="save,action-analytic-move-line-method-refresh-axis" width="large">
     <panel name="mainPanel">
       <field name="analyticJournal" form-view="analytic-journal-form"
         grid-view="analytic-journal-grid"
-        onSelect="action-attrs-domain-onselect-journal-analytic-move-line"/>
+        onSelect="action-method-domain-onselect-journal-analytic-move-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onSelect="action-method-domain-onselect-axis-analytic-move-line"
         onChange="action-record-onchange-axis-analytic-move-line"/>
       <field name="analyticAccount" form-view="analytic-account-form"
         grid-view="analytic-account-grid" onSelect="action-group-domain-onselect-analytic-account"/>
       <field name="date"/>
-      <field name="percentage" min="0" max="100"/>
+      <field name="percentage" min="0" max="100"
+        onChange="action-analytic-move-line-method-compute-amount"/>
       <field name="originalPieceAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
       <field name="amount" x-scale="currency.numberOfDecimals"/>
       <field name="currency" canEdit="false" form-view="currency-form"
         grid-view="currency-grid"/>
-      <field name="project"
-        domain="self.analyticDistributionTemplate != null AND self.isBusinessProject = true"
-        if-module="axelor-business-project" form-view="business-project-form"
-        grid-view="project-grid" if="__config__.app.isApp('business-project')"
-        title="Business project"/>
       <field name="account" onSelect="action-analytic-move-line-attrs-account-domain"
         onChange="action-analytic-move-line-record-account-onchange"/>
       <field name="accountType"
@@ -138,9 +132,9 @@
     <panel name="mainPanel">
       <field name="analyticJournal" grid-view="analytic-journal-grid"
         form-view="analytic-journal-form"
-        onSelect="action-attrs-domain-onselect-journal-analytic-move-line"/>
+        onSelect="action-method-domain-onselect-journal-analytic-move-line"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
-        onSelect="action-method-domain-onselect-axis-analytic-move-line"/>
+        onSelect="action-method-domain-onselect-axis-analytic-move-line" required="true"/>
       <field name="analyticAccount" showIf="analyticAxis" grid-view="analytic-account-grid"
         form-view="analytic-account-form" onSelect="action-group-domain-onselect-analytic-account"/>
       <field name="accountType" grid-view="account-type-grid" form-view="account-type-form"/>
@@ -149,8 +143,6 @@
       <field name="originalPieceAmount" aggregate="sum" x-scale="currency.numberOfDecimals"/>
       <field name="amount" colSpan="4" readonly="true" x-scale="currency.numberOfDecimals"/>
       <field name="date" colSpan="4"/>
-      <field name="project" grid-view="project-grid" form-view="business-project-form"
-        if-module="axelor-business-project" if="__config__.app.isApp('business-project')"/>
       <field name="typeSelect"/>
       <field name="currency" hidden="true" grid-view="currency-grid" form-view="currency-form"/>
       <field name="currency.numberOfDecimals" hidden="true"/>
@@ -183,12 +175,7 @@
       expr="eval: 'self.accountType = :accountType AND self.statusSelect = 1'" if="accountType"/>
   </action-attrs>
 
-  <action-attrs if-module="axelor-business-project"
-    name="action-analytic-move-line-attrs-title-project">
-    <attribute name="title" for="project"
-      expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
-      if="__config__.app.isApp('project') &amp;&amp; !com.google.common.base.Strings.isNullOrEmpty(__config__.app.getApp('project')?.getProjectLabel())"/>
-  </action-attrs>
+
 
   <action-attrs if-module="axelor-supplychain"
     name="action-analytic-move-line-attrs-set-original-piece-amount">
@@ -250,7 +237,6 @@
 
   <search-filters name="analytic-move-line-filters"
     model="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic move line filters">
-    <field name="project" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <filter name="analytic-move-line-filters-type-select" title="Real (accounting)">
       <domain>self.typeSelect = 3</domain>
     </filter>
@@ -261,17 +247,10 @@
       method="setAnalyticAxisDomain"/>
   </action-method>
 
-  <action-attrs name="action-attrs-domain-onselect-journal-analytic-move-line">
-    <attribute name="domain" for="analyticJournal"
-      expr="eval: &quot;self.statusSelect = 1 AND (self.company is null OR self.company.id = ${analyticAxis.company.id} ) &quot;"
-      if="analyticAxis &amp;&amp; analyticAxis.company"/>
-    <attribute name="domain" for="analyticJournal"
-      expr="eval: &quot;self.statusSelect = 1 AND (self.company is null OR self.company.id = ${__parent__?.parentContext?.company?.id?:__parent__?.move?.company?.id}) &quot;"
-      if="!(analyticAxis?.company) &amp;&amp; __parent__"/>
-    <attribute name="domain" for="analyticJournal"
-      expr="eval: &quot;self.statusSelect = 1 &quot;"
-      if="!(analyticAxis?.company) &amp;&amp; !__parent__"/>
-  </action-attrs>
+  <action-method name="action-method-domain-onselect-journal-analytic-move-line">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="setAnalyticJournalDomain"/>
+  </action-method>
 
   <action-group name="action-group-domain-onselect-analytic-account">
     <action name="action-method-domain-onselect-analytic-account-analytic-line"
@@ -305,6 +284,11 @@
   <action-method name="action-method-analytic-move-line-move-line-onnew">
     <call class="com.axelor.apps.account.web.AnalyticDistributionLineController"
       method="manageNewAnalyticDistributionLine"/>
+  </action-method>
+
+  <action-method name="action-analytic-move-line-method-refresh-axis">
+    <call class="com.axelor.apps.account.web.AnalyticMoveLineQueryController"
+      method="refreshAxis"/>
   </action-method>
 
   <grid model="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic Move Lines"

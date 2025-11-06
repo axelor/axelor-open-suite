@@ -53,6 +53,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -129,7 +130,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     this.product = product;
     this.productName = productName;
     this.description = description;
-    this.qty = qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP);
+    this.qty = qty;
     this.unit = unit;
     this.sequence = sequence;
     this.isTaxInvoice = isTaxInvoice;
@@ -263,7 +264,6 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setInTaxPrice(inTaxPrice);
 
     invoiceLine.setPriceDiscounted(priceDiscounted);
-    invoiceLine.setQty(qty);
     invoiceLine.setUnit(unit);
 
     if (coefficient == null) {
@@ -284,16 +284,19 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       invoiceLine.setTaxLineSet(Sets.newHashSet(taxLineSet));
       invoiceLine.setTaxRate(taxService.getTotalTaxRateInPercentage(taxLineSet));
       invoiceLine.setTaxCode(taxService.computeTaxCode(taxLineSet));
+    } else {
+      invoiceLine.setTaxLineSet(new HashSet<>());
     }
 
     if ((exTaxTotal == null || inTaxTotal == null)) {
       this.computeTotal();
     }
-
+    invoiceLine.setQty(
+        qty.setScale(appBaseService.getNbDecimalDigitForQty(), RoundingMode.HALF_UP));
     invoiceLine.setExTaxTotal(exTaxTotal);
     invoiceLine.setInTaxTotal(inTaxTotal);
 
-    this.computeCompanyTotal(invoiceLine);
+    this.computeCompanyTotal(invoiceLine, today);
 
     invoiceLine.setSequence(sequence);
 
@@ -343,7 +346,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     }
   }
 
-  public void computeCompanyTotal(InvoiceLine invoiceLine) throws AxelorException {
+  public void computeCompanyTotal(InvoiceLine invoiceLine, LocalDate date) throws AxelorException {
 
     if (typeSelect == InvoiceLineRepository.TYPE_TITLE) {
       return;
@@ -363,13 +366,13 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
     invoiceLine.setCompanyExTaxTotal(
         currencyService
             .getAmountCurrencyConvertedAtDate(
-                invoice.getCurrency(), companyCurrency, exTaxTotal, today)
+                invoice.getCurrency(), companyCurrency, exTaxTotal, date)
             .setScale(this.companyCurrencyScale, RoundingMode.HALF_UP));
 
     invoiceLine.setCompanyInTaxTotal(
         currencyService
             .getAmountCurrencyConvertedAtDate(
-                invoice.getCurrency(), companyCurrency, inTaxTotal, today)
+                invoice.getCurrency(), companyCurrency, inTaxTotal, date)
             .setScale(this.companyCurrencyScale, RoundingMode.HALF_UP));
   }
 

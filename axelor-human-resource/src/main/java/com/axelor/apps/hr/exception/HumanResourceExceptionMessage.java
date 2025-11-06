@@ -151,6 +151,10 @@ public final class HumanResourceExceptionMessage {
       "Employees' leaves failed to be computed due to missing data : %s" /*)*/;
   public static final String BATCH_LEAVE_MANAGEMENT_QTY_OUT_OF_BOUNDS = /*$$(*/
       "Qty must be lower than %d." /*)*/;
+  public static final String BATCH_LEAVE_REQUEST_ENDING_1 = /*$$(*/
+      "Leaves request successfully computed : %s" /*)*/;
+  public static final String BATCH_LEAVE_REQUEST_ENDING_2 = /*$$(*/
+      "Leaves request failed to be computed due to configuration anomaly : %s" /*)*/;
   public static final String BATCH_SENIORITY_LEAVE_MANAGEMENT_FORMULA = /*$$(*/
       "There is an error in a formula" /*)*/;
   public static final String BATCH_PAYROLL_PREPARATION_GENERATION_RECAP = /*$$(*/
@@ -437,4 +441,13 @@ public final class HumanResourceExceptionMessage {
 
   public static final String TIMESHEET_CREATE_NO_USER_ERROR = /*$$(*/
       "No user was found when creating the timesheet." /*)*/;
+  public static final String PROJECT_PLANNING_TIME_CREATION_CONSENT = /*$$(*/
+      "Would you like to create a new planning time?" /*)*/;
+
+  public static final String PROJECT_PLANNING_TIME_CREATION_INFO = /*$$(*/
+      "A new planning time has been created." /*)*/;
+  public static final String PROJECT_PLANNING_TIME_EXISTING_ON_DURATION = /*$$(*/
+      "There is already a project planning time in these dates." /*)*/;
+  public static final String PROJECT_PLANNING_TIME_UPDATE = /*$$(*/
+      "A project planning time already exists. Do you want to update it?" /*)*/;
 }

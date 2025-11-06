@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form id="contract-partner-form" title="Partner" name="partner-form"
     model="com.axelor.apps.base.db.Partner" extension="true">
@@ -32,7 +32,7 @@
 
   <action-view name="action-partner-view-supplier-contracts" title="Supplier contracts"
     model="com.axelor.apps.contract.db.Contract">
-    <view type="grid" name="contract-grid"/>
+    <view type="grid" name="supplier-contract-grid"/>
     <view type="form" name="contract-form"/>
     <domain>self.partner.id = :id AND self.targetTypeSelect = 2</domain>
   </action-view>

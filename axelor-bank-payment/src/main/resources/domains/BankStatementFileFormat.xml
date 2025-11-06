@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="bank-payment" package="com.axelor.apps.bankpayment.db"/>
 
@@ -55,6 +55,9 @@
 
         public static final String FILE_FORMAT_CSV_JMA_DOT = "csv.jma.dot";
         public static final String FILE_FORMAT_CSV_YMD_DOT = "csv.ymd.dot";
+
+        public static final String CAMT_BALANCE_TYPE_INITIAL_BALANCE = "OPBD";
+        public static final String CAMT_BALANCE_TYPE_FINAL_BALANCE = "CLBD";
 
 	]]></extra-code>
 

@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="import-export-translation-history-grid" title="History"
     model="com.axelor.apps.base.db.ImportExportTranslationHistory" canNew="false">
     <button name="traceBackHistoryBtn" title="Tracebacks"
       onClick="import-export-translation-history-view-trace-back-history" icon="fa-wrench"
       help="Show tracebacks"/>
+    <field name="statusSelect"/>
     <field name="actionType"/>
     <field name="recordNumber"/>
     <field name="errorNumber"/>
@@ -18,6 +19,8 @@
     model="com.axelor.apps.base.db.ImportExportTranslationHistory" canNew="false">
     <panel name="importExportTranslationHistoryPanel" showTitle="false" title="History"
       colSpan="12">
+      <field name="statusSelect" showTitle="false" readonly="true" widget="NavSelect"
+        colSpan="12"/>
       <field name="actionType" colSpan="4"/>
       <field name="recordNumber" colSpan="4"/>
       <field name="errorNumber" colSpan="4"/>

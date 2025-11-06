@@ -26,7 +26,6 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
-import com.axelor.apps.account.db.repo.FixedAssetCategoryRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
@@ -38,7 +37,6 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -50,6 +48,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -315,18 +314,13 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
   }
 
   protected void checkPlansToCopy(FixedAsset fixedAsset) {
-    List<String> depreciationPlans =
-        Arrays.asList(
-            (fixedAsset.getFixedAssetCategory().getDepreciationPlanSelect().replace(" ", ""))
-                .split(","));
-    if (ObjectUtils.notEmpty(depreciationPlans)
-        && depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL)) {
-      if (depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
-        copyFiscalPlanToEconomicPlan(fixedAsset);
-      }
-      if (depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
-        copyFiscalPlanToIfrsPlan(fixedAsset);
-      }
+    List<String> depreciationPlans = getDepreciationPlans(fixedAsset);
+
+    if (depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_ECONOMIC)) {
+      copyFiscalPlanToEconomicPlan(fixedAsset);
+    }
+    if (depreciationPlans.contains(FixedAssetRepository.DEPRECIATION_PLAN_IFRS)) {
+      copyFiscalPlanToIfrsPlan(fixedAsset);
     }
   }
 
@@ -339,7 +333,7 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     fixedAsset.setPeriodicityTypeSelect(fixedAsset.getFiscalPeriodicityTypeSelect());
     fixedAsset.setDurationInMonth(fixedAsset.getFiscalPeriodicityTypeSelect());
     fixedAsset.setDegressiveCoef(fixedAsset.getFiscalDegressiveCoef());
-    fixedAsset.setIsEqualToFiscalDepreciation(true);
+    fixedAsset.setIsEqualToFiscalDepreciation(isFiscal(fixedAsset));
   }
 
   protected void copyFiscalPlanToIfrsPlan(FixedAsset fixedAsset) {
@@ -351,12 +345,24 @@ public class FixedAssetGenerationServiceImpl implements FixedAssetGenerationServ
     fixedAsset.setIfrsPeriodicityTypeSelect(fixedAsset.getFiscalPeriodicityTypeSelect());
     fixedAsset.setIfrsDurationInMonth(fixedAsset.getFiscalPeriodicityTypeSelect());
     fixedAsset.setIfrsDegressiveCoef(fixedAsset.getFiscalDegressiveCoef());
-    fixedAsset.setIsIfrsEqualToFiscalDepreciation(true);
+    fixedAsset.setIsIfrsEqualToFiscalDepreciation(isFiscal(fixedAsset));
   }
 
   protected int getFirstDepreciationDateInitSelect(String computationMethodSelect) {
     return computationMethodSelect.equals(FixedAssetRepository.COMPUTATION_METHOD_LINEAR)
-        ? FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
-        : FixedAssetCategoryRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION;
+        ? FixedAssetRepository.REFERENCE_FIRST_DEPRECIATION_FIRST_SERVICE_DATE
+        : FixedAssetRepository.REFERENCE_FIRST_DEPRECIATION_DATE_ACQUISITION;
+  }
+
+  protected List<String> getDepreciationPlans(FixedAsset fixedAsset) {
+    return Optional.ofNullable(fixedAsset)
+        .map(FixedAsset::getFixedAssetCategory)
+        .map(FixedAssetCategory::getDepreciationPlanSelect)
+        .map(plans -> Arrays.asList(plans.replace(" ", "").split(",")))
+        .orElse(List.of());
+  }
+
+  protected boolean isFiscal(FixedAsset fixedAsset) {
+    return getDepreciationPlans(fixedAsset).contains(FixedAssetRepository.DEPRECIATION_PLAN_FISCAL);
   }
 }

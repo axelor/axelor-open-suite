@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.account.service.move.control;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
@@ -25,6 +26,7 @@ import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.PaymentConditionService;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.journal.JournalCheckPartnerTypeService;
@@ -61,6 +63,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
   protected InvoiceTermService invoiceTermService;
   protected PaymentConditionService paymentConditionService;
   protected FixedAssetRepository fixedAssetRepository;
+  protected AnalyticAxisService analyticAxisService;
 
   @Inject
   public MoveCheckServiceImpl(
@@ -74,7 +77,8 @@ public class MoveCheckServiceImpl implements MoveCheckService {
       MoveInvoiceTermService moveInvoiceTermService,
       PaymentConditionService paymentConditionService,
       InvoiceTermService invoiceTermService,
-      FixedAssetRepository fixedAssetRepository) {
+      FixedAssetRepository fixedAssetRepository,
+      AnalyticAxisService analyticAxisService) {
     this.moveRepository = moveRepository;
     this.moveToolService = moveToolService;
     this.periodService = periodService;
@@ -86,6 +90,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
     this.paymentConditionService = paymentConditionService;
     this.invoiceTermService = invoiceTermService;
     this.fixedAssetRepository = fixedAssetRepository;
+    this.analyticAxisService = analyticAxisService;
   }
 
   @Override
@@ -140,14 +145,6 @@ public class MoveCheckServiceImpl implements MoveCheckService {
           String.format(
               I18n.get(AccountExceptionMessage.MOVE_LINE_RECONCILE_LINE_CANNOT_BE_REMOVED),
               moveLineReconciledAndRemovedNameList.toString()));
-    }
-  }
-
-  @Override
-  public void checkAnalyticAccount(Move move) throws AxelorException {
-    Objects.requireNonNull(move);
-    if (move != null && CollectionUtils.isNotEmpty(move.getMoveLineList())) {
-      moveLineCheckService.checkAnalyticAccount(move.getMoveLineList());
     }
   }
 
@@ -218,20 +215,21 @@ public class MoveCheckServiceImpl implements MoveCheckService {
             && (move.getStatusSelect() == MoveRepository.STATUS_NEW
                 || move.getStatusSelect() == MoveRepository.STATUS_SIMULATED))) {
       return I18n.get(AccountExceptionMessage.MOVE_CHECK_ACCOUNTING);
-    } else if (move.getMoveLineList().stream()
-        .anyMatch(
-            ml -> {
-              try {
-                return ml.getMove() != null
-                    && invoiceTermService.getPfpValidatorUserCondition(
-                        ml.getMove().getInvoice(), ml)
-                    && CollectionUtils.isNotEmpty(ml.getInvoiceTermList())
-                    && ml.getInvoiceTermList().stream()
-                        .anyMatch(it -> it.getPfpValidatorUser() == null);
-              } catch (AxelorException e) {
-                throw new RuntimeException(e);
-              }
-            })) {
+    } else if (CollectionUtils.isNotEmpty(move.getMoveLineList())
+        && move.getMoveLineList().stream()
+            .anyMatch(
+                ml -> {
+                  try {
+                    return ml.getMove() != null
+                        && invoiceTermService.getPfpValidatorUserCondition(
+                            ml.getMove().getInvoice(), ml)
+                        && CollectionUtils.isNotEmpty(ml.getInvoiceTermList())
+                        && ml.getInvoiceTermList().stream()
+                            .anyMatch(it -> it.getPfpValidatorUser() == null);
+                  } catch (AxelorException e) {
+                    throw new RuntimeException(e);
+                  }
+                })) {
       return I18n.get(AccountExceptionMessage.INVOICE_PFP_VALIDATOR_USER_MISSING);
     }
 
@@ -289,5 +287,22 @@ public class MoveCheckServiceImpl implements MoveCheckService {
                 .bind("id", move.getId())
                 .count()
             > 0;
+  }
+
+  @Override
+  public void checkAnalyticAxisByCompany(Move move) throws AxelorException {
+    if (move == null || ObjectUtils.isEmpty(move.getMoveLineList())) {
+      return;
+    }
+
+    for (MoveLine moveLine : move.getMoveLineList()) {
+      if (!ObjectUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+        analyticAxisService.checkRequiredAxisByCompany(
+            move.getCompany(),
+            moveLine.getAnalyticMoveLineList().stream()
+                .map(AnalyticMoveLine::getAnalyticAxis)
+                .collect(Collectors.toList()));
+      }
+    }
   }
 }

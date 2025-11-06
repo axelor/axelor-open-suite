@@ -58,9 +58,7 @@ public class InvoiceToolService {
     LocalDate invoiceDate =
         isPurchase(invoice) ? invoice.getOriginDate() : invoice.getInvoiceDate();
     return ObjectUtils.isEmpty(invoice.getInvoiceTermList())
-            || PaymentConditionToolService.isFreePaymentCondition(invoice)
-        ? PaymentConditionToolService.getMaxDueDate(
-            invoice.getPaymentCondition(), invoiceDate, invoice.getDueDate())
+        ? PaymentConditionToolService.getMaxDueDate(invoice.getPaymentCondition(), invoiceDate)
         : Beans.get(InvoiceTermService.class).getDueDate(invoice.getInvoiceTermList(), invoiceDate);
   }
 
@@ -237,6 +235,7 @@ public class InvoiceToolService {
     copy.setIrrecoverableStatusSelect(InvoiceRepository.IRRECOVERABLE_STATUS_NOT_IRRECOUVRABLE);
     copy.setAmountRejected(BigDecimal.ZERO);
     copy.setPaymentProgress(0);
+    copy.setPaymentDate(null);
     copy.clearBatchSet();
     copy.setDebitNumber(null);
     copy.setDoubtfulCustomerOk(false);

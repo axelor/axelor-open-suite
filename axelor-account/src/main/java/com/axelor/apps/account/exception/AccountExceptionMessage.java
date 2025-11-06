@@ -71,6 +71,10 @@ public final class AccountExceptionMessage {
       /*$$(*/ "When on failover alreadyDepreciatedAmount and NbrOfPastDepreciation must be greater than 0." /*)*/;
   public static final String FIXED_ASSET_CAN_NOT_BE_REMOVE =
       /*$$(*/ "Only fixed assets at draft status can be deleted." /*)*/;
+
+  public static final String NO_VALIDATED_DEPRECIATED_FIXED_ASSET_SELECTED =
+      /*$$(*/ "Please select validated or depreciated fixed asset before running this process." /*)*/;
+
   public static final String INVOICE_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
 
   /** Bank statement service */
@@ -828,7 +832,8 @@ public final class AccountExceptionMessage {
   /** Debt recovery service */
   public static final String DEBT_RECOVERY_1 = /*$$(*/ "There's no accounting situation." /*)*/;
 
-  public static final String DEBT_RECOVERY_2 = /*$$(*/ "Reference date undefined." /*)*/;
+  public static final String DEBT_RECOVERY_2 = /*$$(*/
+      "The move on the invoice is ignored when calculating debt recovery." /*)*/;
   public static final String DEBT_RECOVERY_3 = /*$$(*/
       "%s : No debt recovery method has been found for the company %s and the category %s %s (Partner %s)" /*)*/;
   public static final String DEBT_RECOVERY_4 = /*$$(*/
@@ -1287,6 +1292,9 @@ public final class AccountExceptionMessage {
   public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_COMPANY_JOURNAL = /*$$(*/
       "Selected AnalyticJournal doesn't belong to the select company." /*)*/;
 
+  public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CHECK_REQUIRED_COMPANY_AXIS = /*$$(*/
+      "The following analytic axis are required : %s (company: %s)" /*)*/;
+
   public static final String MOVE_CHECK_ORIGIN = /*$$(*/
       "The move field origin is empty, do you wish to continue ?" /*)*/;
 
@@ -1448,6 +1456,9 @@ public final class AccountExceptionMessage {
 
   public static final String IMPORT_FEC_JOURNAL_NOT_FOUND = /*$$(*/
       "The journal with the code %s cannot be found. The move cannot be created." /*)*/;
+
+  public static final String IMPORT_FEC_COMPANY_NOT_FOUND = /*$$(*/
+      "No company found. The move cannot be created." /*)*/;
 
   public static final String IMPORT_FEC_PERIOD_NOT_FOUND = /*$$(*/
       "No period found for the date %s and the company %s. The move cannot be created." /*)*/;
@@ -1655,9 +1666,6 @@ public final class AccountExceptionMessage {
   public static final String COMPENSATION_ON_SESSION_BY_INVOICE_TERM = /*$$(*/
       "Compensation is not allowed on payment session accounted by invoice term, please unselect them" /*)*/;
 
-  public static final String ANALYTIC_DISTRIBUTION_TEMPLATE_CONTAINS_NOT_ALLOWED_ACCOUNTS = /*$$(*/
-      "The selected Analytic Distribution template contains Analytic Accounts which are not allowed on this account. Please select an appropriate template or modify the analytic coherence rule for this account." /*)*/;
-
   public static final String MOVE_INVOICE_DESCRIPTION_REQUIRED = /*$$(*/
       "Description is required in moves for company %s but description of moves that are being generated will be empty. Please make sure a journal is set and fill a default description or enable document number to be used as such." /*)*/;
 
@@ -1769,6 +1777,18 @@ public final class AccountExceptionMessage {
   public static final String BATCH_BLOCK_CUSTOMER_WITH_LATE_PAYMENT = /*$$(*/
       "Block customer with late payment issues batch's reporting :" /*)*/;
 
+  public static final String FEC_IMPORT_ANALYTIC_MISSING_REQUIRED = /*$$(*/
+      "The analytic accounting is required on the financial account %s. There should be a template or analytic accounts associated with such account and respecting the number of defined analytic axis. Accounting entry %s can't be imported." /*)*/;
+
+  public static final String FEC_IMPORT_ANALYTIC_NOT_AUTHORIZED = /*$$(*/
+      "The financial account %s doesn't support the analytic accounting. There shouldn't be any template or analytic account associated with such account. Accounting entry %s can't be imported." /*)*/;
+
+  public static final String FEC_IMPORT_ANALYTIC_DISTRIBUTION_EMPTY = /*$$(*/
+      "The analytic distribution template %s can't be found for company %s. Accounting entry %s can't be imported." /*)*/;
+
+  public static final String FEC_IMPORT_ANALYTIC_ACCOUNT_EMPTY = /*$$(*/
+      "The analytic account %s can't be found for company %s and analytic axis %s. Accounting entry %s can't be imported." /*)*/;
+
   public static final String ACCOUNT_CONFIG_MISSING_FOREIGN_EXCHANGE_GAINS_ACCOUNT = /*$$(*/
       "Please select a foreign exchange gain account config for company %s." /*)*/;
 
@@ -1819,4 +1839,19 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_LINE_PRODUCT_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED = /*$$(*/
       "Non-deductible tax not authorized for customer invoice. Please remove the non-deductible tax on product." /*)*/;
+
+  public static final String ANALYTIC_MOVE_LINE_QUERY_WRONG_SUM_FOR_AXIS = /*$$(*/
+      "The total percentage is not 100%% for the axis %s" /*)*/;
+
+  public static final String ACCOUNT_ALREADY_EXISTS = /*$$(*/
+      "The account with code %s and company %s already exists." /*)*/;
+
+  public static final String INVOICE_PAYMENT_UNLINK_ALERT = /*$$(*/
+      "You are about to cancel the payment allocated to this invoice. The payment accounting entry will remain posted in the journal, only the reconciliation will be cancelled. Do you wish to continue ?" /*)*/;
+
+  public static final String INVOICE_PAYMENT_ALERT_DEFAULT_REVERSE = /*$$(*/
+      "You are about to cancel the payment allocated to this invoice and its associated accounting entry. The payment accounting entry will be reversed. Do you wish to continue ?" /*)*/;
+
+  public static final String INVOICE_PAYMENT_ALERT_VOUCHER_DEPOSIT_REVERSE = /*$$(*/
+      "Warning: this payment is included in a cheque deposit slip that has already been submitted. Do you want to reverse the payment accounting entry ?" /*)*/;
 }

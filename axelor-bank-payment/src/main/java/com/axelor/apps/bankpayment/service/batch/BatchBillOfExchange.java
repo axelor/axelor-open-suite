@@ -209,7 +209,7 @@ public class BatchBillOfExchange extends BatchStrategy {
             invoice.getPaymentMode(),
             invoice.getFiscalPosition(),
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
-            MoveRepository.FUNCTIONAL_ORIGIN_SALE,
+            MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             invoice.getInvoiceId(),
             null,
             invoice.getCompanyBankDetails());

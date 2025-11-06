@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -21,6 +21,10 @@
     <decimal name="metricMass" title="Metric weight" default="0" min="0" precision="20"
       scale="10"/>
     <decimal name="productDensity" title="Final product density" precision="20" scale="10"/>
+
+    <one-to-many name="defaultStockLocationBySite"
+      ref="com.axelor.apps.stock.db.DefaultStockLocationBySite"
+      title="Default stock location by site" mappedBy="product"/>
 
     <track on="UPDATE">
       <field name="trackingNumberConfiguration"/>

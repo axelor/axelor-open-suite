@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="leave-request-grid" title="Leave Requests"
     model="com.axelor.apps.hr.db.LeaveRequest" orderBy="-fromDateT,-startOnSelect">
@@ -23,7 +23,7 @@
     <field name="startOnSelect"/>
     <field name="toDateT"/>
     <field name="endOnSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <grid name="leave-request-validate-grid" title="Leave Requests"
@@ -45,17 +45,18 @@
     <field name="startOnSelect"/>
     <field name="toDateT" onChange="action-leave-request-validate-dates"/>
     <field name="endOnSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="leave-request-form" title="Leave Request"
     model="com.axelor.apps.hr.db.LeaveRequest" onNew="action-leave-request-group-onnew"
     onLoad="action-leave-request-group-on-form-load"
-    onSave="action-leave-request-validate-dates-on-save" canCopy="false">
-
+    onSave="action-leave-request-validate-dates-on-save,action-leave-request-attrs-fill-toDateT"
+    canCopy="false">
     <panel sidebar="true" name="actionsPanel" stacked="true">
-      <button name="sendLeaveBtn" onClick="action-leave-request-group-send" colSpan="4"
-        title="Send" hideIf="statusSelect &gt; 1"/>
+      <button name="sendLeaveBtn"
+        onClick="action-leave-request-attrs-fill-toDateT,action-leave-request-group-send"
+        colSpan="4" title="Send" hideIf="statusSelect &gt; 1"/>
       <button name="validateBtn" hidden="true" onClick="action-leave-request-group-validate"
         title="Validate"/>
       <button name="refuseBtn" hidden="true" onClick="action-leave-request-group-refuse"
@@ -173,7 +174,8 @@
   <form name="complete-my-leave-request-form" title="Leave Request"
     model="com.axelor.apps.hr.db.LeaveRequest" onNew="action-leave-request-group-onnew"
     onLoad="action-leave-request-group-on-form-load"
-    onSave="action-leave-request-validate-dates-on-save" canCopy="false" canNew="false">
+    onSave="action-leave-request-attrs-fill-toDateT,action-leave-request-validate-dates-on-save"
+    canCopy="false" canNew="false">
     <panel-include view="leave-request-form"/>
   </form>
 
@@ -308,10 +310,14 @@
 
   <action-validate name="action-leave-request-validate-dates-on-save">
     <error message="Invalid dates"
-      if="toDateT &lt; fromDateT || (toDateT == fromDateT &amp;&amp; startOnSelect &gt; endOnSelect)"/>
+      if="toDateT!=null &amp;&amp;(toDateT &lt; fromDateT || (toDateT == fromDateT &amp;&amp; startOnSelect &gt; endOnSelect))"/>
     <error message="Duration equals 0" if="duration == 0"/>
   </action-validate>
-
+  <action-record name="action-leave-request-attrs-fill-toDateT"
+    model="com.axelor.apps.hr.db.LeaveRequest">
+    <field name="toDateT" expr="eval:fromDateT"
+      if="toDateT==null &amp;&amp; fromDateT!=null  &amp;&amp; startOnSelect &lt;= endOnSelect "/>
+  </action-record>
   <action-method name="action-leave-request-method-leave-reason-to-justify">
     <call class="com.axelor.apps.hr.web.leave.LeaveController" method="leaveReasonToJustify"/>
   </action-method>

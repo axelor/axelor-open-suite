@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
     groupBy="employee" orderBy="employee,-fromDate">
@@ -19,7 +19,8 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDateTime"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"
+      widget="single-select"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
@@ -40,7 +41,8 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDateTime"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"
+      widget="single-select"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
@@ -61,7 +63,8 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="sentDateTime"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"
+      widget="single-select"/>
     <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
@@ -85,7 +88,8 @@
     <field name="toDate"/>
     <field name="sentDateTime"/>
     <field name="periodTotal"/>
-    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"/>
+    <field name="statusSelect" if="__config__.app.getApp('timesheet')?.needValidation"
+      widget="single-select"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="isCompleted" if="!__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
@@ -116,9 +120,6 @@
           onChange="action-timesheet-group-employee-onchange"
           onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
           canEdit="false" canView="false"/>
-        <field if-module="axelor-business-production"
-          if=" __config__.app.getApp('production')?.getManageBusinessProduction()"
-          name="employee.timesheetImputationSelect" hidden="true"/>
         <field name="fromDate"
           onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date" colSpan="5"/>
         <field name="toDate" readonlyIf="isCompleted"
@@ -217,23 +218,12 @@
         showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; employee.timesheetImputationSelect == 2)"
         x-can-copy="true"/>
       <panel-related name="timesheetLineListPanel" field="timesheetLineList"
-        colSpan="12" height="20" grid-view="timesheet-line-timesheet-manuf-order-grid"
-        editable="true" form-view="timesheet-line-timesheet-manuf-order-form" hidden="true"
-        showIf="!showEditor &amp;&amp; !$readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; employee.timesheetImputationSelect == 2"
-        x-can-copy="true" if-module="axelor-business-production"
-        if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
-      <panel-related name="timesheetLineListPanel" field="timesheetLineList"
         canMove="true" orderBy="sequence" colSpan="12" height="20"
         grid-view="timesheet-line-timesheet-readonly-grid" form-view="timesheet-line-timesheet-form"
         hidden="true"
         showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; !($enableTimesheetManufOrder &amp;&amp; employee.timesheetImputationSelect == 2)"
         x-can-copy="true"/>
-      <panel-related name="timesheetLineListPanel" field="timesheetLineList"
-        colSpan="12" height="20" grid-view="timesheet-line-timesheet-readonly-manuf-order-grid"
-        form-view="timesheet-line-timesheet-manuf-order-form" hidden="true"
-        showIf="!showEditor &amp;&amp; $readonly() &amp;&amp; $enableTimesheetManufOrder &amp;&amp; employee.timesheetImputationSelect == 2"
-        x-can-copy="true" if-module="axelor-business-production"
-        if=" __config__.app.getApp('production')?.getManageBusinessProduction()"/>
+
       <button name="fullScreenEditorBtn" colSpan="3" title="Fullscreen Editor"
         showIf="id != null &amp;&amp; showEditor"
         if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
@@ -301,8 +291,6 @@
   <action-group name="action-timesheet-group-employee-onchange">
     <action name="action-timesheet-record-default"/>
     <action name="action-timesheet-method-set-show-activity"/>
-    <action name="action-timesheet-attrs-enable-timesheet-manuforder"
-      if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
     <action name="action-timesheet-group-buttons"/>
     <action name="action-timesheet-attrs-set-visible-duration-title"/>
     <action name="action-timesheet-record-from-period-date"/>
@@ -319,14 +307,10 @@
 
   <action-group name="action-timesheet-group-onsave">
     <action name="action-timesheet-validate-toDate"/>
-    <action name="action-timesheet-method-update-operation-order"
-      if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
   </action-group>
 
   <action-group name="action-timesheet-group-onload">
     <action name="action-timesheet-method-set-show-activity"/>
-    <action name="action-timesheet-attrs-enable-timesheet-manuforder"
-      if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
     <action name="action-timesheet-group-buttons"/>
     <action name="action-timesheet-attrs-set-visible-duration-title"/>
     <action name="action-timesheet-attrs-title-project"/>
@@ -563,11 +547,6 @@
     <attribute name="value" for="showEditor" expr="eval:true"/>
   </action-attrs>
 
-  <action-attrs name="action-timesheet-attrs-enable-timesheet-manuforder">
-    <attribute for="$enableTimesheetManufOrder" name="value"
-      expr="eval: __config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
-  </action-attrs>
-
   <action-record name="action-timesheet-record-from-period-date"
     model="com.axelor.apps.hr.db.Timesheet">
     <field name="fromDate"
@@ -741,10 +720,6 @@
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="showEditor" hidden="true"
       if="!(__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getTimesheetEditor())"/>
-    <field name="employee.timesheetImputationSelect" hidden="true"
-      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction())"/>
-    <field name="timesheetLineList" hidden="true"
-      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageBusinessProduction())"/>
   </search-filters>
 
 </object-views>

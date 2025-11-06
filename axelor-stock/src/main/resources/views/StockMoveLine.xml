@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="stock-move-line-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
@@ -52,7 +52,7 @@
       onChange="action-stock-move-line-record-price-onchange"
       readonlyIf="lineTypeSelect == 1 || $get('stockMove.pickingIsEdited') || saleOrderLine || purchaseOrderLine"/>
     <field name="unitPriceTaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
-    <field name="companyUnitPriceUntaxed" hidden="true"/>
+    <field name="companyUnitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" width="70px"
       readonlyIf="lineTypeSelect == 1 || (($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3)"/>
     <field name="netMass" onChange="action-stock-move-line-group-net-mass-onchange"
@@ -94,6 +94,11 @@
     <field name="$trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="oldQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="availableQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="availableQtyForProduct" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="shippedQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="companyPurchasePrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <form name="stock-move-line-form" title="Stock move line"
@@ -178,7 +183,7 @@
         onChange="action-stock-move-line-group-real-qty-onchange, action-stock-move-line-attrs-set-real-qty-modified-by-user-true"
         x-scale="$nbDecimalDigitForQty"/>
       <field name="isRealQtyModifiedByUser" hidden="true"/>
-      <field name="qtyInvoiced" colSpan="6" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+      <field name="qtyInvoiced" colSpan="3" readonly="true" x-scale="$nbDecimalDigitForQty"/>
       <field name="$availableQty" showIf="product &amp;&amp; productTypeSelect != 'service'"
         type="decimal" title="Available qty" readonly="true" hidden="true"
         x-scale="$nbDecimalDigitForQty"/>
@@ -236,6 +241,12 @@
       <field name="stockMove.typeSelect" hidden="true"/>
       <field name="conformitySelect" onChange="action-stock-move-attrs-change-conformity"/>
       <field name="$isReadOnly" hidden="true"/>
+      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
+        colSpan="12">
+        <button name="addControlEntryBtn" title="Add a control entry"
+          onClick="save,action-stock-move-line-view-add-control-entry" colOffset="6"/>
+        <panel-dashlet action="action-stock-move-line-view-control-entry" colSpan="12"/>
+      </panel>
       <panel name="descriptionPanel" title="Description" colSpan="12">
         <field name="description" showTitle="false" colSpan="12" widget="html" x-lite="true"/>
       </panel>
@@ -356,6 +367,18 @@
     </field>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="qty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="oldQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="availableQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="availableQtyForProduct" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="shippedQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="wapPrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="companyPurchasePrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="companyUnitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
+    <field name="reservedQty" x-scale="$nbDecimalDigitForQty" hidden="true"
+      if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
+    <field name="requestedReservedQty" x-scale="$nbDecimalDigitForQty" hidden="true"
+      if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
   </grid>
 
   <grid name="stock-move-line-all-grid-planned" title="Planned stock move lines"
@@ -432,6 +455,13 @@
       <field name="productName" required="true"
         readonlyIf="$get('stockMove.statusSelect') > 1"/>
       <field name="stockMove.partner"/>
+      <panel name="moveLineStockLocationPanel" colSpan="6"
+        if=" __config__.app.getApp('stock').isManageStockLocationOnStockMoveLine">
+        <field name="fromStockLocation" hidden="true" showIf="stockMove.typeSelect == 2"
+          colSpan="12"/>
+        <field name="toStockLocation" hidden="true" showIf="stockMove.typeSelect == 3"
+          colSpan="12"/>
+      </panel>
       <field name="qty" colSpan="2" min="0"
         onChange="action-stock-move-line-group-qty-onchange"
         readonlyIf="$get('stockMove.statusSelect') > 1" x-scale="$nbDecimalDigitForQty"/>
@@ -493,6 +523,12 @@
       <field name="$trackingNumberConfiguration.isProductionTrackingManaged" hidden="true"/>
       <field name="$trackingNumberConfiguration.isSaleTrackingManaged" hidden="true"/>
       <field name="stockMove.statusSelect" hidden="true"/>
+      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
+        colSpan="12">
+        <button name="addControlEntryBtn" title="Add a control entry"
+          onClick="save,action-stock-move-line-view-add-control-entry" colOffset="6"/>
+        <panel-dashlet action="action-stock-move-line-view-control-entry" colSpan="12"/>
+      </panel>
       <field name="description" colSpan="12" widget="html"/>
       <field name="regime"/>
       <field name="natureOfTransaction"/>
@@ -647,6 +683,8 @@
     <action name="action-supplychain-stock-move-line-attrs-hide-button"/>
     <action name="action-stock-move-line-method-translate-product-description-and-name"/>
     <action name="action-stock-move-line-attrs-reset-qty" if="eval: product == null"/>
+    <action name="action-stock-move-line-method-set-stock-location"
+      if="__config__.app.getApp('base').enableSiteManagementForStock &amp;&amp; __config__.app.getApp('stock').isManageStockLocationOnStockMoveLine"/>
   </action-group>
 
   <action-group name="action-group-stock-stockmoveline-production-onnew">
@@ -714,6 +752,8 @@
     <action name="action-stock-move-line-compute-price"/>
     <action name="action-stock-move-line-record-total-net-mass"/>
     <action name="action-stock-move-line-method-set-available-status"/>
+    <action name="action-stock-move-line-record-set-qty-remaining-to-package"
+      if="__config__.app.isApp('supplychain')"/>
   </action-group>
 
   <action-group name="action-stock-move-line-group-net-mass-onchange">
@@ -742,6 +782,10 @@
   <action-method name="action-stock-move-line-method-update-lines">
     <call class="com.axelor.apps.stock.web.StockMoveLineController"
       method="splitStockMoveLineByTrackingNumber"/>
+  </action-method>
+
+  <action-method name="action-stock-move-line-method-set-stock-location">
+    <call class="com.axelor.apps.stock.web.StockMoveLineController" method="fillStockLocation"/>
   </action-method>
 
   <action-record name="action-stock-move-line-record-product"
@@ -823,6 +867,24 @@
     <domain>self.stockMove.statusSelect = 3 and
       (self.fromStockLocation.typeSelect = 1 or
       self.toStockLocation.typeSelect = 1) and self.product.id = :_id</domain>
+  </action-view>
+
+  <action-view name="action-stock-move-line-view-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="grid" name="control-entry-grid"/>
+    <view type="form" name="control-entry-form"/>
+    <domain>self.relatedToSelectId = :stockMoveLineId AND self.relatedToSelect =
+      'com.axelor.apps.stock.db.StockMoveLine'</domain>
+    <context name="stockMoveLineId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-stock-move-line-view-add-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="form" name="control-entry-form"/>
+    <view type="grid" name="control-entry-grid"/>
+    <view-param name="popup" value="reload"/>
+    <context name="relatedTo" expr="eval: 'com.axelor.apps.stock.db.StockMoveLine'"/>
+    <context name="relatedToId" expr="eval:__self__?.id"/>
   </action-view>
 
   <action-validate name="action-stock-move-line-validate-check-split-quantity">

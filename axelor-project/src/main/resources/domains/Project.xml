@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -32,6 +32,8 @@
 
     <string name="code" title="Code" unique="true"/>
     <many-to-many name="membersUserSet" ref="com.axelor.auth.db.User" title="Membres"/>
+    <many-to-many name="favouriteProjectUserSet" ref="com.axelor.auth.db.User"
+      title="Favourite project users"/>
     <many-to-one name="clientPartner" ref="com.axelor.apps.base.db.Partner"
       title="Customer"/>
     <many-to-one name="contactPartner" ref="com.axelor.apps.base.db.Partner"
@@ -110,12 +112,16 @@
     <many-to-one name="completedTaskStatus" title="Completed task status"
       ref="com.axelor.apps.project.db.TaskStatus"
       help="This task status will be used to define which status is flagged as completed for tasks."/>
+    <boolean name="isAllowTaskToBeAssignedToAnyUser"
+      title="Allow task to be assigned to any user?" default="true"
+      help="When this option is active, any active user can be assigned to the tasks of this project. Otherwise, only members of the project can be assigned."/>
 
     <many-to-many name="projectTaskLinkTypeSet"
       ref="com.axelor.apps.project.db.ProjectTaskLinkType" title="Project task relation types"/>
 
     <string name="customFieldManagementSelect" title="Custom fields management"
       selection="project.custom.field.management.select" default="app"/>
+    <string name="appJson" title="App json" json="true"/>
 
     <boolean name="enableStatusProgressByCategory"
       title="Enable status progress by category."

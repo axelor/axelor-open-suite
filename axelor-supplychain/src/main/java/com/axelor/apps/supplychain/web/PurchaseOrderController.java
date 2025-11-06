@@ -178,7 +178,7 @@ public class PurchaseOrderController {
           Beans.get(PurchaseOrderShipmentService.class)
               .createShipmentCostLine(purchaseOrder, shipmentMode);
       if (message != null) {
-        response.setInfo(message);
+        response.setNotify(message);
       }
       response.setValues(purchaseOrder);
     } catch (Exception e) {
@@ -206,5 +206,14 @@ public class PurchaseOrderController {
         Beans.get(PurchaseOrderStockService.class)
             .updatePurchaseOrderLinesStockLocation(purchaseOrder);
     response.setValue("purchaseOrderLineList", purchaseOrderLineList);
+  }
+
+  public void checkAnalyticAxis(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    try {
+      Beans.get(PurchaseOrderSupplychainService.class).checkAnalyticAxisByCompany(purchaseOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <menuitem name="menu-quality-root" order="-1700" if="__config__.app.isApp('quality')"
     title="Quality" icon="check" icon-background="#3f6bb9"/>
 
-  <menuitem name="quality-controls-root" parent="menu-quality-root"
-    title="Quality controls" order="100"/>
+  <menuitem name="quality-controls-root" parent="menu-quality-root" title="Quality audits"
+    order="100"/>
 
   <menuitem name="quality-control-entries" parent="menu-quality-root"
     title="Control entries" action="quality.control.entries.view" order="80"/>
@@ -37,10 +37,10 @@
   </action-view>
 
 
-  <menuitem name="quality-controls" parent="quality-controls-root" title="Quality controls"
+  <menuitem name="quality-controls" parent="quality-controls-root" title="Quality audits"
     action="quality.controls" order="200"/>
 
-  <action-view name="quality.controls" title="Quality controls"
+  <action-view name="quality.controls" title="Quality audits"
     model="com.axelor.apps.quality.db.QualityControl">
     <view type="kanban" name="quality-control-kanban"/>
     <view type="grid" name="quality-control-grid"/>
@@ -137,8 +137,6 @@
   <menuitem name="quality-control-plan-characteristics" parent="quality-configurations"
     title="Control plan characteristics" action="quality.control.plan.characteristics.view"
     order="90"/>
-
-
 
   <action-view name="quality.control.plan.characteristics.view"
     title="Control plan characteristics"
@@ -265,6 +263,56 @@
     model="com.axelor.apps.quality.db.QIAction">
     <view type="grid" name="qi-action-grid"/>
     <view type="form" name="qi-action-form"/>
+  </action-view>
+
+  <menuitem name="quality-required-document" parent="menu-dms" title="Required documents"
+    action="quality.required.document" order="-75" if="__config__.app.isApp('quality')"/>
+  <action-view name="quality.required.document" title="Required documents"
+    model="com.axelor.apps.quality.db.RequiredDocument">
+    <view type="grid" name="required-document-grid"/>
+    <view type="form" name="required-document-form"/>
+    <view-param name="search-filters" value="quality-required-document-filters"/>
+  </action-view>
+
+  <menuitem name="quality-characteristic-type" title="Characteristics types"
+    parent="base-referential-root-product-settings" action="quality.characteristic.type" order="500"
+    if="__config__.app.isApp('quality')"/>
+
+  <action-view name="quality.characteristic.type" title="Characteristics types"
+    model="com.axelor.apps.quality.db.CharacteristicType">
+    <view type="grid" name="characteristic-type-grid"/>
+    <view type="form" name="characteristic-type-form"/>
+  </action-view>
+
+  <menuitem name="quality-characteristic-property" title="Characteristics properties"
+    parent="base-referential-root-product-settings" action="quality.characteristic.property"
+    order="510" if="__config__.app.isApp('quality')"/>
+
+  <action-view name="quality.characteristic.property" title="Characteristics properties"
+    model="com.axelor.apps.quality.db.CharacteristicProperty">
+    <view type="grid" name="characteristic-property-grid"/>
+    <view type="form" name="characteristic-property-form"/>
+  </action-view>
+
+  <menuitem name="quality-product-characteristic" title="Product characteristics"
+    parent="base-referential-root-product-settings" action="quality.product.characteristic"
+    order="490" if="__config__.app.isApp('quality')"/>
+
+  <action-view name="quality.product.characteristic" title="Product characteristics"
+    model="com.axelor.apps.quality.db.ProductCharacteristic">
+    <view type="grid" name="product-characteristic-grid"/>
+    <view type="form" name="product-characteristic-form"/>
+  </action-view>
+
+  <menuitem name="quality-tracking-numbers-characteristic" parent="stock-root-conf"
+    title="Tracking number characteristics" action="quality.tracking.number.characteristics"
+    order="301"/>
+
+  <action-view name="quality.tracking.number.characteristics"
+    title="Tracking number characteristics"
+    model="com.axelor.apps.quality.db.TrackingNumberCharacteristic">
+    <view type="grid" name="tracking-number-characteristic-grid"/>
+    <view type="form" name="tracking-number-characteristic-form"/>
   </action-view>
 
 </object-views>

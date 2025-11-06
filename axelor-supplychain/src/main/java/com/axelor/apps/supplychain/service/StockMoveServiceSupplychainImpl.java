@@ -38,7 +38,6 @@ import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -100,6 +99,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   protected PfpService pfpService;
   protected SaleOrderConfirmService saleOrderConfirmService;
   protected StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain;
+  protected final PurchaseOrderReceiptStateService purchaseOrderReceiptStateService;
 
   @Inject
   public StockMoveServiceSupplychainImpl(
@@ -124,7 +124,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       FixedAssetRepository fixedAssetRepository,
       PfpService pfpService,
       SaleOrderConfirmService saleOrderConfirmService,
-      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain) {
+      StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
+      PurchaseOrderReceiptStateService purchaseOrderReceiptStateService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -148,6 +149,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     this.pfpService = pfpService;
     this.saleOrderConfirmService = saleOrderConfirmService;
     this.stockMoveLineServiceSupplychain = stockMoveLineServiceSupplychain;
+    this.purchaseOrderReceiptStateService = purchaseOrderReceiptStateService;
   }
 
   @Override
@@ -192,12 +194,12 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       PurchaseOrderStockService purchaseOrderStockService =
           Beans.get(PurchaseOrderStockService.class);
       for (PurchaseOrder purchaseOrder : stockMove.getPurchaseOrderSet()) {
-        updatePurchaseOrderLines(stockMove, !stockMove.getIsReversion());
+        purchaseOrderReceiptStateService.updatePurchaseOrderLineReceiptState(purchaseOrder);
         // Update linked purchaseOrder receipt state depending on BackOrder's existence
         if (newStockSeq != null) {
           purchaseOrder.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
         } else {
-          purchaseOrderStockService.updateReceiptState(purchaseOrder);
+          purchaseOrderReceiptStateService.updateReceiptState(purchaseOrder);
 
           if (appSupplychain.getTerminatePurchaseOrderOnReceipt()) {
             finishOrValidatePurchaseOrderStatus(purchaseOrder);
@@ -380,8 +382,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         Beans.get(PurchaseOrderStockService.class);
     for (PurchaseOrder po : poSet) {
 
-      updatePurchaseOrderLines(stockMove, stockMove.getIsReversion());
-      purchaseOrderStockService.updateReceiptState(po);
+      purchaseOrderReceiptStateService.updatePurchaseOrderLineReceiptState(po);
+      purchaseOrderReceiptStateService.updateReceiptState(po);
       if (appSupplyChainService.getAppSupplychain().getTerminatePurchaseOrderOnReceipt()) {
         finishOrValidatePurchaseOrderStatus(po);
       }
@@ -400,36 +402,6 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_FINISHED);
     } else {
       purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_VALIDATED);
-    }
-  }
-
-  protected void updatePurchaseOrderLines(StockMove stockMove, boolean qtyWasReceived)
-      throws AxelorException {
-    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-      if (stockMoveLine.getPurchaseOrderLine() != null) {
-        PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
-
-        BigDecimal realQty =
-            unitConversionService.convert(
-                stockMoveLine.getUnit(),
-                purchaseOrderLine.getUnit(),
-                stockMoveLine.getRealQty(),
-                stockMoveLine.getRealQty().scale(),
-                purchaseOrderLine.getProduct());
-
-        if (qtyWasReceived) {
-          purchaseOrderLine.setReceivedQty(purchaseOrderLine.getReceivedQty().add(realQty));
-        } else {
-          purchaseOrderLine.setReceivedQty(purchaseOrderLine.getReceivedQty().subtract(realQty));
-        }
-        if (purchaseOrderLine.getReceivedQty().signum() == 0) {
-          purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_NOT_RECEIVED);
-        } else if (purchaseOrderLine.getReceivedQty().compareTo(purchaseOrderLine.getQty()) < 0) {
-          purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
-        } else {
-          purchaseOrderLine.setReceiptState(PurchaseOrderRepository.STATE_RECEIVED);
-        }
-      }
     }
   }
 
@@ -626,7 +598,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       if (partner != null) {
         if (!CollectionUtils.isEmpty(partner.getManagedByPartnerLinkList())) {
           List<PartnerLink> partnerLinkList = partner.getManagedByPartnerLinkList();
-          // Retrieve all Invoiced by Type
+          // Retrieve all Invoiced to Type
           List<PartnerLink> partnerLinkInvoicedByList =
               partnerLinkList.stream()
                   .filter(
@@ -634,7 +606,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                           partnerLink
                               .getPartnerLinkType()
                               .getTypeSelect()
-                              .equals(PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY))
+                              .equals(PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO))
                   .collect(Collectors.toList());
 
           // If there is only one, then it is the default one
@@ -705,8 +677,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   @Override
   public void setOrigin(StockMove oldStockMove, StockMove newStockMove) {
-    if (ObjectUtils.notEmpty(oldStockMove.getSaleOrderSet())) {
-      newStockMove.setSaleOrderSet(Sets.newHashSet(oldStockMove.getSaleOrderSet()));
+    Set<SaleOrder> saleOrderSet = oldStockMove.getSaleOrderSet();
+    if (ObjectUtils.notEmpty(saleOrderSet)) {
+      newStockMove.setSaleOrderSet(Sets.newHashSet(saleOrderSet));
+      saleOrderSet.forEach(saleOrder -> saleOrder.addStockMoveListItem(newStockMove));
     } else if (oldStockMove.getPurchaseOrderSet() != null) {
       newStockMove.setPurchaseOrderSet(Sets.newHashSet(oldStockMove.getPurchaseOrderSet()));
     } else {
@@ -740,5 +714,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         sml.setTotalNetMass(sml.getQty().multiply(sml.getNetMass()));
       }
     }
+  }
+
+  @Override
+  @Transactional
+  public void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove) {
+    stockMove.setFullySpreadOverLogisticalFormsFlag(true);
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="accounting-batch-grid" title="Accounting batches"
     model="com.axelor.apps.account.db.AccountingBatch">
@@ -65,7 +65,7 @@
       <panel name="billOfExchangePagePanel" title="Bill of exchange configuration"
         hideIf="actionSelect != 24">
         <field name="billOfExchangeStepBatchSelect" widget="NavSelect" colSpan="12"/>
-        <field name="billOfExchangeDataTypeSelect"
+        <field name="billOfExchangeDataTypeSelect" selection-in="[1]"
           readonlyIf="billOfExchangeStepBatchSelect != 1"
           requiredIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1"/>
         <field name="billOfExhangeMailTemplate" showIf="billOfExchangeStepBatchSelect == 2"
@@ -143,7 +143,7 @@
           showIf="closeYear || openYear"/>
         <field name="allocatePerPartner" colSpan="3" showIf="closeYear || openYear"/>
         <field name="generatedMoveStatusSelect" colSpan="3" selection-in="[2,3,5]"
-          requiredIf="actionSelect == 21" showIf="closeYear || openYear"/>
+          requiredIf="actionSelect == 21" showIf="closeYear || openYear" widget="single-select"/>
         <label name="daybookRemainingLabel" hidden="true" css="label-danger" colSpan="12"/>
         <field name="moveDescription" colSpan="12" showIf="closeYear || openYear"/>
         <field name="$closeAllAccounts" title="Close all accounts (Balance c/f preparation) ?"
@@ -213,7 +213,8 @@
             grid-view="journal-grid" hideIf="accountingCutOffTypeSelect &lt;= 2"
             onSelect="action-attrs-accounting-batch-set-journal-domain" canNew="false"
             canEdit="false" widget="TagSelect"/>
-          <field name="generatedMoveStatusSelect" colSpan="6" selection-in="[2,3,5]"/>
+          <field name="generatedMoveStatusSelect" colSpan="6" selection-in="[2,3,5]"
+            widget="single-select"/>
           <spacer colSpan="6"/>
           <field name="recoveredTax" showIf="accountingCutOffTypeSelect &lt;= 2"/>
           <field name="ati"
@@ -248,8 +249,8 @@
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
         <field name="description" showTitle="false"/>
-        <panel-related name="batchListPanel" field="batchList" colSpan="12"
-          form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+        <panel-dashlet name="batchListPanel" colSpan="12"
+          action="action-batch-method-show-batches" canSearch="true"/>
       </panel>
 
     </panel-tabs>

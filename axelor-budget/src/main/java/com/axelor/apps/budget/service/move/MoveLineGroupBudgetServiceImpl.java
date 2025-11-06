@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service.move;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveLineInvoiceTermService;
@@ -42,6 +43,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.compute.BudgetDistributionComputeService;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
 
   protected BudgetToolsService budgetToolsService;
   protected AppBudgetService appBudgetService;
+  protected BudgetDistributionComputeService budgetDistributionComputeService;
 
   @Inject
   public MoveLineGroupBudgetServiceImpl(
@@ -74,7 +77,9 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
       BudgetToolsService budgetToolsService,
       AppBudgetService appBudgetService,
       FiscalPositionService fiscalPositionService,
-      TaxService taxService) {
+      TaxService taxService,
+      AnalyticAxisService analyticAxisService,
+      BudgetDistributionComputeService budgetDistributionComputeService) {
     super(
         moveLineService,
         moveLineDefaultService,
@@ -93,9 +98,11 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
         moveLineCheckBankPaymentService,
         moveLineRecordBankPaymentService,
         fiscalPositionService,
-        taxService);
+        taxService,
+        analyticAxisService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
+    this.budgetDistributionComputeService = budgetDistributionComputeService;
   }
 
   @Override
@@ -137,12 +144,25 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
   }
 
   @Override
+  public Map<String, Object> getOnNewValuesMap(MoveLine moveLine, Move move)
+      throws AxelorException {
+    Map<String, Object> valuesMap = super.getOnNewValuesMap(moveLine, move);
+
+    if (move != null) {
+      valuesMap.put("budgetFromDate", move.getBudgetFromDate());
+      valuesMap.put("budgetToDate", move.getBudgetToDate());
+    }
+
+    return valuesMap;
+  }
+
+  @Override
   public Map<String, Object> getDebitOnChangeValuesMap(
       MoveLine moveLine, Move move, LocalDate dueDate) throws AxelorException {
 
     Map<String, Object> valuesMap = super.getDebitOnChangeValuesMap(moveLine, move, dueDate);
 
-    addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+    manageBudgetChanges(valuesMap, moveLine);
 
     return valuesMap;
   }
@@ -153,7 +173,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
 
     Map<String, Object> valuesMap = super.getCreditOnChangeValuesMap(moveLine, move, dueDate);
 
-    addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+    manageBudgetChanges(valuesMap, moveLine);
 
     return valuesMap;
   }
@@ -164,7 +184,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     Map<String, Object> valuesMap =
         super.getCurrencyAmountRateOnChangeValuesMap(moveLine, move, dueDate);
 
-    addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+    manageBudgetChanges(valuesMap, moveLine);
 
     return valuesMap;
   }
@@ -174,7 +194,7 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
       throws AxelorException {
     Map<String, Object> valuesMap = super.getDebitCreditOnChangeValuesMap(moveLine, move);
 
-    addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+    manageBudgetChanges(valuesMap, moveLine);
 
     return valuesMap;
   }
@@ -194,6 +214,16 @@ public class MoveLineGroupBudgetServiceImpl extends MoveLineGroupBankPaymentServ
     valuesMap.put("budgetDistributionList", new ArrayList<>());
 
     return valuesMap;
+  }
+
+  protected void manageBudgetChanges(Map<String, Object> valuesMap, MoveLine moveLine) {
+    if (appBudgetService.isApp("budget")) {
+      budgetDistributionComputeService.updateMonoBudgetAmounts(
+          moveLine.getBudgetDistributionList(), moveLine.getDebit().max(moveLine.getCredit()));
+
+      addBudgetRemainingAmountToAllocate(valuesMap, moveLine);
+      valuesMap.put("budgetDistributionList", moveLine.getBudgetDistributionList());
+    }
   }
 
   protected void addBudgetRemainingAmountToAllocate(

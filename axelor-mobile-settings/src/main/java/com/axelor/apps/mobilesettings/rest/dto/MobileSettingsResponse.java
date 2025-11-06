@@ -29,6 +29,7 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final List<MobileConfigResponse> apps;
   protected final Boolean isLoginUserQrcodeEnabled;
   protected final Boolean isTrackerMessageEnabled;
+  protected final Boolean isInboxAccessEnabled;
   protected final Boolean isInventoryValidationEnabled;
   protected final Boolean isStockCorrectionValidationEnabled;
   protected final Boolean isCustomerDeliveryLineAdditionEnabled;
@@ -64,12 +65,14 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isFolderCreationAllowed;
   protected final Boolean isFileCreationAllowed;
   protected final Boolean isFileDeletionAllowed;
+  protected final Long defaultQiDetectionId;
 
   public MobileSettingsResponse(
       Integer version,
       List<MobileConfigResponse> apps,
       Boolean isLoginUserQrcodeEnabled,
       Boolean isTrackerMessageEnabled,
+      Boolean isInboxAccessEnabled,
       Boolean isInventoryValidationEnabled,
       Boolean isStockCorrectionValidationEnabled,
       Boolean isCustomerDeliveryLineAdditionEnabled,
@@ -104,11 +107,13 @@ public class MobileSettingsResponse extends ResponseStructure {
       Boolean isRenamingAllowed,
       Boolean isFolderCreationAllowed,
       Boolean isFileCreationAllowed,
-      Boolean isFileDeletionAllowed) {
+      Boolean isFileDeletionAllowed,
+      Long defaultQiDetectionId) {
     super(version);
     this.apps = apps;
     this.isLoginUserQrcodeEnabled = isLoginUserQrcodeEnabled;
     this.isTrackerMessageEnabled = isTrackerMessageEnabled;
+    this.isInboxAccessEnabled = isInboxAccessEnabled;
     this.isInventoryValidationEnabled = isInventoryValidationEnabled;
     this.isStockCorrectionValidationEnabled = isStockCorrectionValidationEnabled;
     this.isCustomerDeliveryLineAdditionEnabled = isCustomerDeliveryLineAdditionEnabled;
@@ -144,6 +149,7 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.isFolderCreationAllowed = isFolderCreationAllowed;
     this.isFileCreationAllowed = isFileCreationAllowed;
     this.isFileDeletionAllowed = isFileDeletionAllowed;
+    this.defaultQiDetectionId = defaultQiDetectionId;
   }
 
   public List<MobileConfigResponse> getApps() {
@@ -158,6 +164,11 @@ public class MobileSettingsResponse extends ResponseStructure {
   @JsonProperty(value = "isTrackerMessageEnabled")
   public Boolean getTrackerMessageEnabled() {
     return isTrackerMessageEnabled;
+  }
+
+  @JsonProperty(value = "isInboxAccessEnabled")
+  public Boolean getInboxAccessEnabled() {
+    return isInboxAccessEnabled;
   }
 
   @JsonProperty(value = "isInventoryValidationEnabled")
@@ -331,5 +342,10 @@ public class MobileSettingsResponse extends ResponseStructure {
   @JsonProperty(value = "isFileDeletionAllowed")
   public Boolean getIsFileDeletionAllowed() {
     return isFileDeletionAllowed;
+  }
+
+  @JsonProperty(value = "defaultQiDetectionId")
+  public Long getDefaultQiDetectionId() {
+    return defaultQiDetectionId;
   }
 }

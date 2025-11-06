@@ -118,6 +118,8 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoiceTerm.setReasonOfRefusalToPayStr(
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
+
+    refreshInvoicePfpStatus(invoiceTerm.getInvoice());
   }
 
   @Override
@@ -227,27 +229,19 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  public Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
-    if (CollectionUtils.isEmpty(invoiceTermList)) {
-      return null;
-    }
-    InvoiceTerm firstInvoiceTerm = invoiceTermList.get(0);
-    int pfpStatus = invoiceTermPfpToolService.getPfpValidateStatusSelect(firstInvoiceTerm);
-    int otherPfpStatus;
-    for (InvoiceTerm otherInvoiceTerm : invoiceTermList) {
-      if (otherInvoiceTerm.getId() != null
-          && firstInvoiceTerm.getId() != null
-          && !otherInvoiceTerm.getId().equals(firstInvoiceTerm.getId())) {
-        otherPfpStatus = invoiceTermPfpToolService.getPfpValidateStatusSelect(otherInvoiceTerm);
-
-        if (otherPfpStatus != pfpStatus) {
-          pfpStatus = InvoiceTermRepository.PFP_STATUS_AWAITING;
-          break;
-        }
-      }
+  @Transactional(rollbackOn = {Exception.class})
+  public void refreshInvoicePfpStatus(Invoice invoice) {
+    if (invoice == null || ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return;
     }
 
-    return pfpStatus;
+    Integer pfpStatus =
+        invoiceTermPfpToolService.checkOtherInvoiceTerms(invoice.getInvoiceTermList());
+
+    if (pfpStatus != null && pfpStatus != invoice.getPfpValidateStatusSelect()) {
+      invoice.setPfpValidateStatusSelect(pfpStatus);
+      invoiceRepo.save(invoice);
+    }
   }
 
   @Override

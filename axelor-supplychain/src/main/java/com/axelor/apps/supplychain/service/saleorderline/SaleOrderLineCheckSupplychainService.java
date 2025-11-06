@@ -26,4 +26,6 @@ public interface SaleOrderLineCheckSupplychainService {
 
   void saleSupplySelectOnChangeCheck(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
+
+  void checkLinkedPackagingLine(SaleOrderLine saleOrderLine) throws AxelorException;
 }

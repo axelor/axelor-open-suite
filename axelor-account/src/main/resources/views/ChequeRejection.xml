@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="cheque-rejection-grid" title="Cheque Rejections"
     model="com.axelor.apps.account.db.ChequeRejection">
@@ -14,7 +14,7 @@
     <field name="rejectionDate"/>
     <field name="interbankCodeLine" form-view="interbank-code-line-form"
       grid-view="interbank-code-line-form"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="cheque-rejection-form" title="Cheque Rejection"
@@ -64,7 +64,7 @@
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info" itemSpan="6" readonly="true">
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <field name="move" form-view="move-form" grid-view="move-grid" readonly="true"/>
       <field name="dateTime"/>
     </panel>

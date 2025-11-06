@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="purchase" package="com.axelor.apps.purchase.db"/>
+
+  <entity name="CallTenderSupplier">
+
+    <many-to-one name="supplierPartner" ref="com.axelor.apps.base.db.Partner"
+      title="Supplier partner" required="true"/>
+    <many-to-one name="callTender" ref="com.axelor.apps.purchase.db.CallTender"/>
+    <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner"
+      title="Contacts"/>
+
+    <track on="UPDATE">
+      <field name="supplierPartner"/>
+    </track>
+  </entity>
+
+</domain-models>

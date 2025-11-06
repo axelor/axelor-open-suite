@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <simple-property-list name="includeResource">
         <value>translation_fr_FR</value>
         <value>translation_en_US</value>
@@ -1808,6 +1808,35 @@ this.height=row["logo_height"];]]></method>
     <Visible>true</Visible>
   </Block>
   <Dimension>Two_Dimensional</Dimension>
+  <Script>importPackage(Packages.org.eclipse.birt.chart.model.attribute.impl);
+
+var colorMap = {
+  &quot;A&quot;: ColorDefinitionImpl.create(71, 191, 219),   // light blue
+  &quot;B&quot;: ColorDefinitionImpl.create(232, 172, 57),   // orange
+  &quot;C&quot;: ColorDefinitionImpl.create(242, 88, 106)    // red
+};
+
+function beforeGeneration(chart, icsc) {
+  var xAxis = chart.getPrimaryBaseAxes()[0];
+  var yAxis = chart.getPrimaryOrthogonalAxis(xAxis);
+
+  var seriesDef = yAxis.getSeriesDefinitions().get(0);
+  seriesDef.getSeriesPalette().getEntries().clear();
+
+  var allSeries = seriesDef.getRunTimeSeries();
+  for (var i = 0; i &lt; allSeries.size(); i++) {
+    var series = allSeries.get(i);
+    var seriesIdentifier = series.getSeriesIdentifier();
+
+    var color = colorMap[seriesIdentifier] || ColorDefinitionImpl.create(80, 166, 218);
+
+    series.getLineAttributes().setVisible(true);
+    series.getLineAttributes().setColor(color);
+
+    seriesDef.getSeriesPalette().getEntries().add(color);
+  }
+}
+</Script>
   <Units>Points</Units>
   <SeriesThickness>10.0</SeriesThickness>
   <ExtendedProperties>

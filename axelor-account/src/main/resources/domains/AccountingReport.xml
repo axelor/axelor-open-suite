@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -60,7 +60,7 @@
 
     <!--Report 7 : Partner genereal ledger -->
     <boolean name="displayOnlyNotCompletelyLetteredMoveLines"
-      title="Display only not completely lettered move lines" default="false"
+      title="Exclude totally reconciled moves" default="false"
       help="By selecting this option, only move lines not lettered or partially lettered are displayed."/>
     <boolean name="displayCumulativeBalance" title="Display cumulative balance on printing"/>
 

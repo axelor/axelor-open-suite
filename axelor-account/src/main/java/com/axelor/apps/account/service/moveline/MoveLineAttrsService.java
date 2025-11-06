@@ -58,7 +58,9 @@ public interface MoveLineAttrsService {
 
   void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  void addAnalyticDistributionTemplateDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+  void addAnalyticDistributionTemplateDomain(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
 
   void changeFocus(Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 
@@ -70,5 +72,8 @@ public interface MoveLineAttrsService {
       Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 
   void addCutOffDatesRequired(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
+
+  void addVatSystemSelectReadonly(
       Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="sale-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
@@ -36,7 +36,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="lastReminderDate"/>
     <field name="lastReminderComments"/>
     <button name="printBtn" title="Print" icon="fa-print"
@@ -79,7 +79,7 @@
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="deliveryState" if="__config__.app.isApp('supplychain')"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="salespersonUser"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
@@ -110,7 +110,29 @@
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
+    <button name="printBtn" title="Print" icon="fa-print"
+      onClick="action-sale-order-method-show-sale-order"/>
+    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+      onClick="action-send-by-email-with-template"/>
+  </grid>
+
+  <grid name="sale-order-partner-quotation-grid" title="Sale orders"
+    model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
+    <field name="saleOrderSeq" width="120"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <field name="externalReference"/>
+    <field name="creationDate"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
+    <field name="inTaxTotalRemainingToOrder" aggregate="sum"
+      x-scale="currency.numberOfDecimals"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -130,7 +152,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
     <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
@@ -314,7 +336,14 @@
           </viewer>
         </field>
       </panel>
-      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
+      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"
+        if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"
+        selection-in="[1,2,5]" if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
+        showIf="statusSelect &lt;= 2 || statusSelect == 5"/>
+      <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"
+        selection-in="[3,4]" if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
+        showIf="statusSelect &gt; 2 &amp;&amp; statusSelect != 5"/>
       <field name="saleOrderSeq" showTitle="false">
         <viewer depends="statusSelect,saleOrderSeq"><![CDATA[
 	          <>
@@ -360,6 +389,15 @@
 	          </>
 	      ]]></viewer>
         </field>
+        <field if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"
+          showTitle="false" name="orderingStatus" showIf="statusSelect &lt;= 2">
+          <viewer><![CDATA[
+	          <>
+                 {orderingStatus == 1 && <Badge bg="warning">{_t('Partially ordered')}</Badge>}
+	             {orderingStatus == 2 && <Badge bg="success">{_t('orderingStatus.closed')}</Badge>}
+	          </>
+	      ]]></viewer>
+        </field>
         <field name="availabilityRequestLabel" colSpan="3" css="label-bold bold"
           showTitle="false" readonly="true" hidden="true">
           <viewer>
@@ -381,7 +419,7 @@
           form-view="company-form" grid-view="company-grid" colSpan="3"/>
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName"
-          readonlyIf="(saleOrderLineList &amp;&amp; saleOrderLineList.length > 0) || statusSelect >= 2"
+          readonlyIf="!createdByInterco &amp;&amp; ((saleOrderLineList &amp;&amp; saleOrderLineList.length > 0) || statusSelect >= 2)"
           canEdit="false"
           onChange="action-sale-method-printing-settings-default-values,action-sale-order-record-set-stock-location"
           domain="self.company = :company" form-view="trading-name-form"
@@ -561,12 +599,16 @@
           form-view="partner-form" grid-view="partner-grid"/>
         <field name="incoterm" canEdit="false" form-view="incoterm-form"
           grid-view="incoterm-grid" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
+        <field name="shippingCost" title="SaleOrder.shippingCost"
+          x-scale="company.currency.numberOfDecimals"
+          onChange="action-sale-order-method-compute-margin"/>
         <field name="isNeedingConformityCertificate" colSpan="3"/>
         <field name="isIspmRequired" readonly="true" colSpan="3"/>
         <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details"
           showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
-        <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries"
-          showIf="statusSelect >= 3" colSpan="12" action="action-sale-order-view-stock-moves"/>
+        <panel-related name="stockMovesPanel" field="stockMoveList"
+          grid-view="stock-move-sale-order-grid" form-view="stock-move-form"
+          showIf="statusSelect >= 3" colSpan="12" readonly="true"/>
         <panel name="deliveryCommentsPanel" title="Comment to display on delivery"
           colSpan="12">
           <field name="deliveryComments" widget="html" colSpan="12" showTitle="false"/>
@@ -664,84 +706,111 @@
         <panel-dashlet name="pastVersionsPanel"
           action="action-sale-order-view-previous-versions" colSpan="12" readonly="true"/>
       </panel>
+      <panel-dashlet name="childrenOrdersPanel" title="Children sale orders"
+        action="action-sale-order-view-children-order" colSpan="12" readonly="true"
+        showIf="statusSelect &lt;= 2"
+        if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
     </panel>
     <panel name="actionsPanel" hideIf="clientPartner == null" sidebar="true" stacked="true">
-      <button name="addPackBtn" title="Add a pack"
-        onClick="save,action-sale-order-view-add-pack"
-        if="__config__.app.getApp('sale')?.enablePackManagement"
-        hideIf="clientPartner == null || [2,4,5].indexOf(statusSelect) != -1 || (statusSelect == 3 &amp;&amp; !orderBeingEdited)"/>
       <button name="finalizeBtn" title="Finalize" showIf="statusSelect == 1" colSpan="12"
-        onClick="action-group-sale-order-finalize-quotation"/>
+        onClick="action-group-sale-order-finalize-quotation" icon="check" css="btn-success"
+        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
+      <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2"
+        colSpan="12" onClick="action-sale-group-confirmed"
+        readonlyIf="(advancePaymentNeeded &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmountNeeded)) || !saleOrderLineList || saleOrderLineList.length == 0"
+        icon="check-all" css="btn-success"
+        if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+      <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2"
+        colSpan="12" onClick="action-sale-order-group-split-confirm"
+        readonlyIf="(advancePaymentNeeded &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmountNeeded)) || !saleOrderLineList || saleOrderLineList.length == 0"
+        icon="check-all" css="btn-success"
+        if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
       <button
         if="(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder) || (!__config__.app.isApp('supplychain'))"
         name="completeManuallySaleOrderBtn" title="Complete manually sale order"
         showIf="statusSelect == 3"
         prompt="Warning, a completed order can't be changed anymore, do you want to continue?"
-        colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"/>
+        colSpan="12" onClick="save,action-sale-order-method-complete-sale-order"
+        icon="person-check-fill" css="btn-warning"
+        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
+      <button name="cancelBtn" title="Cancel" css="btn-danger" icon="x"
+        showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12"
+        onClick="save,action-sale-order-view-cancel"
+        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
+      <button
+        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder"
+        name="backToOrderConfirmBtn" title="Back to confirmed order" showIf="statusSelect == 4"
+        if-module="axelor-supplychain"
+        onClick="save,action-sale-order-method-set-status-to-confirmed" icon="reply-fill"
+        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button if="__config__.app.getApp('sale')?.getManageSaleOrderVersion()"
         name="newVersionBtn" title="New version"
         showIf="(statusSelect == 1 || statusSelect == 2) &amp;&amp; id" colSpan="12"
-        onClick="action-sale-order-group-new-version-btn"/>
+        onClick="action-sale-order-group-new-version-btn" icon="tag-fill"
+        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
+      <button name="separateInNewQuotationBtn" title="Separate in a new quotation"
+        showIf="statusSelect == 1" onClick="save,action-sale-order-method-separate-in-new-quotation"
+        icon="diagram-2-fill" readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button if="__config__.app.getApp('sale')?.allowPendingOrderModification"
         name="editOrderBtn" title="Edit order"
         showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12"
-        onClick="action-sale-order-method-edit-order"/>
+        onClick="action-sale-order-method-edit-order" icon="pencil-square"
+        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button name="validateChangesBtn" title="Validate changes"
         showIf="statusSelect == 3 &amp;&amp; orderBeingEdited" colSpan="12"
-        onClick="action-group-sale-order-validate-changes"/>
-      <button
-        if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto"
-        name="generateCustomerStockMoveBtn" title="Generate customer deliveries"
-        showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
-        readonlyIf="!saleOrderLineList || !saleOrderLineList.length > 0" colSpan="12"
-        onClick="save, action-supplychain-sale-order-create-stock-move"/>
-      <button name="confirmOrderBtn" title="Confirm order" showIf="statusSelect == 2"
-        colSpan="12" onClick="action-sale-group-confirmed"
-        readonlyIf="advancePaymentNeeded &amp;&amp; $number(advanceTotal) &lt; $number(advancePaymentAmountNeeded)"/>
-      <button name="invoiceAdvancePaymentBtn" title="Invoice an advance payment"
-        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()"
-        showIf="statusSelect == 2 &amp;&amp; inTaxTotal != 0 &amp;&amp; advancePaymentAmountNeeded > 0  &amp;&amp; advancePaymentNeeded"
-        colSpan="12" onClick="save,action-sale-order-view-invoicing-advance-payment-wizard"
-        if-module="axelor-supplychain"/>
+        onClick="action-group-sale-order-validate-changes" icon="bookmark-check"
+        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button
         if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()"
         if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate invoice"
         showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited" colSpan="12"
-        onClick="action-supplychain-sale-order-group-generate-invoice"/>
+        onClick="action-supplychain-sale-order-group-generate-invoice" icon="file-earmark"
+        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
+      <button name="invoiceAdvancePaymentBtn" title="Invoice an advance payment"
+        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()"
+        showIf="statusSelect == 2 &amp;&amp; inTaxTotal != 0 &amp;&amp; advancePaymentAmountNeeded > 0  &amp;&amp; advancePaymentNeeded"
+        colSpan="12" onClick="save,action-sale-order-view-invoicing-advance-payment-wizard"
+        if-module="axelor-supplychain" icon="receipt-cutoff"
+        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button
-        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain')?.getPurchaseOrderGenerationAuto()"
-        name="generatePOBtn" title="Generate purchase order"
-        showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; !orderBeingEdited" colSpan="12"
-        onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"/>
+        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"
+        if-module="axelor-supplychain" name="addAdvancePaymentBtn" title="Register a deposit"
+        showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12"
+        onClick="save,action-sale-order-view-register-advance-payment" icon="cash-coin"
+        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
+      <button name="addPackBtn" title="Add a pack"
+        onClick="save,action-sale-order-view-add-pack"
+        if="__config__.app.getApp('sale')?.enablePackManagement"
+        hideIf="clientPartner == null || [2,4,5].indexOf(statusSelect) != -1 || (statusSelect == 3 &amp;&amp; !orderBeingEdited)"
+        icon="box-seam-fill"/>
+      <button if="__config__.app.getApp('sale')?.getEnableConfigurator()"
+        name="addLineFromConfiguratorBtn" title="Add Line from Configurator"
+        showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"
+        icon="ui-checks"/>
+      <button
+        if="__config__.app.getApp('supplychain')?.custStockMoveMgtOnSO &amp;&amp; !__config__.app.getApp('supplychain')?.customerStockMoveGenerationAuto"
+        name="generateCustomerStockMoveBtn" title="Generate customer deliveries"
+        showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
+        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0" colSpan="12"
+        onClick="save,action-supplychain-group-sale-order-create-stock-move" icon="truck"/>
       <button
         if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.prodOrderMgtOnSO &amp;&amp;
         !__config__.app.getApp('production')?.productionOrderGenerationAuto"
         name="generateProductionOrderBtn" title="Generate production order"
         if-module="axelor-production" showIf="statusSelect == 3 &amp;&amp; !orderBeingEdited"
-        colSpan="12" onClick="save,action-sale-order-method-create-production-order"/>
-      <button name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times"
-        showIf="id &amp;&amp; (statusSelect == 1 || statusSelect == 2)" colSpan="12"
-        onClick="save,action-sale-order-view-cancel"/>
+        colSpan="12" onClick="save,action-sale-order-group-create-production-order"
+        icon="house-gear-fill" readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button
-        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()"
-        if-module="axelor-supplychain" name="addAdvancePaymentBtn" title="Register a deposit"
-        showIf="statusSelect == 3 &amp;&amp; amountInvoiced == 0" colSpan="12"
-        onClick="save,action-sale-order-view-register-advance-payment"/>
-      <button
-        if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.allowCompleteManuallySaleOrder"
-        name="backToOrderConfirmBtn" title="Back to confirmed order" showIf="statusSelect == 4"
-        if-module="axelor-supplychain"
-        onClick="save,action-sale-order-method-set-status-to-confirmed"/>
+        if="__config__.app.isApp('supplychain') &amp;&amp; !__config__.app.getApp('supplychain')?.getPurchaseOrderGenerationAuto()"
+        name="generatePOBtn" title="Generate purchase order"
+        showIf="(statusSelect == 2 || statusSelect == 3) &amp;&amp; !orderBeingEdited" colSpan="12"
+        onClick="save,action-supplychain-sale-order-generate-purchase-orders-from-selected-SOLines"
+        icon="cart-check-fill" readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <field name="message" hidden="true" type="string"/>
       <field name="amountInvoiced" hidden="true" x-scale="currency.numberOfDecimals"/>
-      <button if="__config__.app.getApp('sale')?.getEnableConfigurator()"
-        name="addLineFromConfiguratorBtn" title="Add Line from Configurator"
-        showIf="statusSelect == 1" onClick="save,action-sale-order-view-generate-line"/>
-      <button name="separateInNewQuotationBtn" title="Separate in a new quotation"
-        showIf="statusSelect == 1" onClick="save,action-sale-order-method-separate-in-new-quotation"/>
     </panel>
     <panel name="inTaxTotalPanel" readonly="true" hideIf="clientPartner == null" colSpan="4"
       sidebar="true">
@@ -755,10 +824,14 @@
         x-scale="currency.numberOfDecimals"/>
       <field name="advanceTotal" hidden="true" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals"/>
+      <field name="exTaxTotalOrdered" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotalOrdered" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
       <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals">
         <viewer
-          depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal,discountTypeSelect,discountAmount,priceBeforeGlobalDiscount,discountCurrency,discountScale">
+          depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal,discountTypeSelect,discountAmount,priceBeforeGlobalDiscount,discountCurrency,discountScale,exTaxTotalOrdered,inTaxTotalOrdered">
           <![CDATA[
 	                  <>
 	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
@@ -774,6 +847,10 @@
 	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
 	                     	 {statusSelect >= 3 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>}
 	                     	 {statusSelect >= 3 && <Box as="dd" m={0} px={3} py={1}>{$fmt('amountInvoiced')}</Box>}
+	                     	 {(statusSelect >= 2 && inAti && inTaxTotalOrdered != 0) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total ordered A.T.I.')}</Box>}
+	                     	 {(statusSelect >= 2 && inAti && inTaxTotalOrdered != 0) && <Box as="dd" m={0} px={3} py={1}>{$fmt('inTaxTotalOrdered')}</Box>}
+	                     	 {(statusSelect >= 2 && !inAti && exTaxTotalOrdered != 0) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total ordered W.T.')}</Box>}
+	                     	 {(statusSelect >= 2 && !inAti && exTaxTotalOrdered != 0) && <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotalOrdered')}</Box>}
 	                     	 {statusSelect >= 2 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>}
 	                     	 {statusSelect >= 2 && <Box as="dd" m={0} px={3} py={1}>{$fmt('advanceTotal')}</Box>}
 	                     </Box>
@@ -785,7 +862,7 @@
     <panel name="globalDiscountPanel" title="Global discount"
       if="__config__.app.getApp('base')?.getIsGlobalDiscountEnabled()"
       showIf="clientPartner &amp;&amp; saleOrderLineList &amp;&amp; saleOrderLineList.length != 0"
-      sidebar="true">
+      sidebar="true" readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited">
       <field name="discountTypeSelect" onChange="action-sale-order-method-on-line-change"/>
       <field name="discountAmount" showIf="discountTypeSelect != 0"
         x-currency="discountCurrency" x-scale="discountScale" colSpan="6"
@@ -839,6 +916,7 @@
           <![CDATA[<><Badge bg="warning">{_t('Reference already existing')}</Badge></>]]>
         </viewer>
       </field>
+      <field name="originSaleQuotation" showIf="originSaleQuotation" colSpan="12"/>
     </panel>
     <panel name="marginPanel" title="Margin" readonly="true" hideIf="clientPartner == null"
       itemSpan="6" sidebar="true" canCollapse="true" collapseIf="true">
@@ -1003,14 +1081,6 @@
           <field name="description" showTitle="false" widget="Html" x-lite="true" colSpan="12"/>
         </panel>
       </panel>
-
-      <panel name="projectPanel"
-        if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder()"
-        title="Business project" colSpan="12" if-module="axelor-business-project">
-        <field name="project" form-view="business-project-form" grid-view="project-grid"
-          colSpan="12"/>
-      </panel>
-
     </panel-tabs>
 
     <panel sidebar="true" name="actionsPanel" title="Actions">
@@ -1046,9 +1116,14 @@
         x-scale="currency.numberOfDecimals"/>
       <field name="advanceTotal" hidden="true" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals"/>
+      <field name="exTaxTotalOrdered" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
+      <field name="inTaxTotalOrdered" hidden="true" x-currency="currency.symbol"
+        x-scale="currency.numberOfDecimals"/>
       <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
         x-scale="currency.numberOfDecimals">
-        <viewer depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal">
+        <viewer
+          depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal,exTaxTotalOrdered,inTaxTotalOrdered">
                     <![CDATA[
 	                  <>
 	                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
@@ -1060,6 +1135,10 @@
 	                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
 	                     	 {statusSelect >= 3 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>}
 	                     	 {statusSelect >= 3 && <Box as="dd" m={0} px={3} py={1}>{$fmt('amountInvoiced')}</Box>}
+	                     	 {(statusSelect >= 2 && inAti && inTaxTotalOrdered != 0) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total ordered A.T.I.')}</Box>}
+	                     	 {(statusSelect >= 2 && inAti && inTaxTotalOrdered != 0) && <Box as="dd" m={0} px={3} py={1}>{$fmt('inTaxTotalOrdered')}</Box>}
+	                     	 {(statusSelect >= 2 && !inAti && exTaxTotalOrdered != 0) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total ordered W.T.')}</Box>}
+	                     	 {(statusSelect >= 2 && !inAti && exTaxTotalOrdered != 0) && <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotalOrdered')}</Box>}
 	                     	 {statusSelect >= 2 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>}
 	                     	 {statusSelect >= 2 && <Box as="dd" m={0} px={3} py={1}>{$fmt('advanceTotal')}</Box>}
 	                     </Box>
@@ -1084,7 +1163,7 @@
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printBtn" title="Print" icon="fa-print"
       onClick="action-sale-order-method-show-sale-order"/>
   </grid>
@@ -1161,9 +1240,14 @@
             x-scale="currency.numberOfDecimals"/>
           <field name="advanceTotal" hidden="true" x-currency="currency.symbol"
             x-scale="currency.numberOfDecimals"/>
+          <field name="exTaxTotalOrdered" hidden="true" x-currency="currency.symbol"
+            x-scale="currency.numberOfDecimals"/>
+          <field name="inTaxTotalOrdered" hidden="true" x-currency="currency.symbol"
+            x-scale="currency.numberOfDecimals"/>
           <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol"
             x-scale="currency.numberOfDecimals">
-            <viewer depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal">
+            <viewer
+              depends="exTaxTotal,taxTotal,statusSelect,amountInvoiced,advanceTotal,exTaxTotalOrdered,inTaxTotalOrdered">
                         <![CDATA[
 		                  <>
 		                     <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
@@ -1175,6 +1259,10 @@
 		                     	 <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
 		                     	 {statusSelect >= 3 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Amount invoiced W.T.')}</Box>}
 		                     	 {statusSelect >= 3 && <Box as="dd" m={0} px={3} py={1}>{$fmt('amountInvoiced')}</Box>}
+                                 {(statusSelect >= 2 && inAti && inTaxTotalOrdered != 0) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total ordered A.T.I.')}</Box>}
+                                 {(statusSelect >= 2 && inAti && inTaxTotalOrdered != 0) && <Box as="dd" m={0} px={3} py={1}>{$fmt('inTaxTotalOrdered')}</Box>}
+                                 {(statusSelect >= 2 && !inAti && exTaxTotalOrdered != 0) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total ordered W.T.')}</Box>}
+                                 {(statusSelect >= 2 && !inAti && exTaxTotalOrdered != 0) && <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotalOrdered')}</Box>}
 		                     	 {statusSelect >= 2 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance payment A.T.I. total')}</Box>}
 		                     	 {statusSelect >= 2 && <Box as="dd" m={0} px={3} py={1}>{$fmt('advanceTotal')}</Box>}
 		                     </Box>
@@ -1275,7 +1363,8 @@
   </form>
 
   <form name="sale-order-incoterm-wizard-form" title="Fill incoterm"
-    model="com.axelor.apps.sale.db.SaleOrder" onSave="action-sale-group-confirmed">
+    model="com.axelor.apps.sale.db.SaleOrder"
+    onSave="action-sale-order-group-incoterm-wizard-onsave">
     <panel name="mainPanel" colSpan="12">
       <field name="incoterm" required="true" grid-view="incoterm-grid"
         form-view="incoterm-form"/>
@@ -1297,10 +1386,13 @@
     <view-param name="show-confirm" value="false"/>
     <context name="_printedPDF" expr="eval: printedPDF"/>
     <context name="_saleOrderId" expr="eval: id"/>
+    <context name="_company" expr="eval: company"/>
   </action-view>
 
   <action-attrs name="action-sale-order-reports-wizard-attrs">
     <attribute name="value" for="$reportType" expr="eval: 1"/>
+    <attribute name="value" for="$saleOrderPrintTemplate"
+      expr="eval: __repo__(SaleConfig).all().filter('self.company = ?', _company).fetchOne()?.saleOrderPrintTemplate"/>
   </action-attrs>
 
   <cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
@@ -1494,15 +1586,11 @@
     <action name="action-sale-order-attrs-collapse-specific-settings-group"/>
     <action name="action-sale-order-attrs-in-ati"/>
     <action name="action-sale-order-attrs-hidden-bank-details"/>
-    <action name="action-sale-order-record-project-default-fields"
-      if="__config__.app.isApp('business-project')"/>
     <action name="action-sale-order-attrs-external-reference"/>
     <action name="action-sale-order-attrs-availability"/>
-    <action name="action-sale-order-attrs-set-required"/>
     <action name="action-sale-order-attrs-set-discounts-need-review"/>
     <action name="action-sale-order-record-get-trading-names-management-config"/>
     <action name="action-sale-order-method-is-incoterm-required"/>
-    <action name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product"/>
     <action name="action-sale-order-method-get-last-version"/>
     <action name="action-sale-order-attrs-set-save-actual-version"/>
     <action name="action-sale-order-attrs-list-selection-in-type-select"/>
@@ -1513,9 +1601,22 @@
     <action name="action-sale-order-method-fill-incoterm-if-required"
       if="!incoterm &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
     <action name="save"/>
-    <action name="action-business-project-method-generate-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getAutomaticProject()"/>
     <action name="action-sale-order-method-confirm"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-split-confirm">
+    <action name="action-sale-order-method-check-before-confirm"/>
+    <action name="action-sale-order-method-fill-incoterm-if-required"
+      if="!incoterm &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled"/>
+    <action name="save"/>
+    <action name="action-sale-order-confirm-wizard-method-open-wizard"/>
+  </action-group>
+
+  <action-group name="action-sale-order-group-incoterm-wizard-onsave">
+    <action name="action-sale-group-confirmed"
+      if="!__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
+    <action name="action-sale-order-group-split-confirm"
+      if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled"/>
   </action-group>
 
   <action-group name="action-group-sale-order-validate-changes">
@@ -1839,8 +1940,6 @@
       if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowSusbcriptionSaleOrder())"/>
     <field name="versionNumber" hidden="true"
       if="!__config__.app.getApp('sale')?.getManageSaleOrderVersion()"/>
-    <field name="project" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getGenerateProjectOrder())"/>
     <field name="timetableTemplate" hidden="true"
       if="!(__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing())"/>
     <field name="computationDate" hidden="true"
@@ -1939,16 +2038,6 @@
       :saleOrder))</domain>
     <context name="saleOrder" expr="eval: __self__.id"/>
   </action-view>
-
-  <action-view name="action-sale-order-view-stock-moves" title="Stock moves"
-    model="com.axelor.apps.stock.db.StockMove">
-    <view type="grid" name="stock-move-sale-order-grid"/>
-    <view type="form" name="stock-move-form"/>
-    <domain>:saleOrder MEMBER OF self.saleOrderSet</domain>
-    <context name="saleOrder" expr="eval: __this__.id"/>
-    <context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
-  </action-view>
-
 
   <action-view name="action-view-open-quotation-lines" title="Quotation lines"
     model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -2088,11 +2177,6 @@
     <field name="manualUnblock" expr="true"/>
   </action-record>
 
-  <action-attrs name="action-sale-order-record-project-default-fields"
-    if-module="axelor-business-project">
-    <attribute for="$_elementStartDate" name="value" expr="#{__datetime__}"/>
-  </action-attrs>
-
   <action-attrs name="action-sale-order-attrs-external-reference">
     <attribute name="hidden" for="duplicateReferenceLabel"
       expr="eval: !((externalReference != null &amp;&amp; id != null &amp;&amp; __repo__(SaleOrder).all().filter('self.externalReference = ? AND self.id != ?', externalReference , id).count() > 0)
@@ -2162,18 +2246,6 @@
       if="_clientPartnerCurrency"/>
   </action-attrs>
 
-  <action-attrs name="action-sale-order-attrs-set-required">
-    <attribute name="required" for="$_projectGeneratorType"
-      expr="eval: statusSelect == com.axelor.apps.sale.db.repo.SaleOrderRepository.STATUS_FINALIZED_QUOTATION &amp;&amp; __config__.app.getApp('business-project')?.getAutomaticProject()"/>
-  </action-attrs>
-
-  <action-attrs
-    name="action-sale-order-attrs-hide-selection-on-enable-task-template-by-product">
-    <attribute name="selection-in" for="$_projectGeneratorType"
-      if="!__config__.app.getApp('business-project')?.getEnableTaskTemplatesByProduct()"
-      expr="['PROJECT_ALONE', 'SUB_PROJECT_BY_LINE', 'TASK_BY_LINE']"/>
-  </action-attrs>
-
   <action-method name="action-sale-order-method-generate-advance-payment">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController"
       method="generateAdvancePaymentInvoice"/>
@@ -2212,16 +2284,6 @@
     <field name="stockLocation"
       expr="eval: tradingName?.shippingDefaultStockLocation != null ? tradingName?.shippingDefaultStockLocation : stockLocation"/>
   </action-record>
-
-  <action-attrs name="action-sale-order-attrs-incoterm-required">
-    <attribute for="incoterm" name="required"
-      expr="eval: __config__.app.isApp('supplychain')
-                      &amp;&amp; __config__.app.getApp('stock')?.isIncotermEnabled
-          &amp;&amp; saleOrderLineList?.any{it?.product?.productTypeSelect == 'storable'}
-          &amp;&amp; (
-          (stockLocation != null &amp;&amp; deliveryAddress?.country?.alpha2Code != stockLocation?.address?.country?.alpha2Code)
-          || (stockLocation == null &amp;&amp; deliveryAddress?.country?.alpha2Code != company.address?.country?.alpha2Code)) &amp;&amp; statusSelect == 2"/>
-  </action-attrs>
 
   <action-attrs name="action-sale-order-attrs-list-selection-in-type-select">
     <attribute name="selection-in" for="saleOrderLineList.typeSelect"
@@ -2275,5 +2337,16 @@
     <view type="form" name="sale-order-editable-multi-lines-form"/>
     <context name="_showRecord" expr="eval: id"/>
   </action-view>
+
+  <action-view name="action-sale-order-view-children-order" title="Children sale orders"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="grid" name="sale-order-grid"/>
+    <view type="form" name="sale-order-form"/>
+    <domain>self.originSaleQuotation.id = :id</domain>
+  </action-view>
+
+  <action-method name="action-sale-order-method-compute-margin">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="computeMargin"/>
+  </action-method>
 
 </object-views>

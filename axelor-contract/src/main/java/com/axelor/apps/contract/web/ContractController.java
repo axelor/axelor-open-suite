@@ -302,7 +302,7 @@ public class ContractController {
       String strFilter =
           Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  contract.getPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+                  contract.getPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
     } catch (Exception e) {
@@ -327,6 +327,8 @@ public class ContractController {
   public void onChangeContractLines(ActionRequest request, ActionResponse response) {
     try {
       Contract contract = this.getContract(request);
+
+      Beans.get(ContractLineService.class).checkAnalyticAxisByCompany(contract);
 
       response.setAttrs(
           Beans.get(ContractLineAttrsService.class)

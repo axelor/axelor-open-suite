@@ -125,16 +125,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
         move.getStatusSelect() == MoveRepository.STATUS_NEW
             || move.getStatusSelect() == MoveRepository.STATUS_CANCELED,
         attrsMap);
-
-    this.addAttr(
-        "moveLineList.vatSystemSelect",
-        "hidden",
-        move.getJournal() != null
-            && move.getJournal().getJournalType().getTechnicalTypeSelect()
-                != JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
-            && move.getJournal().getJournalType().getTechnicalTypeSelect()
-                != JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
-        attrsMap);
   }
 
   @Override
@@ -387,6 +377,15 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
                   || move.getJournal().getJournalType().getTechnicalTypeSelect()
                       == JournalTypeRepository.TECHNICAL_TYPE_SELECT_OTHER),
           attrsMap);
+      this.addAttr(
+          "moveLineMassEntryList.vatSystemSelect",
+          "hidden",
+          technicalTypeSelectIsNotNull
+              && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  != JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE
+              && move.getJournal().getJournalType().getTechnicalTypeSelect()
+                  != JournalTypeRepository.TECHNICAL_TYPE_SELECT_SALE,
+          attrsMap);
     }
   }
 
@@ -518,5 +517,14 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
     return "self.id IN ("
         + StringHelper.getIdListString(bankDetailsList)
         + ") AND self.active = true";
+  }
+
+  @Override
+  public void addFiscalPositionWarningHidden(Move move, Map<String, Map<String, Object>> attrsMap) {
+    boolean hidden = true;
+    if (move != null && move.getInvoice() != null) {
+      hidden = Objects.equals(move.getFiscalPosition(), move.getInvoice().getFiscalPosition());
+    }
+    this.addAttr("fiscalPositionWarningPanel", "hidden", hidden, attrsMap);
   }
 }

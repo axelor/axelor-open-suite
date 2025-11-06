@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="bank-reconciliation-grid" title="Bank reconciliations"
     model="com.axelor.apps.bankpayment.db.BankReconciliation"
@@ -15,13 +15,14 @@
     <field name="journal" form-view="journal-form" grid-view="journal-grid"/>
     <field name="startingBalance" x-scale="currency.numberOfDecimals"/>
     <field name="endingBalance" x-scale="currency.numberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
 
   <form name="bank-reconciliation-form" title="Bank reconciliation"
     model="com.axelor.apps.bankpayment.db.BankReconciliation" width="large"
-    onNew="action-bank-reconciliation-onnew-group" onLoad="action-bank-reconciliation-onload-group">
+    onNew="action-bank-reconciliation-onnew-group" onLoad="action-bank-reconciliation-onload-group"
+    onSave="action-bank-reconciliation-method-check-multiple-move-line">
     <panel name="mainPanel" colSpan="12">
       <spacer colSpan="10"/>
       <button name="correctBtn" title="Correct" hidden="true"
@@ -80,8 +81,7 @@
           onClick="action-bank-reconciliation-view-show-reconciled-move-lines"/>
       </panel>
     </panel>
-    <panel name="bankReconciliationPanel" title="Bank reconciliation"
-      readonlyIf="statusSelect == 2" colSpan="12"
+    <panel name="bankReconciliationPanel" title="Bank reconciliation" colSpan="12"
       showIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0">
       <panel name="balancePanel" title="Balance" colSpan="12">
         <field name="totalPaid" colSpan="3" x-scale="currency.numberOfDecimals"/>
@@ -96,24 +96,26 @@
       <panel-related name="bankReconciliationLineListPanel" colSpan="12"
         field="bankReconciliationLineList" form-view="bank-reconciliation-line-form"
         grid-view="bank-reconciliation-line-bank-reconciliation-grid" editable="true"
-        onChange="action-group-bankreconciliation-compute-click" x-can-copy="true"
-        orderBy="effectDate" height="12"/>
-      <button name="autoReconcileBtn" title="Auto reconcile"
-        showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3"
-        onClick="action-bank-reconciliation-method-automatic-reconciliation"/>
-      <button name="multipleReconcileBtn" title="Multiple reconciles" colSpan="3"
-        onClick="save,action-bank-reconciliation-validate-lines-selected,action-bank-reconciliation-view-multiple-reconcile-wizard"/>
-      <button name="unreconcileBtn" title="Unreconcile selected" colSpan="3"
-        onClick="save,action-bank-reconciliation-method-unreconcile"/>
-      <button name="reconcileBtn" title="Reconcile selected" colSpan="3"
-        onClick="save,action-bank-reconciliation-method-reconcile-selected"/>
-      <spacer colSpan="1"/>
+        x-can-copy="true" readonlyIf="statusSelect == 2" orderBy="effectDate" height="12"/>
+      <panel name="reconcileBtnPanel" readonlyIf="statusSelect == 2" colSpan="12">
+        <button name="autoReconcileBtn" title="Auto reconcile"
+          showIf="bankStatement &amp;&amp; bankReconciliationLineList.length > 0" colSpan="3"
+          onClick="action-bank-reconciliation-method-automatic-reconciliation,action-bank-reconciliation-method-check-multiple-move-line"/>
+        <button name="multipleReconcileBtn" title="Multiple reconciles" colSpan="3"
+          onClick="save,action-bank-reconciliation-validate-lines-selected,action-bank-reconciliation-view-multiple-reconcile-wizard"/>
+        <button name="unreconcileBtn" title="Unreconcile selected" colSpan="3"
+          onClick="save,action-bank-reconciliation-method-unreconcile"/>
+        <button name="reconcileBtn" title="Reconcile selected" colSpan="3"
+          onClick="action-group-bank-reconciliation-reconcile"/>
+      </panel>
+      <button name="computeBalances" title="Compute balances" colSpan="3"
+        onClick="save,action-bank-reconciliation-method-compute-balances" css="btn-success"/>
       <label name="selectionBankReconciliationLinesLabel"
-        title="Selection total for bank reconciliation lines" css="label-bold" colSpan="3"/>
+        title="Selection total for bank reconciliation lines" css="label-bold" colSpan="2"/>
       <field name="$selectionBankReconciliationLines" showTitle="false" readonly="true"
         colSpan="2" css="bold"/>
       <label name="selectionUnreconciledMoveLinesLabel"
-        title="Selection total for unreconciliated move lines" css="label-bold" colSpan="3"/>
+        title="Selection total for unreconciliated move lines" css="label-bold" colSpan="2"/>
       <field name="$selectionUnreconciledMoveLines" readonly="true" showTitle="false"
         colSpan="2" css="bold"/>
 
@@ -133,8 +135,6 @@
       </panel>
       <panel name="mainBalancePanel" colSpan="6"
         showIf="bankReconciliationLineList &amp;&amp; bankReconciliationLineList.length > 0">
-        <button name="computeBalances" title="Compute balances" colSpan="12"
-          onClick="save,action-bank-reconciliation-method-compute-balances"/>
         <label name="bankStatementLabel" title="Bank statement" colSpan="4"/>
         <spacer colSpan="4"/>
         <label name="accountingLabel" title="Accounting" colSpan="4"/>
@@ -227,14 +227,16 @@
     <action name="save"/>
     <action name="action-bank-reconciliation-method-compute"/>
     <action name="action-bank-reconciliation-check-incomplete-bankreconciliation-line"/>
+    <action name="action-bank-reconciliation-method-check-multiple-move-line"/>
     <action name="action-bank-reconciliation-method-validate"/>
     <action name="action-bank-reconciliation-method-compute-balances"/>
     <action name="action-bank-reconciliation-method-set-bank-statement-is-fully-reconciled"/>
   </action-group>
 
-  <action-group name="action-group-bankreconciliation-compute-click">
+  <action-group name="action-group-bank-reconciliation-reconcile">
     <action name="save"/>
-    <action name="action-bank-reconciliation-method-compute"/>
+    <action name="action-bank-reconciliation-method-reconcile-selected"/>
+    <action name="action-bank-reconciliation-method-check-multiple-move-line"/>
   </action-group>
 
   <action-record model="com.axelor.apps.bankpayment.db.BankReconciliation"
@@ -461,6 +463,11 @@
 
   <action-method name="action-bank-reconciliation-method-correct-click">
     <call class="com.axelor.apps.bankpayment.web.BankReconciliationController" method="correct"/>
+  </action-method>
+
+  <action-method name="action-bank-reconciliation-method-check-multiple-move-line">
+    <call class="com.axelor.apps.bankpayment.web.BankReconciliationController"
+      method="checkMultipleMoveLine"/>
   </action-method>
 
   <search-filters name="bank-reconciliation-filters"

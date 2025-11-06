@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <menuitem title="Contracts" name="contracts-root" order="-1500"
     if="__config__.app.isApp('contract')" icon="briefcase-fill" icon-background="#2196f3"/>
@@ -23,7 +23,7 @@
 
   <action-view name="contracts.root.supplier.all" title="Supplier contracts"
     model="com.axelor.apps.contract.db.Contract">
-    <view type="grid" name="contract-grid"/>
+    <view type="grid" name="supplier-contract-grid"/>
     <view type="form" name="contract-form"/>
     <view-param name="search-filters" value="contract-filters"/>
     <domain>self.targetTypeSelect = 2 AND self.contractTypeSelect = 1 AND self.statusSelect != 3</domain>
@@ -49,7 +49,7 @@
 
   <action-view name="contracts.root.yer.supplier.all" title="YEB/YER Supplier contracts"
     model="com.axelor.apps.contract.db.Contract">
-    <view type="grid" name="contract-grid"/>
+    <view type="grid" name="supplier-contract-grid"/>
     <view type="form" name="contract-form"/>
     <view-param name="search-filters" value="contract-filters"/>
     <domain>self.targetTypeSelect = 4 AND self.contractTypeSelect = 1 AND self.statusSelect != 3</domain>

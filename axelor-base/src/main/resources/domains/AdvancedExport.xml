@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -17,6 +17,8 @@
     <integer name="queryFetchSize" title="Query fetch size" default="100"
       help="Number of records to fetch from database on one query run. It will fetch upto 'Maximum export limit'."/>
     <boolean name="includeArchivedRecords" title="Include archived records"/>
+    <boolean name="useTechnicalFieldName" title="Use technical field name in columns"
+      help="When enabling this option, the exported file will have column names based on the technical field name."/>
   </entity>
 
 </domain-models>

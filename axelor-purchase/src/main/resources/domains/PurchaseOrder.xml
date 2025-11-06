@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="purchase" package="com.axelor.apps.purchase.db"/>
 
@@ -99,6 +99,11 @@
 
     <integer name="typeSelect" title="Type" selection="purchase.purchase.order.type.select"
       default="1"/>
+
+    <boolean name="orderBeingEdited" title="Order being edited"/>
+
+    <many-to-one name="callTender" title="Call for tenders"
+      ref="com.axelor.apps.purchase.db.CallTender"/>
 
     <unique-constraint columns="purchaseOrderSeq,company"/>
 

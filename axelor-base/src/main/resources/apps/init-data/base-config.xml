@@ -1,11 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
   <input file="base_sequence.csv" separator=";" type="com.axelor.apps.base.db.Sequence"
     search="self.importId = :importId" call="com.axelor.csv.script.ImportSequence:importSequence">
-    <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"/>
+    <bind column="codeSelect" to="codeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.Sequence', 'codeSelect', codeSelect)"
+      check-message="Invalid codeSelect"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="sequenceTypeSelect" to="sequenceTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(sequenceTypeSelect)"
+      check-message="Sequence type must not be null"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.apps.base.db.Company', 'importId', company_importId)"
+      check-message="Company doesn't exist"/>
+    <bind column="company_importId" to="company" search="self.importId = :company_importId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.Sequence','importId', importId, 'company.importId, codeSelect, prefixe, suffixe', company_importId, codeSelect, prefixe, suffixe)"
+      check-message="Company, code, prefixe and suffixe must be unique"/>
+    <bind to="yearlyResetOk" column="yearlyResetOk" eval="yearlyResetOk == '1' ? true : false"
+      if="yearlyResetOk"/>
     <bind to="nextNum" column="nextNum" eval="nextNum?.empty ? '1' : nextNum"/>
     <bind to="padding" column="padding" eval="padding?.empty ? '1' : padding"/>
     <bind to="toBeAdded" column="toBeAdded" eval="toBeAdded?.empty ? '1' : toBeAdded"/>
@@ -15,13 +31,61 @@
 
   <input file="studio_appBase.csv" separator=";" type="com.axelor.studio.db.AppBase"
     search="self.app.code = :code">
+    <bind column="mapApiSelect" to="mapApiSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'mapApiSelect', mapApiSelect)"
+      check-message="Invalid mapApiSelect"/>
+    <bind column="currencyWsURL" to="currencyWsURL"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'currencyWsURL', currencyWsURL)"
+      check-message="Invalid currencyWsURL"/>
+    <bind column="productInAtiSelect" to="productInAtiSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'productInAtiSelect', productInAtiSelect)"
+      check-message="Invalid productInAtiSelect"/>
+    <bind column="regroupProductsTypeSelect" to="regroupProductsTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'regroupProductsTypeSelect', regroupProductsTypeSelect)"
+      check-message="Invalid regroupProductsTypeSelect"/>
+    <bind column="regroupProductsLevelSelect" to="regroupProductsLevelSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'regroupProductsLevelSelect', regroupProductsLevelSelect)"
+      check-message="Invalid regroupProductsLevelSelect"/>
+    <bind column="computeMethodDiscountSelect" to="computeMethodDiscountSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'computeMethodDiscountSelect', computeMethodDiscountSelect)"
+      check-message="Invalid computeMethodDiscountSelect"/>
+    <bind column="timeLoggingPreferenceSelect" to="timeLoggingPreferenceSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'timeLoggingPreferenceSelect', timeLoggingPreferenceSelect)"
+      check-message="Invalid timeLoggingPreferenceSelect"/>
+    <bind column="productSequenceTypeSelect" to="productSequenceTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'productSequenceTypeSelect', productSequenceTypeSelect)"
+      check-message="Invalid productSequenceTypeSelect"/>
+    <bind column="shortcutMultiSelect" to="shortcutMultiSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.studio.db.AppBase', 'shortcutMultiSelect', shortcutMultiSelect)"
+      check-message="Invalid shortcutMultiSelect"/>
     <bind to="app" column="code" search="self.code = :code"/>
   </input>
 
   <input file="base_fakerApiField.csv" type="com.axelor.apps.base.db.FakerApiField"
-    search="self.importId = :importId" update="false"/>
+    search="self.importId = :importId" update="false">
+    <bind column="className" to="className"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(className)"
+      check-message="Class name must not be null"/>
+    <bind column="methodName" to="methodName"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(methodName)"
+      check-message="Method name must not be null"/>
+    <bind column="dataType" to="dataType"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.FakerApiField', 'dataType', dataType)"
+      check-message="Invalid dataType"/>
+  </input>
 
   <input file="base_fakerApiFieldParameters.csv"
-    type="com.axelor.apps.base.db.FakerApiFieldParameters"/>
+    type="com.axelor.apps.base.db.FakerApiFieldParameters">
+    <bind column="paramType" to="paramType"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.FakerApiFieldParameters', 'paramType', paramType)"
+      check-message="Invalid paramType"/>
+  </input>
 
+  <input file="base_icpe.csv" type="com.axelor.apps.base.db.Icpe" separator=";"/>
+
+  <input file="base_hazard_pictogram.csv" type="com.axelor.apps.base.db.HazardPictogram"
+    separator=";" call="com.axelor.csv.script.ImportHazardPictogram:importPictogram"/>
+
+  <input file="base_hazard_phrase.csv" type="com.axelor.apps.base.db.HazardPhrase"
+    separator=";"/>
 </csv-inputs>

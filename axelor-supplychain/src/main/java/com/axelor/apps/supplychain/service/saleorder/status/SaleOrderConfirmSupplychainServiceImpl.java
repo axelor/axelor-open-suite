@@ -21,10 +21,12 @@ package com.axelor.apps.supplychain.service.saleorder.status;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.sale.db.SaleOrder;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
@@ -36,6 +38,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
+import java.util.Objects;
 
 public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmSupplychainService {
 
@@ -46,6 +50,7 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
   protected SaleOrderStockService saleOrderStockService;
   protected IntercoService intercoService;
   protected StockMoveRepository stockMoveRepository;
+  protected AccountingSituationSupplychainService accountingSituationSupplychainService;
 
   @Inject
   public SaleOrderConfirmSupplychainServiceImpl(
@@ -55,7 +60,8 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
       SaleOrderPurchaseService saleOrderPurchaseService,
       SaleOrderStockService saleOrderStockService,
       IntercoService intercoService,
-      StockMoveRepository stockMoveRepository) {
+      StockMoveRepository stockMoveRepository,
+      AccountingSituationSupplychainService accountingSituationSupplychainService) {
     this.appSupplychainService = appSupplychainService;
     this.analyticToolSupplychainService = analyticToolSupplychainService;
     this.partnerSupplychainService = partnerSupplychainService;
@@ -63,6 +69,7 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
     this.saleOrderStockService = saleOrderStockService;
     this.intercoService = intercoService;
     this.stockMoveRepository = stockMoveRepository;
+    this.accountingSituationSupplychainService = accountingSituationSupplychainService;
   }
 
   @Override
@@ -71,6 +78,17 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
 
     if (!appSupplychainService.isApp("supplychain")) {
       return "";
+    }
+
+    if (saleOrder.getEstimatedShippingDate() == null) {
+      var estimatedShippingDate =
+          saleOrder.getSaleOrderLineList().stream()
+              .map(SaleOrderLine::getEstimatedShippingDate)
+              .filter(Objects::nonNull)
+              .max(LocalDate::compareTo)
+              .orElse(null);
+
+      saleOrder.setEstimatedShippingDate(estimatedShippingDate);
     }
 
     analyticToolSupplychainService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
@@ -99,6 +117,8 @@ public class SaleOrderConfirmSupplychainServiceImpl implements SaleOrderConfirmS
     if (StringUtils.notEmpty(notifyMessage)) {
       return notifyMessage;
     }
+
+    accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
 
     return "";
   }

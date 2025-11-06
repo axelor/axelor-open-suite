@@ -75,7 +75,13 @@ public class SaleOrderLineDetailsServiceImpl implements SaleOrderLineDetailsServ
             .multiply(saleOrderLineDetails.getQty())
             .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
-    setLineInfo(saleOrderLineDetails, costPrice, price, totalPrice, totalCostPrice, product);
+    setLineInfo(
+        saleOrderLineDetails,
+        costPrice.setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP),
+        price,
+        totalPrice,
+        totalCostPrice,
+        product);
     lineMap.putAll(saleOrderLineDetailsPriceService.computeMarginCoef(saleOrderLineDetails));
     setMapInfo(saleOrderLineDetails, saleOrder, lineMap);
     return lineMap;

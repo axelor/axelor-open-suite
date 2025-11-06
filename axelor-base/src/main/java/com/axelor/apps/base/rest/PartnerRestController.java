@@ -18,10 +18,13 @@
  */
 package com.axelor.apps.base.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.rest.dto.PartnerPostRequest;
 import com.axelor.apps.base.rest.dto.PartnerResponse;
+import com.axelor.apps.base.service.partner.PartnerCreationService;
 import com.axelor.apps.base.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -33,6 +36,7 @@ import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -71,5 +75,32 @@ public class PartnerRestController {
         Response.Status.OK,
         I18n.get(ITranslation.PARTNER_ADDRESS_UPDATED),
         new PartnerResponse(partner));
+  }
+
+  @Operation(
+      summary = "Create a partner",
+      tags = {"Partner"})
+  @Path("/")
+  @POST
+  @HttpExceptionHandler
+  public Response createPartner(PartnerPostRequest requestBody) throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().createAccess(Partner.class).readAccess(Partner.class).check();
+
+    Partner partner =
+        Beans.get(PartnerCreationService.class)
+            .createPartner(
+                requestBody.getPartnerTypeSelect(),
+                requestBody.getTitleSelect(),
+                requestBody.getFirstName(),
+                requestBody.getName(),
+                requestBody.fetchMainPartner(),
+                requestBody.getDescription(),
+                requestBody.getIsContact(),
+                requestBody.getIsCustomer(),
+                requestBody.getIsSupplier(),
+                requestBody.getIsProspect());
+
+    return ResponseConstructor.buildCreateResponse(partner, new PartnerResponse(partner));
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form id="budget-move-line-tabs-form" name="move-line-tabs-form" title="Move line"
     model="com.axelor.apps.account.db.MoveLine" extension="true">
@@ -25,7 +25,14 @@
               ]]>
             </viewer>
           </field>
-          <field name="budget" onChange="action-reset-budget-distribution-list-method"
+          <panel name="datesPanel" colSpan="12">
+            <field name="budgetFromDate" requiredIf="budgetToDate"
+              onChange="action-budget-method-manage-budget-date-label"/>
+            <field name="budgetToDate" requiredIf="budgetFromDate"
+              onChange="action-budget-method-manage-budget-date-label"/>
+            <label name="budgetDatesLabel" hidden="true" css="label-danger" colSpan="12"/>
+          </panel>
+          <field name="budget" onChange="action-move-line-group-onchange-budget"
             readonlyIf="isBudgetImputed"
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" onSelect="action-move-line-method-set-budget-domain"/>
@@ -34,6 +41,8 @@
             form-view="move-line-budget-distribution-form" editable="true" colSpan="12"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
             onChange="action-group-budget-move-line-budget-distribution-onchange"/>
+          <field name="oldBudgetDistributionList" hidden="true"/>
+          <field name="$budgetAlreadyChanged" hidden="true"/>
         </panel>
       </insert>
     </extend>
@@ -43,6 +52,12 @@
     <action name="action-method-move-line-budget-distribution-validate-amount"/>
     <action name="action-move-line-method-compute-budget-remaining-amount"/>
     <action name="action-move-line-method-update-budget-amounts"/>
+    <action name="action-budget-method-manage-budget-date-label"/>
+  </action-group>
+
+  <action-group name="action-move-line-group-onchange-budget">
+    <action name="action-move-line-method-change-budget-distribution"/>
+    <action name="action-group-budget-move-line-budget-distribution-onchange"/>
   </action-group>
 
   <action-method name="action-method-move-line-budget-distribution-validate-amount">
@@ -61,5 +76,10 @@
 
   <action-method name="action-move-line-method-update-budget-amounts">
     <call class="com.axelor.apps.budget.web.MoveLineController" method="updateBudgetAmounts"/>
+  </action-method>
+
+  <action-method name="action-move-line-method-change-budget-distribution">
+    <call class="com.axelor.apps.budget.web.MoveLineController"
+      method="changeBudgetDistribution"/>
   </action-method>
 </object-views>

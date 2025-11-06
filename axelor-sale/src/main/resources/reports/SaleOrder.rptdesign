@@ -7006,7 +7006,7 @@ row["ex_tax_total"] - row["totalDiscountAmount"]
                             <property name="hideDetail">false</property>
                             <list-property name="sort">
                                 <structure>
-                                    <expression name="key" type="javascript">var levels = row["levelIndicator"].split(".");
+                                    <expression name="key" type="javascript">var levels = row["levelIndicator"] ? row["levelIndicator"].split(".") : row["sequence"] ? row["sequence"] : row["levelNo"];
 var levelScalingFactor = 10000;
 var value = 0;
 for (var i = 0; i &lt; levels.length; i++) {
@@ -9146,8 +9146,31 @@ else {'SaleOrder.totalTaxes'}</value>
                     <property name="rowSpan">1</property>
                     <text id="4380">
                         <property name="fontSize">8pt</property>
+                        <property name="dataSet">TranslateDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'value:'+row["LegalNote"]</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["LegalNote"]</VALUE-OF>]]></text-property>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["translation"] != null ? row["translation"] : row._outer["LegalNote"]</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
             </row>
@@ -9243,14 +9266,37 @@ else {'SaleOrder.totalTaxes'}</value>
                     <property name="rowSpan">1</property>
                     <text id="3878">
                         <property name="fontSize">10pt</property>
+                        <property name="dataSet">TranslateDS</property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["ClientBox"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row._outer["ClientBox"] == null</expression>
+                            </structure>
+                        </list-property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'value:'+row["ClientBox"]</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
                             </structure>
                         </list-property>
                         <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["ClientBox"]</VALUE-OF>
+                        <text-property name="content"><![CDATA[<VALUE-OF format="HTML">row["translation"] != null ? row["translation"] : row._outer["ClientBox"]</VALUE-OF>
 ]]></text-property>
                     </text>
                 </cell>

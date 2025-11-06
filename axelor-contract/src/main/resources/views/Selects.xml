@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <selection name="contract.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Active</option>
-    <option value="3">Closed</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Active</option>
+    <option value="3" color="red">Closed</option>
   </selection>
 
   <selection name="contract.version.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Waiting</option>
-    <option value="3">Ongoing</option>
-    <option value="4">Terminated</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="yellow">Waiting</option>
+    <option value="3" color="green">Ongoing</option>
+    <option value="4" color="red">Terminated</option>
   </selection>
 
   <selection name="contract.version.invoicing.moment.select">

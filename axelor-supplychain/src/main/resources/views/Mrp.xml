@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="mrp-grid" model="com.axelor.apps.supplychain.db.Mrp" title="MRP"
     onDelete="action-mrp-validate-delete-multi-mrp-reset">
@@ -18,7 +18,7 @@
       grid-view="stock-location-grid" colSpan="6"/>
     <field name="stockLocation.company"/>
     <field name="endDate" colSpan="6"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="mrp-form" model="com.axelor.apps.supplychain.db.Mrp" title="MRP" width="large"
@@ -35,6 +35,9 @@
           prompt="Are you sure you want to run the calculation ? Calculation can take a long time."/>
         <item name="generateProposalsItem" title="Generate proposals"
           showIf="statusSelect == 2" action="save,action-mrp-view-generate-proposal-wizard"/>
+        <item name="generateCallForTendersItem" title="Generate call for tenders"
+          action="save,action-mrp-view-generate-call-for-tenders-wizard"
+          if="__config__.app.getApp('purchase')?.getManageCallForTender()"/>
         <item action="save,action-method-mrp-undo-manual-changes" title="Undo manual changes"
           name="undoManualChangesItem"/>
       </menu>
@@ -116,6 +119,18 @@
     </panel>
   </form>
 
+  <form name="mrp-generate-call-for-tenders-wizard-form"
+    model="com.axelor.apps.supplychain.db.Mrp" title="MPS">
+    <panel name="wizardPanel">
+      <button name="generateSelectedCallForTenderBtn"
+        title="Generate call for tender for selected lines"
+        onClick="action-method-mrp-generate-selected-call-for-tender,close"/>
+      <button name="generateAllCallForTenderBtn"
+        title="Generate call for tender for all possible lines"
+        onClick="action-method-mrp-generate-all-call-for-tender,close"/>
+    </panel>
+  </form>
+
   <action-method name="action-method-mrp-run-calculation">
     <call class="com.axelor.apps.supplychain.web.MrpController" method="runCalculation"/>
   </action-method>
@@ -127,6 +142,16 @@
   <action-method name="action-method-mrp-generate-selected-proposal">
     <call class="com.axelor.apps.supplychain.web.MrpController"
       method="generateSelectedProposals"/>
+  </action-method>
+
+  <action-method name="action-method-mrp-generate-all-call-for-tender">
+    <call class="com.axelor.apps.supplychain.web.MrpController"
+      method="generateAllCallForTenders"/>
+  </action-method>
+
+  <action-method name="action-method-mrp-generate-selected-call-for-tender">
+    <call class="com.axelor.apps.supplychain.web.MrpController"
+      method="generateSelectedCallForTenders"/>
   </action-method>
 
   <action-view name="action-mrp-view-mrp-line" title="Results"
@@ -150,6 +175,17 @@
   <action-view name="action-mrp-view-generate-proposal-wizard" title="Mrp"
     model="com.axelor.apps.supplychain.db.Mrp">
     <view type="form" name="mrp-generate-proposal-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="forceEdit" value="true"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-view name="action-mrp-view-generate-call-for-tenders-wizard" title="Mrp"
+    model="com.axelor.apps.supplychain.db.Mrp">
+    <view type="form" name="mrp-generate-call-for-tenders-wizard-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-confirm" value="false"/>
     <view-param name="show-toolbar" value="false"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
@@ -50,6 +50,71 @@
       onClick="save, action-project-view-add-subtask"/>
     <button name="deleteTaskBtn" icon="fa-times-circle"
       onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
+  </grid>
+
+  <grid name="project-task-editable-grid" title="Tasks"
+    model="com.axelor.apps.project.db.ProjectTask" editable="true"
+    orderBy="-priority.technicalTypeSelect" onNew="action-project-task-group-onnew">
+    <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
+    <field name="project" width="200" onChange="action-project-task-group-project-onchange"
+      onSelect="action-project-task-editable-grid-attrs-project-on-select" form-view="project-form"
+      grid-view="project-grid" required="true"/>
+    <field name="assignedTo" readonlyIf="project == null" canNew="false" canView="false"
+      canEdit="false" onSelect="action-project-task-attrs-project-assigned-to-configurations"
+      required="true" form-view="user-form" grid-view="user-grid"
+      onChange="action-project-task-attrs-hide-time-spent-button" width="150"/>
+    <field name="name" width="200"/>
+    <field name="taskEndDate" onChange="action-project-task-attrs-set-task-duration"
+      width="150">
+      <hilite color="red"
+        if="(taskEndDate != null &amp;&amp; $moment().diff(taskEndDate,'days') &gt; 0) &amp;&amp; ($get('status.id') != $get('project.completedTaskStatus.id'))"/>
+    </field>
+    <field name="projectTaskCategory" width="150"/>
+    <field name="priority" onSelect="action-project-task-atts-priority-on-select"
+      canView="false" width="150"/>
+    <field name="status" onSelect="action-project-task-method-status-on-select"
+      hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
+      onChange="action-project-task-method-auto-change-progress" width="125"/>
+    <field name="createdOn" width="125"/>
+    <field name="createdBy" width="125"/>
+    <field name="progress" onChange="action-project-task-group-progress-onchange" min="0"
+      max="100" widget="Progress"/>
+    <field name="priority.technicalTypeSelect" hidden="true"/>
+    <field name="project.completedTaskStatus.id" hidden="true"/>
+  </grid>
+
+  <grid name="project-task-tree-project-grid" title="Tasks" widget="tree-grid"
+    x-tree-field="projectTaskList" x-tree-field-title="Add sub tasks"
+    model="com.axelor.apps.project.db.ProjectTask" editable="true"
+    orderBy="-priority.technicalTypeSelect" onNew="action-project-task-group-onnew">
+    <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
+    <field name="assignedTo" readonlyIf="project == null" canNew="false" canView="false"
+      canEdit="false" onSelect="action-project-task-attrs-project-assigned-to-configurations"
+      required="true" form-view="user-form" grid-view="user-grid"
+      onChange="action-project-task-attrs-hide-time-spent-button"/>
+    <field name="name" width="200"/>
+    <field name="taskEndDate" onChange="action-project-task-attrs-set-task-duration"
+      width="150">
+      <hilite color="red"
+        if="(taskEndDate != null &amp;&amp; $moment().diff(taskEndDate,'days') &gt; 0) &amp;&amp; ($get('status.id') != $get('project.completedTaskStatus.id'))"/>
+    </field>
+    <field name="projectTaskCategory"/>
+    <field name="priority" onSelect="action-project-task-atts-priority-on-select"
+      canView="false"/>
+    <field name="status" onSelect="action-project-task-method-status-on-select"
+      hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
+      onChange="action-project-task-method-auto-change-progress"/>
+    <field name="createdOn"/>
+    <field name="createdBy"/>
+    <field name="progress" onChange="action-project-task-group-progress-onchange"
+      widget="Progress" min="0" max="100"/>
+    <field name="project" hidden="true"/>
+    <field name="priority.technicalTypeSelect" hidden="true"/>
+    <field name="project.completedTaskStatus.id" hidden="true"/>
   </grid>
 
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
@@ -161,6 +226,8 @@
       <field name="site" onSelect="action-project-task-attrs-set-site-domain"
         form-view="site-form" grid-view="site-grid"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+      <field name="watcherUserSet" widget="TagSelect" canNew="false" colSpan="6"
+        form-view="user-form" grid-view="user-grid" canEdit="false"/>
 
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
         collapseIf="false" canCollapse="true">
@@ -216,6 +283,7 @@
         showIf="project.sprintManagementSelect == 'project' || (project.sprintManagementSelect == 'version' &amp;&amp; targetVersion)"
         onSelect="action-project-task-method-compute-sprint-domain" colSpan="4"
         form-view="sprint-form" grid-view="sprint-grid"/>
+      <field name="imputable"/>
       <field name="project.isShowProgress" hidden="true"/>
       <field name="project.isShowStatus" hidden="true"/>
       <field name="project.isShowPriority" hidden="true"/>
@@ -539,6 +607,7 @@
 
   <action-group name="action-project-task-group-project-onchange">
     <action name="action-project-task-group-reset-datas"/>
+    <action name="action-project-task-attrs-reset-parent-task"/>
     <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-record-project-configurations"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
@@ -551,7 +620,6 @@
 
   <action-group name="action-project-task-group-reset-datas">
     <action name="action-project-task-attrs-reset-version-and-sprint"/>
-    <action name="action-project-task-attrs-reset-parent-task"/>
   </action-group>
 
   <action-method name="action-project-task-method-set-link-type-domain">
@@ -652,7 +720,7 @@
   <action-record name="action-project-task-record-set-default"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="isFirst" expr="true"/>
-    <field name="typeSelect" expr="eval: _typeSelect"/>
+    <field name="typeSelect" expr="eval: _typeSelect?:'task'"/>
   </action-record>
 
   <action-record name="action-project-task-record-set-date-or-frequency-changed"
@@ -686,6 +754,10 @@
     <field name="taskDate" expr="#{__config__.date}"/>
     <field name="project" expr="eval:_project"/>
     <field name="project" expr="eval: __user__?.activeProject" if="!_project"/>
+    <field name="project" expr="eval: __repo__(Project).find(_parent?.id)"
+      if="_parent &amp;&amp; _parent?._model == 'com.axelor.apps.project.db.Project'"/>
+    <field name="project" expr="eval: __repo__(ProjectTask).find(_parent?.id)?.project"
+      if="_parent &amp;&amp; _parent?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <field name="parentTask" expr="eval:_parentTask"/>
   </action-record>
 
@@ -708,7 +780,9 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain"
       expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN(${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
-      for="assignedTo"/>
+      for="assignedTo" if="project &amp;&amp; !project.isAllowTaskToBeAssignedToAnyUser"/>
+    <attribute name="domain" expr="eval:null" for="assignedTo"
+      if="project &amp;&amp; project.isAllowTaskToBeAssignedToAnyUser"/>
   </action-attrs>
 
   <action-attrs name="action-project-task-attrs-parent-task-configurations"
@@ -847,6 +921,11 @@
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="deleteProjectTasks"/>
   </action-method>
 
+  <action-method name="action-project-task-method-status-on-select">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="statusOnSelect"/>
+  </action-method>
+
+
   <action-view name="dashlet.task" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="grid" name="project-task-grid"/>
@@ -899,6 +978,13 @@
       expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"/>
   </action-attrs>
 
+  <action-attrs name="action-project-task-editable-grid-attrs-project-on-select">
+    <attribute for="project" name="domain"
+      expr="eval: &quot;self.id IN (${_projectIdList.join(',')})&quot;" if="_projectIdList"/>
+    <attribute for="project" name="domain"
+      expr="eval: &quot;self.projectStatus.isCompleted = false&quot;" if="!_projectIdList"/>
+  </action-attrs>
+
   <action-validate name="action-project-task-validate-finish-status">
     <error message="Please fill completed task status in Project configuration."
       if="!project?.completedTaskStatus"/>
@@ -906,39 +992,30 @@
 
   <search-filters name="project-task-filters"
     model="com.axelor.apps.project.db.ProjectTask" title="Project task filters">
-    <field name="targetVersion" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="team" hidden="true" if="__config__.app.isApp('business-support')"/>
-    <field name="customerReferral" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="isPrivate" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="isOrderAccepted" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="isOrderProposed" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="assignment" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="internalDescription" hidden="true"
-      if="!__config__.app.isApp('business-support')"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="budgetedTime" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="plannedProgress" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="invoicingType" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="isPaid" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="isTaskRefused" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="invoiced" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="project.invoicingSequenceSelect" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="saleOrderLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="product" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="quantity" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="invoicingUnit" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="unitPrice" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="currency" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="discountTypeSelect" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="discountAmount" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="priceDiscounted" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="exTaxTotal" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="metaFile" hidden="true"
-      if="!__config__.app.getApp('project')?.isEnableSignature"/>
+    <filter title="My tasks" name="my-tasks">
+      <domain>self.assignedTo IS NOT NULL AND self.assignedTo = :__user__ AND
+        self.status.isCompleted = FALSE</domain>
+    </filter>
+    <filter title="My observed tasks" name="my-observed-tasks">
+      <domain>:__user__ MEMBER OF self.watcherUserSet AND self.status.isCompleted = FALSE</domain>
+    </filter>
+    <filter title="Tasks assigned to others" name="task-assigned-to-others">
+      <domain>self.createdBy = :__user__ AND (self.assignedTo IS NOT NULL AND self.assignedTo !=
+        :__user__) AND self.status.isCompleted = FALSE</domain>
+    </filter>
+    <filter title="All my tasks" name="all-my-tasks">
+      <domain>self.assignedTo IS NOT NULL AND self.assignedTo = :__user__</domain>
+    </filter>
+    <filter title="All my observed tasks" name="all-my-observed-tasks">
+      <domain>:__user__ MEMBER OF self.watcherUserSet</domain>
+    </filter>
+    <filter title="All tasks assigned to others" name="all-task-assigned-to-others">
+      <domain>self.createdBy = :__user__ AND (self.assignedTo IS NOT NULL AND self.assignedTo !=
+        :__user__)</domain>
+    </filter>
   </search-filters>
 
 </object-views>

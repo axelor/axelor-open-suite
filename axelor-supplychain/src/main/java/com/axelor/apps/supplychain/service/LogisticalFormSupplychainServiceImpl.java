@@ -18,55 +18,75 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.base.db.repo.ProductRepository;
-import com.axelor.apps.base.service.UnitConversionService;
-import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.stock.db.LogisticalForm;
-import com.axelor.apps.stock.db.LogisticalFormLine;
-import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
-import com.axelor.apps.stock.service.app.AppStockService;
-import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.inject.Beans;
+import com.axelor.apps.stock.db.StockConfig;
+import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
+import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.supplychain.db.Packaging;
+import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.util.List;
+import org.apache.commons.collections.CollectionUtils;
 
-public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceImpl
-    implements LogisticalFormSupplychainService {
+public class LogisticalFormSupplychainServiceImpl implements LogisticalFormSupplychainService {
+
+  protected StockConfigService stockConfigService;
+  protected StockMoveService stockMoveService;
+  protected StockMoveServiceSupplychain stockMoveServiceSupplychain;
 
   @Inject
   public LogisticalFormSupplychainServiceImpl(
-      ProductRepository productRepository,
-      UnitConversionService unitConversionService,
-      AppStockService appStockService) {
-    super(productRepository, unitConversionService, appStockService);
+      StockConfigService stockConfigService,
+      StockMoveService stockMoveService,
+      StockMoveServiceSupplychain stockMoveServiceSupplychain) {
+    this.stockConfigService = stockConfigService;
+    this.stockMoveService = stockMoveService;
+    this.stockMoveServiceSupplychain = stockMoveServiceSupplychain;
   }
 
   @Override
-  protected boolean testForDetailLine(StockMoveLine stockMoveLine) {
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return super.testForDetailLine(stockMoveLine);
-    }
-    SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
-    return saleOrderLine == null
-        || saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL;
-  }
-
-  @Override
-  protected LogisticalFormLine createLogisticalFormLine(
-      LogisticalForm logisticalForm, StockMoveLine stockMoveLine, BigDecimal qty) {
-    LogisticalFormLine logisticalFormLine =
-        super.createLogisticalFormLine(logisticalForm, stockMoveLine, qty);
-
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return logisticalFormLine;
+  @Transactional(rollbackOn = {Exception.class})
+  public void processCollected(LogisticalForm logisticalForm) throws AxelorException {
+    if (logisticalForm.getStatusSelect() == null
+        || logisticalForm.getStatusSelect() != LogisticalFormRepository.STATUS_CARRIER_VALIDATED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.LOGISTICAL_FORM_COLLECT_WRONG_STATUS));
     }
 
-    if (stockMoveLine.getSaleOrderLine() != null) {
-      logisticalFormLine.setSaleOrder(stockMoveLine.getSaleOrderLine().getSaleOrder());
+    List<StockMove> stockMoveList = logisticalForm.getStockMoveList();
+    List<Packaging> packagingList = logisticalForm.getPackagingList();
+    if (CollectionUtils.isEmpty(stockMoveList) || CollectionUtils.isEmpty(packagingList)) {
+      return;
     }
+    boolean hastQtyRemainingToPackage =
+        stockMoveList.stream()
+            .filter(stockMove -> CollectionUtils.isNotEmpty(stockMove.getStockMoveLineList()))
+            .flatMap(stockMove -> stockMove.getStockMoveLineList().stream())
+            .anyMatch(line -> line.getQtyRemainingToPackage().compareTo(BigDecimal.ZERO) > 0);
 
-    return logisticalFormLine;
+    if (hastQtyRemainingToPackage) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.STOCK_MOVE_NOT_FULLY_PACKAGED));
+    }
+    stockMoveList.forEach(stockMoveServiceSupplychain::updateFullySpreadOverLogisticalFormsFlag);
+
+    StockConfig stockConfig = stockConfigService.getStockConfig(logisticalForm.getCompany());
+    if (stockConfig.getRealizeStockMovesUponParcelPalletCollection()) {
+      for (StockMove stockMove : stockMoveList) {
+        if (stockMove.getFullySpreadOverLogisticalFormsFlag()) {
+          stockMoveService.realize(stockMove);
+        }
+      }
+    }
+    logisticalForm.setStatusSelect(LogisticalFormRepository.STATUS_COLLECTED);
   }
 }

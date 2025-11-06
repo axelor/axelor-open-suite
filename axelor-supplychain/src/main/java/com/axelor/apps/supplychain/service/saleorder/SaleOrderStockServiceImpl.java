@@ -44,7 +44,9 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveLineStockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
@@ -52,6 +54,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
@@ -87,6 +90,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected TaxService taxService;
   protected SaleOrderDeliveryAddressService saleOrderDeliveryAddressService;
+  protected final SaleOrderLineBlockingSupplychainService saleOrderLineBlockingSupplychainService;
+  protected AppStockService appStockService;
+  protected StockMoveLineStockLocationService stockMoveLineStockLocationService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -104,7 +110,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       ProductCompanyService productCompanyService,
       PartnerStockSettingsService partnerStockSettingsService,
       TaxService taxService,
-      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService) {
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
+      SaleOrderLineBlockingSupplychainService saleOrderLineBlockingSupplychainService,
+      AppStockService appStockService,
+      StockMoveLineStockLocationService stockMoveLineStockLocationService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockConfigService = stockConfigService;
@@ -120,6 +129,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.taxService = taxService;
     this.saleOrderDeliveryAddressService = saleOrderDeliveryAddressService;
+    this.saleOrderLineBlockingSupplychainService = saleOrderLineBlockingSupplychainService;
+    this.appStockService = appStockService;
+    this.stockMoveLineStockLocationService = stockMoveLineStockLocationService;
   }
 
   @Override
@@ -155,6 +167,8 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       Optional<StockMove> stockMove =
           createStockMove(saleOrder, deliveryAddressStr, estimatedDeliveryDate, saleOrderLineList);
 
+      stockMove.ifPresent(saleOrder::addStockMoveListItem);
+
       stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
     }
     return stockMoveList;
@@ -186,10 +200,22 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       if (saleOrderLine.getProduct() != null) {
+        if (saleOrderLineBlockingSupplychainService.isDeliveryBlocked(saleOrderLine)) {
+          continue;
+        }
         BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
         if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
-          createStockMoveLine(
-              stockMove, saleOrderLine, qty, saleOrder.getStockLocation(), toStockLocation);
+          StockLocation fromStockLocation = saleOrder.getStockLocation();
+          if (appBaseService.getAppBase().getEnableSiteManagementForStock()
+              && appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()) {
+            fromStockLocation =
+                Optional.ofNullable(
+                        stockMoveLineStockLocationService.getDefaultFromStockLocation(
+                            saleOrderLine.getProduct(), stockMove))
+                    .orElse(fromStockLocation);
+          }
+
+          createStockMoveLine(stockMove, saleOrderLine, qty, fromStockLocation, toStockLocation);
         }
       }
     }
@@ -507,6 +533,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               fromStockLocation,
               toStockLocation);
 
+      stockMoveLine.setQtyRemainingToPackage(
+          stockMoveLine.getRealQty().setScale(3, RoundingMode.HALF_UP));
+
       if (saleOrderLine.getDeliveryState() == 0) {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
       }
@@ -575,6 +604,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
+      if (saleOrderLine.getQty().signum() == 0) {
+        continue;
+      }
       if (this.isStockMoveProduct(saleOrderLine, saleOrder)) {
 
         if (saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {

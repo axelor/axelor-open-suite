@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service.meta;
 
+import com.axelor.apps.base.service.indicator.IndicatorMetaService;
 import com.axelor.apps.base.service.pricing.PricingMetaService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateMetaService;
 import com.axelor.meta.schema.views.AbstractView;
@@ -28,18 +29,22 @@ public class BaseViewProcessor implements ViewProcessor {
 
   protected PricingMetaService pricingMetaService;
   protected PrintingTemplateMetaService printingTemplateMetaService;
+  protected IndicatorMetaService indicatorMetaService;
 
   @Inject
   public BaseViewProcessor(
       PricingMetaService pricingMetaService,
-      PrintingTemplateMetaService printingTemplateMetaService) {
+      PrintingTemplateMetaService printingTemplateMetaService,
+      IndicatorMetaService indicatorMetaService) {
     this.pricingMetaService = pricingMetaService;
     this.printingTemplateMetaService = printingTemplateMetaService;
+    this.indicatorMetaService = indicatorMetaService;
   }
 
   @Override
   public void process(AbstractView view) {
     pricingMetaService.managePricing(view);
     printingTemplateMetaService.addPrintButton(view);
+    indicatorMetaService.process(view);
   }
 }

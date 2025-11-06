@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -11,6 +11,25 @@
       title="MRP family" massUpdate="true"/>
     <boolean name="excludeFromMrp" title="Exclude from MRP" massUpdate="true"/>
     <integer name="standardDelay" title="Standard delay (days)" default="0"/>
+    <integer name="availabilityMeanTime" title="Availability mean time" min="0"
+      help="Average product availability time in working days" nullable="true"/>
+    <boolean name="isAdr" title="ADR"/>
+    <many-to-one name="unCode" ref="com.axelor.apps.supplychain.db.UNCode"
+      title="UN code"/>
+    <integer name="packagingGroupSelect" title="Packaging group"
+      selection="base.product.packaging.group.select" default="1"/>
+    <boolean name="limitedQty" title="Limited qty"/>
+    <boolean name="isReturnable" title="Returnable"/>
+    <string name="labelNumber" title="Label number"/>
+    <string name="hazardNumber" title="Hazard number"/>
+
+    <extra-code>
+    	<![CDATA[
+    		public static final int PACKAGING_GROUP_I = 1;
+    		public static final int PACKAGING_GROUP_II = 2;
+    		public static final int PACKAGING_GROUP_III = 3;
+    	]]>
+    </extra-code>
 
   </entity>
 

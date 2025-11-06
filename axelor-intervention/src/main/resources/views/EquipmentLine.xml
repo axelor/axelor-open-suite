@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid model="com.axelor.apps.intervention.db.EquipmentLine" title="Equipments lines"
     name="equipment-line-grid" canNew="false">
@@ -44,8 +44,8 @@
         required="true" onChange="action-equipment-line-group-product-on-change"/>
       <field name="quantity" validIf="quantity > 0"
         readonlyIf="product.trackingNumberConfiguration.generateSaleAutoTrackingNbr"/>
-      <field name="trackingNumber" canSelect="false" canNew="true"
-        grid-view="tracking-number-grid" form-view="tracking-number-form" hidden="true"/>
+      <field name="trackingNumber" canNew="true" grid-view="tracking-number-grid"
+        form-view="tracking-number-form" domain="self.product = :product"/>
       <field name="trackingNumber.warrantyExpirationDate" hideIf="!trackingNumber"
         title="Supplier warranty end date"/>
       <field name="comments" colSpan="12"/>

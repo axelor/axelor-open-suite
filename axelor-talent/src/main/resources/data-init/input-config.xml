@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
 
   <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
     search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="object" to="object"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(object)"
+      check-message="Object must not be null"/>
     <bind to="canRead" eval="can_read == 'x' ? 'true' : 'false'"/>
     <bind to="canWrite" eval="can_write == 'x' ? 'true' : 'false'"/>
     <bind to="canCreate" eval="can_create == 'x' ? 'true' : 'false'"/>
@@ -12,21 +18,48 @@
     <bind to="canExport" eval="can_export == 'x' ? 'true' : 'false'"/>
   </input>
 
-  <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
-    <bind to="language" eval="'en'"/>
-    <bind to="type" eval="'tooltip'"/>
+  <input file="meta_helpEN.csv" separator=";" type="com.axelor.meta.db.MetaHelp"
+    search="self.importId = :importId">
+    <bind to="help" check="com.axelor.utils.helpers.ImportHelper.isValuePresent(help)"
+      check-message="Help value must not be null"/>
+    <bind to="language" eval="'en'"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'language', 'en')"
+      check-message="Invalid language"/>
+    <bind to="type" eval="'tooltip'"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'type', 'tooltip')"
+      check-message="Invalid help type"/>
     <bind to="model" eval="__repo__(MetaModel).findByName(object)?.getFullName()"
       column="object"/>
   </input>
 
-  <input file="meta_helpFR.csv" separator=";" type="com.axelor.meta.db.MetaHelp">
-    <bind to="language" eval="'fr'"/>
-    <bind to="type" eval="'tooltip'"/>
+  <input file="meta_helpFR.csv" separator=";" type="com.axelor.meta.db.MetaHelp"
+    search="self.importId = :importId">
+    <bind to="help" check="com.axelor.utils.helpers.ImportHelper.isValuePresent(help)"
+      check-message="Help value must not be null"/>
+    <bind to="language" eval="'fr'"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'language', 'fr')"
+      check-message="Invalid language"/>
+    <bind to="type" eval="'tooltip'"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaHelp', 'type', 'tooltip')"
+      check-message="Invalid help type"/>
     <bind to="model" eval="__repo__(MetaModel).findByName(object)?.getFullName()"
       column="object"/>
   </input>
 
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
-    search="self.name = :name" update="true"/>
+    search="self.name = :name" update="true">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+    <bind column="title" to="title"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(title)"
+      check-message="Title must not be null"/>
+    <bind column="xmlId" to="xmlId"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.meta.db.MetaMenu', 'name', name, 'xmlId', xmlId)"
+      check-message="Xml id must be unique"/>
+    <bind column="tagStyle" to="tagStyle"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaMenu', 'tagStyle', tagStyle)"
+      check-message="Invalid tagStyle"/>
+  </input>
 
 </csv-inputs>

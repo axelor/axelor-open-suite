@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-  http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
 
   <grid name="gdpr-request-grid" title="Requests" canNew="true"
@@ -10,7 +10,7 @@
     <field name="requestDateT"/>
     <field name="typeSelect"/>
     <field name="gdprRequestOrigin"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="modelSelect"/>
     <field name="dueSendingDateT"/>
   </grid>

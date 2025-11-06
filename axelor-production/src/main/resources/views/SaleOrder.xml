@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form id="sale-order-production-form" name="sale-order-form" title="Sale order"
     model="com.axelor.apps.sale.db.SaleOrder" extension="true">
@@ -57,6 +57,16 @@
     <call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController"
       method="createProductionOrders"/>
   </action-method>
+
+  <action-method name="action-sale-order-method-check-blocking">
+    <call class="com.axelor.apps.production.web.ProductionOrderSaleOrderController"
+      method="checkBlocking"/>
+  </action-method>
+
+  <action-group name="action-sale-order-group-create-production-order">
+    <action name="action-sale-order-method-check-blocking"/>
+    <action name="action-sale-order-method-create-production-order"/>
+  </action-group>
 
 
 </object-views>

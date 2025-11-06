@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -75,7 +75,6 @@
     <one-to-many name="timerList" ref="com.axelor.apps.base.db.Timer"/>
 
     <decimal name="budgetedTime" title="Estimated time"/>
-    <many-to-one name="metaFile" title="Signature" ref="com.axelor.meta.db.MetaFile"/>
 
     <many-to-many name="tagSet" ref="com.axelor.apps.base.db.Tag" title="Tags"/>
 
@@ -102,6 +101,11 @@
     <many-to-one name="oldActiveSprint" title="Old sprint"
       ref="com.axelor.apps.project.db.Sprint" transient="true"/>
     <decimal name="oldBudgetedTime" title="Old budgeted time" transient="true"/>
+
+    <boolean name="imputable" title="Imputable" default="true"/>
+
+    <many-to-many name="watcherUserSet" ref="com.axelor.auth.db.User"
+      title="User watchers"/>
 
     <extra-code>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="timetable-grid" title="Timetables"
     model="com.axelor.apps.supplychain.db.Timetable" orderBy="estimatedDate" editable="true">
@@ -11,7 +11,7 @@
       onChange="action-timetable-group-on-amount-change"
       x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="percentage" readonlyIf="invoiced" required="true"
-      onChange="action-timetable-record-on-percentage-change"/>
+      onChange="action-timetable-method-percentage-onchange"/>
     <field name="comments" readonlyIf="invoiced" width="300%"/>
     <field name="invoiced" readonly="true"/>
     <button name="generateInvoiceBtn" readonlyIf="!id || invoiced" help="Generate Invoice"
@@ -40,7 +40,7 @@
         onChange="action-timetable-group-on-amount-change"
         x-scale="saleOrder.currency.numberOfDecimals"/>
       <field name="percentage" colSpan="4" required="true"
-        onChange="action-timetable-record-on-percentage-change"/>
+        onChange="action-timetable-method-percentage-onchange"/>
       <button name="generateInvoiceBtn" colOffset="9" colSpan="3" title="Generate Invoice"
         onClick="save, action-timetable-method-generate-invoice"
         if="__config__.app.isApp('invoice') &amp;&amp; __config__.app.getApp('supplychain')?.getAllowTimetableInvoicing()"
@@ -62,7 +62,7 @@
       onChange="action-timetable-group-on-amount-change"
       x-scale="purchaseOrder.currency.numberOfDecimals"/>
     <field name="percentage" readonlyIf="invoiced" required="true"
-      onChange="action-timetable-record-on-percentage-change"/>
+      onChange="action-timetable-method-percentage-onchange"/>
     <field name="comments" readonlyIf="invoiced" width="300%"/>
     <field name="invoiced" readonly="true"/>
     <button name="generateInvoiceBtn" readonlyIf="!id || invoiced" help="Generate Invoice"
@@ -92,7 +92,7 @@
         onChange="action-timetable-group-on-amount-change"
         x-scale="saleOrder.currency.numberOfDecimals"/>
       <field name="percentage" colSpan="4" required="true"
-        onChange="action-timetable-record-on-percentage-change"/>
+        onChange="action-timetable-method-percentage-onchange"/>
       <field name="invoiced" hideIf="!invoice"/>
       <field name="comments" colSpan="12"/>
       <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
@@ -100,33 +100,27 @@
   </form>
 
   <action-group name="action-timetable-group-on-amount-change">
-    <action name="action-timetable-condition-on-amount-change"
-      if="__parent__ != null &amp;&amp; (__parent__._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder')"/>
     <action name="action-timetable-record-on-amount-change"
       if="__parent__ != null &amp;&amp; (__parent__._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder')"/>
   </action-group>
 
-  <action-condition name="action-timetable-condition-on-amount-change">
-    <check field="amount"
-      error="Amount cannot be superior to the order's total excluding taxes"
-      if="amount &gt; __parent__.exTaxTotal || __parent__.exTaxTotal == null"/>
-  </action-condition>
-
   <action-record name="action-timetable-record-on-amount-change"
     model="com.axelor.apps.supplychain.db.Timetable">
     <field name="percentage"
-      expr="eval: (__parent__.exTaxTotal != null &amp;&amp; __parent__.exTaxTotal &gt; 0) ? amount * 100 / __parent__.exTaxTotal : 0"/>
-  </action-record>
-
-  <action-record name="action-timetable-record-on-percentage-change"
-    model="com.axelor.apps.supplychain.db.Timetable">
-    <field name="amount"
-      expr="eval: (__parent__.exTaxTotal != null) ? (__parent__.exTaxTotal * percentage / 100).setScale(__parent__?.currency?.numberOfDecimals, java.math.RoundingMode.HALF_UP) : 0"
-      if="__parent__ != null &amp;&amp; (__parent__._model == 'com.axelor.apps.sale.db.SaleOrder' || __parent__._model == 'com.axelor.apps.purchase.db.PurchaseOrder')"/>
+      expr="eval: (__parent__.exTaxTotal != null &amp;&amp; __parent__.exTaxTotal &gt; 0) ? amount * 100 / __parent__.exTaxTotal : 0"
+      if="!__parent__.inAti"/>
+    <field name="percentage"
+      expr="eval: (__parent__.inTaxTotal != null &amp;&amp; __parent__.inTaxTotal &gt; 0) ? amount * 100 / __parent__.inTaxTotal : 0"
+      if="__parent__.inAti"/>
   </action-record>
 
   <action-method name="action-timetable-method-generate-invoice">
     <call class="com.axelor.apps.supplychain.web.TimetableController" method="generateInvoice"/>
+  </action-method>
+
+  <action-method name="action-timetable-method-percentage-onchange">
+    <call class="com.axelor.apps.supplychain.web.TimetableController"
+      method="percentageOnChange"/>
   </action-method>
 
 </object-views>

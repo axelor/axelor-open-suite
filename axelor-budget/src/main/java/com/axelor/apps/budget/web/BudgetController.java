@@ -49,8 +49,7 @@ public class BudgetController {
   public void computeTotalAmount(ActionRequest request, ActionResponse response) {
     try {
       Budget budget = request.getContext().asType(Budget.class);
-      response.setValue(
-          "totalAmountExpected", Beans.get(BudgetService.class).computeTotalAmount(budget));
+      response.setValues(Beans.get(BudgetToolsService.class).computeBudgetAmountMap(budget));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -60,16 +59,6 @@ public class BudgetController {
     try {
       Budget budget = request.getContext().asType(Budget.class);
       response.setValue("budgetLineList", Beans.get(BudgetService.class).generatePeriods(budget));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void computeToBeCommittedAndFirmGap(ActionRequest request, ActionResponse response) {
-    try {
-      Budget budget = request.getContext().asType(Budget.class);
-      BudgetService budgetService = Beans.get(BudgetService.class);
-      response.setValue("totalFirmGap", budgetService.computeFirmGap(budget));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

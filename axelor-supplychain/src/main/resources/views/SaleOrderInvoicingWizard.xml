@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <form name="sale-order-invoicing-wizard-form" title="Invoicing"
     model="com.axelor.apps.sale.db.SaleOrder"
@@ -48,10 +48,11 @@
     <field name="exTaxTotal" readonly="true" aggregate="sum"
       x-scale="saleOrder.currency.numberOfDecimals"/>
     <field name="amountInvoiced" readonly="true" x-scale="saleOrder.currency.numberOfDecimals"/>
-    <field name="qtyToInvoice" title="Qty to invoice" type="decimal" readonlyIf="invoiceAll"
-      min="0" x-scale="2"/>
+    <field name="qtyToInvoice" title="Qty to invoice" type="decimal"
+      readonlyIf="invoiceAll || amountInvoiced == exTaxTotal" min="0" x-scale="2"/>
     <field name="invoiceAll" title="Invoice all" type="boolean"
-      onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"/>
+      onChange="action-attrs-sale-order-line-invoicing-wizard-fill-qty"
+      readonlyIf="amountInvoiced == exTaxTotal"/>
     <field name="saleOrder.currency.numberOfDecimals" hidden="true"/>
   </grid>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="stock-config-grid" title="Stock configurations"
     model="com.axelor.apps.stock.db.StockConfig">
@@ -75,6 +75,9 @@
           domain="self.typeSelect != 3 AND self.company = :company" colSpan="4"/>
         <field name="isWithReturnSurplus" widget="boolean-switch" colSpan="4"/>
         <field name="isWithBackorder" widget="boolean-switch" colSpan="4"/>
+        <field name="isLogisticalFormMultiClientsEnabled" widget="boolean-switch" colSpan="4"/>
+        <field name="allowInternalStockMoveOnLogisticalForm" widget="boolean-switch"
+          colSpan="4"/>
       </panel>
     </panel>
     <panel name="stockRuleInfoPanel" title="Stock rule information">
@@ -142,6 +145,10 @@
       <field name="displayOrderReferenceAndOrderDate" widget="boolean-switch"/>
       <field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
       <field name="displayPriceOnPrinting" widget="boolean-switch"/>
+      <field name="isDisplayAdrDetailInPrinting" widget="boolean-switch"/>
+    </panel>
+    <panel name="logisticalFormPrintSettingsPanel" title="Logistical form printing settings">
+      <field name="isDisplayPackagingLineDetailInPrinting" widget="boolean-switch"/>
     </panel>
     <panel name="printingsPanel" title="Printings" colSpan="12">
       <field name="pickingStockMovePrintTemplate"/>

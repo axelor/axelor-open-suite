@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -25,6 +25,8 @@
 
     <datetime name="reservationDateTime" readonly="true"/>
 
+    <decimal name="qtyRemainingToPackage" title="Qty remaining to package" default="0"
+      scale="3" precision="20"/>
 
     <finder-method name="findForDeclarationOfExchanges"
       using="LocalDate:fromDate,LocalDate:toDate,String:productTypeSelect,int:stockMoveTypeSelect,com.axelor.apps.base.db.Country:country,com.axelor.apps.base.db.Company:company "

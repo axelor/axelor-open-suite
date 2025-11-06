@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="analytic-move-line-query-parameter-search-grid"
     title="Search analytic move line query parameter"
@@ -48,12 +48,14 @@
     model="com.axelor.apps.account.db.AnalyticMoveLineQueryParameter">
     <field name="analyticMoveLineSearch" expr="eval: __parent__"/>
     <field name="typeSelect" expr="eval:1"/>
+    <field name="percentage" expr="eval: new BigDecimal(100)"/>
   </action-record>
 
   <action-record
     name="action-analytic-move-line-query-parameter-record-reverse-on-new"
     model="com.axelor.apps.account.db.AnalyticMoveLineQueryParameter">
     <field name="typeSelect" expr="eval:2"/>
+    <field name="percentage" expr="eval: new BigDecimal(100)"/>
   </action-record>
 
 </object-views>

@@ -1,4 +1,4 @@
-"importId";"startUnit.importId";"coef";"endUnit.importId";typeSelect;entitySelect;formula
+"importId";"startUnit_importId";"coef";"endUnit_importId";typeSelect;entitySelect;formula
 1;102;4;101;1;0;
 2;103;8;101;1;0;
 3;104;5;103;1;0;
@@ -24,3 +24,6 @@
 23;103;480;100;1;0;
 24;501;0;306;2;0;"// Convert from m3 to kg using the product characteristics
 $Product.netMass$ / $Product.articleVolume$"
+27;403;1000;400;1;0;
+28;403;100;401;1;0;
+29;401;10;400;1;0;

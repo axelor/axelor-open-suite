@@ -69,8 +69,10 @@ public class AnalyticDistributionTemplateController {
     try {
       AnalyticDistributionTemplate analyticDistributionTemplate =
           request.getContext().asType(AnalyticDistributionTemplate.class);
-      Beans.get(AnalyticDistributionTemplateService.class)
-          .checkAnalyticAccounts(analyticDistributionTemplate);
+      AnalyticDistributionTemplateService analyticDistributionTemplateService =
+          Beans.get(AnalyticDistributionTemplateService.class);
+      analyticDistributionTemplateService.checkAnalyticAccounts(analyticDistributionTemplate);
+      analyticDistributionTemplateService.checkRequiredAxisByCompany(analyticDistributionTemplate);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

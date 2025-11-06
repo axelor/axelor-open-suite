@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/domain-models"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -470,6 +470,7 @@
       <field name="generateMoveForAdvancePayment" on="UPDATE"/>
       <field name="fixedAssetCatReqOnInvoice" on="UPDATE"/>
       <field name="isPrintInvoicesInCompanyLanguage" on="UPDATE"/>
+      <field name="isInvoiceCoefficientEnabled" on="UPDATE"/>
 
       <field name="accountingConfigTemplate" on="UPDATE"/>
       <field name="hasChartImported" on="UPDATE"/>
@@ -493,6 +494,9 @@
       <field name="displayPartnerSeqOnPrinting" on="UPDATE"/>
       <field name="displayHeadOfficeAddrOnInvoicePrinting" on="UPDATE"/>
       <field name="displayStockMoveOnInvoicePrinting" on="UPDATE"/>
+      <field name="displayPartnerSirenOnInvoicePrinting" on="UPDATE"/>
+      <field name="displayNoFinancialDiscountAppliedOnPrinting" on="UPDATE"/>
+      <field name="displayItemsCategoriesOnPrinting" on="UPDATE"/>
       <field name="invoiceClientBox" on="UPDATE"/>
       <field name="saleInvoiceLegalNote" on="UPDATE"/>
       <field name="termsAndConditions" on="UPDATE"/>
@@ -503,6 +507,7 @@
 
       <field name="isManagePassedForPayment" on="UPDATE"/>
       <field name="isManagePFPInRefund" on="UPDATE"/>
+      <field name="isManageDaybookInPFP" on="UPDATE"/>
 
       <field name="lineMinBeforeLongReportGenerationMessageNumber" on="UPDATE"/>
 
@@ -543,10 +548,15 @@
 
       <field name="retrieveDaybookMovesInPaymentSession" on="UPDATE"/>
 
+      <field name="allowedTaxGap" on="UPDATE"/>
+
       <field name="invoicePrintTemplate" on="UPDATE"/>
       <field name="purchaseInvoicesDetailsPrintTemplate" on="UPDATE"/>
       <field name="chequeDepositSlipPrintTemplate" on="UPDATE"/>
       <field name="saleInvoicesDetailsPrintTemplate" on="UPDATE"/>
+
+      <field name="foreignExchangeGainsAccount" on="UPDATE"/>
+      <field name="foreignExchangeLossesAccount" on="UPDATE"/>
     </track>
 
   </entity>

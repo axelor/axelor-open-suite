@@ -69,6 +69,9 @@ public class HrBatchService extends AbstractBatchService {
       case HrBatchRepository.ACTION_INCREMENT_LEAVE:
         batch = incrementLeave(hrBatch);
         break;
+      case HrBatchRepository.ACTION_LEAVE_REQUEST:
+        batch = leaveRequest(hrBatch);
+        break;
       default:
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -116,5 +119,9 @@ public class HrBatchService extends AbstractBatchService {
 
   public Batch incrementLeave(HrBatch hrBatch) {
     return Beans.get(BatchIncrementLeave.class).run(hrBatch);
+  }
+
+  public Batch leaveRequest(HrBatch hrBatch) {
+    return Beans.get(BatchLeaveRequest.class).run(hrBatch);
   }
 }

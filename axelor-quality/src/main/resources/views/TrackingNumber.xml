@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="tracking-number-grid" title="Tracking numbers" id="quality-tracking-number-grid"
+    model="com.axelor.apps.stock.db.TrackingNumber" extension="true">
+    <extend target="//field[@name='originMoveTypeSelect']">
+      <insert position="after">
+        <field name="conformitySelect"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form name="tracking-number-form" title="Tracking number" id="quality-tracking-number-form"
+    model="com.axelor.apps.stock.db.TrackingNumber" extension="true">
+    <extend target="//panel-tabs[@name='trackingNumberPanelTabs']">
+      <insert position="inside">
+        <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
+          <field name="conformitySelect"/>
+          <button onClick="save,action-tracking-number-method-add-complete-control"
+            name="AddCompleteControlBtn" title="Add a complete control" colSpan="3"/>
+          <button onClick="save,action-tracking-number-view-show-product-characteristic"
+            name="AddCharacteristicControlBtn" title="Add a characteristic control" colSpan="3"/>
+          <field name="trackingNumberCharacteristicList" colSpan="12" canNew="false"
+            onChange="action-tracking-number-method-assign-conformity-select"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <form model="com.axelor.apps.stock.db.TrackingNumber" title="Product characteristics"
+    name="tracking-number-characteristic-product-characteristic-wizard-form">
+    <panel name="mainPanel">
+      <panel-related name="productCharacteristicPanel"
+        field="product.productCharacteristicSet" grid-view="product-characteristic-grid"
+        form-view="product-characteristic-form" colSpan="12" canNew="false" editable="true"/>
+      <button onClick="action-tracking-number-method-add-characteristic-control"
+        name="AddCharacteristicControlBtn" title="Add a characteristic control"/>
+    </panel>
+  </form>
+
+  <action-method name="action-tracking-number-method-assign-conformity-select">
+    <call class="com.axelor.apps.quality.web.TrackingNumberController"
+      method="assignConformitySelect"/>
+  </action-method>
+
+  <action-method name="action-tracking-number-method-add-complete-control">
+    <call class="com.axelor.apps.quality.web.TrackingNumberController"
+      method="addCompleteControl"/>
+  </action-method>
+
+  <action-view name="action-tracking-number-view-show-product-characteristic"
+    title="Product characteristic" model="com.axelor.apps.stock.db.TrackingNumber">
+    <view type="form" name="tracking-number-characteristic-product-characteristic-wizard-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+  <action-method name="action-tracking-number-method-add-characteristic-control">
+    <call class="com.axelor.apps.quality.web.TrackingNumberController"
+      method="addCharacteristicControl"/>
+  </action-method>
+
+</object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid id="stock-move-line-supplychain-grid" name="stock-move-line-grid"
     title="Stock move lines" model="com.axelor.apps.stock.db.StockMoveLine" extension="true">
@@ -10,6 +10,23 @@
         <button name="addToCartBtn" title="Add to cart"
           onClick="action-stock-move-line-method-add-to-cart" icon="cart-plus-fill"
           if="__config__.app.getApp('sale')?.getIsCartManagementEnabled()"/>
+      </insert>
+    </extend>
+
+    <extend target="//field[@name='qtyInvoiced']">
+      <insert position="after">
+        <field name="qtyRemainingToPackage" readonly="true" x-scale="$nbDecimalDigitForQty"/>
+      </insert>
+    </extend>
+
+    <extend target="/">
+      <insert position="before">
+        <hilite strong="true" color="green"
+          if="_fromLogisticalForm &amp;&amp; $number(qtyRemainingToPackage) == 0"/>
+        <hilite strong="true" color="orange"
+          if="_fromLogisticalForm &amp;&amp; $number(qtyRemainingToPackage) > 0 &amp;&amp; $number(qtyRemainingToPackage) &lt; $number(realQty)"/>
+        <hilite strong="true" color="grey"
+          if="_fromLogisticalForm &amp;&amp; $number(qtyRemainingToPackage) == $number(realQty)"/>
       </insert>
     </extend>
   </grid>
@@ -146,6 +163,16 @@
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
+  <form id="stock-move-line-supplychain-form" name="stock-move-line-form"
+    title="Stock move line" model="com.axelor.apps.stock.db.StockMoveLine" extension="true">
+    <extend target="//field[@name='qtyInvoiced']">
+      <insert position="after">
+        <field name="qtyRemainingToPackage" readonly="true" x-scale="$nbDecimalDigitForQty"
+          colSpan="3"/>
+      </insert>
+    </extend>
+  </form>
+
   <form name="allocated-qty-stock-move-line-form" title="Change allocated qty"
     model="com.axelor.apps.stock.db.StockMoveLine">
     <panel name="mainPanel">
@@ -179,6 +206,11 @@
       <field name="$nbDecimalDigitForQty" hidden="true"/>
     </panel>
   </form>
+
+  <action-record name="action-stock-move-line-record-set-qty-remaining-to-package"
+    model="com.axelor.apps.stock.db.StockMoveLine">
+    <field name="qtyRemainingToPackage" expr="eval: realQty"/>
+  </action-record>
 
   <action-view name="action-stock-move-line-product-reserved-planned"
     title="${fullName} plan. st. move" model="com.axelor.apps.stock.db.StockMoveLine">

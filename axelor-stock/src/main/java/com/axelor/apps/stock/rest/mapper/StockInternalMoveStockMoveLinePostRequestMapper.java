@@ -37,6 +37,7 @@ public class StockInternalMoveStockMoveLinePostRequestMapper {
     stockMoveLineResult.setFromStockLocation(stockMoveLinePostRequest.fetchFromStockLocation());
     stockMoveLineResult.setToStockLocation(stockMoveLinePostRequest.fetchtoStockLocation());
     stockMoveLineResult.setTrackingNumber(stockMoveLinePostRequest.fetchTrackingNumber());
+    stockMoveLineResult.setDescription(stockMoveLinePostRequest.getDescription());
 
     return stockMoveLineResult;
   }

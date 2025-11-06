@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -39,6 +39,10 @@
     <finder-method name="findAllBySaleOrderAndStatus"
       using="saleOrderSet,statusSelect" all="true"
       filter="(:saleOrderSet) MEMBER OF self.saleOrderSet AND self.statusSelect = :statusSelect"/>
+
+    <finder-method name="findAllByPurchaseOrderAndStatus"
+      using="purchaseOrderSet,statusSelect" all="true"
+      filter="(:purchaseOrderSet) MEMBER OF self.purchaseOrderSet AND self.statusSelect = :statusSelect"/>
 
     <extra-code>
     <![CDATA[

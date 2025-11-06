@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -80,9 +80,6 @@
     <many-to-one name="customsCodeNomenclature"
       ref="com.axelor.apps.stock.db.CustomsCodeNomenclature"/>
     <string name="customsCode"/>
-    <one-to-many name="logisticalFormLineList"
-      ref="com.axelor.apps.stock.db.LogisticalFormLine" mappedBy="stockMoveLine"
-      title="Logistical form lines"/>
     <integer name="lineTypeSelect" title="Type" selection="line.type.select"/>
 
     <enum name="regime" ref="com.axelor.apps.stock.db.Regime"/>

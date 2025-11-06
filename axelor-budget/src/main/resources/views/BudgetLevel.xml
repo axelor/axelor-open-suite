@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid model="com.axelor.apps.budget.db.BudgetLevel" title="Sections" name="budget-level-grid"
     orderBy="code" canNew="false">
@@ -15,7 +15,7 @@
     <field name="realizedWithNoPo" x-scale="$currencyNumberOfDecimals"/>
     <field name="realizedWithPo" x-scale="$currencyNumberOfDecimals"/>
     <field name="totalFirmGap" x-scale="$currencyNumberOfDecimals"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 
@@ -90,7 +90,8 @@
       <field name="budgetLevelList" title="Sections" form-view="budget-level-form"
         grid-view="budget-level-grid" colSpan="12" canEdit="statusSelect == 'draft'"
         canNew="statusSelect == 'draft'" canRemove="statusSelect == 'draft'"
-        hideIf="budgetList != null &amp;&amp; budgetList.length &gt;= 1"/>
+        hideIf="budgetList != null &amp;&amp; budgetList.length &gt;= 1"
+        onChange="action-budget-level-change-compute-level-amounts"/>
       <spacer colSpan="12"/>
       <label name="orLabel" title="Or" colSpan="12"
         hideIf="(budgetList != null &amp;&amp; budgetList.length &gt;= 1) || (budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1)"/>
@@ -99,7 +100,8 @@
         grid-view="budget-grid"
         hideIf="budgetLevelList != null &amp;&amp; budgetLevelList.length &gt;= 1"
         canNew="statusSelect == 'draft'" canEdit="statusSelect == 'draft'"
-        canRemove="statusSelect == 'draft'"/>
+        canRemove="statusSelect == 'draft'"
+        onChange="action-budget-level-change-compute-level-amounts"/>
     </panel>
   </form>
 
@@ -257,6 +259,10 @@
 
   <action-method name="action-budget-level-method-draft">
     <call class="com.axelor.apps.budget.web.BudgetLevelController" method="draft"/>
+  </action-method>
+
+  <action-method name="action-budget-level-change-compute-level-amounts">
+    <call class="com.axelor.apps.budget.web.BudgetLevelController" method="computeLevelAmounts"/>
   </action-method>
 
   <action-view name="action-budget-view-budget-level" title="Sections"

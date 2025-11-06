@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="indicator-config-grid" title="Indicator configurations"
+    model="com.axelor.apps.base.db.IndicatorConfig">
+    <field name="name"/>
+    <field name="targetModel"/>
+    <field name="displayInRecordViewTypeSelect"/>
+  </grid>
+
+  <form name="indicator-config-form" title="Indicator configuration"
+    model="com.axelor.apps.base.db.IndicatorConfig" width="large">
+
+    <panel name="generalPanel" colSpan="12">
+      <field name="name" colSpan="12"/>
+      <panel name="queryPanel" colSpan="12">
+        <field name="recordQuery" widget="CodeEditor" x-code-syntax="sql" height="150"
+          colSpan="12"/>
+      </panel>
+
+      <panel name="targetModelPanel" colSpan="12">
+        <field name="targetModel" canView="false"
+          onChange="action-birt-printing-wizard-method-model-on-change"/>
+      </panel>
+
+      <panel name="expressionPanel" colSpan="12">
+        <field name="expressionTypeSelect" colSpan="6"/>
+        <field name="expression" widget="CodeEditor" x-code-syntax="groovy"
+          showIf="expressionTypeSelect == 1" colSpan="12" height="150"/>
+        <field name="expression" widget="CodeEditor" x-code-syntax="javascript"
+          showIf="expressionTypeSelect == 2" colSpan="12" height="150"/>
+        <field name="expression" widget="CodeEditor" x-code-syntax="sql"
+          showIf="expressionTypeSelect == 3" colSpan="12" height="150"/>
+
+        <field name="targetExpressionTypeSelect" colSpan="6"/>
+        <field name="targetExpression" widget="CodeEditor" x-code-syntax="groovy"
+          showIf="targetExpressionTypeSelect == 1" colSpan="12" height="150"/>
+        <field name="targetExpression" widget="CodeEditor" x-code-syntax="javascript"
+          showIf="targetExpressionTypeSelect == 2" colSpan="12" height="150"/>
+
+        <field name="alertExpressionTypeSelect" colSpan="6"/>
+        <field name="alertExpression" widget="CodeEditor" x-code-syntax="groovy"
+          showIf="alertExpressionTypeSelect == 1" colSpan="12" height="150"/>
+        <field name="alertExpression" widget="CodeEditor" x-code-syntax="javascript"
+          showIf="alertExpressionTypeSelect == 2" colSpan="12" height="150"/>
+
+      </panel>
+    </panel>
+
+    <panel name="displayConfigPanel" title="Display config."
+      help="Config. to manage how generated indicator results will be displayed in related model view">
+      <field name="displayInRecordViewTypeSelect" colSpan="4"/>
+      <field name="displayBarChart" colSpan="4"/>
+      <field name="forLastNResults" colSpan="4"/>
+    </panel>
+
+    <panel name="testingExprPanel" title="Testing expression" colSpan="12" canCollapse="true"
+      collapseIf="!$testResult">
+      <field name="recordValue" widget="EvalRefSelect" title="Select record"
+        x-eval-target="targetModel.fullName" x-eval-target-name="metaModelTargetName"
+        x-eval-value="recordValue" x-eval-title="recordTitle"/>
+      <button name="checkExprValueBtn" title="checkExprValueBtn"
+        onClick="save,action-indicator-config-method-test-expression"
+        readonlyIf="!targetModel || !recordValue"/>
+      <field name="$testResult" type="decimal" title="Testing result" readonly="true"
+        showIf="$testResult"/>
+    </panel>
+
+    <panel name="testingQueryPanel" title="Testing query" colSpan="12" canCollapse="true"
+      collapseIf="true">
+      <button name="checkQueryValueBtn" readonlyIf="!recordQuery" title="checkQueryValueBtn"
+        onClick="save,action-indicator-config-method-test-query" colOffset="6"/>
+      <field name="queryResult" colSpan="12" showIf="queryResult" readonly="true">
+        <viewer><![CDATA[
+        <>
+          {(() => {
+            const data = queryResult;
+            const [header, ...rows] = data.split("\n");
+            const columns = header.split(",");
+            return (
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            {columns.map((col, ind) => <TableCell key={ind} as="th">{col}</TableCell>)}
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rows.map((row, ind) => (
+                            <TableRow key={ind}>
+                                {row.split(",").map((col, ind) => <TableCell key={ind}>{col}</TableCell>)}
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            )
+          })()}
+        </>
+        ]]></viewer>
+      </field>
+    </panel>
+
+    <panel name="resultPanel" title="Results" canCollapse="true" collapseIf="true">
+      <panel-dashlet name="resultPanel" showTitle="false"
+        action="action-indicator-config-view-indicator-result" colSpan="12"/>
+    </panel>
+
+    <panel name="hiddenFieldsPanel" hidden="true">
+      <field name="targetModel.fullName"/>
+      <field name="metaModelTargetName"/>
+      <field name="recordTitle"/>
+      <field name="recordValue"/>
+    </panel>
+  </form>
+
+  <action-method name="action-indicator-config-method-test-query">
+    <call class="com.axelor.apps.base.web.IndicatorController" method="testQuery"/>
+  </action-method>
+
+  <action-method name="action-indicator-config-method-test-expression">
+    <call class="com.axelor.apps.base.web.IndicatorController" method="testExpression"/>
+  </action-method>
+
+  <action-view name="action-indicator-config-view-indicator-result" title=""
+    model="com.axelor.apps.base.db.IndicatorResult">
+    <view type="grid" name="indicator-result-grid"/>
+    <view type="form" name="indicator-result-form"/>
+    <view-param name="popup" value="true"/>
+    <domain>self.indicatorConfig.id = :_indicatorConfigId</domain>
+    <context name="_indicatorConfigId" expr="eval: id"/>
+  </action-view>
+
+</object-views>

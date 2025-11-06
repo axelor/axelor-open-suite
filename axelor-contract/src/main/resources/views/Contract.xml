@@ -2,10 +2,10 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-              http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+              http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="contract-grid" title="Contracts" model="com.axelor.apps.contract.db.Contract"
-    orderBy="-contractId">
+    orderBy="-contractId" groupBy="statusSelect">
     <hilite if="statusSelect == 1" color="info"/>
     <field name="contractId" width="120"/>
     <field name="name"/>
@@ -15,7 +15,27 @@
     <field name="currentContractVersion.supposedEndDate"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
+    <field name="currency" hidden="true"/>
+    <field name="currency.numberOfDecimals" hidden="true"/>
+    <field name="currentContractVersion.initialExTaxTotalPerYear"
+      x-scale="currency.numberOfDecimals"/>
+    <field name="currentContractVersion.yearlyExTaxTotalRevalued"
+      x-scale="currency.numberOfDecimals"/>
+  </grid>
+
+  <grid name="supplier-contract-grid" title="Contracts"
+    model="com.axelor.apps.contract.db.Contract" orderBy="-contractId" groupBy="partner">
+    <hilite if="statusSelect == 1" color="info"/>
+    <field name="contractId" width="120"/>
+    <field name="name"/>
+    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="partner"/>
+    <field name="startDate"/>
+    <field name="currentContractVersion.supposedEndDate"/>
+    <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
+      if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="currentContractVersion.initialExTaxTotalPerYear"
@@ -88,8 +108,6 @@
           hidden="true"/>
         <label name="tradingNameLabel"
           if="!(__config__.app.getApp('base')?.enableTradingNamesManagement)" colSpan="3"/>
-        <field name="project" colSpan="8" domain="self.clientPartner=:partner" hidden="true"
-          showIf="contractTypeSelect == 1"/>
         <field name="company.tradingNameList" hidden="true"/>
       </panel>
     </panel>
@@ -507,7 +525,7 @@
         <field name="createdOn"/>
         <field name="activationDateTime"/>
         <field name="endDateTime"/>
-        <field name="statusSelect"/>
+        <field name="statusSelect" widget="single-select"/>
       </panel-related>
 
       <panel-dashlet name="generatedSaleOrdersPanel" title="Sale orders"
@@ -592,7 +610,6 @@
       expr="action:action-record-contract-version-default-record"/>
     <field name="partner" expr="eval: _clientPartner" if="_clientPartner != null"/>
     <field name="currency" expr="eval: __user__.activeCompany?.currency"/>
-    <field name="project" expr="eval:_project" if="_project != null"/>
     <field name="tradingName" expr="eval: __user__?.tradingName"/>
   </action-record>
 

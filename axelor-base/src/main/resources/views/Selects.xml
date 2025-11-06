@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -257,17 +257,17 @@
   </selection>
 
   <selection name="base.year.status.select">
-    <option value="1">Opened</option>
-    <option value="2">Closed</option>
-    <option value="3">Adjusting</option>
+    <option value="1" color="green">Opened</option>
+    <option value="2" color="red">Closed</option>
+    <option value="3" color="yellow">Adjusting</option>
   </selection>
 
   <selection name="base.period.status.select">
-    <option value="1">Opened</option>
-    <option value="2">Permanently Closed</option>
-    <option value="3">Adjusting</option>
-    <option value="4">Temporarily Closed</option>
-    <option value="5">Closure in progress</option>
+    <option value="1" color="green">Opened</option>
+    <option value="2" color="red">Permanently Closed</option>
+    <option value="3" color="orange">Adjusting</option>
+    <option value="4" color="yellow">Temporarily Closed</option>
+    <option value="5" color="blue">Closure in progress</option>
   </selection>
 
   <selection name="company.partner.category.select">
@@ -436,8 +436,8 @@
   </selection>
 
   <selection name="base.printing.template.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Active</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="green">Active</option>
   </selection>
 
   <selection name="base.blocking.select">
@@ -452,6 +452,7 @@
     <option value="com.axelor.apps.base.job.MailJob">com.axelor.apps.base.job.MailJob</option>
     <option value="com.axelor.apps.base.job.BatchJob">com.axelor.apps.base.job.BatchJob</option>
     <option value="com.axelor.apps.base.job.CurrencyConversionJob">com.axelor.apps.base.job.CurrencyConversionJob</option>
+    <option value="com.axelor.apps.base.job.IndicatorComputeJob">com.axelor.apps.base.job.IndicatorComputeJob</option>
   </selection>
 
   <selection name="meta.schedule.batch.service.select"
@@ -515,8 +516,8 @@
   </selection>
 
   <selection name="advanced.import.status.select">
-    <option value="0">Draft</option>
-    <option value="1">Validated</option>
+    <option value="0" color="blue">Draft</option>
+    <option value="1" color="green">Validated</option>
   </selection>
 
   <selection name="file.field.import.type.select">
@@ -538,9 +539,9 @@
   </selection>
 
   <selection name="abc.analysis.status.select">
-    <option value="1">Draft</option>
-    <option value="2">Analyzing</option>
-    <option value="3">Finished</option>
+    <option value="1" color="blue">Draft</option>
+    <option value="2" color="orange">Analyzing</option>
+    <option value="3" color="green">Finished</option>
   </selection>
 
   <selection name="order.by.type">
@@ -729,12 +730,12 @@
   </selection>
 
   <selection name="data.backup.status.select">
-    <option value="0">Draft</option>
-    <option value="1">In Progress</option>
-    <option value="2">Backup Created</option>
-    <option value="3">Backup Restored</option>
-    <option value="4">Backup Restore Error</option>
-    <option value="5">Error</option>
+    <option value="0" color="blue">Draft</option>
+    <option value="1" color="orange">In Progress</option>
+    <option value="2" color="green">Backup Created</option>
+    <option value="3" color="teal">Backup Restored</option>
+    <option value="4" color="red">Backup Restore Error</option>
+    <option value="5" color="black">Error</option>
   </selection>
 
   <selection name="global.tracking.log.type.select">
@@ -816,6 +817,48 @@
   <selection name="base.change.shortcut.select">
     <option value="0">Active company</option>
     <option value="1">Active trading name</option>
+  </selection>
+
+  <selection name="base.product.retention.type.select">
+    <option value="0">Acid retention</option>
+    <option value="1">Tank retention</option>
+    <option value="2">Individual retention</option>
+    <option value="3">Retention pool</option>
+    <option value="4">Powder retention</option>
+  </selection>
+
+  <selection name="base.product.packaging.level.select">
+    <option value="0">Box</option>
+    <option value="1">Pallet</option>
+    <option value="2">Container</option>
+  </selection>
+
+  <selection name="import.export.translation.history.status.select">
+    <option value="0">Draft</option>
+    <option value="1">In Progress</option>
+    <option value="2">Completed</option>
+  </selection>
+
+  <selection name="base.indicator.config.expression.type.select">
+    <option value="1">Groovy</option>
+    <option value="2">Javascript</option>
+    <option value="3">Jpql</option>
+  </selection>
+
+  <selection name="base.indicator.config.target.expression.type.select">
+    <option value="1">Groovy</option>
+    <option value="2">Javascript</option>
+  </selection>
+
+  <selection name="base.indicator.config.display.in.rec.view.type.select">
+    <option value="0">None</option>
+    <option value="1">Button in top menu</option>
+    <option value="2">Panel at the end of view</option>
+  </selection>
+
+  <selection name="base.indicator.alert.status.select">
+    <option value="1">New</option>
+    <option value="2">Checked</option>
   </selection>
 
 </object-views>

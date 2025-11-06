@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="stock" package="com.axelor.apps.stock.db"/>
 
@@ -50,7 +50,8 @@
     <string name="trackingNumber" title="Tracking number"/>
     <integer name="numOfPackages" title="Number Of Packages"/>
     <integer name="numOfPalettes" title="Number Of Palettes"/>
-    <decimal name="grossMass" title="Gross Mass"/>
+    <decimal name="grossMass" title="Gross Mass"
+      help="This value is the packed gross mass, that is, the total gross mass of all packaged products plus the gross mass of their packagings (as defined in its logistical form)."/>
 
     <decimal name="exTaxTotal" title="Total W.T." precision="20" scale="2"/>
 
@@ -125,6 +126,9 @@
       ref="com.axelor.apps.stock.db.StockCorrection" copy="false"/>
     <many-to-one name="massStockMove" title="Mass move"
       ref="com.axelor.apps.stock.db.MassStockMove"/>
+
+    <many-to-one name="logisticalForm" title="Logistical form"
+      ref="com.axelor.apps.stock.db.LogisticalForm"/>
 
     <unique-constraint columns="stockMoveSeq,company"/>
 

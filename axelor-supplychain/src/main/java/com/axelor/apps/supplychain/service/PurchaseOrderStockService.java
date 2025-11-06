@@ -57,8 +57,6 @@ public interface PurchaseOrderStockService {
   // Check if existing at least one stockMove not canceled for the purchaseOrder
   public boolean existActiveStockMoveForPurchaseOrder(Long purchaseOrderId);
 
-  public void updateReceiptState(PurchaseOrder purchaseOrder) throws AxelorException;
-
   /**
    * Create a query to find purchase order line of a product of a specific/all company and a
    * specific/all stock location

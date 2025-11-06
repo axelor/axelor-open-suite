@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -20,6 +20,7 @@
     <boolean name="isProjectAppEnabled" title="Project" default="false"/>
     <boolean name="isDMSAppEnabled" title="DMS" default="false"/>
     <boolean name="isPurchaseAppEnabled" title="Purchase" default="false"/>
+    <boolean name="isMaintenanceAppEnabled" title="Maintenance" default="false"/>
 
     <many-to-one name="qrCode" title="Barcode" ref="com.axelor.meta.db.MetaFile"/>
 
@@ -48,6 +49,8 @@
 
     <boolean name="isTrackerMessageEnabled" title="Enable tracker messages." default="false"
       help="Enabling this setting, allows you to see on the mobile application the comments and changes that are tracked on the web application."/>
+    <boolean name="isInboxAccessEnabled" title="Activate inbox access" default="false"
+      help="This configuration allows all users to access their inbox."/>
 
     <!-- Stock line verification config -->
     <boolean name="isVerifyCustomerDeliveryLineEnabled"
@@ -87,6 +90,8 @@
     <many-to-many name="stockCorrectionValidationRoleSet" ref="com.axelor.auth.db.Role"
       title="Authorized roles"
       help="If no role selected, everyone can use this feature. Else, only roles selected have the ability to use this feature."/>
+
+    <long name="defaultQiDetectionId" title="Default detection id for QI"/>
 
     <many-to-many name="verifyCustomerDeliveryLineRoleSet"
       ref="com.axelor.auth.db.Role" title="Authorized roles"
@@ -169,8 +174,10 @@
       <field name="isProjectAppEnabled" on="UPDATE"/>
       <field name="isDMSAppEnabled" on="UPDATE"/>
       <field name="isPurchaseAppEnabled" on="UPDATE"/>
+      <field name="isMaintenanceAppEnabled" on="UPDATE"/>
       <field name="isLoginUserQrcodeEnabled" on="UPDATE"/>
       <field name="isTrackerMessageEnabled" on="UPDATE"/>
+      <field name="isInboxAccessEnabled" on="UPDATE"/>
       <field name="manageCarrierOption" on="UPDATE"/>
       <field name="qrCode" on="UPDATE"/>
       <field name="isInventoryValidationEnabled" on="UPDATE"/>
@@ -202,6 +209,10 @@
       <field name="isFolderCreationAllowed" on="UPDATE"/>
       <field name="isFileCreationAllowed" on="UPDATE"/>
       <field name="isFileDeletionAllowed" on="UPDATE"/>
+      <field name="fieldsToShowOnTimesheet" on="UPDATE"/>
+      <field name="isStockLocationManagementEnabled" on="UPDATE"/>
+      <field name="isOneLineShortcut" on="UPDATE"/>
+      <field name="defaultQiDetectionId" on="UPDATE"/>
     </track>
   </entity>
 </domain-models>

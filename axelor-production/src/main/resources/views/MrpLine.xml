@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="mrp-line-grid" id="mrp-line-production-grid"
     model="com.axelor.apps.supplychain.db.MrpLine" title="Results" extension="true">
@@ -20,6 +20,33 @@
       <insert position="after">
         <field name="billOfMaterial"/>
       </insert>
+    </extend>
+    <extend target="//field[@name='maturityDate']">
+      <replace>
+        <field name="maturityDate" width="100">
+          <hilite
+            if="warnDelayFromManufacturing || (warnDelayFromSupplier &amp;&amp; !estimatedDeliveryDate)"
+            color="danger"/>
+        </field>
+      </replace>
+    </extend>
+    <extend target="//field[@name='respectDeliveryDelayDate']">
+      <replace>
+        <field name="respectDeliveryDelayDate" title="Date to respect delays" type="date"
+          readonly="true">
+          <hilite
+            if="warnDelayFromManufacturing || (warnDelayFromSupplier &amp;&amp; !estimatedDeliveryDate)"
+            color="danger"/>
+        </field>
+      </replace>
+    </extend>
+    <extend target="//field[@name='deliveryDelayDate']">
+      <insert position="after">
+        <field name="warnDelayFromManufacturing" hidden="true"/>
+      </insert>
+    </extend>
+    <extend target="//button[@name='errorIconButton']">
+      <attribute name="showIf" value="warnDelayFromSupplier || warnDelayFromManufacturing"/>
     </extend>
   </grid>
 
@@ -51,6 +78,21 @@
         value="[5,8,12].indexOf(mrpLineType.elementSelect) == -1
     				  &amp;&amp; (mrpLineType.elementSelect != 12 || (mrpLineType.elementSelect == 12 &amp;&amp; mrp.mrpTypeSelect == 2))
     				  	&amp;&amp; (mrpLineType.elementSelect != 10 || (mrpLineType.elementSelect == 10 &amp;&amp; mrp.mrpTypeSelect == 1))"/>
+    </extend>
+    <extend target="//field[@name='product']">
+      <insert position="before">
+        <field name="$warnDelayFromManufacturingLabel" readonly="true" showTitle="false"
+          colSpan="12" showIf="warnDelayFromManufacturing">
+          <viewer>
+            <![CDATA[<><Badge bg="warning">{_t('The product will not be manufactured in time for its corresponding need.')}</Badge></>]]>
+          </viewer>
+        </field>
+      </insert>
+    </extend>
+    <extend target="//field[@name='warnDelayFromSupplier']">
+      <insert position="after">
+        <field name="warnDelayFromManufacturing" hidden="true"/>
+      </insert>
     </extend>
   </form>
 

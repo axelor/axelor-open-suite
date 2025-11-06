@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project"
     orderBy="projectStatus, name">
@@ -31,6 +31,25 @@
       onClick="action-project-open-gantt"/>
     <button name="openTasks" onClick="action-project-view-show-related-tasks"
       icon="list-task"/>
+  </grid>
+
+  <grid name="project-tree-grid" title="Projects" model="com.axelor.apps.project.db.Project"
+    widget="tree-grid" x-tree-field="childProjectList" canNew="false" orderBy="projectStatus,name"
+    summary-view="project-child-tasks-form">
+    <hilite if="childProjectList?.length || projectTaskList?.length" strong="true"
+      color="default"/>
+    <field name="name"/>
+    <field name="company" form-view="company-form" grid-view="company-grid"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="code"/>
+    <field name="clientPartner"/>
+    <field name="assignedTo"/>
+    <field name="fromDate"/>
+    <field name="toDate"/>
+    <field name="projectStatus"/>
+    <button name="openTasks" onClick="action-project-view-show-tasks-tree" icon="list-task"/>
+    <field name="childProjectList" hidden="true"/>
+    <field name="projectTaskList" hidden="true"/>
   </grid>
 
   <grid name="project-child-grid" title="Projects" model="com.axelor.apps.project.db.Project"
@@ -130,9 +149,6 @@
         <panel-include view="incl-project-config-panel-form"/>
       </panel>
     </panel-tabs>
-    <panel name="attrsPanel">
-      <field name="attrs" colSpan="12"/>
-    </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
@@ -201,6 +217,7 @@
         <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
           canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
           grid-view="user-grid" colSpan="3"/>
+        <field name="isAllowTaskToBeAssignedToAnyUser" colSpan="6" widget="boolean-switch"/>
       </panel>
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
         <field name="parentProject" canEdit="false" form-view="project-form"
@@ -325,6 +342,7 @@
       <field name="isShowCalendarPerUser" colSpan="4" widget="inline-checkbox"/>
     </panel>
     <panel-include view="incl-custom-fields-to-display-panel-form"/>
+    <panel-include view="incl-project-customized-field-panel-form"/>
   </form>
 
   <form name="project-select-wizard-form" title="Select Projects"
@@ -406,9 +424,36 @@
     </panel>
   </form>
 
+  <form name="incl-project-customized-field-panel-form" title="Customized fields"
+    model="com.axelor.apps.project.db.Project">
+    <panel name="customizedFieldsPanel" title="Customized fields" collapseIf="true"
+      canCollapse="true" colSpan="12">
+      <panel name="appJsonPanel" colSpan="12"
+        showIf="$contains(customFieldManagementSelect, 'app')" title="App customized fields">
+        <field name="appJson" colSpan="12"/>
+      </panel>
+      <panel name="otherFieldsPanel" title="Other customized fields" colSpan="12">
+        <field name="attrs" colSpan="12"/>
+      </panel>
+    </panel>
+  </form>
+
+  <form name="project-child-tasks-form" title="Project"
+    model="com.axelor.apps.project.db.Project">
+    <panel-dashlet name="tasksPanel" action="action-project-dashlet-child-tree"
+      title="Tasks" colSpan="12" canSearch="true" canNew="true"/>
+  </form>
+
+  <action-view name="action-project-dashlet-child-tree"
+    model="com.axelor.apps.project.db.ProjectTask" title="">
+    <view type="grid" name="project-task-tree-project-grid"/>
+    <view type="form" name="project-task-form"/>
+    <view-param name="limit" value="200"/>
+    <domain>self.project.id = :id AND self.parentTask IS NULL</domain>
+  </action-view>
+
   <kanban columnBy="projectStatus" sequenceBy="orderByState" limit="10" name="project-kanban"
-    title="Projects" model="com.axelor.apps.project.db.Project"
-    onMove="action-business-project-group-project-status-on-change">
+    title="Projects" model="com.axelor.apps.project.db.Project">
     <field name="fullName"/>
     <field name="description"/>
     <field name="projectStatus"/>
@@ -467,26 +512,31 @@
     </node>
   </tree>
 
-  <tree name="project-phase-tree" title="Phases">
-
+  <tree name="project-phase-tree" title="">
     <column name="name" type="string"/>
+    <column name="treeBtn" type="button"/>
+    <column name="listBtn" type="button"/>
     <column name="assignedTo" type="reference"/>
-    <column name="progress" type="integer"/>
-    <column name="openTask" type="button"/>
 
-    <node model="com.axelor.apps.project.db.Project" domain="self.parentProject.id = :id"
-      onClick="action-project-view-phase">
+    <node model="com.axelor.apps.project.db.Project" domain="self.id IN :idList"
+      onClick="action-project-view-show-project">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
-      <button name="openTaskBtn" title="Open phase" onClick="action-project-view-phase"/>
+      <button name="treeBtn" icon="fa-sitemap" onClick="action-project-view-show-tasks-tree"
+        title="Open projects tree"/>
+      <button name="listBtn" title="Open tasks list" icon="fa-list"
+        onClick="action-project-view-show-tasks-tree"/>
     </node>
 
-    <node model="com.axelor.apps.project.db.ProjectTask" parent="project" draggable="true"
-      onClick="action-project-task-view-task">
+    <node model="com.axelor.apps.project.db.Project" parent="parentProject"
+      onClick="action-project-view-show-project">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
-      <button name="openTaskBtn" title="Open task" onClick="action-project-task-open-task"/>
+      <button name="treeBtn" title="Open projects tree" icon="fa-sitemap"
+        onClick="action-project-view-show-tasks-tree"/>
+      <button name="listBtn" icon="fa-list" title="Open tasks list"
+        onClick="action-project-view-show-tasks-tree"/>
     </node>
   </tree>
 
@@ -542,16 +592,6 @@
       if="(typeSelect == 'task')&amp;&amp;(project?.membersUserSet)&amp;&amp;(!project.membersUserSet.isEmpty())"/>
   </action-attrs>
 
-  <action-attrs name="action-attrs-project-set-project-type"
-    model="com.axelor.apps.project.db.Project">
-    <attribute name="readonly" for="isBusinessProject" expr="eval:_fromBusinessProject"/>
-  </action-attrs>
-
-  <action-attrs name="action-business-support-attrs-project-default">
-    <attribute name="hidden" for="project" expr="eval:true"
-      if="_parent &amp;&amp; (_parent?._model == 'com.axelor.apps.project.db.Project' || _parent?._model == 'com.axelor.apps.project.db.ProjectTemplate')"/>
-  </action-attrs>
-
   <action-attrs name="action-project-gantt-user-wizard-user-domain">
     <attribute name="domain"
       expr="eval:&quot;self.id in (${([0]+__repo__(Project).all().fetch().collect{it->it.membersUserSet.id}.flatten()).join(',')})&quot;"
@@ -570,8 +610,7 @@
     <attribute name="value" for="company" expr="eval:__user__.activeCompany"/>
     <attribute name="value" for="fromDate" expr="eval: __datetime__"/>
     <attribute name="value" for="assignedTo" expr="eval: __user__"/>
-    <attribute name="value:add" for="membersUserSet" expr="eval: __user__"/>
-    <attribute name="value" for="isBusinessProject" expr="eval:_fromBusinessProject"/>
+    <attribute name="value:add" for="membersUserSet" expr="eval: [id:__user__.id]"/>
     <attribute name="value" for="parentProject"
       expr="eval:__repo__(Project).find(_parentProjectId)" if="_parentProjectId != null"/>
     <attribute name="value" for="siteSet"
@@ -770,6 +809,11 @@
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="viewSprints"/>
   </action-method>
 
+  <action-method name="action-project-view-show-tasks-tree">
+    <call method="allProjectTasksTree"
+      class="com.axelor.apps.project.web.ProjectMenuController"/>
+  </action-method>
+
   <!-- ACTION VIEW -->
 
   <action-view name="action-project-open-popup-select-users" title="Select Users"
@@ -817,8 +861,8 @@
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_project" expr="eval:__this__.project"/>
-    <context name="_parentTask" expr="eval:__this__"/>
+    <context name="_project" expr="eval:__self__?.project"/>
+    <context name="_parentTask" expr="eval:__self__"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
   </action-view>
@@ -940,34 +984,7 @@
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="resourceBookingList" hidden="true"
       if="!__config__.app.getApp('project')?.resourceManagement"/>
-    <field name="productionOrderList" hidden="true"
-      if="!(__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').getShowProductionOrderRelatedToProject())"/>
-    <field name="clientPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="currency" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="priceList" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="contactPartner" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="customerAddress" hidden="true" if="!__config__.app.isApp('business-project')"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="isInvoicingTimesheet" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="isInvoicingExpenses" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="isInvoicingPurchases" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="invoicingSequenceSelect" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="consolidatePhaseWhenInvoicing" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="invoicingComment" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="manualElementList" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="roadmapSet" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="announcementList" hidden="true"
-      if="!__config__.app.isApp('business-support')"/>
     <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="isBusinessProject" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
   </search-filters>
 </object-views>

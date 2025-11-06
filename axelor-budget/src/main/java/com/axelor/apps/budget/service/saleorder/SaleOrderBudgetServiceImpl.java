@@ -34,8 +34,7 @@ import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.InvoiceToolBudgetService;
 import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetService;
-import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.contract.service.SaleOrderInvoiceContractServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -66,7 +65,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
-public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceImpl
+public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceImpl
     implements SaleOrderBudgetService {
 
   protected AppBudgetService appBudgetService;
@@ -94,7 +93,6 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
       SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
-      AppBusinessProjectService appBusinessProjectService,
       AppBudgetService appBudgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
@@ -117,8 +115,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         currencyScaleService,
         orderInvoiceService,
         invoiceTaxService,
-        saleOrderDeliveryAddressService,
-        appBusinessProjectService);
+        saleOrderDeliveryAddressService);
     this.appBudgetService = appBudgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineBudgetService = saleOrderLineBudgetService;
@@ -223,6 +220,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         invoiceLine.setBudget(saleOrderLine.getBudget());
         invoiceLine.setBudgetRemainingAmountToAllocate(
             saleOrderLine.getBudgetRemainingAmountToAllocate());
+        invoiceLine.setBudgetFromDate(saleOrderLine.getBudgetFromDate());
+        invoiceLine.setBudgetToDate(saleOrderLine.getBudgetToDate());
         invoiceToolBudgetService.copyBudgetDistributionList(
             saleOrderLine.getBudgetDistributionList(),
             invoiceLine,
@@ -291,10 +290,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
           }
         } else {
           Budget budget = saleOrderLine.getBudget();
-          if (budget != null) {
-            budgetToolsService.fillAmountPerBudgetMap(
-                budget, saleOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
-          }
+          budgetToolsService.fillAmountPerBudgetMap(
+              budget, saleOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
         }
       }
 

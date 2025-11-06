@@ -40,6 +40,13 @@ public class SaleInvoicingStateServiceImpl implements SaleInvoicingStateService 
     this.invoiceLineRepository = invoiceLineRepository;
   }
 
+  @Transactional
+  @Override
+  public void updateInvoicingState(SaleOrder saleOrder) {
+    updateSaleOrderLinesInvoicingState(saleOrder.getSaleOrderLineList());
+    saleOrder.setInvoicingState(computeSaleOrderInvoicingState(saleOrder));
+  }
+
   @Override
   public int getSaleOrderLineInvoicingState(SaleOrderLine saleOrderLine) {
     int invoicingState = 0;

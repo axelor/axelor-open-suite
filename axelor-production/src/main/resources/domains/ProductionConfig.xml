@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="production" package="com.axelor.apps.production.db"/>
 
@@ -57,6 +57,8 @@
       <field name="partFinishMoAutomaticEmail" on="UPDATE"/>
       <field name="partFinishMoMessageTemplate" on="UPDATE"/>
       <field name="prodProcessPrintTemplate" on="UPDATE"/>
+      <field name="capacity" on="UPDATE"/>
+      <field name="scheduling" on="UPDATE"/>
     </track>
 
   </entity>

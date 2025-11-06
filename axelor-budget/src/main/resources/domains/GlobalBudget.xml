@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module package="com.axelor.apps.budget.db" name="budget"/>
 
@@ -66,10 +66,6 @@
 
     <boolean name="automaticBudgetComputation" title="Automatic budget computation"
       help="If enabled, an automatic budget computation will be done at request/finalize for orders"/>
-
-    <many-to-many name="projectSet" ref="com.axelor.apps.project.db.Project"
-      title="Projects" mappedBy="globalBudgetSet"/>
-
 
     <string name="fullName" namecolumn="true" search="code,name" title="Full name">
             <![CDATA[

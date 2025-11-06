@@ -40,6 +40,7 @@ import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMergingServiceImpl
     implements PurchaseOrderMergingSupplychainService {
@@ -58,6 +59,7 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
 
   protected static class ChecksSupplyChainImpl extends ChecksImpl {
     private boolean existStockLocationDiff = false;
+    private boolean existIntercoDiff = false;
 
     public boolean isExistStockLocationDiff() {
       return existStockLocationDiff;
@@ -65,6 +67,14 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
 
     public void setExistStockLocationDiff(boolean existStockLocationDiff) {
       this.existStockLocationDiff = existStockLocationDiff;
+    }
+
+    public boolean isExistIntercoDiff() {
+      return existIntercoDiff;
+    }
+
+    public void setExistIntercoDiff(boolean existIntercoDiff) {
+      this.existIntercoDiff = existIntercoDiff;
     }
   }
 
@@ -174,6 +184,11 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
             getCommonFields(result).getCommonTradingName(),
             getCommonFields(result).getCommonFiscalPosition());
 
+    purchaseOrderMerged.setInAti(purchaseOrdersToMerge.stream().anyMatch(PurchaseOrder::getInAti));
+    purchaseOrderMerged.setInterco(
+        purchaseOrdersToMerge.stream().anyMatch(PurchaseOrder::getInterco));
+    purchaseOrderMerged.setTaxNumber(getCommonFields(result).getCommonCompanyTaxNumber());
+
     this.attachToNewPurchaseOrder(purchaseOrdersToMerge, purchaseOrderMerged);
     purchaseOrderService.computePurchaseOrder(purchaseOrderMerged);
     return purchaseOrderMerged;
@@ -200,5 +215,29 @@ public class PurchaseOrderMergingServiceSupplyChainImpl extends PurchaseOrderMer
           stockMove.getStockMoveSeq());
     }
     return result.getPurchaseOrder();
+  }
+
+  @Override
+  protected void checkDiffs(
+      List<PurchaseOrder> purchaseOrdersToMerge,
+      PurchaseOrderMergingResult result,
+      PurchaseOrder firstPurchaseOrder) {
+    super.checkDiffs(purchaseOrdersToMerge, result, firstPurchaseOrder);
+
+    if (purchaseOrdersToMerge.stream()
+        .anyMatch(order -> order.getInterco() != firstPurchaseOrder.getInterco())) {
+      ChecksSupplyChainImpl checks = getChecks(result);
+      checks.setExistIntercoDiff(true);
+    }
+  }
+
+  @Override
+  protected void checkErrors(StringJoiner fieldErrors, PurchaseOrderMergingResult result) {
+    super.checkErrors(fieldErrors, result);
+
+    if (getChecks(result).isExistIntercoDiff()) {
+      fieldErrors.add(
+          I18n.get(SupplychainExceptionMessage.PURCHASE_ORDER_MERGE_ERROR_INTERCO_CONFIG));
+    }
   }
 }

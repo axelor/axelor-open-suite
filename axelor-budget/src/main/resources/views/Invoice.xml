@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="invoice-supplier-grid" id="budget-invoice-supplier-grid" title="Invoices"
     model="com.axelor.apps.account.db.Invoice" extension="true">
@@ -31,8 +31,14 @@
 
     <extend target="panel-tabs[@name='mainPanelTab']/panel[@name='pfpAccountConfigPanel']">
       <insert position="after">
-        <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')"
-          showIf="(statusSelect >= 2 &amp;&amp; statusSelect &lt; 4) || budgetDistributionGenerated">
+        <panel name="budgetPanel" title="Budget" if="__config__.app.isApp('budget')">
+          <panel name="datesPanel" colSpan="12" itemSpan="4"
+            readonlyIf="statusSelect == 4 || statusSelect == 3 || partner == null">
+            <field name="budgetFromDate" requiredIf="budgetToDate"/>
+            <field name="budgetToDate" requiredIf="budgetFromDate"/>
+            <button name="initBudgetDatesBtn" title="Init budget dates"
+              onClick="action-invoice-method-initialize-budget-dates"/>
+          </panel>
           <panel-dashlet name="budgetDistributionPanel" title="Budget distribution"
             action="action-budget-distribution-view-budget-distribution" colSpan="12"
             readonly="true"/>
@@ -47,7 +53,8 @@
         <button name="computeBudgetDistributionBtn" title="Compute budget distribution"
           onClick="action-budget-group-compute-budget-distribution" hidden="true"
           if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-          showIf="company.accountConfig.enableBudgetKey &amp;&amp; purchaseOrder == null &amp;&amp; (statusSelect == 1 || statusSelect == 2) &amp;&amp; (invoiceLineList &amp;&amp; invoiceLineList.length != 0)"/>
+          showIf="company.accountConfig.enableBudgetKey &amp;&amp; purchaseOrder == null &amp;&amp; (statusSelect == 1 || statusSelect == 2) &amp;&amp; (invoiceLineList &amp;&amp; invoiceLineList.length != 0)"
+          icon="clipboard2-data-fill" readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
       </insert>
     </extend>
 
@@ -66,6 +73,7 @@
       if="__config__.app.isApp('budget')"/>
     <action name="action-invoice-method-budget-validate-ventilation"
       if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
     <action name="action-invoice-group-ventilate"/>
   </action-group>
 
@@ -100,6 +108,10 @@
     <call class="com.axelor.apps.budget.web.InvoiceController" method="checkNoComputeBudget"/>
   </action-method>
 
+  <action-method name="action-invoice-method-initialize-budget-dates">
+    <call class="com.axelor.apps.budget.web.InvoiceController" method="initializeBudgetDates"/>
+  </action-method>
+
   <action-validate name="action-validate-budget-recompute-budget-distribution">
     <alert
       message="A budget distribution has already been generated. By launching this action, the budget distribution table will be cleared and re-computed. Do you want to proceed ?"
@@ -112,6 +124,7 @@
       if="__config__.app.isApp('budget') &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
     <action name="action-budget-invoice-validate-budget-balance"
       if="__config__.app.isApp('budget') &amp;&amp; (operationTypeSelect == 1 || operationTypeSelect == 3)"/>
+    <action name="action-budget-validate-budget-dates" if="__config__.app.isApp('budget')"/>
   </action-group>
 
   <action-record name="action-budget-invoice-record-get-budget-balance"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <dashboard name="project-my-projects" title="My projects">
     <dashlet action="action-project-db-my-tasks-to-do"/>
@@ -85,27 +85,6 @@
 				         	<p>{$spentTime} <span>{_t('hours')}</span></p> <Box/>
 				   	     	<Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-timesheet-line-log-time")}><span>{_t('Log time')}</span></Button> | <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={(e) => $execute("project.spent.time")}><span>{_t('Details')}</span></Button>
 				         </>
-				        ]]>
-          </viewer>
-        </field>
-      </panel>
-      <panel name="announcementPanel" title="Latest announcement" icon="fa-newspaper-o"
-        if="__config__.app.isApp('business-support')" if-module="axelor-business-support"
-        hideIf="$announcementList.length == 0">
-        <field name="$announcementList" showTitle="false" colSpan="12">
-          <viewer>
-            <![CDATA[
-						 <>
-						 	 {$announcementList.map((item,index) => (
-								 <p key={index}>
-                                     <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("project.announcement", {announcementId : item.id})}>{item.title}</Button><br/>
-							         <span>{_t('Added by')}</span>
-                                     <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("action-auth-users", {userId : item.createdById})}>{item.createdBy}</Button>
-							         <Button variant="link" p={0} style={{verticalAlign: "unset"}} title="{$moment(item.announcementDate).format('MM/DD/YYYY')}" onClick={$action("com.axelor.apps.businesssupport.service.ProjectActivityDashboardBusinessSupportService:getProjectActivityView("+item.id+")")}>{$moment(item.announcementDate).fromNow()}</Button>
-							     </p>
-						     ))}
-						 <Button variant="link" p={0} style={{verticalAlign: "unset"}} onClick={() => $execute("project.announcement")}>View all announcement</Button>
-					     </>
 				        ]]>
           </viewer>
         </field>

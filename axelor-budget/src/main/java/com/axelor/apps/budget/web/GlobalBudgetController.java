@@ -31,13 +31,14 @@ import com.axelor.apps.budget.db.repo.BudgetVersionRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.export.ExportBudgetCallableService;
 import com.axelor.apps.budget.service.BudgetComputeHiddenDateService;
+import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.BudgetVersionService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetGroupService;
+import com.axelor.apps.budget.service.globalbudget.GlobalBudgetResetToolService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetWorkflowService;
 import com.axelor.auth.AuthUtils;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -45,7 +46,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import java.util.ArrayList;
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class GlobalBudgetController {
@@ -175,11 +176,10 @@ public class GlobalBudgetController {
 
   public void clearBudgetList(ActionRequest request, ActionResponse response) {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
-    if (ObjectUtils.isEmpty(globalBudget.getBudgetLevelList())) {
-      globalBudget.setBudgetList(new ArrayList<>());
-      Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
-      response.setValues(globalBudget);
-    }
+    Beans.get(GlobalBudgetResetToolService.class).clearBudgetList(globalBudget);
+    globalBudget.setBudgetList(globalBudget.getBudgetList());
+    Beans.get(GlobalBudgetService.class).computeTotals(globalBudget);
+    response.setValues(globalBudget);
   }
 
   @ErrorException
@@ -275,5 +275,13 @@ public class GlobalBudgetController {
     GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
     boolean isHidden = Beans.get(BudgetComputeHiddenDateService.class).isHidden(globalBudget);
     response.setAttr("updateDatesBtn", "hidden", isHidden);
+  }
+
+  public void computeAmounts(ActionRequest request, ActionResponse response) {
+    GlobalBudget globalBudget = request.getContext().asType(GlobalBudget.class);
+    Map<String, BigDecimal> amountByField =
+        Beans.get(BudgetToolsService.class)
+            .buildMapWithAmounts(globalBudget.getBudgetList(), globalBudget.getBudgetLevelList());
+    response.setValues(amountByField);
   }
 }

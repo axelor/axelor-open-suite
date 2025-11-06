@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="stock-location-grid" title="Stock Locations"
     model="com.axelor.apps.stock.db.StockLocation">
@@ -141,7 +141,11 @@
           if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"
           showIf="usableOnProduction"/>
         <field name="isOutsourcingLocation" onChange="action-stock-set-partner-domain-attrs"
-          showIf="typeSelect==2 || typeSelect==3" colSpan="3" if-module="axelor-production"
+          showIf="typeSelect == 1 || typeSelect==2 || typeSelect==3" colSpan="3"
+          if-module="axelor-production"
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
+        <field name="isConsignmentStock" showIf="isOutsourcingLocation" colSpan="3"
+          if-module="axelor-production"
           if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageOutsourcing()"/>
         <field name="includeVirtualSubLocation" onChange="save" hideIf="typeSelect == 3"
           colSpan="3"/>

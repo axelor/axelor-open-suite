@@ -23,11 +23,11 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.hr.db.Expense;
-import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.EmployeeAdvanceService;
+import com.axelor.apps.hr.service.KilometricExpenseService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.auth.AuthUtils;
@@ -38,8 +38,6 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
-import java.math.BigDecimal;
-import wslite.json.JSONException;
 
 @Singleton
 public class ExpenseValidateServiceImpl implements ExpenseValidateService {
@@ -51,6 +49,7 @@ public class ExpenseValidateServiceImpl implements ExpenseValidateService {
   protected HRConfigService hrConfigService;
   protected TemplateMessageService templateMessageService;
   protected ExpenseRepository expenseRepository;
+  protected final KilometricExpenseService kilometricExpenseService;
 
   @Inject
   public ExpenseValidateServiceImpl(
@@ -60,7 +59,8 @@ public class ExpenseValidateServiceImpl implements ExpenseValidateService {
       AppAccountService appAccountService,
       HRConfigService hrConfigService,
       TemplateMessageService templateMessageService,
-      ExpenseRepository expenseRepository) {
+      ExpenseRepository expenseRepository,
+      KilometricExpenseService kilometricExpenseService) {
     this.kilometricService = kilometricService;
     this.expenseComputationService = expenseComputationService;
     this.employeeAdvanceService = employeeAdvanceService;
@@ -68,6 +68,7 @@ public class ExpenseValidateServiceImpl implements ExpenseValidateService {
     this.hrConfigService = hrConfigService;
     this.templateMessageService = templateMessageService;
     this.expenseRepository = expenseRepository;
+    this.kilometricExpenseService = kilometricExpenseService;
   }
 
   @Override
@@ -80,23 +81,13 @@ public class ExpenseValidateServiceImpl implements ExpenseValidateService {
           I18n.get(HumanResourceExceptionMessage.EXPENSE_MISSING_PERIOD));
     }
 
-    if (expense.getKilometricExpenseLineList() != null
-        && !expense.getKilometricExpenseLineList().isEmpty()) {
-      for (ExpenseLine line : expense.getKilometricExpenseLineList()) {
-        BigDecimal amount = kilometricService.computeKilometricExpense(line, expense.getEmployee());
-        line.setTotalAmount(amount);
-        line.setUntaxedAmount(amount);
-
-        kilometricService.updateKilometricLog(line, expense.getEmployee());
-      }
-      expenseComputationService.compute(expense);
-    }
-
     employeeAdvanceService.fillExpenseWithAdvances(expense);
     expense.setStatusSelect(ExpenseRepository.STATUS_VALIDATED);
     expense.setValidatedBy(AuthUtils.getUser());
     expense.setValidationDateTime(
         appAccountService.getTodayDateTime(expense.getCompany()).toLocalDateTime());
+
+    kilometricExpenseService.updateExpenseLineKilometricLog(expense);
 
     if (expense.getEmployee().getContactPartner() != null) {
       PaymentMode paymentMode = expense.getEmployee().getContactPartner().getOutPaymentMode();
@@ -106,16 +97,20 @@ public class ExpenseValidateServiceImpl implements ExpenseValidateService {
   }
 
   @Override
-  public Message sendValidationEmail(Expense expense)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+  public Message sendValidationEmail(Expense expense) throws AxelorException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(expense.getCompany());
 
-    if (hrConfig.getExpenseMailNotification()) {
+    try {
+      if (hrConfig.getExpenseMailNotification()) {
 
-      return templateMessageService.generateAndSendMessage(
-          expense, hrConfigService.getValidatedExpenseTemplate(hrConfig));
+        return templateMessageService.generateAndSendMessage(
+            expense, hrConfigService.getValidatedExpenseTemplate(hrConfig));
+      }
+    } catch (IOException | ClassNotFoundException e) {
+      new AxelorException(e, TraceBackRepository.CATEGORY_INCONSISTENCY, e.getMessage());
     }
+
     return null;
   }
 }

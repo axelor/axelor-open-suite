@@ -110,6 +110,10 @@ public interface ITranslation {
   public static final String STOCK_MOVE_NET_MASS = /*$$(*/ "StockMove.netMass"; /*)*/
   public static final String STOCK_MOVE_LINE_UNIT_PRICE = /*$$(*/ "StockMove.unitPrice"; /*)*/
   public static final String STOCK_MOVE_ORDER_DATE = /*$$(*/ "StockMove.orderDate"; /*)*/
+  public static final String STOCK_MOVE_IS_ADR = /*$$(*/ "StockMove.isAdr"; /*)*/
+  public static final String STOCK_MOVE_IS_ADR_INFO = /*$$(*/ "StockMove.isAdrInfo"; /*)*/
+  public static final String STOCK_MOVE_LIMITED_QTY = /*$$(*/ "StockMove.limitedQty"; /*)*/
+  public static final String STOCK_MOVE_WEIGHT = /*$$(*/ "StockMove.weight"; /*)*/
 
   // PickingStockMove
   public static final String STOCK_MOVE_PICKING_ORDER = /*$$(*/ "StockMove.pickingOrder"; /*)*/

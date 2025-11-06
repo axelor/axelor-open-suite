@@ -25,32 +25,36 @@ import com.axelor.apps.sale.service.event.SaleOrderLineProductOnChange;
 import com.axelor.apps.sale.service.event.SaleOrderLineViewOnLoad;
 import com.axelor.apps.sale.service.event.SaleOrderLineViewOnNew;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainService;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnLoadService;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineSupplychainOnNewService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import javax.annotation.Priority;
 
 public class SaleOrderLineSupplychainObserver {
-  void onSaleOrderLineOnNew(@Observes SaleOrderLineViewOnNew event) throws AxelorException {
+  void onSaleOrderLineOnNew(@Observes @Priority(value = 20) SaleOrderLineViewOnNew event)
+      throws AxelorException {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(
-        Beans.get(SaleOrderLineViewSupplychainService.class)
+        Beans.get(SaleOrderLineSupplychainOnNewService.class)
             .getSupplychainOnNewAttrs(saleOrderLine, saleOrder));
   }
 
-  void onSaleOrderLineOnLoad(@Observes SaleOrderLineViewOnLoad event) throws AxelorException {
+  void onSaleOrderLineOnLoad(@Observes @Priority(value = 20) SaleOrderLineViewOnLoad event)
+      throws AxelorException {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
     saleOrderLineMap.putAll(
-        Beans.get(SaleOrderLineViewSupplychainService.class)
+        Beans.get(SaleOrderLineSupplychainOnLoadService.class)
             .getSupplychainOnLoadAttrs(saleOrderLine, saleOrder));
   }
 
-  void onSaleOrderLineProductOnChange(@Observes SaleOrderLineProductOnChange event)
-      throws AxelorException {
+  void onSaleOrderLineProductOnChange(
+      @Observes @Priority(value = 20) SaleOrderLineProductOnChange event) throws AxelorException {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Object> saleOrderLineMap = event.getSaleOrderLineMap();

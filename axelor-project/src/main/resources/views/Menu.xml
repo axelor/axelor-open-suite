@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <menuitem name="menu-project-root" order="-1400" title="Project management"
     icon="list-task" if="__config__.app.isApp('project')" icon-background="#3f6bb9"/>
@@ -19,6 +19,22 @@
     title="Project tasks" action="project.task.all"/>
   <action-method name="project.task.all">
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="allProjectTasks"/>
+  </action-method>
+
+  <menuitem name="project-fav-project-tree" parent="menu-project-root" order="200"
+    title="Favourite projects" icon="fa-star" icon-background="#3f6bb9"
+    action="project.fav.project.tree"
+    if="__config__.app.isApp('project') &amp;&amp; __user__?.favouriteProjectSet"/>
+  <action-method name="project.fav.project.tree">
+    <call class="com.axelor.apps.project.web.ProjectMenuController"
+      method="allFavouriteProjects"/>
+  </action-method>
+
+  <menuitem name="project-task-all-filtered" parent="menu-project-root" order="250"
+    title="Tasks" action="project.task.all.filtered"/>
+  <action-method name="project.task.all.filtered">
+    <call class="com.axelor.apps.project.web.ProjectMenuController"
+      method="allProjectTasksFiltered"/>
   </action-method>
 
   <menuitem name="project-template" parent="menu-project-root" order="500"

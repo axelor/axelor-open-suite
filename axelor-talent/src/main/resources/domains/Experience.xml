@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="talent" package="com.axelor.apps.talent.db"/>
+
+  <entity name="Experience">
+    <string name="company" title="experience.company"/>
+    <string name="location"/>
+    <string name="jobTitle" title="experience.jobtitle"/>
+    <string name="duration"/>
+    <string name="description" large="true"/>
+    <string name="jobDescription" large="true" title="experience.jobDescription"/>
+    <date name="fromDate"/>
+    <date name="toDate"/>
+
+    <many-to-one ref="com.axelor.apps.talent.db.JobApplication" name="jobApplicant"/>
+  </entity>
+
+</domain-models>

@@ -76,6 +76,7 @@ public class SaleOrderRestController {
         Beans.get(SaleOrderGeneratorService.class)
             .createSaleOrder(
                 requestBody.fetchClientPartner(),
+                requestBody.fetchDeliveredPartner(),
                 requestBody.fetchCompany(),
                 requestBody.fetchContact(),
                 requestBody.fetchCurrency(),

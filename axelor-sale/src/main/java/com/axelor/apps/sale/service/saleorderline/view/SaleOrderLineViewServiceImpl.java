@@ -47,11 +47,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
-  public static final String HIDDEN_ATTR = "hidden";
-  public static final String TITLE_ATTR = "title";
-  public static final String SCALE_ATTR = "scale";
-  public static final String SELECTION_IN_ATTR = "selection-in";
-  public static final String READONLY_ATTR = "readonly";
 
   protected AppBaseService appBaseService;
   protected AppSaleService appSaleService;

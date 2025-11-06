@@ -235,15 +235,15 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     if (depositSlip.getFromDate() != null) {
       if (depositSlip.getToDate() != null) {
         queryBuilder.add(
-            "self.chequeDate IS NULL OR self.chequeDate BETWEEN :fromDate AND :toDate");
+            "self.chequeDueDate IS NULL OR self.chequeDueDate BETWEEN :fromDate AND :toDate");
         queryBuilder.bind("fromDate", depositSlip.getFromDate());
         queryBuilder.bind("toDate", depositSlip.getToDate());
       } else {
-        queryBuilder.add("self.chequeDate IS NULL OR self.chequeDate >= :fromDate");
+        queryBuilder.add("self.chequeDueDate IS NULL OR self.chequeDueDate >= :fromDate");
         queryBuilder.bind("fromDate", depositSlip.getFromDate());
       }
     } else if (depositSlip.getToDate() != null) {
-      queryBuilder.add("self.chequeDate IS NULL OR self.chequeDate <= :toDate");
+      queryBuilder.add("self.chequeDueDate IS NULL OR self.chequeDueDate <= :toDate");
       queryBuilder.bind("toDate", depositSlip.getToDate());
     }
 
@@ -292,11 +292,11 @@ public class DepositSlipServiceImpl implements DepositSlipService {
   }
 
   @Override
-  public List<Integer> getSelectedPaymentVoucherDueIdList(
+  public List<PaymentVoucher> getSelectedPaymentVoucherDueList(
       List<Map<String, Object>> paymentVoucherDueList) {
     return paymentVoucherDueList.stream()
         .filter(o -> ObjectUtils.notEmpty(o.get("selected")) && (Boolean) o.get("selected"))
-        .map(o -> (Integer) o.get("id"))
+        .map(it -> paymentVoucherRepository.find(((Integer) it.get("id")).longValue()))
         .collect(Collectors.toList());
   }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <menuitem id="abs-menu-mail" name="menu-mail"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnterpriseCommunication()"
@@ -92,6 +92,16 @@
     <view type="grid" name="sharing-setting-menu-grid"/>
     <view type="form" name="sharing-setting-menu-form"/>
     <domain>self.sharedWith = :__user__</domain>
+  </action-view>
+
+  <menuitem name="admin-root-indicator-config" parent="admin-root"
+    if="__config__.app.isApp('base')" title="Indicator configuration" order="2000"
+    action="admin.root.indicator.config"/>
+
+  <action-view name="admin.root.indicator.config" title="Indicator configuration"
+    model="com.axelor.apps.base.db.IndicatorConfig">
+    <view type="grid" name="indicator-config-grid"/>
+    <view type="form" name="indicator-config-form"/>
   </action-view>
 
   <menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100"
@@ -207,6 +217,15 @@
     <view type="form" name="import-export-translation-form"/>
   </action-view>
 
+  <menuitem name="admin-root-general-map-configurator" title="Map configurators"
+    parent="admin-root-general" action="admin.root.general.map.configurator" order="1200"/>
+
+  <action-view name="admin.root.general.map.configurator" title="Map configurators"
+    model="com.axelor.apps.base.db.MapView">
+    <view type="grid" name="map-view-grid"/>
+    <view type="form" name="map-view-form"/>
+  </action-view>
+
   <menuitem name="referential-root" title="Referential" order="300" parent="admin-root"
     if="__config__.app.isApp('base')"/>
   <menuitem name="referential-root-partners" parent="referential-root" title="Partners"
@@ -297,10 +316,7 @@
     model="com.axelor.apps.base.db.PriceList">
     <view type="grid" name="price-list-grid"/>
     <view type="form" name="price-list-form"/>
-    <domain>self.id not in (select priceList.id from PriceList priceList where parentPriceList IS
-      NOT NULL ) and self.id not in (select priceList.id from PriceList priceList join
-      PartnerPriceList partnerPriceList on priceList member of partnerPriceList.priceListSet where
-      partnerPriceList.isExclusive IS TRUE )</domain>
+    <domain>self.parentPriceList IS NULL</domain>
   </action-view>
 
   <menuitem title="Sites" name="referential-sites" parent="referential-root"
@@ -1209,5 +1225,35 @@
     <domain>self.typeSelect = :_typeSelect</domain>
     <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
+
+  <menuitem name="base-icpe-all" parent="base-referential-root-product-settings"
+    title="ICPE" action="base.icpe.all" order="610"/>
+
+  <action-view name="base.icpe.all" title="ICPE" model="com.axelor.apps.base.db.Icpe">
+    <view type="grid" name="base-icpe-grid"/>
+    <view type="form" name="base-icpe-form"/>
+  </action-view>
+
+  <menuitem name="base-hazard-pictogram-all"
+    parent="base-referential-root-product-settings" title="Hazard Pictograms"
+    action="base.hazard.pictogram.all" order="620"/>
+
+  <action-view name="base.hazard.pictogram.all" title="Hazard Pictograms"
+    model="com.axelor.apps.base.db.HazardPictogram">
+    <view type="grid" name="base-hazard-pictogram-grid"/>
+    <view type="form" name="base-hazard-pictogram-form"/>
+  </action-view>
+
+  <menuitem name="base-hazard-phrase-all" parent="base-referential-root-product-settings"
+    title="Hazard phrases" action="base.hazard.phrase.all" order="100"/>
+
+  <action-view name="base.hazard.phrase.all" title="Hazard Phrases"
+    model="com.axelor.apps.base.db.HazardPhrase">
+    <view type="grid" name="base-hazard-phrase-grid"/>
+    <view type="form" name="base-hazard-phrase-form"/>
+  </action-view>
+
+  <menuitem name="base-referential-root-product-settings" title="Settings" order="400"
+    parent="referential-root-product-root"/>
 
 </object-views>

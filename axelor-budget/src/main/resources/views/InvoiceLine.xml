@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid id="budget-invoice-line-grid" name="invoice-line-grid" title="Invoice lines"
+    model="com.axelor.apps.account.db.InvoiceLine" extension="true">
+    <extend target="//field[@name='typeSelect']">
+      <insert position="after">
+        <field name="budgetRemainingAmountToAllocate" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <grid id="budget-invoice-line-menu-grid" name="invoice-line-menu-grid" title="Invoice lines"
+    model="com.axelor.apps.account.db.InvoiceLine" extension="true">
+    <extend target="//field[@name='invoice.dueDate']">
+      <insert position="after">
+        <field name="budgetRemainingAmountToAllocate" x-scale="$nbDecimalDigitForUnitPrice"
+          hidden="true" if="__config__.app.getApp('budget')?.getManageMultiBudget()"/>
+      </insert>
+    </extend>
+  </grid>
 
   <form id="budget-invoice-line-form" name="invoice-line-form" title="Invoice line"
     model="com.axelor.apps.account.db.InvoiceLine" extension="true">
@@ -36,14 +56,18 @@
           </field>
           <field name="budgetRemainingAmountToAllocate" colSpan="6"
             if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
-            readonly="true" x-scale="$companyCurrencyScale" x-currency="$currencySymbol">
-            <viewer depends="budgetRemainingAmountToAllocate">
-              <![CDATA[
-				<dd>{{$fmt('budgetRemainingAmountToAllocate')}}</dd>
-              ]]>
-            </viewer>
-          </field>
-          <field name="budget" onChange="action-reset-budget-distribution-list-method"
+            readonly="true" x-scale="$nbDecimalDigitForUnitPrice"/>
+
+          <panel name="datesPanel" colSpan="12">
+            <field name="budgetFromDate" requiredIf="budgetToDate"
+              onChange="action-budget-method-manage-budget-date-label"/>
+            <field name="budgetToDate" requiredIf="budgetFromDate"
+              onChange="action-budget-method-manage-budget-date-label"/>
+            <label name="budgetDatesLabel" hidden="true" css="label-danger" colSpan="12"/>
+          </panel>
+
+          <field name="budget"
+            onChange="action-reset-budget-distribution-list-method,action-budget-method-manage-budget-date-label"
             if="__config__.app.isApp('budget') &amp;&amp; !__config__.app.getApp('budget')?.getManageMultiBudget()"
             canEdit="false" onSelect="action-invoice-line-method-set-budget-domain"/>
           <panel-related name="budgetDistributionListPanel"
@@ -53,6 +77,7 @@
             onChange="action-group-budget-invoice-line-budget-distribution-onchange"/>
           <field name="$currencySymbol" hidden="true"/>
           <field name="$companyCurrencyScale" hidden="true"/>
+          <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
         </panel>
       </insert>
     </extend>
@@ -62,6 +87,7 @@
   <action-group name="action-group-budget-invoice-line-budget-distribution-onchange">
     <action name="action-method-invoice-line-budget-distribution-validate-amount"/>
     <action name="action-invoice-line-method-compute-budget-remaining-amount"/>
+    <action name="action-budget-method-manage-budget-date-label"/>
   </action-group>
 
   <action-group name="action-budget-group-account-invoice-line-product-onchange">
@@ -107,6 +133,8 @@
       name="action-budget-distribution-group-budget-amount-available-and-currency-symbol"
       if="__config__.app.isApp('budget')"/>
     <action name="action-method-invoice-line-budget-check-budget-key-roles"
+      if="__config__.app.isApp('budget')"/>
+    <action name="action-budget-dates-attrs-initialize-budget-dates"
       if="__config__.app.isApp('budget')"/>
   </action-group>
 </object-views>

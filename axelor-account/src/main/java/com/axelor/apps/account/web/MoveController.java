@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
+import com.axelor.apps.account.service.move.record.MoveGroupOnChangeService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
 import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
@@ -59,6 +60,7 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
+import com.axelor.utils.helpers.ContextHelper;
 import com.google.inject.Singleton;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -321,6 +323,12 @@ public class MoveController {
         Long accountingReportId =
             Long.valueOf(request.getContext().get("_accountingReportId").toString());
         actionViewBuilder.domain("self.move.accountingReport.id = " + accountingReportId);
+      }
+      if (request.getContext().get("fecImportId") != null) {
+        Long fecImport =
+            ContextHelper.getFieldFromContextParent(
+                request.getContext(), "fecImportId", Long.class);
+        actionViewBuilder.domain("self.move.fecImport.id = " + fecImport);
       }
       response.setView(actionViewBuilder.map());
     } catch (Exception e) {
@@ -597,10 +605,10 @@ public class MoveController {
   public void onChangePaymentMode(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
+      MoveGroupOnChangeService movePaymentModeService = Beans.get(MoveGroupOnChangeService.class);
 
-      response.setValues(moveGroupService.getPaymentModeOnChangeValuesMap(move));
-      response.setAttrs(moveGroupService.getHeaderChangeAttrsMap());
+      response.setValues(movePaymentModeService.getPaymentModeOnChangeValuesMap(move));
+      response.setAttrs(movePaymentModeService.getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -647,8 +655,9 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
 
-      response.setValues(
-          Beans.get(MoveGroupService.class).getFiscalPositionOnChangeValuesMap(move));
+      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
+      response.setValues(moveGroupService.getFiscalPositionOnChangeValuesMap(move));
+      response.setAttrs(moveGroupService.getFiscalPositionOnChangeAttrsMap(move));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -719,7 +728,7 @@ public class MoveController {
 
   public void onChangePartnerBankDetails(ActionRequest request, ActionResponse response) {
     try {
-      response.setAttrs(Beans.get(MoveGroupService.class).getHeaderChangeAttrsMap());
+      response.setAttrs(Beans.get(MoveGroupOnChangeService.class).getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

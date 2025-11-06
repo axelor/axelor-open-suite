@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="mass-stock-move-grid" title="Mass stock moves"
     model="com.axelor.apps.stock.db.MassStockMove" onNew="action-mass-stock-move-method-on-new">
     <field name="sequence"/>
     <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
-    <field name="statusSelect" required="true"/>
+    <field name="statusSelect" required="true" widget="single-select"/>
     <field name="cartStockLocation" domain="self.company = :company AND self.typeSelect != 3"
       onChange="action-mass-stock-move-attrs-refresh-cart-content"/>
     <field name="commonFromStockLocation"
@@ -154,8 +154,13 @@
     <view type="grid" name="stock-location-line-mass-stock-move-cart-grid"/>
     <view type="form" name="stock-location-line-form"/>
     <view-param name="show-toolbar" value="false"/>
-    <domain>self.currentQty > 0 and (self.stockLocation = :cartStockLocation OR
-      self.detailsStockLocation = :cartStockLocation)</domain>
+    <domain>self.currentQty > 0 AND (self.stockLocation = :cartStockLocation OR
+      self.detailsStockLocation = :cartStockLocation)
+      AND (self.trackingNumber IS NOT NULL OR
+      (self.trackingNumber IS NULL
+      AND NOT EXISTS (SELECT line.id FROM StockLocationLine line WHERE
+      line.product.id = self.product.id AND line.trackingNumber IS NOT NULL)))
+    </domain>
     <context name="cartStockLocation" expr="eval: __this__?.cartStockLocation"/>
   </action-view>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <!-- PAYMENT MOVE LINE DISTRIBUTION -->
 
@@ -59,7 +59,8 @@
       <field name="move" form-view="move-form" grid-view="move-grid"/>
       <field name="moveLine" form-view="move-line-form" grid-view="move-line-grid"/>
       <field name="reconcile" form-view="reconcile-form" grid-view="reconcile-grid"/>
-      <field name="taxLine" form-view="tax-line-form" grid-view="tax-line-grid"/>
+      <field name="taxLineSet" form-view="tax-line-form" grid-view="tax-line-grid"
+        widget="TagSelect"/>
       <field name="inTaxProratedAmount"/>
       <field name="exTaxProratedAmount"/>
       <field name="taxProratedAmount"/>

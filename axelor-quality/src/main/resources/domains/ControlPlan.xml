@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="quality" package="com.axelor.apps.quality.db"/>
 
@@ -16,6 +16,9 @@
       mappedBy="controlPlan"/>
     <integer name="statusSelect" selection="quality.control.plan.status.select"
       title="Status" default="1"/>
+    <string name="relatedToSelect" title="Related to"
+      selection="quality.control.plan.related.to.select"/>
+    <long name="relatedToSelectId"/>
 
     <extra-code>
 			<![CDATA[

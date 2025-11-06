@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <menuitem name="stock-root" title="Stock management" order="-700"
     if="__config__.app.isApp('stock')" icon="boxes" icon-background="#b6473f"/>
@@ -64,6 +64,20 @@
     <context name="_typeSelect" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
     <context name="_statusSelect" expr="eval: __repo__(StockMove).STATUS_PLANNED"/>
     <context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SENDER"/>
+  </action-view>
+
+  <menuitem name="stock-root-packagings" parent="stock-root-deliveries" order="600"
+    title="Packagings" action="stock.root.packagings"/>
+
+  <action-view name="stock.root.packagings" title="Packagings"
+    model="com.axelor.apps.base.db.Product">
+    <view type="cards" name="product-cards"/>
+    <view type="grid" name="product-production-stock-grid"/>
+    <view type="form" name="product-form"/>
+    <view-param name="search-filters" value="products-filters"/>
+    <domain>self.isModel = false AND self.productTypeSelect = 'storable' AND self.dtype = 'Product'
+      AND self.isPackaging = true</domain>
+    <context name="_fromStock" expr="eval: true"/>
   </action-view>
 
   <menuitem name="stock-root-arrivals" parent="stock-root" title="Arrivals" order="200"/>
@@ -303,8 +317,8 @@
     <view type="form" name="stock-correction-reason-form"/>
   </action-view>
 
-  <menuitem name="stock-root-all-line" parent="stock-root-conf" title="Stock move lines"
-    action="stock.root.all.line" order="1100"/>
+  <menuitem name="stock-root-all-line" parent="stock-root" title="Stock move lines"
+    action="stock.root.all.line" order="375"/>
 
   <action-view name="stock.root.all.line" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine">

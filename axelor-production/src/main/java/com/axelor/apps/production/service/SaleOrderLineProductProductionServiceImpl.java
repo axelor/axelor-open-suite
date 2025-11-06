@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.production.db.BillOfMaterial;
@@ -40,6 +41,8 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplemen
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.pricing.FreightCarrierApplyPricingService;
+import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.studio.db.AppProduction;
@@ -50,6 +53,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineProductProductionServiceImpl
     extends SaleOrderLineProductSupplychainServiceImpl
@@ -60,6 +64,7 @@ public class SaleOrderLineProductProductionServiceImpl
   protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
   protected final SolBomUpdateService solBomUpdateService;
   protected final SolDetailsBomUpdateService solDetailsBomUpdateService;
+  protected final SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService;
 
   @Inject
   public SaleOrderLineProductProductionServiceImpl(
@@ -79,11 +84,15 @@ public class SaleOrderLineProductProductionServiceImpl
       AnalyticLineModelService analyticLineModelService,
       AppSupplychainService appSupplychainService,
       SaleOrderLineAnalyticService saleOrderLineAnalyticService,
+      FreightCarrierPricingService freightCarrierPricingService,
+      FreightCarrierApplyPricingService freightCarrierApplyPricingService,
       AppProductionService appProductionService,
       SaleOrderLineBomService saleOrderLineBomService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
       SolBomUpdateService solBomUpdateService,
-      SolDetailsBomUpdateService solDetailsBomUpdateService) {
+      SolDetailsBomUpdateService solDetailsBomUpdateService,
+      SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService,
+      PublicHolidayService publicHolidayService) {
     super(
         appSaleService,
         appBaseService,
@@ -100,12 +109,16 @@ public class SaleOrderLineProductProductionServiceImpl
         blockingService,
         analyticLineModelService,
         appSupplychainService,
-        saleOrderLineAnalyticService);
+        saleOrderLineAnalyticService,
+        freightCarrierPricingService,
+        freightCarrierApplyPricingService,
+        publicHolidayService);
     this.appProductionService = appProductionService;
     this.saleOrderLineBomService = saleOrderLineBomService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
     this.solBomUpdateService = solBomUpdateService;
     this.solDetailsBomUpdateService = solDetailsBomUpdateService;
+    this.saleOrderLineDetailsProdProcessService = saleOrderLineDetailsProdProcessService;
   }
 
   @Override
@@ -171,24 +184,36 @@ public class SaleOrderLineProductProductionServiceImpl
       throws AxelorException {
     AppProduction appProduction = appProductionService.getAppProduction();
     AppSale appSale = appSaleService.getAppSale();
+    BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
     if (saleOrderLine.getIsToProduce()
         && appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
         && !appProduction.getIsBomLineGenerationInSODisabled()) {
       if (!solBomUpdateService.isUpdated(saleOrderLine)) {
-        saleOrderLineBomService
-            .createSaleOrderLinesFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
-            .stream()
+        saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder).stream()
             .filter(Objects::nonNull)
             .forEach(saleOrderLine::addSubSaleOrderLineListItem);
       }
       if (!solDetailsBomUpdateService.isSolDetailsUpdated(
           saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList())) {
         saleOrderLineDetailsBomService
-            .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+            .createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder, saleOrderLine)
             .stream()
             .filter(Objects::nonNull)
             .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
       }
+      saleOrderLineDetailsProdProcessService.addSaleOrderLineDetailsFromProdProcess(
+          billOfMaterial.getProdProcess(), saleOrder, saleOrderLine);
     }
+  }
+
+  @Override
+  protected Map<String, Object> resetProductInformationMap(SaleOrderLine line) {
+    Map<String, Object> saleOrderLineMap = super.resetProductInformationMap(line);
+    if (CollectionUtils.isNotEmpty(line.getSaleOrderLineDetailsList())) {
+      line.clearSaleOrderLineDetailsList();
+      saleOrderLineMap.put("saleOrderLineDetailsList", line.getSaleOrderLineDetailsList());
+    }
+
+    return saleOrderLineMap;
   }
 }

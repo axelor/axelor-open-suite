@@ -2,7 +2,7 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
-	http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+	http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="consumption-line-grid" title="Consumption Lines"
     model="com.axelor.apps.contract.db.ConsumptionLine" orderBy="lineDate">
@@ -70,10 +70,14 @@
 
   <action-attrs name="action-consumption-line-attrs-set-product-domain">
     <attribute name="domain" for="product"
-      expr="eval: &quot; self.dtype = 'Product' AND self.sellable = true &quot;"
+      expr="eval: __parent__?.company &amp;&amp; __config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'sellable'}) ?
+      &quot; self.dtype = 'Product' AND EXISTS (SELECT pc FROM self.productCompanyList pc WHERE pc.company.id = &quot; + __parent__.company.id + &quot; AND pc.sellable = true) &quot; :
+      &quot; self.dtype = 'Product' AND self.sellable = true &quot;"
       if="__parent__?.targetTypeSelect == 1 || __parent__?.targetTypeSelect == 3"/>
     <attribute name="domain" for="product"
-      expr="eval: &quot; self.dtype = 'Product' AND self.purchasable = true &quot;"
+      expr="eval:__parent__?.company &amp;&amp;  __config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'purchasable'}) ?
+      &quot; self.dtype = 'Product' AND EXISTS (SELECT pc FROM self.productCompanyList pc WHERE pc.company.id = &quot; + __parent__.company.id + &quot; AND pc.purchasable = true) &quot; :
+      &quot; self.dtype = 'Product' AND self.purchasable = true &quot;"
       if="__parent__?.targetTypeSelect == 2 || __parent__?.targetTypeSelect == 4"/>
   </action-attrs>
 

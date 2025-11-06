@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
@@ -20,12 +20,22 @@
     <one-to-many name="saleOrderLineDetailsList" title="Sale order line details list"
       ref="com.axelor.apps.production.db.SaleOrderLineDetails" mappedBy="saleOrderLine"/>
     <decimal name="qtyToProduce" title="Quantity to produce" readonly="true"/>
-
+    <decimal name="qtyProduced" title="Quantity produced" readonly="true"/>
     <boolean name="isToProduce" transient="true">
       <![CDATA[
-		return (this.saleSupplySelect == 3 || this.saleSupplySelect == 4) && this.billOfMaterial != null;
+		return this.saleSupplySelect != null && (this.saleSupplySelect == 3 || this.saleSupplySelect == 4) && this.billOfMaterial != null;
         ]]>
     </boolean>
+
+    <!-- Blocking information -->
+    <boolean name="isProductionBlocking" title="Block production"/>
+    <many-to-one name="productionBlockingReason"
+      ref="com.axelor.apps.base.db.StopReason" title="Blocking production reason"/>
+    <date name="productionBlockingToDate" title="Blocking production until"/>
+    <many-to-one name="productionBlockingByUser" ref="com.axelor.auth.db.User"
+      title="Production blocking done by"/>
+    <string name="commentProductionBlocking" title="Blocking comment for production"
+      large="true"/>
 
     <entity-listener
       class="com.axelor.apps.production.db.repo.SaleOrderLineProductionListener"/>

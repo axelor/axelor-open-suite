@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
   <selection name="sale.order.status.select">
-    <option value="1">Draft quotation</option>
-    <option value="2">Finalized quotation</option>
-    <option value="3">Order confirmed</option>
-    <option value="4">Order completed</option>
-    <option value="5">Canceled</option>
+    <option value="1" color="blue">Draft quotation</option>
+    <option value="2" color="orange">Finalized quotation</option>
+    <option value="3" color="green">Order confirmed</option>
+    <option value="4" color="teal">Order completed</option>
+    <option value="5" color="red">Canceled</option>
   </selection>
 
   <selection name="message.related.to.select" id="sale.message.related.to.select">
@@ -24,9 +24,9 @@
   </selection>
 
   <selection name="advance.payment.status.select">
-    <option value="0">Draft</option>
-    <option value="1">Validated</option>
-    <option value="2">Canceled</option>
+    <option value="0" color="blue">Draft</option>
+    <option value="1" color="green">Validated</option>
+    <option value="2" color="red">Canceled</option>
   </selection>
 
   <selection name="configurator.update.sale.order.line">
@@ -112,6 +112,11 @@
     <option value="SALE_ORDER_LINE_PRODUCT_TYPE_FINISHED_PRODUCT" icon="fa-box"/>
     <option value="SALE_ORDER_LINE_PRODUCT_TYPE_SEMI_FINISH_PRODUCT" icon="fa-wrench"/>
     <option value="SALE_ORDER_LINE_PRODUCT_TYPE_COMPONENT" icon="fa-cpu-fill"/>
+  </selection>
+
+  <selection name="sale.sale.order.ordering.status.select">
+    <option value="1">Partially ordered</option>
+    <option value="2">orderingStatus.closed</option>
   </selection>
 
 </object-views>

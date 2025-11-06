@@ -19,6 +19,7 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import java.math.BigDecimal;
@@ -30,8 +31,6 @@ import wslite.json.JSONException;
 public interface SaleOrderService {
 
   public String getFileName(SaleOrder saleOrder);
-
-  public SaleOrder computeEndOfValidityDate(SaleOrder saleOrder);
 
   /**
    * Fill {@link SaleOrder#mainInvoicingAddressStr} and {@link SaleOrder#deliveryAddressStr}
@@ -108,4 +107,6 @@ public interface SaleOrderService {
   void checkPrintingSettings(SaleOrder saleOrder) throws AxelorException;
 
   boolean isIncotermRequired(SaleOrder saleOrder);
+
+  boolean getInAti(SaleOrder saleOrder, Company company) throws AxelorException;
 }

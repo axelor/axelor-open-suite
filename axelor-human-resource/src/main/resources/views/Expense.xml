@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
     orderBy="-sentDateTime" groupBy="period">
@@ -16,8 +16,8 @@
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="inTaxTotal" aggregate="sum"/>
-    <field name="currency" colSpan="2" required="true"/>
-    <field name="statusSelect"/>
+    <field name="currency" colSpan="2"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="ventilated"/>
   </grid>
 
@@ -45,12 +45,13 @@
     <field name="period" form-view="period-form" grid-view="period-grid" canEdit="false"
       canView="false"/>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
     onNew="action-expense-group-form-onNew" onLoad="action-expense-group-form-onLoad"
-    onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false">
+    onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false"
+    canCopy="false">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printAll" title="Print report and files"
@@ -82,26 +83,26 @@
           <spacer/>
           <field name="company" canEdit="false" form-view="company-form"
             grid-view="company-grid"
-            onChange="action-expense-record-company-onchange,action-expense-attrs-kilometric-panel-visibility"
+            onChange="action-expense-record-company-onchange,action-expense-attrs-kilometric-panel-visibility,action-expense-group-recompute-company-amounts"
             required="true"/>
           <field name="employee" form-view="employee-form"
             onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
             canEdit="false" canView="false"
             onChange="action-expense-record-employee-onchange,action-expense-method-update-general-and-kilometric-expense-line-employee"
             required="true"/>
-          <field name="currency" canEdit="false" colSpan="6" required="true"
-            readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
-            onChange="action-expense-attrs-kilometric-panel-visibility"/>
+          <field name="currency" canEdit="false" colSpan="6"
+            onChange="action-expense-group-recompute-company-amounts"/>
           <field name="bankDetails" widget="SuggestBox" if-module="axelor-cash-management"
             onSelect="action-accounting-batch-attrs-bank-details-domain"
             form-view="bank-details-form" grid-view="bank-details-grid"
             if="__config__.app.getApp('base')?.getManageMultiBanks()"/>
           <field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period"
-            form-view="period-form" grid-view="period-grid" canView="false"/>
+            onChange="action-expense-group-recompute-company-amounts" form-view="period-form"
+            grid-view="period-grid" canView="false"/>
           <field name="companyCbSelect" onChange="action-expense-attrs-expense-company-cb"
             readonlyIf="statusSelect != 1"/>
           <field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1"
-            readonlyIf="statusSelect != 1"/>
+            readonlyIf="statusSelect != 1" onChange="action-expense-method-compute-dummy-amounts"/>
           <field name="employee.companyCbDetails" colSpan="12" hidden="true"
             showIf="employee != null &amp;&amp; companyCbSelect &gt; 1"/>
           <field name="personalExpenseAmount" hidden="true"/>
@@ -143,13 +144,13 @@
 			                     	  <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
 			                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
 			                     	  {personalExpenseAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Personal expense')}</Box>}
-			                     	  {personalExpenseAmount != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('personalExpenseAmount')}</Box>}
+			                     	  {personalExpenseAmount != 0 && <Box as="dd" m={0} px={3} py={1}>- {$fmt('personalExpenseAmount')}</Box>}
 			                     	  {withdrawnCash != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Withdrawn cash')}</Box>}
-			                     	  {withdrawnCash != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('withdrawnCash')}</Box>}
+			                     	  {withdrawnCash != 0 && <Box as="dd" m={0} px={3} py={1}>- {$fmt('withdrawnCash')}</Box>}
 			                     	  {advanceAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance')}</Box>}
-			                     	  {advanceAmount != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('paymentAmount')}</Box>}
+			                     	  {advanceAmount != 0 && <Box as="dd" m={0} px={3} py={1}>- {$fmt('advanceAmount')}</Box>}
 			                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal" color="primary">{_t('Payment')}</Box>}
-			                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dd" m={0} px={3} py={1} color="primary">-{$fmt('paymentAmount')}</Box>}
+			                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dd" m={0} px={3} py={1} color="primary">- {$fmt('paymentAmount')}</Box>}
 			                          <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('TotalToRefund')}</Box>
 			                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('$totalToRefund')}</Box>
 			                      </Box>
@@ -157,10 +158,64 @@
 		                    ]]>
             </viewer>
           </field>
+          <field name="currency.symbol" hidden="true"/>
           <field name="$totalToRefund" title="Total to refund" type="decimal" hidden="true"
             x-currency="currency.symbol"/>
           <field name="exTaxTotal" x-currency="currency.symbol" hidden="true"/>
           <field name="taxTotal" x-currency="currency.symbol" hidden="true"/>
+          <field name="paymentAmount" x-currency="currency.symbol" hidden="true"/>
+          <field name="personalExpenseAmount" x-currency="currency.symbol" hidden="true"/>
+          <field name="withdrawnCash" x-currency="currency.symbol" hidden="true"/>
+          <field name="advanceAmount" x-currency="currency.symbol" hidden="true"/>
+        </panel>
+        <panel name="companyTotalPanel" readonly="true"
+          hideIf="company == null || currency == null || company.currency.code == currency.code">
+          <field name="statusSelect" hidden="true"/>
+          <field name="company.currency.symbol" hidden="true"/>
+          <field name="company.currency.numberOfDecimals" hidden="true"/>
+          <field name="companyExTaxTotal" x-currency="company.currency.symbol" hidden="true"
+            x-scale="company.currency.numberOfDecimals"/>
+          <field name="companyTaxTotal" x-currency="company.currency.symbol" hidden="true"
+            x-scale="company.currency.numberOfDecimals"/>
+          <field name="companyInTaxTotal" showTitle="false" colSpan="12"
+            x-currency="company.currency.symbol" x-scale="company.currency.numberOfDecimals">
+            <viewer
+              depends="companyExTaxTotal,companyTaxTotal,statusSelect,paymentAmount,$companyPaymentAmount,paymentStatusSelect">
+              <![CDATA[
+			                  <>
+			                      <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+			                          <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+			                     	  <Box as="dd" m={0} px={3} py={1}>{$fmt('companyExTaxTotal')}</Box>
+			                     	  <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+			                     	  <Box as="dd" m={0} px={3} py={1}>{$fmt('companyTaxTotal')}</Box>
+			                     	  <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+			                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('companyInTaxTotal')}</Box>
+			                     	  {personalExpenseAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Personal expense')}</Box>}
+			                     	  {personalExpenseAmount != 0 && <Box as="dd" m={0} px={3} py={1}>- {$fmt('$companyPersonalExpenseAmount')}</Box>}
+			                     	  {withdrawnCash != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Withdrawn cash')}</Box>}
+			                     	  {withdrawnCash != 0 && <Box as="dd" m={0} px={3} py={1}>- {$fmt('$companyWithdrawnCash')}</Box>}
+			                     	  {advanceAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance')}</Box>}
+			                     	  {advanceAmount != 0 && <Box as="dd" m={0} px={3} py={1}>- {$fmt('$companyAdvanceAmount')}</Box>}
+			                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal" color="primary">{_t('Payment')}</Box>}
+			                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dd" m={0} px={3} py={1} color="primary">- {$fmt('$companyPaymentAmount')}</Box>}
+			                          <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('TotalToRefund')}</Box>
+			                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('$companyTotalToRefund')}</Box>
+			                      </Box>
+			                  </>
+		                    ]]>
+            </viewer>
+          </field>
+          <field name="$companyTotalToRefund" title="Total to refund" type="decimal"
+            hidden="true" x-currency="company.currency.symbol"
+            x-scale="company.currency.numberOfDecimals"/>
+          <field name="$companyPaymentAmount" type="decimal" hidden="true"
+            x-currency="company.currency.symbol" x-scale="company.currency.numberOfDecimals"/>
+          <field name="$companyPersonalExpenseAmount" type="decimal"
+            x-currency="company.currency.symbol" hidden="true"/>
+          <field name="$companyWithdrawnCash" type="decimal"
+            x-currency="company.currency.symbol" hidden="true"/>
+          <field name="$companyAdvanceAmount" type="decimal"
+            x-currency="company.currency.symbol" hidden="true"/>
         </panel>
       </panel>
     </panel>
@@ -204,7 +259,7 @@
         </panel>
         <panel name="paymentInfoPanel" showIf=" statusSelect == 4" title="Payment information"
           colSpan="12">
-          <field name="paymentStatusSelect" colSpan="4"/>
+          <field name="paymentStatusSelect" colSpan="4" widget="single-select"/>
           <field name="paymentMode" readonly="true" showIf="paymentMode" colSpan="4"/>
           <field name="paymentDate" showIf="paymentDate" colSpan="4" readonly="true"/>
           <field name="bankOrder" hidden="true" showIf="bankOrder" colSpan="4"/>
@@ -221,14 +276,15 @@
   </form>
 
   <form name="popup-expense-refusal-form" title="Ground for refusal"
-    model="com.axelor.apps.hr.db.Expense">
+    model="com.axelor.apps.hr.db.Expense" canCopy="false">
     <panel name="mainPanel">
       <field name="groundForRefusal" showTitle="false"/>
     </panel>
   </form>
 
   <form name="popup-expense-form" title="Select the expense you want to edit"
-    model="com.axelor.utils.db.Wizard" onNew="action-expense-attrs-domain-expense-select">
+    model="com.axelor.utils.db.Wizard" onNew="action-expense-attrs-domain-expense-select"
+    canCopy="false">
     <panel name="mainPanel">
       <field name="$expenseSelect" title="Select Expense" type="many-to-one"
         target="com.axelor.apps.hr.db.Expense" widget="SuggestBox" canEdit="false"/>
@@ -238,7 +294,7 @@
   </form>
 
   <form name="popup-expense-add-payment-form" title="Choose payment mode"
-    model="com.axelor.apps.hr.db.Expense">
+    model="com.axelor.apps.hr.db.Expense" canCopy="false">
     <panel name="mainPanel">
       <field name="paymentMode" domain="self.inOutSelect = 2"/>
       <field name="paymentDate" colSpan="4" required="true"/>
@@ -250,14 +306,14 @@
   <form name="complete-my-expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense"
     width="large" onNew="action-expense-group-form-onNew" onLoad="action-expense-group-form-onLoad"
     onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false"
-    canNew="false">
+    canNew="false" canCopy="false">
     <panel-include view="expense-form"/>
   </form>
 
   <action-group name="action-expense-group-form-onNew">
     <action name="action-expense-record-default"/>
     <action name="action-expense-attrs-hide-button-readonly-field"/>
-    <action name="action-expense-attrs-set-total-to-refund"/>
+    <action name="action-expense-method-compute-dummy-amounts"/>
     <action name="action-expense-attrs-kilometric-panel-visibility"/>
     <action name="action-validate-check-user-employee"/>
   </action-group>
@@ -265,7 +321,7 @@
   <action-group name="action-expense-group-form-onLoad">
     <action name="action-expense-attrs-hide-button-readonly-field"/>
     <action name="action-expense-attrs-expense-company-cb"/>
-    <action name="action-expense-attrs-set-total-to-refund"/>
+    <action name="action-expense-method-compute-dummy-amounts"/>
     <action name="action-expense-attrs-kilometric-panel-visibility"/>
     <action name="action-expense-method-check-total-amount"/>
   </action-group>
@@ -299,7 +355,20 @@
   <action-group name="action-expense-group-expense-line-on-change">
     <action name="action-expense-method-compute"/>
     <action name="action-expense-method-update-moveDate-and-period"/>
-    <action name="action-expense-attrs-set-total-to-refund"/>
+    <action name="action-expense-method-compute-dummy-amounts"/>
+    <action name="action-expense-method-check-analytic-axis"/>
+  </action-group>
+
+  <action-group name="action-expense-group-recompute-company-amounts">
+    <action name="action-expense-method-change-currency-on-lines"/>
+    <action name="action-expense-method-compute-line-company-amounts"/>
+    <action name="action-expense-method-compute-dummy-amounts"/>
+  </action-group>
+
+  <action-group name="action-expense-group-company-onchange">
+    <action name="action-expense-record-company-onchange"/>
+    <action name="action-expense-attrs-kilometric-panel-visibility"/>
+    <action name="action-expense-group-recompute-company-amounts"/>
   </action-group>
 
   <action-record name="action-expense-record-default"
@@ -326,7 +395,7 @@
     <field name="bankDetails"
       expr="eval: employee?.mainEmploymentContract?.payCompany ? employee?.mainEmploymentContract?.payCompany?.defaultBankDetails : employee?.user?.activeCompany?.defaultBankDetails"/>
     <field name="currency"
-      expr="eval: employee?.mainEmploymentContract?.payCompany.currency ?: employee?.user?.activeCompany?.currency"/>
+      expr="eval: employee?.mainEmploymentContract?.payCompany?.currency ?: employee?.user?.activeCompany?.currency"/>
   </action-record>
 
   <action-record name="action-expense-record-company-onchange"
@@ -381,6 +450,20 @@
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="cancelPayment"/>
   </action-method>
 
+  <action-method name="action-expense-method-compute-dummy-amounts">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="computeDummyAmounts"/>
+  </action-method>
+
+  <action-method name="action-expense-method-compute-line-company-amounts">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController"
+      method="computeLineCompanyAmounts"/>
+  </action-method>
+
+  <action-method name="action-expense-method-change-currency-on-lines">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController"
+      method="updateCurrencyOnLine"/>
+  </action-method>
+
   <action-attrs name="action-expense-attrs-hide-button-readonly-field">
     <attribute name="hidden" for="ventilateBtn"
       expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated || _isExpenseDeclaration"/>
@@ -388,8 +471,7 @@
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="refuseBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; user?.employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
-    <attribute name="hidden" for="cancelBtn"
-      expr="eval: period?.toDate?.isAfter(__config__.date) || statusSelect == 6 || ventilated"/>
+    <attribute name="hidden" for="cancelBtn" expr="eval: statusSelect == 6 || ventilated"/>
     <attribute name="readonly" for="period" expr="eval: true"
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="period" expr="eval: ventilated"
@@ -401,6 +483,10 @@
     <attribute name="readonly" for="company" expr="eval: true"
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="company" expr="eval: statusSelect &gt; 2"
+      if="__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="currency" expr="eval: true"
+      if="!__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="currency" expr="eval: statusSelect &gt; 2"
       if="__user__.employee?.hrManager"/>
     <attribute name="readonly" for="employee"
       expr="eval: statusSelect &gt; 2 || (!__user__.employee?.hrManager &amp;&amp; __repo__(Employee).all().filter('self.managerUser.id = ?', __user__.id).count() == 0) || _isEmployeeReadOnly"/>
@@ -458,11 +544,6 @@
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkTotalAmount"/>
   </action-method>
 
-  <action-attrs name="action-expense-attrs-set-total-to-refund">
-    <attribute name="value" for="$totalToRefund"
-      expr="eval: inTaxTotal - (advanceAmount + withdrawnCash + personalExpenseAmount + paymentAmount)"/>
-  </action-attrs>
-
   <action-attrs name="action-expense-attrs-kilometric-panel-visibility">
     <attribute for="kilometricExpenseLineList" name="hidden"
       expr="eval: currency != company?.currency"/>
@@ -483,6 +564,10 @@
 
   <action-method name="action-expense-method-draft">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="backToDraft"/>
+  </action-method>
+
+  <action-method name="action-expense-method-check-analytic-axis">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="checkAnalyticAxis"/>
   </action-method>
 
   <search-filters name="expense-filters" model="com.axelor.apps.hr.db.Expense"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="group-grid" id="base-group-grid" title="Groups" model="com.axelor.auth.db.Group">
     <field name="name"/>
@@ -26,7 +26,6 @@
       <field name="homeAction" widget="ref-text" x-target="com.axelor.meta.db.MetaAction"
         x-target-name="name" domain="self.type = 'action-view' and self.home = true"/>
       <field name="technicalStaff" colSpan="3"/>
-      <field name="canViewCollaboration" if-module="axelor-enterprise-edition"/>
       <field name="isClient" colSpan="3"/>
       <field name="isSupplier" colSpan="3"/>
       <field name="viewCustomizationPermission" colSpan="3"/>
