@@ -95,6 +95,7 @@
 
     <unique-constraint columns="interbankCodeLine,bankDetails,paymentMode"/>
     <unique-constraint columns="paymentMode,bankDetails,company"/>
+    <unique-constraint columns="productFamily,company"/>
 
     <finder-method name="find" using="paymentMode,bankDetails,company"
       cacheable="true"/>
