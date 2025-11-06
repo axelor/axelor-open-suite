@@ -1,3 +1,84 @@
+## [8.4.11] (2025-11-06)
+
+### Fixes
+#### Base
+
+* Theme: fixed logo on default theme.
+* Account Management: fixed duplicate company selection for product families
+* Currency conversion: updated old API for currency conversion.
+* Bank details: fixed some iban fields when adding bank details from partner view.
+
+#### Account
+
+* Invoice: keep advance payments empty on validate if user cleared them in draft.
+* Invoice: correct due dates with multi‑term payment conditions when Free is enabled on payment conditions
+* Reconcile: avoid negative amount when duplicating a reconcile.
+* Invoice: fixed an issue where Payment mode on invoice term is changed after the ventiation
+* Invoice: fixed shipping date in invoice report.
+* FixedAsset: fixed lines amount's after split
+* Move line query: fixed selected move lines unreconcilation.
+
+#### Project
+
+* Project: fixed partner informations when generating a project from a sale order.
+* Project: fixed project generation when the partner name contains an apostrophe.
+
+#### Stock
+
+* Stock move: fixed title for Customer deliveries invoice button.
+
+#### Supply Chain
+
+* Sale order: fixed issue where duplicated lines were not visible in mass invoicing
+
+
+### Developer
+
+#### Base
+
+Implemented domain filtering to prevent duplicate AccountManagement records for the same company and ProductFamily combination.
+
+-- Add unique constraint to prevent future duplicates
+ALTER TABLE account_account_management 
+ADD CONSTRAINT uk_product_family_company_unique 
+UNIQUE (product_family, company);
+
+---
+
+-- migration script to update bank_code, sort_code, account_nbr and bban_key in bank details table
+
+UPDATE base_bank_details BankDetails
+SET bank_code = SUBSTRING(BankDetails.iban FROM 5 FOR 5)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.bank_code IS NULL OR BankDetails.bank_code = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET sort_code = SUBSTRING(BankDetails.iban FROM 10 FOR 5)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.sort_code IS NULL OR BankDetails.sort_code = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET account_nbr = SUBSTRING(BankDetails.iban FROM 15 FOR 11)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.account_nbr IS NULL OR BankDetails.account_nbr = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET bban_key = RIGHT(BankDetails.iban, 2)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.bban_key IS NULL OR BankDetails.bban_key = '')
+  AND BankDetails.iban IS NOT NULL;
+
 ## [8.4.10] (2025-10-30)
 
 ### Fixes
@@ -1010,6 +1091,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.11]: https://github.com/axelor/axelor-open-suite/compare/v8.4.10...v8.4.11
 [8.4.10]: https://github.com/axelor/axelor-open-suite/compare/v8.4.9...v8.4.10
 [8.4.9]: https://github.com/axelor/axelor-open-suite/compare/v8.4.8...v8.4.9
 [8.4.8]: https://github.com/axelor/axelor-open-suite/compare/v8.4.7...v8.4.8
