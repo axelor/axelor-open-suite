@@ -1,3 +1,75 @@
+## [8.3.20] (2025-11-06)
+
+### Fixes
+#### Base
+
+* Account Management: fixed duplicate company selection for product families
+* Currency conversion: updated old API for currency conversion.
+* Bank details: fixed some iban fields when adding bank details from partner view.
+
+#### Account
+
+* Invoice: keep advance payments empty on validate if user cleared them in draft.
+* Invoice: correct due dates with multi‑term payment conditions when Free is enabled on payment conditions
+* Reconcile: avoid negative amount when duplicating a reconcile.
+* Invoice: fixed an issue where Payment mode on invoice term is changed after the ventiation
+* Invoice: fixed shipping date in invoice report.
+* FixedAsset: fixed lines amount's after split
+* Move line query: fixed selected move lines unreconcilation.
+
+#### Project
+
+* Project: fixed partner informations when generating a project from a sale order.
+* Project: fixed project generation when the partner name contains an apostrophe.
+
+
+### Developer
+
+#### Base
+
+Implemented domain filtering to prevent duplicate AccountManagement records for the same company and ProductFamily combination.
+
+-- Add unique constraint to prevent future duplicates
+ALTER TABLE account_account_management 
+ADD CONSTRAINT uk_product_family_company_unique 
+UNIQUE (product_family, company);
+
+---
+
+-- migration script to update bank_code, sort_code, account_nbr and bban_key in bank details table
+
+UPDATE base_bank_details BankDetails
+SET bank_code = SUBSTRING(BankDetails.iban FROM 5 FOR 5)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.bank_code IS NULL OR BankDetails.bank_code = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET sort_code = SUBSTRING(BankDetails.iban FROM 10 FOR 5)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.sort_code IS NULL OR BankDetails.sort_code = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET account_nbr = SUBSTRING(BankDetails.iban FROM 15 FOR 11)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.account_nbr IS NULL OR BankDetails.account_nbr = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET bban_key = RIGHT(BankDetails.iban, 2)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.bban_key IS NULL OR BankDetails.bban_key = '')
+  AND BankDetails.iban IS NOT NULL;
+
 ## [8.3.19] (2025-10-30)
 
 ### Fixes
@@ -1672,6 +1744,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.20]: https://github.com/axelor/axelor-open-suite/compare/v8.3.19...v8.3.20
 [8.3.19]: https://github.com/axelor/axelor-open-suite/compare/v8.3.18...v8.3.19
 [8.3.18]: https://github.com/axelor/axelor-open-suite/compare/v8.3.17...v8.3.18
 [8.3.17]: https://github.com/axelor/axelor-open-suite/compare/v8.3.16...v8.3.17

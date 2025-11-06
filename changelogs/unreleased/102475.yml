@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed an issue where Payment mode on invoice term is changed after the ventiation"
-module: axelor-account
