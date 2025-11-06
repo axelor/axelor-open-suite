@@ -1,5 +1,5 @@
 ---
-title: "Account Management: Fixed duplicate company selection for product families"
+title: "Account Management: fixed duplicate company selection for product families"
 module: axelor-base
 developer: |
   Implemented domain filtering to prevent duplicate AccountManagement records for the same company and ProductFamily combination.
