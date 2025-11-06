@@ -1,3 +1,37 @@
 ---
 title: "Bank details: fixed some iban fields when adding bank details from partner view."
 module: axelor-base
+developer: |
+  -- migration script to update bank_code, sort_code, account_nbr and bban_key in bank details table
+
+  UPDATE base_bank_details BankDetails
+  SET bank_code = SUBSTRING(BankDetails.iban FROM 5 FOR 5)
+  FROM base_bank Bank
+  WHERE BankDetails.bank = Bank.id
+    AND Bank.bank_details_type_select = 1
+    AND (BankDetails.bank_code IS NULL OR BankDetails.bank_code = '')
+    AND BankDetails.iban IS NOT NULL;
+
+  UPDATE base_bank_details BankDetails
+  SET sort_code = SUBSTRING(BankDetails.iban FROM 10 FOR 5)
+  FROM base_bank Bank
+  WHERE BankDetails.bank = Bank.id
+    AND Bank.bank_details_type_select = 1
+    AND (BankDetails.sort_code IS NULL OR BankDetails.sort_code = '')
+    AND BankDetails.iban IS NOT NULL;
+
+  UPDATE base_bank_details BankDetails
+  SET account_nbr = SUBSTRING(BankDetails.iban FROM 15 FOR 11)
+  FROM base_bank Bank
+  WHERE BankDetails.bank = Bank.id
+    AND Bank.bank_details_type_select = 1
+    AND (BankDetails.account_nbr IS NULL OR BankDetails.account_nbr = '')
+    AND BankDetails.iban IS NOT NULL;
+
+  UPDATE base_bank_details BankDetails
+  SET bban_key = RIGHT(BankDetails.iban, 2)
+  FROM base_bank Bank
+  WHERE BankDetails.bank = Bank.id
+    AND Bank.bank_details_type_select = 1
+    AND (BankDetails.bban_key IS NULL OR BankDetails.bban_key = '')
+    AND BankDetails.iban IS NOT NULL;
