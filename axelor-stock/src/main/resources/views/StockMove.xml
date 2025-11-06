@@ -416,7 +416,8 @@
 	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
           </static>
           <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
-            showTitle="false">
+            showTitle="false" x-currency="company.currency.symbol"
+            x-scale="company.currency.numberOfDecimals">
             <viewer><![CDATA[
 						<>
 							<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
@@ -492,7 +493,8 @@
             </field>
 
             <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
-              showTitle="false">
+              showTitle="false" x-currency="company.currency.symbol"
+              x-scale="company.currency.numberOfDecimals">
               <viewer>
                           <![CDATA[
 							<>
@@ -535,7 +537,8 @@
               <viewer><![CDATA[<>{fromAddressStr}</>]]></viewer>
             </field>
             <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
-              showTitle="false">
+              showTitle="false" x-currency="company.currency.symbol"
+              x-scale="company.currency.numberOfDecimals">
               <viewer><![CDATA[
 							<>
 								<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
@@ -548,6 +551,8 @@
             </field>
           </panel>
         </panel>
+        <field name="company.currency.symbol" hidden="true"/>
+        <field name="company.currency.numberOfDecimals" hidden="true"/>
       </panel>
       <panel name="actionPanel" colSpan="3" itemSpan="12">
         <button name="planBtn" title="Plan" icon="fa-calendar" showIf="statusSelect == 1"
