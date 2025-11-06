@@ -19,9 +19,8 @@
     <boolean name="toolsUsage" title="Tools usage"/>
     <boolean name="dirtAllowance" title="Dirt Allowance"/>
     <string name="material" title="Materials" large="true"/>
-    <string name="otherServices" title="Other services" large="true"/>
     <string name="comments" title="Comments" large="true"/>
-    <boolean name="customerAvailable" title="Customer Available"/>
+    <boolean name="customerNotAvailable" default="false" title="Customer Available"/>
     <string name="customerName" title="Customer name"/>
     <binary name="employeeSignature" title="Employee signature"/>
     <binary name="customerSignature" title="Customer signature"/>

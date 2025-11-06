@@ -7,6 +7,10 @@
   <!-- preview form -->
   <form name="task-report-preview-form" title="MGM Task Report Preview"
     model="com.axelor.apps.businessproject.db.TaskReport" width="large" canAttach="true">
+    <toolbar>
+      <button name="printTaskReportbtn" title="Print Task Report" icon="fa-print"
+        readonlyIf="!id" onClick="action-task-report-method-print"/>
+    </toolbar>
     <panel colSpan="12" name="mainPanel">
       <panel colSpan="12" showTitle="false" style="text-align:center;" showFrame="false">
         <label value="MGM TASK REPORT" style="font-size:18px; font-weight:bold;"/>
@@ -53,10 +57,10 @@
   </form>
   <form title="Team Member Reports" name="incl-task-report-team-member-report-panel-preview"
     readonlyIf="_previewReadonly" model="com.axelor.apps.businessproject.db.TaskReport">
-    <panel title="Team Members Reports" canCollapse="true" colSpan="12"
-      readonlyIf="_previewReadonly">
+    <panel title="Team Members Reports" showTitle="false" canCollapse="false"
+      collapseIf="false" colSpan="12" readonlyIf="_previewReadonly">
       <field name="taskMemberReports" widget="list" form-view="task-member-report-form"
-        colSpan="12" readonly="true" showTitle="false"/>
+        x-show-bars="true" colSpan="12" readonly="true" showTitle="false"/>
       <field name="totalWorkHours" colSpan="12" readonly="true"/>
     </panel>
   </form>
@@ -83,16 +87,22 @@
   </form>
   <form title="Sign Off" name="incl-task-report-sign-off-form-panel-preview"
     model="com.axelor.apps.businessproject.db.TaskReport">
-    <panel title="Sign-Off" colSpan="12">
+    <panel title="Sign-Off" colSpan="12" readonly="true">
       <panel colSpan="12">
         <field name="taskDate" colSpan="4" readonly="true"/>
       </panel>
       <panel colSpan="12">
         <field name="employee" title="Employee Name" readonly="true"/>
-        <field name="customerName" title="Customer Name" readonlyIf="!_canSign" colSpan="6"/>
-        <field name="employeeSignature" title="Employee Signature" widget="drawing" readonly="true"/>
+        <field name="customerName" title="Customer Name" colSpan="6"
+          hideIf="customerNotAvailable" readonly="true"/>
+        <field name="employeeSignature" title="Employee Signature" widget="drawing"
+          readonly="true"/>
         <field name="customerSignature" title="Customer Signature" widget="drawing"
-          readonlyIf="!_canSign"/>
+          hideIf="customerNotAvailable" readonly="true"/>
+      </panel>
+      <panel colSpan="12" hidden="true">
+        <field name="customerNotAvailable" widget="checkbox" title="Customer Available"
+          onChange="action-customer-available-attrs"/>
       </panel>
     </panel>
   </form>

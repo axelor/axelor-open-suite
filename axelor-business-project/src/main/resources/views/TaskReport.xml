@@ -6,7 +6,7 @@
   <!-- Grid View -->
   <grid name="task-report-grid" title="Task Reports"
     model="com.axelor.apps.businessproject.db.TaskReport" canEdit="false" editable="false"
-    canArchive="true">
+    canNew="true" canArchive="true" onNew="action-business-project-add-task-report">
     <!-- <toolbar> -->
     <!-- <button name="addNewTaskReport" title="New Task Report" css="btn-custom text-left" -->
     <!-- icon="fa-plus" onClick="action-task-report-new"/> -->
@@ -34,14 +34,16 @@
     model="com.axelor.apps.businessproject.db.TaskReport" onNew="action-task-report-default"
     width="large">
     <toolbar>
-      <button name="previewbtn" title="Preview Report" icon="fa-print" readonlyIf="!id"
-        onClick="action-task-report-method-print"/>
+      <button name="previewTaskReportbtn" title="Preview Report" icon="fa-eye"
+        readonlyIf="!id" onClick="action-task-report-method-preview"/>
     </toolbar>
     <panel colSpan="12" name="taskReportMainPanel">
       <panel colSpan="12" name="parentPanel" showFrame="true">
         <panel title="General Information" showFrame="false">
           <field name="project" title="Order"
-            domain="self.membersUserSet.id = :__user__ OR self.assignedTo.id = :__user__"
+            domain-function="eval: ( (__user__.group.code == 'CUSTOM-PM' || __user__.group.code == 'MGM-OM')
+                    ? 'self.projectStatus.isCompleted = false'
+                    : 'self.projectStatus.isCompleted = false AND (self.membersUserSet.id = :__user__ OR self.assignedTo.id = :__user__)' )"
             onChange="action-task-report-on-change-project" required="true"/>
           <field name="customer" hidden="true"/>
           <field name="customer"/>
@@ -68,7 +70,6 @@
           </panel>
           <panel title="Activity Details" colSpan="12" showTitle="false">
             <field name="material" colSpan="12" widget="textarea"/>
-            <field name="otherServices" colSpan="12" widget="textarea"/>
             <field name="comments" title="Comments" colSpan="12" widget="textarea"/>
           </panel>
         </panel>
@@ -78,9 +79,17 @@
             <field name="taskDate" colSpan="4"/>
           </panel>
           <panel colSpan="12">
-            <field name="employee" title="Employee Name" colSpan="6"/>
+            <field name="employee" title="Employee Name"/>
+            <field name="customerName" title="Customer Name" hideIf="customerNotAvailable"/>
+
             <field name="employeeSignature" title="Employee Signature" widget="drawing"
               colSpan="6"/>
+            <field name="customerSignature" title="Customer Signature" widget="drawing"
+              colSpan="6" hideIf="customerNotAvailable"/>
+          </panel>
+          <panel colSpan="12">
+            <field name="customerNotAvailable" widget="checkbox" title="Customer Available"
+              onChange="action-customer-available-attrs"/>
           </panel>
         </panel>
       </panel>
@@ -92,7 +101,7 @@
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <panel colSpan="12" canCollapse="true" collapseIf="false">
       <field name="task" title="Task" widget="Select"
-        domain-function="eval: 'self.project.id = ' + parent.project.id"
+        domain-function="eval: parent != null &amp;&amp; parent.project != null ? 'self.project.id = ' + parent.project.id : ''"
         onChange="action-task-member-report-on-change-task"/>
       <field name="employee" title="Employee"/>
       <field name="startTime" onChange="action-task-report-on-change-time"/>
@@ -116,7 +125,12 @@
     <action name="task-report-preview-form-action-view"/>
   </action-group>
 
-  <action-method name="action-task-report-method-print">
+  <action-attrs name="action-customer-available-attrs">
+    <attribute for="customerName" name="hidden" expr="customerNotAvailable"/>
+    <attribute for="customerSignature" name="hidden" expr="customerNotAvailable"/>
+  </action-attrs>
+
+  <action-method name="action-task-report-method-preview">
     <call class="com.axelor.apps.businessproject.web.TaskReportController"
       method="previewTaskReport"/>
   </action-method>
@@ -126,6 +140,7 @@
     model="com.axelor.apps.businessproject.db.TaskReport">
     <field name="customer" expr="eval: project?.clientPartner"/>
     <field name="location" expr="eval: project?.customerAddress"/>
+    <field name="taskMemberReports" expr="eval: null"/>
   </action-record>
 
   <action-record name="action-task-member-report-on-change-task"
