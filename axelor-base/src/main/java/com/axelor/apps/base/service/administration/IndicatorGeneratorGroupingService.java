@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.base.service.administration;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.IndicatorGenerator;
 import com.axelor.apps.base.db.IndicatorGeneratorGrouping;
@@ -77,7 +79,7 @@ public class IndicatorGeneratorGroupingService {
   public void export(IndicatorGeneratorGrouping indicatorGeneratorGrouping) throws AxelorException {
 
     String log = "";
-    String dataExportDir = appService.getDataExportDir();
+    String dataExportDir = AppSettings.get().get(AvailableAppSettings.DATA_UPLOAD_DIR);
 
     if (indicatorGeneratorGrouping.getPath() == null
         || indicatorGeneratorGrouping.getPath().isEmpty()) {

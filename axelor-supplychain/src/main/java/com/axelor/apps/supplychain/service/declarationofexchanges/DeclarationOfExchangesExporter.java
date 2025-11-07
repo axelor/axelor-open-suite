@@ -19,6 +19,7 @@
 package com.axelor.apps.supplychain.service.declarationofexchanges;
 
 import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
@@ -110,7 +111,7 @@ public abstract class DeclarationOfExchangesExporter {
 
   protected String getExportDir() {
     AppSettings appSettings = AppSettings.get();
-    String exportDir = appSettings.get("data.export.dir");
+    String exportDir = appSettings.get(AvailableAppSettings.DATA_UPLOAD_DIR);
 
     if (exportDir == null) {
       throw new IllegalArgumentException(I18n.get("Export directory is not configured."));

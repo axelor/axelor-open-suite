@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.PaymentMode;
@@ -119,7 +121,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
       String bankOrderExportPath = accountingBatch.getPaymentMode().getBankOrderExportFolderPath();
       String dataExpotDir;
       try {
-        dataExpotDir = appBaseService.getDataExportDir();
+        dataExpotDir = AppSettings.get().get(AvailableAppSettings.DATA_UPLOAD_DIR);
 
         BankPaymentConfigService bankPaymentConfigService =
             Beans.get(BankPaymentConfigService.class);
