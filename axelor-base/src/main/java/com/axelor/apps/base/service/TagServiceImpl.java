@@ -72,18 +72,6 @@ public class TagServiceImpl implements TagService {
   }
 
   @Override
-  public Map<String, Object> fillMetaModelField(
-      String metaModelName, Map<String, Object> valuesMap) {
-    if (StringUtils.isEmpty(metaModelName)) {
-      return valuesMap;
-    }
-
-    MetaModel metaModel = metaModelRepository.findByName(metaModelName);
-    valuesMap.put("$metaModel", metaModel);
-    return valuesMap;
-  }
-
-  @Override
   public String getTagDomain(String metaModelName, Company company) {
     if (StringUtils.isEmpty(metaModelName)) {
       return "self.id = 0";
