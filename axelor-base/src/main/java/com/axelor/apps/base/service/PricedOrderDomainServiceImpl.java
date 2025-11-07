@@ -35,7 +35,7 @@ public class PricedOrderDomainServiceImpl implements PricedOrderDomainService {
         if (pricedOrder.getPriceList() != null) {
           newDomain.append(
               String.format(
-                  " AND %d IN self.salePartnerPriceList.priceListSet.id",
+                  " AND %d IN (self.salePartnerPriceList.priceListSet.id)",
                   pricedOrder.getPriceList().getId()));
         } else {
           newDomain.append(" AND self.salePartnerPriceList is NULL");
@@ -44,7 +44,7 @@ public class PricedOrderDomainServiceImpl implements PricedOrderDomainService {
         if (pricedOrder.getPriceList() != null) {
           newDomain.append(
               String.format(
-                  " AND %d IN self.purchasePartnerPriceList.priceListSet.id",
+                  " AND %d IN (self.purchasePartnerPriceList.priceListSet.id)",
                   pricedOrder.getPriceList().getId()));
         } else {
           newDomain.append(" AND self.purchasePartnerPriceList is NULL");
