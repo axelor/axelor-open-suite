@@ -152,6 +152,7 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
   public Invoice generateInvoice(Contract contract) throws AxelorException {
     InvoiceGenerator invoiceGenerator = new InvoiceGeneratorContract(contract);
     Invoice invoice = invoiceGenerator.generate();
+    invoice.setTradingName(contract.getTradingName());
     invoice.addContractSetItem(contract);
     return invoice;
   }
