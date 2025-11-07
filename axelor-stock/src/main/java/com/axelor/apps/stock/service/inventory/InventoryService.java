@@ -301,7 +301,7 @@ public class InventoryService {
     final AtomicReference<Inventory> inventoryRef = new AtomicReference<>(inventory);
 
     StockBatchProcessorHelper batchHelper =
-        StockBatchProcessorHelper.builder().flushAfterBatch(false).build();
+        StockBatchProcessorHelper.builder().flushAfterBatch(false).autoReattach(false).build();
     Query<StockLocationLine> prePass =
         buildSllFilterQuery(inventory)
             .add("self.trackingNumber IS NOT NULL")
@@ -323,7 +323,9 @@ public class InventoryService {
     inventoryRef.set(inventoryRepo.find(inventoryId));
     Query<StockLocationLine> mainPass =
         buildSllFilterQuery(inventory).add("self.id > :lastSeenId").build().order("id");
-    StockBatchProcessorHelper.of()
+    StockBatchProcessorHelper.builder()
+        .autoReattach(false)
+        .build()
         .<StockLocationLine, AxelorException>forEachByQuery(
             mainPass,
             sll -> {
@@ -337,8 +339,7 @@ public class InventoryService {
                 this.createInventoryLine(inventoryRef.get(), sll);
                 anyCreated.set(true);
               }
-            },
-            () -> inventoryRef.set(inventoryRepo.find(inventoryId)));
+            });
 
     if (!anyScanned.get()) {
       return null;

@@ -34,6 +34,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.PersistenceContextScope;
 import com.axelor.inject.Beans;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -113,6 +114,13 @@ public class InventoryLineServiceImpl implements InventoryLineService {
     if (stockLocation == null) {
       inventoryLine.setStockLocation(detailsStockLocation);
     }
+
+    PersistenceContextScope scope = PersistenceContextScope.current();
+    if (scope != null) {
+      // Dynamically pin the whole line graph (to-one refs, initialized to-many)
+      scope.pinGraph(inventoryLine);
+    }
+
     this.compute(inventoryLine, inventory);
 
     return inventoryLine;
@@ -130,6 +138,12 @@ public class InventoryLineServiceImpl implements InventoryLineService {
     }
 
     inventoryLine.setPrice(BigDecimal.ZERO);
+
+    PersistenceContextScope scope = PersistenceContextScope.current();
+    if (scope != null) {
+      // Ensure associations used during compute/save stay managed in the current scope
+      scope.pinGraph(inventoryLine);
+    }
     StockLocationLine stockLocationLine =
         stockLocationLineService.getOrCreateStockLocationLine(stockLocation, product);
 

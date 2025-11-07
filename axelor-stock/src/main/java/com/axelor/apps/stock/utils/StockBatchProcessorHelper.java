@@ -23,11 +23,13 @@ public class StockBatchProcessorHelper {
   private final int batchSize;
   private final boolean flushAfterBatch;
   private final int clearEveryNBatch;
+  private final boolean autoReattach;
 
   private StockBatchProcessorHelper(Builder builder) {
     this.batchSize = builder.batchSize;
     this.flushAfterBatch = builder.flushAfterBatch;
     this.clearEveryNBatch = builder.clearEveryNBatch;
+    this.autoReattach = builder.autoReattach;
   }
 
   public static Builder builder() {
@@ -42,6 +44,7 @@ public class StockBatchProcessorHelper {
     private int batchSize = resolveDefaultBatchSize();
     private boolean flushAfterBatch = true;
     private int clearEveryNBatch = 1;
+    private boolean autoReattach = true;
 
     public Builder batchSize(int batchSize) {
       this.batchSize = batchSize;
@@ -55,6 +58,11 @@ public class StockBatchProcessorHelper {
 
     public Builder clearEveryNBatch(int clearEveryNBatch) {
       this.clearEveryNBatch = clearEveryNBatch;
+      return this;
+    }
+
+    public Builder autoReattach(boolean autoReattach) {
+      this.autoReattach = autoReattach;
       return this;
     }
 
@@ -83,26 +91,32 @@ public class StockBatchProcessorHelper {
   public <T extends Model, E extends Exception> void forEachByQuery(
       Query<T> queryBase, ThrowConsumer<T, E> action, Runnable postBatchAction) throws E {
 
-    logCallerContext();
-    long lastSeenId = 0L;
-    int batchCount = 0;
-    int totalProcessed = 0;
-    List<T> entities;
-
-    do {
-      entities = queryBase.bind("lastSeenId", lastSeenId).autoFlush(false).fetch(batchSize);
-
-      for (T entity : entities) {
-        action.accept(entity);
+    try (PersistenceContextScope pc = PersistenceContextScope.begin()) {
+      pc.autoReattach(autoReattach);
+      if (!autoReattach) {
+        pc.prefetchAssociations();
       }
+      logCallerContext();
+      long lastSeenId = 0L;
+      int batchCount = 0;
+      int totalProcessed = 0;
+      List<T> entities;
 
-      if (CollectionUtils.isNotEmpty(entities)) {
-        lastSeenId = entities.get(entities.size() - 1).getId();
-        batchCount++;
-        totalProcessed += entities.size();
-        afterBatch(postBatchAction, batchCount, totalProcessed);
-      }
-    } while (!entities.isEmpty());
+      do {
+        entities = queryBase.bind("lastSeenId", lastSeenId).autoFlush(false).fetch(batchSize);
+
+        for (T entity : entities) {
+          action.accept(entity);
+        }
+
+        if (!entities.isEmpty()) {
+          lastSeenId = entities.get(entities.size() - 1).getId();
+          batchCount++;
+          totalProcessed += entities.size();
+          afterBatch(postBatchAction, batchCount, totalProcessed, pc);
+        }
+      } while (!entities.isEmpty());
+    }
   }
 
   public <T extends Model, E extends Exception> void forEachByIds(
@@ -113,36 +127,43 @@ public class StockBatchProcessorHelper {
   public <T extends Model, E extends Exception> void forEachByIds(
       Class<T> entityClass, Set<Long> ids, ThrowConsumer<T, E> action, Runnable postBatchAction)
       throws E {
-    logCallerContext();
-    if (CollectionUtils.isEmpty(ids)) {
-      return;
+
+    try (PersistenceContextScope pc = PersistenceContextScope.begin()) {
+      pc.autoReattach(autoReattach);
+      if (!autoReattach) {
+        pc.prefetchAssociations();
+      }
+      logCallerContext();
+      if (CollectionUtils.isEmpty(ids)) {
+        return;
+      }
+      long lastSeenId = 0L;
+      int batchCount = 0;
+      int totalProcessed = 0;
+      List<T> entities;
+
+      do {
+        entities =
+            Query.of(entityClass)
+                .filter("self.id IN :ids AND self.id > :lastSeenId")
+                .bind("ids", ids)
+                .bind("lastSeenId", lastSeenId)
+                .autoFlush(false)
+                .order("id")
+                .fetch(batchSize);
+
+        for (T entity : entities) {
+          action.accept(entity);
+        }
+
+        if (!entities.isEmpty()) {
+          lastSeenId = entities.get(entities.size() - 1).getId();
+          batchCount++;
+          totalProcessed += entities.size();
+          afterBatch(postBatchAction, batchCount, totalProcessed, pc);
+        }
+      } while (!entities.isEmpty());
     }
-    long lastSeenId = 0L;
-    int batchCount = 0;
-    int totalProcessed = 0;
-    List<T> entities;
-
-    do {
-      entities =
-          Query.of(entityClass)
-              .filter("self.id IN :ids AND self.id > :lastSeenId")
-              .bind("ids", ids)
-              .bind("lastSeenId", lastSeenId)
-              .autoFlush(false)
-              .order("id")
-              .fetch(batchSize);
-
-      for (T entity : entities) {
-        action.accept(entity);
-      }
-
-      if (CollectionUtils.isNotEmpty(entities)) {
-        lastSeenId = entities.get(entities.size() - 1).getId();
-        batchCount++;
-        totalProcessed += entities.size();
-        afterBatch(postBatchAction, batchCount, totalProcessed);
-      }
-    } while (!entities.isEmpty());
   }
 
   public <T extends Model, E extends Exception> void forEachByEntities(
@@ -211,15 +232,18 @@ public class StockBatchProcessorHelper {
     return consumer::accept;
   }
 
-  private void afterBatch(Runnable postBatchAction, int batchCount, int totalProcessed) {
+  private void afterBatch(
+      Runnable postBatchAction, int batchCount, int totalProcessed, PersistenceContextScope pc) {
 
     if (flushAfterBatch) {
       JPA.flush();
     }
-
     if (clearEveryNBatch > 0 && batchCount % clearEveryNBatch == 0) {
-      logger.debug("Clearing EntityManager after batch {}", batchCount);
-      JPA.clear();
+      logger.debug("Partial clear (keeping pre-managed via scope) after batch {}", batchCount);
+      pc.partialClear();
+      if (!autoReattach) {
+        pc.reattachAssociationsForPins();
+      }
     }
 
     if (postBatchAction != null) {

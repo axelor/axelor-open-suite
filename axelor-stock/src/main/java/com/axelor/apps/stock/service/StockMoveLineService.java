@@ -300,6 +300,16 @@ public interface StockMoveLineService {
       boolean generateOrder)
       throws AxelorException;
 
+  void updateLocations(
+      int fromStatus,
+      int toStatus,
+      long stockMoveId,
+      boolean plannedLines,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      boolean generateOrder)
+      throws AxelorException;
+
   /**
    * Same as {@link #updateLocations(StockLocation, StockLocation, int, int, List, LocalDate,
    * boolean)} But instead of creating wap history at with today date,they will be created at date
@@ -330,6 +340,18 @@ public interface StockMoveLineService {
       int fromStatus,
       int toStatus,
       Set<Long> stockMoveLineIds,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      LocalDate date,
+      String origin,
+      boolean generateOrder)
+      throws AxelorException;
+
+  void updateLocations(
+      int fromStatus,
+      int toStatus,
+      long stockMoveId,
+      boolean plannedLines,
       LocalDate lastFutureStockMoveDate,
       boolean realQty,
       LocalDate date,
