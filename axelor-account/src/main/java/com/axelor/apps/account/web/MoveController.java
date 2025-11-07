@@ -67,6 +67,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -278,17 +279,31 @@ public class MoveController {
       String flashMessage = I18n.get(AccountExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE);
 
       if (!CollectionUtils.isEmpty(moveIds)) {
-        List<? extends Move> moveList =
+        List<Move> moveList =
             Beans.get(MoveRepository.class)
                 .all()
-                .filter(
-                    "self.id in ?1 AND self.statusSelect in (?2,?3,?4,?5) AND (self.archived = false or self.archived = null)",
-                    moveIds,
-                    MoveRepository.STATUS_NEW,
-                    MoveRepository.STATUS_DAYBOOK,
-                    MoveRepository.STATUS_CANCELED,
-                    MoveRepository.STATUS_SIMULATED)
+                .filter("self.id in :moveIds AND (self.archived = false or self.archived = null)")
+                .bind("moveIds", moveIds)
                 .fetch();
+        if (ObjectUtils.notEmpty(moveList)
+            && moveList.stream()
+                .map(Move::getCompany)
+                .map(Company::getAccountConfig)
+                .anyMatch(ac -> ac.getIsActivateSimulatedMove())) {
+          flashMessage =
+              I18n.get(AccountExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE_AND_SIMULATED);
+        }
+
+        Set<Integer> validStatuses =
+            Set.of(
+                MoveRepository.STATUS_NEW,
+                MoveRepository.STATUS_DAYBOOK,
+                MoveRepository.STATUS_CANCELED,
+                MoveRepository.STATUS_SIMULATED);
+        moveList =
+            moveList.stream()
+                .filter(m -> validStatuses.contains(m.getStatusSelect()))
+                .collect(Collectors.toList());
         int moveNb = moveList.size();
 
         if (!moveList.isEmpty()) {

@@ -1,0 +1,3 @@
+---
+title: "MOVE : fixed inconsistant message when trying to delete a move"
+module: axelor-account
