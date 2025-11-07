@@ -678,7 +678,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           accounting(move);
         }
       } catch (Exception e) {
-        TraceBackService.trace(e);
+        TraceBackService.trace(e, move.getReference());
         if (errors.length() > 0) {
           errors = errors.concat(", ");
         }
