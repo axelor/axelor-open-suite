@@ -108,4 +108,6 @@ public interface ManufOrderStockMoveService {
       throws AxelorException;
 
   public List<Long> getOutgoingStockMoves(ManufOrder manufOrder);
+
+  void updatePrices(ManufOrder manufOrder, BigDecimal costPrice) throws AxelorException;
 }
