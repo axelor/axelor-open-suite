@@ -365,6 +365,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
     account.setCompany(company);
     account.setUseForPartnerBalance(useForPartnerBalance);
     account.setCompatibleAccountSet(new HashSet<>());
+    account.setStatusSelect(AccountRepository.STATUS_ACTIVE);
 
     return account;
   }
