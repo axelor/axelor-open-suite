@@ -1,0 +1,5 @@
+---
+title: "Stock move: fixed production cost price anomaly on outgoing products."
+module: axelor-production
+developer: |
+  - Changed method signature from updateRealPrice(ManufOrder,StockMove) to updateRealPrice(ManufOrder) in ManufOrderStockMoveServiceImpl

@@ -43,6 +43,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -207,7 +208,6 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       this.finishStockMove(stockMove);
     }
     for (StockMove stockMove : manufOrder.getOutStockMoveList()) {
-      updateRealPrice(manufOrder, stockMove);
       this.finishStockMove(stockMove);
     }
   }
@@ -219,14 +219,21 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
    * @param manufOrder
    * @param stockMove
    */
-  protected void updateRealPrice(ManufOrder manufOrder, StockMove stockMove) {
-    stockMove.getStockMoveLineList().stream()
-        .filter(
-            stockMoveLine ->
-                stockMoveLine.getProduct() != null
-                    && stockMoveLine.getProduct().getRealOrEstimatedPriceSelect()
-                        == ProductRepository.PRICE_METHOD_REAL)
-        .forEach(stockMoveLine -> stockMoveLine.setUnitPriceUntaxed(manufOrder.getCostPrice()));
+  @Override
+  public void updateRealPrice(ManufOrder manufOrder) {
+    List<StockMove> outStockMoveList = manufOrder.getOutStockMoveList();
+    if (ObjectUtils.isEmpty(outStockMoveList)) {
+      return;
+    }
+    for (StockMove stockMove : outStockMoveList) {
+      stockMove.getStockMoveLineList().stream()
+          .filter(
+              stockMoveLine ->
+                  stockMoveLine.getProduct() != null
+                      && stockMoveLine.getProduct().getRealOrEstimatedPriceSelect()
+                          == ProductRepository.PRICE_METHOD_REAL)
+          .forEach(stockMoveLine -> stockMoveLine.setUnitPriceUntaxed(manufOrder.getCostPrice()));
+    }
   }
 
   public void finishStockMove(StockMove stockMove) throws AxelorException {
@@ -300,7 +307,6 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     Optional<StockMove> stockMoveToRealize =
         manufOrderGetStockMoveService.getPlannedStockMove(stockMoveList);
     if (stockMoveToRealize.isPresent()) {
-      updateRealPrice(manufOrder, stockMoveToRealize.get());
       finishStockMove(stockMoveToRealize.get());
     }
 
