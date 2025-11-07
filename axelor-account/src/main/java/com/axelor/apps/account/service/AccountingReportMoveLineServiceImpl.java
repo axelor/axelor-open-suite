@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportMoveLine;
 import com.axelor.apps.account.db.PaymentMoveLineDistribution;
@@ -34,7 +36,6 @@ import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.app.service.AppService;
 import com.axelor.utils.helpers.file.FileHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -169,7 +170,9 @@ public class AccountingReportMoveLineServiceImpl implements AccountingReportMove
 
     File file =
         FileHelper.writer(
-            Beans.get(AppService.class).getDataExportDir(), fileName, (List<String>) lines);
+            AppSettings.get().get(AvailableAppSettings.DATA_UPLOAD_DIR),
+            fileName,
+            (List<String>) lines);
     InputStream is = new FileInputStream(file);
     return Beans.get(MetaFiles.class).attach(is, fileName, accountingExport).getMetaFile();
   }

@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder.file;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
@@ -30,8 +32,6 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
-import com.axelor.studio.app.service.AppService;
 import com.axelor.utils.helpers.file.FileHelper;
 import com.axelor.utils.xml.MarshallingHelper;
 import com.google.common.base.Strings;
@@ -116,7 +116,7 @@ public class BankOrderFileService {
           I18n.get(BankPaymentExceptionMessage.BANK_ORDER_FILE_NO_FOLDER_PATH),
           paymentMode.getName());
     }
-    return Beans.get(AppService.class).getDataExportDir() + folderPath;
+    return AppSettings.get().get(AvailableAppSettings.DATA_UPLOAD_DIR) + folderPath;
   }
 
   /**

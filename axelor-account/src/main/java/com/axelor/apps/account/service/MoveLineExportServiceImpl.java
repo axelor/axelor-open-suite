@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.Journal;
@@ -516,7 +518,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       throws AxelorException, IOException {
 
     String filePath = accountConfigService.getAccountConfig(company).getExportPath();
-    String dataExportDir = appAccountService.getDataExportDir();
+    String dataExportDir = AppSettings.get().get(AvailableAppSettings.DATA_UPLOAD_DIR);
 
     for (String[] items : allMoveData) {
       for (int i = 0; i < items.length; i++) {
