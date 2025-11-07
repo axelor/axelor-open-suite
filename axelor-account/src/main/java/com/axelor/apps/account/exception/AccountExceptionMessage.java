@@ -102,7 +102,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_ARCHIVE_OK = /*$$(*/
       "Move(s) has been archived successfully" /*)*/;
   public static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE = /*$$(*/
-      "Please select 'Draft' or 'Accounted' or 'Canceled' moves" /*)*/;
+      "No move to delete, please only select New, Daybook or Canceled moves not already archived." /*)*/;
+  public static final String NO_MOVE_TO_REMOVE_OR_ARCHIVE_AND_SIMULATED = /*$$(*/
+      "No move to delete, please only select New, Simulated, Daybook or Canceled moves not already archived." /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_OK = /*$$(*/
       "Selected move(s) successfully removed" /*)*/;
   public static final String MOVE_ARCHIVE_OR_REMOVE_NOT_OK = /*$$(*/
