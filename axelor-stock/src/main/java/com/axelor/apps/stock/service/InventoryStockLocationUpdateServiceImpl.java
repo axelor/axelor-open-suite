@@ -115,7 +115,8 @@ public class InventoryStockLocationUpdateServiceImpl
             inventoryLineList.stream()
                 .filter(
                     line ->
-                        line.getTrackingNumber().equals(trackingNumber)
+                        line.getTrackingNumber() != null
+                            && line.getTrackingNumber().equals(trackingNumber)
                             && line.getProduct().equals(product))
                 .findFirst()
                 .map(InventoryLine::getRealQty)

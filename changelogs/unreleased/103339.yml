@@ -1,0 +1,3 @@
+---
+title: "Inventory: fixed an error occurring when validating an inventory containing line with and without tracking number."
+module: axelor-stock
