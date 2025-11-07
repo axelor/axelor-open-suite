@@ -67,7 +67,9 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.StringUtils;
@@ -354,65 +356,11 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     LocalDate interfaceDate = accountingReport.getDate();
 
-    List<String> moveLineQueryList = new ArrayList<>();
-
-    moveLineQueryList.add(
-        String.format(
-            "self.move.statusSelect IN (%d, %d)",
-            MoveRepository.STATUS_ACCOUNTED,
-            administration ? MoveRepository.STATUS_ACCOUNTED : MoveRepository.STATUS_DAYBOOK));
-
-    moveLineQueryList.add(String.format("self.move.company = %s", company.getId()));
-    if (accountingReport.getYear() != null) {
-      moveLineQueryList.add(
-          String.format("self.move.period.year = %s", accountingReport.getYear().getId()));
-    }
-
-    if (accountingReport.getPeriod() != null) {
-      moveLineQueryList.add(
-          String.format("self.move.period = %s", accountingReport.getPeriod().getId()));
-    } else {
-      if (accountingReport.getDateFrom() != null) {
-        moveLineQueryList.add(
-            String.format("self.date >= '%s'", accountingReport.getDateFrom().toString()));
-      }
-      if (accountingReport.getDateTo() != null) {
-        moveLineQueryList.add(
-            String.format("self.date <= '%s'", accountingReport.getDateTo().toString()));
-      }
-    }
-
-    if (accountingReport.getDate() != null) {
-      moveLineQueryList.add(
-          String.format("self.date <= '%s'", accountingReport.getDate().toString()));
-    }
-
-    moveLineQueryList.add("self.move.ignoreInAccountingOk = false");
-
-    if (!administration) {
-      moveLineQueryList.add("self.move.journal.notExportOk = false");
-
-      if (accountingReport.getJournal() != null) {
-        moveLineQueryList.add(
-            String.format("self.move.journal.id = %s", accountingReport.getJournal().getId()));
-      }
-
-      if (replay) {
-        moveLineQueryList.add(
-            String.format(
-                "self.move.accountingOk = true AND self.move.accountingReport.id = %s",
-                accountingReport.getId()));
-      } else {
-        moveLineQueryList.add("self.move.accountingOk = false");
-      }
-    }
-
-    String moveLineQueryStr = StringUtils.join(moveLineQueryList, " AND ");
-
     List<Long> idList =
         moveLineRepo
             .all()
-            .filter(moveLineQueryStr)
+            .filter(getMoveLineQueryForType1000(accountingReport, administration, replay))
+            .bind(getMoveLineBindingsForType1000(accountingReport, administration, replay, company))
             .order("move.accountingDate")
             .order("date")
             .order("name")
@@ -452,6 +400,94 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReportRepo.save(accountingReport);
     return writeMoveLineToCsvFile(
         company, fileName, this.createHeaderForJournalEntry(), allMoveLineData, accountingReport);
+  }
+
+  protected String getMoveLineQueryForType1000(
+      AccountingReport accountingReport, boolean administration, boolean replay) {
+    List<String> moveLineQueryList = new ArrayList<>();
+
+    moveLineQueryList.add("self.move.statusSelect IN (:accountedStatus, :daybookStatus)");
+
+    moveLineQueryList.add("self.move.company = :company");
+    if (accountingReport.getYear() != null) {
+      moveLineQueryList.add("self.move.period.year = :year");
+    }
+
+    if (accountingReport.getPeriod() != null) {
+      moveLineQueryList.add("self.move.period = :period");
+    } else {
+      if (accountingReport.getDateFrom() != null) {
+        moveLineQueryList.add("self.date >= :toDate");
+      }
+      if (accountingReport.getDateTo() != null) {
+        moveLineQueryList.add("self.date <= :fromDate");
+      }
+    }
+
+    if (accountingReport.getDate() != null) {
+      moveLineQueryList.add("self.date <= :date");
+    }
+
+    moveLineQueryList.add("self.move.ignoreInAccountingOk = false");
+
+    if (!administration) {
+      moveLineQueryList.add("self.move.journal.notExportOk = false");
+
+      if (accountingReport.getJournal() != null) {
+        moveLineQueryList.add("self.move.journal = :journal");
+      }
+
+      if (replay) {
+        moveLineQueryList.add(
+            "self.move.accountingOk = true AND self.move.accountingReport = :accountingReport");
+      } else {
+        moveLineQueryList.add("self.move.accountingOk = false");
+      }
+    }
+
+    return StringUtils.join(moveLineQueryList, " AND ");
+  }
+
+  protected Map<String, Object> getMoveLineBindingsForType1000(
+      AccountingReport accountingReport, boolean administration, boolean replay, Company company) {
+    Map<String, Object> moveLineBindingMap = new HashMap<>();
+
+    moveLineBindingMap.put(":accountedStatus", MoveRepository.STATUS_ACCOUNTED);
+    moveLineBindingMap.put(
+        ":daybookStatus",
+        administration ? MoveRepository.STATUS_ACCOUNTED : MoveRepository.STATUS_DAYBOOK);
+
+    moveLineBindingMap.put(":company", company);
+    if (accountingReport.getYear() != null) {
+      moveLineBindingMap.put(":year", accountingReport.getYear());
+    }
+
+    if (accountingReport.getPeriod() != null) {
+      moveLineBindingMap.put(":period", accountingReport.getPeriod());
+    } else {
+      if (accountingReport.getDateFrom() != null) {
+        moveLineBindingMap.put(":fromDate'", accountingReport.getDateFrom());
+      }
+      if (accountingReport.getDateTo() != null) {
+        moveLineBindingMap.put(":toDate", accountingReport.getDateTo());
+      }
+    }
+
+    if (accountingReport.getDate() != null) {
+      moveLineBindingMap.put(":date", accountingReport.getDate());
+    }
+
+    if (!administration) {
+      if (accountingReport.getJournal() != null) {
+        moveLineBindingMap.put(":journal", accountingReport.getJournal());
+      }
+
+      if (replay) {
+        moveLineBindingMap.put(":accountingReport", accountingReport);
+      }
+    }
+
+    return moveLineBindingMap;
   }
 
   protected String[] createItemForExportMoveLine(MoveLine moveLine, List<Move> moveList) {
