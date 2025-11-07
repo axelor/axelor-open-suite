@@ -54,6 +54,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.persistence.Query;
@@ -212,11 +213,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.initQuery();
 
     if (accountingReport.getCompany() != null) {
-      this.addParams("self.move.company.id = ?%d", accountingReport.getCompany());
+      this.addParams("self.move.company.id = ?%d", accountingReport.getCompany().getId());
     }
 
     if (accountingReport.getCurrency() != null) {
-      this.addParams("self.move.currency.id = ?%d", accountingReport.getCurrency());
+      this.addParams("self.move.currency.id = ?%d", accountingReport.getCurrency().getId());
     }
 
     AccountingReportType accountingReportType = accountingReport.getReportType();
@@ -240,11 +241,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     if (accountingReport.getJournal() != null) {
-      this.addParams("self.move.journal.id = ?%d", accountingReport.getJournal());
+      this.addParams("self.move.journal.id = ?%d", accountingReport.getJournal().getId());
     }
 
     if (accountingReport.getPeriod() != null) {
-      this.addParams("self.move.period.id = ?%d", accountingReport.getPeriod());
+      this.addParams("self.move.period.id = ?%d", accountingReport.getPeriod().getId());
     }
 
     if (accountingReport.getAccountSet() != null && !accountingReport.getAccountSet().isEmpty()) {
@@ -253,7 +254,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
               + "or self.account.parentAccount.parentAccount.id in (?%d) or self.account.parentAccount.parentAccount.parentAccount.id in (?%d) "
               + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.id in (?%d) or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.id in (?%d) "
               + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.id in (?%d))",
-          accountingReport.getAccountSet());
+          StringHelper.getIdListString(accountingReport.getAccountSet()));
     }
 
     List<String> technicalTypeToExclude = new ArrayList<>();
@@ -274,13 +275,15 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     if (accountingReport.getPartnerSet() != null && !accountingReport.getPartnerSet().isEmpty()) {
-      this.addParams("self.partner.id in (?%d)", accountingReport.getPartnerSet());
+      this.addParams(
+          "self.partner.id in (?%d)",
+          StringHelper.getIdListString(accountingReport.getPartnerSet()));
     }
 
     if (accountingReport.getYear() != null
         && accountingReportType != null
         && typeSelect != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
-      this.addParams("self.move.period.year.id = ?%d", accountingReport.getYear());
+      this.addParams("self.move.period.year.id = ?%d", accountingReport.getYear().getId());
 
     } else if (accountingReportType != null
         && typeSelect == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
@@ -293,7 +296,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       JournalType journalType =
           accountingReport.getCompany().getAccountConfig().getDasReportJournalType();
       if (journalType != null) {
-        this.addParams("self.move.journal.journalType.id = ?%d", journalType);
+        this.addParams("self.move.journal.journalType.id = ?%d", journalType.getId());
       }
       String dateFromStr = "'" + accountingReport.getDateFrom().toString() + "'";
       String dateToStr = "'" + accountingReport.getDateTo().toString() + "'";
@@ -305,19 +308,19 @@ public class AccountingReportServiceImpl implements AccountingReportService {
           "(self.reconcileGroup IS NOT null AND self.reconcileGroup.letteringDateTime IS NOT null "
               + "AND EXISTS (SELECT 1 FROM Reconcile AS reconcile WHERE "
               + reconcileDateConditionQuery
-              + " AND self.reconcileGroup = reconcile.reconcileGroup AND (reconcile.debitMoveLine = self.id OR reconcile.creditMoveLine = self.id)))";
+              + " AND self.reconcileGroup = reconcile.reconcileGroup AND (reconcile.debitMoveLine.id = self.id OR reconcile.creditMoveLine.id = self.id)))";
       String otherLinedReconciledQuery =
           "EXISTS (SELECT 1 FROM MoveLine AS ml WHERE ml.reconcileGroup IS NOT null AND ml.reconcileGroup.letteringDateTime IS NOT null AND ml.move.id = self.move.id "
               + "AND EXISTS (SELECT 1 FROM Reconcile AS reconcile WHERE "
               + reconcileDateConditionQuery
-              + " AND ml.reconcileGroup = reconcile.reconcileGroup AND (reconcile.debitMoveLine = ml.id OR reconcile.creditMoveLine = ml.id)))";
+              + " AND ml.reconcileGroup = reconcile.reconcileGroup AND (reconcile.debitMoveLine.id = ml.id OR reconcile.creditMoveLine.id = ml.id)))";
       String reconcileQuery =
           String.format("(%s OR %s)", selfReconciledQuery, otherLinedReconciledQuery);
       this.addParams(reconcileQuery);
     }
 
     if (accountingReport.getPaymentMode() != null) {
-      this.addParams("self.move.paymentMode.id = ?%d", accountingReport.getPaymentMode());
+      this.addParams("self.move.paymentMode.id = ?%d", accountingReport.getPaymentMode().getId());
     }
 
     if (accountingReportType != null) {
@@ -362,7 +365,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         accountSet.add(cashPositionVariationCreditAccount);
       }
       if (!CollectionUtils.isEmpty(accountSet)) {
-        this.addParams("self.account.id in (?%d)", accountSet);
+        this.addParams("self.account.id in (?%d)", StringHelper.getIdListString(accountSet));
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -404,7 +407,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       if (typeSelect > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
         this.addParams(
             "(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.accountingReport.id = ?%d))",
-            accountingReport);
+            accountingReport.getId());
       }
 
       if (typeSelect >= AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
