@@ -1306,10 +1306,12 @@
   </action-group>
 
   <action-group name="action-business-project-group-project-status-on-change">
+    <action name="action-project-validate-completed-status"
+      if="__config__.app.isApp('business-project')"/>
     <action name="action-business-project-method-check-project-state"
-      if="__config__.app.isApp('business-project') &amp;&amp; (projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus.id || projectStatus.id == __config__.app.getApp('project')?.completedPaidProjectStatus.id)"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; (projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus?.id || projectStatus.id == __config__.app.getApp('project')?.completedPaidProjectStatus?.id)"/>
     <action name="action-project-group-finish-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus.id"/>
+      if="__config__.app.isApp('business-project') &amp;&amp; projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus?.id"/>
   </action-group>
 
   <action-method name="action-business-project-method-check-project-state">
