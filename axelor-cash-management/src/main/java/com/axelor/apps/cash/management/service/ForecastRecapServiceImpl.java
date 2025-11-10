@@ -49,6 +49,7 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
@@ -420,14 +421,20 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND (0 in (:bankDetailsId) OR self.companyBankDetails.id in (:bankDetailsId)) "
             + "AND self.timetableList IS EMPTY";
       case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
-        return "(self.expectedRealisationDate BETWEEN :fromDate AND :toDate "
-            + "OR (self.orderDate BETWEEN :fromDateMinusDuration AND :toDateMinusDuration "
-            + "AND self.expectedRealisationDate IS NULL)) "
-            + "AND self.company = :company "
+        return "self.company = :company "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.inTaxTotal != 0 "
             + "AND (0 in (:bankDetailsId) OR self.companyBankDetails.id in (:bankDetailsId)) "
-            + "AND self.timetableList IS EMPTY";
+            + "AND self.timetableList IS EMPTY "
+            + "AND EXISTS ( "
+            + "    SELECT 1 FROM PurchaseOrderLine pol "
+            + "    WHERE pol.purchaseOrder = self.id "
+            + "    AND ( "
+            + "         (pol.estimatedReceiptDate IS NOT NULL AND pol.estimatedReceiptDate BETWEEN :fromDate AND :toDate) "
+            + "      OR (pol.estimatedReceiptDate IS NULL AND self.expectedRealisationDate IS NOT NULL AND self.expectedRealisationDate BETWEEN :fromDate AND :toDate) "
+            + "      OR (pol.estimatedReceiptDate IS NULL AND self.expectedRealisationDate IS NULL AND self.orderDate BETWEEN :fromDateMinusDuration AND :toDateMinusDuration) "
+            + "    ) "
+            + ")";
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
         return "self.validationDateTime BETWEEN :fromDate AND :toDate "
             + "AND self.company = :company "
@@ -497,7 +504,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             .getAmountCurrencyConvertedAtDate(
                 saleOrder.getCurrency(),
                 saleOrder.getCompany().getCurrency(),
-                getOrderAmount(forecastRecap, forecastRecapLineType, forecastModel),
+                getSaleOrderAmount(forecastRecap, forecastRecapLineType, forecastModel),
                 appBaseService.getTodayDate(forecastRecap.getCompany()))
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
@@ -506,7 +513,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             .getAmountCurrencyConvertedAtDate(
                 purchaseOrder.getCurrency(),
                 purchaseOrder.getCompany().getCurrency(),
-                getOrderAmount(forecastRecap, forecastRecapLineType, forecastModel),
+                getPurchaseOrderAmount(forecastRecap, forecastRecapLineType, forecastModel),
                 appBaseService.getTodayDate(forecastRecap.getCompany()))
             .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
@@ -533,29 +540,69 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     }
   }
 
-  protected BigDecimal getOrderAmount(
+  protected BigDecimal getSaleOrderAmount(
       ForecastRecap forecastRecap,
       ForecastRecapLineType forecastRecapLineType,
       Model forecastModel) {
-    BigDecimal sumAmountInvoices;
-    BigDecimal orderTotal;
+    SaleOrder saleOrder = (SaleOrder) forecastModel;
+    BigDecimal orderTotal = saleOrder.getInTaxTotal();
+    BigDecimal sumAmountInvoices =
+        getSumAmountInvoices(
+            forecastRecapLineType,
+            forecastModel,
+            InvoiceRepository.OPERATION_TYPE_CLIENT_SALE,
+            InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND);
+    return orderTotal.subtract(sumAmountInvoices);
+  }
 
-    int operationTypeRefund;
-    int operationTypeInvoice;
+  protected BigDecimal getPurchaseOrderAmount(
+      ForecastRecap forecastRecap,
+      ForecastRecapLineType forecastRecapLineType,
+      Model forecastModel) {
+    PurchaseOrder purchaseOrder = (PurchaseOrder) forecastModel;
+    BigDecimal orderTotal = BigDecimal.ZERO;
 
-    if (forecastRecapLineType.getElementSelect()
-        == ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER) {
-      operationTypeRefund = InvoiceRepository.OPERATION_TYPE_CLIENT_REFUND;
-      operationTypeInvoice = InvoiceRepository.OPERATION_TYPE_CLIENT_SALE;
-      SaleOrder saleOrder = (SaleOrder) forecastModel;
-      orderTotal = saleOrder.getInTaxTotal();
-    } else {
-      operationTypeRefund = InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND;
-      operationTypeInvoice = InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
-      PurchaseOrder purchaseOrder = (PurchaseOrder) forecastModel;
-      orderTotal = purchaseOrder.getInTaxTotal();
+    int estimatedDuration = forecastRecapLineType.getEstimatedDuration();
+    LocalDate fromDate = forecastRecap.getFromDate();
+    LocalDate toDate = forecastRecap.getToDate();
+    LocalDate fromDateMinusDuration = fromDate.minusDays(estimatedDuration);
+    LocalDate toDateMinusDuration = toDate.minusDays(estimatedDuration);
+
+    for (PurchaseOrderLine line : purchaseOrder.getPurchaseOrderLineList()) {
+      LocalDate date = null;
+
+      if (line.getEstimatedReceiptDate() != null) {
+        date = line.getEstimatedReceiptDate();
+        if (date.isBefore(fromDate) || date.isAfter(toDate)) {
+          continue;
+        }
+      } else if (purchaseOrder.getExpectedRealisationDate() != null) {
+        date = purchaseOrder.getExpectedRealisationDate();
+        if (date.isBefore(fromDate) || date.isAfter(toDate)) {
+          continue;
+        }
+      } else {
+        date = purchaseOrder.getOrderDate().plusDays(estimatedDuration);
+        if (date.isBefore(fromDateMinusDuration) || date.isAfter(toDateMinusDuration)) {
+          continue;
+        }
+      }
+      orderTotal = orderTotal.add(line.getInTaxTotal());
     }
+    BigDecimal sumAmountInvoices =
+        getSumAmountInvoices(
+            forecastRecapLineType,
+            forecastModel,
+            InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE,
+            InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND);
+    return orderTotal.subtract(sumAmountInvoices);
+  }
 
+  protected BigDecimal getSumAmountInvoices(
+      ForecastRecapLineType forecastRecapLineType,
+      Model forecastModel,
+      int operationTypeInvoice,
+      int operationTypeRefund) {
     TypedQuery<BigDecimal> sumAmountInvoiceQuery =
         JPA.em()
             .createQuery(
@@ -579,9 +626,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             .setParameter("operationTypeRefund", operationTypeRefund)
             .setParameter("refundStatusSelect", invoiceStatusMap.get(operationTypeRefund));
 
-    sumAmountInvoices =
-        Optional.ofNullable(sumAmountInvoiceQuery.getSingleResult()).orElse(BigDecimal.ZERO);
-    return orderTotal.subtract(sumAmountInvoices);
+    return Optional.ofNullable(sumAmountInvoiceQuery.getSingleResult()).orElse(BigDecimal.ZERO);
   }
 
   protected BigDecimal getCompanyAmountForOpportunity(
@@ -623,7 +668,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         return invoice.getDueDate();
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
         SaleOrder saleOrder = (SaleOrder) forecastModel;
-        return getOrderDate(
+        return getSaleOrderDate(
             forecastRecapLineType,
             saleOrder.getExpectedRealisationDate(),
             saleOrder.getCreationDate(),
@@ -631,12 +676,13 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             saleOrder.getPaymentCondition());
       case ForecastRecapLineTypeRepository.ELEMENT_PURCHASE_ORDER:
         PurchaseOrder purchaseOrder = (PurchaseOrder) forecastModel;
-        return getOrderDate(
+        return getPurchaseOrderDate(
             forecastRecapLineType,
             purchaseOrder.getExpectedRealisationDate(),
             purchaseOrder.getOrderDate(),
             purchaseOrder.getEstimatedReceiptDate(),
-            purchaseOrder.getPaymentCondition());
+            purchaseOrder.getPaymentCondition(),
+            purchaseOrder.getPurchaseOrderLineList());
       case ForecastRecapLineTypeRepository.ELEMENT_EXPENSE:
         Expense expense = (Expense) forecastModel;
         return expense.getValidationDateTime().toLocalDate();
@@ -662,12 +708,40 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
     }
   }
 
-  protected LocalDate getOrderDate(
+  protected LocalDate getSaleOrderDate(
       ForecastRecapLineType forecastRecapLineType,
       LocalDate expectedRealisationDate,
       LocalDate orderDate,
       LocalDate estimatedDate,
       PaymentCondition paymentCondition) {
+    if (expectedRealisationDate != null) {
+      return expectedRealisationDate;
+    }
+    LocalDate baseDate = (estimatedDate != null) ? estimatedDate : orderDate;
+    LocalDate newEstimatedDate = baseDate.plusDays(forecastRecapLineType.getEstimatedDuration());
+
+    return PaymentConditionToolService.getMaxDueDate(paymentCondition, newEstimatedDate);
+  }
+
+  protected LocalDate getPurchaseOrderDate(
+      ForecastRecapLineType forecastRecapLineType,
+      LocalDate expectedRealisationDate,
+      LocalDate orderDate,
+      LocalDate estimatedDate,
+      PaymentCondition paymentCondition,
+      List<PurchaseOrderLine> purchaseOrderLineList) {
+    LocalDate estimatedReceiptDate = null;
+    for (PurchaseOrderLine line : purchaseOrderLineList) {
+      if (line.getEstimatedReceiptDate() != null) {
+        LocalDate date = line.getEstimatedReceiptDate();
+        if (estimatedReceiptDate == null || date.isBefore(estimatedReceiptDate)) {
+          estimatedReceiptDate = date;
+        }
+      }
+    }
+    if (estimatedReceiptDate != null) {
+      return estimatedReceiptDate;
+    }
     if (expectedRealisationDate != null) {
       return expectedRealisationDate;
     }
