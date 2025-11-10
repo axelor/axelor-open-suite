@@ -40,17 +40,18 @@
     <view type="form" name="intervention-type-form"/>
     <domain>
       :questionId in (SELECT rq.question.id FROM RangeQuestion rq WHERE rq.rangeVal.id in
-      self.advancedStartupMonitoringRange.id)
+      (self.advancedStartupMonitoringRange.id))
       OR :questionId in (SELECT rq.question.id FROM
-      RangeQuestion rq WHERE rq.rangeVal.id in self.headerRangeList.rangeVal.id)
+      RangeQuestion rq WHERE rq.rangeVal.id in (self.headerRangeList.rangeVal.id))
       OR :questionId in
       (SELECT
       rq.question.id FROM RangeQuestion rq WHERE rq.rangeVal.id in
-      self.equipmentRangeList.rangeVal.id)
+      (self.equipmentRangeList.rangeVal.id))
       OR
-      :questionId in (SELECT rq.question.id FROM RangeQuestion
+      :questionId in (SELECT rq.question.id FROM
+      RangeQuestion
       rq WHERE rq.rangeVal.id in
-      self.footerRangeList.rangeVal.id)
+      (self.footerRangeList.rangeVal.id))
     </domain>
     <context name="questionId" expr="eval: id ?: 0"/>
   </action-view>

@@ -53,12 +53,13 @@
     <view type="grid" name="intervention-type-grid"/>
     <view type="form" name="intervention-type-form"/>
     <domain>
-      :rangeId in self.advancedStartupMonitoringRange.id
+      :rangeId in (self.advancedStartupMonitoringRange.id)
       OR :rangeId in
-      self.headerRangeList.rangeVal.id
-      OR :rangeId in self.equipmentRangeList.rangeVal.id
-      OR :rangeId
-      in self.footerRangeList.rangeVal.id
+      (self.headerRangeList.rangeVal.id)
+      OR :rangeId in (self.equipmentRangeList.rangeVal.id)
+      OR
+      :rangeId
+      in (self.footerRangeList.rangeVal.id)
     </domain>
     <context name="rangeId" expr="eval: id == null ? 0 : id"/>
   </action-view>

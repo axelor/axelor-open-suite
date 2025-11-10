@@ -379,7 +379,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       List<StockMove> stockMoveList =
           stockMoveRepository
               .all()
-              .filter(":invoiceId in self.invoiceSet.id")
+              .filter(":invoiceId in (self.invoiceSet.id)")
               .bind("invoiceId", invoice.getId())
               .fetch();
       for (StockMove stockMove : stockMoveList) {
