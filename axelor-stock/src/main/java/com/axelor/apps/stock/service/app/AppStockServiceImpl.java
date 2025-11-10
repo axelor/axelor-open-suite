@@ -51,6 +51,6 @@ public class AppStockServiceImpl implements AppStockService {
 
   @Override
   public AppStock getAppStock() {
-    return appStockRepository.all().fetchOne();
+    return appStockRepository.all().cacheable().autoFlush(false).fetchOne();
   }
 }

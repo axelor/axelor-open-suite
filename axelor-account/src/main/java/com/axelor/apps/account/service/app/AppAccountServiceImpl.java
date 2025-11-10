@@ -70,12 +70,12 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
 
   @Override
   public AppAccount getAppAccount() {
-    return appAccountRepo.all().fetchOne();
+    return appAccountRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
   public AppInvoice getAppInvoice() {
-    return appInvoiceRepo.all().fetchOne();
+    return appInvoiceRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Transactional
