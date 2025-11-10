@@ -1,0 +1,4 @@
+---
+title: "Invoice: fixed attachment behavior when printing/regenerating to avoid duplicates and respect the attachment option, including on ventilation."
+module: axelor-account
+
