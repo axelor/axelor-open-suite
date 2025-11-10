@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.invoice.tax;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLineTax;
+import com.axelor.apps.account.service.invoice.generator.line.InvoiceLineManagement;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -67,5 +68,15 @@ public class InvoiceTaxComputeServiceImpl implements InvoiceTaxComputeService {
     invoice.setCompanyInTaxTotalRemaining(invoice.getCompanyInTaxTotal());
 
     invoice.setAmountRemaining(invoice.getInTaxTotal());
+  }
+
+  @Override
+  public BigDecimal computeTaxAmount(
+      InvoiceLineTax invoiceLineTax,
+      BigDecimal exTaxBase,
+      BigDecimal taxValue,
+      BigDecimal inTaxTotal) {
+    return InvoiceLineManagement.computeAmount(
+        exTaxBase, taxValue, currencyScaleService.getScale(invoiceLineTax.getInvoice()), null);
   }
 }
