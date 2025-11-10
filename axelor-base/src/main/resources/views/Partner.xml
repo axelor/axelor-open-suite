@@ -199,19 +199,19 @@
         </field>
         <panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
           <label name="googleLabel"
-            title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.google.com' target='_blank' &gt;&lt;img src='img/social/google.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="facebookLabel"
-            title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.facebook.com' target='_blank' &gt;&lt;img src='img/social/facebook.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="twitterLabel"
-            title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;"
+            title="&lt;a href='https://x.com/' target='_blank' &gt;&lt;img src='img/social/twitter-x.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="linkedinLabel"
-            title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.linkedin.com' target='_blank' &gt;&lt;img src='img/social/linkedin.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="youtubeLabel"
-            title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.youtube.com' target='_blank' &gt;&lt;img src='img/social/youtube.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
         </panel>
       </panel>
@@ -661,19 +661,19 @@
         </field>
         <panel name="socialNetworkPanel" colSpan="12">
           <label name="googleLabel"
-            title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.google.com' target='_blank'  &gt;&lt;img src='img/social/google.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="facebookLabel"
-            title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.facebook.com' target='_blank'  &gt;&lt;img src='img/social/facebook.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="twitterLabel"
-            title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;"
+            title="&lt;a href='http://x.com' target='_blank'  &gt;&lt;img src='img/social/twitter-x.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="linkedinLabel"
-            title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.linkedin.com' target='_blank'  &gt;&lt;img src='img/social/linkedin.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="youtubeLabel"
-            title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.youtube.com' target='_blank'  &gt;&lt;img src='img/social/youtube.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
         </panel>
       </panel>
@@ -949,19 +949,19 @@
         <field name="picture" widget="Image" showTitle="false" colSpan="12"/>
         <panel colSpan="12" name="socialNetworkPanel">
           <label name="googleLabel"
-            title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.google.com' target='_blank' &gt;&lt;img src='img/social/google.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="facebookLabel"
-            title="&lt;a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.facebook.com' target='_blank' &gt;&lt;img src='img/social/facebook.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="twitterLabel"
-            title="&lt;a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' /&gt;"
+            title="&lt;a href='http://x.com' target='_blank' &gt;&lt;img src='img/social/twitter-x.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="linkedinLabel"
-            title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.linkedin.com' target='_blank' &gt;&lt;img src='img/social/linkedin.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="youtubeLabel"
-            title="&lt;a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.youtube.com' target='_blank' &gt;&lt;img src='img/social/youtube.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
         </panel>
       </panel>

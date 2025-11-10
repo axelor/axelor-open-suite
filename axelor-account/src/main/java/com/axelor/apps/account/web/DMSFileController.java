@@ -48,8 +48,8 @@ public class DMSFileController {
           response.setValue("typeIcon", "file-earmark-excel");
         }
 
-          MetaFile metaFile = dmsFile.getMetaFile();
-          if (metaFile != null) {
+        MetaFile metaFile = dmsFile.getMetaFile();
+        if (metaFile != null) {
           String fileType = metaFile.getFileType();
           String fileIcon = Beans.get(MetaFiles.class).fileTypeIcon(metaFile);
           response.setValue("fileType", fileType);

@@ -123,10 +123,10 @@
         <field name="picture" showTitle="false" widget="Image" colSpan="12"/>
         <panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
           <label name="googleLabel"
-            title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.google.com' target='_blank' &gt;&lt;img src='img/social/google.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="linkedinLabel"
-            title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.linkedin.com' target='_blank' &gt;&lt;img src='img/social/linkedin.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
         </panel>
       </panel>

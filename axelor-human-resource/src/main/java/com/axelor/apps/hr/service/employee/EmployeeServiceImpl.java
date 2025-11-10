@@ -165,25 +165,33 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     name = name == null ? "" : name;
     urlMap.put(
         "facebook",
-        "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
+        "<a href='https://www.facebook.com/search/more/?q="
             + name
             + "&init=public"
-            + "' target='_blank'/>");
+            + "' target='_blank' >"
+            + "<img src='img/social/facebook.svg'/>"
+            + "</a>");
     urlMap.put(
         "twitter",
-        "<a class='fa fa-twitter' href='https://twitter.com/search?q="
+        "<a href='https://x.com/search?q="
             + name
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/twitter-x.svg'/>"
+            + "</a>");
     urlMap.put(
         "linkedin",
-        "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
+        "<a href='http://www.linkedin.com/pub/dir/"
             + name.replace("+", "/")
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/linkedin.svg'/>"
+            + "</a>");
     urlMap.put(
         "youtube",
-        "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
+        "<a href='https://www.youtube.com/results?search_query="
             + name
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/youtube.svg'/>"
+            + "</a>");
 
     return urlMap;
   }
