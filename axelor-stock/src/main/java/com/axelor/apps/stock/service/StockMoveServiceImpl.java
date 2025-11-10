@@ -473,11 +473,11 @@ public class StockMoveServiceImpl implements StockMoveService {
   public void updateLocations(StockMove stockMove, int initialStatus) throws AxelorException {
 
     copyPlannedStockMovLines(stockMove);
+    final Set<Long> plannedLineIds = getPlannedStockMoveLineIds(stockMove);
     stockMoveLineService.updateLocations(
         initialStatus,
         StockMoveRepository.STATUS_PLANNED,
-        stockMove.getId(),
-        true,
+        plannedLineIds,
         stockMove.getEstimatedDate(),
         false,
         true);
@@ -494,10 +494,7 @@ public class StockMoveServiceImpl implements StockMoveService {
         .<StockMoveLine>forEachByIds(
             StockMoveLine.class,
             plannedStockMoveLineIds,
-            line -> {
-              line.setPlannedStockMove(null);
-              stockMoveLineRepo.save(line);
-            },
+            stockMove::removePlannedStockMoveLineListItem,
             () -> stockMoveRef.set(stockMoveRepo.find(stockMoveId)));
 
     Query<StockMoveLine> query = getStockMoveLineQuery(stockMoveId);
@@ -567,8 +564,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMoveLineService.updateLocations(
         initialStatus,
         StockMoveRepository.STATUS_CANCELED,
-        stockMove.getId(),
-        true,
+        getPlannedStockMoveLineIds(stockMove),
         stockMove.getEstimatedDate(),
         false,
         false);
@@ -576,8 +572,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMoveLineService.updateLocations(
         StockMoveRepository.STATUS_DRAFT,
         StockMoveRepository.STATUS_REALIZED,
-        stockMove.getId(),
-        false,
+        getStockMoveLineIds(stockMove),
         stockMove.getEstimatedDate(),
         true,
         true);
@@ -1041,8 +1036,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMoveLineService.updateLocations(
           initialStatus,
           StockMoveRepository.STATUS_CANCELED,
-          stockMove.getId(),
-          true,
+          getPlannedStockMoveLineIds(stockMove),
           stockMove.getEstimatedDate(),
           false,
           false);
@@ -1051,8 +1045,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       stockMoveLineService.updateLocations(
           initialStatus,
           StockMoveRepository.STATUS_CANCELED,
-          stockMove.getId(),
-          false,
+          getStockMoveLineIds(stockMove),
           stockMove.getEstimatedDate(),
           true,
           true);

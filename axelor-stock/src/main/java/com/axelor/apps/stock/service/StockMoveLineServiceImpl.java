@@ -663,29 +663,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   public void updateLocations(
       int fromStatus,
       int toStatus,
-      long stockMoveId,
-      boolean plannedLines,
-      LocalDate lastFutureStockMoveDate,
-      boolean realQty,
-      boolean generateOrder)
-      throws AxelorException {
-
-    updateLocations(
-        fromStatus,
-        toStatus,
-        stockMoveId,
-        plannedLines,
-        lastFutureStockMoveDate,
-        realQty,
-        null,
-        null,
-        generateOrder);
-  }
-
-  @Override
-  public void updateLocations(
-      int fromStatus,
-      int toStatus,
       Set<Long> stockMoveLineIds,
       LocalDate lastFutureStockMoveDate,
       boolean realQty,
@@ -704,50 +681,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         .<StockMoveLine, AxelorException>forEachByIds(
             StockMoveLine.class,
             stockMoveLineIds,
-            line ->
-                updateLocationForStockMoveLine(
-                    line,
-                    realQty,
-                    fromStatus,
-                    toStatus,
-                    lastFutureStockMoveDate,
-                    date,
-                    origin,
-                    generateOrder,
-                    productIdsForWapUpdate));
-
-    recomputeAvgPricesForProducts(productIdsForWapUpdate);
-  }
-
-  @Override
-  public void updateLocations(
-      int fromStatus,
-      int toStatus,
-      long stockMoveId,
-      boolean plannedLines,
-      LocalDate lastFutureStockMoveDate,
-      boolean realQty,
-      LocalDate date,
-      String origin,
-      boolean generateOrder)
-      throws AxelorException {
-
-    Query<StockMoveLine> query =
-        stockMoveLineRepository
-            .all()
-            .filter(
-                (plannedLines
-                        ? "self.plannedStockMove.id = :stockMoveId"
-                        : "self.stockMove.id = :stockMoveId")
-                    + " AND self.id > :lastSeenId")
-            .bind("stockMoveId", stockMoveId)
-            .order("id");
-
-    Set<Long> productIdsForWapUpdate = new HashSet<>();
-
-    StockBatchProcessorHelper.of()
-        .<StockMoveLine, AxelorException>forEachByQuery(
-            query,
             line ->
                 updateLocationForStockMoveLine(
                     line,
