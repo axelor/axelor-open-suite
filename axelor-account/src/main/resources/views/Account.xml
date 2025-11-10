@@ -304,7 +304,6 @@
     <action name="action-account-record-new"/>
     <action name="action-method-account-hide-analytic"/>
     <action name="action-attrs-account-account-readonly-if-account-in-move-line"/>
-    <action name="action-method-init-meta-model-field"/>
   </action-group>
 
   <action-group name="action-account-group-onsave">
@@ -342,7 +341,6 @@
     <action name="action-method-account-hide-analytic"/>
     <action name="action-attrs-account-account-status-show-title"/>
     <action name="action-account-method-show-origin-analytic-template"/>
-    <action name="action-method-init-meta-model-field"/>
   </action-group>
 
   <action-group name="action-account-group-new-customer-account">
@@ -580,7 +578,7 @@
 
   <action-attrs name="action-account-attrs-set-account-tag-domain">
     <attribute name="domain" for="tagSet"
-      expr="eval: &quot; (:metaModel MEMBER OF self.concernedModelSet OR self.concernedModelSet IS EMPTY) AND (:company IS NULL OR :company MEMBER OF self.companySet OR self.companySet IS EMPTY) &quot;"/>
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Account')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (:company IS NULL OR :company MEMBER OF self.companySet OR self.companySet IS EMPTY) &quot;"/>
   </action-attrs>
 
   <action-view name="action-account-view-accounting-report-config-line" title=""

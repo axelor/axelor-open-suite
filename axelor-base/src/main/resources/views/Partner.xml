@@ -350,7 +350,7 @@
         </panel>
         <field name="tagSet" widget="Tags" x-color-field="color"
           grid-view="tag-simplified-grid" form-view="tag-form"
-          onSelect="action-method-init-meta-model-field,action-partner-attrs-set-partner-tag-domain"/>
+          onSelect="action-partner-attrs-set-partner-tag-domain"/>
       </panel>
       <panel name="otherPartnerDetailsPanel">
         <field name="registrationCode" hideIf="partnerTypeSelect== 2" colSpan="4"
@@ -1799,10 +1799,8 @@
 
   <action-attrs name="action-partner-attrs-set-partner-tag-domain">
     <attribute name="domain" for="tagSet"
-      expr="eval: &quot; (:metaModel MEMBER OF self.concernedModelSet OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (self.companySet IS EMPTY OR EXISTS(SELECT 1 FROM Company c WHERE c MEMBER OF self.companySet AND c.id IN (${(companySet?.collect{it.id}+[0]).join(',')}))) &quot;"/>
   </action-attrs>
-
-
 
   <action-view name="action-partner-view-wizard-api-sirene-configuration"
     title="Sirene API call" model="com.axelor.utils.db.Wizard">

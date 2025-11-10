@@ -27,7 +27,5 @@ public interface TagService {
 
   Map<String, Object> getOnNewValuesMap(Tag tag, String fullNameModel, String fieldModel);
 
-  Map<String, Object> fillMetaModelField(String metaModelName, Map<String, Object> valuesMap);
-
   String getTagDomain(String metaModelName, Company company);
 }
