@@ -1,3 +1,92 @@
+## [8.5.3] (2025-11-06)
+
+### Fixes
+#### Base
+
+* Theme: fixed logo on default theme.
+* Account Management: fixed duplicate company selection for product families
+* Currency conversion: updated old API for currency conversion.
+* Indicator: fixed display issue and demo data.
+* Bank details: fixed some iban fields when adding bank details from partner view.
+
+#### Account
+
+* Invoice: keep advance payments empty on validate if user cleared them in draft.
+* Invoice: correct due dates with multi‑term payment conditions when Free is enabled on payment conditions
+* Reconcile: avoid negative amount when duplicating a reconcile.
+* Invoice: fixed an issue where Payment mode on invoice term is changed after the ventiation
+* Invoice: fixed shipping date in invoice report.
+* FixedAsset: fixed lines amount's after split
+* Move line query: fixed selected move lines unreconcilation.
+* Account management: fixed typo when importing chart of accounts.
+* Account: fixed the tax account setting on account charts demo/l10n.
+
+#### Human Resource
+
+* Expense: fixed currency initialization on the lines.
+
+#### Project
+
+* Project: fixed partner informations when generating a project from a sale order.
+* Project: fixed project generation when the partner name contains an apostrophe.
+
+#### Stock
+
+* Stock move: fixed title for Customer deliveries invoice button.
+* Stock move: fixed display of currency on the form view in the viewer of 'exTaxTotal'.
+
+#### Supply Chain
+
+* Sale order: fixed issue where duplicated lines were not visible in mass invoicing
+
+
+### Developer
+
+#### Base
+
+Implemented domain filtering to prevent duplicate AccountManagement records for the same company and ProductFamily combination.
+
+-- Add unique constraint to prevent future duplicates
+ALTER TABLE account_account_management 
+ADD CONSTRAINT uk_product_family_company_unique 
+UNIQUE (product_family, company);
+
+---
+
+-- migration script to update bank_code, sort_code, account_nbr and bban_key in bank details table
+
+UPDATE base_bank_details BankDetails
+SET bank_code = SUBSTRING(BankDetails.iban FROM 5 FOR 5)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.bank_code IS NULL OR BankDetails.bank_code = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET sort_code = SUBSTRING(BankDetails.iban FROM 10 FOR 5)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.sort_code IS NULL OR BankDetails.sort_code = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET account_nbr = SUBSTRING(BankDetails.iban FROM 15 FOR 11)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.account_nbr IS NULL OR BankDetails.account_nbr = '')
+  AND BankDetails.iban IS NOT NULL;
+
+UPDATE base_bank_details BankDetails
+SET bban_key = RIGHT(BankDetails.iban, 2)
+FROM base_bank Bank
+WHERE BankDetails.bank = Bank.id
+  AND Bank.bank_details_type_select = 1
+  AND (BankDetails.bban_key IS NULL OR BankDetails.bban_key = '')
+  AND BankDetails.iban IS NOT NULL;
+
 ## [8.5.2] (2025-10-30)
 
 ### Fixes
@@ -317,6 +406,7 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.3]: https://github.com/axelor/axelor-open-suite/compare/v8.5.2...v8.5.3
 [8.5.2]: https://github.com/axelor/axelor-open-suite/compare/v8.5.1...v8.5.2
 [8.5.1]: https://github.com/axelor/axelor-open-suite/compare/v8.5.0...v8.5.1
 [8.5.0]: https://github.com/axelor/axelor-open-suite/compare/v8.4.8...v8.5.0

@@ -24,6 +24,7 @@ import com.axelor.apps.base.AxelorException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /** This service is used to compute new lines from an existing fixed asset header. */
@@ -57,8 +58,11 @@ public interface FixedAssetLineComputationService {
    *
    * @param line
    * @param prorata
+   * @param amountByFieldMap
    */
-  void multiplyLineBy(FixedAssetLine line, BigDecimal prorata) throws AxelorException;
+  void multiplyLineBy(
+      FixedAssetLine line, BigDecimal prorata, Map<String, BigDecimal> amountByFieldMap)
+      throws AxelorException;
 
   /**
    * Multiply economic and fiscal lines by prorata

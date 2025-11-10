@@ -55,6 +55,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectServiceImpl implements ProjectService {
 
@@ -112,7 +113,9 @@ public class ProjectServiceImpl implements ProjectService {
     project.setClientPartner(clientPartner);
     project.setAssignedTo(assignedTo);
     project.setProjectStatus(getDefaultProjectStatus());
-
+    if (clientPartner != null) {
+      setPartnerData(project, clientPartner);
+    }
     manageTaskStatus(project, parentProject);
 
     project.setProjectTaskPrioritySet(
@@ -247,15 +250,14 @@ public class ProjectServiceImpl implements ProjectService {
     project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
     project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
     project.setProjectStatus(getDefaultProjectStatus());
-
+    if (clientPartner != null) {
+      setPartnerData(project, clientPartner);
+    }
     manageTaskStatus(project, projectTemplate);
 
     project.setProjectTaskPrioritySet(
         new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
     project.setCompletedTaskStatus(appProjectService.getAppProject().getCompletedTaskStatus());
-    if (clientPartner != null && ObjectUtils.notEmpty(clientPartner.getContactPartnerSet())) {
-      project.setContactPartner(clientPartner.getContactPartnerSet().iterator().next());
-    }
     return project;
   }
 
@@ -358,6 +360,14 @@ public class ProjectServiceImpl implements ProjectService {
 
     if (!ObjectUtils.isEmpty(taskStatusSet)) {
       project.setProjectTaskStatusSet(new HashSet<>(taskStatusSet));
+    }
+  }
+
+  @Override
+  public void setPartnerData(Project project, Partner clientPartner) {
+    Set<Partner> contactPartnerSet = clientPartner.getContactPartnerSet();
+    if (CollectionUtils.isNotEmpty(contactPartnerSet)) {
+      project.setContactPartner(contactPartnerSet.iterator().next());
     }
   }
 }

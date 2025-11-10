@@ -243,6 +243,10 @@
       if="__config__.app.isApp('account')"/>
   </action-attrs>
 
+  <action-method name="action-bank-details-method-set-iban-information">
+    <call class="com.axelor.apps.base.web.BankDetailsController" method="setIbanInfo"/>
+  </action-method>
+
   <search-filters name="bank-detail-filters"
     model="com.axelor.apps.base.db.BankDetails" title="Bank detail filters">
     <field name="balance" hidden="true" if="!__config__.app.isApp('bank-payment')"/>
