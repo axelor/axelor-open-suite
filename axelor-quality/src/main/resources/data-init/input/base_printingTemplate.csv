@@ -1,2 +1,2 @@
-"importId";"name";"modelName";"statusSelect";"toAttach"
-"81";"QualityControl";"com.axelor.apps.quality.db.QualityControl";"2";"false"
+"importId";"name";"modelName";"statusSelect";"toAttach";"scriptFieldName"
+"81";"QualityControl";"com.axelor.apps.quality.db.QualityControl";"2";"false";"${__i18n__.get('Quality control') + ' ' + (QualityControl.reference ?: QualityControl.id) + '-' + date}"
