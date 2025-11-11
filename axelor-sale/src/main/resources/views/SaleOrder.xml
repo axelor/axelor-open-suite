@@ -1436,7 +1436,8 @@
 
   <action-group name="action-sale-group-onchange-company">
     <action name="action-sale-order-record-company-configuration"/>
-    <action name="action-supplychain-sale-order-method-get-stock-location"/>
+    <action name="action-supplychain-sale-order-method-get-stock-location"
+      if="__config__.app.isApp('supplychain') &amp;&amp; (tradingName?.shippingDefaultStockLocation == null || stockLocation == null)"/>
     <action name="action-supplychain-sale-order-method-get-to-stock-location"
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-sale-order-method-fill-company-bank-details"/>
@@ -1544,7 +1545,7 @@
     <action name="action-sale-order-record-partner-supplychain"
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-supplychain-sale-order-method-get-stock-location"
-      if="__config__.app.isApp('supplychain') &amp;&amp; tradingName?.shippingDefaultStockLocation == null &amp;&amp; stockLocation == null"/>
+      if="__config__.app.isApp('supplychain') &amp;&amp; (tradingName?.shippingDefaultStockLocation == null || stockLocation == null)"/>
     <action name="action-supplychain-sale-order-method-get-to-stock-location"
       if="__config__.app.isApp('supplychain')"/>
     <action name="action-partner-attrs-hide-contact-partner"/>
