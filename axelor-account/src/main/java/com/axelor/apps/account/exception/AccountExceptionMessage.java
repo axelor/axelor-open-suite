@@ -1856,4 +1856,7 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_PAYMENT_ALERT_VOUCHER_DEPOSIT_REVERSE = /*$$(*/
       "Warning: this payment is included in a cheque deposit slip that has already been submitted. Do you want to reverse the payment accounting entry ?" /*)*/;
+
+  public static final String RECONCILE_GROUP_WRONG_MOVE_LINE_COMPANY = /*$$(*/
+      "The move line %s belong to a different company than the reconcile group %s company." /*)*/;
 }

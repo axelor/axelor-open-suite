@@ -3365,6 +3365,7 @@
 "The move is accounted and so can not be canceled.",,,
 "The move is already accounted, to cancel it, please reverse it.",,,
 "The move is already cancelled.",,,
+"The move line %s belong to a different company than the reconcile group %s company.",,,
 "The move line %s cannot be reconciled because of a pending payment.",,,
 "The move line %s is missing description in order to create fixed asset",,,
 "The move lines %s are reconciled and should not have been removed.",,,
