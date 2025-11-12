@@ -5,8 +5,7 @@
 
   <grid name="mrp-line-grid" model="com.axelor.apps.supplychain.db.MrpLine" title="Results"
     groupBy="product" sortable="false"
-    orderBy="product.code,maturityDate,mrpLineType.typeSelect,mrpLineType.sequence,id"
-    editable="true">
+    orderBy="product.code,maturityDate,mrpLineType.typeSelect,mrpLineType.sequence,id">
     <toolbar>
       <button name="selectBtn" title="Select" onClick="action-mrp-line-method-select"/>
       <button name="unselectBtn" title="Unselect" onClick="action-mrp-line-method-unselect"/>
