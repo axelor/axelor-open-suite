@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
@@ -31,6 +32,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,6 +146,17 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
                       new BigDecimal(100),
                       AppBaseService.COMPUTATION_SCALING,
                       RoundingMode.HALF_UP));
+
+      if (Optional.of(purchaseOrderLineTax)
+          .map(PurchaseOrderLineTax::getPurchaseOrder)
+          .map(PurchaseOrder::getInAti)
+          .orElse(false)) {
+        BigDecimal diff =
+            taxTotal.subtract(purchaseOrderLineTax.getInTaxTotal().subtract(exTaxBase)).abs();
+        if (diff.compareTo(BigDecimal.ZERO) >= 0 && diff.compareTo(new BigDecimal("0.01")) <= 0) {
+          taxTotal = purchaseOrderLineTax.getInTaxTotal().subtract(exTaxBase);
+        }
+      }
     }
 
     return taxTotal;
