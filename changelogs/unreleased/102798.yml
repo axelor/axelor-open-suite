@@ -1,0 +1,3 @@
+---
+title: "Expense API: fixed analytic move line not generated when creating expense line from API."
+module: axelor-human-resource
