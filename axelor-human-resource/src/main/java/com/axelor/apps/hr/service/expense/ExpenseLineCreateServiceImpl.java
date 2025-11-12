@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -52,6 +53,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
   protected HRConfigService hrConfigService;
   protected AppBaseService appBaseService;
   protected ExpenseProofFileService expenseProofFileService;
+  protected ExpenseAnalyticService expenseAnalyticService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public ExpenseLineCreateServiceImpl(
@@ -60,13 +63,17 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       KilometricService kilometricService,
       HRConfigService hrConfigService,
       AppBaseService appBaseService,
-      ExpenseProofFileService expenseProofFileService) {
+      ExpenseProofFileService expenseProofFileService,
+      ExpenseAnalyticService expenseAnalyticService,
+      AppAccountService appAccountService) {
     this.expenseLineRepository = expenseLineRepository;
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
     this.hrConfigService = hrConfigService;
     this.appBaseService = appBaseService;
     this.expenseProofFileService = expenseProofFileService;
+    this.expenseAnalyticService = expenseAnalyticService;
+    this.appAccountService = appAccountService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -272,6 +279,12 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     expenseLine.setExpenseDate(expenseDate);
     expenseLine.setComments(comments);
     expenseLine.setTotalAmount(BigDecimal.ZERO);
+    if (appAccountService.isApp("account")
+        && appAccountService.getAppAccount().getManageAnalyticAccounting()) {
+      expenseLine.setAnalyticDistributionTemplate(employee.getAnalyticDistributionTemplate());
+      expenseAnalyticService.createAnalyticDistributionWithTemplate(expenseLine);
+    }
+
     return expenseLine;
   }
 
