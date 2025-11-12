@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderTaxService;
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.stock.db.StockLocation;
@@ -48,9 +49,10 @@ public class PurchaseOrderCreateServiceSupplychainImpl extends PurchaseOrderCrea
   @Inject
   public PurchaseOrderCreateServiceSupplychainImpl(
       PurchaseConfigService purchaseConfigService,
-      AccountConfigService accountConfigService,
-      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService) {
-    super(purchaseConfigService, purchaseOrderTypeSelectService);
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
+      PurchaseOrderTaxService purchaseOrderTaxService,
+      AccountConfigService accountConfigService) {
+    super(purchaseConfigService, purchaseOrderTypeSelectService, purchaseOrderTaxService);
     this.accountConfigService = accountConfigService;
   }
 
