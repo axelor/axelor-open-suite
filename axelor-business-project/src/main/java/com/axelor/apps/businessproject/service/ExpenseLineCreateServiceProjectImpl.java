@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -31,6 +32,7 @@ import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.employee.EmployeeFetchService;
+import com.axelor.apps.hr.service.expense.ExpenseAnalyticService;
 import com.axelor.apps.hr.service.expense.ExpenseLineCreateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseLineToolService;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
@@ -53,8 +55,10 @@ public class ExpenseLineCreateServiceProjectImpl extends ExpenseLineCreateServic
       AppBaseService appBaseService,
       ExpenseProofFileService expenseProofFileService,
       ExpenseLineToolService expenseLineToolService,
-      AppBusinessProjectService appBusinessProjectService,
-      EmployeeFetchService employeeFetchService) {
+      EmployeeFetchService employeeFetchService,
+      ExpenseAnalyticService expenseAnalyticService,
+      AppAccountService appAccountService,
+      AppBusinessProjectService appBusinessProjectService) {
     super(
         expenseLineRepository,
         appHumanResourceService,
@@ -63,7 +67,9 @@ public class ExpenseLineCreateServiceProjectImpl extends ExpenseLineCreateServic
         appBaseService,
         expenseProofFileService,
         expenseLineToolService,
-        employeeFetchService);
+        employeeFetchService,
+        expenseAnalyticService,
+        appAccountService);
     this.appBusinessProjectService = appBusinessProjectService;
   }
 
