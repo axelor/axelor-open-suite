@@ -87,7 +87,7 @@ public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
             date);
 
-    expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
+    analyticMoveLineList.forEach(expenseLine::addAnalyticMoveLineListItem);
     return expenseLine;
   }
 }
