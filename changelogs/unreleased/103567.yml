@@ -1,0 +1,3 @@
+---
+title: "Project: added an error message when finishing a project if the default completed status was not configured."
+module: axelor-project
