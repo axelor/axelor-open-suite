@@ -25,6 +25,6 @@ public class AppInterventionServiceImpl implements AppInterventionService {
 
   @Override
   public AppIntervention getAppIntervention() {
-    return Query.of(AppIntervention.class).fetchOne();
+    return Query.of(AppIntervention.class).cacheable().autoFlush(false).fetchOne();
   }
 }

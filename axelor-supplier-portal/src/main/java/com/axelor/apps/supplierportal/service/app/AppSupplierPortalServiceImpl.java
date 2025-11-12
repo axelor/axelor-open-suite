@@ -33,6 +33,6 @@ public class AppSupplierPortalServiceImpl implements AppSupplierPortalService {
 
   @Override
   public AppSupplierPortal getAppSupplierPortal() {
-    return appSupplierPortalRepo.all().fetchOne();
+    return appSupplierPortalRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 }

@@ -64,7 +64,7 @@ public class AppSupplychainServiceImpl extends AppBaseServiceImpl implements App
 
   @Override
   public AppSupplychain getAppSupplychain() {
-    return appSupplychainRepo.all().fetchOne();
+    return appSupplychainRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

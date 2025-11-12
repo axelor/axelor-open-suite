@@ -60,7 +60,7 @@ public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQual
 
   @Override
   public AppQuality getAppQuality() {
-    return appQualityRepo.all().fetchOne();
+    return appQualityRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
