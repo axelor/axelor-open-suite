@@ -27,7 +27,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.studio.app.service.AppService;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -81,11 +81,7 @@ public class AccountingReportPrintServiceImpl implements AccountingReportPrintSe
       throws AxelorException {
     String file = "";
     if (accountingReport.getReportType().getTemplate() != null) {
-      file =
-          String.format(
-              "%s/%s",
-              AppService.getFileUploadDir(),
-              accountingReport.getReportType().getTemplate().getFilePath());
+      file = MetaFiles.getPath(accountingReport.getReportType().getTemplate()).toString();
 
     } else {
       final Integer typeSelect = accountingReport.getReportType().getTypeSelect();

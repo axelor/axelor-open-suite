@@ -99,7 +99,7 @@ public abstract class Importer {
   }
 
   public Importer init(ImportConfiguration configuration) {
-    return init(configuration, DEFAULT_WORKSPACE);
+    return init(configuration, createDefaultWorkspace());
   }
 
   public Importer init(ImportConfiguration configuration, File workspace) {
@@ -110,10 +110,11 @@ public abstract class Importer {
   }
 
   public ImportHistory run(Map<String, Object> importContext) throws AxelorException, IOException {
-
-    File bind = MetaFiles.getPath(configuration.getBindMetaFile()).toFile();
-    File data = MetaFiles.getPath(configuration.getDataMetaFile()).toFile();
-    checkEntryFilesType(bind, data);
+    MetaFile bindMetaFile = configuration.getBindMetaFile();
+    MetaFile dataMetaFile = configuration.getDataMetaFile();
+    File bind = MetaFiles.getPath(bindMetaFile).toFile();
+    File data = MetaFiles.getPath(dataMetaFile).toFile();
+    checkEntryFilesType(bindMetaFile, dataMetaFile);
 
     if (!bind.exists()) {
       throw new AxelorException(
@@ -167,7 +168,7 @@ public abstract class Importer {
     File finalWorkspace = new File(workspace, computeFinalWorkspaceName(data));
     finalWorkspace.mkdir();
 
-    if (isZip(data)) {
+    if (isZip(metaFile)) {
       unZip(data, finalWorkspace);
     } else {
       org.apache.commons.io.FileUtils.copyFile(
@@ -187,8 +188,8 @@ public abstract class Importer {
         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
   }
 
-  protected boolean isZip(File file) {
-    return FileUtils.getExtension(file.getName()).equals("zip");
+  protected boolean isZip(MetaFile file) {
+    return FileUtils.getExtension(file.getFilePath()).equals("zip");
   }
 
   protected void unZip(File file, File directory) throws IOException {
@@ -285,8 +286,8 @@ public abstract class Importer {
     }
   }
 
-  public void checkEntryFilesType(File bind, File data) throws AxelorException {
-    if (!FileUtils.getExtension(bind.getAbsolutePath()).equals("xml")) {
+  public void checkEntryFilesType(MetaFile bind, MetaFile data) throws AxelorException {
+    if (!FileUtils.getExtension(bind.getFilePath()).equals("xml")) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.IMPORT_CONFIGURATION_WRONG_BINDING_FILE_TYPE_MESSAGE));

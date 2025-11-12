@@ -68,7 +68,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.app.service.AppService;
 import com.google.common.collect.Sets;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -488,7 +487,7 @@ public class IntercoServiceImpl implements IntercoService {
       throws AxelorException {
     MetaFiles metaFiles = Beans.get(MetaFiles.class);
     try {
-      String printedPdfPath = AppService.getFileUploadDir() + printedPdf.getFilePath();
+      String printedPdfPath = MetaFiles.getPath(printedPdf).toString();
       MetaFile printedPdfCopy = metaFiles.upload(new File(printedPdfPath));
       metaFiles.attach(printedPdfCopy, printedPdf.getFileName(), intercoInvoice);
     } catch (IOException e) {

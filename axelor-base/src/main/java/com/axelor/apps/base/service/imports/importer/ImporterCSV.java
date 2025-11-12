@@ -27,9 +27,9 @@ import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.google.common.io.Files;
 import com.google.inject.Inject;
-import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -72,10 +72,10 @@ class ImporterCSV extends Importer {
   }
 
   @Override
-  public void checkEntryFilesType(File bind, File data) throws AxelorException {
+  public void checkEntryFilesType(MetaFile bind, MetaFile data) throws AxelorException {
     super.checkEntryFilesType(bind, data);
-    if (!Files.getFileExtension(data.getAbsolutePath()).equals("csv")
-        && !Files.getFileExtension(data.getAbsolutePath()).equals("zip")) {
+    if (!Files.getFileExtension(data.getFilePath()).equals("csv")
+        && !Files.getFileExtension(data.getFilePath()).equals("zip")) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_CSV_MESSAGE));

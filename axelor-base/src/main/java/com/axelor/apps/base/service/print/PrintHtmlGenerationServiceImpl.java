@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.PrintLine;
 import com.axelor.apps.base.db.repo.PrintRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.meta.MetaFiles;
 import java.io.File;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -97,7 +98,7 @@ public class PrintHtmlGenerationServiceImpl implements PrintHtmlGenerationServic
       String height = company.getHeight() != 0 ? company.getHeight() + "px" : "71px";
       imageTag =
           "<img src='"
-              + company.getLogo().getFilePath()
+              + MetaFiles.getPath(company.getLogo())
               + "' height='"
               + height
               + "' "
