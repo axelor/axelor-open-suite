@@ -1,0 +1,9 @@
+---
+title: "Account Management: fixed duplicate company selection for product families"
+module: axelor-base
+developer: |
+  Implemented domain filtering to prevent duplicate AccountManagement records for the same company and ProductFamily combination.
+  -- Add unique constraint to prevent future duplicates
+  ALTER TABLE account_account_management 
+  ADD CONSTRAINT uk_product_family_company_unique 
+  UNIQUE (product_family, company);
