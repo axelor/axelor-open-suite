@@ -26,8 +26,8 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.PurchaseOrderTaxService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
-import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.IntercoService;
@@ -50,7 +50,7 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
       PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain,
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderRepository purchaseOrderRepository,
-      PurchaseConfigService purchaseConfigService,
+      PurchaseOrderTaxService purchaseOrderTaxService,
       AppBaseService appBaseService,
       PartnerPriceListService partnerPriceListService,
       SupplierCatalogService supplierCatalogService,
@@ -62,7 +62,7 @@ public class ProjectPurchaseServiceImpl extends SaleOrderPurchaseServiceImpl {
         purchaseOrderLineServiceSupplychain,
         purchaseOrderService,
         purchaseOrderRepository,
-        purchaseConfigService,
+        purchaseOrderTaxService,
         appBaseService,
         partnerPriceListService,
         supplierCatalogService,

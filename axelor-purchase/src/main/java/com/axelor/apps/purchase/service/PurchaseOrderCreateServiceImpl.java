@@ -44,13 +44,16 @@ public class PurchaseOrderCreateServiceImpl implements PurchaseOrderCreateServic
 
   protected PurchaseConfigService purchaseConfigService;
   protected final PurchaseOrderTypeSelectService purchaseOrderTypeSelectService;
+  protected final PurchaseOrderTaxService purchaseOrderTaxService;
 
   @Inject
   public PurchaseOrderCreateServiceImpl(
       PurchaseConfigService purchaseConfigService,
-      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService) {
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
+      PurchaseOrderTaxService purchaseOrderTaxService) {
     this.purchaseConfigService = purchaseConfigService;
     this.purchaseOrderTypeSelectService = purchaseOrderTypeSelectService;
+    this.purchaseOrderTaxService = purchaseOrderTaxService;
   }
 
   @Override
@@ -128,6 +131,7 @@ public class PurchaseOrderCreateServiceImpl implements PurchaseOrderCreateServic
     purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());
     purchaseOrder.setDisplayPriceOnQuotationRequest(
         purchaseConfigService.getPurchaseConfig(company).getDisplayPriceOnQuotationRequest());
+    purchaseOrderTaxService.setPurchaseOrderInAti(purchaseOrder);
     return purchaseOrder;
   }
 }
