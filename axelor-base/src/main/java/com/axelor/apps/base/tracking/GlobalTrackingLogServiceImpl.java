@@ -25,6 +25,7 @@ import com.axelor.common.Inflector;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFileRepository;
@@ -89,7 +90,7 @@ public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
       globalTrackingLogRepo.remove(globalTrackingLog);
 
       if (globalTrackingLog.getMetaFile() != null) {
-        File metaFileFile = new File(globalTrackingLog.getMetaFile().getFilePath());
+        File metaFileFile = MetaFiles.getPath(globalTrackingLog.getMetaFile()).toFile();
         metaFileFile.delete();
         metaFileRepo.remove(metaFile);
       }

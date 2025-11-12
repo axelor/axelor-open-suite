@@ -150,7 +150,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           && reportType != null
           && reportType != InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS) {
 
-        Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFilePath());
+        Path path = MetaFiles.getPath(invoice.getPrintedPDF());
         return path.toFile();
       } else {
 
