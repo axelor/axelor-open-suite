@@ -19,7 +19,7 @@
 648;104;"Watermark";"${__bean__(com.axelor.apps.account.db.repo.AccountConfigRepository.class).findByCompany(bankReconciliation.company).getInvoiceWatermark() ? com.axelor.meta.MetaFiles.getPath(__bean__(com.axelor.apps.account.db.repo.AccountConfigRepository.class).findByCompany(bankReconciliation.company)?.getInvoiceWatermark()).toString() : null}";"string"
 651;105;"FromDate";"${hasVariable('FromDate')?FromDate:__date__}";"date"
 652;105;"ToDate";"${hasVariable('ToDate')?ToDate:__date__}";"date"
-653;105;"BankDetails";"${hasVariable('BankDetails')?BankDetails:0}";"decimal"
+653;105;"BankDetails";"${hasVariable('bankDetails')?bankDetails:0}";"decimal"
 654;105;"__locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}";"string"
 655;106;"AccountingReportId";"$accountingReport.id";"decimal"
 656;106;"__locale";"${com.axelor.apps.report.engine.ReportSettings.getPrintingLocale()}";"string"
