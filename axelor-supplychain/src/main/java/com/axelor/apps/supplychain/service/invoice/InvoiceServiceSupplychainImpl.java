@@ -231,7 +231,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     }
 
     if (CollectionUtils.isNotEmpty(purchaseOrderIds)) {
-      query.bind("_purchaseOrder", purchaseOrderIds);
+      query.bind("_purchaseOrderList", purchaseOrderIds);
     }
     if (!generateMoveForInvoicePayment) {
       if (currency == null) {
