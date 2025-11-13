@@ -85,8 +85,9 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       if (appSale.getIsQuotationAndOrderSplitEnabled()) {
         saleOrderOrderingStatusService.updateOrderingStatus(saleOrder);
       }
-      Beans.get(SaleOrderLineComputeService.class)
-          .computeLevels(saleOrder.getSaleOrderLineList(), null);
+      SaleOrderLineComputeService saleOrderLineComputeService =
+          Beans.get(SaleOrderLineComputeService.class);
+      saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null, saleOrder);
       return super.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

@@ -375,7 +375,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
           generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     }
     saleOrderLine.setConfigurator(configurator);
-    saleOrderLineComputeService.computeLevels(List.of(saleOrderLine), null);
+    saleOrderLineComputeService.computeLevels(List.of(saleOrderLine), null, saleOrder);
     saleOrderLineRepository.save(saleOrderLine);
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderRepository.save(saleOrder);

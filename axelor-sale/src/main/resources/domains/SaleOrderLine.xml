@@ -118,6 +118,8 @@
       ref="com.axelor.apps.sale.db.SaleOrderLine" mappedBy="parentSaleOrderLine"/>
     <many-to-one name="parentSaleOrderLine" ref="com.axelor.apps.sale.db.SaleOrderLine"
       title="Parent sale order line"/>
+    <many-to-one name="mainSaleOrder" ref="com.axelor.apps.sale.db.SaleOrder"
+      title="Main sale order"/>
     <string name="levelIndicator" title="Level"/>
 
     <many-to-one name="currency" transient="true" ref="com.axelor.apps.base.db.Currency">

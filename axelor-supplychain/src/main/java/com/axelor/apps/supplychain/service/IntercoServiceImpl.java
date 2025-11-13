@@ -331,6 +331,7 @@ public class IntercoServiceImpl implements IntercoService {
     SaleOrderLine saleOrderLine = new SaleOrderLine();
 
     saleOrderLine.setSaleOrder(saleOrder);
+    saleOrderLine.setMainSaleOrder(saleOrder);
     saleOrderLine.setProduct(purchaseOrderLine.getProduct());
     saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
     saleOrderLine.setProductName(purchaseOrderLine.getProductName());

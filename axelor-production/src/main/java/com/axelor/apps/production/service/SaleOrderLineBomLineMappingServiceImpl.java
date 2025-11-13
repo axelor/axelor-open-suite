@@ -54,6 +54,7 @@ public class SaleOrderLineBomLineMappingServiceImpl implements SaleOrderLineBomL
     if (billOfMaterialLine.getProduct().getProductSubTypeSelect()
         == ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT) {
       SaleOrderLine saleOrderLine = new SaleOrderLine();
+      saleOrderLine.setMainSaleOrder(saleOrder);
       saleOrderLine.setProduct(billOfMaterialLine.getProduct());
       saleOrderLine.setQty(billOfMaterialLine.getQty());
       saleOrderLine.setBillOfMaterialLine(billOfMaterialLine);

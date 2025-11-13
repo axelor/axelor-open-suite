@@ -157,6 +157,7 @@ public class SaleOrderComplementaryProductServiceImpl
     }
     if (compProductSelected.getIsSelected()) {
       newSoLine = new SaleOrderLine();
+      newSoLine.setMainSaleOrder(saleOrder);
       newSoLine.setProduct(compProductSelected.getProduct());
       if (isSubLine) {
         newSoLine.setParentSaleOrderLine(parentSaleOrderLine);
