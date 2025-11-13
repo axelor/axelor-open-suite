@@ -56,19 +56,6 @@ public class InvoiceTermToolServiceImpl implements InvoiceTermToolService {
   }
 
   @Override
-  public boolean isEnoughAmountToPay(
-      List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date) {
-    BigDecimal amountToPay =
-        invoiceTermList.stream()
-            .filter(this::isNotReadonly)
-            .map(it -> this.getAmountRemaining(it, date, false))
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
-
-    return amountToPay.compareTo(amount) >= 0;
-  }
-
-  @Override
   public boolean isNotReadonly(InvoiceTerm invoiceTerm) {
     return this.isNotReadonlyExceptPfp(invoiceTerm)
         && invoiceTerm.getPfpValidateStatusSelect() <= InvoiceTermRepository.PFP_STATUS_AWAITING;

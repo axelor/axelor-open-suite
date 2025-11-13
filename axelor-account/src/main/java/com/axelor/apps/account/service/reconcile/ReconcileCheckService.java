@@ -33,6 +33,4 @@ public interface ReconcileCheckService {
   void checkCurrencies(MoveLine debitMoveLine, MoveLine creditMoveLine) throws AxelorException;
 
   boolean isCompanyCurrency(Reconcile reconcile, InvoicePayment invoicePayment, Move otherMove);
-
-  void checkReconcile(Reconcile reconcile) throws AxelorException;
 }
