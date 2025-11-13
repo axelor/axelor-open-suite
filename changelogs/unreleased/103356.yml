@@ -1,0 +1,2 @@
+title: "Move/Accounting : fix rounding issue during taxes computation"
+module: axelor-account

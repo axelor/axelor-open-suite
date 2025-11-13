@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.move;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticJournal;
 import com.axelor.apps.account.db.AnalyticMoveLine;
@@ -30,6 +31,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.TaxEquiv;
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
@@ -74,9 +76,12 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -864,15 +869,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     List<MoveLine> moveLineList = move.getMoveLineList();
 
     BigDecimal linesTaxAmount =
-        moveLineList.stream()
-            .filter(
-                moveLine ->
-                    moveLineTaxService.isGenerateMoveLineForAutoTax(
-                            moveLine.getAccount().getAccountType().getTechnicalTypeSelect())
-                        && moveLine.getTaxLine() != null)
-            .map(this::getTaxAmount)
-            .reduce(BigDecimal::add)
-            .orElse(BigDecimal.ZERO);
+        getLinesTaxAmount(moveLineList, move)
+            .setScale(appAccountService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
     BigDecimal taxLinesAmount =
         moveLineList.stream()
@@ -897,19 +895,59 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     }
   }
 
-  protected BigDecimal getTaxAmount(MoveLine moveLine) {
-    if (moveLine.getTaxLine() == null) {
-      return BigDecimal.ZERO;
+  protected BigDecimal getLinesTaxAmount(List<MoveLine> moveLineList, Move move) {
+    List<MoveLine> moveLineWithTaxList =
+        moveLineList.stream()
+            .filter(
+                ml ->
+                    moveLineTaxService.isGenerateMoveLineForAutoTax(
+                            Optional.ofNullable(ml)
+                                .map(MoveLine::getAccount)
+                                .map(Account::getAccountType)
+                                .map(AccountType::getTechnicalTypeSelect)
+                                .orElse(""))
+                        && ml.getTaxLine() != null)
+            .collect(Collectors.toList());
+
+    BigDecimal lineTaxAmount = BigDecimal.ZERO;
+    if (ObjectUtils.isEmpty(moveLineWithTaxList)) {
+      return lineTaxAmount;
     }
 
+    Map<Object, BigDecimal> amountByTaxLineMap = new HashMap<>();
+    for (MoveLine moveLine : moveLineWithTaxList) {
+      getTaxAmount(moveLine, amountByTaxLineMap);
+    }
+
+    if (!ObjectUtils.isEmpty(amountByTaxLineMap)) {
+      for (Map.Entry<Object, BigDecimal> entry : amountByTaxLineMap.entrySet()) {
+        lineTaxAmount = lineTaxAmount.add(entry.getValue());
+      }
+    }
+
+    return lineTaxAmount;
+  }
+
+  protected void getTaxAmount(MoveLine moveLine, Map<Object, BigDecimal> amountByTaxLineMap) {
     BigDecimal lineTotal = this.getMoveLineSignedValue(moveLine);
 
-    return lineTotal
-        .multiply(moveLine.getTaxLine().getValue())
-        .divide(
-            BigDecimal.valueOf(100),
-            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-            RoundingMode.HALF_UP);
+    if (moveLine.getTaxLine() == null || lineTotal.signum() == 0) {
+      return;
+    }
+
+    TaxLine taxLine = moveLine.getTaxLine();
+
+    BigDecimal taxAmount =
+        lineTotal
+            .multiply(moveLine.getTaxLine().getValue())
+            .divide(
+                BigDecimal.valueOf(100), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
+
+    if (amountByTaxLineMap.get(taxLine) != null) {
+      amountByTaxLineMap.replace(taxLine, amountByTaxLineMap.get(taxLine).add(taxAmount));
+    } else {
+      amountByTaxLineMap.put(taxLine, taxAmount);
+    }
   }
 
   protected BigDecimal getMoveLineSignedValue(MoveLine moveLine) {
