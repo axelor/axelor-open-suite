@@ -53,7 +53,7 @@
     onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false"
     canCopy="false">
     <menubar>
-      <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
+      <menu name="expenseReportsMenu" title="Reports" icon="files">
         <item name="printAll" title="Print report and files"
           action="save,action-expense-method-print-report-and-proof-file"/>
       </menu>
@@ -121,7 +121,7 @@
           <button name="refuseBtn" onClick="action-expense-group-refuse" title="Refuse"
             hidden="true"/>
           <button name="cancelBtn" onClick="action-expense-group-cancel" hidden="true"
-            title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+            title="Cancel" icon="x-circle-fill" css="btn-danger"/>
           <button name="draftBtn" onClick="action-expense-method-draft"
             title="Return to draft status" showIf="statusSelect &gt; 4 "/>
           <button name="addPaymentBtn" title="Register payment"

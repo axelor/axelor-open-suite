@@ -77,7 +77,7 @@
         <field name="$isReadOnly" hidden="true" readonly="true"/>
       </panel>
       <panel name="balancePanel" colSpan="4" showIf="id">
-        <button name="$balanceBtn" title="Total balance" icon="fa-money" widget="info-button"
+        <button name="$balanceBtn" title="Total balance" icon="cash" widget="info-button"
           onClick="action-account-view-show-move-lines" x-currency="company.currency.symbol"/>
       </panel>
     </panel>

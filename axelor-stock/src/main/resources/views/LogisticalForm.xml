@@ -32,7 +32,7 @@
     onSave="action-logistical-form-validate-mass-on-save">
     <toolbar>
       <button name="printBtn" title="Print packing list"
-        onClick="action-group-logistical-form-print-packing-list" icon="fa-print"
+        onClick="action-group-logistical-form-print-packing-list" icon="printer"
         if="__config__.app.isApp('supplychain')"/>
     </toolbar>
     <panel colSpan="12" name="mainPanel">
@@ -57,10 +57,10 @@
       <panel name="actionsPanel" colSpan="4">
         <button name="carrierValidatedBtn" title="Carrier validated"
           showIf="statusSelect == 1" onClick="action-group-logistical-form-carrier-validated"
-          icon="fa-check" css="btn btn-success" colSpan="12"
+          icon="check" css="btn btn-success" colSpan="12"
           prompt="Are you sure you want to validate the carrier?"/>
         <button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1"
-          icon="fa-cubes" onClick="action-logistical-form-method-back-to-provision" colSpan="12"
+          icon="boxes" onClick="action-logistical-form-method-back-to-provision" colSpan="12"
           prompt="Are you sure you want to go back to provision ?"/>
       </panel>
     </panel>

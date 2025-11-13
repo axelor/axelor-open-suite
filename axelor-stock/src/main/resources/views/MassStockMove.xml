@@ -90,17 +90,17 @@
       <panel-related field="pickedProductList" grid-view="picked-product-grid"
         form-view="picked-product-form" colSpan="12" canNew="company != null" onChange="save"/>
       <button name="realizePickingBtn" title="Pick all / the rest"
-        onClick="save,action-mass-stock-move-method-realize-picking" icon="fa-play"/>
+        onClick="save,action-mass-stock-move-method-realize-picking" icon="play-fill"/>
       <button name="cancelPickingBtn" title="Cancel picking"
-        onClick="action-mass-stock-move-method-cancel-picking" icon="fa-undo"/>
+        onClick="action-mass-stock-move-method-cancel-picking" icon="arrow-counterclockwise"/>
     </panel>
     <panel name="storedProductPanel" hidden="true" showIf="stepSelect == 4">
       <panel-related field="storedProductList" grid-view="stored-product-grid"
         form-view="stored-product-form" colSpan="12" canNew="company != null" onChange="save"/>
       <button name="realizeStoringBtn" title="Store all / the rest"
-        onClick="save,action-mass-stock-move-method-realize-storing" icon="fa-play"/>
+        onClick="save,action-mass-stock-move-method-realize-storing" icon="play-fill"/>
       <button name="cancelStorageBtn" title="Cancel storage"
-        onClick="save,action-mass-stock-move-method-cancel-storing" icon="fa-undo"/>
+        onClick="save,action-mass-stock-move-method-cancel-storing" icon="arrow-counterclockwise"/>
     </panel>
   </form>
 

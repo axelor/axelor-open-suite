@@ -76,7 +76,7 @@
   <menuitem name="line-expense" parent="my-hr-root" title="OrphanExpenseLine.title"
     action="expense.line" order="350"
     if="__config__.app.isApp('expense') &amp;&amp; __config__.app.getApp('expense')?.getIsOrphanExpenseLineManaged()"
-    icon="fa-receipt" icon-background="#84429f"/>
+    icon="receipt" icon-background="#84429f"/>
 
   <action-view name="expense.line" title="Expense line"
     model="com.axelor.apps.hr.db.ExpenseLine">
@@ -105,7 +105,7 @@
   <menuitem title="Start&amp;Stop Timer" name="time-sheet-timer" parent="my-hr-root"
     action="time.sheet.timer" order="450"
     if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer() &amp;&amp; !__config__.app.getApp('timesheet')?.getIsMultipleTimerEnabled()"
-    icon="fa-play" icon-background="#84429f"/>
+    icon="play-fill" icon-background="#84429f"/>
 
   <action-method name="time.sheet.timer">
     <call class="com.axelor.apps.hr.web.timesheet.timer.TSTimerController"
@@ -115,7 +115,7 @@
   <menuitem title="Multiple Start&amp;Stop Timer" name="time-sheet-multiple-timer"
     parent="my-hr-root" action="action.timesheet.view.multiple.timer"
     if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer() &amp;&amp; __config__.app.getApp('timesheet')?.getIsMultipleTimerEnabled()"
-    order="460" icon="fa-play" icon-background="#84429f"/>
+    order="460" icon="play-fill" icon-background="#84429f"/>
 
   <action-view name="action.timesheet.view.multiple.timer"
     model="com.axelor.apps.hr.db.TSTimer" title="Multiple timer">
@@ -210,7 +210,7 @@
   </action-view>
 
   <menuitem name="hr-root-emp-mgt-conf" parent="hr-root-emp-mgt" title="Configuration"
-    icon="fa-cog" order="700"/>
+    icon="gear" order="700"/>
 
   <menuitem name="hr-conf-product-activity" parent="hr-root-emp-mgt-conf"
     title="Product Activities" action="conf.product.activity" order="100"/>
@@ -473,7 +473,7 @@
   </action-method>
 
   <menuitem name="leave-request-conf" parent="leave-request-root" title="Configuration"
-    icon="fa-cog" order="700"/>
+    icon="gear" order="700"/>
 
   <menuitem name="leave-reason-all" parent="leave-request-conf" title="Leave reason"
     action="leave.reason.all" order="100"/>
@@ -531,7 +531,7 @@
   </action-method>
 
   <menuitem name="expense-root-conf" parent="expense-root" title="Configuration"
-    icon="fa-cog" order="500"/>
+    icon="gear" order="500"/>
 
   <menuitem name="conf-expense-type" parent="expense-root-conf" title="Expense Type"
     action="conf.expense.type" order="100"/>
@@ -662,7 +662,7 @@
   </action-view>
 
   <menuitem name="hr-report-root" parent="hr-root" title="Reportings" order="900"
-    icon="fa-bar-chart"/>
+    icon="bar-chart"/>
 
   <menuitem name="menu-hr-manager-dashboard" parent="hr-report-root"
     title="Human Resources Manager" action="hr.manager.dashboard.view" order="100"/>

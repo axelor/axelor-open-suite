@@ -23,9 +23,8 @@
         <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
       </panel>
       <panel name="actionsPanel" colSpan="4">
-        <button name="validateBtn" title="Validate" icon="fa-check"
-          showIf="statusSelect == 1" onClick="action-group-stock-correction-validate-click"
-          colSpan="12"/>
+        <button name="validateBtn" title="Validate" icon="check" showIf="statusSelect == 1"
+          onClick="action-group-stock-correction-validate-click" colSpan="12"/>
         <button name="showGeneratedStockMoveBtn" title="Show Generated Stock Move"
           showIf="statusSelect == 2" colSpan="12"
           onClick="action-stock-correction-method-show-generated-stock-move"/>

@@ -30,7 +30,7 @@
       <panel name="actionPanel" colSpan="3">
         <button name="$operatingDurationBtn"
           onClick="action-machine-view-open-finished-operation-orders" title="Operating duration"
-          colSpan="12" icon="fa-clock-o" widget="info-button"/>
+          colSpan="12" icon="clock" widget="info-button"/>
       </panel>
     </panel>
     <panel name="machineInformationPanel" title="Machine Information" canCollapse="true">

@@ -11,7 +11,7 @@
 
   <form name="print-form" title="PRINT_NOUN" model="com.axelor.apps.base.db.Print">
     <toolbar>
-      <button name="print" title="Print" icon="fa-print"
+      <button name="print" title="Print" icon="printer"
         onClick="save,action-print-method-print" readonlyIf="id == null"/>
     </toolbar>
     <panel>

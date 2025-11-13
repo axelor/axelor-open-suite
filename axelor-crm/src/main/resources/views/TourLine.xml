@@ -12,7 +12,7 @@
     <field name="event" domain="self.partner = :partner" canNew="true" form-view="event-form"
       grid-view="event-grid"/>
     <field name="isValidated" readonly="true" width="110"/>
-    <button name="validateBtn" title="Validate" icon="fa-check"
+    <button name="validateBtn" title="Validate" icon="check"
       showIf="!isValidated &amp;&amp; id != null"
       onClick="action-tour-line-method-set-validated-and-last-visit-date"/>
   </grid>

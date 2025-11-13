@@ -135,8 +135,8 @@
   </action-view>
 
 
-  <menuitem name="invoice-root-report" parent="invoice-root" order="1000"
-    icon="fa-bar-chart" title="Reportings"/>
+  <menuitem name="invoice-root-report" parent="invoice-root" order="1000" icon="bar-chart"
+    title="Reportings"/>
 
   <menuitem name="account-root" title="Accounting" order="-900"
     if="__config__.app.isApp('account')" icon="calculator-fill" icon-background="#2fa042"/>
@@ -412,7 +412,7 @@
   </action-view>
 
   <menuitem name="debt-recovery-root-conf" parent="account-root-debt-recovery"
-    title="Configuration" order="400" icon="fa-cog"/>
+    title="Configuration" order="400" icon="gear"/>
 
   <menuitem name="debt-recovery-root-conf-debt-recovery-method"
     parent="debt-recovery-root-conf" title="Debt recovery methods"
@@ -451,7 +451,7 @@
 
   <menuitem name="account-root-accounting-accounting-reports"
     parent="account-root-accounting" title="Accounting reports"
-    action="account.root.accounting.accounting.reports" icon="fa-bar-chart" order="200"/>
+    action="account.root.accounting.accounting.reports" icon="bar-chart" order="200"/>
 
   <action-view name="account.root.accounting.accounting.reports"
     title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport">
@@ -557,7 +557,7 @@
   </action-view>
 
   <menuitem title="Configurations" name="account-root-asset-management-conf"
-    parent="account-root-asset-management" icon="fa-cog" order="200"/>
+    parent="account-root-asset-management" icon="gear" order="200"/>
 
   <menuitem title="Fixed asset categories"
     name="account-root-asset-management-conf-asset-categories"
@@ -594,11 +594,11 @@
 
 
   <menuitem name="account-root-report" parent="account-root" title="Reportings"
-    order="1200" icon="fa-bar-chart"/>
+    order="1200" icon="bar-chart"/>
 
 
   <menuitem name="account-conf" parent="account-root" title="Configuration" order="1300"
-    icon="fa-cog"/>
+    icon="gear"/>
 
   <menuitem name="account-conf-financial" parent="account-conf" title="Financial"
     order="100"/>
@@ -946,7 +946,7 @@
   </action-view>
 
   <menuitem name="invoice-conf" parent="invoice-root" title="Configuration" order="1100"
-    icon="fa-cog" if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    icon="gear" if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
 
   <menuitem name="invoice-conf-refusalreason" parent="invoice-conf"
     title="Reason of refusal" action="invoice.conf.refusalreason"
@@ -1020,7 +1020,7 @@
 
 
   <menuitem name="account-analytic-structure" parent="account-conf-analytic"
-    action="account.conf.analytic.axis.tree" title="Analytic Structure" icon="fa-sitemap"
+    action="account.conf.analytic.axis.tree" title="Analytic Structure" icon="diagram-3-fill"
     order="100"/>
 
   <action-view name="account.conf.analytic.axis.tree" title="Analytic Tree"

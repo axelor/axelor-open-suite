@@ -20,7 +20,7 @@
     <field name="typeSelect"/>
     <field name="ruleTypeSelect"/>
     <field name="hidden"/>
-    <button name="editConfigLineBtn" title="Edit config line" icon="fa-external-link"
+    <button name="editConfigLineBtn" title="Edit config line" icon="box-arrow-up-right"
       onClick="action-move-line-view-open-report-config-line"/>
   </grid>
 

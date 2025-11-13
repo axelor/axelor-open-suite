@@ -28,7 +28,7 @@
       <field name="globalTrackingLog.metaModel" colSpan="4"/>
       <field name="globalTrackingLog.relatedId" colSpan="3"/>
       <button name="showReferenceBtn" title="Show the reference" css="btn-primary"
-        icon="fa-share" onClick="action-method-show-global-tracking-line-reference" colSpan="5"/>
+        icon="share" onClick="action-method-show-global-tracking-line-reference" colSpan="5"/>
       <field name="globalTrackingLog.user" colSpan="4"/>
       <field name="globalTrackingLog.dateT" colSpan="3"/>
       <field name="globalTrackingLog.typeSelect" hidden="true"/>

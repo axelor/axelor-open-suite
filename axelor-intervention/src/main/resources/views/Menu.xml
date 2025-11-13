@@ -8,7 +8,7 @@
     if="__config__.app.isApp('intervention')" icon-background="#4caf50" icon="wrench" left="true"/>
 
   <menuitem name="assets-management-root-equipment-tree" title="Equipments tree"
-    parent="assets-management-root" icon-background="grey" icon="fa-sitemap" left="true"
+    parent="assets-management-root" icon-background="grey" icon="diagram-3-fill" left="true"
     action="assets.management.root.equipment.tree" order="1"/>
 
   <action-view name="assets.management.root.equipment.tree" title="Equipments tree"
@@ -19,7 +19,7 @@
   </action-view>
 
   <menuitem name="assets-management-root-equipment" title="Equipments"
-    parent="assets-management-root" icon-background="grey" icon="fa-microchip" left="true"
+    parent="assets-management-root" icon-background="grey" icon="memory" left="true"
     action="assets.management.root.equipment" order="2"/>
 
   <action-view name="assets.management.root.equipment" title="Equipments"
@@ -30,7 +30,7 @@
   </action-view>
 
   <menuitem name="assets-management-root-equipment-line" title="Equipment lines"
-    parent="assets-management-root" icon-background="grey" icon="fa-qrcode" left="true"
+    parent="assets-management-root" icon-background="grey" icon="qr-code" left="true"
     action="assets.management.root.equipment.line" order="3"/>
 
   <action-view name="assets.management.root.equipment.line" title="Equipment lines"
@@ -41,7 +41,7 @@
   </action-view>
 
   <menuitem name="assets-management-root-park-model" title="Park models"
-    parent="assets-management-root" icon-background="grey" icon="fa-qrcode" left="true"
+    parent="assets-management-root" icon-background="grey" icon="qr-code" left="true"
     action="assets.management.root.park.model" order="4"/>
 
   <action-view name="assets.management.root.park.model" title="Park models"
@@ -51,7 +51,7 @@
   </action-view>
 
   <menuitem name="assets-management-root-conf" title="Configuration"
-    parent="assets-management-root" icon-background="grey" icon="fa-cogs" order="99"/>
+    parent="assets-management-root" icon-background="grey" icon="gear" order="99"/>
 
   <menuitem name="assets-management-root-conf-equipment-families"
     title="Equipment families" parent="assets-management-root-conf"
@@ -78,7 +78,7 @@
   </action-view>
 
   <menuitem name="intervention-root-customer-requests" title="Customer requests"
-    parent="intervention-root" icon="fa-ticket" icon-background="#e59331"
+    parent="intervention-root" icon="ticket-fill" icon-background="#e59331"
     action="intervention.root.customer.requests" tag-count="true" order="10"/>
 
   <action-view model="com.axelor.apps.intervention.db.CustomerRequest"
@@ -88,7 +88,7 @@
   </action-view>
 
   <!-- INTERVENTION CONFIG -->
-  <menuitem title="Configuration" name="intervention-root-configuration" icon="fa-cog"
+  <menuitem title="Configuration" name="intervention-root-configuration" icon="gear"
     icon-background="#e59331" parent="intervention-root" order="999"/>
 
   <menuitem title="Questions" name="intervention-root-configuration-question"

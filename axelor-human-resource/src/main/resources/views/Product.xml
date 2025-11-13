@@ -14,7 +14,7 @@
     <field name="saleSupplySelect"/>
     <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
     <field name="personalExpense"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -22,9 +22,9 @@
     title="Expense type" model="com.axelor.apps.base.db.Product"
     onLoad="action-product-attrs-scale-and-precision">
     <toolbar>
-      <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+      <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
         onClick="save,action-send-by-email-with-template"/>
-      <button name="printBtn" title="Product sheet" icon="fa-print"
+      <button name="printBtn" title="Product sheet" icon="printer"
         onClick="save,action-product-validate-user-active-company,action-method-print-template"/>
     </toolbar>
     <panel name="mainPanel">
@@ -89,7 +89,7 @@
     model="com.axelor.apps.base.db.Product" orderBy="name">
     <toolbar>
       <button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog"
-        icon="fa-book"/>
+        icon="book"/>
     </toolbar>
     <field name="picture" widget="Image"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -101,7 +101,7 @@
     <field name="productTypeSelect" width="100"/>
     <field name="saleSupplySelect"/>
     <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -110,9 +110,9 @@
     onNew="action-group-base-product-onnew, action-product-activity-record-default-activity"
     onLoad="action-product-attrs-scale-and-precision" width="large">
     <toolbar>
-      <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+      <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
         onClick="save,action-send-by-email-with-template"/>
-      <button name="printBtn" title="Product sheet" icon="fa-print"
+      <button name="printBtn" title="Product sheet" icon="printer"
         onClick="save,action-product-validate-user-active-company,action-method-print-template"/>
     </toolbar>
     <panel name="mainPanel">
@@ -186,7 +186,7 @@
     title="Product Activities" orderBy="code,name" width="25%" css="rect-image">
     <toolbar>
       <button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog"
-        icon="fa-book"/>
+        icon="book"/>
     </toolbar>
     <field name="picture"/>
     <field name="fullName"/>

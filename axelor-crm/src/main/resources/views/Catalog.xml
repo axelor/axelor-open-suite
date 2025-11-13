@@ -36,7 +36,7 @@
   <form name="catalog-form" title="Catalog" model="com.axelor.apps.crm.db.Catalog"
     width="large" onSave="action-crm-validate-catalog-onsave">
     <menubar>
-      <menu name="catalogToolsMenu" title="Tools" icon="fa-wrench">
+      <menu name="catalogToolsMenu" title="Tools" icon="wrench">
         <item name="sendEmailItem" title="Send Email"
           action="save,action-catalog-view-send-email-wizard"/>
       </menu>

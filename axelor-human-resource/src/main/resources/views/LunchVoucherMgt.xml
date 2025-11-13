@@ -19,7 +19,7 @@
     onNew="action-lunch-voucher-record-default-onnew"
     onSave="action-lunch-voucher-group-form-onsave">
     <toolbar>
-      <button name="exportBtn" title="Export CSV" icon="fa-file-text-o"
+      <button name="exportBtn" title="Export CSV" icon="file-text"
         showIf="statusSelect == 3 &amp;&amp; csvFile == null"
         onClick="action-lunch-voucher-method-export"/>
     </toolbar>

@@ -28,7 +28,7 @@
     <field name="price" readonlyIf="isPresentInStockLocation"
       x-scale="nbDecimalDigitForUnitPrice"/>
     <field name="isPresentInStockLocation" type="boolean" x-dirty="false" hidden="true"/>
-    <button name="showDetailStockProduct" icon="fa-cubes"
+    <button name="showDetailStockProduct" icon="boxes"
       onClick="action-inventory-line-view-for-a-product-from-product-view" readonlyIf="!product"
       if="__config__.app.isApp('supplychain')"/>
     <field name="nbDecimalDigitForUnitPrice" x-dirty="false" hidden="true" type="integer"/>
@@ -59,7 +59,7 @@
       <field name="inventory" readonly="true"/>
       <button name="showDetailStockProduct" title="See stock details" colSpan="3"
         onClick="action-inventory-line-view-for-a-product-from-product-view"
-        if="__config__.app.isApp('supplychain')" widget="info-button" icon="fa-cubes"/>
+        if="__config__.app.isApp('supplychain')" widget="info-button" icon="boxes"/>
     </panel>
   </form>
 

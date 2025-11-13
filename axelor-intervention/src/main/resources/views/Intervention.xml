@@ -24,7 +24,7 @@
     <field name="totalDuration"/>
     <field name="deliveredPartner"/>
     <field name="interventionType"/>
-    <button name="planBtn" icon="fa-calendar-plus-o"
+    <button name="planBtn" icon="calendar-plus"
       onClick="save,action-intervention-view-confirm-planification" readonlyIf="statusSelect != 10"/>
   </grid>
 
@@ -44,7 +44,7 @@
     name="intervention-form" width="large" onNew="action-intervention-group-on-new"
     onLoad="action-intervention-group-on-load">
     <menubar>
-      <menu name="interventionToolsMenu" title="Tools" icon="fa-wrench">
+      <menu name="interventionToolsMenu" title="Tools" icon="wrench">
         <item if-module="axelor-message" name="sendEmailItem" title="Send email"
           readonlyIf="id == null" action="save,action-send-by-email-with-template"/>
       </menu>
@@ -100,12 +100,12 @@
       <button name="openSurvey" title="Open survey"
         onClick="save,action.intervention.question.view.intervention" css="btn-success"
         readonlyIf="statusSelect &lt; 30 || isSurveyGenerationRunning === true"/>
-      <button name="planBtn" title="Plan" icon="fa-calendar-plus-o"
+      <button name="planBtn" title="Plan" icon="calendar-plus"
         onClick="save,action-intervention-view-confirm-planification" hidden="true"
         showIf="statusSelect == 10"/>
       <button name="startBtn" title="Start" onClick="save,action-intervention-method-start"
         hidden="true" showIf="[20,40].includes(statusSelect)"/>
-      <button name="rescheduleBtn" title="Reschedule" icon="fa-calendar-minus-o"
+      <button name="rescheduleBtn" title="Reschedule" icon="calendar-minus"
         onClick="save,action-intervention-method-reschedule" hidden="true"
         showIf="[20,60].includes(statusSelect)"/>
       <button name="suspendBtn" title="Suspend"

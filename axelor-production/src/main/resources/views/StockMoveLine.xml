@@ -20,12 +20,12 @@
       readonly="true" x-scale="$nbDecimalDigitForQty"/>
     <button name="allocateAll"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate"
-      icon="fa-plus-square"
+      icon="plus-square-fill"
       readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == $number(qty)"
       onClick="save,action-supplychain-stock-move-line-allocate-all"/>
     <button name="deallocate"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Deallocate"
-      icon="fa-minus-square"
+      icon="dash-square-fill"
       readonlyIf="$get('stockMove.statusSelect') != 2 || $number(reservedQty) == 0"
       onClick="save,action-supplychain-stock-move-line-deallocate-all"/>
     <field name="unitPriceUntaxed" x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -42,7 +42,7 @@
     <field name="stockMove.statusSelect"/>
     <button name="trackNumberWizardBtn" title="Split by tracking numbers"
       readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged'))"
-      icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
+      icon="upc" onClick="save,action-stock-move-line-method-open-wizard"/>
     <field name="realQty" hidden="true" x-scale="$nbDecimalDigitForQty"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
@@ -70,7 +70,7 @@
     <field name="stockMove.statusSelect"/>
     <button name="trackNumberWizardBtn" title="Split by tracking numbers"
       readonlyIf="$get('stockMove.statusSelect') > 2 || (!$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged'))"
-      icon="fa-barcode" onClick="save,action-stock-move-line-method-open-wizard"/>
+      icon="upc" onClick="save,action-stock-move-line-method-open-wizard"/>
     <field name="realQty" hidden="true" x-scale="$nbDecimalDigitForQty"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>

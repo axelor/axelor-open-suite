@@ -15,7 +15,7 @@
     <field name="fixedAsset.statusSelect" hidden="true"/>
     <button name="realizeBtn" title="Realize"
       readonlyIf="$get('fixedAsset.statusSelect') &lt; 2 || statusSelect == 2"
-      icon="fa-check-circle" onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>
+      icon="check-circle-fill" onClick="action-attrs-account-fixed-asset-derogatory-line-realize"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
   </grid>
 

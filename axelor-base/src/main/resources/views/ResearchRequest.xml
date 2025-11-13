@@ -17,7 +17,7 @@
     <panel name="requestPanel" title="ResearchRequest.title" colSpan="12">
       <field name="name" colSpan="3" required="true"/>
       <field name="models" required="true" widget="MultiSelect" colSpan="3"/>
-      <panel title="Search" icon="fa-search" name="searchPanel" colSpan="12" hideIf="!models">
+      <panel title="Search" icon="search" name="searchPanel" colSpan="12" hideIf="!models">
 
         <field name="research1" canEdit="false"
           onChange="action-research-request-record-research-1-reset-value,action-research-request-attrs-result-column-display"
@@ -54,7 +54,7 @@
         <field name="dateResearch1Value" requiredIf="dateResearch1" title="Date 1" colSpan="4"
           readonlyIf="dateResearch1 == null"/>
 
-        <button name="searchBtn" title="Search" icon="fa-search"
+        <button name="searchBtn" title="Search" icon="search"
           onClick="save,action-base-search" colOffset="8" colSpan="4"
           readonlyIf="(research1 == null &amp;&amp; research2 == null &amp;&amp; research3 == null &amp;&amp; research4 == null ) || (research1 != null &amp;&amp; research1Value == null) || (research2 != null &amp;&amp; research2Value == null  )  || (research3 != null &amp;&amp; research3Value == null)  || (research4 != null &amp;&amp; research4Value == null)"/>
         <panel-related name="researchResultsPanel" title="Results"

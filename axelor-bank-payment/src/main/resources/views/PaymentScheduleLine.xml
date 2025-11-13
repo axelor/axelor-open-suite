@@ -7,7 +7,7 @@
     model="com.axelor.apps.account.db.PaymentScheduleLine" orderBy="scheduleDate,scheduleLineSeq,id"
     canNew="false" canEdit="false" canDelete="false">
     <toolbar>
-      <button name="rejectSelectedBtn" title="Reject selected lines" icon="fa-times"
+      <button name="rejectSelectedBtn" title="Reject selected lines" icon="x"
         onClick="action-payment-schedule-line-show-reject-wizard"/>
     </toolbar>
     <field name="paymentSchedule" form-view="payment-schedule-form"
@@ -24,7 +24,7 @@
       if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>
     <field name="statusSelect" hidden="true"/>
     <field name="paymentSchedule.statusSelect" hidden="true"/>
-    <button name="rejectBtn" title="Reject" icon="fa-times"
+    <button name="rejectBtn" title="Reject" icon="x"
       onClick="action-payment-schedule-line-show-reject-wizard"
       readonlyIf="statusSelect != 3 || $get('paymentSchedule.statusSelect') != 2"
       if="__config__.app.getApp('bank-payment')?.manageDirectDebitPayment"/>

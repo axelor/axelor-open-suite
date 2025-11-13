@@ -62,7 +62,7 @@
       <button name="refuseBtn" hidden="true" onClick="action-leave-request-group-refuse"
         title="Refuse"/>
       <button name="cancelBtn" onClick="action-leave-request-group-cancel"
-        hideIf="statusSelect == 5" title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+        hideIf="statusSelect == 5" title="Cancel" icon="x-circle-fill" css="btn-danger"/>
       <button name="draftBtn"
         onClick="action-leave-request-record-draft,save,action-leave-request-attrs-buttons,action-leave-request-attrs-draft-cancel"
         title="Return to draft status" showIf="statusSelect &gt; 3 "/>

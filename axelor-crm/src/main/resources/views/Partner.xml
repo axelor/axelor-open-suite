@@ -38,7 +38,7 @@
   <form name="incl-event-actions-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" id="incl-event-actions-crm-partner-form">
     <menubar>
-      <menu name="partnerToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="partnerToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="sirenApiBtn" title="Fill from Sirene API"
           action="save,action-partner-view-wizard-api-sirene-configuration"/>
         <item title="Customer recovery" name="customerRecoveryItem"
@@ -400,13 +400,13 @@
   <grid name="partner-prospect-grid" title="Prospects" model="com.axelor.apps.base.db.Partner"
     orderBy="name" edit-icon="true">
     <menubar>
-      <menu name="partnerReportsMenu" title="Reports" showTitle="true" icon="fa-files-o">
+      <menu name="partnerReportsMenu" title="Reports" showTitle="true" icon="files">
         <item name="contactPhoneBookItem" title="Contact PhoneBook"
           action="action-print-phonebook"/>
         <item if="__config__.app.isApp('employee')" name="companyPhoneBookItem"
           title="Company phoneBook" action="action-print-company-phonebook"/>
       </menu>
-      <menu name="partnerToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+      <menu name="partnerToolsMenu" title="Tools" showTitle="true" icon="wrench">
         <item name="checkDuplicateItem" title="Check Duplicate"
           action="action-general-check-duplicate-records"/>
         <item name="mergeDuplicatedItem" title="Merge duplicated"
@@ -424,9 +424,9 @@
       widget="Tags"/>
     <field name="leadScoringSelect" widget="Rating"/>
     <button if="__config__.app.isApp('crm')" if-module="axelor-crm" name="scheduleEventBtn"
-      title="Schedule Event" icon="fa-group" onClick="action-partner-view-schedule-event"/>
+      title="Schedule Event" icon="people-fill" onClick="action-partner-view-schedule-event"/>
     <button if="__config__.app.isApp('crm')" if-module="axelor-crm" name="sendByEmailBtn"
-      title="Send Email" icon="fa-envelope" onClick="action-send-by-email-with-template"/>
+      title="Send Email" icon="envelope-fill" onClick="action-send-by-email-with-template"/>
   </grid>
 
   <grid id="crm-partner-grid" name="partner-grid" title="Partners"
@@ -441,9 +441,9 @@
   <cards id="crm-partner-cards" name="partner-cards" model="com.axelor.apps.base.db.Partner"
     title="Partners" css="rect-image">
     <toolbar>
-      <button name="printPhoneBookBtn" title="Contact PhoneBook" icon="fa-print"
+      <button name="printPhoneBookBtn" title="Contact PhoneBook" icon="printer"
         onClick="action-print-phonebook"/>
-      <button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="fa-print"
+      <button name="printCompanyPhoneBookBtn" title="Company PhoneBook" icon="printer"
         onClick="action-print-company-phonebook" if="__config__.app.isApp('employee')"/>
       <button name="checkDuplicateBtn" title="Check Duplicate"
         onClick="action-general-check-duplicate-records"/>

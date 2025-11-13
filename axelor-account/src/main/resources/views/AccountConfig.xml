@@ -62,7 +62,7 @@
         <button name="installTemplateBtn" title="Import the chart" hidden="true"
           showIf="(accountingConfigTemplate &amp;&amp; !$existingChartAccount &amp;&amp; !hasChartImported) &amp;&amp; ($existingFiscalYear || !$generateFiscalYear) &amp;&amp; isImportAccountChartOnly"
           readonlyIf="company == null || accountingConfigTemplate == null || (hasAccountCodeFixedNbrChar &amp;&amp; (accountCodeNbrCharSelect == 0 || accountCodeNbrCharSelect == null)) || hasChartImported"
-          colSpan="3" icon="fa-import" onClick="action-group-account-config-installchart-click"/>
+          colSpan="3" icon="upload" onClick="action-group-account-config-installchart-click"/>
         <spacer colSpan="12"/>
 
         <panel name="installTemplatePanel" hidden="true" showIf="accountingConfigTemplate"

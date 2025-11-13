@@ -21,7 +21,7 @@
       <insert position="after">
         <button name="collectedBtn" title="Collected" showIf="statusSelect == 2"
           readonlyIf="!(packagingList &amp;&amp; packagingList.length > 0)"
-          onClick="action-logistical-form-method-process-collected" icon="fa-truck"
+          onClick="action-logistical-form-method-process-collected" icon="truck"
           css="btn btn-success" colSpan="12"
           prompt="Are you sure you want to change status to &quot;Collected&quot; ?"/>
       </insert>

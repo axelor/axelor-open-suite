@@ -6,7 +6,7 @@
   <grid name="timesheet-grid" title="Timesheet" model="com.axelor.apps.hr.db.Timesheet"
     groupBy="employee" orderBy="employee,-fromDate">
     <menubar>
-      <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="timesheetToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="seeTimesheetLinesItem"
           action="action-timesheet-method-timesheet-line-historic" title="See timesheet lines"/>
       </menu>
@@ -28,7 +28,7 @@
   <grid name="all-timesheet-grid" title="All timesheets"
     model="com.axelor.apps.hr.db.Timesheet" groupBy="employee" orderBy="employee,-fromDate">
     <menubar>
-      <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="timesheetToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="seeTimesheetLinesItem" action="action-timesheet-method-all-timesheet-line"
           title="See timesheet lines"/>
       </menu>
@@ -50,7 +50,7 @@
   <grid name="my-timesheets-grid" title="My Timesheets" model="com.axelor.apps.hr.db.Timesheet"
     orderBy="-fromDate">
     <menubar>
-      <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="timesheetToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="seeTimesheetLinesItem" action="action-timesheet-see-timesheet-lines"
           title="See timesheet lines"/>
       </menu>
@@ -71,7 +71,7 @@
   <grid name="timesheet-validate-grid" title="Timesheet"
     model="com.axelor.apps.hr.db.Timesheet" orderBy="employee,-fromDate">
     <menubar>
-      <menu name="timesheetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="timesheetToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="timesheetValidatedBySubordinatesItem"
           action="com.axelor.apps.hr.web.timesheet.TimesheetController:showSubordinateTimesheets"
           title="Show timesheets to be validated by my subordinates"/>
@@ -98,7 +98,7 @@
     width="large" onNew="action-group-timesheet-onnew" onLoad="action-timesheet-group-onload"
     onSave="action-timesheet-group-onsave" canCopy="false">
     <menubar>
-      <menu title="Tools" icon="fa-wrench">
+      <menu title="Tools" icon="wrench">
         <item title="Lines Generation Wizard" showIf="statusSelect == 1"
           action="action-timesheet-record-default-generation-date,action-timesheet-attrs-set-log-time-title,action-timesheet-attrs-generate-lines-panel-hidden-false"/>
         <item title="Generate Lines From Expected Planning" showIf="statusSelect == 1"
@@ -141,25 +141,25 @@
           </viewer>
         </field>
         <button name="confirmBtn" onClick="action-timesheet-group-confirm" title="Confirm"
-          hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
+          hideIf="statusSelect &gt; 1" icon="check-square"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="continueBtn" onClick="action-timesheet-group-continue,close"
           title="Continue"
           showIf="statusSelect == 2 &amp;&amp; employee != null &amp;&amp; employee.user != null &amp;&amp; employee.user.code == $user"
-          icon="fa-arrow-right" if="__config__.app.getApp('timesheet')?.needValidation"/>
+          icon="arrow-right" if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="confirmContinueBtn"
           onClick="action-timesheet-group-confirm-continue,close" title="Confirm &amp; Continue"
-          hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
+          hideIf="statusSelect &gt; 1" icon="check-square"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="validateBtn" hidden="true" onClick="action-timesheet-group-validate"
-          title="Validate" icon="fa-check" css="btn-success"
+          title="Validate" icon="check" css="btn-success"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="refuseBtn" hidden="true" onClick="action-timesheet-group-refuse"
-          title="Refuse" icon="fa-times" css="btn-danger"
+          title="Refuse" icon="x" css="btn-danger"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="cancelBtn" hidden="true"
           onClick="save,action-timesheet-method-cancel,action-timesheet-group-buttons"
-          title="Cancel" icon="fa-times-circle" css="btn-danger"
+          title="Cancel" icon="x-circle-fill" css="btn-danger"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
         <button name="draftBtn"
           onClick="save,action-timesheet-method-draft,action-timesheet-group-buttons"
@@ -170,7 +170,7 @@
           if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer()"/>
         <button name="completeBtn" onClick="save,action-timesheet-method-complete"
           title="Complete" if="!__config__.app.getApp('timesheet')?.needValidation"
-          icon="fa-arrow-right"/>
+          icon="arrow-right"/>
       </panel>
     </panel>
 

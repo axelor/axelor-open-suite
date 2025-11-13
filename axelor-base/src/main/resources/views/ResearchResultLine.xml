@@ -12,7 +12,7 @@
     <field name="research4Value" title="Value 4"/>
     <field name="dateResearch1Value" title="Date 1"/>
     <button name="openModel" onClick="action-base-research-request-method-open-result-form"
-      icon="fa-external-link"/>
+      icon="box-arrow-up-right"/>
   </grid>
 
   <form name="research-result-line-form" model="com.axelor.apps.base.db.ResearchResultLine"

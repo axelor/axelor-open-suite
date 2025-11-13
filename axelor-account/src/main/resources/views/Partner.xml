@@ -58,7 +58,7 @@
             onSelect="action-attrs-account-bankdetails-bank-set-address-domain" canNew="true"
             form-view="bank-address-form"/>
           <field name="label"/>
-          <field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star"
+          <field name="isDefault" widget="toggle" x-icon="star" x-icon-active="star-fill"
             x-exclusive="true"/>
           <field name="active" widget="boolean-switch"/>
           <field name="ibanBic" hidden="true" x-bind="{{iban + ' ' + bank.code}}"/>

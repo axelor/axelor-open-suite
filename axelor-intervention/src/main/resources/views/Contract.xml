@@ -10,7 +10,7 @@
         <button name="generateEquipmentsBtn" title="Generate equipments"
           onClick="save,action-park-model-show-confirmation-from-contract"
           if="__config__.app.isApp('intervention')"/>
-        <button name="createInterventionBtn" title="Create intervention" icon="fa-calendar"
+        <button name="createInterventionBtn" title="Create intervention" icon="calendar"
           onClick="save,action-create-intervention-from-contract"
           if="__config__.app.isApp('intervention')" if-module="axelor-intervention"/>
       </insert>

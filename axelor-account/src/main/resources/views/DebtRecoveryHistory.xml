@@ -6,7 +6,7 @@
   <grid name="debt-recovery-history-grid" title="Debt recovery history"
     model="com.axelor.apps.account.db.DebtRecoveryHistory" canNew="false">
     <menubar>
-      <menu name="debtRecovryHistoryAttachmentsMenu" title="Attachments" icon="fa-files-o"
+      <menu name="debtRecovryHistoryAttachmentsMenu" title="Attachments" icon="files"
         showTitle="true">
         <item name="exportDmsFile"
           action="action-debit-recovery-history-export-dms-file-method" title="Export attachments"/>
@@ -29,7 +29,7 @@
     <field name="debtRecoveryDate"/>
     <field name="debtRecoveryMethodLine" grid-view="debt-recovery-method-line-grid"
       form-view="debt-recovery-method-line-form"/>
-    <button icon="fa-paperclip" onClick="action-debit-recovery-history-print-dms-file-method"
+    <button icon="paperclip" onClick="action-debit-recovery-history-print-dms-file-method"
       title="Attachments" name="dmsFileBtn"/>
   </grid>
 

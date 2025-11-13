@@ -23,7 +23,7 @@
         showIf="statusSelect != 2"/>
       <button name="printBtn" title="Print"
         onClick="action-abc-analysis-method-set-sequence,save,action-abc-analysis-validate-abc-analysis-seq,action-abc-analysis-validate-status,action-method-print-template"
-        icon="fa-print"/>
+        icon="printer"/>
     </toolbar>
     <panel name="statusPanel" hidden="true">
       <field name="statusSelect"/>

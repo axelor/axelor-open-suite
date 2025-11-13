@@ -125,25 +125,31 @@ public class LeadServiceImpl implements LeadService {
     searchName = searchName == null ? "" : searchName;
     urlMap.put(
         "linkedin",
-        "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
+        "<a href='http://www.linkedin.com/pub/dir/"
             + searchName.replace("+", "/")
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/linkedin.svg'/>"
+            + "</a>");
     if (companyName != null) {
       urlMap.put(
           "google",
-          "<a class='fa fa-google' href='https://www.google.com/search?q="
+          "<a href='https://www.google.com/search?q="
               + companyName
               + "+"
               + searchName
               + "&gws_rd=cr"
-              + "' target='_blank' />");
+              + "' target='_blank' >"
+              + "<img src='img/social/google.svg'/>"
+              + "</a>");
     } else {
       urlMap.put(
           "google",
-          "<a class='fa fa-google' href='https://www.google.com/search?q="
+          "<a href='https://www.google.com/search?q="
               + searchName
               + "&gws_rd=cr"
-              + "' target='_blank' />");
+              + "' target='_blank' >"
+              + "<img src='img/social/google.svg'/>"
+              + "</a>");
     }
     return urlMap;
   }

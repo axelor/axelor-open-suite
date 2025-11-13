@@ -6,7 +6,7 @@
   <grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee"
     orderBy="contactPartner.simpleFullName">
     <toolbar>
-      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print"
+      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="printer"
         onClick="action-print-employee-phonebook"/>
     </toolbar>
     <field name="contactPartner.partnerSeq" width="120"/>
@@ -43,12 +43,12 @@
 
     <!-- New employee wizard -->
     <panel name="stepByStepControlsPanel" showIf="stepByStepSelect &lt; 5" colSpan="12">
-      <button name="previousSBSBtn" colSpan="1" icon="fa-caret-left"
+      <button name="previousSBSBtn" colSpan="1" icon="caret-left-fill"
         readonlyIf="stepByStepSelect &lt; 2"
         onClick="validate,action-employee-record-previous-step,save"/>
       <field name="stepByStepSelect" colSpan="8" css="text-center" readonly="true"
         showTitle="false" widget="NavSelect" selection-in="[1, 2, 3, 4]"/>
-      <button name="nextSBSBtn" colSpan="1" icon="fa-caret-right"
+      <button name="nextSBSBtn" colSpan="1" icon="caret-right-fill"
         readonlyIf="(user &amp;&amp; stepByStepSelect &gt;= 3) || (user == null &amp;&amp; stepByStepSelect &gt; 3) "
         onClick="validate,action-employee-record-next-step,save"/>
       <button name="finishBtn" colSpan="2" title="Finish"
@@ -489,7 +489,7 @@
             colSpan="12" form-view="lunch-voucher-advance-form"
             grid-view="lunch-voucher-advance-grid"/>
           <button name="addLunchVoucherAdvanceBtn" title="Add an advance" colSpan="3"
-            icon="fa-ticket" onClick="save,action-lunch-voucher-advance-new"/>
+            icon="ticket-fill" onClick="save,action-lunch-voucher-advance-new"/>
         </panel>
 
         <panel name="expensesPanel" title="Expenses" canCollapse="true" collapseIf="true">
@@ -652,7 +652,7 @@
   <cards name="employee-card" title="Employee" model="com.axelor.apps.hr.db.Employee"
     css="rect-image" orderBy="contactPartner.simpleFullName">
     <toolbar>
-      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print"
+      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="printer"
         onClick="action-print-employee-phonebook"/>
     </toolbar>
     <field name="contactPartner.picture"/>

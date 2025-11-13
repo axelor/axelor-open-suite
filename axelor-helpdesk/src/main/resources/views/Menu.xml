@@ -94,7 +94,7 @@
   </action-view>
 
   <menuitem title="Reportings" name="helpdesk-reporting" order="700" parent="helpdesk-root"
-    icon="fa-bar-chart"/>
+    icon="bar-chart"/>
 
   <menuitem title="Tickets" name="helpdesk-report-ticket" action="helpdesk.report.ticket"
     parent="helpdesk-reporting" order="100"/>
@@ -117,7 +117,7 @@
   </action-view>
 
   <menuitem title="Configuration" name="helpdesk-config" order="800" parent="helpdesk-root"
-    icon="fa-cog"/>
+    icon="gear"/>
 
   <menuitem title="SLA policies" name="helpdesk-sla-policies-all"
     action="helpdesk.sla.policies.all" parent="helpdesk-config"

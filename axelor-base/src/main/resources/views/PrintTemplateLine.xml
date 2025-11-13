@@ -10,7 +10,7 @@
     <field name="ignoreTheLine" width="150"/>
     <field name="conditions"/>
     <field name="notes"/>
-    <button name="testTemplateLineBtn" title="Test" icon="fa-file-text-o"
+    <button name="testTemplateLineBtn" title="Test" icon="file-text"
       onClick="save,action-print-template-line-view-open-test-line"/>
   </grid>
 
@@ -35,7 +35,7 @@
         grid-view="print-template-line-grid" form-view="print-template-line-form" colSpan="12"
         orderBy="sequence" canMove="true"/>
       <field name="notes" colSpan="12"/>
-      <button name="testTemplateLineBtn" title="Test" icon="fa-file-text-o"
+      <button name="testTemplateLineBtn" title="Test" icon="file-text"
         onClick="save,action-print-template-line-view-open-test-line" showIf="id" colSpan="4"
         colOffset="4"/>
       <field name="parent" hidden="true"/>

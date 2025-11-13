@@ -21,7 +21,7 @@
     <field name="rack"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
-    <button name="stockCorrectionBtn" icon="fa-pencil-square-o"
+    <button name="stockCorrectionBtn" icon="pencil-square"
       onClick="action-stock-location-line-view-open-stock-correction-form"/>
   </grid>
 
@@ -59,13 +59,13 @@
       <field name="lastInventoryDateT" title="Date"/>
     </panel>
     <panel name="actionPanel">
-      <button name="$realQtyBtn" title="Real qty" icon="fa-building-o"
+      <button name="$realQtyBtn" title="Real qty" icon="building"
         onClick="action-stock-location-line-view-realized-stock-move-lines" colSpan="4"
         widget="info-button"/>
-      <button name="$futureQtyBtn" title="Future qty" icon="fa-line-chart"
+      <button name="$futureQtyBtn" title="Future qty" icon="graph-up-arrow"
         onClick="action-stock-location-line-view-planned-stock-move-lines" colSpan="4"
         widget="info-button"/>
-      <button name="$reservedQtyBtn" title="Reserved qty" icon="fa-cubes"
+      <button name="$reservedQtyBtn" title="Reserved qty" icon="boxes"
         onClick="action-stock-location-line-view-reserved-stock-move-lines" colSpan="4"
         widget="info-button" if-module="axelor-supplychain"
         if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
@@ -171,13 +171,13 @@
       <field name="lastInventoryDateT" title="Date"/>
     </panel>
     <panel name="actionPanel">
-      <button name="$realQtyBtn" title="Real qty" icon="fa-building-o"
+      <button name="$realQtyBtn" title="Real qty" icon="building"
         onClick="action-stock-location-line-view-realized-stock-move-lines" colSpan="3"
         widget="info-button"/>
-      <button name="$futureQtyBtn" title="Future qty" icon="fa-line-chart"
+      <button name="$futureQtyBtn" title="Future qty" icon="graph-up-arrow"
         onClick="action-stock-location-line-view-planned-stock-move-lines" colSpan="3"
         widget="info-button"/>
-      <button name="$reservedQtyBtn" title="Reserved qty" icon="fa-cubes"
+      <button name="$reservedQtyBtn" title="Reserved qty" icon="boxes"
         onClick="action-stock-location-line-view-reserved-stock-move-lines" colSpan="3"
         widget="info-button" if-module="axelor-supplychain"
         if="__config__.app.getApp('supplychain')?.getManageStockReservation()"/>
@@ -215,7 +215,7 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
     <field name="trackingNumber" domain="self.product = :product"/>
     <field name="rack"/>
-    <button name="stockCorrectionBtn" icon="fa-pencil-square-o"
+    <button name="stockCorrectionBtn" icon="pencil-square"
       onClick="action-stock-location-line-view-open-stock-correction-form"/>
   </grid>
 

@@ -142,7 +142,7 @@
   </action-view>
 
   <menuitem name="sc-root-sale-report" parent="sc-root-sale" title="Reportings"
-    order="1300" icon="fa-bar-chart"/>
+    order="1300" icon="bar-chart"/>
 
   <menuitem name="sc-root-sale-maps" parent="sc-root-sale-report" title="Maps" order="500"/>
 
@@ -154,7 +154,7 @@
     action="action-show-prospects-on-map-page" order="200"/>
 
   <menuitem name="sc-root-sale-conf" parent="sc-root-sale" title="Configuration"
-    order="1400" icon="fa-cog"/>
+    order="1400" icon="gear"/>
 
   <menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf" title="Cancel Reasons"
     action="sale.conf.cancelreason" order="200"/>

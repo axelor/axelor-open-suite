@@ -305,21 +305,27 @@ public class PartnerServiceImpl implements PartnerService {
     name = name == null ? "" : name;
     urlMap.put(
         "google",
-        "<a class='fa fa-google' href='https://www.google.com/search?q="
+        "<a href='https://www.google.com/search?q="
             + name
             + "&gws_rd=cr"
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/google.svg'/>"
+            + "</a>");
     urlMap.put(
         "linkedin",
-        "<a class='fa fa-linkedin' href='https://www.linkedin.com/company/"
+        "<a href='https://www.linkedin.com/company/"
             + name
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/linkedin.svg'/>"
+            + "</a>");
     if (typeSelect == 2) {
       urlMap.put(
           "linkedin",
-          "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
+          "<a href='http://www.linkedin.com/pub/dir/"
               + name.replace("+", "/")
-              + "' target='_blank' />");
+              + "' target='_blank' >"
+              + "<img src='img/social/linkedin.svg'/>"
+              + "</a>");
     }
 
     return urlMap;

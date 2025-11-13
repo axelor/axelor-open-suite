@@ -14,9 +14,9 @@
 
   <grid name="contract-file-grid" title="Files" model="com.axelor.apps.base.db.File">
     <toolbar>
-      <button name="newLineBtn" title="New File" icon="fa-plus"
+      <button name="newLineBtn" title="New File" icon="plus-lg"
         onClick="action-contract-file-view-add-file"/>
-      <button name="removeLineBtn" title="Remove files" icon="fa-trash"
+      <button name="removeLineBtn" title="Remove files" icon="trash"
         onClick="action-contract-file-validate-confirm-remove, action-contract-file-method-remove"/>
     </toolbar>
     <field name="fileType"/>

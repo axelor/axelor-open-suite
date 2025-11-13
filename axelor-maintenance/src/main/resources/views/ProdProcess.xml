@@ -22,7 +22,7 @@
     onSave="action-prod-process-method-validate-prod-process"
     onNew="action-maintenance-prod-process-group-onnew">
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
+      <button name="printBtn" title="Print" icon="printer"
         onClick="save,action-production-process-print"/>
       <button if="__config__.app.getApp('production')?.manageProdProcessVersion"
         name="newVersionBtn" title="Generate new version"

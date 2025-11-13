@@ -7,9 +7,9 @@
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
     onNew="action-timesheet-line-group-project-grid-on-new" orderBy="-date" groupBy="employee">
     <toolbar>
-      <button name="newLineBtn" title="New line" icon="fa-plus"
+      <button name="newLineBtn" title="New line" icon="plus-lg"
         onClick="action-timesheet-line-method-log-time"/>
-      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+      <button name="removeLineBtn" title="Remove lines" icon="trash"
         onClick="action-timesheet-line-method-remove-timesheet-lines"/>
     </toolbar>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
@@ -29,9 +29,9 @@
     model="com.axelor.apps.hr.db.TimesheetLine" editable="true"
     onNew="action-timesheet-line-group-project-grid-on-new" orderBy="-date">
     <toolbar>
-      <button name="newLineBtn" title="New line" icon="fa-plus"
+      <button name="newLineBtn" title="New line" icon="plus-lg"
         onClick="action-timesheet-line-method-log-time"/>
-      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+      <button name="removeLineBtn" title="Remove lines" icon="trash"
         onClick="action-timesheet-line-method-remove-timesheet-lines"/>
     </toolbar>
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>

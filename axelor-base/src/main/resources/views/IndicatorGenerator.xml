@@ -25,7 +25,7 @@
         onClick="save,com.axelor.apps.base.web.IndicatorGeneratorController:run"/>
       <button name="exportCsvBtn" title="Export CSV"
         onClick="save,com.axelor.apps.base.web.IndicatorGeneratorController:exportCsv"
-        readonlyIf="!result" icon="fa-reply"/>
+        readonlyIf="!result" icon="reply-fill"/>
       <field name="result" colSpan="12" widget="html" x-lite="true"/>
       <field name="log" colSpan="12"/>
     </panel>

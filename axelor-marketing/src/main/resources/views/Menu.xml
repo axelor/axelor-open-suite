@@ -25,8 +25,8 @@
     <view name="campaign-form" type="form"/>
   </action-view>
 
-  <menuitem name="marketing-conf" title="Configuration" parent="marketing-root"
-    icon="fa-cog" order="300"/>
+  <menuitem name="marketing-conf" title="Configuration" parent="marketing-root" icon="gear"
+    order="300"/>
 
   <menuitem name="marketing-conf-campaign-type" parent="marketing-conf"
     title="Campaign types" action="marketing.conf.campaign.type" order="100"/>

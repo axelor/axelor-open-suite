@@ -39,10 +39,10 @@
   <grid name="invoice-term-pfp-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
     <toolbar>
-      <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
+      <button name="passedForPaymentValidationBtn" icon="check-circle-fill"
         title="toolbar.validatePFP" onClick="action-invoice-term-method-mass-validate-pfp"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-      <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
+      <button name="refusalToPayBtn" icon="dash-circle-fill" title="toolbar.refusePFP"
         onClick="action-invoiceterm-view-refusal-to-pay"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     </toolbar>
@@ -69,10 +69,10 @@
   <grid name="invoice-term-move-line-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
     <toolbar>
-      <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
+      <button name="passedForPaymentValidationBtn" icon="check-circle-fill"
         title="toolbar.validatePFP" onClick="action-invoice-term-method-mass-validate-pfp"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-      <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
+      <button name="refusalToPayBtn" icon="dash-circle-fill" title="toolbar.refusePFP"
         onClick="action-invoiceterm-view-refusal-to-pay"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     </toolbar>
@@ -109,10 +109,10 @@
   <grid name="invoice-term-invoice-payment-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
     <toolbar>
-      <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
+      <button name="passedForPaymentValidationBtn" icon="check-circle-fill"
         title="toolbar.validatePFP" onClick="action-invoice-term-method-mass-validate-pfp"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-      <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
+      <button name="refusalToPayBtn" icon="dash-circle-fill" title="toolbar.refusePFP"
         onClick="action-invoiceterm-view-refusal-to-pay"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     </toolbar>
@@ -183,16 +183,16 @@
     <hilite color="primary" if="isSelectedOnPaymentSession"/>
     <hilite color="warning" if="financialDiscount &amp;&amp; !isSelectedOnPaymentSession"/>
     <button name="selectBtn" title="Select"
-      onClick="action-invoice-term-method-select-terms-btn,save" icon="fa-plus-circle"
+      onClick="action-invoice-term-method-select-terms-btn,save" icon="plus-circle-fill"
       readonlyIf="isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="unselectBtn" title="Unselect"
-      onClick="action-invoice-term-method-unselect-terms-btn,save" icon="fa-minus-circle"
+      onClick="action-invoice-term-method-unselect-terms-btn,save" icon="dash-circle-fill"
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
-      icon="fa-user-plus" onClick="action-invoice-term-method-select-partner-terms-btn"
+      icon="person-plus-fill" onClick="action-invoice-term-method-select-partner-terms-btn"
       readonlyIf="isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
-      icon="fa-user-times" onClick="action-invoice-term-method-unselect-partner-terms-btn"
+      icon="person-x-fill" onClick="action-invoice-term-method-unselect-partner-terms-btn"
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <field name="paymentSession.name" hidden="true"/>
     <field name="$statusSelectPaymentSession" hidden="true"/>

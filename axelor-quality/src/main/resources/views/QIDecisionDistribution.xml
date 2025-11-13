@@ -17,7 +17,7 @@
     <field name="answeredOn"/>
     <field name="generatedFile"/>
     <field name="distributionSent"/>
-    <button onClick="action-qi-resolution-decision-view-register-response" icon="fa-reply"
+    <button onClick="action-qi-resolution-decision-view-register-response" icon="reply-fill"
       name="registerResponseBtn" title="Register response"/>
   </grid>
 

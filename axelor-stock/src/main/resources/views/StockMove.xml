@@ -7,8 +7,8 @@
     orderBy="statusSelect,-estimatedDate">
     <toolbar>
       <button name="printBtn" title="Print StockMove(s)"
-        onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
-      <button name="mergeBtn" title="Merge stock moves" icon="fa-object-ungroup"
+        onClick="action-stock-move-group-print-stock-move" icon="printer"/>
+      <button name="mergeBtn" title="Merge stock moves" icon="merge"
         onClick="action-stock-move-group-merge"/>
     </toolbar>
     <hilite if="statusSelect == 2 &amp;&amp; $moment().diff(estimatedDate, 'days') &gt; 0"
@@ -44,7 +44,7 @@
       if="__config__.app.isApp('supplychain')"/>
     <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
       if-module="axelor-supplychain" if="__config__.app.isApp('supplychain')"/>
-    <button name="printStockMoveBtn" title="Print" icon="fa-print"
+    <button name="printStockMoveBtn" title="Print" icon="printer"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
     <button name="viewDirectionBtn" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
@@ -55,12 +55,12 @@
     model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate" groupBy="statusSelect">
     <toolbar>
       <button name="printBtn" title="Print StockMove(s)"
-        onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
+        onClick="action-stock-move-group-print-stock-move" icon="printer"/>
       <button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)"
-        onClick="action-print-picking-stock-move" icon="fa-print"/>
+        onClick="action-print-picking-stock-move" icon="printer"/>
       <button name="seeStockMoveLinesBtn" title="See stock move lines"
-        onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
-      <button name="mergeBtn" title="Merge stock moves" icon="fa-object-ungroup"
+        onClick="action-stock-move-view-stock-move-line" icon="list-task"/>
+      <button name="mergeBtn" title="Merge stock moves" icon="merge"
         onClick="action-stock-move-group-merge"/>
       <button name="addToLogisticalFormBtn" title="Add stock move(s) to logistical form"
         onClick="action-stock-move-validate-stock-moves,action-stock-move-view-add-stock-moves-to-logistical-form"/>
@@ -99,7 +99,7 @@
     <field name="pickingIsEdited" hidden="true"/>
     <field name="typeSelect" hidden="true"/>
     <field name="toStockLocation" hidden="true"/>
-    <button name="printStockMoveBtn" title="Print" icon="fa-print"
+    <button name="printStockMoveBtn" title="Print" icon="printer"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
     <button name="viewDirectionBtn" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
@@ -127,9 +127,9 @@
     model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     <toolbar>
       <button name="printBtn" title="Print StockMove(s)"
-        onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
+        onClick="action-stock-move-group-print-stock-move" icon="printer"/>
       <button name="printPickingStockMoveGridBtn" title="Print Picking StockMove(s)"
-        onClick="action-print-picking-stock-move" icon="fa-print"/>
+        onClick="action-print-picking-stock-move" icon="printer"/>
       <button name="seeStockMoveLinesBtn" title="See stock move lines"
         onClick="action-stock-move-view-stock-move-line"/>
     </toolbar>
@@ -158,7 +158,7 @@
     <field name="availabilityRequest"/>
     <field name="pickingIsEdited" hidden="true"/>
     <field name="typeSelect" hidden="true"/>
-    <button name="printStockMoveBtn" title="Print" icon="fa-print"
+    <button name="printStockMoveBtn" title="Print" icon="printer"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
     <button name="viewDirectionBtn" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
@@ -169,10 +169,10 @@
     model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate" groupBy="statusSelect">
     <toolbar>
       <button name="printBtn" title="Print StockMove(s)"
-        onClick="action-stock-move-group-print-stock-move" icon="fa-print"/>
+        onClick="action-stock-move-group-print-stock-move" icon="printer"/>
       <button name="seeStockMoveLinesBtn" title="See stock move lines"
-        onClick="action-stock-move-view-stock-move-line" icon="fa-tasks"/>
-      <button name="mergeBtn" title="Merge stock moves" icon="fa-object-ungroup"
+        onClick="action-stock-move-view-stock-move-line" icon="list-task"/>
+      <button name="mergeBtn" title="Merge stock moves" icon="merge"
         onClick="action-stock-move-group-merge"/>
     </toolbar>
     <field name="stockMoveSeq" width="120"/>
@@ -192,7 +192,7 @@
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <field name="typeSelect" hidden="true"/>
-    <button name="printStockMoveBtn" title="Print" icon="fa-print"
+    <button name="printStockMoveBtn" title="Print" icon="printer"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
     <button name="viewDirectionBtn" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
@@ -236,7 +236,7 @@
       <button name="printBtn" hideIf="true" onClick=""/>
     </toolbar>
     <menubar>
-      <menu name="stockMoveReportsMenu" title="Reports" icon="fa-files-o">
+      <menu name="stockMoveReportsMenu" title="Reports" icon="files">
         <item name="printInternalMoveItem" title="Print Internal Move"
           action="action-stock-move-group-save-and-update-stocks,action-stock-move-group-print-stock-move"
           readonlyIf="statusSelect == 1" showIf="typeSelect == 1"/>
@@ -254,7 +254,7 @@
           showIf="statusSelect != 1 &amp;&amp; isNeedingConformityCertificate"/>
       </menu>
 
-      <menu name="stockMoveToolsMenu" title="Tools" icon="fa-wrench">
+      <menu name="stockMoveToolsMenu" title="Tools" icon="wrench">
         <item name="viewDirectionItem" title="View Direction"
           showIf="typeSelect == 2 &amp;&amp; statusSelect!=4"
           action="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
@@ -555,7 +555,7 @@
         <field name="company.currency.numberOfDecimals" hidden="true"/>
       </panel>
       <panel name="actionPanel" colSpan="3" itemSpan="12">
-        <button name="planBtn" title="Plan" icon="fa-calendar" showIf="statusSelect == 1"
+        <button name="planBtn" title="Plan" icon="calendar" showIf="statusSelect == 1"
           onClick="action-group-stock-stockmove-plan-click"/>
         <button name="passedForPaymentAuthorizedBtn" showIf="pfpValidateStatusSelect != 2"
           title="PFP authorized"
@@ -567,19 +567,20 @@
           onClick="action-stock-move-group-save-and-update-stocks,action-stock-move-record-pfp-refusal-to-pay,save"
           if-module="axelor-supplychain"
           if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('account')?.getActivatePassedForPayment()"/>
-        <button name="realizeBtn" title="Realize" icon="fa-check" showIf="statusSelect == 2"
+        <button name="realizeBtn" title="Realize" icon="check" showIf="statusSelect == 2"
           prompt="Are you sure you want to realize this stock move?"
           onClick="action-group-stock-stockmove-realize-click"/>
         <button
           if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getGenerateInvoiceFromStockMove()"
           if-module="axelor-supplychain" name="generateInvoiceBtn" title="Generate control invoice"
-          hidden="true" icon="fa-file-o"
+          hidden="true" icon="file"
           onClick="save,action-supplychain-stock-move-validate-invoicing-block,action-supplychain-stock-move-method-invoicing-wizard"/>
-        <button name="generateReversionBtn" title="Generate reversion" icon="fa-undo"
-          onClick="save,action-stock-move-method-generate-reversion"
+        <button name="generateReversionBtn" title="Generate reversion"
+          icon="arrow-counterclockwise" onClick="save,action-stock-move-method-generate-reversion"
           showIf="statusSelect == 3 &amp;&amp; !isReversion"/>
         <button name="generateNewStockMoveBtn" title="Generate a new stock move"
-          icon="fa-undo" onClick="save,action-stock-move-method-generate-new-stock-move"
+          icon="arrow-counterclockwise"
+          onClick="save,action-stock-move-method-generate-new-stock-move"
           showIf="statusSelect == 3 &amp;&amp; isReversion"/>
         <button if="__config__.app.getApp('supplychain')?.getValidStepForInvOutSM()"
           name="delayedInvoice" title="Facturation ultérieure"
@@ -591,7 +592,7 @@
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 4"
           css="btn-success"
           onClick="save,action-stock-move-method-set-invoicing-status-invoiced-validated"/>
-        <button name="cancelBtn" title="Cancel" icon="fa-times-circle" css="btn-danger"
+        <button name="cancelBtn" title="Cancel" icon="x-circle-fill" css="btn-danger"
           showIf="id != null &amp;&amp; statusSelect &gt; 1 &amp;&amp; statusSelect &lt; 4"
           onClick="action-group-stock-stockmove-cancel-click"/>
         <button name="draftBtn" title="Draft" showIf="statusSelect == 4"
@@ -775,9 +776,9 @@
 
       <button name="yesBtn" title="Yes"
         onClick="action-stock-move-popup-backorder-record-set-backorder,save,action-stock-move-method-realize,close"
-        icon="fa-check" colOffset="3" colSpan="3"/>
+        icon="check" colOffset="3" colSpan="3"/>
       <button name="noBtn" title="No" onClick="action-stock-move-method-realize,close"
-        icon="fa-times" css="btn-danger" colSpan="3"/>
+        icon="x" css="btn-danger" colSpan="3"/>
 
       <field name="typeSelect" hidden="true"/>
       <field name="fromStockLocation" hidden="true"/>
@@ -804,10 +805,9 @@
         </viewer>
       </field>
       <button name="confirmBtn" title="Confirm"
-        onClick="save,action-stock-move-group-realize,close" icon="fa-check" colOffset="3"
+        onClick="save,action-stock-move-group-realize,close" icon="check" colOffset="3" colSpan="3"/>
+      <button name="cancelBtn" title="Cancel" onClick="close" icon="x" css="btn-danger"
         colSpan="3"/>
-      <button name="cancelBtn" title="Cancel" onClick="close" icon="fa-times"
-        css="btn-danger" colSpan="3"/>
       <field name="$percentToleranceForWapChange" type="integer" hidden="true"/>
       <field name="$productsWithError" type="string" hidden="true"/>
     </panel>

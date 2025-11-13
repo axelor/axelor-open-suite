@@ -11,7 +11,7 @@
     <field name="typeSelect"/>
     <field name="user"/>
     <field name="dateT"/>
-    <button name="showReferenceButton" title="Show the reference" icon="fa-share"
+    <button name="showReferenceButton" title="Show the reference" icon="share"
       onClick="action-global-tracking-log-method-show-reference"/>
   </grid>
 
