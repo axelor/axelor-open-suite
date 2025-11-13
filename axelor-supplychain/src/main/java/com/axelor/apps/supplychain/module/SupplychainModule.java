@@ -50,6 +50,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderMergingViewServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
+import com.axelor.apps.purchase.service.purchaseorderline.view.PurchaseOrderLineViewServiceImpl;
 import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
 import com.axelor.apps.sale.db.repo.CartLineManagementRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineSaleRepository;
@@ -301,6 +302,7 @@ import com.axelor.apps.supplychain.service.pricing.FreightCarrierApplyPricingSer
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingServiceImpl;
 import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl;
+import com.axelor.apps.supplychain.service.purchaseorderline.view.PurchaseOrderLineViewServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
@@ -400,6 +402,8 @@ public class SupplychainModule extends AxelorModule {
     bind(StockRulesService.class).to(StockRulesServiceImpl.class);
     bind(StockRulesSupplychainService.class).to(StockRulesSupplychainServiceImpl.class);
     bind(PurchaseOrderServiceImpl.class).to(PurchaseOrderServiceSupplychainImpl.class);
+    bind(PurchaseOrderLineViewServiceImpl.class)
+        .to(PurchaseOrderLineViewServiceSupplychainImpl.class);
     bind(SaleOrderServiceImpl.class).to(SaleOrderServiceSupplychainImpl.class);
     bind(SaleOrderCreateServiceImpl.class).to(SaleOrderCreateServiceSupplychainImpl.class);
     bind(SaleOrderComputeServiceImpl.class).to(SaleOrderComputeServiceSupplychainImpl.class);
