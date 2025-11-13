@@ -96,6 +96,8 @@
 
   <menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100"
     icon="wrench-adjustable-circle" icon-background="#2fa042"/>
+  <menuitem id="mgm-abs-menu-admin" name="mgm-admin" title="Administration" order="150"
+    groups="MGM-OM" icon="wrench-adjustable-circle" icon-background="#2fa042"/>
 
   <menuitem name="admin-root-general" parent="admin-root" order="200"
     if="__config__.app.isApp('base')" title="General data"/>
@@ -226,6 +228,8 @@
 
   <menuitem name="referential-root-contacts" parent="referential-root" title="Contacts"
     action="referential.root.contacts" order="200"/>
+  <menuitem name="mgm-referential-root-contacts" parent="mgm-admin" title="Contacts"
+    action="referential.root.contacts" order="200"/>
 
   <action-view name="referential.root.contacts" title="Contacts"
     model="com.axelor.apps.base.db.Partner">
@@ -354,6 +358,8 @@
 
   <menuitem name="referential-conf-address" parent="referential-conf" title="Addresses"
     action="referential.conf.address" order="500"/>
+  <menuitem name="mgm-referential-conf-address" parent="mgm-admin" title="Addresses"
+    action="referential.conf.address" order="500"/>
 
   <action-view name="referential.conf.address" title="Addresses"
     model="com.axelor.apps.base.db.Address">
@@ -366,6 +372,8 @@
 
   <menuitem name="referential-conf-invoice-rib" parent="referential-conf"
     title="Bank details" action="referential.conf.invoice.rib" order="600"/>
+  <menuitem name="mgm-referential-conf-invoice-rib" parent="mgm-admin" title="Bank details"
+    action="referential.conf.invoice.rib" order="600"/>
 
   <action-view name="referential.conf.invoice.rib" title="Bank details"
     model="com.axelor.apps.base.db.BankDetails">
@@ -376,6 +384,8 @@
 
   <menuitem name="referential-conf-invoice-bank" parent="referential-conf"
     title="SWIFT codes" action="referential.conf.invoice.bank" order="700"/>
+  <menuitem name="mgm-referential-conf-invoice-bank" parent="mgm-admin" title="SWIFT codes"
+    action="referential.conf.invoice.bank" order="700"/>
 
   <action-view name="referential.conf.invoice.bank" title="SWIFT codes"
     model="com.axelor.apps.base.db.Bank">
@@ -384,6 +394,8 @@
   </action-view>
 
   <menuitem name="referential-conf-partner-category" parent="referential-conf"
+    title="Partner categories" action="referential.conf.partner.category" order="800"/>
+  <menuitem name="mgm-referential-conf-partner-category" parent="mgm-admin"
     title="Partner categories" action="referential.conf.partner.category" order="800"/>
 
   <action-view name="referential.conf.partner.category" title="Partner categories"
@@ -394,6 +406,8 @@
 
   <menuitem name="referential-conf-partner-sources" parent="referential-conf"
     title="Partner sources" action="referential.conf.partner.sources" order="900"/>
+  <menuitem name="mgm-referential-conf-partner-sources" parent="mgm-admin"
+    title="Partner sources" action="referential.conf.partner.sources" order="900"/>
 
   <action-view name="referential.conf.partner.sources" title="Partner sources"
     model="com.axelor.apps.base.db.Source">
@@ -402,6 +416,8 @@
   </action-view>
 
   <menuitem name="referential-conf-industry-sector-config" parent="referential-conf"
+    title="Industry sectors" action="referential.conf.industry.sector.config" order="1000"/>
+  <menuitem name="mgm-referential-conf-industry-sector-config" parent="mgm-admin"
     title="Industry sectors" action="referential.conf.industry.sector.config" order="1000"/>
 
   <action-view name="referential.conf.industry.sector.config" title="Industry sectors"
@@ -540,6 +556,8 @@
   <menuitem name="admin-root-organisation-territory-city"
     parent="admin-root-organisation-territory" title="Cities"
     action="admin.root.organisation.territory.city" order="200"/>
+  <menuitem name="mgm-admin-root-organisation-territory-city" parent="mgm-admin"
+    title="Cities" action="admin.root.organisation.territory.city" order="200"/>
 
   <action-view name="admin.root.organisation.territory.city" title="Cities"
     model="com.axelor.apps.base.db.City">
@@ -614,6 +632,8 @@
 
   <menuitem name="admin-root-user-user" parent="admin-root-user" title="Users"
     action="action-auth-users" order="100"/>
+  <menuitem name="mgm-admin-root-user-user" parent="mgm-admin" title="Users"
+    action="action-auth-users" order="100"/>
 
   <action-view id="base-action-auth-users" name="action-auth-users" title="Users"
     model="com.axelor.auth.db.User">
@@ -651,6 +671,8 @@
 
   <menuitem name="company-department-all" parent="admin-root-user-configuration"
     title="Departments" action="company.department.all" order="100"/>
+  <menuitem name="mgm-company-department-all" parent="mgm-admin" title="Departments"
+    action="company.department.all" order="100"/>
 
   <action-view name="company.department.all" title="Company departments"
     model="com.axelor.apps.base.db.CompanyDepartment">
@@ -734,6 +756,10 @@
 
   <menuitem name="mail-root-email-conf-routing" parent="mail-conf" title="Routings"
     action="mail.root.email.conf.routing" order="200"/>
+  <menuitem name="mgm-mail-root-email-conf-mail-account" title="Email Accounts"
+    parent="mgm-admin" action="mail.root.email.conf.mail.account" order="15"/>
+  <menuitem name="mgm-mail-root-email-conf-email-address" title="Email addresses"
+    parent="mgm-admin" action="mail.root.email.conf.email.address" order="20"/>
 
   <action-view name="mail.root.email.conf.routing" title="Routings"
     model="com.axelor.apps.base.db.Routing">
@@ -786,6 +812,8 @@
 
   <menuitem name="admin-root-indicator-generator-grouping" parent="admin-root-maintenance"
     title="Indicators groups" action="admin.root.indicator.generator.grouping" order="600"/>
+  <menuitem name="mgmm-admin-root-indicator-generator-grouping" parent="mgm-admin"
+    title="Indicators groups" action="admin.root.indicator.generator.grouping" order="600"/>
 
   <action-view name="admin.root.indicator.generator.grouping" title="Indicators groups"
     model="com.axelor.apps.base.db.IndicatorGeneratorGrouping">
@@ -813,6 +841,8 @@
 
   <menuitem title="Printing Setting" name="menu-printing-setting"
     parent="admin-root-maintenance" action="menu-printing-setting" order="900"/>
+  <menuitem title="Printing Setting" name="mgm-menu-printing-setting" parent="mgm-admin"
+    action="menu-printing-setting" order="900"/>
 
   <action-view name="menu-printing-setting" title="Printing Setting"
     model="com.axelor.apps.base.db.PrintingSettings">

@@ -88,8 +88,9 @@
               colSpan="6" hideIf="customerNotAvailable"/>
           </panel>
           <panel colSpan="12">
-            <field name="customerNotAvailable" widget="checkbox" title="Customer Available"
-              onChange="action-customer-available-attrs"/>
+            <field name="customerNotAvailable" widget="checkbox" colSpan="9" hidden="true"/>
+            <field name="customerNotAvailable" widget="checkbox" colSpan="3"
+              title="Customer Not Available" onChange="action-customer-available-attrs"/>
           </panel>
         </panel>
       </panel>
