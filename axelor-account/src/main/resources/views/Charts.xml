@@ -1405,6 +1405,8 @@ from InvoiceTerm as self
     <field name="amount" type="decimal" x-scale="numberOfDecimals"/>
     <field name="statusSelect" title="Status"
       selection="payment.session.dashlet.status.select" widget="single-select"/>
+    <field name="supplier" type="string"/>
+    <field name="bankDetails" title="Bank Details" type="string"/>
 
     <dataset type="jpql"><![CDATA[
 	   SELECT

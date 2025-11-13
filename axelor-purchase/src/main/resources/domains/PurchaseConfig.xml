@@ -28,6 +28,17 @@
       title="Analytic distribution required on purchase order line"/>
     <many-to-one name="purchaseOrderPrintTemplate" title="Purchase order template"
       ref="com.axelor.apps.base.db.PrintingTemplate"/>
+
+    <extra-code>
+      <![CDATA[
+        // TYPE SELECT
+		public static final int PURCHASE_WT_ALWAYS = 1;
+		public static final int PURCHASE_ATI_ALWAYS = 2;
+		public static final int PURCHASE_WT_DEFAULT = 3;
+		public static final int PURCHASE_ATI_DEFAULT = 4;
+      ]]>
+    </extra-code>
+
     <track>
       <field name="company" on="UPDATE"/>
       <field name="purchaseOrderInAtiSelect" on="UPDATE"/>
@@ -43,5 +54,7 @@
       <field name="purchaseOrderPrintTemplate" on="UPDATE"/>
     </track>
   </entity>
+
+
 
 </domain-models>

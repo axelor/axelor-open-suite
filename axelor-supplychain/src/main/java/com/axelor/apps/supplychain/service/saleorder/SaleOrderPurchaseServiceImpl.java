@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.supplychain.service.saleorder;
 
-import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -30,8 +29,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.PurchaseOrderTaxService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
-import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
@@ -63,7 +62,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
   protected PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain;
   protected PurchaseOrderService purchaseOrderService;
   protected PurchaseOrderRepository purchaseOrderRepository;
-  protected PurchaseConfigService purchaseConfigService;
+  protected PurchaseOrderTaxService purchaseOrderTaxService;
   protected AppBaseService appBaseService;
   protected PartnerPriceListService partnerPriceListService;
   protected SupplierCatalogService supplierCatalogService;
@@ -77,7 +76,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
       PurchaseOrderLineServiceSupplyChain purchaseOrderLineServiceSupplychain,
       PurchaseOrderService purchaseOrderService,
       PurchaseOrderRepository purchaseOrderRepository,
-      PurchaseConfigService purchaseConfigService,
+      PurchaseOrderTaxService purchaseOrderTaxService,
       AppBaseService appBaseService,
       PartnerPriceListService partnerPriceListService,
       SupplierCatalogService supplierCatalogService,
@@ -88,7 +87,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
     this.purchaseOrderLineServiceSupplychain = purchaseOrderLineServiceSupplychain;
     this.purchaseOrderService = purchaseOrderService;
     this.purchaseOrderRepository = purchaseOrderRepository;
-    this.purchaseConfigService = purchaseConfigService;
+    this.purchaseOrderTaxService = purchaseOrderTaxService;
     this.appBaseService = appBaseService;
     this.partnerPriceListService = partnerPriceListService;
     this.supplierCatalogService = supplierCatalogService;
@@ -191,16 +190,7 @@ public class SaleOrderPurchaseServiceImpl implements SaleOrderPurchaseService {
     purchaseOrder.setGeneratedSaleOrderId(saleOrder.getId());
     purchaseOrder.setGroupProductsOnPrintings(supplierPartner.getGroupProductsOnPrintings());
 
-    Integer atiChoice =
-        purchaseConfigService
-            .getPurchaseConfig(saleOrder.getCompany())
-            .getPurchaseOrderInAtiSelect();
-    if (atiChoice == AccountConfigRepository.INVOICE_ATI_ALWAYS
-        || atiChoice == AccountConfigRepository.INVOICE_ATI_DEFAULT) {
-      purchaseOrder.setInAti(true);
-    } else {
-      purchaseOrder.setInAti(false);
-    }
+    purchaseOrderTaxService.setPurchaseOrderInAti(purchaseOrder);
 
     if (appSupplychainService.getAppSupplychain().getIntercoFromPurchase()) {
       Company intercoCompany = intercoService.findIntercoCompany(supplierPartner);
