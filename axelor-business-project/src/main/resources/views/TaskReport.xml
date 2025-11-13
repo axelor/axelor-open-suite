@@ -51,7 +51,7 @@
         </panel>
 
         <!-- Panel for Task Member Reports -->
-        <panel title="Team Members Reports" canCollapse="true" collapseIf="true" colSpan="12">
+        <panel title="Team Members Reports" canCollapse="true" collapseIf="false" colSpan="12">
           <field name="taskMemberReports" widget="list" colSpan="12" canNew="true"
             canEdit="true" form-view="task-member-report-form"
             onChange="action-update-total-work-hours"/>
