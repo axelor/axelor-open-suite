@@ -88,7 +88,7 @@ public class BankStatementLinePrintAFB120ServiceImpl
               bankStatementLinesPrintTemplate,
               new PrintingGenFactoryContext(
                   Map.of(
-                      "FromDate", fromDate, "ToDate", toDate, "BankDetails", bankDetails.getId())),
+                      "FromDate", fromDate, "ToDate", toDate, "bankDetails", bankDetails.getId())),
               "Bank statement lines - " + fromDate + " to " + toDate);
     }
     return fileLink;
