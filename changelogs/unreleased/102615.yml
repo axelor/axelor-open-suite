@@ -1,0 +1,10 @@
+---
+title: "Reconcile: fixed manual reconcile in the specific reconcile view."
+module: axelor-account
+developer: |
+  - Removed the checkReconcile method from ReconcileCheckService.
+  - Removed the isEnoughAmountToPay method from InvoiceTermToolService.
+  
+  Script to remove a deleted action : 
+  - DELETE FROM meta_action WHERE name = 'action-reconcile-method-check-reconcile';
+
