@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed the domain for sale orders without stock move."
+module: axelor-supplychain
