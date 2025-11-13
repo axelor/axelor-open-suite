@@ -32,9 +32,11 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSale;
+import com.axelor.studio.db.repo.AppSaleRepository;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
@@ -44,13 +46,16 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
 
   protected final SaleOrderCopyService saleOrderCopyService;
   protected final SaleOrderOrderingStatusService saleOrderOrderingStatusService;
+  protected final SubSaleOrderLineService subSaleOrderLineService;
 
   @Inject
   public SaleOrderManagementRepository(
       SaleOrderCopyService saleOrderCopyService,
-      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService,
+      SubSaleOrderLineService subSaleOrderLineService) {
     this.saleOrderCopyService = saleOrderCopyService;
     this.saleOrderOrderingStatusService = saleOrderOrderingStatusService;
+    this.subSaleOrderLineService = subSaleOrderLineService;
   }
 
   @Override
@@ -83,6 +88,10 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       Beans.get(SaleOrderMarginService.class).computeMarginSaleOrder(saleOrder);
       if (appSale.getIsQuotationAndOrderSplitEnabled()) {
         saleOrderOrderingStatusService.updateOrderingStatus(saleOrder);
+      }
+      if (appSale.getListDisplayTypeSelect()
+          == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
+        subSaleOrderLineService.setMainSaleOrder(saleOrder);
       }
       return super.save(saleOrder);
     } catch (Exception e) {

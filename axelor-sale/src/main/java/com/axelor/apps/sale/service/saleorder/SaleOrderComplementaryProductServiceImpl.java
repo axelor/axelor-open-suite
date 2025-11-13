@@ -160,6 +160,7 @@ public class SaleOrderComplementaryProductServiceImpl
       newSoLine.setProduct(compProductSelected.getProduct());
       if (isSubLine) {
         newSoLine.setParentSaleOrderLine(parentSaleOrderLine);
+        newSoLine.setMainSaleOrder(saleOrder);
       } else {
         newSoLine.setSaleOrder(saleOrder);
       }
