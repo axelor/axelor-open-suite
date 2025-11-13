@@ -74,7 +74,8 @@
     <field name="projectTaskCategory" width="150"/>
     <field name="priority" onSelect="action-project-task-atts-priority-on-select"
       canView="false" width="150"/>
-    <field name="status" onSelect="action-project-task-method-status-on-select"
+    <field name="status" widget="Tag" x-color-field="color"
+      onSelect="action-project-task-method-status-on-select"
       hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
       onChange="action-project-task-method-auto-change-progress" width="125"/>
     <field name="createdOn" width="125"/>
@@ -105,7 +106,8 @@
     <field name="projectTaskCategory"/>
     <field name="priority" onSelect="action-project-task-atts-priority-on-select"
       canView="false"/>
-    <field name="status" onSelect="action-project-task-method-status-on-select"
+    <field name="status" widget="Tag" x-color-field="color"
+      onSelect="action-project-task-method-status-on-select"
       hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
       onChange="action-project-task-method-auto-change-progress"/>
     <field name="createdOn"/>
