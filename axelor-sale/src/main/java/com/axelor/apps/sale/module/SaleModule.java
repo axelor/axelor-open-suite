@@ -215,6 +215,8 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductSe
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineService;
+import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
@@ -342,5 +344,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderOrderingStatusService.class).to(SaleOrderOrderingStatusServiceImpl.class);
     bind(SaleOrderSequenceService.class).to(SaleOrderSequenceServiceImpl.class);
     bind(SaleOrderSplitDummyService.class).to(SaleOrderSplitDummyServiceImpl.class);
+    bind(SubSaleOrderLineService.class).to(SubSaleOrderLineServiceImpl.class);
   }
 }

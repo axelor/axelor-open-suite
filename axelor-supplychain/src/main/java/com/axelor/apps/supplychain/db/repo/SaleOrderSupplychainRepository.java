@@ -25,6 +25,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderManagementRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
+import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineService;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.inject.Beans;
@@ -36,8 +37,9 @@ public class SaleOrderSupplychainRepository extends SaleOrderManagementRepositor
   @Inject
   public SaleOrderSupplychainRepository(
       SaleOrderCopyService saleOrderCopyService,
-      SaleOrderOrderingStatusService saleOrderOrderingStatusService) {
-    super(saleOrderCopyService, saleOrderOrderingStatusService);
+      SaleOrderOrderingStatusService saleOrderOrderingStatusService,
+      SubSaleOrderLineService subSaleOrderLineService) {
+    super(saleOrderCopyService, saleOrderOrderingStatusService, subSaleOrderLineService);
   }
 
   @Override
