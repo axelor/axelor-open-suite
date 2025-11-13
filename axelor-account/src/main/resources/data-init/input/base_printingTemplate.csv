@@ -8,6 +8,6 @@ __i18n__.get('SaleInvoicesDetails-') + AssistantReportInvoice.fromDate.format(fo
 __i18n__.get('PurchaseInvoicesDetails-') + AssistantReportInvoice.fromDate.format(formatter) + AssistantReportInvoice.toDate.format(formatter)}"
 "93";"Move";"com.axelor.apps.account.db.Move";"2";"false";"${__i18n__.get('Move') + '-' + Move.reference + '-' + date}"
 "94";"SubrogationRelease";"com.axelor.apps.account.db.SubrogationRelease";"2";"true";"${__i18n__.get('Subrogation release') + '-' + SubrogationRelease.sequenceNumber}"
-"95";"ChequeDepositSlip";"com.axelor.apps.account.db.DepositSlip";"1";"true";
+"95";"ChequeDepositSlip";"com.axelor.apps.account.db.DepositSlip";"1";"true";"${__i18n__.get('Deposit slip') + ' ' + (DepositSlip.depositNumber ?: DepositSlip.id) + '-' + date}"
 "151";"Invoice XLS";"com.axelor.apps.account.db.Invoice";"2";"false";"${__i18n__.get(Invoice.operationTypeSelect == 1 || Invoice.operationTypeSelect == 3 ? 'Invoice' : 'Credit note').replace(' ','') + ' ' + Invoice.invoiceId + '-' + date}"
 "152";"Invoice DOC";"com.axelor.apps.account.db.Invoice";"2";"false";"${__i18n__.get(Invoice.operationTypeSelect == 1 || Invoice.operationTypeSelect == 3 ? 'Invoice' : 'Credit note').replace(' ','') + ' ' + Invoice.invoiceId + '-' + date}"
