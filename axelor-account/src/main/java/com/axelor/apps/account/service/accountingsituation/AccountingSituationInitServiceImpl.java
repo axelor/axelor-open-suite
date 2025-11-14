@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -365,6 +366,7 @@ public class AccountingSituationInitServiceImpl implements AccountingSituationIn
     account.setCompany(company);
     account.setUseForPartnerBalance(useForPartnerBalance);
     account.setCompatibleAccountSet(new HashSet<>());
+    account.setStatusSelect(AccountRepository.STATUS_ACTIVE);
 
     return account;
   }

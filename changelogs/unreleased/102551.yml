@@ -1,0 +1,3 @@
+---
+title: "Account: fixed an issue where accounts automatically generated when creating a partner were not activated."
+module: axelor-account
