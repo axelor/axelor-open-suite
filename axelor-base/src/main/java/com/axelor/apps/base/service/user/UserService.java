@@ -30,8 +30,6 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaPermissionRule;
 import com.axelor.script.ScriptAllowed;
 import com.axelor.team.db.Team;
-import com.google.inject.persist.Transactional;
-import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -42,40 +40,40 @@ import java.util.Optional;
 public interface UserService {
 
   /**
-   * Method that return the current connected user
+   * Return the current connected user.
    *
    * @return user the current connected user
    */
-  public User getUser();
+  User getUser();
 
   /**
-   * Method that return the id of the current connected user
+   * Return the id of the current connected user.
    *
    * @return user the id of current connected user
    */
-  public Long getUserId();
+  Long getUserId();
 
   /**
-   * Method that return the active company of the current connected user
+   * Return the active company of the current connected user.
    *
    * @return Company the active company
    */
   @CallMethod
-  public Company getUserActiveCompany();
+  Company getUserActiveCompany();
 
   /**
-   * Method that return the Trading name of the current connected user
+   * Return the trading name of the current connected user.
    *
    * @return Company the active company
    */
-  public TradingName getTradingName();
+  TradingName getTradingName();
 
   /**
-   * Method that return the active company id of the current connected user
+   * Return the active company id of the current connected user.
    *
    * @return Company the active company id
    */
-  public Long getUserActiveCompanyId();
+  Long getUserActiveCompanyId();
 
   /**
    * Retrieves the appropriate company logo for the currently authenticated user, based on the
@@ -89,7 +87,7 @@ public interface UserService {
    * @return the selected {@link MetaFile} logo, or the default company logo if none is set or
    *     applicable
    */
-  public MetaFile getUserActiveCompanyLogo(String mode);
+  MetaFile getUserActiveCompanyLogo(String mode);
 
   /**
    * Returns the download URL for the current user’s company logo based on their theme, falling back
@@ -98,39 +96,38 @@ public interface UserService {
    * @param mode theme mode indicator (unused)
    * @return the logo’s download URL, or null if no logo (or company) is available
    */
-  public String getUserActiveCompanyLogoLink(String mode);
+  String getUserActiveCompanyLogoLink(String mode);
 
   /**
-   * Method that return the active team of the current connected user
+   * Return the active team of the current connected user.
    *
    * @return Team the active team
    */
   @CallMethod
-  public Team getUserActiveTeam();
+  Team getUserActiveTeam();
 
   /**
-   * Method that return the active team of the current connected user
+   * Return the active team ID of the current connected user.
    *
    * @return Team the active team id
    */
   @CallMethod
-  public Long getUserActiveTeamId();
+  Long getUserActiveTeamId();
 
   /**
-   * Method that return the partner of the current connected user
+   * Return the partner of the current connected user.
    *
    * @return Partner the user partner
    */
   @CallMethod
-  public Partner getUserPartner();
+  Partner getUserPartner();
 
-  @Transactional
-  public void createPartner(User user);
+  void createPartner(User user);
 
-  public String getLocalizationCode();
+  String getLocalizationCode();
 
   /**
-   * Get user's active company address.
+   * Get the active company address of the user.
    *
    * @return
    */
@@ -142,34 +139,23 @@ public interface UserService {
    * @param user
    * @param values
    * @return
-   * @throws ClassNotFoundException
-   * @throws InstantiationException
-   * @throws IllegalAccessException
-   * @throws MessagingException
-   * @throws IOException
-   * @throws AxelorException
    */
-  User changeUserPassword(User user, Map<String, Object> values)
-      throws ClassNotFoundException,
-          InstantiationException,
-          IllegalAccessException,
-          MessagingException,
-          IOException,
-          AxelorException;
+  User changeUserPassword(User user, Map<String, Object> values);
 
   /**
-   * Processs changed user password.
+   * Trigger post processes after a change of the user password.
    *
    * @param user
+   * @throws AxelorException
    * @throws ClassNotFoundException
    * @throws IOException
-   * @throws AxelorException
    */
   void processChangedPassword(User user)
       throws AxelorException, ClassNotFoundException, IOException;
 
   /**
-   * Match password with configured pattern.
+   * Return whether the password matches the pattern in {@code user.password.pattern} property, with
+   * a fallback to the default password pattern if property is not set.
    *
    * @param password
    * @return
@@ -192,16 +178,15 @@ public interface UserService {
   String getPasswordPatternDescription();
 
   /**
-   * Setting user's partner
+   * Set the partner of the user.
    *
    * @param partner
    * @param user
    * @return
    */
-  @Transactional
-  public Partner setUserPartner(Partner partner, User user);
+  Partner setUserPartner(Partner partner, User user);
 
-  public void generateRandomPasswordForUser(User user);
+  void generateRandomPasswordForUser(User user);
 
   List<Permission> getPermissions(User user);
 

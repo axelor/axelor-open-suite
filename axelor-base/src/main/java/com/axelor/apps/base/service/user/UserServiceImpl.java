@@ -45,7 +45,6 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaPermission;
 import com.axelor.meta.db.MetaPermissionRule;
-import com.axelor.meta.db.ThemeLogoMode;
 import com.axelor.studio.db.AppBase;
 import com.axelor.team.db.Team;
 import com.google.common.base.MoreObjects;
@@ -53,45 +52,38 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
-import jakarta.mail.MessagingException;
 import jakarta.validation.ValidationException;
 import java.io.IOException;
-import java.lang.invoke.MethodHandles;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.exception.TooManyIterationsException;
 import org.apache.shiro.session.Session;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-/** UserService is a class that implement all methods for user information */
 public class UserServiceImpl implements UserService {
 
-  @Inject private UserRepository userRepo;
-  @Inject private MetaFiles metaFiles;
-  @Inject private MetaThemeFetchService metaThemeFetchService;
-
-  public static final String DEFAULT_LOCALE = "en";
+  protected UserRepository userRepo;
+  protected MetaFiles metaFiles;
+  protected MetaThemeFetchService metaThemeFetchService;
 
   public static final String DEFAULT_LOCALIZATION_CODE = "en_GB";
 
-  private static final String PATTERN_ACCES_RESTRICTION =
+  private static final String PATTERN_ACCESS_RESTRICTION =
       "(((?=.*[a-z])(?=.*[A-Z])(?=.*\\d))|((?=.*[a-z])(?=.*[A-Z])(?=.*\\W))|((?=.*[a-z])(?=.*\\d)(?=.*\\W))|((?=.*[A-Z])(?=.*\\d)(?=.*\\W))).{8,}";
   private static final Pattern PATTERN =
       Pattern.compile(
           MoreObjects.firstNonNull(
-              AppSettings.get().get("user.password.pattern"), PATTERN_ACCES_RESTRICTION));
+              AppSettings.get().get("user.password.pattern"), PATTERN_ACCESS_RESTRICTION));
 
   private static final String PATTERN_DESCRIPTION =
-      PATTERN.pattern().equals(PATTERN_ACCES_RESTRICTION)
+      PATTERN.pattern().equals(PATTERN_ACCESS_RESTRICTION)
           ? BaseExceptionMessage.USER_PATTERN_MISMATCH_ACCES_RESTRICTION
           : BaseExceptionMessage.USER_PATTERN_MISMATCH_CUSTOM;
 
@@ -101,8 +93,13 @@ public class UserServiceImpl implements UserService {
   private static final int GEN_LOOP_LIMIT = 1000;
   private static final SecureRandom random = new SecureRandom();
 
-  private static final Logger logger =
-      LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  @Inject
+  public UserServiceImpl(
+      UserRepository userRepo, MetaFiles metaFiles, MetaThemeFetchService metaThemeFetchService) {
+    this.userRepo = userRepo;
+    this.metaFiles = metaFiles;
+    this.metaThemeFetchService = metaThemeFetchService;
+  }
 
   /**
    * Method that return the current connected user
@@ -181,20 +178,12 @@ public class UserServiceImpl implements UserService {
     if (company == null) {
       return null;
     }
-    MetaFile logo = null;
-    ThemeLogoMode logoMode = metaThemeFetchService.getCurrentThemeLogoMode(user);
-    switch (logoMode) {
-      case DARK:
-      case NONE:
-        logo = company.getDarkLogo();
-        break;
-      case LIGHT:
-        logo = company.getLightLogo();
-        break;
-      default:
-        logo = company.getLogo();
-        break;
-    }
+
+    MetaFile logo =
+        switch (metaThemeFetchService.getCurrentThemeLogoMode(user)) {
+          case DARK, NONE -> company.getDarkLogo();
+          case LIGHT -> company.getLightLogo();
+        };
     return Optional.ofNullable(logo).orElse(company.getLogo());
   }
 
@@ -291,8 +280,9 @@ public class UserServiceImpl implements UserService {
   public String getLocalizationCode() {
     User user = getUser();
     if (user != null && user.getLocalization() != null) {
-      if (!Strings.isNullOrEmpty(user.getLocalization().getCode())) {
-        return user.getLocalization().getCode();
+      var code = user.getLocalization().getCode();
+      if (!Strings.isNullOrEmpty(code)) {
+        return code;
       }
     }
     return DEFAULT_LOCALIZATION_CODE;
@@ -304,13 +294,7 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public User changeUserPassword(User user, Map<String, Object> values)
-      throws ClassNotFoundException,
-          InstantiationException,
-          IllegalAccessException,
-          MessagingException,
-          IOException,
-          AxelorException {
+  public User changeUserPassword(User user, Map<String, Object> values) {
     Preconditions.checkNotNull(user, I18n.get("User cannot be null."));
     Preconditions.checkNotNull(values, I18n.get("User context cannot be null."));
 
@@ -449,26 +433,20 @@ public class UserServiceImpl implements UserService {
     List<Permission> permissionList = new ArrayList<>();
     Optional.ofNullable(user.getPermissions()).ifPresent(permissionList::addAll);
     Optional.ofNullable(user.getGroup())
-        .ifPresent(group -> permissionList.addAll(group.getPermissions()));
+        .map(Group::getPermissions)
+        .ifPresent(permissionList::addAll);
     Optional.ofNullable(user.getRoles())
-        .map(
-            roles ->
-                roles.stream()
-                    .map(Role::getPermissions)
-                    .flatMap(Set::stream)
-                    .collect(Collectors.toList()))
+        .map(UserServiceImpl::getPermissions)
         .ifPresent(permissionList::addAll);
     Optional.ofNullable(user.getGroup())
         .map(Group::getRoles)
-        .map(
-            roles ->
-                roles.stream()
-                    .map(Role::getPermissions)
-                    .flatMap(Set::stream)
-                    .collect(Collectors.toList()))
+        .map(UserServiceImpl::getPermissions)
         .ifPresent(permissionList::addAll);
-
     return permissionList;
+  }
+
+  private static List<Permission> getPermissions(Set<Role> roles) {
+    return roles.stream().map(Role::getPermissions).flatMap(Set::stream).toList();
   }
 
   @Override
@@ -477,51 +455,33 @@ public class UserServiceImpl implements UserService {
     Optional.ofNullable(user.getMetaPermissions())
         .ifPresent(
             metaPermissions ->
-                metaPermissionRuleList.addAll(
-                    metaPermissions.stream()
-                        .map(MetaPermission::getRules)
-                        .flatMap(List::stream)
-                        .collect(Collectors.toList())));
+                metaPermissionRuleList.addAll(getMetaPermissionRules(metaPermissions)));
     Optional.ofNullable(user.getGroup())
         .map(Group::getMetaPermissions)
         .ifPresent(
             metaPermissions ->
-                metaPermissionRuleList.addAll(
-                    metaPermissions.stream()
-                        .map(MetaPermission::getRules)
-                        .flatMap(List::stream)
-                        .collect(Collectors.toList())));
+                metaPermissionRuleList.addAll(getMetaPermissionRules(metaPermissions)));
     Optional.ofNullable(user.getRoles())
-        .map(
-            roles ->
-                roles.stream()
-                    .map(Role::getMetaPermissions)
-                    .flatMap(Set::stream)
-                    .collect(Collectors.toList()))
+        .map(UserServiceImpl::getMetaPermissions)
         .ifPresent(
             metaPermissions ->
-                metaPermissionRuleList.addAll(
-                    metaPermissions.stream()
-                        .map(MetaPermission::getRules)
-                        .flatMap(List::stream)
-                        .collect(Collectors.toList())));
+                metaPermissionRuleList.addAll(getMetaPermissionRules(metaPermissions)));
     Optional.ofNullable(user.getGroup())
         .map(Group::getRoles)
-        .map(
-            roles ->
-                roles.stream()
-                    .map(Role::getMetaPermissions)
-                    .flatMap(Set::stream)
-                    .collect(Collectors.toList()))
+        .map(UserServiceImpl::getMetaPermissions)
         .ifPresent(
             metaPermissions ->
-                metaPermissionRuleList.addAll(
-                    metaPermissions.stream()
-                        .map(MetaPermission::getRules)
-                        .flatMap(List::stream)
-                        .collect(Collectors.toList())));
-
+                metaPermissionRuleList.addAll(getMetaPermissionRules(metaPermissions)));
     return metaPermissionRuleList;
+  }
+
+  protected static List<MetaPermission> getMetaPermissions(Set<Role> roles) {
+    return roles.stream().map(Role::getMetaPermissions).flatMap(Set::stream).toList();
+  }
+
+  protected static List<MetaPermissionRule> getMetaPermissionRules(
+      Collection<MetaPermission> metaPermissions) {
+    return metaPermissions.stream().map(MetaPermission::getRules).flatMap(List::stream).toList();
   }
 
   @Override
