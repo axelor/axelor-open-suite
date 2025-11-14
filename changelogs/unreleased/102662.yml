@@ -1,0 +1,3 @@
+---
+title: "Supplychain : fixed an issue where nothing happened when launching the invoicing batch."
+module: axelor-supplychain
