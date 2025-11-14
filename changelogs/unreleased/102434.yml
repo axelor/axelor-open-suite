@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed sale order invoicing state when invoiced amount is superior to the sale order total w.t."
+module: axelor-supplychain
