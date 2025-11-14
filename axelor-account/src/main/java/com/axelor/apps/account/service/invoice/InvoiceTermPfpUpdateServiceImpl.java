@@ -21,10 +21,13 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.move.MovePfpValidateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.auth.AuthUtils;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -59,19 +62,37 @@ public class InvoiceTermPfpUpdateServiceImpl implements InvoiceTermPfpUpdateServ
   public void updatePfp(
       InvoiceTerm invoiceTerm, Map<InvoiceTerm, Integer> invoiceTermPfpValidateStatusSelectMap)
       throws AxelorException {
-    int pfpValidateStatusSelect;
-    if (MapUtils.isEmpty(invoiceTermPfpValidateStatusSelectMap)) {
-      pfpValidateStatusSelect = invoiceTerm.getPfpValidateStatusSelect();
-    } else {
-      pfpValidateStatusSelect = invoiceTermPfpValidateStatusSelectMap.get(invoiceTerm);
+    Invoice invoice = invoiceTerm.getInvoice();
+
+    if (!MapUtils.isEmpty(invoiceTermPfpValidateStatusSelectMap)) {
+      boolean shouldAutoValidate =
+          invoice != null
+              && invoice.getPfpValidateStatusSelect() == InvoiceRepository.PFP_STATUS_AWAITING
+              && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())
+              && Beans.get(PfpService.class).getPfpCondition(invoice)
+              && invoice.getOperationTypeSelect()
+                  == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
+
+      if (!shouldAutoValidate) {
+        return;
+      }
     }
+
+    Integer mappedStatus =
+        MapUtils.isEmpty(invoiceTermPfpValidateStatusSelectMap)
+            ? null
+            : invoiceTermPfpValidateStatusSelectMap.get(invoiceTerm);
+    int pfpValidateStatusSelect =
+        mappedStatus != null ? mappedStatus : invoiceTerm.getPfpValidateStatusSelect();
 
     if (invoiceTermPfpToolService.getAlreadyValidatedStatusList().contains(pfpValidateStatusSelect)
         || pfpValidateStatusSelect == InvoiceTermRepository.PFP_STATUS_LITIGATION) {
       return;
     }
 
-    invoiceTermPfpValidateStatusSelectMap.remove(invoiceTerm);
+    if (!MapUtils.isEmpty(invoiceTermPfpValidateStatusSelectMap)) {
+      invoiceTermPfpValidateStatusSelectMap.remove(invoiceTerm);
+    }
 
     if (invoiceTerm.getAmountRemaining().signum() > 0) {
       BigDecimal grantedAmount = invoiceTerm.getAmount().subtract(invoiceTerm.getAmountRemaining());
@@ -83,7 +104,6 @@ public class InvoiceTermPfpUpdateServiceImpl implements InvoiceTermPfpUpdateServ
       invoiceTermPfpValidateService.validatePfp(invoiceTerm, AuthUtils.getUser());
     }
 
-    Invoice invoice = invoiceTerm.getInvoice();
     if (invoice != null
         && invoice.getInvoiceTermList().stream()
             .allMatch(

@@ -448,7 +448,8 @@
 	                    ]]>
           </viewer>
         </field>
-        <field name="$pfpViewerTags" showTitle="false" readonly="true" showIf="$readonly()"
+        <field name="$pfpViewerTags" showTitle="false" readonly="true"
+          showIf="$readonly() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2))"
           colSpan="3" if="__config__.app.getApp('account')?.getActivatePassedForPayment()">
           <viewer>
 	                    <![CDATA[
