@@ -54,7 +54,8 @@
           name="currency" readonlyIf="statusSelect >= 2" canEdit="false"/>
         <field name="name" colSpan="12" css="highlight"
           hideIf="$readonly() &amp;&amp; !name &amp;&amp; statusSelect >= 2"/>
-        <field name="project" colSpan="8" domain="self.clientPartner=:partner"/>
+        <field name="project" colSpan="8" hidden="true" showIf="contractTypeSelect == 1"
+          onSelect="action-contract-attrs-set-project-domain"/>
         <panel name="contractDatesPanel" title="Contract Dates" hidden="true" showIf="id"
           colSpan="12">
           <field name="createdOn" colSpan="3"/>
@@ -696,4 +697,71 @@
       if="!__config__.app.getApp('contract')?.isConsumptionManagement"/>
   </search-filters>
 
+  <<<<<<< HEAD
+  =======
+  <action-method name="action-contract-method-contract-line-list-on-change">
+    <call class="com.axelor.apps.contract.web.ContractController"
+      method="onChangeContractLines"/>
+  </action-method>
+
+  <action-method name="action-contract-method-additional-contract-line-list-on-change">
+    <call class="com.axelor.apps.contract.web.ContractController"
+      method="onChangeAdditionalContractLines"/>
+  </action-method>
+
+  <action-method name="action-contract-method-price-list-domain">
+    <call class="com.axelor.apps.contract.web.ContractController"
+      method="changePriceListDomain"/>
+  </action-method>
+
+  <action-method name="action-contract-method-generate-sale-order">
+    <call class="com.axelor.apps.contract.web.ContractController"
+      method="generateSaleOrderFromContract"/>
+  </action-method>
+
+  <action-method name="action-contract-method-generate-purchase-order">
+    <call class="com.axelor.apps.contract.web.ContractController"
+      method="generatePurchaseOrderFromContract"/>
+  </action-method>
+
+  <action-view name="action-contract-view-generated-sale-orders" title="Sale orders"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="grid" name="sale-order-grid"/>
+    <view type="form" name="sale-order-form"/>
+    <domain>self.contract.id = :id</domain>
+  </action-view>
+
+  <action-view name="action-contract-view-generated-purchase-orders"
+    title="Purchase orders" model="com.axelor.apps.purchase.db.PurchaseOrder">
+    <view type="grid" name="purchase-order-grid"/>
+    <view type="form" name="purchase-order-form"/>
+    <domain>self.contract.id = :id</domain>
+  </action-view>
+
+  <action-record name="action-contract-record-get-trading-names-management-config"
+    model="com.axelor.apps.contract.db.Contract">
+    <field name="$enableTradingNamesManagement"
+      expr="eval: __config__.app.getApp('base')?.enableTradingNamesManagement"/>
+  </action-record>
+
+  <action-group name="action-contract-group-ongoing">
+    <action name="save"/>
+    <action name="action-contract-validate-on-going"/>
+    <action name="action-contract-method-ongoing"/>
+  </action-group>
+
+  <action-attrs name="action-contract-attrs-set-invoicing-management-title">
+    <attribute name="title" for="isInvoicingManagement"
+      expr="eval: com.axelor.i18n.I18n.get('Invoicing management')" if="contractTypeSelect == 1"/>
+    <attribute name="title" for="isInvoicingManagement"
+      expr="eval: com.axelor.i18n.I18n.get('Product management')" if="contractTypeSelect == 2"/>
+  </action-attrs>
+
+  <action-attrs name="action-contract-attrs-set-project-domain">
+    <attribute name="domain" for="project"
+      expr="eval: &quot; self.clientPartner = :partner AND self.isBusinessProject = true &quot;"
+      if="targetTypeSelect == 1"/>
+  </action-attrs>
+
+  >>>>>>> a1556d30cc (Anomaly RM#92336:SUPPLIER CONTRACT : remove domain for project field (#14240))
 </object-views>
