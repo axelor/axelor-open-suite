@@ -135,6 +135,7 @@ import com.axelor.apps.production.service.SaleOrderLineDetailsServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDummyProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineInitValueProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineOnChangeProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineOnSaleSupplyChangeServiceProductionImpl;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionService;
@@ -303,6 +304,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckBlockingSuppl
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderComputeServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineDummySupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineInitValueSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineOnChangeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychainImpl;
@@ -497,5 +499,7 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderCheckBlockingSupplychainServiceImpl.class)
         .to(SaleOrderCheckBlockingServiceProductionServiceImpl.class);
     bind(SaleOrderBlockingProductionService.class).to(SaleOrderBlockingProductionServiceImpl.class);
+    bind(SaleOrderLineInitValueSupplychainServiceImpl.class)
+        .to(SaleOrderLineInitValueProductionServiceImpl.class);
   }
 }
