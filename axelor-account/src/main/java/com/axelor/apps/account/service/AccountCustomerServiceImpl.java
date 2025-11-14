@@ -238,7 +238,7 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "LEFT JOIN account_invoice AS invoice ON (move.invoice = invoice.id) "
                     + "WHERE ml.partner = :partnerId AND move.company = :companyId "
                     + (tradingName != null ? "AND move.trading_name = :tradingNameId " : "")
-                    + "AND move.ignore_in_accounting_ok IN (false, null) AND account.use_for_partner_balance = true"
+                    + "AND move.ignore_in_accounting_ok IN (false, null) AND account.use_for_partner_balance = true "
                     + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ABS(ml.amount_remaining) > 0 "
                     + "AND (invoice IS NULL OR invoice.debt_recovery_blocking_ok IN (false, null)) ")
             .setParameter("mailTransitTime", mailTransitTime)
