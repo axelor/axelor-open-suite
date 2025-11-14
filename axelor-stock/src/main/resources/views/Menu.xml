@@ -226,6 +226,7 @@
     <view type="cards" name="partner-cards"/>
     <view type="grid" name="partner-grid"/>
     <view type="form" name="partner-form"/>
+    <view-param name="forceTitle" value="true"/>
     <view-param name="limit" value="39"/>
     <view-param name="search-filters" value="partner-filters"/>
     <domain>self.isCarrier = true</domain>
