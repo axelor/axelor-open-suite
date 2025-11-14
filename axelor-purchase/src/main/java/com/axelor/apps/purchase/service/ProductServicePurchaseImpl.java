@@ -21,6 +21,7 @@ package com.axelor.apps.purchase.service;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.ProductVariantConfigRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ProductServiceImpl;
@@ -39,7 +40,8 @@ public class ProductServicePurchaseImpl extends ProductServiceImpl {
       AppBaseService appBaseService,
       ProductRepository productRepo,
       ProductCompanyService productCompanyService,
-      ProductCompanyRepository productCompanyRepository) {
+      ProductCompanyRepository productCompanyRepository,
+      ProductVariantConfigRepository productVariantConfigRepository) {
     super(
         productVariantService,
         productVariantRepo,
@@ -47,7 +49,8 @@ public class ProductServicePurchaseImpl extends ProductServiceImpl {
         appBaseService,
         productRepo,
         productCompanyService,
-        productCompanyRepository);
+        productCompanyRepository,
+        productVariantConfigRepository);
   }
 
   @Override
