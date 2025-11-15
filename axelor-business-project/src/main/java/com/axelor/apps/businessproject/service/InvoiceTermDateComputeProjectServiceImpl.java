@@ -27,7 +27,6 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.google.inject.Inject;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 public class InvoiceTermDateComputeProjectServiceImpl extends InvoiceTermDateComputeServiceImpl {
@@ -46,8 +45,7 @@ public class InvoiceTermDateComputeProjectServiceImpl extends InvoiceTermDateCom
         Optional.of(invoiceTerm)
             .map(InvoiceTerm::getInvoice)
             .map(Invoice::getProject)
-            .map(Project::getToDate)
-            .map(LocalDateTime::toLocalDate);
+            .map(Project::getToDate);
     if (projectToDate.isPresent() && invoiceTerm.getIsHoldBack()) {
       invoiceDate = projectToDate.get();
     }
