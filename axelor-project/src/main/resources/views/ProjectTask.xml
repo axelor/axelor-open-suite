@@ -195,14 +195,14 @@
   </form>
 
   <form name="incl-characteristics-panel-form" title="Characteristics"
-    model="com.axelor.apps.project.db.ProjectTask">
+    model="com.axelor.apps.project.db.ProjectTask" onSave="action-project-task-validate-toDate">
     <panel name="mainPanel" colSpan="12">
       <!-- MGM-68 -->
       <field name="taskDate" colSpan="6"
         onChange="action-project-task-attrs-set-task-duration,action-project-task-record-set-date-or-frequency-changed"
         required="true"/>
       <field name="taskEndDate" colSpan="6"
-        onChange="action-project-task-attrs-set-task-duration"/>
+        onChange="action-project-task-attrs-set-task-duration, action-project-task-validate-toDate"/>
       <field name="taskDeadline" title="Task deadline" colSpan="6"/>
       <!-- MGM-68 -->
       <!-- <field name="tagSet" widget="TagSelect" x-color-field="color" form-view="tag-form" grid-view="tag-simplified-grid"

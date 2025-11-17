@@ -128,7 +128,8 @@
   <form name="business-project-task-form" title="Task"
     model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-business-project-project-task-group-on-new"
-    onLoad="action-business-project-project-task-group-on-load" width="large">
+    onLoad="action-business-project-project-task-group-on-load" width="large"
+    onSave="action-project-task-validate-toDate">
     <toolbar>
       <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
@@ -523,6 +524,12 @@
       if="invoicingType != 1"/>
   </action-attrs>
 
+  <action-validate name="action-project-task-validate-toDate">
+    <error message="Start Date should not be after Due Date"
+      if="taskDate != null &amp;&amp; taskEndDate != null &amp;&amp; taskDate.isAfter(taskEndDate)"
+      action="action-project-task-set-toDate-to-null"/>
+  </action-validate>
+
   <action-group name="action-project-task-group-set-price-from-contract">
     <action name="action-project-task-method-get-contract-product"/>
     <action name="action-project-task-method-compute"/>
@@ -593,6 +600,11 @@
     <field name="$provider"
       expr="eval: __config__.app.getApp('business-support').providerCompany.name"
       if="__config__.app.getApp('business-support').providerCompany"/>
+  </action-record>
+
+  <action-record name="action-project-task-set-toDate-to-null"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="taskEndDate" expr="eval: null"/>
   </action-record>
 
   <action-group name="action-business-project-project-task-group-product-onchange">
