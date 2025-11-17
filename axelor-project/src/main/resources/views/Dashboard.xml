@@ -14,6 +14,10 @@
     <dashlet action="action-project-db-my-upcomming-planning"
       if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
   </dashboard>
+  <dashboard name="project-my-tasks" title="My Tasks">
+    <dashlet action="action-project-db-my-tasks-to-do" colSpan="12"/>
+    <dashlet action="action-project-db-my-tasks-done" colSpan="12"/>
+  </dashboard>
 
   <dashboard name="project-planned-charge" title="Planned charge">
     <dashlet action="chart:chart.daily.planned.charge.in.month.per.project" colSpan="12"/>
@@ -255,6 +259,14 @@
     <domain><![CDATA[
       (self.assignedTo = :__user__  AND self.status.isCompleted = false) AND
       (self.taskDeadline <= current_date)
+    ]]></domain>
+  </action-view>
+  <action-view name="action-project-db-my-tasks-done" title="My tasks done"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="project-task-grid"/>
+    <view type="form" name="project-task-form"/>
+    <domain><![CDATA[
+      (self.assignedTo = :__user__  AND self.status.isCompleted = true)
     ]]></domain>
   </action-view>
 

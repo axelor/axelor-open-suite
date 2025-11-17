@@ -98,7 +98,7 @@
         <field name="employeeSignature" title="Employee Signature" widget="drawing"
           readonly="true"/>
         <field name="customerSignature" title="Customer Signature" widget="drawing"
-          hideIf="customerNotAvailable" readonly="true"/>
+          hideIf="customerNotAvailable" hidden="true"/>
       </panel>
       <panel colSpan="12" hidden="true">
         <field name="customerNotAvailable" widget="checkbox" title="Customer Available"

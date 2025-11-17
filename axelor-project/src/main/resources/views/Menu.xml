@@ -50,6 +50,11 @@
   <action-view name="project.my.projects" title="My projects">
     <view type="dashboard" name="project-my-projects"/>
   </action-view>
+  <menuitem name="project-reporting-my-tasks" parent="project-reporting" order="110"
+    title="My Tasks" action="project.my.tasks"/>
+  <action-view name="project.my.tasks" title="My Tasks">
+    <view type="dashboard" name="project-my-tasks"/>
+  </action-view>
 
   <menuitem name="project-reporting-planned-charge" parent="project-reporting" order="200"
     title="Planned charge" action="project.planned.charge"

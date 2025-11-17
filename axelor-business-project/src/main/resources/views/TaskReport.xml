@@ -77,6 +77,9 @@
         <panel title="Sign-Off" showFrame="false" colSpan="12">
           <panel colSpan="12">
             <field name="taskDate" colSpan="4"/>
+            <field  widget="checkbox" name="customerNotAvailable" colSpan="3" hidden="true"/>
+            <field widget="checkbox" name="customerNotAvailable" colSpan="5"
+              title="Customer Not Available" onChange="action-customer-available-attrs"/>
           </panel>
           <panel colSpan="12">
             <field name="employee" title="Employee Name"/>
@@ -86,11 +89,6 @@
               colSpan="6"/>
             <field name="customerSignature" title="Customer Signature" widget="drawing"
               colSpan="6" hideIf="customerNotAvailable"/>
-          </panel>
-          <panel colSpan="12">
-            <field name="customerNotAvailable" widget="checkbox" colSpan="9" hidden="true"/>
-            <field name="customerNotAvailable" widget="checkbox" colSpan="3"
-              title="Customer Not Available" onChange="action-customer-available-attrs"/>
           </panel>
         </panel>
       </panel>
