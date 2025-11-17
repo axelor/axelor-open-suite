@@ -21,6 +21,8 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="priority"/>
+    <!-- mgm-fix-gk: Add status for better filtering purposes -->
+    <field name="projectStatus"/>
     <button name="openTasks" onClick="action-business-project-view-show-related-tasks"
       icon="list-task"/>
   </grid>

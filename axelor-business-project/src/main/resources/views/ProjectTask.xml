@@ -24,8 +24,8 @@
     <field name="taskEndDate" hidden="true"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
     <field name="project.completedTaskStatus.id" hidden="true"/>
-    <button name="showFinancialReport" title="Show financial reports" icon="bar-chart-fill"
-      onClick="action-project-task-view-show-financial-datas-panel"/>
+    <!-- mgm-fix-gk: Don't show financial status in the grid -->
+    <!-- <button name="showFinancialReport" title="Show financial reports" icon="bar-chart-fill" onClick="action-project-task-view-show-financial-datas-panel"/> -->
   </grid>
   <!-- <grid name="business-project-task-project-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" groupBy="typeSelect" orderBy="-priority.technicalTypeSelect"> -->
