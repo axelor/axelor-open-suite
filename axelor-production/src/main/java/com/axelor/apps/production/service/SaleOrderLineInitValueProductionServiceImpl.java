@@ -1,5 +1,6 @@
 package com.axelor.apps.production.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -28,6 +29,18 @@ public class SaleOrderLineInitValueProductionServiceImpl
   public Map<String, Object> onNewEditableInitValues(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol) {
     Map<String, Object> values = super.onNewEditableInitValues(saleOrder, saleOrderLine, parentSol);
+    values.put(
+        "qtyToProduce",
+        saleOrderLineProductionService.computeQtyToProduce(
+            saleOrderLine, saleOrderLine.getParentSaleOrderLine()));
+    return values;
+  }
+
+  @Override
+  public Map<String, Object> onNewInitValues(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol)
+      throws AxelorException {
+    Map<String, Object> values = super.onNewInitValues(saleOrder, saleOrderLine, parentSol);
     values.put(
         "qtyToProduce",
         saleOrderLineProductionService.computeQtyToProduce(
