@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
@@ -55,7 +56,7 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppStock;
-import com.google.common.base.MoreObjects;
+import com.axelor.utils.ThrowConsumer;
 import com.google.common.base.Preconditions;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -75,9 +76,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -929,12 +928,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     BigDecimal oldQty = stockLocationLine.getCurrentQty().subtract(newQty);
 
-    log.debug(
-        "Old price: {}, Old quantity: {}, New price: {}, New quantity: {}",
-        oldAvgPrice,
-        oldQty,
-        newPrice,
-        newQty);
+    //    log.debug(
+    //        "Old price: {}, Old quantity: {}, New price: {}, New quantity: {}",
+    //        oldAvgPrice,
+    //        oldQty,
+    //        newPrice,
+    //        newQty);
     BigDecimal sum = oldAvgPrice.multiply(oldQty);
     sum = sum.add(newPrice.multiply(newQty));
     BigDecimal denominator = oldQty.add(newQty);
@@ -1299,7 +1298,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             (BigDecimal)
                 productCompanyService.get(
                     stockMoveLine.getProduct(), "purchasePrice", stockMove.getCompany());
-        ;
         unitPriceUntaxed = companyPurchasePrice.multiply(shippingCoef);
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
           && stockMoveLine.getFromStockLocation() != null
@@ -1891,30 +1889,43 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   @Transactional(rollbackOn = {Exception.class})
   public void splitStockMoveLineByTrackingNumber(StockMove stockMove) throws AxelorException {
     Integer type = stockMove.getTypeSelect();
-    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-    if (type == StockMoveRepository.TYPE_INTERNAL || CollectionUtils.isEmpty(stockMoveLineList)) {
+    if (type == StockMoveRepository.TYPE_INTERNAL || stockMove.getId() == null) {
       return;
     }
-    // Does not manage the case where line is already splited
-    // Works when generating a tracking number
-    // But not when assigning one
-    for (StockMoveLine stockMoveLine : new CopyOnWriteArrayList<>(stockMoveLineList)) {
-      Product product = stockMoveLine.getProduct();
-      if (product == null) {
-        return;
-      }
-      TrackingNumberConfiguration trackingNumberConfiguration =
-          (TrackingNumberConfiguration)
-              productCompanyService.get(
-                  product, "trackingNumberConfiguration", stockMove.getCompany());
 
-      this.assignOrGenerateTrackingNumber(
-          stockMoveLine,
-          stockMove,
-          product,
-          trackingNumberConfiguration,
-          type == StockMoveRepository.TYPE_OUTGOING ? TYPE_SALES : TYPE_PURCHASES);
+    ThrowConsumer<StockMoveLine, AxelorException> processor =
+        stockMoveLine ->
+            processTrackingNumberSplit(
+                stockMove,
+                stockMoveLine,
+                type == StockMoveRepository.TYPE_OUTGOING ? TYPE_SALES : TYPE_PURCHASES);
+
+    Query<StockMoveLine> query =
+        stockMoveLineRepository
+            .all()
+            .filter("self.stockMove.id = :stockMoveId AND self.id > :lastSeenId")
+            .bind("stockMoveId", stockMove.getId())
+            .order("id");
+
+    StockBatchProcessorHelper.builder()
+        .clearEveryNBatch(0)
+        .build()
+        .<StockMoveLine, AxelorException>forEachByQuery(query, processor);
+  }
+
+  protected void processTrackingNumberSplit(
+      StockMove stockMove, StockMoveLine stockMoveLine, int splitType) throws AxelorException {
+    Product product = stockMoveLine.getProduct();
+    if (product == null) {
+      return;
     }
+    TrackingNumberConfiguration trackingNumberConfiguration =
+        (TrackingNumberConfiguration)
+            productCompanyService.get(
+                product, "trackingNumberConfiguration", stockMove.getCompany());
+
+    assignOrGenerateTrackingNumber(
+        stockMoveLine, stockMove, product, trackingNumberConfiguration, splitType);
   }
 
   @Override

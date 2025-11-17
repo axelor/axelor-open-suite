@@ -32,7 +32,9 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.utils.StockBatchProcessorHelper;
 import com.axelor.common.StringUtils;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -41,6 +43,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,17 +77,32 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   @Override
   public BigDecimal compute(StockMove stockMove) {
     BigDecimal exTaxTotal = BigDecimal.ZERO;
-    if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
-      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-        exTaxTotal =
-            exTaxTotal.add(
-                stockMoveLine
-                    .getRealQty()
-                    .multiply(stockMoveLine.getUnitPriceUntaxed())
-                    .setScale(2, RoundingMode.HALF_UP));
-      }
+    if (stockMove == null || stockMove.getId() == null) {
+      return exTaxTotal;
     }
-    return exTaxTotal;
+
+    AtomicReference<BigDecimal> runningTotal = new AtomicReference<>(BigDecimal.ZERO);
+    Query<StockMoveLine> query =
+        stockMoveLineRepo
+            .all()
+            .filter("self.stockMove.id = :stockMoveId AND self.id > :lastSeenId")
+            .bind("stockMoveId", stockMove.getId())
+            .order("id");
+
+    StockBatchProcessorHelper.builder()
+        .build()
+        .<StockMoveLine>forEachByQuery(
+            query,
+            stockMoveLine ->
+                runningTotal.set(runningTotal.get().add(computeLineAmount(stockMoveLine))));
+    return runningTotal.get();
+  }
+
+  protected BigDecimal computeLineAmount(StockMoveLine stockMoveLine) {
+    return stockMoveLine
+        .getRealQty()
+        .multiply(stockMoveLine.getUnitPriceUntaxed())
+        .setScale(2, RoundingMode.HALF_UP);
   }
 
   /**

@@ -218,7 +218,7 @@ public class StockBatchProcessorHelper {
     }
 
     if (clearEveryNBatch > 0 && batchCount % clearEveryNBatch == 0) {
-      logger.debug("Clearing EntityManager after batch {}", batchCount);
+      //      logger.debug("Clearing EntityManager after batch {}", batchCount);
       JPA.clear();
     }
 

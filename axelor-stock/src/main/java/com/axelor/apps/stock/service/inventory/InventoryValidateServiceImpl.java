@@ -35,6 +35,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -237,9 +238,10 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
     if (CollectionUtils.isEmpty(ids)) {
       return;
     }
-    for (Long id : ids) {
-      stockMoveRealize(getStockMove(id));
-    }
+    StockBatchProcessorHelper.builder()
+        .build()
+        .<StockMove, AxelorException>forEachByIds(
+            StockMove.class, new HashSet<>(ids), this::stockMoveRealize);
   }
 
   protected void stockMoveRealize(StockMove stockMove) throws AxelorException {
