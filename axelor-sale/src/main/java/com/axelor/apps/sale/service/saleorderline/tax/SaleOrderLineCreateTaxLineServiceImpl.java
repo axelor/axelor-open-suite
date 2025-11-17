@@ -191,10 +191,7 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
                       AppBaseService.COMPUTATION_SCALING,
                       RoundingMode.HALF_UP));
 
-      if (Optional.of(saleOrderLineTax)
-          .map(SaleOrderLineTax::getSaleOrder)
-          .map(SaleOrder::getInAti)
-          .orElse(false)) {
+      if (saleOrderLineTax.getSaleOrder() != null) {
         BigDecimal diff =
             taxTotal.subtract(saleOrderLineTax.getInTaxTotal().subtract(exTaxBase)).abs();
         if (diff.compareTo(BigDecimal.ZERO) >= 0 && diff.compareTo(new BigDecimal("0.01")) <= 0) {

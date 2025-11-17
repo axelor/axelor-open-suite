@@ -76,7 +76,18 @@ public class InvoiceTaxComputeServiceImpl implements InvoiceTaxComputeService {
       BigDecimal exTaxBase,
       BigDecimal taxValue,
       BigDecimal inTaxTotal) {
-    return InvoiceLineManagement.computeAmount(
-        exTaxBase, taxValue, currencyScaleService.getScale(invoiceLineTax.getInvoice()), null);
+    Invoice invoice = invoiceLineTax.getInvoice();
+    BigDecimal taxAmount =
+        InvoiceLineManagement.computeAmount(
+            exTaxBase, taxValue, currencyScaleService.getScale(invoice), null);
+
+    if (invoice != null) {
+      BigDecimal diff = taxAmount.subtract(inTaxTotal.subtract(exTaxBase)).abs();
+      if (diff.compareTo(BigDecimal.ZERO) >= 0 && diff.compareTo(new BigDecimal("0.01")) <= 0) {
+        return inTaxTotal.subtract(exTaxBase);
+      }
+    }
+
+    return taxAmount;
   }
 }

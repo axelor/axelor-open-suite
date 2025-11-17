@@ -971,7 +971,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               .multiply(taxAccountService.getTotalTaxRateInPercentage(Set.of(taxLine)))
               .divide(
                   BigDecimal.valueOf(100),
-                  AppBaseService.COMPUTATION_SCALING,
+                  currencyScaleService.getCompanyScale(moveLine),
                   RoundingMode.HALF_UP);
       if (amountByTaxLineMap.get(taxLine) != null) {
         amountByTaxLineMap.replace(taxLine, amountByTaxLineMap.get(taxLine).add(taxAmount));
