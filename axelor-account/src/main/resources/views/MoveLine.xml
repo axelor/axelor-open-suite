@@ -167,11 +167,10 @@
       domain="self.endDate > :date OR self.endDate IS NULL"
       onChange="account-move-line-update-tax-equiv" width="80" widget="Tags"/>
     <field name="vatSystemSelect"
-      validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax'"
+      validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax' || !account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"
-      readonlyIf="move.journal.journalType.technicalTypeSelect == 3 || account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
+      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
       width="80"/>
-    <field name="move.journal.journalType.technicalTypeSelect"/>
     <field name="account.useForPartnerBalance" hidden="true"/>
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
     <field name="analyticDistributionTemplate"
@@ -522,7 +521,7 @@
             grid-view="tax-line-grid" domain="self.endDate > :date OR self.endDate IS NULL"
             onChange="account-move-line-update-tax-equiv" widget="Tags"/>
           <field name="vatSystemSelect"
-            validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax'"
+            validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax' || !account.isTaxAuthorizedOnMoveLine"
             readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
             requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"/>
         </panel>

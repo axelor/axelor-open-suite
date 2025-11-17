@@ -55,11 +55,9 @@ public class SaleInvoicingStateServiceImpl implements SaleInvoicingStateService 
     BigDecimal exTaxTotal = saleOrderLine.getExTaxTotal();
     BigDecimal difference = exTaxTotal.subtract(amountInvoiced);
 
-    if (difference.compareTo(BigDecimal.ZERO) == 0) {
+    if (difference.compareTo(BigDecimal.ZERO) <= 0) {
       invoicingState = SALE_ORDER_INVOICE_INVOICED;
-    }
-
-    if (difference.compareTo(BigDecimal.ZERO) != 0) {
+    } else {
       invoicingState = SALE_ORDER_INVOICE_PARTIALLY_INVOICED;
     }
 
