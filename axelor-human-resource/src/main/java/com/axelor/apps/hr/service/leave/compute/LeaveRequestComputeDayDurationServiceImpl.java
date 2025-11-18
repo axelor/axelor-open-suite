@@ -20,8 +20,10 @@ package com.axelor.apps.hr.service.leave.compute;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.db.repo.DayPlanningRepository;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
@@ -31,6 +33,7 @@ import com.axelor.apps.hr.service.leave.LeaveRequestPlanningService;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 public class LeaveRequestComputeDayDurationServiceImpl
     implements LeaveRequestComputeDayDurationService {
@@ -71,16 +74,35 @@ public class LeaveRequestComputeDayDurationServiceImpl
       LocalDate fromDate,
       LocalDate toDate,
       int startOn,
-      int endOn)
+      int endOn,
+      int offDays)
       throws AxelorException {
 
     BigDecimal duration = BigDecimal.ZERO;
     WeeklyPlanning weeklyPlanning = leaveRequestPlanningService.getWeeklyPlanning(leave, employee);
+    updateDayPlanning(weeklyPlanning, offDays);
     EventsPlanning holidayPlanning =
         leaveRequestPlanningService.getPublicHolidayEventsPlanning(leave, employee);
 
     return computeDurationInDays(
         fromDate, toDate, startOn, endOn, duration, weeklyPlanning, holidayPlanning);
+  }
+
+  protected WeeklyPlanning updateDayPlanning(WeeklyPlanning weeklyPlanning, Integer offDays) {
+    List<DayPlanning> dayPlanningList = weeklyPlanning.getWeekDays();
+    final String saturday = DayPlanningRepository.SATURDAY;
+    final String sunday = DayPlanningRepository.SUNDAY;
+
+    for (int i = dayPlanningList.size() - 1; i >= 0; i--) {
+      DayPlanning dayPlanning = dayPlanningList.get(i);
+      boolean isSatuday = saturday.equals(dayPlanning.getNameSelect());
+      boolean isSunday = sunday.equals(dayPlanning.getNameSelect());
+
+      if ((isSatuday && offDays == 2) || (isSunday && offDays > 0)) {
+        dayPlanningList.remove(dayPlanning);
+      }
+    }
+    return weeklyPlanning;
   }
 
   @Override

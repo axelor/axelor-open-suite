@@ -38,6 +38,8 @@
    		<![CDATA[
    			public static final int UNIT_SELECT_DAYS = 1;
    			public static final int UNIT_SELECT_HOURS = 2;
+   			public static final int UNIT_SELECT_CALENDAR_DAYS = 3;
+   			public static final int UNIT_SELECT_BUSINESS_DAYS = 4;
 
             public static final int TYPE_SELECT_EVERY_MONTH = 1;
    			public static final int TYPE_SELECT_EXCEPTIONAL_DAYS = 2;

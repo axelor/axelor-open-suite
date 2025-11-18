@@ -228,6 +228,8 @@ import com.axelor.apps.hr.service.leave.LeaveRequestValidateService;
 import com.axelor.apps.hr.service.leave.LeaveRequestValidateServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveValueProrataService;
 import com.axelor.apps.hr.service.leave.LeaveValueProrataServiceImpl;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeCalendarDayService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeCalendarDayServiceImpl;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationServiceImpl;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDurationService;
@@ -531,5 +533,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(KilometricGoogleService.class).to(KilometricGoogleServiceImpl.class);
     bind(KilometricOsmService.class).to(KilometricOsmServiceImpl.class);
     bind(KilometricResponseToolService.class).to(KilometricResponseToolServiceImpl.class);
+    bind(LeaveRequestComputeCalendarDayService.class)
+        .to(LeaveRequestComputeCalendarDayServiceImpl.class);
   }
 }
