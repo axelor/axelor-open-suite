@@ -29,11 +29,12 @@ import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.concurrent.ContextAware;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
-import com.axelor.db.tenants.TenantAware;
+import com.axelor.db.tenants.TenantResolver;
 import com.axelor.inject.Beans;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailException;
@@ -359,16 +360,19 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     }
 
     // send email using a separate process to void thread blocking
+    String currentTenantId = TenantResolver.currentTenantIdentifier();
     executor.submit(
-        new TenantAware(
+        ContextAware.of()
+            .withTransaction(false)
+            .withTenantId(currentTenantId)
+            .build(
                 () -> {
                   try {
                     send(sender, email);
                   } catch (Exception e) {
                     throw new RuntimeException(e);
                   }
-                })
-            .withTransaction(false));
+                }));
   }
 
   @Override

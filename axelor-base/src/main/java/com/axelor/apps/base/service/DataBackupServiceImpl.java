@@ -22,8 +22,9 @@ import com.axelor.apps.base.db.DataBackup;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuditableRunner;
+import com.axelor.concurrent.ContextAware;
 import com.axelor.db.JPA;
-import com.axelor.db.tenants.TenantAware;
+import com.axelor.db.tenants.TenantResolver;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -67,8 +68,12 @@ public class DataBackupServiceImpl implements DataBackupService {
     if (dataBackup.getUpdateImportId()) {
       updateImportId(dataBackup.getIsExportApp());
     }
+    String currentTenantId = TenantResolver.currentTenantIdentifier();
     executor.submit(
-        new TenantAware(
+        ContextAware.of()
+            .withTransaction(false)
+            .withTenantId(currentTenantId)
+            .build(
                 () -> {
                   RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
                   try (RequestScoper.CloseableScope ignored = scope.open()) {
@@ -76,8 +81,7 @@ public class DataBackupServiceImpl implements DataBackupService {
                   } catch (Exception e) {
                     TraceBackService.trace(e);
                   }
-                })
-            .withTransaction(false));
+                }));
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -114,16 +118,19 @@ public class DataBackupServiceImpl implements DataBackupService {
   public void restoreBackUp(DataBackup dataBackup) {
     setStatus(dataBackup);
 
+    String currentTenantId = TenantResolver.currentTenantIdentifier();
     executor.submit(
-        new TenantAware(
+        ContextAware.of()
+            .withTransaction(false)
+            .withTenantId(currentTenantId)
+            .build(
                 () -> {
                   try {
                     startRestore(dataBackup);
                   } catch (Exception e) {
                     TraceBackService.trace(e);
                   }
-                })
-            .withTransaction(false));
+                }));
   }
 
   protected void startRestore(DataBackup dataBackup) throws Exception {
