@@ -49,4 +49,6 @@ public interface InvoiceTermToolService {
 
   List<InvoiceTerm> getPaymentVoucherInvoiceTerms(InvoicePayment invoicePayment, Invoice invoice)
       throws AxelorException;
+
+  void checkHoldbackBeforeReconcile(List<InvoiceTerm> invoiceTermList) throws AxelorException;
 }
