@@ -47,6 +47,6 @@ public class AppTalentServiceImpl extends AppBaseServiceImpl implements AppTalen
 
   @Override
   public AppRecruitment getAppRecruitment() {
-    return appRecruitmentRepository.all().fetchOne();
+    return appRecruitmentRepository.all().cacheable().autoFlush(false).fetchOne();
   }
 }

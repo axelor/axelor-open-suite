@@ -55,7 +55,7 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
 
   @Override
   public AppProduction getAppProduction() {
-    return Query.of(AppProduction.class).autoFlush(false).fetchOne();
+    return Query.of(AppProduction.class).cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

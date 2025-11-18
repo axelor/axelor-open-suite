@@ -30,7 +30,7 @@ import java.util.Objects;
 public class AppGdprServiceImpl implements AppGdprService {
   @Override
   public AppGdpr getAppGDPR() {
-    return Query.of(AppGdpr.class).fetchOne();
+    return Query.of(AppGdpr.class).cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
