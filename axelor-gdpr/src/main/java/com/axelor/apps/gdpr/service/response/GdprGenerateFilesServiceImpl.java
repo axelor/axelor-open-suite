@@ -160,12 +160,18 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
 
       if (!"OneToMany".equals(metaField.getRelationship())) {
         records =
-            Query.of(klass).filter(metaField.getName() + " = " + gdprRequest.getModelId()).fetch();
+            Query.of(klass)
+                .filter(metaField.getName() + ".id = " + gdprRequest.getModelId())
+                .fetch();
 
       } else {
         records =
             Query.of(klass)
-                .filter(gdprRequest.getModelId() + " MEMBER OF " + metaField.getName())
+                .filter(
+                    gdprRequest.getModelId()
+                        + " IN (SELECT obj.id FROM self."
+                        + metaField.getName()
+                        + " obj)")
                 .fetch();
       }
 

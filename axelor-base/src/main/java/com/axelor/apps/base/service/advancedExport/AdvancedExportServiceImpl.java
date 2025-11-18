@@ -238,7 +238,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
             + ("msi_" + (msi))
             + ".value AND "
             + ("msi_" + (msi))
-            + ".select IN ("
+            + ".select.id IN ("
             + metaSelectIds
             + ")";
 
