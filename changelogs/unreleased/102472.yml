@@ -1,0 +1,3 @@
+---
+title: "Sale order import: fixed an error occurring when importing lines with no tax lines."
+module: axelor-sale
