@@ -7137,8 +7137,10 @@ else {
                                         <property name="borderLeftWidth">thin</property>
                                         <property name="borderRightStyle">solid</property>
                                         <property name="borderRightWidth">thin</property>
+                                        <property name="textAlign">center</property>
                                         <image id="5497">
-                                            <property name="width">100%</property>
+                                            <property name="height">0.33in</property>
+                                            <property name="width">0.33in</property>
                                             <list-property name="visibility">
                                                 <structure>
                                                     <property name="format">all</property>
