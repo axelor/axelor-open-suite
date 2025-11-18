@@ -16,9 +16,9 @@
     <panel name="mainPanel">
       <field name="address" canNew="true"
         if="!__config__.app.getApp('base')?.getIsSharedAddress()" required="true"/>
-      <field name="isInvoicingAddr" widget="toggle" x-icon="fa-exclamation-circle"/>
-      <field name="isDeliveryAddr" widget="toggle" x-icon="fa-ban"/>
-      <field name="isDefaultAddr" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star"/>
+      <field name="isInvoicingAddr" widget="toggle" x-icon="exclamation-circle-fill"/>
+      <field name="isDeliveryAddr" widget="toggle" x-icon="ban"/>
+      <field name="isDefaultAddr" widget="toggle" x-icon="star" x-icon-active="star-fill"/>
     </panel>
   </form>
 

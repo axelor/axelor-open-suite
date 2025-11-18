@@ -43,7 +43,7 @@
     <field name="origin" width="120"/>
     <field name="description"/>
     <field name="dueDate"/>
-    <button name="viewMoveBtn" title="View entry" icon="fa-external-link"
+    <button name="viewMoveBtn" title="View entry" icon="box-arrow-up-right"
       onClick="action-move-line-view-open-move"/>
     <field name="analyticMoveLineList" hidden="true"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
@@ -65,7 +65,7 @@
     <field name="move.statusSelect"/>
     <field name="description"/>
     <field name="dueDate"/>
-    <button name="editMoveBtn" title="Edit Move" icon="fa-external-link"
+    <button name="editMoveBtn" title="Edit Move" icon="box-arrow-up-right"
       onClick="action-move-line-view-open-move"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
@@ -93,7 +93,7 @@
     <field name="reconcileGroup"/>
     <field name="description"/>
     <field name="dueDate"/>
-    <button name="editMoveBtn" title="Edit Move" icon="fa-external-link"
+    <button name="editMoveBtn" title="Edit Move" icon="box-arrow-up-right"
       onClick="action-move-line-view-open-move"/>
     <field name="taxEquiv" hidden="true" grid-view="tax-equiv-grid" form-view="tax-equiv-form"/>
     <field name="companyCurrencyDecimals" hidden="true"/>
@@ -130,10 +130,10 @@
     <field name="externalOrigin"/>
     <field name="reconcileGroup.isProposal" hidden="true"/>
     <button name="validateReconcileGroupBtn" title="Validate reconcile group"
-      onClick="action-reconcile-group-method-validate-proposal" icon="fa-check-circle"
+      onClick="action-reconcile-group-method-validate-proposal" icon="check-circle-fill"
       readonlyIf="!$get('reconcileGroup.isProposal')" help="Validate reconcile group"/>
     <button name="cancelReconcileGroupBtn" title="Cancel reconcile group"
-      readonlyIf="!$get('reconcileGroup.isProposal')" icon="fa-minus-circle"
+      readonlyIf="!$get('reconcileGroup.isProposal')" icon="dash-circle-fill"
       onClick="action-reconcile-group-method-cancel-proposal" help="Cancel reconcile group"/>
   </grid>
 
@@ -310,7 +310,7 @@
   <grid name="move-line-cut-off-grid" title="Move lines concerned by cut off"
     model="com.axelor.apps.account.db.MoveLine" groupBy="move">
     <toolbar>
-      <button name="validateBtn" title="Validate" icon="fa-check"
+      <button name="validateBtn" title="Validate" icon="check"
         onClick="action-move-line-method-validate-preview-batch"/>
     </toolbar>
     <hilite color="danger" if="$get('move.cutOffMoveGenerated')"/>
@@ -336,7 +336,7 @@
   <grid name="move-line-doubtful-customer-grid" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine">
     <toolbar>
-      <button name="validateBtn" title="Validate" icon="fa-check"
+      <button name="validateBtn" title="Validate" icon="check"
         onClick="action-move-line-method-validate-preview-batch"/>
     </toolbar>
     <field name="name" title="Reference"/>

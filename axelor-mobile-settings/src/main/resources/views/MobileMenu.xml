@@ -11,7 +11,7 @@
     <field name="authorizedRoles" widget="Tags"/>
     <field name="menuOrder"/>
     <button name="viewMenuTranslationBtn" title="Menu translation"
-      onClick="action-mobile-menu-view-menu-translation" icon="fa-language"/>
+      onClick="action-mobile-menu-view-menu-translation" icon="translate"/>
   </grid>
 
   <form name="mobile-menu-form" title="Mobile Menu"

@@ -15,11 +15,11 @@
     <field name="saleOrderLine.saleOrder.orderBeingEdited" hidden="true"/>
     <button name="selectBtn"
       readonlyIf="isSelected || !optional ||($get('saleOrderLine.saleOrder.statusSelect')==3 &amp;&amp; !$get('saleOrderLine.saleOrder.orderBeingEdited'))"
-      icon="fa-check" help="Select this optional complementary product"
+      icon="check" help="Select this optional complementary product"
       onClick="action-compl-product-selected-record-select"/>
     <button name="unSelectBtn"
       readonlyIf="!isSelected || !optional ||($get('saleOrderLine.saleOrder.statusSelect')==3 &amp;&amp; !$get('saleOrderLine.saleOrder.orderBeingEdited'))"
-      icon="fa-minus" help="Unselect this optional complementary product"
+      icon="dash-lg" help="Unselect this optional complementary product"
       onClick="action-compl-product-selected-record-unselect"/>
   </grid>
 

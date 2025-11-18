@@ -12,14 +12,14 @@
     <field name="mobilePhone" widget="phone"/>
     <field name="jobPosition"/>
     <button name="resume" onClick="action-job-application-method-show-resume"
-      icon="fa-file-text-o"/>
+      icon="file-text"/>
   </grid>
 
   <form title="Job applicant" name="job-application-form"
     model="com.axelor.apps.talent.db.JobApplication" width="large"
     onNew="action-job-application-defaults" onLoad="action-job-application-group-onload">
     <menubar>
-      <menu name="jobApplicationToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="jobApplicationToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="scheduleEventItem" title="Schedule Event"
           action="save,action-job-application-schedule-event" readonlyIf="id == null"/>
       </menu>
@@ -116,16 +116,16 @@
         <field name="commentary" widget="html" colSpan="12"/>
       </panel>
       <panel name="actionPanel" title="Actions">
-        <button name="meetingBtn" title="Create a meeting" colSpan="3"
-          icon="fa-pencil-square-o" link="" onClick="save,action-job-application-view-meeting-event"/>
-        <button name="callBtn" title="Create a call" colSpan="3" icon="fa-phone" link=""
+        <button name="meetingBtn" title="Create a meeting" colSpan="3" icon="pencil-square"
+          link="" onClick="save,action-job-application-view-meeting-event"/>
+        <button name="callBtn" title="Create a call" colSpan="3" icon="telephone" link=""
           onClick="save,action-job-application-view-call-event"/>
-        <button name="taskBtn" title="Create a task" colSpan="3" icon="fa-tasks" link=""
+        <button name="taskBtn" title="Create a task" colSpan="3" icon="list-task" link=""
           onClick="save,action-job-application-view-task-event"/>
-        <button name="noteBtn" title="Create a note" colSpan="3" icon="fa-sticky-note-o"
-          link="" onClick="save,action-job-application-view-note-event"/>
+        <button name="noteBtn" title="Create a note" colSpan="3" icon="sticky" link=""
+          onClick="save,action-job-application-view-note-event"/>
         <button name="showAllEventsBtn" title="Show all events" readonlyIf="id == null"
-          css="btn-custom text-left" icon="fa-tasks"
+          css="btn-custom text-left" icon="list-task"
           onClick="action-job-application-view-all-events"/>
         <panel-dashlet name="eventPanelDashlet" title="Events" colSpan="12"
           canDelete="true" height="550" action="action-job-application-events"/>

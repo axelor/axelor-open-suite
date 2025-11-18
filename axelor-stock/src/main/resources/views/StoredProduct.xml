@@ -22,8 +22,8 @@
     <field name="storedQty" title="Stored qty / Qty to store" x-scale="nbDecimalQty"/>
     <button name="realizeStoringBtn" title="Realize storing"
       onClick="action-stored-product-method-realize-storing" readonlyIf="stockMoveLine != null"
-      icon="fa-play" hideIf="!id"/>
-    <button name="cancelPickingBtn" icon="fa-undo"
+      icon="play" hideIf="!id"/>
+    <button name="cancelPickingBtn" icon="arrow-counterclockwise"
       onClick="action-stored-product-method-cancel-storing" readonlyIf="stockMoveLine == null"
       hideIf="!id"/>
     <field name="stockMoveLine" hidden="true"/>

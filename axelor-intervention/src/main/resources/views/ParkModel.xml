@@ -6,7 +6,7 @@
   <grid name="park-model-grid" title="Park models"
     model="com.axelor.apps.intervention.db.ParkModel">
     <field name="name"/>
-    <button icon="fa-cogs" name="generateEquipments"
+    <button icon="gear" name="generateEquipments"
       onClick="action-park-model-show-confirmation"/>
   </grid>
 

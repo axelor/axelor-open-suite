@@ -14,7 +14,7 @@
     onNew="action-campaign-attrs-on-new-on-load,action-campaign-attrs-manage-event-readonly"
     onLoad="action-campaign-attrs-on-new-on-load,action-campaign-attrs-manage-event-readonly">
     <menubar>
-      <menu name="campaignToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="campaignToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="launchEmailingItem" title="Launch emailing"
           action="save,action-campaign-validate-send-email,action-campaign-method-send-email"
           readonlyIf="!emailing"/>
@@ -177,7 +177,7 @@
         onClick="save,action-campaign-record-ended,save,action-campaign-attrs-on-new-on-load"/>
       <button name="cancelBtn" showIf="stageSelect != 0" title="Cancel"
         onClick="save,action-campaign-record-cancel,save,action-campaign-attrs-on-new-on-load"
-        css="btn-danger" icon="fa-times"/>
+        css="btn-danger" icon="x"/>
     </panel>
   </form>
 

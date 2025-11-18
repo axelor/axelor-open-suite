@@ -61,7 +61,7 @@
     orderBy="-contactDate">
     <!-- <toolbar> <button name="showMap" title="Map" onClick="action-show-leads-on-map-page" /> </toolbar> -->
     <menubar>
-      <menu name="leadToolsMenu" title="Tools" icon="fa-wrench">
+      <menu name="leadToolsMenu" title="Tools" icon="wrench">
         <item name="assignToMeItem" title="Assign to me"
           action="action-lead-method-assign-to-me-multiple"/>
         <item name="checkDuplicateItem" title="Check duplicate"
@@ -81,11 +81,11 @@
     <field name="user" form-view="user-form" grid-view="user-grid"/>
     <field name="leadStatus" title="Status"/>
     <field name="leadScoringSelect" widget="Rating"/>
-    <button name="grabLeadBtn" hideIf="user.id == _internalUserId" icon="fa-suitcase"
+    <button name="grabLeadBtn" hideIf="user.id == _internalUserId" icon="briefcase-fill"
       help="Take charge" onClick="action-lead-method-assign-to-me"/>
-    <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+    <button name="scheduleEventBtn" title="Schedule Event" icon="people-fill"
       onClick="action-lead-view-schedule-event"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -123,10 +123,10 @@
         <field name="picture" showTitle="false" widget="Image" colSpan="12"/>
         <panel name="socialNetworkPanel" colSpan="12" showIf="fullName != null">
           <label name="googleLabel"
-            title="&lt;a class='fa fa-google' href='http://www.google.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.google.com' target='_blank' &gt;&lt;img src='img/social/google.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
           <label name="linkedinLabel"
-            title="&lt;a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' /&gt;"
+            title="&lt;a href='http://www.linkedin.com' target='_blank' &gt;&lt;img src='img/social/linkedin.svg'/&gt;&lt;a/&gt;"
             colSpan="2"/>
         </panel>
       </panel>
@@ -248,23 +248,23 @@
       </panel>
 
       <panel name="eventPanel" title="Events">
-        <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
+        <button name="meetingBtn" title="Create a meeting" link="" icon="pencil-square"
           onClick="save,action-lead-view-meeting-event" colSpan="3"/>
-        <button name="callBtn" title="Create a call" link="" icon="fa-phone"
+        <button name="callBtn" title="Create a call" link="" icon="telephone"
           onClick="save,action-lead-view-call-event" colSpan="3"/>
-        <button name="taskBtn" title="Create a task" link="" icon="fa-tasks"
+        <button name="taskBtn" title="Create a task" link="" icon="list-task"
           onClick="save,action-lead-view-task-event" colSpan="3"/>
-        <button name="noteBtn" title="Create a note" link="" icon="fa-sticky-note-o"
+        <button name="noteBtn" title="Create a note" link="" icon="sticky"
           onClick="save,action-lead-view-note-event" colSpan="3"/>
         <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
-          icon="fa-tasks" onClick="action-lead-view-all-events" readonlyIf="id == null"/>
+          icon="list-task" onClick="action-lead-view-all-events" readonlyIf="id == null"/>
         <field name="lastEventDateT" readonly="true" colSpan="3"/>
         <field name="nextScheduledEventDateT" readonly="true" colSpan="3"/>
         <panel-dashlet name="eventPanelDashlet" action="action-lead-view-events"
           title="Events" height="550" colSpan="12"/>
       </panel>
       <panel name="emailPanel" title="Emails">
-        <button name="emailBtn" title="Create an email" link="" icon="fa-envelope-o"
+        <button name="emailBtn" title="Create an email" link="" icon="envelope"
           onClick="save,action-send-by-email-with-template" colSpan="3"/>
         <panel-dashlet name="leadSentEmailsPanel" title="Sent emails"
           action="action-lead-view-sent-emails" colSpan="12" height="550"/>
@@ -279,15 +279,15 @@
     <panel name="actionsPanel" sidebar="true"
       hideIf="user.id == _internalUserId &amp;&amp; (!id || isConverted) &amp;&amp; !partner">
       <button name="grabLeadBtn" title="Take in charge" hideIf="user.id == _internalUserId"
-        icon="fa-suitcase" onClick="save,action-lead-method-assign-to-me"/>
+        icon="briefcase-fill" onClick="save,action-lead-method-assign-to-me"/>
       <button name="convertBtn" title="Convert" hideIf="!id || isConverted || $isLost"
-        icon="fa-exchange" onClick="action-lead-group-lead-convert"/>
+        icon="arrow-left-right" onClick="action-lead-group-lead-convert"/>
       <button name="showPartnerBtn" title="Show Partner" hideIf="!partner"
         onClick="action-lead-view-show-partner"/>
       <button name="loseBtn" title="Lose" hideIf="!id || isConverted || $isLost"
-        onClick="action-lead-view-lose" css="btn-danger" icon="fa-times-circle"/>
+        onClick="action-lead-view-lose" css="btn-danger" icon="x-circle-fill"/>
       <button name="resetBtn" title="Reset" showIf="$isLost"
-        onClick="action-lead-method-reset" icon="fa-refresh"/>
+        onClick="action-lead-method-reset" icon="arrow-repeat"/>
     </panel>
 
     <panel sidebar="true" name="activityPanel" title="Activity" colSpan="12" showIf="id">
@@ -362,7 +362,7 @@
     <field name="emailAddress.address"/>
     <field name="contactDate"/>
     <field name="user" form-view="user-form" grid-view="user-grid"/>
-    <button name="addBtn" title="Add" icon="fa-plus" onClick="action-lead-event-add-attendee"/>
+    <button name="addBtn" title="Add" icon="plus-lg" onClick="action-lead-event-add-attendee"/>
   </grid>
 
   <grid name="my-lead-grid" title="My Leads" model="com.axelor.apps.crm.db.Lead"
@@ -378,9 +378,9 @@
     <field name="fixedPhone" widget="phone" x-placeholder-number-type="FIXED_LINE"/>
     <field name="mobilePhone" widget="phone"/>
     <field name="emailAddress.address"/>
-    <button name="scheduleEventBtn" title="Schedule Event" icon="fa-group"
+    <button name="scheduleEventBtn" title="Schedule Event" icon="people-fill"
       onClick="action-lead-view-schedule-event"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 

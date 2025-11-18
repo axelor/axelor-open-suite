@@ -29,7 +29,7 @@
     <field name="_xFinishedInterventions" title="Finished interventions" type="long"/>
     <field name="_xGitStatusIndicator" hidden="true"/>
     <field name="_xGrtStatusIndicator" hidden="true"/>
-    <button name="createIntervention" icon="fa-plus"
+    <button name="createIntervention" icon="plus-lg"
       showIf="statusSelect == 20 || statusSelect ==
       30"
       onClick="action-customer-request-method-create-an-intervention"/>
@@ -38,7 +38,7 @@
   <form model="com.axelor.apps.intervention.db.CustomerRequest" title="Customer request"
     name="customer-request-form" width="large" onNew="action-customer-request-record-default-values">
     <menubar>
-      <menu name="customerRequestToolsMenu" title="Tools" icon="fa-wrench">
+      <menu name="customerRequestToolsMenu" title="Tools" icon="wrench">
         <item if-module="axelor-message" name="sendEmailItem" title="Send email"
           readonlyIf="id == null" action="save,action-send-by-email-with-template"/>
       </menu>

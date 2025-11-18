@@ -124,7 +124,7 @@
   </action-view>
 
   <menuitem name="manufacturing-root-calendars" parent="manufacturing-root"
-    title="Calendars" order="1450" icon="fa-calendar"/>
+    title="Calendars" order="1450" icon="calendar"/>
 
   <menuitem name="manufacturing-root-operation-order-planned-calendar"
     parent="manufacturing-root-calendars" title="Planned operations"
@@ -286,7 +286,7 @@
   </action-view>
 
   <menuitem name="manufacturing-mps-conf" parent="manufacturing-mps" title="Configuration"
-    icon="fa-cog" order="400"/>
+    icon="gear" order="400"/>
 
   <menuitem name="manufacturing-mps-conf-mrp-line-type" parent="manufacturing-mps-conf"
     title="Move types" action="manufacturing.mps.conf.mrp.line.type" order="100"/>
@@ -319,7 +319,7 @@
   </action-view>
 
   <menuitem name="manufacturing-root-report" parent="manufacturing-root" title="Reportings"
-    order="1500" icon="fa-bar-chart"/>
+    order="1500" icon="bar-chart"/>
 
   <menuitem name="menu-manufacturing-dashboard-1" parent="manufacturing-root-report"
     title="Manufacturing" action="manufacturing.dashboard.view" order="100"/>
@@ -347,7 +347,7 @@
   </action-view>
 
   <menuitem name="manufacturing-conf" parent="manufacturing-root" title="Configuration"
-    order="1700" icon="fa-cog"/>
+    order="1700" icon="gear"/>
 
   <menuitem name="manufacturing-conf-work-center" parent="manufacturing-conf"
     title="Work centers" action="manufacturing.conf.work.center" order="100"/>

@@ -14,7 +14,7 @@
     <field name="registrationCode"/>
     <field name="mainAddress"/>
     <field name="companySet" widget="Tags"/>
-    <button name="partnerPresentAtEventBtn" title="Present at the event" icon="fa-check"
+    <button name="partnerPresentAtEventBtn" title="Present at the event" icon="check"
       onClick="action-campaign-method-mark-partner-present" hidden="true"/>
   </grid>
 

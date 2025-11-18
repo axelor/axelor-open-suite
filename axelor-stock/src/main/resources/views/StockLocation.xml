@@ -6,7 +6,7 @@
   <grid name="stock-location-grid" title="Stock Locations"
     model="com.axelor.apps.stock.db.StockLocation">
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
+      <button name="printBtn" title="Print" icon="printer"
         onClick="action-stock-location-validate-selected-locations,action-stock-location-method-open-print-wizard"/>
       <button name="treeBtn" title="Stock location tree"
         onClick="action-stock-location-view-tree"/>
@@ -65,7 +65,7 @@
     <toolbar>
       <button name="createInventoryBtn" title="Create inventory"
         onClick="action-location-view-create-inventory"/>
-      <button name="printBtn" title="Print" icon="fa-print"
+      <button name="printBtn" title="Print" icon="printer"
         onClick="save,action-stock-location-method-open-print-wizard"/>
     </toolbar>
     <panel name="mainPanel">

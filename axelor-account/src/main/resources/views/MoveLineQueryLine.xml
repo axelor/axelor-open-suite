@@ -7,9 +7,9 @@
     name="move-line-query-line-grid" editable="true">
     <hilite if="isSelected" color="primary"/>
     <button name="selectBtn" onClick="action-move-line-query-line-group-set-isselected"
-      title="Select / Unselect" icon="fa-check-circle" showIf="!isSelected"/>
+      title="Select / Unselect" icon="check-circle-fill" showIf="!isSelected"/>
     <button name="unselectBtn" onClick="action-move-line-query-line-group-set-isselected"
-      title="Select / Unselect" icon="fa-minus-circle" showIf="isSelected"/>
+      title="Select / Unselect" icon="dash-circle-fill" showIf="isSelected"/>
     <field name="moveLine.reconcileGroup" width="120"/>
     <field name="moveLine" readonly="true"/>
     <field name="moveLine.name" width="135"/>

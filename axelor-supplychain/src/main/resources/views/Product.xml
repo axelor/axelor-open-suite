@@ -30,37 +30,36 @@
     <panel name="mainPanelIndicators" showIf="$product">
       <panel name="indicators" title="Indicators" colSpan="12">
         <panel name="stockIndicators" colSpan="12" itemSpan="3">
-          <button name="$realQty" title="Real quantity" icon="fa-building-o"
-            widget="info-button" onClick="action-supplychain-stock-move-line-product-real-quantity"/>
-          <button name="$futureQty" title="Future quantity" icon="fa-building-o"
+          <button name="$realQty" title="Real quantity" icon="building" widget="info-button"
+            onClick="action-supplychain-stock-move-line-product-real-quantity"/>
+          <button name="$futureQty" title="Future quantity" icon="building"
             widget="info-button"
             onClick="action-supplychain-stock-move-line-product-future-quantity"/>
-          <button name="$reservedQty" title="Reserved quantity" icon="fa-building-o"
+          <button name="$reservedQty" title="Reserved quantity" icon="building"
             widget="info-button"
             if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"
             onClick="action-supplychain-stock-move-line-product-reserved"/>
           <button name="$requestedReservedQty" title="Requested reserved quantity"
-            icon="fa-building-o" widget="info-button"
+            icon="building" widget="info-button"
             if="__config__.app.isApp('supplychain') &amp;&amp; __config__.app.getApp('supplychain')?.getManageStockReservation()"
             onClick="action-method-suppplychain-stock-location-line-view-requested-reserved"/>
         </panel>
         <panel name="supplychainIndicators" colSpan="12" itemSpan="3">
-          <button name="$saleOrderQty" title="Sale order quantity" icon="fa-shopping-cart"
+          <button name="$saleOrderQty" title="Sale order quantity" icon="cart-fill"
             widget="info-button" onClick="action-method-supplychain-sale-order-product-planned"/>
-          <button name="$purchaseOrderQty" title="Purchase order quantity"
-            icon="fa-shopping-cart" widget="info-button"
-            onClick="action-method-supplychain-purchase-order-product-planned"/>
-          <button name="$availableQty" title="Available stock" icon="fa-building-o"
+          <button name="$purchaseOrderQty" title="Purchase order quantity" icon="cart-fill"
+            widget="info-button" onClick="action-method-supplychain-purchase-order-product-planned"/>
+          <button name="$availableQty" title="Available stock" icon="building"
             widget="info-button" onClick="action-method-supplychain-stock-available-product"/>
         </panel>
         <panel name="productionIndicators" colSpan="12" itemSpan="3"
           if="__config__.app.isApp('production')">
-          <button name="$buildingQty" title="Building quantity" icon="fa-cogs"
+          <button name="$buildingQty" title="Building quantity" icon="gear"
             widget="info-button" onClick="action-method-production-building-quantity-product"/>
           <button name="$consumeManufOrderQty" title="Consume manuf order quantity"
-            icon="fa-cogs" widget="info-button" onClick="action-method-production-consume-product"/>
+            icon="gear" widget="info-button" onClick="action-method-production-consume-product"/>
           <button name="$missingManufOrderQty" title="Missing manuf order quantity"
-            icon="fa-cogs" widget="info-button" onClick="action-method-production-missing-product"/>
+            icon="gear" widget="info-button" onClick="action-method-production-missing-product"/>
         </panel>
         <panel name="buttonPanel" colSpan="12" itemSpan="4">
           <button name="projectedStockButton" title="See projected stock"

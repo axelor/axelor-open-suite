@@ -11,7 +11,7 @@
     <hilite color="success" if="receiptState == 3"/>
     <field name="$hasWarning" hidden="true"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
-      icon="fa-exclamation-triangle"/>
+      icon="exclamation-triangle"/>
     <field name="sequence"
       if="__config__.app.getApp('purchase')?.isDisplayPurchaseOrderLineNumber" width="51"/>
     <field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')"/>
@@ -43,7 +43,7 @@
     name="purchase-order-line-grid" canNew="false" canDelete="false" canEdit="false">
     <field name="$hasWarning" hidden="true"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
-      icon="fa-exclamation-triangle"/>
+      icon="exclamation-triangle"/>
     <field name="purchaseOrder.purchaseOrderSeq" width="120"/>
     <field name="purchaseOrder.supplierPartner" form-view="partner-form"
       grid-view="partner-grid"/>

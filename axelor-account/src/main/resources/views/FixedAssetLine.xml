@@ -16,7 +16,7 @@
     <field name="fixedAsset.statusSelect" hidden="true"/>
     <field name="fiscalFixedAsset.statusSelect" hidden="true"/>
     <field name="ifrsFixedAsset.statusSelect" hidden="true"/>
-    <button name="realizeBtn" title="Realize" icon="fa-check-circle"
+    <button name="realizeBtn" title="Realize" icon="check-circle-fill"
       readonlyIf="($get('fixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('fiscalFixedAsset.statusSelect') &lt; 2 &amp;&amp; $get('ifrsFixedAsset.statusSelect') &lt; 2) || statusSelect == 2"
       onClick="save,action-fixed-asset-line-method-realize"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>
@@ -33,7 +33,7 @@
     <field name="fixedAsset.statusSelect" hidden="true"/>
     <field name="fiscalFixedAsset.statusSelect" hidden="true"/>
     <field name="ifrsFixedAsset.statusSelect" hidden="true"/>
-    <button name="realizeBtn" title="Realize" icon="fa-check-circle"
+    <button name="realizeBtn" title="Realize" icon="check-circle-fill"
       readonlyIf="(($get('fixedAsset.statusSelect') == null || $get('fixedAsset.statusSelect') &lt; 2) &amp;&amp; ($get('fiscalFixedAsset.statusSelect') == null || $get('fiscalFixedAsset.statusSelect') &lt; 2) &amp;&amp; ($get('ifrsFixedAsset.statusSelect') == null || $get('ifrsFixedAsset.statusSelect') &lt; 2 )) || statusSelect == 2"
       onClick="save,action-fixed-asset-line-method-realize"/>
     <field name="$currencyNumberOfDecimals" hidden="true"/>

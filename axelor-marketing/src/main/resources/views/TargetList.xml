@@ -46,7 +46,7 @@
                 onSelect="action-target-list-attrs-partner-filters-target-meta-field-domain"
                 onChange="action-filter-method-update-target-meta-field"/>
               <button name="clearSelection" colSpan="4" title="Clear Selection"
-                icon="fa-arrow-left" showIf="metaField.relationship != null"
+                icon="arrow-left" showIf="metaField.relationship != null"
                 onClick="action-filter-method-clear-selection"/>
               <field name="targetField" hidden="true"
                 requiredIf="metaField.relationship != null"
@@ -97,7 +97,7 @@
                 onSelect="action-target-list-attrs-partner-filters-target-meta-field-domain"
                 onChange="action-filter-method-update-target-meta-field"/>
               <button name="clearSelection" colSpan="4" title="Clear Selection"
-                icon="fa-arrow-left" showIf="metaField.relationship != null"
+                icon="arrow-left" showIf="metaField.relationship != null"
                 onClick="action-filter-method-clear-selection"/>
               <field name="targetField" hidden="true"
                 requiredIf="metaField.relationship != null"

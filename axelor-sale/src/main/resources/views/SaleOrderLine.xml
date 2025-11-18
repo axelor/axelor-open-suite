@@ -11,7 +11,7 @@
     <hilite color="success" if="deliveryState == 3"/>
     <field name="$hasWarning" hidden="true"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
-      icon="fa-exclamation-triangle"/>
+      icon="exclamation-triangle"/>
     <field name="sequence" if="__config__.app.getApp('sale')?.isDisplaySaleOrderLineNumber"
       width="51"/>
     <button name="addToCartBtn" title="Add to cart"
@@ -32,12 +32,12 @@
       x-scale="$nbDecimalDigitForQty"/>
     <button name="allocateAll"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Allocate"
-      icon="fa-plus-square"
+      icon="plus-square-fill"
       readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == $number(qty) || deliveryState == 3 || $get('product.productTypeSelect') == 'service'"
       onClick="save,action-supplychain-sale-order-line-allocate-all"/>
     <button name="deallocate"
       if="__config__.app.getApp('supplychain')?.manageStockReservation" title="Deallocate"
-      icon="fa-minus-square"
+      icon="dash-square-fill"
       readonlyIf="$get('saleOrder.statusSelect') != 3 || $get('saleOrder.orderBeingEdited') || $number(reservedQty) == 0 || deliveryState == 3"
       onClick="save,action-supplychain-sale-order-line-deallocate-all"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
@@ -58,7 +58,7 @@
     <button name="configuratorDuplicateBtn"
       onClick="action-sale-order-line-group-on-configurator-duplicate"
       if="__config__.app.getApp('sale')?.getEnableLineDuplication()"
-      readonlyIf="saleOrder.id == null" icon="fa-copy"/>
+      readonlyIf="saleOrder.id == null" icon="copy"/>
     <field name="saleOrder.statusSelect" hidden="true"/>
     <field name="saleOrder.orderBeingEdited" hidden="true"/>
     <field name="product.productTypeSelect" hidden="true"/>
@@ -154,7 +154,7 @@
     <button name="configuratorDuplicateBtn"
       onClick="action-sale-order-line-group-on-configurator-duplicate"
       if="__config__.app.getApp('sale')?.getEnableLineDuplication()"
-      readonlyIf="saleOrder.id == null" icon="fa-copy"/>
+      readonlyIf="saleOrder.id == null" icon="copy"/>
     <field name="saleOrder.priceList.nonNegotiable" hidden="true"/>
     <field name="$nonNegotiable" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
@@ -504,7 +504,7 @@
         <field name="estimatedDeliveryDate" readonlyIf="$availabiltyRequest"/>
         <field name="deliveredQty" readonly="true" hidden="true"
           x-scale="$nbDecimalDigitForQty"/>
-        <button name="$previewBtn" title="See stock details" icon="fa-cubes" colSpan="4"
+        <button name="$previewBtn" title="See stock details" icon="boxes" colSpan="4"
           widget="info-button"
           onClick="action-stock-location-line-view-for-a-product-from-saleorderline-view"
           if="__config__.app.isApp('supplychain')"/>

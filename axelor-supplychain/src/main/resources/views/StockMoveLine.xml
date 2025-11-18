@@ -144,7 +144,7 @@
   <grid name="stock-move-line-cut-off-grid" title="Stock move lines concerned by cut off"
     model="com.axelor.apps.stock.db.StockMoveLine" groupBy="stockMove">
     <toolbar>
-      <button name="validateBtn" title="Validate" icon="fa-check"
+      <button name="validateBtn" title="Validate" icon="check"
         onClick="action-stock-move-line-method-validate-cut-off-batch"/>
     </toolbar>
     <hilite color="danger" if="$get('stockMove.cutOffMoveGenerated')"/>

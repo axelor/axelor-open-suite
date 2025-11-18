@@ -31,7 +31,7 @@
     onNew="action-declaration-of-exchanges-onnew"
     onLoad="action-declaration-of-exchanges-attrs-show-price" width="large">
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
+      <button name="printBtn" title="Print" icon="printer"
         onClick="action-declaration-of-exchanges-export"/>
     </toolbar>
 

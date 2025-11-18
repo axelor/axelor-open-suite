@@ -12,7 +12,7 @@
           colSpan="3"
           if="__config__.app.isApp('budget') &amp;&amp; __config__.app.getApp('budget')?.getManageMultiBudget()"
           onClick="action-account-move-group-compute-budget-distribution" css="btn-custom text-left"
-          icon="fa-plus"
+          icon="plus-lg"
           showIf="company.accountConfig.enableBudgetKey &amp;&amp; technicalOriginSelect == 1
 			&amp;&amp; (journal.journalType.technicalTypeSelect == 1 || journal.journalType.technicalTypeSelect == 2)
 			&amp;&amp; (statusSelect == 1 || statusSelect == 2 || statusSelect == 5) &amp;&amp; moveLineList &amp;&amp; moveLineList.length != 0"/>

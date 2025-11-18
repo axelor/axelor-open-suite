@@ -9,7 +9,7 @@
         onClick="action-base-method-show-duplicate"/>
     </toolbar>
     <field name="fullName"/>
-    <button name="mapBtn" icon="fa-map-marker" onClick="action-base-address-method-view-map"/>
+    <button name="mapBtn" icon="geo-alt-fill" onClick="action-base-address-method-view-map"/>
     <button name="directionsBtn" icon="near_me"
       onClick="action-base-address-method-view-direction"/>
   </grid>
@@ -31,14 +31,14 @@
     <panel sidebar="true" name="actionsPanel" title="Actions" colSpan="12">
       <panel name="mapBtnPanel" colSpan="12">
         <button-group hideIf="$popup()" readonlyIf="!id" colSpan="12">
-          <button name="mapBtn" title="View map" icon="fa-map-marker"
+          <button name="mapBtn" title="View map" icon="geo-alt-fill"
             onClick="action-base-address-method-view-map"/>
           <button name="directionsBtn" title="Get direction" icon="near_me"
             onClick="action-base-address-method-view-direction"/>
         </button-group>
         <spacer name="btnGrpSpacer" colSpan="12"/>
         <button-group showIf="$popup()" readonlyIf="!id" colSpan="12">
-          <button name="mapBtn" title="View map" icon="fa-map-marker"
+          <button name="mapBtn" title="View map" icon="geo-alt-fill"
             onClick="action-base-address-method-view-map,close"/>
           <button name="directionsBtn" title="Get direction" icon="near_me"
             onClick="action-base-address-method-view-direction,close"/>

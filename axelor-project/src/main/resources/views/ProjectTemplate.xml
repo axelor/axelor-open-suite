@@ -22,8 +22,7 @@
         </field>
       </panel>
       <panel name="actionPanel" colSpan="6">
-        <button name="createProjectBtn" icon="fa-copy"
-          title="Create project from this template"
+        <button name="createProjectBtn" icon="copy" title="Create project from this template"
           onClick="save,action-project-template-method-generate-project" colSpan="12"/>
       </panel>
     </panel>

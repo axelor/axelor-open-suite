@@ -23,6 +23,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import java.util.regex.Pattern;
@@ -39,20 +40,21 @@ public class DMSFileController {
         if ("html".equals(dmsFile.getContentType())) {
           response.setValue("fileType", "text/html");
           response.setValue("contentType", "html");
-          response.setValue("typeIcon", "fa fa-file-text-o");
+          response.setValue("typeIcon", "file-earmark-text");
         }
         if ("spreadsheet".equals(dmsFile.getContentType())) {
           response.setValue("fileType", "text/json");
           response.setValue("contentType", "spreadsheet");
-          response.setValue("typeIcon", "fa fa-file-excel-o");
+          response.setValue("typeIcon", "file-earmark-excel");
         }
 
-        if (dmsFile.getMetaFile() != null) {
-          String fileType = dmsFile.getMetaFile().getFileType();
-          String fileIcon = Beans.get(MetaFiles.class).fileTypeIcon(dmsFile.getMetaFile());
+        MetaFile metaFile = dmsFile.getMetaFile();
+        if (metaFile != null) {
+          String fileType = metaFile.getFileType();
+          String fileIcon = Beans.get(MetaFiles.class).fileTypeIcon(metaFile);
           response.setValue("fileType", fileType);
-          response.setValue("typeIcon", "fa fa-colored " + fileIcon);
-          response.setValue("metaFile.sizeText", dmsFile.getMetaFile().getSizeText());
+          response.setValue("typeIcon", fileIcon);
+          response.setValue("metaFile.sizeText", metaFile.getSizeText());
 
           // Put inlineUrl only if preview for that file type is supported, to prevent
           // auto-downloading

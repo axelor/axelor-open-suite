@@ -6,7 +6,7 @@
   <grid name="fixed-asset-grid" title="Fixed assets"
     model="com.axelor.apps.account.db.FixedAsset" orderBy="company.code,-fixedAssetSeq,-reference">
     <menubar>
-      <menu name="fixedAssetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="fixedAssetToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedFixedAssetsItem" title="Validate selected fixed assets"
           action="action-fixed-asset-method-mass-validation"
           prompt="Are you sure you want to validate all selected fixed assets ?"/>
