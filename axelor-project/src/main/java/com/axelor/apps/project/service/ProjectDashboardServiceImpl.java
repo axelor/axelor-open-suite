@@ -27,6 +27,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionResponse;
@@ -115,11 +116,14 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   }
 
   protected Set<User> getMembers(Project project) {
-    Set<User> membersSet = new HashSet<>();
-    projectRepo.all().filter("self.id IN ?1", projectService.getContextProjectIds()).fetch()
-        .stream()
-        .forEach(subProject -> membersSet.addAll(subProject.getMembersUserSet()));
-    return membersSet;
+    List<User> users =
+        JPA.em()
+            .createQuery(
+                "SELECT DISTINCT new User(user.code, user.name) FROM Project self JOIN self.membersUserSet user WHERE self.id IN :ids",
+                User.class)
+            .setParameter("ids", projectService.getContextProjectIds())
+            .getResultList();
+    return new HashSet<>(users);
   }
 
   protected List<Project> getSubprojects(Project project) {
