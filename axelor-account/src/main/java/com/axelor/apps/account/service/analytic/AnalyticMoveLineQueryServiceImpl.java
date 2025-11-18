@@ -79,7 +79,7 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
             + " AND ";
 
     query +=
-        "NOT EXISTS (SELECT 1 FROM AnalyticMoveLine l WHERE l.originAnalyticMoveLine = self.id) AND ";
+        "NOT EXISTS (SELECT 1 FROM AnalyticMoveLine l WHERE l.originAnalyticMoveLine.id = self.id) AND ";
     query += "self.moveLine.move.company.id = " + analyticMoveLineQuery.getCompany().getId();
 
     if (appBaseService.getAppBase().getEnableTradingNamesManagement()

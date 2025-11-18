@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -219,13 +219,6 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="InvoiceDB" id="3420">
             <property name="nullsOrdering">nulls lowest</property>
             <list-property name="columnHints">
-                <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="alias">logo_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
-                </structure>
                 <structure>
                     <property name="columnName">invoice_id</property>
                     <property name="alias">invoice_id</property>
@@ -772,8 +765,8 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -1162,9 +1155,9 @@ reportContext.getDesignHandle().findMasterPage("Simple MasterPage").getStyle().b
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
@@ -4485,7 +4478,7 @@ WHERE Invoice.id = ?;]]></xml-property>
 CREATE OR REPLACE FUNCTION invoice_proc(InvoiceId bigint)
 RETURNS table(
 	"inv_id" bigint,
-    "logo_path" varchar,
+    "logo_id" bigint,
     "invoice_id" varchar,
     "operation_type_select" int,
     "status_select" int,
@@ -4568,7 +4561,7 @@ IF (SELECT COUNT(to_regclass('studio_app_business_project')) = 0) THEN
 return query
 select distinct
 	Invoice.id as inv_id,
-	coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path,
+	coalesce(MetaFileTN.id, MetaFile.id) as logo_id,
 	Invoice.invoice_id,
 	Invoice.operation_type_select,
 	Invoice.status_select as status_select,
@@ -4671,7 +4664,7 @@ ELSE
 return query
 select distinct
 	Invoice.id as inv_id,
-	coalesce(MetaFileTN.file_path, MetaFile.file_path) as logo_path,
+	coalesce(MetaFileTN.id, MetaFile.id) as logo_id,
 	Invoice.invoice_id,
 	Invoice.operation_type_select,
 	Invoice.status_select as status_select,
@@ -5143,10 +5136,11 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
                 </structure>
                 <structure>
                     <property name="name">invoice_id</property>
@@ -5624,10 +5618,14 @@ if (logoPosition == 2) {
                                 <expression name="valueExpr" type="javascript">row["logoPosition"] == 0</expression>
                             </structure>
                         </list-property>
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
                         <method name="onRender"><![CDATA[this.width=row["logo_width"];
 this.height=row["logo_height"];]]></method>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                        <property name="source">expr</property>
                     </image>
                 </cell>
                 <cell id="5998">
@@ -5678,10 +5676,14 @@ this.height=row["logo_height"];]]></method>
                     <property name="textAlign">right</property>
                     <property name="verticalAlign">middle</property>
                     <image id="6016">
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
                         <method name="onRender"><![CDATA[this.width=row["logo_width"];
 this.height=row["logo_height"];]]></method>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                        <property name="source">expr</property>
                     </image>
                 </cell>
             </row>
@@ -9556,12 +9558,6 @@ else{ 1.00 }
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">invoice_id</property>
                     <text-property name="displayName">invoice_id</text-property>
                     <expression name="expression" type="javascript">dataSetRow["invoice_id"]</expression>
@@ -11925,12 +11921,6 @@ else {'Invoice.totalTaxes'}</value>
                                     <property name="dataType">decimal</property>
                                 </structure>
                                 <structure>
-                                    <property name="name">logo_path</property>
-                                    <text-property name="displayName">logo_path</text-property>
-                                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                    <property name="dataType">string</property>
-                                </structure>
-                                <structure>
                                     <property name="name">invoice_id</property>
                                     <text-property name="displayName">invoice_id</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["invoice_id"]</expression>
@@ -13513,12 +13503,6 @@ else {'Invoice.totalTaxes'}</value>
                     <text-property name="displayName">inv_id</text-property>
                     <expression name="expression" type="javascript">dataSetRow["inv_id"]</expression>
                     <property name="dataType">decimal</property>
-                </structure>
-                <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">invoice_id</property>

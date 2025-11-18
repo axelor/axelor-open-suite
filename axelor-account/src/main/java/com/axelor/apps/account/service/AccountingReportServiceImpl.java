@@ -671,7 +671,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         return fixedAssetRepo.all().filter(this.getFixedAssetList(accountingReport)).count()
             + JPA.em()
                 .createQuery(
-                    "Select invoiceLine FROM InvoiceLine invoiceLine LEFT JOIN FixedAsset fixedAsset on fixedAsset.invoiceLine = invoiceLine.id WHERE invoiceLine.fixedAssets = true and fixedAsset.invoiceLine is null ")
+                    "Select invoiceLine FROM InvoiceLine invoiceLine LEFT JOIN FixedAsset fixedAsset on fixedAsset.invoiceLine.id = invoiceLine.id WHERE invoiceLine.fixedAssets = true and fixedAsset.invoiceLine is null ")
                 .getResultList()
                 .size();
       case AccountingReportRepository.REPORT_GROSS_VALUES_AND_DEPRECIATION:
