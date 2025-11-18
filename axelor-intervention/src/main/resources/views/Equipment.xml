@@ -114,16 +114,16 @@
     </toolbar>
     <panel name="mainPanel">
       <field name="sequence" showTitle="false" readonly="true">
-        <viewer depends="sequence"><![CDATA[<h3>{{record.sequence}}</h3>]]></viewer>
+        <viewer depends="sequence"><![CDATA[<h3>{{sequence}}</h3>]]></viewer>
       </field>
       <field name="$viewerTags" showTitle="false" readonly="true">
         <viewer depends="indicatorSelect">
           <![CDATA[
               <h4 style="text-align: right;">
-                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #4CAF50;" ng-show="record.indicatorSelect == 1" x-translate>Under contract and operational</span>
-                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #F44336;" ng-show="record.indicatorSelect == 2" x-translate>Under contract and non-operational</span>
-                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #2196F3;" ng-show="record.indicatorSelect == 3" x-translate>Off-contract and operational</span>
-                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #FF9800; color: #372100" ng-show="record.indicatorSelect == 4" x-translate>Off-contract and non-operational</span>
+                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #4CAF50;" ng-show="indicatorSelect == 1" x-translate>Under contract and operational</span>
+                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #F44336;" ng-show="indicatorSelect == 2" x-translate>Under contract and non-operational</span>
+                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #2196F3;" ng-show="indicatorSelect == 3" x-translate>Off-contract and operational</span>
+                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #FF9800; color: #372100" ng-show="indicatorSelect == 4" x-translate>Off-contract and non-operational</span>
               </h4>
           ]]>
         </viewer>

@@ -50,18 +50,18 @@
         <viewer depends="product.isUnrenewed,product.isPrototype">
           <![CDATA[
             <h4 class="text-right">
-              <span class="label label-default" style="background-color: #4caf50;" ng-show="record.gitStatusIndicator === 'ok'"><span x-translate>GIT</span>: <span x-translate>Ok</span></span>
-              <span class="label label-default" style="background-color: #f44336;" ng-show="record.gitStatusIndicator === 'fail'"><span x-translate>GIT</span>: <span x-translate>Fail</span></span>
-              <span class="label label-default" style="background-color: #ffeb3b; color: #333333" ng-show="record.gitStatusIndicator === 'alert'"><span x-translate>GIT</span>: <span x-translate>On alert</span></span>
-              <span class="label label-default" style="background-color: #ff9800;" ng-show="record.gitStatusIndicator === 'urgent'"><span x-translate>GIT</span>: <span x-translate>URGENT</span></span>
-              <span class="label label-default" style="background-color: #4caf50;" ng-show="record.gitStatusIndicator === 'respected'"><span x-translate>GIT</span>: <span x-translate>Respected</span></span>
-              <span class="label label-default" style="background-color: #f44336;" ng-show="record.gitStatusIndicator === 'nonRespected'"><span x-translate>GIT</span>: <span x-translate>Non respected</span></span>
-              <span class="label label-default" style="background-color: #4caf50;" ng-show="record.grtStatusIndicator === 'ok'"><span x-translate>GRT</span>: <span x-translate>Ok</span></span>
-              <span class="label label-default" style="background-color: #f44336;" ng-show="record.grtStatusIndicator === 'fail'"><span x-translate>GRT</span>: <span x-translate>Fail</span></span>
-              <span class="label label-default" style="background-color: #ffeb3b; color: #333333" ng-show="record.grtStatusIndicator === 'alert'"><span x-translate>GRT</span>: <span x-translate>On alert</span></span>
-              <span class="label label-default" style="background-color: #ff9800;" ng-show="record.grtStatusIndicator === 'urgent'"><span x-translate>GRT</span>: <span x-translate>URGENT</span></span>
-              <span class="label label-default" style="background-color: #4caf50;" ng-show="record.grtStatusIndicator === 'respected'"><span x-translate>GRT</span>: <span x-translate>Respected</span></span>
-              <span class="label label-default" style="background-color: #f44336;" ng-show="record.grtStatusIndicator === 'nonRespected'"><span x-translate>GRT</span>: <span x-translate>Non respected</span></span>
+              <span class="label label-default" style="background-color: #4caf50;" ng-show="gitStatusIndicator === 'ok'"><span x-translate>GIT</span>: <span x-translate>Ok</span></span>
+              <span class="label label-default" style="background-color: #f44336;" ng-show="gitStatusIndicator === 'fail'"><span x-translate>GIT</span>: <span x-translate>Fail</span></span>
+              <span class="label label-default" style="background-color: #ffeb3b; color: #333333" ng-show="gitStatusIndicator === 'alert'"><span x-translate>GIT</span>: <span x-translate>On alert</span></span>
+              <span class="label label-default" style="background-color: #ff9800;" ng-show="gitStatusIndicator === 'urgent'"><span x-translate>GIT</span>: <span x-translate>URGENT</span></span>
+              <span class="label label-default" style="background-color: #4caf50;" ng-show="gitStatusIndicator === 'respected'"><span x-translate>GIT</span>: <span x-translate>Respected</span></span>
+              <span class="label label-default" style="background-color: #f44336;" ng-show="gitStatusIndicator === 'nonRespected'"><span x-translate>GIT</span>: <span x-translate>Non respected</span></span>
+              <span class="label label-default" style="background-color: #4caf50;" ng-show="grtStatusIndicator === 'ok'"><span x-translate>GRT</span>: <span x-translate>Ok</span></span>
+              <span class="label label-default" style="background-color: #f44336;" ng-show="grtStatusIndicator === 'fail'"><span x-translate>GRT</span>: <span x-translate>Fail</span></span>
+              <span class="label label-default" style="background-color: #ffeb3b; color: #333333" ng-show="grtStatusIndicator === 'alert'"><span x-translate>GRT</span>: <span x-translate>On alert</span></span>
+              <span class="label label-default" style="background-color: #ff9800;" ng-show="grtStatusIndicator === 'urgent'"><span x-translate>GRT</span>: <span x-translate>URGENT</span></span>
+              <span class="label label-default" style="background-color: #4caf50;" ng-show="grtStatusIndicator === 'respected'"><span x-translate>GRT</span>: <span x-translate>Respected</span></span>
+              <span class="label label-default" style="background-color: #f44336;" ng-show="grtStatusIndicator === 'nonRespected'"><span x-translate>GRT</span>: <span x-translate>Non respected</span></span>
             </h4>
           ]]>
         </viewer>
