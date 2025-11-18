@@ -56,10 +56,10 @@
         <viewer depends="nonConforming">
           <![CDATA[
               <h4 class="text-right">
-              	<span class="label label-info" ng-show="record.isSurveyGenerationRunning" x-translate>Survey generation in progress</span>
-              	<span class="label label-success" ng-show="record.following == true && record.statusSelect == 50" x-translate>Following : Yes</span>
-              	<span class="label label-important" ng-show="record.following  == false && record.statusSelect == 50" x-translate>Following : No</span>
-              	<span class="label label-important" ng-show="record.nonConforming > 0 && record.statusSelect == 50"><span x-translate>Non-conforming : </span><span>{{record.nonConforming}}</span></span>
+              	<span class="label label-info" ng-show="isSurveyGenerationRunning" x-translate>Survey generation in progress</span>
+              	<span class="label label-success" ng-show="following == true && statusSelect == 50" x-translate>Following : Yes</span>
+              	<span class="label label-important" ng-show="following  == false && statusSelect == 50" x-translate>Following : No</span>
+              	<span class="label label-important" ng-show="nonConforming > 0 && statusSelect == 50"><span x-translate>Non-conforming : </span><span>{{nonConforming}}</span></span>
               </h4>
             ]]>
         </viewer>

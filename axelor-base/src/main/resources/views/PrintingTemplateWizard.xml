@@ -14,8 +14,8 @@
     <panel name="mainPanel" colSpan="12">
       <field name="metaModel" onChange="action-birt-printing-wizard-method-model-on-change"/>
       <field name="recordValue" widget="EvalRefSelect" title="Select record"
-        x-eval-target="record.metaModel.fullName" x-eval-target-name="record.metaModelTargetName"
-        x-eval-value="record.recordValue" x-eval-title="record.recordTitle"/>
+        x-eval-target="metaModel.fullName" x-eval-target-name="metaModelTargetName"
+        x-eval-value="recordValue" x-eval-title="recordTitle"/>
       <button onClick="save,action-method-print-template" name="printBtn" title="Print"
         readonlyIf="!metaModel || !recordValue"/>
     </panel>
