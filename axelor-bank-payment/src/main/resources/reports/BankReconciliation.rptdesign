@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -325,10 +325,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <text-property name="heading">cash_account</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
+                    <property name="columnName">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <text-property name="heading">logo_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">account</property>
@@ -406,8 +405,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     </structure>
                     <structure>
                         <property name="position">8</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
@@ -477,9 +476,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
@@ -514,7 +514,7 @@ bankReconciliation.created_on AS report_date ,
 currency.code AS currency ,
 journal.name AS journal ,
 concat( account.code  ,' - ' , account.name) AS cash_account ,
-metaFile.file_path AS logo_path ,
+metaFile.id AS logo_id ,
 bankDetails.full_name AS account,
 bankReconciliation.corrected_date_time as corrected_date_time,
 AuthUser.full_name as corrected_user_full_name,
@@ -1406,12 +1406,6 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
-                            <property name="name">logo_path</property>
-                            <text-property name="displayName">logo_path</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
                             <property name="name">account</property>
                             <text-property name="displayName">account</text-property>
                             <expression name="expression" type="javascript">dataSetRow["account"]</expression>
@@ -1443,6 +1437,12 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                             <expression name="expression" type="javascript">dataSetRow["corrected_user_full_name"]</expression>
                             <property name="dataType">string</property>
                             <property name="allowExport">true</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_id</property>
+                            <text-property name="displayName">logo_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                            <property name="dataType">decimal</property>
                         </structure>
                     </list-property>
                     <column id="6199">
@@ -1503,9 +1503,14 @@ AND (moveLine.date_val <= ? OR moveLine.due_date <= ?)));
                             <image id="6890">
                                 <expression name="altText">""</expression>
                                 <method name="onCreate"><![CDATA[this.width = row["logo_width"];
-this.height = row["logo_height"];]]></method>
-                                <property name="source">file</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+this.height = row["logo_height"];
+
+var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                <property name="source">expr</property>
                             </image>
                         </cell>
                         <cell id="6422">
@@ -1696,12 +1701,6 @@ this.height = row["logo_height"];]]></method>
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
-                            <property name="name">logo_path</property>
-                            <text-property name="displayName">logo_path</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
                             <property name="name">account</property>
                             <text-property name="displayName">account</text-property>
                             <expression name="expression" type="javascript">dataSetRow["account"]</expression>
@@ -1738,6 +1737,12 @@ this.height = row["logo_height"];]]></method>
                             <text-property name="displayName">comments</text-property>
                             <expression name="expression" type="javascript">dataSetRow["comments"]</expression>
                             <property name="dataType">string</property>
+                        </structure>
+                        <structure>
+                            <property name="name">logo_id</property>
+                            <text-property name="displayName">logo_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                            <property name="dataType">decimal</property>
                         </structure>
                     </list-property>
                     <column id="6048">
@@ -1803,10 +1808,15 @@ this.height = row["logo_height"];]]></method>
                                 <expression name="altText">""</expression>
                                 <structure name="toc"/>
                                 <method name="onCreate"><![CDATA[this.width = row["logo_width"];
-this.height = row["logo_height"];]]></method>
-                                <property name="source">file</property>
+this.height = row["logo_height"];
+
+var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                <property name="source">expr</property>
                                 <property name="proportionalScale">true</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"]+row["logo_path"]</expression>
                             </image>
                         </cell>
                         <cell id="7748">
@@ -1987,12 +1997,6 @@ this.height = row["logo_height"];]]></method>
                     <property name="name">cash_account</property>
                     <text-property name="displayName">cash_account</text-property>
                     <expression name="expression" type="javascript">dataSetRow["cash_account"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -3223,12 +3227,6 @@ else{
                     <property name="name">cash_account</property>
                     <text-property name="displayName">cash_account</text-property>
                     <expression name="expression" type="javascript">dataSetRow["cash_account"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
