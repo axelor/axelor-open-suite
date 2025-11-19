@@ -1,0 +1,3 @@
+---
+title: "Invoice term: fixed the scale of amount when computing the name."
+module: axelor-account
