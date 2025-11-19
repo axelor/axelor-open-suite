@@ -140,6 +140,19 @@
     <context name="user_id" expr="eval:__user__.id"/>
   </action-view>
 
+  <!-- MyHR related documents -->
+  <menuitem name="my-documents" parent="my-hr-root" title="My Documents"
+    action="my.documents.view" order="600" icon="folder2-open" icon-background="#84429f"/>
+
+  <action-view name="my.documents.view" title="My Documents"
+    model="com.axelor.dms.db.DMSFile">
+    <view type="grid" name="dms-file-grid"/>
+    <view type="form" name="dms-file-form"/>
+    <domain>self.relatedModel = 'com.axelor.apps.hr.db.Employee'
+      AND self.relatedId = :employeeId</domain>
+    <context name="employeeId" expr="eval: __user__.employee?.id"/>
+  </action-view>
+
   <!-- RH -->
 
   <menuitem name="hr-root" order="-1600" title="HR" icon="diagram-3-fill"
@@ -200,6 +213,16 @@
     <view type="form" name="employee-bonus-mgt-form"/>
     <view-param name="search-filters" value="employee-bonus-mgt-filters"/>
   </action-view>
+
+  <!-- see all employee related documents -->
+  <menuitem name="hr-employee-documents" parent="hr-root-emp-mgt"
+    title="Employee Related Documents" action="employee.documents.all" order="600"/>
+
+  <action-method name="employee.documents.all">
+    <call class="com.axelor.apps.hr.web.EmployeeDocumentController"
+      method="showEmployeeDocuments"/>
+  </action-method>
+
 
   <menuitem name="hr-employee-dpae" title="DPAEs" parent="hr-root-emp-mgt"
     action="employee.dpae.all" if="__user__.activeCompany?.hrConfig?.enableDPAE" order="600"/>

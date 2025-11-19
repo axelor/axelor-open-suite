@@ -41,6 +41,8 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -282,5 +284,32 @@ public class ProjectController {
             .domain("self.isBusinessProject = true");
     response.setCanClose(true);
     response.setView(builder.map());
+  }
+
+  public void findProjectDmsHomeGrid(ActionRequest request, ActionResponse response) {
+    Long projectId = (Long) request.getContext().get("id");
+    if (projectId == null) {
+      return;
+    }
+
+    Project project = Beans.get(ProjectRepository.class).find(projectId);
+    if (project == null) {
+      return;
+    }
+
+    DMSFile home = Beans.get(DMSFileRepository.class).findHomeByRelated(project);
+
+    if (home != null) {
+      response.setView(
+          ActionView.define(I18n.get("Project Files") + " - " + project.getFullName())
+              .model(DMSFile.class.getName())
+              .add("grid", "dms-file-grid")
+              .add("form", "dms-file-form")
+              .domain("self.parent.id = :parentId")
+              .context("parentId", home.getId())
+              .map());
+    } else {
+      response.setAlert("There are no files for this project");
+    }
   }
 }
