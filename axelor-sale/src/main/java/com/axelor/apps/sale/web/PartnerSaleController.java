@@ -32,6 +32,7 @@ import com.axelor.rpc.Context;
 import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -95,8 +96,12 @@ public class PartnerSaleController {
 
     try {
 
-      String fromDate = (String) context.get("fromDate");
-      String toDate = (String) context.get("toDate");
+      LocalDate fromDate =
+          context.get("fromDate") != null
+              ? LocalDate.parse(context.get("fromDate").toString())
+              : null;
+      LocalDate toDate =
+          context.get("toDate") != null ? LocalDate.parse(context.get("toDate").toString()) : null;
 
       List<Map<String, Object>> dataList =
           Beans.get(PartnerSaleService.class).averageByCustomer(averageElement, fromDate, toDate);

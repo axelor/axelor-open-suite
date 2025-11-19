@@ -18,19 +18,25 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.db.JPA;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.repo.MessageRepository;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -125,9 +131,23 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
   }
 
   public List<Map<String, Object>> averageByCustomer(
-      String averageOn, String fromDate, String toDate) {
+      String averageOn, LocalDate fromDate, LocalDate toDate) throws AxelorException {
+
+    List<String> authorizedField = new ArrayList<>();
+    authorizedField.add("markup");
+    authorizedField.add("marginRate");
+
+    if (!authorizedField.contains(averageOn)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(SaleExceptionMessage.SALE_MANAGER_CHART_ERROR));
+    }
 
     List<Map<String, Object>> dataList = new ArrayList<Map<String, Object>>();
+    fromDate = fromDate.plusDays(1);
+
+    LocalDateTime fromDateTime = fromDate.atStartOfDay();
+    LocalDateTime toDateTime = toDate.atTime(23, 59, 59);
 
     String averageSelection = "SELECT AVG(sale." + averageOn + ")";
     String customerSelection = "SELECT sale.clientPartner.name";
@@ -138,20 +158,24 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
             + ", "
             + SaleOrderRepository.STATUS_ORDER_COMPLETED
             + ")"
-            + " AND sale.confirmationDateTime BETWEEN to_date('"
-            + fromDate
-            + "', 'YYYY-MM-DD') AND to_date('"
-            + toDate
-            + "', 'YYYY-MM-DD') + 1"
+            + " AND sale.confirmationDateTime BETWEEN :fromDateTime AND :toDateTime"
             + " GROUP BY sale.clientPartner.name"
             + " ORDER BY AVG("
             + averageOn
             + ") desc";
 
     List<Double> averageList =
-        JPA.em().createQuery(averageSelection + endQuery, Double.class).getResultList();
+        JPA.em()
+            .createQuery(averageSelection + endQuery, Double.class)
+            .setParameter("toDateTime", toDateTime)
+            .setParameter("fromDateTime", fromDateTime)
+            .getResultList();
     List<String> customerList =
-        JPA.em().createQuery(customerSelection + endQuery, String.class).getResultList();
+        JPA.em()
+            .createQuery(customerSelection + endQuery, String.class)
+            .setParameter("toDateTime", toDateTime)
+            .setParameter("fromDateTime", fromDateTime)
+            .getResultList();
 
     for (int i = 0; i < averageList.size(); i++) {
       Map<String, Object> dataMap = new HashMap<String, Object>();
