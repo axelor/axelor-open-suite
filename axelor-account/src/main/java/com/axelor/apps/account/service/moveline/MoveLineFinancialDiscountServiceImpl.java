@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.TaxRepository;
 import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -243,7 +244,9 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
               taxMap.get(taxcode),
               paymentDate,
               counter,
-              vatSystemTaxMap.get(taxcode),
+              vatSystemTaxMap == null
+                      ? MoveLineRepository.VAT_SYSTEM_DEFAULT
+                      : vatSystemTaxMap.get(taxcode),
               isDebit,
               financialDiscountVat);
     }
@@ -523,14 +526,22 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
               .flatMap(il -> il.getTaxLineSet().stream())
               .count();
 
+      // In case of noOfLines = count, we can simplify and avoid division by 0
       BigDecimal amountProrata =
-          invoiceLineTax
-              .getExTaxBase()
-              .multiply(BigDecimal.valueOf(noOfLines))
-              .divide(
-                  invoice.getExTaxTotal().multiply(BigDecimal.valueOf(count)),
-                  AppBaseService.COMPUTATION_SCALING,
-                  RoundingMode.HALF_UP);
+          noOfLines == count
+              ? invoiceLineTax
+                  .getExTaxBase()
+                  .divide(
+                      invoice.getExTaxTotal(),
+                      AppBaseService.COMPUTATION_SCALING,
+                      RoundingMode.HALF_UP)
+              : invoiceLineTax
+                  .getExTaxBase()
+                  .multiply(BigDecimal.valueOf(noOfLines))
+                  .divide(
+                      invoice.getExTaxTotal().multiply(BigDecimal.valueOf(count)),
+                      AppBaseService.COMPUTATION_SCALING,
+                      RoundingMode.HALF_UP);
 
       BigDecimal taxProrata = BigDecimal.ONE;
       if (taxTotal.compareTo(BigDecimal.ZERO) != 0) {

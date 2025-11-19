@@ -1,0 +1,5 @@
+---
+title: "Invoice: Fix division by zero error when registering a payment from an invoice with both the fiscal position and the financial discount set"
+module: axelor-account
+developer: |
+  When both fiscalPosition and financialDiscount are set on a supplier invoice, when registering a payment with applyFinancialDiscount true, a division by zero occurs.
