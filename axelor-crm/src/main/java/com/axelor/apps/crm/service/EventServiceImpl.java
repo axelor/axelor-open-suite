@@ -144,6 +144,7 @@ public class EventServiceImpl implements EventService {
       while (repeated != repetitionsNumber) {
         Event copy = eventRepo.copy(lastEvent, false);
         copy.setParentEvent(event);
+        copyAttendees(event, copy);
         copy.setStartDateTime(copy.getStartDateTime().plusDays(periodicity));
         copy.setEndDateTime(copy.getEndDateTime().plusDays(periodicity));
         lastEvent = eventRepo.save(copy);
@@ -156,6 +157,7 @@ public class EventServiceImpl implements EventService {
           .isBefore(endDate.atStartOfDay().plusDays(1))) {
         Event copy = eventRepo.copy(lastEvent, false);
         copy.setParentEvent(event);
+        copyAttendees(event, copy);
         copy.setStartDateTime(copy.getStartDateTime().plusDays(periodicity));
         copy.setEndDateTime(copy.getEndDateTime().plusDays(periodicity));
         lastEvent = eventRepo.save(copy);
@@ -204,6 +206,7 @@ public class EventServiceImpl implements EventService {
 
         Event copy = eventRepo.copy(lastEvent, false);
         copy.setParentEvent(event);
+        copyAttendees(event, copy);
         copy.setStartDateTime(nextStartDateTime);
         copy.setEndDateTime(nextStartDateTime.plus(duration));
         lastEvent = eventRepo.save(copy);
@@ -274,6 +277,7 @@ public class EventServiceImpl implements EventService {
 
       Event copy = eventRepo.copy(lastEvent, false);
       copy.setParentEvent(event);
+      copyAttendees(event, copy);
       copy.setStartDateTime(nextStartDateTime);
       copy.setEndDateTime(nextStartDateTime.plus(duration));
       lastEvent = eventRepo.save(copy);
@@ -290,6 +294,7 @@ public class EventServiceImpl implements EventService {
       while (repeated != repetitionsNumber) {
         Event copy = eventRepo.copy(lastEvent, false);
         copy.setParentEvent(event);
+        copyAttendees(event, copy);
         copy.setStartDateTime(copy.getStartDateTime().plusYears(periodicity));
         copy.setEndDateTime(copy.getEndDateTime().plusYears(periodicity));
         lastEvent = eventRepo.save(copy);
@@ -302,6 +307,7 @@ public class EventServiceImpl implements EventService {
           .isBefore(endDate.atStartOfDay().plusYears(1))) {
         Event copy = eventRepo.copy(lastEvent, false);
         copy.setParentEvent(event);
+        copyAttendees(event, copy);
         copy.setStartDateTime(copy.getStartDateTime().plusYears(periodicity));
         copy.setEndDateTime(copy.getEndDateTime().plusYears(periodicity));
         lastEvent = eventRepo.save(copy);
@@ -335,6 +341,7 @@ public class EventServiceImpl implements EventService {
       child.setEventLead(event.getEventLead());
       child.setTypeSelect(event.getTypeSelect());
       child.setLocation(event.getLocation());
+      copyAttendees(event, child);
       eventRepo.save(child);
       copyEvent = child;
       child = eventRepo.all().filter("self.parentEvent.id = ?1", copyEvent.getId()).fetchOne();
@@ -360,6 +367,7 @@ public class EventServiceImpl implements EventService {
       parent.setEventLead(event.getEventLead());
       parent.setTypeSelect(event.getTypeSelect());
       parent.setLocation(event.getLocation());
+      copyAttendees(event, parent);
       eventRepo.save(parent);
       parent = nextParent;
     }
@@ -649,5 +657,35 @@ public class EventServiceImpl implements EventService {
   @Transactional(rollbackOn = {Exception.class})
   public void cancelEvent(Event event) {
     event.setStatusSelect(EventRepository.STATUS_CANCELED);
+  }
+
+  /**
+   * Copy attendees from source event to target event by creating new ICalendarUser instances.
+   * This is necessary because attendees use a one-to-many relationship (not many-to-many),
+   * so each ICalendarUser can only be associated with one event at a time.
+   *
+   * @param source The source event containing attendees to copy
+   * @param target The target event that will receive the attendees
+   */
+  protected void copyAttendees(Event source, Event target) {
+    if (source == null || target == null) {
+      return;
+    }
+
+    // Clear existing attendees to avoid duplicates
+    target.clearAttendees();
+
+    // Create new ICalendarUser instances for each attendee
+    if (source.getAttendees() != null) {
+      source.getAttendees().forEach(attendee -> {
+        com.axelor.apps.base.db.ICalendarUser newAttendee =
+            new com.axelor.apps.base.db.ICalendarUser();
+        newAttendee.setName(attendee.getName());
+        newAttendee.setEmail(attendee.getEmail());
+        newAttendee.setStatusSelect(attendee.getStatusSelect());
+        newAttendee.setUser(attendee.getUser());
+        target.addAttendee(newAttendee);
+      });
+    }
   }
 }
