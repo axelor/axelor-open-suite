@@ -26,4 +26,7 @@ public final class MobileSettingsExceptionMessage {
 
   public static final String MOBILE_MENU_WRONG_MENU_TYPE = /*$$(*/
       "Authorized values for menuType : menu, separator or submenu" /*)*/;
+
+  public static final String MOBILE_CHART_QUERY_ERROR = /*$$(*/
+      "The query contains forbidden keyword such as UPDATE, DELETE or FUNCTION." /*)*/;
 }
