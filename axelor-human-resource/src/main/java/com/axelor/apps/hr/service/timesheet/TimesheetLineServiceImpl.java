@@ -217,12 +217,14 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     Integer dailyLimit = getDailyLimitFromApp();
 
     if (dailyLimit == 0) {
+      log.debug("daily limit is zero");
       return;
     }
 
     BigDecimal totalHoursDuration = calculateTotalHoursDuration(timesheet, currentTimesheetLine);
 
     if (isExceedingDailyLimit(totalHoursDuration, hoursDuration, dailyLimit)) {
+      log.debug("something exceeds daily limit");
       handleExceedingDailyLimit(dailyLimit, currentTimesheetLine.getDate());
     }
   }

@@ -4,12 +4,13 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="timesheet-line-invoicing-project-grid" title="Log Times"
-    model="com.axelor.apps.hr.db.TimesheetLine" orderBy="-date" groupBy="project"
-    onNew="action-timesheet-line-method-set-product">
+    model="com.axelor.apps.hr.db.TimesheetLine" orderBy="-startTime" groupBy="project"
+    onNew="action-timesheet-line-method-set-product" editable="true">
     <field name="employee" form-view="employee-form" grid-view="employee-grid"/>
     <field name="projectTask" form-view="project-task-form"
       grid-view="business-project-task-grid" onChange="action-timesheet-line-method-set-product"/>
-    <field name="date"/>
+    <field name="startTime"/>
+    <field name="endTime"/>
     <field name="product" if="__config__.app.getApp('timesheet')?.enableActivity"
       form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="hoursDuration" width="62%" min="0.01" aggregate="sum"/>
@@ -22,6 +23,7 @@
     <field name="enableEditor" hidden="true"/>
     <field name="invoiced"/>
     <field name="project" hidden="true"/>
+    <field name="date" hidden="true"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"
       readonlyIf="invoiced" icon="fa-check-circle"
@@ -34,6 +36,11 @@
     <extend target="/">
       <attribute name="onNew"
         value="action-timesheet-line-group-business-project-task-form-on-new"/>
+      <attribute name="onSave" value="action-timesheet-line-group-on-save"/>
+    </extend>
+
+    <extend target="//field[@name='date']">
+      <attribute name="hidden" value="true"/>
     </extend>
 
     <extend target="//field[@name='timesheet']">
@@ -55,6 +62,7 @@
   <action-group name="action-timesheet-line-group-business-project-task-form-on-new">
     <action name="action-timesheet-line-group-project-task-form-on-new"/>
     <action name="action-timesheet-line-attrs-manage-business-fields"/>
+    <action name="action-timesheet-line-method-prefill-from-task-member-report"/>
   </action-group>
 
   <action-method name="action-timesheet-line-method-set-default-to-invoice">
@@ -67,5 +75,9 @@
       for="toInvoice"/>
   </action-attrs>
 
+  <action-method name="action-timesheet-line-method-prefill-from-task-member-report">
+    <call class="com.axelor.apps.businessproject.web.TimesheetLineBusinessController"
+      method="prefillFromTaskMemberReport"/>
+  </action-method>
 
 </object-views>

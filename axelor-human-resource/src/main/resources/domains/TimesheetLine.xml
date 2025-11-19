@@ -11,16 +11,19 @@
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
     <many-to-one name="employee" title="Employee" ref="Employee" readonly="true"/>
-    <date name="date" column="date_val" required="true"/>
+    <date name="date" column="date_val" required="true" readonly="true"/>
+    <datetime name="startTime" title="Start Time" required="true"/>
+    <datetime name="endTime" title="End Time"/>
     <many-to-one name="timesheet" ref="com.axelor.apps.hr.db.Timesheet"
       title="Time Sheet" readonly="true"/>
     <decimal name="hoursDuration" title="Duration"/>
     <decimal name="duration" title="Duration"/>
     <decimal name="durationForCustomer" title="Duration adjust for customer" nullable="true"/>
+    <decimal name="breakTime" title="Break Time (hours)" precision="5" scale="2"/>
     <string name="comments" large="true"/>
     <boolean name="toInvoice"/>
     <boolean name="invoiced" title="Invoiced" readonly="true"/>
-    <string name="fullName" namecolumn="true"></string>
+    <string name="fullName" namecolumn="true"/>
     <boolean name="enableEditor" title="Allow updates via editor" nullable="true"/>
 
     <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>

@@ -42,12 +42,15 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TimesheetLineController {
 
   private static final String HOURS_DURATION_FIELD = "hoursDuration";
 
   private static final String DURATION_FIELD = "duration";
+  private static final Logger log = LoggerFactory.getLogger(TimesheetLineController.class);
 
   /**
    * Called from timesheet line editable grid or form. Get the timesheet corresponding to
@@ -58,18 +61,25 @@ public class TimesheetLineController {
    * @param response
    */
   public void setStoredDuration(ActionRequest request, ActionResponse response) {
+    log.debug("Been called upon to set timesheet line hourseDuration");
     try {
       TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
       Timesheet timesheet;
       Context parent = request.getContext().getParent();
+
+      log.debug("timesheet line duraiton: {}", timesheetLine.getDuration());
       if (parent != null && parent.getContextClass().equals(Timesheet.class)) {
+        log.debug("blah blah 1");
         timesheet = parent.asType(Timesheet.class);
       } else {
+        log.debug("blah blah 2");
         timesheet = timesheetLine.getTimesheet();
       }
       TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
       BigDecimal hoursDuration =
           timesheetLineService.computeHoursDuration(timesheet, timesheetLine.getDuration(), true);
+
+      log.debug("computed hourseDuraiton: {}", hoursDuration);
 
       // check daily limit
       timesheetLineService.checkDailyLimit(timesheet, timesheetLine, hoursDuration);
@@ -77,6 +87,7 @@ public class TimesheetLineController {
       response.setValue(HOURS_DURATION_FIELD, hoursDuration);
 
     } catch (Exception e) {
+      log.debug("An exception occured while trying to determine hoursDuration");
       response.setValue(DURATION_FIELD, 0);
       response.setValue(HOURS_DURATION_FIELD, 0);
       TraceBackService.trace(response, e);
