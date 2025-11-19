@@ -1,0 +1,3 @@
+---
+title: "Invoice: note panel still visible even if invoiceCommentsPanel is empty in BIRT."
+module: axelor-account
