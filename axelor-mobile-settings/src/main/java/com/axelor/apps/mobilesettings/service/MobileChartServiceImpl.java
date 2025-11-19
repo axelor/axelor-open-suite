@@ -21,7 +21,9 @@ package com.axelor.apps.mobilesettings.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.mobilesettings.db.MobileChart;
+import com.axelor.apps.mobilesettings.exception.MobileSettingsExceptionMessage;
 import com.axelor.apps.mobilesettings.rest.dto.MobileChartValueResponse;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import jakarta.persistence.Query;
@@ -29,6 +31,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MobileChartServiceImpl implements MobileChartService {
@@ -100,6 +103,8 @@ public class MobileChartServiceImpl implements MobileChartService {
       return Collections.emptyList();
     }
 
+    checkQuery(mobileChart);
+
     List<Object> result;
 
     try {
@@ -111,6 +116,34 @@ public class MobileChartServiceImpl implements MobileChartService {
           I18n.get("There is an error with the query : \n") + e.getMessage());
     }
     return result;
+  }
+
+  protected void checkQuery(MobileChart mobileChart) throws AxelorException {
+    if (mobileChart == null) {
+      return;
+    }
+
+    String query = mobileChart.getQuery().toUpperCase();
+
+    if (containsForbiddenKeyword(query)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(MobileSettingsExceptionMessage.MOBILE_CHART_QUERY_ERROR));
+    }
+  }
+
+  protected boolean containsForbiddenKeyword(String query) {
+    if (StringUtils.isEmpty(query)) {
+      return false;
+    }
+    String upperInput = query.toUpperCase();
+    Pattern update = Pattern.compile("\\bUPDATE\\b");
+    Pattern delete = Pattern.compile("\\bDELETE\\b");
+    Pattern function = Pattern.compile("\\bFUNCTION\\b");
+
+    return update.matcher(upperInput).find()
+        || delete.matcher(upperInput).find()
+        || function.matcher(upperInput).find();
   }
 
   protected String formatList(List<Object> objectList) {
