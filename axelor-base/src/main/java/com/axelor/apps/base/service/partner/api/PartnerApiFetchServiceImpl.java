@@ -75,7 +75,7 @@ public class PartnerApiFetchServiceImpl extends GenericApiFetchService
     Map<String, String> headers = new HashMap<>();
     headers.put(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
     String apiKey = appBaseService.getAppBase().getSireneKey();
-    if (Objects.isNull(apiKey)) {
+    if (StringUtils.isEmpty(apiKey)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.API_WRONG_CREDENTIALS));
