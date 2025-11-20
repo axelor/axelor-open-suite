@@ -102,7 +102,7 @@ public class ProdProductProductionRepository extends ProdProductRepository {
     List<Object[]> queryResult =
         JPA.em()
             .createQuery(
-                "SELECT locationLine.currentQty, locationLine.unit.id "
+                "SELECT locationLine.currentQty, locationLine.unit.id, locationLine.reservedQty "
                     + "FROM ManufOrder manufOrder "
                     + "LEFT JOIN StockLocationLine locationLine "
                     + "ON locationLine.stockLocation.id = manufOrder.prodProcess.stockLocation.id "
@@ -125,10 +125,14 @@ public class ProdProductProductionRepository extends ProdProductRepository {
             Optional.ofNullable(resultTab[1])
                 .map(unitObj -> unitRepository.find(Long.valueOf(unitObj.toString())))
                 .orElse(null);
+        BigDecimal reservedQtyInLocationUnit =
+            Optional.ofNullable(resultTab[2])
+                .map(reservedQtyObj -> new BigDecimal(reservedQtyObj.toString()))
+                .orElse(BigDecimal.ZERO);
         if (locationUnit != null) {
+          availableQty = availableQtyInLocationUnit.subtract(reservedQtyInLocationUnit);
           availableQty =
-              unitConversionService.convert(
-                  locationUnit, targetUnit, availableQtyInLocationUnit, scale, null);
+              unitConversionService.convert(locationUnit, targetUnit, availableQty, scale, null);
         }
 
       } catch (Exception e) {
