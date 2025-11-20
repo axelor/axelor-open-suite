@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineInitValueSupplychainServiceImpl;
@@ -35,10 +36,15 @@ public class SaleOrderLineInitValueProjectServiceImpl
 
   @Inject
   public SaleOrderLineInitValueProjectServiceImpl(
+      SaleOrderLineComputeQtyService saleOrderLineComputeQtyService,
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
       AppSupplychainService appSupplychainService,
       SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
-    super(saleOrderLineServiceSupplyChain, appSupplychainService, saleOrderLineAnalyticService);
+    super(
+        saleOrderLineComputeQtyService,
+        saleOrderLineServiceSupplyChain,
+        appSupplychainService,
+        saleOrderLineAnalyticService);
   }
 
   @Override
