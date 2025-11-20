@@ -110,25 +110,25 @@
       self.stockMove.statusSelect = 3
       AND self.stockMove.company = :company
       AND
-      (COALESCE(self.stockMove.fromAddress.country,
-      self.fromStockLocation.address.country) =
+      (COALESCE(self.stockMove.fromAddress.country.id,
+      self.fromStockLocation.address.country.id) =
       :country
       OR
-      COALESCE(self.stockMove.toAddress.country,
-      self.toStockLocation.address.country) =
+      COALESCE(self.stockMove.toAddress.country.id,
+      self.toStockLocation.address.country.id) =
       :country)
       AND
-      COALESCE(self.stockMove.fromAddress.country,
-      self.fromStockLocation.address.country)
+      COALESCE(self.stockMove.fromAddress.country.id,
+      self.fromStockLocation.address.country.id)
       !=
-      COALESCE(self.stockMove.toAddress.country,
-      self.toStockLocation.address.country)
+      COALESCE(self.stockMove.toAddress.country.id,
+      self.toStockLocation.address.country.id)
       AND
-      COALESCE(self.stockMove.fromAddress.country.economicArea,
-      self.fromStockLocation.address.country.economicArea)
+      COALESCE(self.stockMove.fromAddress.country.economicArea.id,
+      self.fromStockLocation.address.country.economicArea.id)
       =
-      COALESCE(self.stockMove.toAddress.country.economicArea,
-      self.toStockLocation.address.country.economicArea)
+      COALESCE(self.stockMove.toAddress.country.economicArea.id,
+      self.toStockLocation.address.country.economicArea.id)
       AND
       self.product.usedInDEB = true
       AND
@@ -148,7 +148,7 @@
     <context name="toDate" expr="eval: period?.toDate"/>
     <context name="productTypeSelect" expr="eval: productTypeSelect"/>
     <context name="stockMoveTypeSelect" expr="eval: stockMoveTypeSelect"/>
-    <context name="country" expr="eval: country"/>
+    <context name="country" expr="eval: country.id"/>
     <context name="company" expr="eval: company"/>
   </action-view>
 
