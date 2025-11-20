@@ -1,7 +1,7 @@
 ext.versionFile = "../version.txt"
 ext.baseVersion = project.file(versionFile).text.trim()
 
-version baseVersion
+version = baseVersion
 
 if(project.hasProperty("mavenRepository") && !project.hasProperty("finalRelease")) {
   version += "-SNAPSHOT"
