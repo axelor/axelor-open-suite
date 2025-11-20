@@ -91,6 +91,7 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
   @Override
   public void beforeTransactionCompletion(Transaction tx) {
     globalTracker.get().onComplete(tx, AuthUtils.getUser());
+    globalTracker.get().processDeferredDMSUpdates();
     super.beforeTransactionCompletion(tx);
   }
 
@@ -176,6 +177,12 @@ public class GlobalAuditInterceptor extends AuditInterceptor {
       globalTracker.set(new GlobalAuditTracker());
       globalTracker.get().init();
     }
+
+    globalTracker
+        .get()
+        .checkAndScheduleDMSUpdate(
+            (AuditableModel) entity, propertyNames, currentState, previousState);
+
     GlobalTrackingLog log =
         globalTracker
             .get()

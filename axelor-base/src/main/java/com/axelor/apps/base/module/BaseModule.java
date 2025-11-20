@@ -66,6 +66,7 @@ import com.axelor.apps.base.db.repo.TeamTaskBaseRepository;
 import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
+import com.axelor.apps.base.db.repo.dms.CustomDMSFileRepository;
 import com.axelor.apps.base.listener.BaseServerStartListener;
 import com.axelor.apps.base.quickmenu.ActiveCompanyUpdateQuickMenuCreator;
 import com.axelor.apps.base.quickmenu.InstanceInfoQuickMenuCreator;
@@ -333,6 +334,7 @@ import com.axelor.auth.service.PermissionService;
 import com.axelor.auth.service.PermissionServiceImpl;
 import com.axelor.base.service.ical.ICalendarEventService;
 import com.axelor.base.service.ical.ICalendarEventServiceImpl;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.message.service.MailAccountServiceImpl;
 import com.axelor.message.service.MailServiceMessageImpl;
 import com.axelor.message.service.MessageServiceImpl;
@@ -560,5 +562,6 @@ public class BaseModule extends AxelorModule {
     bind(PartnerConvertService.class).to(PartnerConvertServiceImpl.class);
     bind(ProductCompanyRepository.class).to(ProductCompanyBaseRepository.class);
     bind(MetaThemeFetchService.class).to(MetaThemeFetchServiceImpl.class);
+    bind(DMSFileRepository.class).to(CustomDMSFileRepository.class);
   }
 }
