@@ -5,12 +5,20 @@
 
   <!-- Grid View -->
   <grid name="task-report-grid" title="Task Reports"
-    model="com.axelor.apps.businessproject.db.TaskReport" canEdit="false" editable="false"
-    canNew="true" canArchive="true" onNew="action-business-project-add-task-report">
-    <!-- <toolbar> -->
-    <!-- <button name="addNewTaskReport" title="New Task Report" css="btn-custom text-left" -->
-    <!-- icon="fa-plus" onClick="action-task-report-new"/> -->
-    <!-- </toolbar> -->
+    model="com.axelor.apps.businessproject.db.TaskReport" canEdit="true" canNew="true"
+    canArchive="true" canDelete="true" onNew="action-business-project-add-task-report">
+    <field name="project" title="Order "/>
+    <field name="customer.simpleFullName" title="Customer"/>
+    <field name="taskDate" title="Date"/>
+    <field name="location"/>
+    <field name="totalWorkHours"/>
+  </grid>
+  <grid name="add-task-report-grid" title="Task Reports"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <toolbar>
+      <button name="addNewTaskReport" title="New Task Report" css="btn-custom text-left"
+        icon="fa-plus" onClick="action-business-project-add-task-report"/>
+    </toolbar>
     <field name="project" title="Order "/>
     <field name="customer.simpleFullName" title="Customer"/>
     <field name="taskDate" title="Date"/>
@@ -30,12 +38,12 @@
   </grid>
 
   <!-- Form View -->
-  <form name="task-report-form" title="Task Reports"
+  <form name="task-report-form" title="Task Reports" canEdit="true"
     model="com.axelor.apps.businessproject.db.TaskReport" onNew="action-task-report-default"
-    width="large">
+    onSave="action-task-report-validate" width="large">
     <toolbar>
-      <button name="previewTaskReportbtn" title="Preview Report" icon="fa-eye"
-        readonlyIf="!id" onClick="action-task-report-method-preview"/>
+      <button name="viewTaskReportbtn" title="View Report" icon="fa-eye"
+        onClick="save,action-task-report-method-preview"/>
     </toolbar>
     <panel colSpan="12" name="taskReportMainPanel">
       <panel colSpan="12" name="parentPanel" showFrame="true">
@@ -77,7 +85,7 @@
         <panel title="Sign-Off" showFrame="false" colSpan="12">
           <panel colSpan="12">
             <field name="taskDate" colSpan="4"/>
-            <field  widget="checkbox" name="customerNotAvailable" colSpan="3" hidden="true"/>
+            <field widget="checkbox" name="customerNotAvailable" colSpan="3" hidden="true"/>
             <field widget="checkbox" name="customerNotAvailable" colSpan="5"
               title="Customer Not Available" onChange="action-customer-available-attrs"/>
           </panel>
@@ -90,6 +98,11 @@
             <field name="customerSignature" title="Customer Signature" widget="drawing"
               colSpan="6" hideIf="customerNotAvailable"/>
           </panel>
+          <panel colSpan="12">
+            <field name="customerNotAvailable" widget="checkbox" colSpan="9" hidden="true"/>
+            <field name="customerNotAvailable" widget="checkbox" colSpan="3"
+              title="Customer Not Available" onChange="action-customer-available-attrs"/>
+          </panel>
         </panel>
       </panel>
     </panel>
@@ -100,7 +113,6 @@
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <panel colSpan="12" canCollapse="true" collapseIf="false">
       <field name="task" title="Task" widget="Select"
-        domain-function="eval: parent != null &amp;&amp; parent.project != null ? 'self.project.id = ' + parent.project.id : ''"
         onChange="action-task-member-report-on-change-task"/>
       <field name="employee" title="Employee"/>
       <field name="startTime" onChange="action-task-report-on-change-time"/>
@@ -111,19 +123,6 @@
     </panel>
   </form>
 
-  <action-view name="task-report-form-action-view" title="Task Report Form"
-    model="com.axelor.apps.businessproject.db.TaskReport">
-    <view type="form" name="task-report-form"/>
-    <view-param name="popup" value="true"/>
-    <view-param name="popup-save" value="true"/>
-    <view-param name="popup-close-action" value="reload"/>
-  </action-view>
-
-  <action-group name="action-task-report-preview-group">
-    <action name="save"/>
-    <action name="task-report-preview-form-action-view"/>
-  </action-group>
-
   <action-attrs name="action-customer-available-attrs">
     <attribute for="customerName" name="hidden" expr="customerNotAvailable"/>
     <attribute for="customerSignature" name="hidden" expr="customerNotAvailable"/>
@@ -132,6 +131,10 @@
   <action-method name="action-task-report-method-preview">
     <call class="com.axelor.apps.businessproject.web.TaskReportController"
       method="previewTaskReport"/>
+  </action-method>
+  <action-method name="action-task-report-validate">
+    <call class="com.axelor.apps.businessproject.web.TaskReportController"
+      method="validateTaskReport"/>
   </action-method>
 
   <!-- Action when project changes - auto-fill all related fields -->
@@ -149,8 +152,9 @@
 
   <action-view name="action-task-report-dashlet" title="Task Reports"
     model="com.axelor.apps.businessproject.db.TaskReport">
-    <view type="grid" name="task-report-grid"/>
-    <view type="form" name="task-report-form"/>
+    <view type="grid" name="add-task-report-grid"/>
+    <view type="form" name="task-report-preview-form"/>
+    <view-param name="show-toolbar" value="true"/>
     <domain>
       self.project != null
       AND self.project.id = :projectId
@@ -163,16 +167,14 @@
   <action-view name="member-task-report" title="Member Task Reports"
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <view type="form" name="task-member-report-form"/>
-    <view-param name="popup" value="reload"/>
     <context name="employee" expr="eval: project?.membersUserSet"/>
     <context name="project" expr="eval: __parent__.project"/>
   </action-view>
-  <action-view name="member-task-report-lead" title="Member Task Reports"
-    model="com.axelor.apps.businessproject.db.TaskMemberReport">
-    <view type="form" name="task-member-report-form-lead"/>
-    <view-param name="popup" value="reload"/>
-    <context name="employee" expr="eval: project?.membersUserSet"/>
-    <context name="project" expr="eval: __parent__.project"/>
+  <action-view name="action-task-report-new" title="New Task Report"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <view type="form" name="task-report-form"/>
+    <context name="project" expr="eval: _self"/>
+    <context name="__new__" expr="true"/>
   </action-view>
 
   <action-record name="action-task-report-on-change-time"

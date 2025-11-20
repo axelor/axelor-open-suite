@@ -546,6 +546,7 @@
   </action-group>
 
   <action-group name="action-project-group-on-save">
+    <action name="action-set-default-project-priority"/>
     <action name="action-project-method-check-resource-availibility"/>
     <action name="action-project-method-check-sprint-overlap"/>
     <action name="action-project-validate-toDate"/>

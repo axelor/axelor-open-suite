@@ -37,4 +37,25 @@ public class TaskReportController {
             .context("_canSign", true)
             .map());
   }
+
+  public void validateTaskReport(ActionRequest request, ActionResponse response) {
+    TaskReport taskReport = request.getContext().asType(TaskReport.class);
+
+    if (taskReport.getProject() == null) {
+      response.setError("Project must be selected before saving the Task Report.");
+      return;
+    }
+
+    TaskReport existingReport =
+        Beans.get(TaskReportRepository.class)
+            .all()
+            .filter("self.project.id = ?1", taskReport.getProject().getId())
+            .fetchOne();
+
+    if (existingReport != null
+        && (taskReport.getId() == null || !existingReport.getId().equals(taskReport.getId()))) {
+      response.setError("A Task Report already exists for this project.");
+      return;
+    }
+  }
 }

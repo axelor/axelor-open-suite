@@ -6,7 +6,8 @@
   <module name="business-project" package="com.axelor.apps.businessproject.db"/>
 
   <entity name="TaskReport">
-    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <one-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"
+      unique="true"/>
     <many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
     <many-to-one name="location" ref="com.axelor.apps.base.db.Address" title="Location"/>
     <many-to-one name="employee" ref="com.axelor.auth.db.User" title="Report Created By"/>

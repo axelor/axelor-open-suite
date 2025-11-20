@@ -196,20 +196,11 @@
           canSearch="true"/>
       </panel>
       <!-- MGM-66 task reports -->
-      <panel title="Task Reports" name="taskReportsPanel"
+      <panel title="Task Report" name="taskReportsPanel"
         if="__user__.group.code != 'CUSTOM-PM'">
-        <panel colSpan="12">
-          <button name="addTaskReportBtn" onClick="action-business-project-add-task-report"
-            colSpan="8" hidden="true" title="New Task Report"
-            css="btn btn-sm btn-primary float-right" icon="fa-plus"/>
-          <button name="addTaskReportBtn" onClick="action-business-project-add-task-report"
-            colSpan="4" title="New Task Report" css="btn btn-sm btn-primary float-right"
-            icon="fa-plus" if="__config__.app.isApp('business-project')"
-            if-module="axelor-business-project" showIf="id &amp;&amp; isBusinessProject"/>
-        </panel>
-
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
-          action="action-task-report-dashlet" colSpan="12" canNew="true" x-show-bars="true"/>
+          action="action-task-report-dashlet" colSpan="12" canNew="true" x-show-bars="true"
+          reload-dotted="true"/>
       </panel>
 
       <panel title="Configurations" name="configurationsPanel"
@@ -674,8 +665,14 @@
   </action-group>
 
   <action-group name="action-project-group-on-save">
+    <action name="action-set-default-project-priority"/>
     <action name="action-project-validate-toDate"/>
   </action-group>
+  <action-record name="action-set-default-project-priority"
+    model="com.axelor.apps.project.db.Project">
+    <field name="priority" if="!priority"
+      expr="select: com.axelor.apps.project.db.ProjectPriority where technicalTypeSelect = 2 limit 1"/>
+  </action-record>
 
   <action-method name="action-project-method-generate-quotation">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
@@ -1128,8 +1125,12 @@
   <action-view name="action-business-project-add-task-report" title="New Task Report"
     model="com.axelor.apps.businessproject.db.TaskReport">
     <view type="form" name="task-report-form"/>
+    <view type="grid" name="task-report-grid"/>
     <view-param name="popup" value="reload"/>
-    <context name="project" expr="eval: _self"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="show-toolbar" value="true"/>
+    <context name="_project" expr="eval:__parent__"/>
   </action-view>
 
   <action-attrs name="action-project-attrs-expense-line-select-lines">

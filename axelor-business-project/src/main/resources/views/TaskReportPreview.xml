@@ -6,10 +6,11 @@
 
   <!-- preview form -->
   <form name="task-report-preview-form" title="MGM Task Report Preview"
-    model="com.axelor.apps.businessproject.db.TaskReport" width="large" canAttach="true">
+    model="com.axelor.apps.businessproject.db.TaskReport" width="large" canAttach="true"
+    canDelete="false" canEdit="false" canNew="false">
     <toolbar>
-      <button name="printTaskReportbtn" title="Print Task Report" icon="fa-print"
-        readonlyIf="!id" onClick="action-task-report-method-print"/>
+      <button name="printTaskReportbtn" title="Print Report" icon="fa-print" readonlyIf="!id"
+        onClick="action-task-report-method-print"/>
     </toolbar>
     <panel colSpan="12" name="mainPanel">
       <panel colSpan="12" showTitle="false" style="text-align:center;" showFrame="false">

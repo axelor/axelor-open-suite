@@ -7,7 +7,7 @@
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
     <hilite if="$get('status.isCompleted') &amp;&amp; $get('status.isDefaultCompleted')"
       color="success"/>
-    <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
+    <!-- <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/> -->
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
