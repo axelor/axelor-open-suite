@@ -1,3 +1,57 @@
+## [8.2.30] (2025-11-20)
+
+### Fixes
+#### Account
+
+* Reconcile: fixed manual reconcile in the specific reconcile view.
+* Move: added origin in traceback while mass accounting during anomaly.
+* Accounting report: fixed Aged balance and detailed customer balance report issue.
+* Invoice term: fixed the scale of amount when computing the name.
+* Payment session: fixed french translation for supplier and bank details in custom dashlet.
+* Invoice: fixed attachment behavior when printing/regenerating to avoid duplicates and respect the attachment option, including on ventilation.
+* MOVE : fixed inconsistant message when trying to delete a move
+
+#### Business Project
+
+* Business project: fixed internal server error while changing status.
+
+#### Contract
+
+* Contract: fixed the project domain based on the contarct types.
+* Contract: fixed invoicing amounts not translated in french.
+
+#### Production
+
+* Product: fixed cost price and avg price when the product is manufactured for the first time.
+
+#### Project
+
+* Project: fixed the performance issue in project form with many projects linked to a user.
+
+#### Stock
+
+* Bill of material: fixed decimal digit number for bill of material line.
+* Inventory: fixed an error occurring when there were more than 2 duplicated inventory lines.
+
+#### Supply Chain
+
+* Invoice/PurchaseOrder : fixed the link between an advance payment and an invoice from the same purchase order
+
+
+### Developer
+
+#### Account
+
+- Removed the checkReconcile method from ReconcileCheckService.
+- Removed the isEnoughAmountToPay method from InvoiceTermToolService.
+
+Script to remove a deleted action : 
+- DELETE FROM meta_action WHERE name = 'action-reconcile-method-check-reconcile';
+
+#### Production
+
+- Changed the ManufOrderWorkflowServiceImpl.updateProductCostPrice parameters to add a BigDecimal costPrice
+
 ## [8.2.29] (2025-11-06)
 
 ### Fixes
@@ -2068,6 +2122,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.30]: https://github.com/axelor/axelor-open-suite/compare/v8.2.29...v8.2.30
 [8.2.29]: https://github.com/axelor/axelor-open-suite/compare/v8.2.28...v8.2.29
 [8.2.28]: https://github.com/axelor/axelor-open-suite/compare/v8.2.27...v8.2.28
 [8.2.27]: https://github.com/axelor/axelor-open-suite/compare/v8.2.26...v8.2.27

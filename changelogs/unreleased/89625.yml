@@ -1,3 +1,0 @@
----
-title: "Invoice/PurchaseOrder : fixed the link between an advance payment and an invoice from the same purchase order"
-module: axelor-supplychain
