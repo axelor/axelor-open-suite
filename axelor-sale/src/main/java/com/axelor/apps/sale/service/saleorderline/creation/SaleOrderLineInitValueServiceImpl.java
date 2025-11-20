@@ -22,16 +22,21 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyService;
 import com.google.inject.Inject;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SaleOrderLineInitValueServiceImpl implements SaleOrderLineInitValueService {
 
+  protected SaleOrderLineComputeQtyService saleOrderLineComputeQtyService;
+
   @Inject
-  public SaleOrderLineInitValueServiceImpl() {}
+  public SaleOrderLineInitValueServiceImpl(
+      SaleOrderLineComputeQtyService saleOrderLineComputeQtyService) {
+    this.saleOrderLineComputeQtyService = saleOrderLineComputeQtyService;
+  }
 
   @Override
   public Map<String, Object> onNewInitValues(
@@ -39,7 +44,7 @@ public class SaleOrderLineInitValueServiceImpl implements SaleOrderLineInitValue
       throws AxelorException {
     Map<String, Object> values = new HashMap<>();
     values.putAll(fillEstimatedDate(saleOrder, saleOrderLine));
-    values.putAll(initQty(saleOrderLine));
+    values.putAll(saleOrderLineComputeQtyService.initQty(saleOrderLine));
     values.putAll(fillDeliveryAddress(saleOrder, saleOrderLine));
     return values;
   }
@@ -56,7 +61,7 @@ public class SaleOrderLineInitValueServiceImpl implements SaleOrderLineInitValue
       SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol) {
     Map<String, Object> values = new HashMap<>();
     values.putAll(fillEstimatedDate(saleOrder, saleOrderLine));
-    values.putAll(initQty(saleOrderLine));
+    values.putAll(saleOrderLineComputeQtyService.initQty(saleOrderLine));
     values.putAll(fillDeliveryAddress(saleOrder, saleOrderLine));
     return values;
   }
@@ -67,13 +72,6 @@ public class SaleOrderLineInitValueServiceImpl implements SaleOrderLineInitValue
     LocalDate estimatedShippingDate = saleOrder.getEstimatedShippingDate();
     saleOrderLine.setEstimatedShippingDate(estimatedShippingDate);
     values.put("estimatedShippingDate", estimatedShippingDate);
-    return values;
-  }
-
-  protected Map<String, Object> initQty(SaleOrderLine saleOrderLine) {
-    Map<String, Object> values = new HashMap<>();
-    saleOrderLine.setQty(BigDecimal.ONE);
-    values.put("qty", saleOrderLine.getQty());
     return values;
   }
 
