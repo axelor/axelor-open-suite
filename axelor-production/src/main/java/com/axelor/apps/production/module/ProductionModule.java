@@ -109,6 +109,7 @@ import com.axelor.apps.production.service.SaleOrderLineBomSyncService;
 import com.axelor.apps.production.service.SaleOrderLineBomSyncServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineCheckProductionService;
 import com.axelor.apps.production.service.SaleOrderLineCheckProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineComputeQtyProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineCostPriceComputeProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingServiceImpl;
@@ -123,7 +124,6 @@ import com.axelor.apps.production.service.SaleOrderLineDetailsServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDummyProductionServiceImpl;
-import com.axelor.apps.production.service.SaleOrderLineInitValueProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineOnChangeProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionService;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionServiceImpl;
@@ -246,6 +246,7 @@ import com.axelor.apps.production.service.saleorder.onchange.SaleOrderOnLineChan
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductCompanyStockRepository;
@@ -266,7 +267,6 @@ import com.axelor.apps.supplychain.service.TrackingNumberCompanySupplychainServi
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderComputeServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineDummySupplychainServiceImpl;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineInitValueSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineOnChangeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainServiceImpl;
@@ -430,7 +430,7 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderLineCheckProductionService.class)
         .to(SaleOrderLineCheckProductionServiceImpl.class);
     bind(ProductCompanyStockRepository.class).to(ProductCompanyProductionRepository.class);
-    bind(SaleOrderLineInitValueSupplychainServiceImpl.class)
-        .to(SaleOrderLineInitValueProductionServiceImpl.class);
+    bind(SaleOrderLineComputeQtyServiceImpl.class)
+        .to(SaleOrderLineComputeQtyProductionServiceImpl.class);
   }
 }

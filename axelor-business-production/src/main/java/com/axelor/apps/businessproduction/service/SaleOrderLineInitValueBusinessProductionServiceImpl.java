@@ -23,6 +23,7 @@ import com.axelor.apps.businessproject.service.SaleOrderLineInitValueProjectServ
 import com.axelor.apps.production.service.SaleOrderLineProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
@@ -37,11 +38,16 @@ public class SaleOrderLineInitValueBusinessProductionServiceImpl
 
   @Inject
   public SaleOrderLineInitValueBusinessProductionServiceImpl(
+      SaleOrderLineComputeQtyService saleOrderLineComputeQtyService,
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
       AppSupplychainService appSupplychainService,
       SaleOrderLineAnalyticService saleOrderLineAnalyticService,
       SaleOrderLineProductionService saleOrderLineProductionService) {
-    super(saleOrderLineServiceSupplyChain, appSupplychainService, saleOrderLineAnalyticService);
+    super(
+        saleOrderLineComputeQtyService,
+        saleOrderLineServiceSupplyChain,
+        appSupplychainService,
+        saleOrderLineAnalyticService);
     this.saleOrderLineProductionService = saleOrderLineProductionService;
   }
 

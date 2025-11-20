@@ -173,6 +173,8 @@ import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
@@ -324,5 +326,6 @@ public class SaleModule extends AxelorModule {
         .to(SaleOrderLineCostPriceComputeServiceImpl.class);
     bind(MarginComputeService.class).to(MarginComputeServiceImpl.class);
     bind(SaleOrderGlobalDiscountService.class).to(SaleOrderGlobalDiscountServiceImpl.class);
+    bind(SaleOrderLineComputeQtyService.class).to(SaleOrderLineComputeQtyServiceImpl.class);
   }
 }
