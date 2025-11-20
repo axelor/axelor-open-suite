@@ -48,13 +48,13 @@
     <panel colSpan="12" name="taskReportMainPanel">
       <panel colSpan="12" name="parentPanel" showFrame="true">
         <panel title="General Information" showFrame="false">
-          <field name="project" title="Order"
+          <field name="project" title="Order" canView="false"
             domain-function="eval: ( (__user__.group.code == 'CUSTOM-PM' || __user__.group.code == 'MGM-OM')
                     ? 'self.projectStatus.isCompleted = false'
                     : 'self.projectStatus.isCompleted = false AND (self.membersUserSet.id = :__user__ OR self.assignedTo.id = :__user__)' )"
             onChange="action-task-report-on-change-project" required="true"/>
           <field name="customer" hidden="true"/>
-          <field name="customer" readonly="true"/>
+          <field name="customer" readonly="true" canView="false"/>
           <field name="location" canEdit="true" canView="false"/>
         </panel>
 
