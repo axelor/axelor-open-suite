@@ -52,7 +52,7 @@
   </grid>
 
   <grid name="stock-move-out-grid" title="Stock moves"
-    model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate" groupBy="statusSelect">
+    model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     <toolbar>
       <button name="printBtn" title="Print StockMove(s)"
         onClick="action-stock-move-group-print-stock-move" icon="printer"/>
@@ -166,7 +166,7 @@
   </grid>
 
   <grid name="stock-move-in-grid" title="Stock moves"
-    model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate" groupBy="statusSelect">
+    model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate">
     <toolbar>
       <button name="printBtn" title="Print StockMove(s)"
         onClick="action-stock-move-group-print-stock-move" icon="printer"/>

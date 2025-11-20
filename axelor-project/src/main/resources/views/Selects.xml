@@ -100,4 +100,8 @@
     <option value="1">Project</option>
   </selection>
 
+  <selection id="project.sequence.generic.code.select" name="sequence.generic.code.select">
+    <option value="project">Project</option>
+  </selection>
+
 </object-views>

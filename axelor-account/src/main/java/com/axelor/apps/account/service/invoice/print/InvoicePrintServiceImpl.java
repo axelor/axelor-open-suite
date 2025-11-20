@@ -179,7 +179,45 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               invoice.getInvoiceId()),
           invoice);
     }
+    PrintingGenFactoryContext factoryContext =
+        buildPrintingContext(invoice, reportType, invoicePrintTemplate, locale);
+    return printingTemplatePrintService.getPrintFile(
+        invoicePrintTemplate, factoryContext, invoicePrintTemplate.getToAttach());
+  }
 
+  public File printAndSave(
+      Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale)
+      throws AxelorException {
+    PrintingGenFactoryContext factoryContext =
+        buildPrintingContext(invoice, reportType, invoicePrintTemplate, locale);
+    File file =
+        printingTemplatePrintService.getPrintFile(invoicePrintTemplate, factoryContext, false);
+    MetaFile metaFile;
+
+    try {
+      MetaFiles metaFiles = Beans.get(MetaFiles.class);
+      metaFile = metaFiles.upload(file);
+      MetaFile signedMetaFile =
+          ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(file.getName()))
+              ? getSignedPdf(metaFile)
+              : metaFile;
+      if (invoicePrintTemplate.getToAttach()) {
+        metaFiles.attach(signedMetaFile, signedMetaFile.getFileName(), invoice);
+      }
+      invoice.setPrintedPDF(signedMetaFile);
+      return MetaFiles.getPath(metaFile).toFile();
+    } catch (IOException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.INVOICE_PRINTING_IO_ERROR)
+              + " "
+              + e.getLocalizedMessage());
+    }
+  }
+
+  protected PrintingGenFactoryContext buildPrintingContext(
+      Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale)
+      throws AxelorException {
     AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
     if (Strings.isNullOrEmpty(locale)) {
       String userLocalizationCode =
@@ -200,11 +238,13 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               ? companyLocalizationCode
               : partnerLocalizationCode;
     }
+
     String watermark = null;
     MetaFile invoiceWatermark = accountConfig.getInvoiceWatermark();
     if (invoiceWatermark != null) {
       watermark = MetaFiles.getPath(invoiceWatermark).toString();
     }
+
     Map<String, Object> paramMap = new HashedMap<>();
     paramMap.put("ReportType", reportType == null ? 0 : reportType);
     paramMap.put("locale", locale);
@@ -213,33 +253,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     PrintingGenFactoryContext factoryContext =
         new PrintingGenFactoryContext(EntityHelper.getEntity(invoice));
     factoryContext.setContext(paramMap);
-    return printingTemplatePrintService.getPrintFile(invoicePrintTemplate, factoryContext);
-  }
-
-  public File printAndSave(
-      Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale)
-      throws AxelorException {
-
-    File file = print(invoice, reportType, invoicePrintTemplate, locale);
-    MetaFile metaFile;
-
-    try {
-      MetaFiles metaFiles = Beans.get(MetaFiles.class);
-      metaFile = metaFiles.upload(file);
-      MetaFile signedMetaFile =
-          ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(file.getName()))
-              ? getSignedPdf(metaFile)
-              : metaFile;
-      metaFiles.attach(signedMetaFile, signedMetaFile.getFileName(), invoice);
-      invoice.setPrintedPDF(signedMetaFile);
-      return MetaFiles.getPath(metaFile).toFile();
-    } catch (IOException e) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.INVOICE_PRINTING_IO_ERROR)
-              + " "
-              + e.getLocalizedMessage());
-    }
+    return factoryContext;
   }
 
   protected MetaFile getSignedPdf(MetaFile metaFile) throws AxelorException {
