@@ -45,7 +45,7 @@
           <button name="estimatePackagingBtn" title="Estimate packaging" icon="envelope-fill"
             onClick="save,action-sale-order-method-estimate-packaging"
             readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
-          <help colSpan="12"><![CDATA[This packaging is different from real packagings defined during shipping process. Design for only shipping cost estimation.]]></help>
+          <help colSpan="12"><![CDATA[<>This packaging is different from real packagings defined during shipping process. Design for only shipping cost estimation.</>]]></help>
           <panel-related name="packagingPanel" field="estimatedPackagingList"
             grid-view="packaging-sale-order-grid" form-view="packaging-sale-order-form" colSpan="12"
             widget="tree-grid" x-tree-field="childrenPackagingList"

@@ -114,7 +114,7 @@
     </toolbar>
     <panel name="mainPanel">
       <field name="sequence" showTitle="false" readonly="true">
-        <viewer depends="sequence"><![CDATA[<h3>{{sequence}}</h3>]]></viewer>
+        <viewer depends="sequence"><![CDATA[<><h3>{{sequence}}</h3></>]]></viewer>
       </field>
       <field name="$viewerTags" showTitle="false" readonly="true">
         <viewer depends="indicatorSelect">

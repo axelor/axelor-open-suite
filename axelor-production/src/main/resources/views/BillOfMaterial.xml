@@ -61,7 +61,7 @@
     </menubar>
 
     <panel name="mainPanel">
-      <help showIf="$isUsedInSaleOrder" colSpan="12"><![CDATA[This bill of material is used in a sale order. Generate a new version if you need to edit it.]]></help>
+      <help showIf="$isUsedInSaleOrder" colSpan="12"><![CDATA[<>This bill of material is used in a sale order. Generate a new version if you need to edit it.</>]]></help>
       <field name="statusSelect" showTitle="false" colSpan="8" readonly="true"
         widget="NavSelect"/>
       <field name="$defaultBOMOnProduct" readonly="true" showIf="id" showTitle="false"
