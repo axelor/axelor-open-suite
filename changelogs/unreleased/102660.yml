@@ -1,3 +1,0 @@
----
-title: "SaleOrderLine: fixed the initialisation of quantity to produce."
-module: axelor-production

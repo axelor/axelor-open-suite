@@ -1,3 +1,94 @@
+## [8.3.21] (2025-11-20)
+
+### Fixes
+#### Base
+
+* User: fixed permissions for 'demoerp' user.
+* Quick menu: fixed the title for the instance info.
+* Product: fixed product variant config by creating a new one when duplicating a Product.
+
+#### Account
+
+* Reconcile: fixed manual reconcile in the specific reconcile view.
+* Invoice: fixed the division by zero error and NPE when registering a payment from an invoice with both a fiscal position and a financial discount set.
+* Move: added origin in traceback while mass accounting during anomaly.
+* Bank reconciliation: fixed the display of accounting moves line(s) to reconcile.
+* Accounting report: fixed Aged balance and detailed customer balance report issue.
+* Invoice term: fixed the scale of amount when computing the name.
+* Payment session: fixed french translation for supplier and bank details in custom dashlet.
+* Account: fixed an issue where accounts automatically generated when creating a partner were not activated.
+* Invoice: fixed attachment behavior when printing/regenerating to avoid duplicates and respect the attachment option, including on ventilation.
+* MOVE : fixed inconsistant message when trying to delete a move
+* Move line: fixed display condition and validity check on VAT System.
+
+#### Budget
+
+* Sale/Purchase order: fixed the performance issue due to the individual line update.
+
+#### Business Project
+
+* Business project: fixed internal server error while changing status.
+
+#### Contract
+
+* Contract: fixed the project domain based on the contarct types.
+* Contract: fixed invoicing amounts not translated in french.
+
+#### Human Resource
+
+* Expense API: fixed analytic move line not generated when creating expense line from API.
+* Allocation line: fixed the value of project field on new.
+
+#### Production
+
+* SaleOrderLine: fixed the initialisation of quantity to produce.
+* Product: fixed cost price and avg price when the product is manufactured for the first time.
+
+#### Project
+
+* Project: fixed the performance issue in project form with many projects linked to a user.
+
+#### Purchase
+
+* Purchase order: fixed purchase order tax configuration when order were automatically generated.
+
+#### Sale
+
+* Sale order import: fixed an error occurring when importing lines with no tax lines.
+
+#### Stock
+
+* Stock correction: fixed the error message related to the tracking number check.
+* Bill of material: fixed decimal digit number for bill of material line.
+* Stock move: fixed display of currency on the form view in the viewer of 'exTaxTotal'.
+* Inventory: fixed an error occurring when there were more than 2 duplicated inventory lines.
+* Partner: fixed the form view title for Freight Carrier.
+
+#### Supply Chain
+
+* Supplychain : fixed an issue where nothing happened when launching the invoicing batch.
+* Sale order: fixed sale order invoicing state when invoiced amount is superior to the sale order total w.t.
+* Invoice/PurchaseOrder : fixed the link between an advance payment and an invoice from the same purchase order
+
+
+### Developer
+
+#### Account
+
+- Removed the checkReconcile method from ReconcileCheckService.
+- Removed the isEnoughAmountToPay method from InvoiceTermToolService.
+
+Script to remove a deleted action : 
+- DELETE FROM meta_action WHERE name = 'action-reconcile-method-check-reconcile';
+
+#### Production
+
+- Changed the ManufOrderWorkflowServiceImpl.updateProductCostPrice parameters to add a BigDecimal costPrice
+
+#### Purchase
+
+Added PurchaseOrderTaxService to PurchaseOrderCreateServiceImpl constructor.
+
 ## [8.3.20] (2025-11-06)
 
 ### Fixes
@@ -1744,6 +1835,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.21]: https://github.com/axelor/axelor-open-suite/compare/v8.3.20...v8.3.21
 [8.3.20]: https://github.com/axelor/axelor-open-suite/compare/v8.3.19...v8.3.20
 [8.3.19]: https://github.com/axelor/axelor-open-suite/compare/v8.3.18...v8.3.19
 [8.3.18]: https://github.com/axelor/axelor-open-suite/compare/v8.3.17...v8.3.18

@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed the division by zero error and NPE when registering a payment from an invoice with both a fiscal position and a financial discount set."
-module: axelor-account
