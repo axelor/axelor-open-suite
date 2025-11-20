@@ -1,3 +1,31 @@
+## [7.2.54] (2025-11-20)
+
+### Fixes
+#### Account
+
+* Move: added origin in traceback while mass accounting during anomaly.
+* Payment session: fixed french translation for supplier and bank details in custom dashlet.
+* Move/Accounting : fix rounding issue during taxes computation
+* MOVE : fixed inconsistant message when trying to delete a move
+
+#### Contract
+
+* Contract: fixed the project domain based on the contarct types.
+
+#### Human Resource
+
+* Expense API: fixed analytic move line not generated when creating expense line from API.
+
+#### Project
+
+* Project: fixed the performance issue in project form with many projects linked to a user.
+
+#### Stock
+
+* Bill of material: fixed decimal digit number for bill of material line.
+* Inventory: fixed an error occurring when there were more than 2 duplicated inventory lines.
+* Partner: fixed the form view title for Freight Carrier.
+
 ## [7.2.53] (2025-11-06)
 
 ### Fixes
@@ -2310,6 +2338,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.54]: https://github.com/axelor/axelor-open-suite/compare/v7.2.53...v7.2.54
 [7.2.53]: https://github.com/axelor/axelor-open-suite/compare/v7.2.52...v7.2.53
 [7.2.52]: https://github.com/axelor/axelor-open-suite/compare/v7.2.51...v7.2.52
 [7.2.51]: https://github.com/axelor/axelor-open-suite/compare/v7.2.50...v7.2.51
