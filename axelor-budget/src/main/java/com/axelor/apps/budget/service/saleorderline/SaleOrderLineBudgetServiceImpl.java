@@ -103,10 +103,8 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   }
 
   @Override
-  @Transactional
   public void fillBudgetStrOnLine(SaleOrderLine saleOrderLine, boolean multiBudget) {
     saleOrderLine.setBudgetStr(this.searchAndFillBudgetStr(saleOrderLine, multiBudget));
-    saleOrderLineRepo.save(saleOrderLine);
   }
 
   @Override

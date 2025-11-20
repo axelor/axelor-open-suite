@@ -26,7 +26,6 @@ import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderBudgetService;
 import com.axelor.apps.budget.service.saleorder.SaleOrderCheckBudgetService;
-import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
@@ -36,7 +35,6 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.db.repo.AppBudgetRepository;
 import com.google.common.base.Strings;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -95,15 +93,7 @@ public class SaleOrderController {
     try {
       SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
       saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
-      if (saleOrder != null && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())) {
-        SaleOrderLineBudgetService saleOrderLineBudgetService =
-            Beans.get(SaleOrderLineBudgetService.class);
-        boolean multiBudget =
-            Beans.get(AppBudgetRepository.class).all().fetchOne().getManageMultiBudget();
-        for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-          saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, multiBudget);
-        }
-      }
+      Beans.get(SaleOrderBudgetService.class).fillBudgetStrOnLine(saleOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
