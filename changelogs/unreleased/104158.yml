@@ -1,5 +1,0 @@
-title: "SaleOrderLine: fixed the initialisation of quantity to produce."
-module: axelor-production
-developer : |
-  - Added SaleOrderLineComputeQtyService in the SaleOrderLineInitValueService constructor
-  - Moved the SaleOrderLineInitValueServiceImpl protected method initQty into a new service SaleOrderLineComputeQtyService

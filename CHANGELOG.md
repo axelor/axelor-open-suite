@@ -1,3 +1,18 @@
+## [8.4.13] (2025-11-20)
+
+### Fixes
+#### Production
+
+* SaleOrderLine: fixed the initialisation of quantity to produce.
+
+
+### Developer
+
+#### Production
+
+- Added SaleOrderLineComputeQtyService in the SaleOrderLineInitValueService constructor
+- Moved the SaleOrderLineInitValueServiceImpl protected method initQty into a new service SaleOrderLineComputeQtyService
+
 ## [8.4.12] (2025-11-20)
 
 ### Fixes
@@ -1181,6 +1196,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.13]: https://github.com/axelor/axelor-open-suite/compare/v8.4.12...v8.4.13
 [8.4.12]: https://github.com/axelor/axelor-open-suite/compare/v8.4.11...v8.4.12
 [8.4.11]: https://github.com/axelor/axelor-open-suite/compare/v8.4.10...v8.4.11
 [8.4.10]: https://github.com/axelor/axelor-open-suite/compare/v8.4.9...v8.4.10
