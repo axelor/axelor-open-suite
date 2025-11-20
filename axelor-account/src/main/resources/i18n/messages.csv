@@ -3355,6 +3355,7 @@
 "The invoice had already been paid, therefore invoice term creation is not possible.",,,
 "The invoice had already been ventilated, therefore you can't delete invoice terms with hold back.",,,
 "The invoice term %s is tagged as a holdback. All other invoice terms from the invoice %s must be paid before you can process this one.",,,
+"The invoice term %s is tagged as a holdback. All other invoice terms from the move %s must be paid before you can process this one.",,,
 "The journal %s is in the 'journals to close' of the period %s, please remove it.",,,
 "The journal : %s is inactive. Thus, the move can't be set to daybook/accounted.",,,
 "The journal with the code %s cannot be found. The move cannot be created.",,,
