@@ -1,3 +1,17 @@
+## [8.1.36] (2025-11-20)
+
+### Fixes
+#### Production
+
+* Product: fixed cost price and avg price when the product is manufactured for the first time.
+
+
+### Developer
+
+#### Production
+
+- Changed the ManufOrderWorkflowServiceImpl.updateProductCostPrice parameters to add a BigDecimal costPrice
+
 ## [8.1.35] (2025-11-06)
 
 ### Fixes
@@ -1779,6 +1793,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.36]: https://github.com/axelor/axelor-open-suite/compare/v8.1.35...v8.1.36
 [8.1.35]: https://github.com/axelor/axelor-open-suite/compare/v8.1.34...v8.1.35
 [8.1.34]: https://github.com/axelor/axelor-open-suite/compare/v8.1.33...v8.1.34
 [8.1.33]: https://github.com/axelor/axelor-open-suite/compare/v8.1.32...v8.1.33
