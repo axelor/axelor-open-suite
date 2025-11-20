@@ -1,3 +1,18 @@
+## [8.5.5] (2025-11-20)
+
+### Fixes
+#### Production
+
+* SaleOrderLine: fixed the initialisation of quantity to produce.
+
+
+### Developer
+
+#### Production
+
+- Added SaleOrderLineComputeQtyService in the SaleOrderLineInitValueService constructor
+- Moved the SaleOrderLineInitValueServiceImpl protected method initQty into a new service SaleOrderLineComputeQtyService
+
 ## [8.5.4] (2025-11-20)
 
 ### Fixes
@@ -494,6 +509,7 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.5]: https://github.com/axelor/axelor-open-suite/compare/v8.5.4...v8.5.5
 [8.5.4]: https://github.com/axelor/axelor-open-suite/compare/v8.5.3...v8.5.4
 [8.5.3]: https://github.com/axelor/axelor-open-suite/compare/v8.5.2...v8.5.3
 [8.5.2]: https://github.com/axelor/axelor-open-suite/compare/v8.5.1...v8.5.2
