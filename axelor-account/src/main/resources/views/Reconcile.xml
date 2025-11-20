@@ -80,7 +80,6 @@
 
   <action-group name="action-reconcile-group-reconcile">
     <action name="save"/>
-    <action name="action-reconcile-method-check-reconcile"/>
     <action name="action-reconcile-method-reconcile"/>
   </action-group>
 
@@ -102,10 +101,6 @@
 
   <action-method name="action-reconcile-method-unreconcile">
     <call class="com.axelor.apps.account.web.ReconcileController" method="unreconcile"/>
-  </action-method>
-
-  <action-method name="action-reconcile-method-check-reconcile">
-    <call class="com.axelor.apps.account.web.ReconcileController" method="checkReconcile"/>
   </action-method>
 
   <action-method name="action-reconcile-method-domain-debit">
