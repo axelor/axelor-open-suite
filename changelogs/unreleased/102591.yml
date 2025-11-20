@@ -1,5 +1,0 @@
----
-title: "Product: fixed cost price and avg price when the product is manufactured for the first time."
-module: axelor-production
-developer: |
-  - Changed the ManufOrderWorkflowServiceImpl.updateProductCostPrice parameters to add a BigDecimal costPrice
