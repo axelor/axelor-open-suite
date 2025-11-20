@@ -13,7 +13,7 @@
     <field name="location"/>
     <field name="totalWorkHours"/>
   </grid>
-  <grid name="add-task-report-grid" title="Task Reports"
+  <grid name="add-task-report-grid" title="Task Reports" canDelete="true" canNew="false"
     model="com.axelor.apps.businessproject.db.TaskReport">
     <toolbar>
       <button name="addNewTaskReport" title="New Task Report" css="btn-custom text-left"
@@ -54,8 +54,8 @@
                     : 'self.projectStatus.isCompleted = false AND (self.membersUserSet.id = :__user__ OR self.assignedTo.id = :__user__)' )"
             onChange="action-task-report-on-change-project" required="true"/>
           <field name="customer" hidden="true"/>
-          <field name="customer"/>
-          <field name="location" canEdit="true"/>
+          <field name="customer" readonly="true"/>
+          <field name="location" canEdit="true" canView="false"/>
         </panel>
 
         <!-- Panel for Task Member Reports -->

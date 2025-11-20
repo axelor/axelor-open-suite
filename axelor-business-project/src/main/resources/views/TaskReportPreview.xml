@@ -7,7 +7,7 @@
   <!-- preview form -->
   <form name="task-report-preview-form" title="MGM Task Report Preview"
     model="com.axelor.apps.businessproject.db.TaskReport" width="large" canAttach="true"
-    canDelete="false" canEdit="false" canNew="false">
+    canDelete="true" canEdit="true" canNew="false">
     <toolbar>
       <button name="printTaskReportbtn" title="Print Report" icon="fa-print" readonlyIf="!id"
         onClick="action-task-report-method-print"/>
@@ -46,9 +46,8 @@
       </panel>
     </panel>
   </form>
-  <form title="General Info" name="incl-task-report-general-info-panel-preview"
-    readonlyIf="_previewReadonly" model="com.axelor.apps.businessproject.db.TaskReport">
-    <panel title="General Information" showFrame="false" readonlyIf="_previewReadonly"
+  <form title="General Info" name="incl-task-report-general-info-panel-preview" canEdit="true" model="com.axelor.apps.businessproject.db.TaskReport">
+    <panel title="General Information" showFrame="false"
       colSpan="12">
       <field name="project" hidden="true" colSpan="6"/>
       <field name="project" title="Order Number" colSpan="6" canView="false"/>
@@ -56,17 +55,16 @@
       <field name="location" colSpan="6" canView="false"/>
     </panel>
   </form>
-  <form title="Team Member Reports" name="incl-task-report-team-member-report-panel-preview"
-    readonlyIf="_previewReadonly" model="com.axelor.apps.businessproject.db.TaskReport">
+  <form title="Team Member Reports" name="incl-task-report-team-member-report-panel-preview" canEdit="true" model="com.axelor.apps.businessproject.db.TaskReport">
     <panel title="Team Members Reports" showTitle="false" canCollapse="false"
-      collapseIf="false" colSpan="12" readonlyIf="_previewReadonly">
+      collapseIf="false" colSpan="12" >
       <field name="taskMemberReports" widget="list" form-view="task-member-report-form"
         x-show-bars="true" colSpan="12" readonly="true" showTitle="false"/>
       <field name="totalWorkHours" colSpan="12" readonly="true"/>
     </panel>
   </form>
   <form title="Additional services" name="incl-task-report-additional-services-panel-preview"
-    width="large" readonlyIf="_previewReadonly"
+    width="large" canEdit="true"
     model="com.axelor.apps.businessproject.db.TaskReport">
     <panel colSpan="12" title="Additional Services Details" readonly="true">
       <panel colSpan="12" showFrame="false">
@@ -86,7 +84,7 @@
       </panel>
     </panel>
   </form>
-  <form title="Sign Off" name="incl-task-report-sign-off-form-panel-preview"
+  <form title="Sign Off" name="incl-task-report-sign-off-form-panel-preview" canEdit="true"
     model="com.axelor.apps.businessproject.db.TaskReport">
     <panel title="Sign-Off" colSpan="12" readonly="true">
       <panel colSpan="12">
