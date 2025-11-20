@@ -1,3 +1,0 @@
----
-title: "Inventory: fixed an error occurring when there were more than 2 duplicated inventory lines."
-module: axelor-stock

@@ -1,3 +1,0 @@
----
-title: "Sale/Purchase order: fixed the performance issue due to the individual line update."
-module: axelor-budget
