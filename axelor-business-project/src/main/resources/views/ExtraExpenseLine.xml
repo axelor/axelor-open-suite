@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="extra-expense-line-grid" title="Extra Expense Lines" canEdit="true"
+    model="com.axelor.apps.businessproject.db.ExtraExpenseLine">
+    <field name="project"/>
+    <field name="expenseProduct" form-view="product-form" grid-view="product-grid"/>
+    <field name="expenseDate"/>
+    <field name="totalAmount" aggregate="sum"/>
+    <field name="quantity"/>
+    <field name="toInvoice"/>
+    <field name="comments"/>
+  </grid>
+
+  <form name="extra-expense-line-form" title="Extra Expense Line"
+    model="com.axelor.apps.businessproject.db.ExtraExpenseLine" width="large">
+    <panel name="Extra Expense Details">
+      <field name="expenseProduct" form-view="product-expense-form"
+        grid-view="product-expense-grid"/>
+      <field name="project" form-view="project-form" grid-view="project-grid" readonly="true"/>
+      <field name="totalAmount" colSpan="4" readonly="true"/>
+      <field name="quantity" colSpan="4" canEdit="true" canNew="true"/>
+      <field name="toInvoice"/>
+    </panel>
+    <panel name="comments">
+      <field name="comments" showTitle="false" colSpan="12"/>
+    </panel>
+  </form>
+
+</object-views>

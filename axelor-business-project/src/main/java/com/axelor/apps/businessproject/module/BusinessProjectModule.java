@@ -119,6 +119,8 @@ import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUp
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.TaskTemplateBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.taskreport.TaskReportExpenseService;
+import com.axelor.apps.businessproject.service.taskreport.TaskReportExpenseServiceImpl;
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
@@ -243,5 +245,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(InvoiceTermDateComputeServiceImpl.class)
         .to(InvoiceTermDateComputeProjectServiceImpl.class);
     bind(SaleOrderCopyProjectService.class).to(SaleOrderCopyProjectServiceImpl.class);
+    bind(TaskReportExpenseService.class).to(TaskReportExpenseServiceImpl.class);
   }
 }

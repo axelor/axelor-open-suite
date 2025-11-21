@@ -22,8 +22,9 @@
 
   <form name="invoicing-project-form" title="Invoicing business project"
     model="com.axelor.apps.businessproject.db.InvoicingProject"
-    onNew="action-invoicing-project-group-on-new"
-    onLoad="action-invoicing-project-attrs-title-project" width="large" canDelete="!invoice">
+    onNew="action-invoicing-project-group-on-new, action-check-extra-expenses"
+    onLoad="action-invoicing-project-attrs-title-project, action-check-extra-expenses" width="large"
+    canDelete="!invoice">
 
     <panel name="mainPanel">
       <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"
@@ -73,6 +74,10 @@
           showIf="expenseLineSet &amp;&amp; expenseLineSet.length &gt; 0" readonlyIf="invoice"
           name="expenseLineSetPanel"/>
 
+        <panel-dashlet title="Extra Expenses"
+          action="extra-expense-line-invoicing-project-action" colSpan="12" readonlyIf="invoice"
+          name="extraExpenseLineSetDashlet"/>
+
         <panel-related title="Production" field="manufOrderSet" colSpan="12"
           canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production"
           grid-view="manuf-order-invoicing-project-grid" form-view="manuf-order-form"
@@ -121,6 +126,11 @@
       method="fillIn"/>
   </action-method>
 
+  <action-method name="action-check-extra-expenses">
+    <call method="checkHasInvoicableExpenses"
+      class="com.axelor.apps.businessproject.web.TaskReportController"/>
+  </action-method>
+
   <action-attrs name="action-invoicing-project-attrs-title-project">
     <attribute name="title" for="project"
       expr="eval: __config__.app.getApp('project')?.getProjectLabel()"
@@ -147,6 +157,14 @@
     <view name="timesheet-line-project-form" type="form"/>
     <domain>self.id IN (:list) </domain>
     <context name="list" expr="eval: logTimesSet.collect{it.id}"/>
+  </action-view>
+
+  <action-view name="extra-expense-line-invoicing-project-action" title="Extra Expenses"
+    model="com.axelor.apps.businessproject.db.ExtraExpenseLine">
+    <view type="grid" name="extra-expense-line-grid"/>
+    <view type="form" name="extra-expense-line-form"/>
+    <domain>self.project.id = :projectId AND self.toInvoice = true AND self.invoiced = false</domain>
+    <context name="projectId" expr="eval: __this__.project?.id"/>
   </action-view>
 
   <search-filters name="invoicing-project-filters"

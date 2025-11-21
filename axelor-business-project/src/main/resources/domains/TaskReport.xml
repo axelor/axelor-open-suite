@@ -25,6 +25,9 @@
     <string name="customerName" title="Customer name"/>
     <binary name="employeeSignature" title="Employee signature"/>
     <binary name="customerSignature" title="Customer signature"/>
+    <one-to-many name="extraExpenseLineList"
+      ref="com.axelor.apps.businessproject.db.ExtraExpenseLine" mappedBy="taskReport"
+      title="Extra Expenses"/>
   </entity>
 
 </domain-models>

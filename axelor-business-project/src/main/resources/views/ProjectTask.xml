@@ -354,7 +354,8 @@
       <field name="project" colSpan="5" form-view="business-project-form"
         grid-view="business-project-grid"
         onChange="action-business-project-task-group-project-onchange"
-        domain="self.projectStatus.isCompleted = false" required="true" canView="false" readonly="true"/>
+        domain="self.projectStatus.isCompleted = false" required="true" canView="false"
+        readonly="true"/>
       <!-- MGM-68 -->
       <!-- <field name="parentTask" readonlyIf="project == null" colSpan="6" form-view="business-project-task-form"
         grid-view="business-project-task-grid" onChange="action-project-task-record-get-parent-timeunit" onSelect="action-project-task-attrs-project-parent-task-configurations"/> -->

@@ -1,22 +1,23 @@
 package com.axelor.apps.base.db.repo.dms;
 
 /**
- * Class holding configurations for defining custom folder structures in the DMS for specific entity types.
+ * Class holding configurations for defining custom folder structures in the DMS for specific entity
+ * types.
  */
 public final class DMSFolderConfiguration {
 
   private DMSFolderConfiguration() {}
 
-    /**
-     * Configuration for defining custom folder structures in the DMS for specific entity types.
-     */
+  /** Configuration for defining custom folder structures in the DMS for specific entity types. */
   public static class FolderStructureConfig {
-    public final String entityClass; /** The class name of the entity this configuration applies to */
+    public final String entityClass;
 
+    /** The class name of the entity this configuration applies to */
     public final String[] rootPath; /* The hierarchical folder path to create */
 
-    /** Ordered list of field names to check for establishing parent-child relationships.
-     * Fields are checked in priority order until a valid relation is found
+    /**
+     * Ordered list of field names to check for establishing parent-child relationships. Fields are
+     * checked in priority order until a valid relation is found
      */
     public final String[] fieldPriority;
 

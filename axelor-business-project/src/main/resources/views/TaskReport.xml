@@ -40,7 +40,8 @@
   <!-- Form View -->
   <form name="task-report-form" title="Task Reports" canEdit="true"
     model="com.axelor.apps.businessproject.db.TaskReport" onNew="action-task-report-default"
-    onSave="action-task-report-validate" width="large">
+    onSave="action-task-report-validate, action-task-report-method-create-expense-lines"
+    width="large">
     <toolbar>
       <button name="viewTaskReportbtn" title="View Report" icon="fa-eye"
         onClick="save,action-task-report-method-preview"/>
@@ -89,6 +90,8 @@
             <field widget="checkbox" name="customerNotAvailable" colSpan="5"
               title="Customer Not Available" onChange="action-customer-available-attrs"/>
           </panel>
+        </panel>
+        <panel colSpan="12">
           <panel colSpan="12">
             <field name="employee" title="Employee Name"/>
             <field name="customerName" title="Customer Name" hideIf="customerNotAvailable"/>
@@ -131,6 +134,11 @@
   <action-method name="action-task-report-method-preview">
     <call class="com.axelor.apps.businessproject.web.TaskReportController"
       method="previewTaskReport"/>
+  </action-method>
+
+  <action-method name="action-task-report-method-create-expense-lines">
+    <call class="com.axelor.apps.businessproject.web.TaskReportController"
+      method="createOrUpdateExtraExpenses"/>
   </action-method>
   <action-method name="action-task-report-validate">
     <call class="com.axelor.apps.businessproject.web.TaskReportController"

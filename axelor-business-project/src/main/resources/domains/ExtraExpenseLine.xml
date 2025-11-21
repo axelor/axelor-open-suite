@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="business-project" package="com.axelor.apps.businessproject.db"/>
+
+  <entity name="ExtraExpenseLine">
+
+    <many-to-one name="taskReport" ref="com.axelor.apps.businessproject.db.TaskReport"
+      title="Task Report" required="true"/>
+    <!-- Original part of expenseLine -->
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <many-to-one name="expenseProduct" ref="com.axelor.apps.base.db.Product"
+      title="Expense Type" required="true"/>
+    <decimal name="totalAmount" title="Total amount" min="0"/>
+    <decimal name="quantity" title="Quantity" min="0"/>
+    <string name="comments" title="Comments" large="true"/>
+    <date name="expenseDate" title="Expense date"/>
+    <boolean name="toInvoice"/>
+    <boolean name="invoiced" readonly="true"/>
+  </entity>
+
+</domain-models>

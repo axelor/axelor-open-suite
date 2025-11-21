@@ -46,26 +46,26 @@
       </panel>
     </panel>
   </form>
-  <form title="General Info" name="incl-task-report-general-info-panel-preview" canEdit="true" model="com.axelor.apps.businessproject.db.TaskReport">
-    <panel title="General Information" showFrame="false"
-      colSpan="12">
+  <form title="General Info" name="incl-task-report-general-info-panel-preview" canEdit="true"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <panel title="General Information" showFrame="false" colSpan="12">
       <field name="project" hidden="true" colSpan="6"/>
       <field name="project" title="Order Number" colSpan="6" canView="false"/>
       <field name="customer" colSpan="6" canView="false"/>
       <field name="location" colSpan="6" canView="false"/>
     </panel>
   </form>
-  <form title="Team Member Reports" name="incl-task-report-team-member-report-panel-preview" canEdit="true" model="com.axelor.apps.businessproject.db.TaskReport">
+  <form title="Team Member Reports" name="incl-task-report-team-member-report-panel-preview"
+    canEdit="true" model="com.axelor.apps.businessproject.db.TaskReport">
     <panel title="Team Members Reports" showTitle="false" canCollapse="false"
-      collapseIf="false" colSpan="12" >
+      collapseIf="false" colSpan="12">
       <field name="taskMemberReports" widget="list" form-view="task-member-report-form"
         x-show-bars="true" colSpan="12" showTitle="false" canEdit="true"/>
       <field name="totalWorkHours" colSpan="12" readonly="true"/>
     </panel>
   </form>
   <form title="Additional services" name="incl-task-report-additional-services-panel-preview"
-    width="large" canEdit="true"
-    model="com.axelor.apps.businessproject.db.TaskReport">
+    width="large" canEdit="true" model="com.axelor.apps.businessproject.db.TaskReport">
     <panel colSpan="12" title="Additional Services Details">
       <panel colSpan="12" showFrame="false">
         <panel title="Extra charges" colSpan="6" showFrame="false" showTitle="true">
@@ -78,7 +78,8 @@
         <panel title="Activity Details" colSpan="12" showTitle="false" showFrame="false">
           <field name="material" colSpan="12" widget="textarea" canEdit="true"/>
           <field name="otherServices" colSpan="12" widget="textarea" canEdit="true"/>
-          <field name="comments" title="Comments" colSpan="12" widget="textarea" canEdit="true"/>
+          <field name="comments" title="Comments" colSpan="12" widget="textarea"
+            canEdit="true"/>
         </panel>
       </panel>
     </panel>
@@ -94,8 +95,8 @@
         <field name="customerName" title="Customer Name" colSpan="6" canEdit="true"
           hideIf="customerNotAvailable"/>
         <field name="employeeSignature" title="Employee Signature" widget="drawing"/>
-        <field name="customerSignature" title="Customer Signature" widget="drawing" canEdit="true"
-          hideIf="customerNotAvailable" hidden="true"/>
+        <field name="customerSignature" title="Customer Signature" widget="drawing"
+          canEdit="true" hideIf="customerNotAvailable" hidden="true"/>
       </panel>
       <panel colSpan="12" hidden="true">
         <field name="customerNotAvailable" widget="checkbox" title="Customer Available"
