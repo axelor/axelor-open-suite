@@ -114,6 +114,8 @@
 
   <!-- Define the form view for Task Member Report -->
   <form name="task-member-report-form" title="Team Member Report"
+    onLoad="action-task-member-report-attrs-task-domain"
+    onNew="action-task-member-report-attrs-task-domain"
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <panel colSpan="12" canCollapse="true" collapseIf="false">
       <field name="task" title="Task" widget="Select"
@@ -132,6 +134,10 @@
     <attribute for="customerSignature" name="hidden" expr="customerNotAvailable"/>
   </action-attrs>
 
+  <action-attrs name="action-task-member-report-attrs-task-domain">
+    <attribute for="task" name="domain"
+      expr="eval: &quot;self.project.id = ${__parent__?.project?.id ?: 0}&quot;"/>
+  </action-attrs>
     <action-attrs name="action-task-report-attrs-filter-projects">
         <attribute name="domain" for="project"
                    expr="eval: __user__.group?.code == 'CUSTOM-PT' || __user__.group?.code == 'CUSTOM-TM' ?
