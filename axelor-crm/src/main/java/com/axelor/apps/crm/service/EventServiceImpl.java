@@ -20,6 +20,7 @@ package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
+import com.axelor.apps.base.db.ICalendarUser;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -660,9 +661,9 @@ public class EventServiceImpl implements EventService {
   }
 
   /**
-   * Copy attendees from source event to target event by creating new ICalendarUser instances.
-   * This is necessary because attendees use a one-to-many relationship (not many-to-many),
-   * so each ICalendarUser can only be associated with one event at a time.
+   * Copy attendees from source event to target event by creating new ICalendarUser instances. This
+   * is necessary because attendees use a one-to-many relationship (not many-to-many), so each
+   * ICalendarUser can only be associated with one event at a time.
    *
    * @param source The source event containing attendees to copy
    * @param target The target event that will receive the attendees
@@ -677,15 +678,16 @@ public class EventServiceImpl implements EventService {
 
     // Create new ICalendarUser instances for each attendee
     if (source.getAttendees() != null) {
-      source.getAttendees().forEach(attendee -> {
-        com.axelor.apps.base.db.ICalendarUser newAttendee =
-            new com.axelor.apps.base.db.ICalendarUser();
-        newAttendee.setName(attendee.getName());
-        newAttendee.setEmail(attendee.getEmail());
-        newAttendee.setStatusSelect(attendee.getStatusSelect());
-        newAttendee.setUser(attendee.getUser());
-        target.addAttendee(newAttendee);
-      });
+      source
+          .getAttendees()
+          .forEach(
+              attendee -> {
+                ICalendarUser newAttendee = new ICalendarUser();
+                newAttendee.setEmail(attendee.getEmail());
+                newAttendee.setStatusSelect(attendee.getStatusSelect());
+                newAttendee.setUser(attendee.getUser());
+                target.addAttendee(newAttendee);
+              });
     }
   }
 }

@@ -1,0 +1,7 @@
+---
+title: Fix attendee copying in event duplication
+type: fix
+description: |
+  When duplicating recurring events or creating event series, attendees
+  (participants) are now properly copied to all generated event instances.
+  Previously, attendees were not transferred to duplicated events.
