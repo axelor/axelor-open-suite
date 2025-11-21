@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="extra-expense-line-grid" title="Extra Expense Lines" canEdit="true"
-    groupBy="project" model="com.axelor.apps.businessproject.db.ExtraExpenseLine">
+        model="com.axelor.apps.businessproject.db.ExtraExpenseLine">
     <field name="project"/>
     <field name="expenseProduct" form-view="product-form" grid-view="product-grid"/>
     <field name="expenseDate"/>
