@@ -163,6 +163,9 @@
     model="com.axelor.apps.businessproject.db.ExtraExpenseLine">
     <view type="grid" name="extra-expense-line-grid"/>
     <view type="form" name="extra-expense-line-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
     <domain>self.project.id = :projectId AND self.toInvoice = true AND self.invoiced = false</domain>
     <context name="projectId" expr="eval: __this__.project?.id"/>
   </action-view>

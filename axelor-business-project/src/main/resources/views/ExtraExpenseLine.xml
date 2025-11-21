@@ -4,12 +4,13 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="extra-expense-line-grid" title="Extra Expense Lines" canEdit="true"
-    model="com.axelor.apps.businessproject.db.ExtraExpenseLine">
+    groupBy="project" model="com.axelor.apps.businessproject.db.ExtraExpenseLine">
     <field name="project"/>
     <field name="expenseProduct" form-view="product-form" grid-view="product-grid"/>
     <field name="expenseDate"/>
-    <field name="totalAmount" aggregate="sum"/>
+    <field name="price"/>
     <field name="quantity"/>
+    <field name="totalAmount" aggregate="sum"/>
     <field name="toInvoice"/>
     <field name="comments"/>
   </grid>
@@ -20,13 +21,30 @@
       <field name="expenseProduct" form-view="product-expense-form"
         grid-view="product-expense-grid"/>
       <field name="project" form-view="project-form" grid-view="project-grid" readonly="true"/>
+      <field name="price" colSpan="4" readonly="true"/>
+      <field name="quantity" colSpan="4" canEdit="true" canNew="true"
+        onChange="compute-total-amount"/>
       <field name="totalAmount" colSpan="4" readonly="true"/>
-      <field name="quantity" colSpan="4" canEdit="true" canNew="true"/>
       <field name="toInvoice"/>
     </panel>
     <panel name="comments">
       <field name="comments" showTitle="false" colSpan="12"/>
     </panel>
   </form>
+
+  <action-view name="extra-expense-form-view-action"
+    model="com.axelor.apps.businessproject.db.ExtraExpenseLine"
+    title="Extra Expense Form View Action">
+    <view type="form" name="extra-expense-line-form"/>
+    <view type="grid" name="extra-expense-line-grid"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+  </action-view>
+  <action-record name="compute-total-amount"
+    model="com.axelor.apps.businessproject.db.ExtraExpenseLine">
+    <field name="totalAmount"
+      expr="eval: (price != null &amp;&amp; quantity != null) ? price.multiply(quantity) : java.math.BigDecimal.ZERO"/>
+  </action-record>
 
 </object-views>

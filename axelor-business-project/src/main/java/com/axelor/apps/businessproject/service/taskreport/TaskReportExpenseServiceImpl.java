@@ -10,6 +10,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -91,15 +92,15 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
 
     // Add new lines for required expenses that don't exist yet
     if (taskReport.getTravelExpenses() && !existingProductCodes.contains(CODE_TRAVEL_EXPENSES)) {
-      addExpenseLine(taskReport, project, projectTask, CODE_TRAVEL_EXPENSES, "Travel Expenses");
+      addExpenseLine(taskReport, project, CODE_TRAVEL_EXPENSES);
     }
 
     if (taskReport.getToolsUsage() && !existingProductCodes.contains(CODE_TOOLS_USAGE)) {
-      addExpenseLine(taskReport, project, projectTask, CODE_TOOLS_USAGE, "Tools Usage");
+      addExpenseLine(taskReport, project, CODE_TOOLS_USAGE);
     }
 
     if (taskReport.getDirtAllowance() && !existingProductCodes.contains(CODE_DIRT_ALLOWANCE)) {
-      addExpenseLine(taskReport, project, projectTask, CODE_DIRT_ALLOWANCE, "Dirt Allowance");
+      addExpenseLine(taskReport, project, CODE_DIRT_ALLOWANCE);
     }
 
     log.info("Total extra expense lines: {}", taskReport.getExtraExpenseLineList().size());
@@ -122,12 +123,7 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
     return product;
   }
 
-  private void addExpenseLine(
-      TaskReport taskReport,
-      Project project,
-      ProjectTask projectTask,
-      String productCode,
-      String comments) {
+  private void addExpenseLine(TaskReport taskReport, Project project, String productCode) {
 
     Product product = findExpenseProduct(productCode);
     if (product == null) {
@@ -138,11 +134,11 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
     line.setTaskReport(taskReport);
     line.setProject(project);
     line.setExpenseProduct(product);
+    line.setPrice(product.getSalePrice() != null ? product.getSalePrice() : BigDecimal.ZERO);
     line.setToInvoice(true);
-    line.setTotalAmount(product.getSalePrice() != null ? product.getSalePrice() : BigDecimal.ZERO);
+    line.setExpenseDate(LocalDate.now());
     line.setQuantity(BigDecimal.ONE);
-    line.setComments(comments);
-
+    line.setTotalAmount(line.getPrice().multiply(line.getQuantity()));
     taskReport.addExtraExpenseLineListItem(line);
   }
 }
