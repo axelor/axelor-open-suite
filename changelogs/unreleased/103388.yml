@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed an error due to missing target for dummy one-to-many sale order line field."
+module: axelor-sale
