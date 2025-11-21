@@ -1,0 +1,3 @@
+---
+title: "Purchase request: fixed NPE on generating purchase order if company is empty."
+module: axelor-purchase
