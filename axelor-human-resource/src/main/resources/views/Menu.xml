@@ -149,7 +149,8 @@
     <view type="grid" name="dms-file-grid"/>
     <view type="form" name="dms-file-form"/>
     <domain>self.relatedModel = 'com.axelor.apps.hr.db.Employee'
-      AND self.relatedId = :employeeId</domain>
+      AND self.relatedId = :employeeId AND
+      self.isDirectory = true</domain>
     <context name="employeeId" expr="eval: __user__.employee?.id"/>
   </action-view>
 
