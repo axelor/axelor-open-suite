@@ -1,0 +1,3 @@
+---
+title: "ManufOrder: fixed NPE due to missing producible qty when computing the missing components label."
+module: axelor-production
