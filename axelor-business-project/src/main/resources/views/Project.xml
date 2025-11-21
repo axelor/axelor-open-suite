@@ -198,20 +198,6 @@
       <!-- MGM-66 task reports -->
       <panel title="Task Report" name="taskReportsPanel"
         if="__user__.group.code != 'CUSTOM-PM'">
-        <panel colSpan="12">
-          <button name="addTaskReportBtn" onClick="action-business-project-add-task-report"
-            colSpan="8" hidden="true" title="New Task Report"
-            css="btn btn-sm btn-primary float-right" icon="fa-plus"/>
-          <button name="addTaskReportBtn" onClick="action-business-project-add-task-report"
-            colSpan="4" title="New Task Report" css="btn btn-sm btn-primary float-right"
-            icon="fa-plus" if="__config__.app.isApp('business-project')"
-            if-module="axelor-business-project" showIf="id &amp;&amp; isBusinessProject"/>
-        </panel>
-
-        <panel-related name="extraExpenseLineListPanel" title="Extra Expenses"
-          field="extraExpenseLineList" colSpan="12" form-view="extra-expense-line-form"
-          grid-view="extra-expense-line-grid" canNew="false" canEdit="true" canRemove="false"/>
-
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
           action="action-task-report-dashlet" colSpan="12" canNew="true" x-show-bars="true"
           reload-dotted="true"/>
@@ -342,8 +328,7 @@
       <panel-include view="incl-project-roadmap-panel-form"
         if="__user__.group.code == 'admins'"/>
       <!--- MGM-66: display panel to only selected group e.g admins -->
-      <panel title="Invoicing" name="invoicingPanel"
-        if="__user__.group.code == 'admins' || __user__.group.code == 'CUSTOM-ACCOUNTANT'">
+      <panel title="Invoicing" name="invoicingPanel" if="__user__.group.code != 'CUSTOM-PT'">
         <!-- MGM-80: No need to show this help message -->
         <!-- <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses,
           etc.) has to be set with the checkbox "To invoice" as True. These boolean buttons below will set newly
