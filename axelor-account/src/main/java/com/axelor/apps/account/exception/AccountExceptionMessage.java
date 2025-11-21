@@ -1750,6 +1750,12 @@ public final class AccountExceptionMessage {
   public static final String CANNOT_BE_RECONCILED_WAITING_PAYMENT =
       /*$$(*/ "The move line %s cannot be reconciled because of a pending payment." /*)*/;
 
+  public static final String PAYMENT_HOLDBACK_INVOICE_TERM_INVOICE_ERROR =
+      /*$$(*/ "The invoice term %s is tagged as a holdback. All other invoice terms from the invoice %s must be paid before you can process this one." /*)*/;
+
+  public static final String PAYMENT_HOLDBACK_INVOICE_TERM_MOVE_ERROR =
+      /*$$(*/ "The invoice term %s is tagged as a holdback. All other invoice terms from the move %s must be paid before you can process this one." /*)*/;
+
   public static final String CREATE_REFUND_BTN_CLASSIC_REFUND = /*$$(*/
       "Generate credit note" /*)*/;
   public static final String CREATE_REFUND_BTN_ADVANCE_PAYMENT_REFUND = /*$$(*/
