@@ -202,7 +202,7 @@ public class TimesheetLineController {
     Project project = null;
     ProjectTask projectTask = null;
 
-    //modified the original method to ensure the correct context is
+    // modified the original method to ensure the correct context is
     // from any direction we come from
     Class<?> ctxClass = context.getContextClass();
     if (Project.class.equals(ctxClass)) {

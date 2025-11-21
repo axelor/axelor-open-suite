@@ -137,11 +137,10 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
     ExtraExpenseLine line = new ExtraExpenseLine();
     line.setTaskReport(taskReport);
     line.setProject(project);
-    line.setProjectTask(projectTask);
     line.setExpenseProduct(product);
     line.setToInvoice(true);
-    line.setInvoiced(false);
     line.setTotalAmount(product.getSalePrice() != null ? product.getSalePrice() : BigDecimal.ZERO);
+    line.setQuantity(BigDecimal.ONE);
     line.setComments(comments);
 
     taskReport.addExtraExpenseLineListItem(line);
