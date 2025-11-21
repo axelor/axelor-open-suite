@@ -129,7 +129,10 @@
 
     </panel-tabs>
 
-
+    <panel-mail name="mailPanel">
+      <mail-messages limit="4"/>
+      <mail-followers/>
+    </panel-mail>
 
   </form>
 
