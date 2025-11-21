@@ -25,12 +25,12 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
-import com.axelor.apps.hr.service.timesheet.TimesheetEmployeeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetQueryService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -202,29 +202,39 @@ public class TimesheetLineController {
     Project project = null;
     ProjectTask projectTask = null;
 
-    if (Project.class.equals(context.getContextClass())) {
+    //modified the original method to ensure the correct context is
+    // from any direction we come from
+    Class<?> ctxClass = context.getContextClass();
+    if (Project.class.equals(ctxClass)) {
       project = context.asType(Project.class);
-    } else if (ProjectTask.class.equals(context.getContextClass())) {
+    } else if (ProjectTask.class.equals(ctxClass)) {
       projectTask = context.asType(ProjectTask.class);
-    } else if (Project.class.equals(context.getParent().getContextClass())) {
-      project = context.getParent().asType(Project.class);
-    } else if (ProjectTask.class.equals(context.getParent().getContextClass())) {
-      projectTask = context.getParent().asType(ProjectTask.class);
     }
 
-    if (projectTask != null) {
+    if (project == null && projectTask == null) {
+      Context parent = context.getParent();
+      if (parent != null) {
+        Class<?> parentClass = parent.getContextClass();
+        if (Project.class.equals(parentClass)) {
+          project = parent.asType(Project.class);
+        } else if (ProjectTask.class.equals(parentClass)) {
+          projectTask = parent.asType(ProjectTask.class);
+        }
+      }
+    }
+
+    if (projectTask != null && projectTask.getProject() != null) {
       project = projectTask.getProject();
     }
 
     if (project != null && project.getId() == null) {
       project = null;
     }
-
     if (projectTask != null && projectTask.getId() == null) {
       projectTask = null;
     }
 
-    Employee employee = Beans.get(TimesheetEmployeeService.class).getEmployee(project);
+    Employee employee = AuthUtils.getUser().getEmployee();
 
     response.setView(
         ActionView.define(I18n.get("Create Timesheet line"))
