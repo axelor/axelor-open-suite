@@ -166,7 +166,7 @@
     <view-param name="popup" value="true"/>
     <view-param name="popup-save" value="true"/>
     <view-param name="show-toolbar" value="false"/>
-    <domain>self.project.id = :projectId AND self.toInvoice = true AND self.invoiced = false</domain>
+    <domain>self.project.id = :projectId AND self.toInvoice = true</domain>
     <context name="projectId" expr="eval: __this__.project?.id"/>
   </action-view>
 

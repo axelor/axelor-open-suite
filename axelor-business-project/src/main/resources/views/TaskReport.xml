@@ -39,8 +39,9 @@
 
   <!-- Form View -->
   <form name="task-report-form" title="Task Reports" canEdit="true"
-    model="com.axelor.apps.businessproject.db.TaskReport" onNew="action-task-report-default, action-task-report-attrs-filter-projects"
-        onLoad="action-task-report-attrs-filter-projects"
+    model="com.axelor.apps.businessproject.db.TaskReport"
+    onNew="action-task-report-default, action-task-report-attrs-filter-projects"
+    onLoad="action-task-report-attrs-filter-projects"
     onSave="action-task-report-validate, action-task-report-method-create-expense-lines"
     width="large">
     <toolbar>
@@ -138,12 +139,12 @@
     <attribute for="task" name="domain"
       expr="eval: &quot;self.project.id = ${__parent__?.project?.id ?: 0}&quot;"/>
   </action-attrs>
-    <action-attrs name="action-task-report-attrs-filter-projects">
-        <attribute name="domain" for="project"
-                   expr="eval: __user__.group?.code == 'CUSTOM-PT' || __user__.group?.code == 'CUSTOM-TM' ?
+  <action-attrs name="action-task-report-attrs-filter-projects">
+    <attribute name="domain" for="project"
+      expr="eval: __user__.group?.code == 'CUSTOM-PT' || __user__.group?.code == 'CUSTOM-TM' ?
     'self.projectStatus.isCompleted = false AND (self.membersUserSet[].id = ' + __user__.id + ' OR self.assignedTo.id = ' + __user__.id + ')' :
            'self.projectStatus.isCompleted = false'"/>
-    </action-attrs>
+  </action-attrs>
 
   <action-method name="action-task-report-method-preview">
     <call class="com.axelor.apps.businessproject.web.TaskReportController"
