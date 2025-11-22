@@ -197,7 +197,7 @@
       </panel>
       <!-- MGM-66 task reports -->
       <panel title="Task Report" name="taskReportsPanel"
-        if="__user__.group.code != 'CUSTOM-PM'">
+        if="__user__.group.code == 'CUSTOM-PT'">
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
           action="action-task-report-dashlet" colSpan="12" canNew="true" x-show-bars="true"
           reload-dotted="true"/>
