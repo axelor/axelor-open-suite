@@ -742,4 +742,10 @@ public final class BaseExceptionMessage {
       "The products' total weight exceeds the maximum weight carried by the packaging." /*)*/;
 
   public static final String SEND_EMAIL_EXCEPTION = /*$$(*/ "Error when sending email: %s" /*)*/;
+
+  public static final String GOOGLE_MAP_API_ERROR_1 = /*$$(*/
+      "Error while reading the google map response." /*)*/;
+
+  public static final String GOOGLE_MAP_API_ERROR_2 = /*$$(*/
+      "Error while fetching data from Google API." /*)*/;
 }
