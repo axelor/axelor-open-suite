@@ -94,6 +94,12 @@ public class BankOrderLineService {
 
     BankDetails receiverBankDetails = bankDetailsRepo.findDefaultByPartner(partner);
 
+    if (receiverBankDetails == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MISSING_RECEIVER_BANK_DETAILS));
+    }
+
     return this.createBankOrderLine(
         bankOrderFileFormat,
         null,
