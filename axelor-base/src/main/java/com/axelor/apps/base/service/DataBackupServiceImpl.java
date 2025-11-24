@@ -125,7 +125,8 @@ public class DataBackupServiceImpl implements DataBackupService {
             .withTenantId(currentTenantId)
             .build(
                 () -> {
-                  try {
+                  RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
+                  try (RequestScoper.CloseableScope ignored = scope.open()) {
                     startRestore(dataBackup);
                   } catch (Exception e) {
                     TraceBackService.trace(e);
