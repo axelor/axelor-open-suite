@@ -1,0 +1,3 @@
+---
+title: "Bank order line: added a check for missing receiver bank details when registering an expense payment."
+module: axelor-bank-payment
