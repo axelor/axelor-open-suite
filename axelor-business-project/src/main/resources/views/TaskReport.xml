@@ -160,7 +160,7 @@
       method="validateTaskReport"/>
   </action-method>
 
-  <!-- Action when project changes - auto-fill all related fields -->
+  <!-- Action when project changes - autofill all related fields -->
   <action-record name="action-task-report-on-change-project"
     model="com.axelor.apps.businessproject.db.TaskReport">
     <field name="customer" expr="eval: project?.clientPartner"/>
@@ -203,7 +203,14 @@
   <action-record name="action-task-report-on-change-time"
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <field name="workHours"
-      expr="eval: (startTime != null &amp;&amp; endTime != null) ? ( (java.time.Duration.between(startTime.toLocalTime(), endTime.toLocalTime()).toMinutes() / 60.0) - (breakTimeHours ?: 0) ) : 0"/>
+      expr="eval:
+      (startTime != null &amp;&amp; endTime != null)
+      ? (
+          (
+            java.time.Duration.between(startTime, endTime).toMinutes() / 60.0
+          ) - (breakTimeHours ?: 0)
+        )
+      : 0"/>
   </action-record>
   <action-record name="action-update-total-work-hours"
     model="com.axelor.apps.businessproject.db.TaskReport">
