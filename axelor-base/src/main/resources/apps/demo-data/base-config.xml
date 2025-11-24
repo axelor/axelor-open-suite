@@ -67,7 +67,7 @@
   </input>
 
   <input file="meta_file.csv" separator=";" type="com.axelor.meta.db.MetaFile"
-    search="self.fileName = :fileName">
+    search="self.fileName = :fileName" call="com.axelor.csv.script.ImportMetaFile:importMetaFile">
     <bind column="fileName" to="fileName"
       check="com.axelor.utils.helpers.ImportHelper.isValuePresent(fileName)"
       check-message="File name must not be null"/>
