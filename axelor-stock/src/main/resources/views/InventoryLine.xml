@@ -5,33 +5,35 @@
 
   <grid name="inventory-line-grid" title="Inventory lines"
     model="com.axelor.apps.stock.db.InventoryLine" editable="true" orderBy="product.code"
-    onNew="action-inventory-line-attrs-scale-and-precision">
+    onNew="action-inventory-line-attrs-scale-and-precision, action-inventory-line-attrs-set-default-values">
     <hilite if="!isPresentInStockLocation" color="lightgreen"/>
     <field name="product" canEdit="false"
       onChange="action-inventory-line-group-on-change-product-stock-location"
       domain="self.stockManaged = true AND self.dtype = 'Product'" grid-view="product-grid"
-      form-view="product-form"/>
+      form-view="product-form" readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
     <field name="stockLocation"
       onSelect="action-inventory-line-method-set-stock-location-domain"
-      onChange="action-inventory-line-group-on-change-product-stock-location"/>
+      onChange="action-inventory-line-group-on-change-product-stock-location" readonlyIf="inventory.statusSelect >= 5"/>
     <field name="currentQty" readonly="true" aggregate="sum" width="120" x-scale="2"/>
     <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum"
-      width="120" x-scale="2" min="0"/>
-    <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
-    <field name="description"/>
-    <field name="rack" width="150"/>
+      width="120" x-scale="2" min="0" readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
+    <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
+    <field name="description" readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
+    <field name="rack" width="150" readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
     <field name="trackingNumber" canNew="true" width="150" domain="self.product = :product"
-      onChange="action-inventory-line-method-update-inventory-line"/>
+      onChange="action-inventory-line-method-update-inventory-line" readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
     <field name="gap"/>
     <field name="gapValue"/>
     <field name="realValue"/>
-    <field name="price" readonlyIf="isPresentInStockLocation"
+    <field name="price" readonlyIf="isPresentInStockLocation || inventory.statusSelect >= 5 || inventory.stockLocation == null"
       x-scale="nbDecimalDigitForUnitPrice"/>
     <field name="isPresentInStockLocation" type="boolean" x-dirty="false" hidden="true"/>
     <button name="showDetailStockProduct" icon="boxes"
-      onClick="action-inventory-line-view-for-a-product-from-product-view" readonlyIf="!product"
+      onClick="action-inventory-line-view-for-a-product-from-product-view" readonlyIf="!product || inventory.statusSelect >= 5 || inventory.stockLocation == null"
       if="__config__.app.isApp('supplychain')"/>
     <field name="nbDecimalDigitForUnitPrice" x-dirty="false" hidden="true" type="integer"/>
+    <field name="inventory.statusSelect"/>
+    <field name="inventory.stockLocation"/>
   </grid>
 
   <form name="inventory-line-form" title="Inventory line"
@@ -114,4 +116,17 @@
     <context name="_product" expr="eval:__this__?.product"/>
     <context name="_company" expr="eval:__parent__?.company"/>
   </action-view>
+
+  <action-view name="action-inventory-line-view-dashlet" title="Inventory lines"
+    model="com.axelor.apps.stock.db.InventoryLine">
+    <view type="grid" name="inventory-line-grid"/>
+    <view type="form" name="inventory-line-form"/>
+    <domain>self.inventory = :inventory</domain>
+    <context name="inventory" expr="eval: __this__" if=""/>
+  </action-view>
+
+  <action-attrs name="action-inventory-line-attrs-set-default-values">
+    <attribute for="inventory" name="value" expr="eval: __parent__ ? __parent__ : null"/>
+  </action-attrs>
+
 </object-views>
