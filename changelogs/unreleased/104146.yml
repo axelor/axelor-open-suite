@@ -1,0 +1,3 @@
+---
+title: "Product: fixed potential NPE due to missing product company."
+module: axelor-base
