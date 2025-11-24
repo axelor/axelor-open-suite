@@ -331,4 +331,7 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_RECONCILIATION_CREATING_MOVE_MISSING_JOURNAL = /*$$(*/
       "Missing journal while creating a move from a bank reconciliation." /*)*/;
+
+  public static final String BANK_ORDER_MISSING_RECEIVER_BANK_DETAILS = /*$$(*/
+      "The recipient partner attached to the employee does not have an associated bank account, please create one." /*)*/;
 }
