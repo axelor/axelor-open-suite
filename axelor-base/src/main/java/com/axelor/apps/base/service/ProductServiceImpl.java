@@ -38,6 +38,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.studio.db.repo.AppBaseRepository;
@@ -361,6 +362,10 @@ public class ProductServiceImpl implements ProductService {
     product = productVariantService.copyAdditionalFields(product, productModel);
 
     this.updateSalePrice(product, null);
+
+    if (ObjectUtils.isEmpty(product.getProductCompanyList())) {
+      return product;
+    }
 
     for (ProductCompany productCompany : product.getProductCompanyList()) {
       setPriceOfVariantProductCompanyWithExtra(product, productCompany.getCompany());
