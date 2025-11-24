@@ -71,7 +71,8 @@ public class InvoiceTermPfpUpdateServiceImpl implements InvoiceTermPfpUpdateServ
               && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())
               && Beans.get(PfpService.class).getPfpCondition(invoice)
               && invoice.getOperationTypeSelect()
-                  == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
+                  == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+              && invoiceTerm.getAmountRemaining().signum() == 0;
 
       if (!shouldAutoValidate) {
         return;

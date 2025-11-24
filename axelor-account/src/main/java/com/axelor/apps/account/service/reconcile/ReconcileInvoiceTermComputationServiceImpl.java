@@ -269,7 +269,9 @@ public class ReconcileInvoiceTermComputationServiceImpl
 
     for (InvoiceTerm invoiceTerm : invoiceTermList) {
       int status = invoiceTerm.getPfpValidateStatusSelect();
-      if (shouldAutoValidate && status == InvoiceTermRepository.PFP_STATUS_AWAITING) {
+      if (shouldAutoValidate
+          && status == InvoiceTermRepository.PFP_STATUS_AWAITING
+          && invoiceTerm.getAmountRemaining().signum() == 0) {
         status = InvoiceTermRepository.PFP_STATUS_VALIDATED;
       }
       map.put(invoiceTerm, status);
