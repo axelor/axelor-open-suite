@@ -19,11 +19,15 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppBase;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Preconditions;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.UriBuilder;
@@ -40,6 +44,7 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,7 +67,7 @@ public class MapGoogleServiceImpl implements MapGoogleService {
   @Override
   public Map<String, Object> getMapGoogle(String qString) throws AxelorException {
     LOG.debug("Query string: {}", qString);
-    /*    JSONObject googleResponse = geocodeGoogle(qString);
+    JsonNode googleResponse = geocodeGoogle(qString);
     LOG.debug("Google response: {}", googleResponse);
     if (googleResponse != null) {
       Map<String, Object> result = new HashMap<>();
@@ -81,53 +86,58 @@ public class MapGoogleServiceImpl implements MapGoogleService {
       result.put("latitude", latitude);
       result.put("longitude", longitude);
       return result;
-    }*/
+    }
 
     return null;
   }
 
   @Override
   public void testGMapService() throws AxelorException {
-    /*    HttpResponse<String> response = getGoogleApiResponse("google");
-    getJSON(response.body());*/
-    return;
+    HttpResponse<String> response = getGoogleApiResponse("google");
+    getJSON(response);
   }
 
-  protected Map<String, Object> geocodeGoogle(String qString) throws AxelorException {
+  protected JsonNode geocodeGoogle(String qString) throws AxelorException {
     if (StringUtils.isBlank(qString)) {
       return null;
     }
     // http://maps.googleapis.com/maps/api/geocode/json?address=1600+Amphitheatre+Parkway,+Mountain+View,+CA&sensor=true_or_false
 
     // TODO inject the rest client, or better, run it in the browser
-    /*    HttpResponse<String> response = getGoogleApiResponse(qString);
+    HttpResponse<String> response = getGoogleApiResponse(qString);
 
     System.out.println(response.body());
 
-    LOG.debug("Gmap response: {}", restResponse);
+    LOG.debug("Gmap response: {}", response);
 
-    if (restResponse.containsKey("results")) {
-      JSONArray results = (JSONArray) restResponse.get("results");
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      JsonNode rootNode = objectMapper.readTree(response.body());
 
-      if (CollectionUtils.isNotEmpty(results)) {
-        JSONObject result = (JSONObject) results.iterator().next();
+      if (rootNode.has("results")
+          && rootNode.get("results").isArray()
+          && rootNode.get("results").size() > 0) {
+        JsonNode firstResult = rootNode.get("results").get(0);
 
-        if (result != null && result.containsKey("geometry")) {
-          return (JSONObject) ((JSONObject) result.get("geometry")).get("location");
+        if (firstResult != null && firstResult.has("geometry")) {
+          JsonNode locationNode = firstResult.get("geometry").get("location");
+          return locationNode;
         }
       }
+    } catch (IOException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.GOOGLE_MAP_API_ERROR_1));
     }
 
     throw new AxelorException(
-            appBaseService.getAppBase(),
-            TraceBackRepository.CATEGORY_NO_VALUE,
-            I18n.get(BaseExceptionMessage.MAP_RESPONSE_ERROR),
-            restResponse);*/
-    return null;
+        appBaseService.getAppBase(),
+        TraceBackRepository.CATEGORY_NO_VALUE,
+        I18n.get(BaseExceptionMessage.MAP_RESPONSE_ERROR),
+        response);
   }
 
-  protected HttpResponse<String> getGoogleApiResponse(String qString)
-      throws IOException, InterruptedException {
+  protected HttpResponse<String> getGoogleApiResponse(String qString) throws AxelorException {
     Map<String, Object> responseQuery = new HashMap<>();
     responseQuery.put("address", qString.trim());
     responseQuery.put("sensor", "false");
@@ -144,46 +154,56 @@ public class MapGoogleServiceImpl implements MapGoogleService {
 
     String url = "https://maps.googleapis.com/maps/api/geocode/json?" + queryString;
 
-    HttpClient client =
-        HttpClient.newBuilder()
-            .connectTimeout(Duration.ofMillis(5000))
-            .followRedirects(HttpClient.Redirect.NEVER)
-            .build();
+    try {
+      HttpClient client =
+          HttpClient.newBuilder()
+              .connectTimeout(Duration.ofMillis(5000))
+              .followRedirects(HttpClient.Redirect.NEVER)
+              .build();
 
-    HttpRequest request =
-        HttpRequest.newBuilder()
-            .uri(URI.create(url))
-            .header("Accept", "application/json")
-            .timeout(Duration.ofMillis(10000))
-            .GET()
-            .build();
+      HttpRequest request =
+          HttpRequest.newBuilder()
+              .uri(URI.create(url))
+              .header("Accept", "application/json")
+              .timeout(Duration.ofMillis(10000))
+              .GET()
+              .build();
 
-    return client.send(request, HttpResponse.BodyHandlers.ofString());
+      return client.send(request, HttpResponse.BodyHandlers.ofString());
+    } catch (IOException | InterruptedException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.MAP_RESPONSE_ERROR),
+          e.getMessage());
+    }
   }
 
   protected Map<String, Object> getJSON(HttpResponse<String> response) throws AxelorException {
-    /*    LOG.debug(
-        "Gmap connection status code: {}, message: {}",
-        response.statusCode(),
-        response.getStatusMessage());
+    LOG.debug("Gmap connection status code: {}", response.statusCode());
 
     AppBase appBase = appBaseService.getAppBase();
 
     if (response.statusCode() != HttpStatus.SC_OK) {
-      String msg = String.format("%d: %s", response.getStatusCode(), response.getStatusMessage());
+      String msg = String.format("%d", response.statusCode());
       throw new AxelorException(appBase, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, msg);
     }
 
-    JSONObject json = new JSONObject(response.getContentAsString());
-    String status = json.getString("status");
-
-    if (!"OK".equalsIgnoreCase(status)) {
-      String msg =
-          json.has("error_message")
-              ? String.format("%s: %s", status, json.getString("error_message"))
-              : status;
-      throw new AxelorException(appBase, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, msg);
-    }*/
+    try {
+      ObjectMapper objectMapper = new ObjectMapper();
+      JsonNode rootNode = objectMapper.readTree(response.body());
+      String status = String.valueOf(rootNode.get("status"));
+      if (!"OK".equalsIgnoreCase(status)) {
+        String msg =
+            rootNode.has("error_message")
+                ? String.format("%s: %s", status, rootNode.get("error_message"))
+                : status;
+        throw new AxelorException(appBase, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR, msg);
+      }
+    } catch (IOException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get("Error while reading the google map response."));
+    }
 
     return null;
   }
@@ -269,7 +289,7 @@ public class MapGoogleServiceImpl implements MapGoogleService {
 
   protected void getGoogleResponse(String key) throws AxelorException {
     @SuppressWarnings("unchecked")
-    Map<String, Object> googleResponse = geocodeGoogle(key);
+    JsonNode googleResponse = geocodeGoogle(key);
 
     lat = lon = BigDecimal.ZERO;
     if (googleResponse != null) {

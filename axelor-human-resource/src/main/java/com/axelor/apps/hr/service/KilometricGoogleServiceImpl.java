@@ -20,17 +20,21 @@ package com.axelor.apps.hr.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapGoogleService;
-import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.auth.AuthUtils;
-import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Map;
-import org.apache.http.client.utils.URIBuilder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 public class KilometricGoogleServiceImpl implements KilometricGoogleService {
 
@@ -46,32 +50,21 @@ public class KilometricGoogleServiceImpl implements KilometricGoogleService {
   }
 
   @Override
-  public BigDecimal getDistanceUsingGoogle(String fromCity, String toCity)
-      throws AxelorException, URISyntaxException, IOException {
-    User user = AuthUtils.getUser();
-    Map<String, Object> json =
-        getGoogleMapsDistanceMatrixResponse(fromCity, toCity, user.getLanguage());
-    String status = json.get("status").toString();
-
-    if (status.equals("OK")) {
-      Map<String, Object> row = ((List<Map<String, Object>>) json.get("rows")).getFirst();
-      Map<String, Object> element = ((List<Map<String, Object>>) row.get("elements")).getFirst();
-      status = element.get("status").toString();
-      if (status.equals("OK")) {
-        double distance = (double) element.get("distance");
+  public BigDecimal getDistanceUsingGoogle(String fromCity, String toCity) throws AxelorException {
+    HttpResponse<String> response = getGoogleMapsDistanceMatrixResponse(fromCity, toCity);
+    try {
+      if (response.statusCode() == 200) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode json = objectMapper.readTree(response.body());
+        double distance = json.get("routes").get(0).get("distanceMeters").doubleValue();
         return BigDecimal.valueOf(distance / 1000);
       }
+    } catch (JsonProcessingException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.GOOGLE_MAP_API_ERROR_2));
     }
-
-    String msg =
-        json.get("error_message") != null
-            ? String.format("%s / %s", status, json.get("error_message"))
-            : status;
-
-    throw new AxelorException(
-        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-        HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR,
-        msg);
+    return BigDecimal.ZERO;
   }
 
   /**
@@ -79,23 +72,47 @@ public class KilometricGoogleServiceImpl implements KilometricGoogleService {
    *
    * @param origins
    * @param destinations
-   * @param language
    * @return
    * @throws URISyntaxException
    * @throws IOException
    * @throws AxelorException
    */
-  protected Map<String, Object> getGoogleMapsDistanceMatrixResponse(
-      String origins, String destinations, String language)
-      throws URISyntaxException, IOException, AxelorException {
+  protected HttpResponse<String> getGoogleMapsDistanceMatrixResponse(
+      String origins, String destinations) throws AxelorException {
 
-    URIBuilder ub = new URIBuilder("https://maps.googleapis.com/maps/api/distancematrix/json");
-    ub.addParameter("origins", origins);
-    ub.addParameter("destinations", destinations);
-    ub.addParameter("language", language);
-    ub.addParameter("key", mapGoogleService.getGoogleMapsApiKey());
+    try {
+      String apiKey = mapGoogleService.getGoogleMapsApiKey();
+      ObjectMapper mapper = new ObjectMapper();
 
-    return kilometricResponseToolService.getApiResponse(
-        ub.toString(), HumanResourceExceptionMessage.KILOMETRIC_ALLOWANCE_GOOGLE_MAPS_ERROR);
+      ObjectNode root = mapper.createObjectNode();
+      ObjectNode originNode = root.putObject("origin");
+      originNode.put("address", origins);
+      ObjectNode destinationNode = root.putObject("destination");
+      destinationNode.put("address", destinations);
+
+      root.put("travelMode", "DRIVE");
+      root.put("computeAlternativeRoutes", false);
+      root.put("routingPreference", "TRAFFIC_AWARE");
+
+      String jsonBody = mapper.writeValueAsString(root);
+
+      HttpClient client = HttpClient.newHttpClient();
+      HttpRequest request =
+          HttpRequest.newBuilder()
+              .uri(URI.create("https://routes.googleapis.com/directions/v2:computeRoutes"))
+              .header("Content-Type", "application/json")
+              .header("X-Goog-Api-Key", apiKey)
+              .header(
+                  "X-Goog-FieldMask",
+                  "routes.distanceMeters,routes.duration,routes.polyline.encodedPolyline")
+              .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
+              .build();
+
+      return client.send(request, HttpResponse.BodyHandlers.ofString());
+    } catch (IOException | InterruptedException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.GOOGLE_MAP_API_ERROR_2));
+    }
   }
 }
