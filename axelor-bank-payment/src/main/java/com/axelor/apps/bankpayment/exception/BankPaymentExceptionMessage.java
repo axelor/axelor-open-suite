@@ -334,4 +334,7 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_RECONCILIATION_MULTIPLE_MOVE_LINE_RECONCILIATION_ERROR = /*$$(*/
       "The movelines %s are already reconciled with another bank statement line. Multiple bank statement lines can't be reconciled with the same move line." /*)*/;
+
+  public static final String BANK_ORDER_MISSING_RECEIVER_BANK_DETAILS = /*$$(*/
+      "The recipient partner attached to the employee does not have an associated bank account, please create one." /*)*/;
 }
