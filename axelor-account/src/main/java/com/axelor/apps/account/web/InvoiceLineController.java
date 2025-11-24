@@ -443,7 +443,8 @@ public class InvoiceLineController {
   public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
     try {
       InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      if (request.getContext().getParent() != null) {
+      if (request.getContext().getParent() != null
+          && Invoice.class.equals(request.getContext().getParent().getContextClass())) {
         Invoice invoice = request.getContext().getParent().asType(Invoice.class);
         AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
         for (int i = startAxisPosition; i <= endAxisPosition; i++) {
