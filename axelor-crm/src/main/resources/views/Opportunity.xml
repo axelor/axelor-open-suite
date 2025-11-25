@@ -268,7 +268,7 @@
 
   <kanban columnBy="opportunityStatus" sequenceBy="orderByState" limit="10"
     name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity"
-    onMove="action-opportunity-method-cancel-saleorders, action-opportunity-method-kanban-onmove">
+    onMove="action-opportunity-method-cancel-saleorders, action-opportunity-method-kanban-onmove,action-opportunity-group-status-onchange">
     <field name="opportunitySeq"/>
     <field name="name"/>
     <field name="description"/>
