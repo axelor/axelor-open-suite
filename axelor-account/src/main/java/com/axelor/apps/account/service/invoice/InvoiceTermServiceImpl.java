@@ -1288,6 +1288,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       throws AxelorException {
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     if (invoiceTermList != null) {
+      invoiceTermToolService.checkHoldbackBeforeReconcile(invoiceTermList);
+
       BigDecimal currencyAmount =
           invoicePayment != null
               ? currencyService.getAmountCurrencyConvertedAtDate(
