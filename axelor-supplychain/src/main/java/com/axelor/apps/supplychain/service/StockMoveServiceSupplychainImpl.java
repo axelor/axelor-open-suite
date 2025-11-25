@@ -586,6 +586,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     if (stockMoveLineList != null && !stockMoveLineList.isEmpty()) {
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         stockMoveLine.setQtyInvoiced(BigDecimal.ZERO);
+        stockMoveLine.setRequestedReservedQty(BigDecimal.ZERO);
       }
     }
     return newStockMove;
