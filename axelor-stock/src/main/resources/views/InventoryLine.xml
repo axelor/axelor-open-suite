@@ -122,7 +122,7 @@
     <view type="grid" name="inventory-line-grid"/>
     <view type="form" name="inventory-line-form"/>
     <domain>self.inventory = :inventory</domain>
-    <context name="inventory" expr="eval: __this__" if=""/>
+    <context name="inventory" expr="eval: __this__"/>
   </action-view>
 
   <action-attrs name="action-inventory-line-attrs-set-default-values">
