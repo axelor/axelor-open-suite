@@ -141,6 +141,8 @@
       <field name="pOFilterOnStockDetailStatusSelect" on="UPDATE"/>
       <field name="autoFillDeliveryRealQty" on="UPDATE"/>
       <field name="autoFillReceiptRealQty" on="UPDATE"/>
+      <field name="stockLocationToCartLimit" on="UPDATE"/>
+      <field name="cancelReasonOnChangingPurchaseOrder" on="UPDATE"/>
     </track>
   </entity>
 

@@ -120,6 +120,7 @@
       <field name="isCostPerProcessLine" on="UPDATE"/>
       <field name="employeeScheduling" on="UPDATE"/>
       <field name="isBomLineGenerationInSODisabled" on="UPDATE"/>
+      <field name="isProdProcessLineGenerationInSODisabled" on="UPDATE"/>
     </track>
   </entity>
 

@@ -96,6 +96,7 @@
       <field name="isSOLPriceTotalOfSubLines" on="UPDATE"/>
       <field name="enableConfiguratorEdition" on="UPDATE"/>
       <field name="enableLineDuplication" on="UPDATE"/>
+      <field name="isQuotationAndOrderSplitEnabled" on="UPDATE"/>
     </track>
   </entity>
 
