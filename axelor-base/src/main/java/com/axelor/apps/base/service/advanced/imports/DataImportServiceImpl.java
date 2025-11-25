@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.FileFieldRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
+import com.axelor.apps.base.utils.ZipExtractionTool;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
@@ -58,8 +59,6 @@ import com.thoughtworks.xstream.XStream;
 import jakarta.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.text.SimpleDateFormat;
@@ -70,9 +69,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
-import java.util.zip.ZipInputStream;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.io.FileUtils;
@@ -883,31 +880,7 @@ public class DataImportServiceImpl implements DataImportService {
     }
 
     File attachmentFile = MetaFiles.getPath(attachments).toFile();
-    try (ZipInputStream zis = new ZipInputStream(new FileInputStream(attachmentFile))) {
-      ZipEntry ze;
-      byte[] buffer = new byte[1024];
-
-      while ((ze = zis.getNextEntry()) != null) {
-        String fileName = ze.getName();
-        File extractFile = new File(dataDir, fileName);
-
-        if (ze.isDirectory()) {
-          extractFile.mkdirs();
-          continue;
-        } else {
-          extractFile.getParentFile().mkdirs();
-          extractFile.createNewFile();
-        }
-
-        try (FileOutputStream fos = new FileOutputStream(extractFile)) {
-          int len;
-          while ((len = zis.read(buffer)) > 0) {
-            fos.write(buffer, 0, len);
-          }
-        }
-        zis.closeEntry();
-      }
-    }
+    ZipExtractionTool.extractZipFile(attachmentFile, dataDir);
   }
 
   protected MetaFile importData(List<CSVInput> inputs) throws IOException {

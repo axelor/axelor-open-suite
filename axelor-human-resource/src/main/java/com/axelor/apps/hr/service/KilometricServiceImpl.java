@@ -28,7 +28,6 @@ import com.axelor.studio.db.repo.AppBaseRepository;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URISyntaxException;
 import org.apache.commons.lang3.StringUtils;
 
 public class KilometricServiceImpl implements KilometricService {
@@ -84,7 +83,7 @@ public class KilometricServiceImpl implements KilometricService {
           break;
       }
       return distance;
-    } catch (URISyntaxException | IOException e) {
+    } catch (IOException e) {
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
   }

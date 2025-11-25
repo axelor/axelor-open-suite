@@ -21,19 +21,27 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -173,5 +181,53 @@ public class InvoiceTermToolServiceImpl implements InvoiceTermToolService {
       invoiceTerms = invoiceTermFilterService.getUnpaidInvoiceTermsFiltered(invoice);
     }
     return invoiceTerms;
+  }
+
+  @Override
+  public void checkHoldbackBeforeReconcile(List<InvoiceTerm> invoiceTermList)
+      throws AxelorException {
+    if (ObjectUtils.isEmpty(invoiceTermList)
+        || invoiceTermList.stream().noneMatch(InvoiceTerm::getIsHoldBack)) {
+      return;
+    }
+
+    Set<InvoiceTerm> holdbackInvoiceTermSet =
+        invoiceTermList.stream().filter(InvoiceTerm::getIsHoldBack).collect(Collectors.toSet());
+    for (InvoiceTerm invoiceTerm : holdbackInvoiceTermSet) {
+      Invoice invoice = invoiceTerm.getInvoice();
+      if (invoice != null) {
+        if (invoice.getInvoiceTermList().stream()
+            .anyMatch(
+                it -> !it.getIsHoldBack() && !it.getIsPaid() && !invoiceTermList.contains(it))) {
+          throw new AxelorException(
+              invoice,
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(AccountExceptionMessage.PAYMENT_HOLDBACK_INVOICE_TERM_INVOICE_ERROR),
+              invoiceTerm.getName(),
+              invoice.getInvoiceId());
+        }
+        continue;
+      }
+
+      Move move =
+          Optional.of(invoiceTerm)
+              .map(InvoiceTerm::getMoveLine)
+              .map(MoveLine::getMove)
+              .orElse(null);
+      if (move != null
+          && move.getMoveLineList().stream()
+              .filter(ml -> ObjectUtils.notEmpty(ml.getInvoiceTermList()))
+              .map(MoveLine::getInvoiceTermList)
+              .flatMap(Collection::stream)
+              .anyMatch(
+                  it -> !it.getIsHoldBack() && !it.getIsPaid() && !invoiceTermList.contains(it))) {
+        throw new AxelorException(
+            move,
+            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+            I18n.get(AccountExceptionMessage.PAYMENT_HOLDBACK_INVOICE_TERM_MOVE_ERROR),
+            invoiceTerm.getName(),
+            move.getReference());
+      }
+    }
   }
 }
