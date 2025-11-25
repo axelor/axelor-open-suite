@@ -22,6 +22,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.TaskReportRepository;
+import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -29,6 +30,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
@@ -46,6 +48,17 @@ public class TimesheetLineBusinessController {
   @Inject protected TaskReportRepository taskReportRepository;
 
   @Inject protected EmployeeRepository employeeRepository;
+
+  public void setDefaultToInvoice(ActionRequest request, ActionResponse response) {
+    try {
+      TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+      timesheetLine =
+          Beans.get(TimesheetLineBusinessService.class).getDefaultToInvoice(timesheetLine);
+      response.setValue("toInvoice", timesheetLine.getToInvoice());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
   /** Prefill for full form */
   public void prefillFromTaskMemberReport(ActionRequest request, ActionResponse response) {

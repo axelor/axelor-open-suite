@@ -34,8 +34,14 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.db.JpaRepository;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -43,6 +49,7 @@ import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +62,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   protected AppHumanResourceService appHumanResourceService;
   protected UserHrService userHrService;
   protected DateService dateService;
+  protected ProjectTaskRepository projectTaskRepo;
+  protected ProjectRepository projectRepo;
 
   @Inject
   public TimesheetLineServiceImpl(
@@ -63,13 +72,17 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       TimesheetRepository timesheetRepo,
       AppHumanResourceService appHumanResourceService,
       UserHrService userHrService,
-      DateService dateService) {
+      DateService dateService,
+      ProjectTaskRepository projectTaskRepo,
+      ProjectRepository projectRepo) {
     this.timesheetService = timesheetService;
     this.employeeRepository = employeeRepository;
     this.timesheetRepo = timesheetRepo;
     this.appHumanResourceService = appHumanResourceService;
     this.userHrService = userHrService;
     this.dateService = dateService;
+    this.projectTaskRepo = projectTaskRepo;
+    this.projectRepo = projectRepo;
   }
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -276,5 +289,100 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     if (timesheetLine != null) {
       timesheetLine.setTimer(null);
     }
+  }
+
+  @Override
+  public Timesheet resolveTimesheet(Context context, TimesheetLine timesheetLine) {
+    Context parent = context.getParent();
+
+    if (parent != null && parent.getContextClass().equals(Timesheet.class)) {
+      return parent.asType(Timesheet.class);
+    }
+    return timesheetLine.getTimesheet();
+  }
+
+  @Override
+  public ProjectTask resolveProjectTask(Context context) {
+    Class<?> ctxClass = context.getContextClass();
+
+    if (ProjectTask.class.equals(ctxClass)) {
+      return fetchEntity(context.asType(ProjectTask.class), projectTaskRepo);
+    }
+
+    ProjectTask projectTask = extractFromParent(context, ProjectTask.class, projectTaskRepo);
+    if (projectTask != null) return projectTask;
+
+    projectTask = extractFromContextId(context, "_projectTaskId", projectTaskRepo);
+    if (projectTask != null) return projectTask;
+
+    return extractEntityFromObject(context.get("_projectTask"), ProjectTask.class, projectTaskRepo);
+  }
+
+  @Override
+  public Project resolveProject(Context context, ProjectTask projectTask) {
+    Class<?> ctxClass = context.getContextClass();
+    if (Project.class.equals(ctxClass)) {
+      return fetchEntity(context.asType(Project.class), projectRepo);
+    }
+
+    Project project = extractFromParent(context, Project.class, projectRepo);
+    if (project != null) return project;
+
+    project = extractFromContextId(context, "_projectId", projectRepo);
+    if (project != null) return project;
+
+    project = extractEntityFromObject(context.get("_project"), Project.class, projectRepo);
+    if (project != null) return project;
+
+    return (projectTask != null) ? projectTask.getProject() : null;
+  }
+
+  private <T extends Model> T fetchEntity(T entity, JpaRepository<T> repo) {
+    if (entity == null || entity.getId() == null) return null;
+    return repo.find(entity.getId());
+  }
+
+  private <T extends Model> T extractFromContextId(
+      Context context, String key, JpaRepository<T> repo) {
+    Object id = context != null ? context.get(key) : null;
+    if (id != null) {
+      return repo.find(Long.valueOf(id.toString()));
+    }
+    return null;
+  }
+
+  private <T extends Model> T extractFromParent(
+      Context context, Class<T> entityClass, JpaRepository<T> repo) {
+    Context parent = context != null ? context.getParent() : null;
+    if (parent == null) return null;
+
+    if (entityClass.equals(parent.getContextClass())) {
+      Object parentId = parent.get("id");
+      if (parentId != null) {
+        return repo.find(Long.valueOf(parentId.toString()));
+      }
+    }
+    return null;
+  }
+
+  @SuppressWarnings("unchecked")
+  private <T extends Model> T extractEntityFromObject(
+      Object obj, Class<T> entityClass, JpaRepository<T> repo) {
+    if (obj == null) return null;
+
+    if (entityClass.isInstance(obj)) {
+      return fetchEntity(entityClass.cast(obj), repo);
+    }
+
+    if (obj instanceof Map) {
+      Object entityId = ((Map<?, ?>) obj).get("id");
+      if (entityId != null) {
+        Long id =
+            (entityId instanceof Integer) ? ((Integer) entityId).longValue() : (Long) entityId;
+        return repo.find(id);
+      }
+    }
+
+    return null;
   }
 }
