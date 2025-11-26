@@ -1,6 +1,0 @@
----
-title: "Purchase order: fixed an error when displaying list of purchase order lines."
-module: axelor-budget
-developer:
-  A script need to be executed to remove an non necessary action view override.
-  DELETE FROM meta_action WHERE xml_id='budget-purchase-order-see-purchase-order-lines';
