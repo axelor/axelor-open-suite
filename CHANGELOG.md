@@ -1,3 +1,43 @@
+## [7.2.55] (2025-11-26)
+
+### Fixes
+#### Base
+
+* Product: fixed a potential error due to missing product company when generating variant product.
+
+#### Account
+
+* Invoice line: fixed error when opening an invoice line from a sale order line.
+
+#### Bank Payment
+
+* Bank order line: added a check for missing receiver bank details when registering an expense payment.
+* PAYMENTSCHEDULE : The rejectReason field has been fixed so that it no longer accepts string values.
+
+#### CRM
+
+* Opportunity: display the partner popup when moving an opportunity to 'Closed won' in Kanban view.
+
+#### Project
+
+* Project: fix activity dates format according to user's localization
+
+#### Stock
+
+* Stock move: fixed the wrong quantity invoiced in the case of partial invoicing.
+
+#### Supply Chain
+
+* Stock move: fixed requested reserved qty for stock move returns.
+* MRP: MRP result grid view is no longer editable.
+
+
+### Developer
+
+#### Stock
+
+- Changed method signature from isStockMoveInvoicingPartiallyActivated(Invoice,StockMoveLine) to isStockMoveInvoicingPartiallyActivated(Invoice) in WorkflowVentilationServiceSupplychainImpl
+
 ## [7.2.54] (2025-11-20)
 
 ### Fixes
@@ -2338,6 +2378,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.55]: https://github.com/axelor/axelor-open-suite/compare/v7.2.54...v7.2.55
 [7.2.54]: https://github.com/axelor/axelor-open-suite/compare/v7.2.53...v7.2.54
 [7.2.53]: https://github.com/axelor/axelor-open-suite/compare/v7.2.52...v7.2.53
 [7.2.52]: https://github.com/axelor/axelor-open-suite/compare/v7.2.51...v7.2.52
