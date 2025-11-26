@@ -166,46 +166,53 @@ public class InventoryLineServiceImpl implements InventoryLineService {
               : BigDecimal.ZERO;
       inventoryLine.setGap(gap);
 
-      BigDecimal price;
-      int inventoryValuationTypeSelect =
-          stockConfigService.getStockConfig(company).getInventoryValuationTypeSelect();
-
-      BigDecimal productAvgPrice =
-          (BigDecimal) productCompanyService.get(product, "avgPrice", company);
-
-      switch (inventoryValuationTypeSelect) {
-        case StockConfigRepository.VALUATION_TYPE_WAP_VALUE:
-          price = productAvgPrice;
-          break;
-        case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
-          price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
-          break;
-        case StockConfigRepository.VALUATION_TYPE_SALE_VALUE:
-          price = (BigDecimal) productCompanyService.get(product, "salePrice", company);
-          break;
-        case StockConfigRepository.VALUATION_TYPE_PURCHASE_VALUE:
-          price = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
-          break;
-        case StockConfigRepository.VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE:
-          if (stockLocationLine != null) {
-            price = stockLocationLine.getAvgPrice();
-          } else {
-            price = productAvgPrice;
-          }
-          break;
-        default:
-          price = productAvgPrice;
-          break;
-      }
+      BigDecimal price = getInventoryLinePrice(company, product, stockLocationLine);
 
       inventoryLine.setGapValue(gap.multiply(price).setScale(2, RoundingMode.HALF_UP));
       inventoryLine.setRealValue(
           inventoryLine.getRealQty() != null
               ? inventoryLine.getRealQty().multiply(price).setScale(2, RoundingMode.HALF_UP)
               : BigDecimal.ZERO);
+      inventoryLine.setPrice(price);
     }
 
     return inventoryLine;
+  }
+
+  @Override
+  public BigDecimal getInventoryLinePrice(Company company, Product product, StockLocationLine stockLocationLine) throws AxelorException {
+    BigDecimal price;
+    int inventoryValuationTypeSelect =
+        stockConfigService.getStockConfig(company).getInventoryValuationTypeSelect();
+
+    BigDecimal productAvgPrice =
+        (BigDecimal) productCompanyService.get(product, "avgPrice", company);
+
+    switch (inventoryValuationTypeSelect) {
+      case StockConfigRepository.VALUATION_TYPE_WAP_VALUE:
+        price = productAvgPrice;
+        break;
+      case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
+        price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
+        break;
+      case StockConfigRepository.VALUATION_TYPE_SALE_VALUE:
+        price = (BigDecimal) productCompanyService.get(product, "salePrice", company);
+        break;
+      case StockConfigRepository.VALUATION_TYPE_PURCHASE_VALUE:
+        price = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
+        break;
+      case StockConfigRepository.VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE:
+        if (stockLocationLine != null) {
+          price = stockLocationLine.getAvgPrice();
+        } else {
+          price = productAvgPrice;
+        }
+        break;
+      default:
+        price = productAvgPrice;
+        break;
+    }
+    return price;
   }
 
   @Override

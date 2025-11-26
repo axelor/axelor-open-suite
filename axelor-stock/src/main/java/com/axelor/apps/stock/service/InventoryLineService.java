@@ -19,10 +19,12 @@
 package com.axelor.apps.stock.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import java.math.BigDecimal;
 
@@ -79,4 +81,6 @@ public interface InventoryLineService {
    * @return false if not present in its stock location, else true
    */
   public boolean isPresentInStockLocation(InventoryLine inventoryLine);
+
+  BigDecimal getInventoryLinePrice(Company company, Product product, StockLocationLine stockLocationLine) throws AxelorException;
 }

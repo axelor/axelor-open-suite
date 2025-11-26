@@ -72,11 +72,6 @@
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
 
-  <action-method name="action-inventory-line-method-on-change-tracking-number">
-    <call class="com.axelor.apps.stock.web.InventoryLineController"
-      method="updateInventoryLine"/>
-  </action-method>
-
   <action-group name="action-inventory-line-group-on-change-product-stock-location">
     <action name="action-inventory-line-method-check-presence-in-stock-location"/>
     <action name="action-inventory-line-method-update-inventory-line"/>

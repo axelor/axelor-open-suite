@@ -57,6 +57,7 @@ public class InventoryLineController {
     response.setValue("gap", inventoryLine.getGap());
     response.setValue("gapValue", inventoryLine.getGapValue());
     response.setValue("realValue", inventoryLine.getRealValue());
+    response.setValue("price", inventoryLine.getPrice());
   }
 
   public void compute(ActionRequest request, ActionResponse response) {
@@ -71,6 +72,7 @@ public class InventoryLineController {
       response.setValue("gap", inventoryLine.getGap());
       response.setValue("gapValue", inventoryLine.getGapValue());
       response.setValue("realValue", inventoryLine.getRealValue());
+      response.setValue("price", inventoryLine.getPrice());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

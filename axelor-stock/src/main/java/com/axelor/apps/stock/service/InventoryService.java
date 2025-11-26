@@ -286,7 +286,8 @@ public class InventoryService {
     }
 
     if (inventoryLineService.isPresentInStockLocation(inventoryLine)) {
-      inventoryLine.setPrice(BigDecimal.ZERO);
+      inventoryLine.setPrice(inventoryLineService.getInventoryLinePrice(inventory.getCompany(), product, stockLocationLineFetchService.getStockLocationLine(
+              inventoryLine.getStockLocation(), inventoryLine.getProduct())));
     }
     return inventoryLine;
   }
