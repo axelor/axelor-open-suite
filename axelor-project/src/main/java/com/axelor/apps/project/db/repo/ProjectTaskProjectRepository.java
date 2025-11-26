@@ -19,9 +19,11 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.base.db.Frequency;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
+import com.axelor.apps.project.service.ProjectTaskProgressUpdateService;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.StringUtils;
@@ -100,6 +102,18 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
     }
 
     projectTask.setDescription(projectTaskService.getTaskLink(projectTask.getDescription()));
+
+    try {
+      ProjectTaskProgressUpdateService projectTaskProgressUpdateService =
+          Beans.get(ProjectTaskProgressUpdateService.class);
+      projectTask =
+          projectTaskProgressUpdateService.updateChildrenProgress(
+              projectTask, projectTask.getProgress());
+      projectTask = projectTaskProgressUpdateService.updateParentsProgress(projectTask);
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
 
     return super.save(projectTask);
   }
