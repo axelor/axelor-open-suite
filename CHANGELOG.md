@@ -1,3 +1,14 @@
+## [8.1.37] (2025-11-26)
+
+### Fixes
+#### Bank Payment
+
+* Bank order line: added a check for missing receiver bank details when registering an expense payment.
+
+#### Supply Chain
+
+* Stock move: fixed requested reserved qty for stock move returns.
+
 ## [8.1.36] (2025-11-20)
 
 ### Fixes
@@ -1793,6 +1804,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.37]: https://github.com/axelor/axelor-open-suite/compare/v8.1.36...v8.1.37
 [8.1.36]: https://github.com/axelor/axelor-open-suite/compare/v8.1.35...v8.1.36
 [8.1.35]: https://github.com/axelor/axelor-open-suite/compare/v8.1.34...v8.1.35
 [8.1.34]: https://github.com/axelor/axelor-open-suite/compare/v8.1.33...v8.1.34
