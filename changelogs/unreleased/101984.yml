@@ -1,5 +1,0 @@
----
-title: "Stock move: fixed the wrong quantity invoiced in the case of partial invoicing."
-module: axelor-stock
-developer: |
-  - Changed method signature from isStockMoveInvoicingPartiallyActivated(Invoice,StockMoveLine) to isStockMoveInvoicingPartiallyActivated(Invoice) in WorkflowVentilationServiceSupplychainImpl

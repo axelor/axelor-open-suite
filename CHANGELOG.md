@@ -1,3 +1,58 @@
+## [8.4.14] (2025-11-26)
+
+### Fixes
+#### Base
+
+* Product: fixed a potential error due to missing product company when generating variant product.
+
+#### Account
+
+* Invoice line: fixed error when opening an invoice line from a sale order line.
+* Reconcile : added an error when trying to pay a holdback invoice terms on an invoice with remaining ones
+
+#### Bank Payment
+
+* Bank order line: added a check for missing receiver bank details when registering an expense payment.
+* PAYMENTSCHEDULE : The rejectReason field has been fixed so that it no longer accepts string values.
+
+#### Contract
+
+* Contract: fixed trading name on consumption invoice when trading name management is enable.
+
+#### CRM
+
+* Opportunity: display the partner popup when moving an opportunity to 'Closed won' in Kanban view.
+
+#### Production
+
+* ManufOrder: fixed NPE due to missing producible qty when computing the missing components label.
+
+#### Project
+
+* Project: fix activity dates format according to user's localization
+* ProjectTask : Move Progress computation process from business project to project module.
+
+#### Sale
+
+* Sale order: hide already processed line when splitting quotation and sale order.
+
+#### Stock
+
+* Stock move: fixed the wrong quantity invoiced in the case of partial invoicing.
+
+#### Supply Chain
+
+* Stock move: fixed requested reserved qty for stock move returns.
+* MRP: MRP result grid view is no longer editable.
+* Sale order: fixed the domain for sale orders without stock move.
+
+
+### Developer
+
+#### Stock
+
+- Changed method signature from isStockMoveInvoicingPartiallyActivated(Invoice,StockMoveLine) to isStockMoveInvoicingPartiallyActivated(Invoice) in WorkflowVentilationServiceSupplychainImpl
+
 ## [8.4.13] (2025-11-20)
 
 ### Fixes
@@ -1196,6 +1251,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.14]: https://github.com/axelor/axelor-open-suite/compare/v8.4.13...v8.4.14
 [8.4.13]: https://github.com/axelor/axelor-open-suite/compare/v8.4.12...v8.4.13
 [8.4.12]: https://github.com/axelor/axelor-open-suite/compare/v8.4.11...v8.4.12
 [8.4.11]: https://github.com/axelor/axelor-open-suite/compare/v8.4.10...v8.4.11

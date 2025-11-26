@@ -1,3 +1,0 @@
----
-title: "PAYMENTSCHEDULE : The rejectReason field has been fixed so that it no longer accepts string values."
-module: axelor-bank-payment
