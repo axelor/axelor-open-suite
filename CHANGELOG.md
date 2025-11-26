@@ -1,3 +1,27 @@
+## [8.2.31] (2025-11-26)
+
+### Fixes
+#### Base
+
+* Product: fixed a potential error due to missing product company when generating variant product.
+
+#### Account
+
+* Invoice line: fixed error when opening an invoice line from a sale order line.
+* Reconcile : added an error when trying to pay a holdback invoice terms on an invoice with remaining ones
+
+#### Bank Payment
+
+* Bank order line: added a check for missing receiver bank details when registering an expense payment.
+
+#### Production
+
+* ManufOrder: fixed NPE due to missing producible qty when computing the missing components label.
+
+#### Supply Chain
+
+* Stock move: fixed requested reserved qty for stock move returns.
+
 ## [8.2.30] (2025-11-20)
 
 ### Fixes
@@ -2122,6 +2146,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.31]: https://github.com/axelor/axelor-open-suite/compare/v8.2.30...v8.2.31
 [8.2.30]: https://github.com/axelor/axelor-open-suite/compare/v8.2.29...v8.2.30
 [8.2.29]: https://github.com/axelor/axelor-open-suite/compare/v8.2.28...v8.2.29
 [8.2.28]: https://github.com/axelor/axelor-open-suite/compare/v8.2.27...v8.2.28
