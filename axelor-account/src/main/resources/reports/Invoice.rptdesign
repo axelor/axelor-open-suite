@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.8.0.v201806261756</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -24,6 +24,22 @@
         </structure>
     </list-property>
     <property name="units">cm</property>
+    <method name="initialize"><![CDATA[function isEmptyHtml(value) {
+  if (!value) return true;
+  var html = value
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/[\r\n]/g, "")
+    .replace(/<br\s*\/?>/gi, "");
+  var emptyTagPattern = /<([a-zA-Z0-9]+)(\s[^>]*)?>\s*<\/\1>/g;
+  var previous = "";
+  while (html != previous) {
+    previous = html;
+    html = html.replace(emptyTagPattern, "");
+  }
+  html = html.replace(/\s+/g, "");
+  return html == "";
+}
+]]></method>
     <method name="beforeFactory"><![CDATA[if(params["HeaderHeight"].value != 0 ) {
 reportContext.getDesignHandle().findMasterPage("Simple MasterPage").setProperty("headerHeight",params["HeaderHeight"].value+"cm");
 }
@@ -11145,7 +11161,7 @@ row["enablePackMangement"] ? 'InvoiceLine.total' : 'InvoiceLine.endOfPack'
                                             <structure>
                                                 <property name="format">all</property>
                                                 <expression name="valueExpr" type="javascript">((row._outer["status_select"] == 1 || row._outer["status_select"] == 2 ) &amp;&amp; (row._outer["proforma_comments"] == null || row._outer["proforma_comments"] == "")) ||
-((row._outer["status_select"] == 3 || (row._outer["status_select"] == 2 &amp;&amp; row._outer["operation_sub_type_select"] == 2)) &amp;&amp; (row._outer["note"] == null || row._outer["note"] == "") &amp;&amp; (row._outer["invoice_comments"] == null || row._outer["invoice_comments"] == "" ) )</expression>
+((row._outer["status_select"] == 3 || (row._outer["status_select"] == 2 &amp;&amp; row._outer["operation_sub_type_select"] == 2)) &amp;&amp; isEmptyHtml(row._outer["note"]) &amp;&amp; isEmptyHtml(row._outer["invoice_comments"]))</expression>
                                             </structure>
                                         </list-property>
                                         <list-property name="paramBindings">
