@@ -397,7 +397,7 @@ public class InvoicingProjectService {
       allLines.addAll(nightShiftLines);
     }
 
-    invoicingProject.setNightShiftLogTimes(allLines);
+    invoicingProject.setNightShiftHours(allLines);
   }
 
   private LocalDateTime[] calculateNightShiftPeriod(LocalDateTime start, LocalDateTime end) {
