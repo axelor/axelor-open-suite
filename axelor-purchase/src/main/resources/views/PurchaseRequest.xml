@@ -92,17 +92,30 @@
   </form>
 
   <form name="purchase-request-wizard-generate-po-form" title="Generate PO"
-    model="com.axelor.apps.purchase.db.PurchaseRequest">
+    model="com.axelor.utils.db.Wizard" onNew="action-purchase-request-attrs-company">
     <panel name="mainPanel">
+      <field name="$company" title="Company" type="many-to-one"
+        target="com.axelor.apps.base.db.Company" hidden="true"
+        onChange="action-purchase-request-attrs-company"/>
+      <spacer name="companySpacer"/>
       <field name="$groupBySupplier" title="Group by supplier" type="boolean"/>
       <spacer name="supplierSpacer"/>
       <field name="$groupByProduct" title="Group by product" type="boolean"
         onChange="action-purchase-request-set-group-by-supplier"/>
       <spacer name="productSpacer"/>
       <button name="generatePOBtn" title="Generate PO"
-        onClick="action-purchase-request-method-generate-po"/>
+        onClick="save,action-purchase-request-method-generate-po"/>
     </panel>
   </form>
+
+  <action-attrs name="action-purchase-request-attrs-company">
+    <attribute name="hidden" for="$company"
+      expr="eval: !__repo__(PurchaseRequest).all().filter('self.id in ?1', _ids).fetch()?.any{!it.company}"
+      if="_ids"/>
+    <attribute name="required" for="$company"
+      expr="eval: __repo__(PurchaseRequest).all().filter('self.id in ?1', _ids).fetch()?.any{!it.company}"
+      if="_ids"/>
+  </action-attrs>
 
   <action-attrs name="action-purchase-request-set-group-by-supplier">
     <attribute name="value" for="$groupBySupplier" expr="eval: groupByProduct"/>
@@ -164,7 +177,7 @@
   </action-method>
 
   <action-view name="action-purchase-request-open-generate-po-wizard"
-    title="Generate PO" model="com.axelor.apps.purchase.db.PurchaseRequest">
+    title="Generate PO" model="com.axelor.utils.db.Wizard">
     <view type="form" name="purchase-request-wizard-generate-po-form"/>
     <view-param name="popup" value="true"/>
     <view-param name="show-toolbar" value="false"/>

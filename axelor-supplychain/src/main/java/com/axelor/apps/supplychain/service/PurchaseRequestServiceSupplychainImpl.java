@@ -33,10 +33,10 @@ public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServic
   @Inject StockLocationRepository stockLocationRepo;
 
   @Override
-  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest)
+  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest, Company company)
       throws AxelorException {
 
-    PurchaseOrder purchaseOrder = super.createPurchaseOrder(purchaseRequest);
+    PurchaseOrder purchaseOrder = super.createPurchaseOrder(purchaseRequest, company);
 
     if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       purchaseOrder.setStockLocation(purchaseRequest.getStockLocation());
