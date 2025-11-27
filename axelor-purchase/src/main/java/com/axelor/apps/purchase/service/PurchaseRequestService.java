@@ -27,7 +27,10 @@ import java.util.Map;
 
 public interface PurchaseRequestService {
   public List<PurchaseOrder> generatePo(
-      List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
+      List<PurchaseRequest> purchaseRequests,
+      Boolean groupBySupplier,
+      Boolean groupByProduct,
+      Company company)
       throws AxelorException;
 
   public Map<String, Object> getDefaultValues(PurchaseRequest purchaseRequest, Company company)
