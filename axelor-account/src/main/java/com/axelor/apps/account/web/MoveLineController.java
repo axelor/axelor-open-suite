@@ -541,20 +541,6 @@ public class MoveLineController {
     }
   }
 
-  public void accountOnSelect(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = this.getMove(request, moveLine);
-      if (move != null) {
-        response.setAttrs(
-            Beans.get(MoveLineGroupService.class)
-                .getAccountOnSelectAttrsMap(move.getJournal(), move.getCompany()));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void partnerOnSelect(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);

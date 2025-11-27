@@ -700,15 +700,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(Move move) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addPartnerDomain(move, attrsMap);
-
-    return attrsMap;
-  }
-
-  @Override
   public Map<String, Map<String, Object>> getPaymentModeOnSelectAttrsMap(Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
@@ -722,15 +713,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addPartnerBankDetailsDomain(move, attrsMap);
-
-    return attrsMap;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getTradingNameOnSelectAttrsMap(Move move) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addTradingNameDomain(move, attrsMap);
 
     return attrsMap;
   }
@@ -771,15 +753,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveAttrsService.addMassEntryHidden(move, attrsMap);
     moveAttrsService.addMassEntryPaymentConditionRequired(move, attrsMap);
     moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
-
-    return attrsMap;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getCompanyOnSelectAttrsMap(Move move) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addCompanyDomain(move, attrsMap);
 
     return attrsMap;
   }
