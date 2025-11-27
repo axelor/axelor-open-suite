@@ -65,7 +65,10 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public List<PurchaseOrder> generatePo(
-      List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
+      List<PurchaseRequest> purchaseRequests,
+      Boolean groupBySupplier,
+      Boolean groupByProduct,
+      Company company)
       throws AxelorException {
 
     Map<String, PurchaseOrder> purchaseOrderMap = new HashMap<>();
@@ -77,13 +80,13 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
       if (key != null && purchaseOrderMap.containsKey(key)) {
         purchaseOrder = purchaseOrderMap.get(key);
       } else {
-        purchaseOrder = createPurchaseOrder(purchaseRequest);
+        purchaseOrder = createPurchaseOrder(purchaseRequest, company);
         key = key == null ? purchaseRequest.getId().toString() : key;
         purchaseOrderMap.put(key, purchaseOrder);
       }
 
       if (purchaseOrder == null) {
-        purchaseOrder = createPurchaseOrder(purchaseRequest);
+        purchaseOrder = createPurchaseOrder(purchaseRequest, company);
       }
 
       this.generatePoLineListFromPurchaseRequest(purchaseRequest, purchaseOrder, groupByProduct);
@@ -96,12 +99,12 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
     return purchaseOrders;
   }
 
-  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest)
+  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest, Company company)
       throws AxelorException {
     return purchaseOrderRepo.save(
         purchaseOrderCreateService.createPurchaseOrder(
             AuthUtils.getUser(),
-            purchaseRequest.getCompany(),
+            Optional.ofNullable(purchaseRequest.getCompany()).orElse(company),
             null,
             purchaseRequest.getSupplierPartner().getCurrency(),
             null,
