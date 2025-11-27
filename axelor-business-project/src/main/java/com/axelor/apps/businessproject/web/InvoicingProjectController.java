@@ -50,13 +50,18 @@ public class InvoicingProjectController {
     InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
     InvoicingProjectService invoicingProjectService = Beans.get(InvoicingProjectService.class);
     Project project = invoicingProject.getProject();
+
     if (project == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BusinessProjectExceptionMessage.INVOICING_PROJECT_PROJECT));
     }
+
     invoicingProjectService.clearLines(invoicingProject);
     invoicingProjectService.setLines(invoicingProject, project, 0);
+
+    //    response.setValue("nightShiftLogTimes", invoicingProject.getNightShiftLogTimes());
+
     response.setValues(invoicingProject);
   }
 

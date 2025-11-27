@@ -25,6 +25,14 @@
     <boolean name="invoiced" title="Invoiced" readonly="true"/>
     <string name="fullName" namecolumn="true"/>
     <boolean name="enableEditor" title="Allow updates via editor" nullable="true"/>
+    <boolean name="isSaturday" title="Saturday" readonly="true"/>
+    <boolean name="isSunday" title="Sunday" readonly="true"/>
+    <boolean name="isPublicHoliday" title="Public holiday" readonly="true"/>
+    <boolean name="isEmergencyService" title="Emergency service" readonly="true"/>
+    <boolean name="isNightShift" title="Night  Shift"/>
+    <decimal name="nightShiftHours" title="Night Shift Hours" precision="5" scale="2"/>
+    <string name="shiftType" selection="hr.timesheet.shift.type" title="shift"
+      default="normal"/>
 
     <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
 

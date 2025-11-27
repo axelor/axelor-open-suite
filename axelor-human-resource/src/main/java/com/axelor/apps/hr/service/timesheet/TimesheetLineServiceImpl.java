@@ -32,8 +32,10 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPriority;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
@@ -46,8 +48,10 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
@@ -337,6 +341,75 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     return (projectTask != null) ? projectTask.getProject() : null;
   }
 
+  @Override
+  public void splitTimesheetLine(TimesheetLine line) {
+    LocalDateTime start = line.getStartTime();
+    LocalDateTime end = line.getEndTime();
+    if (start == null || end == null) return;
+
+    DayOfWeek day = start.getDayOfWeek();
+    line.setIsSaturday(day == DayOfWeek.SATURDAY);
+    line.setIsSunday(day == DayOfWeek.SUNDAY);
+
+    // Public holiday
+    line.setIsPublicHoliday(
+        Beans.get(PublicHolidayHrService.class)
+            .checkPublicHolidayDay(start.toLocalDate(), line.getEmployee()));
+
+    // Emergency service via ProjectTask priority = 4 (urgent)
+    ProjectTask task = line.getProjectTask();
+    ProjectPriority priority = (task != null ? task.getPriority() : null);
+
+    boolean isEmergency =
+        priority != null
+            && priority.getTechnicalTypeSelect() != null
+            && priority.getTechnicalTypeSelect() == 4;
+
+    line.setIsEmergencyService(isEmergency);
+
+    // Night shift hours (18:00 to 06:00)
+    Duration nightDuration = calculateNightShiftDuration(start, end);
+    boolean isNightShift = !nightDuration.isZero();
+
+    line.setIsNightShift(isNightShift);
+
+    if (isNightShift) {
+      double hours = nightDuration.toMinutes() / 60.0;
+      line.setNightShiftHours(BigDecimal.valueOf(hours));
+    } else {
+      line.setNightShiftHours(BigDecimal.ZERO);
+    }
+  }
+
+  private Duration calculateNightShiftDuration(LocalDateTime start, LocalDateTime end) {
+    // If end is before start, assume it passed midnight
+    if (end.isBefore(start)) {
+      end = end.plusDays(1);
+    }
+
+    Duration totalNight = Duration.ZERO;
+    LocalDateTime pointer = start;
+
+    while (pointer.isBefore(end)) {
+      LocalDate currentDate = pointer.toLocalDate();
+
+      LocalDateTime nightStart = currentDate.atTime(18, 0);
+      LocalDateTime nightEnd = currentDate.plusDays(1).atTime(6, 0);
+
+      // Overlap range
+      LocalDateTime overlapStart = pointer.isAfter(nightStart) ? pointer : nightStart;
+      LocalDateTime overlapEnd = end.isBefore(nightEnd) ? end : nightEnd;
+
+      // Valid overlap
+      if (!overlapStart.isAfter(overlapEnd)) {
+        totalNight = totalNight.plus(Duration.between(overlapStart, overlapEnd));
+      }
+      // Move to next day's night block
+      pointer = nightEnd;
+    }
+    return totalNight;
+  }
+
   private <T extends Model> T fetchEntity(T entity, JpaRepository<T> repo) {
     if (entity == null || entity.getId() == null) return null;
     return repo.find(entity.getId());
@@ -353,16 +426,27 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   private <T extends Model> T extractFromParent(
       Context context, Class<T> entityClass, JpaRepository<T> repo) {
-    Context parent = context != null ? context.getParent() : null;
-    if (parent == null) return null;
-
-    if (entityClass.equals(parent.getContextClass())) {
-      Object parentId = parent.get("id");
-      if (parentId != null) {
-        return repo.find(Long.valueOf(parentId.toString()));
-      }
+    if (context == null) {
+      log.warn("Context is null, cannot extract parent.");
+      return null;
     }
-    return null;
+    // Instead of calling getParent(), check the "_parentId" or "parentId" keys
+    Object parentIdObj = context.get("id");
+    if (parentIdObj == null) {
+      log.debug("No parent ID found in context: {}", context);
+      return null;
+    }
+
+    try {
+      Long parentId = Long.valueOf(parentIdObj.toString());
+      return repo.find(parentId);
+    } catch (NumberFormatException e) {
+      log.warn("Invalid parent id in context: {}", parentIdObj, e);
+      return null;
+    } catch (Exception e) {
+      log.error("Error fetching entity from repository", e);
+      return null;
+    }
   }
 
   @SuppressWarnings("unchecked")

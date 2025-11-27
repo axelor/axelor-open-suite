@@ -416,7 +416,7 @@
   <action-group name="action-timesheet-line-group-on-save">
     <action name="action-timesheet-line-validate-date"/>
     <action name="action-timesheet-line-set-date-and-duration"/>
-      <action name="action-timesheet-line-method-set-stored-duration"/>
+    <action name="action-timesheet-line-method-set-stored-duration"/>
     <action name="save"/>
   </action-group>
 

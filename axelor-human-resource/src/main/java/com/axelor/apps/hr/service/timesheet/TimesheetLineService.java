@@ -97,4 +97,6 @@ public interface TimesheetLineService {
   ProjectTask resolveProjectTask(Context context);
 
   Project resolveProject(Context context, ProjectTask projectTask);
+
+  void splitTimesheetLine(TimesheetLine line);
 }
