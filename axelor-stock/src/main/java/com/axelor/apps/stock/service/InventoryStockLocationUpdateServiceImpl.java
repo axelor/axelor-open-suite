@@ -31,7 +31,6 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -81,7 +80,7 @@ public class InventoryStockLocationUpdateServiceImpl
             .bind("productList", productList)
             .fetch();
 
-    Map<Product, BigDecimal> productToQtyMap = getProductQtylMap(inventoryLineList);
+    Map<Product, BigDecimal> productToQtyMap = getProductQtyMap(inventoryLineList);
 
     for (StockLocationLine stockLocationLine : stockLocationLineList) {
       Product product = stockLocationLine.getProduct();
@@ -90,8 +89,9 @@ public class InventoryStockLocationUpdateServiceImpl
     }
   }
 
-  protected Map<Product, BigDecimal> getProductQtylMap(List<InventoryLine> inventoryLineList) {
+  protected Map<Product, BigDecimal> getProductQtyMap(List<InventoryLine> inventoryLineList) {
     return inventoryLineList.stream()
+        .filter(line -> line.getTrackingNumber() == null)
         .collect(
             Collectors.groupingBy(
                 InventoryLine::getProduct,
@@ -136,9 +136,7 @@ public class InventoryStockLocationUpdateServiceImpl
         .filter(line -> line.getTrackingNumber() != null)
         .collect(
             Collectors.toMap(
-                line -> Pair.of(line.getProduct(), line.getTrackingNumber()),
-                Function.identity(),
-                (existing, replacement) -> existing));
+                line -> Pair.of(line.getProduct(), line.getTrackingNumber()), line -> line));
   }
 
   protected void updateLine(
