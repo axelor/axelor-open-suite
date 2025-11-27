@@ -1,0 +1,3 @@
+---
+title: "MoveLine/VatSystem: fixed wrong vat system computation on generate counterpart action."
+module: axelor-account
