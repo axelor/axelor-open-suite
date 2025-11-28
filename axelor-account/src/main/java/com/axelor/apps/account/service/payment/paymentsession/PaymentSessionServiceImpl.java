@@ -224,7 +224,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     return invoiceTermRepository
         .all()
         .filter(
-            "self.paymentSession = :paymentSession AND (self.isSelectedOnPaymentSession IS :isSelectedOnPaymentSession )")
+            "self.paymentSession = :paymentSession AND self.isSelectedOnPaymentSession = :isSelectedOnPaymentSession")
         .bind("paymentSession", paymentSession.getId())
         .bind("isSelectedOnPaymentSession", isSelectedOnPaymentSession);
   }
