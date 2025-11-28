@@ -88,9 +88,9 @@
         </panel>
       </panel>
 
-      <panel-related name="inventoryLineListPanel" field="inventoryLineList"
-        readonlyIf="statusSelect >= 5 || stockLocation == null" colSpan="12" height="20"
-        grid-view="inventory-line-grid" form-view="inventory-line-form"/>
+      <panel-dashlet  name="inventoryLineListPanelDashlet" title="Inventory lines"
+        height="800" readonlyIf="statusSelect >= 5 || stockLocation == null"
+        action="action-inventory-line-view-dashlet" canNew="id" canDelete="true" showIf="id"/>
 
       <panel name="filterPanel" title="Filters" hideIf="statusSelect &lt; 2" readonly="true">
         <field name="productFamily" grid-view="product-family-grid"
