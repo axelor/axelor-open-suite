@@ -269,8 +269,8 @@
   </selection>
 
   <selection name="hr.timesheet.shift.type">
-    <option value="normal">Normal Work Hours</option>
-    <option value="night">Night Shift</option>
+    <option value="01-normal">Normal Shift</option>
+    <option value="02-night">Night Shift</option>
   </selection>
 
 </object-views>

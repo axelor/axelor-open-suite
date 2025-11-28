@@ -29,11 +29,9 @@
     <boolean name="isSunday" title="Sunday" readonly="true"/>
     <boolean name="isPublicHoliday" title="Public holiday" readonly="true"/>
     <boolean name="isEmergencyService" title="Emergency service" readonly="true"/>
-    <boolean name="isNightShift" title="Night  Shift"/>
-    <decimal name="nightShiftHours" title="Night Shift Hours" precision="5" scale="2"/>
+    <boolean name="isNightShift" title="Night Shift"/>
     <string name="shiftType" selection="hr.timesheet.shift.type" title="shift"
-      default="normal"/>
-
+      default="01-normal"/>
     <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
 
     <many-to-one name="projectPlanningTime"

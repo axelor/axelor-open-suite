@@ -43,9 +43,6 @@
       selection="business.project.invoicing.project.status.select" default="1"/>
     <boolean name="consolidatePhaseWhenInvoicing" title="Consolidate phase invoicing"/>
 
-    <one-to-many name="nightShiftHours" ref="com.axelor.apps.hr.db.TimesheetLine"
-      transient="true" title="Night Shift Lines"/>
-
     <extra-code>
       // STATUS SELECT
       public static final int STATUS_DRAFT = 1;

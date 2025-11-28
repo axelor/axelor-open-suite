@@ -63,9 +63,6 @@ import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -160,9 +157,6 @@ public class InvoicingProjectService {
                   .bind(logTimesQueryMap)
                   .fetch());
     }
-
-    // Call method to set transient fields here.
-    computeTransientFields(invoicingProject);
 
     StringBuilder expenseLineQueryBuilder = new StringBuilder(commonQuery);
     expenseLineQueryBuilder.append(
@@ -358,78 +352,5 @@ public class InvoicingProjectService {
           invoicingProject.getProject().getConsolidatePhaseWhenInvoicing());
     }
     return invoicingProjectRepo.save(invoicingProject);
-  }
-
-  private void computeTransientFields(InvoicingProject invoicingProject) {
-    if (invoicingProject == null) return;
-
-    List<TimesheetLine> allLines = new ArrayList<>();
-
-    if (invoicingProject.getLogTimesSet() != null && !invoicingProject.getLogTimesSet().isEmpty()) {
-
-      allLines.addAll(invoicingProject.getLogTimesSet());
-
-      List<TimesheetLine> nightShiftLines =
-          invoicingProject.getLogTimesSet().stream()
-              .filter(line -> Boolean.TRUE.equals(line.getIsNightShift()))
-              .filter(
-                  line ->
-                      line.getNightShiftHours() != null
-                          && line.getNightShiftHours().compareTo(BigDecimal.ZERO) > 0)
-              .map(
-                  line -> {
-                    TimesheetLine nightLine = JPA.copy(line, false);
-
-                    nightLine.setShiftType("night");
-                    nightLine.setHoursDuration(line.getNightShiftHours());
-                    nightLine.setDuration(line.getNightShiftHours());
-
-                    LocalDateTime[] nightPeriod =
-                        calculateNightShiftPeriod(line.getStartTime(), line.getEndTime());
-
-                    nightLine.setStartTime(nightPeriod[0]);
-                    nightLine.setEndTime(nightPeriod[1]);
-
-                    return nightLine;
-                  })
-              .collect(Collectors.toList());
-
-      allLines.addAll(nightShiftLines);
-    }
-
-    invoicingProject.setNightShiftHours(allLines);
-  }
-
-  private LocalDateTime[] calculateNightShiftPeriod(LocalDateTime start, LocalDateTime end) {
-    if (end.isBefore(start)) {
-      end = end.plusDays(1);
-    }
-
-    LocalDateTime nightShiftStart = null;
-    LocalDateTime nightShiftEnd = null;
-    LocalDateTime pointer = start;
-
-    while (pointer.isBefore(end)) {
-      LocalDate currentDate = pointer.toLocalDate();
-
-      LocalDateTime nightStart = currentDate.atTime(18, 0);
-      LocalDateTime nightEnd = currentDate.plusDays(1).atTime(6, 0);
-
-      LocalDateTime overlapStart = pointer.isAfter(nightStart) ? pointer : nightStart;
-      LocalDateTime overlapEnd = end.isBefore(nightEnd) ? end : nightEnd;
-
-      if (!overlapStart.isAfter(overlapEnd)) {
-        if (nightShiftStart == null) {
-          nightShiftStart = overlapStart;
-        }
-        nightShiftEnd = overlapEnd;
-      }
-
-      pointer = nightEnd;
-    }
-
-    return new LocalDateTime[] {
-      nightShiftStart != null ? nightShiftStart : start, nightShiftEnd != null ? nightShiftEnd : end
-    };
   }
 }

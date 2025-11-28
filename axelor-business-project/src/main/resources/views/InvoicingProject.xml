@@ -63,17 +63,12 @@
           form-view="purchase-order-line-form"
           showIf="purchaseOrderLineSet &amp;&amp; purchaseOrderLineSet.length &gt; 0"
           readonlyIf="invoice" name="purchaseOrderLineSetPanel"/>
-        <!-- <panel-related title="Time spent" field="logTimesSet" colSpan="12" -->
-        <!-- canNew="false" canEdit="false" canSelect="false" -->
-        <!-- grid-view="timesheet-line-invoicing-project-grid" form-view="timesheet-line-project-form" -->
-        <!-- showIf="logTimesSet &amp;&amp; logTimesSet.length &gt; 0" readonlyIf="invoice" -->
-        <!-- name="logTimesSetPanel"/> -->
-
-        <panel-related title="Time spent" field="nightShiftHours" colSpan="12"
-          canNew="true" canEdit="true" canSelect="true"
+        <panel-related title="Time spent" field="logTimesSet" colSpan="12"
+          canNew="false" canEdit="false" canSelect="false"
           grid-view="timesheet-line-invoicing-project-grid" form-view="timesheet-line-project-form"
-          showIf="nightShiftHours &amp;&amp; nightShiftHours.length &gt; 0"
-          readonlyIf="invoice" name="logTimesSetPanel"/>
+          showIf="logTimesSet &amp;&amp; logTimesSet.length &gt; 0" readonlyIf="invoice"
+          name="logTimesSetPanel"/>
+
         <panel-related title="Expenses" field="expenseLineSet" colSpan="12"
           canNew="false" canEdit="false" canSelect="false" form-view="expense-line-form"
           grid-view="expense-line-invoicing-project-grid"

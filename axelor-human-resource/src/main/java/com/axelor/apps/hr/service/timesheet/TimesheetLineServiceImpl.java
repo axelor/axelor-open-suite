@@ -343,46 +343,77 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   public void splitTimesheetLine(TimesheetLine line) {
-    LocalDateTime start = line.getStartTime();
-    LocalDateTime end = line.getEndTime();
-    if (start == null || end == null) return;
+    if (Boolean.TRUE.equals(line.getIsAutomaticallyGenerated()))
+      return; // Do not split generated night-lines
+    if (!hasValidTime(line)) return;
 
-    DayOfWeek day = start.getDayOfWeek();
+    applyWeekendFlag(line);
+    applyHolidayFlag(line);
+    applyEmergencyFlag(line);
+
+    BigDecimal nightHours = calculateNightHours(line);
+    if (nightHours.compareTo(BigDecimal.ZERO) == 0) {
+      resetNightFields(line);
+      return;
+    }
+
+    if (nightLineAlreadyExists(line)) return; // Prevent duplicates
+
+    createNightShiftLine(line, nightHours);
+    resetNightFields(line);
+  }
+
+  private boolean hasValidTime(TimesheetLine line) {
+    return line.getStartTime() != null && line.getEndTime() != null;
+  }
+
+  private void applyWeekendFlag(TimesheetLine line) {
+    DayOfWeek day = line.getStartTime().getDayOfWeek();
     line.setIsSaturday(day == DayOfWeek.SATURDAY);
     line.setIsSunday(day == DayOfWeek.SUNDAY);
+  }
 
-    // Public holiday
-    line.setIsPublicHoliday(
+  private void applyHolidayFlag(TimesheetLine line) {
+    boolean isHoliday =
         Beans.get(PublicHolidayHrService.class)
-            .checkPublicHolidayDay(start.toLocalDate(), line.getEmployee()));
+            .checkPublicHolidayDay(line.getStartTime().toLocalDate(), line.getEmployee());
+    line.setIsPublicHoliday(isHoliday);
+  }
 
-    // Emergency service via ProjectTask priority = 4 (urgent)
+  private void applyEmergencyFlag(TimesheetLine line) {
     ProjectTask task = line.getProjectTask();
     ProjectPriority priority = (task != null ? task.getPriority() : null);
-
     boolean isEmergency =
         priority != null
             && priority.getTechnicalTypeSelect() != null
             && priority.getTechnicalTypeSelect() == 4;
-
     line.setIsEmergencyService(isEmergency);
+  }
 
-    // Night shift hours (18:00 to 06:00)
-    Duration nightDuration = calculateNightShiftDuration(start, end);
-    boolean isNightShift = !nightDuration.isZero();
+  private BigDecimal calculateNightHours(TimesheetLine line) {
+    Duration nightDuration = calculateNightShiftDuration(line.getStartTime(), line.getEndTime());
+    return BigDecimal.valueOf(nightDuration.toMinutes() / 60.0);
+  }
 
-    line.setIsNightShift(isNightShift);
+  private boolean nightLineAlreadyExists(TimesheetLine line) {
+    return line.getTimesheet().getTimesheetLineList().stream()
+        .anyMatch(l -> Boolean.TRUE.equals(l.getIsNightShift()));
+  }
 
-    if (isNightShift) {
-      double hours = nightDuration.toMinutes() / 60.0;
-      line.setNightShiftHours(BigDecimal.valueOf(hours));
-    } else {
-      line.setNightShiftHours(BigDecimal.ZERO);
-    }
+  private void resetNightFields(TimesheetLine line) {
+    line.setIsNightShift(false);
+    line.setShiftType("01-normal");
+  }
+
+  private void createNightShiftLine(TimesheetLine line, BigDecimal nightHours) {
+    TimesheetLine nightLine = createNightShiftTimesheetLine(line, nightHours);
+    nightLine.setIsNightShift(true);
+    nightLine.setShiftType("02-night");
+    nightLine.setIsAutomaticallyGenerated(true);
+    line.getTimesheet().addTimesheetLineListItem(nightLine);
   }
 
   private Duration calculateNightShiftDuration(LocalDateTime start, LocalDateTime end) {
-    // If end is before start, assume it passed midnight
     if (end.isBefore(start)) {
       end = end.plusDays(1);
     }
@@ -391,23 +422,70 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     LocalDateTime pointer = start;
 
     while (pointer.isBefore(end)) {
-      LocalDate currentDate = pointer.toLocalDate();
-
-      LocalDateTime nightStart = currentDate.atTime(18, 0);
-      LocalDateTime nightEnd = currentDate.plusDays(1).atTime(6, 0);
-
-      // Overlap range
-      LocalDateTime overlapStart = pointer.isAfter(nightStart) ? pointer : nightStart;
-      LocalDateTime overlapEnd = end.isBefore(nightEnd) ? end : nightEnd;
-
-      // Valid overlap
-      if (!overlapStart.isAfter(overlapEnd)) {
-        totalNight = totalNight.plus(Duration.between(overlapStart, overlapEnd));
+      LocalDateTime[] interval = getNightShiftIntervalForDate(pointer.toLocalDate(), start, end);
+      if (interval != null) {
+        totalNight = totalNight.plus(Duration.between(interval[0], interval[1]));
       }
-      // Move to next day's night block
-      pointer = nightEnd;
+      pointer = pointer.toLocalDate().plusDays(1).atTime(0, 0); // next day
     }
     return totalNight;
+  }
+
+  private LocalDateTime[] getNightShiftIntervalForDate(
+      LocalDate date, LocalDateTime taskStart, LocalDateTime taskEnd) {
+    LocalDateTime nightStart = date.atTime(18, 0);
+    LocalDateTime nightEnd = date.plusDays(1).atTime(6, 0);
+
+    LocalDateTime overlapStart = taskStart.isAfter(nightStart) ? taskStart : nightStart;
+    LocalDateTime overlapEnd = taskEnd.isBefore(nightEnd) ? taskEnd : nightEnd;
+
+    if (overlapStart.isAfter(overlapEnd)) {
+      return null;
+    }
+    return new LocalDateTime[] {overlapStart, overlapEnd};
+  }
+
+  private TimesheetLine createNightShiftTimesheetLine(TimesheetLine line, BigDecimal nightHours) {
+    TimesheetLine nightLine = new TimesheetLine();
+
+    nightLine.setTimesheet(line.getTimesheet());
+    nightLine.setProject(line.getProject());
+    nightLine.setProjectTask(line.getProjectTask());
+    nightLine.setProduct(line.getProduct());
+    nightLine.setDate(line.getDate());
+    nightLine.setEmployee(line.getEmployee());
+    nightLine.setBreakTime(BigDecimal.ZERO);
+    nightLine.setSite(line.getSite());
+    nightLine.setProjectPlanningTime(line.getProjectPlanningTime());
+    nightLine.setToInvoice(line.getToInvoice());
+    nightLine.setEnableEditor(line.getEnableEditor());
+    nightLine.setIsAutomaticallyGenerated(true);
+
+    // Set accurate night start/end
+    LocalDateTime[] interval =
+        getNightShiftIntervalForDate(
+            line.getStartTime().toLocalDate(), line.getStartTime(), line.getEndTime());
+    if (interval != null) {
+      nightLine.setStartTime(interval[0]);
+      nightLine.setEndTime(interval[1]);
+    } else {
+      nightLine.setStartTime(line.getStartTime());
+      nightLine.setEndTime(line.getEndTime());
+    }
+
+    nightLine.setHoursDuration(nightHours);
+    nightLine.setDurationForCustomer(nightHours);
+    nightLine.setDuration(nightHours);
+
+    nightLine.setIsNightShift(true);
+    nightLine.setIsEmergencyService(line.getIsEmergencyService());
+    nightLine.setIsSaturday(line.getIsSaturday());
+    nightLine.setIsSunday(line.getIsSunday());
+
+    nightLine.setComments("Night hours extracted from work time.");
+    nightLine.setShiftType("02-night");
+
+    return nightLine;
   }
 
   private <T extends Model> T fetchEntity(T entity, JpaRepository<T> repo) {
