@@ -1,0 +1,8 @@
+---
+title: "StockMove/StockLocation : fixed the future quantity error when using the split tracking number configuration"
+module: axelor-stock
+developer : |
+  - Added StockMoveService to the StockMoveLineServiceImpl constructor.
+  - Added StockMoveService to the StockMoveLineServiceSupplychainImpl constructor.
+  - Added StockMoveService to the StockMoveLineProductionServiceImpl constructor.
+
