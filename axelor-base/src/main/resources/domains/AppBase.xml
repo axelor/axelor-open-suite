@@ -134,6 +134,9 @@
     <many-to-one name="productSequence" ref="com.axelor.apps.base.db.Sequence"
       title="Product sequence"/>
 
+    <boolean name="showProductCompanies" title="Show product companies" default="false"
+      help="This option allows products to be displayed by company in the product form, provided that one or more fields are selected in “Company-specific product fields.”"/>
+
     <many-to-many name="companySpecificProductFieldsSet"
       ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
 
