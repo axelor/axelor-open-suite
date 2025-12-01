@@ -19,18 +19,12 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.base.ResponseMessageType;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
-import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
-import com.axelor.auth.AuditableRunner;
-import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -106,52 +100,4 @@ public class ProductController {
     }
     response.setValue("$stockLocationIdList", Arrays.asList(0L));
   }
-
-  public void duplicateGenerator(ActionRequest request, ActionResponse response) {
-	    final ProductRepository productRepository = Beans.get(ProductRepository.class);
-	    final StockLocationLineService stockLocationLineService = Beans.get(StockLocationLineService.class);
-
-	    // 2. Get Context Data
-	    Product contextProduct = request.getContext().asType(Product.class);
-	    final Long productId = contextProduct.getId();
-
-	    final int startNum = 1;
-	    final int endNum = 10000;
-	    final int batchSize = 100; // Define transaction size (Commit every 100 items)
-
-	    // 3. OUTER LOOP: Steps through the range in chunks (1, 101, 201...)
-	    for (int i = startNum; i <= endNum; i += batchSize) {
-	        
-	        // Calculate the range for this specific transaction
-	        final int currentBatchStart = i;
-	        final int currentBatchEnd = Math.min(i + batchSize - 1, endNum);
-
-	        // 4. TRANSACTION SCOPE: Runs strictly for this batch
-	        JPA.runInTransaction(new Runnable() {
-	            @Override
-	            public void run() {
-	                // IMPORTANT: Entities are "Detached" in a new transaction.
-	                // We must re-fetch the parent entities fresh from the DB every time.
-	                Product originalProduct = productRepository.find(productId);
-	                StockLocation stockLocation = JPA.find(StockLocation.class, 1L);
-
-	                System.err.println("Processing Batch: " + currentBatchStart + " to " + currentBatchEnd);
-
-	                // 5. INNER LOOP: Process only the current batch
-	                for (int j = currentBatchStart; j <= currentBatchEnd; j++) {
-	                    
-	                    Product copy = productRepository.copy(originalProduct, false);
-	                    
-	                    copy.setCode(originalProduct.getCode() + "--" + j);
-	                    copy.setParentProduct(originalProduct);
-	                    copy = productRepository.save(copy);
-
-	                    StockLocationLine line = stockLocationLineService
-	                        .getOrCreateStockLocationLine(stockLocation, copy);
-	                    JPA.save(line);
-	                }
-	            }
-	        });
-	    }
-	}
 }
