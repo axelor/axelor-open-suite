@@ -50,12 +50,12 @@
     </extend>
 
     <extend target="//field[@name='timesheet']">
-      <insert position="before">
-        <field name="durationForCustomer" colSpan="4" if-module="axelor-business-project"
-          if="__config__.app.isApp('business-project')" showIf="project.isBusinessProject"/>
-        <label name="durationLabel" colSpan="2" if-module="axelor-business-project"
-          if="__config__.app.isApp('business-project')" showIf="project.isBusinessProject"/>
-      </insert>
+      <!-- <insert position="before"> -->
+      <!-- <field name="durationForCustomer" colSpan="4" if-module="axelor-business-project" -->
+      <!-- if="__config__.app.isApp('business-project')" showIf="project.isBusinessProject"/> -->
+      <!-- <label name="durationLabel" colSpan="2" if-module="axelor-business-project" -->
+      <!-- if="__config__.app.isApp('business-project')" showIf="project.isBusinessProject"/> -->
+      <!-- </insert> -->
 
       <insert position="after">
         <field name="toInvoice" if-module="axelor-business-project"

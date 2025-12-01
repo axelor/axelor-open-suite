@@ -22,8 +22,7 @@
       requiredIf="toInvoice" onSelect="action-hr-timesheet-line-attrs-domain-product"
       widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="hoursDuration" width="62%" min="0.01" title="Duration (hours)"/>
-    <field name="durationForCustomer" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project')"/>
+    <field name="durationForCustomer" hidden="true"/>
     <field name="toInvoice" readonly="true" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
@@ -57,8 +56,7 @@
       grid-view="product-activity-grid" readonlyIf="projectTask.frameworkCustomerContract"
       canEdit="false" canView="false"/>
     <field name="hoursDuration" width="62%" min="0.01" title="TimesheetLine.duration"/>
-    <field name="durationForCustomer" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project')"/>
+    <field name="durationForCustomer" hidden="true"/>
     <field name="toInvoice" readonly="true" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
@@ -128,7 +126,7 @@
     <field name="product"/>
     <field name="duration"/>
     <field name="hoursDuration"/>
-    <field name="durationForCustomer"/>
+    <field name="durationForCustomer" hidden="true"/>
     <field name="toInvoice" readonly="true" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
@@ -156,8 +154,7 @@
       readonlyIf="projectTask.frameworkCustomerContract" canView="false" canEdit="false"/>
     <field name="duration" width="62%"
       onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
-    <field name="durationForCustomer" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project')"/>
+    <field name="durationForCustomer" hidden="true"/>
     <field name="hoursDuration" hidden="true"/>
     <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"
       canEdit="false" canView="false"/>
@@ -224,8 +221,7 @@
       <field name="duration" width="62%" colSpan="3"
         onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
       <label name="durationLabel" colSpan="3"/>
-      <field name="durationForCustomer" colSpan="3" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project')"/>
+      <field name="durationForCustomer" colSpan="3" hidden="true"/>
       <label name="durationLabel" colSpan="1" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project')"/>
       <field name="hoursDuration" hidden="true"/>
@@ -270,8 +266,7 @@
       <field name="duration" width="62%" colSpan="3"
         onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
       <label name="durationLabel" colSpan="3"/>
-      <field name="durationForCustomer" colSpan="3" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project')"/>
+      <field name="durationForCustomer" colSpan="3" hidden="true"/>
       <label name="durationLabel" colSpan="1" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project')"/>
       <field name="hoursDuration" hidden="true"/>
@@ -330,8 +325,7 @@
       <field name="duration" width="62%" colSpan="2" min="0.01"
         onChange="action-timesheet-line-method-set-stored-duration"/>
       <label name="durationLabel" colSpan="4"/>
-      <field name="durationForCustomer" colSpan="3" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project')"/>
+      <field name="durationForCustomer" colSpan="3" hidden="true"/>
       <label name="durationLabel" colSpan="1" if-module="axelor-business-project"
         if="__config__.app.isApp('business-project')"/>
       <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"
