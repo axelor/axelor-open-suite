@@ -861,4 +861,12 @@
     <option value="2">Checked</option>
   </selection>
 
+  <selection name="data.backup.field.separator.select">
+    <option value=",">Comma (,)</option>
+    <option value=";">Semicolon (;)</option>
+    <option value="/">Slash (/)</option>
+    <option value="\t">Tab (\t)</option>
+    <option value="|">Pipe (|)</option>
+  </selection>
+
 </object-views>

@@ -140,6 +140,7 @@ public class DataBackupCreateService {
   protected AnonymizerLineRepository anonymizerLineRepository;
   protected Logger LOG = LoggerFactory.getLogger(getClass());
   protected DataBackupAnonymizeService dataBackupAnonymizeService;
+  protected DataBackupService dataBackupService;
 
   @Inject
   public DataBackupCreateService(
@@ -148,13 +149,15 @@ public class DataBackupCreateService {
       MetaFiles metaFiles,
       AnonymizeService anonymizeService,
       AnonymizerLineRepository anonymizerLineRepository,
-      DataBackupAnonymizeService dataBackupAnonymizeService) {
+      DataBackupAnonymizeService dataBackupAnonymizeService,
+      DataBackupService dataBackupService) {
     this.dataBackupRepository = dataBackupRepository;
     this.metaModelRepo = metaModelRepo;
     this.metaFiles = metaFiles;
     this.anonymizeService = anonymizeService;
     this.anonymizerLineRepository = anonymizerLineRepository;
     this.dataBackupAnonymizeService = dataBackupAnonymizeService;
+    this.dataBackupService = dataBackupService;
   }
 
   /* Generate csv Files for each individual MetaModel and single config file */
@@ -164,6 +167,7 @@ public class DataBackupCreateService {
     int fetchLimit = dataBackup.getFetchLimit();
     boolean anonymizeData = dataBackup.getAnonymizer() != null;
     boolean isExportApp = dataBackup.getIsExportApp();
+    char separator = dataBackupService.getSeparator(dataBackup.getFieldSeparatorSelect());
     int errorsCount = 0;
     byte[] salt = null;
 
@@ -178,7 +182,8 @@ public class DataBackupCreateService {
     if (dataBackup.getCheckAllErrorFirst()) {
       dataBackup.setFetchLimit(1);
 
-      errorsCount = checkErrors(dataBackup, metaModelList, tempDirectoryPath, subClassesMap);
+      errorsCount =
+          checkErrors(dataBackup, metaModelList, tempDirectoryPath, subClassesMap, separator);
 
       dataBackup.setFetchLimit(fetchLimit);
       fileNameList.clear();
@@ -204,11 +209,18 @@ public class DataBackupCreateService {
 
           File templateFile = new File(tempDirectoryPath, metaModel.getName() + ".csv");
           CSVFile csvFormat =
-              CSVFile.DEFAULT.withDelimiter(SEPARATOR).withQuoteAll().withFirstRecordAsHeader();
+              CSVFile.DEFAULT.withDelimiter(separator).withQuoteAll().withFirstRecordAsHeader();
           CSVPrinter printer = csvFormat.write(templateFile);
           CSVInput csvInput =
               writeCSVData(
-                  metaModel, printer, dataBackup, totalRecord, subClasses, tempDirectoryPath, salt);
+                  metaModel,
+                  printer,
+                  dataBackup,
+                  totalRecord,
+                  subClasses,
+                  tempDirectoryPath,
+                  salt,
+                  separator);
           printer.close();
 
           if (notNullReferenceFlag) {
@@ -218,6 +230,7 @@ public class DataBackupCreateService {
             CSVInput temcsv = new CSVInput();
             temcsv.setFileName(csvInput.getFileName());
             temcsv.setTypeName(csvInput.getTypeName());
+            temcsv.setSeparator(separator);
 
             if (dataBackup.getIsRelativeDate()) {
               temcsv.setBindings(new ArrayList<>());
@@ -447,7 +460,8 @@ public class DataBackupCreateService {
       long totalRecord,
       List<String> subClasses,
       String dirPath,
-      byte[] salt)
+      byte[] salt,
+      char separator)
       throws AxelorException, IOException {
 
     CSVInput csvInput = new CSVInput();
@@ -475,6 +489,7 @@ public class DataBackupCreateService {
       csvInput.setFileName(metaModel.getName() + ".csv");
       csvInput.setTypeName(metaModel.getFullName());
       csvInput.setBindings(new ArrayList<>());
+      csvInput.setSeparator(separator);
 
       if (totalRecord > 0 && (maxLinesPerFile == null || maxLinesPerFile > 0)) {
         for (int i = 0; i < totalRecord; i = i + fetchLimit) {
@@ -924,7 +939,8 @@ public class DataBackupCreateService {
       DataBackup dataBackup,
       List<MetaModel> metaModelList,
       String tempDirectoryPath,
-      Map<String, List<String>> subClassesMap) {
+      Map<String, List<String>> subClassesMap,
+      char separator) {
     int errorsCount = 0;
 
     for (MetaModel metaModel : metaModelList) {
@@ -937,7 +953,7 @@ public class DataBackupCreateService {
 
           File templateFile = new File(tempDirectoryPath, metaModel.getName() + ".csv");
           CSVFile csvFormat =
-              CSVFile.DEFAULT.withDelimiter(SEPARATOR).withQuoteAll().withFirstRecordAsHeader();
+              CSVFile.DEFAULT.withDelimiter(separator).withQuoteAll().withFirstRecordAsHeader();
           CSVPrinter printer = csvFormat.write(templateFile);
 
           writeCSVData(
@@ -947,7 +963,8 @@ public class DataBackupCreateService {
               1,
               subClasses,
               tempDirectoryPath,
-              anonymizeService.getSalt());
+              anonymizeService.getSalt(),
+              separator);
           printer.close();
         }
       } catch (ClassNotFoundException e) {

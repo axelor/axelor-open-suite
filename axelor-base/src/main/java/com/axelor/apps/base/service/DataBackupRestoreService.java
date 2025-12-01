@@ -51,17 +51,15 @@ import org.slf4j.LoggerFactory;
 
 public class DataBackupRestoreService {
 
-  protected static final char SEPARATOR = ',';
-
   /* Restore the Data using provided zip File and prepare Log File and Return it*/
-  public File restore(MetaFile zipedBackupFile, boolean isTemplateWithDescription)
+  public File restore(MetaFile zipedBackupFile, boolean isTemplateWithDescription, char separator)
       throws AxelorException, IOException {
     Logger LOG = LoggerFactory.getLogger(getClass());
     Path tempDir = TempFiles.createTempDir();
     String dirPath = tempDir.toAbsolutePath().toString();
     StringBuilder sb = new StringBuilder();
     try {
-      unZip(zipedBackupFile, dirPath, isTemplateWithDescription);
+      unZip(zipedBackupFile, dirPath, isTemplateWithDescription, separator);
       String configFName =
           tempDir.toAbsolutePath() + File.separator + DataBackupServiceImpl.CONFIG_FILE_NAME;
 
@@ -117,7 +115,10 @@ public class DataBackupRestoreService {
   }
 
   protected void unZip(
-      MetaFile zipMetaFile, String destinationDirectoryPath, boolean isTemplateWithDescription)
+      MetaFile zipMetaFile,
+      String destinationDirectoryPath,
+      boolean isTemplateWithDescription,
+      char separator)
       throws IOException {
     File zipFile = MetaFiles.getPath(zipMetaFile).toFile();
     File destDir = new File(destinationDirectoryPath);
@@ -126,7 +127,7 @@ public class DataBackupRestoreService {
     if (destDir.exists() && destDir.isDirectory() && isTemplateWithDescription) {
       for (File file : destDir.listFiles()) {
         if (file.getName().toLowerCase().endsWith(".csv")) {
-          processCsv(file);
+          processCsv(file, separator);
         }
       }
     }
@@ -163,8 +164,8 @@ public class DataBackupRestoreService {
     return bean;
   }
 
-  protected void processCsv(File file) throws IOException {
-    CSVFile csvFormat = CSVFile.EXCEL.withDelimiter(SEPARATOR).withQuoteAll();
+  protected void processCsv(File file, char separator) throws IOException {
+    CSVFile csvFormat = CSVFile.EXCEL.withDelimiter(separator).withQuoteAll();
     List<CSVRecord> records;
     try (CSVParser parser = csvFormat.parse(file, StandardCharsets.UTF_8)) {
       records = parser.getRecords();
