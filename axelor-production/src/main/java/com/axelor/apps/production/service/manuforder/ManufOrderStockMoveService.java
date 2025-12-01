@@ -70,7 +70,7 @@ public interface ManufOrderStockMoveService {
    * given manufacturing order.
    *
    * @param manufOrder
-   * @return TODO
+   * @return
    */
   ManufOrder partialFinish(ManufOrder manufOrder) throws AxelorException;
 

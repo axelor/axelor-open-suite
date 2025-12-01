@@ -490,7 +490,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
 
     if (stockMove != null) {
-      //      stockMove.addStockMoveLineListItem(stockMoveLine);
       stockMoveLine.setStockMove(stockMove);
       stockMoveLine.setNetMass(
           this.computeNetMass(stockMove, stockMoveLine, stockMove.getCompany()));
@@ -975,12 +974,12 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
 
     BigDecimal oldQty = stockLocationLine.getCurrentQty().subtract(newQty);
 
-    //    log.debug(
-    //        "Old price: {}, Old quantity: {}, New price: {}, New quantity: {}",
-    //        oldAvgPrice,
-    //        oldQty,
-    //        newPrice,
-    //        newQty);
+    log.debug(
+        "Old price: {}, Old quantity: {}, New price: {}, New quantity: {}",
+        oldAvgPrice,
+        oldQty,
+        newPrice,
+        newQty);
     BigDecimal sum = oldAvgPrice.multiply(oldQty);
     sum = sum.add(newPrice.multiply(newQty));
     BigDecimal denominator = oldQty.add(newQty);
@@ -1345,6 +1344,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             (BigDecimal)
                 productCompanyService.get(
                     stockMoveLine.getProduct(), "purchasePrice", stockMove.getCompany());
+        ;
         unitPriceUntaxed = companyPurchasePrice.multiply(shippingCoef);
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
           && stockMoveLine.getFromStockLocation() != null

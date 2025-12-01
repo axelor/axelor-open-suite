@@ -41,7 +41,6 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -169,16 +168,15 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
               stockMoveLineUnit, stockLocationLineUnit, qty, qty.scale(), product);
     }
 
-    //    LOG.debug(
-    //        "Stock update : Stock location? {}, Product? {}, Quantity? {}, Current quantity? {},
-    // Future quantity? {}, Is increment? {}, Date? {} ",
-    //        stockLocation.getName(),
-    //        product.getCode(),
-    //        qty,
-    //        current,
-    //        future,
-    //        isIncrement,
-    //        lastFutureStockMoveDate);
+    LOG.debug(
+        "Stock update : Stock location? {}, Product? {}, Quantity? {}, Current quantity? {}, Future quantity? {}, Is increment? {}, Date? {} ",
+        stockLocation.getName(),
+        product.getCode(),
+        qty,
+        current,
+        future,
+        isIncrement,
+        lastFutureStockMoveDate);
 
     if (generateOrder && isIncrement) {
       maxStockRules(product, qty, stockLocationLine, current, future);
@@ -304,17 +302,16 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
               stockMoveLineUnit, stockLocationLineUnit, qty, qty.scale(), product);
     }
 
-    //    LOG.debug(
-    //        "Stock detail update : Stock location? {}, Product? {}, Quantity? {}, Current
-    // quantity? {}, Future quantity? {}, Is increment? {}, Date? {}, Tracking number? {} ",
-    //        stockLocation.getName(),
-    //        product.getCode(),
-    //        qty,
-    //        current,
-    //        future,
-    //        isIncrement,
-    //        lastFutureStockMoveDate,
-    //        trackingNumber);
+    LOG.debug(
+        "Stock detail update : Stock location? {}, Product? {}, Quantity? {}, Current quantity? {}, Future quantity? {}, Is increment? {}, Date? {}, Tracking number? {} ",
+        stockLocation.getName(),
+        product.getCode(),
+        qty,
+        current,
+        future,
+        isIncrement,
+        lastFutureStockMoveDate,
+        trackingNumber);
 
     detailLocationLine =
         this.updateLocation(
@@ -351,15 +348,14 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       }
     }
 
-    //    LOG.debug(
-    //        "Get stock line detail: Stock location? {}, Product? {}, Current quantity? {}, Future
-    // quantity? {}, Date? {}, Num de suivi? {} ",
-    //        detailLocationLine.getDetailsStockLocation().getName(),
-    //        product.getCode(),
-    //        detailLocationLine.getCurrentQty(),
-    //        detailLocationLine.getFutureQty(),
-    //        detailLocationLine.getLastFutureStockMoveDate(),
-    //        detailLocationLine.getTrackingNumber());
+    LOG.debug(
+        "Get stock line detail: Stock location? {}, Product? {}, Current quantity? {}, Future quantity? {}, Date? {}, Num de suivi? {} ",
+        detailLocationLine.getDetailsStockLocation().getName(),
+        product.getCode(),
+        detailLocationLine.getCurrentQty(),
+        detailLocationLine.getFutureQty(),
+        detailLocationLine.getLastFutureStockMoveDate(),
+        detailLocationLine.getTrackingNumber());
 
     return detailLocationLine;
   }
@@ -471,14 +467,13 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
       stockLocationLine = this.createLocationLine(stockLocation, product);
     }
 
-    //    LOG.debug(
-    //        "Get stock line: Stock location? {}, Product? {}, Current quantity? {}, Future
-    // quantity? {}, Date? {} ",
-    //        stockLocationLine.getStockLocation().getName(),
-    //        product.getCode(),
-    //        stockLocationLine.getCurrentQty(),
-    //        stockLocationLine.getFutureQty(),
-    //        stockLocationLine.getLastFutureStockMoveDate());
+    LOG.debug(
+        "Get stock line: Stock location? {}, Product? {}, Current quantity? {}, Future quantity? {}, Date? {} ",
+        stockLocationLine.getStockLocation().getName(),
+        product.getCode(),
+        stockLocationLine.getCurrentQty(),
+        stockLocationLine.getFutureQty(),
+        stockLocationLine.getLastFutureStockMoveDate());
 
     return stockLocationLine;
   }
@@ -493,15 +488,14 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   @Override
   public StockLocationLine createLocationLine(StockLocation stockLocation, Product product) {
 
-    //    LOG.debug(
-    //        "Stock line creation : Stock location? {}, Product? {} ",
-    //        stockLocation.getName(),
-    //        product.getCode());
+    LOG.debug(
+        "Stock line creation : Stock location? {}, Product? {} ",
+        stockLocation.getName(),
+        product.getCode());
 
     StockLocationLine stockLocationLine = new StockLocationLine();
 
     stockLocationLine.setStockLocation(stockLocation);
-    //    stockLocation.addStockLocationLineListItem(stockLocationLine);
     stockLocationLine.setProduct(product);
     stockLocationLine.setUnit(product.getUnit());
     stockLocationLine.setCurrentQty(BigDecimal.ZERO);
@@ -520,13 +514,14 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
   protected StockLocationLine createDetailLocationLine(
       StockLocation stockLocation, Product product, TrackingNumber trackingNumber, BigDecimal qty) {
 
-    //    LOG.debug(
-    //        "Stock line detail creation : Stock location? {}, Product? {}, Tracking number? {} ",
-    //        stockLocation.getName(),
-    //        product.getCode(),
-    //        trackingNumber.getTrackingNumberSeq());
+    LOG.debug(
+        "Stock line detail creation : Stock location? {}, Product? {}, Tracking number? {} ",
+        stockLocation.getName(),
+        product.getCode(),
+        trackingNumber.getTrackingNumberSeq());
 
     StockLocationLine detailLocationLine = new StockLocationLine();
+
     detailLocationLine.setDetailsStockLocation(stockLocation);
     stockLocation.addDetailsStockLocationLineListItem(detailLocationLine);
     detailLocationLine.setProduct(product);
@@ -672,57 +667,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     }
 
     return futureQty;
-  }
-
-  protected List<StockMoveLine> findIncomingPlannedStockMoveLines(
-      StockLocationLine stockLocationLine) {
-    boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
-    String incomingStockMoveLineFilter =
-        STOCK_MOVE_LINE_FILTER + "AND self.toStockLocation.id = :stockLocationId";
-    if (isDetailsStockLocationLine) {
-      incomingStockMoveLineFilter =
-          incomingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
-    }
-    Query<StockMoveLine> stockMoveLineQuery =
-        stockMoveLineRepository
-            .all()
-            .filter(incomingStockMoveLineFilter)
-            .bind("planned", StockMoveRepository.STATUS_PLANNED)
-            .bind("productId", stockLocationLine.getProduct().getId());
-    if (isDetailsStockLocationLine) {
-      stockMoveLineQuery
-          .bind("stockLocationId", stockLocationLine.getDetailsStockLocation().getId())
-          .bind("trackingNumberId", stockLocationLine.getTrackingNumber().getId());
-    } else {
-      stockMoveLineQuery.bind("stockLocationId", stockLocationLine.getStockLocation().getId());
-    }
-    return stockMoveLineQuery.fetch();
-  }
-
-  protected List<StockMoveLine> findOutgoingPlannedStockMoveLines(
-      StockLocationLine stockLocationLine) {
-    boolean isDetailsStockLocationLine = stockLocationLine.getDetailsStockLocation() != null;
-    String outgoingStockMoveLineFilter =
-        STOCK_MOVE_LINE_FILTER + "AND self.fromStockLocation.id = :stockLocationId";
-    if (isDetailsStockLocationLine) {
-      outgoingStockMoveLineFilter =
-          outgoingStockMoveLineFilter + " AND self.trackingNumber.id = :trackingNumberId";
-    }
-    Query<StockMoveLine> stockMoveLineQuery =
-        stockMoveLineRepository
-            .all()
-            .filter(outgoingStockMoveLineFilter)
-            .bind("planned", StockMoveRepository.STATUS_PLANNED)
-            .bind("productId", stockLocationLine.getProduct().getId());
-
-    if (isDetailsStockLocationLine) {
-      stockMoveLineQuery
-          .bind("stockLocationId", stockLocationLine.getDetailsStockLocation().getId())
-          .bind("trackingNumberId", stockLocationLine.getTrackingNumber().getId());
-    } else {
-      stockMoveLineQuery.bind("stockLocationId", stockLocationLine.getStockLocation().getId());
-    }
-    return stockMoveLineQuery.fetch();
   }
 
   @Override

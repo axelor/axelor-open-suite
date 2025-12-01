@@ -62,7 +62,7 @@ public class StockBatchProcessorHelper {
     private int batchSize = resolveDefaultBatchSize();
     private boolean flushAfterBatch = true;
     private int clearEveryNBatch = 1;
-    private boolean loggingEnabled = true;
+    private boolean loggingEnabled = false;
 
     public Builder batchSize(int batchSize) {
       this.batchSize = batchSize;
