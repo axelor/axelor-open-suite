@@ -493,7 +493,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       stockMoveLine.setStockMove(stockMove);
       stockMoveLine.setNetMass(
           this.computeNetMass(stockMove, stockMoveLine, stockMove.getCompany()));
-      //      stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
+      stockMoveLine.setSequence((int) getStockMoveLinesCount(stockMove));
     } else {
       stockMoveLine.setNetMass(this.computeNetMass(stockMove, stockMoveLine, null));
     }
@@ -2025,5 +2025,13 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     unfulfilledStockMoveLine.setRealQty(BigDecimal.ZERO);
     unfulfilledStockMoveLine.setStockMove(fulfilledStockMoveLine.getStockMove());
     unfulfilledStockMoveLine.setConformitySelect(0);
+  }
+
+  protected long getStockMoveLinesCount(StockMove stockMove) {
+    return stockMoveLineRepository
+        .all()
+        .filter("self.stockMove.id = :stockMoveId")
+        .bind("stockMoveId", stockMove.getId())
+        .count();
   }
 }
