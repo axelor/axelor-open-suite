@@ -35,12 +35,10 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import javax.persistence.EntityManager;
 import org.apache.commons.collections.CollectionUtils;
@@ -112,7 +110,6 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
     inventoryStockLocationUpdateService.storeLastInventoryData(inventory);
   }
 
-  @Transactional(rollbackOn = {Exception.class})
   public void generateStockMoves(Inventory inventory, boolean isEnteringStock)
       throws AxelorException {
 
@@ -125,13 +122,12 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
 
     Map<StockMoveLocationKey, Long> stockMoveIdMap = new HashMap<>();
 
-    final AtomicReference<Inventory> inventoryRef =
-        new AtomicReference<>(inventoryRepo.find(inventoryId));
-    final AtomicReference<StockLocation> virtualInvLocRef =
-        new AtomicReference<>(
-            virtualInventoryLocation != null
-                ? stockLocationRepository.find(virtualInventoryLocation.getId())
-                : null);
+    final Inventory[] inventoryHolder = {inventoryRepo.find(inventoryId)};
+    final StockLocation[] virtualInvLocHolder = {
+      virtualInventoryLocation != null
+          ? stockLocationRepository.find(virtualInventoryLocation.getId())
+          : null
+    };
 
     Query<InventoryLine> query =
         inventoryLineRepository
@@ -148,9 +144,9 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
             inventoryLine -> {
               StockLocation realStockLocation = inventoryLine.getStockLocation();
               StockLocation fromStockLocation =
-                  isEnteringStock ? virtualInvLocRef.get() : realStockLocation;
+                  isEnteringStock ? virtualInvLocHolder[0] : realStockLocation;
               StockLocation toStockLocation =
-                  isEnteringStock ? realStockLocation : virtualInvLocRef.get();
+                  isEnteringStock ? realStockLocation : virtualInvLocHolder[0];
 
               StockMoveLocationKey key =
                   new StockMoveLocationKey(fromStockLocation.getId(), toStockLocation.getId());
@@ -159,7 +155,7 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
               if (stockMoveId == null) {
                 stockMove =
                     generateStockMove(
-                        inventoryRef.get(), isEnteringStock, fromStockLocation, toStockLocation);
+                        inventoryHolder[0], isEnteringStock, fromStockLocation, toStockLocation);
                 stockMoveIdMap.put(key, stockMove.getId());
               } else {
                 stockMove = getStockMove(stockMoveId);
@@ -173,13 +169,14 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
                   isEnteringStock);
             },
             () -> {
-              inventoryRef.set(inventoryRepo.find(inventoryId));
-              virtualInvLocRef.set(
+              inventoryHolder[0] = inventoryRepo.find(inventoryId);
+              virtualInvLocHolder[0] =
                   Optional.ofNullable(virtualInventoryLocation)
                       .map(StockLocation::getId)
                       .map(stockLocationRepository::find)
-                      .orElse(null));
+                      .orElse(null);
             });
+
     realizeGeneratedStockMoves(stockMoveIdMap);
   }
 
@@ -238,10 +235,10 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
     if (CollectionUtils.isEmpty(ids)) {
       return;
     }
-    StockBatchProcessorHelper.builder()
-        .build()
-        .<StockMove, AxelorException>forEachByIds(
-            StockMove.class, new HashSet<>(ids), this::stockMoveRealize);
+    for (Long id : ids) {
+      StockMove stockMove = getStockMove(id);
+      stockMoveRealize(stockMove);
+    }
   }
 
   protected void stockMoveRealize(StockMove stockMove) throws AxelorException {

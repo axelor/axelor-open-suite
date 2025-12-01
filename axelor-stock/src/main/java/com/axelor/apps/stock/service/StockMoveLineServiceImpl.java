@@ -77,6 +77,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -492,10 +493,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     }
 
     if (stockMove != null) {
-      stockMove.addStockMoveLineListItem(stockMoveLine);
+      //      stockMove.addStockMoveLineListItem(stockMoveLine);
+      stockMoveLine.setStockMove(stockMove);
       stockMoveLine.setNetMass(
           this.computeNetMass(stockMove, stockMoveLine, stockMove.getCompany()));
-      stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
+      //      stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
     } else {
       stockMoveLine.setNetMass(this.computeNetMass(stockMove, stockMoveLine, null));
     }
@@ -653,9 +655,31 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         stockMoveLineIds,
         lastFutureStockMoveDate,
         realQty,
+        generateOrder,
+        false);
+  }
+
+  @Override
+  public void updateLocations(
+      int fromStatus,
+      int toStatus,
+      Set<Long> stockMoveLineIds,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      boolean generateOrder,
+      boolean clearBatch)
+      throws AxelorException {
+
+    updateLocations(
+        fromStatus,
+        toStatus,
+        stockMoveLineIds,
+        lastFutureStockMoveDate,
+        realQty,
         null,
         null,
-        generateOrder);
+        generateOrder,
+        clearBatch);
   }
 
   @Override
@@ -669,14 +693,40 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       String origin,
       boolean generateOrder)
       throws AxelorException {
+    updateLocations(
+        fromStatus,
+        toStatus,
+        stockMoveLineIds,
+        lastFutureStockMoveDate,
+        realQty,
+        date,
+        origin,
+        generateOrder,
+        false);
+  }
 
-    if (stockMoveLineIds == null || stockMoveLineIds.isEmpty()) {
+  @Override
+  public void updateLocations(
+      int fromStatus,
+      int toStatus,
+      Set<Long> stockMoveLineIds,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      LocalDate date,
+      String origin,
+      boolean generateOrder,
+      boolean clearBatch)
+      throws AxelorException {
+
+    if (CollectionUtils.isEmpty(stockMoveLineIds)) {
       return;
     }
 
     Set<Long> productIdsForWapUpdate = new HashSet<>();
 
-    StockBatchProcessorHelper.of()
+    StockBatchProcessorHelper.builder()
+        .clearEveryNBatch(clearBatch ? 1 : 0)
+        .build()
         .<StockMoveLine, AxelorException>forEachByIds(
             StockMoveLine.class,
             stockMoveLineIds,
@@ -1102,7 +1152,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           final TrackingNumberConfiguration trackingNumberConfiguration =
               (TrackingNumberConfiguration)
                   productCompanyService.get(
-                      product, "trackingNumberConfiguration", stockMove.getCompany());
+                      product, "trackingNumberConfiguration", sml.getStockMove().getCompany());
 
           // Require tracking when: purchase OR production OR (sale & outgoing)
           final boolean trackingRequired =
@@ -1896,7 +1946,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     ThrowConsumer<StockMoveLine, AxelorException> processor =
         stockMoveLine ->
             processTrackingNumberSplit(
-                stockMove,
+                stockMoveLine.getStockMove(),
                 stockMoveLine,
                 type == StockMoveRepository.TYPE_OUTGOING ? TYPE_SALES : TYPE_PURCHASES);
 
@@ -1907,10 +1957,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             .bind("stockMoveId", stockMove.getId())
             .order("id");
 
-    StockBatchProcessorHelper.builder()
-        .clearEveryNBatch(0)
-        .build()
-        .<StockMoveLine, AxelorException>forEachByQuery(query, processor);
+    StockBatchProcessorHelper.of().<StockMoveLine, AxelorException>forEachByQuery(query, processor);
   }
 
   protected void processTrackingNumberSplit(

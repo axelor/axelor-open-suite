@@ -43,7 +43,6 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,12 +75,12 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
 
   @Override
   public BigDecimal compute(StockMove stockMove) {
-    BigDecimal exTaxTotal = BigDecimal.ZERO;
     if (stockMove == null || stockMove.getId() == null) {
-      return exTaxTotal;
+      return BigDecimal.ZERO;
     }
 
-    AtomicReference<BigDecimal> runningTotal = new AtomicReference<>(BigDecimal.ZERO);
+    final BigDecimal[] runningTotal = {BigDecimal.ZERO};
+
     Query<StockMoveLine> query =
         stockMoveLineRepo
             .all()
@@ -89,13 +88,14 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
             .bind("stockMoveId", stockMove.getId())
             .order("id");
 
-    StockBatchProcessorHelper.builder()
-        .build()
-        .<StockMoveLine>forEachByQuery(
-            query,
-            stockMoveLine ->
-                runningTotal.set(runningTotal.get().add(computeLineAmount(stockMoveLine))));
-    return runningTotal.get();
+    StockBatchProcessorHelper batchHelper =
+        StockBatchProcessorHelper.builder().loggingEnabled(false).flushAfterBatch(false).build();
+
+    batchHelper.<StockMoveLine>forEachByQuery(
+        query,
+        stockMoveLine -> runningTotal[0] = runningTotal[0].add(computeLineAmount(stockMoveLine)));
+
+    return runningTotal[0];
   }
 
   protected BigDecimal computeLineAmount(StockMoveLine stockMoveLine) {

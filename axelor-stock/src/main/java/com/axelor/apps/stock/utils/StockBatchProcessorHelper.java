@@ -23,11 +23,13 @@ public class StockBatchProcessorHelper {
   private final int batchSize;
   private final boolean flushAfterBatch;
   private final int clearEveryNBatch;
+  private final boolean loggingEnabled;
 
   private StockBatchProcessorHelper(Builder builder) {
     this.batchSize = builder.batchSize;
     this.flushAfterBatch = builder.flushAfterBatch;
     this.clearEveryNBatch = builder.clearEveryNBatch;
+    this.loggingEnabled = builder.loggingEnabled;
   }
 
   public static Builder builder() {
@@ -42,6 +44,7 @@ public class StockBatchProcessorHelper {
     private int batchSize = resolveDefaultBatchSize();
     private boolean flushAfterBatch = true;
     private int clearEveryNBatch = 1;
+    private boolean loggingEnabled = true;
 
     public Builder batchSize(int batchSize) {
       this.batchSize = batchSize;
@@ -55,6 +58,11 @@ public class StockBatchProcessorHelper {
 
     public Builder clearEveryNBatch(int clearEveryNBatch) {
       this.clearEveryNBatch = clearEveryNBatch;
+      return this;
+    }
+
+    public Builder loggingEnabled(boolean loggingEnabled) {
+      this.loggingEnabled = loggingEnabled;
       return this;
     }
 
@@ -88,13 +96,10 @@ public class StockBatchProcessorHelper {
     int batchCount = 0;
     int totalProcessed = 0;
     List<T> entities;
-
     do {
       entities = queryBase.bind("lastSeenId", lastSeenId).autoFlush(false).fetch(batchSize);
 
-      for (T entity : entities) {
-        action.accept(entity);
-      }
+      process(action, entities);
 
       if (CollectionUtils.isNotEmpty(entities)) {
         lastSeenId = entities.get(entities.size() - 1).getId();
@@ -132,10 +137,7 @@ public class StockBatchProcessorHelper {
               .order("id")
               .fetch(batchSize);
 
-      for (T entity : entities) {
-        action.accept(entity);
-      }
-
+      process(action, entities);
       if (CollectionUtils.isNotEmpty(entities)) {
         lastSeenId = entities.get(entities.size() - 1).getId();
         batchCount++;
@@ -207,6 +209,13 @@ public class StockBatchProcessorHelper {
     }
   }
 
+  private <T extends Model, E extends Exception> void process(
+      ThrowConsumer<T, E> action, List<T> entities) throws E {
+    for (T entity : entities) {
+      action.accept(entity);
+    }
+  }
+
   private <T> ThrowConsumer<T, Exception> wrap(Consumer<T> consumer) {
     return consumer::accept;
   }
@@ -218,7 +227,6 @@ public class StockBatchProcessorHelper {
     }
 
     if (clearEveryNBatch > 0 && batchCount % clearEveryNBatch == 0) {
-      //      logger.debug("Clearing EntityManager after batch {}", batchCount);
       JPA.clear();
     }
 
@@ -226,10 +234,15 @@ public class StockBatchProcessorHelper {
       postBatchAction.run();
     }
 
-    logger.debug("Processed {} records so far [batch={}]", totalProcessed, batchCount);
+    if (loggingEnabled) {
+      logger.debug("Processed {} records so far [batch={}]", totalProcessed, batchCount);
+    }
   }
 
   private void logCallerContext() {
+    if (!loggingEnabled) {
+      return;
+    }
     StackTraceElement[] stack = Thread.currentThread().getStackTrace();
     String helperClass = StockBatchProcessorHelper.class.getName();
 

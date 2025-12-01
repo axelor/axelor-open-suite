@@ -27,6 +27,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
@@ -41,11 +42,13 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.utils.StockBatchProcessorHelper;
+import com.axelor.auth.AuditableRunner;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -57,8 +60,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -233,9 +234,15 @@ public class InventoryService {
     inventory.setCompletedBy(AuthUtils.getUser());
   }
 
-  @Transactional(rollbackOn = {Exception.class})
-  public void validateInventory(Inventory inventory) throws AxelorException {
-    inventoryValidateService.validate(inventory);
+  public void validateInventory(Inventory inventory) {
+    AuditableRunner auditableRunner = Beans.get(AuditableRunner.class);
+    auditableRunner.runWithoutTracking(() -> {
+	  try {
+	    inventoryValidateService.validate(inventory);
+	  } catch (AxelorException e) {
+	    TraceBackService.trace(e);
+	  }
+	});
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -293,15 +300,17 @@ public class InventoryService {
     }
 
     this.initInventoryLines(inventory);
-    final AtomicBoolean anyScanned = new AtomicBoolean(false);
-    final AtomicBoolean anyCreated = new AtomicBoolean(false);
+
+    final boolean[] anyScanned = {false};
+    final boolean[] anyCreated = {false};
     final Set<Long> trackedProductIdsAtInventoryLocation = new HashSet<>();
 
     final long inventoryId = inventory.getId();
-    final AtomicReference<Inventory> inventoryRef = new AtomicReference<>(inventory);
+    final Inventory[] inventoryHolder = {inventory};
 
     StockBatchProcessorHelper batchHelper =
         StockBatchProcessorHelper.builder().flushAfterBatch(false).build();
+
     Query<StockLocationLine> prePass =
         buildSllFilterQuery(inventory)
             .add("self.trackingNumber IS NOT NULL")
@@ -310,40 +319,43 @@ public class InventoryService {
             .bind("stockLocation", inventory.getStockLocation())
             .build()
             .order("id");
+
     batchHelper.<StockLocationLine, AxelorException>forEachByQuery(
         prePass,
         sll -> {
-          anyScanned.set(true);
+          anyScanned[0] = true;
           final Product product = sll.getProduct();
           if (product != null) {
             trackedProductIdsAtInventoryLocation.add(product.getId());
           }
         });
 
-    inventoryRef.set(inventoryRepo.find(inventoryId));
+    inventoryHolder[0] = inventoryRepo.find(inventoryId);
+
     Query<StockLocationLine> mainPass =
         buildSllFilterQuery(inventory).add("self.id > :lastSeenId").build().order("id");
+
     StockBatchProcessorHelper.of()
         .<StockLocationLine, AxelorException>forEachByQuery(
             mainPass,
             sll -> {
-              anyScanned.set(true);
+              anyScanned[0] = true;
               final Product product = sll.getProduct();
               if (product == null) {
                 return;
               }
               if (sll.getTrackingNumber() != null
                   || !trackedProductIdsAtInventoryLocation.contains(product.getId())) {
-                this.createInventoryLine(inventoryRef.get(), sll);
-                anyCreated.set(true);
+                this.createInventoryLine(inventoryHolder[0], sll);
+                anyCreated[0] = true;
               }
             },
-            () -> inventoryRef.set(inventoryRepo.find(inventoryId)));
+            () -> inventoryHolder[0] = inventoryRepo.find(inventoryId));
 
-    if (!anyScanned.get()) {
+    if (!anyScanned[0]) {
       return null;
     }
-    return anyCreated.get();
+    return anyCreated[0];
   }
 
   public QueryBuilder<StockLocationLine> buildSllFilterQuery(Inventory inventory) {

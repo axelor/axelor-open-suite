@@ -21,6 +21,7 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.stock.db.PartnerProductQualityRating;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -28,6 +29,7 @@ import com.axelor.apps.stock.db.repo.PartnerProductQualityRatingRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.utils.StockBatchProcessorHelper;
 import com.axelor.db.Query;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -60,15 +62,20 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
       return;
     }
 
+    final long partnerId = partner.getId();
+    final PartnerRepository partnerRepo = Beans.get(PartnerRepository.class);
+    final Partner[] partnerHolder = {partnerRepo.find(partnerId)};
+
     forEachStockMoveLine(
         stockMove,
         stockMoveLine -> {
           if (Optional.ofNullable(stockMoveLine.getConformitySelect()).orElse(0) != 0) {
             createAndUpdatePartnerProducQualityRating(stockMoveLine, partner);
           }
-        });
+        },
+        () -> partnerHolder[0] = partnerRepo.find(partnerId));
 
-    updateSupplier(partner);
+    updateSupplier(partnerHolder[0]);
   }
 
   protected void createAndUpdatePartnerProducQualityRating(
@@ -89,6 +96,10 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
       return;
     }
 
+    final long partnerId = partner.getId();
+    final PartnerRepository partnerRepo = Beans.get(PartnerRepository.class);
+    final Partner[] partnerHolder = {partnerRepo.find(partnerId)};
+
     forEachStockMoveLine(
         stockMove,
         stockMoveLine -> {
@@ -100,9 +111,10 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
             PartnerProductQualityRating partnerProductQualityRating = optional.get();
             updatePartnerProductQualityRating(partnerProductQualityRating, stockMoveLine, true);
           }
-        });
+        },
+        () -> partnerHolder[0] = partnerRepo.find(partnerId));
 
-    updateSupplier(partner);
+    updateSupplier(partnerHolder[0]);
   }
 
   /**
@@ -235,7 +247,8 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
     partner.setSupplierArrivalProductQty(supplierArrivalProductQty);
   }
 
-  protected void forEachStockMoveLine(StockMove stockMove, Consumer<StockMoveLine> consumer) {
+  protected void forEachStockMoveLine(
+      StockMove stockMove, Consumer<StockMoveLine> consumer, Runnable postBatchAction) {
     if (stockMove == null || consumer == null || stockMove.getId() == null) {
       return;
     }
@@ -250,7 +263,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
     StockBatchProcessorHelper.builder()
         .clearEveryNBatch(0)
         .build()
-        .<StockMoveLine>forEachByQuery(query, consumer);
+        .<StockMoveLine>forEachByQuery(query, consumer, postBatchAction);
   }
 
   /**

@@ -49,7 +49,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.csv.CSVRecord;
@@ -163,8 +162,7 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
     L10n dateFormat = L10n.getInstance(locale);
 
     Long stockLocationId = inventory.getStockLocation().getId();
-    AtomicReference<StockLocation> stockLocationRef =
-        new AtomicReference<>(inventory.getStockLocation());
+    final StockLocation[] stockLocationHolder = {inventory.getStockLocation()};
 
     Integer statusSelect = inventory.getStatusSelect();
 
@@ -181,11 +179,11 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
             queryBase,
             inventoryLine -> {
               String[] item =
-                  createCsvRow(inventoryLine, statusSelect, stockLocationRef.get(), dateFormat);
+                  createCsvRow(inventoryLine, statusSelect, stockLocationHolder[0], dateFormat);
               list.add(item);
             },
             () -> {
-              stockLocationRef.set(stockLocationRepository.find(stockLocationId));
+              stockLocationHolder[0] = stockLocationRepository.find(stockLocationId);
             });
 
     return createAndUploadCsvFile(inventory, list);
