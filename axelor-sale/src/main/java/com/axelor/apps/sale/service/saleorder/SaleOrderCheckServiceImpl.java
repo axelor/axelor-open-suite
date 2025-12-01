@@ -88,16 +88,26 @@ public class SaleOrderCheckServiceImpl implements SaleOrderCheckService {
   @Override
   public boolean priceListIsNotValid(SaleOrder saleOrder) {
     PriceList priceList = saleOrder.getPriceList();
+
     if (priceList == null) {
       return false;
     }
     LocalDate todayDate = appBaseService.getTodayDate(null);
     LocalDate priceListBeginDate = priceList.getApplicationBeginDate();
     LocalDate priceListEndDate = priceList.getApplicationEndDate();
+    if (priceListBeginDate == null && priceListEndDate == null) {
+      return false;
+    }
 
-    boolean beginDateNotValid =
-        priceListBeginDate == null || priceListBeginDate.isBefore(todayDate);
-    boolean endDateNotValid = priceListEndDate == null || priceListEndDate.isAfter(todayDate);
+    boolean beginDateNotValid = false;
+    boolean endDateNotValid = false;
+    if (priceListBeginDate != null) {
+      beginDateNotValid = todayDate.isBefore(priceListBeginDate);
+    }
+    if (priceListEndDate != null) {
+      endDateNotValid = todayDate.isAfter(priceListEndDate);
+    }
+
     return !priceList.getIsActive() || beginDateNotValid || endDateNotValid;
   }
 }
