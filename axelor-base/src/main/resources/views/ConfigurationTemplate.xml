@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="configuration-template-grid" title="Configurations templates"
+    model="com.axelor.apps.base.db.ConfigurationTemplate">
+    <field name="name"/>
+    <field name="code"/>
+    <field name="description"/>
+  </grid>
+
+  <form name="configuration-template-form" title="Configurations template"
+    model="com.axelor.apps.base.db.ConfigurationTemplate">
+    <panel name="generalPanel" title="General" colSpan="12">
+      <field name="name"/>
+      <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="metaFile" widget="binary-link" form-view="meta-files-form"
+        grid-view="meta-files-grid" required="true"/>
+      <field name="bindingFile" widget="binary-link" form-view="meta-files-form"
+        grid-view="meta-files-grid" required="true"/>
+      <field name="description" colSpan="12" widget="html"/>
+    </panel>
+    <panel name="companiesPanel" showIf="id">
+      <button onClick="action-configuration-template-view-link-companies"
+        name="linkCompaniesBtn" title="Link companies"/>
+      <button onClick="action-configuration-template-method-import-for-all-companies"
+        name="importConfigurationForCompaniesBtn" title="Import configuration for linked companies"/>
+      <panel-dashlet name="companyPanel" title="Companies"
+        action="action-configuration-template-view-show-company-dashlet" colSpan="12"/>
+    </panel>
+  </form>
+
+  <form model="com.axelor.utils.db.Wizard" title="Link companies"
+    name="wizard-link-companies-form" onNew="action-wizard-attrs-set-configuration-template">
+    <panel name="mainPanel">
+      <field name="$_companiesToLink" title="Companies to link" type="many-to-many"
+        canEdit="false" canNew="false" widget="TagSelect" target="com.axelor.apps.base.db.Company"
+        colSpan="12" domain="self.configurationTemplate = null"/>
+      <button onClick="action-configuration-template-method-link-companies"
+        name="linkCompaniesBtn" title="Link companies"/>
+      <field name="_configurationTemplate" type="many-to-one" hidden="true"
+        target="com.axelor.apps.base.db.ConfigurationTemplate"/>
+    </panel>
+  </form>
+
+  <action-method name="action-configuration-template-method-import-for-all-companies">
+    <call class="com.axelor.apps.base.web.ConfigurationTemplateController"
+      method="importConfigurationForCompanies"/>
+  </action-method>
+
+  <action-method name="action-configuration-template-method-link-companies">
+    <call class="com.axelor.apps.base.web.ConfigurationTemplateController"
+      method="linkCompanies"/>
+  </action-method>
+
+  <action-attrs name="action-wizard-attrs-set-configuration-template">
+    <attribute name="value" for="_configurationTemplate"
+      expr="eval: _configurationTemplate"/>
+  </action-attrs>
+
+  <action-view name="action-configuration-template-view-link-companies"
+    title="Link companies" model="com.axelor.utils.db.Wizard">
+    <view type="form" name="wizard-link-companies-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_configurationTemplate" expr="eval:__self__"/>
+  </action-view>
+
+  <action-view name="action-configuration-template-view-show-company-dashlet"
+    title="Companies" model="com.axelor.apps.base.db.Company">
+    <view type="grid" name="company-grid"/>
+    <view type="form" name="company-form"/>
+    <domain>self.configurationTemplate.id = :id</domain>
+    <context name="accountingConfigTemplate" expr="eval:__self__"/>
+  </action-view>
+
+</object-views>
