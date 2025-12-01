@@ -477,6 +477,9 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
   }
 
   protected String getDetailF1Value(BankOrderLine bankOrderLine) {
+    if (bankOrderFileFormat.getIsMultiDate() && bankOrderLine.getBankOrderDate() != null) {
+      return bankOrderLine.getBankOrderDate().format(DateTimeFormatter.ofPattern("ddMMyy"));
+    }
     return this.bankOrderDate.format(DateTimeFormatter.ofPattern("ddMMyy"));
   }
 
