@@ -53,9 +53,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
 import javax.persistence.FlushModeType;
-
 import org.hibernate.jpa.QueryHints;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -503,7 +501,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     StockLocationLine stockLocationLine = new StockLocationLine();
 
     stockLocationLine.setStockLocation(stockLocation);
-//    stockLocation.addStockLocationLineListItem(stockLocationLine);
+    //    stockLocation.addStockLocationLineListItem(stockLocationLine);
     stockLocationLine.setProduct(product);
     stockLocationLine.setUnit(product.getUnit());
     stockLocationLine.setCurrentQty(BigDecimal.ZERO);

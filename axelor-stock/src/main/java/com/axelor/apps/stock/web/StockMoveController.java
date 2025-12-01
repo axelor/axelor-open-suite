@@ -76,8 +76,8 @@ public class StockMoveController {
 
   public void plan(ActionRequest request, ActionResponse response) {
     try {
-    long start = System.currentTimeMillis();
-    		StockMove stockMove = request.getContext().asType(StockMove.class);
+      long start = System.currentTimeMillis();
+      StockMove stockMove = request.getContext().asType(StockMove.class);
       // we have to inject TraceBackService to use non static methods
       TraceBackService traceBackService = Beans.get(TraceBackService.class);
       long tracebackCount = traceBackService.countMessageTraceBack(stockMove);
@@ -94,7 +94,7 @@ public class StockMoveController {
                             I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
-      System.err.println(System.currentTimeMillis()-start);
+      System.err.println(System.currentTimeMillis() - start);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

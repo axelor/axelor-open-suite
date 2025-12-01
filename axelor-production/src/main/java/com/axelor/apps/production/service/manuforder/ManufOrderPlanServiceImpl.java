@@ -170,8 +170,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     if (manufOrder.getBillOfMaterial() != null) {
       manufOrder.setUnit(manufOrder.getBillOfMaterial().getUnit());
     }
-    planStockMoves(manufOrder);
-    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+    manufOrder = planStockMoves(manufOrder);
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_PLANNED);
     manufOrder.setCancelReason(null);
     manufOrder.setCancelReasonStr(null);
@@ -180,7 +179,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     return manufOrder;
   }
 
-  protected void planStockMoves(ManufOrder manufOrder) throws AxelorException {
+  protected ManufOrder planStockMoves(ManufOrder manufOrder) throws AxelorException {
     if (!manufOrder.getIsConsProOnOperation()) {
       Optional<StockMove> stockMoveOpt =
           manufOrderPlanStockMoveService.createAndPlanToConsumeStockMoveWithLines(manufOrder);
@@ -217,6 +216,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
         addToResidualStockMoveLineList(manufOrder, sm);
       }
     }
+    return manufOrder;
   }
 
   protected void addToProducedStockMoveLineList(ManufOrder manufOrder, StockMove stockMove) {

@@ -99,7 +99,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected StockLocationLineHistoryService stockLocationLineHistoryService;
   protected StockLocationLineFetchService stockLocationLineFetchService;
   protected TrackingNumberCreateService trackingNumberCreateService;
-  protected ProductRepository productRepository;
 
   @Inject
   public StockMoveLineServiceImpl(
@@ -116,8 +115,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       ShippingCoefService shippingCoefService,
       StockLocationLineHistoryService stockLocationLineHistoryService,
       StockLocationLineFetchService stockLocationLineFetchService,
-      TrackingNumberCreateService trackingNumberCreateService,
-      ProductRepository productRepository) {
+      TrackingNumberCreateService trackingNumberCreateService) {
     this.trackingNumberService = trackingNumberService;
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
@@ -132,7 +130,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     this.stockLocationLineHistoryService = stockLocationLineHistoryService;
     this.stockLocationLineFetchService = stockLocationLineFetchService;
     this.trackingNumberCreateService = trackingNumberCreateService;
-    this.productRepository = productRepository;
   }
 
   @Override

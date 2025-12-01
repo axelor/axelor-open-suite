@@ -236,13 +236,14 @@ public class InventoryService {
 
   public void validateInventory(Inventory inventory) {
     AuditableRunner auditableRunner = Beans.get(AuditableRunner.class);
-    auditableRunner.runWithoutTracking(() -> {
-	  try {
-	    inventoryValidateService.validate(inventory);
-	  } catch (AxelorException e) {
-	    TraceBackService.trace(e);
-	  }
-	});
+    auditableRunner.runWithoutTracking(
+        () -> {
+          try {
+            inventoryValidateService.validate(inventory);
+          } catch (AxelorException e) {
+            TraceBackService.trace(e);
+          }
+        });
   }
 
   @Transactional(rollbackOn = {Exception.class})
