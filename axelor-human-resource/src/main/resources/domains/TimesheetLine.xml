@@ -27,8 +27,8 @@
     <boolean name="enableEditor" title="Allow updates via editor" nullable="true"/>
     <boolean name="isSaturday" title="Saturday" readonly="true"/>
     <boolean name="isSunday" title="Sunday" readonly="true"/>
-    <boolean name="isPublicHoliday" title="Public holiday" readonly="true"/>
-    <boolean name="isEmergencyService" title="Emergency service" readonly="true"/>
+    <boolean name="isPublicHoliday" title="Holiday" readonly="true"/>
+    <boolean name="isEmergencyService" title="Emergency Service" readonly="true"/>
     <boolean name="isNightShift" title="Night Shift"/>
     <string name="shiftType" selection="hr.timesheet.shift.type" title="shift"
       default="01-normal"/>

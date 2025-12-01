@@ -75,9 +75,15 @@
           showIf="expenseLineSet &amp;&amp; expenseLineSet.length &gt; 0" readonlyIf="invoice"
           name="expenseLineSetPanel"/>
 
-        <panel-dashlet title="Extra Expenses"
-          action="extra-expense-line-invoicing-project-action" colSpan="12" readonlyIf="invoice"
-          name="extraExpenseLineSetDashlet"/>
+        <!-- <panel-dashlet title="Extra Expenses" -->
+        <!-- action="extra-expense-line-invoicing-project-action" colSpan="12" readonlyIf="invoice" -->
+        <!-- name="extraExpenseLineSetDashlet"/> -->
+
+        <panel-related title="Extra Expenses" field="extraExpenseLineSet" colSpan="12"
+          canNew="false" canEdit="false" canSelect="false" form-view="extra-expense-line-form"
+          grid-view="extra-expense-line-grid"
+          showIf="extraExpenseLineSet &amp;&amp; extraExpenseLineSet.length &gt; 0"
+          readonlyIf="invoice" name="extraExpenseLineSetPanel"/>
 
         <panel-related title="Production" field="manufOrderSet" colSpan="12"
           canNew="false" canEdit="false" canSelect="false" if-module="axelor-business-production"
@@ -106,6 +112,7 @@
         <field name="expenseLineSetPrioritySelect"/>
         <field name="projectSetPrioritySelect"/>
         <field name="projectTaskSetPrioritySelect"/>
+        <field name="extraExpenseLineSetPrioritySelect"/>
       </panel>
     </panel-tabs>
 

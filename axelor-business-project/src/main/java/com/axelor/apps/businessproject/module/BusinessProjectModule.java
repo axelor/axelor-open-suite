@@ -102,6 +102,8 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigService;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigServiceImpl;
+import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseInvoiceService;
+import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoiceMergingServiceBusinessProjectImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectService;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectServiceImpl;
@@ -246,5 +248,6 @@ public class BusinessProjectModule extends AxelorModule {
         .to(InvoiceTermDateComputeProjectServiceImpl.class);
     bind(SaleOrderCopyProjectService.class).to(SaleOrderCopyProjectServiceImpl.class);
     bind(TaskReportExpenseService.class).to(TaskReportExpenseServiceImpl.class);
+    bind(ExtraExpenseInvoiceService.class).to(ExtraExpenseInvoiceServiceImpl.class);
   }
 }

@@ -361,6 +361,15 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
     createNightShiftLine(line, nightHours);
     resetNightFields(line);
+
+    // create normal TSLine using only day hours
+    BigDecimal normalHours = calculateNormalHours(line);
+    line.setHoursDuration(normalHours);
+    line.setDurationForCustomer(normalHours);
+    line.setShiftType("01-normal");
+
+    // adjust end time not be within night hours
+    adjustNormalLineTimes(line);
   }
 
   private boolean hasValidTime(TimesheetLine line) {
@@ -429,6 +438,52 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       pointer = pointer.toLocalDate().plusDays(1).atTime(0, 0); // next day
     }
     return totalNight;
+  }
+
+  private BigDecimal calculateNormalHours(TimesheetLine line) {
+    LocalDateTime start = line.getStartTime();
+    LocalDateTime end = line.getEndTime();
+    if (end.isBefore(start)) {
+      end = end.plusDays(1);
+    }
+    Duration totalHours = Duration.ZERO;
+    LocalDateTime pointer = start;
+    while (pointer.isBefore(end)) {
+      LocalDate currentDate = pointer.toLocalDate();
+      LocalDateTime normalStart = currentDate.atTime(6, 0);
+      LocalDateTime normalEnd = currentDate.atTime(18, 0);
+
+      LocalDateTime overlapStart = start.isAfter(normalStart) ? start : normalStart;
+      LocalDateTime overlapEnd = end.isBefore(normalEnd) ? end : normalEnd;
+
+      if (!overlapStart.isAfter(overlapEnd)) {
+        totalHours = totalHours.plus(Duration.between(overlapStart, overlapEnd));
+      }
+      pointer = currentDate.plusDays(1).atTime(0, 0);
+    }
+    return BigDecimal.valueOf(totalHours.toMinutes() / 60.0);
+  }
+
+  private void adjustNormalLineTimes(TimesheetLine line) {
+    LocalDateTime start = line.getStartTime();
+    LocalDateTime end = line.getEndTime();
+
+    LocalDate date = start.toLocalDate();
+    LocalDateTime normalStart = date.atTime(6, 0);
+    LocalDateTime normalEnd = date.atTime(18, 0);
+
+    if (start.isBefore(normalStart)) {
+      line.setStartTime(normalStart);
+    }
+    if (end.isAfter(normalEnd)) {
+      line.setEndTime(normalEnd);
+    }
+    // If adjusted start > adjusted end → zero normal hours
+    if (line.getStartTime().isAfter(line.getEndTime())) {
+      line.setHoursDuration(BigDecimal.ZERO);
+      line.setDuration(BigDecimal.ZERO);
+      line.setDurationForCustomer(BigDecimal.ZERO);
+    }
   }
 
   private LocalDateTime[] getNightShiftIntervalForDate(
