@@ -16,34 +16,21 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.intervention.service;
+package com.axelor.apps.intervention.web;
 
-import com.axelor.apps.intervention.db.Equipment;
 import com.axelor.apps.intervention.db.EquipmentModel;
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
+import com.axelor.apps.intervention.db.repo.EquipmentModelRepository;
+import com.axelor.apps.intervention.service.EquipmentModelService;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.ActionRequest;
+import com.axelor.rpc.ActionResponse;
 
-public interface EquipmentModelService {
+public class EquipmentModelController {
 
-  List<Long> generate(
-      Long parentId,
-      List<Long> modelIds,
-      Map<Long, Integer> quantitiesMap,
-      Long partnerId,
-      LocalDate commissioningDate,
-      LocalDate customerWarrantyOnPartEndDate,
-      LocalDate customerMoWarrantyEndDate,
-      Long contractId);
-
-  Equipment generate(
-      Long parentId,
-      Long modelId,
-      Long partnerId,
-      LocalDate commissioningDate,
-      LocalDate customerWarrantyOnPartEndDate,
-      LocalDate customerMoWarrantyEndDate,
-      Long contractId);
-
-  void removeEquipmentModel(EquipmentModel equipmentModel);
+  public void removeEquipmentModel(ActionRequest request, ActionResponse response) {
+    EquipmentModel equipmentModel = request.getContext().asType(EquipmentModel.class);
+    equipmentModel = Beans.get(EquipmentModelRepository.class).find(equipmentModel.getId());
+    Beans.get(EquipmentModelService.class).removeEquipmentModel(equipmentModel);
+    response.setReload(true);
+  }
 }

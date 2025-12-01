@@ -167,4 +167,10 @@ public class EquipmentModelServiceImpl implements EquipmentModelService {
     }
     return equipmentRepository.save(equipment);
   }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void removeEquipmentModel(EquipmentModel equipmentModel) {
+    equipmentModelRepository.remove(equipmentModel);
+  }
 }
