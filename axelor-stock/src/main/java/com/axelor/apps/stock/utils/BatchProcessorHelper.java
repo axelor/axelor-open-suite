@@ -33,7 +33,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StockBatchProcessorHelper {
+public class BatchProcessorHelper {
 
   private static final Logger logger =
       LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -43,7 +43,7 @@ public class StockBatchProcessorHelper {
   private final int clearEveryNBatch;
   private final boolean loggingEnabled;
 
-  private StockBatchProcessorHelper(Builder builder) {
+  private BatchProcessorHelper(Builder builder) {
     this.batchSize = builder.batchSize;
     this.flushAfterBatch = builder.flushAfterBatch;
     this.clearEveryNBatch = builder.clearEveryNBatch;
@@ -54,7 +54,7 @@ public class StockBatchProcessorHelper {
     return new Builder();
   }
 
-  public static StockBatchProcessorHelper of() {
+  public static BatchProcessorHelper of() {
     return new Builder().build();
   }
 
@@ -84,8 +84,8 @@ public class StockBatchProcessorHelper {
       return this;
     }
 
-    public StockBatchProcessorHelper build() {
-      return new StockBatchProcessorHelper(this);
+    public BatchProcessorHelper build() {
+      return new BatchProcessorHelper(this);
     }
 
     private static int resolveDefaultBatchSize() {
@@ -262,7 +262,7 @@ public class StockBatchProcessorHelper {
       return;
     }
     StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-    String helperClass = StockBatchProcessorHelper.class.getName();
+    String helperClass = BatchProcessorHelper.class.getName();
 
     for (int i = 2; i < stack.length; i++) {
       StackTraceElement frame = stack[i];

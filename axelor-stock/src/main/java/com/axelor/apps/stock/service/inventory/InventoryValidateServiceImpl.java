@@ -41,7 +41,7 @@ import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.apps.stock.utils.StockBatchProcessorHelper;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
@@ -155,7 +155,7 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
             .bind("inventoryId", inventoryId)
             .order("id");
 
-    StockBatchProcessorHelper.builder()
+    BatchProcessorHelper.builder()
         .build()
         .<InventoryLine, AxelorException>forEachByQuery(
             query,

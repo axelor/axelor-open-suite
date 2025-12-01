@@ -36,7 +36,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineService;
-import com.axelor.apps.stock.utils.StockBatchProcessorHelper;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -87,7 +87,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
     Query<StockMoveLine> query = getManagedStockMoveLineQuery(stockMove.getId());
 
-    StockBatchProcessorHelper helper = StockBatchProcessorHelper.builder().build();
+    BatchProcessorHelper helper = BatchProcessorHelper.builder().build();
 
     helper.<StockMoveLine, AxelorException>forEachByQuery(
         query,
@@ -202,7 +202,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     Map<Long, BigDecimal> reservedQtyByProduct = new HashMap<>();
     Map<Long, Long> firstLineIdByProduct = new HashMap<>();
 
-    StockBatchProcessorHelper.builder()
+    BatchProcessorHelper.builder()
         .clearEveryNBatch(0)
         .build()
         .<StockMoveLine>forEachByQuery(
@@ -223,7 +223,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
                       currentMin == null || candidate < currentMin ? candidate : currentMin);
             });
 
-    StockBatchProcessorHelper.builder()
+    BatchProcessorHelper.builder()
         .build()
         .<StockMoveLine>forEachByQuery(
             getManagedStockMoveLineQuery(stockMove.getId()),

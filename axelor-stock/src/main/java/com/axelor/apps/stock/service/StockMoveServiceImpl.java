@@ -56,8 +56,8 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.apps.stock.utils.JpaModelHelper;
-import com.axelor.apps.stock.utils.StockBatchProcessorHelper;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -494,7 +494,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     final long stockMoveId = stockMove.getId();
     Query<StockMoveLine> query = getStockMoveLineQuery(stockMoveId);
     final StockMove[] stockMoveHolder = {stockMoveRepo.find(stockMoveId)};
-    StockBatchProcessorHelper.of()
+    BatchProcessorHelper.of()
         .<StockMoveLine>forEachByQuery(
             query,
             line -> {
@@ -511,7 +511,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     final StockMove[] stockMoveHolder = {stockMoveRepo.find(stockMoveId)};
     int clearOnBatch = clearOnEachBatch ? 1 : 0;
     Query<StockMoveLine> plannedStockMoveLineQuery = getPlannedStockMoveLineQuery(stockMoveId);
-    StockBatchProcessorHelper.builder()
+    BatchProcessorHelper.builder()
         .clearEveryNBatch(clearOnBatch)
         .build()
         .<StockMoveLine>forEachByQuery(
@@ -665,8 +665,8 @@ public class StockMoveServiceImpl implements StockMoveService {
    */
   protected void checkOngoingInventory(StockMove stockMove) throws AxelorException {
 
-    StockBatchProcessorHelper batchHelper =
-        StockBatchProcessorHelper.builder().flushAfterBatch(false).build();
+    BatchProcessorHelper batchHelper =
+        BatchProcessorHelper.builder().flushAfterBatch(false).build();
 
     Set<Long> stockLocationIds = new HashSet<>();
     Set<Long> productIds = new HashSet<>();
@@ -723,7 +723,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     Long stockMoveId = stockMove.getId();
     Query<StockMoveLine> query = getStockMoveLineQuery(stockMoveId);
 
-    StockBatchProcessorHelper.of()
+    BatchProcessorHelper.of()
         .<StockMoveLine>forEachByQuery(query, (StockMoveLine sml) -> sml.setTotalNetMass(null));
   }
 
@@ -748,7 +748,7 @@ public class StockMoveServiceImpl implements StockMoveService {
             .bind("storable", ProductRepository.PRODUCT_TYPE_STORABLE)
             .order("id");
 
-    StockBatchProcessorHelper.of()
+    BatchProcessorHelper.of()
         .<StockMoveLine, AxelorException>forEachByQuery(
             query,
             stockMoveLine -> {
@@ -837,7 +837,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setOrigin(stockMove.getOrigin());
 
     AtomicBoolean hasNewLines = new AtomicBoolean(false);
-    StockBatchProcessorHelper.of()
+    BatchProcessorHelper.of()
         .<StockMoveLine, AxelorException>forEachByIds(
             StockMoveLine.class,
             linesToProcess,
@@ -1258,7 +1258,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     if (stockMove.getId() != null) {
       Query<StockMoveLine> query = getStockMoveLineQuery(stockMove.getId());
-      StockBatchProcessorHelper.of()
+      BatchProcessorHelper.of()
           .<StockMoveLine>forEachByQuery(
               query,
               line -> stockMoveLineService.fillRealQuantities(line, stockMove, line.getQty()));
@@ -1328,14 +1328,14 @@ public class StockMoveServiceImpl implements StockMoveService {
             .bind("date", date)
             .order("id");
 
-    StockBatchProcessorHelper.builder()
+    BatchProcessorHelper.builder()
         .flushAfterBatch(false)
         .clearEveryNBatch(0)
         .build()
         .<StockMoveLine>forEachByQuery(
             incomingQuery, line -> incomingQty[0] = incomingQty[0].add(line.getQty()));
 
-    StockBatchProcessorHelper.builder()
+    BatchProcessorHelper.builder()
         .flushAfterBatch(false)
         .clearEveryNBatch(0)
         .build()
@@ -1713,7 +1713,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     Long stockMoveId = stockMove.getId();
     Query<StockMoveLine> query = getStockMoveLineQuery(stockMoveId);
 
-    StockBatchProcessorHelper.of()
+    BatchProcessorHelper.of()
         .<StockMoveLine>forEachByQuery(query, stockMoveLineService::fillRealizeWapPrice);
   }
 
@@ -1722,7 +1722,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     Long stockMoveId = stockMove.getId();
     Query<StockMoveLine> query = getStockMoveLineQuery(stockMoveId);
 
-    StockBatchProcessorHelper.of()
+    BatchProcessorHelper.of()
         .<StockMoveLine, AxelorException>forEachByQuery(
             query, stockMoveLineService::storeCustomsCodes);
   }
@@ -1730,7 +1730,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected Set<Long> getStockMoveLineIds(StockMove stockMove) {
     final Set<Long> lineIds = new LinkedHashSet<>();
     final long stockMoveId = stockMove.getId();
-    StockBatchProcessorHelper.builder()
+    BatchProcessorHelper.builder()
         .flushAfterBatch(false)
         .build()
         .<StockMoveLine>forEachByQuery(
@@ -1741,7 +1741,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected Set<Long> getPlannedStockMoveLineIds(StockMove stockMove, boolean clearOnEachBatch) {
     final Set<Long> plannedLineIds = new LinkedHashSet<>();
     int clearOnBatch = clearOnEachBatch ? 1 : 0;
-    StockBatchProcessorHelper.builder()
+    BatchProcessorHelper.builder()
         .clearEveryNBatch(clearOnBatch)
         .flushAfterBatch(false)
         .build()

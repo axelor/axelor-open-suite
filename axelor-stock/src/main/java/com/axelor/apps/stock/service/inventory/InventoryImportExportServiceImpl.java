@@ -38,7 +38,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
-import com.axelor.apps.stock.utils.StockBatchProcessorHelper;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
@@ -192,7 +192,7 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
             .order("id")
             .order("product.code");
 
-    StockBatchProcessorHelper.of()
+    BatchProcessorHelper.of()
         .<InventoryLine>forEachByQuery(
             queryBase,
             inventoryLine -> {
@@ -523,7 +523,7 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
       return;
     }
 
-    StockBatchProcessorHelper.of()
+    BatchProcessorHelper.of()
         .<InventoryLine>forEachByIds(
             InventoryLine.class, Set.copyOf(inventoryLineIdList), inventoryLineRepository::remove);
   }
@@ -546,8 +546,7 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
             .bind("inventoryId", inventory.getId())
             .order("id");
 
-    StockBatchProcessorHelper helper =
-        StockBatchProcessorHelper.builder().flushAfterBatch(false).build();
+    BatchProcessorHelper helper = BatchProcessorHelper.builder().flushAfterBatch(false).build();
     helper.<InventoryLine>forEachByQuery(queryBase, action);
   }
 

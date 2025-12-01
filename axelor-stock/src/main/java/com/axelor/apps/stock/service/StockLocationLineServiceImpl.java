@@ -38,6 +38,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.db.repo.StockRulesRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.utils.StockLocationLineQtyView;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -618,7 +619,7 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
 
     StringBuilder jpql = new StringBuilder();
     jpql.append(
-        "SELECT new com.axelor.apps.stock.service.StockLocationLineQtyView("
+        "SELECT new com.axelor.apps.stock.utils.StockLocationLineQtyView("
             + " self.unit, "
             + " SUM(CASE WHEN self.toStockLocation.id = :stockLocationId THEN COALESCE(self.realQty, 0) ELSE 0 END), "
             + " SUM(CASE WHEN self.fromStockLocation.id = :stockLocationId THEN COALESCE(self.realQty, 0) ELSE 0 END) "

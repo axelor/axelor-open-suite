@@ -32,7 +32,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
-import com.axelor.apps.stock.utils.StockBatchProcessorHelper;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
@@ -88,8 +88,8 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
             .bind("stockMoveId", stockMove.getId())
             .order("id");
 
-    StockBatchProcessorHelper batchHelper =
-        StockBatchProcessorHelper.builder().loggingEnabled(false).flushAfterBatch(false).build();
+    BatchProcessorHelper batchHelper =
+        BatchProcessorHelper.builder().loggingEnabled(false).flushAfterBatch(false).build();
 
     batchHelper.<StockMoveLine>forEachByQuery(
         query,

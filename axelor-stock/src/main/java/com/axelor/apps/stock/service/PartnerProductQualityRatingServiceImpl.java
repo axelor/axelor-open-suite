@@ -27,7 +27,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.PartnerProductQualityRatingRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
-import com.axelor.apps.stock.utils.StockBatchProcessorHelper;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -260,7 +260,7 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
             .bind("stockMoveId", stockMove.getId())
             .order("id");
 
-    StockBatchProcessorHelper.builder()
+    BatchProcessorHelper.builder()
         .clearEveryNBatch(0)
         .build()
         .<StockMoveLine>forEachByQuery(query, consumer, postBatchAction);

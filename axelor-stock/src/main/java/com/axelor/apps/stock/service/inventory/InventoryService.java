@@ -40,7 +40,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveService;
-import com.axelor.apps.stock.utils.StockBatchProcessorHelper;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -186,7 +186,7 @@ public class InventoryService {
             .bind("inventoryId", inventory.getId())
             .order("id");
 
-    StockBatchProcessorHelper.of().<InventoryLine>forEachByQuery(query, this::updateCurrentQty);
+    BatchProcessorHelper.of().<InventoryLine>forEachByQuery(query, this::updateCurrentQty);
   }
 
   protected void updateCurrentQty(InventoryLine inventoryLine) {
@@ -298,8 +298,8 @@ public class InventoryService {
     final long inventoryId = inventory.getId();
     final Inventory[] inventoryHolder = {inventory};
 
-    StockBatchProcessorHelper batchHelper =
-        StockBatchProcessorHelper.builder().flushAfterBatch(false).build();
+    BatchProcessorHelper batchHelper =
+        BatchProcessorHelper.builder().flushAfterBatch(false).build();
 
     Query<StockLocationLine> prePass =
         buildSllFilterQuery(inventory)
@@ -325,7 +325,7 @@ public class InventoryService {
     Query<StockLocationLine> mainPass =
         buildSllFilterQuery(inventory).add("self.id > :lastSeenId").build().order("id");
 
-    StockBatchProcessorHelper.of()
+    BatchProcessorHelper.of()
         .<StockLocationLine, AxelorException>forEachByQuery(
             mainPass,
             sll -> {

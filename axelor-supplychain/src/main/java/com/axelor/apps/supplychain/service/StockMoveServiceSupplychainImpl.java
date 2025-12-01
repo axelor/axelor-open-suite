@@ -58,7 +58,7 @@ import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.axelor.apps.stock.utils.StockBatchProcessorHelper;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
@@ -237,7 +237,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
             .bind("stockMoveId", stockMove.getId())
             .order("id");
 
-    StockBatchProcessorHelper.builder()
+    BatchProcessorHelper.builder()
         .build()
         .<StockMoveLine>forEachByQuery(
             query,
@@ -267,7 +267,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
             .bind("stockMoveId", stockMove.getId())
             .order("id");
 
-    StockBatchProcessorHelper.builder()
+    BatchProcessorHelper.builder()
         .build()
         .<StockMoveLine>forEachByQuery(query, line -> line.setSaleOrderLine(null));
   }
