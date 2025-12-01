@@ -27,7 +27,6 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
@@ -42,13 +41,11 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.utils.StockBatchProcessorHelper;
-import com.axelor.auth.AuditableRunner;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -234,16 +231,8 @@ public class InventoryService {
     inventory.setCompletedBy(AuthUtils.getUser());
   }
 
-  public void validateInventory(Inventory inventory) {
-    AuditableRunner auditableRunner = Beans.get(AuditableRunner.class);
-    auditableRunner.runWithoutTracking(
-        () -> {
-          try {
-            inventoryValidateService.validate(inventory);
-          } catch (AxelorException e) {
-            TraceBackService.trace(e);
-          }
-        });
+  public void validateInventory(Inventory inventory) throws AxelorException {
+    inventoryValidateService.validate(inventory);
   }
 
   @Transactional(rollbackOn = {Exception.class})
