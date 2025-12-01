@@ -42,6 +42,7 @@ import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptAllowed;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
@@ -66,6 +67,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ScriptAllowed
 @ThreadSafe
 @Singleton
 public class SequenceService {
