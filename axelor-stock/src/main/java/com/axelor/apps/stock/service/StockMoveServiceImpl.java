@@ -44,6 +44,7 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
@@ -1163,6 +1164,10 @@ public class StockMoveServiceImpl implements StockMoveService {
       originalStockMoveLine.setQty(remainingQty);
       originalStockMoveLine.setRealQty(remainingQty);
       originalStockMoveLine.setTotalNetMass(netMass.multiply(remainingQty));
+    }
+    TrackingNumber trackingNumber = originalStockMoveLine.getTrackingNumber();
+    if (trackingNumber != null) {
+      trackingNumber.setOriginStockMoveLine(newStockMoveLine);
     }
 
     return newStockMoveLine;
