@@ -1255,4 +1255,14 @@
   <menuitem name="base-referential-root-product-settings" title="Settings" order="400"
     parent="referential-root-product-root"/>
 
+  <menuitem name="configuration-template-all" title="Configurations template"
+    action="config.template.all" parent="referential-root" order="250"/>
+
+  <action-view name="config.template.all" title="Configuration template"
+    model="com.axelor.apps.base.db.ConfigurationTemplate">
+    <view name="configuration-template-grid" type="grid"/>
+    <view name="configuration-template-form" type="form"/>
+  </action-view>
+
+
 </object-views>

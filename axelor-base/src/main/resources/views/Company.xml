@@ -90,6 +90,11 @@
           canNew="false" canSelect="true" domain="self.isWorkshop is true"/>
       </panel>
       <panel name="configurationsPanel" title="Configurations">
+        <panel colSpan="12" name="importConfigurationPanel" title="Import configuration">
+          <field name="configurationTemplate"/>
+          <button name="importConfigBtn" title="Import configs"
+            onClick="action-group-config-template-installchart-click" showIf="configurationTemplate"/>
+        </panel>
         <field name="currency" canEdit="false" form-view="currency-form"
           grid-view="currency-grid"/>
         <field name="printingSettings" canNew="true" required="true"
@@ -190,6 +195,11 @@
     <call class="com.axelor.apps.base.web.CompanyController" method="checkMultiBanks"/>
   </action-method>
 
+  <action-method name="action-company-method-config-install-config">
+    <call class="com.axelor.apps.base.web.ConfigurationTemplateController"
+      method="installConfig"/>
+  </action-method>
+
   <search-filters name="company-filters" model="com.axelor.apps.base.db.Company"
     title="Company filters">
     <field name="tradingNameList" hidden="true"
@@ -203,4 +213,8 @@
     <field name="orderBloquedMessage" hidden="true" if="!__config__.app.isApp('sale')"/>
   </search-filters>
 
+  <action-group name="action-group-config-template-installchart-click">
+    <action name="save"/>
+    <action name="action-company-method-config-install-config"/>
+  </action-group>
 </object-views>

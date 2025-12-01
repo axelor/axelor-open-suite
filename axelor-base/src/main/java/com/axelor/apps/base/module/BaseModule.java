@@ -237,6 +237,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
+import com.axelor.apps.base.service.configuration.template.ConfigurationTemplateService;
+import com.axelor.apps.base.service.configuration.template.ConfigurationTemplateServiceImpl;
 import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateService;
 import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateServiceImpl;
 import com.axelor.apps.base.service.connectormapper.ConnectorMapperFetchService;
@@ -629,5 +631,6 @@ public class BaseModule extends AxelorModule {
     bind(MapOsmService.class).to(MapOsmServiceImpl.class);
     bind(MapGoogleService.class).to(MapGoogleServiceImpl.class);
     bind(MapToolService.class).to(MapToolServiceImpl.class);
+    bind(ConfigurationTemplateService.class).to(ConfigurationTemplateServiceImpl.class);
   }
 }
