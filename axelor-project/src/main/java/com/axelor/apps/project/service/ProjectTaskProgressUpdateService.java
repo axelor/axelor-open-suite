@@ -16,26 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service;
+package com.axelor.apps.project.service;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseRequest;
-import java.util.List;
-import java.util.Map;
+import com.axelor.apps.project.db.ProjectTask;
+import java.math.BigDecimal;
 
-public interface PurchaseRequestService {
-  public List<PurchaseOrder> generatePo(
-      List<PurchaseRequest> purchaseRequests,
-      Boolean groupBySupplier,
-      Boolean groupByProduct,
-      Company company)
-      throws AxelorException;
+public interface ProjectTaskProgressUpdateService {
+  ProjectTask updateChildrenProgress(ProjectTask task, BigDecimal progress) throws AxelorException;
 
-  public Map<String, Object> getDefaultValues(PurchaseRequest purchaseRequest, Company company)
-      throws AxelorException;
-
-  public PurchaseRequest createPurchaseRequest(
-      Company fetchCompany, Integer status, String description) throws AxelorException;
+  ProjectTask updateParentsProgress(ProjectTask task) throws AxelorException;
 }

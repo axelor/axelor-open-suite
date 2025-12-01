@@ -1,3 +1,0 @@
----
-title: "Reconcile : added an error when trying to pay a holdback invoice terms on an invoice with remaining ones"
-module: axelor-account

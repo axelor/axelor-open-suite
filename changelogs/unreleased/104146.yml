@@ -1,4 +1,0 @@
----
-title: "Product: fixed a potential error due to missing product company when generating variant product."
-module: axelor-base
-
