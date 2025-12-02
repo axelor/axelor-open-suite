@@ -402,6 +402,7 @@ public class IntercoServiceImpl implements IntercoService {
           }
         };
     Invoice intercoInvoice = invoiceGenerator.generate();
+    intercoInvoice.setFiscalPosition(intercoPartner.getFiscalPosition());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     if (invoice.getInvoiceLineList() != null) {
