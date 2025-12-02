@@ -384,6 +384,8 @@
 "The maximum order quantity of %s to the supplier is not respected. Unit price might be different than the supplier catalog one.",,,
 "The minimum order quantity of %s to the supplier is not respected. Unit price might be different than the supplier catalog one.",,,
 "The partner's language is different from the current language. Description and product name are in :",,,
+"The purchase request %s is already linked to a purchaseOrder",,,
+"The purchase request %s must be accepted before proceeding with the purchase.",,,
 "The supplier Partner is required and must be the same for all purchase orders",,,
 "The supplier catalog's unit is different from the current unit.",,,
 "The supplier of the purchase order is different from the default supplier of the product.",,,

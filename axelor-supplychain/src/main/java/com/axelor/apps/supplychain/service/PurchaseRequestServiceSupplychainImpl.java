@@ -20,19 +20,13 @@ package com.axelor.apps.supplychain.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
-import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
-import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
-import com.axelor.apps.purchase.service.PurchaseOrderLineService;
-import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
-import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.purchase.service.purchase.request.PurchaseRequestToPoCreateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.axelor.inject.Beans;
-import jakarta.inject.Inject;
+import com.google.inject.Inject;
 import java.util.Map;
 
 public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServiceImpl {
@@ -42,50 +36,17 @@ public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServic
 
   @Inject
   public PurchaseRequestServiceSupplychainImpl(
-      PurchaseOrderService purchaseOrderService,
-      PurchaseOrderCreateService purchaseOrderCreateService,
-      PurchaseOrderLineService purchaseOrderLineService,
-      PurchaseOrderRepository purchaseOrderRepo,
-      AppBaseService appBaseService,
       PurchaseRequestWorkflowService purchaseRequestWorkflowService,
+      PurchaseRequestRepository purchaseRequestRepository,
+      PurchaseRequestToPoCreateService purchaseRequestToPoCreateService,
       AppSupplychainService appSupplychainService,
       PurchaseOrderSupplychainService purchaseOrderSupplychainService) {
     super(
-        purchaseOrderService,
-        purchaseOrderCreateService,
-        purchaseOrderLineService,
-        purchaseOrderRepo,
-        appBaseService,
-        purchaseRequestWorkflowService);
+        purchaseRequestWorkflowService,
+        purchaseRequestRepository,
+        purchaseRequestToPoCreateService);
     this.appSupplychainService = appSupplychainService;
     this.purchaseOrderSupplychainService = purchaseOrderSupplychainService;
-  }
-
-  @Override
-  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest)
-      throws AxelorException {
-
-    PurchaseOrder purchaseOrder = super.createPurchaseOrder(purchaseRequest);
-
-    if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      purchaseOrder.setStockLocation(purchaseRequest.getStockLocation());
-    }
-    return purchaseOrder;
-  }
-
-  @Override
-  protected String getPurchaseOrderGroupBySupplierKey(PurchaseRequest purchaseRequest) {
-    String key = super.getPurchaseOrderGroupBySupplierKey(purchaseRequest);
-
-    if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
-      return key;
-    }
-
-    StockLocation stockLocation = purchaseRequest.getStockLocation();
-    if (stockLocation != null) {
-      key = key + "_" + stockLocation.getId().toString();
-    }
-    return key;
   }
 
   @Override
