@@ -44,6 +44,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.businessproject.db.ExtraExpenseLine;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
@@ -246,7 +247,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
         && invoicingProject.getExpenseLineSet().isEmpty()
         && invoicingProject.getProjectTaskSet().isEmpty()
         && invoicingProject.getStockMoveLineSet().isEmpty()
-        && invoicingProject.getExtraExpenseLineSet().isEmpty()) {
+        && getProjectExtraExpense(invoicingProject.getProject()).isEmpty()) {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -269,7 +270,9 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     List<TimesheetLine> timesheetLineList = new ArrayList<>(folder.getLogTimesSet());
     List<ExpenseLine> expenseLineList = new ArrayList<>(folder.getExpenseLineSet());
     List<ProjectTask> projectTaskList = new ArrayList<>(folder.getProjectTaskSet());
-    List<ExtraExpenseLine> extraExpenseLineList = new ArrayList<>(folder.getExtraExpenseLineSet());
+
+    // extra expenses
+    List<ExtraExpenseLine> extraExpenseLineList = getProjectExtraExpense(folder.getProject());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     invoiceLineList.addAll(
@@ -382,5 +385,13 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
 
       analyticLineService.setAnalyticAccount(invoiceLine, company);
     }
+  }
+
+  public List<ExtraExpenseLine> getProjectExtraExpense(Project project) {
+    return Beans.get(ExtraExpenseLineRepository.class)
+        .all()
+        .filter("self.project.id = :projectId AND self.toInvoice = true")
+        .bind("projectId", project.getId())
+        .fetch();
   }
 }

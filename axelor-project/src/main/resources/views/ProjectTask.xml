@@ -206,7 +206,8 @@
         onChange="action-project-task-attrs-set-task-duration,action-project-task-record-set-date-or-frequency-changed"
         required="true" readonly="true"/>
       <field name="taskEndDate" colSpan="6"
-        onChange="action-project-task-attrs-set-task-duration, action-project-task-validate-toDate" readonly="true"/>
+        onChange="action-project-task-attrs-set-task-duration, action-project-task-validate-toDate"
+        readonly="true"/>
       <field name="taskDeadline" title="Task deadline" colSpan="6" readonly="true"/>
       <!-- MGM-68 -->
       <!-- <field name="tagSet" widget="TagSelect" x-color-field="color" form-view="tag-form" grid-view="tag-simplified-grid"

@@ -29,10 +29,8 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateHelper;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
-import com.axelor.apps.businessproject.db.ExtraExpenseLine;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.BusinessProjectBatchRepository;
-import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
@@ -188,19 +186,19 @@ public class InvoicingProjectService {
       expenseLineQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
     }
 
-    // Extra expense
-    StringBuilder extraExpenseLineQueryBuilder = new StringBuilder(commonQuery);
-    Map<String, Object> extraExpenseLineQueryMap = new HashMap<>();
-    extraExpenseLineQueryMap.put("project", project);
-
-    invoicingProject
-        .getExtraExpenseLineSet()
-        .addAll(
-            Beans.get(ExtraExpenseLineRepository.class)
-                .all()
-                .filter(extraExpenseLineQueryBuilder.toString())
-                .bind(extraExpenseLineQueryMap)
-                .fetch());
+    //    // Extra expense
+    //    StringBuilder extraExpenseLineQueryBuilder = new StringBuilder(commonQuery);
+    //    Map<String, Object> extraExpenseLineQueryMap = new HashMap<>();
+    //    extraExpenseLineQueryMap.put("project", project);
+    //
+    //    invoicingProject
+    //        .getExtraExpenseLineSet()
+    //        .addAll(
+    //            Beans.get(ExtraExpenseLineRepository.class)
+    //                .all()
+    //                .filter(extraExpenseLineQueryBuilder.toString())
+    //                .bind(extraExpenseLineQueryMap)
+    //                .fetch());
 
     List<SaleOrderLine> saleOrderLineList =
         saleOrderLineRepository.all().filter(solQueryBuilder.toString()).bind(solQueryMap).fetch();
@@ -255,7 +253,6 @@ public class InvoicingProjectService {
     invoicingProject.setExpenseLineSet(new HashSet<ExpenseLine>());
     invoicingProject.setProjectTaskSet(new HashSet<ProjectTask>());
     invoicingProject.setStockMoveLineSet(new HashSet<StockMoveLine>());
-    invoicingProject.setExtraExpenseLineSet(new HashSet<ExtraExpenseLine>());
   }
 
   public Company getRootCompany(Project project) {

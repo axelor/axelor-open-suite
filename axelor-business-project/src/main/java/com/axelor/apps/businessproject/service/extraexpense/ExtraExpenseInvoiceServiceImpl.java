@@ -24,7 +24,6 @@ public class ExtraExpenseInvoiceServiceImpl implements ExtraExpenseInvoiceServic
       invoiceLineList.addAll(
           this.createInvoiceLine(invoice, extraExpenseLine, priority * 100 + count));
       count++;
-      extraExpenseLine.setInvoiced(true);
     }
 
     return invoiceLineList;
