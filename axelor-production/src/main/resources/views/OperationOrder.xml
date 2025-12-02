@@ -179,7 +179,7 @@
           form-view="prod-product-form" grid-view="prod-product-grid"/>
         <panel-related name="consumedStockMoveLineListPanel"
           field="consumedStockMoveLineList"
-          onChange="action-operation-order-method-check-consumed-stock-move,save,action-operation-order-method-update-consumed-stock-move"
+          onChange="action-operation-order-group-on-change-consumed-stock-move-line"
           form-view="stock-move-line-production-form"
           grid-view="stock-move-line-consumed-production-grid" colSpan="12"/>
         <panel-related name="diffConsumeProdProductListPanel"
@@ -311,6 +311,18 @@
 
   <action-method name="action-operation-order-method-plan">
     <call class="com.axelor.apps.production.web.OperationOrderController" method="plan"/>
+  </action-method>
+
+  <action-group name="action-operation-order-group-on-change-consumed-stock-move-line">
+    <action name="action-operation-order-method-check-consumed-stock-move"/>
+    <action name="action-operation-order-method-set-stock-location-consumed-sml"/>
+    <action name="save"/>
+    <action name="action-operation-order-method-update-consumed-stock-move"/>
+  </action-group>
+
+  <action-method name="action-operation-order-method-set-stock-location-consumed-sml">
+    <call class="com.axelor.apps.production.web.OperationOrderController"
+      method="setConsumedStockMoveLineStockLocation"/>
   </action-method>
 
   <action-method name="action-operation-order-method-check-consumed-stock-move">
