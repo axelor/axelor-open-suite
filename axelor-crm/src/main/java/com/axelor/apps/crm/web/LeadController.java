@@ -26,10 +26,8 @@ import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.apps.crm.db.report.IReport;
 import com.axelor.apps.crm.exception.IExceptionMessage;
 import com.axelor.apps.crm.service.LeadService;
-import com.axelor.apps.crm.service.LeadServiceImpl;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.csv.script.ImportLeadConfiguration;
-import com.axelor.db.Query;
 import com.axelor.exception.AxelorException;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
@@ -183,11 +181,5 @@ public class LeadController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
-  }
-
-  public void isDuplicatedLead(ActionRequest request, ActionResponse response) {
-    Lead lead = Query.of(Lead.class).filter("self.id = ?1", request.getData().get("id")).fetchOne();
-    lead.setIsDuplicated(Beans.get(LeadService.class).isThereDuplicateLead(lead));
-    Beans.get(LeadServiceImpl.class).saveLead(lead);
   }
 }

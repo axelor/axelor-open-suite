@@ -18,12 +18,7 @@
   	<string name="department" title="Dep./Div."/>
   	<string name="fax" title="Fax"/>
   	<string name="webSite" title="Website"/>
-    <string name="consuelFile" title="Consuel"/>
-    <string name="planningPermissionFile" title="Autorisation d'urbanisme"/>
-    <string name="connectionProofFile" title="Demande de raccordement"/>
-    <string name="dinvdeFile" title="DINVDE"/>
-    <boolean name="isDuplicated" title="Doublon"/>    
-    <string name="installerName" title="Nom de l'installateur"/> 
+
   	
 <!--   Primary address group -->
 	<string name="primaryAddress" title="Address"/>
