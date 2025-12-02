@@ -1,3 +1,3 @@
 ---
-title: "Partner: Fixed error when siren api key was empty."
+title: "Partner: alert the user when using the API Sirene and the key was emtpy in the configuration."
 module: axelor-base
