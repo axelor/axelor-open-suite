@@ -343,33 +343,33 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   public void splitTimesheetLine(TimesheetLine line) {
-    if (Boolean.TRUE.equals(line.getIsAutomaticallyGenerated()))
-      return; // Do not split generated night-lines
+
+    if (Boolean.TRUE.equals(line.getIsAutomaticallyGenerated())) return;
+
     if (!hasValidTime(line)) return;
 
+    // Flags
     applyWeekendFlag(line);
     applyHolidayFlag(line);
     applyEmergencyFlag(line);
 
     BigDecimal nightHours = calculateNightHours(line);
-    if (nightHours.compareTo(BigDecimal.ZERO) == 0) {
-      resetNightFields(line);
-      return;
+
+    // subtract break time from night hours only
+    if (line.getBreakTime() != null && nightHours.compareTo(BigDecimal.ZERO) > 0) {
+      nightHours = nightHours.subtract(line.getBreakTime());
+      if (nightHours.compareTo(BigDecimal.ZERO) < 0) {
+        nightHours = BigDecimal.ZERO;
+      }
     }
 
-    if (nightLineAlreadyExists(line)) return; // Prevent duplicates
+    line.setNightHours(nightHours);
+    line.setIsNightShift(nightHours.compareTo(BigDecimal.ZERO) > 0);
 
-    createNightShiftLine(line, nightHours);
-    resetNightFields(line);
-
-    // create normal TSLine using only day hours
-    BigDecimal normalHours = calculateNormalHours(line);
-    line.setHoursDuration(normalHours);
-    line.setDurationForCustomer(normalHours);
-    line.setShiftType("01-normal");
-
-    // adjust end time not be within night hours
-    adjustNormalLineTimes(line);
+    // keep normal duration as-is (total hours worked)
+    line.setHoursDuration(line.getDuration());
+    line.setDuration(line.getDuration());
+    line.setDurationForCustomer(line.getDuration());
   }
 
   private boolean hasValidTime(TimesheetLine line) {
@@ -404,24 +404,6 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     return BigDecimal.valueOf(nightDuration.toMinutes() / 60.0);
   }
 
-  private boolean nightLineAlreadyExists(TimesheetLine line) {
-    return line.getTimesheet().getTimesheetLineList().stream()
-        .anyMatch(l -> Boolean.TRUE.equals(l.getIsNightShift()));
-  }
-
-  private void resetNightFields(TimesheetLine line) {
-    line.setIsNightShift(false);
-    line.setShiftType("01-normal");
-  }
-
-  private void createNightShiftLine(TimesheetLine line, BigDecimal nightHours) {
-    TimesheetLine nightLine = createNightShiftTimesheetLine(line, nightHours);
-    nightLine.setIsNightShift(true);
-    nightLine.setShiftType("02-night");
-    nightLine.setIsAutomaticallyGenerated(true);
-    line.getTimesheet().addTimesheetLineListItem(nightLine);
-  }
-
   private Duration calculateNightShiftDuration(LocalDateTime start, LocalDateTime end) {
     if (end.isBefore(start)) {
       end = end.plusDays(1);
@@ -440,52 +422,6 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     return totalNight;
   }
 
-  private BigDecimal calculateNormalHours(TimesheetLine line) {
-    LocalDateTime start = line.getStartTime();
-    LocalDateTime end = line.getEndTime();
-    if (end.isBefore(start)) {
-      end = end.plusDays(1);
-    }
-    Duration totalHours = Duration.ZERO;
-    LocalDateTime pointer = start;
-    while (pointer.isBefore(end)) {
-      LocalDate currentDate = pointer.toLocalDate();
-      LocalDateTime normalStart = currentDate.atTime(6, 0);
-      LocalDateTime normalEnd = currentDate.atTime(18, 0);
-
-      LocalDateTime overlapStart = start.isAfter(normalStart) ? start : normalStart;
-      LocalDateTime overlapEnd = end.isBefore(normalEnd) ? end : normalEnd;
-
-      if (!overlapStart.isAfter(overlapEnd)) {
-        totalHours = totalHours.plus(Duration.between(overlapStart, overlapEnd));
-      }
-      pointer = currentDate.plusDays(1).atTime(0, 0);
-    }
-    return BigDecimal.valueOf(totalHours.toMinutes() / 60.0);
-  }
-
-  private void adjustNormalLineTimes(TimesheetLine line) {
-    LocalDateTime start = line.getStartTime();
-    LocalDateTime end = line.getEndTime();
-
-    LocalDate date = start.toLocalDate();
-    LocalDateTime normalStart = date.atTime(6, 0);
-    LocalDateTime normalEnd = date.atTime(18, 0);
-
-    if (start.isBefore(normalStart)) {
-      line.setStartTime(normalStart);
-    }
-    if (end.isAfter(normalEnd)) {
-      line.setEndTime(normalEnd);
-    }
-    // If adjusted start > adjusted end → zero normal hours
-    if (line.getStartTime().isAfter(line.getEndTime())) {
-      line.setHoursDuration(BigDecimal.ZERO);
-      line.setDuration(BigDecimal.ZERO);
-      line.setDurationForCustomer(BigDecimal.ZERO);
-    }
-  }
-
   private LocalDateTime[] getNightShiftIntervalForDate(
       LocalDate date, LocalDateTime taskStart, LocalDateTime taskEnd) {
     LocalDateTime nightStart = date.atTime(18, 0);
@@ -498,49 +434,6 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       return null;
     }
     return new LocalDateTime[] {overlapStart, overlapEnd};
-  }
-
-  private TimesheetLine createNightShiftTimesheetLine(TimesheetLine line, BigDecimal nightHours) {
-    TimesheetLine nightLine = new TimesheetLine();
-
-    nightLine.setTimesheet(line.getTimesheet());
-    nightLine.setProject(line.getProject());
-    nightLine.setProjectTask(line.getProjectTask());
-    nightLine.setProduct(line.getProduct());
-    nightLine.setDate(line.getDate());
-    nightLine.setEmployee(line.getEmployee());
-    nightLine.setBreakTime(BigDecimal.ZERO);
-    nightLine.setSite(line.getSite());
-    nightLine.setProjectPlanningTime(line.getProjectPlanningTime());
-    nightLine.setToInvoice(line.getToInvoice());
-    nightLine.setEnableEditor(line.getEnableEditor());
-    nightLine.setIsAutomaticallyGenerated(true);
-
-    // Set accurate night start/end
-    LocalDateTime[] interval =
-        getNightShiftIntervalForDate(
-            line.getStartTime().toLocalDate(), line.getStartTime(), line.getEndTime());
-    if (interval != null) {
-      nightLine.setStartTime(interval[0]);
-      nightLine.setEndTime(interval[1]);
-    } else {
-      nightLine.setStartTime(line.getStartTime());
-      nightLine.setEndTime(line.getEndTime());
-    }
-
-    nightLine.setHoursDuration(nightHours);
-    nightLine.setDurationForCustomer(nightHours);
-    nightLine.setDuration(nightHours);
-
-    nightLine.setIsNightShift(true);
-    nightLine.setIsEmergencyService(line.getIsEmergencyService());
-    nightLine.setIsSaturday(line.getIsSaturday());
-    nightLine.setIsSunday(line.getIsSunday());
-
-    nightLine.setComments("Night hours extracted from work time.");
-    nightLine.setShiftType("02-night");
-
-    return nightLine;
   }
 
   private <T extends Model> T fetchEntity(T entity, JpaRepository<T> repo) {

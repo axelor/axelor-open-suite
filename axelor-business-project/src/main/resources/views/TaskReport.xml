@@ -52,7 +52,7 @@
       <panel colSpan="12" name="parentPanel" showFrame="true">
         <panel title="General Information" showFrame="false">
           <field name="project" title="Order" canView="false"
-            domain-function="eval: ( (__user__.group.code == 'CUSTOM-PM' || __user__.group.code == 'MGM-OM')
+            domain-function="eval: ( (__user__.group.code == 'CUSTOM-PM' || __user__.group.code == 'CUSTOM-OM')
                     ? 'self.projectStatus.isCompleted = false'
                     : 'self.projectStatus.isCompleted = false AND (self.membersUserSet.id = :__user__ OR self.assignedTo.id = :__user__)' )"
             onChange="action-task-report-on-change-project" required="true"/>
@@ -102,11 +102,6 @@
               colSpan="6"/>
             <field name="customerSignature" title="Customer Signature" widget="drawing"
               colSpan="6" hideIf="customerNotAvailable"/>
-          </panel>
-          <panel colSpan="12">
-            <field name="customerNotAvailable" widget="checkbox" colSpan="9" hidden="true"/>
-            <field name="customerNotAvailable" widget="checkbox" colSpan="3"
-              title="Customer Not Available" onChange="action-customer-available-attrs"/>
           </panel>
         </panel>
       </panel>

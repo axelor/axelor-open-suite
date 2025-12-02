@@ -97,7 +97,7 @@
   <menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100"
     icon="wrench-adjustable-circle" icon-background="#2fa042"/>
   <menuitem id="mgm-abs-menu-admin" name="mgm-admin" title="Administration" order="150"
-    groups="MGM-OM" icon="wrench-adjustable-circle" icon-background="#2fa042"/>
+    groups="CUSTOM-OM" icon="wrench-adjustable-circle" icon-background="#2fa042"/>
 
   <menuitem name="admin-root-general" parent="admin-root" order="200"
     if="__config__.app.isApp('base')" title="General data"/>

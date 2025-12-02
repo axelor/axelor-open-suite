@@ -35,8 +35,8 @@
   </action-view>
 
   <menuitem name="menu-task-report" title="Task Reports" parent="menu-project-root"
-    groups="admins,CUSTOM-ACCOUNTANT,CUSTOM-PM,CUSTOM-EM,MGM-OM"
-    if="[ 'admins','CUSTOM-ACCOUNTANT','CUSTOM-PM','CUSTOM-EM','MGM-OM'].any(g -> __user__.group.code.contains(g))"
+    groups="admins,CUSTOM-ACCOUNTANT,CUSTOM-PM,CUSTOM-EM,CUSTOM-OM"
+    if="[ 'admins','CUSTOM-ACCOUNTANT','CUSTOM-PM','CUSTOM-EM','CUSTOM-OM'].any(g -> __user__.group.code.contains(g))"
     order="350" action="task-report-view"/>
   <menuitem name="menu-task-report-technician" title="Task Reports" icon="list-task"
     groups="CUSTOM-PT" if="__user__.group.code == 'CUSTOM-PT'" order="350" action="task-report-view"/>
