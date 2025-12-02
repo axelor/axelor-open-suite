@@ -1,0 +1,3 @@
+---
+title: "Base: fixed data init error when creating a new database."
+module: axelor-base
