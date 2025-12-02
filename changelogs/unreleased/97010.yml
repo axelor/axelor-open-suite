@@ -1,0 +1,5 @@
+---
+title: "Purchase Requests: fixed an issue where purchase order was not linked with PurchaseRequest"
+module: axelor-purchase
+developer: |
+  - PurchaseRequestServiceImpl consturctor is updated to introduce PurchaseRequestToPoCreateService
