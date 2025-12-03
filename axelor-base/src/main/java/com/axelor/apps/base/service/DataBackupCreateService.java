@@ -103,14 +103,7 @@ public class DataBackupCreateService {
   protected List<String> fileNameList;
   protected static Set<String> exceptColumnNameList =
       ImmutableSet.of(
-          "importId",
-          "updatedBy",
-          "createdBy",
-          "updatedOn",
-          "createdOn",
-          "archived",
-          "version",
-          "attrs");
+          "importId", "updatedBy", "createdBy", "updatedOn", "createdOn", "version", "attrs");
 
   StringBuilder sb = new StringBuilder();
 
