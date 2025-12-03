@@ -1,6 +1,25 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.purchase.service.purchase.request;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -22,6 +41,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPoCreateService {
@@ -52,7 +72,10 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public PurchaseRequestToPoGenerationResult createFromRequests(
-      List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
+      List<PurchaseRequest> purchaseRequests,
+      Boolean groupBySupplier,
+      Boolean groupByProduct,
+      Company company)
       throws AxelorException {
 
     final Map<String, PurchaseOrder> poMap = new HashMap<>();
@@ -76,7 +99,7 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
               : purchaseRequest.getId().toString();
       PurchaseOrder po = poMap.get(key);
       if (po == null) {
-        po = createPurchaseOrder(purchaseRequest);
+        po = createPurchaseOrder(purchaseRequest, company);
         poMap.put(key, po);
       }
 
@@ -99,7 +122,8 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public PurchaseOrder createFromRequest(PurchaseRequest pr) throws AxelorException {
-    PurchaseRequestToPoGenerationResult result = createFromRequests(List.of(pr), false, false);
+    PurchaseRequestToPoGenerationResult result =
+        createFromRequests(List.of(pr), false, false, null);
 
     if (result.hasWarnings()) {
       throw new AxelorException(TraceBackRepository.CATEGORY_NO_VALUE, result.getWarningMessage());
@@ -137,12 +161,12 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
     return String.valueOf(pr.getSupplierPartner().getId());
   }
 
-  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest)
+  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest, Company company)
       throws AxelorException {
     return purchaseOrderRepo.save(
         purchaseOrderCreateService.createPurchaseOrder(
             AuthUtils.getUser(),
-            purchaseRequest.getCompany(),
+            Optional.ofNullable(purchaseRequest.getCompany()).orElse(company),
             null,
             purchaseRequest.getSupplierPartner().getCurrency(),
             null,

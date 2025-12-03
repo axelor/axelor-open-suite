@@ -29,11 +29,11 @@ libs.ical4j = 'org.mnode.ical4j:ical4j:2.2.0'
 libs.ical4j_connector = dependencies.create("org.mnode.ical4j:ical4j-connector:1.0.1") {
   exclude group: 'asm', module: 'asm'
   exclude group: 'org.apache.tika', module: 'tika-core'
+  exclude group: 'org.codehaus.groovy', module: 'groovy-all'
 }
-libs.ical4j_extensions = [
-        'org.mnode.ical4j:ical4j-extensions:1.0.3',
-        libs.groovy
-]
+libs.ical4j_extensions = dependencies.create("org.mnode.ical4j:ical4j-extensions:1.0.3"){
+  exclude group: 'org.codehaus.groovy', module: 'groovy-all'
+}
 
 libs.jsch = 'com.jcraft:jsch:0.1.55'
 

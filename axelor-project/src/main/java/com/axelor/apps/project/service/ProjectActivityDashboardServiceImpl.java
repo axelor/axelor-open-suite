@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.project.service;
 
+import com.axelor.apps.base.db.Localization;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.Wiki;
@@ -51,6 +52,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -138,21 +140,33 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
       activityDataMap.put(date, titleMapList);
     }
 
-    dataMap.put("$startDate", startDate.format(DATE_FORMATTER));
-    dataMap.put("$endDate", endDate.format(DATE_FORMATTER));
+    DateTimeFormatter dateFormat = getDateFormatter();
+    dataMap.put("$startDate", startDate.format(dateFormat));
+    dataMap.put("$endDate", endDate.format(dateFormat));
+
     dataMap.put("$activityList", activityDataMap.isEmpty() ? null : Arrays.asList(activityDataMap));
     return dataMap;
   }
 
+  protected DateTimeFormatter getDateFormatter() {
+    return Optional.ofNullable(AuthUtils.getUser())
+        .map(User::getLocalization)
+        .filter(Objects::nonNull)
+        .map(Localization::getDateFormat)
+        .filter(StringUtils::notEmpty)
+        .map(DateTimeFormatter::ofPattern)
+        .orElse(DATE_FORMATTER);
+  }
+
   @Override
   public Map<String, Object> getPreviousData(String date, Long projectId) {
-    LocalDate formattedDate = LocalDate.parse(date, DATE_FORMATTER);
+    LocalDate formattedDate = LocalDate.parse(date, getDateFormatter());
     return this.getData(formattedDate.minusDays(30), formattedDate.minusDays(1), projectId);
   }
 
   @Override
   public Map<String, Object> getNextData(String date, Long projectId) {
-    LocalDate formattedDate = LocalDate.parse(date, DATE_FORMATTER);
+    LocalDate formattedDate = LocalDate.parse(date, getDateFormatter());
     LocalDate endDate = formattedDate.plusDays(30);
     LocalDate todayDate = LocalDate.now();
     if (todayDate.isBefore(endDate)) {
@@ -222,7 +236,7 @@ public class ProjectActivityDashboardServiceImpl implements ProjectActivityDashb
 
   protected String getActivityDate(LocalDateTime dateTime) {
     LocalDate date = dateTime.toLocalDate();
-    return LocalDate.now().equals(date) ? I18n.get("Today") : date.format(DATE_FORMATTER);
+    return LocalDate.now().equals(date) ? I18n.get("Today") : date.format(getDateFormatter());
   }
 
   protected List<MailMessage> getMailMessages(

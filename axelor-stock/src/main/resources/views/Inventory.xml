@@ -88,7 +88,7 @@
         </panel>
       </panel>
 
-      <panel-dashlet  name="inventoryLineListPanelDashlet" title="Inventory lines"
+      <panel-dashlet name="inventoryLineListPanelDashlet" title="Inventory lines"
         height="800" readonlyIf="statusSelect >= 5 || stockLocation == null"
         action="action-inventory-line-view-dashlet" canNew="id" canDelete="true" showIf="id"/>
 

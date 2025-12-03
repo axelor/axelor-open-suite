@@ -10,26 +10,35 @@
     <field name="product" canEdit="false"
       onChange="action-inventory-line-group-on-change-product-stock-location"
       domain="self.stockManaged = true AND self.dtype = 'Product'" grid-view="product-grid"
-      form-view="product-form" readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
+      form-view="product-form"
+      readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
     <field name="stockLocation"
       onSelect="action-inventory-line-method-set-stock-location-domain"
-      onChange="action-inventory-line-group-on-change-product-stock-location" readonlyIf="inventory.statusSelect >= 5"/>
+      onChange="action-inventory-line-group-on-change-product-stock-location"
+      readonlyIf="inventory.statusSelect >= 5"/>
     <field name="currentQty" readonly="true" aggregate="sum" width="120" x-scale="2"/>
     <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum"
-      width="120" x-scale="2" min="0" readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
-    <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false" readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
-    <field name="description" readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
-    <field name="rack" width="150" readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
+      width="120" x-scale="2" min="0"
+      readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
+    <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"
+      readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
+    <field name="description"
+      readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
+    <field name="rack" width="150"
+      readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
     <field name="trackingNumber" canNew="true" width="150" domain="self.product = :product"
-      onChange="action-inventory-line-method-update-inventory-line" readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
+      onChange="action-inventory-line-method-update-inventory-line"
+      readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
     <field name="gap"/>
     <field name="gapValue"/>
     <field name="realValue"/>
-    <field name="price" readonlyIf="isPresentInStockLocation || inventory.statusSelect >= 5 || inventory.stockLocation == null"
+    <field name="price"
+      readonlyIf="isPresentInStockLocation || inventory.statusSelect >= 5 || inventory.stockLocation == null"
       x-scale="nbDecimalDigitForUnitPrice"/>
     <field name="isPresentInStockLocation" type="boolean" x-dirty="false" hidden="true"/>
     <button name="showDetailStockProduct" icon="boxes"
-      onClick="action-inventory-line-view-for-a-product-from-product-view" readonlyIf="!product || inventory.statusSelect >= 5 || inventory.stockLocation == null"
+      onClick="action-inventory-line-view-for-a-product-from-product-view"
+      readonlyIf="!product || inventory.statusSelect >= 5 || inventory.stockLocation == null"
       if="__config__.app.isApp('supplychain')"/>
     <field name="nbDecimalDigitForUnitPrice" x-dirty="false" hidden="true" type="integer"/>
     <field name="inventory.statusSelect"/>

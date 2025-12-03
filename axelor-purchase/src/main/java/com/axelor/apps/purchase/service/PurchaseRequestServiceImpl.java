@@ -52,11 +52,14 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public PurchaseRequestToPoGenerationResult generatePo(
-      List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
+      List<PurchaseRequest> purchaseRequests,
+      Boolean groupBySupplier,
+      Boolean groupByProduct,
+      Company company)
       throws AxelorException {
     PurchaseRequestToPoGenerationResult result =
         purchaseRequestToPoCreateService.createFromRequests(
-            purchaseRequests, groupBySupplier, groupByProduct);
+            purchaseRequests, groupBySupplier, groupByProduct, company);
 
     for (PurchaseRequest pr : purchaseRequests) {
       if (pr.getPurchaseOrder() != null) {
