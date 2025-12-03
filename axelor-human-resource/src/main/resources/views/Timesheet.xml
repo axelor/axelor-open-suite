@@ -157,14 +157,17 @@
           if="__config__.app.getApp('timesheet')?.needValidation &amp;&amp; __user__.group.code == 'admins'"/>
         <button name="validateBtn" hidden="true" onClick="action-timesheet-group-validate"
           title="Validate" icon="fa-check" css="btn-success"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation &amp;&amp;
+            !(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
         <button name="refuseBtn" hidden="true" onClick="action-timesheet-group-refuse"
           title="Refuse" icon="fa-times" css="btn-danger"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation &amp;&amp;
+        !(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
         <button name="cancelBtn" hidden="true"
           onClick="save,action-timesheet-method-cancel,action-timesheet-group-buttons"
           title="Cancel" icon="fa-times-circle" css="btn-danger"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation &amp;&amp;
+            !(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
         <button name="draftBtn"
           onClick="save,action-timesheet-method-draft,action-timesheet-group-buttons"
           title="Return to draft status" showIf="statusSelect &gt; 3"

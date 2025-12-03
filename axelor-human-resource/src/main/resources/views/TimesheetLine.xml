@@ -23,7 +23,7 @@
       widget="SuggestBox" form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="hoursDuration" width="62%" min="0.01" title="Duration (hours)"/>
     <field name="durationForCustomer" hidden="true"/>
-    <field name="toInvoice" readonly="true" if-module="axelor-business-project"
+    <field name="toInvoice" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
@@ -57,7 +57,7 @@
       canEdit="false" canView="false"/>
     <field name="hoursDuration" width="62%" min="0.01" title="TimesheetLine.duration"/>
     <field name="durationForCustomer" hidden="true"/>
-    <field name="toInvoice" readonly="true" if-module="axelor-business-project"
+    <field name="toInvoice" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
@@ -99,7 +99,7 @@
     <field name="duration" width="100"
       onChange="action-timesheet-line-method-set-stored-duration" aggregate="sum" min="0.01"/>
     <field name="hoursDuration" hidden="true"/>
-    <field name="toInvoice" width="100" readonly="true" if-module="axelor-business-project"
+    <field name="toInvoice" width="100" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" width="100" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
@@ -127,7 +127,7 @@
     <field name="duration"/>
     <field name="hoursDuration"/>
     <field name="durationForCustomer" hidden="true"/>
-    <field name="toInvoice" readonly="true" if-module="axelor-business-project"
+    <field name="toInvoice" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
@@ -158,7 +158,7 @@
     <field name="hoursDuration" hidden="true"/>
     <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"
       canEdit="false" canView="false"/>
-    <field name="toInvoice" readonly="true" if-module="axelor-business-project"
+    <field name="toInvoice" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
@@ -296,7 +296,7 @@
         if="__config__.app.getApp('timesheet')?.needValidation"/>
     </panel>
     <panel-include view="timesheet-line-timesheet-form"/>
-    <panel-mail name="panelMail">
+    <panel-mail name="panelMail" if="__user.group.code ==  'admins' ">
       <mail-messages/>
       <mail-followers/>
     </panel-mail>

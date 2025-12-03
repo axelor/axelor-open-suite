@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlService;
 import com.axelor.apps.businessproject.service.BusinessProjectService;
@@ -109,13 +110,27 @@ public class ProjectController {
     Project project = request.getContext().asType(Project.class);
     project = Beans.get(ProjectRepository.class).find(project.getId());
 
-    response.setView(
+    InvoicingProject invoicingProject =
+        Beans.get(InvoicingProjectRepository.class)
+            .all()
+            .filter("self.project.id = ?", project.getId())
+            .fetchOne();
+
+    ActionView.ActionViewBuilder view =
         ActionView.define(I18n.get("Invoice Business Project"))
             .model(InvoicingProject.class.getName())
             .add("form", "invoicing-project-form")
-            .param("forceEdit", "true")
-            .context("_project", project)
-            .map());
+            .param("forceEdit", "true");
+
+    if (invoicingProject != null) {
+      // Open existing invoicing project
+      view.context("_showRecord", invoicingProject.getId());
+    } else {
+      // Creating new invoicing project : pre-fill with project
+      view.context("_project", project);
+    }
+
+    response.setView(view.map());
   }
 
   @ErrorException
