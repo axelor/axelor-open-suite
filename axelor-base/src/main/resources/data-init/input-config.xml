@@ -19,6 +19,12 @@
       check-message="Invalid navigation"/>
   </input>
 
+  <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"
+    search="self.name = :name">
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Name must not be null"/>
+  </input>
   <input file="auth_permission.csv" separator=";" type="com.axelor.auth.db.Permission"
     search="self.name = :name" call="com.axelor.csv.script.ImportPermission:importPermissionToRole">
     <bind column="name" to="name"
@@ -243,6 +249,7 @@
 
   <input file="meta_metaMenu.csv" separator=";" type="com.axelor.meta.db.MetaMenu"
     search="self.name = :name and self.module = 'axelor-core'" update="true">
+    <bind column="importId" to="importId" eval="null"/>
     <bind column="name" to="name"
       check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
       check-message="Name must not be null"/>
@@ -293,13 +300,6 @@
     <bind column="batchServiceSelect" to="batchServiceSelect"
       check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.meta.db.MetaSchedule', 'batchServiceSelect', batchServiceSelect)"
       check-message="Invalid batchServiceSelect"/>
-  </input>
-
-  <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"
-    search="self.name = :name">
-    <bind column="name" to="name"
-      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
-      check-message="Name must not be null"/>
   </input>
 
   <input file="base_addressTemplate.csv" separator=";"
