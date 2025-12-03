@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="timesheet-line-invoicing-project-grid" title="Log Times"
-    model="com.axelor.apps.hr.db.TimesheetLine" orderBy="shiftType,startTime" groupBy="shiftType"
+    model="com.axelor.apps.hr.db.TimesheetLine" orderBy="startTime"
     onNew="action-timesheet-line-method-set-product" editable="true">
     <field name="employee" form-view="employee-form" grid-view="employee-grid" hidden="true"/>
     <field name="projectTask" form-view="project-task-form"
@@ -16,10 +16,10 @@
     <field name="hoursDuration" aggregate="sum"/>
     <!-- <field name="durationForCustomer" if-module="axelor-business-project" -->
     <!-- if="__config__.app.isApp('business-project')" aggregate="sum"/> -->
-    <field name="isEmergencyService" readonly="true"/>
-    <field name="isPublicHoliday" readonly="true"/>
-    <field name="isSaturday" readonly="true"/>
-    <field name="isSunday" readonly="true"/>
+    <field name="isEmergencyService" readonly="true" hidden="true"/>
+    <field name="isPublicHoliday" readonly="true" hidden="true"/>
+    <field name="isSaturday" readonly="true" hidden="true"/>
+    <field name="isSunday" readonly="true" hidden="true"/>
     <field name="toInvoice" readonly="true" if-module="axelor-business-project"
       if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="comments"/>
@@ -28,7 +28,6 @@
     <field name="enableEditor" hidden="true"/>
     <field name="invoiced" hidden="true"/>
     <field name="project" hidden="true"/>
-    <field name="shiftType" hidden="true"/>
     <field name="date" hidden="true"/>
     <button name="updateToInvoiceBtn" title="Update to invoice"
       if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"

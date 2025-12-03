@@ -31,8 +31,8 @@
     <boolean name="isPublicHoliday" title="Holiday" readonly="true"/>
     <boolean name="isEmergencyService" title="Emergency Service" readonly="true"/>
     <boolean name="isNightShift" title="Night Shift"/>
-<!--    <string name="shiftType" selection="hr.timesheet.shift.type" title="shift"-->
-<!--      default="01-normal"/>-->
+    <!-- <string name="shiftType" selection="hr.timesheet.shift.type" title="shift" -->
+    <!-- default="01-normal"/> -->
     <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
 
     <many-to-one name="projectPlanningTime"
