@@ -120,7 +120,8 @@
             hidden="true"
             if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
           <button name="refuseBtn" onClick="action-expense-group-refuse" title="Refuse"
-            hidden="true" if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
+            hidden="true"
+            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
           <button name="cancelBtn" onClick="action-expense-group-cancel" hidden="true"
             title="Cancel" icon="fa-times-circle" css="btn-danger"
             if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
@@ -218,7 +219,7 @@
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
     </panel>
-    <panel-mail name="mailPanel" if="__user.group.code ==  'admins' ">
+    <panel-mail name="mailPanel" if="__user__.group.code ==  'admins' ">
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>

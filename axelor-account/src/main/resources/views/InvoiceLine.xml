@@ -255,7 +255,7 @@
       </panel>
     </panel-tabs>
 
-    <panel-mail name="mailPanel"  if="__user.group.code ==  'admins' ">
+    <panel-mail name="mailPanel" if="__user__.group.code ==  'admins' ">
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>
