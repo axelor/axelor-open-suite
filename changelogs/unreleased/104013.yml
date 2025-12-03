@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed error when merging sale quotations with new versions."
+module: axelor-sale
