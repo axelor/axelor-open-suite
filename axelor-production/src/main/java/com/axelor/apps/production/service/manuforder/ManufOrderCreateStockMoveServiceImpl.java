@@ -30,6 +30,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class ManufOrderCreateStockMoveServiceImpl implements ManufOrderCreateStockMoveService {
 
@@ -182,7 +183,9 @@ public class ManufOrderCreateStockMoveServiceImpl implements ManufOrderCreateSto
         fromStockLocation,
         virtualStockLocation,
         null,
-        manufOrder.getPlannedStartDateT().toLocalDate(),
+        Optional.ofNullable(manufOrder.getPlannedStartDateT())
+            .map(LocalDateTime::toLocalDate)
+            .orElse(null),
         null,
         StockMoveRepository.TYPE_INTERNAL);
   }
