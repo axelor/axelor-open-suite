@@ -76,7 +76,8 @@
           onClick="save,action-target-list-method-open-filtered-partners"/>
         <spacer name="btnSpacer"/>
         <panel-related name="partnerSetPanel" field="partnerSet" colSpan="12"
-          onSelect="action-target-list-lead-partner-set-domain"/>
+          onSelect="action-target-list-lead-partner-set-domain" grid-view="partner-grid"
+          form-view="partner-form"/>
       </panel>
       <panel name="leadsPanel" title="Leads">
         <field name="leadQueryTypeSelect"/>
