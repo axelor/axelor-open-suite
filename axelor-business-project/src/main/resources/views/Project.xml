@@ -112,7 +112,7 @@
       <field name="$viewerProjectTags" showTitle="false" colSpan="2" readonly="true"
         if="__user__.group.code == 'admins' || __user__.group.code == 'CUSTOM-ACCOUNTANT'">
         <viewer depends="isBusinessProject,$toInvoiceCounter,id">
-            <![CDATA[
+                    <![CDATA[
 								<>
 									<Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
 										<Box>
@@ -151,7 +151,8 @@
         <panel name="generalInfoPanel" colSpan="12" title="General information"
           canCollapse="true" collapseIf="false">
           <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
-            onChange="action-business-project-group-project-status-on-change" colSpan="12"/>
+            onChange="action-business-project-group-project-status-on-change-with-validation"
+            colSpan="12"/>
           <field name="fromDate" colSpan="6"/>
           <field name="toDate" onChange="action-project-group-to-date-onchange" colSpan="6"/>
           <field name="company" form-view="company-form" grid-view="company-grid" colSpan="6"
@@ -705,6 +706,11 @@
     <error message="Invalid date."
       if="fromDate != null &amp;&amp; toDate != null &amp;&amp; toDate &lt; fromDate"
       action="action-project-null-toDate"/>
+  </action-validate>
+
+  <action-validate name="action-business-project-validate-task-report-exists">
+    <alert message="This project has no task report."
+      if="id != null &amp;&amp; __repo__(TaskReport).all().filter('self.project.id = ?1', id).count() == 0"/>
   </action-validate>
 
   <action-attrs id="business-project-action-project-project-default"
@@ -1379,6 +1385,7 @@
   </action-method>
 
   <action-group name="action-business-project-group-finish-project">
+    <action name="action-business-project-validate-task-report-exists"/>
     <action name="action-business-project-method-check-project-state"
       if="__config__.app.isApp('business-project')"/>
     <action name="action-project-group-finish-project"/>
@@ -1393,6 +1400,14 @@
 
   <action-group name="action-project-group-to-date-onchange">
     <action name="action-project-validate-toDate"/>
+  </action-group>
+
+  <action-group
+    name="action-business-project-group-project-status-on-change-with-validation">
+    <action name="action-business-project-validate-task-report-exists"
+      if="projectStatus?.isCompleted == true"/>
+    <action name="action-business-project-group-project-status-on-change"
+      if="projectStatus?.isCompleted != true || __repo__(com.axelor.apps.businessproject.db.TaskReport).all().filter('self.project.id = ?1', id).count() > 0"/>
   </action-group>
 
   <action-method name="action-business-project-method-check-project-state">

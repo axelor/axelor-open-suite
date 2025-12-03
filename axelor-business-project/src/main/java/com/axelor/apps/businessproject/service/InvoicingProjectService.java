@@ -114,8 +114,7 @@ public class InvoicingProjectService {
   }
 
   public void fillLines(InvoicingProject invoicingProject, Project project) {
-    String commonQuery =
-        "self.project = :project AND self.toInvoice = true AND self.invoiced = false";
+    String commonQuery = "self.project = :project AND self.toInvoice = true";
 
     StringBuilder solQueryBuilder = new StringBuilder(commonQuery);
     solQueryBuilder.append(
@@ -185,20 +184,6 @@ public class InvoicingProjectService {
       expenseLineQueryBuilder.append(" AND self.expenseDate <= :deadlineDate");
       expenseLineQueryMap.put("deadlineDate", invoicingProject.getDeadlineDate());
     }
-
-    //    // Extra expense
-    //    StringBuilder extraExpenseLineQueryBuilder = new StringBuilder(commonQuery);
-    //    Map<String, Object> extraExpenseLineQueryMap = new HashMap<>();
-    //    extraExpenseLineQueryMap.put("project", project);
-    //
-    //    invoicingProject
-    //        .getExtraExpenseLineSet()
-    //        .addAll(
-    //            Beans.get(ExtraExpenseLineRepository.class)
-    //                .all()
-    //                .filter(extraExpenseLineQueryBuilder.toString())
-    //                .bind(extraExpenseLineQueryMap)
-    //                .fetch());
 
     List<SaleOrderLine> saleOrderLineList =
         saleOrderLineRepository.all().filter(solQueryBuilder.toString()).bind(solQueryMap).fetch();
