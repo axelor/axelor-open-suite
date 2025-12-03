@@ -136,6 +136,7 @@
     <action name="action-sequence-validate"/>
     <action name="action-method-sequence-validate-before-save"/>
     <action name="action-sequence-method-verify-pattern"/>
+    <action name="action-sequence-method-compute-fullname"/>
   </action-group>
 
   <action-group name="action-sequence-version-form-on-change-date-group">
