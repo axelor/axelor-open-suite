@@ -1,0 +1,3 @@
+---
+title: "Account: fixed the issue where the status button title was incorrect when opening an account from the partner form."
+module: axelor-account
