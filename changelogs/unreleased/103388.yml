@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed an error occurring when opening form view of a sale order line in confirmation wizard."
+module: axelor-sale
