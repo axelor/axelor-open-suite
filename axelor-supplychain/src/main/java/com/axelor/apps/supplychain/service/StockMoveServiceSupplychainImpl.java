@@ -420,8 +420,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       throws AxelorException {
     StockMoveLine newStockMoveLine = super.copySplittedStockMoveLine(stockMoveLine);
 
-    if (appSupplyChainService.isApp("supplychain")
-        && appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
+    AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
+    if (appSupplyChainService.isApp("supplychain") && appSupplychain.getManageStockReservation()) {
       BigDecimal requestedReservedQty =
           stockMoveLine
               .getRequestedReservedQty()
@@ -434,6 +434,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       reservedQtyService.deallocateStockMoveLineAfterSplit(
           stockMoveLine, stockMoveLine.getReservedQty());
       stockMoveLine.setReservedQty(BigDecimal.ZERO);
+    }
+    StockMove stockMove = stockMoveLine.getStockMove();
+    if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+            && appSupplychain.getAutoFillDeliveryRealQty())
+        || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+            && appSupplychain.getAutoFillReceiptRealQty())) {
+      newStockMoveLine.setRealQty(newStockMoveLine.getQty());
     }
     return newStockMoveLine;
   }
