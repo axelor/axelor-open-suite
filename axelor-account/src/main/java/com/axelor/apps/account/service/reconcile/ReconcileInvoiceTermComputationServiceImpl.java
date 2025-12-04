@@ -357,13 +357,13 @@ public class ReconcileInvoiceTermComputationServiceImpl
           .collect(Collectors.toList());
     } else {
       List<InvoiceTerm> invoiceTermsToPay;
-      if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
-        invoiceTermsToPay =
-            invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
-
-      } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
         invoiceTermsToPay =
             invoiceTermService.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
+
+      } else if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+        invoiceTermsToPay =
+            invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
 
       } else {
         return null;
