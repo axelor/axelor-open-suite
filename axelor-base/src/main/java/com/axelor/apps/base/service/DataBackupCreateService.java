@@ -465,7 +465,6 @@ public class DataBackupCreateService {
       Property[] pro = metaModelMapper.getProperties();
       Integer fetchLimit = dataBackup.getFetchLimit();
       boolean isRelativeDate = dataBackup.getIsRelativeDate();
-      boolean updateImportId = dataBackup.getUpdateImportId();
       boolean isTemplateWithDescription = dataBackup.getIsTemplateWithDescription();
       int count = 0;
       Integer maxLinesPerFile = dataBackup.getMaxLinesPerFile();
@@ -503,7 +502,6 @@ public class DataBackupCreateService {
                           dataObject,
                           dirPath,
                           isRelativeDate,
-                          updateImportId,
                           dataBackup,
                           relativeDateTime));
                   if (templateFlag && isTemplateWithDescription) {
@@ -697,7 +695,6 @@ public class DataBackupCreateService {
       Object dataObject,
       String dirPath,
       boolean isRelativeDate,
-      boolean updateImportId,
       DataBackup dataBackup,
       LocalDateTime relativeDateTime)
       throws AxelorException {
@@ -721,7 +718,7 @@ public class DataBackupCreateService {
 
     switch (propertyTypeStr) {
       case "LONG":
-        if (updateImportId) {
+        if ("id".equalsIgnoreCase(property.getName())) {
           return ((Model) dataObject).getImportId();
         }
         return value.toString();
@@ -756,10 +753,10 @@ public class DataBackupCreateService {
         return fileName;
       case "ONE_TO_ONE":
       case "MANY_TO_ONE":
-        return getRelationalFieldValue(property, value, updateImportId);
+        return getRelationalFieldValue(property, value);
       case "ONE_TO_MANY":
       case "MANY_TO_MANY":
-        return getRelationalFieldData(property, value, updateImportId);
+        return getRelationalFieldData(property, value);
       default:
         return value.toString();
     }
@@ -835,12 +832,12 @@ public class DataBackupCreateService {
         + "]";
   }
 
-  public String getRelationalFieldData(Property property, Object value, boolean updateImportId) {
+  public String getRelationalFieldData(Property property, Object value) {
     StringBuilder idStringBuilder = new StringBuilder();
     Collection<?> valueList = (Collection<?>) value;
     String referenceData;
     for (Object val : valueList) {
-      referenceData = getRelationalFieldValue(property, val, updateImportId);
+      referenceData = getRelationalFieldValue(property, val);
       if (StringUtils.notBlank(referenceData)) {
         idStringBuilder.append(referenceData).append(REFERENCE_FIELD_SEPARATOR);
       }
@@ -852,21 +849,19 @@ public class DataBackupCreateService {
     return idStringBuilder.toString();
   }
 
-  protected String getRelationalFieldValue(Property property, Object val, boolean updateImportId) {
+  protected String getRelationalFieldValue(Property property, Object val) {
     if (property.getTarget() != null
         && property.getTarget().getPackage().equals(Package.getPackage("com.axelor.meta.db"))
         && !property.getTarget().getTypeName().equals("com.axelor.meta.db.MetaFile")) {
-      try {
-        return Mapper.of(val.getClass()).get(val, "name").toString();
-      } catch (Exception e) {
-        return (updateImportId) ? ((Model) val).getImportId() : ((Model) val).getId().toString();
-      }
+      return Mapper.of(val.getClass()).get(val, "name").toString();
     } else if (property.getTarget() != null
         && property.getTarget() == App.class
         && property.getType() == PropertyType.ONE_TO_ONE) {
       return Mapper.of(val.getClass()).get(val, "code").toString();
     } else {
-      return (updateImportId) ? ((Model) val).getImportId() : ((Model) val).getId().toString();
+      return ((Model) val).getImportId() != null
+          ? ((Model) val).getImportId()
+          : ((Model) val).getId().toString();
     }
   }
 
