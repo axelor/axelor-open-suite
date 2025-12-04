@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed the check for financial discount accounts when no financial discount is selected."
+module: axelor-account
