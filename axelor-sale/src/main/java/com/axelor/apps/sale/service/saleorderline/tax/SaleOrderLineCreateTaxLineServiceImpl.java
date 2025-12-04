@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -29,6 +30,8 @@ import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -122,6 +125,9 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
         saleOrderLineTax.setExTaxBase(
             currencyScaleService.getScaledValue(
                 saleOrder, saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal())));
+        saleOrderLineTax.setInTaxTotal(
+            currencyScaleService.getScaledValue(
+                saleOrder, saleOrderLineTax.getInTaxTotal().add(saleOrderLine.getInTaxTotal())));
       } else {
         SaleOrderLineTax saleOrderLineTax =
             createSaleOrderLineTax(saleOrder, saleOrderLine, taxLine);
@@ -135,6 +141,7 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
     SaleOrderLineTax saleOrderLineTax = new SaleOrderLineTax();
     saleOrderLineTax.setSaleOrder(saleOrder);
     saleOrderLineTax.setExTaxBase(saleOrderLine.getExTaxTotal());
+    saleOrderLineTax.setInTaxTotal(saleOrderLine.getInTaxTotal());
     saleOrderLineTax.setTaxLine(taxLine);
     saleOrderLineTax.setTaxType(
         Optional.ofNullable(taxLine.getTax()).map(Tax::getTaxType).orElse(null));
@@ -148,7 +155,7 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
       List<SaleOrderLineTax> currentSaleOrderLineTaxList) {
     for (SaleOrderLineTax saleOrderLineTax : map.values()) {
       // Dans la devise de la facture
-      orderLineTaxService.computeTax(saleOrderLineTax, currency);
+      computeTax(saleOrderLineTax, currency);
       SaleOrderLineTax oldSaleOrderLineTax =
           getExistingSaleOrderLineTax(saleOrderLineTax, currentSaleOrderLineTaxList);
       if (oldSaleOrderLineTax == null) {
@@ -161,6 +168,37 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
         saleOrderLineTaxList.add(oldSaleOrderLineTax);
       }
     }
+  }
+
+  protected void computeTax(SaleOrderLineTax saleOrderLineTax, Currency currency) {
+    BigDecimal exTaxBase = saleOrderLineTax.getExTaxBase().abs();
+    BigDecimal taxTotal = BigDecimal.ZERO;
+    int currencyScale = currencyScaleService.getCurrencyScale(currency);
+
+    if (saleOrderLineTax.getTaxLine() != null) {
+      taxTotal =
+          exTaxBase.multiply(
+              saleOrderLineTax
+                  .getTaxLine()
+                  .getValue()
+                  .divide(
+                      new BigDecimal(100),
+                      AppBaseService.COMPUTATION_SCALING,
+                      RoundingMode.HALF_UP));
+
+      if (saleOrderLineTax.getSaleOrder() != null) {
+        BigDecimal diff =
+            taxTotal.subtract(saleOrderLineTax.getInTaxTotal().subtract(exTaxBase)).abs();
+        if (diff.compareTo(BigDecimal.ZERO) >= 0 && diff.compareTo(new BigDecimal("0.01")) <= 0) {
+          taxTotal = saleOrderLineTax.getInTaxTotal().subtract(exTaxBase);
+        }
+      }
+
+      saleOrderLineTax.setTaxTotal(currencyScaleService.getScaledValue(taxTotal, currencyScale));
+      saleOrderLineTax.setPercentageTaxTotal(saleOrderLineTax.getTaxTotal());
+    }
+    saleOrderLineTax.setInTaxTotal(
+        currencyScaleService.getScaledValue(exTaxBase.add(taxTotal), currencyScale));
   }
 
   @Override

@@ -32,6 +32,7 @@ import com.axelor.apps.account.service.invoice.InvoiceJournalService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.TaxGenerator;
 import com.axelor.apps.account.service.invoice.tax.InvoiceLineTaxToolService;
+import com.axelor.apps.account.service.invoice.tax.InvoiceTaxComputeService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.account.util.TaxConfiguration;
 import com.axelor.apps.base.AxelorException;
@@ -64,6 +65,7 @@ public class TaxInvoiceLine extends TaxGenerator {
   protected TaxAccountToolService taxAccountToolService;
   protected InvoiceJournalService invoiceJournalService;
   protected InvoiceLineTaxToolService invoiceLineTaxToolService;
+  protected InvoiceTaxComputeService invoiceTaxComputeService;
 
   public TaxInvoiceLine(Invoice invoice, List<InvoiceLine> invoiceLines) {
     super(invoice, invoiceLines);
@@ -73,6 +75,7 @@ public class TaxInvoiceLine extends TaxGenerator {
     this.taxAccountToolService = Beans.get(TaxAccountToolService.class);
     this.invoiceJournalService = Beans.get(InvoiceJournalService.class);
     this.invoiceLineTaxToolService = Beans.get(InvoiceLineTaxToolService.class);
+    this.invoiceTaxComputeService = Beans.get(InvoiceTaxComputeService.class);
   }
 
   /**
@@ -235,6 +238,11 @@ public class TaxInvoiceLine extends TaxGenerator {
         currencyScaleService.getCompanyScaledValue(
             invoiceLine,
             invoiceLineTax.getCompanyExTaxBase().add(invoiceLine.getCompanyExTaxTotal())));
+    invoiceLineTax.setInTaxTotal(invoiceLineTax.getInTaxTotal().add(invoiceLine.getInTaxTotal()));
+    invoiceLineTax.setCompanyInTaxTotal(
+        currencyScaleService.getCompanyScaledValue(
+            invoiceLine,
+            invoiceLineTax.getCompanyInTaxTotal().add(invoiceLine.getCompanyInTaxTotal())));
 
     invoiceLineTax.setVatSystemSelect(vatSystem);
   }
@@ -249,6 +257,11 @@ public class TaxInvoiceLine extends TaxGenerator {
     // Dans la devise de la comptabilité du tiers
     invoiceLineTax.setCompanyExTaxBase(
         currencyScaleService.getCompanyScaledValue(invoice, invoiceLine.getCompanyExTaxTotal()));
+    invoiceLineTax.setInTaxTotal(invoiceLineTax.getInTaxTotal().add(invoiceLine.getInTaxTotal()));
+    invoiceLineTax.setCompanyInTaxTotal(
+        currencyScaleService.getCompanyScaledValue(
+            invoice,
+            invoiceLineTax.getCompanyInTaxTotal().add(invoiceLine.getCompanyInTaxTotal())));
 
     invoiceLineTax.setImputedAccount(imputedAccount);
     invoiceLineTax.setVatSystemSelect(vatSystem);
@@ -306,8 +319,8 @@ public class TaxInvoiceLine extends TaxGenerator {
             ? invoiceLineTax.getExTaxBase().negate()
             : invoiceLineTax.getExTaxBase();
     BigDecimal taxTotal =
-        computeAmount(
-            exTaxBase, taxValue, currencyScaleService.getScale(invoiceLineTax.getInvoice()), null);
+        invoiceTaxComputeService.computeTaxAmount(
+            invoiceLineTax, exTaxBase, taxValue, invoiceLineTax.getInTaxTotal());
 
     if (!ObjectUtils.isEmpty(updatedInvoiceLineTaxList)) {
       for (InvoiceLineTax updatedInvoiceLineTax : updatedInvoiceLineTaxList) {
@@ -337,15 +350,12 @@ public class TaxInvoiceLine extends TaxGenerator {
         (invoiceLineTax.getReverseCharged())
             ? invoiceLineTax.getCompanyExTaxBase().negate()
             : invoiceLineTax.getCompanyExTaxBase();
-    BigDecimal companyTaxTotal =
-        computeAmount(
-            companyExTaxBase,
-            taxValue,
-            currencyScaleService.getCompanyScale(invoiceLineTax.getInvoice()),
-            null);
 
-    invoiceLineTax.setCompanyTaxTotal(companyTaxTotal);
-    invoiceLineTax.setCompanyInTaxTotal(invoiceLineTax.getCompanyExTaxBase().add(companyTaxTotal));
+    invoiceLineTax.setCompanyTaxTotal(
+        invoiceTaxComputeService.computeTaxAmount(
+            invoiceLineTax, companyExTaxBase, taxValue, invoiceLineTax.getCompanyInTaxTotal()));
+    invoiceLineTax.setCompanyInTaxTotal(
+        invoiceLineTax.getCompanyExTaxBase().add(invoiceLineTax.getCompanyTaxTotal()));
 
     invoiceLineTaxList.add(invoiceLineTax);
 
