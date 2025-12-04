@@ -1,3 +1,15 @@
+## [8.2.32] (2025-12-04)
+
+### Fixes
+#### Account
+
+* Analytic move line: fixed the percentage validation logic for analytic reverse lines.
+* Invoice term: added a check to prevent reconciling a holdback invoice term before other invoice terms are paid during a payment session or manual reconciliation.
+
+#### Project
+
+* Project: fix activity dates format according to user's localization
+
 ## [8.2.31] (2025-11-26)
 
 ### Fixes
@@ -2146,6 +2158,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.32]: https://github.com/axelor/axelor-open-suite/compare/v8.2.31...v8.2.32
 [8.2.31]: https://github.com/axelor/axelor-open-suite/compare/v8.2.30...v8.2.31
 [8.2.30]: https://github.com/axelor/axelor-open-suite/compare/v8.2.29...v8.2.30
 [8.2.29]: https://github.com/axelor/axelor-open-suite/compare/v8.2.28...v8.2.29
