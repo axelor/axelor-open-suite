@@ -1,3 +1,137 @@
+## [8.3.24] (2025-12-04)
+
+### Fixes
+#### Base
+
+* Sequence: fixed full name computation on save.
+* App base: fixed the display of testing panel.
+* Partner: alert the user when using the API Sirene and the key was emtpy in the configuration.
+* Account management : fixed fr translation on taxes
+
+#### Account
+
+* Invoice: note panel still visible even if invoiceCommentsPanel is empty in BIRT.
+* Analytic move line: fixed the percentage validation logic for analytic reverse lines.
+* Reconcile group: prevent move line reconciliation across different companies.
+* Invoice term: added a check to prevent reconciling a holdback invoice term before other invoice terms are paid during a payment session or manual reconciliation.
+* Account: fixed the issue where the status button title was incorrect when opening an account from the partner form.
+* Reconcile: added missing translation for Debit and Credit move line amount remaining.
+* Invoice/PurchaseOrder/SaleOrder: fixed the rounding issue on tax generation.
+* Invoice: fixed the check for financial discount accounts when no financial discount is selected.
+
+#### Bank Payment
+
+* Bank reconciliation : fixed moves ongoing reconciled line balance to uses only one company.
+
+#### Cash Management
+
+* Forecast recap: fixed an issue related to dates for purchase order.
+
+#### Contract
+
+* Contract batch: fixed grouped invoicing in case of supplier contracts.
+
+#### Production
+
+* Operation order: fixed missing stock location for consumed stock move lines.
+* Bill of material line: fixed the value of bill of material on change of product.
+* MRP: added an explicit error message instead of a NPE when bill of material is missing on manufacturing proposal.
+* Bill of material: fixed an issue where tree view was not displayed properly.
+
+#### Purchase
+
+* Purchase request: fixed NPE on generating purchase order if company is empty.
+
+#### Sale
+
+* Sale order line: fixed issue where duplicating a line did not include its sub lines.
+* Sale order: fixed error when merging sale quotations with new versions.
+* Sale order: fixed price list date validity check.
+
+#### Stock
+
+* Stock move line: fixed field type for 'counter' on tracking number wizard form.
+* Conformity certificate: fixed stock move line qty in BIRT report.
+* Stock move: fixed an issue where the 'Split into 2' feature did not work when splitting a line with a tracking number.
+* Stock move: fixed the PFP buttons to display only for supplier moves.
+
+#### Supply Chain
+
+* MrpLineType: fixed helper translation.
+* Invoice: fixed fiscal position when the interco invoice is generated.
+* Sale order: fixed issue where duplicated lines were not visible in mass invoicing.
+* Sale order: fixed the value of 'Invoiced Amount (excl. tax)' in case of multi-order invoices.
+
+
+### Developer
+
+#### Purchase
+
+- Changed the PurchaseRequestService.generatePo method to use a default company too.
+
+#### Supply Chain
+
+-- migration script to update amount_invoiced in Sale Order table
+
+UPDATE sale_sale_order SaleOrder
+SET amount_invoiced =
+(
+    CASE
+      WHEN SaleOrder.currency <> Company.currency
+       AND SaleOrder.company_ex_tax_total <> 0
+      THEN SaleOrder.ex_tax_total *
+          (
+              (
+                  COALESCE((
+                      SELECT SUM(InvoiceLine.company_ex_tax_total)
+                      FROM account_invoice_line InvoiceLine
+                      JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+                      WHERE InvoiceLine.sale_order_line IN (
+                          SELECT id FROM sale_sale_order_line WHERE sale_order = SaleOrder.id
+                      )
+                      AND Invoice.operation_type_select = 3
+                      AND Invoice.status_select = 3
+                  ), 0)
+                  -
+                  COALESCE((
+                      SELECT SUM(InvoiceLine.company_ex_tax_total)
+                      FROM account_invoice_line InvoiceLine
+                      JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+                      WHERE InvoiceLine.sale_order_line IN (
+                          SELECT id FROM sale_sale_order_line WHERE sale_order = SaleOrder.id
+                      )
+                      AND Invoice.operation_type_select = 4
+                      AND Invoice.status_select = 3
+                  ), 0)
+              ) / SaleOrder.company_ex_tax_total
+          )
+      ELSE
+          COALESCE((
+              SELECT SUM(InvoiceLine.company_ex_tax_total)
+              FROM account_invoice_line InvoiceLine
+              JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+              WHERE InvoiceLine.sale_order_line IN (
+                  SELECT id FROM sale_sale_order_line WHERE sale_order = SaleOrder.id
+              )
+              AND Invoice.operation_type_select = 3
+              AND Invoice.status_select = 3
+          ), 0)
+          -
+          COALESCE((
+              SELECT SUM(InvoiceLine.company_ex_tax_total)
+              FROM account_invoice_line InvoiceLine
+              JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+              WHERE InvoiceLine.sale_order_line IN (
+                  SELECT id FROM sale_sale_order_line WHERE sale_order = SaleOrder.id
+              )
+              AND Invoice.operation_type_select = 4
+              AND Invoice.status_select = 3
+          ), 0)
+    END
+)
+FROM base_company Company
+WHERE SaleOrder.company = Company.id;
+
 ## [8.3.23] (2025-11-26)
 
 ### Fixes
@@ -1901,6 +2035,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.24]: https://github.com/axelor/axelor-open-suite/compare/v8.3.23...v8.3.24
 [8.3.23]: https://github.com/axelor/axelor-open-suite/compare/v8.3.22...v8.3.23
 [8.3.22]: https://github.com/axelor/axelor-open-suite/compare/v8.3.21...v8.3.22
 [8.3.21]: https://github.com/axelor/axelor-open-suite/compare/v8.3.20...v8.3.21

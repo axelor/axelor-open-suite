@@ -1,3 +1,0 @@
----
-title: "Sale order line: fixed issue where duplicating a line did not include its sub lines."
-module: axelor-sale
