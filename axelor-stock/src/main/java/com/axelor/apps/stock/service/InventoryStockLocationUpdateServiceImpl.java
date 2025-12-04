@@ -29,9 +29,11 @@ import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class InventoryStockLocationUpdateServiceImpl
     implements InventoryStockLocationUpdateService {
@@ -78,17 +80,24 @@ public class InventoryStockLocationUpdateServiceImpl
             .bind("productList", productList)
             .fetch();
 
-    if (stockLocationLineList != null) {
-      for (StockLocationLine stockLocationLine : stockLocationLineList) {
-        Product product = stockLocationLine.getProduct();
-        BigDecimal realQty =
-            inventoryLineList.stream()
-                .filter(line -> line.getProduct().equals(product))
-                .map(InventoryLine::getRealQty)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        updateLine(inventory, inventoryLineList, stockLocationLine, realQty, product);
-      }
+    Map<Product, BigDecimal> productToQtyMap = getProductQtyMap(inventoryLineList);
+
+    for (StockLocationLine stockLocationLine : stockLocationLineList) {
+      Product product = stockLocationLine.getProduct();
+      BigDecimal realQty = productToQtyMap.getOrDefault(product, BigDecimal.ZERO);
+      updateLine(inventory, inventoryLineList, stockLocationLine, realQty, product);
     }
+  }
+
+  protected Map<Product, BigDecimal> getProductQtyMap(List<InventoryLine> inventoryLineList) {
+    return inventoryLineList.stream()
+        .filter(line -> line.getTrackingNumber() == null)
+        .collect(
+            Collectors.groupingBy(
+                InventoryLine::getProduct,
+                Collectors.mapping(
+                    InventoryLine::getRealQty,
+                    Collectors.reducing(BigDecimal.ZERO, BigDecimal::add))));
   }
 
   protected void updateDetailsStockLocationLines(
@@ -107,22 +116,27 @@ public class InventoryStockLocationUpdateServiceImpl
             .bind("productList", productList)
             .fetch();
 
+    Map<Pair<Product, TrackingNumber>, InventoryLine> inventoryLineMap =
+        getPairInventoryLineMap(inventoryLineList);
+
     if (detailsStockLocationLineList != null) {
       for (StockLocationLine detailsStockLocationLine : detailsStockLocationLineList) {
         Product product = detailsStockLocationLine.getProduct();
         TrackingNumber trackingNumber = detailsStockLocationLine.getTrackingNumber();
-        BigDecimal realQty =
-            inventoryLineList.stream()
-                .filter(
-                    line ->
-                        line.getTrackingNumber().equals(trackingNumber)
-                            && line.getProduct().equals(product))
-                .findFirst()
-                .map(InventoryLine::getRealQty)
-                .orElse(BigDecimal.ZERO);
+        InventoryLine matchingLine = inventoryLineMap.get(Pair.of(product, trackingNumber));
+        BigDecimal realQty = matchingLine != null ? matchingLine.getRealQty() : BigDecimal.ZERO;
         updateLine(inventory, inventoryLineList, detailsStockLocationLine, realQty, product);
       }
     }
+  }
+
+  protected Map<Pair<Product, TrackingNumber>, InventoryLine> getPairInventoryLineMap(
+      List<InventoryLine> inventoryLineList) {
+    return inventoryLineList.stream()
+        .filter(line -> line.getTrackingNumber() != null)
+        .collect(
+            Collectors.toMap(
+                line -> Pair.of(line.getProduct(), line.getTrackingNumber()), line -> line));
   }
 
   protected void updateLine(
