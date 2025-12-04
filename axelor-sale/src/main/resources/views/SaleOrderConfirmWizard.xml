@@ -11,8 +11,9 @@
     ]]></help>
     <panel name="mainPanel">
       <panel-related name="saleOrderLineListPanel" field="$saleOrderLineList"
-        title="Sale order lines" type="one-to-many" canNew="false" canRemove="false"
-        grid-view="confirm-wizard-sale-order-line-grid" editable="true" colSpan="12"
+        title="Sale order lines" type="one-to-many" target="com.axelor.apps.sale.db.SaleOrderLine"
+        canNew="false" canRemove="false" grid-view="confirm-wizard-sale-order-line-grid"
+        editable="true" colSpan="12"
         onChange="action-sale-order-confirm-wizard-method-compute-current-total-ordered"/>
       <spacer colSpan="4"/>
       <panel name="infoPanel" colSpan="8">
@@ -49,11 +50,12 @@
         </field>
       </panel>
       <panel name="actionPanel" colSpan="12">
-        <button name="confirmBtn" title="Generate the order"
-          onClick="validate, save, action-sale-order-confirm-wizard-method-generate"
-          readonlyIf="$isUsedCreditExceeded &amp;&amp; !manualUnblock" colSpan="6"/>
         <button name="orderAllBtn" title="Order all"
           onClick="action-sale-order-confirm-wizard-method-order-all" colSpan="6"/>
+        <button name="confirmBtn" title="Generate the order"
+          onClick="validate, save, action-sale-order-confirm-wizard-method-generate"
+          readonlyIf="$isUsedCreditExceeded &amp;&amp; !manualUnblock" colSpan="6" icon="check-all"
+          css="btn-success"/>
         <field name="manualUnblock" showIf="$isUsedCreditExceeded"/>
         <field name="$isUsedCreditExceeded" hidden="true"/>
       </panel>

@@ -349,4 +349,7 @@ public final class BankPaymentExceptionMessage {
 
   public static final String INVOICE_PAYMENT_ALERT_BANK_ORDER_REVERSE = /*$$(*/
       "Warning: this payment is related to a carried out bank order. Do you want to reverse the payment accounting entry ?" /*)*/;
+
+  public static final String BANK_ORDER_MISSING_RECEIVER_BANK_DETAILS = /*$$(*/
+      "The recipient partner attached to the employee does not have an associated bank account, please create one." /*)*/;
 }

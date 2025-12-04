@@ -77,19 +77,20 @@
     <boolean name="debtRecoveryBlockingOk" title="Debt recovery blocking"/>
     <string name="name" namecolumn="true" search="invoice,moveLine" title="Name">
             <![CDATA[
+            BigDecimal scaledAmount = amount.setScale(3);
             if( invoice != null ){
                if (dueDate != null) {
-            	 return invoice.getInvoiceId() + "_" + dueDate + "_" + amount;
+            	 return invoice.getInvoiceId() + "_" + dueDate + "_" + scaledAmount;
                }
                else {
-                 return invoice.getInvoiceId() + "_" + amount;
+                 return invoice.getInvoiceId() + "_" + scaledAmount;
                }
             } else if (moveLine != null) {
                if (dueDate != null) {
-            	 return moveLine.getName() + "_" + dueDate + "_" + amount;
+            	 return moveLine.getName() + "_" + dueDate + "_" + scaledAmount;
                }
                else {
-                 return moveLine.getName() + "_" + amount;
+                 return moveLine.getName() + "_" + scaledAmount;
                }
             }
 

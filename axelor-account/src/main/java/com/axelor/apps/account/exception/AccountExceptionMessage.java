@@ -1122,8 +1122,6 @@ public final class AccountExceptionMessage {
 
   public static final String RECONCILE_NO_AVAILABLE_INVOICE_TERM = /*$$(*/
       "Payment can't be processed at the moment on invoice as there is no invoice term available to pay. Please check current unpaid invoice term record(s) if they are already awaiting a payment or maybe, if activated, they didn't pass the PFP process." /*)*/;
-  public static final String RECONCILE_NOT_ENOUGH_AMOUNT = /*$$(*/
-      "The remaining amount of the available invoice term(s) for payment is lower than the amount to reconcile. The reconciliation process couldn't succeed." /*)*/;
 
   /** Move template controller */
   public static final String MOVE_TEMPLATE_1 = /*$$(*/ "Template move is not balanced" /*)*/;
@@ -1755,6 +1753,12 @@ public final class AccountExceptionMessage {
   public static final String CANNOT_BE_RECONCILED_WAITING_PAYMENT =
       /*$$(*/ "The move line %s cannot be reconciled because of a pending payment." /*)*/;
 
+  public static final String PAYMENT_HOLDBACK_INVOICE_TERM_INVOICE_ERROR =
+      /*$$(*/ "The invoice term %s is tagged as a holdback. All other invoice terms from the invoice %s must be paid before you can process this one." /*)*/;
+
+  public static final String PAYMENT_HOLDBACK_INVOICE_TERM_MOVE_ERROR =
+      /*$$(*/ "The invoice term %s is tagged as a holdback. All other invoice terms from the move %s must be paid before you can process this one." /*)*/;
+
   public static final String CREATE_REFUND_BTN_CLASSIC_REFUND = /*$$(*/
       "Generate credit note" /*)*/;
   public static final String CREATE_REFUND_BTN_ADVANCE_PAYMENT_REFUND = /*$$(*/
@@ -1856,4 +1860,7 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_PAYMENT_ALERT_VOUCHER_DEPOSIT_REVERSE = /*$$(*/
       "Warning: this payment is included in a cheque deposit slip that has already been submitted. Do you want to reverse the payment accounting entry ?" /*)*/;
+
+  public static final String RECONCILE_GROUP_WRONG_COMPANY_ON_MOVE_LINES = /*$$(*/
+      "Reconcile group %s contains move line(s) belonging to a different company than %s : %s" /*)*/;
 }

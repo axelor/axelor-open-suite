@@ -119,6 +119,7 @@ import com.axelor.apps.production.service.SaleOrderLineBomSyncService;
 import com.axelor.apps.production.service.SaleOrderLineBomSyncServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineCheckProductionService;
 import com.axelor.apps.production.service.SaleOrderLineCheckProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineComputeQtyProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineCostPriceComputeProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingService;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingServiceImpl;
@@ -281,6 +282,7 @@ import com.axelor.apps.production.service.saleorder.onchange.SaleOrderOnLineChan
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.stock.db.repo.ProductCompanyStockRepository;
@@ -497,5 +499,7 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderCheckBlockingSupplychainServiceImpl.class)
         .to(SaleOrderCheckBlockingServiceProductionServiceImpl.class);
     bind(SaleOrderBlockingProductionService.class).to(SaleOrderBlockingProductionServiceImpl.class);
+    bind(SaleOrderLineComputeQtyServiceImpl.class)
+        .to(SaleOrderLineComputeQtyProductionServiceImpl.class);
   }
 }

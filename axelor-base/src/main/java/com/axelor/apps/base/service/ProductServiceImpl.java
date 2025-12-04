@@ -33,12 +33,14 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.ProductVariantConfigRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.studio.db.repo.AppBaseRepository;
@@ -64,6 +66,7 @@ public class ProductServiceImpl implements ProductService {
   protected ProductCompanyService productCompanyService;
   protected CompanyRepository companyRepo;
   protected ProductCompanyRepository productCompanyRepository;
+  protected ProductVariantConfigRepository productVariantConfigRepository;
 
   @Inject
   public ProductServiceImpl(
@@ -73,7 +76,8 @@ public class ProductServiceImpl implements ProductService {
       AppBaseService appBaseService,
       ProductRepository productRepo,
       ProductCompanyService productCompanyService,
-      ProductCompanyRepository productCompanyRepository) {
+      ProductCompanyRepository productCompanyRepository,
+      ProductVariantConfigRepository productVariantConfigRepository) {
     this.productVariantService = productVariantService;
     this.productVariantRepo = productVariantRepo;
     this.sequenceService = sequenceService;
@@ -81,6 +85,7 @@ public class ProductServiceImpl implements ProductService {
     this.productRepo = productRepo;
     this.productCompanyService = productCompanyService;
     this.productCompanyRepository = productCompanyRepository;
+    this.productVariantConfigRepository = productVariantConfigRepository;
   }
 
   @Inject private MetaFiles metaFiles;
@@ -334,6 +339,8 @@ public class ProductServiceImpl implements ProductService {
     description += "<br>" + productVariant.getName();
     internalDescription += "<br>" + productVariant.getName();
 
+    productModel.setIsModel(false);
+
     Product generatedProduct = productRepo.copy(productModel, true);
 
     generatedProduct.setName(productModel.getName() + " (" + productVariant.getName() + ")");
@@ -348,6 +355,10 @@ public class ProductServiceImpl implements ProductService {
     generatedProduct.setProductVariant(productVariant);
 
     this.updateSalePrice(generatedProduct, null);
+
+    if (ObjectUtils.isEmpty(generatedProduct.getProductCompanyList())) {
+      return generatedProduct;
+    }
 
     for (ProductCompany productCompany : generatedProduct.getProductCompanyList()) {
       setPriceOfVariantProductCompanyWithExtra(generatedProduct, productCompany.getCompany());
@@ -617,6 +628,13 @@ public class ProductServiceImpl implements ProductService {
     copy.setLastPurchaseDate(null);
     copy.setCode(null);
     copy.setSerialNumber(null);
+    if (copy.getIsModel()) {
+      ProductVariantConfig productVariantConfig =
+          productVariantConfigRepository.copy(product.getProductVariantConfig(), false);
+      copy.setProductVariantConfig(productVariantConfig);
+    } else {
+      copy.setProductVariantConfig(null);
+    }
   }
 
   @Override

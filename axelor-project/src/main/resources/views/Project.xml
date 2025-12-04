@@ -569,6 +569,7 @@
   </action-group>
 
   <action-group name="action-project-group-finish-project">
+    <action name="action-project-validate-completed-status"/>
     <action name="action-project-record-status-finish"/>
     <action name="save"/>
   </action-group>
@@ -955,6 +956,11 @@
   <action-validate name="action-project-validate-checklist-items">
     <alert message="Your current check list will be erased, do you want to continue ?"
       if="projectCheckListItemList &amp;&amp; !projectCheckListItemList.isEmpty()"/>
+  </action-validate>
+
+  <action-validate name="action-project-validate-completed-status">
+    <error message="Please fill in the default completion status in the Project app settings."
+      if="!__config__.app.getApp('project')?.completedProjectStatus"/>
   </action-validate>
 
 

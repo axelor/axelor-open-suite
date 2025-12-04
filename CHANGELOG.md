@@ -1,3 +1,169 @@
+## [8.5.6] (2025-11-26)
+
+### Fixes
+#### Base
+
+* Product: fixed a potential error due to missing product company when generating variant product.
+
+#### Account
+
+* Invoice line: fixed error when opening an invoice line from a sale order line.
+* Reconcile : added an error when trying to pay a holdback invoice terms on an invoice with remaining ones
+
+#### Bank Payment
+
+* Bank order line: added a check for missing receiver bank details when registering an expense payment.
+* PAYMENTSCHEDULE : The rejectReason field has been fixed so that it no longer accepts string values.
+
+#### Budget
+
+* Purchase order: fixed an error when displaying list of purchase order lines.
+
+#### Contract
+
+* Contract: fixed trading name on consumption invoice when trading name management is enable.
+
+#### CRM
+
+* Opportunity: display the partner popup when moving an opportunity to 'Closed won' in Kanban view.
+
+#### Production
+
+* ManufOrder: fixed NPE due to missing producible qty when computing the missing components label.
+
+#### Project
+
+* Project: fix activity dates format according to user's localization
+* ProjectTask : Move Progress computation process from business project to project module.
+
+#### Sale
+
+* Sale order: hide already processed line when splitting quotation and sale order.
+
+#### Stock
+
+* Stock move: fixed the wrong quantity invoiced in the case of partial invoicing.
+
+#### Supply Chain
+
+* Stock move: fixed requested reserved qty for stock move returns.
+* MRP: MRP result grid view is no longer editable.
+* Sale order: fixed the domain for sale orders without stock move.
+
+
+### Developer
+
+#### Budget
+
+A script need to be executed to remove an non necessary action view override. DELETE FROM meta_action WHERE xml_id='budget-purchase-order-see-purchase-order-lines';
+
+#### Stock
+
+- Changed method signature from isStockMoveInvoicingPartiallyActivated(Invoice,StockMoveLine) to isStockMoveInvoicingPartiallyActivated(Invoice) in WorkflowVentilationServiceSupplychainImpl
+
+## [8.5.5] (2025-11-20)
+
+### Fixes
+#### Production
+
+* SaleOrderLine: fixed the initialisation of quantity to produce.
+
+
+### Developer
+
+#### Production
+
+- Added SaleOrderLineComputeQtyService in the SaleOrderLineInitValueService constructor
+- Moved the SaleOrderLineInitValueServiceImpl protected method initQty into a new service SaleOrderLineComputeQtyService
+
+## [8.5.4] (2025-11-20)
+
+### Fixes
+#### Base
+
+* User: fixed permissions for 'demoerp' user.
+* Quick menu: fixed the title for the instance info.
+* Product: fixed product variant config by creating a new one when duplicating a Product.
+
+#### Account
+
+* Reconcile: fixed manual reconcile in the specific reconcile view.
+* Invoice: fixed the division by zero error and NPE when registering a payment from an invoice with both a fiscal position and a financial discount set.
+* Move: added origin in traceback while mass accounting during anomaly.
+* Bank reconciliation: fixed the display of accounting moves line(s) to reconcile.
+* Accounting report: fixed Aged balance and detailed customer balance report issue.
+* Invoice term: fixed the scale of amount when computing the name.
+* Payment session: fixed french translation for supplier and bank details in custom dashlet.
+* Invoice: fixed attachment behavior when printing/regenerating to avoid duplicates and respect the attachment option, including on ventilation.
+* MOVE : fixed inconsistant message when trying to delete a move
+* Move line: fixed display condition and validity check on VAT System.
+
+#### Budget
+
+* Sale/Purchase order: fixed the performance issue due to the individual line update.
+
+#### Contract
+
+* Contract: fixed invoicing amounts not translated in french.
+
+#### Human Resource
+
+* Expense: fixed the currency for the advance amount field in form view.
+* Expense API: fixed analytic move line not generated when creating expense line from API.
+* Allocation line: fixed the value of project field on new.
+
+#### Production
+
+* SaleOrderLine: fixed the initialisation of quantity to produce.
+* Product: fixed cost price and avg price when the product is manufactured for the first time.
+
+#### Project
+
+* Project: fixed sequence demo data.
+* Project: added an error message when finishing a project if the default completed status was not configured.
+* Project: fixed the performance issue in project form with many projects linked to a user.
+
+#### Purchase
+
+* Purchase order: fixed purchase order tax configuration when order were automatically generated.
+
+#### Sale
+
+* Sale order import: fixed an error occurring when importing lines with no tax lines.
+
+#### Stock
+
+* Stock correction: fixed the error message related to the tracking number check.
+* Bill of material: fixed decimal digit number for bill of material line.
+* Stock move: do not group stock move by status in grid view.
+* Inventory: fixed an error occurring when there were more than 2 duplicated inventory lines.
+* Partner: fixed the form view title for Freight Carrier.
+
+#### Supply Chain
+
+* Supplychain : fixed an issue where nothing happened when launching the invoicing batch.
+* Sale order: fixed sale order invoicing state when invoiced amount is superior to the sale order total w.t.
+* Invoice/PurchaseOrder : fixed the link between an advance payment and an invoice from the same purchase order
+
+
+### Developer
+
+#### Account
+
+- Removed the checkReconcile method from ReconcileCheckService.
+- Removed the isEnoughAmountToPay method from InvoiceTermToolService.
+
+Script to remove a deleted action : 
+- DELETE FROM meta_action WHERE name = 'action-reconcile-method-check-reconcile';
+
+#### Production
+
+- Changed the ManufOrderWorkflowServiceImpl.updateProductCostPrice parameters to add a BigDecimal costPrice
+
+#### Purchase
+
+Added PurchaseOrderTaxService to PurchaseOrderCreateServiceImpl constructor.
+
 ## [8.5.3] (2025-11-06)
 
 ### Fixes
@@ -406,6 +572,9 @@ Removed CommonInvoiceService.createInvoiceLinesFromOrder Changed the parameter o
 * Bill of material: added default value for calculation quantity.
 * Manuf order: fixed relation with production order.
 
+[8.5.6]: https://github.com/axelor/axelor-open-suite/compare/v8.5.5...v8.5.6
+[8.5.5]: https://github.com/axelor/axelor-open-suite/compare/v8.5.4...v8.5.5
+[8.5.4]: https://github.com/axelor/axelor-open-suite/compare/v8.5.3...v8.5.4
 [8.5.3]: https://github.com/axelor/axelor-open-suite/compare/v8.5.2...v8.5.3
 [8.5.2]: https://github.com/axelor/axelor-open-suite/compare/v8.5.1...v8.5.2
 [8.5.1]: https://github.com/axelor/axelor-open-suite/compare/v8.5.0...v8.5.1

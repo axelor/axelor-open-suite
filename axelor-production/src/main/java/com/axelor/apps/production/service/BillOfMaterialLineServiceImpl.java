@@ -109,6 +109,8 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
             .getProductSubTypeSelect()
             .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)) {
       billOfMaterialLine.setBillOfMaterial(billOfMaterialService.getBOM(product, company));
+    } else {
+      billOfMaterialLine.setBillOfMaterial(null);
     }
   }
 

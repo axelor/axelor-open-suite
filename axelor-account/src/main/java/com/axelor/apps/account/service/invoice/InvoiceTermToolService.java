@@ -30,8 +30,6 @@ import java.util.List;
 public interface InvoiceTermToolService {
   boolean isPartiallyPaid(InvoiceTerm invoiceTerm);
 
-  boolean isEnoughAmountToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date);
-
   boolean isNotReadonly(InvoiceTerm invoiceTerm);
 
   boolean isNotReadonlyExceptPfp(InvoiceTerm invoiceTerm);
@@ -49,4 +47,6 @@ public interface InvoiceTermToolService {
 
   List<InvoiceTerm> getPaymentVoucherInvoiceTerms(InvoicePayment invoicePayment, Invoice invoice)
       throws AxelorException;
+
+  void checkHoldbackBeforeReconcile(List<InvoiceTerm> invoiceTermList) throws AxelorException;
 }

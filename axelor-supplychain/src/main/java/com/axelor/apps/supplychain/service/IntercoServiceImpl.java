@@ -437,6 +437,7 @@ public class IntercoServiceImpl implements IntercoService {
             .map(Invoice::getCompanyTaxNumber)
             .map(TaxNumber::getTaxNbr)
             .orElse(""));
+    intercoInvoice.setFiscalPosition(intercoPartner.getFiscalPosition());
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     if (invoice.getInvoiceLineList() != null) {
