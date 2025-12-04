@@ -1826,4 +1826,7 @@ public final class AccountExceptionMessage {
 
   public static final String INVOICE_LINE_PRODUCT_WITH_NON_DEDUCTIBLE_TAX_NOT_AUTHORIZED = /*$$(*/
       "Non-deductible tax not authorized for customer invoice. Please remove the non-deductible tax on product." /*)*/;
+
+  public static final String RECONCILE_GROUP_WRONG_COMPANY_ON_MOVE_LINES = /*$$(*/
+      "Reconcile group %s contains move line(s) belonging to a different company than %s : %s" /*)*/;
 }
