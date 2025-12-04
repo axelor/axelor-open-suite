@@ -412,6 +412,9 @@ public final class ProductionExceptionMessage {
   public static final String BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR_MORE = /*$$(*/
       "The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s and %s more" /*)*/;
 
+  public static final String MRP_BOM_REQUIRED = /*$$(*/
+      "The manufacturing order for %s could not be generated because it has no bill of material." /*)*/;
+
   public static final String MRP_PROD_PROCESS_REQUIRED = /*$$(*/
       "The manufacturing order for %s could not be generated because the bill of material has no production process." /*)*/;
 
