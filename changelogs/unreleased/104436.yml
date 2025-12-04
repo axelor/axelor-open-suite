@@ -1,3 +1,0 @@
----
-title: "MRP: added an explicit error message instead of a NPE when bill of material is missing on manufacturing proposal."
-module: axelor-production
