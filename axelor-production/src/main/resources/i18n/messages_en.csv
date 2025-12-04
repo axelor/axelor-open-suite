@@ -884,6 +884,7 @@
 "The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s and %s more",,,
 "The manuf order couldn't be generated for the product %s. Please fill a company on the linked BOM.",,,
 "The manufacturing operation is already finished and cannot be moved.",,,
+"The manufacturing order for %s could not be generated because it has no bill of material.",,,
 "The manufacturing order for %s could not be generated because the bill of material has no production process.",,,
 "The manufacturing order planned for %s can not be planned before today's date. Please adjust it. (Used date time %s)",,,
 "The manufacturing order was canceled.",,,
