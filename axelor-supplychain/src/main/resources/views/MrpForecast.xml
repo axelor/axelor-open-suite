@@ -47,7 +47,7 @@
         <field name="id" title="Ref"/>
         <field name="forecastDate" onChange="action-mrp-forecast-validate-check-forecast-date"/>
         <field name="product" canEdit="false" onChange="action-mrp-forecast-record-unit"
-          domain="self.dtype = 'Product'"/>
+          domain="self.productTypeSelect = 'storable' AND self.excludeFromMrp = false AND self.stockManaged = true AND self.dtype = 'Product'"/>
         <field name="qty"/>
         <field name="unit"/>
         <field name="stockLocation"/>
