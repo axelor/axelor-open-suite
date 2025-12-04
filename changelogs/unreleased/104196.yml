@@ -1,0 +1,3 @@
+---
+title: "Analytic move line: fixed the percentage validation logic for analytic reverse lines."
+module: axelor-account
