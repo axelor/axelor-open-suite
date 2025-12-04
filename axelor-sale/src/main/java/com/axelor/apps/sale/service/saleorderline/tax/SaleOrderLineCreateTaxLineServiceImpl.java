@@ -27,7 +27,6 @@ import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
-import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -51,16 +50,12 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected OrderLineTaxService orderLineTaxService;
   protected CurrencyScaleService currencyScaleService;
-  protected SaleConfigService saleConfigService;
 
   @Inject
   public SaleOrderLineCreateTaxLineServiceImpl(
-      OrderLineTaxService orderLineTaxService,
-      CurrencyScaleService currencyScaleService,
-      SaleConfigService saleConfigService) {
+      OrderLineTaxService orderLineTaxService, CurrencyScaleService currencyScaleService) {
     this.orderLineTaxService = orderLineTaxService;
     this.currencyScaleService = currencyScaleService;
-    this.saleConfigService = saleConfigService;
   }
 
   /**
