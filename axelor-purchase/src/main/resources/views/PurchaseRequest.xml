@@ -182,7 +182,8 @@
 
   <action-group name="action-purchase-request-group-request-button">
     <action name="save"/>
-    <action name="action-purchase-request-method-set-status-requested"/>
+    <action name="action-purchase-request-validate-check-company" if="!company"/>
+    <action name="action-purchase-request-method-set-status-requested" if="company"/>
     <action name="save"/>
   </action-group>
 
@@ -224,6 +225,10 @@
 
   <action-validate name="action-purchase-request-validate-check-supplier-user">
     <error message="Supplier is required to generate a purchase order."/>
+  </action-validate>
+
+  <action-validate name="action-purchase-request-validate-check-company">
+    <error message="Company is required to generate a purchase order."/>
   </action-validate>
 
   <search-filters name="purchase-request-filters"
