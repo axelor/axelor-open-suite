@@ -71,6 +71,7 @@
         grid-view="bill-of-material-grid"/>
       <field name="$qty" title="Quantity" type="decimal"/>
       <field name="$_startDate" widget="dateTime" title="Planned start date"/>
+      <field name="$_endDate" widget="dateTime" title="Planned end date"/>
       <button name="AddManufOrderBtn" title="Add Manuf. Order"
         onClick="action-production-order-method-add-manuf-order"/>
     </panel>
