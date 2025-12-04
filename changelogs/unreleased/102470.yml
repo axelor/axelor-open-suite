@@ -1,0 +1,3 @@
+---
+title: "Invoice/PurchaseOrder/SaleOrder: fixed the rounding issue on tax generation."
+module: axelor-account
