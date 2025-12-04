@@ -1241,7 +1241,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = ? and EnTransla
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select StockMove.id as stock_move_id, StockMoveLine.id, Product.code as product_code, StockMoveLine.product_name as product_name,
-StockMoveLine.qty, Unit.label_to_printing as unit_code, TrackingNumber.tracking_number_seq, StockMoveLine.description,
+StockMoveLine.real_qty as qty, Unit.label_to_printing as unit_code, TrackingNumber.tracking_number_seq, StockMoveLine.description,
 ( SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine",
 StockMoveLine.sequence
 from stock_stock_move as StockMove
@@ -1251,7 +1251,7 @@ left join base_unit as Unit on (StockMoveLine.unit = Unit.id)
 left join stock_tracking_number as TrackingNumber on (StockMoveLine.tracking_number = TrackingNumber.id)
 left outer join sale_sale_order_line as SaleOrderLine on (SaleOrderLine.id = StockMoveLine.sale_order_line)
 left outer join purchase_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.id = StockMoveLine.purchase_order_line)
-where StockMove.id = ?]]></xml-property>
+where StockMove.id = ? and StockMoveLine.real_qty > 0]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="SaleOrderDS" id="4172">
             <list-property name="columnHints">
