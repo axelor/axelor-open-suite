@@ -1,3 +1,121 @@
+## [7.2.56] (2025-12-04)
+
+### Fixes
+#### Base
+
+* Sequence: fixed full name computation on save.
+* Account Management: fixed duplicate company selection for product families
+
+#### Account
+
+* Invoice: note panel still visible even if invoiceCommentsPanel is empty in BIRT.
+* Analytic move line: fixed the percentage validation logic for analytic reverse lines.
+* Account: fixed the issue where the status button title was incorrect when opening an account from the partner form.
+* Reconcile: added missing translation for Debit and Credit move line amount remaining.
+
+#### Contract
+
+* Contract batch: fixed grouped invoicing in case of supplier contracts.
+
+#### Production
+
+* Bill of material line: fixed the value of bill of material on change of product.
+* Bill of material: fixed an issue where tree view was not displayed properly.
+
+#### Purchase
+
+* Purchase request: fixed NPE on generating purchase order if company is empty.
+
+#### Stock
+
+* Conformity certificate: fixed stock move line qty in BIRT report.
+* Stock move: fixed the PFP buttons to display only for supplier moves.
+
+#### Supply Chain
+
+* MrpLineType: fixed helper translation.
+* Invoice: fixed fiscal position when the interco invoice is generated.
+* Sale order: fixed issue where duplicated lines were not visible in mass invoicing.
+* Sale order: fixed the value of 'Invoiced Amount (excl. tax)' in case of multi-order invoices.
+
+
+### Developer
+
+#### Base
+
+Implemented domain filtering to prevent duplicate AccountManagement records for the same company and ProductFamily combination.
+-- Add unique constraint to prevent future duplicates
+ALTER TABLE account_account_management 
+ADD CONSTRAINT uk_product_family_company_unique 
+UNIQUE (product_family, company);
+
+#### Purchase
+
+- Changed the PurchaseRequestService.generatePo method to use a default company too.
+
+#### Supply Chain
+
+-- migration script to update amount_invoiced in Sale Order table
+
+UPDATE sale_sale_order SaleOrder
+SET amount_invoiced =
+(
+    CASE
+      WHEN SaleOrder.currency <> Company.currency
+       AND SaleOrder.company_ex_tax_total <> 0
+      THEN SaleOrder.ex_tax_total *
+          (
+              (
+                  COALESCE((
+                      SELECT SUM(InvoiceLine.company_ex_tax_total)
+                      FROM account_invoice_line InvoiceLine
+                      JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+                      WHERE InvoiceLine.sale_order_line IN (
+                          SELECT id FROM sale_sale_order_line WHERE sale_order = SaleOrder.id
+                      )
+                      AND Invoice.operation_type_select = 3
+                      AND Invoice.status_select = 3
+                  ), 0)
+                  -
+                  COALESCE((
+                      SELECT SUM(InvoiceLine.company_ex_tax_total)
+                      FROM account_invoice_line InvoiceLine
+                      JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+                      WHERE InvoiceLine.sale_order_line IN (
+                          SELECT id FROM sale_sale_order_line WHERE sale_order = SaleOrder.id
+                      )
+                      AND Invoice.operation_type_select = 4
+                      AND Invoice.status_select = 3
+                  ), 0)
+              ) / SaleOrder.company_ex_tax_total
+          )
+      ELSE
+          COALESCE((
+              SELECT SUM(InvoiceLine.company_ex_tax_total)
+              FROM account_invoice_line InvoiceLine
+              JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+              WHERE InvoiceLine.sale_order_line IN (
+                  SELECT id FROM sale_sale_order_line WHERE sale_order = SaleOrder.id
+              )
+              AND Invoice.operation_type_select = 3
+              AND Invoice.status_select = 3
+          ), 0)
+          -
+          COALESCE((
+              SELECT SUM(InvoiceLine.company_ex_tax_total)
+              FROM account_invoice_line InvoiceLine
+              JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+              WHERE InvoiceLine.sale_order_line IN (
+                  SELECT id FROM sale_sale_order_line WHERE sale_order = SaleOrder.id
+              )
+              AND Invoice.operation_type_select = 4
+              AND Invoice.status_select = 3
+          ), 0)
+    END
+)
+FROM base_company Company
+WHERE SaleOrder.company = Company.id;
+
 ## [7.2.55] (2025-11-26)
 
 ### Fixes
@@ -2378,6 +2496,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.56]: https://github.com/axelor/axelor-open-suite/compare/v7.2.55...v7.2.56
 [7.2.55]: https://github.com/axelor/axelor-open-suite/compare/v7.2.54...v7.2.55
 [7.2.54]: https://github.com/axelor/axelor-open-suite/compare/v7.2.53...v7.2.54
 [7.2.53]: https://github.com/axelor/axelor-open-suite/compare/v7.2.52...v7.2.53
