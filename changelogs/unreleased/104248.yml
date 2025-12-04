@@ -1,0 +1,3 @@
+---
+title: "Invoice term: added a check to prevent reconciling a holdback invoice term before other invoice terms are paid during a payment session or manual reconciliation."
+module: axelor-account
