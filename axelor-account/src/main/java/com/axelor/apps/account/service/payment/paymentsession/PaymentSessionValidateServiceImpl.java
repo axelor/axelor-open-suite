@@ -797,7 +797,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       return taxLineMap;
     }
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+      if (moveLineFinancialDiscountService.isFinancialDiscountLine(
+          moveLine,
+          move.getCompany(),
+          move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)) {
         taxLineMap.put(moveLine, moveLine.getTaxLineSet());
         moveLine.setTaxLineSet(Sets.newHashSet());
       }

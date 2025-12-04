@@ -1006,12 +1006,17 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected boolean isFinancialDiscount(Move move) throws AxelorException {
 
     AppAccount account = appAccountService.getAppAccount();
-    if (account == null || !account.getManageFinancialDiscount()) {
+    if (account == null
+        || !account.getManageFinancialDiscount()
+        || (move.getInvoice() != null && move.getInvoice().getFinancialDiscount() == null)) {
       return false;
     }
 
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+      if (moveLineFinancialDiscountService.isFinancialDiscountLine(
+          moveLine,
+          move.getCompany(),
+          move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)) {
         return true;
       }
     }
