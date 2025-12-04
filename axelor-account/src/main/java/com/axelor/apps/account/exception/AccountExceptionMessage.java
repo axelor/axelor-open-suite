@@ -1833,4 +1833,7 @@ public final class AccountExceptionMessage {
 
   public static final String ANALYTIC_MOVE_LINE_QUERY_WRONG_SUM_FOR_AXIS = /*$$(*/
       "The total percentage is not 100%% for the axis %s" /*)*/;
+
+  public static final String RECONCILE_GROUP_WRONG_COMPANY_ON_MOVE_LINES = /*$$(*/
+      "Reconcile group %s contains move line(s) belonging to a different company than %s : %s" /*)*/;
 }
