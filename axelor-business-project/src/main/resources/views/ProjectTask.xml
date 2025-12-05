@@ -130,19 +130,14 @@
     onNew="action-business-project-project-task-group-on-new"
     onLoad="action-business-project-project-task-group-on-load" width="large"
     onSave="action-project-task-validate-toDate">
-    <toolbar>
-      <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
-        onClick="action-project-task-record-assigned-yourself,save"/>
-      <button name="doneBtn" icon="fa-check"
-        onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
-        showIf="project.taskStatusManagementSelect != 1"/>
-      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-business-project-task-view-show-planning"
-        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
-        showIf="project.isShowPlanning"/>
-      <!-- MGM-80, @gkouete: Show financial data is not relevant for MGM -->
-      <!-- <button name="showFinancialDatas" icon="clipboard-data" title="Show financial datas" onClick="save,action-project-task-view-show-financial-datas-panel"/> -->
-    </toolbar>
+    <!-- MGM-80, @gkouete: the following toolbar item are not relevant for MGM -->
+    <!-- <toolbar> <button name="grabEventBtn" icon="fa-suitcase" help="Take charge" onClick="action-project-task-record-assigned-yourself,save"/>
+      <button name="doneBtn" icon="fa-check" onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
+      showIf="project.taskStatusManagementSelect != 1"/> <button name="showPlanningBtn" icon="calendar-week"
+      title="Show planning" onClick="save,action-business-project-task-view-show-planning" if="__config__.app.isApp('employee')
+      &amp;&amp; __config__.app.getApp('project')?.enablePlanification" showIf="project.isShowPlanning"/> <button
+      name="showFinancialDatas" icon="clipboard-data" title="Show financial datas" onClick="save,action-project-task-view-show-financial-datas-panel"/>
+      </toolbar> -->
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
         if="__config__.app.getApp('project')?.resourceManagement">

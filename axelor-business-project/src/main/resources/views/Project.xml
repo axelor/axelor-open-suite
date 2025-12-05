@@ -6,10 +6,9 @@
   <grid name="business-project-grid" title="Projects"
     model="com.axelor.apps.project.db.Project">
 
-    <toolbar>
-      <button name="logTimeBtn" icon="clock-history"
-        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
-    </toolbar>
+    <!-- MGM-84: log time not necessary to display at the business project level -->
+    <!-- <toolbar> <button name="logTimeBtn" icon="clock-history" onClick="action-timesheet-line-method-log-time"
+      if="__config__.app.isApp('timesheet')"/> </toolbar> -->
 
     <!-- MGM-84: highlighting priority in project grid view -->
     <hilite if="priority.name == 'Urgent'" color="danger"/>
@@ -78,7 +77,8 @@
       <!-- MGM 8- @gkouete - added log time button in the project menu to improve user experience -->
       <!-- <toolbar> <button name="logTimeBtn" icon="clock-history" onClick="action-timesheet-line-method-log-time"
         if="__config__.app.isApp('timesheet')"/> </toolbar> -->
-      <menu name="projectToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+      <menu name="projectToolsMenu" title="Tools" showTitle="true" icon="fa-wrench"
+        if="__user__.group.code == 'admins'">
         <!-- MGM-80 @gkouete- Compute project totals not required -->
         <!-- <item title="Compute project totals" action="save,action-project-method-compute-project-totals"
           if="__config__.app.isApp('business-project')" showIf="id"/> -->
