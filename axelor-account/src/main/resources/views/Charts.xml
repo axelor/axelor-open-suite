@@ -1425,7 +1425,7 @@ from InvoiceTerm as self
 	   LEFT JOIN self.moveLine.partner AS _partner
 	   LEFT JOIN self.bankDetails AS _bankDetails
 	   LEFT JOIN self.thirdPartyPayerPartner AS _thirdPartyPayerPartner
-	   LEFT JOIN BankDetails AS _subrogationBankDetails ON _subrogationBankDetails.partner = _thirdPartyPayerPartner.id
+	   LEFT JOIN BankDetails AS _subrogationBankDetails ON _subrogationBankDetails.partner.id = _thirdPartyPayerPartner.id
 	   WHERE self.isSelectedOnPaymentSession IS TRUE AND self.paymentSession.id = :_id
 	   GROUP BY _partner.id, _thirdPartyPayerPartner.id, _bankDetails.id, _subrogationBankDetails.id, self.currency.numberOfDecimals
 	   ORDER BY _partner.name

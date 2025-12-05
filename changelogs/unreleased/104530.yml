@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed a query error while searching for due invoice terms."
+module: axelor-account
