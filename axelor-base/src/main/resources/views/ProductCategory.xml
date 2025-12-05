@@ -28,6 +28,8 @@
       <field name="sequence" onSelect="action-attrs-product-category-form-set-sequence-domain"/>
       <field name="maxDiscount" onChange="action-group-product-category-max-discount-onchange"/>
       <field name="growthCoef"/>
+      <field name="excludeFromMrp" if-module="axelor-supplychain"
+        if="__config__.app.isApp('supplychain')"/>
     </panel>
     <panel-dashlet name="salesTurnoverPanel" title="Sales Turnover"
       action="dashlet.category.sales.turnover.per.month" colSpan="12" height="350"
