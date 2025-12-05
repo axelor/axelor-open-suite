@@ -1,5 +1,5 @@
 ---
-title: "Supplier Invoice: Fixed an issue where it auto-validated PFP"
+title: "Invoice: fixed wrong auto-validation PFP from credit note."
 module: axelor-account
 developer: |
   Introduce PfpService in InvoiceTermPfpUpdateService and ReconcileInvoiceTermComputationService constructors.
