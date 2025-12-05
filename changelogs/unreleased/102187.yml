@@ -1,3 +1,5 @@
 ---
 title: "Supplier Invoice: Fixed an issue where it auto-validated PFP"
 module: axelor-account
+developer: |
+  Introduce PfpService in InvoiceTermPfpUpdateService and ReconcileInvoiceTermComputationService constructors.

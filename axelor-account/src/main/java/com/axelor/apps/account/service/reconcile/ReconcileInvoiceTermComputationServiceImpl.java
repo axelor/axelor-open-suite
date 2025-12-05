@@ -42,7 +42,6 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -68,6 +67,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
   protected InvoiceTermPaymentRepository invoiceTermPaymentRepository;
   protected InvoiceRepository invoiceRepository;
   protected InvoiceTermPfpService invoiceTermPfpService;
+  protected PfpService pfpService;
 
   @Inject
   public ReconcileInvoiceTermComputationServiceImpl(
@@ -81,7 +81,8 @@ public class ReconcileInvoiceTermComputationServiceImpl
       InvoicePaymentRepository invoicePaymentRepository,
       InvoiceTermPaymentRepository invoiceTermPaymentRepository,
       InvoiceRepository invoiceRepository,
-      InvoiceTermPfpService invoiceTermPfpService) {
+      InvoiceTermPfpService invoiceTermPfpService,
+      PfpService pfpService) {
     this.reconcileCheckService = reconcileCheckService;
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermFilterService = invoiceTermFilterService;
@@ -93,6 +94,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
     this.invoiceTermPaymentRepository = invoiceTermPaymentRepository;
     this.invoiceRepository = invoiceRepository;
     this.invoiceTermPfpService = invoiceTermPfpService;
+    this.pfpService = pfpService;
   }
 
   @Override
@@ -261,7 +263,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
     }
 
     boolean shouldAutoValidate =
-        Beans.get(PfpService.class).getPfpCondition(invoice)
+        pfpService.getPfpCondition(invoice)
             && invoice.getOperationTypeSelect()
                 == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
 

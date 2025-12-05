@@ -27,7 +27,6 @@ import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.move.MovePfpValidateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.auth.AuthUtils;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -42,6 +41,7 @@ public class InvoiceTermPfpUpdateServiceImpl implements InvoiceTermPfpUpdateServ
   protected InvoiceTermPfpService invoiceTermPfpService;
   protected MovePfpValidateService movePfpValidateService;
   protected InvoicePfpValidateService invoicePfpValidateService;
+  protected PfpService pfpService;
 
   @Inject
   public InvoiceTermPfpUpdateServiceImpl(
@@ -49,12 +49,14 @@ public class InvoiceTermPfpUpdateServiceImpl implements InvoiceTermPfpUpdateServ
       InvoiceTermPfpValidateService invoiceTermPfpValidateService,
       InvoiceTermPfpService invoiceTermPfpService,
       MovePfpValidateService movePfpValidateService,
-      InvoicePfpValidateService invoicePfpValidateService) {
+      InvoicePfpValidateService invoicePfpValidateService,
+      PfpService pfpService) {
     this.invoiceTermPfpToolService = invoiceTermPfpToolService;
     this.invoiceTermPfpValidateService = invoiceTermPfpValidateService;
     this.invoiceTermPfpService = invoiceTermPfpService;
     this.movePfpValidateService = movePfpValidateService;
     this.invoicePfpValidateService = invoicePfpValidateService;
+    this.pfpService = pfpService;
   }
 
   @Override
@@ -69,7 +71,7 @@ public class InvoiceTermPfpUpdateServiceImpl implements InvoiceTermPfpUpdateServ
           invoice != null
               && invoice.getPfpValidateStatusSelect() == InvoiceRepository.PFP_STATUS_AWAITING
               && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())
-              && Beans.get(PfpService.class).getPfpCondition(invoice)
+              && pfpService.getPfpCondition(invoice)
               && invoice.getOperationTypeSelect()
                   == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
               && invoiceTerm.getAmountRemaining().signum() == 0;
