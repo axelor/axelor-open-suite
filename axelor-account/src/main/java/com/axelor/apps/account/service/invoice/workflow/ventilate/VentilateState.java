@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -53,6 +54,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -286,6 +288,9 @@ public class VentilateState extends WorkflowInvoice {
 
       // Update invoice pfp status
       if (invoice != null
+          && Beans.get(PfpService.class).getPfpCondition(invoice)
+          && invoice.getPfpValidateStatusSelect() == InvoiceRepository.PFP_STATUS_AWAITING
+          && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())
           && invoice.getInvoiceTermList().stream()
               .allMatch(
                   it ->
