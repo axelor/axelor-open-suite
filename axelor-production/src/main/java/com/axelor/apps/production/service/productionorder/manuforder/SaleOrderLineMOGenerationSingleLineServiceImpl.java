@@ -34,6 +34,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -48,17 +49,20 @@ public class SaleOrderLineMOGenerationSingleLineServiceImpl
   protected final ProductionOrderUpdateService productionOrderUpdateService;
   protected final BillOfMaterialService billOfMaterialService;
   protected final ManufOrderGenerationService manufOrderGenerationService;
+  protected final StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
   public SaleOrderLineMOGenerationSingleLineServiceImpl(
       ProductionConfigService productionConfigService,
       ProductionOrderUpdateService productionOrderUpdateService,
       BillOfMaterialService billOfMaterialService,
-      ManufOrderGenerationService manufOrderGenerationService) {
+      ManufOrderGenerationService manufOrderGenerationService,
+      StockLocationLineFetchService stockLocationLineFetchService) {
     this.productionConfigService = productionConfigService;
     this.productionOrderUpdateService = productionOrderUpdateService;
     this.billOfMaterialService = billOfMaterialService;
     this.manufOrderGenerationService = manufOrderGenerationService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   /**
@@ -123,11 +127,18 @@ public class SaleOrderLineMOGenerationSingleLineServiceImpl
         if (childBom.getProdProcess() == null) {
           continue;
         }
+        BigDecimal qtyToProduce = qtyRequested.multiply(subBomMapWithLineQty.get(childBom));
+        if (!childBom.equals(billOfMaterial)) {
+          BigDecimal availableQty =
+              stockLocationLineFetchService.getAvailableQty(
+                  saleOrderLine.getSaleOrder().getStockLocation(), childBom.getProduct());
+          qtyToProduce = qtyToProduce.subtract(availableQty);
+        }
         ManufOrder manufOrder =
             manufOrderGenerationService.generateManufOrder(
                 childBom.getProduct(),
                 childBom,
-                qtyRequested.multiply(subBomMapWithLineQty.get(childBom)),
+                qtyToProduce,
                 startDate,
                 endDate,
                 saleOrder,
