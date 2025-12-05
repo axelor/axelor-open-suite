@@ -8,7 +8,7 @@
   <entity name="ExtraExpenseLine">
 
     <many-to-one name="taskReport" ref="com.axelor.apps.businessproject.db.TaskReport"
-      title="Task Report" required="true"/>
+      title="Task Report" required="false"/>
     <!-- Original part of expenseLine -->
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="expenseProduct" ref="com.axelor.apps.base.db.Product"

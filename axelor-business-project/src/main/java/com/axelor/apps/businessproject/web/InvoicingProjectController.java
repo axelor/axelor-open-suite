@@ -91,12 +91,6 @@ public class InvoicingProjectController {
     }
     if (projects.size() > 0) {
       for (InvoicingProject invProject : projects) {
-        // If invoice already exists : open it instead of generating new one
-        if (invProject.getInvoice() != null) {
-          invoiceIdList.add(invProject.getInvoice().getId());
-          continue;
-        }
-        // Otherwise generate a new one
         invoice = Beans.get(ProjectGenerateInvoiceService.class).generateInvoice(invProject);
         if (invoice != null) {
           invoiceIdList.add(invoice.getId());

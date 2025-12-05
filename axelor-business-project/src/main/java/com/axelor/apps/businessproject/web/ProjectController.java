@@ -109,6 +109,9 @@ public class ProjectController {
 
     Project project = request.getContext().asType(Project.class);
     project = Beans.get(ProjectRepository.class).find(project.getId());
+    InvoicingProjectService invoicingProjectService = Beans.get(InvoicingProjectService.class);
+    InvoicingProjectRepository invoicingProjectRepository =
+        Beans.get(InvoicingProjectRepository.class);
 
     InvoicingProject invoicingProject =
         Beans.get(InvoicingProjectRepository.class)
@@ -123,7 +126,8 @@ public class ProjectController {
             .param("forceEdit", "true");
 
     if (invoicingProject != null) {
-      // Open existing invoicing project
+      // Open or update existing invoicing project
+      invoicingProject = invoicingProjectService.refreshInvoicingProject(invoicingProject, project);
       view.context("_showRecord", invoicingProject.getId());
     } else {
       // Creating new invoicing project : pre-fill with project

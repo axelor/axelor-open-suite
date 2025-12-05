@@ -113,6 +113,14 @@ public class InvoicingProjectService {
     return;
   }
 
+  @Transactional
+  public InvoicingProject refreshInvoicingProject(
+      InvoicingProject invoicingProject, Project project) {
+    clearLines(invoicingProject);
+    setLines(invoicingProject, project, 0);
+    return invoicingProjectRepo.save(invoicingProject);
+  }
+
   public void fillLines(InvoicingProject invoicingProject, Project project) {
     String commonQuery = "self.project = :project AND self.toInvoice = true";
 
