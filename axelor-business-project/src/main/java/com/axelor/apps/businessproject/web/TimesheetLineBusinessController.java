@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
@@ -79,7 +80,7 @@ public class TimesheetLineBusinessController {
 
       TaskMemberReport report = findLatestMatchingTaskMemberReport(project, employee, projectTask);
       if (report != null) {
-        prefillResponseFromReport(response, report);
+        prefillResponseFromReport(response, report, projectTask.getProduct());
         log.debug("Prefilled from TaskMemberReport (full form)");
       }
 
@@ -104,7 +105,7 @@ public class TimesheetLineBusinessController {
 
       TaskMemberReport report = findLatestMatchingTaskMemberReport(project, employee, projectTask);
       if (report != null) {
-        prefillResponseFromReport(response, report);
+        prefillResponseFromReport(response, report, projectTask.getProduct());
         log.debug(
             "Prefilled from TaskMemberReport (modal/dialog) for employee {} on project {}",
             employee.getName(),
@@ -208,7 +209,8 @@ public class TimesheetLineBusinessController {
   }
 
   /** Prefill response from report (works for modal & full form) */
-  private void prefillResponseFromReport(ActionResponse response, TaskMemberReport report) {
+  private void prefillResponseFromReport(
+      ActionResponse response, TaskMemberReport report, Product activity) {
     Map<String, Object> values = new HashMap<>();
 
     if (report.getStartTime() != null) {
@@ -225,6 +227,10 @@ public class TimesheetLineBusinessController {
     }
 
     if (report.getBreakTimeHours() != null) values.put("breakTime", report.getBreakTimeHours());
+
+    if (activity != null) {
+      values.put("product", activity);
+    }
 
     response.setValues(values);
   }

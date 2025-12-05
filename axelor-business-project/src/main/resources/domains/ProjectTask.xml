@@ -32,6 +32,8 @@
       ref="com.axelor.apps.contract.db.Contract"/>
     <many-to-one name="frameworkSupplierContract" title="Framework supplier contract"
       ref="com.axelor.apps.contract.db.Contract"/>
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
+
 
     <!-- planification fields -->
     <decimal name="soldTime" title="Sold time"/>

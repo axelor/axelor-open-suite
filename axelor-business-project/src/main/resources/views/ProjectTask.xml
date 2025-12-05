@@ -19,6 +19,8 @@
     <field name="status"/>
     <field name="priority"/>
     <field name="projectTaskCategory"/>
+    <field if="__config__.app.getApp('timesheet')?.enableActivity" name="product"
+      form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="targetVersion" if-module="axelor-business-support"
       if="__config__.app.isApp('business-support')"/>
     <field name="taskEndDate" hidden="true"/>
@@ -56,6 +58,9 @@
     <field name="status"/>
     <field name="priority"/>
     <field name="projectTaskCategory"/>
+    <field if="__config__.app.getApp('timesheet')?.enableActivity" name="product"
+      form-view="product-activity-form" grid-view="product-activity-grid"/>
+
     <!-- MGM-80, @gkouete, following data are irrelevant for MGM processes -->
     <!-- <field name="initial" width="120"/> <field name="forecast" width="120"/> <field name="real"
       width="120"/> -->
@@ -83,6 +88,8 @@
     <field name="status"/>
     <field name="priority"/>
     <field name="projectTaskCategory"/>
+    <field if="__config__.app.getApp('timesheet')?.enableActivity" name="product"
+      form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="taskDuration" if="manageTimeSpent"/>
     <field name="$durationForCustomer" title="Duration adjust for customer" type="decimal"
       if="manageTimeSpent"/>
@@ -114,6 +121,8 @@
     <field name="status"/>
     <field name="invoicingProgress"/>
     <field name="progress" widget="Progress"/>
+    <field if="__config__.app.getApp('timesheet')?.enableActivity" name="product"
+      form-view="product-activity-form" grid-view="product-activity-grid"/>
     <field name="exTaxTotal" aggregate="sum"/>
     <field name="quantity" aggregate="sum"/>
     <field name="toInvoice" readonly="true"
@@ -340,6 +349,7 @@
       <field name="project.isShowPlanning" hidden="true"/>
     </panel>
   </form>
+
 
   <form name="incl-overview-business-project-task-panel-form" title="Overview"
     model="com.axelor.apps.project.db.ProjectTask">
