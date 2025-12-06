@@ -32,9 +32,10 @@
     <field name="task" title="Task"/>
     <field name="taskCategories" widget="TagSelect"/>
     <field name="startTime" title="Start Time"/>
-    <field name="breakTimeHours" title="Break Time (hours)"/>
+    <field name="breakTimeMinutes" title="Break Time (min)"/>
     <field name="endTime" title="End Time"/>
     <field name="workHours" title="Work Hours (hours)"/>
+    <field name="breakTimeHours" title="Break Time (hours)" hidden="true"/>
   </grid>
 
   <!-- Form View -->
@@ -110,18 +111,19 @@
 
   <!-- Define the form view for Task Member Report -->
   <form name="task-member-report-form" title="Team Member Report"
-    onLoad="action-task-member-report-attrs-task-domain"
-    onNew="action-task-member-report-group-on-new"
+    onLoad="action-task-member-report-group-on-load" onNew="action-task-member-report-group-on-new"
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <panel colSpan="12" canCollapse="true" collapseIf="false">
       <field name="task" title="Task" widget="Select"
         onChange="action-task-member-report-on-change-task" required="true"/>
       <field name="employee" title="Employee"/>
       <field name="startTime" onChange="action-task-report-on-change-time"/>
-      <field name="breakTimeHours" onChange="action-task-report-on-change-time"/>
+      <field name="breakTimeMinutes" title="Break Time (minutes)"
+        onChange="action-task-member-report-sync-minutes-to-hours,action-task-report-on-change-time"/>
       <field name="endTime" onChange="action-task-report-on-change-time"/>
       <field name="task.projectTaskCategory" title="Task Category" readonly="true"/>
       <field name="workHours"/>
+      <field name="breakTimeHours" hidden="true"/>
     </panel>
   </form>
 
@@ -219,9 +221,26 @@
           .reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add) : 0"/>
   </action-record>
 
+  <action-record name="action-task-member-report-sync-minutes-to-hours"
+    model="com.axelor.apps.businessproject.db.TaskMemberReport">
+    <field name="breakTimeHours"
+      expr="eval: breakTimeMinutes != null ? (breakTimeMinutes / 60.0) : null"/>
+  </action-record>
+
+  <action-record name="action-task-member-report-sync-hours-to-minutes"
+    model="com.axelor.apps.businessproject.db.TaskMemberReport">
+    <field name="breakTimeMinutes"
+      expr="eval: breakTimeHours != null ? Math.round(breakTimeHours * 60) : null"/>
+  </action-record>
+
   <action-group name="action-task-member-report-group-on-new">
     <action name="action-task-member-report-attrs-task-domain"/>
     <action name="action-task-member-report-record-default-start-time"/>
+  </action-group>
+
+  <action-group name="action-task-member-report-group-on-load">
+    <action name="action-task-member-report-attrs-task-domain"/>
+    <action name="action-task-member-report-sync-hours-to-minutes"/>
   </action-group>
 
 </object-views>

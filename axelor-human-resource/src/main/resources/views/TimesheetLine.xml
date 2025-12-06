@@ -203,7 +203,8 @@
     model="com.axelor.apps.hr.db.TimesheetLine"
     onNew="action-timesheet-line-group-project-form-on-new"
     onSave="action-timesheet-line-group-project-task-form-on-save, action-timesheet-line-method-set-stored-duration"
-    onLoad="action-timesheet-line-attrs-set-duration-label" width="large">
+    onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-sync-hours-to-minutes"
+    width="large">
     <panel name="overviewPanel" title="Overview">
       <field name="employee" form-view="employee-form" grid-view="employee-grid"
         canNew="false" canEdit="false" canView="false"/>
@@ -217,7 +218,10 @@
         requiredIf="toInvoice" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
-      <field name="breakTime" title="Break Time (hours)" readonly="true"/>
+      <field name="breakTimeMinutes" title="Break Time (minutes)"
+        onChange="action-timesheet-line-sync-minutes-to-hours,action-timesheet-line-validate-and-calculate"
+        readonly="true"/>
+
       <field name="duration" width="62%" colSpan="3"
         onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
       <label name="durationLabel" colSpan="3"/>
@@ -234,6 +238,7 @@
         if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
       <field name="enableEditor" if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"/>
       <field name="comments"/>
+      <field name="breakTime" hidden="true"/>
     </panel>
   </form>
 
@@ -241,7 +246,7 @@
     model="com.axelor.apps.hr.db.TimesheetLine"
     onNew="action-timesheet-line-group-timesheet-form-on-new"
     onSave="action-timesheet-line-group-project-task-form-on-save, action-timesheet-line-method-set-stored-duration"
-    onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
+    onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project,action-timesheet-line-sync-hours-to-minutes"
     width="large">
     <panel name="overviewPanel" title="Overview">
       <field name="project" onChange="action-timesheet-line-group-project-onchange"
@@ -262,7 +267,8 @@
         requiredIf="toInvoice" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
-      <field name="breakTime" title="Break Time (hours)" readonly="true"/>
+      <field name="breakTimeMinutes" title="Break Time (minutes)"
+        onChange="action-timesheet-line-sync-minutes-to-hours,action-timesheet-line-validate-and-calculate"/>
       <field name="duration" width="62%" colSpan="3"
         onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
       <label name="durationLabel" colSpan="3"/>
@@ -280,6 +286,7 @@
       <field name="comments"/>
       <field name="employee" form-view="employee-form" grid-view="employee-grid" hidden="true"
         canNew="false" canEdit="false" canView="false"/>
+      <field name="breakTime" hidden="true"/>
     </panel>
   </form>
 
@@ -306,7 +313,8 @@
     model="com.axelor.apps.hr.db.TimesheetLine"
     onNew="action-timesheet-line-group-project-form-on-new"
     onSave="action-timesheet-line-group-project-task-form-on-save, action-timesheet-line-method-set-stored-duration"
-    onLoad="action-timesheet-line-group-onload" width="large">
+    onLoad="action-timesheet-line-group-onload,action-timesheet-line-sync-hours-to-minutes"
+    width="large">
     <panel name="overviewPanel" title="Overview">
       <field name="project" onChange="action-timesheet-line-group-project-onchange"
         onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
@@ -321,7 +329,9 @@
         requiredIf="toInvoice" canView="false" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" widget="SuggestBox"
         form-view="product-activity-form" grid-view="product-activity-grid"/>
-      <field name="breakTime" title="Break Time (hours)" readonly="true"/>
+      <field name="breakTimeMinutes" title="Break Time (minutes)"
+        onChange="action-timesheet-line-sync-minutes-to-hours,action-timesheet-line-validate-and-calculate"
+        readonly="true"/>
       <field name="duration" width="62%" colSpan="2" min="0.01"
         onChange="action-timesheet-line-method-set-stored-duration"/>
       <label name="durationLabel" colSpan="4"/>
@@ -341,12 +351,13 @@
       <field name="date" hidden="true"/>
       <field name="employee" form-view="employee-form" grid-view="employee-grid" hidden="true"
         canNew="false" canEdit="false" canView="false"/>
+      <field name="breakTime" hidden="true"/>
     </panel>
   </form>
 
   <form name="timesheet-line-timesheet-project-task-form" title="Timesheet Line"
     model="com.axelor.apps.hr.db.TimesheetLine"
-    onLoad="action-timesheet-line-attrs-overview-readonly-for-project-task"
+    onLoad="action-timesheet-line-attrs-overview-readonly-for-project-task,action-timesheet-line-sync-hours-to-minutes"
     onSave="action-timesheet-line-group-project-task-form-on-save, action-timesheet-line-method-set-stored-duration"
     onNew="action-timesheet-line-group-project-task-form-on-new">
     <panel name="overviewPanel" title="Overview">
@@ -368,7 +379,9 @@
         colSpan="6" widget="SuggestBox" canEdit="false"
         onSelect="action-hr-timesheet-line-attrs-domain-product" form-view="product-activity-form"
         grid-view="product-activity-grid"/>
-      <field name="breakTime" title="Break Time (hours)" readonly="true"/>
+      <field name="breakTimeMinutes" title="Break Time (minutes)"
+        onChange="action-timesheet-line-sync-minutes-to-hours,action-timesheet-line-validate-and-calculate"
+        readonly="true"/>
       <field name="duration" title="Duration" width="62%" colSpan="4"
         onChange="action-timesheet-line-method-set-stored-duration" min="0.01"/>
       <label name="durationLabel" colSpan="2"/>
@@ -382,6 +395,7 @@
       <field name="project.isBusinessProject" hidden="true"/>
       <field name="comments" colSpan="12"/>
       <field name="date" hidden="true"/>
+      <field name="breakTime" hidden="true"/>
     </panel>
   </form>
 
@@ -431,6 +445,7 @@
     <action name="action-timesheet-line-attrs-set-duration-label"/>
     <action name="action-timesheet-line-attrs-title-project"/>
     <action name="action-timesheet-line-atts-overview-readonly"/>
+    <action name="action-timesheet-line-sync-hours-to-minutes"/>
   </action-group>
 
   <action-group name="action-timesheet-line-group-project-task-form-on-new">
@@ -574,6 +589,18 @@
   <action-record name="action-timesheet-line-reset-invalid-time"
     model="com.axelor.apps.hr.db.TimesheetLine">
     <field name="endTime" expr="eval: null"/>
+  </action-record>
+
+  <action-record name="action-timesheet-line-sync-minutes-to-hours"
+    model="com.axelor.apps.hr.db.TimesheetLine">
+    <field name="breakTime"
+      expr="eval: breakTimeMinutes != null ? (breakTimeMinutes / 60.0) : null"/>
+  </action-record>
+
+  <action-record name="action-timesheet-line-sync-hours-to-minutes"
+    model="com.axelor.apps.hr.db.TimesheetLine">
+    <field name="breakTimeMinutes"
+      expr="eval: breakTime != null ? Math.round(breakTime * 60) : null"/>
   </action-record>
 
   <action-method name="action-timesheet-line-method-update-to-invoice">

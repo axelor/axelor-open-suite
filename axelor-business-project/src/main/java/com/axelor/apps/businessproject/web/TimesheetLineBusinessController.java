@@ -227,6 +227,8 @@ public class TimesheetLineBusinessController {
     }
 
     if (report.getBreakTimeHours() != null) values.put("breakTime", report.getBreakTimeHours());
+    if (report.getBreakTimeMinutes() != null)
+      values.put("breakTimeMinutes", report.getBreakTimeMinutes());
 
     if (activity != null) {
       values.put("product", activity);

@@ -13,6 +13,7 @@
     <datetime name="startTime" title="Start Time"/>
     <datetime name="endTime" title="End Time"/>
     <decimal name="breakTimeHours" title="Break Time (hours)" precision="5" scale="2"/>
+    <integer name="breakTimeMinutes" title="Break Time (minutes)"/>
     <decimal name="workHours" title="Work Hours (hours)" precision="6" scale="2"
       readonly="true"/>
   </entity>
