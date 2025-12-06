@@ -19,6 +19,7 @@
 package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -27,24 +28,30 @@ import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectGenerateInvoiceService;
+import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownDisplayService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
-import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class InvoicingProjectController {
 
   @Inject private InvoicingProjectRepository invoicingProjectRepository;
+
+  private static final Logger log = LoggerFactory.getLogger(InvoicingProjectController.class);
 
   public void fillIn(ActionRequest request, ActionResponse response) throws AxelorException {
     InvoicingProject invoicingProject = request.getContext().asType(InvoicingProject.class);
@@ -102,7 +109,7 @@ public class InvoicingProjectController {
         }
       }
       ids = StringUtils.join(invoiceIdList, ",");
-      ActionViewBuilder view =
+      ActionView.ActionViewBuilder view =
           ActionView.define(I18n.get("Invoice"))
               .model(Invoice.class.getName())
               .add("grid", "invoice-grid")
@@ -114,5 +121,88 @@ public class InvoicingProjectController {
               ? view.domain("self.id IN (" + ids + ")").map()
               : view.context("_showRecord", ids).map());
     }
+  }
+
+  public void generateBreakdown(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    if (invoice.getId() != null) {
+      invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    }
+    log.debug("Generating Breakdown of invoice lines for invoice {}", invoice.getId());
+
+    List<Map<String, Object>> displayData =
+        Beans.get(InvoiceBreakdownDisplayService.class).generateBreakdownFromInvoice(invoice);
+    String html = buildHtmlFromData(displayData);
+    log.debug("Finished building view for invoice line breakdown");
+
+    // Set HTML in response
+    response.setValue("breakdownHtml", html);
+  }
+
+  private String buildHtmlFromData(List<Map<String, Object>> data) {
+    StringBuilder html = new StringBuilder();
+    html.append("<table style='width: 100%; border-collapse: collapse;'>");
+    html.append("<thead><tr>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd;'>#</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd;'>Activity</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd;'>Quantity</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd;'>Unit</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd;'>Price</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd;'>Amount</th>");
+    html.append("</tr></thead><tbody>");
+
+    for (Map<String, Object> line : data) {
+      String sectionStyle = (String) line.get("sectionStyle");
+
+      // Render spacing lines
+      if ("SPACING".equals(sectionStyle)) {
+        html.append("<tr style='height: 15px;'>");
+        html.append("<td colspan='6' style='border: none;'>&nbsp;</td>");
+        html.append("</tr>");
+        continue;
+      }
+
+      String style = "";
+      if (Boolean.TRUE.equals(line.get("isBold"))) {
+        style = "font-weight: bold;";
+      }
+
+      html.append("<tr style='").append(style).append("'>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd;'>")
+          .append(line.get("sequence") != null ? line.get("sequence") : "")
+          .append("</td>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd;'>")
+          .append(line.get("description"))
+          .append("</td>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
+          .append(formatValue(line.get("quantity")))
+          .append("</td>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
+          .append(line.get("unit") != null ? line.get("unit") : "")
+          .append("</td>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
+          .append(formatValue(line.get("price")))
+          .append("</td>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
+          .append(formatValue(line.get("amount")))
+          .append("</td>");
+      html.append("</tr>");
+    }
+
+    html.append("</tbody></table>");
+    return html.toString();
+  }
+
+  /** Formats numeric values to 2 decimal places, returns empty string for null */
+  private String formatValue(Object value) {
+    if (value == null) {
+      return "";
+    }
+    if (value instanceof BigDecimal) {
+      BigDecimal bd = (BigDecimal) value;
+      return String.format("%.2f", bd);
+    }
+    return value.toString();
   }
 }

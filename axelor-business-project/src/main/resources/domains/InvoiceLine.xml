@@ -15,6 +15,9 @@
     <many-to-one name="expenseLine" title="Expense line"
       ref="com.axelor.apps.hr.db.ExpenseLine"/>
 
+    <string name="sourceTimesheetLineIds" title="Source Timesheet Line IDs" large="true"/>
+    <string name="sourceType" title="Source Type" selection="invoice.line.source.type.select"/>
+
   </entity>
 
 </domain-models>

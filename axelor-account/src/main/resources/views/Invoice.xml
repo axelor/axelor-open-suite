@@ -637,6 +637,10 @@
           grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change"
           canMove="true" orderBy="sequence" height="30"/>
       </panel>
+      <panel name="invoiceBreakdownPanel" title="Invoice Breakdown">
+        <field name="breakdownHtml" showTitle="false" colSpan="12" widget="html" hidden="true"
+               showIf="breakdownHtml != null" readonly="true"/>
+      </panel>
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false"
         readonlyIf="statusSelect != 1">
         <panel-related name="invoiceLineTaxListPanel" readonlyIf="statusSelect != 1"
@@ -1666,6 +1670,7 @@
     <action name="action-invoice-method-set-invoice-line-list-scale"/>
     <action name="action-invoice-attrs-display-line-coefficient"/>
     <action name="action-invoice-method-set-discount-dummies"/>
+    <action name="action-invoice-generate-breakdown" if="id != null"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
@@ -1854,6 +1859,7 @@
     <action name="action-invoice-method-generate-pfp-partial-terms"
       if="statusSelect == 3 || statusSelect == 2"/>
     <action name="action-invoice-method-round-invoice-term-percentages"/>
+    <action name="action-invoice-generate-breakdown" if="id != null"/>
   </action-group>
 
   <action-group name="action-invoice-group-validate-and-ventilate-onclick">
