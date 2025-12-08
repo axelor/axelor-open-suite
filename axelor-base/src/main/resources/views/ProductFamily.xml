@@ -18,6 +18,8 @@
     <panel name="mainPanel">
       <field name="name"/>
       <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
+      <field name="excludeFromMrp" if-module="axelor-supplychain"
+        if="__config__.app.isApp('supplychain')"/>
       <panel-related name="accountManagementListPanel" field="accountManagementList"
         grid-view="account-management-product-grid" form-view="account-management-form"
         domain="self.typeSelect = 1" colSpan="12"/>
