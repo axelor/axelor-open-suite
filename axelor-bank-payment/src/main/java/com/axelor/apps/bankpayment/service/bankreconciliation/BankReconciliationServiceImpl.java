@@ -693,7 +693,14 @@ public class BankReconciliationServiceImpl implements BankReconciliationService 
     if (!brl.getIsPosted() && !Strings.isNullOrEmpty(brl.getPostedNbr())) {
       String query = "self.postedNbr LIKE '%%s%'";
       query = query.replace("%s", brl.getPostedNbr());
-      List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
+      query += " AND self.move.company = :company";
+
+      List<MoveLine> moveLines =
+          moveLineRepository
+              .all()
+              .filter(query)
+              .bind("company", brl.getBankReconciliation().getCompany())
+              .fetch();
       for (MoveLine moveLine : moveLines) {
         if (moveLine.getDebit().compareTo(BigDecimal.ZERO) != 0) {
           movesOngoingReconciledBalance =
