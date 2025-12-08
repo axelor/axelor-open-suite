@@ -138,18 +138,20 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
   }
 
   protected void attachMetaFile(BillOfMaterialImport billOfMaterialImport) throws AxelorException {
+    billOfMaterialImport = billOfMaterialImportRepository.find(billOfMaterialImport.getId());
     MetaFile metaFile = billOfMaterialImport.getDocumentMetaFile();
-
-    if (metaFile != null) {
+    BillOfMaterial mainBillOfMaterialGenerated =
+        billOfMaterialImport.getMainBillOfMaterialGenerated();
+    if (metaFile != null && mainBillOfMaterialGenerated != null) {
       if (metaFile.getFileType().equals("application/zip")
           || metaFile.getFileType().equals("application/x-zip-compressed")) {
         String zipFilePath = MetaFiles.getPath(metaFile).toFile().getAbsolutePath();
-        dmsService.unzip(zipFilePath, billOfMaterialImport.getMainBillOfMaterialGenerated());
+        dmsService.unzip(zipFilePath, mainBillOfMaterialGenerated);
       } else {
         metaFiles.attach(
             billOfMaterialImport.getDocumentMetaFile(),
             billOfMaterialImport.getDocumentMetaFile().getFileName(),
-            billOfMaterialImport.getMainBillOfMaterialGenerated());
+            mainBillOfMaterialGenerated);
       }
     }
   }

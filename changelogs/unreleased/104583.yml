@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed NPE on bill of material import valdiation."
+module: axelor-production
