@@ -38,7 +38,7 @@
       <field name="company" canEdit="false"
         readonlyIf="statusSelect == 1 || statusSelect == 2 || $isReadOnly" form-view="company-form"
         grid-view="company-grid"
-        onChange="action-journal-record-reset-valid-account-set,action-journal-record-change-config-values"/>
+        onChange="action-journal-record-reset-values,action-journal-record-change-config-values"/>
       <field name="journalType" grid-view="journal-type-grid" form-view="journal-type-form"/>
       <field name="authorizedFunctionalOriginSelect" widget="MultiSelect"/>
       <field name="authorizedRoleSet" grid-view="role-grid" form-view="role-form"
@@ -195,9 +195,10 @@
     <field name="exportCode" expr="eval:null" if="notExportOk"/>
   </action-record>
 
-  <action-record name="action-journal-record-reset-valid-account-set"
+  <action-record name="action-journal-record-reset-values"
     model="com.axelor.apps.account.db.Journal">
     <field name="validAccountSet" expr="eval: null"/>
+    <field name="sequence" expr="eval: null"/>
   </action-record>
 
   <action-group name="action-journal-group-on-load-actions">
