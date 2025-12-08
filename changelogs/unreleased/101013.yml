@@ -1,0 +1,5 @@
+---
+title: "Stock move: fixed production cost price anomaly on outgoing products."
+module: axelor-production
+developer: |
+  - ManufOrderStockMoveServiceImpl consturctor is updated to introduce StockMoveToolService
