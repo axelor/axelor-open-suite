@@ -161,18 +161,19 @@ public class PurchaseRequestToPoCreateServiceImpl implements PurchaseRequestToPo
     return String.valueOf(pr.getSupplierPartner().getId());
   }
 
-  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest, Company company)
-      throws AxelorException {
+  protected PurchaseOrder createPurchaseOrder(
+      PurchaseRequest purchaseRequest, Company defaultCompany) throws AxelorException {
+    Company company = Optional.ofNullable(purchaseRequest.getCompany()).orElse(defaultCompany);
     return purchaseOrderRepo.save(
         purchaseOrderCreateService.createPurchaseOrder(
             AuthUtils.getUser(),
-            Optional.ofNullable(purchaseRequest.getCompany()).orElse(company),
+            company,
             null,
             purchaseRequest.getSupplierPartner().getCurrency(),
             null,
             null,
             null,
-            appBaseService.getTodayDate(purchaseRequest.getCompany()),
+            appBaseService.getTodayDate(company),
             null,
             purchaseRequest.getSupplierPartner(),
             purchaseRequest.getTradingName()));
