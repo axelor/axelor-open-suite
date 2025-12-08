@@ -15,6 +15,7 @@
     <decimal name="percentageTaxTotal" scale="3" precision="20"
       title="Amount Tax (via percentages)"/>
     <decimal name="inTaxTotal" scale="3" precision="20" title="Amount A.T.I."/>
+    <boolean name="reverseCharged"/>
     <many-to-one name="taxType" ref="com.axelor.apps.account.db.TaxType"
       title="Tax type"/>
 
