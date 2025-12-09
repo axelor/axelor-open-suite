@@ -4,16 +4,12 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.businessproject.db.ExtraExpenseLine;
 import com.axelor.apps.businessproject.db.TaskReport;
-import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
 import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectTask;
 import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -29,17 +25,13 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
   public static final String CODE_DIRT_ALLOWANCE = "DIRTALLOWANCE";
 
   protected ProductRepository productRepo;
-  protected ExtraExpenseLineRepository extraExpenseLineRepo;
 
   @Inject
-  public TaskReportExpenseServiceImpl(
-      ProductRepository productRepo, ExtraExpenseLineRepository extraExpenseLineRepo) {
+  public TaskReportExpenseServiceImpl(ProductRepository productRepo) {
     this.productRepo = productRepo;
-    this.extraExpenseLineRepo = extraExpenseLineRepo;
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
   public List<ExtraExpenseLine> createOrUpdateExtraExpenseLinesFromTaskReport(
       TaskReport taskReport) {
     Project project = taskReport.getProject();
@@ -53,7 +45,6 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
       log.warn("Project has no tasks. Cannot create expense lines.");
       return new ArrayList<>();
     }
-    ProjectTask projectTask = project.getProjectTaskList().get(0);
 
     // Map of product codes to boolean flags from TaskReport
     Map<String, Boolean> requiredExpenses = new HashMap<>();
@@ -66,21 +57,18 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
     }
 
     // Remove lines that are no longer needed
-    Iterator<ExtraExpenseLine> iterator = taskReport.getExtraExpenseLineList().iterator();
-    while (iterator.hasNext()) {
-      ExtraExpenseLine line = iterator.next();
+    List<ExtraExpenseLine> linesToRemove = new ArrayList<>();
+    for (ExtraExpenseLine line : taskReport.getExtraExpenseLineList()) {
       String productCode =
           line.getExpenseProduct() != null ? line.getExpenseProduct().getCode() : null;
 
       if (productCode != null
           && requiredExpenses.containsKey(productCode)
           && !requiredExpenses.get(productCode)) {
-        iterator.remove();
-        if (line.getId() != null) {
-          extraExpenseLineRepo.remove(line);
-        }
+        linesToRemove.add(line);
       }
     }
+    taskReport.getExtraExpenseLineList().removeAll(linesToRemove);
 
     // Get existing product codes
     List<String> existingProductCodes = new ArrayList<>();
@@ -124,14 +112,12 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
   }
 
   private void addExpenseLine(TaskReport taskReport, Project project, String productCode) {
-
     Product product = findExpenseProduct(productCode);
     if (product == null) {
       return;
     }
 
     ExtraExpenseLine line = new ExtraExpenseLine();
-    line.setTaskReport(taskReport);
     line.setProject(project);
     line.setExpenseProduct(product);
     line.setPrice(product.getSalePrice() != null ? product.getSalePrice() : BigDecimal.ZERO);
@@ -139,6 +125,8 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
     line.setExpenseDate(LocalDate.now());
     line.setQuantity(BigDecimal.ONE);
     line.setTotalAmount(line.getPrice().multiply(line.getQuantity()));
+
+    // handles the bidirectional relationship
     taskReport.addExtraExpenseLineListItem(line);
   }
 }

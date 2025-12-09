@@ -42,8 +42,7 @@
   <form name="task-report-form" title="Task Reports" canEdit="true"
     model="com.axelor.apps.businessproject.db.TaskReport"
     onNew="action-task-report-default, action-task-report-attrs-filter-projects"
-    onLoad="action-task-report-attrs-filter-projects"
-    onSave="action-task-report-validate, action-task-report-method-create-expense-lines"
+    onLoad="action-task-report-attrs-filter-projects" onSave="action-task-report-validate"
     width="large">
     <toolbar>
       <button name="viewTaskReportbtn" title="View Report" icon="fa-eye"
@@ -148,10 +147,6 @@
       method="previewTaskReport"/>
   </action-method>
 
-  <action-method name="action-task-report-method-create-expense-lines">
-    <call class="com.axelor.apps.businessproject.web.TaskReportController"
-      method="createOrUpdateExtraExpenses"/>
-  </action-method>
   <action-method name="action-task-report-validate">
     <call class="com.axelor.apps.businessproject.web.TaskReportController"
       method="validateTaskReport"/>

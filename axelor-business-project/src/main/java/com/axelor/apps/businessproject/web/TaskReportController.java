@@ -2,11 +2,9 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.businessproject.db.ExtraExpenseLine;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
 import com.axelor.apps.businessproject.db.repo.TaskReportRepository;
-import com.axelor.apps.businessproject.service.taskreport.TaskReportExpenseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -16,7 +14,6 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.List;
 
 @Singleton
 public class TaskReportController {
@@ -44,25 +41,6 @@ public class TaskReportController {
             .context("_previewReadonly", true)
             .context("_canSign", true)
             .map());
-  }
-
-  /** Called on save of TaskReport to create/update extra expense */
-  public void createOrUpdateExtraExpenses(ActionRequest request, ActionResponse response) {
-    try {
-      TaskReport taskReport = request.getContext().asType(TaskReport.class);
-
-      TaskReportExpenseService taskReportExpenseService = Beans.get(TaskReportExpenseService.class);
-
-      List<ExtraExpenseLine> lines =
-          taskReportExpenseService.createOrUpdateExtraExpenseLinesFromTaskReport(taskReport);
-
-      if (lines != null && !lines.isEmpty()) {
-        response.setValue("extraExpenseLineList", lines);
-      }
-
-    } catch (Exception e) {
-      response.setError(e.getMessage());
-    }
   }
 
   /** Determine the visibilty of extra expenses panel. */

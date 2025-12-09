@@ -14,6 +14,5 @@ public interface TaskReportExpenseService {
    * @return List of ExtraExpenseLine created or updated
    * @throws Exception
    */
-  List<ExtraExpenseLine> createOrUpdateExtraExpenseLinesFromTaskReport(TaskReport taskReport)
-      throws Exception;
+  List<ExtraExpenseLine> createOrUpdateExtraExpenseLinesFromTaskReport(TaskReport taskReport);
 }
