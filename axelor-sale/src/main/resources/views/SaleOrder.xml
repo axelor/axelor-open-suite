@@ -1851,6 +1851,8 @@
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"
       if="__config__.app.getApp('sale')?.getSalespersonSelect() == 1"/>
+    <field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"
+      if="__config__.app.isApp('supplychain') &amp;&amp; clientPartner?.shipmentMode != null"/>
   </action-record>
 
   <action-record name="action-sale-order-record-hide-discount"
