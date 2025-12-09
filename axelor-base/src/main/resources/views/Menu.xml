@@ -5,7 +5,8 @@
 
   <menuitem id="abs-menu-mail" name="menu-mail"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnterpriseCommunication()"
-    hidden="false" order="-2500" title="Messaging" icon="chat-dots" icon-background="#84429f"/>
+    hidden="false" groups="admins" order="-2500" title="Messaging" icon="chat-dots"
+    icon-background="#84429f"/>
 
   <menuitem title="Mailing lists" name="menu-mail-mailing-list" parent="menu-mail"
     order="-75"/>
@@ -31,7 +32,7 @@
 
   <menuitem id="abs-menu-dms" name="menu-dms"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getDocument()"
-    hidden="false" order="-2200" title="Documents" icon="card-list" icon-background="#3f6bb9"/>
+    hidden="false" order="500" title="Documents" icon="card-list" icon-background="#3f6bb9"/>
 
   <menuitem id="abs-menu-dms-config" name="menu-dms-config" title="Configuration"
     parent="menu-dms" order="-70" icon="fa-cog"/>
@@ -60,7 +61,8 @@
 
   <menuitem id="calendar.root.menu"
     if="__config__.app.isApp('base') &amp;&amp; __config__.app.getApp('base')?.getEnableCalendars()"
-    name="menu-calendar" order="-2300" title="Calendar" icon="fa-calendar" icon-background="#34d0f7"/>
+    name="menu-calendar" groups="admins" order="-2300" title="Calendar" icon="fa-calendar"
+    icon-background="#34d0f7"/>
 
   <menuitem id="calendar.root.menu.general" name="menu-calendar-general" title="My events"
     parent="menu-calendar" action="calendar.root.menu.my.calendar" order="100"/>
@@ -97,7 +99,7 @@
   <menuitem id="abs-menu-admin" name="menu-admin" title="Administration" order="100"
     icon="wrench-adjustable-circle" icon-background="#2fa042"/>
   <menuitem id="mgm-abs-menu-admin" name="mgm-admin" title="Administration" order="150"
-    groups="CUSTOM-OM" icon="wrench-adjustable-circle" icon-background="#2fa042"/>
+    groups="CUSTOM-OM,CUSTOM-ACCOUNTANT" icon="wrench-adjustable-circle" icon-background="#2fa042"/>
 
   <menuitem name="admin-root-general" parent="admin-root" order="200"
     if="__config__.app.isApp('base')" title="General data"/>
@@ -757,7 +759,7 @@
   <menuitem name="mail-root-email-conf-routing" parent="mail-conf" title="Routings"
     action="mail.root.email.conf.routing" order="200"/>
   <menuitem name="mgm-mail-root-email-conf-mail-account" title="Email Accounts"
-    parent="mgm-admin" action="mail.root.email.conf.mail.account" order="15"/>
+    parent="mail-conf" action="mail.root.email.conf.mail.account" order="15"/>
   <menuitem name="mgm-mail-root-email-conf-email-address" title="Email addresses"
     parent="mgm-admin" action="mail.root.email.conf.email.address" order="20"/>
 

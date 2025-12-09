@@ -688,7 +688,7 @@
   </action-view>
 
   <menuitem name="hr-report-root" parent="hr-root" title="Reportings" order="900"
-    icon="fa-bar-chart"/>
+    icon="fa-bar-chart" groups="admins"/>
 
   <menuitem name="menu-hr-manager-dashboard" parent="hr-report-root"
     title="Human Resources Manager" action="hr.manager.dashboard.view" order="100"/>

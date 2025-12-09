@@ -639,7 +639,7 @@
       </panel>
       <panel name="invoiceBreakdownPanel" title="Invoice Breakdown">
         <field name="breakdownHtml" showTitle="false" colSpan="12" widget="html" hidden="true"
-               showIf="breakdownHtml != null" readonly="true"/>
+          showIf="breakdownHtml != null" readonly="true"/>
       </panel>
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false"
         readonlyIf="statusSelect != 1">
@@ -1901,6 +1901,11 @@
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-update-invoice-terms"/>
   </action-group>
+
+  <action-method name="action-invoice-generate-breakdown">
+    <call class="com.axelor.apps.businessproject.web.InvoicingProjectController"
+      method="generateBreakdown"/>
+  </action-method>
 
   <action-group name="action-invoice-group-invoice-line-list-report-onchange">
     <action name="action-invoice-method-compute"/>

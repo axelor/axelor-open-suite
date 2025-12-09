@@ -142,7 +142,7 @@
   </action-view>
 
   <menuitem name="sc-root-sale-report" parent="sc-root-sale" title="Reportings"
-    order="1300" icon="fa-bar-chart"/>
+    order="1300" icon="fa-bar-chart" groups="admins"/>
 
   <menuitem name="sc-root-sale-maps" parent="sc-root-sale-report" title="Maps" order="500"/>
 
@@ -154,7 +154,7 @@
     action="action-show-prospects-on-map-page" order="200"/>
 
   <menuitem name="sc-root-sale-conf" parent="sc-root-sale" title="Configuration"
-    order="1400" icon="fa-cog"/>
+    order="1400" icon="fa-cog" groups="admins"/>
 
   <menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf" title="Cancel Reasons"
     action="sale.conf.cancelreason" order="200"/>
@@ -203,8 +203,8 @@
     <context name="_typeSelect" expr="eval: 1"/>
   </action-view>
 
-  <menuitem name="sc-root-sale-conf-price-list" parent="sc-root-sale-conf"
-    title="Price lists" action="sc.root.sale.conf.price.list" order="600"/>
+  <menuitem name="sc-root-sale-conf-price-list" parent="mgm-admin" title="Price lists"
+    action="sc.root.sale.conf.price.list" order="600"/>
 
   <action-view name="sc.root.sale.conf.price.list" title="Price lists"
     model="com.axelor.apps.base.db.PriceList">

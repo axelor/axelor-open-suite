@@ -21,7 +21,7 @@
     <call class="com.axelor.apps.project.web.ProjectMenuController" method="allProjectTasks"/>
   </action-method>
 
-  <menuitem name="project-template" parent="menu-project-root" order="500"
+  <menuitem name="project-template" parent="menu-project-root" order="500" groups="admins"
     title="Templates"/>
 
   <menuitem name="project-task-template" parent="project-template" title="Task templates"
@@ -43,7 +43,7 @@
   </action-view>
 
   <menuitem name="project-reporting" parent="menu-project-root" order="800"
-    title="Reportings" icon="fa-bar-chart"/>
+    title="Reportings" icon="fa-bar-chart" groups="admins"/>
 
   <menuitem name="project-reporting-my-projects" parent="project-reporting" order="100"
     title="My projects" action="project.my.projects"/>
