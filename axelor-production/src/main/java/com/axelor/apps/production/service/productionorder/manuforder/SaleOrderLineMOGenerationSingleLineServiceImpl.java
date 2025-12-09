@@ -84,8 +84,7 @@ public class SaleOrderLineMOGenerationSingleLineServiceImpl
       throws AxelorException {
 
     Map<BillOfMaterial, BigDecimal> subBomMapWithLineQty = new HashMap<>();
-    // One for the parent BOM (It will be multiplied by qtyRequested anyway)
-    subBomMapWithLineQty.put(billOfMaterial, BigDecimal.ONE);
+    subBomMapWithLineQty.put(billOfMaterial, billOfMaterial.getQty());
 
     Map<BillOfMaterial, ManufOrder> subBomManufOrderParentMap = new HashMap<>();
     // prevent infinite loop
