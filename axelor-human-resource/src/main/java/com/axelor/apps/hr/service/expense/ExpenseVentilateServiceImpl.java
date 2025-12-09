@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -85,6 +86,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
   protected AccountManagementAccountService accountManagementAccountService;
   protected AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService;
   protected ExpenseRepository expenseRepository;
+  protected MoveLineRecordService moveLineRecordService;
 
   @Inject
   public ExpenseVentilateServiceImpl(
@@ -104,7 +106,8 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
       MoveValidateService moveValidateService,
       AccountManagementAccountService accountManagementAccountService,
       AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService,
-      ExpenseRepository expenseRepository) {
+      ExpenseRepository expenseRepository,
+      MoveLineRecordService moveLineRecordService) {
     this.appAccountService = appAccountService;
     this.sequenceService = sequenceService;
     this.hrConfigService = hrConfigService;
@@ -122,6 +125,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     this.accountManagementAccountService = accountManagementAccountService;
     this.analyticMoveLineGenerateRealService = analyticMoveLineGenerateRealService;
     this.expenseRepository = expenseRepository;
+    this.moveLineRecordService = moveLineRecordService;
   }
 
   @Override
@@ -297,6 +301,9 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
             expense.getExpenseSeq(),
             expense.getFullName()));
 
+    for (MoveLine moveLine : moveLines) {
+      moveLineRecordService.refreshAccountInformation(moveLine, move);
+    }
     move.getMoveLineList().addAll(moveLines);
     move.setExpense(expense);
     moveValidateService.accounting(move);
