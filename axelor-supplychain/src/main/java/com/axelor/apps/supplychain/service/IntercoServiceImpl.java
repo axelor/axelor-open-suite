@@ -25,7 +25,9 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.TaxNumberRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.AccountManagementAccountService;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -60,7 +62,7 @@ import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.apps.supplychain.service.analytic.AnalyticLineModelInitSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
@@ -312,7 +314,9 @@ public class IntercoServiceImpl implements IntercoService {
     purchaseOrderLine.setTaxLineSet(Sets.newHashSet(saleOrderLine.getTaxLineSet()));
 
     // analyticalDistribution
-    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
+    AnalyticLineModel analyticLineModel =
+        AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+            purchaseOrderLine, purchaseOrder);
     analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
 
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
@@ -359,7 +363,8 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrderLine.setTaxLineSet(Sets.newHashSet(purchaseOrderLine.getTaxLineSet()));
 
     // analyticDistribution
-    AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+    AnalyticLineModel analyticLineModel =
+        AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(saleOrderLine, saleOrder);
     analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
 
     if (saleOrderLine.getAnalyticMoveLineList() != null) {

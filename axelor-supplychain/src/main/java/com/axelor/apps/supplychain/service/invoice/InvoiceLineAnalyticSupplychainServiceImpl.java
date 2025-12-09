@@ -23,15 +23,15 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.analytic.AnalyticAxisService;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticServiceImpl;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import jakarta.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -81,7 +81,7 @@ public class InvoiceLineAnalyticSupplychainServiceImpl extends InvoiceLineAnalyt
       InvoiceLine invoiceLine, Invoice invoice, AnalyticLineModel analyticLineModel) {
     if (analyticLineModel.getAnalyticDistributionTemplate() != null
         || CollectionUtils.isNotEmpty(analyticLineModel.getAnalyticMoveLineList())) {
-      analyticLineModelService.setInvoiceLineAnalyticInfo(analyticLineModel, invoiceLine);
+      analyticLineModelService.setInvoiceLineAnalyticInfo(invoiceLine, invoiceLine);
 
       this.copyAnalyticMoveLines(analyticLineModel.getAnalyticMoveLineList(), invoiceLine);
       this.computeAnalyticDistribution(invoiceLine);

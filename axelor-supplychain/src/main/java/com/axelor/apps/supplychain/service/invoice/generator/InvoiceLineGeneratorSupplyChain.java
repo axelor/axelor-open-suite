@@ -27,6 +27,8 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.InvoiceLineGenerator;
 import com.axelor.apps.base.AxelorException;
@@ -41,8 +43,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticLineModelInitSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
@@ -212,7 +213,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
         case SaleOrderLineRepository.TYPE_NORMAL:
           if (manageAnalytic) {
             invoiceLineAnalyticService.setInvoiceLineAnalyticInfo(
-                invoiceLine, invoice, new AnalyticLineModel(saleOrderLine, null));
+                invoiceLine,
+                invoice,
+                AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+                    saleOrderLine, null));
           }
           break;
 
@@ -226,7 +230,10 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
 
       if (manageAnalytic) {
         invoiceLineAnalyticService.setInvoiceLineAnalyticInfo(
-            invoiceLine, invoice, new AnalyticLineModel(purchaseOrderLine, null));
+            invoiceLine,
+            invoice,
+            AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+                purchaseOrderLine, null));
       }
 
       invoiceLine.setFixedAssets(purchaseOrderLine.getFixedAssets());
@@ -329,9 +336,11 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     AnalyticLineModel analyticLineModel = null;
 
     if (saleOrderLine != null) {
-      analyticLineModel = new AnalyticLineModel(saleOrderLine, null);
+      analyticLineModel =
+          AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(saleOrderLine, null);
     } else if (purchaseOrderLine != null) {
-      analyticLineModel = new AnalyticLineModel(purchaseOrderLine, null);
+      analyticLineModel =
+          AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(purchaseOrderLine, null);
     }
 
     return analyticLineModel != null

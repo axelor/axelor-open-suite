@@ -22,17 +22,18 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
-import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.contract.service.analytic.AnalyticLineModelInitContractService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineParentSupplychainServiceImpl;
+import com.axelor.rpc.Context;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.Optional;
@@ -71,18 +72,41 @@ public class AnalyticMoveLineParentContractServiceImpl
               .map(ContractLine::getContractVersion)
               .map(ContractVersion::getContract)
               .orElse(null);
-      AnalyticLineModel analyticLineModel =
-          new AnalyticLineContractModel(contractLine, contractLine.getContractVersion(), contract);
-      analyticLineService.setAnalyticAccount(
-          analyticLineModel,
-          Optional.of(contractLine)
-              .map(ContractLine::getContractVersion)
-              .map(ContractVersion::getContract)
-              .map(Contract::getCompany)
-              .orElse(null));
+      analyticLineService.setAnalyticAccount(contractLine, contract.getCompany());
       contractLineRepository.save(contractLine);
     } else {
       super.refreshAxisOnParent(analyticMoveLine);
     }
+  }
+
+  protected AnalyticLineModel searchWithParentContext(Class<?> parentClass, Context parentContext)
+      throws AxelorException {
+    AnalyticLineModel analyticLineModel = super.searchWithParentContext(parentClass, parentContext);
+    if (analyticLineModel != null) {
+      return analyticLineModel;
+    }
+
+    if (ContractLine.class.equals(parentClass)) {
+      return AnalyticLineModelInitContractService.castAsAnalyticLineModel(
+          parentContext.asType(ContractLine.class), null, null);
+    }
+
+    return null;
+  }
+
+  protected AnalyticLineModel searchWithAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, Context context) throws AxelorException {
+    AnalyticLineModel analyticLineModel =
+        super.searchWithAnalyticMoveLine(analyticMoveLine, context);
+    if (analyticLineModel != null) {
+      return analyticLineModel;
+    }
+
+    if (analyticMoveLine.getContractLine() != null) {
+      return AnalyticLineModelInitContractService.castAsAnalyticLineModel(
+          analyticMoveLine.getContractLine(), null, null);
+    }
+
+    return null;
   }
 }

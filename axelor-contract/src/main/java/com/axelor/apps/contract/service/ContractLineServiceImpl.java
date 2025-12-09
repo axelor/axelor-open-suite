@@ -19,6 +19,8 @@
 package com.axelor.apps.contract.service;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.model.AnalyticLineModel;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -42,10 +44,8 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
-import com.axelor.apps.contract.model.AnalyticLineContractModel;
+import com.axelor.apps.contract.service.analytic.AnalyticLineModelInitContractService;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
@@ -325,7 +325,8 @@ public class ContractLineServiceImpl implements ContractLineService {
   public void computeAnalytic(Contract contract, ContractLine contractLine) throws AxelorException {
     if (appAccountService.isApp("supplychain")) {
       AnalyticLineModel analyticLineModel =
-          new AnalyticLineContractModel(contractLine, null, contract);
+          AnalyticLineModelInitContractService.castAsAnalyticLineModel(
+              contractLine, null, contract);
       analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
     }
   }
@@ -426,8 +427,8 @@ public class ContractLineServiceImpl implements ContractLineService {
 
     if (!ObjectUtils.isEmpty(contract.getCurrentContractVersion().getContractLineList())) {
       for (ContractLine contractLine : contract.getCurrentContractVersion().getContractLineList()) {
-        AnalyticLineContractModel analyticLineModel =
-            new AnalyticLineContractModel(
+        AnalyticLineModel analyticLineModel =
+            AnalyticLineModelInitContractService.castAsAnalyticLineModel(
                 contractLine, contract.getCurrentContractVersion(), contract);
         analyticLineModelService.checkRequiredAxisByCompany(analyticLineModel);
       }

@@ -16,13 +16,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.contract.service;
+package com.axelor.apps.contract.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.contract.db.ContractLine;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import jakarta.inject.Inject;
+import com.google.inject.Inject;
 import java.util.ArrayList;
 
 public class AnalyticLineModelFromContractServiceImpl
@@ -37,19 +37,18 @@ public class AnalyticLineModelFromContractServiceImpl
 
   @Override
   public void copyAnalyticsDataFromContractLine(
-      ContractLine contractLine, AnalyticLineModel analyticLineModel) {
-    if (analyticLineModel.getAnalyticMoveLineList() == null) {
-      analyticLineModel.setAnalyticMoveLineList(new ArrayList<>());
+      ContractLine contractLine, AnalyticLine analyticLine) {
+    if (analyticLine.getAnalyticMoveLineList() == null) {
+      analyticLine.setAnalyticMoveLineList(new ArrayList<>());
     }
 
-    analyticLineModel.setAnalyticDistributionTemplate(
-        contractLine.getAnalyticDistributionTemplate());
+    analyticLine.setAnalyticDistributionTemplate(contractLine.getAnalyticDistributionTemplate());
 
-    analyticLineModel.setAxis1AnalyticAccount(contractLine.getAxis1AnalyticAccount());
-    analyticLineModel.setAxis2AnalyticAccount(contractLine.getAxis2AnalyticAccount());
-    analyticLineModel.setAxis3AnalyticAccount(contractLine.getAxis3AnalyticAccount());
-    analyticLineModel.setAxis4AnalyticAccount(contractLine.getAxis4AnalyticAccount());
-    analyticLineModel.setAxis5AnalyticAccount(contractLine.getAxis5AnalyticAccount());
+    analyticLine.setAxis1AnalyticAccount(contractLine.getAxis1AnalyticAccount());
+    analyticLine.setAxis2AnalyticAccount(contractLine.getAxis2AnalyticAccount());
+    analyticLine.setAxis3AnalyticAccount(contractLine.getAxis3AnalyticAccount());
+    analyticLine.setAxis4AnalyticAccount(contractLine.getAxis4AnalyticAccount());
+    analyticLine.setAxis5AnalyticAccount(contractLine.getAxis5AnalyticAccount());
 
     for (AnalyticMoveLine originalAnalyticMoveLine : contractLine.getAnalyticMoveLineList()) {
       AnalyticMoveLine analyticMoveLine =
@@ -57,8 +56,7 @@ public class AnalyticLineModelFromContractServiceImpl
 
       analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
       analyticMoveLine.setContractLine(null);
-      analyticLineModel.addAnalyticMoveLineListItem(analyticMoveLine);
+      analyticLine.addAnalyticMoveLineListItem(analyticMoveLine);
     }
-    analyticLineModel.copyToModel();
   }
 }

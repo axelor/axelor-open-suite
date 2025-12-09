@@ -26,6 +26,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.IrrecoverableService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelInitAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -229,7 +230,8 @@ public class MoveLineController {
 
       response.setAttrs(
           Beans.get(AnalyticGroupService.class)
-              .getAnalyticAxisDomainAttrsMap(moveLine, move.getCompany()));
+              .getAnalyticAxisDomainAttrsMap(
+                  AnalyticLineModelInitAccountService.castAsAnalyticLineModel(moveLine, move)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

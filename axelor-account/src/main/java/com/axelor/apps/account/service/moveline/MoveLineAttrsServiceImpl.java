@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelInitAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
@@ -96,7 +97,8 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       this.addAttr(
           "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
           "required",
-          analyticLineService.isAxisRequired(moveLine, company, i)
+          analyticLineService.isAxisRequired(
+                  AnalyticLineModelInitAccountService.castAsAnalyticLineModel(moveLine, null), i)
               && !analyticLineService.checkAnalyticLinesByAxis(moveLine, i, company),
           attrsMap);
     }

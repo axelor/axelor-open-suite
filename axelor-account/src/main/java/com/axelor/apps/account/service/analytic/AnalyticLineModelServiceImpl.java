@@ -16,27 +16,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.supplychain.service;
+package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.AccountManagementAccountService;
-import com.axelor.apps.account.service.analytic.AnalyticAxisService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.analytic.AnalyticToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.purchase.service.config.PurchaseConfigService;
-import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
@@ -57,8 +53,6 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   protected AnalyticMoveLineService analyticMoveLineService;
   protected AccountManagementAccountService accountManagementAccountService;
   protected AnalyticToolService analyticToolService;
-  protected SaleConfigService saleConfigService;
-  protected PurchaseConfigService purchaseConfigService;
   protected CurrencyScaleService currencyScaleService;
   protected AnalyticAxisService analyticAxisService;
 
@@ -69,8 +63,6 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
       AnalyticMoveLineService analyticMoveLineService,
       AccountManagementAccountService accountManagementAccountService,
       AnalyticToolService analyticToolService,
-      SaleConfigService saleConfigService,
-      PurchaseConfigService purchaseConfigService,
       CurrencyScaleService currencyScaleService,
       AnalyticAxisService analyticAxisService) {
     this.appBaseService = appBaseService;
@@ -78,49 +70,50 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountManagementAccountService = accountManagementAccountService;
     this.analyticToolService = analyticToolService;
-    this.saleConfigService = saleConfigService;
-    this.purchaseConfigService = purchaseConfigService;
     this.currencyScaleService = currencyScaleService;
     this.analyticAxisService = analyticAxisService;
   }
 
   @Override
-  public boolean analyzeAnalyticLineModel(AnalyticLineModel analyticLineModel, Company company)
+  public boolean analyzeAnalyticLineModel(AnalyticLineModel analyticLineModel)
       throws AxelorException {
-    if (!analyticToolService.isManageAnalytic(company) || analyticLineModel == null) {
+    if (analyticLineModel == null
+        || !analyticToolService.isManageAnalytic(analyticLineModel.getCompany())) {
       return false;
     }
 
-    if (analyticLineModel.getAnalyticMoveLineList() == null) {
-      analyticLineModel.setAnalyticMoveLineList(new ArrayList<>());
+    AnalyticLine analyticLine = analyticLineModel.getAnalyticLine();
+
+    if (analyticLine.getAnalyticMoveLineList() == null) {
+      analyticLine.setAnalyticMoveLineList(new ArrayList<>());
     } else {
       analyticLineModel.getAnalyticMoveLineList().clear();
     }
 
-    for (AnalyticAccount axisAnalyticAccount : this.getAxisAnalyticAccountList(analyticLineModel)) {
+    for (AnalyticAccount axisAnalyticAccount : this.getAxisAnalyticAccountList(analyticLine)) {
       AnalyticMoveLine analyticMoveLine =
-          this.computeAnalyticMoveLine(analyticLineModel, company, axisAnalyticAccount);
+          this.computeAnalyticMoveLine(analyticLineModel, axisAnalyticAccount);
 
-      analyticLineModel.addAnalyticMoveLineListItem(analyticMoveLine);
+      analyticLine.addAnalyticMoveLineListItem(analyticMoveLine);
     }
 
     return true;
   }
 
-  protected List<AnalyticAccount> getAxisAnalyticAccountList(AnalyticLineModel analyticLineModel) {
+  protected List<AnalyticAccount> getAxisAnalyticAccountList(AnalyticLine analyticLine) {
     return Stream.of(
-            analyticLineModel.getAxis1AnalyticAccount(),
-            analyticLineModel.getAxis2AnalyticAccount(),
-            analyticLineModel.getAxis3AnalyticAccount(),
-            analyticLineModel.getAxis4AnalyticAccount(),
-            analyticLineModel.getAxis5AnalyticAccount())
+            analyticLine.getAxis1AnalyticAccount(),
+            analyticLine.getAxis2AnalyticAccount(),
+            analyticLine.getAxis3AnalyticAccount(),
+            analyticLine.getAxis4AnalyticAccount(),
+            analyticLine.getAxis5AnalyticAccount())
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }
 
   protected AnalyticMoveLine computeAnalyticMoveLine(
-      AnalyticLineModel analyticLineModel, Company company, AnalyticAccount analyticAccount)
-      throws AxelorException {
+      AnalyticLineModel analyticLineModel, AnalyticAccount analyticAccount) throws AxelorException {
+    Company company = analyticLineModel.getCompany();
 
     AnalyticMoveLine analyticMoveLine =
         analyticMoveLineService.computeAnalytic(company, analyticAccount);
@@ -128,8 +121,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
 
     analyticMoveLine.setDate(appBaseService.getTodayDate(company));
     analyticMoveLine.setAmount(
-        currencyScaleService.getScaledValue(
-            analyticMoveLine, analyticLineModel.getCompanyExTaxTotal()));
+        currencyScaleService.getScaledValue(analyticMoveLine, analyticLineModel.getLineAmount()));
     analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
 
     return analyticMoveLine;
@@ -141,6 +133,8 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
       return analyticLineModel;
     }
 
+    AnalyticLine analyticLine = analyticLineModel.getAnalyticLine();
+
     AnalyticDistributionTemplate analyticDistributionTemplate =
         analyticMoveLineService.getAnalyticDistributionTemplate(
             analyticLineModel.getPartner(),
@@ -150,16 +144,15 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
             analyticLineModel.getAccount(),
             analyticLineModel.getIsPurchase());
 
-    analyticLineModel.setAnalyticDistributionTemplate(analyticDistributionTemplate);
+    analyticLine.setAnalyticDistributionTemplate(analyticDistributionTemplate);
 
-    if (analyticLineModel.getAnalyticMoveLineList() != null) {
-      analyticLineModel.getAnalyticMoveLineList().clear();
+    if (analyticLine.getAnalyticMoveLineList() != null) {
+      analyticLine.getAnalyticMoveLineList().clear();
     }
 
     this.computeAnalyticDistribution(analyticLineModel);
 
-    analyticLineModel.copyToModel();
-
+    // analyticLineModel.copyToModel();
     return analyticLineModel;
   }
 
@@ -201,12 +194,12 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
         analyticMoveLineService.updateAnalyticMoveLine(
             analyticMoveLine,
             currencyScaleService.getScaledValue(
-                analyticMoveLine, analyticLineModel.getCompanyExTaxTotal()),
+                analyticMoveLine, analyticLineModel.getLineAmount()),
             date);
       }
     }
 
-    analyticLineModel.copyToModel();
+    // analyticLineModel.copyToModel();
 
     return analyticLineModel;
   }
@@ -214,19 +207,21 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   @Override
   public AnalyticLineModel createAnalyticDistributionWithTemplate(
       AnalyticLineModel analyticLineModel) throws AxelorException {
-    this.clearAnalyticInLine(analyticLineModel);
+    AnalyticLine analyticLine = analyticLineModel.getAnalyticLine();
+
+    this.clearAnalyticInLine(analyticLine);
 
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             analyticLineModel.getAnalyticDistributionTemplate(),
             currencyScaleService.getCompanyScaledValue(
-                analyticLineModel.getCompany(), analyticLineModel.getCompanyExTaxTotal()),
+                analyticLineModel.getCompany(), analyticLineModel.getLineAmount()),
             AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
             appBaseService.getTodayDate(this.getCompany(analyticLineModel)));
 
-    analyticLineModel.clearAnalyticMoveLineList();
+    analyticLine.clearAnalyticMoveLineList();
     if (ObjectUtils.notEmpty(analyticMoveLineList)) {
-      analyticMoveLineList.forEach(analyticLineModel::addAnalyticMoveLineListItem);
+      analyticMoveLineList.forEach(analyticLine::addAnalyticMoveLineListItem);
     }
 
     return analyticLineModel;
@@ -238,46 +233,40 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
         : Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
   }
 
-  protected void clearAnalyticInLine(AnalyticLineModel analyticLineModel) {
-    analyticLineModel.setAxis1AnalyticAccount(null);
-    analyticLineModel.setAxis2AnalyticAccount(null);
-    analyticLineModel.setAxis3AnalyticAccount(null);
-    analyticLineModel.setAxis4AnalyticAccount(null);
-    analyticLineModel.setAxis5AnalyticAccount(null);
+  protected void clearAnalyticInLine(AnalyticLine analyticLine) {
+    analyticLine.setAxis1AnalyticAccount(null);
+    analyticLine.setAxis2AnalyticAccount(null);
+    analyticLine.setAxis3AnalyticAccount(null);
+    analyticLine.setAxis4AnalyticAccount(null);
+    analyticLine.setAxis5AnalyticAccount(null);
   }
 
   @Override
-  public void setInvoiceLineAnalyticInfo(
-      AnalyticLineModel analyticLineModel, InvoiceLine invoiceLine) {
-    invoiceLine.setAnalyticDistributionTemplate(
-        analyticLineModel.getAnalyticDistributionTemplate());
+  public void setInvoiceLineAnalyticInfo(AnalyticLine analyticLine, InvoiceLine invoiceLine) {
+    invoiceLine.setAnalyticDistributionTemplate(analyticLine.getAnalyticDistributionTemplate());
 
-    invoiceLine.setAxis1AnalyticAccount(analyticLineModel.getAxis1AnalyticAccount());
-    invoiceLine.setAxis2AnalyticAccount(analyticLineModel.getAxis2AnalyticAccount());
-    invoiceLine.setAxis3AnalyticAccount(analyticLineModel.getAxis3AnalyticAccount());
-    invoiceLine.setAxis4AnalyticAccount(analyticLineModel.getAxis4AnalyticAccount());
-    invoiceLine.setAxis5AnalyticAccount(analyticLineModel.getAxis5AnalyticAccount());
+    invoiceLine.setAxis1AnalyticAccount(analyticLine.getAxis1AnalyticAccount());
+    invoiceLine.setAxis2AnalyticAccount(analyticLine.getAxis2AnalyticAccount());
+    invoiceLine.setAxis3AnalyticAccount(analyticLine.getAxis3AnalyticAccount());
+    invoiceLine.setAxis4AnalyticAccount(analyticLine.getAxis4AnalyticAccount());
+    invoiceLine.setAxis5AnalyticAccount(analyticLine.getAxis5AnalyticAccount());
   }
 
   @Override
   public boolean analyticDistributionTemplateRequired(boolean isPurchase, Company company)
       throws AxelorException {
-    return analyticToolService.isManageAnalytic(company)
-        && ((isPurchase
-                && purchaseConfigService
-                    .getPurchaseConfig(company)
-                    .getIsAnalyticDistributionRequired())
-            || (!isPurchase
-                && saleConfigService.getSaleConfig(company).getIsAnalyticDistributionRequired()));
+    return analyticToolService.isManageAnalytic(company);
   }
 
   @Override
   public void checkRequiredAxisByCompany(AnalyticLineModel analyticLineModel)
       throws AxelorException {
-    if (!CollectionUtils.isEmpty(analyticLineModel.getAnalyticMoveLineList())) {
+    AnalyticLine analyticLine = analyticLineModel.getAnalyticLine();
+
+    if (!CollectionUtils.isEmpty(analyticLine.getAnalyticMoveLineList())) {
       Company company = analyticLineModel.getCompany();
       List<AnalyticAxis> analyticAxisList =
-          analyticLineModel.getAnalyticMoveLineList().stream()
+          analyticLine.getAnalyticMoveLineList().stream()
               .map(AnalyticMoveLine::getAnalyticAxis)
               .collect(Collectors.toList());
       analyticAxisService.checkRequiredAxisByCompany(company, analyticAxisList);

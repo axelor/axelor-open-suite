@@ -25,8 +25,8 @@ import com.axelor.apps.account.db.AnalyticAxisByCompany;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticDistributionTemplateRepository;
-import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.AxelorException;
@@ -138,14 +138,16 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
         : "moveLineList";
   }
 
+  @Override
   public void addAnalyticAxisDomains(
-      AnalyticLine analyticLine, Company company, Map<String, Map<String, Object>> attrsMap)
+      AnalyticLineModel analyticLineModel, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
     List<Long> analyticAccountList;
+    Company company = analyticLineModel.getCompany();
 
     for (int i = startAxisPosition; i <= endAxisPosition; i++) {
       if (analyticToolService.isPositionUnderAnalyticAxisSelect(company, i)) {
-        analyticAccountList = analyticLineService.getAxisDomains(analyticLine, company, i);
+        analyticAccountList = analyticLineService.getAxisDomains(analyticLineModel, company, i);
 
         if (ObjectUtils.isEmpty(analyticAccountList)) {
           this.addAttr(

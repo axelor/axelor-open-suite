@@ -18,8 +18,8 @@
  */
 package com.axelor.apps.supplychain.service.analytic;
 
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import java.util.Map;
 
 public interface AnalyticAttrsSupplychainService {

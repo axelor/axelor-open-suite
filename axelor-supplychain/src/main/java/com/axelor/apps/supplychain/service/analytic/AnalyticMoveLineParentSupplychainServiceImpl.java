@@ -19,9 +19,11 @@
 package com.axelor.apps.supplychain.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentServiceImpl;
 import com.axelor.apps.base.AxelorException;
@@ -31,7 +33,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
+import com.axelor.rpc.Context;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.Optional;
@@ -66,19 +68,16 @@ public class AnalyticMoveLineParentSupplychainServiceImpl
     SaleOrderLine saleOrderLine = analyticMoveLine.getSaleOrderLine();
     AnalyticLineModel analyticLineModel = null;
     if (purchaseOrderLine != null) {
-      analyticLineModel =
-          new AnalyticLineModel(purchaseOrderLine, purchaseOrderLine.getPurchaseOrder());
       analyticLineService.setAnalyticAccount(
-          analyticLineModel,
+          (AnalyticLine) purchaseOrderLine,
           Optional.of(purchaseOrderLine)
               .map(PurchaseOrderLine::getPurchaseOrder)
               .map(PurchaseOrder::getCompany)
               .orElse(null));
       purchaseOrderLineRepository.save(purchaseOrderLine);
     } else if (saleOrderLine != null) {
-      analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrderLine.getSaleOrder());
       analyticLineService.setAnalyticAccount(
-          analyticLineModel,
+          (AnalyticLine) saleOrderLine,
           Optional.of(saleOrderLine)
               .map(SaleOrderLine::getSaleOrder)
               .map(SaleOrder::getCompany)
@@ -87,5 +86,42 @@ public class AnalyticMoveLineParentSupplychainServiceImpl
     } else {
       super.refreshAxisOnParent(analyticMoveLine);
     }
+  }
+
+  protected AnalyticLineModel searchWithParentContext(Class<?> parentClass, Context parentContext)
+      throws AxelorException {
+    AnalyticLineModel analyticLineModel = super.searchWithParentContext(parentClass, parentContext);
+    if (analyticLineModel != null) {
+      return analyticLineModel;
+    }
+
+    if (PurchaseOrderLine.class.equals(parentClass)) {
+      return AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+          parentContext.asType(PurchaseOrderLine.class), null);
+    } else if (SaleOrderLine.class.equals(parentClass)) {
+      return AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+          parentContext.asType(SaleOrderLine.class), null);
+    }
+
+    return null;
+  }
+
+  protected AnalyticLineModel searchWithAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, Context context) throws AxelorException {
+    AnalyticLineModel analyticLineModel =
+        super.searchWithAnalyticMoveLine(analyticMoveLine, context);
+    if (analyticLineModel != null) {
+      return analyticLineModel;
+    }
+
+    if (analyticMoveLine.getPurchaseOrderLine() != null) {
+      return AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+          analyticMoveLine.getPurchaseOrderLine(), null);
+    } else if (analyticMoveLine.getSaleOrderLine() != null) {
+      return AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+          analyticMoveLine.getSaleOrderLine(), null);
+    }
+
+    return null;
   }
 }

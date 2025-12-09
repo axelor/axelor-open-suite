@@ -18,8 +18,11 @@
  */
 package com.axelor.apps.supplychain.web;
 
+import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Blocking;
@@ -35,9 +38,8 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticLineModelInitSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineCheckSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSaleSupplyChangeService;
@@ -68,7 +70,8 @@ public class SaleOrderLineController {
       SaleOrder saleOrder =
           ContextHelper.getContextParent(request.getContext(), SaleOrder.class, 1);
 
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+      AnalyticLineModel analyticLineModel =
+          AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(saleOrderLine, saleOrder);
 
       Beans.get(AnalyticLineModelService.class)
           .createAnalyticDistributionWithTemplate(analyticLineModel);
@@ -329,10 +332,11 @@ public class SaleOrderLineController {
         return;
       }
 
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
       response.setAttrs(
           Beans.get(AnalyticGroupService.class)
-              .getAnalyticAxisDomainAttrsMap(analyticLineModel, saleOrder.getCompany()));
+              .getAnalyticAxisDomainAttrsMap(
+                  AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(
+                      saleOrderLine, saleOrder)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -348,10 +352,11 @@ public class SaleOrderLineController {
       }
 
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+      AnalyticLineModel analyticLineModel =
+          Beans.get(AnalyticLineModelInitSupplychainService.class)
+              .castAsAnalyticLineModel(saleOrderLine, saleOrder);
 
-      if (Beans.get(AnalyticLineModelService.class)
-          .analyzeAnalyticLineModel(analyticLineModel, saleOrder.getCompany())) {
+      if (Beans.get(AnalyticLineModelService.class).analyzeAnalyticLineModel(analyticLineModel)) {
         response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
       }
     } catch (Exception e) {
@@ -369,11 +374,10 @@ public class SaleOrderLineController {
       }
 
       SaleOrderLine saleOrderLine = request.getContext().asType(SaleOrderLine.class);
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
 
       response.setValues(
           Beans.get(AnalyticGroupService.class)
-              .getAnalyticAccountValueMap(analyticLineModel, saleOrder.getCompany()));
+              .getAnalyticAccountValueMap((AnalyticLine) saleOrderLine, saleOrder.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

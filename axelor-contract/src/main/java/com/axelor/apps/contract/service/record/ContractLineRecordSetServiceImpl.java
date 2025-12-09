@@ -18,13 +18,16 @@
  */
 package com.axelor.apps.contract.service.record;
 
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
-import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.util.Optional;
 
 public class ContractLineRecordSetServiceImpl implements ContractLineRecordSetService {
 
@@ -38,17 +41,23 @@ public class ContractLineRecordSetServiceImpl implements ContractLineRecordSetSe
     this.currencyService = currencyService;
   }
 
+  @Override
   public void setCompanyExTaxTotal(
-      AnalyticLineContractModel analyticLineContractModel, ContractLine contractLine)
+      AnalyticLineModel analyticLineModel, ContractLine contractLine, Contract contract)
       throws AxelorException {
-    if (contractLine != null && analyticLineContractModel != null) {
-      BigDecimal companyAmount =
-          currencyService.getAmountCurrencyConvertedAtDate(
-              analyticLineContractModel.getContract().getCurrency(),
-              analyticLineContractModel.getCompany().getCurrency(),
-              contractLine.getExTaxTotal(),
-              appAccountService.getTodayDate(analyticLineContractModel.getCompany()));
-      analyticLineContractModel.setCompanyExTaxTotal(companyAmount);
+    if (contractLine == null || analyticLineModel == null || contract == null) {
+      return;
     }
+
+    BigDecimal companyAmount =
+        currencyService.getAmountCurrencyConvertedAtDate(
+            contract.getCurrency(),
+            Optional.of(analyticLineModel)
+                .map(AnalyticLineModel::getCompany)
+                .map(Company::getCurrency)
+                .orElse(null),
+            contractLine.getExTaxTotal(),
+            appAccountService.getTodayDate(analyticLineModel.getCompany()));
+    analyticLineModel.setLineAmount(companyAmount);
   }
 }

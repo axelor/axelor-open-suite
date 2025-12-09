@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.supplychain.service.saleorderline;
 
+import com.axelor.apps.account.model.AnalyticLineModel;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.PackLine;
@@ -28,9 +30,8 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineCreateServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.ReservedQtyService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticLineModelInitSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.ObjectUtils;
 import jakarta.inject.Inject;
@@ -72,7 +73,8 @@ public class SaleOrderLineCreateSupplychainServiceImpl extends SaleOrderLineCrea
     if (soLine != null && soLine.getProduct() != null) {
       soLine.setSaleSupplySelect(soLine.getProduct().getSaleSupplySelect());
 
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(soLine, null);
+      AnalyticLineModel analyticLineModel =
+          AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(soLine, null);
       analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
 
       if (ObjectUtils.notEmpty(soLine.getAnalyticMoveLineList())) {

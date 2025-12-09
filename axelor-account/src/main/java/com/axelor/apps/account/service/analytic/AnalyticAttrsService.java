@@ -19,7 +19,7 @@
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -38,7 +38,7 @@ public interface AnalyticAttrsService {
       throws AxelorException;
 
   void addAnalyticAxisDomains(
-      AnalyticLine analyticLine, Company company, Map<String, Map<String, Object>> attrsMap)
+      AnalyticLineModel analyticLineModel, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException;
 
   String getAnalyticDistributionTemplateDomain(

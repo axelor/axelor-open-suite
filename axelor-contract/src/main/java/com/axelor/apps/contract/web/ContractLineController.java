@@ -18,8 +18,10 @@
  */
 package com.axelor.apps.contract.web;
 
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.Contract;
@@ -27,14 +29,13 @@ import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
-import com.axelor.apps.contract.model.AnalyticLineContractModel;
 import com.axelor.apps.contract.service.ContractLineContextToolService;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractLineViewService;
 import com.axelor.apps.contract.service.ContractYearEndBonusService;
+import com.axelor.apps.contract.service.analytic.AnalyticLineModelInitContractService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
-import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
@@ -92,16 +93,16 @@ public class ContractLineController {
       ContractVersion contractVersion = this.getContractVersionFromContext(request);
       Contract contract = this.getContractFromContext(request);
 
-      AnalyticLineContractModel analyticLineContractModel =
-          new AnalyticLineContractModel(contractLine, contractVersion, contract);
+      AnalyticLineModel analyticLineModel =
+          AnalyticLineModelInitContractService.castAsAnalyticLineModel(
+              contractLine, contractVersion, contract);
       Beans.get(ContractLineRecordSetService.class)
-          .setCompanyExTaxTotal(analyticLineContractModel, contractLine);
+          .setCompanyExTaxTotal(analyticLineModel, contractLine, contract);
 
       Beans.get(AnalyticLineModelService.class)
-          .createAnalyticDistributionWithTemplate(analyticLineContractModel);
+          .createAnalyticDistributionWithTemplate(analyticLineModel);
 
-      response.setValue(
-          "analyticMoveLineList", analyticLineContractModel.getAnalyticMoveLineList());
+      response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -113,12 +114,11 @@ public class ContractLineController {
       ContractVersion contractVersion = this.getContractVersionFromContext(request);
       Contract contract = this.getContractFromContext(request);
 
-      AnalyticLineContractModel analyticLineContractModel =
-          new AnalyticLineContractModel(contractLine, contractVersion, contract);
       response.setAttrs(
           Beans.get(AnalyticGroupService.class)
               .getAnalyticAxisDomainAttrsMap(
-                  analyticLineContractModel, analyticLineContractModel.getCompany()));
+                  AnalyticLineModelInitContractService.castAsAnalyticLineModel(
+                      contractLine, contractVersion, contract)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -130,14 +130,12 @@ public class ContractLineController {
       ContractVersion contractVersion = this.getContractVersionFromContext(request);
       Contract contract = this.getContractFromContext(request);
 
-      AnalyticLineContractModel analyticLineContractModel =
-          new AnalyticLineContractModel(contractLine, contractVersion, contract);
+      AnalyticLineModel analyticLineModel =
+          AnalyticLineModelInitContractService.castAsAnalyticLineModel(
+              contractLine, contractVersion, contract);
 
-      if (Beans.get(AnalyticLineModelService.class)
-          .analyzeAnalyticLineModel(
-              analyticLineContractModel, analyticLineContractModel.getCompany())) {
-        response.setValue(
-            "analyticMoveLineList", analyticLineContractModel.getAnalyticMoveLineList());
+      if (Beans.get(AnalyticLineModelService.class).analyzeAnalyticLineModel(analyticLineModel)) {
+        response.setValue("analyticMoveLineList", analyticLineModel.getAnalyticMoveLineList());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -168,17 +166,14 @@ public class ContractLineController {
       ContractVersion contractVersion = this.getContractVersionFromContext(request);
       Contract contract = this.getContractFromContext(request);
 
-      AnalyticLineContractModel analyticLineContractModel =
-          new AnalyticLineContractModel(contractLine, contractVersion, contract);
-
-      if (Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
+      if (contract == null
+          || Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
         return;
       }
 
       response.setValues(
           Beans.get(AnalyticGroupService.class)
-              .getAnalyticAccountValueMap(
-                  analyticLineContractModel, analyticLineContractModel.getCompany()));
+              .getAnalyticAccountValueMap(contractLine, contract.getCompany()));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -190,8 +185,10 @@ public class ContractLineController {
       ContractVersion contractVersion = this.getContractVersionFromContext(request);
       Contract contract = this.getContractFromContext(request);
 
-      AnalyticLineContractModel analyticLineContractModel =
-          new AnalyticLineContractModel(contractLine, contractVersion, contract);
+      AnalyticLineModel analyticLineModel =
+          AnalyticLineModelInitContractService.castAsAnalyticLineModel(
+              contractLine, contractVersion, contract);
+
       Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
       if (Beans.get(ContractYearEndBonusService.class).isYebContract(contract)) {
@@ -199,7 +196,7 @@ public class ContractLineController {
       }
 
       Beans.get(AnalyticAttrsSupplychainService.class)
-          .addAnalyticDistributionPanelHiddenAttrs(analyticLineContractModel, attrsMap);
+          .addAnalyticDistributionPanelHiddenAttrs(analyticLineModel, attrsMap);
       response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);

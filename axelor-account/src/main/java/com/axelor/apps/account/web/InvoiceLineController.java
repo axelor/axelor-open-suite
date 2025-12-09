@@ -36,6 +36,7 @@ import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelInitAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -441,7 +442,9 @@ public class InvoiceLineController {
       Invoice invoice = request.getContext().getParent().asType(Invoice.class);
       response.setAttrs(
           Beans.get(AnalyticGroupService.class)
-              .getAnalyticAxisDomainAttrsMap(invoiceLine, invoice.getCompany()));
+              .getAnalyticAxisDomainAttrsMap(
+                  AnalyticLineModelInitAccountService.castAsAnalyticLineModel(
+                      invoiceLine, invoice)));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -458,7 +461,9 @@ public class InvoiceLineController {
           response.setAttr(
               "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
               "required",
-              analyticLineService.isAxisRequired(invoiceLine, invoice.getCompany(), i));
+              analyticLineService.isAxisRequired(
+                  AnalyticLineModelInitAccountService.castAsAnalyticLineModel(invoiceLine, invoice),
+                  i));
         }
       }
     } catch (Exception e) {

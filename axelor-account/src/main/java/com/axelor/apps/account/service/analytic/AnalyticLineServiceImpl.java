@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -77,41 +78,41 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   }
 
   @Override
-  public AnalyticJournal getAnalyticJournal(AnalyticLine analyticLine) throws AxelorException {
-    if (analyticLine.getAccount() != null && analyticLine.getAccount().getCompany() != null) {
+  public AnalyticJournal getAnalyticJournal(AnalyticLineModel analyticLineModel)
+      throws AxelorException {
+    if (analyticLineModel.getCompany() != null) {
       return accountConfigService
-          .getAccountConfig(analyticLine.getAccount().getCompany())
+          .getAccountConfig(analyticLineModel.getCompany())
           .getAnalyticJournal();
     }
     return null;
   }
 
   @Override
-  public Currency getCompanyCurrency(AnalyticLine analyticLine) {
-    return Optional.of(analyticLine)
-        .map(AnalyticLine::getAccount)
-        .map(Account::getCompany)
+  public Currency getCompanyCurrency(AnalyticLineModel analyticLineModel) {
+    return Optional.of(analyticLineModel)
+        .map(AnalyticLineModel::getCompany)
         .map(Company::getCurrency)
         .orElse(null);
   }
 
   @Override
-  public LocalDate getDate(AnalyticLine analyticLine) {
+  public LocalDate getDate(AnalyticLine analyticLine, Company company) {
     if (analyticLine instanceof MoveLine) {
       MoveLine line = (MoveLine) analyticLine;
       if (line.getDate() != null) {
         return line.getDate();
       }
     }
-    if (analyticLine.getAccount() != null && analyticLine.getAccount().getCompany() != null) {
-      return appBaseService.getTodayDate(analyticLine.getAccount().getCompany());
+    if (company != null) {
+      return appBaseService.getTodayDate(company);
     }
     return appBaseService.getTodayDate(null);
   }
 
   @Override
-  public List<Long> getAxisDomains(AnalyticLine line, Company company, int position)
-      throws AxelorException {
+  public List<Long> getAxisDomains(
+      AnalyticLineModel analyticLineModel, Company company, int position) throws AxelorException {
     List<Long> analyticAccountListByAxis = new ArrayList<>();
 
     if (analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)) {
@@ -125,21 +126,23 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
               .findFirst()
               .orElse(null);
 
-      analyticAccountListByAxis = getAnalyticAccountsByAxis(line, analyticAxis);
+      analyticAccountListByAxis = getAnalyticAccountsByAxis(analyticLineModel, analyticAxis);
     }
     return analyticAccountListByAxis;
   }
 
   @Override
-  public List<Long> getAnalyticAccountsByAxis(AnalyticLine line, AnalyticAxis analyticAxis) {
+  public List<Long> getAnalyticAccountsByAxis(
+      AnalyticLineModel analyticLineModel, AnalyticAxis analyticAxis) {
     List<Long> analyticAccountListByRules = new ArrayList<>();
     List<Long> analyticAccountListByAxis =
         analyticAccountRepository.findByAnalyticAxis(analyticAxis).fetch().stream()
             .map(AnalyticAccount::getId)
             .collect(Collectors.toList());
 
-    if (line.getAccount() != null) {
-      List<Long> analyticAccountIdList = accountService.getAnalyticAccountsIds(line.getAccount());
+    if (analyticLineModel.getAccount() != null) {
+      List<Long> analyticAccountIdList =
+          accountService.getAnalyticAccountsIds(analyticLineModel.getAccount());
       if (CollectionUtils.isNotEmpty(analyticAccountIdList)) {
         for (Long analyticAccountId : analyticAccountIdList) {
           analyticAccountListByRules.add(analyticAccountId);
@@ -154,9 +157,10 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   }
 
   @Override
-  public boolean isAxisRequired(AnalyticLine line, Company company, int position)
+  public boolean isAxisRequired(AnalyticLineModel analyticLineModel, int position)
       throws AxelorException {
-    Account account = line.getAccount();
+    Account account = analyticLineModel.getAccount();
+    Company company = analyticLineModel.getCompany();
     if (!analyticToolService.isManageAnalytic(company)
         || !analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)
         || account == null
@@ -178,7 +182,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
 
     } else {
       return account.getAnalyticDistributionRequiredOnMoveLines()
-          && line.getAnalyticDistributionTemplate() == null;
+          && analyticLineModel.getAnalyticDistributionTemplate() == null;
     }
   }
 
@@ -208,11 +212,12 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   }
 
   @Override
-  public AnalyticLine setAnalyticAccount(AnalyticLine analyticLine, Company company)
+  public void setAnalyticAccount(AnalyticLine analyticLine, Company company)
       throws AxelorException {
+
     if (CollectionUtils.isEmpty(analyticLine.getAnalyticMoveLineList()) || company == null) {
       this.resetAxisAnalyticAccount(analyticLine);
-      return analyticLine;
+      return;
     }
 
     for (AnalyticAxisByCompany analyticAxisByCompany :
@@ -226,7 +231,7 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
       }
     }
 
-    return analyticLine;
+    return;
   }
 
   @Override

@@ -22,6 +22,7 @@ import static com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewS
 import static com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService.READONLY_ATTR;
 
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
@@ -29,8 +30,8 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.analytic.AnalyticAttrsSupplychainService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticLineModelInitSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.studio.db.AppAccount;
 import com.axelor.studio.db.AppSupplychain;
@@ -108,7 +109,8 @@ public class SaleOrderLineViewSupplychainServiceImpl
   public Map<String, Map<String, Object>> setAnalyticDistributionPanelHidden(
       SaleOrder saleOrder, SaleOrderLine saleOrderLine) throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+    AnalyticLineModel analyticLineModel =
+        AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(saleOrderLine, saleOrder);
     analyticAttrsSupplychainService.addAnalyticDistributionPanelHiddenAttrs(
         analyticLineModel, attrs);
     return attrs;

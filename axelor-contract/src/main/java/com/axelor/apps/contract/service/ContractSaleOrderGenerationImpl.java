@@ -18,18 +18,19 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.service.analytic.AnalyticLineModelFromContractService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.google.common.collect.Sets;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -112,8 +113,7 @@ public class ContractSaleOrderGenerationImpl implements ContractSaleOrderGenerat
 
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
 
-    AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
     analyticLineModelFromContractService.copyAnalyticsDataFromContractLine(
-        contractLine, analyticLineModel);
+        contractLine, (AnalyticLine) saleOrderLine);
   }
 }

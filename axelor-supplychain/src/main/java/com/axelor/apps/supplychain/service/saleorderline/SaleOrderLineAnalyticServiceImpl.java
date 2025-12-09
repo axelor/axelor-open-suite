@@ -18,12 +18,14 @@
  */
 package com.axelor.apps.supplychain.service.saleorderline;
 
+import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.analytic.AnalyticGroupService;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticLineModelInitSupplychainService;
 import com.axelor.common.ObjectUtils;
 import jakarta.inject.Inject;
 import java.util.Map;
@@ -44,9 +46,8 @@ public class SaleOrderLineAnalyticServiceImpl implements SaleOrderLineAnalyticSe
   @Override
   public Map<String, Object> printAnalyticAccounts(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
       throws AxelorException {
-    AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
     return analyticGroupService.getAnalyticAccountValueMap(
-        analyticLineModel, saleOrder.getCompany());
+        (AnalyticLine) saleOrderLine, saleOrder.getCompany());
   }
 
   @Override
@@ -56,7 +57,8 @@ public class SaleOrderLineAnalyticServiceImpl implements SaleOrderLineAnalyticSe
     }
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+      AnalyticLineModel analyticLineModel =
+          AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(saleOrderLine, saleOrder);
       analyticLineModelService.checkRequiredAxisByCompany(analyticLineModel);
     }
   }

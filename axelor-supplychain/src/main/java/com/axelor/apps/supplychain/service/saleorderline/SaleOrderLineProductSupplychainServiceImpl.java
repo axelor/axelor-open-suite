@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.supplychain.service.saleorderline;
 
+import com.axelor.apps.account.model.AnalyticLineModel;
+import com.axelor.apps.account.service.analytic.AnalyticLineModelService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Blocking;
 import com.axelor.apps.base.db.Partner;
@@ -42,8 +44,7 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplemen
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.db.FreightCarrierPricing;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.axelor.apps.supplychain.service.AnalyticLineModelService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticLineModelInitSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierApplyPricingService;
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
@@ -161,7 +162,8 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
   protected Map<String, Object> setAnalyticMap(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     Map<String, Object> saleOrderLineMap = new HashMap<>();
-    AnalyticLineModel analyticLineModel = new AnalyticLineModel(saleOrderLine, saleOrder);
+    AnalyticLineModel analyticLineModel =
+        AnalyticLineModelInitSupplychainService.castAsAnalyticLineModel(saleOrderLine, saleOrder);
     analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
     saleOrderLineMap.put(
         "analyticDistributionTemplate", saleOrderLine.getAnalyticDistributionTemplate());

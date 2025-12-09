@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import jakarta.inject.Inject;
@@ -39,10 +40,10 @@ public class AnalyticGroupServiceImpl implements AnalyticGroupService {
 
   @Override
   public Map<String, Map<String, Object>> getAnalyticAxisDomainAttrsMap(
-      AnalyticLine analyticLineModel, Company company) throws AxelorException {
+      AnalyticLineModel analyticLineModel) throws AxelorException {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    analyticAttrsService.addAnalyticAxisDomains(analyticLineModel, company, attrsMap);
+    analyticAttrsService.addAnalyticAxisDomains(analyticLineModel, attrsMap);
 
     return attrsMap;
   }

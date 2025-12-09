@@ -18,17 +18,18 @@
  */
 package com.axelor.apps.contract.service;
 
+import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
+import com.axelor.apps.contract.service.analytic.AnalyticLineModelFromContractService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
 import com.google.common.collect.Sets;
 import com.google.inject.persist.Transactional;
@@ -113,8 +114,7 @@ public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrde
         contractLine.getTypeSelect() == ContractLineRepository.TYPE_TITLE);
     purchaseOrder.addPurchaseOrderLineListItem(purchaseOrderLine);
 
-    AnalyticLineModel analyticLineModel = new AnalyticLineModel(purchaseOrderLine, purchaseOrder);
     analyticLineModelFromContractService.copyAnalyticsDataFromContractLine(
-        contractLine, analyticLineModel);
+        contractLine, (AnalyticLine) purchaseOrderLine);
   }
 }

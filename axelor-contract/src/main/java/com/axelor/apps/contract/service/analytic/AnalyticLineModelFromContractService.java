@@ -16,12 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.contract.service;
+package com.axelor.apps.contract.service.analytic;
 
+import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.contract.db.ContractLine;
-import com.axelor.apps.supplychain.model.AnalyticLineModel;
 
 public interface AnalyticLineModelFromContractService {
-  void copyAnalyticsDataFromContractLine(
-      ContractLine contractLine, AnalyticLineModel analyticLineModel);
+  void copyAnalyticsDataFromContractLine(ContractLine contractLine, AnalyticLine analyticLine);
 }

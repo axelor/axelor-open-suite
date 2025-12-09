@@ -24,10 +24,14 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveLineMassEntry;
+import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.MoveLineMassEntryRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.Optional;
@@ -79,5 +83,65 @@ public class AnalyticMoveLineParentServiceImpl implements AnalyticMoveLineParent
               .orElse(null));
       moveLineMassEntryRepository.save(moveLineMassEntry);
     }
+  }
+
+  @Override
+  public AnalyticLineModel getModelUsingAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, Context context) throws AxelorException {
+    AnalyticLineModel analyticLineModel =
+        getAnalyticLineModelFromParentContext(
+            context,
+            Optional.of(context)
+                .map(Context::getParent)
+                .map(Context::getContextClass)
+                .orElse(null));
+
+    if (analyticLineModel != null) {
+      return analyticLineModel;
+    } else {
+      return searchWithAnalyticMoveLine(analyticMoveLine, context);
+    }
+  }
+
+  protected AnalyticLineModel getAnalyticLineModelFromParentContext(
+      Context context, Class<?> parentClass) throws AxelorException {
+    if (context == null
+        || context.getParent() == null
+        || parentClass == null
+        || !AnalyticLine.class.isAssignableFrom(parentClass)) {
+      return null;
+    }
+
+    return searchWithParentContext(parentClass, context.getParent());
+  }
+
+  protected AnalyticLineModel searchWithParentContext(Class<?> parentClass, Context parentContext)
+      throws AxelorException {
+    if (MoveLine.class.equals(parentClass)) {
+      return AnalyticLineModelInitAccountService.castAsAnalyticLineModel(
+          parentContext.asType(MoveLine.class), null);
+    } else if (InvoiceLine.class.equals(parentClass)) {
+      return AnalyticLineModelInitAccountService.castAsAnalyticLineModel(
+          parentContext.asType(InvoiceLine.class), null);
+    }
+
+    return null;
+  }
+
+  protected AnalyticLineModel searchWithAnalyticMoveLine(
+      AnalyticMoveLine analyticMoveLine, Context context) throws AxelorException {
+    if (analyticMoveLine.getMoveLine() != null) {
+      return AnalyticLineModelInitAccountService.castAsAnalyticLineModel(
+          analyticMoveLine.getMoveLine(), null);
+    } else if (analyticMoveLine.getInvoiceLine() != null) {
+      return AnalyticLineModelInitAccountService.castAsAnalyticLineModel(
+          analyticMoveLine.getInvoiceLine(), null);
+    } else if (context.get("invoiceId") != null) {
+      Long invoiceId = Long.valueOf((Integer) context.get("invoiceId"));
+      return AnalyticLineModelInitAccountService.castAsAnalyticLineModel(
+          Beans.get(InvoiceLineRepository.class).find(invoiceId), null);
+    }
+
+    return null;
   }
 }

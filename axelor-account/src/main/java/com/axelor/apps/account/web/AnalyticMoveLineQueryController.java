@@ -22,11 +22,10 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
 import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
-import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.model.AnalyticLineModel;
 import com.axelor.apps.account.service.analytic.AnalyticAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
@@ -204,9 +203,9 @@ public class AnalyticMoveLineQueryController {
   public void setAnalyticAccountDomains(ActionRequest request, ActionResponse response) {
     try {
       AnalyticMoveLine analyticMoveLine = request.getContext().asType(AnalyticMoveLine.class);
-      InvoiceLine invoiceLine =
-          ContextHelper.getContextParent(request.getContext(), InvoiceLine.class, 1);
-      MoveLine moveLine = ContextHelper.getContextParent(request.getContext(), MoveLine.class, 1);
+      AnalyticLineModel analyticLineModel =
+          Beans.get(AnalyticMoveLineParentService.class)
+              .getModelUsingAnalyticMoveLine(analyticMoveLine, request.getContext());
 
       AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
       List<Long> analyticAccountList = new ArrayList<>();
@@ -216,15 +215,12 @@ public class AnalyticMoveLineQueryController {
               Beans.get(AnalyticAccountService.class).getIsNotParentAnalyticAccountQuery());
       domain.append(" AND self.id in (");
 
-      if (invoiceLine != null) {
+      if (analyticLineModel != null) {
         analyticAccountList =
             analyticLineService.getAnalyticAccountsByAxis(
-                invoiceLine, analyticMoveLine.getAnalyticAxis());
-      } else if (moveLine != null) {
-        analyticAccountList =
-            analyticLineService.getAnalyticAccountsByAxis(
-                moveLine, analyticMoveLine.getAnalyticAxis());
+                analyticLineModel, analyticMoveLine.getAnalyticAxis());
       }
+
       if (CollectionUtils.isEmpty(analyticAccountList)) {
         domain.append("0");
       } else {
