@@ -39,7 +39,7 @@
     if="[ 'admins','CUSTOM-ACCOUNTANT','CUSTOM-PM','CUSTOM-EM','CUSTOM-OM'].any(g -> __user__.group.code.contains(g))"
     order="350" action="task-report-view"/>
   <menuitem name="menu-task-report-technician" title="Task Reports" icon="list-task"
-    groups="CUSTOM-PT" if="__user__.group.code == 'CUSTOM-PT'" order="350" action="task-report-view"/>
+    groups="CUSTOM-PT,CUSTOM-TM" order="350" action="task-report-view"/>
 
   <action-view name="task-report-view" title="Task Reports"
     model="com.axelor.apps.businessproject.db.TaskReport">
@@ -47,7 +47,8 @@
     <view type="form" name="task-report-form"/>
     <domain>self.project.membersUserSet[].id = :_userId OR :_isNotCustomPT = true</domain>
     <context name="_userId" expr="eval: __user__.id"/>
-    <context name="_isNotCustomPT" expr="eval: __user__.group?.code != 'CUSTOM-PT'"/>
+    <context name="_isNotCustomPT"
+      expr="eval: __user__.group?.code != 'CUSTOM-PT' &amp;&amp; __user__.group?.code != 'CUSTOM-TM'"/>
   </action-view>
 
   <menuitem name="business-project-folder" parent="project-configurations"

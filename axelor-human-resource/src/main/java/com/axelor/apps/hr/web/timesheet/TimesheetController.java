@@ -231,6 +231,23 @@ public class TimesheetController {
     response.setView(actionView.map());
   }
 
+  public void allTimesheetLineCustom(ActionRequest request, ActionResponse response) {
+
+    User user = AuthUtils.getUser();
+    Employee employee = user.getEmployee();
+
+    ActionViewBuilder actionView =
+        ActionView.define(I18n.get("See timesheet lines"))
+            .model(TimesheetLine.class.getName())
+            .add("grid", "timesheet-line-grid")
+            .add("form", "timesheet-line-form");
+
+    Beans.get(TimesheetDomainService.class)
+        .createCustomDomainAllTimesheetLine(user, employee, actionView);
+
+    response.setView(actionView.map());
+  }
+
   public void validateTimesheet(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();

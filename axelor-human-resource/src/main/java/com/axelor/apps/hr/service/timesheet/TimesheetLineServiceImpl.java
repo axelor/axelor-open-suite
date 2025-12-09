@@ -376,6 +376,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void validateLine(TimesheetLine line) {
     line.setIsValidated(true);
     line.setValidationDateTime(LocalDateTime.now());
