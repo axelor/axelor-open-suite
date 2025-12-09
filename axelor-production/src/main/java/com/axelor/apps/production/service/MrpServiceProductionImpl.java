@@ -486,6 +486,13 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             .orElse(billOfMaterialService.getDefaultBOM(product, company));
 
     if (appProductionService.isApp("production")
+        && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL) {
+      BigDecimal economicManufOrderQty =
+          (BigDecimal) productCompanyService.get(product, "economicManufOrderQty", company);
+      reorderQty = reorderQty.max(economicManufOrderQty);
+    }
+
+    if (appProductionService.isApp("production")
         && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && billOfMaterial != null) {
       maturityDate =
