@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed missing siren label on invoice report."
+module: axelor-account
