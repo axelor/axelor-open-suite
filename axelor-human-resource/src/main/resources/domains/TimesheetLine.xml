@@ -32,6 +32,10 @@
     <boolean name="isPublicHoliday" title="Holiday" readonly="true"/>
     <boolean name="isEmergencyService" title="Emergency Service" readonly="true"/>
     <boolean name="isNightShift" title="Night Shift"/>
+    <boolean name="isValidated" title="Validated"/>
+    <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by"
+      readonly="true"/>
+    <datetime name="validationDateTime" title="Validation Date" readonly="true"/>
     <!-- <string name="shiftType" selection="hr.timesheet.shift.type" title="shift" -->
     <!-- default="01-normal"/> -->
     <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>

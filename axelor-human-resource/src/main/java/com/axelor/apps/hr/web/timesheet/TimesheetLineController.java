@@ -77,6 +77,13 @@ public class TimesheetLineController {
     }
   }
 
+  public void validateLine(ActionRequest request, ActionResponse response) {
+    TimesheetLine line = request.getContext().asType(TimesheetLine.class);
+    line = Beans.get(TimesheetLineRepository.class).find(line.getId());
+    Beans.get(TimesheetLineService.class).validateLine(line);
+    response.setReload(true);
+  }
+
   public void setDuration(ActionRequest request, ActionResponse response) {
     try {
       TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);

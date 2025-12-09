@@ -99,4 +99,6 @@ public interface TimesheetLineService {
   Project resolveProject(Context context, ProjectTask projectTask);
 
   void splitTimesheetLine(TimesheetLine line);
+
+  void validateLine(TimesheetLine line);
 }

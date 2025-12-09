@@ -116,7 +116,7 @@
       <button name="logTime" title="Log time" onClick="action-timesheet-line-log-time"
         showIf="_showLogTime" if="__user__.activeProject"/>
     </toolbar>
-    <field name="timesheet.company"/>
+    <field name="timesheet.company" hidden="true"/>
     <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"
       canEdit="false" canView="false"/>
     <field name="timesheet.employee"/>
@@ -125,17 +125,13 @@
     <field name="endTime"/>
     <field name="product"/>
     <field name="duration"/>
-    <field name="hoursDuration"/>
-    <field name="durationForCustomer" hidden="true"/>
     <field name="toInvoice" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
+           if="__config__.app.isApp('business-project') &amp;&amp; __config__.app.getApp('business-project').automaticInvoicing"/>
     <field name="toInvoice" if-module="axelor-business-project"
-      if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
-    <field name="enableEditor"/>
+           if="__config__.app.isApp('business-project') &amp;&amp; !__config__.app.getApp('business-project').automaticInvoicing"/>
+    <field name="isValidated"/>
     <field name="comments"/>
     <field name="date" hidden="true"/>
-    <field name="timesheet.statusSelect"
-      if="__config__.app.getApp('timesheet')?.needValidation"/>
   </grid>
 
   <grid name="timesheet-line-timesheet-project-grid" title="Timesheet Lines"
@@ -295,6 +291,16 @@
     onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
     onSave="action-timesheet-line-group-on-save, ">
     <panel name="mainPanel">
+      <panel name="validateBtnPanel" colSpan="12">
+        <panel name="hiddenBtnPanel" colSpan="8" hidden="true">
+          <button if="!isValidated" name="validateLineButton" title="Validate Timesheet Line"
+            colSpan="8" onClick="action-timesheet-line-validate"/>
+        </panel>
+        <panel name="showBtnPanel" colSpan="4">
+          <button if="!isValidated" name="validateLineButton" title="Validate Timesheet Line"
+            colSpan="4" onClick="action-timesheet-line-validate"/>
+        </panel>
+      </panel>
       <field name="timesheet.company"/>
       <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"
         canEdit="false" canView="false"/>
@@ -762,6 +768,11 @@
 
   <action-method name="action-timesheet-line-method-set-product">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController" method="setProduct"/>
+  </action-method>
+
+  <action-method name="action-timesheet-line-validate">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController"
+      method="validateLine"/>
   </action-method>
 
   <action-group name="action-timesheet-line-group-project-grid-on-new">

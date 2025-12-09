@@ -159,6 +159,9 @@
   <menuitem name="hr-root" order="-1600" title="HR" icon="diagram-3-fill"
     if="__config__.app.isApp('employee')" icon-background="#84429f"/>
 
+  <menuitem name="mgm-tm-hr-root" order="-1600" title="HR" icon="diagram-3-fill"
+    if="__user__.group.code == 'CUSTOM-TM' " icon-background="#84429f"/>
+
   <menuitem name="hr-root-emp-mgt" parent="hr-root" title="Employees Management"
     icon="person-vcard" icon-background="#84429f" order="100"/>
 
@@ -590,9 +593,34 @@
   <menuitem title="All timesheets" name="all-timesheet" parent="timesheet-root"
     action="action.timesheet.method.all.timesheet" order="100"/>
 
+  <menuitem title="Timesheet Lines to validate" name="mgm-tm-timesheet-lines-to-validate"
+    parent="mgm-tm-hr-root" groups="CUSTOM-TM" action="action.timesheet.method.all.timesheet-lines" order="110"/>
+
+  <menuitem name="mgm-tm-validate-expense" parent="mgm-tm-hr-root"
+    title="Expenses to Validate" action="expense.validate" tag-style="default"
+    tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateMenuTag()" order="100"/>
+
   <action-method name="action.timesheet.method.all.timesheet">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="allTimesheet"/>
   </action-method>
+
+  <action-method name="action.timesheet.method.all.timesheet-lines">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="allTimesheetLine"/>
+  </action-method>
+
+  <action-view
+          name="timesheet-line-project-lines"
+          title="Timesheet Lines to Validate"
+          model="com.axelor.apps.hr.db.TimesheetLine">
+    <view type="grid" name="timesheet-line-grid"/>
+    <domain>
+      (self.project.membersUserSet[].id = :userId)
+      OR
+      (self.projectTask.project.membersUserSet[].id = :userId)
+    </domain>
+    <context name="userId" expr="eval: __user__.id"/>
+  </action-view>
 
   <action-method name="edit.timesheet">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="editTimesheet"/>

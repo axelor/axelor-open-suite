@@ -29,6 +29,7 @@ import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
@@ -39,12 +40,14 @@ import com.axelor.apps.project.db.ProjectPriority;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.auth.AuthUtils;
 import com.axelor.db.JpaRepository;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -370,6 +373,14 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     line.setHoursDuration(line.getDuration());
     line.setDuration(line.getDuration());
     line.setDurationForCustomer(line.getDuration());
+  }
+
+  @Override
+  public void validateLine(TimesheetLine line) {
+    line.setIsValidated(true);
+    line.setValidationDateTime(LocalDateTime.now());
+    line.setValidatedBy(AuthUtils.getUser());
+    Beans.get(TimesheetLineRepository.class).save(line);
   }
 
   private boolean hasValidTime(TimesheetLine line) {
