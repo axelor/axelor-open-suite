@@ -133,20 +133,19 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
     }
 
     saleOrderLineDetails.setCostPrice(
-        costPrice.setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
+        costPrice.setScale(getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
     lineMap.put("costPrice", saleOrderLineDetails.getCostPrice());
     return lineMap;
   }
 
   protected Map<String, Object> computeSubTotalCostPrice(
       SaleOrderLineDetails saleOrderLineDetails) {
+
     Map<String, Object> lineMap = new HashMap<>();
     BigDecimal qty = saleOrderLineDetails.getQty();
     BigDecimal costPrice = saleOrderLineDetails.getCostPrice();
     BigDecimal totalCostPrice =
-        costPrice
-            .multiply(qty)
-            .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+        costPrice.multiply(qty).setScale(getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
     saleOrderLineDetails.setSubTotalCostPrice(totalCostPrice);
     lineMap.put("subTotalCostPrice", saleOrderLineDetails.getSubTotalCostPrice());
@@ -169,5 +168,13 @@ public class SaleOrderLineDetailsPriceServiceImpl implements SaleOrderLineDetail
     saleOrderLineDetails.setMarginCoefficient(marginCoef);
     lineMap.put("marginCoefficient", saleOrderLineDetails.getMarginCoefficient());
     return lineMap;
+  }
+
+  protected int getNbDecimalDigitForUnitPrice() {
+    int nbDecimalDigitForUnitPrice = appSaleService.getNbDecimalDigitForUnitPrice();
+    if (nbDecimalDigitForUnitPrice > 3) {
+      nbDecimalDigitForUnitPrice = 3;
+    }
+    return nbDecimalDigitForUnitPrice;
   }
 }
