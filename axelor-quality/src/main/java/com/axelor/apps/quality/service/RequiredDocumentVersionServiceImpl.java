@@ -20,8 +20,8 @@ package com.axelor.apps.quality.service;
 
 import com.axelor.apps.quality.db.RequiredDocument;
 import com.axelor.apps.quality.db.repo.RequiredDocumentRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class RequiredDocumentVersionServiceImpl implements RequiredDocumentVersionService {

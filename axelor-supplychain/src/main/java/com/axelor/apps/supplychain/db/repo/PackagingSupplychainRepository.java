@@ -23,7 +23,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.service.packaging.PackagingMassService;
 import com.axelor.apps.supplychain.service.packaging.PackagingSequenceService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 import java.util.Map;
 

@@ -19,8 +19,8 @@
 package com.axelor.apps.base.service.indicator.evaluator;
 
 import com.axelor.apps.base.db.repo.IndicatorConfigRepository;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;

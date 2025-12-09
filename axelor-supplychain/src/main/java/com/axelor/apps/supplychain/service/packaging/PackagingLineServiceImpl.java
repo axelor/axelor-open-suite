@@ -27,7 +27,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.PackagingLine;
 import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingDimensionService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Optional;

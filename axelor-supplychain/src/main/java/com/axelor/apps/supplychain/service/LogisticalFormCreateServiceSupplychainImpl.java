@@ -30,7 +30,7 @@ import com.axelor.apps.stock.service.LogisticalFormService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class LogisticalFormCreateServiceSupplychainImpl extends LogisticalFormCreateServiceImpl {
 
