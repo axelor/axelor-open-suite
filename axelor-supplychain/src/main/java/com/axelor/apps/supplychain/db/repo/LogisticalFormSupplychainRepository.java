@@ -24,7 +24,7 @@ import com.axelor.apps.stock.db.repo.LogisticalFormStockRepository;
 import com.axelor.apps.stock.service.LogisticalFormSequenceService;
 import com.axelor.apps.supplychain.service.LogisticalFormComputeService;
 import com.axelor.apps.supplychain.service.packaging.PackagingSequenceService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.persistence.PersistenceException;
 
 public class LogisticalFormSupplychainRepository extends LogisticalFormStockRepository {
