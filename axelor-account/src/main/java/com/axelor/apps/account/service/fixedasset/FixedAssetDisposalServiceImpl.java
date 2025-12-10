@@ -31,7 +31,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -347,12 +346,6 @@ public class FixedAssetDisposalServiceImpl implements FixedAssetDisposalService 
               fixedAsset, disposalDate, disposalAmount, transferredReason, comments, typeSelect);
     }
 
-    String depreciationPlanSelect = fixedAsset.getDepreciationPlanSelect();
-    if (correspondingFixedAssetLine != null
-        && StringUtils.notEmpty(depreciationPlanSelect)
-        && depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
-      generateDerogatoryCessionMove(fixedAsset, disposalDate);
-    }
     fixedAssetLineMoveService.generateDisposalMove(
         fixedAsset, correspondingFixedAssetLine, transferredReason, disposalDate);
     return correspondingFixedAssetLine;
