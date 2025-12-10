@@ -1,0 +1,3 @@
+---
+title: "Manufacturing orders now include per-piece WorkCenter cost in cost sheets"
+module: axelor-production
