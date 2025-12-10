@@ -121,7 +121,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     values.putAll(getCompanyBankDetails(saleOrder));
     values.putAll(getAdvancePayment(saleOrder));
     values.putAll(saleOrderIntercoService.getInterco(saleOrder));
-    values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder, false));
+    values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
     values.putAll(saleOrderStockLocationService.getToStockLocation(saleOrder));
     values.putAll(setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder));
     values.putAll(getIsIspmRequired(saleOrder));
@@ -134,7 +134,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
   @Override
   public Map<String, Object> companyOnChange(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> values = super.companyOnChange(saleOrder);
-    values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder, true));
+    values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
     values.putAll(saleOrderStockLocationService.getToStockLocation(saleOrder));
     values.putAll(getIncoterm(saleOrder));
     values.putAll(saleOrderTaxNumberService.getTaxNumber(saleOrder));
