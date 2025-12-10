@@ -19,7 +19,6 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.auth.db.User;
 import com.axelor.meta.schema.actions.ActionView;
 
@@ -28,9 +27,8 @@ public class HRMenuValidateService {
   public void createValidateDomain(
       User user, Employee employee, ActionView.ActionViewBuilder actionView) {
 
-    actionView
-        .domain("self.statusSelect = :_statusSelect")
-        .context("_statusSelect", ExpenseRepository.STATUS_CONFIRMED);
+    actionView.domain("self.statusSelect IN (1, 2)");
+    //        .context("_statusSelect", ExpenseRepository.STATUS_DRAFT);
 
     if (employee == null || !employee.getHrManager()) {
       if (employee == null || employee.getManagerUser() == null) {

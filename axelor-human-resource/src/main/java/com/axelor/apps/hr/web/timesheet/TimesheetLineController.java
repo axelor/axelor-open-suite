@@ -84,6 +84,13 @@ public class TimesheetLineController {
     response.setReload(true);
   }
 
+  public void cancelTimesheetLineValidation(ActionRequest request, ActionResponse response) {
+    TimesheetLine line = request.getContext().asType(TimesheetLine.class);
+    line = Beans.get(TimesheetLineRepository.class).find(line.getId());
+    Beans.get(TimesheetLineService.class).cancelTimesheetLineValidation(line);
+    response.setReload(true);
+  }
+
   public void setDuration(ActionRequest request, ActionResponse response) {
     try {
       TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);

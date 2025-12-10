@@ -384,6 +384,15 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     Beans.get(TimesheetLineRepository.class).save(line);
   }
 
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void cancelTimesheetLineValidation(TimesheetLine line) {
+    line.setIsValidated(false);
+    line.setValidatedBy(null);
+    line.setValidationDateTime(null);
+    Beans.get(TimesheetLineRepository.class).save(line);
+  }
+
   private boolean hasValidTime(TimesheetLine line) {
     return line.getStartTime() != null && line.getEndTime() != null;
   }
