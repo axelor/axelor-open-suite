@@ -23,4 +23,12 @@ import com.axelor.apps.base.db.Partner;
 
 public interface PartnerGenerateService {
   void configurePartner(Partner partner, String siret) throws AxelorException;
+
+  void configurePartner(
+      Partner partner,
+      String siret,
+      boolean updateSirenAndVatNumber,
+      boolean updateCategoryAndType,
+      boolean updateAddress)
+      throws AxelorException;
 }
