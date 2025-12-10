@@ -36,6 +36,8 @@ jobs:
       run: cd open-suite-webapp && ./gradlew generateChangelog
     - name: Check XML files validity
       run: cd open-suite-webapp && ./gradlew checkXml
+    - name: Check Inject annotation import
+      run: cd open-suite-webapp && ./gradlew checkJavaInjectAnnotationImport
     - name: Build without tests
       run: cd open-suite-webapp && ./gradlew -xtest clean build
     - name: Run tests

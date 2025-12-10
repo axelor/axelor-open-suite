@@ -28,8 +28,8 @@ import com.axelor.meta.schema.views.ChartView;
 import com.axelor.meta.schema.views.ChartView.ChartCategory;
 import com.axelor.meta.schema.views.ChartView.ChartSeries;
 import com.axelor.meta.schema.views.DataSet;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import jakarta.persistence.Query;
 import java.util.*;
 

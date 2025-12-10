@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.repo.PurchaseConfigRepository;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class PurchaseOrderTaxServiceImpl implements PurchaseOrderTaxService {
 

@@ -28,8 +28,8 @@ import com.axelor.meta.loader.XMLViews;
 import com.axelor.meta.schema.views.FormView;
 import com.axelor.meta.schema.views.Panel;
 import com.axelor.meta.schema.views.Spacer;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 

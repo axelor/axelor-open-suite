@@ -38,7 +38,8 @@ public interface MoveLineFinancialDiscountService {
 
   void computeFinancialDiscount(MoveLine moveLine, Move move);
 
-  boolean isFinancialDiscountLine(MoveLine moveLine, Company company) throws AxelorException;
+  boolean isFinancialDiscountLine(MoveLine moveLine, Company company, boolean isPurchase)
+      throws AxelorException;
 
   int createFinancialDiscountMoveLine(
       Invoice invoice,

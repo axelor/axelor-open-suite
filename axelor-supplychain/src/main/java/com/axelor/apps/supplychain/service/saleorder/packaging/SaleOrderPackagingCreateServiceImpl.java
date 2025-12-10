@@ -26,7 +26,7 @@ import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.PackagingLine;
 import com.axelor.apps.supplychain.db.repo.PackagingLineRepository;
 import com.axelor.apps.supplychain.db.repo.PackagingRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;

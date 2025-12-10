@@ -238,7 +238,14 @@ public class BankReconciliationBalanceComputationServiceImpl
     if (!brl.getIsPosted() && !Strings.isNullOrEmpty(brl.getPostedNbr())) {
       String query = "self.postedNbr LIKE '%%s%'";
       query = query.replace("%s", brl.getPostedNbr());
-      List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
+      query += " AND self.move.company = :company";
+
+      List<MoveLine> moveLines =
+          moveLineRepository
+              .all()
+              .filter(query)
+              .bind("company", brl.getBankReconciliation().getCompany())
+              .fetch();
       for (MoveLine moveLine : moveLines) {
         // To avoid the fact that a moveline can be related to multiple brl and so, the update of
         // the amount can be duplicated
