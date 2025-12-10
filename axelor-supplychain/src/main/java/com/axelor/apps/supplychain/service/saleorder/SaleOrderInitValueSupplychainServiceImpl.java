@@ -87,7 +87,7 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
     Map<String, Object> initValues = super.getOnNewInitValues(saleOrder);
     initValues.putAll(getPaymentMode(saleOrder));
     initValues.putAll(getBankDetails(saleOrder));
-    initValues.putAll(saleOrderStockLocationService.getStockLocation(saleOrder, true));
+    initValues.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
     initValues.putAll(saleOrderIntercoService.getInterco(saleOrder));
     initValues.putAll(getShipmentCostLine(saleOrder));
     initValues.putAll(saleOrderTaxNumberService.getTaxNumber(saleOrder));
