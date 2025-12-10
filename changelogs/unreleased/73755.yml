@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed shipment mode not filled when creating directly from partner form."
+module: axelor-supplychain
