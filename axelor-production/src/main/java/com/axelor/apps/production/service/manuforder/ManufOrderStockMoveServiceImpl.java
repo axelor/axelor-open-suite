@@ -43,6 +43,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
@@ -81,6 +82,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   protected ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService;
   protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
   protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
+  protected StockMoveToolService stockMoveToolService;
 
   @Inject
   public ManufOrderStockMoveServiceImpl(
@@ -95,7 +97,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       StockMoveLineRepository stockMoveLineRepository,
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
-      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
+      StockMoveToolService stockMoveToolService) {
     this.supplyChainConfigService = supplyChainConfigService;
     this.stockMoveProductionService = stockMoveProductionService;
     this.stockMoveLineService = stockMoveLineService;
@@ -108,6 +111,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     this.manufOrderOutgoingStockMoveService = manufOrderOutgoingStockMoveService;
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
+    this.stockMoveToolService = stockMoveToolService;
   }
 
   @Override
@@ -480,6 +484,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     }
     for (StockMove stockMove : outStockMoveList) {
       updatePrices(stockMove, costPrice);
+      stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
     }
   }
 
