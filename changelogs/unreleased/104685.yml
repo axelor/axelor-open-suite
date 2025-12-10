@@ -1,0 +1,5 @@
+---
+title: "Journal: empty the sequence field when changing company to avoid inconsistency."
+module: axelor-account
+developer: |
+  Changed action record name 'action-journal-record-reset-valid-account-set' to 'action-journal-record-reset-values'
