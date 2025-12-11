@@ -98,7 +98,7 @@ public class OpportunitySaleOrderServiceImpl implements OpportunitySaleOrderServ
     return saleOrderCreateService.createSaleOrder(
         opportunity.getUser(),
         opportunity.getCompany(),
-        null,
+        opportunity.getContact(),
         currency,
         null,
         opportunity.getName(),
