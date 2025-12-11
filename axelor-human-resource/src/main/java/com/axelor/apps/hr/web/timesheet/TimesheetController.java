@@ -239,8 +239,8 @@ public class TimesheetController {
     ActionViewBuilder actionView =
         ActionView.define(I18n.get("See timesheet lines"))
             .model(TimesheetLine.class.getName())
-            .add("grid", "timesheet-line-grid")
-            .add("form", "timesheet-line-form");
+            .add("grid", "custom-mgm-timesheet-line-grid")
+            .add("form", "custom-mgm-timesheet-line-form");
 
     Beans.get(TimesheetDomainService.class)
         .createCustomDomainAllTimesheetLine(user, employee, actionView);
