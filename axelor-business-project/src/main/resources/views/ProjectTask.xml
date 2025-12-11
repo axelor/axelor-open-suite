@@ -15,7 +15,9 @@
     <field name="name"/>
     <field name="project"/>
     <field name="assignedTo"/>
-    <field name="taskDate"/>
+    <!-- <field name="taskDate"/> -->
+    <field name="startTime"/>
+    <field name="endTime"/>
     <field name="status"/>
     <field name="priority"/>
     <field name="projectTaskCategory"/>
@@ -54,7 +56,9 @@
     <field name="name"/>
     <field name="project"/>
     <field name="assignedTo"/>
-    <field name="taskDate"/>
+    <!-- <field name="taskDate"/> -->
+    <field name="startTime"/>
+    <field name="endTime"/>
     <field name="status"/>
     <field name="priority"/>
     <field name="projectTaskCategory"/>

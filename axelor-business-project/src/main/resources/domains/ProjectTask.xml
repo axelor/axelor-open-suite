@@ -69,6 +69,9 @@
     <decimal name="totalCosts" title="Total cost" readonly="true"/>
     <decimal name="invoicingProgress" title="Invoicing progress"/>
 
+    <datetime name="startTime" title="Start time"/>
+    <datetime name="endTime" title="End time"/>
+
     <extra-code>
 			<![CDATA[
 				public static final Integer INVOICING_TYPE_TIME_SPENT= 1;

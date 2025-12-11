@@ -15,7 +15,9 @@
     <field name="name"/>
     <field name="project"/>
     <field name="assignedTo"/>
-    <field name="taskDate"/>
+    <!-- <field name="taskDate"/> -->
+    <field name="startTime"/>
+    <field name="endTime"/>
     <field name="status"/>
     <field name="priority"/>
     <field name="projectTaskCategory"/>
@@ -46,7 +48,9 @@
       if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
     <field name="name"/>
     <field name="projectTaskCategory" width="200"/>
-    <field name="taskDate" width="100"/>
+    <!-- <field name="taskDate" width="100"/> -->
+    <field name="startTime" width="100"/>
+    <field name="endTime" width="100"/>
     <field name="status" width="100"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
     <button name="createSubtaskBtn" icon="fa-plus"
@@ -202,11 +206,12 @@
     model="com.axelor.apps.project.db.ProjectTask" onSave="action-project-task-validate-toDate">
     <panel name="mainPanel" colSpan="12">
       <!-- MGM-68 -->
-      <field name="taskDate" colSpan="6"
-        onChange="action-project-task-attrs-set-task-duration,action-project-task-record-set-date-or-frequency-changed"
+      <!-- Replace the taskDate and taskEndDate fields with: -->
+      <field name="startTime" colSpan="6"
+        onChange="action-project-task-record-sync-start-time-to-date,action-project-task-attrs-set-task-duration,action-project-task-record-set-date-or-frequency-changed"
         required="true"/>
-      <field name="taskEndDate" colSpan="6"
-        onChange="action-project-task-attrs-set-task-duration, action-project-task-validate-toDate"/>
+      <field name="endTime" colSpan="6"
+        onChange="action-project-task-record-sync-end-time-to-date,action-project-task-attrs-set-task-duration,action-project-task-validate-toDate"/>
       <field name="taskDeadline" title="Task deadline" colSpan="6"/>
       <!-- MGM-68 -->
       <!-- <field name="tagSet" widget="TagSelect" x-color-field="color" form-view="tag-form" grid-view="tag-simplified-grid"
@@ -239,6 +244,12 @@
       <field name="project.taskStatusManagementSelect" hidden="true"/>
       <field name="project.sprintManagementSelect" hidden="true"/>
       <field name="oldActiveSprint" hidden="true"/>
+      <field name="taskDate" colSpan="6"
+        onChange="action-project-task-attrs-set-task-duration,action-project-task-record-set-date-or-frequency-changed"
+        required="true" hidden="true"/>
+      <field name="taskEndDate" colSpan="6"
+        onChange="action-project-task-attrs-set-task-duration, action-project-task-validate-toDate"
+        hidden="true"/>
     </panel>
   </form>
 
@@ -701,6 +712,7 @@
     <field name="name" expr="eval: _value" if="_value"/>
     <field name="assignedTo" expr="eval:__user__"/>
     <field name="taskDate" expr="#{__config__.date}"/>
+    <field name="startTime" expr="eval: __config__.date.atTime(java.time.LocalTime.now())"/>
     <field name="project" expr="eval:_project"/>
     <field name="project" expr="eval: __user__?.activeProject" if="!_project"/>
     <field name="parentTask" expr="eval:_parentTask"/>
@@ -713,6 +725,24 @@
   <action-record name="action-project-task-update-planned-progress"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="plannedProgress" expr="eval: progress"/>
+  </action-record>
+
+  <action-record name="action-project-task-record-sync-start-time-to-date"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="taskDate" expr="eval: startTime?.toLocalDate()" if="startTime != null"/>
+  </action-record>
+
+  <action-record name="action-project-task-record-sync-end-time-to-date"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="taskEndDate" expr="eval: endTime?.toLocalDate()" if="endTime != null"/>
+  </action-record>
+
+  <action-record name="action-project-task-record-sync-dates-on-load"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="startTime" expr="eval: taskDate?.atStartOfDay()"
+      if="id != null &amp;&amp; startTime == null &amp;&amp; taskDate != null"/>
+    <field name="endTime" expr="eval: taskEndDate?.atStartOfDay()"
+      if="id != null &amp;&amp; endTime == null &amp;&amp; taskEndDate != null"/>
   </action-record>
 
   <action-attrs name="action-project-task-attrs-project-task-category-configurations"
@@ -845,6 +875,7 @@
   </action-attrs>
 
   <action-group name="action-project-task-group-timer-process">
+    <action name="action-project-task-record-sync-dates-on-load"/>
     <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-method-manage-timer-buttons"/>
     <action name="action-project-task-method-compute-total-timer-duration"/>
