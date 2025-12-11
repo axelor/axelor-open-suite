@@ -43,6 +43,9 @@
   <menuitem name="all-expense" parent="my-hr-root" title="Expenses" action="expense.all"
     order="310" if="__config__.app.isApp('expense')" icon="list-task" icon-background="#84429f"/>
 
+  <menuitem name="all-expense-projects-menu" title="Expenses" action="expense.all"
+    order="360" if="__config__.app.isApp('expense')" groups="CUSTOM-PT" icon="list-task"/>
+
   <action-view name="expense.all" model="com.axelor.apps.hr.db.Expense"
     title="My Expenses">
     <view name="expense-grid" type="grid"/>
