@@ -1,0 +1,3 @@
+---
+title: "ACCOUNTING EXPORT : Fix balances in balancePanel not updating during FEC export."
+module: axelor-account
