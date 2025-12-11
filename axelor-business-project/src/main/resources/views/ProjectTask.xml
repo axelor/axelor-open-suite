@@ -360,7 +360,7 @@
         grid-view="business-project-grid"
         onChange="action-business-project-task-group-project-onchange"
         domain="self.projectStatus.isCompleted = false" required="true" canView="false"
-        readonly="true"/>
+        readonlyIf="id != null || _project != null"/>
       <field if="__config__.app.isApp('business-project')" name="project.customerAddress"
         readonly="true" colSpan="6" showIf="project"
         domain="self IN (SELECT address FROM PartnerAddress where partner = :project.clientPartner)"
@@ -534,6 +534,7 @@
       if="invoicingType != 1"/>
   </action-attrs>
 
+
   <action-validate name="action-project-task-validate-toDate">
     <error message="Start Date should not be after Due Date"
       if="taskDate != null &amp;&amp; taskEndDate != null &amp;&amp; taskDate.isAfter(taskEndDate)"
@@ -555,6 +556,7 @@
       if="__config__.app.isApp('business-support')"/>
     <action name="action-project-task-attrs-onchange-invoice-type"
       if="__config__.app.isApp('business-project')"/>
+    <action name="action-project-task-attrs-filter-project-by-user"/>
   </action-group>
 
   <action-group name="action-business-project-task-group-project-onchange">
@@ -573,6 +575,7 @@
 
   <action-group name="action-business-project-project-task-group-on-load">
     <action name="action-project-task-group-timer-process"/>
+    <action name="action-project-task-attrs-filter-project-by-user"/>
   </action-group>
 
   <action-group name="action-project-task-group-unit-price-onchange">

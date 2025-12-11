@@ -101,5 +101,6 @@ public interface TimesheetLineService {
   void splitTimesheetLine(TimesheetLine line);
 
   void validateLine(TimesheetLine line);
+
   void cancelTimesheetLineValidation(TimesheetLine line);
 }

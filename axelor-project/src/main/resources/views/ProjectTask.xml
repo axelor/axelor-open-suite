@@ -155,7 +155,7 @@
         if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
       <field name="project" colSpan="6" onChange="action-project-task-group-project-onchange"
         domain="self.projectStatus.isCompleted = false" required="true" form-view="project-form"
-        grid-view="project-grid" canView="false" readonly="true"/>
+        grid-view="project-grid" canView="false" readonlyIf="id != null || _project != null"/>
       <field if="__config__.app.isApp('business-project')" name="project.customerAddress"
         readonly="true" colSpan="6" showIf="project"
         domain="self IN (SELECT address FROM PartnerAddress where partner = :project.clientPartner)"
@@ -551,6 +551,7 @@
     <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
     <action name="action-project-task-group-reset-datas"/>
+    <action name="action-project-task-attrs-filter-project-by-user"/>
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">
@@ -767,6 +768,13 @@
       if="parentTask?.timeUnit"/>
   </action-attrs>
 
+  <action-attrs name="action-project-task-attrs-filter-project-by-user">
+    <attribute name="domain" for="project"
+      expr="eval: (__user__.group?.code == 'CUSTOM-PT' || __user__.group?.code == 'CUSTOM-TM' || __user__.group == null) ?
+    'self.projectStatus.isCompleted = false AND (self.membersUserSet[].id = ' + __user__.id + ' OR self.assignedTo.id = ' + __user__.id + ')' :
+    'self.projectStatus.isCompleted = false'"/>
+  </action-attrs>
+
   <!-- fill timeUnit from parentTask -->
   <action-record name="action-project-task-record-get-parent-timeunit"
     model="com.axelor.apps.project.db.ProjectTask">
@@ -841,6 +849,7 @@
     <action name="action-project-task-method-manage-timer-buttons"/>
     <action name="action-project-task-method-compute-total-timer-duration"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
+    <action name="action-project-task-attrs-filter-project-by-user"/>
   </action-group>
 
   <action-method name="action-project-task-method-start-timer">
