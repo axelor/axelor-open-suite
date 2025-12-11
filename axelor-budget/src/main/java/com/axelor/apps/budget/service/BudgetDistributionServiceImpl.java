@@ -302,7 +302,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     if (date != null) {
       query =
           query.concat(
-              String.format(" AND self.fromDate <= '%s' AND self.toDate >= '%s'", date, date));
+              String.format(
+                  " AND self.fromDate <= CAST('%s' AS date) AND self.toDate >= CAST('%s' AS date)",
+                  date, date));
     }
     if (AccountTypeRepository.TYPE_INCOME.equals(technicalTypeSelect)) {
       query =
