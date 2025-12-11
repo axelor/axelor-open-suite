@@ -234,6 +234,8 @@ public class TimesheetLineBusinessController {
       values.put("product", activity);
     }
 
+    values.put("toInvoice", true);
+
     response.setValues(values);
   }
 }
