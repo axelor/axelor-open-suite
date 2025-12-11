@@ -106,7 +106,8 @@ public abstract class GlobalDiscountAbstractService {
         globalDiscounter
             .getPriceBeforeGlobalDiscount()
             .multiply(BigDecimal.valueOf(100).subtract(globalDiscounter.getDiscountAmount()))
-            .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP);
+            .divide(BigDecimal.valueOf(100))
+            .setScale(2, RoundingMode.HALF_UP);
     if (priceDiscountedByLine.compareTo(priceDiscountedOnTotal) == 0) {
       return;
     }
