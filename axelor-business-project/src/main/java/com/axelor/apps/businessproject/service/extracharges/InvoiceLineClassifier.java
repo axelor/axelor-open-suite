@@ -8,7 +8,7 @@ public class InvoiceLineClassifier {
   public List<InvoiceLine> getTimesheetLines(List<InvoiceLine> lines) {
     List<InvoiceLine> result = new ArrayList<>();
     for (InvoiceLine line : lines) {
-      if ("TIMESHEET".equals(line.getSourceType())) {
+      if (ExtraChargeConstants.TIMESHEET_INVOICE_LINE_SOURCE_TYPE.equals(line.getSourceType())) {
         result.add(line);
       }
     }
@@ -18,17 +18,17 @@ public class InvoiceLineClassifier {
   public List<InvoiceLine> getExpenseLines(List<InvoiceLine> lines) {
     List<InvoiceLine> result = new ArrayList<>();
     for (InvoiceLine line : lines) {
-      if ("EXPENSE".equals(line.getSourceType())) {
+      if (ExtraChargeConstants.EXPENSE_INVOICE_LINE_SOURCE_TYPE.equals(line.getSourceType())) {
         result.add(line);
       }
     }
     return result;
   }
 
-  public List<InvoiceLine> getSurchargeLines(List<InvoiceLine> lines) {
+  public List<InvoiceLine> getExtraChargeLines(List<InvoiceLine> lines) {
     List<InvoiceLine> result = new ArrayList<>();
     for (InvoiceLine line : lines) {
-      if ("SURCHARGE".equals(line.getSourceType())) {
+      if (ExtraChargeConstants.EXTRACHARGE_INVOICE_LINE_SOURCE_TYPE.equals(line.getSourceType())) {
         result.add(line);
       }
     }
@@ -39,7 +39,7 @@ public class InvoiceLineClassifier {
     List<InvoiceLine> result = new ArrayList<>();
     for (InvoiceLine line : lines) {
       String type = line.getSourceType();
-      if (!"TIMESHEET".equals(type) && !"EXPENSE".equals(type) && !"SURCHARGE".equals(type)) {
+      if (ExtraChargeConstants.INVOICE_LINE_SOURCE_TYPES.contains(type)) {
         result.add(line);
       }
     }

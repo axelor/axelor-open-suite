@@ -240,7 +240,11 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
       }
     }
 
-    String description = employee.getName();
+    Unit unit = (Unit) productCompanyService.get(product, "unit", invoice.getCompany());
+
+    //    String description = employee.getName();
+    String description =
+        String.format(I18n.get("Billed for %.2f %s(s)"), qtyConverted, unit.getName());
     String productName = (String) productCompanyService.get(product, "name", invoice.getCompany());
     if (date != null) {
       productName += " " + "(" + date + ")";
@@ -257,7 +261,7 @@ public class TimesheetInvoiceServiceImpl implements TimesheetInvoiceService {
             Optional.ofNullable(forcedPriceDiscounted).orElse(priceDiscounted),
             description,
             qtyConverted,
-            (Unit) productCompanyService.get(product, "unit", invoice.getCompany()),
+            unit,
             null,
             priority,
             discountAmount,

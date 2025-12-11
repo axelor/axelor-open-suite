@@ -137,28 +137,41 @@ public class InvoicingProjectController {
     log.debug("Finished building view for invoice line breakdown");
 
     // Set HTML in response
-    response.setValue("breakdownHtml", html);
+    response.setValue("$breakdownHtml", html);
   }
 
   private String buildHtmlFromData(List<Map<String, Object>> data) {
+
     StringBuilder html = new StringBuilder();
     html.append("<table style='width: 100%; border-collapse: collapse;'>");
     html.append("<thead><tr>");
-    html.append("<th style='padding: 10px; border: 1px solid #ddd;'>#</th>");
-    html.append("<th style='padding: 10px; border: 1px solid #ddd;'>Activity</th>");
-    html.append("<th style='padding: 10px; border: 1px solid #ddd;'>Quantity</th>");
-    html.append("<th style='padding: 10px; border: 1px solid #ddd;'>Unit</th>");
-    html.append("<th style='padding: 10px; border: 1px solid #ddd;'>Price</th>");
-    html.append("<th style='padding: 10px; border: 1px solid #ddd;'>Amount</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>#</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
+        .append(I18n.get("Description"))
+        .append("</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
+        .append(I18n.get("Quantity"))
+        .append("</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
+        .append(I18n.get("Unit"))
+        .append("</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
+        .append(I18n.get("Price"))
+        .append("</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
+        .append(I18n.get("Amount"))
+        .append("</th>");
+    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
+        .append(I18n.get("Billing Details"))
+        .append("</th>");
     html.append("</tr></thead><tbody>");
 
     for (Map<String, Object> line : data) {
       String sectionStyle = (String) line.get("sectionStyle");
 
-      // Render spacing lines
       if ("SPACING".equals(sectionStyle)) {
         html.append("<tr style='height: 15px;'>");
-        html.append("<td colspan='6' style='border: none;'>&nbsp;</td>");
+        html.append("<td colspan='7' style='border: none;'>&nbsp;</td>");
         html.append("</tr>");
         continue;
       }
@@ -186,6 +199,9 @@ public class InvoicingProjectController {
           .append("</td>");
       html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
           .append(formatValue(line.get("amount")))
+          .append("</td>");
+      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
+          .append(formatValue(line.get("billingDetails") != null ? line.get("billingDetails") : ""))
           .append("</td>");
       html.append("</tr>");
     }

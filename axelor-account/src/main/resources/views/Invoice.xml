@@ -638,8 +638,8 @@
           canMove="true" orderBy="sequence" height="30"/>
       </panel>
       <panel name="invoiceBreakdownPanel" title="Invoice Breakdown">
-        <field name="breakdownHtml" showTitle="false" colSpan="12" widget="html" hidden="true"
-          showIf="breakdownHtml != null" readonly="true"/>
+        <field name="$breakdownHtml" showTitle="false" colSpan="12" widget="html"
+          hidden="true" showIf="$breakdownHtml != null" readonly="true"/>
       </panel>
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false"
         readonlyIf="statusSelect != 1">
@@ -2357,6 +2357,11 @@
 
   <action-method name="action-invoice-method-set-payment-visibility">
     <call class="com.axelor.apps.account.web.InvoiceController" method="setPaymentVisibility"/>
+  </action-method>
+
+  <action-method name="action-invoice-generate-breakdown">
+    <call class="com.axelor.apps.businessproject.web.InvoicingProjectController"
+      method="generateBreakdown"/>
   </action-method>
 
   <action-validate name="action-invoice-validate-regenerate-invoice">

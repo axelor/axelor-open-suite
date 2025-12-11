@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.ExtrachargeType;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -46,6 +47,8 @@ import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.Context;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
@@ -55,6 +58,7 @@ import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
@@ -93,6 +97,9 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   }
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+  private final PublicHolidayHrService holidayService = Beans.get(PublicHolidayHrService.class);
 
   @Override
   public BigDecimal computeHoursDuration(Timesheet timesheet, BigDecimal duration, boolean toHours)
@@ -356,22 +363,38 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     applyHolidayFlag(line);
     applyEmergencyFlag(line);
 
-    BigDecimal nightHours = calculateNightHours(line);
+    BigDecimal nightHoursRaw = calculateNightHours(line);
 
-    // subtract break time from night hours only
-    if (line.getBreakTime() != null && nightHours.compareTo(BigDecimal.ZERO) > 0) {
-      nightHours = nightHours.subtract(line.getBreakTime());
-      if (nightHours.compareTo(BigDecimal.ZERO) < 0) {
-        nightHours = BigDecimal.ZERO;
+    Map<String, BigDecimal> extraChargeBreakdown =
+        calculateExtraChargeBreakdown(line, nightHoursRaw);
+
+    BigDecimal nightHoursAfterBreak = nightHoursRaw;
+    if (line.getBreakTime() != null && nightHoursRaw.compareTo(BigDecimal.ZERO) > 0) {
+      nightHoursAfterBreak = nightHoursRaw.subtract(line.getBreakTime());
+      if (nightHoursAfterBreak.compareTo(BigDecimal.ZERO) < 0) {
+        nightHoursAfterBreak = BigDecimal.ZERO;
+      }
+
+      if (extraChargeBreakdown.containsKey(ExtrachargeType.NIGHT.name())) {
+        extraChargeBreakdown.put(ExtrachargeType.NIGHT.name(), nightHoursAfterBreak);
       }
     }
 
-    line.setNightHours(nightHours);
-    line.setIsNightShift(nightHours.compareTo(BigDecimal.ZERO) > 0);
+    line.setNightHours(nightHoursAfterBreak);
+    line.setIsNightShift(nightHoursAfterBreak.compareTo(BigDecimal.ZERO) > 0);
 
-    // keep normal duration as-is (total hours worked)
+    // Serialize extra charge breakdown to JSON
+    try {
+      String extraChargeBreakdownString = OBJECT_MAPPER.writeValueAsString(extraChargeBreakdown);
+      line.setExtraChargeBreakdown(extraChargeBreakdownString);
+    } catch (JsonProcessingException e) {
+      log.error("Error serializing extra charge breakdown to JSON: {}", e.getMessage());
+      // Set to empty JSON object on error
+      line.setExtraChargeBreakdown("{}");
+    }
+
+    // Keep normal duration as-is
     line.setHoursDuration(line.getDuration());
-    line.setDuration(line.getDuration());
     line.setDurationForCustomer(line.getDuration());
   }
 
@@ -405,8 +428,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   private void applyHolidayFlag(TimesheetLine line) {
     boolean isHoliday =
-        Beans.get(PublicHolidayHrService.class)
-            .checkPublicHolidayDay(line.getStartTime().toLocalDate(), line.getEmployee());
+        holidayService.checkPublicHolidayDay(line.getStartTime().toLocalDate(), line.getEmployee());
     line.setIsPublicHoliday(isHoliday);
   }
 
@@ -515,5 +537,137 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     }
 
     return null;
+  }
+
+  /**
+   * Calculate Extra Charge breakdown for cross-day shifts. Returns a map of ExtrachargeType ->
+   * hours that qualify as extra charges.
+   *
+   * @param line The timesheet line to analyze
+   * @param nightHours The night hours (should be RAW hours before break subtraction)
+   * @return Map of extra charge types to hours
+   */
+  private Map<String, BigDecimal> calculateExtraChargeBreakdown(
+      TimesheetLine line, BigDecimal nightHours) {
+    Map<String, BigDecimal> breakdown = new HashMap<>();
+
+    // Calculate Saturday hours overlap
+    BigDecimal saturdayHours = calculateDayTypeOverlap(line, DayOfWeek.SATURDAY);
+    if (saturdayHours.compareTo(BigDecimal.ZERO) > 0) {
+      breakdown.put(ExtrachargeType.SATURDAY.name(), saturdayHours);
+    }
+
+    // Calculate Sunday hours overlap
+    BigDecimal sundayHours = calculateDayTypeOverlap(line, DayOfWeek.SUNDAY);
+    if (sundayHours.compareTo(BigDecimal.ZERO) > 0) {
+      breakdown.put(ExtrachargeType.SUNDAY.name(), sundayHours);
+    }
+
+    // Calculate holiday hours overlap
+    BigDecimal holidayHours = calculateHolidayOverlap(line);
+    if (holidayHours.compareTo(BigDecimal.ZERO) > 0) {
+      breakdown.put(ExtrachargeType.HOLIDAY.name(), holidayHours);
+    }
+
+    if (nightHours.compareTo(BigDecimal.ZERO) > 0) {
+      breakdown.put(ExtrachargeType.NIGHT.name(), nightHours);
+    }
+
+    return breakdown;
+  }
+
+  /**
+   * Calculate hours that overlap with a specific day of the week. Handles cross-midnight shifts
+   * correctly.
+   *
+   * @param line The timesheet line
+   * @param targetDay The day of week to check for overlap
+   * @return Hours that fall on the target day
+   */
+  private BigDecimal calculateDayTypeOverlap(TimesheetLine line, DayOfWeek targetDay) {
+    LocalDateTime start = line.getStartTime();
+    LocalDateTime end = line.getEndTime();
+
+    // Normalize end time if it's before start (next day)
+    if (end.isBefore(start)) {
+      end = end.plusDays(1);
+    }
+
+    Duration totalOverlap = Duration.ZERO;
+    LocalDateTime pointer = start;
+
+    // Iterate through each day in the shift
+    while (pointer.isBefore(end)) {
+      LocalDate currentDate = pointer.toLocalDate();
+
+      // Check if current day matches target day
+      if (currentDate.getDayOfWeek() == targetDay) {
+        // Calculate overlap for this target day
+        // Use the later of: shift start OR midnight of current day
+        LocalDateTime dayStart = pointer.isAfter(start) ? pointer : start;
+
+        // Use the earlier of: shift end OR midnight of next day
+        LocalDateTime dayEnd = currentDate.plusDays(1).atStartOfDay();
+        if (end.isBefore(dayEnd)) {
+          dayEnd = end;
+        }
+
+        Duration dayOverlap = Duration.between(dayStart, dayEnd);
+        totalOverlap = totalOverlap.plus(dayOverlap);
+      }
+
+      // Move to next day (start of next day)
+      pointer = pointer.toLocalDate().plusDays(1).atStartOfDay();
+    }
+
+    return BigDecimal.valueOf(totalOverlap.toMinutes() / 60.0).setScale(2, RoundingMode.HALF_UP);
+  }
+
+  /**
+   * Calculate hours that overlap with public holidays. Similar to calculateDayTypeOverlap but
+   * checks holiday dates.
+   *
+   * @param line The timesheet line
+   * @return Hours that fall on public holidays
+   */
+  private BigDecimal calculateHolidayOverlap(TimesheetLine line) {
+    LocalDateTime start = line.getStartTime();
+    LocalDateTime end = line.getEndTime();
+
+    // Normalize end time if before start
+    if (end.isBefore(start)) {
+      end = end.plusDays(1);
+    }
+
+    Duration totalOverlap = Duration.ZERO;
+    LocalDateTime pointer = start;
+
+    // Iterate through each day in the shift
+    while (pointer.isBefore(end)) {
+      LocalDate currentDate = pointer.toLocalDate();
+
+      // Check if current day is a public holiday
+      boolean isHoliday = holidayService.checkPublicHolidayDay(currentDate, line.getEmployee());
+
+      if (isHoliday) {
+        // Calculate overlap for this holiday
+        // Use the later of: shift start OR midnight of current day
+        LocalDateTime dayStart = pointer.isAfter(start) ? pointer : start;
+
+        // Use the earlier of: shift end OR midnight of next day
+        LocalDateTime dayEnd = currentDate.plusDays(1).atStartOfDay();
+        if (end.isBefore(dayEnd)) {
+          dayEnd = end;
+        }
+
+        Duration dayOverlap = Duration.between(dayStart, dayEnd);
+        totalOverlap = totalOverlap.plus(dayOverlap);
+      }
+
+      // Move pointer to the next day
+      pointer = pointer.toLocalDate().plusDays(1).atStartOfDay();
+    }
+
+    return BigDecimal.valueOf(totalOverlap.toMinutes() / 60.0).setScale(2, RoundingMode.HALF_UP);
   }
 }

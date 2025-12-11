@@ -4,6 +4,12 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
 
   <module name="human-resource" package="com.axelor.apps.hr.db"/>
+  <enum name="ExtrachargeType">
+    <item name="SATURDAY" value="SATURDAY"/>
+    <item name="SUNDAY" value="SUNDAY"/>
+    <item name="HOLIDAY" value="HOLIDAY"/>
+    <item name="NIGHT" value="NIGHT"/>
+  </enum>
 
   <entity name="TimesheetLine" cacheable="true">
 
@@ -32,6 +38,9 @@
     <boolean name="isPublicHoliday" title="Holiday" readonly="true"/>
     <boolean name="isEmergencyService" title="Emergency Service" readonly="true"/>
     <boolean name="isNightShift" title="Night Shift"/>
+
+    <string name="extraChargeBreakdown" title="Extra Charge Time Breakdown" nullable="true"
+      json="true"/>
     <boolean name="isValidated" title="Validated"/>
     <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by"
       readonly="true"/>
