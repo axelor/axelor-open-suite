@@ -21,9 +21,11 @@ package com.axelor.apps.intervention.service.helper;
 import com.axelor.apps.intervention.db.AnswerValue;
 import com.axelor.apps.intervention.db.InterventionQuestion;
 import com.axelor.apps.intervention.db.InterventionQuestionState;
+import com.axelor.script.ScriptAllowed;
 import java.util.Optional;
 import java.util.Set;
 
+@ScriptAllowed
 public class InterventionQuestionHelper {
 
   public static boolean isAnswered(InterventionQuestion question) {
