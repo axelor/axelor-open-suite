@@ -44,9 +44,7 @@
       <attribute name="onSave" value="action-timesheet-line-group-on-save"/>
     </extend>
 
-    <extend target="//field[@name='date']">
-      <attribute name="hidden" value="true"/>
-    </extend>
+    <!-- <extend target="//field[@name='date']"> <attribute name="hidden" value="true"/> </extend> -->
 
     <extend target="//field[@name='timesheet']">
       <!-- <insert position="before"> -->
