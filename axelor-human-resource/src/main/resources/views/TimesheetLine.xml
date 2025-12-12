@@ -285,7 +285,6 @@
         <field name="breakTime" hidden="true"/>
       </panel>
       <panel name="actionsPanel" colSpan="3" itemSpan="12">
-        <field name="timesheet.employee" canView="false"/>
         <button showIf="!isValidated" name="validateLineButton" title="Validate"
           onClick="action-timesheet-line-validate" css="btn-success" icon="fa-check"/>
         <button showIf="isValidated" name="cancelLineButton" title="Cancel"
@@ -294,7 +293,7 @@
     </panel>
     <panel name="timesheetPanel" colSpan="12" title="Related Timesheet">
       <field name="timesheet" canEdit="false" form-view="timesheet-form"
-        grid-view="timesheet-grid" showTitle="false"/>
+        grid-view="timesheet-grid" canView="false"/>
       <field name="timesheet.company" canView="false"/>
       <field name="timesheet.employee" canView="false"/>
       <field if="__config__.app.getApp('timesheet')?.needValidation"
