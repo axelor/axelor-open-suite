@@ -163,6 +163,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     invoice.setIsExpenseLineOnInvoiceGrouped(appBusinessProject.getIsExpenseLineOnInvoiceGrouped());
     invoice.setGroupingPeriodSelect(appBusinessProject.getGroupingPeriodSelect());
 
+    invoice.setPartnerTaxNbr(invoice.getPartner().getTaxNbr());
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
     invoice = projectHoldBackLineService.generateInvoiceLinesForHoldBacks(invoice);
     invoiceRepository.save(invoice);
