@@ -832,10 +832,11 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
 
       for (Timetable timetable : timetableList) {
         timetable = timetableRepo.find(timetable.getId());
+        SaleOrder saleOrder = timetable.getSaleOrder();
         BigDecimal amountCompanyCurr =
             currencyService
                 .getAmountCurrencyConvertedAtDate(
-                    timetable.getSaleOrder().getCurrency(),
+                    saleOrder.getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
                     timetable.getAmount(),
                     today)
@@ -845,10 +846,10 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             forecastRecapLineType.getTypeSelect(),
             amountCompanyCurr,
             SaleOrder.class.getName(),
-            timetable.getSaleOrder().getId(),
-            timetable.getSaleOrder().getSaleOrderSeq(),
-            timetable.getSaleOrder().getPaymentMode(),
-            null,
+            saleOrder.getId(),
+            saleOrder.getSaleOrderSeq(),
+            saleOrder.getPaymentMode(),
+            saleOrder.getCompanyBankDetails(),
             forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
             forecastRecapRepo.find(forecastRecap.getId()));
       }
@@ -875,10 +876,11 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
 
       for (Timetable timetable : timetableList) {
         timetable = timetableRepo.find(timetable.getId());
+        PurchaseOrder purchaseOrder = timetable.getPurchaseOrder();
         BigDecimal amountCompanyCurr =
             currencyService
                 .getAmountCurrencyConvertedAtDate(
-                    timetable.getPurchaseOrder().getCurrency(),
+                    purchaseOrder.getCurrency(),
                     forecastRecap.getCompany().getCurrency(),
                     timetable.getAmount(),
                     today)
@@ -888,10 +890,10 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             forecastRecapLineType.getTypeSelect(),
             amountCompanyCurr,
             PurchaseOrder.class.getName(),
-            timetable.getPurchaseOrder().getId(),
-            timetable.getPurchaseOrder().getPurchaseOrderSeq(),
-            timetable.getPurchaseOrder().getPaymentMode(),
-            null,
+            purchaseOrder.getId(),
+            purchaseOrder.getPurchaseOrderSeq(),
+            purchaseOrder.getPaymentMode(),
+            purchaseOrder.getCompanyBankDetails(),
             forecastRecapLineTypeRepo.find(forecastRecapLineType.getId()),
             forecastRecapRepo.find(forecastRecap.getId()));
       }
