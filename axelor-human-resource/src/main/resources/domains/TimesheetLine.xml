@@ -17,8 +17,8 @@
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
     <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Activity"/>
     <many-to-one name="employee" title="Employee" ref="Employee" readonly="true"/>
-    <date name="date" column="date_val" required="true" readonly="true"/>
-    <datetime name="startTime" title="Start Time" required="true"/>
+    <date name="date" column="date_val" readonly="true"/>
+    <datetime name="startTime" title="Start Time"/>
     <datetime name="endTime" title="End Time"/>
     <many-to-one name="timesheet" ref="com.axelor.apps.hr.db.Timesheet"
       title="Time Sheet" readonly="true"/>
