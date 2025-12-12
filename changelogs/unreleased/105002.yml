@@ -1,0 +1,5 @@
+---
+title: "Security; updated a dependency to avoid security issue."
+module: axelor-base
+developer: |
+  Upgraded the tika-core dependency to 3.2.3 to fix an important security breach.
