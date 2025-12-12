@@ -418,12 +418,15 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     List<Move> moveList = new ArrayList<>();
     String exportNumber = null;
     int endSubListIndex = Math.min(idList.size(), EXPORT_LINES_LIMIT);
-
+    BigDecimal debitBalance = BigDecimal.ZERO;
+    BigDecimal creditBalance = BigDecimal.ZERO;
     while (!(moveLineIdList = idList.subList(offset, endSubListIndex)).isEmpty()) {
       for (Long id : moveLineIdList) {
         MoveLine moveLine = moveLineRepo.find(id);
         offset++;
         allMoveLineData.add(createItemForExportMoveLine(moveLine, moveList));
+        debitBalance = debitBalance.add(moveLine.getDebit());
+        creditBalance = creditBalance.add(moveLine.getCredit());
       }
 
       JPA.clear();
@@ -440,6 +443,9 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     accountingReport = accountingReportRepo.find(accountingReport.getId());
 
     String fileName = this.setFileName(accountingReport);
+    accountingReport.setTotalDebit(debitBalance);
+    accountingReport.setTotalCredit(creditBalance);
+    accountingReport.setBalance(debitBalance.subtract(creditBalance));
     accountingReportRepo.save(accountingReport);
     return writeMoveLineToCsvFile(
         company, fileName, this.createHeaderForJournalEntry(), allMoveLineData, accountingReport);
