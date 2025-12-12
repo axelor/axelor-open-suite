@@ -176,6 +176,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
               .fetchOne();
       invoice.setCompanyTaxNumber(companyTaxNumber);
     }
+    invoice.setPartnerTaxNbr(invoice.getPartner().getTaxNbr());
 
     invoiceGenerator.populate(invoice, this.populate(invoice, invoicingProject));
     invoice = projectHoldBackLineService.generateInvoiceLinesForHoldBacks(invoice);
