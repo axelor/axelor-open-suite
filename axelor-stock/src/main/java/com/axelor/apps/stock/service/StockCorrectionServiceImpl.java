@@ -146,15 +146,18 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
         stockConfigService.getInventoryVirtualStockLocation(
             stockConfigService.getStockConfig(company));
 
-    BigDecimal realQty = stockCorrection.getRealQty();
     Product product = stockCorrection.getProduct();
     TrackingNumber trackingNumber = stockCorrection.getTrackingNumber();
+    final boolean presentInStockLocation = isPresentInStockLocation(stockCorrection, product);
     StockLocationLine stockLocationLine =
         getStockLocationLine(stockCorrection, toStockLocation, product);
+
+    BigDecimal realQty = stockCorrection.getRealQty();
     BigDecimal diff = realQty.subtract(stockLocationLine.getCurrentQty());
 
     BigDecimal productCostPrice =
         (BigDecimal) productCompanyService.get(product, "costPrice", company);
+    BigDecimal avgPrice = getAvgPrice(company, product, presentInStockLocation, stockLocationLine);
 
     StockLocation computedFromStockLocation;
     StockLocation computedToStockLocation;
@@ -182,6 +185,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
         stockLocationLine,
         diff,
         productCostPrice,
+        avgPrice,
         computedFromStockLocation,
         computedToStockLocation,
         stockMove);
@@ -200,6 +204,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       StockLocationLine stockLocationLine,
       BigDecimal diff,
       BigDecimal productCostPrice,
+      BigDecimal avgPrice,
       StockLocation computedFromStockLocation,
       StockLocation computedToStockLocation,
       StockMove stockMove)
@@ -211,7 +216,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
             product.getDescription(),
             diff.abs(),
             productCostPrice,
-            stockLocationLine.getAvgPrice(),
+            avgPrice,
             product.getUnit(),
             stockMove,
             StockMoveLineService.TYPE_NULL,
@@ -357,5 +362,29 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       stockCorrection.setComments(comments);
       stockCorrectionRepository.save(stockCorrection);
     }
+  }
+
+  protected BigDecimal getAvgPrice(
+      Company company,
+      Product product,
+      boolean presentInStockLocation,
+      StockLocationLine stockLocationLine)
+      throws AxelorException {
+    BigDecimal avgPrice = stockLocationLine.getAvgPrice();
+    if (!presentInStockLocation && avgPrice.compareTo(BigDecimal.ZERO) == 0) {
+      avgPrice = (BigDecimal) productCompanyService.get(product, "avgPrice", company);
+    }
+    return avgPrice;
+  }
+
+  protected boolean isPresentInStockLocation(StockCorrection stockCorrection, Product product) {
+    StockLocation stockLocation = stockCorrection.getStockLocation();
+    TrackingNumber trackingNumber = stockCorrection.getTrackingNumber();
+    if (trackingNumber == null) {
+      return stockLocationLineFetchService.getStockLocationLine(stockLocation, product) != null;
+    }
+    return stockLocationLineFetchService.getDetailLocationLine(
+            stockLocation, product, trackingNumber)
+        != null;
   }
 }
