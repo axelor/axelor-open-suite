@@ -138,8 +138,7 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
   /** Process expense lines section */
   private int processExpenseSection(
       List<Map<String, Object>> displayLines, List<InvoiceLine> expenseLines, int sequence) {
-    return processGenericSection(
-        displayLines, expenseLines, sequence, I18n.get("Night Shift Total"));
+    return processGenericSection(displayLines, expenseLines, sequence, I18n.get("Expense Total"));
   }
 
   /** Process other lines section */
@@ -183,7 +182,7 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
     // VAT
     if (invoice.getTaxTotal() != null && invoice.getTaxTotal().compareTo(BigDecimal.ZERO) > 0) {
       BigDecimal vatPercent = calculateVatPercentage(invoice);
-      displayLines.add(createVATLine(sequence, vatPercent, invoice.getTaxTotal()));
+      displayLines.add(createVATLine(sequence, vatPercent, invoice.getTaxTotal(), invoice));
     }
 
     // Total with tax
@@ -197,7 +196,7 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
         sequence,
         line.getProductName(),
         line.getQty(),
-        line.getUnit() != null ? line.getUnit().getName() : I18n.get("Total Amount"),
+        line.getUnit() != null ? line.getUnit().getName() : I18n.get("Hour"),
         line.getPrice(),
         line.getExTaxTotal(),
         false,
@@ -246,12 +245,19 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
   }
 
   private Map<String, Object> createVATLine(
-      int sequence, BigDecimal vatPercent, BigDecimal amount) {
+      int sequence, BigDecimal vatPercent, BigDecimal amount, Invoice invoice) {
+    String currency = "EUR"; // default
+    if (invoice != null
+        && invoice.getCurrency() != null
+        && invoice.getCurrency().getCodeISO() != null) {
+      currency = invoice.getCurrency().getCodeISO();
+    }
+
     return createDisplayLine(
         sequence,
-        "VAT (" + String.format("%.0f%%", vatPercent) + ")",
+        I18n.get("VAT") + " (" + String.format("%.0f%%", vatPercent) + ")",
         BigDecimal.ONE,
-        I18n.get("Hours"),
+        currency,
         null,
         amount,
         false,
@@ -348,16 +354,16 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
 
       return lines.stream().map(this::formatTimesheetLineDetail).collect(Collectors.joining(", "));
     } catch (Exception e) {
-      return "Error loading source details: " + e.getMessage();
+      return I18n.get("Error loading source details:") + " " + e.getMessage();
     }
   }
 
   private String formatTimesheetLineDetail(TimesheetLine tsl) {
     return String.format(
-        "%.2f hours on %s by %s",
+        I18n.get("%.2f hours on %s by %s"),
         tsl.getHoursDuration(),
         tsl.getDate(),
-        tsl.getEmployee() != null ? tsl.getEmployee().getName() : "Unknown");
+        tsl.getEmployee() != null ? tsl.getEmployee().getName() : I18n.get("Unknown"));
   }
 
   /**

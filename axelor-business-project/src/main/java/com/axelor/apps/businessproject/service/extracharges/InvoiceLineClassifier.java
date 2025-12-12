@@ -39,7 +39,7 @@ public class InvoiceLineClassifier {
     List<InvoiceLine> result = new ArrayList<>();
     for (InvoiceLine line : lines) {
       String type = line.getSourceType();
-      if (ExtraChargeConstants.INVOICE_LINE_SOURCE_TYPES.contains(type)) {
+      if (type == null || !ExtraChargeConstants.INVOICE_LINE_SOURCE_TYPES.contains(type)) {
         result.add(line);
       }
     }

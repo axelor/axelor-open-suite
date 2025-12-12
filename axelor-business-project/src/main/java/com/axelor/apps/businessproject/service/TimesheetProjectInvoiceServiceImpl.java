@@ -524,6 +524,11 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
     public void addTimesheetData(
         TimesheetLine line, Product product, Employee employee, Project project, BigDecimal hours) {
 
+      if (line.getStartTime() == null || line.getEndTime() == null) {
+        log.warn("Timesheet line {} has null start or end time, skipping", line.getId());
+        return;
+      }
+
       ProjectTask projectTask = line.getProjectTask();
       BigDecimal forcedUnitPrice = null;
       BigDecimal forcedPriceDiscounted = null;
@@ -549,7 +554,7 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
 
       if (timesheetDataMap.containsKey(key)) {
         TimesheetData existing = timesheetDataMap.get(key);
-        existing.updateDates(line.getStartTime().toLocalDate(), line.getDate());
+        existing.updateDates(line.getStartTime().toLocalDate(), line.getEndTime().toLocalDate());
         existing.addHours(hours);
         timesheetSourceIdsMap.get(key).add(line.getId());
       } else {
