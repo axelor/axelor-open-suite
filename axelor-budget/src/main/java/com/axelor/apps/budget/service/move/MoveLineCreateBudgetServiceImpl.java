@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -68,6 +69,7 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
       AppBaseService appBaseService,
       AnalyticLineService analyticLineService,
       CurrencyScaleService currencyScaleService,
+      MoveLineRecordService moveLineRecordService,
       BudgetToolsService budgetToolsService) {
     super(
         companyConfigService,
@@ -86,7 +88,8 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
         taxService,
         appBaseService,
         analyticLineService,
-        currencyScaleService);
+        currencyScaleService,
+        moveLineRecordService);
     this.budgetToolsService = budgetToolsService;
   }
 
