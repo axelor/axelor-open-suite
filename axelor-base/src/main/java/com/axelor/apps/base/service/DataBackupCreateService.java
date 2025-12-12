@@ -107,7 +107,6 @@ public class DataBackupCreateService {
           "createdBy",
           "updatedOn",
           "createdOn",
-          "archived",
           "version",
           "attrs");
 
