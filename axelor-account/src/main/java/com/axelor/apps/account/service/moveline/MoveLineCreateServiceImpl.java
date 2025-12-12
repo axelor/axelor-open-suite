@@ -95,6 +95,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected TaxService taxService;
   protected AppBaseService appBaseService;
   protected AnalyticLineService analyticLineService;
+  protected MoveLineRecordService moveLineRecordService;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -113,7 +114,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       FiscalPositionService fiscalPositionService,
       TaxService taxService,
       AppBaseService appBaseService,
-      AnalyticLineService analyticLineService) {
+      AnalyticLineService analyticLineService,
+      MoveLineRecordService moveLineRecordService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -130,6 +132,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.taxService = taxService;
     this.appBaseService = appBaseService;
     this.analyticLineService = analyticLineService;
+    this.moveLineRecordService = moveLineRecordService;
   }
 
   /**
@@ -523,6 +526,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
 
         moveLines.add(moveLine);
       }
+    }
+    for (MoveLine moveLine : moveLines) {
+      moveLineRecordService.refreshAccountInformation(moveLine, move);
     }
 
     // Creation of tax move lines for each invoice line tax
