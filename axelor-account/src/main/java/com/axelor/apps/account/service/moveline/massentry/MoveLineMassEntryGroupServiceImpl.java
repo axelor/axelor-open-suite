@@ -247,6 +247,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     valuesMap.put("cutOffEndDate", moveLine.getCutOffEndDate());
     valuesMap.put("isCutOffGenerated", moveLine.getCutOffEndDate());
     valuesMap.put("analyticMoveLineMassEntryList", moveLine.getAnalyticMoveLineMassEntryList());
+    valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
     valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
     valuesMap.put("taxEquiv", moveLine.getTaxEquiv());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
