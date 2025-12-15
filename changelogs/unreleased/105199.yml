@@ -1,0 +1,3 @@
+---
+title: "Stock history line: fixed the number of decimals in quantity and price fields."
+module: axelor-stock
