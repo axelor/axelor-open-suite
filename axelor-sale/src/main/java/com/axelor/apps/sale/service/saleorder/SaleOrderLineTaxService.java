@@ -73,6 +73,13 @@ public class SaleOrderLineTaxService {
       for (SaleOrderLine saleOrderLine : saleOrderLineList) {
 
         TaxLine taxLine = saleOrderLine.getTaxLine();
+        TaxEquiv taxEquiv = saleOrderLine.getTaxEquiv();
+        TaxLine taxLineRC =
+            (taxEquiv != null
+                    && taxEquiv.getReverseCharge()
+                    && taxEquiv.getReverseChargeTax() != null)
+                ? taxEquiv.getReverseChargeTax().getActiveTaxLine()
+                : null;
 
         if (taxLine != null) {
 
@@ -85,6 +92,8 @@ public class SaleOrderLineTaxService {
             saleOrderLineTax.setExTaxBase(
                 saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal()));
 
+            saleOrderLineTax.setReverseCharged(false);
+
           } else {
 
             SaleOrderLineTax saleOrderLineTax = new SaleOrderLineTax();
@@ -92,13 +101,41 @@ public class SaleOrderLineTaxService {
 
             saleOrderLineTax.setExTaxBase(saleOrderLine.getExTaxTotal());
 
+            saleOrderLineTax.setReverseCharged(false);
+
             saleOrderLineTax.setTaxLine(taxLine);
             map.put(taxLine, saleOrderLineTax);
           }
         }
 
+        if (taxLineRC != null) {
+          LOG.debug("VAT {}", taxLineRC);
+
+          if (map.containsKey(taxLineRC)) {
+
+            SaleOrderLineTax saleOrderLineRC =
+                map.get(taxEquiv.getReverseChargeTax().getActiveTaxLine());
+
+            saleOrderLineRC.setExTaxBase(
+                saleOrderLineRC.getExTaxBase().add(saleOrderLine.getExTaxTotal()));
+
+            saleOrderLineRC.setReverseCharged(true);
+
+          } else {
+
+            SaleOrderLineTax saleOrderLineTaxRC = new SaleOrderLineTax();
+            saleOrderLineTaxRC.setSaleOrder(saleOrder);
+
+            saleOrderLineTaxRC.setExTaxBase(saleOrderLine.getExTaxTotal());
+
+            saleOrderLineTaxRC.setReverseCharged(true);
+
+            saleOrderLineTaxRC.setTaxLine(taxLineRC);
+            map.put(taxLineRC, saleOrderLineTaxRC);
+          }
+        }
+
         if (!customerSpecificNote) {
-          TaxEquiv taxEquiv = saleOrderLine.getTaxEquiv();
           if (taxEquiv != null && taxEquiv.getSpecificNote() != null) {
             specificNotes.add(taxEquiv.getSpecificNote());
           }
@@ -109,7 +146,10 @@ public class SaleOrderLineTaxService {
     for (SaleOrderLineTax saleOrderLineTax : map.values()) {
 
       // Dans la devise de la facture
-      BigDecimal exTaxBase = saleOrderLineTax.getExTaxBase();
+      BigDecimal exTaxBase =
+          saleOrderLineTax.getReverseCharged()
+              ? saleOrderLineTax.getExTaxBase().negate()
+              : saleOrderLineTax.getExTaxBase();
       BigDecimal taxTotal = BigDecimal.ZERO;
       if (saleOrderLineTax.getTaxLine() != null) {
         taxTotal =
@@ -117,7 +157,7 @@ public class SaleOrderLineTaxService {
                 exTaxBase, saleOrderLineTax.getTaxLine().getValue().divide(new BigDecimal(100)));
         saleOrderLineTax.setTaxTotal(taxTotal);
       }
-      saleOrderLineTax.setInTaxTotal(exTaxBase.add(taxTotal));
+      saleOrderLineTax.setInTaxTotal(saleOrderLineTax.getExTaxBase().add(taxTotal));
       saleOrderLineTaxList.add(saleOrderLineTax);
 
       LOG.debug(
