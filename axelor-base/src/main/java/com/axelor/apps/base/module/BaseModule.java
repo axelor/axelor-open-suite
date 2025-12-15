@@ -59,6 +59,7 @@ import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.base.db.repo.ProductCompanyBaseRepository;
 import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.PushTokenRepository;
 import com.axelor.apps.base.db.repo.SequenceBaseRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TaxBaseRepository;
@@ -67,6 +68,7 @@ import com.axelor.apps.base.db.repo.UserBaseRepository;
 import com.axelor.apps.base.db.repo.YearBaseRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.db.repo.dms.CustomDMSFileRepository;
+import com.axelor.apps.base.db.repo.pushtoken.PushTokenBaseRepository;
 import com.axelor.apps.base.listener.BaseServerStartListener;
 import com.axelor.apps.base.quickmenu.ActiveCompanyUpdateQuickMenuCreator;
 import com.axelor.apps.base.quickmenu.InstanceInfoQuickMenuCreator;
@@ -304,6 +306,8 @@ import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServi
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateServiceImpl;
+import com.axelor.apps.base.service.pushnotification.PushNotificationService;
+import com.axelor.apps.base.service.pushnotification.PushNotificationServiceImpl;
 import com.axelor.apps.base.service.research.ResearchRequestService;
 import com.axelor.apps.base.service.research.ResearchRequestServiceImpl;
 import com.axelor.apps.base.service.signature.SignatureService;
@@ -563,5 +567,7 @@ public class BaseModule extends AxelorModule {
     bind(ProductCompanyRepository.class).to(ProductCompanyBaseRepository.class);
     bind(MetaThemeFetchService.class).to(MetaThemeFetchServiceImpl.class);
     bind(DMSFileRepository.class).to(CustomDMSFileRepository.class);
+    bind(PushTokenRepository.class).to(PushTokenBaseRepository.class);
+    bind(PushNotificationService.class).to(PushNotificationServiceImpl.class);
   }
 }

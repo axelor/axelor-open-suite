@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="PushToken">
+    <many-to-one name="employee" ref="com.axelor.auth.db.User" required="true"/>
+    <string name="token" required="true" unique="true" min="1" max="255"/>
+    <string name="deviceId" max="255" title="Device ID"/>
+    <boolean name="isActive" default="true"/>
+    <datetime name="lastUsedOn"/>
+
+    <track>
+      <field name="user"/>
+      <field name="token"/>
+      <field name="isActive"/>
+    </track>
+  </entity>
+
+</domain-models>

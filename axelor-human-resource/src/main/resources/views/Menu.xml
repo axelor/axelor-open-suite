@@ -597,8 +597,8 @@
     action="action.timesheet.method.all.timesheet" order="100"/>
 
   <menuitem title="Timesheet Lines to validate" name="mgm-tm-timesheet-lines-to-validate"
-    parent="mgm-tm-hr-root" groups="CUSTOM-TM"
-    action="action.timesheet.method.all.timesheet-lines-custom" order="110"/>
+    parent="mgm-tm-hr-root" groups="CUSTOM-TM" action="action.timesheet.method.all.timesheet-lines-custom"
+    order="110"/>
 
   <menuitem name="mgm-tm-validate-expense" parent="mgm-tm-hr-root"
     title="Expenses to Validate" action="expense.validate" tag-style="default"
