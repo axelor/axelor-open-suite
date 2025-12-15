@@ -846,7 +846,26 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         newMoveLineDebit,
         newMoveLineCredit);
 
+    if (Optional.of(taxLine).map(TaxLine::getTax).map(Tax::getIsNonDeductibleTax).orElse(false)) {
+      fillIfChargeOnOriginalAccount(taxLine.getTax(), moveLine, newOrUpdatedMoveLine, move);
+    }
+
     return newOrUpdatedMoveLine;
+  }
+
+  protected void fillIfChargeOnOriginalAccount(
+      Tax tax, MoveLine oldMoveLine, MoveLine newMoveLine, Move move) throws AxelorException {
+    if (!Optional.ofNullable(
+                accountManagementService.getAccountManagement(
+                    tax.getAccountManagementList(), move.getCompany()))
+            .map(AccountManagement::getChargeOnOriginalAccount)
+            .orElse(false)
+        || oldMoveLine == null) {
+      return;
+    }
+
+    moveLineComputeAnalyticService.copyAnalyticsDataFromMoveLine(
+        oldMoveLine, newMoveLine, newMoveLine.getCredit().max(newMoveLine.getDebit()));
   }
 
   protected BigDecimal computeTaxLineValue(TaxLine taxLine, List<TaxLine> nonDeductibleTaxList) {
