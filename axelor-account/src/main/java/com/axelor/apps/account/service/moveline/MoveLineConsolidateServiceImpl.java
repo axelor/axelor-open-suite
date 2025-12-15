@@ -87,6 +87,8 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
             if (count == list1.size()) {
               return moveLineIt;
             }
+          } else {
+            return moveLineIt;
           }
         } else {
           return null;
