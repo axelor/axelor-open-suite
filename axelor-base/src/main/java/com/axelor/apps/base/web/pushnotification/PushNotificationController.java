@@ -29,9 +29,7 @@ public class PushNotificationController {
   private PushNotificationServiceImpl pushNotificationService =
       Beans.get(PushNotificationServiceImpl.class);
 
-  /**
-   * Register a push token for the current user Expected payload: token, deviceId
-   */
+  /** Register a push token for the current user Expected payload: token, deviceId */
   @POST
   @Path("/register")
   public Response registerToken(Map<String, Object> payload) {

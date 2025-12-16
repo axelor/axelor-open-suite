@@ -42,8 +42,8 @@
   <form name="task-report-form" title="Task Reports" canEdit="true"
     model="com.axelor.apps.businessproject.db.TaskReport"
     onNew="action-task-report-default, action-task-report-attrs-filter-projects"
-    onLoad="action-task-report-attrs-filter-projects" onSave="action-task-report-validate"
-    width="large">
+    onLoad="action-task-report-attrs-filter-projects, action-task-report-set-flag"
+    onSave="action-task-report-validate, action-task-report-set-flag" width="large">
     <toolbar>
       <button name="viewTaskReportbtn" title="View Report" icon="fa-eye"
         onClick="save,action-task-report-method-preview"/>
@@ -85,23 +85,60 @@
           </panel>
         </panel>
 
-        <panel title="Sign-Off" showFrame="false" colSpan="12">
+        <!-- MGM Enclose sign-off panels into a global panel for hiding -->
+
+        <!-- <panel title="Sign-Off" showFrame="false" colSpan="12"> -->
+        <!-- <panel colSpan="12"> -->
+        <!-- <field name="taskDate" colSpan="4"/> -->
+        <!-- <field widget="checkbox" name="customerNotAvailable" colSpan="3" hidden="true"/> -->
+        <!-- <field widget="checkbox" name="customerNotAvailable" colSpan="5" -->
+        <!-- title="Customer Not Available" onChange="action-customer-available-attrs"/> -->
+        <!-- </panel> -->
+        <!-- </panel> -->
+        <!-- <panel colSpan="12"> -->
+        <!-- <panel colSpan="12"> -->
+        <!-- <field name="employee" title="Employee Name"/> -->
+        <!-- <field name="customerName" title="Customer Name" hideIf="customerNotAvailable"/> -->
+
+        <!-- <field name="employeeSignature" title="Employee Signature" widget="drawing" -->
+        <!-- colSpan="6"/> -->
+        <!-- <field name="customerSignature" title="Customer Signature" widget="drawing" -->
+        <!-- colSpan="6" hideIf="customerNotAvailable"/> -->
+        <!-- </panel> -->
+        <!-- </panel> -->
+
+        <panel name="signatureInfoPanel" showIf="!reportedAllTasks" colSpan="12"
+          showFrame="false">
           <panel colSpan="12">
-            <field name="taskDate" colSpan="4"/>
-            <field widget="checkbox" name="customerNotAvailable" colSpan="3" hidden="true"/>
-            <field widget="checkbox" name="customerNotAvailable" colSpan="5"
-              title="Customer Not Available" onChange="action-customer-available-attrs"/>
+            <help css="alert-info">
+              <![CDATA[
+                The Sign-Off section will show once all project tasks have been reported.
+              ]]>
+            </help>
           </panel>
         </panel>
-        <panel colSpan="12">
-          <panel colSpan="12">
-            <field name="employee" title="Employee Name"/>
-            <field name="customerName" title="Customer Name" hideIf="customerNotAvailable"/>
 
-            <field name="employeeSignature" title="Employee Signature" widget="drawing"
-              colSpan="6"/>
-            <field name="customerSignature" title="Customer Signature" widget="drawing"
-              colSpan="6" hideIf="customerNotAvailable"/>
+        <panel name="signatureParentPanel" colSpan="12" showFrame="false"
+          hideIf="!reportedAllTasks">
+          <panel title="Sign-Off" showFrame="false" colSpan="12">
+            <panel colSpan="12">
+              <field name="taskDate" colSpan="4"/>
+              <field widget="checkbox" name="customerNotAvailable" colSpan="3" hidden="true"/>
+              <field widget="checkbox" name="customerNotAvailable" colSpan="5"
+                title="Customer Not Available" onChange="action-customer-available-attrs"/>
+            </panel>
+          </panel>
+          <panel colSpan="12">
+            <panel colSpan="12">
+              <field name="employee" title="Employee Name"/>
+              <field name="customerName" title="Customer Name" hideIf="customerNotAvailable"/>
+
+              <field name="employeeSignature" title="Employee Signature" widget="drawing"
+                colSpan="6"/>
+              <field name="customerSignature" title="Customer Signature" widget="drawing"
+                colSpan="6" hideIf="customerNotAvailable"/>
+              <field name="reportedAllTasks" hidden="true" x-dirty="false"/>
+            </panel>
           </panel>
         </panel>
       </panel>
@@ -150,6 +187,11 @@
   <action-method name="action-task-report-validate">
     <call class="com.axelor.apps.businessproject.web.TaskReportController"
       method="validateTaskReport"/>
+  </action-method>
+
+  <action-method name="action-task-report-set-flag">
+    <call class="com.axelor.apps.businessproject.web.TaskReportController"
+      method="setReportedAllProjectTaskFlag"/>
   </action-method>
 
   <!-- Action when project changes - autofill all related fields -->

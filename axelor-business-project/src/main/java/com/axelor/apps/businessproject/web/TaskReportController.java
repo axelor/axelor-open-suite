@@ -5,6 +5,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
 import com.axelor.apps.businessproject.db.repo.TaskReportRepository;
+import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -84,5 +85,15 @@ public class TaskReportController {
       response.setError("A Task Report already exists for this project.");
       return;
     }
+  }
+
+  /** Updates the reportedAllTask field to the current state */
+  public void setReportedAllProjectTaskFlag(ActionRequest request, ActionResponse response) {
+    TaskReport taskReport = request.getContext().asType(TaskReport.class);
+
+    boolean allTasksReported =
+        Beans.get(TaskReportService.class).checkIfAllTasksReported(taskReport);
+
+    response.setValue("reportedAllTasks", allTasksReported);
   }
 }

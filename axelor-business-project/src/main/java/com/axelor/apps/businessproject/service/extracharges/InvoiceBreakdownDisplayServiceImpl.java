@@ -85,7 +85,7 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
     }
 
     if (extraChargeTotal.compareTo(baseTotal) > 0) {
-      displayLines.add(createTotalLine(I18n.get("Base Total"), extraChargeTotal));
+      displayLines.add(createTotalLine(I18n.get("Extra Charge Total"), extraChargeTotal));
     }
 
     return sequence;

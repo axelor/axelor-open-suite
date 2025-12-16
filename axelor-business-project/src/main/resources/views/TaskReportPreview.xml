@@ -7,7 +7,8 @@
   <!-- preview form -->
   <form name="task-report-preview-form" title="MGM Task Report Preview"
     model="com.axelor.apps.businessproject.db.TaskReport" width="large" canAttach="true"
-    canDelete="true" canEdit="true" canNew="false">
+    canDelete="true" canEdit="true" canNew="false" onSave="action-task-report-set-flag"
+    onLoad="action-task-report-set-flag">
     <panel colSpan="12" name="mainPanel">
       <panel colSpan="12" showTitle="false" style="text-align:center;" showFrame="false">
         <label value="MGM TASK REPORT" style="font-size:18px; font-weight:bold;"/>
@@ -81,7 +82,18 @@
   </form>
   <form title="Sign Off" name="incl-task-report-sign-off-form-panel-preview" canEdit="true"
     model="com.axelor.apps.businessproject.db.TaskReport">
-    <panel title="Sign-Off" colSpan="12">
+
+    <panel name="signatureInfoPanel" showIf="!reportedAllTasks" colSpan="12" showFrame="false">
+      <panel colSpan="12">
+        <help css="alert-info">
+          <![CDATA[
+                The Sign-Off section will show once all project tasks have been reported.
+              ]]>
+        </help>
+      </panel>
+    </panel>
+
+    <panel title="Sign-Off" colSpan="12" hideIf="!reportedAllTasks">
       <panel colSpan="12">
         <field name="taskDate" colSpan="4"/>
       </panel>
@@ -96,6 +108,7 @@
       <panel colSpan="12" hidden="true">
         <field name="customerNotAvailable" widget="checkbox" title="Customer Available"
           onChange="action-customer-available-attrs"/>
+        <field name="reportedAllTasks" hidden="true" x-dirty="false"/>
       </panel>
     </panel>
   </form>

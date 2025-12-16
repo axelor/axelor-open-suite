@@ -28,6 +28,9 @@
     <one-to-many name="extraExpenseLineList"
       ref="com.axelor.apps.businessproject.db.ExtraExpenseLine" mappedBy="taskReport"
       title="Extra Expenses"/>
+
+    <!-- MGM Initially added to hide conditionaly hide sign-off panel -->
+    <boolean name="reportedAllTasks" title="Reported all project tasks"/>
   </entity>
 
 </domain-models>

@@ -128,6 +128,8 @@ import com.axelor.apps.businessproject.service.projecttask.TaskTemplateBusinessP
 import com.axelor.apps.businessproject.service.pushnotification.TaskAssignmentNotificationRule;
 import com.axelor.apps.businessproject.service.taskreport.TaskReportExpenseService;
 import com.axelor.apps.businessproject.service.taskreport.TaskReportExpenseServiceImpl;
+import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
+import com.axelor.apps.businessproject.service.taskreport.TaskReportServiceImpl;
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
@@ -256,7 +258,7 @@ public class BusinessProjectModule extends AxelorModule {
     bind(ExtraExpenseInvoiceService.class).to(ExtraExpenseInvoiceServiceImpl.class);
     bind(TaskReportRepository.class).to(TaskReportBusinessRepository.class);
     bind(InvoiceBreakdownDisplayService.class).to(InvoiceBreakdownDisplayServiceImpl.class);
-
+    bind(TaskReportService.class).to(TaskReportServiceImpl.class);
     bind(TaskAssignmentNotificationRule.class).asEagerSingleton();
   }
 }
