@@ -9,6 +9,7 @@ import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
+import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
  * Notification rule for task assignment changes. Sends push notification when a task is assigned to
  * a user.
  */
+@Singleton
 public class TaskAssignmentNotificationRule extends PushNotificationRule {
 
   private static final Logger LOG = LoggerFactory.getLogger(TaskAssignmentNotificationRule.class);
@@ -77,7 +79,7 @@ public class TaskAssignmentNotificationRule extends PushNotificationRule {
     }
 
     if (task.getPriority() != null) {
-      data.put("priority", task.getPriority());
+      data.put("priority", task.getPriority().getName());
     }
 
     if (task.getStatus() != null) {
@@ -89,7 +91,11 @@ public class TaskAssignmentNotificationRule extends PushNotificationRule {
     }
 
     if (task.getProjectTaskCategory() != null) {
-      data.put("category", task.getProjectTaskCategory());
+      data.put("category", task.getProjectTaskCategory().getName());
+    }
+
+    if (task.getProduct() != null) {
+      data.put("activity", task.getProduct().getFullName());
     }
 
     return data;

@@ -306,6 +306,7 @@ import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServi
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateServiceImpl;
+import com.axelor.apps.base.service.pushnotification.FirebaseInitializer;
 import com.axelor.apps.base.service.pushnotification.PushNotificationService;
 import com.axelor.apps.base.service.pushnotification.PushNotificationServiceImpl;
 import com.axelor.apps.base.service.research.ResearchRequestService;
@@ -569,5 +570,7 @@ public class BaseModule extends AxelorModule {
     bind(DMSFileRepository.class).to(CustomDMSFileRepository.class);
     bind(PushTokenRepository.class).to(PushTokenBaseRepository.class);
     bind(PushNotificationService.class).to(PushNotificationServiceImpl.class);
+
+    bind(FirebaseInitializer.class).asEagerSingleton();
   }
 }

@@ -61,8 +61,10 @@ public class PushNotificationController {
                   true,
                   "message",
                   "Token registered successfully",
-                  "tokenId",
-                  pushToken.getId()))
+                  "token",
+                  pushToken.getToken(),
+                  "deviceId",
+                  pushToken.getDeviceId()))
           .build();
 
     } catch (Exception e) {

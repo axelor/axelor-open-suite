@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.inject.Singleton;
 import org.hibernate.Transaction;
 import org.hibernate.type.Type;
 import org.slf4j.Logger;
@@ -19,6 +20,7 @@ import org.slf4j.LoggerFactory;
  * entities/fields.
  */
 @SuppressWarnings("serial")
+@Singleton
 public class PushNotificationInterceptor extends GlobalAuditInterceptor {
   private static final Logger LOG = LoggerFactory.getLogger(PushNotificationInterceptor.class);
 

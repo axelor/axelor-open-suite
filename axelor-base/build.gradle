@@ -78,4 +78,7 @@ dependencies {
 	implementation libs.bcprov_jdk18on
 	implementation libs.bcpkix_jdk18on
 	implementation libs.flyingsaucer_openpdf
+
+	// Firebaes push notifications
+	implementation 'com.google.firebase:firebase-admin:9.2.0'
 }
