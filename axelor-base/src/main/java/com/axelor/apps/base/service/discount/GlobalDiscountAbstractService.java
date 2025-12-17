@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.interfaces.GlobalDiscounter;
 import com.axelor.apps.base.interfaces.GlobalDiscounterLine;
+import com.axelor.apps.base.service.app.AppBaseService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -102,12 +103,17 @@ public abstract class GlobalDiscountAbstractService {
 
   protected void adjustPercentageDiscountOnLastLine(GlobalDiscounter globalDiscounter) {
     BigDecimal priceDiscountedByLine =
-        globalDiscounter.getExTaxTotal().setScale(2, RoundingMode.HALF_UP);
+        globalDiscounter
+            .getExTaxTotal()
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
     BigDecimal priceDiscountedOnTotal =
         globalDiscounter
             .getPriceBeforeGlobalDiscount()
             .multiply(BigDecimal.valueOf(100).subtract(globalDiscounter.getDiscountAmount()))
-            .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+            .divide(
+                BigDecimal.valueOf(100),
+                AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                RoundingMode.HALF_UP);
     if (priceDiscountedByLine.compareTo(priceDiscountedOnTotal) == 0) {
       return;
     }
@@ -126,13 +132,19 @@ public abstract class GlobalDiscountAbstractService {
                   lastLine
                       .getPriceDiscounted()
                       .add(differenceInDiscount)
-                      .divide(lastLine.getPrice(), RoundingMode.HALF_UP))
+                      .divide(
+                          lastLine.getPrice(),
+                          AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                          RoundingMode.HALF_UP))
               .multiply(BigDecimal.valueOf(100)));
     }
   }
 
   protected void adjustFixedDiscountOnLastLine(GlobalDiscounter globalDiscounter) {
-    BigDecimal priceDiscountedByLine = globalDiscounter.getExTaxTotal();
+    BigDecimal priceDiscountedByLine =
+        globalDiscounter
+            .getExTaxTotal()
+            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
 
     BigDecimal priceDiscountedOnTotal =
         globalDiscounter
@@ -146,10 +158,15 @@ public abstract class GlobalDiscountAbstractService {
     GlobalDiscounterLine lastLine =
         getGlobalDiscounterLines(globalDiscounter)
             .get(getGlobalDiscounterLines(globalDiscounter).size() - 1);
-    lastLine.setDiscountAmount(
-        lastLine
-            .getDiscountAmount()
-            .subtract(differenceInDiscount.divide(lastLine.getQty(), RoundingMode.HALF_UP)));
+
+    if (lastLine.getQty() == null || lastLine.getQty().compareTo(BigDecimal.ZERO) == 0) {
+      lastLine.setDiscountAmount(BigDecimal.ZERO);
+    } else {
+      lastLine.setDiscountAmount(
+          lastLine
+              .getDiscountAmount()
+              .subtract(differenceInDiscount.divide(lastLine.getQty(), RoundingMode.HALF_UP)));
+    }
   }
 
   public BigDecimal computeDiscountFixedEquivalence(GlobalDiscounter globalDiscounter) {
