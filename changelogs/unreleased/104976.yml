@@ -1,0 +1,3 @@
+---
+title: "Accounting batch: fixed doubtful customer batch issue by not removing old invoice terms."
+module: axelor-account

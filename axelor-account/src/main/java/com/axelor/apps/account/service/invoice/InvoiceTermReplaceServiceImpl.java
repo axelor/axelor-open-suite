@@ -199,7 +199,6 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
     }
 
     for (InvoiceTerm invoiceTerm : invoiceTermListToRemove) {
-      invoice.removeInvoiceTermListItem(invoiceTerm);
       invoiceTerm.setInvoice(null);
     }
 
@@ -214,9 +213,7 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
       invoiceTerm.setPaymentSession(null);
       MoveLine moveLine = invoiceTerm.getMoveLine();
       moveLine.addInvoiceTermListItem(newInvoiceTerm);
-      moveLine.removeInvoiceTermListItem(invoiceTerm);
       invoiceTerm.setMoveLine(null);
-      invoiceTermRepo.remove(invoiceTerm);
     }
   }
 
