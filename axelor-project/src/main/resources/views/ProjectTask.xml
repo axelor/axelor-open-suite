@@ -62,12 +62,10 @@
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
     width="large">
-    <toolbar>
-      <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
-        onClick="action-project-task-record-assigned-yourself,save"/>
-      <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
-        showIf="project.taskStatusManagementSelect != 1"/>
-    </toolbar>
+    <!-- MGM-80, @gkouete: the following toolbar item are not relevant for MGM -->
+    <!-- <toolbar> <button name="grabEventBtn" icon="fa-suitcase" help="Take charge" onClick="action-project-task-record-assigned-yourself,save"/>
+      <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done" showIf="project.taskStatusManagementSelect
+      != 1"/> </toolbar> -->
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
         if="__config__.app.getApp('project')?.resourceManagement">

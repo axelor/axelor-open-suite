@@ -54,10 +54,17 @@
     onLoad="action-business-project-project-group-on-load"
     onNew="action-business-project-project-group-on-new" onSave="action-project-group-on-save">
     <!-- MGM-80 @gkouete- showing planning and financial data not required -->
-    <!-- <toolbar> <button name="showPlanningBtn" icon="calendar-week" title="Show planning" onClick="save,action-project-view-show-planning-panel"
-      if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"
-      showIf="isShowPlanning"/> <button name="showFinancialDatas" icon="clipboard-data" title="Show financial
-      datas" onClick="save,action-project-view-show-financial-datas-panel"/> </toolbar> -->
+    <toolbar>
+      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
+        onClick="save,action-project-view-show-planning-panel"
+        if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification  &amp;&amp; __user__.group.code == admins"
+        showIf="isShowPlanning"/>
+      <button name="showFinancialDatas" icon="clipboard-data"
+        title="Show financial
+      datas"
+        onClick="save,action-project-view-show-financial-datas-panel"
+        if="__user__.group.code == admins"/>
+    </toolbar>
     <menubar>
       <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
         <item name="myOpenTasks" title="My open tasks"

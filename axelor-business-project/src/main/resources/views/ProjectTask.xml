@@ -82,7 +82,8 @@
     name="business-project-project-task-grid" orderBy="-taskDate">
     <toolbar>
       <button name="logTimeBtn" icon="clock-history"
-        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
+        onClick="action-timesheet-line-method-log-time"
+        if="__config__.app.isApp('timesheet') &amp;&amp; __user__.group.code == admins"/>
     </toolbar>
     <!-- <field name="ticketNumber" if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/> -->
     <field name="name"/>
