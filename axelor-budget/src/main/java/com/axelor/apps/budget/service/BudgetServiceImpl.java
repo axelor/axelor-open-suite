@@ -978,6 +978,7 @@ public class BudgetServiceImpl implements BudgetService {
     optBudget.setTypeSelect(BudgetRepository.BUDGET_TYPE_SELECT_BUDGET);
     optBudget.setSourceSelect(BudgetRepository.BUDGET_SOURCE_AUTO);
     optBudget.setCategory(budgetScenarioVariable.getCategory());
+    optBudget.setCompany(globalBudget.getCompany());
     BigDecimal calculatedAmount =
         currencyScaleService.getCompanyScaledValue(
             parent,
