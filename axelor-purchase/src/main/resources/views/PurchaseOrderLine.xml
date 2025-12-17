@@ -265,6 +265,10 @@
         <panel-dashlet name="POLineInvoicelinesPanel"
           action="action-purchase-order-line-view-show-invoice-lines" colSpan="12"/>
       </panel>
+      <panel name="settingsPanel" title="Configuration"
+        showIf="pricingScaleLogs &amp;&amp; product">
+        <field name="pricingScaleLogs" colSpan="12"/>
+      </panel>
     </panel-tabs>
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>

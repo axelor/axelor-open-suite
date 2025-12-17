@@ -79,6 +79,8 @@
       return purchaseOrder != null ? purchaseOrder.getCompanyCurrency() : null;
 	    ]]>
     </many-to-one>
+    <string name="pricingScaleLogs" title="Price calculation details" large="true"
+      readonly="true"/>
 
     <track>
       <field name="desiredReceiptDate"/>

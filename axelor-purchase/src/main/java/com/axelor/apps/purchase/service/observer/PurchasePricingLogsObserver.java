@@ -16,25 +16,26 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder.pricing;
+package com.axelor.apps.purchase.service.observer;
 
-import com.axelor.apps.base.service.pricing.PricingObserverImpl;
-import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.base.service.observer.PricingLogs;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.db.EntityHelper;
-import jakarta.inject.Inject;
+import com.axelor.db.Model;
+import com.axelor.event.Observes;
+import jakarta.annotation.Priority;
 
-public class PricingObserverSaleImpl extends PricingObserverImpl {
+public class PurchasePricingLogsObserver {
 
-  @Inject
-  public PricingObserverSaleImpl() {
-    super();
+  void onPricingLogs(@Observes @Priority(value = 30) PricingLogs event) {
+    Model model = event.getModel();
+    String logs = event.getLogs();
+    fillPricingScaleLogs(model, logs);
   }
 
-  @Override
-  public void fillPricingScaleLogs(String pricingScaleLogs) {
-    super.fillPricingScaleLogs(pricingScaleLogs);
-    if (this.model != null && SaleOrderLine.class.equals(EntityHelper.getEntityClass(this.model))) {
-      ((SaleOrderLine) this.model).setPricingScaleLogs(pricingScaleLogs);
+  protected void fillPricingScaleLogs(Model model, String pricingScaleLogs) {
+    if (model != null && PurchaseOrderLine.class.equals(EntityHelper.getEntityClass(model))) {
+      ((PurchaseOrderLine) model).setPricingScaleLogs(pricingScaleLogs);
     }
   }
 }

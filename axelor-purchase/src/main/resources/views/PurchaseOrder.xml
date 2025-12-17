@@ -130,6 +130,10 @@
     <toolbar>
       <button name="printBtn" title="Reports" icon="printer" hideIf="supplierPartner == null"
         readonlyIf="!id" onClick="save,action-purchase-order-method-show-purchase-order"/>
+      <button name="recomputePricesBtn" title="Recompute prices"
+        onClick="action-purchase-order-group-recompute-prices-btn" showIf="statusSelect == 1"
+        icon="calculator"
+        if="__config__.app.getApp('purchase')?.getIsEnableCalculationEntireQuotation()"/>
     </toolbar>
     <menubar>
       <menu name="purchaseOrderToolsMenu" title="Tools" icon="wrench" showTitle="true">
@@ -670,6 +674,12 @@
     <action name="action-purchase-order-method-validate-changes"/>
   </action-group>
 
+  <action-group name="action-purchase-order-group-recompute-prices-btn">
+    <action name="action-purchase-order-method-update-purchase-order-line-list"/>
+    <action name="action-purchase-order-method-compute"/>
+    <action name="save"/>
+  </action-group>
+
   <action-method
     name="action-purchase-order-method-update-amount-to-be-spread-over-the-timetable"
     if-module="axelor-supplychain">
@@ -679,6 +689,11 @@
 
   <action-method name="action-purchase-order-method-update-cost-price">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderController" method="updateCostPrice"/>
+  </action-method>
+
+  <action-method name="action-purchase-order-method-update-purchase-order-line-list">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderController"
+      method="updatePurchaseOrderLineList"/>
   </action-method>
 
   <action-attrs name="action-purchase-order-attrs-in-ati">
