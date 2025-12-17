@@ -101,9 +101,16 @@ public class DataBackupCreateService {
   protected boolean referenceFlag;
   protected boolean byteArrFieldFlag = false;
   protected List<String> fileNameList;
-  protected static Set<String> exceptColumnNameList =
+  protected static Set<String> exceptColumnNameList = ImmutableSet.of("importId");
+  protected static Set<String> technicalFieldList =
       ImmutableSet.of(
-          "importId", "updatedBy", "createdBy", "updatedOn", "createdOn", "version", "attrs");
+          "archived",
+          "createdBy",
+          "createdOn",
+          "updatedBy",
+          "updatedOn",
+          "version",
+          "processInstanceId");
 
   StringBuilder sb = new StringBuilder();
 
@@ -302,9 +309,7 @@ public class DataBackupCreateService {
       Property[] properties = metaModelMapper.getProperties();
       for (Property property : properties) {
         String propertyType = property.getType().toString();
-        if ((propertyType.equals("DATE") || propertyType.equals("DATETIME"))
-            && !property.getName().equals("createdOn")
-            && !property.getName().equals("updatedOn")) {
+        if (propertyType.equals("DATE") || propertyType.equals("DATETIME")) {
           getDateOrDateTimeHeader(property, csvInput);
         }
       }
@@ -474,6 +479,8 @@ public class DataBackupCreateService {
       boolean isRelativeDate = dataBackup.getIsRelativeDate();
       boolean updateImportId = dataBackup.getUpdateImportId();
       boolean isTemplateWithDescription = dataBackup.getIsTemplateWithDescription();
+      boolean isIncludeTechnicalFields = dataBackup.getIsIncludeTechnicalFields();
+      boolean isIncludeJsonFields = dataBackup.getIsIncludeJsonFields();
       int count = 0;
       Integer maxLinesPerFile = dataBackup.getMaxLinesPerFile();
       LocalDateTime relativeDateTime = dataBackup.getRelativeDateTime();
@@ -498,7 +505,7 @@ public class DataBackupCreateService {
               dataArr = new ArrayList<>();
 
               for (Property property : pro) {
-                if (isPropertyExportable(property)) {
+                if (isPropertyExportable(property, isIncludeTechnicalFields, isIncludeJsonFields)) {
                   if (headerFlag) {
                     String headerStr = getMetaModelHeader(property, csvInput, isRelativeDate);
                     headerArr.add(headerStr);
@@ -528,7 +535,7 @@ public class DataBackupCreateService {
                       "com.axelor.apps.base.service.DataBackupRestoreService:importObjectWithByteArray");
                   byteArrFieldFlag = false;
                 }
-                sortedHeaderArr = sortHeader(headerArr);
+                sortedHeaderArr = sortHeader(headerArr, isIncludeTechnicalFields);
                 printer.printRecord(sortedHeaderArr);
                 headerFlag = false;
               }
@@ -559,7 +566,7 @@ public class DataBackupCreateService {
         }
       } else {
         for (Property property : pro) {
-          if (isPropertyExportable(property)) {
+          if (isPropertyExportable(property, isIncludeTechnicalFields, isIncludeJsonFields)) {
             String headerStr = getMetaModelHeader(property, csvInput, isRelativeDate);
             headerArr.add(headerStr);
             if (isTemplateWithDescription) {
@@ -574,7 +581,7 @@ public class DataBackupCreateService {
               "com.axelor.apps.base.service.DataBackupRestoreService:importObjectWithByteArray");
           byteArrFieldFlag = false;
         }
-        sortedHeaderArr = sortHeader(headerArr);
+        sortedHeaderArr = sortHeader(headerArr, isIncludeTechnicalFields);
         printer.printRecord(sortedHeaderArr);
         if (isTemplateWithDescription) {
           printer.println();
@@ -599,8 +606,11 @@ public class DataBackupCreateService {
     return csvInput;
   }
 
-  protected boolean isPropertyExportable(Property property) {
+  protected boolean isPropertyExportable(
+      Property property, boolean isIncludeTechnicalFields, boolean isIncludeJsonFields) {
     return !exceptColumnNameList.contains(property.getName())
+        && (!technicalFieldList.contains(property.getName()) || isIncludeTechnicalFields)
+        && (!property.isJson() || isIncludeJsonFields)
         && ((StringUtils.isEmpty(property.getMappedBy()))
             || (!StringUtils.isEmpty(property.getMappedBy())
                 && (property.getTarget() != null
@@ -1084,11 +1094,26 @@ public class DataBackupCreateService {
     return builder.toString();
   }
 
-  protected List<String> sortHeader(List<String> headerArr) {
+  protected List<String> sortHeader(List<String> headerArr, boolean isIncludeTechnicalFields) {
     List<String> sortedHeaderArr = new ArrayList<>();
     for (String header : headerList) {
       if (headerArr.contains(header)) {
         sortedHeaderArr.add(header);
+      }
+    }
+    if (isIncludeTechnicalFields) {
+      for (String technicalField : technicalFieldList) {
+        if ("createdBy".equals(technicalField) && headerArr.contains("createdBy_importId")) {
+          sortedHeaderArr.add("createdBy_importId");
+          continue;
+        }
+        if ("updatedBy".equals(technicalField) && headerArr.contains("updatedBy_importId")) {
+          sortedHeaderArr.add("updatedBy_importId");
+          continue;
+        }
+        if (headerArr.contains(technicalField)) {
+          sortedHeaderArr.add(technicalField);
+        }
       }
     }
     List<String> remainingHeaderArr =
