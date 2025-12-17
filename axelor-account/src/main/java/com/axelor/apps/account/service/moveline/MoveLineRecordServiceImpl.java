@@ -19,10 +19,13 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
@@ -42,17 +45,20 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected MoveLoadDefaultConfigService moveLoadDefaultConfigService;
   protected FiscalPositionService fiscalPositionService;
   protected CurrencyService currencyService;
+  protected AccountingSituationRepository accountingSituationRepository;
 
   @Inject
   public MoveLineRecordServiceImpl(
       AppAccountService appAccountService,
       MoveLoadDefaultConfigService moveLoadDefaultConfigService,
       FiscalPositionService fiscalPositionService,
-      CurrencyService currencyService) {
+      CurrencyService currencyService,
+      AccountingSituationRepository accountingSituationRepository) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.fiscalPositionService = fiscalPositionService;
     this.currencyService = currencyService;
+    this.accountingSituationRepository = accountingSituationRepository;
   }
 
   @Override
@@ -131,8 +137,16 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       }
     }
 
-    if (ObjectUtils.notEmpty(accountingAccount.getVatSystemSelect())) {
+    if (accountingAccount.getVatSystemSelect() != null
+        && accountingAccount.getVatSystemSelect() != AccountRepository.VAT_SYSTEM_DEFAULT) {
       moveLine.setVatSystemSelect(accountingAccount.getVatSystemSelect());
+    } else {
+      AccountingSituation accountingSituation =
+          accountingSituationRepository.findByCompanyAndPartner(
+              move.getCompany(), moveLine.getPartner());
+      if (accountingSituation != null
+          && accountingSituation.getVatSystemSelect() == AccountingSituationRepository.VAT_DELIVERY)
+        moveLine.setVatSystemSelect(AccountRepository.VAT_SYSTEM_GOODS);
     }
   }
 
