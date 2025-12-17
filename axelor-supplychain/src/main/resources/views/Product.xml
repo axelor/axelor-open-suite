@@ -15,7 +15,7 @@
       <field name="$product" title="Product" canEdit="false"
         target="com.axelor.apps.base.db.Product" type="many-to-one" form-view="product-form"
         grid-view="product-grid" onChange="action-group-supplychain-update-indicators"
-        domain="self.stockManaged = true AND self.dtype = 'Product' AND self.productTypeSelect = 'storable'"/>
+        domain="self.stockManaged = true AND self.dtype = 'Product' AND self.productTypeSelect = 'storable' AND self.isModel = false"/>
       <field name="$company" title="Company" showIf="$product" canEdit="false"
         target="com.axelor.apps.base.db.Company" type="many-to-one" form-view="company-form"
         grid-view="company-grid"
