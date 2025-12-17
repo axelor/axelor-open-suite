@@ -88,6 +88,9 @@
         </panel>
       </panel>
 
+      <panel-related name="inventoryLineListPanel" field="inventoryLineList"
+        readonlyIf="statusSelect >= 5 || stockLocation == null" colSpan="12" height="20"
+        grid-view="inventory-line-grid" form-view="inventory-line-form"/>
 
       <panel name="filterPanel" title="Filters" hideIf="statusSelect &lt; 2" readonly="true">
         <field name="productFamily" grid-view="product-family-grid"
