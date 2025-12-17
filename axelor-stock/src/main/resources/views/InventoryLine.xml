@@ -7,8 +7,8 @@
     model="com.axelor.apps.stock.db.InventoryLine" editable="true" orderBy="product.code">
     <field name="product" canEdit="false"
       onChange="action-inventory-line-group-update-inventory-line"
-      domain="self.stockManaged = true AND self.dtype = 'Product'" grid-view="product-grid"
-      form-view="product-form"/>
+      domain="self.stockManaged = true AND self.dtype = 'Product' AND self.isModel = false"
+      grid-view="product-grid" form-view="product-form"/>
     <field name="stockLocation"
       onSelect="action-inventory-line-method-set-stock-location-domain"
       onChange="action-inventory-line-group-update-inventory-line"/>
@@ -32,7 +32,7 @@
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-inventory-line-group-update-inventory-line"
-        domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and self.dtype = 'Product'"
+        domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and self.dtype = 'Product' AND self.isModel = false"
         form-view="product-form" grid-view="product-grid"/>
       <field name="stockLocation"
         onSelect="action-inventory-line-method-set-stock-location-domain"
