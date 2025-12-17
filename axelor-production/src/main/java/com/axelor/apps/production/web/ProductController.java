@@ -29,6 +29,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 
 public class ProductController {
 
@@ -54,9 +55,10 @@ public class ProductController {
   }
 
   public void bomImportLineProductOnNew(ActionRequest request, ActionResponse response) {
-    if (request.getContext().getParent() != null) {
+    Context parent = request.getContext().getParent();
+    if (parent != null && BillOfMaterialImportLine.class.equals(parent.getContextClass())) {
       BillOfMaterialImportLine billOfMaterialImportLine =
-          request.getContext().getParent().asType(BillOfMaterialImportLine.class);
+          parent.asType(BillOfMaterialImportLine.class);
 
       response.setValue("code", billOfMaterialImportLine.getCode());
       response.setValue("name", billOfMaterialImportLine.getName());

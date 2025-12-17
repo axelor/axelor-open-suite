@@ -15,7 +15,7 @@
     <button icon="plus-lg" name="newBtn"
       onClick="action-equipment-model-view-new-equipment-model"/>
     <button icon="trash" name="deleteBtn"
-      onClick="action-equipment-model-script-remove-equipment-model"/>
+      onClick="action-equipment-model-method-remove-equipment-model"/>
   </grid>
 
   <form model="com.axelor.apps.intervention.db.EquipmentModel" title="Equipment model"
@@ -66,7 +66,7 @@
       <button name="newBtn" icon="plus-lg"
         onClick="action-equipment-model-view-new-equipment-model"/>
       <button name="deleteBtn" icon="trash"
-        onClick="action-equipment-model-script-remove-equipment-model"/>
+        onClick="action-equipment-model-method-remove-equipment-model"/>
     </node>
     <node model="com.axelor.apps.intervention.db.EquipmentModel" parent="parentEquipmentModel"
       onClick="action-equipment-model-view-from-tree">
@@ -77,7 +77,7 @@
       <button name="newBtn" icon="plus-lg"
         onClick="action-equipment-model-view-new-equipment-model"/>
       <button name="deleteBtn" icon="trash"
-        onClick="action-equipment-model-script-remove-equipment-model"/>
+        onClick="action-equipment-model-method-remove-equipment-model"/>
     </node>
   </tree>
 
@@ -88,18 +88,6 @@
     <context name="_xParentEquipmentModelId" expr="eval: id"/>
     <context name="_xParkModelId" expr="eval: parkModel?.id"/>
   </action-view>
-
-  <action-script name="action-equipment-model-script-remove-equipment-model">
-    <script language="groovy" transactional="true">
-      <![CDATA[
-        if ($request.context.id == null) return
-        def equipmentModel = __repo__(EquipmentModel).find($request.context.id)
-        if (equipmentModel == null) return
-        __repo__(EquipmentModel).remove(equipmentModel)
-        $response.reload = true
-      ]]>
-    </script>
-  </action-script>
 
   <action-attrs name="action-equipment-model-attrs-set-default">
     <attribute for="parkModel" name="value"
@@ -124,5 +112,10 @@
     <context name="_showRecord" expr="eval: id"/>
     <context name="_showSingle" expr="true"/>
   </action-view>
+
+  <action-method name="action-equipment-model-method-remove-equipment-model">
+    <call class="com.axelor.apps.intervention.web.EquipmentModelController"
+      method="removeEquipmentModel"/>
+  </action-method>
 
 </object-views>

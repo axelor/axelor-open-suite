@@ -35,11 +35,13 @@
     <panel name="mainPanel">
       <field name="label"/>
       <field name="countIncMvtStockPeriod"/>
-      <field name="sumIncQtyPeriod"/>
-      <field name="priceIncStockMovePeriod"/>
+      <field name="sumIncQtyPeriod" x-scale="$nbDecimalDigitForQty"/>
+      <field name="priceIncStockMovePeriod" x-scale="$nbDecimalDigitForUnitPrice"/>
       <field name="countOutMvtStockPeriod"/>
-      <field name="sumOutQtyPeriod"/>
-      <field name="priceOutStockMovePeriod"/>
+      <field name="sumOutQtyPeriod" x-scale="$nbDecimalDigitForQty"/>
+      <field name="priceOutStockMovePeriod" x-scale="$nbDecimalDigitForUnitPrice"/>
+      <field name="$nbDecimalDigitForQty" hidden="true"/>
+      <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     </panel>
   </form>
 
@@ -60,13 +62,16 @@
     <field name="product"/>
     <field name="label" colSpan="3" showTitle="false"/>
     <field name="countIncMvtStockPeriod"/>
-    <field name="sumIncQtyPeriod" x-scale="2"/>
-    <field name="priceIncStockMovePeriod"/>
+    <field name="sumIncQtyPeriod" x-scale="$nbDecimalDigitForQty"/>
+    <field name="priceIncStockMovePeriod" x-scale="$nbDecimalDigitForUnitPrice"/>
     <field name="countOutMvtStockPeriod"/>
-    <field name="sumOutQtyPeriod" x-scale="2"/>
-    <field name="sumOneoffSaleOutQtyPeriod" if-module="axelor-supplychain" x-scale="2"/>
-    <field name="avgOutQtyOn12PastMonth" x-scale="2"/>
-    <field name="priceOutStockMovePeriod"/>
+    <field name="sumOutQtyPeriod" x-scale="$nbDecimalDigitForQty"/>
+    <field name="sumOneoffSaleOutQtyPeriod" if-module="axelor-supplychain"
+      x-scale="$nbDecimalDigitForQty"/>
+    <field name="avgOutQtyOn12PastMonth" x-scale="$nbDecimalDigitForQty"/>
+    <field name="priceOutStockMovePeriod" x-scale="$nbDecimalDigitForUnitPrice"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
+    <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>
 
   <form title="Stock history line" name="stock-history-line-all-form"
@@ -104,6 +109,12 @@
     <attribute name="value" for="$beginDate" expr="eval: __config__.date.minusMonths(6)"/>
     <attribute name="value" for="$endDate" expr="eval: __config__.date"/>
     <attribute name="value" for="$nbOfPeriod" expr="eval: 7"/>
+    <attribute name="scale"
+      for="$stockHistoryLineList.sumIncQtyPeriod,$stockHistoryLineList.sumOutQtyPeriod"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale"
+      for="$stockHistoryLineList.priceIncStockMovePeriod,$stockHistoryLineList.priceOutStockMovePeriod"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
 
   <action-attrs name="action-stock-history-line-attrs-compute-nb-of-periods">
@@ -112,12 +123,11 @@
   </action-attrs>
 
   <action-attrs name="action-stock-history-line-attrs-scale">
-    <attribute name="scale" for="sumIncQtyPeriod"
+    <attribute name="scale"
+      for="sumIncQtyPeriod,sumOutQtyPeriod,sumOneoffSaleOutQtyPeriod"
       expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    <attribute name="scale" for="sumOutQtyPeriod"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
-    <attribute name="scale" for="sumOneoffSaleOutQtyPeriod"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+    <attribute name="scale" for="priceIncStockMovePeriod,priceOutStockMovePeriod"
+      expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
 
   <action-method name="action-stock-history-line-method-fill-stock-history-line-list">

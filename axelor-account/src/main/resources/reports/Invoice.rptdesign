@@ -6128,7 +6128,7 @@ this.height=row["logo_height"];]]></method>
                                         <structure>
                                             <property name="paramName">param_1</property>
                                             <simple-property-list name="expression">
-                                                <value type="javascript">'N° Siren'</value>
+                                                <value type="javascript">'Short registration number'</value>
                                             </simple-property-list>
                                         </structure>
                                     </list-property>
@@ -6147,7 +6147,7 @@ this.height=row["logo_height"];]]></method>
                                         </structure>
                                     </list-property>
                                     <property name="contentType">html</property>
-                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["siren"]</VALUE-OF>]]></text-property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{'Short registration number'}</VALUE-OF> : <VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer["siren"]</VALUE-OF>]]></text-property>
                                 </text>
                             </cell>
                         </row>

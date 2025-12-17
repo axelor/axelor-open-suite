@@ -27,8 +27,8 @@
       AND self.saleOrder.company = :activeCompany
       AND
       self.product.productFamily.id = :id
-      AND self.saleOrder.confirmationDateTime BETWEEN
-      DATE(:fromDate) AND DATE(:toDate)
+      AND self.saleOrder.confirmationDateTime BETWEEN :fromDate
+      AND :toDate
       GROUP BY
       to_char(self.saleOrder.confirmationDateTime,'yyyy-MM')
       ORDER BY
@@ -648,8 +648,9 @@
       AND self.saleOrder.company = :activeCompany
       AND
       self.product = :product
-      AND self.saleOrder.confirmationDateTime BETWEEN DATE(:toDate) - 365 AND
-      DATE(:toDate)
+      AND self.saleOrder.confirmationDateTime BETWEEN CAST(:toDate AS DATE) -
+      365 DAY AND
+      CAST(:toDate AS DATE)
       GROUP BY
       TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM')
       ORDER BY _month

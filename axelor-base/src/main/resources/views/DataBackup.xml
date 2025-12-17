@@ -34,9 +34,10 @@
 
     <panel-tabs name="mainPanelTab">
       <panel name="templatePanel" title="Templates.title">
-        <field name="isProcessEmptyTable" widget="boolean-switch" colSpan="4"/>
-        <field name="isTemplateWithDescription" widget="boolean-switch" colSpan="4"/>
-        <field name="maxLinesPerFile" colSpan="4"/>
+        <field name="isProcessEmptyTable" widget="boolean-switch"/>
+        <field name="isTemplateWithDescription" widget="boolean-switch"/>
+        <field name="maxLinesPerFile"/>
+        <field name="fieldSeparatorSelect"/>
       </panel>
     </panel-tabs>
 
@@ -71,10 +72,10 @@
       <field name="backupMetaFile" required="true" domain="self.fileName LIKE '%.zip'"
         widget="binary-link"/>
       <field name="isTemplateWithDescription" widget="boolean-switch"/>
+      <field name="fieldSeparatorSelect"/>
       <button name="restoreBtn" title="Restore"
         showIf="backupMetaFile != null &amp;&amp; statusSelect != 2"
         onClick="save,action.data.backup.call.restorebackup,save"/>
-      <spacer name="restoreBtnSpacer"/>
       <field name="restoreDate" readonly="true"/>
       <field name="logMetaFile" readonly="true" widget="binary-link"/>
     </panel>
