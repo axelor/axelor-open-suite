@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed an error occurring when confirming an order with splitting quotation and order enabled."
+module: axelor-sale
