@@ -622,6 +622,15 @@ public final class BaseExceptionMessage {
   public static final String SEQUENCE_GROOVY_CONFIGURATION = /*$$(*/
       "An error occurred while generating the sequence. Please check the configuration." /*)*/;
 
+  public static final String SEQUENCE_INCREMENT_TIMEOUT = /*$$(*/
+      "Timeout while acquiring sequence lock for sequence ID %s. Please retry." /*)*/;
+
+  public static final String SEQUENCE_INCREMENT_FAILED = /*$$(*/
+      "Failed to increment sequence ID %s. Please contact administrator." /*)*/;
+
+  public static final String SEQUENCE_INCREMENT_INTERRUPTED = /*$$(*/
+      "Sequence generation was interrupted for sequence ID %s." /*)*/;
+
   public static final String ADDRESS_TEMPLATE_ERROR = /*$$(*/
       "An error occurred while generating the address template: '%s'" /*)*/;
 
