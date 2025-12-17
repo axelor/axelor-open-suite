@@ -59,6 +59,7 @@ import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.stock.utils.BatchProcessorHelper;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
@@ -173,7 +174,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
     LOG.debug("Stock move realization: {} ", stockMove.getStockMoveSeq());
     String newStockSeq = super.realizeStockMove(stockMove, check);
-    stockMove = stockMoveRepo.find(stockMove.getId());
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
 
     AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
     Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();

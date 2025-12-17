@@ -82,7 +82,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -588,21 +587,23 @@ public class StockMoveServiceImpl implements StockMoveService {
         true,
         true);
 
-    stockMove = stockMoveRepo.find(stockMove.getId());
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
     clearPlannedStockMoveLine(stockMove, true);
     storeCustomsCodesForStockMove(stockMove);
     resetMasses(stockMove);
 
     boolean mustBeSplit = mustBeSplit(stockMove);
     if (stockMove.getIsWithBackorder() && mustBeSplit) {
-      Optional<StockMove> newStockMove = copyAndSplitStockMove(stockMove);
+      Optional<StockMove> newStockMove =
+          copyAndSplitStockMove(JpaModelHelper.ensureManaged(stockMove));
       if (newStockMove.isPresent()) {
         newStockSeq = newStockMove.get().getStockMoveSeq();
       }
     }
 
     if (stockMove.getIsWithReturnSurplus() && mustBeSplit) {
-      Optional<StockMove> newStockMove = copyAndSplitStockMoveReverse(stockMove, true);
+      Optional<StockMove> newStockMove =
+          copyAndSplitStockMoveReverse(JpaModelHelper.ensureManaged(stockMove), true);
       if (newStockMove.isPresent()) {
         if (newStockSeq != null) {
           newStockSeq = newStockSeq + " " + newStockMove.get().getStockMoveSeq();
@@ -817,36 +818,15 @@ public class StockMoveServiceImpl implements StockMoveService {
 
   @Override
   public Optional<StockMove> copyAndSplitStockMove(StockMove stockMove) throws AxelorException {
-    return copyAndSplitStockMove(
-        stockMove, stockMove == null ? null : stockMove.getStockMoveLineList());
-  }
 
-  @Override
-  public Optional<StockMove> copyAndSplitStockMove(
-      StockMove stockMove, List<StockMoveLine> stockMoveLines) throws AxelorException {
-
-    if (stockMove == null) {
+    if (stockMove == null || !isNewBackorderLinePossible(stockMove)) {
       return Optional.empty();
     }
 
-    Set<Long> linesToProcess =
-        stockMoveLines.stream().map(StockMoveLine::getId).collect(Collectors.toSet());
     StockMove newStockMove = stockMoveRepo.copy(stockMove, false);
 
     setOrigin(stockMove, newStockMove);
     newStockMove.setOrigin(stockMove.getOrigin());
-
-    AtomicBoolean hasNewLines = new AtomicBoolean(false);
-    BatchProcessorHelper.of()
-        .<StockMoveLine, AxelorException>forEachByIds(
-            StockMoveLine.class,
-            linesToProcess,
-            line -> processBackorderLine(line, newStockMove, hasNewLines));
-
-    if (!hasNewLines.get()) {
-      return Optional.empty();
-    }
-
     newStockMove.setRealDate(null);
     newStockMove.setStockMoveSeq(
         stockMoveToolService.getSequenceStockMove(
@@ -876,12 +856,28 @@ public class StockMoveServiceImpl implements StockMoveService {
     newStockMove.setSignatoryUser(null);
     newStockMove.setIsConformityCertifSigned(false);
     newStockMove.setElectronicSignature(null);
-
-    plan(newStockMove);
     newStockMove.setStockMoveOrigin(stockMove);
-    stockMoveRepo.save(newStockMove);
+    newStockMove = stockMoveRepo.save(newStockMove);
     stockMove.setBackorderId(newStockMove.getId());
-    return Optional.of(newStockMove);
+    stockMoveRepo.save(stockMove);
+    final StockMove[] newStockMoveHolder = new StockMove[] {newStockMove};
+    BatchProcessorHelper.of()
+        .<StockMoveLine, AxelorException>forEachByQuery(
+            getStockMoveLineQuery(stockMove.getId()),
+            line -> processBackorderLine(line, newStockMoveHolder[0]),
+            () -> newStockMoveHolder[0] = stockMoveRepo.find(newStockMoveHolder[0].getId()));
+    newStockMove = stockMoveRepo.find(newStockMove.getId());
+    plan(newStockMove);
+    return Optional.of(stockMoveRepo.find(newStockMove.getId()));
+  }
+
+  protected boolean isNewBackorderLinePossible(StockMove stockMove) throws AxelorException {
+    return stockMoveLineRepo
+            .all()
+            .filter("self.stockMove.id = :stockMoveId AND self.qty > self.realQty")
+            .bind("stockMoveId", stockMove.getId())
+            .count()
+        > 0;
   }
 
   protected StockMoveLine copySplittedStockMoveLine(StockMoveLine stockMoveLine)
@@ -894,15 +890,13 @@ public class StockMoveServiceImpl implements StockMoveService {
     return newStockMoveLine;
   }
 
-  protected void processBackorderLine(
-      StockMoveLine stockMoveLine, StockMove newStockMove, AtomicBoolean hasNewLines)
+  protected void processBackorderLine(StockMoveLine stockMoveLine, StockMove newStockMove)
       throws AxelorException {
     if (stockMoveLine.getQty().compareTo(stockMoveLine.getRealQty()) <= 0) {
       return;
     }
     StockMoveLine newStockMoveLine = copySplittedStockMoveLine(stockMoveLine);
     newStockMove.addStockMoveLineListItem(newStockMoveLine);
-    hasNewLines.set(true);
   }
 
   @Override

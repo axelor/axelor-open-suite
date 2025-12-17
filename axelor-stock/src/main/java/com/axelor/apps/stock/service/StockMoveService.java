@@ -140,9 +140,6 @@ public interface StockMoveService {
 
   public Optional<StockMove> copyAndSplitStockMove(StockMove stockMove) throws AxelorException;
 
-  public Optional<StockMove> copyAndSplitStockMove(
-      StockMove stockMove, List<StockMoveLine> stockMoveLines) throws AxelorException;
-
   public Optional<StockMove> copyAndSplitStockMoveReverse(StockMove stockMove, boolean split)
       throws AxelorException;
 
