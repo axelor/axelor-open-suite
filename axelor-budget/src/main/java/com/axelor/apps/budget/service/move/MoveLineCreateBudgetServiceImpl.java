@@ -39,6 +39,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -70,6 +71,7 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
       AnalyticLineService analyticLineService,
       CurrencyScaleService currencyScaleService,
       MoveLineRecordService moveLineRecordService,
+      AccountManagementService accountManagementService,
       BudgetToolsService budgetToolsService) {
     super(
         companyConfigService,
@@ -89,7 +91,8 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
         appBaseService,
         analyticLineService,
         currencyScaleService,
-        moveLineRecordService);
+        moveLineRecordService,
+        accountManagementService);
     this.budgetToolsService = budgetToolsService;
   }
 
