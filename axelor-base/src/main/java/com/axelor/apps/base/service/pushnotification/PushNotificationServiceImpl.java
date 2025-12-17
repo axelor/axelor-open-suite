@@ -5,6 +5,7 @@ import com.axelor.apps.base.db.repo.pushtoken.PushTokenBaseRepository;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.google.inject.persist.Transactional;
@@ -79,9 +80,9 @@ public class PushNotificationServiceImpl implements PushNotificationService {
       return;
     }
 
-    // Send notification all all active devices for this user
+    // Send notification to all active devices for this user
     for (String token : activeTokens) {
-      sendToSingleToken(token, title, body, data);
+      sendToSingleToken(token, title, body, data, user);
     }
   }
 
@@ -99,9 +100,13 @@ public class PushNotificationServiceImpl implements PushNotificationService {
   }
 
   private void sendToSingleToken(
-      String token, String title, String body, Map<String, Object> data) {
+      String token, String title, String body, Map<String, Object> data, User user) {
+
+    // Using this to log a clear error message of the faulty token
+    Long pushTokenId = pushTokenRepo.findByToken(token).getId();
 
     try {
+
       Message.Builder builder =
           Message.builder()
               .setToken(token)
@@ -119,7 +124,11 @@ public class PushNotificationServiceImpl implements PushNotificationService {
       updateLastUsed(token);
 
     } catch (Exception e) {
-      LOG.warn("Push failed for token {}", token, e);
+      LOG.warn("Failed to send push notification to user {} " +
+              "for push token with id {}: {}",
+              user.getFullName(), pushTokenId, formatErrorMessage(e));
+
+      LOG.debug("Full stack trace: ", e);
       handleSendError(token, e);
     }
   }
@@ -154,5 +163,14 @@ public class PushNotificationServiceImpl implements PushNotificationService {
       pushToken.setLastUsedOn(LocalDateTime.now());
       pushTokenRepo.save(pushToken);
     }
+  }
+
+  private String formatErrorMessage(Exception e) {
+    if (e instanceof FirebaseMessagingException) {
+      FirebaseMessagingException fbme = (FirebaseMessagingException) e;
+      return fbme.getMessagingErrorCode() + "- " + fbme.getMessage();
+    }
+
+    return e.getClass().getSimpleName() + "- " + e.getMessage();
   }
 }
