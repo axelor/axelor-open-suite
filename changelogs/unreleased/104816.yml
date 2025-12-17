@@ -1,0 +1,63 @@
+---
+title: "Purchase order: fixed the value of 'Invoiced Amount (excl. tax)' in case of multi-order invoices."
+module: axelor-supplychain
+developer: |
+  -- migration script to update amount_invoiced in Purchase Order table
+  UPDATE purchase_purchase_order PurchaseOrder
+  SET amount_invoiced =
+  (
+      CASE
+        WHEN PurchaseOrder.currency <> Company.currency
+         AND PurchaseOrder.company_ex_tax_total <> 0
+        THEN PurchaseOrder.ex_tax_total *
+            (
+                (
+                    COALESCE((
+                        SELECT SUM(InvoiceLine.company_ex_tax_total)
+                        FROM account_invoice_line InvoiceLine
+                        JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+                        WHERE ((InvoiceLine.purchase_order_line IN (
+                            SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
+                        ) OR Invoice.purchase_order = PurchaseOrder.id)
+                        AND Invoice.operation_type_select = 3
+                        AND Invoice.status_select = 3
+                    ), 0)
+                    -
+                    COALESCE((
+                        SELECT SUM(InvoiceLine.company_ex_tax_total)
+                        FROM account_invoice_line InvoiceLine
+                        JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+                        WHERE ((InvoiceLine.purchase_order_line IN (
+                            SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
+                        ) OR Invoice.purchase_order = PurchaseOrder.id)
+                        AND Invoice.operation_type_select = 4
+                        AND Invoice.status_select = 3
+                    ), 0)
+                ) / PurchaseOrder.company_ex_tax_total
+            )
+        ELSE
+            COALESCE((
+                SELECT SUM(InvoiceLine.company_ex_tax_total)
+                FROM account_invoice_line InvoiceLine
+                JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+                WHERE ((InvoiceLine.purchase_order_line IN (
+                    SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
+                ) OR Invoice.purchase_order = PurchaseOrder.id)
+                AND Invoice.operation_type_select = 3
+                AND Invoice.status_select = 3
+            ), 0)
+            -
+            COALESCE((
+                SELECT SUM(InvoiceLine.company_ex_tax_total)
+                FROM account_invoice_line InvoiceLine
+                JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+                WHERE ((InvoiceLine.purchase_order_line IN (
+                    SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
+                ) OR Invoice.purchase_order = PurchaseOrder.id)
+                AND Invoice.operation_type_select = 4
+                AND Invoice.status_select = 3
+            ), 0)
+      END
+  )
+  FROM base_company Company
+  WHERE PurchaseOrder.company = Company.id;
