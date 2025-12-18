@@ -1,0 +1,3 @@
+---
+title: "Sale invoice details: fixed the format of the toDate field in BIRT report."
+module: axelor-account
