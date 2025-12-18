@@ -897,6 +897,24 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
     StockMoveLine newStockMoveLine = copySplittedStockMoveLine(stockMoveLine);
     newStockMove.addStockMoveLineListItem(newStockMoveLine);
+
+    Product product = newStockMoveLine.getProduct();
+    if (product != null) {
+      TrackingNumberConfiguration trackingNumberConfiguration =
+          (TrackingNumberConfiguration)
+              productCompanyService.get(
+                  product, "trackingNumberConfiguration", newStockMove.getCompany());
+
+      newStockMoveLine.setTrackingNumber(null);
+      stockMoveLineService.assignOrGenerateTrackingNumber(
+          newStockMoveLine,
+          newStockMove,
+          product,
+          trackingNumberConfiguration,
+          newStockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              ? StockMoveLineService.TYPE_SALES
+              : StockMoveLineService.TYPE_PURCHASES);
+    }
   }
 
   @Override
