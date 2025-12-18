@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed missing quantity in to consumed product list."
+module: axelor-production

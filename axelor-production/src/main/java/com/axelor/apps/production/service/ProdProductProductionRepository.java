@@ -82,11 +82,14 @@ public class ProdProductProductionRepository extends ProdProductRepository {
     List<Object[]> queryResult =
         JPA.em()
             .createQuery(
-                "SELECT locationLine.currentQty, locationLine.unit.id "
+                "SELECT locationLine.currentQty, locationLine.unit.id, locationLine.reservedQty, stockMoveLine.reservedQty "
                     + "FROM ManufOrder manufOrder "
                     + "LEFT JOIN StockLocationLine locationLine "
                     + "ON locationLine.stockLocation.id = manufOrder.prodProcess.stockLocation.id "
+                    + "LEFT JOIN StockMoveLine stockMoveLine "
+                    + "ON stockMoveLine.consumedManufOrder.id = :manufOrderId "
                     + "WHERE locationLine.product.id = :productId "
+                    + "AND stockMoveLine.product.id = :productId "
                     + "AND manufOrder.id = :manufOrderId")
             .setParameter("productId", productId)
             .setParameter("manufOrderId", toProduceManufOrderId)
@@ -107,10 +110,24 @@ public class ProdProductProductionRepository extends ProdProductRepository {
                     unitObj ->
                         Beans.get(UnitRepository.class).find(Long.valueOf(unitObj.toString())))
                 .orElse(null);
+        BigDecimal reservedQtyInLocationUnit =
+            Optional.ofNullable(resultTab[2])
+                .map(reservedQtyObj -> new BigDecimal(reservedQtyObj.toString()))
+                .orElse(BigDecimal.ZERO);
+        BigDecimal reservedQtyInStockMoveLine =
+            Optional.ofNullable(resultTab[3])
+                .map(
+                    stockMoveLinereservedQtyObj ->
+                        new BigDecimal(stockMoveLinereservedQtyObj.toString()))
+                .orElse(BigDecimal.ZERO);
         if (locationUnit != null) {
           availableQty =
+              availableQtyInLocationUnit
+                  .add(reservedQtyInStockMoveLine)
+                  .subtract(reservedQtyInLocationUnit);
+          availableQty =
               Beans.get(UnitConversionService.class)
-                  .convert(locationUnit, targetUnit, availableQtyInLocationUnit, scale, null);
+                  .convert(locationUnit, targetUnit, availableQty, scale, null);
         }
 
       } catch (Exception e) {
