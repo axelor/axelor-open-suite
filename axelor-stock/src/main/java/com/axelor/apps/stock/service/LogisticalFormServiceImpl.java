@@ -81,12 +81,16 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
 
   protected ProductRepository productRepository;
   protected UnitConversionService unitConversionService;
+  protected StockConfigService stockConfigService;
 
   @Inject
   public LogisticalFormServiceImpl(
-      ProductRepository productRepository, UnitConversionService unitConversionService) {
+      ProductRepository productRepository,
+      UnitConversionService unitConversionService,
+      StockConfigService stockConfigService) {
     this.productRepository = productRepository;
     this.unitConversionService = unitConversionService;
+    this.stockConfigService = stockConfigService;
   }
 
   @Override
@@ -517,15 +521,22 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       return "self IS NULL";
     }
 
+    Company company = logisticalForm.getCompany();
     List<String> domainList = new ArrayList<>();
 
     domainList.add("self.company = :company");
     domainList.add("self.partner = :deliverToCustomerPartner");
     domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
-    domainList.add(
-        String.format(
-            "self.statusSelect in (%d, %d)",
-            StockMoveRepository.STATUS_PLANNED, StockMoveRepository.STATUS_REALIZED));
+    if (stockConfigService
+        .getStockConfig(company)
+        .getRealizeStockMovesUponParcelPalletCollection()) {
+      domainList.add(String.format("self.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
+    } else {
+      domainList.add(
+          String.format(
+              "self.statusSelect in (%d, %d)",
+              StockMoveRepository.STATUS_PLANNED, StockMoveRepository.STATUS_REALIZED));
+    }
     domainList.add("COALESCE(self.fullySpreadOverLogisticalFormsFlag, FALSE) = FALSE");
     if (logisticalForm.getStockLocation() != null) {
       domainList.add("self.stockMoveLineList.fromStockLocation = :stockLocation");

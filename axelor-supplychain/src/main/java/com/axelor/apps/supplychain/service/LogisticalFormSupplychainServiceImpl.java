@@ -26,6 +26,7 @@ import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -36,8 +37,10 @@ public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceI
 
   @Inject
   public LogisticalFormSupplychainServiceImpl(
-      ProductRepository productRepository, UnitConversionService unitConversionService) {
-    super(productRepository, unitConversionService);
+      ProductRepository productRepository,
+      UnitConversionService unitConversionService,
+      StockConfigService stockConfigService) {
+    super(productRepository, unitConversionService, stockConfigService);
   }
 
   @Override
