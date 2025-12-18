@@ -1,3 +1,0 @@
----
-title: "Stock correction: stock move now uses product average price when stock location line is not present"
-module: axelor-stock
