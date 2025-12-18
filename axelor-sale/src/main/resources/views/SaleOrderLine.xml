@@ -111,7 +111,8 @@
     <field name="product.code" width="120" readonlyIf="$isParentTitleLine"/>
     <field name="productName" readonlyIf="$isParentTitleLine"/>
     <field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange"
-      validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty" readonlyIf="$isParentTitleLine"/>
+      validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"
+      readonlyIf="$isParentTitleLine || typeSelect != 0"/>
     <field name="orderedQty" colSpan="3" x-scale="$nbDecimalDigitForQty"
       if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled" readonly="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"
