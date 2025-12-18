@@ -1,3 +1,0 @@
----
-title: "Mrp forecast: fixed domain filter on stock location in order to be able to select the right storable product."
-module: axelor-supplychain

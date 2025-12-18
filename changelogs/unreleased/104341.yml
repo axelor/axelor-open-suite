@@ -1,3 +1,0 @@
----
-title: "StockMove: fixed issue where total was not computed on fill real qty button."
-module: axelor-supplychain
