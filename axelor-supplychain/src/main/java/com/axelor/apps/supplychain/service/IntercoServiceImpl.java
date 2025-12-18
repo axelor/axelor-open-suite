@@ -73,6 +73,7 @@ import com.google.inject.persist.Transactional;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -489,6 +490,10 @@ public class IntercoServiceImpl implements IntercoService {
         Beans.get(AccountManagementAccountService.class);
     InvoiceLineAnalyticService invoiceLineAnalyticService =
         Beans.get(InvoiceLineAnalyticService.class);
+
+    LocalDate cutOffStartDate = invoiceLine.getCutOffStartDate();
+    LocalDate cutOffEndDate = invoiceLine.getCutOffEndDate();
+
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             intercoInvoice,
@@ -521,6 +526,10 @@ public class IntercoServiceImpl implements IntercoService {
               List<AnalyticMoveLine> analyticMoveLineList =
                   invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
               analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
+            }
+            if (cutOffStartDate != null && cutOffEndDate != null) {
+              invoiceLine.setCutOffStartDate(cutOffStartDate);
+              invoiceLine.setCutOffEndDate(cutOffEndDate);
             }
             return List.of(invoiceLine);
           }
