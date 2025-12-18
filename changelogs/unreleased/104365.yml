@@ -1,5 +1,0 @@
----
-title: "Move line: fixed the value of tax lines and VAT system on move lines generated from invoices."
-module: axelor-account
-developer: |
-  - Added MoveLineRecordService in the MoveLineCreateServiceImpl constructor

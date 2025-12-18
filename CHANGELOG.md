@@ -1,3 +1,144 @@
+## [7.2.57] (2025-12-18)
+
+### Fixes
+#### Base
+
+* Security; updated a dependency to avoid security issue.
+* Data backup: added 'archived' field in backup.
+
+#### Account
+
+* Move line mass entry: fixed the value of VAT system on change of account.
+* ACCOUNTING EXPORT: fixed balances in balance panel not updated during FEC export.
+* Move line: fixed the value of tax lines and VAT system on move lines generated from invoices.
+* Journal: empty the sequence field when changing company to avoid inconsistency.
+* Fixed asset: fixed wrong full derogatory entry generated when disposing an asset.
+* Move line: fixed the value of VAT system if empty on account.
+* Invoice/Consolidate: fixed the consolidate process when two moveline have different analytic
+* ACCOUNTING REPORT : Fixed an error when opening general balance in excel format
+
+#### Bank Payment
+
+* Bank reconciliation : fixed moves ongoing reconciled line balance to uses only one company.
+
+#### Cash Management
+
+* Forecast recap line: fixed the missing bank details in case of sale/purchase order with time tables.
+
+#### Human Resource
+
+* Move line: fixed the value of tax lines and VAT system on move lines generated from expenses.
+* Expense: fixed wrong hidden condition on refuse button.
+
+#### Production
+
+* Manufacturing order: fixed missing quantity in to consumed product list.
+* Manuf order: fixed planned end date when generating a manufacturing order from a production order with 'At the latest' scheduling.
+
+#### Sale
+
+* Sale order: fixed the stock location on change of partner.
+* Opportunity: generated quotations now correctly inherit the customer contact.
+* Sale order: added reverse charge process.
+
+#### Stock
+
+* Logistical form: fixed the domain filter on stock move to block realized stock moves when 'Realize stock moves upon parcel/pallet collection' is enabled.
+* Stock history line: fixed the number of decimals in quantity and price fields.
+* Stock : prohibited selection of product model in inventory, stock correction and stock details by product.
+* Stock correction: stock move now uses product average price when stock location line is not present
+
+#### Supply Chain
+
+* Mrp forecast: fixed domain filter on stock location in order to be able to select the right storable product.
+* Sale order: fixed shipment mode not filled when creating directly from partner form.
+* Purchase order: fixed the value of 'Invoiced Amount (excl. tax)' in case of multi-order invoices.
+* Invoice: fixed cut off dates when the interco invoice is generated.
+* Mrp forecast: fixed domain filter on stock location in order to be able to select the right stock location.
+
+
+### Developer
+
+#### Base
+
+Upgraded the tika-core dependency to 3.2.3 to fix an important security breach.
+
+#### Account
+
+- Added MoveLineRecordService in the MoveLineCreateServiceImpl constructor
+
+---
+
+Changed action record name 'action-journal-record-reset-valid-account-set' to 'action-journal-record-reset-values'
+
+#### Sale
+
+-- migration script to add column reverse_charged in sale_order_line_tax table
+
+ALTER TABLE sale_sale_order_line_tax ADD COLUMN IF NOT EXISTS reverse_charged boolean;
+
+#### Supply Chain
+
+-- migration script to update amount_invoiced in Purchase Order table
+UPDATE purchase_purchase_order PurchaseOrder
+SET amount_invoiced =
+(
+    CASE
+      WHEN PurchaseOrder.currency <> Company.currency
+       AND PurchaseOrder.company_ex_tax_total <> 0
+      THEN PurchaseOrder.ex_tax_total *
+          (
+              (
+                  COALESCE((
+                      SELECT SUM(InvoiceLine.company_ex_tax_total)
+                      FROM account_invoice_line InvoiceLine
+                      JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+                      WHERE ((InvoiceLine.purchase_order_line IN (
+                          SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
+                      ) OR Invoice.purchase_order = PurchaseOrder.id)
+                      AND Invoice.operation_type_select = 3
+                      AND Invoice.status_select = 3
+                  ), 0)
+                  -
+                  COALESCE((
+                      SELECT SUM(InvoiceLine.company_ex_tax_total)
+                      FROM account_invoice_line InvoiceLine
+                      JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+                      WHERE ((InvoiceLine.purchase_order_line IN (
+                          SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
+                      ) OR Invoice.purchase_order = PurchaseOrder.id)
+                      AND Invoice.operation_type_select = 4
+                      AND Invoice.status_select = 3
+                  ), 0)
+              ) / PurchaseOrder.company_ex_tax_total
+          )
+      ELSE
+          COALESCE((
+              SELECT SUM(InvoiceLine.company_ex_tax_total)
+              FROM account_invoice_line InvoiceLine
+              JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+              WHERE ((InvoiceLine.purchase_order_line IN (
+                  SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
+              ) OR Invoice.purchase_order = PurchaseOrder.id)
+              AND Invoice.operation_type_select = 3
+              AND Invoice.status_select = 3
+          ), 0)
+          -
+          COALESCE((
+              SELECT SUM(InvoiceLine.company_ex_tax_total)
+              FROM account_invoice_line InvoiceLine
+              JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+              WHERE ((InvoiceLine.purchase_order_line IN (
+                  SELECT id FROM purchase_purchase_order_line WHERE purchase_order = PurchaseOrder.id) AND Invoice.purchase_order IS NULL
+              ) OR Invoice.purchase_order = PurchaseOrder.id)
+              AND Invoice.operation_type_select = 4
+              AND Invoice.status_select = 3
+          ), 0)
+    END
+)
+FROM base_company Company
+WHERE PurchaseOrder.company = Company.id;
+
 ## [7.2.56] (2025-12-04)
 
 ### Fixes
@@ -2496,6 +2637,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.57]: https://github.com/axelor/axelor-open-suite/compare/v7.2.56...v7.2.57
 [7.2.56]: https://github.com/axelor/axelor-open-suite/compare/v7.2.55...v7.2.56
 [7.2.55]: https://github.com/axelor/axelor-open-suite/compare/v7.2.54...v7.2.55
 [7.2.54]: https://github.com/axelor/axelor-open-suite/compare/v7.2.53...v7.2.54
