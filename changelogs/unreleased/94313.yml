@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed cut off dates when the interco invoice is generated."
+module: axelor-supplychain
