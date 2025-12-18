@@ -38,22 +38,24 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.Group;
+import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
-import com.axelor.db.Query;
+import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -153,17 +155,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   }
 
   @Override
-  public void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
-    if (move == null) {
-      return;
-    }
-
-    String domain = moveViewHelperService.filterPartner(move.getCompany(), move.getJournal());
-
-    this.addAttr("partner", "domain", domain, attrsMap);
-  }
-
-  @Override
   public void addPaymentModeDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
     if (move == null || move.getCompany() == null) {
       return;
@@ -198,55 +189,48 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
   }
 
   @Override
-  public void addTradingNameDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
-    if (move == null || move.getCompany() == null) {
-      return;
-    }
-
-    String tradingNameIds =
-        CollectionUtils.isEmpty(move.getCompany().getTradingNameList())
-            ? "0"
-            : move.getCompany().getTradingNameList().stream()
-                .map(TradingName::getId)
-                .map(Objects::toString)
-                .collect(Collectors.joining(","));
-
-    String domain = String.format("self.id IN (%s)", tradingNameIds);
-
-    this.addAttr("tradingName", "domain", domain, attrsMap);
-  }
-
-  @Override
   public void addJournalDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
     if (move == null || move.getCompany() == null) {
       return;
     }
 
-    Query<Journal> journalQuery = journalRepository.all();
-    String query = "self.company.id = :company AND self.statusSelect = :statusSelect";
+    StringBuilder domain = new StringBuilder();
+
+    domain
+        .append("self.company.id = ")
+        .append(move.getCompany().getId())
+        .append(" AND self.statusSelect = ")
+        .append(JournalRepository.STATUS_ACTIVE);
+
     BankDetails companyBankDetails = move.getCompanyBankDetails();
     if (companyBankDetails != null && companyBankDetails.getJournal() != null) {
-      query += " AND (self.id = :journal OR self.journalType.technicalTypeSelect != :journalType)";
-      journalQuery.bind("journal", companyBankDetails.getJournal());
-      journalQuery.bind("journalType", JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY);
+      domain
+          .append(" AND (self.id = ")
+          .append(companyBankDetails.getJournal().getId())
+          .append(" OR self.journalType.technicalTypeSelect != ")
+          .append(JournalTypeRepository.TECHNICAL_TYPE_SELECT_TREASURY)
+          .append(")");
     }
-    List<Journal> journalList =
-        journalQuery
-            .filter(query)
-            .bind("company", move.getCompany().getId())
-            .bind("statusSelect", JournalRepository.STATUS_ACTIVE)
-            .fetch();
-    String journalIdList =
-        journalList.stream()
-            .filter(
-                journal ->
-                    UserRoleToolService.checkUserRolesPermissionIncludingEmpty(
-                        AuthUtils.getUser(), journal.getAuthorizedRoleSet()))
-            .map(Journal::getId)
-            .map(Objects::toString)
-            .collect(Collectors.joining(","));
 
-    this.addAttr("journal", "domain", String.format("self.id IN (%s)", journalIdList), attrsMap);
+    User user = AuthUtils.getUser();
+    Set<Role> userRoles = new HashSet<>();
+    if (user != null) {
+      if (user.getRoles() != null) {
+        userRoles.addAll(user.getRoles());
+      }
+      Group group = user.getGroup();
+      if (group != null && group.getRoles() != null) {
+        userRoles.addAll(group.getRoles());
+      }
+    }
+    if (ObjectUtils.notEmpty(userRoles)) {
+      domain
+          .append(" AND (self.authorizedRoleSet IS EMPTY OR self.authorizedRoleSet.id IN (")
+          .append(StringHelper.getIdListString(userRoles))
+          .append("))");
+    }
+
+    this.addAttr("journal", "domain", domain.toString(), attrsMap);
   }
 
   @Override
@@ -456,19 +440,6 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
                 .allMatch(InvoiceTerm::getIsPaid);
 
     this.addAttr("thirdPartyPayerPartner", "readonly", isReadonly, attrsMap);
-  }
-
-  @Override
-  public void addCompanyDomain(Move move, Map<String, Map<String, Object>> attrsMap) {
-    String companyIds =
-        companyRepository.all().filter("self.accountConfig IS NOT NULL").fetch().stream()
-            .map(Company::getId)
-            .map(Objects::toString)
-            .collect(Collectors.joining(","));
-
-    String domain = String.format("self.id IN (%s)", companyIds.isEmpty() ? "0" : companyIds);
-
-    this.addAttr("company", "domain", domain, attrsMap);
   }
 
   @Override

@@ -26,7 +26,7 @@
       onChange="action-account-move-line-mass-entry-attrs-set-description,action-move-line-mass-entry-record-set-is-edited"
       readonly="false" requiredIf="$isDescriptionRequired"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
-      onSelect="action-move-line-method-partner-onselect"
+      onSelect="action-move-line-attrs-partner-onselect"
       onChange="action-move-line-mass-entry-group-on-change-partner" width="200" canEdit="false"
       readonly="false">
       <hilite if="$contains(fieldsErrorList,'partner:'+partner.name)" background="danger"/>
@@ -39,7 +39,7 @@
       <hilite if="$contains(fieldsErrorList,'paymentMode:')" background="danger"/>
     </field>
     <field name="account" form-view="account-form" grid-view="account-grid"
-      onSelect="action-move-line-method-account-onselect" width="200" canEdit="false"
+      onSelect="action-move-line-attrs-account-onselect" width="200" canEdit="false"
       onChange="action-move-line-mass-entry-method-account-onchange"/>
     <field name="taxLineSet" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
