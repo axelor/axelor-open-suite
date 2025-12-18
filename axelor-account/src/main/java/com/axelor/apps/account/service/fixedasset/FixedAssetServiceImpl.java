@@ -392,12 +392,6 @@ public class FixedAssetServiceImpl implements FixedAssetService {
               fixedAsset, disposalDate, disposalAmount, transferredReason, comments, typeSelect);
     }
 
-    String depreciationPlanSelect = fixedAsset.getDepreciationPlanSelect();
-    if (correspondingFixedAssetLine != null
-        && StringUtils.notEmpty(depreciationPlanSelect)
-        && depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
-      generateDerogatoryCessionMove(fixedAsset, disposalDate);
-    }
     fixedAssetLineMoveService.generateDisposalMove(
         fixedAsset, correspondingFixedAssetLine, transferredReason, disposalDate);
     return correspondingFixedAssetLine;
