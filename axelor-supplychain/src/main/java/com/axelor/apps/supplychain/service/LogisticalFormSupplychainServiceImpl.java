@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.stock.db.LogisticalForm;
@@ -25,12 +26,20 @@ import com.axelor.apps.stock.db.LogisticalFormLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.service.LogisticalFormServiceImpl;
+import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
 import java.math.BigDecimal;
 
 public class LogisticalFormSupplychainServiceImpl extends LogisticalFormServiceImpl
     implements LogisticalFormSupplychainService {
+
+  @Inject
+  public LogisticalFormSupplychainServiceImpl(
+      ProductRepository productRepository, StockConfigService stockConfigService) {
+    super(productRepository, stockConfigService);
+  }
 
   @Override
   protected boolean testForDetailLine(StockMoveLine stockMoveLine) {

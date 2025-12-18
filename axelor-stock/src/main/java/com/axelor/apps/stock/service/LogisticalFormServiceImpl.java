@@ -20,6 +20,7 @@ package com.axelor.apps.stock.service;
 
 import com.axelor.app.internal.AppFilter;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -74,7 +75,15 @@ import org.apache.commons.lang3.tuple.Pair;
 
 public class LogisticalFormServiceImpl implements LogisticalFormService {
 
-  @Inject ProductRepository productRepository;
+  protected ProductRepository productRepository;
+  protected StockConfigService stockConfigService;
+
+  @Inject
+  public LogisticalFormServiceImpl(
+      ProductRepository productRepository, StockConfigService stockConfigService) {
+    this.productRepository = productRepository;
+    this.stockConfigService = stockConfigService;
+  }
 
   @Override
   public void addDetailLines(LogisticalForm logisticalForm, StockMove stockMove)
@@ -509,15 +518,22 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
       return "self IS NULL";
     }
 
+    Company company = logisticalForm.getCompany();
     List<String> domainList = new ArrayList<>();
 
     domainList.add("self.company = :company");
     domainList.add("self.partner = :deliverToCustomerPartner");
     domainList.add(String.format("self.typeSelect = %d", StockMoveRepository.TYPE_OUTGOING));
-    domainList.add(
-        String.format(
-            "self.statusSelect in (%d, %d)",
-            StockMoveRepository.STATUS_PLANNED, StockMoveRepository.STATUS_REALIZED));
+    if (stockConfigService
+        .getStockConfig(company)
+        .getRealizeStockMovesUponParcelPalletCollection()) {
+      domainList.add(String.format("self.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
+    } else {
+      domainList.add(
+          String.format(
+              "self.statusSelect in (%d, %d)",
+              StockMoveRepository.STATUS_PLANNED, StockMoveRepository.STATUS_REALIZED));
+    }
     domainList.add("COALESCE(self.fullySpreadOverLogisticalFormsFlag, FALSE) = FALSE");
     if (logisticalForm.getStockLocation() != null) {
       domainList.add("self.stockMoveLineList.fromStockLocation = :stockLocation");
