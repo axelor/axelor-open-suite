@@ -392,8 +392,6 @@ public class IntercoServiceImpl implements IntercoService {
         Beans.get(PartnerPriceListService.class)
             .getDefaultPriceList(intercoPartner, priceListRepositoryType);
     String invoicePartnerTaxNbr = invoice.getPartnerTaxNbr();
-    LocalDate cutOffStartDate = invoice.getCutOffStartDate();
-    LocalDate cutOffEndDate = invoice.getCutOffEndDate();
 
     TaxNumber intercoCompanyTaxNumber =
         Beans.get(TaxNumberRepository.class)
@@ -441,10 +439,6 @@ public class IntercoServiceImpl implements IntercoService {
             .map(TaxNumber::getTaxNbr)
             .orElse(""));
     intercoInvoice.setFiscalPosition(intercoPartner.getFiscalPosition());
-    if (cutOffStartDate != null && cutOffEndDate != null) {
-      intercoInvoice.setCutOffStartDate(cutOffStartDate);
-      intercoInvoice.setCutOffEndDate(cutOffEndDate);
-    }
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     if (invoice.getInvoiceLineList() != null) {
