@@ -1,0 +1,6 @@
+---
+title: "Move: fixed performance issues on move creation."
+module: axelor-account
+developer : |
+  - Script to remove action deleted from the sources :
+  DELETE FROM meta_action WHERE name IN ('action-move-partner-onselect','action-move-method-trading-name-onselect','action-move-method-company-onselect','action-move-line-method-account-onselect','action-move-line-method-partner-onselect');
