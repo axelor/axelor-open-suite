@@ -1,3 +1,43 @@
+## [8.2.33] (2025-12-18)
+
+### Fixes
+#### Base
+
+* Security; updated a dependency to avoid security issue.
+
+#### Account
+
+* Move line mass entry: fixed the value of VAT system on change of account.
+* ACCOUNTING EXPORT: fixed balances in balance panel not updated during FEC export.
+* Fixed asset: fixed wrong full derogatory entry generated when disposing an asset.
+* Accounting batch: fixed doubtful customer batch issue by not removing old invoice terms.
+* Invoice/Consolidate: fixed the consolidate process when two moveline have different analytic
+* InvoiceLine/MoveLine: fill the invoiceline information on the non deductible tax moveline.
+
+#### Sale
+
+* Sale order: fixed the stock location on change of partner.
+
+#### Stock
+
+* Logistical form: fixed the domain filter on stock move to block realized stock moves when 'Realize stock moves upon parcel/pallet collection' is enabled.
+* Stock history line: fixed the number of decimals in quantity and price fields.
+
+#### Supply Chain
+
+* Stock details by product: fixed duplicated entries in projected stock chart.
+
+
+### Developer
+
+#### Base
+
+Upgraded the tika-core dependency to 3.2.3 to fix an important security breach.
+
+#### Account
+
+- Added the AccountManagementService in the MoveLineCreateServiceImpl constructor.
+
 ## [8.2.32] (2025-12-04)
 
 ### Fixes
@@ -2158,6 +2198,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.33]: https://github.com/axelor/axelor-open-suite/compare/v8.2.32...v8.2.33
 [8.2.32]: https://github.com/axelor/axelor-open-suite/compare/v8.2.31...v8.2.32
 [8.2.31]: https://github.com/axelor/axelor-open-suite/compare/v8.2.30...v8.2.31
 [8.2.30]: https://github.com/axelor/axelor-open-suite/compare/v8.2.29...v8.2.30
