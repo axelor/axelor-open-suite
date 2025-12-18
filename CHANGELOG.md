@@ -1,3 +1,25 @@
+## [8.1.38] (2025-12-18)
+
+### Fixes
+#### Base
+
+* Security; updated a dependency to avoid security issue.
+
+#### Sale
+
+* Sale order: fixed the stock location on change of partner.
+
+#### Stock
+
+* Logistical form: fixed the domain filter on stock move to block realized stock moves when 'Realize stock moves upon parcel/pallet collection' is enabled.
+
+
+### Developer
+
+#### Base
+
+Upgraded the tika-core dependency to 3.2.3 to fix an important security breach.
+
 ## [8.1.37] (2025-11-26)
 
 ### Fixes
@@ -1804,6 +1826,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.38]: https://github.com/axelor/axelor-open-suite/compare/v8.1.37...v8.1.38
 [8.1.37]: https://github.com/axelor/axelor-open-suite/compare/v8.1.36...v8.1.37
 [8.1.36]: https://github.com/axelor/axelor-open-suite/compare/v8.1.35...v8.1.36
 [8.1.35]: https://github.com/axelor/axelor-open-suite/compare/v8.1.34...v8.1.35
