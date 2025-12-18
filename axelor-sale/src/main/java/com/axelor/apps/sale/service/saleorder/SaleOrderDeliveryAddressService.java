@@ -32,4 +32,6 @@ public interface SaleOrderDeliveryAddressService {
 
   void checkSaleOrderLinesDeliveryAddress(List<SaleOrderLine> saleOrderLineList)
       throws AxelorException;
+
+  List<SaleOrderLine> updateSaleOrderLinesDeliveryAddressStr(SaleOrder saleOrder);
 }
