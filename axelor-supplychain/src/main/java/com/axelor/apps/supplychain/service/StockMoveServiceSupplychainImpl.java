@@ -45,6 +45,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
+import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -57,10 +58,13 @@ import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Template;
@@ -170,8 +174,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
     LOG.debug("Stock move realization: {} ", stockMove.getStockMoveSeq());
     String newStockSeq = super.realizeStockMove(stockMove, check);
-    AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
 
+    AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
     Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
     if (ObjectUtils.notEmpty(saleOrderSet)) {
       SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
@@ -221,50 +226,67 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   protected void updateFixedAssets(StockMove stockMove) {
-    List<StockMoveLine> stockMoveLineList =
-        stockMove.getStockMoveLineList().stream()
-            .filter(stockMoveLine -> stockMoveLine.getTrackingNumber() != null)
-            .collect(Collectors.toList());
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      FixedAsset fixedAsset =
-          fixedAssetRepository
-              .all()
-              .filter("self.trackingNumber = :trackingNumber")
-              .bind("trackingNumber", stockMoveLine.getTrackingNumber())
-              .fetchOne();
-      if (fixedAsset != null) {
-        fixedAsset.setStockLocation(stockMoveLine.getToStockLocation());
-      }
+    if (stockMove == null || stockMove.getId() == null) {
+      return;
     }
+
+    Query<StockMoveLine> query =
+        stockMoveLineRepo
+            .all()
+            .filter(
+                "self.stockMove.id = :stockMoveId AND self.trackingNumber IS NOT NULL AND self.id > :lastSeenId")
+            .bind("stockMoveId", stockMove.getId())
+            .order("id");
+
+    BatchProcessorHelper.builder()
+        .build()
+        .<StockMoveLine>forEachByQuery(
+            query,
+            sml -> {
+              FixedAsset fixedAsset =
+                  fixedAssetRepository
+                      .all()
+                      .filter("self.trackingNumber = :trackingNumber")
+                      .bind("trackingNumber", sml.getTrackingNumber())
+                      .fetchOne();
+              if (fixedAsset != null) {
+                fixedAsset.setStockLocation(sml.getToStockLocation());
+              }
+            });
   }
 
   @Override
   public void detachNonDeliveredStockMoveLines(StockMove stockMove) {
-    if (stockMove.getStockMoveLineList() == null) {
+    if (stockMove == null || stockMove.getId() == null) {
       return;
     }
-    stockMove.getStockMoveLineList().stream()
-        .filter(line -> line.getRealQty().signum() == 0)
-        .forEach(line -> line.setSaleOrderLine(null));
+    Query<StockMoveLine> query =
+        stockMoveLineRepo
+            .all()
+            .filter(
+                "self.stockMove.id = :stockMoveId AND self.realQty = 0 AND self.id > :lastSeenId")
+            .bind("stockMoveId", stockMove.getId())
+            .order("id");
+
+    BatchProcessorHelper.builder()
+        .build()
+        .<StockMoveLine>forEachByQuery(query, line -> line.setSaleOrderLine(null));
   }
 
   @Override
   public void cancel(StockMove stockMove) throws AxelorException {
 
     cancelStockMove(stockMove);
+    StockConfig stockConfig = stockConfigService.getStockConfig(stockMove.getCompany());
     Boolean supplierArrivalCancellationAutomaticMail =
-        stockConfigService
-            .getStockConfig(stockMove.getCompany())
-            .getSupplierArrivalCancellationAutomaticMail();
+        stockConfig.getSupplierArrivalCancellationAutomaticMail();
     if (!supplierArrivalCancellationAutomaticMail
         || stockMove.getIsReversion()
         || stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING) {
       return;
     }
     Template supplierCancellationMessageTemplate =
-        stockConfigService
-            .getStockConfig(stockMove.getCompany())
-            .getSupplierArrivalCancellationMessageTemplate();
+        stockConfig.getSupplierArrivalCancellationMessageTemplate();
     super.sendMailForStockMove(stockMove, supplierCancellationMessageTemplate);
   }
 

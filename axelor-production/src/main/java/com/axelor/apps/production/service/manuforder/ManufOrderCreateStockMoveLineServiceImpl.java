@@ -195,23 +195,26 @@ public class ManufOrderCreateStockMoveLineServiceImpl
       StockLocation toStockLocation)
       throws AxelorException {
 
-    return stockMoveLineService.createStockMoveLine(
-        prodProduct.getProduct(),
-        (String)
-            productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
-        (String)
-            productCompanyService.get(
-                prodProduct.getProduct(), "description", stockMove.getCompany()),
-        qty,
-        costPrice,
-        costPrice,
-        prodProduct.getUnit(),
-        stockMove,
-        inOrOutType,
-        false,
-        BigDecimal.ZERO,
-        fromStockLocation,
-        toStockLocation);
+    StockMoveLine stockMoveLine =
+        stockMoveLineService.createStockMoveLine(
+            prodProduct.getProduct(),
+            (String)
+                productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
+            (String)
+                productCompanyService.get(
+                    prodProduct.getProduct(), "description", stockMove.getCompany()),
+            qty,
+            costPrice,
+            costPrice,
+            prodProduct.getUnit(),
+            stockMove,
+            inOrOutType,
+            false,
+            BigDecimal.ZERO,
+            fromStockLocation,
+            toStockLocation);
+    stockMoveLine.getStockMove().addStockMoveLineListItem(stockMoveLine);
+    return stockMoveLine;
   }
 
   /**
