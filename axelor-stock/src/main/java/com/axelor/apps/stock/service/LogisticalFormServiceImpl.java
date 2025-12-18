@@ -79,8 +79,16 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         domainList.add("self.partner = :deliverToCustomerPartner");
       }
     }
-
-    domainList.add(String.format("self.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
+    if (stockConfigService
+        .getStockConfig(company)
+        .getRealizeStockMovesUponParcelPalletCollection()) {
+      domainList.add(String.format("self.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
+    } else {
+      domainList.add(
+          String.format(
+              "self.statusSelect in (%d, %d)",
+              StockMoveRepository.STATUS_PLANNED, StockMoveRepository.STATUS_REALIZED));
+    }
     domainList.add("COALESCE(self.fullySpreadOverLogisticalFormsFlag, FALSE) = FALSE");
     if (logisticalForm.getStockLocation() != null) {
       domainList.add("self.stockMoveLineList.fromStockLocation = :stockLocation");

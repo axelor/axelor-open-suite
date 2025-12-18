@@ -1,0 +1,3 @@
+---
+title: "Logistical form: fixed the domain filter on stock move to block realized stock moves when 'Realize stock moves upon parcel/pallet collection' is enabled."
+module: axelor-stock
