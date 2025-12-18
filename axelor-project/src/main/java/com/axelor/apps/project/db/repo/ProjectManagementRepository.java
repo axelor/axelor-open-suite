@@ -70,7 +70,6 @@ public class ProjectManagementRepository extends ProjectRepository {
 
   @Override
   public Project save(Project project) {
-
     AppProject appProject = Beans.get(AppProjectService.class).getAppProject();
 
     try {

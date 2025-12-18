@@ -749,11 +749,16 @@
       expr="eval: (project?.projectTaskCategorySet !=  null &amp;&amp; project?.projectTaskCategorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectTaskCategorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
   </action-attrs>
 
+  <!-- filter to show only users that are members of the project -->
   <action-attrs name="action-project-task-attrs-project-assigned-to-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain"
       expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN(${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
       for="assignedTo"/>
+
+    <attribute name="domain"
+      expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() > 0) ? &quot;self.id IN(${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
+      for="assignedEmployees"/>
   </action-attrs>
 
   <action-attrs name="action-project-task-attrs-parent-task-configurations"

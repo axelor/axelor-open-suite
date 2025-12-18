@@ -757,7 +757,8 @@
     <view type="form" name="business-project-task-form"/>
     <view-param name="show-toolbar" value="true"/>
     <view-param name="popup" value="reload"/>
-    <domain>self.project.id in (:_projectIds)</domain>
+    <domain>self.project.id in (:_projectIds) AND (self.isTemplate = false OR self.isTemplate IS
+      NULL)</domain>
     <context if="id == null" name="_projectIds" expr="eval:[0]"/>
     <context if="id != null &amp;&amp; !isShowPhasesElements" name="_projectIds"
       expr="eval:[id]"/>
@@ -794,11 +795,13 @@
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
   </action-view>
 
+  <!-- MGM: Update domain filter to filter out template tasks -->
   <action-view name="action-view-show-business-project-task" title="Project Tasks"
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="grid" name="business-project-task-project-grid"/>
     <view type="form" name="business-project-task-form"/>
-    <domain>self.project.id = :_id</domain>
+    <domain>self.project.id = :_id AND (self.isTemplate = false OR self.isTemplate IS NULL)</domain>
+    <!-- <domain>self.project.id = :_id </domain> -->
     <context name="_id" expr="eval: id"/>
   </action-view>
 

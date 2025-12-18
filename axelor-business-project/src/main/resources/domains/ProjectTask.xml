@@ -69,8 +69,16 @@
     <decimal name="totalCosts" title="Total cost" readonly="true"/>
     <decimal name="invoicingProgress" title="Invoicing progress"/>
 
+    <!-- MGM -->
     <datetime name="startTime" title="Start time"/>
     <datetime name="endTime" title="End time"/>
+
+    <!-- MGM This fields are added to help with the workflow of creating task automatically -->
+    <string name="templateTaskId" title="Template task id"/>
+    <boolean name="isTemplate" title="Template task" default="false"/>
+    <many-to-many name="assignedEmployees" ref="com.axelor.auth.db.User"
+      title="Assigned employees"/>
+
 
     <extra-code>
 			<![CDATA[

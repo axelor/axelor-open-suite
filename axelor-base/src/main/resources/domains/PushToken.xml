@@ -13,7 +13,7 @@
     <datetime name="lastUsedOn"/>
 
     <track>
-      <field name="user"/>
+      <field name="employee"/>
       <field name="token"/>
       <field name="isActive"/>
     </track>

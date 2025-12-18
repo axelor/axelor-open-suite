@@ -399,8 +399,16 @@
         onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true"
         form-view="user-form" grid-view="user-grid"
         onChange="action-project-task-group-assigned-to-on-change"/>
+
+      <!-- MGM - Open template task for current task if it was created from a template -->
+      <button name="viewTemplateBtn" title="View Template Task" colSpan="4"
+        showIf="templateTaskId &amp;&amp; !isTemplate" onClick="action-project-task-view-template"/>
       <field name="invoicingProgress" readonly="true" colSpan="4" showIf="invoicingType == 4"/>
       <field name="description" colSpan="12" widget="html"/>
+
+      <field name="isTemplate" hidden="true"/>
+      <field name="templateTaskId" hidden="true"/>
+      <field name="assignedEmployees" hidden="true"/>
       <!-- </panel> -->
       <!-- <panel-include view="incl-customized-field-panel-form"/> -->
     </panel>

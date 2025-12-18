@@ -33,16 +33,17 @@ public class TaskReportServiceImpl implements TaskReportService {
     List<TaskMemberReport> taskMemberReports = taskReport.getTaskMemberReports();
     log.info("Found {} task member reports", taskMemberReports.size());
 
-    // If no task member reports exist, not all tasks reported
+    // If no task member reports exist, no tasks reported
     if (taskMemberReports == null || taskMemberReports.isEmpty()) {
       return false;
     }
 
-    // Get unique reported task IDs
+    // Get unique reported task IDs, skip template tasks
     Set<Long> reportedTaskIds =
         taskMemberReports.stream()
             .map(TaskMemberReport::getTask)
             .filter(Objects::nonNull)
+                .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
             .map(ProjectTask::getId)
             .filter(Objects::nonNull)
             .collect(Collectors.toSet());
@@ -65,9 +66,11 @@ public class TaskReportServiceImpl implements TaskReportService {
       return false;
     }
 
-    // Get all task Ids for project to use in comparision.
+    // Get all task Ids for project to use in comparision. skip template taks
     Set<Long> allProjectTaskIds =
-        projectTasks.stream().map(ProjectTask::getId).collect(Collectors.toSet());
+        projectTasks.stream()
+                .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
+                .map(ProjectTask::getId).collect(Collectors.toSet());
 
     if (allProjectTaskIds == null || allProjectTaskIds.isEmpty()) {
       return false;

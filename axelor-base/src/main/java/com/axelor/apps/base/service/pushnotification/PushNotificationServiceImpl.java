@@ -124,9 +124,11 @@ public class PushNotificationServiceImpl implements PushNotificationService {
       updateLastUsed(token);
 
     } catch (Exception e) {
-      LOG.warn("Failed to send push notification to user {} " +
-              "for push token with id {}: {}",
-              user.getFullName(), pushTokenId, formatErrorMessage(e));
+      LOG.warn(
+          "Failed to send push notification to user {} " + "for push token with id {}: {}",
+          user.getFullName(),
+          pushTokenId,
+          formatErrorMessage(e));
 
       LOG.debug("Full stack trace: ", e);
       handleSendError(token, e);

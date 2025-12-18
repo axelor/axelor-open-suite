@@ -407,11 +407,11 @@
     </panel>
   </form>
 
-  <action-validate name="action-timesheet-line-validate-date">
-    <error message="Start time must be before or at end time and on the same date"
-      if="startTime != null &amp;&amp; endTime != null &amp;&amp; startTime.isAfter(endTime)"
-      action="action-timesheet-line-reset-invalid-time"/>
-  </action-validate>
+   <action-validate name="action-timesheet-line-validate-date">
+   <error message="Start time must be before or at end time and on the same date"
+   if="startTime != null &amp;&amp; endTime != null &amp;&amp; startTime.isAfter(endTime)"
+   action="action-timesheet-line-reset-invalid-time"/>
+   </action-validate>
 
   <action-record name="action-timesheet-line-set-date-and-duration"
     model="com.axelor.apps.hr.db.TimesheetLine">
