@@ -45,13 +45,17 @@ class TestSequenceService extends BaseTest {
     SequenceRepository sequenceRepo = mock(SequenceRepository.class);
     SequenceVersionGeneratorService sequenceVersionGeneratorService =
         mock(SequenceVersionGeneratorService.class);
+    SequenceReservationService sequenceReservationService = mock(SequenceReservationService.class);
+    SequenceComputationService sequenceComputationService = mock(SequenceComputationService.class);
 
     sequenceService =
         new SequenceService(
             sequenceVersionRepository,
             appBaseService,
             sequenceRepo,
-            sequenceVersionGeneratorService);
+            sequenceVersionGeneratorService,
+            sequenceReservationService,
+            sequenceComputationService);
   }
 
   @Test

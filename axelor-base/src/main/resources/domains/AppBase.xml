@@ -98,6 +98,10 @@
     <boolean name="checkExistingSequenceOnGeneration"
       title="Check existing sequence on generation" default="true"/>
 
+    <integer name="sequenceIncrementTimeout" title="Sequence increment timeout (seconds)"
+      default="5" min="1" max="60"
+      help="Maximum time to wait for sequence increment in isolated transaction. Default is 5 seconds."/>
+
     <boolean name="manageMultiBanks" title="Manage multi banks"/>
 
     <boolean name="manageProductVariants" title="Manage product variants"/>
@@ -258,6 +262,7 @@
       <field name="passwordChangedTemplate" on="UPDATE"/>
       <field name="generatePartnerSequence" on="UPDATE"/>
       <field name="checkExistingSequenceOnGeneration" on="UPDATE"/>
+      <field name="sequenceIncrementTimeout" on="UPDATE"/>
       <field name="storeStreets" on="UPDATE"/>
       <field name="fixerApiKey" on="UPDATE"/>
       <field name="isFixerAPIPaid" on="UPDATE"/>

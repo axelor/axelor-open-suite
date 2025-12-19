@@ -1,0 +1,80 @@
+---
+title: "Sequence: added reserved sequence management system to address deadlock issues."
+module: axelor-base
+developer: |
+  Added new entity ReservedSequence to track sequence reservations with three statuses:
+  PENDING (0), CONFIRMED (1), RELEASED (2).
+
+  New services added:
+  - SequenceIncrementExecutor: executes sequence increments in isolated transactions
+  - SequenceReservationService: manages sequence reservations with transaction synchronization
+  - SequenceComputationService: computes sequence numbers (pure logic, no DB access)
+  - ReservedSequenceCleanupService: cleans up orphaned reservations
+
+  New batch added: Reserved sequence cleanup
+
+  New configuration in AppBase:
+  - sequenceIncrementTimeout: timeout in seconds for sequence increment (default: 5)
+
+  This feature can require a new base batch and a scheduler. 
+  There are init datas on the ticket PR for it : https://github.com/axelor/axelor-open-suite/pull/15416/files
+  Please add this to your instance and use the scheduler every day by default.
+
+  Database migration required - see SQL script below.
+
+  ```sql
+  -- Create new table BASE_RESERVED_SEQUENCE
+  create table if not exists base_reserved_sequence
+  (
+  id                  bigint    not null primary key,
+  archived            boolean,
+  import_id           varchar(255) unique,
+  import_origin       varchar(255),
+  process_instance_id varchar(255),
+  version             integer,
+  created_on          timestamp,
+  updated_on          timestamp,
+  attrs               jsonb,
+  caller_class        varchar(255),
+  caller_field        varchar(255),
+  generated_sequence  text      not null,
+  reserved_at         timestamp not null,
+  reserved_num        bigint    not null,
+  status              integer,
+  created_by          bigint references auth_user,
+  updated_by          bigint references auth_user,
+  sequence            bigint    not null references base_sequence,
+  sequence_version    bigint    not null references base_sequence_version
+  );
+  
+  create index if not exists base_reserved_sequence_sequence_idx
+  on base_reserved_sequence (sequence);
+  
+  create index if not exists base_reserved_sequence_sequence_version_idx
+  on base_reserved_sequence (sequence_version);
+  
+  create index if not exists idx_reserved_seq_seq_version_status
+  on base_reserved_sequence (sequence, sequence_version, status);
+  
+  create index if not exists idx_reserved_seq_status_reserved_at
+  on base_reserved_sequence (status, reserved_at);
+  
+  -- Add new column to studio_app_base
+  alter table studio_app_base
+  add if not exists sequence_increment_timeout integer
+  constraint studio_app_base_sequence_increment_timeout_check
+  check ((sequence_increment_timeout >= 1) AND (sequence_increment_timeout <= 60));
+  
+  -- Add new columns to base_batch
+  alter table base_base_batch
+  add if not exists orphan_reservation_timeout_minutes integer
+  constraint base_base_batch_orphan_reservation_timeout_minutes_check
+  check (orphan_reservation_timeout_minutes >= 1);
+  alter table base_base_batch
+  add if not exists confirmed_reservation_retention_days integer
+  constraint base_base_batch_confirmed_reservation_retention_days_check
+  check (confirmed_reservation_retention_days >= 1);
+  alter table base_base_batch
+  add if not exists delete_old_confirmed_reservations boolean;
+  ```
+
