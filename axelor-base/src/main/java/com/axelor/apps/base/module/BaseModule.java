@@ -173,6 +173,14 @@ import com.axelor.apps.base.service.address.AddressTemplateLineViewService;
 import com.axelor.apps.base.service.address.AddressTemplateLineViewServiceImpl;
 import com.axelor.apps.base.service.address.AddressTemplateService;
 import com.axelor.apps.base.service.address.AddressTemplateServiceImpl;
+import com.axelor.apps.base.service.administration.ReservedSequenceCleanupService;
+import com.axelor.apps.base.service.administration.ReservedSequenceCleanupServiceImpl;
+import com.axelor.apps.base.service.administration.SequenceComputationService;
+import com.axelor.apps.base.service.administration.SequenceComputationServiceImpl;
+import com.axelor.apps.base.service.administration.SequenceIncrementExecutor;
+import com.axelor.apps.base.service.administration.SequenceIncrementExecutorImpl;
+import com.axelor.apps.base.service.administration.SequenceReservationService;
+import com.axelor.apps.base.service.administration.SequenceReservationServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorQueryService;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorQueryServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorService;
@@ -427,6 +435,10 @@ public class BaseModule extends AxelorModule {
     bind(SequenceVersionGeneratorService.class).to(SequenceVersionGeneratorServiceImpl.class);
     bind(SequenceVersionGeneratorQueryService.class)
         .to(SequenceVersionGeneratorQueryServiceImpl.class);
+    bind(SequenceIncrementExecutor.class).to(SequenceIncrementExecutorImpl.class);
+    bind(SequenceReservationService.class).to(SequenceReservationServiceImpl.class);
+    bind(SequenceComputationService.class).to(SequenceComputationServiceImpl.class);
+    bind(ReservedSequenceCleanupService.class).to(ReservedSequenceCleanupServiceImpl.class);
     bind(TranslationRestService.class).to(TranslationRestServiceImpl.class);
     bind(DataBackupService.class).to(DataBackupServiceImpl.class);
     bind(AnonymizeService.class).to(AnonymizeServiceImpl.class);
