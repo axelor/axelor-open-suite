@@ -55,7 +55,11 @@ public interface SequenceComputationService {
    * @throws AxelorException if computation fails (e.g., Groovy error)
    */
   String computeSequenceNumber(
-      SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate, Model model, Long nextNum)
+      SequenceVersion sequenceVersion,
+      Sequence sequence,
+      LocalDate refDate,
+      Model model,
+      Long nextNum)
       throws AxelorException;
 
   /**
@@ -111,8 +115,7 @@ public interface SequenceComputationService {
    * @return the transformed string
    * @throws AxelorException if letters type is null or unsupported
    */
-  String applyCase(String result, SequenceLettersTypeSelect lettersType)
-      throws AxelorException;
+  String applyCase(String result, SequenceLettersTypeSelect lettersType) throws AxelorException;
 
   /**
    * Converts a number to a base-26 letter representation.

@@ -67,13 +67,7 @@ class SequenceComputationServiceTest {
   // Using verified expected values from TestSequenceService
 
   @ParameterizedTest
-  @CsvSource({
-    "1, 3, AAA",
-    "26, 3, AAZ",
-    "27, 3, ABA",
-    "676, 3, AZZ",
-    "677, 3, BAA"
-  })
+  @CsvSource({"1, 3, AAA", "26, 3, AAZ", "27, 3, ABA", "676, 3, AZZ", "677, 3, BAA"})
   void testGetSequenceValue_LettersUppercase(long nextNum, int padding, String expected)
       throws AxelorException {
     Sequence sequence = createSequence(SequenceTypeSelect.LETTERS, padding);
@@ -87,11 +81,7 @@ class SequenceComputationServiceTest {
   // Tests for getSequenceValue with LETTERS type (lowercase)
 
   @ParameterizedTest
-  @CsvSource({
-    "1, 3, aaa",
-    "27, 3, aba",
-    "677, 3, baa"
-  })
+  @CsvSource({"1, 3, aaa", "27, 3, aba", "677, 3, baa"})
   void testGetSequenceValue_LettersLowercase(long nextNum, int padding, String expected)
       throws AxelorException {
     Sequence sequence = createSequence(SequenceTypeSelect.LETTERS, padding);
@@ -106,15 +96,7 @@ class SequenceComputationServiceTest {
   // Using verified test cases from TestSequenceService
 
   @ParameterizedTest
-  @CsvSource({
-    "1, A",
-    "26, Z",
-    "27, BA",
-    "676, ZZ",
-    "677, BAA",
-    "17576, ZZZ",
-    "17577, BAAA"
-  })
+  @CsvSource({"1, A", "26, Z", "27, BA", "676, ZZ", "677, BAA", "17576, ZZZ", "17577, BAAA"})
   void testFindNextLetterSequence(long nextNum, String expected) throws AxelorException {
     Sequence sequence = mock(Sequence.class);
     when(sequence.getSequenceLettersTypeSelect()).thenReturn(SequenceLettersTypeSelect.UPPERCASE);

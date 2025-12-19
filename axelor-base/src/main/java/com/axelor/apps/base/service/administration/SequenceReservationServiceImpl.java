@@ -109,8 +109,7 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
       Sequence sequence, LocalDate refDate, Class<?> objectClass, String fieldName, Model model)
       throws AxelorException {
 
-    log.trace(
-        "Reserving sequence number for sequence {} at date {}", sequence.getId(), refDate);
+    log.trace("Reserving sequence number for sequence {} at date {}", sequence.getId(), refDate);
 
     // Step 1: Try to reuse a RELEASED sequence
     ReservedSequence released = findReleasedSequence(sequence, refDate);
@@ -139,8 +138,12 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
     // Step 6: Create reservation in an isolated transaction
     Long reservationId =
         createReservation(
-            sequence, sequenceVersion, incrementResult.getNextNum(), sequenceNumber,
-            objectClass, fieldName);
+            sequence,
+            sequenceVersion,
+            incrementResult.getNextNum(),
+            sequenceNumber,
+            objectClass,
+            fieldName);
 
     // Step 7: Register transaction synchronization for commit/rollback handling
     registerTransactionCallback(reservationId);
@@ -153,7 +156,8 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
   @Override
   public void confirmReservation(Long reservationId) {
     ReservedSequence reservation = reservedSequenceRepository.find(reservationId);
-    if (reservation != null && reservation.getStatus() == ReservedSequenceRepository.STATUS_PENDING) {
+    if (reservation != null
+        && reservation.getStatus() == ReservedSequenceRepository.STATUS_PENDING) {
       reservation.setStatus(ReservedSequenceRepository.STATUS_CONFIRMED);
       reservedSequenceRepository.save(reservation);
       log.trace("Confirmed reservation {}", reservationId);
@@ -163,7 +167,8 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
   @Override
   public void releaseReservation(Long reservationId) {
     ReservedSequence reservation = reservedSequenceRepository.find(reservationId);
-    if (reservation != null && reservation.getStatus() == ReservedSequenceRepository.STATUS_PENDING) {
+    if (reservation != null
+        && reservation.getStatus() == ReservedSequenceRepository.STATUS_PENDING) {
       reservation.setStatus(ReservedSequenceRepository.STATUS_RELEASED);
       reservedSequenceRepository.save(reservation);
       log.debug("Released reservation {}", reservationId);
@@ -185,7 +190,8 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
     }
 
     // Find oldest RELEASED reservation for this version with lock timeout
-    return JPA.em()
+    return JPA
+        .em()
         .createQuery(
             "SELECT rs FROM ReservedSequence rs "
                 + "WHERE rs.sequence = :sequence "
@@ -272,26 +278,25 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
         () -> {
           TenantAware tenantAware =
               new TenantAware(
-                      () -> {
-                        try {
-                          ReservedSequence reservation = new ReservedSequence();
-                          reservation.setSequence(JPA.find(Sequence.class, sequenceId));
-                          reservation.setSequenceVersion(
-                                  JPA.find(SequenceVersion.class, versionId));
-                          reservation.setReservedNum(reservedNum);
-                          reservation.setGeneratedSequence(sequenceNumber);
-                          reservation.setReservedAt(LocalDateTime.now());
-                          reservation.setStatus(ReservedSequenceRepository.STATUS_PENDING);
-                          reservation.setCallerClass(callerClass);
-                          reservation.setCallerField(fieldName);
+                  () -> {
+                    try {
+                      ReservedSequence reservation = new ReservedSequence();
+                      reservation.setSequence(JPA.find(Sequence.class, sequenceId));
+                      reservation.setSequenceVersion(JPA.find(SequenceVersion.class, versionId));
+                      reservation.setReservedNum(reservedNum);
+                      reservation.setGeneratedSequence(sequenceNumber);
+                      reservation.setReservedAt(LocalDateTime.now());
+                      reservation.setStatus(ReservedSequenceRepository.STATUS_PENDING);
+                      reservation.setCallerClass(callerClass);
+                      reservation.setCallerField(fieldName);
 
-                          JPA.save(reservation);
+                      JPA.save(reservation);
 
-                          resultRef.set(reservation.getId());
-                        } catch (Exception e) {
-                          exceptionRef.set(e);
-                        }
-                      });
+                      resultRef.set(reservation.getId());
+                    } catch (Exception e) {
+                      exceptionRef.set(e);
+                    }
+                  });
           tenantAware.start();
           tenantAware.join();
           return null;
@@ -316,7 +321,8 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
 
     // Check if an exception was captured in the nested lambda
     if (exceptionRef.get() != null) {
-      log.error("Exception in reservation creation for sequence {}", sequenceId, exceptionRef.get());
+      log.error(
+          "Exception in reservation creation for sequence {}", sequenceId, exceptionRef.get());
       throw new RuntimeException("Failed to create sequence reservation", exceptionRef.get());
     }
 

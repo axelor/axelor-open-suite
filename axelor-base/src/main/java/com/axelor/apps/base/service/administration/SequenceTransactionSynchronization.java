@@ -81,25 +81,23 @@ public class SequenceTransactionSynchronization implements Synchronization {
     try {
       TenantAware tenantAware =
           new TenantAware(
-                  () -> {
-                    try {
-                      if (status == Status.STATUS_COMMITTED) {
-                        log.trace("Confirming reservation {}", reservationId);
-                        reservationService.confirmReservation(reservationId);
-                      } else {
-                        // Any other status (ROLLED_BACK, UNKNOWN, etc.) means the transaction
-                        // failed - keep as DEBUG since rollback is noteworthy
-                        log.debug("Releasing reservation {} due to rollback", reservationId);
-                        reservationService.releaseReservation(reservationId);
-                      }
-                    } catch (Exception innerEx) {
-                      // Log inner exception but don't rethrow - allow outer catch to handle
-                      log.error(
-                          "Error in JPA transaction for reservation {} update",
-                          reservationId,
-                          innerEx);
-                    }
-                  });
+              () -> {
+                try {
+                  if (status == Status.STATUS_COMMITTED) {
+                    log.trace("Confirming reservation {}", reservationId);
+                    reservationService.confirmReservation(reservationId);
+                  } else {
+                    // Any other status (ROLLED_BACK, UNKNOWN, etc.) means the transaction
+                    // failed - keep as DEBUG since rollback is noteworthy
+                    log.debug("Releasing reservation {} due to rollback", reservationId);
+                    reservationService.releaseReservation(reservationId);
+                  }
+                } catch (Exception innerEx) {
+                  // Log inner exception but don't rethrow - allow outer catch to handle
+                  log.error(
+                      "Error in JPA transaction for reservation {} update", reservationId, innerEx);
+                }
+              });
       tenantAware.start();
       tenantAware.join();
     } catch (Exception e) {

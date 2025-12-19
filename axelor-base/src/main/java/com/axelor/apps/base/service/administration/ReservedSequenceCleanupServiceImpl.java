@@ -91,7 +91,9 @@ public class ReservedSequenceCleanupServiceImpl implements ReservedSequenceClean
     LocalDateTime cutoffTime = LocalDateTime.now().minusDays(retentionDays);
 
     log.info(
-        "Deleting CONFIRMED reservations older than {} days (cutoff: {})", retentionDays, cutoffTime);
+        "Deleting CONFIRMED reservations older than {} days (cutoff: {})",
+        retentionDays,
+        cutoffTime);
 
     int deletedCount =
         JPA.em()

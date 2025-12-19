@@ -14,11 +14,13 @@
     <long name="reservedNum" title="Reserved Number" required="true"/>
     <string name="generatedSequence" title="Generated Sequence" required="true" large="true"/>
     <datetime name="reservedAt" title="Reserved At" required="true"/>
-    <integer name="status" title="Status" selection="reserved.sequence.status.select" default="0"/>
+    <integer name="status" title="Status" selection="reserved.sequence.status.select"
+      default="0"/>
     <string name="callerClass" title="Caller Class"/>
     <string name="callerField" title="Caller Field"/>
 
-    <index columns="sequence,sequenceVersion,status" name="idx_reserved_seq_seq_version_status"/>
+    <index columns="sequence,sequenceVersion,status"
+      name="idx_reserved_seq_seq_version_status"/>
     <index columns="status,reservedAt" name="idx_reserved_seq_status_reserved_at"/>
 
     <extra-code><![CDATA[

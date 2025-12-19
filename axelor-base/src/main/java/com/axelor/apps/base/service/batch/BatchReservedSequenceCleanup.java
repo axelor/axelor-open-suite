@@ -24,11 +24,10 @@ import com.axelor.apps.base.db.repo.ReservedSequenceRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import com.google.inject.persist.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,8 +95,7 @@ public class BatchReservedSequenceCleanup extends BatchStrategy {
           releasedCount++;
           incrementDone();
         } catch (Exception e) {
-          TraceBackService.trace(
-              e, "Reserved Sequence Cleanup - Release", batch.getId());
+          TraceBackService.trace(e, "Reserved Sequence Cleanup - Release", batch.getId());
           incrementAnomaly();
         }
       }
@@ -158,8 +156,7 @@ public class BatchReservedSequenceCleanup extends BatchStrategy {
           deletedCount++;
           incrementDone();
         } catch (Exception e) {
-          TraceBackService.trace(
-              e, "Reserved Sequence Cleanup - Delete", batch.getId());
+          TraceBackService.trace(e, "Reserved Sequence Cleanup - Delete", batch.getId());
           incrementAnomaly();
         }
       }

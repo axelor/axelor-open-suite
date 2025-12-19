@@ -156,7 +156,7 @@ public class SequenceComputationServiceImpl implements SequenceComputationServic
   public String findNextAlphanumericSequence(Long nextNum, String pattern) {
     int patternLength = pattern.length();
     StringBuilder sequence = new StringBuilder();
-      for (int i = patternLength - 1; i >= 0; i--) {
+    for (int i = patternLength - 1; i >= 0; i--) {
       int value;
       switch (pattern.charAt(i)) {
         case 'N':

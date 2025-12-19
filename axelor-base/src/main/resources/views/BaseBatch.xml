@@ -43,7 +43,8 @@
       <field name="countrySet" canNew="false" canEdit="false" form-view="country-form"
         grid-view="country-grid" colSpan="12" hideIf="allCountries"/>
     </panel>
-    <panel name="reservedSequenceCleanupPanel" title="Reserved sequence cleanup" showIf="actionSelect == 5">
+    <panel name="reservedSequenceCleanupPanel" title="Reserved sequence cleanup"
+      showIf="actionSelect == 5">
       <field name="orphanReservationTimeoutMinutes" colSpan="6"/>
       <field name="confirmedReservationRetentionDays" colSpan="6"/>
       <field name="deleteOldConfirmedReservations" widget="boolean-switch" colSpan="6"/>
