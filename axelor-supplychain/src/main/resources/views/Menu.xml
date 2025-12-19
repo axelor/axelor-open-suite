@@ -302,8 +302,8 @@
     <view type="form" name="pricing-rule-form"/>
   </action-view>
 
-  <menuitem name="supplychain-un-code-all" parent="base-referential-root-product-settings"
-    title="UN codes" action="supplychain.un.code.all" order="1000"/>
+  <menuitem name="supplychain-un-code-all" parent="referential-conf" title="UN codes"
+    action="supplychain.un.code.all" order="1700"/>
 
   <action-view name="supplychain.un.code.all" title="UN codes"
     model="com.axelor.apps.supplychain.db.UNCode">
