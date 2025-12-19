@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.service.InventoryService;
+import com.axelor.apps.stock.service.inventory.InventoryService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.Map;

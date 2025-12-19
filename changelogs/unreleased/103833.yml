@@ -1,5 +1,0 @@
----
-title: "InvoiceLine/MoveLine: fill the invoiceline information on the non deductible tax moveline."
-module: axelor-account
-developer : |
-  - Added the AccountManagementService in the MoveLineCreateServiceImpl constructor.

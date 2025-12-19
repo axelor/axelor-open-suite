@@ -126,8 +126,8 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     Partner contact = new Partner();
     contact.setPartnerTypeSelect(PartnerRepository.PARTNER_TYPE_INDIVIDUAL);
     contact.setTitleSelect(jobApplication.getTitleSelect());
-    contact.setFirstName(jobApplication.getFirstName());
-    contact.setName(jobApplication.getLastName());
+    contact.setName(jobApplication.getFirstName());
+    contact.setFirstName(jobApplication.getLastName());
     contact.setIsContact(true);
     contact.setIsEmployee(true);
     contact.setFixedPhone(jobApplication.getFixedPhone());

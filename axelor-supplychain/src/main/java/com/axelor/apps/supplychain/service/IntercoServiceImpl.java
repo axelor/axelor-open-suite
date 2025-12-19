@@ -74,6 +74,7 @@ import jakarta.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -390,6 +391,8 @@ public class IntercoServiceImpl implements IntercoService {
         Beans.get(PartnerPriceListService.class)
             .getDefaultPriceList(intercoPartner, priceListRepositoryType);
     String invoicePartnerTaxNbr = invoice.getPartnerTaxNbr();
+    LocalDate cutOffStartDate = invoice.getCutOffStartDate();
+    LocalDate cutOffEndDate = invoice.getCutOffEndDate();
 
     TaxNumber intercoCompanyTaxNumber =
         Beans.get(TaxNumberRepository.class)
@@ -437,6 +440,10 @@ public class IntercoServiceImpl implements IntercoService {
             .map(TaxNumber::getTaxNbr)
             .orElse(""));
     intercoInvoice.setFiscalPosition(intercoPartner.getFiscalPosition());
+    if (cutOffStartDate != null && cutOffEndDate != null) {
+      intercoInvoice.setCutOffStartDate(cutOffStartDate);
+      intercoInvoice.setCutOffEndDate(cutOffEndDate);
+    }
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     if (invoice.getInvoiceLineList() != null) {
@@ -503,6 +510,10 @@ public class IntercoServiceImpl implements IntercoService {
         Beans.get(AccountManagementAccountService.class);
     InvoiceLineAnalyticService invoiceLineAnalyticService =
         Beans.get(InvoiceLineAnalyticService.class);
+
+    LocalDate cutOffStartDate = invoiceLine.getCutOffStartDate();
+    LocalDate cutOffEndDate = invoiceLine.getCutOffEndDate();
+
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             intercoInvoice,
@@ -535,6 +546,10 @@ public class IntercoServiceImpl implements IntercoService {
               List<AnalyticMoveLine> analyticMoveLineList =
                   invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
               analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
+            }
+            if (cutOffStartDate != null && cutOffEndDate != null) {
+              invoiceLine.setCutOffStartDate(cutOffStartDate);
+              invoiceLine.setCutOffEndDate(cutOffEndDate);
             }
             return List.of(invoiceLine);
           }

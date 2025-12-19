@@ -36,6 +36,7 @@ import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -135,8 +136,10 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
     StockMove stockMove = generateStockMove(stockCorrection);
     if (stockMove != null) {
+      stockCorrection = stockCorrectionRepository.find(stockCorrection.getId());
       stockCorrection.setStatusSelect(StockCorrectionRepository.STATUS_VALIDATED);
       stockCorrection.setValidationDateT(baseService.getTodayDateTime().toLocalDateTime());
+      stockCorrectionRepository.save(stockCorrection);
       return true;
     }
     return false;
@@ -194,8 +197,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
         stockMove);
 
     stockMoveService.plan(stockMove);
-    stockMoveService.copyQtyToRealQty(stockMove);
-    stockMoveService.realize(stockMove, false);
+    stockMoveService.copyQtyToRealQty(JpaModelHelper.ensureManaged(stockMove));
+    stockMoveService.realize(JpaModelHelper.ensureManaged(stockMove), false);
 
     return stockMove;
   }
@@ -234,6 +237,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(StockExceptionMessage.STOCK_CORRECTION_1));
     }
+    stockMove.addStockMoveLineListItem(stockMoveLine);
     if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
       stockMoveLine.setTrackingNumber(trackingNumber);
     }

@@ -98,7 +98,7 @@
         <field name="productCategory" grid-view="product-category-grid"
           form-view="product-category-form"/>
         <field name="product" grid-view="product-grid" form-view="product-form"
-          domain="self.dtype = 'Product'"/>
+          domain="self.dtype = 'Product' AND self.isModel = false"/>
         <field name="excludeOutOfStock" colSpan="3"/>
         <field name="includeObsolete" colSpan="3"/>
         <spacer name="includeObsoleteSpacer" colSpan="6"/>
@@ -118,7 +118,7 @@
         form-view="product-category-form"/>
       <field name="product" canEdit="false" onSelect="action-inventory-on-select-product"
         onChange="action-inventory-on-change-product" grid-view="product-grid"
-        form-view="product-form" domain="self.dtype = 'Product'"/>
+        form-view="product-form" domain="self.dtype = 'Product' AND self.isModel = false"/>
       <field name="excludeOutOfStock" colSpan="3"/>
       <field name="includeObsolete" colSpan="3"/>
       <spacer name="includeObsoleteSpacer" colSpan="6"/>
@@ -259,21 +259,22 @@
 
   <action-attrs name="action-inventory-on-select-product">
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory != null &amp;&amp; typeSelect == 2"/>
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.productCategory.id = ${productCategory.id} AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory != null &amp;&amp; typeSelect != 2"/>
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect == 2"/>
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.productFamily.id = ${productFamily.id} AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory == null &amp;&amp; productFamily != null &amp;&amp; typeSelect != 2"/>
     <attribute name="domain" for="product"
-      expr="eval:&quot;self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product'&quot;"
+      expr="eval:&quot;self.inventoryTypeSelect = :typeSelect AND self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect == 2"/>
-    <attribute name="domain" for="product" expr="eval:&quot;self.dtype = 'Product'&quot;"
+    <attribute name="domain" for="product"
+      expr="eval:&quot;self.dtype = 'Product' AND self.isModel = false &quot;"
       if="productCategory == null &amp;&amp; productFamily == null &amp;&amp; typeSelect != 2"/>
   </action-attrs>
 

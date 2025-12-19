@@ -32,7 +32,9 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.common.StringUtils;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -73,18 +75,34 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
 
   @Override
   public BigDecimal compute(StockMove stockMove) {
-    BigDecimal exTaxTotal = BigDecimal.ZERO;
-    if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
-      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-        exTaxTotal =
-            exTaxTotal.add(
-                stockMoveLine
-                    .getRealQty()
-                    .multiply(stockMoveLine.getUnitPriceUntaxed())
-                    .setScale(2, RoundingMode.HALF_UP));
-      }
+    if (stockMove == null || stockMove.getId() == null) {
+      return BigDecimal.ZERO;
     }
-    return exTaxTotal;
+
+    final BigDecimal[] runningTotal = {BigDecimal.ZERO};
+
+    Query<StockMoveLine> query =
+        stockMoveLineRepo
+            .all()
+            .filter("self.stockMove.id = :stockMoveId AND self.id > :lastSeenId")
+            .bind("stockMoveId", stockMove.getId())
+            .order("id");
+
+    BatchProcessorHelper batchHelper =
+        BatchProcessorHelper.builder().loggingEnabled(false).flushAfterBatch(false).build();
+
+    batchHelper.<StockMoveLine>forEachByQuery(
+        query,
+        stockMoveLine -> runningTotal[0] = runningTotal[0].add(computeLineAmount(stockMoveLine)));
+
+    return runningTotal[0];
+  }
+
+  protected BigDecimal computeLineAmount(StockMoveLine stockMoveLine) {
+    return stockMoveLine
+        .getRealQty()
+        .multiply(stockMoveLine.getUnitPriceUntaxed())
+        .setScale(2, RoundingMode.HALF_UP);
   }
 
   /**
