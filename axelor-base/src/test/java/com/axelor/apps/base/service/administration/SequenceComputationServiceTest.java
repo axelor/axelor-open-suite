@@ -96,10 +96,31 @@ class SequenceComputationServiceTest {
   // Using verified test cases from TestSequenceService
 
   @ParameterizedTest
-  @CsvSource({"1, A", "26, Z", "27, BA", "676, ZZ", "677, BAA", "17576, ZZZ", "17577, BAAA"})
-  void testFindNextLetterSequence(long nextNum, String expected) throws AxelorException {
+  @CsvSource({
+    "1, A",
+    "26, Z",
+    "27, BA",
+    "676, ZZ",
+    "677, BAA",
+    "17576, ZZZ",
+    "17577, BAAA",
+    "456976, ZZZZ",
+    "11881376, ZZZZZ"
+  })
+  void testFindNextLetterSequence_Uppercase(long nextNum, String expected) throws AxelorException {
     Sequence sequence = mock(Sequence.class);
     when(sequence.getSequenceLettersTypeSelect()).thenReturn(SequenceLettersTypeSelect.UPPERCASE);
+
+    String result = computationService.findNextLetterSequence(nextNum, sequence);
+
+    assertEquals(expected, result);
+  }
+
+  @ParameterizedTest
+  @CsvSource({"1, a", "27, ba", "677, baa", "17577, baaa", "456976, zzzz"})
+  void testFindNextLetterSequence_Lowercase(long nextNum, String expected) throws AxelorException {
+    Sequence sequence = mock(Sequence.class);
+    when(sequence.getSequenceLettersTypeSelect()).thenReturn(SequenceLettersTypeSelect.LOWERCASE);
 
     String result = computationService.findNextLetterSequence(nextNum, sequence);
 
@@ -124,6 +145,15 @@ class SequenceComputationServiceTest {
     assertThrows(
         IllegalArgumentException.class,
         () -> computationService.findNextLetterSequence(-1, sequence));
+  }
+
+  @Test
+  void testFindNextLetterSequence_NullLettersTypeThrowsException() {
+    Sequence sequence = mock(Sequence.class);
+    when(sequence.getSequenceLettersTypeSelect()).thenReturn(null);
+
+    // Throws AxelorException (or wrapping exception due to I18n initialization in test context)
+    assertThrows(Exception.class, () -> computationService.findNextLetterSequence(1, sequence));
   }
 
   // Tests for findNextAlphanumericSequence
