@@ -42,6 +42,12 @@
       <field name="countrySet" canNew="false" canEdit="false" form-view="country-form"
         grid-view="country-grid" colSpan="12" hideIf="allCountries"/>
     </panel>
+    <panel name="reservedSequenceCleanupPanel" title="Reserved sequence cleanup"
+      showIf="actionSelect == 5">
+      <field name="orphanReservationTimeoutMinutes" colSpan="6"/>
+      <field name="confirmedReservationRetentionDays" colSpan="6"/>
+      <field name="deleteOldConfirmedReservations" widget="boolean-switch" colSpan="6"/>
+    </panel>
 
     <panel name="informationPanel" title="Information">
       <field name="createdOn" title="Created on"/>
@@ -52,7 +58,7 @@
     </panel>
     <panel name="actionPanel" sidebar="true">
       <button name="runBatchBtn" title="Run batch" showIf="actionSelect >= 2"
-        readonlyIf="(actionSelect == 3 &amp;&amp; !passwordChangeActionSelect) || (actionSelect == 4 &amp;&amp; (countrySet == null || countrySet.length == 0) &amp;&amp; !allCountries) "
+        readonlyIf="(actionSelect == 3 &amp;&amp; !passwordChangeActionSelect) || (actionSelect == 4 &amp;&amp; (countrySet == null || countrySet.length == 0) &amp;&amp; !allCountries)"
         onClick="save,action-base-batch-method-run-batch"/>
     </panel>
   </form>
