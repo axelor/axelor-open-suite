@@ -94,10 +94,26 @@
   <input file="auth_user.csv" separator=";" type="com.axelor.auth.db.User"
     search="self.code = :code" call="com.axelor.auth.AuthService:encrypt"/>
 
-  <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"/>
-
   <input file="auth_role.csv" separator=";" type="com.axelor.auth.db.Role"
     search="self.name = :name"/>
+
+  <input file="base_baseBatch.csv" separator=";" type="com.axelor.apps.base.db.BaseBatch"
+    search="self.code = :code">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Code must not be null"/>
+    <bind column="actionSelect" to="actionSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.BaseBatch', 'actionSelect', actionSelect)"
+      check-message="Invalid actionSelect"/>
+    <bind column="orphanReservationTimeoutMinutes" to="orphanReservationTimeoutMinutes"/>
+    <bind column="confirmedReservationRetentionDays" to="confirmedReservationRetentionDays"/>
+    <bind column="deleteOldConfirmedReservations" to="deleteOldConfirmedReservations"/>
+  </input>
+
+  <input file="meta_schedule.csv" separator=";" type="com.axelor.meta.db.MetaSchedule"
+    search="self.importId = :importId">
+    <bind column="batchCode" to="batchCode"/>
+  </input>
 
   <input file="base_addressTemplate.csv" separator=";"
     type="com.axelor.apps.base.db.AddressTemplate" search="self.importId = :importId"/>
