@@ -407,7 +407,7 @@
     </panel>
   </form>
 
-  <action-validate name="action-timesheet-line-validate-date">
+  <action-validate name="action-timesheet-line-validate-start-time-and-end-time">
     <error message="Start time must be before or at end time and on the same date"
       if="startTime != null &amp;&amp; endTime != null &amp;&amp; startTime.isAfter(endTime)"
       action="action-timesheet-line-reset-invalid-time"/>
@@ -423,13 +423,13 @@
   </action-record>
 
   <action-group name="action-timesheet-line-validate-and-calculate">
-    <action name="action-timesheet-line-validate-date"/>
+    <action name="action-timesheet-line-validate-start-time-and-end-time"/>
     <action name="action-timesheet-line-set-date-and-duration"/>
     <action name="action-timesheet-line-method-set-stored-duration"/>
   </action-group>
 
   <action-group name="action-timesheet-line-group-on-save">
-    <action name="action-timesheet-line-validate-date"/>
+    <action name="action-timesheet-line-validate-start-time-and-end-time"/>
     <action name="action-timesheet-line-set-date-and-duration"/>
     <action name="action-timesheet-line-method-set-stored-duration"/>
     <action name="save"/>
@@ -465,7 +465,7 @@
   </action-group>
 
   <action-group name="action-timesheet-line-group-project-task-form-on-save">
-    <action name="action-timesheet-line-validate-date"/>
+    <action name="action-timesheet-line-validate-start-time-and-end-time"/>
     <action name="action-timesheet-line-set-date-and-duration"/>
     <action name="action-project-task-validate-check-timesheet-line-date"/>
     <action name="action-timesheet-line-attrs-set-duration-label"/>
