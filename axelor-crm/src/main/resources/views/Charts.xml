@@ -699,8 +699,8 @@
 			    country.name 		AS 	_country
 			FROM
 			  	crm_lead as self
-			LEFT JOIN
-	        	base_country as country ON self.primary_country = country.id
+			LEFT JOIN base_address as address ON self.address = address.id
+			LEFT JOIN base_country as country ON address.country = country.id
 	        WHERE
 	        	self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
 	    	GROUP BY
