@@ -1,2 +1,3 @@
-"active";"name";"job";"cron"
-"false";"Fetch currency conversion rates on every 5 minutes ";"com.axelor.apps.base.job.CurrencyConversionJob";"0 0/5 * * * ?"
+"importId";"active";"name";"job";"cron";"batchServiceSelect";"batchCode"
+1;"false";"Fetch currency conversion rates on every 5 minutes ";"com.axelor.apps.base.job.CurrencyConversionJob";"0 0/5 * * * ?";;
+2;"true";"Reserved sequence cleanup every day";"com.axelor.apps.base.job.BatchJob";"0 0 0 * * ?";"com.axelor.apps.base.service.batch.BaseBatchService";"RESERVED_SEQUENCE_CLEANUP"
