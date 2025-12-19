@@ -113,6 +113,13 @@
     <panel-tabs name="mainPanelTab">
       <panel-include view="incl-overview-project-task-panel-form"/>
 
+      <panel if="__user__.group.code == 'CUSTOM-PT'" name="taskReportsPanel"
+        title="Task Report">
+        <panel-dashlet name="taskReportsDashlet" title="Task Reports" colSpan="12"
+          action="action-task-report-task-dashlet" canNew="true" x-show-bars="true"
+          reload-dotted="true"/>
+      </panel>
+
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
         if="__config__.app.isApp('timesheet') &amp;&amp; __user__.group.code != 'CUSTOM-PM'"
         showIf="project.manageTimeSpent">
@@ -673,6 +680,20 @@
       if="_model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <context name="_project" expr="eval:__parent__"
       if="_model == 'com.axelor.apps.project.db.Project'"/>
+  </action-view>
+
+  <action-view name="action-task-report-task-dashlet"
+    model="com.axelor.apps.businessproject.db.TaskReport" title="Task Reports">
+    <view name="add-task-report-grid" type="grid"/>
+    <view name="task-report-preview-form" type="form"/>
+    <view-param name="show-toolbar" value="true"/>
+    <domain>
+      self.project != null
+      AND self.project.id = :projectId
+      AND :__user__ MEMBER OF
+      self.project.membersUserSet
+    </domain>
+    <context name="projectId" expr="eval: project?.id"/>
   </action-view>
 
   <action-record name="action-project-task-record-set-default"

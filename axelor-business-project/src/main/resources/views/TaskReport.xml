@@ -154,7 +154,7 @@
     <panel colSpan="12" canCollapse="true" collapseIf="false">
       <field name="task" title="Task" widget="Select"
         onChange="action-task-member-report-on-change-task" required="true"/>
-      <field name="employee" title="Employee"/>
+      <field name="employee" title="Employee" readonly="true"/>
       <field name="startTime" onChange="action-task-report-on-change-time"/>
       <field name="breakTimeMinutes" title="Break Time (minutes)"
         onChange="action-task-member-report-sync-minutes-to-hours,action-task-report-on-change-time"/>

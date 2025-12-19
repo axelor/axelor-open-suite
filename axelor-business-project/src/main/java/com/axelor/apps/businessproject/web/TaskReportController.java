@@ -111,16 +111,15 @@ public class TaskReportController {
 
   /** Filter tasks for task member report dropdown */
   public void filterTasksForMemberReport(ActionRequest request, ActionResponse response) {
-      User currentUser = AuthUtils.getUser();
+    User currentUser = AuthUtils.getUser();
 
-      TaskReport taskReport = request.getContext().getParent().asType(TaskReport.class);
+    TaskReport taskReport = request.getContext().getParent().asType(TaskReport.class);
 
-      TaskMemberReport currentReport = request.getContext().asType(TaskMemberReport.class);
-      Long currentTaskId = currentReport.getTask() != null ? currentReport.getTask().getId() : null;
+    TaskMemberReport currentReport = request.getContext().asType(TaskMemberReport.class);
+    Long currentTaskId = currentReport.getTask() != null ? currentReport.getTask().getId() : null;
 
-      String domain =
-          taskReportService.buildTaskDomainFilter(taskReport, currentTaskId, currentUser);
+    String domain = taskReportService.buildTaskDomainFilter(taskReport, currentTaskId, currentUser);
 
-      response.setAttr("task", "domain", domain);
+    response.setAttr("task", "domain", domain);
   }
 }
