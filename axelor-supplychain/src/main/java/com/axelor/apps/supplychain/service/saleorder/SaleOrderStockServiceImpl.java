@@ -56,6 +56,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
 import com.google.inject.persist.Transactional;
@@ -164,12 +165,15 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
       List<SaleOrderLine> saleOrderLineList = entry.getValue();
 
-      Optional<StockMove> stockMove =
+      Optional<StockMove> stockMoveOpt =
           createStockMove(saleOrder, deliveryAddressStr, estimatedDeliveryDate, saleOrderLineList);
-
-      stockMove.ifPresent(saleOrder::addStockMoveListItem);
-
-      stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
+      if (!stockMoveOpt.isPresent()) {
+        continue;
+      }
+      saleOrder = saleOrderRepository.find(saleOrder.getId());
+      StockMove stockMove = JPA.find(StockMove.class, stockMoveOpt.get().getId());
+      saleOrder.addStockMoveListItem(stockMove);
+      stockMoveList.add(stockMove.getId());
     }
     return stockMoveList;
   }
@@ -215,7 +219,12 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
                     .orElse(fromStockLocation);
           }
 
-          createStockMoveLine(stockMove, saleOrderLine, qty, fromStockLocation, toStockLocation);
+          StockMoveLine stockMoveLine =
+              createStockMoveLine(
+                  stockMove, saleOrderLine, qty, fromStockLocation, toStockLocation);
+          if (stockMoveLine != null) {
+            stockMoveLine.getStockMove().addStockMoveLineListItem(stockMoveLine);
+          }
         }
       }
     }

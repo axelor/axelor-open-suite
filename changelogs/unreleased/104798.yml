@@ -1,3 +1,0 @@
----
-title: "Manuf order: fixed planned end date when generating a manufacturing order from a production order with 'At the latest' scheduling."
-module: axelor-production

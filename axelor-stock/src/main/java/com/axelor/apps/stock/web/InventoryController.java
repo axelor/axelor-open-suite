@@ -32,9 +32,10 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
-import com.axelor.apps.stock.service.InventoryProductService;
-import com.axelor.apps.stock.service.InventoryService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.service.inventory.InventoryImportExportService;
+import com.axelor.apps.stock.service.inventory.InventoryProductService;
+import com.axelor.apps.stock.service.inventory.InventoryService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -46,6 +47,10 @@ import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Path;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import org.eclipse.birt.core.exception.BirtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,7 +106,8 @@ public class InventoryController {
       inventory = Beans.get(InventoryRepository.class).find(inventory.getId());
 
       String name = I18n.get("Inventory") + " " + inventory.getInventorySeq();
-      MetaFile metaFile = Beans.get(InventoryService.class).exportInventoryAsCSV(inventory);
+      MetaFile metaFile =
+          Beans.get(InventoryImportExportService.class).exportInventoryAsCSV(inventory);
 
       response.setView(
           ActionView.define(name)
@@ -123,7 +129,7 @@ public class InventoryController {
           Beans.get(InventoryRepository.class)
               .find(request.getContext().asType(Inventory.class).getId());
 
-      Path filePath = Beans.get(InventoryService.class).importFile(inventory);
+      Path filePath = Beans.get(InventoryImportExportService.class).importFile(inventory);
       response.setInfo(
           String.format(
               I18n.get(StockExceptionMessage.INVENTORY_8), filePath.getFileName().toString()));
@@ -168,6 +174,7 @@ public class InventoryController {
   }
 
   public void validateInventory(ActionRequest request, ActionResponse response) {
+    final Instant startInstant = Instant.now();
     try {
       Long id = request.getContext().asType(Inventory.class).getId();
       Inventory inventory = Beans.get(InventoryRepository.class).find(id);
@@ -175,6 +182,12 @@ public class InventoryController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    } finally {
+      final Duration duration = Duration.between(startInstant, Instant.now());
+      final String durationTime =
+          LocalTime.MIN.plusSeconds(duration.getSeconds()).format(DateTimeFormatter.ISO_LOCAL_TIME);
+
+      logger.info("Validate inventory completed in {}", durationTime);
     }
   }
 
@@ -201,6 +214,7 @@ public class InventoryController {
   }
 
   public void fillInventoryLineList(ActionRequest request, ActionResponse response) {
+    final Instant startInstant = Instant.now();
     try {
       Long inventoryId = (Long) request.getContext().get("id");
       if (inventoryId != null) {
@@ -219,6 +233,11 @@ public class InventoryController {
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    } finally {
+      final Duration duration = Duration.between(startInstant, Instant.now());
+      final String durationTime =
+          LocalTime.MIN.plusSeconds(duration.getSeconds()).format(DateTimeFormatter.ISO_LOCAL_TIME);
+      logger.info("Fill inventory lines completed in {}", durationTime);
     }
   }
 
