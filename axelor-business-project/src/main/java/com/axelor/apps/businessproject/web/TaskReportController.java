@@ -2,11 +2,14 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
 import com.axelor.apps.businessproject.db.repo.TaskReportRepository;
 import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -20,6 +23,7 @@ import com.google.inject.Singleton;
 public class TaskReportController {
 
   @Inject private ExtraExpenseLineRepository extraExpenseLineRepo;
+  private final TaskReportService taskReportService = Beans.get(TaskReportService.class);
 
   public void previewTaskReport(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -91,8 +95,7 @@ public class TaskReportController {
   public void setReportedAllProjectTaskFlag(ActionRequest request, ActionResponse response) {
     TaskReport taskReport = request.getContext().asType(TaskReport.class);
 
-    boolean allTasksReported =
-        Beans.get(TaskReportService.class).checkIfAllTasksReported(taskReport);
+    boolean allTasksReported = taskReportService.checkIfAllTasksReported(taskReport);
 
     response.setValue("reportedAllTasks", allTasksReported);
   }
@@ -101,8 +104,23 @@ public class TaskReportController {
   public void updateReportedTaskCount(ActionRequest request, ActionResponse response) {
     TaskReport taskReport = request.getContext().asType(TaskReport.class);
 
-    String reportedTaskCount = Beans.get(TaskReportService.class).getReportedTaskCount(taskReport);
+    String reportedTaskCount = taskReportService.getReportedTaskCount(taskReport);
 
     response.setValue("reportedTaskCount", reportedTaskCount);
+  }
+
+  /** Filter tasks for task member report dropdown */
+  public void filterTasksForMemberReport(ActionRequest request, ActionResponse response) {
+      User currentUser = AuthUtils.getUser();
+
+      TaskReport taskReport = request.getContext().getParent().asType(TaskReport.class);
+
+      TaskMemberReport currentReport = request.getContext().asType(TaskMemberReport.class);
+      Long currentTaskId = currentReport.getTask() != null ? currentReport.getTask().getId() : null;
+
+      String domain =
+          taskReportService.buildTaskDomainFilter(taskReport, currentTaskId, currentUser);
+
+      response.setAttr("task", "domain", domain);
   }
 }

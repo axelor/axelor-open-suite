@@ -202,6 +202,11 @@
       method="updateReportedTaskCount"/>
   </action-method>
 
+  <action-method name="action-task-member-report-method-filter-tasks">
+    <call class="com.axelor.apps.businessproject.web.TaskReportController"
+      method="filterTasksForMemberReport"/>
+  </action-method>
+
   <!-- Action when project changes - autofill all related fields -->
   <action-record name="action-task-report-on-change-project"
     model="com.axelor.apps.businessproject.db.TaskReport">
@@ -291,12 +296,12 @@
   </action-group>
 
   <action-group name="action-task-member-report-group-on-new">
-    <action name="action-task-member-report-attrs-task-domain"/>
+    <action name="action-task-member-report-method-filter-tasks"/>
     <action name="action-task-member-report-record-default-start-time"/>
   </action-group>
 
   <action-group name="action-task-member-report-group-on-load">
-    <action name="action-task-member-report-attrs-task-domain"/>
+    <action name="action-task-member-report-method-filter-tasks"/>
     <action name="action-task-member-report-sync-hours-to-minutes"/>
   </action-group>
 

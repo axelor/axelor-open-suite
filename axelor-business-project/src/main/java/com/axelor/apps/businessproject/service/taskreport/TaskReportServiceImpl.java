@@ -4,6 +4,7 @@ import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.TaskReportRepository;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.slf4j.LoggerFactory;
 public class TaskReportServiceImpl implements TaskReportService {
 
   private static final Logger log = LoggerFactory.getLogger(TaskReportServiceImpl.class);
+  private static final String CUSTOM_PROJECT_TECHNICIAN_GROUP_CODE = "CUSTOM-PT";
 
   @Override
   public boolean checkIfAllTasksReported(TaskReport report) {
@@ -52,6 +54,46 @@ public class TaskReportServiceImpl implements TaskReportService {
     }
 
     return getReportedTaskIds(taskReport).size() + "/" + getAllProjectTaskIds(taskReport).size();
+  }
+
+  @Override
+  public String buildTaskDomainFilter(TaskReport report, Long currentTaskId, User user) {
+
+    TaskReport taskReport = fetchTaskReport(report);
+    if (taskReport == null) {
+      log.warn("TaskReport or Project is null, returning empty domain");
+      return "self.id IN (0)";
+    }
+
+    Long projectId = taskReport.getProject().getId();
+    String userGroupCode = user.getGroup() != null ? user.getGroup().getCode() : null;
+
+    Set<Long> reportedTaskIds = getReportedTaskIds(taskReport);
+
+    // when editng a task, the task being edited should not be filtered out
+    if (currentTaskId != null) {
+      reportedTaskIds.remove(currentTaskId);
+    }
+
+    // Build domain
+    StringBuilder domain = new StringBuilder("self.project.id = ");
+    domain.append(projectId);
+    domain.append(" AND (self.isTemplate = false OR self.isTemplate IS NULL)");
+
+    // Exclude already reported tasks
+    if (!reportedTaskIds.isEmpty()) {
+      String excludedIds =
+          reportedTaskIds.stream().map(String::valueOf).collect(Collectors.joining(","));
+      domain.append(" AND self.id NOT IN (").append(excludedIds).append(")");
+    }
+
+    // Filter by assigned user for project technician group
+    if (CUSTOM_PROJECT_TECHNICIAN_GROUP_CODE.equals(userGroupCode)) {
+      domain.append(" AND self.assignedTo.id = ").append(user.getId());
+    }
+
+    log.debug("Built task domain: {}", domain);
+    return domain.toString();
   }
 
   /** Validates report and fetch entity from repository */
