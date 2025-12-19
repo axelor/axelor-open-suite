@@ -164,9 +164,8 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     if (isCancel) {
       ratio = ratio.negate();
     }
-    if (move != null
-        && move.getInvoice() == null
-        && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+
+    if (move != null && !CollectionUtils.isEmpty(move.getMoveLineList())) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         updateAmountPaidOnBudgets(moveLine.getBudgetDistributionList(), ratio, move.getDate());
       }
