@@ -145,7 +145,8 @@
 
   <!-- MyHR related documents -->
   <menuitem name="my-documents" parent="my-hr-root" title="My Documents"
-    action="my.documents.view" order="600" icon="folder2-open" icon-background="#84429f"/>
+    action="my.documents.view" groups="admins" order="600" icon="folder2-open"
+    icon-background="#84429f"/>
 
   <action-view name="my.documents.view" title="My Documents"
     model="com.axelor.dms.db.DMSFile">
@@ -160,10 +161,10 @@
   <!-- RH -->
 
   <menuitem name="hr-root" order="-1600" title="HR" icon="diagram-3-fill"
-    if="__config__.app.isApp('employee')" icon-background="#84429f"/>
+    if="__config__.app.isApp('employee')" groups="CUSTOM-EM" icon-background="#84429f"/>
 
   <menuitem name="mgm-tm-hr-root" order="-1600" title="Approvals items"
-    icon="diagram-3-fill" groups="CUSTOM-TM" icon-background="#84429f"/>
+    icon="diagram-3-fill" groups="CUSTOM-TM, " icon-background="#84429f"/>
 
   <menuitem name="hr-root-emp-mgt" parent="hr-root" title="Employees Management"
     icon="person-vcard" icon-background="#84429f" order="100"/>

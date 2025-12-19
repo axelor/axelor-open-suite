@@ -126,10 +126,10 @@
 
   <!-- Appraisal menus -->
   <menuitem name="appraisal-root" parent="hr-root" title="Appraisals"
-    if="__config__.app.isApp('appraisal')" icon="fa-comments-o" icon-background="#84429f"
-    order="400"/>
+    if="__config__.app.isApp('appraisal')" groups="admins" icon="fa-comments-o"
+    icon-background="#84429f" order="400"/>
 
-  <menuitem name="appraisal-all-appraisals" title="Appraisals"
+  <menuitem name="appraisal-all-appraisals" title="Appraisals" groups="admins"
     action="appraisal.all.appraisals" parent="appraisal-root" order="100"/>
 
   <action-view name="appraisal.all.appraisals"
@@ -166,7 +166,7 @@
 
   <!-- MyHR -->
 
-  <menuitem name="my-hr-appraisal-all-appraisals" title="Appraisals"
+  <menuitem name="my-hr-appraisal-all-appraisals" title="Appraisals" groups="admins"
     action="appraisal.all.appraisals" parent="my-hr-root" order="600"
     if="__config__.app.isApp('appraisal')" icon="fa-comments-o" icon-background="#84429f"/>
 
