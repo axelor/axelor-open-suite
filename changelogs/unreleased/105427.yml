@@ -16,6 +16,10 @@ developer: |
   New configuration in AppBase:
   - sequenceIncrementTimeout: timeout in seconds for sequence increment (default: 5)
 
+  This feature can require a new base batch and a scheduler. 
+  There are init datas on the ticket PR for it : https://github.com/axelor/axelor-open-suite/pull/15416/files
+  Please add this to your instance and use the scheduler every day by default.
+
   Database migration required - see SQL script below.
 
   ```sql
@@ -73,3 +77,4 @@ developer: |
   alter table base_base_batch
   add if not exists delete_old_confirmed_reservations boolean;
   ```
+
