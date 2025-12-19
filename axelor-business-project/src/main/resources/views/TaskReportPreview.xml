@@ -7,8 +7,9 @@
   <!-- preview form -->
   <form name="task-report-preview-form" title="MGM Task Report Preview"
     model="com.axelor.apps.businessproject.db.TaskReport" width="large" canAttach="true"
-    canDelete="true" canEdit="true" canNew="false" onSave="action-task-report-set-flag"
-    onLoad="action-task-report-set-flag">
+    canDelete="true" canEdit="true" canNew="false"
+    onSave="action-task-report-set-flag, action-task-report-method-updated-reported-task-count"
+    onLoad="action-task-report-set-flag, action-task-report-method-updated-reported-task-count">
     <panel colSpan="12" name="mainPanel">
       <panel colSpan="12" showTitle="false" style="text-align:center;" showFrame="false">
         <label value="MGM TASK REPORT" style="font-size:18px; font-weight:bold;"/>
@@ -56,9 +57,12 @@
     canEdit="true" model="com.axelor.apps.businessproject.db.TaskReport">
     <panel title="Team Members Reports" showTitle="false" canCollapse="false"
       collapseIf="false" colSpan="12">
-      <field name="taskMemberReports" widget="list" form-view="task-member-report-form"
-        x-show-bars="true" colSpan="12" showTitle="false" canEdit="true"/>
-      <field name="totalWorkHours" colSpan="12" readonly="true"/>
+      <field name="reportedTaskCount" title="Tasks Reported" x-dirty="false" readonly="true"
+        colSpan="3"/>
+      <field name="taskMemberReports" showTitle="false" colSpan="12" widget="list"
+        canEdit="true" form-view="task-member-report-form" x-show-bars="true"
+        onChange="action-task-member-report-group-onChange"/>
+      <field name="totalWorkHours" readonly="true" colSpan="3"/>
     </panel>
   </form>
   <form title="Additional services" name="incl-task-report-additional-services-panel-preview"

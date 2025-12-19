@@ -6,4 +6,7 @@ public interface TaskReportService {
 
   /** Check if all tasks for a project habe been reported in this task report. */
   boolean checkIfAllTasksReported(TaskReport report);
+
+  /** Get reported task count per total project task */
+  String getReportedTaskCount(TaskReport report);
 }

@@ -96,4 +96,13 @@ public class TaskReportController {
 
     response.setValue("reportedAllTasks", allTasksReported);
   }
+
+  /** Update reported task count per total project task count */
+  public void updateReportedTaskCount(ActionRequest request, ActionResponse response) {
+    TaskReport taskReport = request.getContext().asType(TaskReport.class);
+
+    String reportedTaskCount = Beans.get(TaskReportService.class).getReportedTaskCount(taskReport);
+
+    response.setValue("reportedTaskCount", reportedTaskCount);
+  }
 }

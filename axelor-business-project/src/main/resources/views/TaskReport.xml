@@ -42,8 +42,8 @@
   <form name="task-report-form" title="Task Reports" canEdit="true"
     model="com.axelor.apps.businessproject.db.TaskReport"
     onNew="action-task-report-default, action-task-report-attrs-filter-projects"
-    onLoad="action-task-report-attrs-filter-projects, action-task-report-set-flag"
-    onSave="action-task-report-validate, action-task-report-set-flag" width="large">
+    onLoad="action-task-report-group-on-load" onSave="action-task-report-group-on-save"
+    width="large">
     <toolbar>
       <button name="viewTaskReportbtn" title="View Report" icon="fa-eye"
         onClick="save,action-task-report-method-preview"/>
@@ -63,11 +63,13 @@
 
         <!-- Panel for Task Member Reports -->
         <panel title="Team Members Reports" canCollapse="true" collapseIf="false" colSpan="12">
+          <field name="reportedTaskCount" title="Tasks Reported" x-dirty="false"
+            readonly="true" colSpan="3"/>
           <field name="taskMemberReports" widget="list" colSpan="12" canNew="true"
             canEdit="true" form-view="task-member-report-form"
-            onChange="action-update-total-work-hours"/>
+            onChange="action-task-member-report-group-onChange"/>
           <panel>
-            <field name="totalWorkHours"/>
+            <field name="totalWorkHours" colSpan="3"/>
           </panel>
         </panel>
 
@@ -195,6 +197,11 @@
       method="setReportedAllProjectTaskFlag"/>
   </action-method>
 
+  <action-method name="action-task-report-method-updated-reported-task-count">
+    <call class="com.axelor.apps.businessproject.web.TaskReportController"
+      method="updateReportedTaskCount"/>
+  </action-method>
+
   <!-- Action when project changes - autofill all related fields -->
   <action-record name="action-task-report-on-change-project"
     model="com.axelor.apps.businessproject.db.TaskReport">
@@ -271,6 +278,18 @@
       expr="eval: breakTimeHours != null ? Math.round(breakTimeHours * 60) : null"/>
   </action-record>
 
+  <action-group name="action-task-report-group-on-save">
+    <action name="action-task-report-validate"/>
+    <action name="action-task-report-set-flag"/>
+    <action name="action-task-report-method-updated-reported-task-count"/>
+  </action-group>
+
+  <action-group name="action-task-report-group-on-load">
+    <action name="action-task-report-attrs-filter-projects"/>
+    <action name="action-task-report-set-flag"/>
+    <action name="action-task-report-method-updated-reported-task-count"/>
+  </action-group>
+
   <action-group name="action-task-member-report-group-on-new">
     <action name="action-task-member-report-attrs-task-domain"/>
     <action name="action-task-member-report-record-default-start-time"/>
@@ -279,6 +298,11 @@
   <action-group name="action-task-member-report-group-on-load">
     <action name="action-task-member-report-attrs-task-domain"/>
     <action name="action-task-member-report-sync-hours-to-minutes"/>
+  </action-group>
+
+  <action-group name="action-task-member-report-group-onChange">
+    <action name="action-update-total-work-hours"/>
+    <action name="action-task-report-method-updated-reported-task-count"/>
   </action-group>
 
 </object-views>
