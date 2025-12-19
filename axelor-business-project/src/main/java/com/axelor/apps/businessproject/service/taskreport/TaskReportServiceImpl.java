@@ -3,6 +3,7 @@ package com.axelor.apps.businessproject.service.taskreport;
 import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.TaskReportRepository;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
@@ -152,5 +153,14 @@ public class TaskReportServiceImpl implements TaskReportService {
     log.info("Found {} project tasks", allProjectTaskIds.size());
 
     return allProjectTaskIds;
+  }
+
+  @Override
+  public void createTaskReport(Project project) {
+    TaskReport report = new TaskReport();
+    report.setProject(project);
+    report.setCustomer(project.getClientPartner());
+    report.setLocation(project.getCustomerAddress());
+    Beans.get(TaskReportRepository.class).save(report);
   }
 }
