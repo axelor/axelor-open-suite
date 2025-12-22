@@ -132,7 +132,8 @@
 
       <panel title="Tasks" name="taskPanel">
         <panel-dashlet name="projectTaskDashletPanel" title="Tasks" x-show-bars="true"
-          colSpan="12" action="action-project-view-show-project-task" height="200%" canSearch="true"/>
+          colSpan="12" action="action-project-view-show-project-task" height="200%" canSearch="true"
+          x-order="createdOn"/>
       </panel>
 
       <panel-include view="incl-wiki-panel-form"/>

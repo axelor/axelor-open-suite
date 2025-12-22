@@ -27,7 +27,7 @@
 
   <grid name="project-task-project-grid" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask" edit-icon="true"
-    orderBy="-priority.technicalTypeSelect">
+    orderBy="levelIndicator,-priority.technicalTypeSelect">
     <toolbar>
       <button name="newLineBtn" title="New line" icon="plus-lg"
         onClick="action-project-add-task"/>
