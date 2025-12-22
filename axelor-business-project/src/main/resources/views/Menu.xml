@@ -140,15 +140,15 @@
   </action-view>
 
   <!-- MGM a seperate menu to create the time spent -->
-  <menuitem name="business-project-task-create-time-spent" parent="menu-project-root"
+  <!-- <menuitem name="business-project-task-create-time-spent" parent="menu-project-root"
     groups="admins,CUSTOM-ACCOUNTANT,CUSTOM-PM,CUSTOM-EM,CUSTOM-OM, CUSTOM-TM"
     if="[ 'admins','CUSTOM-ACCOUNTANT','CUSTOM-PM','CUSTOM-EM','CUSTOM-OM', 'CUSTOM-TM'].any(g -> __user__.group.code.contains(g))"
-    order="302" title="Time Spent" action="business.project.task.create.time.spent"/>
+    order="302" title="Time Spent" action="business.project.task.create.time.spent"/> -->
 
   <menuitem name="business-project-task-create-time-spent-technician"
-    groups="CUSTOM-TM, CUSTOM-PT"
-    if="['CUSTOM-TM', 'CUSTOM-PT'].any(g -> __user__.group.code.contains(g))" order="350"
-    title="Time Spent" icon="fa-tasks" action="business.project.task.create.time.spent"/>
+    groups="CUSTOM-PT"
+    if="['CUSTOM-PT'].any(g -> __user__.group.code.contains(g))" order="350"
+    title="Task Time Spent" icon="fa-tasks" action="business.project.task.create.time.spent"/>
 
   <action-view name="business.project.task.create.time.spent"
     model="com.axelor.apps.hr.db.TimesheetLine" title="Time Spent">

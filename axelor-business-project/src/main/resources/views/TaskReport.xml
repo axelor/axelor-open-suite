@@ -5,7 +5,7 @@
 
   <!-- Grid View -->
   <grid name="task-report-grid" title="Task Reports"
-    model="com.axelor.apps.businessproject.db.TaskReport" canEdit="true" canNew="true"
+    model="com.axelor.apps.businessproject.db.TaskReport" canEdit="true" canNew="false"
     canArchive="true" canDelete="true" onNew="action-business-project-add-task-report">
     <field name="project" title="Order"/>
     <field name="customer.simpleFullName" title="Customer"/>
@@ -15,10 +15,11 @@
   </grid>
   <grid name="add-task-report-grid" title="Task Reports" canDelete="true" canNew="false"
     model="com.axelor.apps.businessproject.db.TaskReport">
-    <toolbar>
-      <button name="addNewTaskReport" title="New Task Report" css="btn-custom text-left"
-        icon="fa-plus" onClick="action-business-project-add-task-report"/>
-    </toolbar>
+    <!-- @nsalifu We do not need this button as task creation is automated from project creation -->
+    <!-- <toolbar> -->
+    <!-- <button name="addNewTaskReport" title="New Task Report" css="btn-custom text-left" -->
+    <!-- icon="fa-plus" onClick="action-business-project-add-task-report"/> -->
+    <!-- </toolbar> -->
     <field name="project" title="Order "/>
     <field name="customer.simpleFullName" title="Customer"/>
     <field name="taskDate" title="Date"/>
@@ -27,7 +28,7 @@
   </grid>
   <!-- Grid View for TaskMemberReport -->
   <grid name="task-member-report-grid" title="Team Members' Reports" canDelete="true"
-    canEdit="true" canNew="true" model="com.axelor.apps.businessproject.db.TaskMemberReport">
+    canEdit="true" canNew="false" model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <field name="employee" title="Employee"/>
     <field name="task" title="Task"/>
     <field name="taskCategories" widget="TagSelect"/>

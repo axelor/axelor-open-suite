@@ -76,7 +76,7 @@
 
   <!-- PROJECT CONFIGURATION -->
   <menuitem name="project-configurations" parent="menu-project-root" title="Configuration"
-    order="1200" icon="fa-cog"/>
+    groups="admins" order="1200" icon="fa-cog"/>
 
   <menuitem name="project-task-category" parent="project-configurations" title="Category"
     action="project.task.category" order="100"/>
