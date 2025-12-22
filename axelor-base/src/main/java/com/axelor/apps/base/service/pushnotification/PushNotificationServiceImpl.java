@@ -39,7 +39,7 @@ public class PushNotificationServiceImpl implements PushNotificationService {
     pushToken.setIsActive(true);
     pushToken.setLastUsedOn(LocalDateTime.now());
 
-    LOG.info("Registered token for user {}", pushToken.getEmployee());
+    LOG.info("Registered token for user {}", pushToken.getEmployee().getCode());
     return pushTokenRepo.save(pushToken);
   }
 
