@@ -423,7 +423,6 @@
     </panel>
   </form>
 
-  <action-validate name="action-timesheet-line-validate-date">
   <action-validate name="action-timesheet-line-validate-start-time-and-end-time">
     <error message="Start time must be before or at end time and on the same date"
       if="startTime != null &amp;&amp; endTime != null &amp;&amp; startTime.isAfter(endTime)"
