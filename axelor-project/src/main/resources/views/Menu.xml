@@ -54,6 +54,7 @@
     title="My Tasks" action="project.my.tasks"/>
   <action-view name="project.my.tasks" title="My Tasks">
     <view type="dashboard" name="project-my-tasks"/>
+    <view-param name="forceEdit" value="true"/>
   </action-view>
 
   <menuitem name="project-reporting-planned-charge" parent="project-reporting" order="200"

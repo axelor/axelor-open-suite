@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <dashboard title="Business Projects" name="custom-mgm-business-project-status-dashboard">
+    <dashlet action="custom-mgm-business-project-ongoing" colSpan="12"/>
+    <dashlet action="custom-mgm-business-project-completed" colSpan="12"/>
+  </dashboard>
+
+  <action-view name="custom-mgm-business-project-ongoing" title="Ongoing Projects"
+    model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="business-project-grid"/>
+    <view type="form" name="business-project-form"/>
+    <domain>
+      self.projectStatus.isCompleted = false
+    </domain>
+  </action-view>
+
+  <action-view name="custom-mgm-business-project-completed" title="Completed Projects"
+    model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="business-project-grid"/>
+    <view type="form" name="business-project-form"/>
+    <domain>
+      self.projectStatus.isCompleted = true
+    </domain>
+  </action-view>
+
+  <action-view name="custom.mgm.business.project.status.dashboard" title="Business projects">
+    <view type="dashboard" name="custom-mgm-business-project-status-dashboard"/>
+  </action-view>
+
+</object-views>
