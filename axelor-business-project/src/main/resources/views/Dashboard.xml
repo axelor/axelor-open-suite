@@ -26,7 +26,8 @@
     </domain>
   </action-view>
 
-  <action-view name="custom.mgm.business.project.status.dashboard" title="Business projects">
+  <action-view name="custom.mgm.business.project.status.dashboard"
+    title="Business projects">
     <view type="dashboard" name="custom-mgm-business-project-status-dashboard"/>
   </action-view>
 
