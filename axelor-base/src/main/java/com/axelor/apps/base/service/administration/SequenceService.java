@@ -144,24 +144,6 @@ public class SequenceService {
     return getSequence(code, company) != null;
   }
 
-  /**
-   * Checks if a sequence number already exists for the given entity and field.
-   *
-   * <p>Delegates to {@link SequenceReservationService#checkSequenceNotExists} for the actual check.
-   * This method is kept for backward compatibility with existing subclasses.
-   *
-   * @param objectClass the entity class
-   * @param fieldName the field name containing the sequence number
-   * @param nextSeq the sequence number to check
-   * @param seq the sequence configuration
-   * @throws AxelorException if the sequence number already exists
-   */
-  protected void isSequenceAlreadyExisting(
-      Class<? extends Model> objectClass, String fieldName, String nextSeq, Sequence seq)
-      throws AxelorException {
-    sequenceReservationService.checkSequenceNotExists(objectClass, fieldName, nextSeq, seq);
-  }
-
   protected String computeNextSeq(
       SequenceVersion sequenceVersion, Sequence sequence, LocalDate refDate)
       throws AxelorException {
