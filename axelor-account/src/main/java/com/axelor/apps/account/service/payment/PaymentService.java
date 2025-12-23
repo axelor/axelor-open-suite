@@ -52,7 +52,7 @@ public interface PaymentService {
    * @param debitMoveLines
    * @param creditMoveLines
    */
-  void useExcessPaymentOnMoveLinesDontThrow(
+  int useExcessPaymentOnMoveLinesDontThrow(
       List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines);
 
   /**

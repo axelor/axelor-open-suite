@@ -41,6 +41,7 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.Inject;
@@ -119,14 +120,17 @@ public class PaymentServiceImpl implements PaymentService {
    * @param creditMoveLines
    */
   @Override
-  public void useExcessPaymentOnMoveLinesDontThrow(
+  public int useExcessPaymentOnMoveLinesDontThrow(
       List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) {
+    int errorNumber = 0;
     try {
-      useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
+      errorNumber = useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
     } catch (Exception e) {
       TraceBackService.trace(e);
       log.debug(e.getMessage());
     }
+
+    return errorNumber;
   }
 
   /**
@@ -138,11 +142,14 @@ public class PaymentServiceImpl implements PaymentService {
    * @param dontThrow
    * @throws AxelorException
    */
-  protected void useExcessPaymentOnMoveLines(
+  protected int useExcessPaymentOnMoveLines(
       List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, boolean dontThrow)
       throws AxelorException {
+    int errorNumber = 0;
 
-    if (debitMoveLines != null && creditMoveLines != null) {
+    if (ObjectUtils.isEmpty(debitMoveLines) || ObjectUtils.isEmpty(creditMoveLines)) {
+      return errorNumber;
+    }
 
       log.debug(
           "Overpayment usage (debit move lines : {}, credit move lines : {})",
@@ -180,6 +187,7 @@ public class PaymentServiceImpl implements PaymentService {
               if (dontThrow) {
                 TraceBackService.trace(e);
                 log.debug(e.getMessage());
+                errorNumber++;
               } else {
                 throw e;
               }
@@ -187,7 +195,8 @@ public class PaymentServiceImpl implements PaymentService {
           }
         }
       }
-    }
+
+      return errorNumber;
   }
 
   /**

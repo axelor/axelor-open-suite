@@ -453,6 +453,9 @@ public final class AccountExceptionMessage {
   public static final String RECONCILE_MISSING_TAX = /*$$(*/
       "Move %s has a move line with a tax account but no tax assigned. Please fix this in order to proceed with this reconcile." /*)*/;
 
+  public static final String RECONCILE_MASS_ERRORS = /*$$(*/
+          "Errors happened during the reconcile process, please check the tracebacks." /*)*/;
+
   public static final String ALREADY_HAVE_PROPOSAL_RECONCILE = /*$$(*/
       "Some selected MoveLines already have a proposal ReconcileGroup" /*)*/;
 
