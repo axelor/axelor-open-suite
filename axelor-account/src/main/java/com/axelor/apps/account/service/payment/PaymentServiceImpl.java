@@ -151,52 +151,52 @@ public class PaymentServiceImpl implements PaymentService {
       return errorNumber;
     }
 
+    log.debug(
+        "Overpayment usage (debit move lines : {}, credit move lines : {})",
+        new Object[] {debitMoveLines.size(), creditMoveLines.size()});
+
+    BigDecimal debitTotalRemaining = BigDecimal.ZERO;
+    BigDecimal creditTotalRemaining = BigDecimal.ZERO;
+    for (MoveLine creditMoveLine : creditMoveLines) {
+
+      log.debug("Overpayment usage : credit move line : {})", creditMoveLine);
+
       log.debug(
-          "Overpayment usage (debit move lines : {}, credit move lines : {})",
-          new Object[] {debitMoveLines.size(), creditMoveLines.size()});
+          "Overpayment usage : credit move line (remaining to pay): {})",
+          creditMoveLine.getAmountRemaining().abs());
+      creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining().abs());
+    }
+    for (MoveLine debitMoveLine : debitMoveLines) {
 
-      BigDecimal debitTotalRemaining = BigDecimal.ZERO;
-      BigDecimal creditTotalRemaining = BigDecimal.ZERO;
-      for (MoveLine creditMoveLine : creditMoveLines) {
+      log.debug("Overpayment usage : debit move line : {})", debitMoveLine);
 
-        log.debug("Overpayment usage : credit move line : {})", creditMoveLine);
+      log.debug(
+          "Overpayment usage : debit move line (remaining to pay): {})",
+          debitMoveLine.getAmountRemaining());
+      debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
+    }
 
-        log.debug(
-            "Overpayment usage : credit move line (remaining to pay): {})",
-            creditMoveLine.getAmountRemaining().abs());
-        creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining().abs());
-      }
+    for (MoveLine creditMoveLine : creditMoveLines) {
       for (MoveLine debitMoveLine : debitMoveLines) {
-
-        log.debug("Overpayment usage : debit move line : {})", debitMoveLine);
-
-        log.debug(
-            "Overpayment usage : debit move line (remaining to pay): {})",
-            debitMoveLine.getAmountRemaining());
-        debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
-      }
-
-      for (MoveLine creditMoveLine : creditMoveLines) {
-        for (MoveLine debitMoveLine : debitMoveLines) {
-          if (creditMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
-              && debitMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
-            try {
-              createReconcile(
-                  debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
-            } catch (Exception e) {
-              if (dontThrow) {
-                TraceBackService.trace(e);
-                log.debug(e.getMessage());
-                errorNumber++;
-              } else {
-                throw e;
-              }
+        if (creditMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
+            && debitMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
+          try {
+            createReconcile(
+                debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
+          } catch (Exception e) {
+            if (dontThrow) {
+              TraceBackService.trace(e);
+              log.debug(e.getMessage());
+              errorNumber++;
+            } else {
+              throw e;
             }
           }
         }
       }
+    }
 
-      return errorNumber;
+    return errorNumber;
   }
 
   /**

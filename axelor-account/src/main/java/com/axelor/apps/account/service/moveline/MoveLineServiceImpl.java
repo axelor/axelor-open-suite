@@ -194,7 +194,8 @@ public class MoveLineServiceImpl implements MoveLineService {
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
       try {
         moveLineLists = this.findMoveLineLists(moveLineLists);
-        errorNumber += this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
+        errorNumber +=
+            this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
       } catch (Exception e) {
         TraceBackService.trace(e);
         log.debug(e.getMessage());
