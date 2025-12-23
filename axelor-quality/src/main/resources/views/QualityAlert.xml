@@ -8,7 +8,6 @@
     <field name="reference" width="120"/>
     <field name="reference" width="120"/>
     <field name="product"/>
-    <field name="workCenter"/>
     <field name="team"/>
     <field name="responsible"/>
     <field name="tagSet"/>
@@ -30,7 +29,6 @@
     <panel name="detailsPanel">
       <field name="reference"/>
       <field name="product" domain="self.dtype = 'Product'"/>
-      <field name="workCenter"/>
       <field name="team" domain="self.typeSelect = 'quality'"/>
       <field name="responsible"/>
       <field name="rootCause"/>

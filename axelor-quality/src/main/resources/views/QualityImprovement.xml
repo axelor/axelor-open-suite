@@ -102,17 +102,6 @@
               <field name="writtenBy"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
               <field name="writtenOn"/>
-              <field name="manufOrder" hideIf="$get('qi.type') == 2"
-                onChange="action-quality-improvement-group-manuf-order-on-change"/>
-              <field name="operationOrder" showIf="manufOrder != null"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by"
-                onSelect="action-quality-improvement-attrs-set-operation-order-domain"/>
-              <field name="toConsumeProdProduct" showIf="manufOrder != null"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by"
-                onSelect="action-quality-improvement-attrs-set-to-consume-prod-product-domain"/>
-              <field name="consumedProdProduct" showIf="manufOrder != null"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by"
-                onSelect="action-quality-improvement-attrs-set-consume-prod-product-domain"/>
               <field name="product" hideIf="$get('qi.type') == 2"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
               <field name="project"
@@ -144,7 +133,8 @@
               <field name="$dummyStockMoveLine" type="many-to-one"
                 x-target="com.axelor.apps.stock.db.StockMoveLine"/>
               <field name="$dummyManufOrder" type="many-to-one"
-                x-target="com.axelor.apps.production.db.ManufOrder"/>
+                x-target="com.axelor.apps.production.db.ManufOrder" if-module="axelor-production"
+                if="__config__.app.isApp('production')"/>
             </panel>
           </editor>
         </field>
@@ -441,31 +431,6 @@
       if="qi?.qiDetection?.origin == 1"/>
   </action-attrs>
 
-  <action-attrs name="action-quality-improvement-attrs-set-operation-order-domain">
-    <attribute name="domain" for="operationOrder"
-      expr="eval: &quot; self.id IN (${manufOrder?.operationOrderList?.collect{it.id}.join(',')}) &quot;"
-      if="!manufOrder.operationOrderList.isEmpty()"/>
-    <attribute name="domain" for="operationOrder"
-      expr="eval: &quot; self.id IN (0) &quot;" if="manufOrder.operationOrderList.isEmpty()"/>
-  </action-attrs>
-
-  <action-attrs
-    name="action-quality-improvement-attrs-set-to-consume-prod-product-domain">
-    <attribute name="domain" for="toConsumeProdProduct"
-      expr="eval: &quot; self.id IN (${manufOrder?.toConsumeProdProductList?.collect{it.id}.join(',')}) &quot;"
-      if="!manufOrder.toConsumeProdProductList.isEmpty()"/>
-    <attribute name="domain" for="toConsumeProdProduct"
-      expr="eval: &quot; self.id IN (0) &quot;" if="manufOrder.toConsumeProdProductList.isEmpty()"/>
-  </action-attrs>
-
-  <action-attrs name="action-quality-improvement-attrs-set-consume-prod-product-domain">
-    <attribute name="domain" for="consumeProdProduct"
-      expr="eval: &quot; self.id IN (${manufOrder?.consumedStockMoveLineList?.collect{it.id}.join(',')}) &quot;"
-      if="!manufOrder.consumedStockMoveLineList.isEmpty()"/>
-    <attribute name="domain" for="consumeProdProduct"
-      expr="eval: &quot; self.id IN (0) &quot;" if="manufOrder.consumedStockMoveLineList.isEmpty()"/>
-  </action-attrs>
-
   <action-group name="action-quality-improvement-group-on-load">
     <action name="action-quality-improvement-attrs-set-defaults" if="qiDetection"/>
     <action name="action-quality-improvement-attrs-set-dummy-field-values-onload"
@@ -533,13 +498,6 @@
     <action name="action-quality-improvement-attrs-set-dummy-field-values"/>
   </action-group>
 
-  <action-group name="action-quality-improvement-group-manuf-order-on-change">
-    <action name="action-quality-improvement-validate-manuf-order-on-change"/>
-    <action name="action-quality-improvement-record-manuf-order-on-change-set-values"/>
-    <action name="action-quality-improvement-method-set-written-on-and-written-by"/>
-    <action name="action-quality-improvement-attrs-set-dummy-field-values"/>
-  </action-group>
-
   <action-attrs name="action-quality-improvement-attrs-set-dummy-field-values">
     <attribute name="value" for="$dummyCustomerPartner" expr="eval: customerPartner"
       if="customerPartner != null"/>
@@ -557,8 +515,6 @@
       if="stockMove != null"/>
     <attribute name="value" for="$dummyStockMoveLine" expr="eval: stockMoveLine"
       if="stockMoveLine != null"/>
-    <attribute name="value" for="$dummyManufOrder" expr="eval: manufOrder"
-      if="manufOrder != null"/>
   </action-attrs>
 
   <action-attrs name="action-quality-improvement-attrs-set-dummy-field-values-onload">
@@ -582,8 +538,6 @@
       expr="eval: qiIdentification.stockMove" if="qiIdentification.stockMove != null"/>
     <attribute name="value" for="qiIdentification.$dummyStockMoveLine"
       expr="eval: qiIdentification.stockMoveLine" if="qiIdentification.stockMoveLine != null"/>
-    <attribute name="value" for="qiIdentification.$dummyManufOrder"
-      expr="eval: qiIdentification.manufOrder" if="qiIdentification.manufOrder != null"/>
   </action-attrs>
 
   <action-attrs name="action-quality-improvement-attrs-on-validate-set-field-values">
@@ -598,7 +552,6 @@
       expr="eval: dummySupplierPurchaseOrderLine"/>
     <attribute name="value" for="stockMove" expr="eval: dummyStockMove"/>
     <attribute name="value" for="stockMoveLine" expr="eval: dummyStockMoveLine"/>
-    <attribute name="value" for="manufOrder" expr="eval: dummyManufOrder"/>
   </action-attrs>
 
   <action-validate
@@ -656,13 +609,6 @@
   <action-validate name="action-quality-improvement-validate-stock-move-on-change">
     <alert message="The following fields will be reset: stock move line , continue ?"
       if="stockMoveLine != null"
-      action="action-quality-improvement-attrs-on-validate-set-field-values"/>
-  </action-validate>
-
-  <action-validate name="action-quality-improvement-validate-manuf-order-on-change">
-    <alert
-      message="The following fields will be reset: manufacturing operation line, manuf Order product to consume, consummed manuf order product , continue ?"
-      if="operationOrder != null || toConsumeProdProduct != null || consummedProdProduct != null"
       action="action-quality-improvement-attrs-on-validate-set-field-values"/>
   </action-validate>
 
@@ -724,14 +670,6 @@
     name="action-quality-improvement-record-stock-move-on-change-set-values"
     model="com.axelor.apps.quality.db.QIIdentification">
     <field name="stockMoveLine" expr="eval: null"/>
-  </action-record>
-
-  <action-record
-    name="action-quality-improvement-record-manuf-order-on-change-set-values"
-    model="com.axelor.apps.quality.db.QIIdentification">
-    <field name="operationOrder" expr="eval: null"/>
-    <field name="toConsumeProdProduct" expr="eval: null"/>
-    <field name="consummedProdProduct" expr="eval: null"/>
   </action-record>
 
   <action-record
