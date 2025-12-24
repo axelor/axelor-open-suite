@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.service;
+package com.axelor.apps.stock.service.inventory;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -31,16 +31,27 @@ import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockConfigRepository;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
+import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.inject.Beans;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 
 public class InventoryLineServiceImpl implements InventoryLineService {
+
+  private final Cache<ImmutablePair<Long, Long>, Boolean> presenceCache =
+      CacheBuilder.newBuilder().maximumSize(1000).expireAfterWrite(5, TimeUnit.MINUTES).build();
+
+  private final Cache<Long, Integer> valuationTypeCache =
+      CacheBuilder.newBuilder().maximumSize(100).expireAfterWrite(5, TimeUnit.MINUTES).build();
 
   protected StockConfigService stockConfigService;
   protected InventoryLineRepository inventoryLineRepository;
@@ -114,31 +125,33 @@ public class InventoryLineServiceImpl implements InventoryLineService {
         Optional.ofNullable(inventoryLine.getStockLocation()).orElse(inventory.getStockLocation());
     Product product = inventoryLine.getProduct();
 
-    if (product != null) {
-      inventoryLine.setPrice(BigDecimal.ZERO);
-      StockLocationLine stockLocationLine =
-          stockLocationLineService.getOrCreateStockLocationLine(stockLocation, product);
+    if (product == null) {
+      return inventoryLine;
+    }
 
-      if (stockLocationLine != null) {
-        inventoryLine.setCurrentQty(stockLocationLine.getCurrentQty());
-        inventoryLine.setRack(stockLocationLine.getRack());
-        if (inventoryLine.getTrackingNumber() != null) {
-          inventoryLine.setCurrentQty(
-              Beans.get(StockLocationLineRepository.class)
-                  .all()
-                  .filter(
-                      "self.product = :product and self.detailsStockLocation = :stockLocation and self.trackingNumber = :trackingNumber")
-                  .bind("product", inventoryLine.getProduct())
-                  .bind("stockLocation", stockLocation)
-                  .bind("trackingNumber", inventoryLine.getTrackingNumber())
-                  .fetchStream()
-                  .map(it -> it.getCurrentQty())
-                  .reduce(BigDecimal.ZERO, (a, b) -> a.add(b)));
-        }
-      } else {
-        inventoryLine.setCurrentQty(null);
-        inventoryLine.setRack(null);
+    inventoryLine.setPrice(BigDecimal.ZERO);
+    StockLocationLine stockLocationLine =
+        stockLocationLineService.getOrCreateStockLocationLine(stockLocation, product);
+
+    if (stockLocationLine != null) {
+      inventoryLine.setCurrentQty(stockLocationLine.getCurrentQty());
+      inventoryLine.setRack(stockLocationLine.getRack());
+      if (inventoryLine.getTrackingNumber() != null) {
+        inventoryLine.setCurrentQty(
+            Beans.get(StockLocationLineRepository.class)
+                .all()
+                .filter(
+                    "self.product = :product and self.detailsStockLocation = :stockLocation and self.trackingNumber = :trackingNumber")
+                .bind("product", inventoryLine.getProduct())
+                .bind("stockLocation", stockLocation)
+                .bind("trackingNumber", inventoryLine.getTrackingNumber())
+                .fetchStream()
+                .map(it -> it.getCurrentQty())
+                .reduce(BigDecimal.ZERO, (a, b) -> a.add(b)));
       }
+    } else {
+      inventoryLine.setCurrentQty(null);
+      inventoryLine.setRack(null);
     }
 
     return inventoryLine;
@@ -154,56 +167,57 @@ public class InventoryLineServiceImpl implements InventoryLineService {
         stockLocationLineFetchService.getStockLocationLine(stockLocation, product);
     Company company = stockLocation.getCompany();
 
-    if (product != null) {
-      inventoryLine.setUnit(product.getUnit());
-
-      BigDecimal gap =
-          inventoryLine.getRealQty() != null
-              ? inventoryLine
-                  .getRealQty()
-                  .subtract(inventoryLine.getCurrentQty())
-                  .setScale(2, RoundingMode.HALF_UP)
-              : BigDecimal.ZERO;
-      inventoryLine.setGap(gap);
-
-      BigDecimal price;
-      int inventoryValuationTypeSelect =
-          stockConfigService.getStockConfig(company).getInventoryValuationTypeSelect();
-
-      BigDecimal productAvgPrice =
-          (BigDecimal) productCompanyService.get(product, "avgPrice", company);
-
-      switch (inventoryValuationTypeSelect) {
-        case StockConfigRepository.VALUATION_TYPE_WAP_VALUE:
-          price = productAvgPrice;
-          break;
-        case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
-          price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
-          break;
-        case StockConfigRepository.VALUATION_TYPE_SALE_VALUE:
-          price = (BigDecimal) productCompanyService.get(product, "salePrice", company);
-          break;
-        case StockConfigRepository.VALUATION_TYPE_PURCHASE_VALUE:
-          price = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
-          break;
-        case StockConfigRepository.VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE:
-          if (stockLocationLine != null) {
-            price = stockLocationLine.getAvgPrice();
-          } else {
-            price = productAvgPrice;
-          }
-          break;
-        default:
-          price = productAvgPrice;
-          break;
-      }
-
-      inventoryLine.setGapValue(gap.multiply(price).setScale(2, RoundingMode.HALF_UP));
-      inventoryLine.setRealValue(
-          inventoryLine.getRealQty() != null
-              ? inventoryLine.getRealQty().multiply(price).setScale(2, RoundingMode.HALF_UP)
-              : BigDecimal.ZERO);
+    if (product == null) {
+      return inventoryLine;
     }
+
+    inventoryLine.setUnit(product.getUnit());
+
+    BigDecimal gap =
+        inventoryLine.getRealQty() != null
+            ? inventoryLine
+                .getRealQty()
+                .subtract(inventoryLine.getCurrentQty())
+                .setScale(2, RoundingMode.HALF_UP)
+            : BigDecimal.ZERO;
+    inventoryLine.setGap(gap);
+
+    BigDecimal price;
+    int inventoryValuationTypeSelect = getInventoryValuationTypeSelect(company);
+
+    BigDecimal productAvgPrice =
+        (BigDecimal) productCompanyService.get(product, "avgPrice", company);
+
+    switch (inventoryValuationTypeSelect) {
+      case StockConfigRepository.VALUATION_TYPE_WAP_VALUE:
+        price = productAvgPrice;
+        break;
+      case StockConfigRepository.VALUATION_TYPE_ACCOUNTING_VALUE:
+        price = (BigDecimal) productCompanyService.get(product, "costPrice", company);
+        break;
+      case StockConfigRepository.VALUATION_TYPE_SALE_VALUE:
+        price = (BigDecimal) productCompanyService.get(product, "salePrice", company);
+        break;
+      case StockConfigRepository.VALUATION_TYPE_PURCHASE_VALUE:
+        price = (BigDecimal) productCompanyService.get(product, "purchasePrice", company);
+        break;
+      case StockConfigRepository.VALUATION_TYPE_WAP_STOCK_LOCATION_VALUE:
+        if (stockLocationLine != null) {
+          price = stockLocationLine.getAvgPrice();
+        } else {
+          price = productAvgPrice;
+        }
+        break;
+      default:
+        price = productAvgPrice;
+        break;
+    }
+
+    inventoryLine.setGapValue(gap.multiply(price).setScale(2, RoundingMode.HALF_UP));
+    inventoryLine.setRealValue(
+        inventoryLine.getRealQty() != null
+            ? inventoryLine.getRealQty().multiply(price).setScale(2, RoundingMode.HALF_UP)
+            : BigDecimal.ZERO);
 
     return inventoryLine;
   }
@@ -275,17 +289,32 @@ public class InventoryLineServiceImpl implements InventoryLineService {
 
   @Override
   public boolean isPresentInStockLocation(InventoryLine inventoryLine) {
-
-    Objects.requireNonNull(inventoryLine);
-
-    if (inventoryLine.getProduct() == null
-        || inventoryLine.getStockLocation() == null
-        || inventoryLine.getStockLocation().getStockLocationLineList() == null) {
+    if (inventoryLine.getProduct() == null || inventoryLine.getStockLocation() == null) {
       return false;
     }
+    ImmutablePair<Long, Long> key =
+        ImmutablePair.of(
+            inventoryLine.getStockLocation().getId(), inventoryLine.getProduct().getId());
 
-    return stockLocationLineFetchService.getStockLocationLine(
-            inventoryLine.getStockLocation(), inventoryLine.getProduct())
-        != null;
+    try {
+      return presenceCache.get(
+          key,
+          () ->
+              stockLocationLineFetchService.getStockLocationLine(
+                      inventoryLine.getStockLocation(), inventoryLine.getProduct())
+                  != null);
+    } catch (Exception e) {
+      throw new RuntimeException("Error checking presence in stock location", e);
+    }
+  }
+
+  protected int getInventoryValuationTypeSelect(Company company) {
+    try {
+      return valuationTypeCache.get(
+          company.getId(),
+          () -> stockConfigService.getStockConfig(company).getInventoryValuationTypeSelect());
+    } catch (Exception e) {
+      throw new RuntimeException("Error fetching valuation type for company " + company.getId(), e);
+    }
   }
 }

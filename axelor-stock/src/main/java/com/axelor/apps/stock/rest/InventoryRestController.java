@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.rest.dto.InventoryPutRequest;
 import com.axelor.apps.stock.rest.dto.InventoryResponse;
-import com.axelor.apps.stock.service.InventoryUpdateService;
+import com.axelor.apps.stock.service.inventory.InventoryUpdateService;
 import com.axelor.apps.stock.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;

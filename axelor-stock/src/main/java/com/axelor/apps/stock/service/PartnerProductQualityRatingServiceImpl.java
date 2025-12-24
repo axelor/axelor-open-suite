@@ -21,28 +21,36 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.stock.db.PartnerProductQualityRating;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.PartnerProductQualityRatingRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
+import com.axelor.db.Query;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class PartnerProductQualityRatingServiceImpl implements PartnerProductQualityRatingService {
 
   public static final BigDecimal MAX_QUALITY_RATING = new BigDecimal(5);
 
-  private PartnerProductQualityRatingRepository partnerProductQualityRatingRepo;
+  private final PartnerProductQualityRatingRepository partnerProductQualityRatingRepo;
+  private final StockMoveLineRepository stockMoveLineRepository;
 
   @Inject
   public PartnerProductQualityRatingServiceImpl(
-      PartnerProductQualityRatingRepository partnerProductQualityRatingRepo) {
+      PartnerProductQualityRatingRepository partnerProductQualityRatingRepo,
+      StockMoveLineRepository stockMoveLineRepository) {
     this.partnerProductQualityRatingRepo = partnerProductQualityRatingRepo;
+    this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
   @Override
@@ -54,18 +62,20 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
       return;
     }
 
-    List<StockMoveLine> stockMoveLines = stockMove.getStockMoveLineList();
+    final long partnerId = partner.getId();
+    final PartnerRepository partnerRepo = Beans.get(PartnerRepository.class);
+    final Partner[] partnerHolder = {partnerRepo.find(partnerId)};
 
-    if (stockMoveLines != null) {
-      stockMoveLines.stream()
-          .filter(
-              stockMoveLine ->
-                  Optional.ofNullable(stockMoveLine.getConformitySelect()).orElse(0) != 0)
-          .forEach(
-              stockMoveLine -> createAndUpdatePartnerProducQualityRating(stockMoveLine, partner));
-    }
+    forEachStockMoveLine(
+        stockMove,
+        stockMoveLine -> {
+          if (Optional.ofNullable(stockMoveLine.getConformitySelect()).orElse(0) != 0) {
+            createAndUpdatePartnerProducQualityRating(stockMoveLine, partner);
+          }
+        },
+        () -> partnerHolder[0] = partnerRepo.find(partnerId));
 
-    updateSupplier(partner);
+    updateSupplier(partnerHolder[0]);
   }
 
   protected void createAndUpdatePartnerProducQualityRating(
@@ -86,22 +96,25 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
       return;
     }
 
-    List<StockMoveLine> stockMoveLines = stockMove.getStockMoveLineList();
+    final long partnerId = partner.getId();
+    final PartnerRepository partnerRepo = Beans.get(PartnerRepository.class);
+    final Partner[] partnerHolder = {partnerRepo.find(partnerId)};
 
-    if (stockMoveLines != null) {
-      for (StockMoveLine stockMoveLine : stockMoveLines) {
-        Product product = stockMoveLine.getProduct();
-        Optional<PartnerProductQualityRating> optional =
-            searchPartnerProductQualityRating(partner, product);
+    forEachStockMoveLine(
+        stockMove,
+        stockMoveLine -> {
+          Product product = stockMoveLine.getProduct();
+          Optional<PartnerProductQualityRating> optional =
+              searchPartnerProductQualityRating(partner, product);
 
-        if (optional.isPresent()) {
-          PartnerProductQualityRating partnerProductQualityRating = optional.get();
-          updatePartnerProductQualityRating(partnerProductQualityRating, stockMoveLine, true);
-        }
-      }
-    }
+          if (optional.isPresent()) {
+            PartnerProductQualityRating partnerProductQualityRating = optional.get();
+            updatePartnerProductQualityRating(partnerProductQualityRating, stockMoveLine, true);
+          }
+        },
+        () -> partnerHolder[0] = partnerRepo.find(partnerId));
 
-    updateSupplier(partner);
+    updateSupplier(partnerHolder[0]);
   }
 
   /**
@@ -232,6 +245,25 @@ public class PartnerProductQualityRatingServiceImpl implements PartnerProductQua
     partner.setSupplierQualityRating(supplierQualityRating);
     partner.setSupplierQualityRatingSelect(computeQualityRatingSelect(supplierQualityRating));
     partner.setSupplierArrivalProductQty(supplierArrivalProductQty);
+  }
+
+  protected void forEachStockMoveLine(
+      StockMove stockMove, Consumer<StockMoveLine> consumer, Runnable postBatchAction) {
+    if (stockMove == null || consumer == null || stockMove.getId() == null) {
+      return;
+    }
+
+    Query<StockMoveLine> query =
+        stockMoveLineRepository
+            .all()
+            .filter("self.stockMove.id = :stockMoveId AND self.id > :lastSeenId")
+            .bind("stockMoveId", stockMove.getId())
+            .order("id");
+
+    BatchProcessorHelper.builder()
+        .clearEveryNBatch(0)
+        .build()
+        .<StockMoveLine>forEachByQuery(query, consumer, postBatchAction);
   }
 
   /**

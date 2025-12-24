@@ -165,16 +165,24 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
   }
 
   protected void updateSaleOrderLineOnCancelOnRealized(StockMove stockMove) {
-    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-    for (StockMoveLine sml : stockMoveLineList) {
-      ManufOrder manufOrder = sml.getProducedManufOrder();
-      if (manufOrder != null
-          && manufOrder.getSaleOrderLine() != null
-          && manufOrder.getSaleOrderLine().getProduct() != null) {
-        SaleOrderLine saleOrderLine = manufOrder.getSaleOrderLine();
-        saleOrderLine.setQtyProduced(computeMOQtyProduced(manufOrder, saleOrderLine.getProduct()));
-        saleOrderLineRepository.save(saleOrderLine);
-      }
+
+    List<StockMoveLine> stockMoveLines =
+        stockMoveLineRepo
+            .all()
+            .filter(
+                "self.stockMove = :stockMove "
+                    + "AND self.producedManufOrder IS NOT NULL "
+                    + "AND self.producedManufOrder.saleOrderLine IS NOT NULL "
+                    + "AND self.producedManufOrder.saleOrderLine.product IS NOT NULL ")
+            .bind("stockMove", stockMove)
+            .fetch();
+    for (StockMoveLine stockMoveLine : stockMoveLines) {
+      ManufOrder manufOrder = stockMoveLine.getProducedManufOrder();
+      SaleOrderLine saleOrderLine = manufOrder.getSaleOrderLine();
+      Product product = saleOrderLine.getProduct();
+      BigDecimal qtyProduced = computeMOQtyProduced(manufOrder, product);
+      saleOrderLine.setQtyProduced(qtyProduced);
+      saleOrderLineRepository.save(saleOrderLine);
     }
   }
 

@@ -54,14 +54,6 @@ import com.axelor.apps.stock.db.repo.massstockmove.StoredProductManagementReposi
 import com.axelor.apps.stock.rest.StockProductRestService;
 import com.axelor.apps.stock.rest.StockProductRestServiceImpl;
 import com.axelor.apps.stock.service.AddressServiceStockImpl;
-import com.axelor.apps.stock.service.InventoryLineService;
-import com.axelor.apps.stock.service.InventoryLineServiceImpl;
-import com.axelor.apps.stock.service.InventoryProductService;
-import com.axelor.apps.stock.service.InventoryProductServiceImpl;
-import com.axelor.apps.stock.service.InventoryStockLocationUpdateService;
-import com.axelor.apps.stock.service.InventoryStockLocationUpdateServiceImpl;
-import com.axelor.apps.stock.service.InventoryUpdateService;
-import com.axelor.apps.stock.service.InventoryUpdateServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormLineService;
 import com.axelor.apps.stock.service.LogisticalFormLineServiceImpl;
 import com.axelor.apps.stock.service.LogisticalFormSequenceService;
@@ -118,6 +110,18 @@ import com.axelor.apps.stock.service.WeightedAveragePriceService;
 import com.axelor.apps.stock.service.WeightedAveragePriceServiceImpl;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.app.AppStockServiceImpl;
+import com.axelor.apps.stock.service.inventory.InventoryImportExportService;
+import com.axelor.apps.stock.service.inventory.InventoryImportExportServiceImpl;
+import com.axelor.apps.stock.service.inventory.InventoryLineService;
+import com.axelor.apps.stock.service.inventory.InventoryLineServiceImpl;
+import com.axelor.apps.stock.service.inventory.InventoryProductService;
+import com.axelor.apps.stock.service.inventory.InventoryProductServiceImpl;
+import com.axelor.apps.stock.service.inventory.InventoryStockLocationUpdateService;
+import com.axelor.apps.stock.service.inventory.InventoryStockLocationUpdateServiceImpl;
+import com.axelor.apps.stock.service.inventory.InventoryUpdateService;
+import com.axelor.apps.stock.service.inventory.InventoryUpdateServiceImpl;
+import com.axelor.apps.stock.service.inventory.InventoryValidateService;
+import com.axelor.apps.stock.service.inventory.InventoryValidateServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsService;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductAttrsServiceImpl;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductCancelService;
@@ -228,5 +232,7 @@ public class StockModule extends AxelorModule {
     bind(InventoryStockLocationUpdateService.class)
         .to(InventoryStockLocationUpdateServiceImpl.class);
     bind(ProductCompanyBaseRepository.class).to(ProductCompanyStockRepository.class);
+    bind(InventoryImportExportService.class).to(InventoryImportExportServiceImpl.class);
+    bind(InventoryValidateService.class).to(InventoryValidateServiceImpl.class);
   }
 }

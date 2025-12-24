@@ -48,6 +48,7 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -204,8 +205,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         }
       }
     }
-
-    manufOrderStockMoveService.finish(manufOrder);
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+    manufOrder = manufOrderStockMoveService.finish(manufOrder);
 
     // create cost sheet
     Beans.get(CostSheetService.class)
@@ -295,7 +296,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         }
       }
     }
-    manufOrderStockMoveService.partialFinish(manufOrder);
+    manufOrder = manufOrderStockMoveService.partialFinish(manufOrder);
     Beans.get(CostSheetService.class)
         .computeCostPrice(
             manufOrder,

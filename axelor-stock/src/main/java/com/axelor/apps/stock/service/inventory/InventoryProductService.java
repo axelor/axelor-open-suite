@@ -16,14 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.stock.service;
+package com.axelor.apps.stock.service.inventory;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.Inventory;
-import com.axelor.auth.db.User;
 
-public interface InventoryUpdateService {
-
-  void updateInventoryStatus(Inventory inventory, Integer wantedStatus, User user)
-      throws AxelorException;
+public interface InventoryProductService {
+  void checkDuplicate(Inventory inventory) throws AxelorException;
 }
