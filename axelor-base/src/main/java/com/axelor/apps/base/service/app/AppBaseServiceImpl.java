@@ -68,7 +68,7 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
 
   @Override
   public AppBase getAppBase() {
-    return Query.of(AppBase.class).fetchOne();
+    return Query.of(AppBase.class).cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
