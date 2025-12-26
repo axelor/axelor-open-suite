@@ -49,13 +49,15 @@ public class SaleOrderStockLocationServiceImpl implements SaleOrderStockLocation
   }
 
   @Override
-  public Map<String, Object> getStockLocation(SaleOrder saleOrder) throws AxelorException {
+  public Map<String, Object> getStockLocation(SaleOrder saleOrder, boolean updateStockLocation)
+      throws AxelorException {
     Map<String, Object> saleOrderMap = new HashMap<>();
     StockLocation shippingDefaultStockLocation =
         Optional.ofNullable(saleOrder.getTradingName())
             .map(TradingName::getShippingDefaultStockLocation)
             .orElse(null);
-    if (shippingDefaultStockLocation != null || saleOrder.getStockLocation() != null) {
+    if (!updateStockLocation
+        && (shippingDefaultStockLocation != null || saleOrder.getStockLocation() != null)) {
       return saleOrderMap;
     }
     Partner clientPartner = saleOrder.getClientPartner();

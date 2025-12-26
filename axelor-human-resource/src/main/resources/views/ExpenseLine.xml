@@ -194,6 +194,7 @@
         <field name="analyticDistributionTemplate"
           grid-view="analytic-distribution-template-grid"
           form-view="analytic-distribution-template-form" canEdit="false"
+          onSelect="action-expense-line-method-set-domain-analytic-distribution-template"
           onChange="action-expense-line-method-create-distribution"/>
         <panel-related name="analyticMoveLineListPanel" field="analyticMoveLineList"
           grid-view="analytic-move-line-distribution-grid"
@@ -534,5 +535,11 @@
     <action name="action-expense-line-attrs-fill-arrival-from-site"/>
     <action name="action-kilometric-allowance-method-compute-distance"/>
   </action-group>
+
+  <action-method
+    name="action-expense-line-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseLineController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
 
 </object-views>

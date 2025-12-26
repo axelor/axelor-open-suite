@@ -19,7 +19,6 @@
 package com.axelor.apps.budget.service.compute;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -63,27 +62,6 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
     ComputeMethod computeMethod = this::updateBudgetLineAmountsWithNoPo;
     Invoice invoice = Optional.ofNullable(move).map(Move::getInvoice).orElse(null);
     if (invoice != null && (invoice.getPurchaseOrder() != null || invoice.getSaleOrder() != null)) {
-      computeMethod = this::updateBudgetLineAmountsWithPo;
-    }
-
-    updateBudgetLineAmounts(budget, amount, fromDate, toDate, defaultDate, computeMethod);
-  }
-
-  @Override
-  public void updateBudgetLineAmounts(
-      InvoiceLine invoiceLine,
-      Budget budget,
-      BigDecimal amount,
-      LocalDate fromDate,
-      LocalDate toDate,
-      LocalDate defaultDate) {
-    ComputeMethod computeMethod = this::updateBudgetLineAmountsWithNoPo;
-    Invoice invoice = Optional.ofNullable(invoiceLine).map(InvoiceLine::getInvoice).orElse(null);
-    if (invoice != null
-        && (invoice.getPurchaseOrder() != null
-            || invoice.getSaleOrder() != null
-            || invoiceLine.getPurchaseOrderLine() != null
-            || invoiceLine.getSaleOrderLine() != null)) {
       computeMethod = this::updateBudgetLineAmountsWithPo;
     }
 

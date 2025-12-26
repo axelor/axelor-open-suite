@@ -63,6 +63,9 @@
     <many-to-one name="imposedDayEventsPlanning"
       ref="com.axelor.apps.base.db.EventsPlanning" title="Imposed holidays planning"
       massUpdate="true"/>
+    <!-- KAPSIKI Customization: MGM38 -->
+    <long name="personalNumber" title="Personal Number" required="true" unique="true"
+      massUpdate="true"/>
     <string name="socialSecurityNumber" title="Social security number" encrypted="true"/>
     <one-to-many name="employeeAdvanceList" ref="com.axelor.apps.hr.db.EmployeeAdvance"
       title="Employee advances" readonly="true" mappedBy="employee"/>
@@ -130,6 +133,8 @@
 
     <one-to-many name="bankCardList" ref="com.axelor.apps.hr.db.BankCard"
       title="Bank cards" mappedBy="employee"/>
+    <many-to-one name="address" ref="com.axelor.apps.base.db.Address" title="Address"
+      massUpdate="true"/>
 
     <extra-code>
    		<![CDATA[
@@ -139,6 +144,8 @@
 
    			public static final String SEX_F = "F";
    			public static final String SEX_M = "M";
+   			public static final String SEX_D = "D";
+   			public static final String SEX_X = "X";
 
             public static final int LUNCH_VOUCHER_MGT_FORMAT_PAPER = 1;
             public static final int LUNCH_VOUCHER_MGT_FORMAT_CARD = 2;
@@ -159,6 +166,7 @@
       <field name="negativeValueLeave" on="UPDATE"/>
       <field name="lunchVoucherFormatSelect" on="UPDATE"/>
       <field name="companyCbSelect" on="UPDATE"/>
+      <field name="address" on="UPDATE"/>
     </track>
 
   </entity>

@@ -18,9 +18,13 @@
  */
 package com.axelor.apps.account.service.analytic;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.repo.AnalyticLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.TradingName;
 import java.util.Map;
 
 public interface AnalyticAttrsService {
@@ -35,5 +39,14 @@ public interface AnalyticAttrsService {
 
   void addAnalyticAxisDomains(
       AnalyticLine analyticLine, Company company, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
+
+  String getAnalyticDistributionTemplateDomain(
+      Partner partner,
+      Product product,
+      Company company,
+      TradingName tradingName,
+      Account account,
+      boolean isPurchase)
       throws AxelorException;
 }

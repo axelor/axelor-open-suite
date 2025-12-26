@@ -27,9 +27,12 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.move.MoveBudgetDistributionService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
+import com.axelor.apps.budget.service.move.MoveLineToolBudgetService;
+import com.axelor.db.EntityHelper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.util.Optional;
 
 public class MoveLineController {
 
@@ -68,7 +71,26 @@ public class MoveLineController {
 
   public void updateBudgetAmounts(ActionRequest request, ActionResponse response) {
     MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    moveLine = EntityHelper.getEntity(moveLine);
+    boolean budgetAlreadyChanged =
+        (Boolean)
+            Optional.of(request.getContext()).map(c -> c.get("budgetAlreadyChanged")).orElse(false);
 
-    Beans.get(MoveBudgetDistributionService.class).checkChanges(moveLine);
+    Beans.get(MoveBudgetDistributionService.class).checkChanges(moveLine, budgetAlreadyChanged);
+    response.setValue(
+        "oldBudgetDistributionList",
+        Beans.get(MoveLineToolBudgetService.class).copyBudgetDistributionList(moveLine));
+    response.setValue("$budgetAlreadyChanged", true);
+  }
+
+  public void changeBudgetDistribution(ActionRequest request, ActionResponse response) {
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+
+    Beans.get(MoveLineBudgetService.class).changeBudgetDistribution(moveLine);
+    response.setValue("budgetDistributionList", moveLine.getBudgetDistributionList());
+    response.setValue("oldBudgetDistributionList", moveLine.getOldBudgetDistributionList());
+    response.setValue(
+        "budgetRemainingAmountToAllocate", moveLine.getBudgetRemainingAmountToAllocate());
+    response.setValue("$budgetAlreadyChanged", true);
   }
 }

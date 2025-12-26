@@ -22,6 +22,7 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineComputeNameService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -46,6 +47,7 @@ public class TimesheetHRRepository extends TimesheetRepository {
     if (timesheet.getTimesheetLineList() != null) {
       for (TimesheetLine timesheetLine : timesheet.getTimesheetLineList()) {
         timesheetLineComputeNameService.computeFullName(timesheetLine);
+        Beans.get(TimesheetLineService.class).splitTimesheetLine(timesheetLine);
       }
     }
 

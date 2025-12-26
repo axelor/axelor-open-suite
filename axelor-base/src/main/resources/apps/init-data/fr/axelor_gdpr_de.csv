@@ -1,0 +1,129 @@
+key,message,language
+<br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>,<br>Zuordnung für die Abfrage :<br>Vorname -> :firstName <br>Nachname -> :lastName <br>Email -> :email <br>Telefon -> :phone <br>,de
+A replacement object is missing for model %s.,Es fehlt ein Ersatzobjekt für das Modell %s.,de
+Access,Zugang,de
+Activate,Aktivieren Sie,de
+Active,Aktiv,de
+Anonymization result,Ergebnis der Anonymisierung,de
+App,App,de
+App GDPR,App GDPR,de
+App gdpr,App gdpr,de
+Archive,Archiv,de
+Archive data,Daten archivieren,de
+Are you sure to cancel the request ?,"Sind Sie sicher, dass Sie die Anfrage stornieren wollen?",de
+Are you sure to confirm the request ?,"Sind Sie sicher, dass Sie die Anfrage bestätigen können?",de
+Can not find object.,Kann Objekt nicht finden.,de
+Cancel,Abbrechen,de
+Canceled,Abgesagt,de
+Code,Code,de
+Comment,Kommentar,de
+Configurations,Konfigurationen,de
+Configure how the app will search the datas,"Konfigurieren Sie, wie die App die Daten durchsuchen soll",de
+Configure request origins,Konfigurieren Sie die Herkunft der Anfrage,de
+Confirm,Bestätigen Sie,de
+Confirmed,Bestätigt,de
+Data file,Die Datei,de
+Data processed,Verarbeitete Daten,de
+Datas to exclude configuration,Daten zum Ausschluss der Konfiguration,de
+Description,Beschreibung,de
+Draft,Entwurf,de
+Due sending date,Fälliges Versanddatum,de
+Elements to be excluded from the access request,Von der Zugangsanfrage auszuschließende Elemente,de
+Email,E-Mail,de
+Email template for access request response,E-Mail-Vorlage für die Beantwortung von Zugangsanträgen,de
+Email template for erasure request response,E-Mail-Vorlage für die Beantwortung von Löschanträgen,de
+Email template to send when responding to an access request.,"E-Mail-Vorlage, die bei der Beantwortung eines Zugangsantrags zu senden ist.",de
+Email template to send when responding to an erasure request.,"E-Mail-Vorlage, die bei der Beantwortung einer Löschungsanfrage zu senden ist.",de
+Erasure,Löschen,de
+Error occurred,Fehler aufgetreten,de
+Error while sending the mail : %s,Fehler beim Senden der E-Mail: %s,de
+Field %s of model %s has not been anonymized. Please check manually.,Das Feld %s des Modells %s wurde nicht anonymisiert. Bitte überprüfen Sie dies manuell.,de
+Field displayed in the result of the research,Im Ergebnis der Recherche angezeigtes Feld,de
+Fields,Felder,de
+First name,Vornamen,de
+GDPR,GDPR,de
+GDPR Processing Register Log,GDPR-Verarbeitungsregister-Protokoll,de
+GDPR Request,GDPR-Anfrage,de
+GDPR app,GDPR-App,de
+GDPR erasure log,GDPR-Löschungsprotokoll,de
+GDPR erasure logs,GDPR-Löschprotokolle,de
+GDPR processing register log,Protokoll des GDPR-Verarbeitungsregisters,de
+GDPR processing register logs,Protokolle des GDPR-Verarbeitungsregisters,de
+GDPR processing registers,GDPR-Verarbeitungsregister,de
+GDPR search configuration,Konfiguration der GDPR-Suche,de
+GDPR search configuration lines,Konfigurationszeilen für die GDPR-Suche,de
+GDPRRequest.title,GDPRRequest.title,de
+Gdpr processing register log list,Gdpr-Verarbeitungsregister Protokollliste,de
+Gdpr processing register rule list,Gdpr-Verarbeitungsregister Regelliste,de
+"Impossible to link with the children meta field %s, no mappedBy field found.","Verknüpfung mit dem Kinder-Metafeld %s nicht möglich, kein mappedBy-Feld gefunden.",de
+"Indicate which date should be verified. If one of the date is after the retention date, the data will not be archived.","Geben Sie an, welches Datum überprüft werden soll. Wenn eines der Daten nach dem Aufbewahrungsdatum liegt, werden die Daten nicht archiviert.",de
+JPQL filter to add to the query,"JPQL-Filter, der der Abfrage hinzugefügt werden soll",de
+Key,Schlüssel,de
+Label,Etikett,de
+Last name,Nachname,de
+Lead,Blei,de
+Mapping,Kartierung,de
+Maximum days to respond,Maximale Antwortzeit,de
+Maximum number of days to respond to a request.,Maximale Anzahl von Tagen für die Beantwortung einer Anfrage.,de
+Meta model,Meta-Modell,de
+Missing response email address,Fehlende Antwort-E-Mail-Adresse,de
+Model,Modell,de
+Model %s has been anonymized using the anonymizer %s.,Das Modell %s wurde mit dem Anonymisierer %s anonymisiert.,de
+Model id,Modellbezeichnung,de
+Model log,Musterprotokoll,de
+Model to search,Zu suchendes Modell,de
+Models,Modelle,de
+Name,Name,de
+Name of the key for the search engine,Name des Schlüssels für die Suchmaschine,de
+No anonymizer found in app GDPR configuration.,In der GDPR-Konfiguration der App wurde kein Anonymisierer gefunden.,de
+Number of records,Anzahl der Datensätze,de
+Partner,Partner,de
+Phone,Telefon,de
+Please configure a mail template for access request response.,Bitte konfigurieren Sie eine E-Mail-Vorlage für die Beantwortung von Zugriffsanfragen.,de
+Please configure a mail template for erasure request response.,Bitte konfigurieren Sie eine E-Mail-Vorlage für die Beantwortung von Löschanträgen.,de
+Please enter at least one field.,Bitte geben Sie mindestens ein Feld ein.,de
+Please select a line,Bitte wählen Sie eine Zeile,de
+Please select at least a pseudonymizer and/or choose to archive the data.,Bitte wählen Sie mindestens einen Pseudonymisierer und/oder entscheiden Sie sich für die Archivierung der Daten.,de
+Please select only one line,Bitte wählen Sie nur eine Zeile aus,de
+Processed finished,Verarbeitet fertig,de
+Processing date,Datum der Bearbeitung,de
+Processing register,Verarbeitungsregister,de
+Processing register - Archiving,Verarbeitungsregister - Archivierung,de
+Processing register rule,Verarbeitung der Registerregel,de
+Processing register rules,Verarbeitung von Registerregeln,de
+Pseudonymizer,Pseudonymisierer,de
+Pseudonymizer template to use when pseudonymizing datas.,Pseudonymisierungsvorlage zur Verwendung bei der Pseudonymisierung von Daten.,de
+Query,Abfrage,de
+Received,Empfangen,de
+Reference,Referenz,de
+Register created,Register erstellt,de
+Relationship Anonymizer,Anonymisierer für Beziehungen,de
+Relationship anonymizer,Anonymisierer für Beziehungen,de
+Request date,Datum der Anfrage,de
+Request origin,Herkunft der Anfrage,de
+Requests,Anfragen an,de
+Requests origin,Ersuchen Herkunft,de
+Requests origins,Herkunft der Anfragen,de
+Response,Antwort,de
+Response email address,Antwort-E-Mail-Adresse,de
+Response message,Antwortnachricht,de
+Restore,Wiederherstellen,de
+Results,Ergebnisse,de
+Retention period (in months),Aufbewahrungsfrist (in Monaten),de
+Rule,Regel,de
+Run process,Prozess ausführen,de
+Search,Suche,de
+Search configuration,Konfiguration suchen,de
+Search configuration line,Konfigurationszeile suchen,de
+Search configuration lines,Konfigurationszeilen suchen,de
+Search configurations,Konfigurationen suchen,de
+Select fields to exclude from the access request response. Leave empty if all fields should be excluded.,"Wählen Sie die Felder aus, die von der Antwort auf die Zugriffsanfrage ausgeschlossen werden sollen. Leer lassen, wenn alle Felder ausgeschlossen werden sollen.",de
+Send Response,Antwort senden,de
+Sending date,Datum der Absendung,de
+Sent,Gesendet,de
+Status,Status,de
+This field doesn't exist.,Dieses Feld ist nicht vorhanden.,de
+Type,Typ,de
+com.axelor.apps.gdpr.job.ProcessingRegisterJob,com.axelor.apps.gdpr.job.ProcessingRegisterJob,de
+result,Ergebnis,de
+value:GDPR,value:GDPR,de

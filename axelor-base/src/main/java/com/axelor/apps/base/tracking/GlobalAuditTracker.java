@@ -23,6 +23,8 @@ import com.axelor.apps.base.db.GlobalTrackingLog;
 import com.axelor.apps.base.db.GlobalTrackingLogLine;
 import com.axelor.apps.base.db.repo.GlobalTrackingConfigurationLineRepository;
 import com.axelor.apps.base.db.repo.GlobalTrackingLogRepository;
+import com.axelor.apps.base.db.repo.dms.CustomDMSFileRepository;
+import com.axelor.apps.base.db.repo.dms.DMSFolderConfiguration;
 import com.axelor.auth.AuditInterceptor;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.AuditableModel;
@@ -31,6 +33,7 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaModel;
@@ -65,7 +68,20 @@ import org.hibernate.collection.internal.PersistentSet;
 
 public class GlobalAuditTracker {
 
+  private static class DeferredDMSUpdate {
+    Long entityId;
+    String entityModel;
+
+    DeferredDMSUpdate(Long id, String model) {
+      this.entityId = id;
+      this.entityModel = model;
+    }
+  }
+
   private static final ThreadLocal<List<GlobalTrackingLog>> LOGS = new ThreadLocal<>();
+
+  private static final ThreadLocal<List<DeferredDMSUpdate>> DEFERRED_DMS_UPDATES =
+      ThreadLocal.withInitial(ArrayList::new);
 
   private final Cache<String, List<GlobalTrackingConfigurationLine>>
       globalTrackingConfigurationLineCache =
@@ -207,6 +223,7 @@ public class GlobalAuditTracker {
    */
   protected void clear() {
     LOGS.remove();
+    DEFERRED_DMS_UPDATES.remove();
   }
 
   protected void addLog(GlobalTrackingLog log) {
@@ -365,5 +382,69 @@ public class GlobalAuditTracker {
     globalTrackingConfigurationLineCache.invalidateAll();
     metaModelCache.invalidateAll();
     metaFieldCache.invalidateAll();
+  }
+
+  /** Check if entity has relationships to configured types and schedule DMS update */
+  public void checkAndScheduleDMSUpdate(
+      AuditableModel entity,
+      String[] propertyNames,
+      Object[] currentState,
+      Object[] previousState) {
+
+    // Skip new entities
+    if (previousState == null || entity.getId() == null) {
+      return;
+    }
+
+    Mapper mapper = Mapper.of(EntityHelper.getEntityClass(entity));
+
+    // Check if entity has a dmsFile property
+    if (mapper.getProperty("dmsFile") == null) {
+      return;
+    }
+
+    // Check if any configured relationship field changed
+    boolean hasRelevantChange = false;
+    for (int i = 0; i < propertyNames.length; i++) {
+      // Skip if value didn't change
+      if (java.util.Objects.equals(currentState[i], previousState[i])) {
+        continue;
+      }
+
+      Property prop = mapper.getProperty(propertyNames[i]);
+      if (prop != null && prop.isReference() && !prop.isCollection() && prop.getTarget() != null) {
+        String targetClass = prop.getTarget().getName();
+
+        // Check if this is one of our configured entity types
+        if (DMSFolderConfiguration.isConfiguredEntity(targetClass)) {
+          hasRelevantChange = true;
+          break;
+        }
+      }
+    }
+
+    if (hasRelevantChange) {
+      DEFERRED_DMS_UPDATES
+          .get()
+          .add(new DeferredDMSUpdate(entity.getId(), entity.getClass().getName()));
+    }
+  }
+
+  /** Process all deferred DMS updates after transaction */
+  public void processDeferredDMSUpdates() {
+    List<DeferredDMSUpdate> updates = DEFERRED_DMS_UPDATES.get();
+    if (updates.isEmpty()) {
+      return;
+    }
+
+    CustomDMSFileRepository dmsRepo = Beans.get(CustomDMSFileRepository.class);
+
+    for (DeferredDMSUpdate update : updates) {
+      try {
+        dmsRepo.moveFileToCorrectHome(update.entityId, update.entityModel);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
   }
 }

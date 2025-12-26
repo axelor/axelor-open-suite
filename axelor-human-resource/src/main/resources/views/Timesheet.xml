@@ -143,34 +143,40 @@
               <![CDATA[<>{isCompleted && <Badge bg="success">{_t('Completed')}</Badge>}</>]]>
           </viewer>
         </field>
+        <!-- diable this button for Technicians to prevent technician confirming the TS -->
         <button name="confirmBtn" onClick="action-timesheet-group-confirm" title="Confirm"
           hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation  &amp;&amp;
+            !(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
         <button name="continueBtn" onClick="action-timesheet-group-continue,close"
           title="Continue"
           showIf="statusSelect == 2 &amp;&amp; employee != null &amp;&amp; employee.user != null &amp;&amp; employee.user.code == $user"
-          icon="fa-arrow-right" if="__config__.app.getApp('timesheet')?.needValidation"/>
+          icon="fa-arrow-right"
+          if="__config__.app.getApp('timesheet')?.needValidation &amp;&amp; __user__.group.code == 'admins'"/>
         <button name="confirmContinueBtn"
           onClick="action-timesheet-group-confirm-continue,close" title="Confirm &amp; Continue"
           hideIf="statusSelect &gt; 1" icon="fa-check-square-o"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation &amp;&amp; __user__.group.code == 'admins'"/>
         <button name="validateBtn" hidden="true" onClick="action-timesheet-group-validate"
           title="Validate" icon="fa-check" css="btn-success"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation &amp;&amp;
+            !(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
         <button name="refuseBtn" hidden="true" onClick="action-timesheet-group-refuse"
           title="Refuse" icon="fa-times" css="btn-danger"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation &amp;&amp;
+        !(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
         <button name="cancelBtn" hidden="true"
           onClick="save,action-timesheet-method-cancel,action-timesheet-group-buttons"
           title="Cancel" icon="fa-times-circle" css="btn-danger"
-          if="__config__.app.getApp('timesheet')?.needValidation"/>
+          if="__config__.app.getApp('timesheet')?.needValidation &amp;&amp;
+            !(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
         <button name="draftBtn"
           onClick="save,action-timesheet-method-draft,action-timesheet-group-buttons"
           title="Return to draft status" showIf="statusSelect &gt; 3"
           if="__config__.app.getApp('timesheet')?.needValidation"/>
-        <button name="startStopFormBtn" title="Start&amp;Stop Timer"
-          onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1"
-          if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer()"/>
+        <!-- <button name="startStopFormBtn" title="Start&amp;Stop Timer" -->
+        <!-- onClick="action-timesheet-method-timesheet-timer" hideIf="statusSelect != 1" -->
+        <!-- if="__config__.app.isApp('timesheet') &amp;&amp; __config__.app.getApp('timesheet')?.getEnableTimer()"/> -->
         <button name="completeBtn" onClick="save,action-timesheet-method-complete"
           title="Complete" if="!__config__.app.getApp('timesheet')?.needValidation"
           icon="fa-arrow-right"/>

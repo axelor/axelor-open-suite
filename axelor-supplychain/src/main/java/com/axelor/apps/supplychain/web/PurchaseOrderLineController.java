@@ -161,6 +161,34 @@ public class PurchaseOrderLineController {
     }
   }
 
+  public void setDomainAnalyticDistributionTemplate(
+      ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrder purchaseOrder =
+          ContextHelper.getContextParent(request.getContext(), PurchaseOrder.class, 1);
+
+      if (purchaseOrder == null || purchaseOrder.getCompany() == null) {
+        return;
+      }
+
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+
+      response.setAttr(
+          "analyticDistributionTemplate",
+          "domain",
+          Beans.get(AnalyticAttrsService.class)
+              .getAnalyticDistributionTemplateDomain(
+                  purchaseOrder.getSupplierPartner(),
+                  purchaseOrderLine.getProduct(),
+                  purchaseOrder.getCompany(),
+                  purchaseOrder.getTradingName(),
+                  null,
+                  true));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void setAnalyticDistributionPanelHidden(ActionRequest request, ActionResponse response) {
     try {
       PurchaseOrder purchaseOrder =

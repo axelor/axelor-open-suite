@@ -1,0 +1,132 @@
+key,message,language
+Acquisition Date,Datum des Erwerbs,de
+Activation Cost,Aktivierungskosten,de
+Active,Aktiv,de
+Additional Properties,Zusätzliche Eigenschaften,de
+Amount,Betrag,de
+Archived,Archiviert,de
+Automatic,Automatisch,de
+Booking,Buchung,de
+BookingDate,BookingDate,de
+Brand,Marke,de
+CO2 Emissions,CO2-Emissionen,de
+Car value,Autowert,de
+Category,Kategorie,de
+Cause of repair,Ursache der Reparatur,de
+Chassis Number,Fahrgestellnummer,de
+Color,Farbe,de
+Company,Unternehmen,de
+Configuration,Konfiguration,de
+Confirmed,Bestätigt,de
+Contact set,Kontakt-Set,de
+Contract Expiration Date,Ablaufdatum des Vertrags,de
+Contract Reference,Vertragsreferenz,de
+Contract Start date,Datum des Vertragsbeginns,de
+Contract details,Details zum Vertrag,de
+Contract number,Vertragsnummer,de
+Contractor,Auftragnehmer,de
+Cost,Kosten,de
+Create odometer,Kilometerzähler erstellen,de
+Customer,Kunde,de
+Daily,Täglich,de
+Date,Datum,de
+Date of repair,Datum der Reparatur,de
+Diesel,Diesel,de
+Doors,Türen,de
+Draft,Entwurf,de
+Driver,Treiber,de
+Electric,Elektrisch,de
+Engine Options,Motor Optionen,de
+Fleet,Flotte,de
+Fuel card code,Code der Tankkarte,de
+Fuel card number,Nummer der Tankkarte,de
+Fuel log,Brennstoff-Logbuch,de
+Fuel type,Kraftstofftyp,de
+Gasoline,Benzin,de
+General Properties,Allgemeine Eigenschaften,de
+Horse Power,Pferdestärken,de
+Horse Power Tax,Steuer auf Pferdestärken,de
+Hybrid,Hybride,de
+Image,Bild,de
+In Progress,In Arbeit,de
+Included Services,Eingeschlossene Dienstleistungen,de
+Information,Informationen,de
+Insurance,Versicherung,de
+Invoice Reference,Referenz der Rechnung,de
+Invoice date,Datum der Rechnung,de
+Kilometric value,Kilometrischer Wert,de
+Leasing,Leasing,de
+Liter,Liter,de
+Location,Standort,de
+Manual,Handbuch,de
+Mileage,Kilometerstand,de
+Model,Modell,de
+Monthly,Monatlich,de
+Name,Name,de
+None,Keine,de
+Notes,Anmerkungen,de
+Odometer,Kilometerzähler,de
+Odometer unit,Einheit Kilometerzähler,de
+Odometers,Odometer,de
+Partner set,Partner-Set,de
+Plate number,Nummernschild,de
+Power(KW),Leistung(KW),de
+Price per Liter,Preis pro Liter,de
+Purchaser,Käufer,de
+Recurring Cost,Wiederkehrende Kosten,de
+Recurring Cost Frequency,Wiederkehrende Kosten Häufigkeit,de
+Recurring Costs,Wiederkehrende Kosten,de
+Refueling details,Einzelheiten zur Betankung,de
+Rent end,Miete Ende,de
+Rent start,Beginn der Miete,de
+Rental,Vermietung,de
+Rental car,Mietauto,de
+Repairing,Reparieren,de
+Repairs,Reparaturen,de
+Seats,Sitze,de
+Service Type,Art der Dienstleistung,de
+Service log,Dienstprotokoll,de
+Services,Dienstleistungen,de
+State,Staat,de
+Status,Status,de
+Tags,Tags,de
+Terminated,Beendet,de
+Terms and Conditions,Bedingungen und Konditionen,de
+To Close,Zum Schließen,de
+Total Price,Gesamtpreis,de
+Total cost,Gesamtkosten,de
+Transmission,Übertragung,de
+Type,Typ,de
+Unit,Einheit,de
+Vehicle,Fahrzeug,de
+Vehicle Contract,Fahrzeug-Vertrag,de
+Vehicle Cost,Fahrzeugkosten,de
+Vehicle Fuel,Fahrzeug-Kraftstoff,de
+Vehicle Fuel Log,Fahrzeug-Kraftstoffprotokoll,de
+Vehicle Model,Fahrzeugmodell,de
+Vehicle Recurring Cost,Fahrzeug Wiederkehrende Kosten,de
+Vehicle Service,Fahrzeug-Service,de
+Vehicle Service Log,Fahrzeug-Serviceprotokoll,de
+Vehicle Service Type,Fahrzeug Service Typ,de
+Vehicle brands,Fahrzeugmarken,de
+Vehicle contract,Fahrzeug-Vertrag,de
+Vehicle contracts,Fahrzeugverträge,de
+Vehicle cost,Fahrzeugkosten,de
+Vehicle fuel log,Fahrtenbuch für Kraftstoffe,de
+Vehicle models,Fahrzeugmodelle,de
+Vehicle odometer,Kilometerzähler des Fahrzeugs,de
+Vehicle rent,Fahrzeugmiete,de
+Vehicle service,Fahrzeugservice,de
+Vehicle service list,Fahrzeug-Service-Liste,de
+Vehicle service log,Fahrzeug-Serviceprotokoll,de
+Vehicle service type,Fahrzeug-Serviceart,de
+Vehicle sevice type,Art des Dienstes am Fahrzeug,de
+Vehicle tag,Fahrzeug-Tag,de
+Vehicle tags,Fahrzeugkennzeichen,de
+Vendor,Anbieter,de
+Vendors,Anbieter,de
+Warning Date,Datum der Warnung,de
+Weekly,Wöchentlich,de
+Yearly,Jährlich,de
+g/km,g/km,de
+value:Fleet,value:Fleet,de

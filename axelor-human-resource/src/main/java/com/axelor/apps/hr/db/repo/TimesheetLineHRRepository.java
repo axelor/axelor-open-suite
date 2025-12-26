@@ -21,6 +21,8 @@ package com.axelor.apps.hr.db.repo;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineComputeNameService;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import javax.persistence.PersistenceException;
 
@@ -39,6 +41,7 @@ public class TimesheetLineHRRepository extends TimesheetLineRepository {
     try {
       timesheetLineComputeNameService.computeFullName(timesheetLine);
 
+      Beans.get(TimesheetLineService.class).splitTimesheetLine(timesheetLine);
       return super.save(timesheetLine);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

@@ -170,8 +170,8 @@
     model="com.axelor.apps.budget.db.BudgetDistribution" groupBy="budget" canNew="false"
     canArchive="false" canDelete="false" canEdit="false">
     <field name="budget"/>
-    <field name="invoiceLine"/>
     <field name="moveLine"/>
+    <field name="moveLine.move.invoice"/>
     <field name="imputationDate"/>
     <field name="amount" aggregate="sum" x-scale="budget.company.currency.numberOfDecimals"/>
     <field name="budget.company.currency.numberOfDecimals" hidden="true"/>

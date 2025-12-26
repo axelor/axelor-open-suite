@@ -18,19 +18,18 @@
     onNew="action-city-record-new">
     <panel name="mainPanel">
       <field name="name"/>
-      <field name="artmin" colSpan="2"/>
-      <field name="zip" colSpan="4"/>
-      <field name="inseeCode"/>
+      <!-- MGM-80: moved the country up here as per stakeholder feedback -->
+      <field name="country" form-view="country-form" grid-view="country-grid"/>
+      <!-- MGM-80: artmin, zip, inseeCode not relevant as per stakeholder feedback -->
+      <!-- <field name="artmin" colSpan="2"/> <field name="zip" colSpan="4"/> <field name="inseeCode"/> -->
       <field name="fullName" hidden="true"/>
     </panel>
-    <panel name="localizationPanel" title="Localization">
-      <field name="country" form-view="country-form" grid-view="country-grid"/>
-      <field name="department" form-view="department-form" grid-view="department-grid"/>
-      <field name="canton" form-view="canton-form" grid-view="canton-grid"/>
-    </panel>
-    <panel name="demographyPanel" title="Demography">
-      <field name="nbInhCommune"/>
-    </panel>
+    <!-- MGM-80: moved the country up, hence hiding the following panel since not relevant as per stakeholder
+      feedback -->
+    <!-- <panel name="localizationPanel" title="Localization"> <field name="country" form-view="country-form"
+      grid-view="country-grid"/> <field name="department" form-view="department-form" grid-view="department-grid"/>
+      <field name="canton" form-view="canton-form" grid-view="canton-grid"/> </panel> <panel name="demographyPanel"
+      title="Demography"> <field name="nbInhCommune"/> </panel> -->
   </form>
 
   <action-record name="action-city-record-new" model="com.axelor.apps.base.db.City">

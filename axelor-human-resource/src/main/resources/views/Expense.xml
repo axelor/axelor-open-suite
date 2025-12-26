@@ -114,13 +114,17 @@
           <button name="sendExpensesBtn" title="Send Expenses"
             onClick="action-expense-group-send" hidden="true" hideIf="statusSelect &gt; 1"/>
           <button name="ventilateBtn" title="Ventilate"
-            onClick="save,action-expense-method-ventilate" hidden="true"/>
+            onClick="save,action-expense-method-ventilate" hidden="true"
+            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
           <button name="validateBtn" onClick="action-expense-group-validate" title="Validate"
-            hidden="true"/>
+            hidden="true"
+            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
           <button name="refuseBtn" onClick="action-expense-group-refuse" title="Refuse"
-            hidden="true"/>
+            hidden="true"
+            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
           <button name="cancelBtn" onClick="action-expense-group-cancel" hidden="true"
-            title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+            title="Cancel" icon="fa-times-circle" css="btn-danger"
+            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"/>
           <button name="draftBtn" onClick="action-expense-method-draft"
             title="Return to draft status" showIf="statusSelect &gt; 4 "/>
           <button name="addPaymentBtn" title="Register payment"
@@ -215,7 +219,7 @@
     <panel name="attrsPanel">
       <field name="attrs" colSpan="12"/>
     </panel>
-    <panel-mail name="mailPanel">
+    <panel-mail name="mailPanel" if="__user__.group.code ==  'admins' ">
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>
@@ -391,8 +395,7 @@
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
     <attribute name="hidden" for="refuseBtn"
       expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; user?.employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
-    <attribute name="hidden" for="cancelBtn"
-      expr="eval: period?.toDate?.isAfter(__config__.date) || statusSelect == 6 || ventilated"/>
+    <attribute name="hidden" for="cancelBtn" expr="eval: statusSelect == 6 || ventilated"/>
     <attribute name="readonly" for="period" expr="eval: true"
       if="!__user__.employee?.hrManager"/>
     <attribute name="readonly" for="period" expr="eval: ventilated"

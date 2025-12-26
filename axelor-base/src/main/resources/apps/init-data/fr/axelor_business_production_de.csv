@@ -1,0 +1,53 @@
+key,message,language
+Add a new sale order line,Eine neue Auftragszeile hinzufügen,de
+Add to cart,In den Warenkorb legen,de
+Business project,Geschäftliches Projekt,de
+Calendar per employee,Kalender pro Mitarbeiter,de
+Details Lines (Tree),Details Linien (Baum),de
+Do not update,Nicht aktualisieren,de
+Employee planned operations,Geplante Maßnahmen der Mitarbeiter,de
+Employee planning,Personalplanung,de
+Employee real operations,Reale Operationen der Mitarbeiter,de
+Employees,Mitarbeiter,de
+Enable timesheet on manuf order,Zeiterfassung für Herstellerauftrag aktivieren,de
+Force update,Aktualisierung der Kräfte,de
+Generate production orders,Produktionsaufträge generieren,de
+Generate timesheet line on manufacturing operation stop,Erzeugen einer Zeiterfassungszeile bei Stopp des Fertigungsvorgangs,de
+Invoiced,In Rechnung gestellt,de
+Manage business production,Verwalten der Unternehmensproduktion,de
+Manuf order,Herstellerauftrag,de
+Manuf. Orders Selection,Manuf. Aufträge Auswahl,de
+Manufacturing operation,Herstellungsvorgang,de
+Operation,Operation,de
+Origin sale order line details,Details der Originalverkaufslinie,de
+Overview,Übersicht,de
+Production orders,Produktionsaufträge,de
+Project,Projekt,de
+SO lines,SO-Linien,de
+Sale order line,Verkaufsauftragszeile,de
+Sale order line details,Details der Verkaufsauftragszeile,de
+Sale order line details list,Liste der Details der Verkaufsauftragszeile,de
+Sale order line details modification configuration,Konfiguration der Modifikation von Verkaufsauftragszeilen,de
+Skill needed,Erforderliche Fähigkeiten,de
+Skills,Fertigkeiten,de
+"Some working employees do not have their timesheet imputation on manuf order, therefore no timesheet line will be generated for those, do you want to continue anyway ?","Einige Mitarbeiter haben keine Zeiterfassung auf dem Fertigungsauftrag, daher wird für sie keine Zeiterfassungszeile erstellt. Wollen Sie trotzdem fortfahren?",de
+"Some working employees have their time logging preference set to 'days' or it is not matching with their current timesheet, do you want to continue anyway ?","Bei einigen Arbeitnehmern ist die Zeiterfassung auf ""Tage"" eingestellt, oder sie stimmt nicht mit dem aktuellen Stundenzettel überein; möchten Sie trotzdem fortfahren?",de
+"Some working users have no employee associated, therefore no timesheet line will be generated for those, do you want to continue anyway ?","Einige arbeitende Benutzer haben keinen zugeordneten Mitarbeiter, daher wird für diese keine Stundenzettelzeile erstellt. Möchten Sie trotzdem fortfahren?",de
+"There are timesheet still waiting validation on this manuf order, do you want to continue anyway ?","Es gibt noch Stundenzettel, die auf die Validierung dieses Fertigungsauftrags warten, möchten Sie trotzdem fortfahren?",de
+"There are timesheet still waiting validation on this manufacturing operation, do you want to continue anyway ?","Es gibt noch Stundenzettel, die auf die Validierung dieses Fertigungsvorgangs warten, wollen Sie trotzdem fortfahren?",de
+Time logging preference for employee %s is not yet taken into account for duration computation,Zeiterfassungspräferenz für Mitarbeiter %s wird bei der Berechnung der Dauer noch nicht berücksichtigt,de
+Timesheet Line,Arbeitszeitblatt Zeile,de
+Timesheet Lines,Stundenzettel-Zeilen,de
+Timesheet imputed on,Angerechneter Stundenzettel am,de
+Timesheet imputed on manufacturing order,Zeiterfassung auf Produktionsauftrag gerechnet,de
+Timesheet imputed on project,Zeiterfassung auf Projekt angerechnet,de
+Timesheet line,Zeile Stundenzettel,de
+Timesheet lines,Stundenzettel-Zeilen,de
+Timesheet on manuf order is not enabled.,Die Zeiterfassung für den Fertigungsauftrag ist nicht aktiviert.,de
+To Invoice,In Rechnung stellen,de
+To invoice,Zur Rechnung,de
+"Warning, this manuforder is finished","Achtung, diese Bestellung ist beendet",de
+"Warning, this manuforder is from another company.","Achtung, dieser Hersteller gehört zu einem anderen Unternehmen.",de
+"When editing a confirmed sale order, update or not the sale order line details in business project with sale order changes. Modifications done in business project will be overwritten.","Wenn Sie einen bestätigten Verkaufsauftrag bearbeiten, aktualisieren Sie die Details der Verkaufsauftragszeile im Geschäftsprojekt mit den Änderungen des Verkaufsauftrags oder nicht. Die im Geschäftsprojekt vorgenommenen Änderungen werden überschrieben.",de
+Work center,Arbeitsplatz,de
+You can not edit a confirmed sale order linked to a project.,"Sie können einen bestätigten Verkaufsauftrag, der mit einem Projekt verknüpft ist, nicht bearbeiten.",de

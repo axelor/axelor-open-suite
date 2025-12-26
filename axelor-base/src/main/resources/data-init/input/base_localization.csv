@@ -1,3 +1,4 @@
 "importId";"name";"code";"language.importId";"dateFormat";"numbersFormat";"country.importId"
-1;"English (UNITED-KINGDOM)";"en_GB";1;"dd/MM/yyyy";"#,##0.###";148
-2;"French (FRANCE)";"fr_FR";2;"dd/MM/yyyy";"# ##0,###";67
+1;"English";"en_GB";1;"dd/MM/yyyy";"#,##0.###";148
+2;"Français";"fr_FR";2;"dd/MM/yyyy";"# ##0,###";67
+3;Deutsch;de_DE;3;dd/MM/yyyy;#,##0.###;5

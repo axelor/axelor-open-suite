@@ -319,6 +319,7 @@ import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSup
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychain;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSaleSupplyChangeService;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSaleSupplyChangeServiceImpl;
@@ -542,5 +543,7 @@ public class SupplychainModule extends AxelorModule {
         .to(AnalyticMoveLineParentSupplychainServiceImpl.class);
     bind(SaleOrderLineSupplychainOnNewService.class)
         .to(SaleOrderLineSupplychainOnNewServiceImpl.class);
+    bind(SaleOrderLineViewServiceSupplychain.class)
+        .to(SaleOrderLineViewServiceSupplychainImpl.class);
   }
 }

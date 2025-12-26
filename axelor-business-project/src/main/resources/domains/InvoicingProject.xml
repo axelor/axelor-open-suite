@@ -8,7 +8,7 @@
   <entity name="InvoicingProject" cacheable="true">
 
     <many-to-one name="project" ref="com.axelor.apps.project.db.Project"
-      title="Business project"/>
+      title="Business project" unique="true"/>
     <many-to-many name="logTimesSet" ref="com.axelor.apps.hr.db.TimesheetLine"
       title="Log Times"/>
     <many-to-many name="saleOrderLineSet" ref="com.axelor.apps.sale.db.SaleOrderLine"
@@ -42,6 +42,10 @@
     <integer name="statusSelect" title="Status"
       selection="business.project.invoicing.project.status.select" default="1"/>
     <boolean name="consolidatePhaseWhenInvoicing" title="Consolidate phase invoicing"/>
+    <!-- <many-to-many name="extraExpenseLineSet" -->
+    <!-- ref="com.axelor.apps.businessproject.db.ExtraExpenseLine" title="Extra Expense Lines"/> -->
+    <integer name="extraExpenseLineSetPrioritySelect"
+      selection="invoicing.project.priority.select" title="Extra Expense Lines Priority" default="7"/>
 
     <extra-code>
       // STATUS SELECT

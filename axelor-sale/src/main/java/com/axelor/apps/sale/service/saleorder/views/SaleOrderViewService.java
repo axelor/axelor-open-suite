@@ -31,5 +31,5 @@ public interface SaleOrderViewService {
   Map<String, Map<String, Object>> getPartnerOnChangeAttrs(SaleOrder saleOrder)
       throws AxelorException;
 
-  Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder);
+  Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder) throws AxelorException;
 }

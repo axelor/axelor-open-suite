@@ -1,0 +1,24 @@
+"name";"isSelectable";"label";"content";"logoMode"
+"MGM Light";"true";"MGM Light";"{
+  ""palette"": {
+    ""mode"": ""light"",
+    ""primary"": ""#4c89b6"",
+    ""blue"": ""#4c89b6""
+  },
+  ""components"": {
+    ""Input"": {
+      ""focus"": {
+        ""border"": {
+          ""color"": ""#4c89b6""
+        }
+      },
+      ""border"": {
+        ""color"": ""#4c89b6""
+      }
+    }
+  },
+  ""link"": {
+    ""hover"": ""#4c89b6"",
+    ""color"": ""#86bcde""
+  }
+}";

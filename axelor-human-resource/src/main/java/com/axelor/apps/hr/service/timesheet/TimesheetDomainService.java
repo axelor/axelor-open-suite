@@ -27,6 +27,9 @@ public interface TimesheetDomainService {
   void createDomainAllTimesheetLine(
       User user, Employee employee, ActionView.ActionViewBuilder actionView);
 
+  void createCustomDomainAllTimesheetLine(
+      User user, Employee employee, ActionView.ActionViewBuilder actionView);
+
   void createValidateDomainTimesheetLine(
       User user, Employee employee, ActionView.ActionViewBuilder actionView);
 }

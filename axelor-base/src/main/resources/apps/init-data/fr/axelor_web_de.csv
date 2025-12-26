@@ -1,0 +1,422 @@
+key,message,language
++{0} more,+{0} mehr,de
+API Documentation,API-Dokumentation,de
+About,Über,de
+Access Error,Zugriffsfehler,de
+Action,Aktion,de
+Action Category,Kategorie Aktion,de
+Action Sub-Category,Aktion Unterkategorie,de
+Action...,Aktion...,de
+Active Users,Aktive Benutzer,de
+Add,hinzufügen,de
+Add Field,Feld hinzufügen,de
+Add and new,Hinzufügen und neu,de
+Add filter,Filter hinzufügen,de
+Add followers,Anhänger hinzufügen,de
+Add recipients to post your message.,"Fügen Sie Empfänger hinzu, um Ihre Nachricht zu veröffentlichen.",de
+Add some tags,Einige Tags hinzufügen,de
+Add subitem,Unterpunkt hinzufügen,de
+Add to favorites...,Zu den Favoriten hinzufügen...,de
+Advanced Search,Erweiterte Suche,de
+Align left,Links ausrichten,de
+Align right,Rechts ausrichten,de
+All,Alle,de
+All Day,Ganztägig,de
+All Rights Reserved,Alle Rechte vorbehalten,de
+Alt.Key,Alt.Key,de
+An error has occurred{0}. Please contact your administrator.,Es ist ein Fehler aufgetreten{0}. Bitte kontaktieren Sie Ihren Administrator.,de
+Apply,Bewerbung,de
+Apply as default for all users,Als Standard für alle Benutzer anwenden,de
+Archive,Archiv,de
+Are you sure to unfollow this document?,"Sind Sie sicher, dass Sie dieses Dokument aufheben wollen?",de
+Are you sure you want to delete the {0} selected documents?,"Sind Sie sicher, dass Sie die {0} ausgewählten Dokumente löschen wollen?",de
+Are you sure you want to delete {0}?,"Sind Sie sicher, dass Sie {0} löschen wollen?",de
+Are you sure you want to reset this view customization?,"Sind Sie sicher, dass Sie diese Ansichtsanpassung zurücksetzen möchten?",de
+Attached to...,Angeschlossen an...,de
+Attachment,Anlage,de
+Attachments,Anhänge,de
+Attributes,Attribute,de
+Avg,Avg,de
+Back,Zurück,de
+Back to editor,Zurück zur Redaktion,de
+Background color,Hintergrundfarbe,de
+Blockquote,Blockquote,de
+Bold (Ctrl+B),Fettdruck (Strg+B),de
+Call,Rufen Sie  an.,de
+Cancel,Abbrechen,de
+Cancelled,Abgebrochen,de
+Center,Zentrum,de
+Change password,Passwort ändern,de
+Change your password,Ändern Sie Ihr Passwort,de
+Clear,Klar,de
+Close,Schließen Sie,de
+Close All,Alle schließen,de
+Close Others,Andere schließen,de
+Code,Code,de
+Collapse All,Alle einklappen,de
+Columns,Rubriken,de
+Comments,Kommentare,de
+Confirm new password,Bestätigen Sie das neue Passwort,de
+Copied,Kopiert,de
+Copy to clipboard,In die Zwischenablage kopieren,de
+Count,Zählen Sie,de
+Create,erstellen.,de
+Create document,Dokument erstellen,de
+Create folder,Ordner erstellen,de
+Create spreadsheet,Tabellenkalkulation erstellen,de
+Create...,Erstellen...,de
+Created,Erstellt,de
+Created By,Erstellt von,de
+Created On,Erstellt am,de
+Ctrl.Key,Ctrl.Key,de
+Current changes will be lost. Do you really want to proceed?,Die aktuellen Änderungen gehen verloren. Wollen Sie wirklich fortfahren?,de
+Current changes will be saved. Do you want to proceed?,Die aktuellen Änderungen werden gespeichert. Möchten Sie fortfahren?,de
+Current password,Aktuelles Passwort,de
+Custom ({0}),Benutzerdefiniert ({0}),de
+Customize...,Anpassen...,de
+DMS.Home,DMS.Home,de
+Day,Tag,de
+Days,Tage,de
+Delete,Löschen,de
+Delete...,Löschen...,de
+Delete.Key,Delete.Key,de
+Details,Einzelheiten,de
+Details...,Details...,de
+Directory,Verzeichnis,de
+Display process,Prozess anzeigen,de
+Do you really want to archive the selected record(s)?,Möchten Sie den/die ausgewählten Datensatz/e wirklich archivieren?,de
+Do you really want to archive the selected record?,Möchten Sie den ausgewählten Datensatz wirklich archivieren?,de
+Do you really want to delete the selected record(s)?,Möchten Sie den/die ausgewählten Datensatz/e wirklich löschen?,de
+Do you really want to delete the selected record?,Möchten Sie den ausgewählten Datensatz wirklich löschen?,de
+Do you really want to delete the selected task?,Möchten Sie die ausgewählte Aufgabe wirklich löschen?,de
+Do you really want to unarchive the selected record(s)?,Möchten Sie die Archivierung der ausgewählten Datensätze wirklich aufheben?,de
+Do you really want to unarchive the selected record?,Möchten Sie die Archivierung des ausgewählten Datensatzes wirklich aufheben?,de
+Do you really want to update all {0} record(s)?,Wollen Sie wirklich alle {0} Datensätze aktualisieren?,de
+Document,Dokument,de
+Documentation,Dokumentation,de
+Domain,Bereich,de
+Download,Herunterladen,de
+Downloading file…,Herunterladen der Datei...,de
+Downloading {0}…,Herunterladen von {0}...,de
+Drop here,Hier fallen lassen,de
+Drop your files to start upload.,"Legen Sie Ihre Dateien ab, um den Upload zu starten.",de
+Duplicate,Duplizieren Sie,de
+Edit,bearbeiten,de
+Either select or create a record.,Wählen Sie entweder einen Datensatz aus oder erstellen Sie einen.,de
+Email,E-Mail,de
+Email address,E-Mail Adresse,de
+Enum type,Enum-Typ,de
+Environment,Umwelt,de
+Error,Fehler,de
+Error code :,Fehlercode :,de
+Expand All,Alle erweitern,de
+Export,Exportieren,de
+Export full,Vollständig exportieren,de
+Failed,Gescheitert,de
+Failed to parse the given JSON theme : incorrect syntax was encountered.,Das angegebene JSON-Theme konnte nicht geparst werden: Es wurde eine falsche Syntax festgestellt.,de
+False,Falsch,de
+Favorite,Favorit,de
+Field name,Name des Feldes,de
+Field type,Feldtyp,de
+File,Datei,de
+File does not exist.,Die Datei existiert nicht.,de
+File upload,Hochladen von Dateien,de
+File {0} does not exist.,Die Datei {0} existiert nicht.,de
+Filter,Filter,de
+Filters,Filter,de
+Filters ({0}),Filter ({0}),de
+Fixed line,Festnetz,de
+Fixed line or mobile,Festnetz oder Mobilfunk,de
+Folder,Mappe,de
+Followers,Follower,de
+Font,Schriftart,de
+Font color,Schriftfarbe,de
+Font size,Schriftgröße,de
+Forgot password?,Passwort vergessen?,de
+Formatted,Formatiert,de
+Free Memory,Freier Speicher,de
+Go,Weiter,de
+Go back to sign in page,Zurück zur Anmeldeseite gehen,de
+Grid requires at least one field.,Grid erfordert mindestens ein Feld.,de
+Group by,Gruppe nach,de
+Grouped,Gruppiert,de
+Groups,Gruppen,de
+Header 1,Kopfzeile 1,de
+Header 2,Kopfzeile 2,de
+Header 3,Kopfzeile 3,de
+Header 4,Kopfzeile 4,de
+Header 5,Kopfzeile 5,de
+Header 6,Kopfzeile 6,de
+Hide,Ausblenden,de
+Hide legend,Legende ausblenden,de
+Hide password,Passwort verstecken,de
+Home page,Hauptseite,de
+"If an account exists with this email address, you will receive a password reset link.","Wenn ein Konto mit dieser E-Mail-Adresse existiert, erhalten Sie einen Link zum Zurücksetzen des Passworts.",de
+Indent,Einrückung,de
+Information,Informationen,de
+Insert image,Bild einfügen,de
+Insert link,Link einfügen,de
+Insert.Key,Insert.Key,de
+Internal Server Error,Interner Serverfehler,de
+Invalid request,Ungültige Anfrage,de
+"Invalid use of ""{0}"" action, must be the last action.","Ungültige Verwendung der Aktion ""{0}"", muss die letzte Aktion sein.",de
+Italic (Ctrl+I),Kursiv (Strg+I),de
+Java Runtime,Java-Laufzeit,de
+Java Version,Java-Version,de
+Justify,Begründen Sie,de
+Keyboard Shortcuts,Tastaturkurzbefehle,de
+Language,Sprache,de
+Large,Groß,de
+Larger,Größere,de
+Last access time,Letzte Zugriffszeit,de
+Last modified...,Zuletzt geändert...,de
+License,Lizenz,de
+Load more,Mehr laden,de
+Loading...,Laden...,de
+Log in time,Einloggzeit,de
+Log out,Abmelden,de
+Maintenance,Wartung,de
+Mark as important,Als wichtig markieren,de
+Mark as not important,Als nicht wichtig markieren,de
+Mark as read,Als gelesen markieren,de
+Mark as unread,Als ungelesen markieren,de
+Mass Update,Massenaktualisierung,de
+Max,Max,de
+Max Memory,Maximaler Speicher,de
+Medium,Mittel,de
+Memory,Speicher,de
+Messages,Nachrichten,de
+Min,Min,de
+Mobile,Mobil,de
+Model...,Modell...,de
+Modified,Geändert,de
+Month,Monat,de
+Months,Monate,de
+More,Mehr,de
+More details...,Mehr Details...,de
+Move to archive,Ins Archiv verschieben,de
+Move to inbox,In den Posteingang verschieben,de
+My Filters,Meine Filter,de
+Name,Name,de
+New,Neu,de
+New Document,Neues Dokument,de
+New Folder,Neue Mappe,de
+New Spreadsheet,Neue Tabellenkalkulation,de
+New password,Neues Passwort,de
+New password must be different.,Das neue Passwort muss anders lauten.,de
+No,Nein,de
+No filters available,Keine Filter verfügbar,de
+No records found.,Keine Aufzeichnungen gefunden.,de
+No results found,Keine Ergebnisse gefunden,de
+None,Keine,de
+Normal,Normal,de
+Normalize,Normalisieren,de
+Not available,Nicht verfügbar,de
+Notifications,Benachrichtigungen,de
+Now,Jetzt,de
+OK,OK,de
+Object,Objekt,de
+Open URL,URL öffnen,de
+Operating System,Betriebssystem,de
+Opps!,Opps!,de
+Ordered list,Geordnete Liste,de
+Organize favorites...,Organisieren Sie Ihre Favoriten...,de
+Orig. value,Ursprünglicher Wert,de
+Outdent,Outdent,de
+Owner,Eigentümer,de
+Page not found,Seite nicht gefunden,de
+Page size limited to {0} records,Seitengröße begrenzt auf {0} Datensätze,de
+PageDown.Key,PageDown.Key,de
+PageUp.Key,PageUp.Key,de
+Pager,Pager,de
+Parent,Elternteil,de
+Password,Passwort,de
+Passwords do not match.,Die Kennwörter stimmen nicht überein.,de
+Pending,Anhängig,de
+Permissions {0},Berechtigungen {0},de
+Permissions...,Erlaubnisse...,de
+Personal number,Persönliche Nummer,de
+Please check back later. Thank you for your patience.,Bitte schauen Sie später wieder vorbei. Wir danken Ihnen für Ihre Geduld.,de
+Please contact your administrator if the problem persists.,"Wenden Sie sich bitte an Ihren Administrator, wenn das Problem weiterhin besteht.",de
+Please select at least one record.,Bitte wählen Sie mindestens einen Datensatz aus.,de
+Please wait...,Bitte warten Sie...,de
+Post,Beitrag,de
+Preferences,Präferenzen,de
+Premium rate,Prämiensatz,de
+Quarter,Quartal,de
+Quarters,Quartier,de
+Question,Frage,de
+Recipients,Empfänger,de
+Reconnecting…,Die Verbindung wiederherstellen...,de
+Reference,Referenz,de
+Refresh,Auffrischen,de
+Refreshed at,Erfrischt bei,de
+Reload,Neu laden,de
+Remove,entfernen,de
+Remove color,Farbe entfernen,de
+Remove format,Format entfernen,de
+Rename...,Umbenennen...,de
+Report attached to current object. Would you like to download?,Bericht an das aktuelle Objekt angehängt. Möchten Sie ihn herunterladen?,de
+Reset,Zurücksetzen,de
+Reset password,Passwort zurücksetzen,de
+Reset your password,Ihr Passwort zurücksetzen,de
+Retry,Wiederholung,de
+Save,Speichern Sie,de
+Save as,Speichern unter,de
+Save column widths,Spaltenbreiten speichern,de
+Save filter as,Filter speichern unter,de
+Search,Suche,de
+Search Objects,Objekte suchen,de
+Search in filters...,Suche in Filtern...,de
+Search menu...,Menü durchsuchen...,de
+Search more...,Mehr suchen...,de
+Search...,Suche...,de
+Select,Wählen Sie,de
+Selection,Auswahl,de
+Send,Senden Sie,de
+Service disabled,Dienst deaktiviert,de
+Share,Teilen Sie,de
+Shared cost,Gemeinsame Kosten,de
+Shortcuts,Abkürzungen,de
+Show,anzeigen,de
+Show archived,Archiviert anzeigen,de
+Show help,Hilfe anzeigen,de
+Show json content,json-Inhalt anzeigen,de
+Show legend,Legende anzeigen,de
+Show password,Passwort anzeigen,de
+Showing all items.,Es werden alle Artikel angezeigt.,de
+Showing {0} of {1} items.,Zeigt {0} von {1} Artikeln.,de
+Sign in,Eintragen,de
+Site under maintenance,Website unter Wartung,de
+Small,Klein,de
+Smaller,Kleiner,de
+Some files can't be downloaded. Please check them and retry.,Einige Dateien können nicht heruntergeladen werden. Bitte überprüfen Sie diese und versuchen Sie es erneut.,de
+"Sorry, something went wrong. Please try again later.","Entschuldigung, da ist etwas schief gelaufen. Bitte versuchen Sie es später noch einmal.",de
+Sort Ascending,Aufsteigend sortieren,de
+Sort Descending,Absteigend sortieren,de
+Spreadsheet,Tabellenkalkulation,de
+Stacked,Gestapelt,de
+Strikethrough (Ctrl+S),Durchgestrichen (Ctrl+S),de
+Style,Stil,de
+Subject,Thema,de
+Sum,Summe,de
+System Information,System-Informationen,de
+Tasks due,Fällige Aufgaben,de
+Tasks todo,Zu erledigende Aufgaben,de
+Tenant,Mieter,de
+The audit log related to update and creation isn't available for the record.,Das Audit-Protokoll für die Aktualisierung und Erstellung ist für den Datensatz nicht verfügbar.,de
+The record has been updated or deleted by another action.,Der Datensatz wurde durch eine andere Aktion aktualisiert oder gelöscht.,de
+There are no records to update.,Es gibt keine Datensätze zu aktualisieren.,de
+This page is automatically reloaded every 30 seconds.,Diese Seite wird automatisch alle 30 Sekunden neu geladen.,de
+Title,Titel,de
+Today,Heute,de
+Toggle,Umschalten auf,de
+Toll free,Gebührenfrei,de
+Tomorrow,Morgen,de
+Total Memory,Gesamtspeicher,de
+Translate,Übersetzen Sie,de
+Translation,Übersetzung,de
+True,Wahr,de
+Try to refresh this page or contact your support service if the problem persists.,"Versuchen Sie, diese Seite zu aktualisieren, oder wenden Sie sich an den Kundendienst, wenn das Problem weiterhin besteht.",de
+Type,Typ,de
+UAN,UAN,de
+Unarchive,Nicht archivieren,de
+Underline (Ctrl+U),Unterstreichen (Strg+U),de
+Unexpected error occurred,Unerwarteter Fehler aufgetreten,de
+Ungroup,Auflösen der Gruppe,de
+Unknown,Unbekannt,de
+Unordered list,Unsortierte Liste,de
+Update,Update,de
+Update all,Alle aktualisieren,de
+Updated By,Aktualisiert von,de
+Updated On,Aktualisiert am,de
+Upload,Hochladen,de
+Upload complete,Upload abgeschlossen,de
+Uploading files...,Hochladen von Dateien...,de
+Used Memory,Verwendeter Speicher,de
+User,Benutzer,de
+Username,Benutzername,de
+Validate,Validieren Sie,de
+Value,Wert,de
+Version,Version,de
+View,Siehe,de
+View...,Ansicht...,de
+VoIP,VoIP,de
+Voicemail,Voicemail,de
+Warning,Warnung,de
+Week,Woche,de
+Weeks,Wochen,de
+Would you like to reload the current record?,Möchten Sie den aktuellen Datensatz neu laden?,de
+Would you like to reload the record?,Möchten Sie den Datensatz neu laden?,de
+Would you like to remove the filter?,Möchten Sie den Filter entfernen?,de
+Write an email,Schreiben Sie eine E-Mail,de
+Write your comment here,Schreiben Sie Ihren Kommentar hier,de
+Wrong current username or password,Falscher aktueller Benutzername oder Passwort,de
+Wrong username or password,Falscher Benutzername oder falsches Passwort,de
+Year,Jahr,de
+Years,Jahre,de
+Yes,Ja,de
+Yesterday,Gestern,de
+You are not allowed to upload a file bigger than {0} MB.,"Sie dürfen keine Datei hochladen, die größer als {0} MB ist.",de
+You are not authorized to access this resource.,"Sie sind nicht berechtigt, auf diese Ressource zuzugreifen.",de
+Your password has been successfully changed.,Ihr Passwort wurde erfolgreich geändert.,de
+Your password reset token is invalid or expired.,Ihr Passwort-Reset-Token ist ungültig oder abgelaufen.,de
+[Last] dddd,[Letzte] ttD,de
+and,und,de
+close the current view tab,Schließen des aktuellen Ansichtsreiters,de
+contains,enthält,de
+create new record,neuen Datensatz anlegen,de
+delete current/selected record(s),aktuellen/ausgewählten Datensatz/e löschen,de
+doesn't contain,enthält nicht,de
+duplicate current record,aktuellen Datensatz duplizieren,de
+edit selected record,ausgewählten Datensatz bearbeiten,de
+equals,ist gleich,de
+focus first or selected item in view,erstes oder ausgewähltes Element in der Ansicht fokussieren,de
+focus left menu search box,Fokus linkes Menü Suchfeld,de
+greater or equal,größer oder gleich,de
+greater than,größer als,de
+in,in,de
+in range,in Reichweite,de
+in the current,in der aktuellen,de
+in the next,im nächsten,de
+in the past,in der Vergangenheit,de
+is current group,ist die aktuelle Gruppe,de
+is current user,ist aktueller Benutzer,de
+is empty,ist leer,de
+is false,ist falsch,de
+is not empty,nicht leer ist,de
+is not null,ist nicht null,de
+is null,ist null,de
+is true,ist wahr,de
+items,Artikel,de
+less or equal,kleiner oder gleich,de
+less than,weniger als,de
+load more,mehr laden,de
+navigate to next page/record,Zur nächsten Seite/Datensatz navigieren,de
+navigate to previous page/record,Zur vorherigen Seite/Datensatz navigieren,de
+no messages,keine Nachrichten,de
+no tasks,keine Aufgaben,de
+not equal,nicht gleich,de
+not in,nicht in,de
+not in range,nicht im Bereich,de
+or,oder,de
+or sign in with,oder melden Sie sich an mit,de
+refresh current view,aktuelle Ansicht aktualisieren,de
+replies ({0} of {1}),Antworten ({0} von {1}),de
+save current record,aktuellen Datensatz speichern,de
+search for records,Suche nach Aufzeichnungen,de
+toggle left menu,Linkes Menü umschalten,de
+{0} is editing since {1},"{0} ist eine Bearbeitung, da {1}",de
+{0} is invalid,{0} ist ungültig,de
+{0} is not in proper format,{0} ist nicht im richtigen Format,de
+{0} is required,{0} ist erforderlich,de
+{0} is too big,{0} ist zu groß,de
+{0} is too small,{0} ist zu klein,de
+{0} joined {1},{0} verbunden {1},de
+{0} left {1},{0} links {1},de
+{0} messages,{0} Nachrichten,de
+{0} of {1},{0} von {1},de
+{0} records exported.,{0} exportierte Datensätze.,de
+{0} saved {1},{0} gespeichert {1},de
+{0} tasks,{0} Aufgaben,de
+{0} to {1} of {2},{0} bis {1} von {2},de

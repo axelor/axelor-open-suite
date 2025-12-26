@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlService;
 import com.axelor.apps.businessproject.service.BusinessProjectService;
@@ -41,6 +42,8 @@ import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -106,14 +109,32 @@ public class ProjectController {
 
     Project project = request.getContext().asType(Project.class);
     project = Beans.get(ProjectRepository.class).find(project.getId());
+    InvoicingProjectService invoicingProjectService = Beans.get(InvoicingProjectService.class);
+    InvoicingProjectRepository invoicingProjectRepository =
+        Beans.get(InvoicingProjectRepository.class);
 
-    response.setView(
+    InvoicingProject invoicingProject =
+        Beans.get(InvoicingProjectRepository.class)
+            .all()
+            .filter("self.project.id = ?", project.getId())
+            .fetchOne();
+
+    ActionView.ActionViewBuilder view =
         ActionView.define(I18n.get("Invoice Business Project"))
             .model(InvoicingProject.class.getName())
             .add("form", "invoicing-project-form")
-            .param("forceEdit", "true")
-            .context("_project", project)
-            .map());
+            .param("forceEdit", "true");
+
+    if (invoicingProject != null) {
+      // Open or update existing invoicing project
+      invoicingProject = invoicingProjectService.refreshInvoicingProject(invoicingProject, project);
+      view.context("_showRecord", invoicingProject.getId());
+    } else {
+      // Creating new invoicing project : pre-fill with project
+      view.context("_project", project);
+    }
+
+    response.setView(view.map());
   }
 
   @ErrorException
@@ -282,5 +303,32 @@ public class ProjectController {
             .domain("self.isBusinessProject = true");
     response.setCanClose(true);
     response.setView(builder.map());
+  }
+
+  public void findProjectDmsHomeGrid(ActionRequest request, ActionResponse response) {
+    Long projectId = (Long) request.getContext().get("id");
+    if (projectId == null) {
+      return;
+    }
+
+    Project project = Beans.get(ProjectRepository.class).find(projectId);
+    if (project == null) {
+      return;
+    }
+
+    DMSFile home = Beans.get(DMSFileRepository.class).findHomeByRelated(project);
+
+    if (home != null) {
+      response.setView(
+          ActionView.define(I18n.get("Project Files") + " - " + project.getFullName())
+              .model(DMSFile.class.getName())
+              .add("grid", "dms-file-grid")
+              .add("form", "dms-file-form")
+              .domain("self.parent.id = :parentId")
+              .context("parentId", home.getId())
+              .map());
+    } else {
+      response.setAlert("There are no files for this project");
+    }
   }
 }

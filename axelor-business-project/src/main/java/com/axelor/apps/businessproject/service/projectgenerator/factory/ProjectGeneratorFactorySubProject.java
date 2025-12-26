@@ -105,7 +105,7 @@ public class ProjectGeneratorFactorySubProject implements ProjectGeneratorFactor
           && saleOrderLine.getSaleSupplySelect() == SaleOrderLineRepository.SALE_SUPPLY_PRODUCE) {
         Project phase = projectBusinessService.generatePhaseProject(saleOrderLine, project);
         lineProject = phase;
-        phase.setFromDate(startDate);
+        phase.setFromDate(startDate.toLocalDate());
         projects.add(phase);
 
         if (!CollectionUtils.isEmpty(product.getTaskTemplateSet())) {

@@ -4,27 +4,31 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
-    edit-icon="true" orderBy="-priority.technicalTypeSelect">
-    <toolbar>
-      <button name="logTimeBtn" icon="clock-history"
-        onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
-    </toolbar>
-    <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
-    <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
-    <hilite if="$get('priority.technicalTypeSelect') == 4" color="warning"/>
-    <field name="ticketNumber"
-      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    edit-icon="false" orderBy="-priority.technicalTypeSelect">
+    <hilite if="$get('status.isCompleted') &amp;&amp; $get('status.isDefaultCompleted')"
+      color="success"/>
+    <!-- <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/> -->
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
+    <!-- <field name="ticketNumber"/> -->
     <field name="name"/>
     <field name="project"/>
-    <field name="taskDate"/>
+    <field name="assignedTo"/>
+    <!-- <field name="taskDate"/> -->
+    <field name="startTime"/>
+    <field name="endTime"/>
     <field name="status"/>
     <field name="priority"/>
     <field name="projectTaskCategory"/>
+    <field name="targetVersion" if-module="axelor-business-support"
+      if="__config__.app.isApp('business-support')"/>
     <field name="taskEndDate" hidden="true"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
-    <field name="project.completedTaskStatus.id" hidden="true"/>
+    <field name="status.isCompleted" hidden="true"/>
+    <field name="status.isDefaultCompleted" hidden="true"/>
   </grid>
-
+  <!-- MGM-68: commented out to use old specific behaviour of task highlighth based on selected priority -->
   <grid name="project-task-project-grid" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask" edit-icon="true"
     orderBy="-priority.technicalTypeSelect">
@@ -33,17 +37,20 @@
         onClick="action-project-add-task"/>
       <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
         onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/>
-      <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-        icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
+      <!-- MGM-80 - @gkouete: all task button within task grid not best for user experience -->
+      <!-- <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left" icon="fa-tasks"
+        onClick="save,action-project-view-show-related-tasks"/> -->
     </toolbar>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
     <field name="ticketNumber"
-      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()" width="200"/>
-    <field name="name" width="680"/>
+      if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/>
+    <field name="name"/>
     <field name="projectTaskCategory" width="200"/>
-    <field name="taskDate" width="100"/>
+    <!-- <field name="taskDate" width="100"/> -->
+    <field name="startTime" width="100"/>
+    <field name="endTime" width="100"/>
     <field name="status" width="100"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
     <button name="createSubtaskBtn" icon="fa-plus"
@@ -55,12 +62,10 @@
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
     width="large">
-    <toolbar>
-      <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
-        onClick="action-project-task-record-assigned-yourself,save"/>
-      <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
-        showIf="project.taskStatusManagementSelect != 1"/>
-    </toolbar>
+    <!-- MGM-80, @gkouete: the following toolbar item are not relevant for MGM -->
+    <!-- <toolbar> <button name="grabEventBtn" icon="fa-suitcase" help="Take charge" onClick="action-project-task-record-assigned-yourself,save"/>
+      <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done" showIf="project.taskStatusManagementSelect
+      != 1"/> </toolbar> -->
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
         if="__config__.app.getApp('project')?.resourceManagement">
@@ -108,17 +113,27 @@
     <panel-tabs name="mainPanelTab">
       <panel-include view="incl-overview-project-task-panel-form"/>
 
+      <panel if="__user__.group.code == 'CUSTOM-PT'" name="taskReportsPanel"
+        title="Task Report">
+        <panel-dashlet name="taskReportsDashlet" title="Task Reports" colSpan="12"
+          action="action-task-report-task-dashlet" canNew="true" x-show-bars="true"
+          reload-dotted="true"/>
+      </panel>
+
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet')" showIf="project.manageTimeSpent">
+        if="__config__.app.isApp('timesheet') &amp;&amp; __user__.group.code != 'CUSTOM-PM'"
+        showIf="project.manageTimeSpent">
         <panel-include view="incl-log-times-projec-task-panel-form"/>
         <field name="project.manageTimeSpent" hidden="true"/>
       </panel>
 
-      <panel name="timeFollowUpPanel" title="Time follow-up">
+      <panel name="timeFollowUpPanel" title="Time follow-up"
+        if="__user__.group.code == 'admins'">
         <panel-include view="incl-time-follow-task-panel-form"/>
       </panel>
 
-      <panel name="taskPanel" title="Tasks" colSpan="12" showIf="id">
+      <panel name="taskPanel" title="Tasks" colSpan="12" showIf="id"
+        if="__user__.group.code == 'admins'">
         <panel-dashlet name="taskTreePanel" title="Task Tree" colSpan="12"
           action="action-view-show-task-tree" canSearch="true" height="200%"/>
         <panel-related name="finishToStartSetPanel" field="finishToStartSet"
@@ -129,12 +144,13 @@
       </panel>
 
 
-      <panel-include view="incl-checklist-task-panel-form"/>
+      <panel-include view="incl-checklist-task-panel-form"
+        if="__user__.group.code == 'admins'"/>
 
-      <panel-include view="incl-links-panel-form"/>
+      <panel-include view="incl-links-panel-form" if="__user__.group.code == 'admins'"/>
     </panel-tabs>
 
-    <panel-mail name="mailPanel">
+    <panel-mail name="mailPanel" if="__user__.group.code == 'admins'">
       <mail-messages/>
       <mail-followers/>
     </panel-mail>
@@ -148,39 +164,42 @@
         if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
       <field name="project" colSpan="6" onChange="action-project-task-group-project-onchange"
         domain="self.projectStatus.isCompleted = false" required="true" form-view="project-form"
-        grid-view="project-grid"/>
-      <field name="parentTask" readonlyIf="project == null" colSpan="6"
-        form-view="project-task-form" grid-view="project-task-grid"
-        onChange="action-project-task-record-get-parent-timeunit"
-        onSelect="action-project-task-attrs-project-parent-task-configurations"/>
+        grid-view="project-grid" canView="false" readonlyIf="id != null || _project != null"/>
+      <field if="__config__.app.isApp('business-project')" name="project.customerAddress"
+        readonly="true" colSpan="6" showIf="project"
+        domain="self IN (SELECT address FROM PartnerAddress where partner = :project.clientPartner)"
+        form-view="address-form" grid-view="address-grid"/>
+      <!-- MGM-68 - @gkouete: parent task not required -->
+      <!-- <field name="parentTask" readonlyIf="project == null" colSpan="6" form-view="project-task-form"
+        grid-view="project-task-grid" onChange="action-project-task-record-get-parent-timeunit" onSelect="action-project-task-attrs-project-parent-task-configurations"/> -->
+      <field name="site" onSelect="action-project-task-attrs-set-site-domain"
+        form-view="site-form" grid-view="site-grid"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject" readonly="true"/>
+      <!-- <panel name="characteristicsPanel" title="Characteristics" colSpan="12" collapseIf="false"
+        canCollapse="true"> <panel-include view="incl-characteristics-panel-form"/> <field name="description"
+        colSpan="12" widget="html"/> </panel> -->
+      <panel-include view="incl-characteristics-panel-form"/>
       <field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false"
         canView="false" canEdit="false"
         onSelect="action-project-task-attrs-project-assigned-to-configurations" required="true"
         form-view="user-form" grid-view="user-grid"
         onChange="action-project-task-attrs-hide-time-spent-button"/>
-      <field name="site" onSelect="action-project-task-attrs-set-site-domain"
-        form-view="site-form" grid-view="site-grid"
-        if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
-
-      <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
-        collapseIf="false" canCollapse="true">
-        <panel-include view="incl-characteristics-panel-form"/>
-        <field name="description" colSpan="12" widget="html"/>
-      </panel>
-      <panel-include view="incl-customized-field-panel-form"/>
+      <field name="description" colSpan="12" widget="html"/>
+      <!-- <panel-include view="incl-customized-field-panel-form"/> -->
     </panel>
   </form>
 
   <form name="incl-log-times-projec-task-panel-form" title="Project task"
     model="com.axelor.apps.project.db.ProjectTask">
     <panel title="Log Times" name="logTimesPanel" showTitle="false" colSpan="12" itemSpan="12">
+      <!-- MGM-80: Inverted wating timesheet and validated timesheet to improve user experience -->
+      <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
+        action="action-project-task-dashlet-waiting-timesheet-lines" title="Waiting Timesheet lines"
+        colSpan="12" canSearch="true" if="__config__.app.getApp('timesheet')?.needValidation"/>
       <panel-dashlet name="validatedTimesheetLinesPanel" x-show-bars="true"
         action="action-project-task-dashlet-validated-timesheet-lines"
         title="Validated Timesheet lines" colSpan="12" canSearch="true"
         if="__config__.app.getApp('timesheet')?.needValidation"/>
-      <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
-        action="action-project-task-dashlet-waiting-timesheet-lines" title="Waiting Timesheet lines"
-        colSpan="12" canSearch="true" if="__config__.app.getApp('timesheet')?.needValidation"/>
       <panel-dashlet name="allTimesheetLinesPanel" x-show-bars="true"
         action="action-project-task-dashlet-all-timesheet-lines" title="TimesheetLine.timeSpent"
         colSpan="12" canSearch="true" if="!__config__.app.getApp('timesheet')?.needValidation"/>
@@ -189,29 +208,36 @@
   </form>
 
   <form name="incl-characteristics-panel-form" title="Characteristics"
-    model="com.axelor.apps.project.db.ProjectTask">
+    model="com.axelor.apps.project.db.ProjectTask" onSave="action-project-task-validate-toDate">
     <panel name="mainPanel" colSpan="12">
-      <field name="projectTaskCategory" colSpan="4" showIf="project.isShowTaskCategory"
+      <!-- MGM-68 -->
+      <!-- Replace the taskDate and taskEndDate fields with: -->
+      <field name="startTime" colSpan="6"
+        onChange="action-project-task-record-sync-start-time-to-date,action-project-task-attrs-set-task-duration,action-project-task-record-set-date-or-frequency-changed"
+        required="true"/>
+      <field name="endTime" colSpan="6"
+        onChange="action-project-task-record-sync-end-time-to-date,action-project-task-attrs-set-task-duration,action-project-task-validate-toDate"/>
+      <field name="taskDeadline" title="Task deadline" colSpan="6"/>
+      <!-- MGM-68 -->
+      <!-- <field name="tagSet" widget="TagSelect" x-color-field="color" form-view="tag-form" grid-view="tag-simplified-grid"
+        colSpan="4" onSelect="action-project-task-method-set-tag-domain"/> -->
+      <field name="priority" colSpan="6" showIf="project.isShowPriority"
+        onSelect="action-project-task-atts-priority-on-select" canView="false"/><!--requiredIf="project.isShowPriority" -->
+      <field name="projectTaskCategory" colSpan="6" showIf="project.isShowTaskCategory"
         requiredIf="project.isShowTaskCategory &amp;&amp; project.taskStatusManagementSelect == 4"
         onSelect="action-project-task-attrs-project-task-category-configurations"
-        onChange="action-project-task-group-project-category-onchange"/>
-      <field name="priority" colSpan="4" showIf="project.isShowPriority"
-        onSelect="action-project-task-atts-priority-on-select" requiredIf="project.isShowPriority"
-        canView="false"/>
-      <field name="taskDate" colSpan="4"
-        onChange="action-project-task-attrs-set-task-duration,action-project-task-record-set-date-or-frequency-changed"
-        required="true"/>
-      <field name="taskEndDate" colSpan="4"
-        onChange="action-project-task-attrs-set-task-duration"/>
-      <field name="taskDeadline" title="Task deadline" colSpan="4"/>
-      <field name="tagSet" widget="TagSelect" x-color-field="color" form-view="tag-form"
-        grid-view="tag-simplified-grid" colSpan="4"
-        onSelect="action-project-task-method-set-tag-domain"/>
-      <field name="progress" onChange="action-project-task-group-progress-onchange"
-        showIf="project.isShowProgress" colSpan="4" min="0" max="100" widget="Slider" x-step="1"
-        x-scale="0"/>
-      <field name="targetVersion" domain=":project member of self.projectSet" colSpan="4"
-        form-view="project-version-form" grid-view="project-version-grid"/>
+        onChange="action-project-task-group-project-category-onchange" canView="false"/>
+      <field if="__config__.app.getApp('timesheet')?.enableActivity" name="product"
+        colSpan="6" widget="SuggestBox" canEdit="false"
+        onSelect="action-hr-timesheet-line-attrs-domain-product" form-view="product-activity-form"
+        grid-view="product-activity-grid"/>
+
+
+      <!-- <field name="progress" onChange="action-project-task-group-progress-onchange" showIf="project.isShowProgress"
+        colSpan="4" min="0" max="100" widget="Slider" x-step="1" x-scale="0"/> -->
+      <!-- MGM-68 -->
+      <!-- <field name="targetVersion" domain=":project member of self.projectSet" colSpan="4" form-view="project-version-form"
+        grid-view="project-version-grid"/> -->
       <field name="activeSprint"
         showIf="project.sprintManagementSelect == 'project' || (project.sprintManagementSelect == 'version' &amp;&amp; targetVersion)"
         onSelect="action-project-task-method-compute-sprint-domain" colSpan="4"
@@ -223,6 +249,12 @@
       <field name="project.taskStatusManagementSelect" hidden="true"/>
       <field name="project.sprintManagementSelect" hidden="true"/>
       <field name="oldActiveSprint" hidden="true"/>
+      <field name="taskDate" colSpan="6"
+        onChange="action-project-task-attrs-set-task-duration,action-project-task-record-set-date-or-frequency-changed"
+        required="true" hidden="true"/>
+      <field name="taskEndDate" colSpan="6"
+        onChange="action-project-task-attrs-set-task-duration, action-project-task-validate-toDate"
+        hidden="true"/>
     </panel>
   </form>
 
@@ -535,6 +567,7 @@
     <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
     <action name="action-project-task-group-reset-datas"/>
+    <action name="action-project-task-attrs-filter-project-by-user"/>
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">
@@ -649,6 +682,20 @@
       if="_model == 'com.axelor.apps.project.db.Project'"/>
   </action-view>
 
+  <action-view name="action-task-report-task-dashlet"
+    model="com.axelor.apps.businessproject.db.TaskReport" title="Task Reports">
+    <view name="add-task-report-grid" type="grid"/>
+    <view name="task-report-preview-form" type="form"/>
+    <view-param name="show-toolbar" value="true"/>
+    <domain>
+      self.project != null
+      AND self.project.id = :projectId
+      AND :__user__ MEMBER OF
+      self.project.membersUserSet
+    </domain>
+    <context name="projectId" expr="eval: project?.id"/>
+  </action-view>
+
   <action-record name="action-project-task-record-set-default"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="isFirst" expr="true"/>
@@ -684,6 +731,7 @@
     <field name="name" expr="eval: _value" if="_value"/>
     <field name="assignedTo" expr="eval:__user__"/>
     <field name="taskDate" expr="#{__config__.date}"/>
+    <field name="startTime" expr="eval: __config__.date.atTime(java.time.LocalTime.now())"/>
     <field name="project" expr="eval:_project"/>
     <field name="project" expr="eval: __user__?.activeProject" if="!_project"/>
     <field name="parentTask" expr="eval:_parentTask"/>
@@ -698,17 +746,40 @@
     <field name="plannedProgress" expr="eval: progress"/>
   </action-record>
 
+  <action-record name="action-project-task-record-sync-start-time-to-date"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="taskDate" expr="eval: startTime?.toLocalDate()" if="startTime != null"/>
+  </action-record>
+
+  <action-record name="action-project-task-record-sync-end-time-to-date"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="taskEndDate" expr="eval: endTime?.toLocalDate()" if="endTime != null"/>
+  </action-record>
+
+  <action-record name="action-project-task-record-sync-dates-on-load"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="startTime" expr="eval: taskDate?.atStartOfDay()"
+      if="id != null &amp;&amp; startTime == null &amp;&amp; taskDate != null"/>
+    <field name="endTime" expr="eval: taskEndDate?.atStartOfDay()"
+      if="id != null &amp;&amp; endTime == null &amp;&amp; taskEndDate != null"/>
+  </action-record>
+
   <action-attrs name="action-project-task-attrs-project-task-category-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain" for="projectTaskCategory"
       expr="eval: (project?.projectTaskCategorySet !=  null &amp;&amp; project?.projectTaskCategorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectTaskCategorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
   </action-attrs>
 
+  <!-- filter to show only users that are members of the project -->
   <action-attrs name="action-project-task-attrs-project-assigned-to-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain"
       expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN(${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
       for="assignedTo"/>
+
+    <attribute name="domain"
+      expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() > 0) ? &quot;self.id IN(${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
+      for="assignedEmployees"/>
   </action-attrs>
 
   <action-attrs name="action-project-task-attrs-parent-task-configurations"
@@ -749,6 +820,13 @@
       expr="eval: __config__.app.getApp('base')?.unitDays" if="!parentTask?.timeUnit"/>
     <attribute for="timeUnit" name="value" expr="eval: parentTask?.timeUnit"
       if="parentTask?.timeUnit"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-filter-project-by-user">
+    <attribute name="domain" for="project"
+      expr="eval: (__user__.group?.code == 'CUSTOM-PT' || __user__.group?.code == 'CUSTOM-TM' || __user__.group == null) ?
+    'self.projectStatus.isCompleted = false AND (self.membersUserSet[].id = ' + __user__.id + ' OR self.assignedTo.id = ' + __user__.id + ')' :
+    'self.projectStatus.isCompleted = false'"/>
   </action-attrs>
 
   <!-- fill timeUnit from parentTask -->
@@ -821,10 +899,12 @@
   </action-attrs>
 
   <action-group name="action-project-task-group-timer-process">
+    <action name="action-project-task-record-sync-dates-on-load"/>
     <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-method-manage-timer-buttons"/>
     <action name="action-project-task-method-compute-total-timer-duration"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
+    <action name="action-project-task-attrs-filter-project-by-user"/>
   </action-group>
 
   <action-method name="action-project-task-method-start-timer">

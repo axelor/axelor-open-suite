@@ -42,10 +42,13 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.businessproject.db.ExtraExpenseLine;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseInvoiceService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -77,6 +80,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
   protected TimesheetInvoiceService timesheetInvoiceService;
 
   protected ExpenseInvoiceLineService expenseInvoiceLineService;
+  protected ExtraExpenseInvoiceService extraExpenseInvoiceService;
 
   protected InvoicingProjectStockMovesService invoicingProjectStockMovesService;
   protected InvoiceLineService invoiceLineService;
@@ -100,6 +104,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       AccountConfigService accountConfigService,
       TimesheetInvoiceService timesheetInvoiceService,
       ExpenseInvoiceLineService expenseInvoiceLineService,
+      ExtraExpenseInvoiceService extraExpenseInvoiceService,
       InvoicingProjectStockMovesService invoicingProjectStockMovesService,
       InvoiceLineService invoiceLineService,
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService,
@@ -117,6 +122,7 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     this.accountConfigService = accountConfigService;
     this.timesheetInvoiceService = timesheetInvoiceService;
     this.expenseInvoiceLineService = expenseInvoiceLineService;
+    this.extraExpenseInvoiceService = extraExpenseInvoiceService;
     this.invoicingProjectStockMovesService = invoicingProjectStockMovesService;
     this.invoiceLineService = invoiceLineService;
     this.projectTaskBusinessProjectService = projectTaskBusinessProjectService;
@@ -240,7 +246,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
         && invoicingProject.getLogTimesSet().isEmpty()
         && invoicingProject.getExpenseLineSet().isEmpty()
         && invoicingProject.getProjectTaskSet().isEmpty()
-        && invoicingProject.getStockMoveLineSet().isEmpty()) {
+        && invoicingProject.getStockMoveLineSet().isEmpty()
+        && getProjectExtraExpense(invoicingProject.getProject()).isEmpty()) {
       throw new AxelorException(
           invoicingProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -264,6 +271,9 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     List<ExpenseLine> expenseLineList = new ArrayList<>(folder.getExpenseLineSet());
     List<ProjectTask> projectTaskList = new ArrayList<>(folder.getProjectTaskSet());
 
+    // extra expenses
+    List<ExtraExpenseLine> extraExpenseLineList = getProjectExtraExpense(folder.getProject());
+
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     invoiceLineList.addAll(
         invoicingProjectStockMovesService.createStockMovesInvoiceLines(
@@ -283,6 +293,9 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
     invoiceLineList.addAll(
         projectTaskBusinessProjectService.createInvoiceLines(
             invoice, projectTaskList, folder.getProjectTaskSetPrioritySelect()));
+    invoiceLineList.addAll(
+        extraExpenseInvoiceService.createInvoiceLines(
+            invoice, extraExpenseLineList, folder.getExtraExpenseLineSetPrioritySelect()));
 
     Collections.sort(invoiceLineList, new InvoiceLineComparator());
 
@@ -372,5 +385,13 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
 
       analyticLineService.setAnalyticAccount(invoiceLine, company);
     }
+  }
+
+  public List<ExtraExpenseLine> getProjectExtraExpense(Project project) {
+    return Beans.get(ExtraExpenseLineRepository.class)
+        .all()
+        .filter("self.project.id = :projectId AND self.toInvoice = true")
+        .bind("projectId", project.getId())
+        .fetch();
   }
 }

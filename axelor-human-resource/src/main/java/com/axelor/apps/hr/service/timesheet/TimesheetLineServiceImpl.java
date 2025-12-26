@@ -25,24 +25,42 @@ import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.ExtrachargeType;
 import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPriority;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.auth.AuthUtils;
+import com.axelor.db.JpaRepository;
+import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.rpc.Context;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,6 +73,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   protected AppHumanResourceService appHumanResourceService;
   protected UserHrService userHrService;
   protected DateService dateService;
+  protected ProjectTaskRepository projectTaskRepo;
+  protected ProjectRepository projectRepo;
 
   @Inject
   public TimesheetLineServiceImpl(
@@ -63,16 +83,23 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       TimesheetRepository timesheetRepo,
       AppHumanResourceService appHumanResourceService,
       UserHrService userHrService,
-      DateService dateService) {
+      DateService dateService,
+      ProjectTaskRepository projectTaskRepo,
+      ProjectRepository projectRepo) {
     this.timesheetService = timesheetService;
     this.employeeRepository = employeeRepository;
     this.timesheetRepo = timesheetRepo;
     this.appHumanResourceService = appHumanResourceService;
     this.userHrService = userHrService;
     this.dateService = dateService;
+    this.projectTaskRepo = projectTaskRepo;
+    this.projectRepo = projectRepo;
   }
 
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+  private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+  private final PublicHolidayHrService holidayService = Beans.get(PublicHolidayHrService.class);
 
   @Override
   public BigDecimal computeHoursDuration(Timesheet timesheet, BigDecimal duration, boolean toHours)
@@ -217,12 +244,14 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     Integer dailyLimit = getDailyLimitFromApp();
 
     if (dailyLimit == 0) {
+      log.debug("daily limit is zero");
       return;
     }
 
     BigDecimal totalHoursDuration = calculateTotalHoursDuration(timesheet, currentTimesheetLine);
 
     if (isExceedingDailyLimit(totalHoursDuration, hoursDuration, dailyLimit)) {
+      log.debug("something exceeds daily limit");
       handleExceedingDailyLimit(dailyLimit, currentTimesheetLine.getDate());
     }
   }
@@ -274,5 +303,371 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     if (timesheetLine != null) {
       timesheetLine.setTimer(null);
     }
+  }
+
+  @Override
+  public Timesheet resolveTimesheet(Context context, TimesheetLine timesheetLine) {
+    Context parent = context.getParent();
+
+    if (parent != null && parent.getContextClass().equals(Timesheet.class)) {
+      return parent.asType(Timesheet.class);
+    }
+    return timesheetLine.getTimesheet();
+  }
+
+  @Override
+  public ProjectTask resolveProjectTask(Context context) {
+    Class<?> ctxClass = context.getContextClass();
+
+    if (ProjectTask.class.equals(ctxClass)) {
+      return fetchEntity(context.asType(ProjectTask.class), projectTaskRepo);
+    }
+
+    ProjectTask projectTask = extractFromParent(context, ProjectTask.class, projectTaskRepo);
+    if (projectTask != null) return projectTask;
+
+    projectTask = extractFromContextId(context, "_projectTaskId", projectTaskRepo);
+    if (projectTask != null) return projectTask;
+
+    return extractEntityFromObject(context.get("_projectTask"), ProjectTask.class, projectTaskRepo);
+  }
+
+  @Override
+  public Project resolveProject(Context context, ProjectTask projectTask) {
+    Class<?> ctxClass = context.getContextClass();
+    if (Project.class.equals(ctxClass)) {
+      return fetchEntity(context.asType(Project.class), projectRepo);
+    }
+
+    Project project = extractFromParent(context, Project.class, projectRepo);
+    if (project != null) return project;
+
+    project = extractFromContextId(context, "_projectId", projectRepo);
+    if (project != null) return project;
+
+    project = extractEntityFromObject(context.get("_project"), Project.class, projectRepo);
+    if (project != null) return project;
+
+    return (projectTask != null) ? projectTask.getProject() : null;
+  }
+
+  @Override
+  public void splitTimesheetLine(TimesheetLine line) {
+
+    if (Boolean.TRUE.equals(line.getIsAutomaticallyGenerated())) return;
+
+    if (!hasValidTime(line)) return;
+
+    // Flags
+    applyWeekendFlag(line);
+    applyHolidayFlag(line);
+    applyEmergencyFlag(line);
+
+    BigDecimal nightHoursRaw = calculateNightHours(line);
+
+    Map<String, BigDecimal> extraChargeBreakdown =
+        calculateExtraChargeBreakdown(line, nightHoursRaw);
+
+    BigDecimal nightHoursAfterBreak = nightHoursRaw;
+    if (line.getBreakTime() != null && nightHoursRaw.compareTo(BigDecimal.ZERO) > 0) {
+      nightHoursAfterBreak = nightHoursRaw.subtract(line.getBreakTime());
+      if (nightHoursAfterBreak.compareTo(BigDecimal.ZERO) < 0) {
+        nightHoursAfterBreak = BigDecimal.ZERO;
+      }
+
+      if (extraChargeBreakdown.containsKey(ExtrachargeType.NIGHT.name())) {
+        extraChargeBreakdown.put(ExtrachargeType.NIGHT.name(), nightHoursAfterBreak);
+      }
+    }
+
+    line.setNightHours(nightHoursAfterBreak);
+    line.setIsNightShift(nightHoursAfterBreak.compareTo(BigDecimal.ZERO) > 0);
+
+    // Serialize extra charge breakdown to JSON
+    try {
+      String extraChargeBreakdownString = OBJECT_MAPPER.writeValueAsString(extraChargeBreakdown);
+      line.setExtraChargeBreakdown(extraChargeBreakdownString);
+    } catch (JsonProcessingException e) {
+      log.error("Error serializing extra charge breakdown to JSON: {}", e.getMessage());
+      // Set to empty JSON object on error
+      line.setExtraChargeBreakdown("{}");
+    }
+
+    // Keep normal duration as-is
+    line.setHoursDuration(line.getDuration());
+    line.setDurationForCustomer(line.getDuration());
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void validateLine(TimesheetLine line) {
+    line.setIsValidated(true);
+    line.setValidationDateTime(LocalDateTime.now());
+    line.setValidatedBy(AuthUtils.getUser());
+    Beans.get(TimesheetLineRepository.class).save(line);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void cancelTimesheetLineValidation(TimesheetLine line) {
+    line.setIsValidated(false);
+    line.setValidatedBy(null);
+    line.setValidationDateTime(null);
+    Beans.get(TimesheetLineRepository.class).save(line);
+  }
+
+  private boolean hasValidTime(TimesheetLine line) {
+    return line.getStartTime() != null && line.getEndTime() != null;
+  }
+
+  private void applyWeekendFlag(TimesheetLine line) {
+    DayOfWeek day = line.getStartTime().getDayOfWeek();
+    line.setIsSaturday(day == DayOfWeek.SATURDAY);
+    line.setIsSunday(day == DayOfWeek.SUNDAY);
+  }
+
+  private void applyHolidayFlag(TimesheetLine line) {
+    boolean isHoliday =
+        holidayService.checkPublicHolidayDay(line.getStartTime().toLocalDate(), line.getEmployee());
+    line.setIsPublicHoliday(isHoliday);
+  }
+
+  private void applyEmergencyFlag(TimesheetLine line) {
+    ProjectTask task = line.getProjectTask();
+    ProjectPriority priority = (task != null ? task.getPriority() : null);
+    boolean isEmergency =
+        priority != null
+            && priority.getTechnicalTypeSelect() != null
+            && priority.getTechnicalTypeSelect() == 4;
+    line.setIsEmergencyService(isEmergency);
+  }
+
+  private BigDecimal calculateNightHours(TimesheetLine line) {
+    Duration nightDuration = calculateNightShiftDuration(line.getStartTime(), line.getEndTime());
+    return BigDecimal.valueOf(nightDuration.toMinutes() / 60.0);
+  }
+
+  private Duration calculateNightShiftDuration(LocalDateTime start, LocalDateTime end) {
+    if (end.isBefore(start)) {
+      end = end.plusDays(1);
+    }
+
+    Duration totalNight = Duration.ZERO;
+    LocalDateTime pointer = start;
+
+    while (pointer.isBefore(end)) {
+      LocalDateTime[] interval = getNightShiftIntervalForDate(pointer.toLocalDate(), start, end);
+      if (interval != null) {
+        totalNight = totalNight.plus(Duration.between(interval[0], interval[1]));
+      }
+      pointer = pointer.toLocalDate().plusDays(1).atTime(0, 0); // next day
+    }
+    return totalNight;
+  }
+
+  private LocalDateTime[] getNightShiftIntervalForDate(
+      LocalDate date, LocalDateTime taskStart, LocalDateTime taskEnd) {
+    LocalDateTime nightStart = date.atTime(18, 0);
+    LocalDateTime nightEnd = date.plusDays(1).atTime(6, 0);
+
+    LocalDateTime overlapStart = taskStart.isAfter(nightStart) ? taskStart : nightStart;
+    LocalDateTime overlapEnd = taskEnd.isBefore(nightEnd) ? taskEnd : nightEnd;
+
+    if (overlapStart.isAfter(overlapEnd)) {
+      return null;
+    }
+    return new LocalDateTime[] {overlapStart, overlapEnd};
+  }
+
+  private <T extends Model> T fetchEntity(T entity, JpaRepository<T> repo) {
+    if (entity == null || entity.getId() == null) return null;
+    return repo.find(entity.getId());
+  }
+
+  private <T extends Model> T extractFromContextId(
+      Context context, String key, JpaRepository<T> repo) {
+    Object id = context != null ? context.get(key) : null;
+    if (id != null) {
+      return repo.find(Long.valueOf(id.toString()));
+    }
+    return null;
+  }
+
+  private <T extends Model> T extractFromParent(
+      Context context, Class<T> entityClass, JpaRepository<T> repo) {
+    if (context == null) {
+      log.warn("Context is null, cannot extract parent.");
+      return null;
+    }
+    // Instead of calling getParent(), check the "_parentId" or "parentId" keys
+    Object parentIdObj = context.get("id");
+    if (parentIdObj == null) {
+      log.debug("No parent ID found in context: {}", context);
+      return null;
+    }
+
+    try {
+      Long parentId = Long.valueOf(parentIdObj.toString());
+      return repo.find(parentId);
+    } catch (NumberFormatException e) {
+      log.warn("Invalid parent id in context: {}", parentIdObj, e);
+      return null;
+    } catch (Exception e) {
+      log.error("Error fetching entity from repository", e);
+      return null;
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private <T extends Model> T extractEntityFromObject(
+      Object obj, Class<T> entityClass, JpaRepository<T> repo) {
+    if (obj == null) return null;
+
+    if (entityClass.isInstance(obj)) {
+      return fetchEntity(entityClass.cast(obj), repo);
+    }
+
+    if (obj instanceof Map) {
+      Object entityId = ((Map<?, ?>) obj).get("id");
+      if (entityId != null) {
+        Long id =
+            (entityId instanceof Integer) ? ((Integer) entityId).longValue() : (Long) entityId;
+        return repo.find(id);
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * Calculate Extra Charge breakdown for cross-day shifts. Returns a map of ExtrachargeType ->
+   * hours that qualify as extra charges.
+   *
+   * @param line The timesheet line to analyze
+   * @param nightHours The night hours (should be RAW hours before break subtraction)
+   * @return Map of extra charge types to hours
+   */
+  private Map<String, BigDecimal> calculateExtraChargeBreakdown(
+      TimesheetLine line, BigDecimal nightHours) {
+    Map<String, BigDecimal> breakdown = new HashMap<>();
+
+    // Calculate Saturday hours overlap
+    BigDecimal saturdayHours = calculateDayTypeOverlap(line, DayOfWeek.SATURDAY);
+    if (saturdayHours.compareTo(BigDecimal.ZERO) > 0) {
+      breakdown.put(ExtrachargeType.SATURDAY.name(), saturdayHours);
+    }
+
+    // Calculate Sunday hours overlap
+    BigDecimal sundayHours = calculateDayTypeOverlap(line, DayOfWeek.SUNDAY);
+    if (sundayHours.compareTo(BigDecimal.ZERO) > 0) {
+      breakdown.put(ExtrachargeType.SUNDAY.name(), sundayHours);
+    }
+
+    // Calculate holiday hours overlap
+    BigDecimal holidayHours = calculateHolidayOverlap(line);
+    if (holidayHours.compareTo(BigDecimal.ZERO) > 0) {
+      breakdown.put(ExtrachargeType.HOLIDAY.name(), holidayHours);
+    }
+
+    if (nightHours.compareTo(BigDecimal.ZERO) > 0) {
+      breakdown.put(ExtrachargeType.NIGHT.name(), nightHours);
+    }
+
+    return breakdown;
+  }
+
+  /**
+   * Calculate hours that overlap with a specific day of the week. Handles cross-midnight shifts
+   * correctly.
+   *
+   * @param line The timesheet line
+   * @param targetDay The day of week to check for overlap
+   * @return Hours that fall on the target day
+   */
+  private BigDecimal calculateDayTypeOverlap(TimesheetLine line, DayOfWeek targetDay) {
+    LocalDateTime start = line.getStartTime();
+    LocalDateTime end = line.getEndTime();
+
+    // Normalize end time if it's before start (next day)
+    if (end.isBefore(start)) {
+      end = end.plusDays(1);
+    }
+
+    Duration totalOverlap = Duration.ZERO;
+    LocalDateTime pointer = start;
+
+    // Iterate through each day in the shift
+    while (pointer.isBefore(end)) {
+      LocalDate currentDate = pointer.toLocalDate();
+
+      // Check if current day matches target day
+      if (currentDate.getDayOfWeek() == targetDay) {
+        // Calculate overlap for this target day
+        // Use the later of: shift start OR midnight of current day
+        LocalDateTime dayStart = pointer.isAfter(start) ? pointer : start;
+
+        // Use the earlier of: shift end OR midnight of next day
+        LocalDateTime dayEnd = currentDate.plusDays(1).atStartOfDay();
+        if (end.isBefore(dayEnd)) {
+          dayEnd = end;
+        }
+
+        Duration dayOverlap = Duration.between(dayStart, dayEnd);
+        totalOverlap = totalOverlap.plus(dayOverlap);
+      }
+
+      // Move to next day (start of next day)
+      pointer = pointer.toLocalDate().plusDays(1).atStartOfDay();
+    }
+
+    return BigDecimal.valueOf(totalOverlap.toMinutes() / 60.0).setScale(2, RoundingMode.HALF_UP);
+  }
+
+  /**
+   * Calculate hours that overlap with public holidays. Similar to calculateDayTypeOverlap but
+   * checks holiday dates.
+   *
+   * @param line The timesheet line
+   * @return Hours that fall on public holidays
+   */
+  private BigDecimal calculateHolidayOverlap(TimesheetLine line) {
+    LocalDateTime start = line.getStartTime();
+    LocalDateTime end = line.getEndTime();
+
+    // Normalize end time if before start
+    if (end.isBefore(start)) {
+      end = end.plusDays(1);
+    }
+
+    Duration totalOverlap = Duration.ZERO;
+    LocalDateTime pointer = start;
+
+    // Iterate through each day in the shift
+    while (pointer.isBefore(end)) {
+      LocalDate currentDate = pointer.toLocalDate();
+
+      // Check if current day is a public holiday
+      boolean isHoliday = holidayService.checkPublicHolidayDay(currentDate, line.getEmployee());
+
+      if (isHoliday) {
+        // Calculate overlap for this holiday
+        // Use the later of: shift start OR midnight of current day
+        LocalDateTime dayStart = pointer.isAfter(start) ? pointer : start;
+
+        // Use the earlier of: shift end OR midnight of next day
+        LocalDateTime dayEnd = currentDate.plusDays(1).atStartOfDay();
+        if (end.isBefore(dayEnd)) {
+          dayEnd = end;
+        }
+
+        Duration dayOverlap = Duration.between(dayStart, dayEnd);
+        totalOverlap = totalOverlap.plus(dayOverlap);
+      }
+
+      // Move pointer to the next day
+      pointer = pointer.toLocalDate().plusDays(1).atStartOfDay();
+    }
+
+    return BigDecimal.valueOf(totalOverlap.toMinutes() / 60.0).setScale(2, RoundingMode.HALF_UP);
   }
 }

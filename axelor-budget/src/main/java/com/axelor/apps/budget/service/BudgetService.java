@@ -227,10 +227,6 @@ public interface BudgetService {
    */
   public void computeTotalAvailableWithSimulatedAmount(Budget budget);
 
-  void updateBudgetLineAmounts(BudgetLine budgetLine, Budget budget, BigDecimal amount);
-
-  void updateBudgetLineAmountWithPo(BudgetLine budgetLine, Budget budget, BigDecimal amount);
-
   /**
    * If budget key is allowed (via config), check that analytic and account are filled then compute
    * key and check if unique. An error can be throwed at every stage of process.

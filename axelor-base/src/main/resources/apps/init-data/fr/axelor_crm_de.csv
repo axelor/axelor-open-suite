@@ -1,0 +1,662 @@
+key,message,language
+%d times,%d mal,de
+1 to 2,1 bis 2,de
+10 to 19,10 bis 19,de
+100 to 199,100 bis 199,de
+1000 to 1999,1000 bis 1999,de
+20 to 49,20 bis 49,de
+200 to 249,200 bis 249,de
+2000 to 4999,2000 bis 4999,de
+250 to 499,250 bis 499,de
+3 to 5,3 bis 5,de
+50 to 99,50 bis 99,de
+500 to 999,500 bis 999,de
+5000 to 9999,5000 bis 9999,de
+6 to 9,6 bis 9,de
+"<><Badge bg=""warning"">The selected date is in the past.</Badge></>","<><Badge bg=""warning"">Das ausgewählte Datum liegt in der Vergangenheit.</Badge></>",de
+"<><Badge bg=""warning"">There is already a lead with this name.</Badge></>","<><Badge bg=""warning"">Es gibt bereits eine Spur mit diesem Namen.</Badge></>",de
+<a class='fa fa-google' href='http://www.google.com' target='_blank' />,<a class='fa fa-google' href='http://www.google.com' target='_blank' />,de
+<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />,<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />,de
+A lost reason must be selected,Ein verlorener Grund muss ausgewählt werden,de
+Create from Sirene API,Erstellen aus Sirene API,de
+Account owner,Kontoinhaber,de
+Action,Aktion,de
+Active agency,Aktive Agentur,de
+Activities,Aktivitäten,de
+Activity,Tätigkeit,de
+Add,hinzufügen,de
+Add a guest,Einen Gast hinzufügen,de
+Address,Adresse,de
+Advanced export,Erweiterter Export,de
+After n repetitions,Nach n Wiederholungen,de
+Agencies,Agenturen,de
+Agencies management,Verwaltung der Agenturen,de
+Agency,Agentur,de
+All events,Alle Ereignisse,de
+All opportunities,Alle Möglichkeiten,de
+All past events,Alle vergangenen Veranstaltungen,de
+All prospects,Alle Perspektiven,de
+All upcoming events,Alle kommenden Veranstaltungen,de
+All users,Alle Benutzer,de
+Amount,Betrag,de
+Amount :,Betrag :,de
+App,App,de
+App Crm,App Crm,de
+App crm,App crm,de
+Apply changes to all recurrence's events,Änderungen auf alle Ereignisse der Wiederholung anwenden,de
+Apply changes to this event only,Änderungen nur auf dieses Ereignis anwenden,de
+Apply modifications,Änderungen anwenden,de
+Apply modifications for all,Änderungen für alle anwenden,de
+Assign to,Zuordnen zu,de
+Assign to me,Mir zuweisen,de
+Assignable Users,Zuweisbare Benutzer,de
+Assigned to,Zugewiesen an,de
+At specific date,Zu einem bestimmten Datum,de
+At the date,Zum Zeitpunkt,de
+Attendee,Teilnehmer,de
+Available,Verfügbar,de
+Batchs,Chargen,de
+Before start date,Vor dem Starttermin,de
+Best Open Deals,Beste Open Deals,de
+Best case,Bester Fall,de
+Busy,Beschäftigt,de
+CRM,CRM,de
+CRM Activities,CRM-Aktivitäten,de
+CRM Batch,CRM-Stapel,de
+CRM batch,CRM-Batch,de
+CRM batches,CRM-Stapel,de
+CRM config,CRM-Konfiguration,de
+CRM config (${ name }),CRM-Konfiguration (${ Name }),de
+CRM configuration,CRM-Konfiguration,de
+CRM configurations,CRM-Konfigurationen,de
+CRM events,CRM-Ereignisse,de
+Call,Rufen Sie  an.,de
+Call Event (${ fullName }),Ereignis aufrufen (${ fullName }),de
+Call Event(${ fullName}),Ereignis aufrufen(${ fullName}),de
+Call filters,Filter anrufen,de
+Call reminder template,Vorlage für Anruferinnerungen,de
+Call type,Art des Anrufs,de
+Calls,Anrufe,de
+Calls Dashboard,Anrufe Dashboard,de
+Calls by team by user,Anrufe nach Team nach Benutzer,de
+Calls by user(of a team),Anrufe durch Benutzer (eines Teams),de
+Calls held by team by type,Vom Team gehaltene Anrufe nach Art,de
+Calls held by type by user,Gehaltene Anrufe nach Typ und Nutzer,de
+Calls monitoring,Überwachung der Anrufe,de
+Calls type by team,Art der Anrufe nach Team,de
+Calls type by user,Art der Anrufe nach Benutzer,de
+Can not mark as lost an already lost lead.,Eine bereits verlorene Spur kann nicht als verloren markiert werden.,de
+Can not mark as lost an already lost partner.,Ein bereits verlorener Partner kann nicht als verloren markiert werden.,de
+"Can only assign to yourself new, assigned or in process lead.","Sie können nur sich selbst einen neuen, zugewiesenen oder in Bearbeitung befindlichen Lead zuweisen.",de
+Can only close lost opportunities in form view.,Kann nur verlorene Gelegenheiten in der Formansicht schließen.,de
+Can only close lost prospects in form view.,Sie können verlorene Interessenten nur in der Formularansicht schließen.,de
+Can only convert leads in form view.,Kann Leads nur in der Formularansicht konvertieren.,de
+"Can only convert new, assigned or in process lead.","Kann nur neue, zugewiesene oder in Bearbeitung befindliche Leads umwandeln.",de
+Can only lose leads in form view.,Kann nur Leads in der Formularansicht verlieren.,de
+Can only recycle a lost lead.,Kann nur eine verlorene Spur wiederverwerten.,de
+Can only start new or assigned lead.,Kann nur eine neue oder zugewiesene Leitung starten.,de
+Cancel,Abbrechen,de
+Cancel this reminder,Diese Erinnerung stornieren,de
+Canceled,Abgesagt,de
+Carrier,Träger,de
+Cases,Fälle,de
+Catalog,Katalog,de
+Catalog type,Katalog-Typ,de
+Catalogs,Kataloge,de
+Catalogs type,Kataloge Typ,de
+Categories,Kategorien,de
+Category,Kategorie,de
+Characteristics,Merkmale,de
+Chart,Tabelle,de
+Check Duplicate,Duplikat prüfen,de
+Check duplicate,Duplikat prüfen,de
+Civility,Höflichkeit,de
+Closed Opportunities,Geschlossene Angebote,de
+Closed leads,Geschlossene Leitungen,de
+Closed lost,Geschlossen verloren,de
+Closed lost opportunity status,"Status ""Geschlossene verlorene Chance",de
+Closed lost partner status,Geschlossen verlorener Partnerstatus,de
+Closed opportunities,Geschlossene Angebote,de
+Closed prospects,Geschlossene Perspektiven,de
+Closed win opportunity status,Status der geschlossenen Gewinnchance,de
+Closed win partner status,Geschlossener Win-Partner-Status,de
+Closed won,Geschlossen gewonnen,de
+Code,Code,de
+Companies,Unternehmen,de
+Company,Unternehmen,de
+Company PhoneBook,Unternehmen Telefonbuch,de
+Company phoneBook,Unternehmen phoneBook,de
+Config,Konfigurieren Sie,de
+Configuration,Konfiguration,de
+Confirm lost reason,Verlorenen Grund bestätigen,de
+Contact,Kontakt,de
+Contact PhoneBook,Kontakt Telefonbuch,de
+Contact details,Kontaktangaben,de
+Contact function,Kontaktfunktion,de
+Contact list,Kontaktliste,de
+Contact name,Name der Kontaktperson,de
+Contacts,Kontakte,de
+Convert,Konvertieren,de
+Convert lead,Blei umwandeln,de
+Convert lead (${ fullName }),Lead umwandeln (${ fullName }),de
+Convert lead into contact,Lead in Kontakt umwandeln,de
+Convert lead into partner,Lead in Partner umwandeln,de
+Converted,Umgewandelt,de
+Converted lead status,Status der konvertierten Leads,de
+Corporate partner,Unternehmenspartner,de
+Corporate partner fidelity,Treue der Unternehmenspartner,de
+Corporate partner monitoring,Überwachung der Unternehmenspartner,de
+Corporate partner since,Unternehmenspartner seit,de
+Corporate partner work domain,Arbeitsbereich der Unternehmenspartner,de
+Countries,Länder,de
+Country,Land,de
+Create a call,Einen Aufruf erstellen,de
+Create a meeting,Eine Besprechung erstellen,de
+Create a new reminder,Eine neue Erinnerung erstellen,de
+Create a note,Eine Notiz erstellen,de
+Create a quotation,Ein Angebot erstellen,de
+Create a task,Eine Aufgabe erstellen,de
+Create an email,Erstellen Sie eine E-Mail,de
+Create event,Ereignis erstellen,de
+Create new contact,Neuen Kontakt erstellen,de
+Create new partner,Neuen Partner anlegen,de
+Create opportunity,Gelegenheit schaffen,de
+Create opportunity (${ fullName }),Opportunity erstellen (${ fullName }),de
+Create order (${ fullName }),Auftrag erstellen (${ fullName }),de
+Create purchase quotation,Kaufangebot erstellen,de
+Create sale quotation,Verkaufsangebot erstellen,de
+Created by,Erstellt von,de
+Created leads by industry sector,Geschaffene Leads nach Industriezweigen,de
+Created leads per month,Erstellte Leads pro Monat,de
+Created on,Erstellt am,de
+Creation date,Datum der Erstellung,de
+Crm Reporting type is missing!,Der Typ Crm Reporting fehlt!,de
+Crm batch,Crm-Batch,de
+Crm batch filters,Crm-Batch-Filter,de
+Crm reporting,Crm-Berichterstattung,de
+Currency,Währung,de
+Custom status,Benutzerdefinierter Status,de
+Custom types,Benutzerdefinierte Typen,de
+Customer,Kunde,de
+Customer / Prospect,Kunde / Interessent,de
+Customer Description,Beschreibung des Kunden,de
+Customer fixed phone,Festnetztelefon des Kunden,de
+Customer follow-up,Nachfassen beim Kunden,de
+Customer mobile phone,Mobiltelefon des Kunden,de
+Customer name,Name des Kunden,de
+Customer recovery,Kundenrückgewinnung,de
+Customers,Kunden,de
+Daily,Täglich,de
+Daily team call summary by user,Zusammenfassung der täglichen Teamanrufe nach Benutzer,de
+Dashboard,Dashboard,de
+Date,Datum,de
+Day of month,Tag des Monats,de
+Day of week,Tag der Woche,de
+Days,Tage,de
+Default lead status,Standard-Leitungsstatus,de
+Default opportunity status,Standard-Opportunity-Status,de
+Default partner status,Standard-Partnerstatus,de
+Default recurring duration (in months),Wiederkehrende Standarddauer (in Monaten),de
+Delete all events,Alle Ereignisse löschen,de
+Delete only this event,Nur dieses Ereignis löschen,de
+Delete this and next events,Dieses und nächste Ereignisse löschen,de
+Dep./Div.,Abt./Div.,de
+Department,Abteilung,de
+Description,Beschreibung,de
+Display customer description in opportunity,Kundenbeschreibung in Opportunity anzeigen,de
+Do not call,Nicht anrufen,de
+Do not email,Keine E-Mail,de
+Done,Erledigt,de
+Duplicate contacts :,Doppelte Kontakte :,de
+Duplicate leads :,Doppelte Leads :,de
+Duplicate prospects :,Doppelte Aussichten :,de
+Duplicate records found,Doppelte Datensätze gefunden,de
+Duration,Dauer,de
+Duration type,Dauer Typ,de
+Email,E-Mail,de
+Email domain to ignore,Zu ignorierende E-Mail-Domäne,de
+Emails,E-Mails,de
+Employee,Mitarbeiter,de
+Enable corporate partner,Unternehmenspartner einbeziehen,de
+Enable search functionality,Aktivieren der Suchfunktion,de
+End,Ende,de
+End date,Datum des Endes,de
+Enterprise,Unternehmen,de
+Enterprise Name,Name des Unternehmens,de
+Enterprise name,Name des Unternehmens,de
+Error in lead conversion,Fehler bei der Lead-Konvertierung,de
+Event,Veranstaltung,de
+Event Categories,Ereignis-Kategorien,de
+Event Dashboard 1,Ereignis-Dashboard 1,de
+Event categories,Ereignis-Kategorien,de
+Event category,Kategorie der Veranstaltung,de
+Event configuration categories,Kategorien der Ereigniskonfiguration,de
+Event filters,Ereignis-Filter,de
+Event monitoring,Überwachung von Ereignissen,de
+Event reminder,Erinnerung an die Veranstaltung,de
+Event reminder %s,Veranstaltungserinnerung %s,de
+Event reminder batch,Ereignis-Erinnerungs-Batch,de
+Event reminder page,Seite für Veranstaltungserinnerungen,de
+Event reminder template,Vorlage für Veranstaltungserinnerungen,de
+Event reminders,Ereignis-Erinnerungen,de
+Event's reminder's generation's reporting :,Die Berichterstattung der Generation Event's Reminder :,de
+Events,Veranstaltungen,de
+Events by saleman,Veranstaltungen von saleman,de
+Events by salesman,Veranstaltungen von Verkäufern,de
+Events by team,Veranstaltungen nach Team,de
+Every %d days,Alle %d Tage,de
+Every %d months the %d,Alle %d Monate werden die %d,de
+Every %d weeks,Alle %d Wochen,de
+Every %d years the %s,Alle %d Jahre werden die %s,de
+Every day,Jeden Tag,de
+Every month,Jeden Monat,de
+Every month the,Jeden Monat wird die,de
+Every week,Jede Woche,de
+Every year,Jedes Jahr,de
+Every year the,Jedes Jahr werden die,de
+Expected close date,Voraussichtliches Abschlussdatum,de
+Expected duration of recurring revenue (in months),Erwartete Dauer der wiederkehrenden Einnahmen (in Monaten),de
+Factor,Faktor,de
+Fetch limit,Abrufgrenze,de
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",Abrufgrenze für diese Charge. 0 wird nicht berücksichtigt. In diesem Fall wird der in der App Base konfigurierte Wert verwendet.,de
+Fidelity,Treue,de
+First name,Vornamen,de
+Follow up,Weiterverfolgung,de
+Follow-up,Nachbereitung,de
+For all,Für alle,de
+For me,Für mich,de
+Fr,P.,de
+Free text,Freier Text,de
+From Date,Von Datum,de
+From date,Vom Datum,de
+Full name,Vollständiger Name,de
+Function,Funktion,de
+Gender,Geschlecht,de
+General information,Allgemeine Informationen,de
+Generate CRM configurations,CRM-Konfigurationen generieren,de
+Generate Project,Projekt generieren,de
+Generate opportunity ?,Gelegenheit schaffen ?,de
+Groups Assignable,Gruppen Zuweisbar,de
+Guests,Gäste,de
+High,Hoch,de
+Historical Period,Historischer Zeitraum,de
+Hours,Stunden,de
+Image,Bild,de
+"In order to make this field working a format is needed, see example: example1.com,example2.fr,example.exemple.com","In order to make this field working a format is needed, see example: example1.com,example2.fr,example.exemple.com",de
+Inbound,Eingehend,de
+Industry,Industrie,de
+Industry Sector,Industrie Sektor,de
+Industry sector,Sektor der Industrie,de
+Industry sectors,Industriezweige,de
+Information,Informationen,de
+Input location please,Bitte Standort eingeben,de
+Internal partner,Interner Partner,de
+Is already convert from lead,Ist bereits aus Lead konvertiert,de
+Job Title,Berufsbezeichnung,de
+Key account,Großkunden,de
+Key accounts,Großkunden,de
+Last event date,Datum der letzten Veranstaltung,de
+Last name,Nachname,de
+Last visit date,Datum des letzten Besuchs,de
+Lead,Blei,de
+Lead Dashboard 1,Dashboard 1 führen,de
+Lead Scoring,Lead-Bewertung,de
+Lead converted,Blei umgewandelt,de
+Lead created,Blei erstellt,de
+Lead filters,Bleifilter,de
+Lead not found.,Blei nicht gefunden.,de
+Lead scoring,Lead Scoring,de
+Lead status,Status der Leitung,de
+Lead with same domain name,Lead mit gleichem Domainnamen,de
+Lead.address_information,Lead.address_information,de
+Lead.company,Lead.company,de
+Lead.email,Lead.email,de
+Lead.header,Lead.header,de
+Lead.industry,Lead.industry,de
+Lead.lead_owner,Lead.lead_owner,de
+Lead.name,Lead.name,de
+Lead.phone,Lead.phone,de
+Lead.source,Lead.source,de
+Lead.status,Lead.status,de
+Lead.title,Lead.title,de
+Leads,Führt,de
+Leads Source,Leads Quelle,de
+Leads by Country,Leads nach Land,de
+Leads by Salesperson by Status,Leads nach Vertriebsmitarbeiter nach Status,de
+Leads by Source,Leads nach Quelle,de
+Leads by Team by Status,Leads nach Team nach Status,de
+Leads monitoring,Überwachung der Leads,de
+Leads status management,Statusverwaltung der Leads,de
+Limit Date,Datum der Begrenzung,de
+Lose,Verlieren Sie,de
+Loss confirmation,Verlustbestätigung,de
+Lost lead status,Status der verlorenen Leitung,de
+Lost reason,Verlorener Grund,de
+Lost reasons,Verlorene Gründe,de
+Low,Niedrig,de
+Main Contact,Hauptkontakt,de
+Main company,Hauptunternehmen,de
+Manage catalogs,Kataloge verwalten,de
+Manage recurring opportunities,Verwalten wiederkehrender Opportunities,de
+Manage statuses on prospect partner,Verwalten Sie den Status der potenziellen Partner,de
+Manager,Manager,de
+Mapping,Kartierung,de
+Mappings,Mappings,de
+Marketing,Marketing,de
+Marketing campaign,Marketing-Kampagne,de
+Meeting,Treffen,de
+Meeting Event (${ fullName }),Besprechungsereignis (${ fullName }),de
+Meeting Event(${ fullName}),Meeting Event(${ fullName}),de
+Meeting filters,Filter für Besprechungen,de
+Meeting reminder template,Vorlage für Besprechungserinnerungen,de
+Meeting's date changed template,Datum der Besprechung geänderte Vorlage,de
+Meeting's guest added template,Gast der Sitzung hinzugefügt Vorlage,de
+Meeting's guest deleted template,Gast des Meetings gelöschte Vorlage,de
+Meetings,Sitzungen,de
+Members,Mitglieder,de
+Memo,Memo,de
+Merge duplicated,Duplizierte zusammenführen,de
+Minutes,Protokoll,de
+Mo,Mo,de
+Mobile number,Handy-Nummer,de
+Month,Monat,de
+Monthly,Monatlich,de
+Months,Monate,de
+My Best Open Deals,Meine besten offenen Deals,de
+My CRM events,Meine CRM-Ereignisse,de
+My Calendar,Mein Kalender,de
+My Calls,Meine Anrufe,de
+My Closed Opportunities,Meine geschlossenen Gelegenheiten,de
+My Current Leads,Meine aktuellen Leads,de
+My Key accounts,Meine Großkunden,de
+My Leads,Meine Leads,de
+My Meetings,Meine Begegnungen,de
+My Open Opportunities,Meine offenen Gelegenheiten,de
+My Opportunities,Meine Chancen,de
+My Planned Activities,Geplante Aktivitäten,de
+My Project Tasks,Meine Projektaufgaben,de
+My Tasks,Meine Aufgaben,de
+My Team Best Open Deals,Mein Team Best Open Deals,de
+My Team Calls,Mein Team ruft an,de
+My Team Closed Opportunities,Mein Team Geschlossene Angebote,de
+My Team Key accounts,Mein Team Großkunden,de
+My Team Leads,Meine Teamleiter,de
+My Team Meetings,Meine Teambesprechungen,de
+My Team Open Opportunities,Mein Team Offene Stellen,de
+My Today Calls,Meine heutigen Anrufe,de
+My Today Tasks,Meine heutigen Aufgaben,de
+My Upcoming Meetings,Meine nächsten Treffen,de
+My Upcoming Tasks,Meine bevorstehenden Aufgaben,de
+My events,Meine Veranstaltungen,de
+My leads,Meine Hinweise,de
+My opportunities,Meine Chancen,de
+My past events,Meine vergangenen Veranstaltungen,de
+My plan activities,Mein Plan Aktivitäten,de
+My prospects,Meine Perspektiven,de
+My team opportunities,Die Möglichkeiten meines Teams,de
+My upcoming events,Meine kommenden Veranstaltungen,de
+My.Calendar.CRM,My.Calendar.CRM,de
+Name,Name,de
+Next scheduled event date,Nächstes geplantes Veranstaltungsdatum,de
+Next stage,Nächste Etappe,de
+No,Nein,de
+No contact creation,Kein Kontaktaufbau,de
+"No template created in CRM configuration for company %s, emails have not been sent","In der CRM-Konfiguration wurde keine Vorlage für das Unternehmen %s erstellt, E-Mails wurden nicht versendet",de
+Non-participant,Nicht-Teilnehmer,de
+None,Keine,de
+Normal,Normal,de
+Note,Hinweis,de
+Note Event (${ fullName }),Ereignis notieren (${ fullName }),de
+Note Event(${ fullName}),Notiz Ereignis(${ fullName}),de
+Number of employees,Anzahl der Mitarbeiter,de
+Nurturing,Pflegen,de
+OK,OK,de
+Objective %s is in contradiction with objective's configuration %s,Das Ziel %s steht im Widerspruch zur Konfiguration des Ziels %s,de
+Objectives' generation's reporting :,"Berichterstattung der Generation ""Zielsetzung"" :",de
+Office name,Name des Büros,de
+Ok,Ok,de
+Only pdf files are allowed,Nur pdf-Dateien sind erlaubt,de
+Open,Öffnen Sie,de
+Open Cases by Agents,Offene Fälle nach Agenten,de
+Open Opportunities,Offene Gelegenheiten,de
+Open the list of results,Öffnen Sie die Liste der Ergebnisse,de
+Opened leads,Eröffnete Leads,de
+Opened opportunities,Eröffnete Möglichkeiten,de
+Opened prospects,Eröffnete Perspektiven,de
+Operation mode,Betriebsart,de
+Opportunities,Möglichkeiten,de
+Opportunities By Origin By Stage,Chancen nach Herkunft nach Stadium,de
+Opportunities By Partner,Möglichkeiten nach Partner,de
+Opportunities By Sale Stage,Chancen nach Verkaufsstufe,de
+Opportunities By Source,Chancen nach Quelle,de
+Opportunities Won By Lead Source,Gewonnene Opportunities nach Lead-Quelle,de
+Opportunities Won By Salesman,Vom Verkäufer gewonnene Chancen,de
+Opportunities Won By Salesperson,Gewonnene Opportunities durch Verkäufer,de
+Opportunities filters,Chancen-Filter,de
+Opportunities monitoring,Überwachung der Chancen,de
+Opportunities status management,Verwaltung des Status der Chancen,de
+Opportunity,Gelegenheit,de
+Opportunity created,Gelegenheit geschaffen,de
+Opportunity lost,Verpasste Gelegenheit,de
+Opportunity scoring,Bewertung von Gelegenheiten,de
+Opportunity status,Opportunitätsstatus,de
+Opportunity statuses,Status der Opportunity,de
+Opportunity type,Art der Opportunität,de
+Opportunity types,Opportunitätsarten,de
+Opportunity won,Gewonnene Chance,de
+Optional participant,Optionaler Teilnehmer,de
+Order by state,Bestellung nach Bundesland,de
+Organization,Organisation,de
+Other opportunities,Andere Möglichkeiten,de
+Outbound,Ausgehend von,de
+Over 10000,Über 10000,de
+PDF file,PDF-Datei,de
+Parent event,Veranstaltung der Eltern,de
+Parent lead is missing.,Es fehlt ein elterlicher Hinweis.,de
+Partner,Partner,de
+Partner Type,Partner-Typ,de
+Partner status,Partnerstatus,de
+Partner types,Partner-Typen,de
+Partners,Partner,de
+Past activity,Frühere Tätigkeit,de
+Periodicity must be greater than 0,Die Periodizität muss größer als 0 sein.,de
+Phone number,Rufnummer,de
+Picture,Bild,de
+Pipeline,Pipeline,de
+Pipeline by Stage and Type,Pipeline nach Stadium und Typ,de
+Pipeline next 90 days,Pipeline nächste 90 Tage,de
+Planned,Geplant,de
+Please complete the contact address.,Bitte füllen Sie die Kontaktadresse aus.,de
+Please complete the partner address.,Bitte füllen Sie die Partneradresse aus.,de
+Please configure all templates in CRM configuration for company %s,Bitte konfigurieren Sie alle Vorlagen in der CRM-Konfiguration für das Unternehmen %s,de
+Please configure information for CRM for company %s,Bitte konfigurieren Sie Informationen für CRM für die Firma %s,de
+Please fill closed lost opportunity status in App CRM configuration.,"Bitte füllen Sie den Status ""Geschlossene verlorene Verkaufschance"" in der App CRM-Konfiguration aus.",de
+Please fill closed lost partner status in App CRM configuration.,"Bitte füllen Sie den Status ""Geschlossen"" für verlorene Partner in der App CRM-Konfiguration aus.",de
+Please fill closed win opportunity status in App CRM configuration.,Bitte füllen Sie den Status der geschlossenen Verkaufschance in der App CRM Konfiguration aus.,de
+Please fill closed win partner status in App CRM configuration.,"Bitte füllen Sie den Status ""Closed Win Partner"" in der App CRM Konfiguration aus.",de
+Please fill converted lead status in App CRM configuration.,Bitte füllen Sie den Status des konvertierten Leads in der App CRM-Konfiguration aus.,de
+Please fill default lead status in App CRM configuration.,Bitte füllen Sie den Standard-Lead-Status in der App CRM-Konfiguration aus.,de
+Please fill default opportunity status in App CRM configuration.,Bitte füllen Sie den Standard-Opportunity-Status in der App CRM-Konfiguration aus.,de
+Please fill default partner status in App CRM configuration.,Bitte füllen Sie den Standard-Partnerstatus in der App CRM-Konfiguration aus.,de
+Please fill lost lead status in App CRM configuration.,Bitte füllen Sie den verlorenen Lead-Status in der App CRM Konfiguration aus.,de
+Please fill sales proposition status in App CRM configuration.,Bitte füllen Sie den Status des Verkaufsvorschlags in der App CRM Konfiguration aus.,de
+Please make sure the opportunity was saved before generating the contract.,"Bitte vergewissern Sie sich, dass die Opportunity gespeichert wurde, bevor Sie den Vertrag erstellen.",de
+Please save the event before setting the recurrence,"Bitte speichern Sie das Ereignis, bevor Sie die Wiederholung einstellen",de
+Please select a lead,Bitte wählen Sie eine Spur,de
+Please set an active company for user %s,Bitte setzen Sie ein aktives Unternehmen für Benutzer %s,de
+Present,Gegenwart,de
+Primary address,Primäre Adresse,de
+Primary key,Primärschlüssel,de
+Primary keys,Primärschlüssel,de
+Priority,Priorität,de
+Probability,Wahrscheinlichkeit,de
+Probability (%),Wahrscheinlichkeit (%),de
+Probability(%) :,Wahrscheinlichkeit(%) :,de
+Prospect,Aussicht,de
+Prospect not found.,Interessent nicht gefunden.,de
+Prospect status,Aussichtsreicher Status,de
+Prospect won and became client.,Der Interessent gewann und wurde Kunde.,de
+Prospects,Aussichten,de
+Prospects status managment,Verwaltung des Status der Aussichten,de
+Realized,Realisiert,de
+Received emails,Empfangene E-Mails,de
+Recent activity,Jüngste Aktivität,de
+Recent lost deals,Kürzlich verlorene Geschäfte,de
+Recently created opportunities,Kürzlich geschaffene Möglichkeiten,de
+Recurrence,Wiederholung,de
+Recurrence assistant,Rückfall-Assistent,de
+Recurrence configuration,Konfiguration der Wiederholung,de
+Recurrence name,Name des Wiederauftretens,de
+Recurrent,Wiederkehrend,de
+Recurrent amount,Wiederkehrender Betrag,de
+Recurring end date,Wiederkehrendes Enddatum,de
+Recurring start date,Wiederkehrendes Startdatum,de
+Reference,Referenz,de
+References,Referenzen,de
+Rejection of calls,Ablehnung von Anrufen,de
+Rejection of e-mails,Ablehnung von E-Mails,de
+Related Contacts,Verwandte Kontakte,de
+Related to,Verwandt mit,de
+Related to select,Verwandt mit wählen,de
+Reminded,Erinnert,de
+Reminder,Erinnerung,de
+Reminder Templates,Erinnerungsvorlagen,de
+Reminder(s) treated,Erinnerung(en) behandelt,de
+Reminders,Mahnungen,de
+Repeat every,Wiederholen Sie alle,de
+Repeat every:,Wiederholen Sie alle:,de
+Repeat the:,Wiederholen Sie den:,de
+Repetitions number,Anzahl Wiederholungen,de
+Reportings,Berichte,de
+Reports,Berichte,de
+Requests,Anfragen an,de
+Required participant,Erforderlicher Teilnehmer,de
+ResearchRequest.title,ResearchRequest.title,de
+Reset,Zurücksetzen,de
+Roles,Rollen,de
+Sa,Sa,de
+Sale quotation,Verkaufspreis,de
+Sale quotations/orders,Verkaufsangebote/Aufträge,de
+Sales Stage,Verkaufsphase,de
+Sales pipeline follow-up,Überwachung der Vertriebspipeline,de
+Sales proposition step,Schritt des Verkaufsangebots,de
+Sales stage,Verkaufsstufe,de
+Salesman,Verkäufer,de
+Salesperson,Vertriebsmitarbeiter,de
+Salesperson user,Benutzer Verkäufer,de
+Saving this partner will convert the lead!,Die Rettung dieses Partners wird den Vorsprung umwandeln!,de
+Schedule Event,Zeitplan Ereignis,de
+Schedule Event (${ fullName }),Ereignis terminieren (${ fullName }),de
+Schedule Event(${ fullName}),Ereignis planen(${ fullName}),de
+Score,Ergebnis,de
+Score :,Punkte:,de
+Search,Suche,de
+Select Contact,Kontakt auswählen,de
+Select Partner,Partner auswählen,de
+Select existing contact,Vorhandenen Kontakt auswählen,de
+Select existing partner,Vorhandenen Partner auswählen,de
+Select partner type to create:,Wählen Sie die zu erstellende Partnerart:,de
+Send Email,E-Mail senden,de
+Sending date,Datum der Absendung,de
+Sent emails,Gesendete Emails,de
+Sent opportunities,Gesendete Gelegenheiten,de
+Sequence,Sequenz,de
+Show PDF,PDF anzeigen,de
+Show Partner,Partner anzeigen,de
+Show all events,Alle Ereignisse anzeigen,de
+Show the events,Anzeigen der Ereignisse,de
+Show the opportunities,Zeigen Sie die Möglichkeiten auf,de
+Size,Größe,de
+Some user groups,Einige Nutzergruppen,de
+Source,Quelle,de
+Source description,Beschreibung der Quelle,de
+Start date,Datum des Beginns,de
+Status,Status,de
+Status description,Statusbeschreibung,de
+Su,Su,de
+Subcontractor,Unterauftragnehmer,de
+Supplier,Anbieter,de
+Tags,Tags,de
+Take charge,Verantwortung übernehmen,de
+Take in charge,Die Verantwortung übernehmen,de
+Task,Aufgabe,de
+Task Event (${ fullName }),Aufgabe Ereignis (${ fullName }),de
+Task Event(${ fullName}),Aufgabe Ereignis(${ fullName}),de
+Task reminder template,Vorlage für Aufgabenerinnerung,de
+Tasks filters,Aufgaben-Filter,de
+Tb Opportunities 1,Tb-Möglichkeiten 1,de
+Tb Opportunities 2,Tb-Möglichkeiten 2,de
+Team,Team,de
+Teams,Mannschaften,de
+Template,Vorlage,de
+Th,Th,de
+The end date must be after the start date,Das Enddatum muss nach dem Startdatum liegen,de
+The number of repetitions must be greater than 0,Die Anzahl der Wiederholungen muss größer als 0 sein.,de
+There's no configured sequence for opportunities for the company %s,Es gibt keine konfigurierte Reihenfolge für Opportunities für das Unternehmen %s,de
+"These opportunities have been found for the same prospect, would you like to close it (closed losed) ?","Diese Gelegenheiten wurden für denselben Interessenten gefunden, möchten Sie sie abschließen (closed losed)?",de
+"These statuses are essential to the operation of the process, they can be renamed but cannot be deleted.","Diese Status sind für das Funktionieren des Prozesses unerlässlich. Sie können umbenannt, aber nicht gelöscht werden.",de
+"This configuration enables a search tool to be activated in CRM, which allows queries to be made on multiple object types (opportunities, leads, events, etc...), using keywords and configurable mapping.","Diese Konfiguration ermöglicht die Aktivierung eines Suchwerkzeugs im CRM, mit dem Abfragen über mehrere Objekttypen (Opportunities, Leads, Events, etc...) unter Verwendung von Schlüsselwörtern und konfigurierbaren Zuordnungen durchgeführt werden können.",de
+This configuration enables catalog management. It allows you to add sales catalogs in pdf format that can be consulted from the application.,"Diese Konfiguration ermöglicht die Katalogverwaltung. Sie ermöglicht es Ihnen, Verkaufskataloge im PDF-Format hinzuzufügen, die von der Anwendung aus eingesehen werden können.",de
+To Date,Bis heute,de
+"To convert lead, please use the Convert button.","Um einen Lead umzuwandeln, verwenden Sie bitte die Schaltfläche Umwandeln.",de
+"To lose lead, please use the Lose button.","Um Blei zu verlieren, verwenden Sie bitte die Schaltfläche Verlieren.",de
+Tools,Werkzeuge,de
+Tour,Tour,de
+Tour line,Linie der Tour,de
+Tour line successfully validated.,Tourlinie erfolgreich validiert.,de
+Tour lines,Tour-Linien,de
+Tour successfully validated.,Tour erfolgreich validiert.,de
+Tours,Touren,de
+Trading name,Handelsname,de
+Treated objectives reporting,Berichterstattung über behandelte Ziele,de
+Tu,Tu,de
+Type,Typ,de
+Type of need,Art des Bedarfs,de
+UID (Calendar),UID (Kalender),de
+Unassigned Leads,Nicht zugewiesene Leads,de
+Unassigned Opportunities,Nicht zugewiesene Gelegenheiten,de
+Unassigned opportunities,Nicht zugewiesene Gelegenheiten,de
+Urgent,Dringend,de
+User,Benutzer,de
+User %s does not have an email address configured nor is it linked to a partner with an email address configured.,Der Benutzer %s hat weder eine E-Mail-Adresse konfiguriert noch ist er mit einem Partner mit einer konfigurierten E-Mail-Adresse verknüpft.,de
+User %s must have an active company to use templates,"Benutzer %s muss ein aktives Unternehmen haben, um Vorlagen zu verwenden",de
+Validate,Validieren Sie,de
+Validated,Validiert,de
+View itinerary,Reiseroute ansehen,de
+We,Wir,de
+"We found the following similar leads/contacts/partners in the system, do you still want to create this lead ?","Wir haben die folgenden ähnlichen Leads/Kontakte/Partner im System gefunden, möchten Sie diesen Lead trotzdem erstellen?",de
+We found these other leads that may be linked to your partner.,"Wir haben diese anderen Hinweise gefunden, die mit Ihrem Partner in Verbindung stehen könnten.",de
+Website,Website,de
+Weekly,Wöchentlich,de
+Weeks,Wochen,de
+Won opportunities,Gewonnene Chancen,de
+Work area,Arbeitsbereich,de
+Work domain,Arbeitsbereich,de
+Worst case,Schlimmster Fall,de
+Years,Jahre,de
+Yes,Ja,de
+You don't have the rights to delete this event,"Sie haben nicht die Rechte, dieses Ereignis zu löschen",de
+You must choose a recurrence type,Sie müssen eine Wiederholungsart wählen,de
+You must choose at least one day in the week,Sie müssen mindestens einen Tag in der Woche wählen,de
+agency.name,agency.name,de
+amount,Betrag,de
+com.axelor.apps.crm.job.EventReminderJob,com.axelor.apps.crm.job.EventReminderJob,de
+com.axelor.apps.crm.service.batch.CrmBatchService,com.axelor.apps.crm.service.batch.CrmBatchService,de
+crm.Partner,crm.Partner,de
+crm.toDate,crm.toDate,de
+every week's day,jeden Tag in der Woche,de
+everyday,Alltag,de
+"fri,","fri,",de
+"mon,","mon,",de
+on,auf,de
+partner.manager,partner.manager,de
+portal.daily.team.calls.summary.by.user,portal.daily.team.calls.summary.by.user,de
+"sat,","satt,",de
+"sun,","Sonne,",de
+"thur,","Do,",de
+tourLine.order,tourLine.order,de
+"tues,","dienstags,",de
+until the,bis die,de
+value:CRM,value:CRM,de
+"wed,","Hochzeit,",de
+whatever@example.com,whatever@example.com,de

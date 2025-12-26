@@ -1,0 +1,341 @@
+key,message,language
+$budgetExceedAlert,$budgetExceedAlert,de
+"<><Badge bg=""warning"">You need to save the budget before manage budget lines on periods</Badge></>","<><Badge bg=""warning"">Sie müssen das Budget speichern, bevor Sie Budgetlinien in Perioden verwalten</Badge></>",de
+"<span class='label label-warning'>To activate this option, you need to disable budget key first in account configurations of companies.</span>","<span class='label label-warning'>Um diese Option zu aktivieren, müssen Sie zuerst den Budgetschlüssel in den Kontokonfigurationen der Unternehmen deaktivieren.</span>",de
+"<span class='label label-warning'>To activate this option, you need to disable project management first in budget configuration.</span>","<span class='label label-warning'>Um diese Option zu aktivieren, müssen Sie zunächst die Projektverwaltung in der Budgetkonfiguration deaktivieren.</span>",de
+A budget date is missing,Es fehlt ein Budgetdatum,de
+"A budget distribution has already been generated. By launching this action, the budget distribution table will be cleared and re-computed. Do you want to proceed ?","Es wurde bereits eine Budgetverteilung erstellt. Wenn Sie diese Aktion starten, wird die Budgetverteilungstabelle geleert und neu berechnet. Möchten Sie fortfahren?",de
+Account,Konto,de
+Account configuration,Konto-Konfiguration,de
+Account model,Kontomodell,de
+Account models,Kontomodelle,de
+Account move,Konto verschieben,de
+Account(s),Konto(s),de
+Accounting.Account,Accounting.Account,de
+AccountingReportType25.balance,AccountingReportType25.balance,de
+AccountingReportType25.company,AccountingReportType25.company,de
+AccountingReportType25.currency,AccountingReportType25.currency,de
+AccountingReportType25.date,AccountingReportType25.date,de
+AccountingReportType25.expectedAmt,AccountingReportType25.expectedAmt,de
+AccountingReportType25.expenditure,AccountingReportType25.expenditure,de
+AccountingReportType25.from,AccountingReportType25.from,de
+AccountingReportType25.gap,AccountingReportType25.gap,de
+AccountingReportType25.realizedAmt,AccountingReportType25.realizedAmt,de
+AccountingReportType25.revenue,AccountingReportType25.revenue,de
+AccountingReportType25.revenueOrExpenditure,AccountingReportType25.revenueOrExpenditure,de
+AccountingReportType25.title,AccountingReportType25.title,de
+AccountingReportType25.to,AccountingReportType25.to,de
+AccountingReportType25.totalExpenditure,AccountingReportType25.totalExpenditure,de
+AccountingReportType25.totalRevenue,AccountingReportType25.totalRevenue,de
+AccountingReportType25.year,AccountingReportType25.year,de
+Active,Aktiv,de
+Active Version,Aktive Version,de
+Active version expected amounts line,Aktive Version erwartete Beträge Zeile,de
+Advance export budget,Vorgezogenes Ausfuhrbudget,de
+Advance export budget level,Voraussichtliche Höhe des Ausfuhrbudgets,de
+Advance export budget line,Haushaltslinie für vorgezogene Ausfuhren,de
+Advance export global budget,Vorgezogene Ausfuhr Globalbudget,de
+All,Alle,de
+Amount,Betrag,de
+Amount for each line,Betrag für jede Zeile,de
+Analytic Axis By Company,Analytische Achse nach Unternehmen,de
+Analytic Axis By company,Analytische Achse Nach Unternehmen,de
+Analytic account,Analytisches Konto,de
+Analytic axis,Analytische Achse,de
+App,App,de
+App budget,App-Budget,de
+Apply to all,Gelten für alle,de
+Archived,Archiviert,de
+Assigned amount,Zugewiesener Betrag,de
+Auto,Auto,de
+Automatic budget computation,Automatische Budgetberechnung,de
+Available Amount,Verfügbarer Betrag,de
+Available amount,Verfügbarer Betrag,de
+Available amount with simulated,Verfügbarer Betrag mit simuliertem,de
+Available amount with simulated moves,Verfügbarer Betrag mit simulierten Zügen,de
+Budget,Haushalt,de
+Budget Distribution,Haushaltsverteilung,de
+Budget Generator,Budget-Generator,de
+Budget Level,Haushaltsebene,de
+Budget Levels,Haushaltsebenen,de
+Budget Line,Haushaltslinie,de
+Budget Lines,Haushaltslinien,de
+Budget Scenario,Budget-Szenario,de
+Budget Scenario Line,Haushaltsszenario Zeile,de
+Budget Scenario Lines,Haushaltsszenario-Linien,de
+Budget Scenario Value,Haushaltsszenario Wert,de
+Budget Scenario Variable,Haushaltsszenario Variable,de
+Budget Scenario Variable %s,Haushaltsszenario Variable %s,de
+Budget Structure,Haushaltsstruktur,de
+Budget Version,Budget Version,de
+Budget amount available,Verfügbarer Haushaltsbetrag,de
+Budget dates,Haushaltsdaten,de
+Budget distribution,Verteilung des Haushalts,de
+Budget distribution generated,Erstellte Budgetverteilung,de
+Budget distribution has not been configured. It is required for the rest of the process.,Die Budgetverteilung wurde nicht konfiguriert. Sie ist für den Rest des Prozesses erforderlich.,de
+Budget distribution imputed,Berechnete Budgetverteilung,de
+Budget distribution role,Rolle der Budgetverteilung,de
+Budget distributions,Haushaltsverteilungen,de
+Budget exceed alert for orders,Budgetüberschreitungswarnung für Aufträge,de
+Budget filters,Budget-Filter,de
+Budget full name,Haushalt vollständiger Name,de
+Budget id,Haushalts-ID,de
+Budget key,Haushaltsschlüssel,de
+Budget level,Haushaltsebene,de
+Budget level export,Ausfuhr auf Haushaltsebene,de
+Budget line,Haushaltslinie,de
+Budget management,Verwaltung des Haushalts,de
+Budget manager,Haushaltsmanager,de
+Budget model,Haushaltsmodell,de
+Budget scenario,Haushaltsszenario,de
+Budget scenario line list,Liste der Haushaltsszenariozeilen,de
+Budget scenario variable,Haushaltsszenario variabel,de
+Budget scenario variables,Variablen des Haushaltsszenarios,de
+Budget structure,Struktur des Haushaltsplans,de
+Budget structures,Haushaltsstrukturen,de
+Budget templates,Budget-Vorlagen,de
+Budget type select,Budgettyp auswählen,de
+Budget version,Haushaltsversion,de
+Budget versions,Budget-Versionen,de
+Budget.Purchase,Budget.Purchase,de
+Budget.Sale,Budget.Sale,de
+BudgetScenario.company,BudgetScenario.company,de
+BudgetScenario.currency,BudgetScenario.currency,de
+BudgetScenario.date,BudgetScenario.date,de
+BudgetScenario.expenseAndRevenueItems,BudgetScenario.expenseAndRevenueItems,de
+BudgetScenario.name,BudgetScenario.name,de
+BudgetScenario.title,BudgetScenario.title,de
+Budgets,Budgets,de
+Budgets related,Budgets im Zusammenhang mit,de
+"By activating this option, you will be able to select projects inside a global budget and inversely, select global budgets inside a project.","Wenn Sie diese Option aktivieren, können Sie Projekte innerhalb eines Gesamtbudgets auswählen und umgekehrt Gesamtbudgets innerhalb eines Projekts auswählen.",de
+"By drafting this budget, you will set children sections and budgets linked in draft too. Do you want to continue ?","Wenn Sie diesen Haushaltsplan erstellen, werden auch die Kinderabschnitte und -budgets im Entwurf verknüpft. Möchten Sie fortfahren?",de
+"By drafting this section, you will set children sections and budgets linked in draft too. Do you want to continue ?","Wenn Sie diesen Abschnitt entwerfen, werden auch die Kinderabschnitte und -budgets im Entwurf verknüpft. Möchten Sie fortfahren?",de
+"By validating this budget, you will validate children sections and budgets linked too. Do you want to continue ?","Wenn Sie dieses Budget validieren, werden auch die damit verbundenen Kinderabschnitte und Budgets validiert. Möchten Sie fortfahren?",de
+"By validating this section, you will validate children sections and budgets linked too. Do you want to continue ?","Wenn Sie diesen Abschnitt validieren, validieren Sie auch die damit verbundenen Unterabschnitte und Budgets. Möchten Sie fortfahren?",de
+Category,Kategorie,de
+Change budget version,Budgetversion ändern,de
+Check Available Budget,Verfügbares Budget prüfen,de
+Check available amount,Verfügbarer Betrag prüfen,de
+Code,Code,de
+Comment,Kommentar,de
+Commentaires,Kommentare,de
+Committed amount,Gebundener Betrag,de
+Committed line,Gebundene Linie,de
+Committed lines,Gebundene Linien,de
+Company,Unternehmen,de
+Company code,Buchungskreis,de
+Company currency,Währung des Unternehmens,de
+Company department,Abteilung des Unternehmens,de
+Compute budget distribution,Berechnung der Budgetverteilung,de
+Create New version,Neue Version erstellen,de
+Currency,Währung,de
+Current Expenses,Laufende Kosten,de
+Data imported successfully,Daten erfolgreich importiert,de
+Date,Datum,de
+"Depending on the level chosen, the user will receive no alert ('None'), a warning message ('Optional') or an error ('Required') if one of the budget exceed the budget value.","Je nach gewählter Stufe erhält der Benutzer keine Warnmeldung (""Keine""), eine Warnmeldung (""Optional"") oder einen Fehler (""Erforderlich""), wenn eines der Budgets den Budgetwert überschreitet.",de
+"Depending on the level chosen, the user will receive no alert ('None'), a warning message ('Optional') or will be obliged to fill in the budget information for the rest of the process ('Required').","Je nach gewählter Stufe erhält der Benutzer keine Warnmeldung (""Keine""), eine Warnmeldung (""Optional"") oder er muss die Budgetinformationen für den Rest des Prozesses ausfüllen (""Erforderlich"").",de
+Display committed lines,Begangene Zeilen anzeigen,de
+Display realized with no po,Anzeige realisiert ohne Po,de
+Display realized with po,Display realisiert mit po,de
+Display simulated moves,Simulierte Züge anzeigen,de
+Distribution lines,Verteilungsleitungen,de
+Draft,Entwurf,de
+Enable budget key,Budgetschlüssel freigeben,de
+Enable the link to projects,Aktivieren Sie den Link zu Projekten,de
+End Date,Enddatum,de
+Error : Following accounts are not found %s,Fehler : Folgende Konten werden nicht gefunden %s,de
+Expected amount,Erwarteter Betrag,de
+Expected amount allocated on the budget. This amount is automatically computed by adding up expected amounts of bellowed levels.,"Voraussichtlicher Betrag, der dem Haushalt zugewiesen wird. Dieser Betrag wird automatisch berechnet, indem die erwarteten Beträge der gebrüllten Ebenen addiert werden.",de
+Export Menu,"Menü ""Exportieren",de
+Export file,Datei exportieren,de
+Export global budget,Globalbudget exportieren,de
+Files are not created,Dateien werden nicht erstellt,de
+Financing,Finanzierung,de
+Firm gap,Feste Lücke,de
+Follow-up,Nachbereitung,de
+Formula,Formel,de
+From,Von,de
+From date,Vom Datum,de
+Full name,Vollständiger Name,de
+Gap amount,Betrag der Lücke,de
+Generate Global Budget,Globales Budget generieren,de
+Generate global budget,Globales Budget generieren,de
+Generate periods,Zeiträume generieren,de
+Global,Global,de
+Global Budget,Globaler Haushalt,de
+Global budget,Globaler Haushalt,de
+Global budget committed lines,Globalhaushalt gebundene Haushaltslinien,de
+Global budget export,Globale Haushaltsausfuhr,de
+Global budget full name,Vollständiger Name des Gesamthaushaltsplans,de
+Global budget id,Globale Haushalts-ID,de
+Global budgets,Globale Budgets,de
+"If enabled, an automatic budget computation will be done at request/finalize for orders","Wenn aktiviert, wird eine automatische Budgetberechnung bei der Anfrage/Fertigstellung für Aufträge durchgeführt.",de
+"If you click OK you will be in excess, do you want to continue ?","Wenn Sie auf ""OK"" klicken, wird ein Überschuss an Daten angezeigt, möchten Sie fortfahren?",de
+Import budgets and budget templates,Budgets und Budgetvorlagen importieren,de
+Import file,Datei importieren,de
+Include in budget key,In den Haushaltsschlüssel einbeziehen,de
+Init budget dates,Erste Haushaltsdaten,de
+Invalid dates,Ungültige Daten,de
+"Invalid dates, please fix this.","Ungültige Daten, bitte korrigieren Sie dies.",de
+Investment,Investition,de
+Investment budget,Investitionsbudget,de
+Investment budgets,Investitionsbudgets,de
+Invoice,Rechnung,de
+Invoice line,Linie der Rechnung,de
+Invoices,Rechnungen,de
+Lines,Zeilen,de
+Manage multi budgets on lines,Verwaltung von Mehrfachbudgets für Linien,de
+Method,Methode,de
+Missing budget alert,Alarm wegen fehlender Haushaltsmittel,de
+Missing required advanced export(s).,Fehlende(r) erforderliche(r) erweiterte(r) Export(e).,de
+Move line,Linie verschieben,de
+MoveLine,MoveLine,de
+Name,Name,de
+New Budget Version,Neue Haushaltsversion,de
+No budget could be reconciled with the data entered for following lines : %s,Für die folgenden Zeilen konnte kein Budget mit den eingegebenen Daten abgeglichen werden: %s,de
+None,Keine,de
+OK,OK,de
+On the line,Auf der Linie,de
+Operations,Betrieb,de
+Optional,Optional,de
+Or,Oder,de
+Overview,Übersicht,de
+PO line,PO-Zeile,de
+PO lines,PO-Zeilen,de
+Paid amount,Gezahlter Betrag,de
+Paid total amount,Gezahlter Gesamtbetrag,de
+Parent,Elternteil,de
+Parent Level,Ebene der Eltern,de
+Parent budget level full name,Vollständiger Name der übergeordneten Haushaltsebene,de
+Parent budget level id,ID der übergeordneten Haushaltsebene,de
+Period duration,Dauer des Zeitraums,de
+Periods generation assistant,Assistent zur Generierung von Zeiträumen,de
+Person in charge,Verantwortliche Person,de
+Please select a budget with Id.,Bitte wählen Sie ein Budget mit Id.,de
+Please select a language on user form.,Bitte wählen Sie im Benutzerformular eine Sprache aus.,de
+"Please select valid dates for budget %s, dates needs to be in the section period","Bitte wählen Sie gültige Daten für das Budget %s aus, die Daten müssen im Zeitraum des Abschnitts liegen",de
+"Please select valid dates for budget level %s, dates needs to be in the parent period","Bitte wählen Sie gültige Daten für die Budgetebene %s, die Daten müssen im übergeordneten Zeitraum liegen",de
+"Please select valid dates for budget lines in budget %s, budget lines need to be on a separate period","Bitte wählen Sie gültige Daten für die Budgetlinien im Budget %s, die Budgetlinien müssen sich auf einen separaten Zeitraum beziehen",de
+"Please select valid dates for budget lines in budget %s, dates need to be in the budget period","Bitte wählen Sie gültige Daten für Budgetlinien im Budget %s aus, die Daten müssen im Budgetzeitraum liegen",de
+"Please select valid dates for budget lines, dates need to be in the budget period","Bitte wählen Sie gültige Daten für die Haushaltslinien aus, die Daten müssen im Haushaltszeitraum liegen.",de
+Previsualize,Vorabvisualisierung,de
+Production,Produktion,de
+Project,Projekt,de
+Projects,Projekte,de
+Purchase and investment,Kauf und Investition,de
+Purchase and investment budget,Kauf- und Investitionsbudget,de
+Purchase and investment budgets,Kauf- und Investitionsbudgets,de
+Purchase budget,Budget für den Kauf,de
+Purchase budgets,Budgets für den Kauf,de
+Purchase order line,Bestellungseingang,de
+Purchase orders,Kaufaufträge,de
+RH,RH,de
+Realized amount,Realisierter Betrag,de
+Realized line,Realisierte Linie,de
+Realized lines,Realisierte Linien,de
+Realized total amount,Realisierter Gesamtbetrag,de
+Realized with no po,Realisiert ohne Po,de
+Realized with po,Realisiert mit po,de
+Ref.,Ref.,de
+Related budgets,Verwandte Haushalte,de
+Remaining amount to allocate on budgets,Verbleibender Betrag zur Aufteilung auf die Budgets,de
+Remaining open amount,Verbleibender offener Betrag,de
+Remains for sale,Überreste zu verkaufen,de
+Represents the expected amount minus the sum of realized amounts and the sum of moves of status simulated.,Stellt den erwarteten Betrag abzüglich der Summe der realisierten Beträge und der Summe der Bewegungen des simulierten Status dar.,de
+Represents the expected amount minus the sum of realized amounts.,Stellt den erwarteten Betrag abzüglich der Summe der realisierten Beträge dar.,de
+Represents the sum of amounts realized with or without commitment that exceed the initial,"Stellt die Summe der mit oder ohne Verpflichtung realisierten Beträge dar, die den ursprünglichen",de
+Represents the sum of moves of status simulated.,Stellt die Summe der Züge des simulierten Status dar.,de
+"Represents the sum of orders of status requested, validated or finished and that don't have an invoiced invoice.","Stellt die Summe der Aufträge mit dem Status ""angefordert"", ""bestätigt"" oder ""abgeschlossen"" dar, für die noch keine Rechnung vorliegt.",de
+"Represents the sum of purchase orders of status requested, validated or finished and that don't have a invoiced invoice.","Stellt die Summe der Bestellungen mit dem Status ""angefordert"", ""bestätigt"" oder ""abgeschlossen"" dar, für die noch keine Rechnung vorliegt.",de
+Represents the sum of ventilated invoices with an order.,Stellt die Summe der belüfteten Rechnungen mit einer Bestellung dar.,de
+Represents the sum of ventilated invoices with no order and daybook and accounted moves with no invoice.,Stellt die Summe der ventilierten Rechnungen ohne Auftrag und der Tagesbücher und abgerechneten Umzüge ohne Rechnung dar.,de
+Represents the sum of ventilated invoices with no purchase order and daybook and accounted moves with no invoice.,Stellt die Summe der ventilierten Rechnungen ohne Bestellung und der Tagesbücher und abgerechneten Umzüge ohne Rechnung dar.,de
+Required,Erforderlich,de
+Results,Ergebnisse,de
+Revenue,Einnahmen,de
+Revenue and expenditure state,Stand der Einnahmen und Ausgaben,de
+SO line,SO-Linie,de
+SO lines,SO-Linien,de
+Sale budget,Verkaufsbudget,de
+Sale budgets,Verkaufsbudgets,de
+Sale order,Verkaufsauftrag,de
+Sale order line,Verkaufsauftragszeile,de
+Scenario,Szenario,de
+Section,Abschnitt,de
+Section line,Abschnittslinie,de
+Sections,Sektionen,de
+See budget distribution lines,Siehe Haushaltsverteilungslinien,de
+See detail,Siehe Detail,de
+See purchase order lines,Siehe Bestellzeilen,de
+Simulated Moves,Simulierte Bewegungen,de
+Simulated amount,Simulierter Betrag,de
+Source,Quelle,de
+Start Date,Datum des Beginns,de
+Starting Year,Anfangsjahr,de
+Status,Status,de
+Status select,Status auswählen,de
+Supplier RFQ/PO,Lieferant RFQ/PO,de
+Tax,Steuer,de
+Template,Vorlage,de
+Templates,Schablonen,de
+"The budget distribution amount exceed the amount on the order line with product %s, please correct it","Der Budgetverteilungsbetrag übersteigt den Betrag in der Auftragszeile mit dem Produkt %s, bitte korrigieren Sie dies",de
+"The budget distribution amount for budget %s exceeds the amount of the invoice line %s, please correct it","Der Budgetverteilungsbetrag für Budget %s übersteigt den Betrag der Rechnungszeile %s, bitte korrigieren Sie dies",de
+"The budget distribution amount for budget %s exceeds the amount of the move line %s, please correct it","Der Betrag der Budgetverteilung für das Budget %s übersteigt den Betrag der Umzugslinie %s, bitte korrigieren Sie dies",de
+"The budget distribution amount for budget %s exceeds the amount of the order line %s, please correct it","Der Budgetverteilungsbetrag für Budget %s übersteigt den Betrag der Auftragszeile %s, bitte korrigieren Sie ihn",de
+"The budget distribution has not been computed yet. By launching this action, you can no longer compute the budget distribution.","Die Budgetverteilung ist noch nicht berechnet worden. Wenn Sie diese Aktion starten, können Sie die Budgetverteilung nicht mehr berechnen.",de
+"The budget key is enabled in the company %s account configuration. Thus, you must fill at least one accounting account before validating in order to ensure its generation (Budget %s)","Der Budgetschlüssel ist in der Konfiguration des Firmenkontos %s aktiviert. Daher müssen Sie vor der Validierung mindestens ein Buchhaltungskonto ausfüllen, um seine Erstellung zu gewährleisten (Budget %s)",de
+"The budget key is enabled in the company %s account configuration. Thus, you must fill the analytic axis and the analytic account before validating in order to ensure its generation (Budget %s)","Der Budgetschlüssel ist in der Konfiguration des Firmenkontos %s aktiviert. Daher müssen Sie die Analyseachse und das analytische Konto vor der Validierung ausfüllen, um die Generierung sicherzustellen (Budget %s)",de
+The budget key is missing in budget %s. Please fill account and analytic distribution configuration in budget before validating in order to ensure its generation,"Der Budgetschlüssel fehlt im Budget %s. Bitte geben Sie vor der Validierung die Konfiguration des Kontos und der analytischen Verteilung in das Budget ein, um die Generierung sicherzustellen.",de
+The period %s to %s is not covered by any budget line for budget %s. Please correct it.,Für den Zeitraum %s bis %s gibt es keine Haushaltslinie für das Budget %s. Bitte korrigieren Sie dies.,de
+"The sum of the budget distribution amount for budget exceeds the amount of the move line %s, please correct it","Die Summe der Budgetverteilungsbeträge für das Budget übersteigt den Betrag der Umzugslinie %s, bitte korrigieren Sie dies",de
+"The sum of the budget distribution amount for budget exceeds the amount of the order line %s, please correct it","Die Summe der Budgetverteilung für das Budget übersteigt den Betrag der Auftragszeile %s, bitte korrigieren Sie dies",de
+"The sum of the budget distribution amounts exceeds the amount of the invoice line %s, please correct it","Die Summe der Budgetverteilungsbeträge übersteigt den Betrag der Rechnungszeile %s, bitte korrigieren Sie dies",de
+The total amount is greater than the budget distribution total.,Der Gesamtbetrag ist größer als die Summe der Budgetverteilung.,de
+There is a budget overrun for %s. The available balance is %.2f %s.,Es gibt eine Budgetüberschreitung für %s. Der verfügbare Saldo beträgt %.2f %s.,de
+"There is already a budget key using the same combination of company, dates, accounts and analytic accounts and axis than the budget line %s","Es gibt bereits einen Haushaltsschlüssel, der dieselbe Kombination von Gesellschaft, Daten, Konten und analytischen Konten und Achsen verwendet wie die Haushaltslinie %s",de
+This field is only used for budget key computation and will not be used as account in the invoice,Dieses Feld wird nur für die Berechnung des Haushaltsschlüssels verwendet und wird nicht als Konto in der Rechnung verwendet.,de
+To,An,de
+To be committed amount,Zu bindender Betrag,de
+To date,Bis heute,de
+"To generate periods, please fill in the Period duration.","Um Perioden zu erstellen, geben Sie bitte die Dauer der Periode ein.",de
+"To generate periods, please fill in the limits of the budget.","Um Zeiträume zu erstellen, geben Sie bitte die Grenzen des Budgets an.",de
+Too much iterations.,Zu viele Iterationen.,de
+Total W.T.,Total W.T.,de
+Total amount committed,Gebundener Gesamtbetrag,de
+Total amount expected,Erwarteter Gesamtbetrag,de
+Total amounts,Beträge insgesamt,de
+Total firm gap,Gesamte Unternehmenslücke,de
+Total unassigned amount,Nicht zugewiesener Gesamtbetrag,de
+Tracebacks,Rückverfolgungen,de
+Type,Typ,de
+Unassigned amount,Nicht zugewiesener Betrag,de
+Update dates,Daten aktualisieren,de
+Validate,Validieren Sie,de
+Validate structure,Struktur validieren,de
+Validated,Validiert,de
+Validated structure,Validierte Struktur,de
+Variables,Variablen,de
+Version Number,Versionsnummer,de
+Version expected amounts line,Version erwartete Beträge Zeile,de
+Version expected amounts line list,Version erwartete Beträge Zeilenliste,de
+Version expected amounts lines,Version erwartete Beträge Zeilen,de
+Versions,Versionen,de
+"Warning, existing lines will be deleted, do you wish to continue?","Warnung, bestehende Zeilen werden gelöscht, möchten Sie fortfahren?",de
+"Warning, you will delete all versions linked to this budget, do you want to continue ?","Achtung, Sie löschen alle mit diesem Budget verknüpften Versionen, wollen Sie fortfahren?",de
+"When budget key is enabled, you must check at least one line on analytic axis to be included in budget key computation","Wenn der Budgetschlüssel aktiviert ist, müssen Sie mindestens eine Zeile auf der analytischen Achse ankreuzen, um in die Berechnung des Budgetschlüssels einbezogen zu werden.",de
+Year,Jahr,de
+Year 2,Jahr 2,de
+Year 3,Jahr 3,de
+Year 4,Jahr 4,de
+Year 5,Jahr 5,de
+Year 6,Jahrgangsstufe 6,de
+Years,Jahre,de
+You can't compute the budget distribution because you are not authorized to.,"Sie können die Budgetverteilung nicht berechnen, weil Sie dazu nicht befugt sind.",de
+archiveBtn,archiveBtn,de
+budget.Budget,budget.Budget,de
+budget.Manual,budget.Manual,de
+budget.custom,budget.custom,de
+copy,kopieren.,de
+draftBtn,draftBtn,de
+validateBtn,validateBtn,de
+value:Budget,value:Budget,de

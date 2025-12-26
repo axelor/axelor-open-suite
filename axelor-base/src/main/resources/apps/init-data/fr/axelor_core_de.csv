@@ -1,0 +1,590 @@
+key,message,language
+"<>
+  <Box d=""flex"" alignItems=""center"">
+    <Icon icon={""exclamation-triangle""} />
+    <span>{_t(""The scheduler service is disabled."")}</span>
+  </Box>
+</>","<>
+  <Box d=""flex"" alignItems=""center"">
+    <Icon icon={""exclamation-triangle""} />
+    <span>{_t(""Der Scheduler-Dienst ist deaktiviert."")}</span>
+  </Box>
+</>",de
+"<>
+  <Box flexDirection=""row"" alignItems=""baseline"" d=""flex"" g={2}>
+    <Icon icon={""info-circle""} />
+    <Box alignSelf=""center"">
+      {_t(""When making the theme available to users, make sure that the name is unique."")}
+    </Box>
+  </Box>
+</>","<>
+  <Box flexDirection=""row"" alignItems=""baseline"" d=""flex"" g={2}>
+    <Icon icon={""info-circle""} />
+    <Box alignSelf=""center"">
+      {_t(""Wenn Sie das Thema den Benutzern zur Verfügung stellen, achten Sie darauf, dass der Name eindeutig ist."")}
+    </Box>
+  </Box>
+</>",de
+A theme with the same name already exist. It may create conflicts. Are you sure you want to continue?,"Ein Thema mit demselben Namen existiert bereits. Dies kann zu Konflikten führen. Sind Sie sicher, dass Sie fortfahren möchten?",de
+A views restoring is already in progress. Please wait until it ends and try again.,"Eine Wiederherstellung der Ansichten ist bereits im Gange. Bitte warten Sie, bis sie beendet ist und versuchen Sie es erneut.",de
+Access error,Zugriffsfehler,de
+Action,Aktion,de
+Action Menu,Menü Aktion,de
+Action Menus,Aktionsmenüs,de
+Action name can't be changed.,Der Aktionsname kann nicht geändert werden.,de
+Actions,Aktionen,de
+Activate on,Aktivieren am,de
+Activate the user from the specified date.,Aktivieren Sie den Benutzer ab dem angegebenen Datum.,de
+Active,Aktiv,de
+Address,Adresse,de
+Administration,Verwaltung,de
+All Actions,Alle Aktionen,de
+All Charts,Alle Diagramme,de
+All Custom Views,Alle benutzerdefinierten Ansichten,de
+All Documents,Alle Dokumente,de
+All Menu Help,Alle Menü-Hilfe,de
+All Menus,Alle Menüs,de
+All Models,Alle Modelle,de
+All Modules,Alle Module,de
+All Schedules,Alle Zeitpläne,de
+All Selects,Alle Auswahlen,de
+All Teams,Alle Teams,de
+All Themes,Alle Themen,de
+All Translations,Alle Übersetzungen,de
+All View Help,Alle anzeigen Hilfe,de
+All Views,Alle Ansichten,de
+All jobs have been restarted.,Alle Aufträge wurden neu gestartet.,de
+All the customizations will be lost. Are you sure?,Alle Anpassungen gehen dann verloren. Sind Sie sicher?,de
+All views have been restored (%s).,Alle Ansichten wurden wiederhergestellt (%s).,de
+Allow,Erlauben Sie,de
+Allow this theme to be used by users,"Zulassen, dass dieses Thema von Benutzern verwendet wird",de
+Always,Immer,de
+Amber,Bernstein,de
+An unique permission name.,Ein eindeutiger Berechtigungsname.,de
+Application,Anmeldung,de
+Archived,Archiviert,de
+Assigned to,Zugewiesen an,de
+Attached to,Angeschlossen an,de
+Attributes,Attribute,de
+Attrs,Attrs,de
+Author,Autor,de
+Authorization,Autorisierung,de
+Authorized roles,Autorisierte Rollen,de
+Auto,Auto,de
+Available for users,Verfügbar für Benutzer,de
+Black,Schwarz,de
+Block the user,Den Benutzer sperren,de
+Block the user for an indefinite period.,Sperre des Benutzers auf unbestimmte Zeit.,de
+Blue,Blau,de
+Blue Grey,Blau Grau,de
+Body,Körper,de
+Boolean,Boolesche,de
+Brown,Braun,de
+Button,Schaltfläche,de
+Calendar,Kalender,de
+Can customize,Anpassen können,de
+Can read,Kann lesen,de
+Can share,Kann teilen,de
+Can write,Kann schreiben,de
+Canceled,Abgesagt,de
+Cannot delete a task while scheduler is running...,"Kann eine Aufgabe nicht löschen, während der Planer läuft...",de
+Cards,Karten,de
+Category,Kategorie,de
+Category name to group action menus.,Kategoriename zur Gruppierung von Aktionsmenüs.,de
+Change password?,Passwort ändern?,de
+Chart,Tabelle,de
+Client side js expression,Client-seitiger js-Ausdruck,de
+Closed,Geschlossen,de
+Code,Code,de
+Code length should be greater than 2.,Die Länge des Codes sollte größer als 2 sein.,de
+Collapse,Kollabieren,de
+Color,Farbe,de
+Column sequence,Reihenfolge der Säulen,de
+Come back later. There are no messages in this folder...,Kommen Sie später wieder. Es gibt keine Nachrichten in diesem Ordner...,de
+Comma separated list of params for the condition.,Durch Kommata getrennte Liste von Parametern für die Bedingung.,de
+Comment,Kommentar,de
+Computed,Berechnet,de
+Concurrent updates error,Fehler bei gleichzeitigen Aktualisierungen,de
+Condition,Zustand,de
+Condition params,Bedingungsparameter,de
+Condition to check,Zu prüfende Bedingung,de
+Conditions,Bedingungen,de
+Configuration,Konfiguration,de
+Confirm new password,Bestätigen Sie das neue Passwort,de
+Confirm new password of the user (must be identical to the new password),Bestätigen Sie das neue Passwort des Benutzers (muss mit dem neuen Passwort identisch sein),de
+Confirm password,Bestätigen Sie das Passwort,de
+Confirm password of the new user (must be identical to the password),Bestätigen Sie das Passwort des neuen Benutzers (muss mit dem Passwort identisch sein),de
+Consumed,Verbraucht,de
+Content,Inhalt,de
+Content type,Art des Inhalts,de
+Context field,Kontextfeld,de
+Context field target,Kontextfeld Ziel,de
+Context field target name,Kontextfeld Zielname,de
+Context field title,Titel des Kontextfeldes,de
+Context field value,Wert des Kontextfeldes,de
+Create,erstellen.,de
+Created,Erstellt,de
+Created by,Erstellt von,de
+Created on,Erstellt am,de
+Cron,Cron,de
+Current password,Aktuelles Passwort,de
+Current password of the logged in user,Aktuelles Passwort des angemeldeten Benutzers,de
+Current password of the user,Aktuelles Passwort des Benutzers,de
+Custom,Benutzerdefiniert,de
+Custom Fields,Benutzerdefinierte Felder,de
+Custom Models,Kundenspezifische Modelle,de
+Custom field,Benutzerdefiniertes Feld,de
+Custom fields,Benutzerdefinierte Felder,de
+Custom model,Benutzerdefiniertes Modell,de
+Custom models,Kundenspezifische Modelle,de
+Custom-ManyToMany,Custom-ManyToMany,de
+Custom-ManyToOne,Custom-ManyToOne,de
+Custom-OneToMany,Benutzerdefiniert-OneToMany,de
+Cyan,Cyan,de
+Dark,Dunkelheit,de
+Dashboard,Dashboard,de
+Data,Daten,de
+Date,Datum,de
+DateTime,DateTime,de
+Decimal,Dezimal,de
+Deep Orange,Tiefes Orange,de
+Deep Purple,Tiefes Lila,de
+Default,Standard,de
+Default home action.,Standard-Aktion zu Hause.,de
+Default value,Standardwert,de
+Define a name for the theme. <b>light</b> or <b>dark</b> can be used to override built-in themes.,"Definieren Sie einen Namen für das Thema. <b>hell</b> oder <b>dunkel</b> können verwendet werden, um eingebaute Themen zu überschreiben.",de
+Dependent features,Abhängige Merkmale,de
+Dependent modules,Abhängige Module,de
+Depends,Abhängig von,de
+Depends On,Hängt ab von,de
+Description,Beschreibung,de
+Details,Einzelheiten,de
+Directories,Verzeichnisse,de
+Directory,Verzeichnis,de
+Disable the user from the specified date.,Deaktivieren Sie den Benutzer ab dem angegebenen Datum.,de
+Display messages,Meldungen anzeigen,de
+Display messages and followers,Anzeigen von Nachrichten und Anhängern,de
+Do not make the theme available,Das Thema nicht verfügbar machen,de
+Document,Dokument,de
+Documents,Dokumente,de
+Domain,Bereich,de
+Domain filter as condition.,Domänenfilter als Bedingung.,de
+Download,Herunterladen,de
+Email,E-Mail,de
+Encryption error,Verschlüsselungsfehler,de
+Encryption key might be wrong.,Der Verschlüsselungscode könnte falsch sein.,de
+English,Englisch,de
+Enum,Enum,de
+Enum type,Enum-Typ,de
+Event,Veranstaltung,de
+Expire at,Verfallen am,de
+Expires on,Läuft ab am,de
+Export,Exportieren,de
+Export complete.,Export abgeschlossen.,de
+Extension,Erweiterung,de
+False,Falsch,de
+Favorite,Favorit,de
+Favorites,Favoriten,de
+Field,Feld,de
+Field is required.,Das Feld ist erforderlich.,de
+Fields,Felder,de
+File,Datei,de
+File added,Datei hinzugefügt,de
+File name,Name der Datei,de
+File path,Dateipfad,de
+File removed,Datei entfernt,de
+File type,Dateityp,de
+Files,Dateien,de
+Filter custom,Benutzerdefiniert filtern,de
+Filter files,Dateien filtern,de
+Filter name already used,Bereits verwendeter Filtername,de
+Filter view,Ansicht filtern,de
+Filters,Filter,de
+Flags,Flaggen,de
+Force password change,Passwortänderung erzwingen,de
+Force the user to change their password at next login.,"Zwingen Sie den Benutzer, sein Passwort bei der nächsten Anmeldung zu ändern.",de
+Form,Formular,de
+Form record,Formularsatz,de
+Form records,Formularsätze,de
+Form view,Ansicht des Formulars,de
+Form width,Breite des Formulars,de
+French,Französisch,de
+From,Von,de
+Fullname,Vollständiger Name,de
+Fully qualified object name or wild card package name.,Vollständig qualifizierter Objektname oder Wildcard-Paketname.,de
+Gantt,Gantt,de
+General,Allgemein,de
+Green,Grün,de
+Grey,Grau,de
+Grid,Raster,de
+Grid view,Gitternetz-Ansicht,de
+Group,Gruppe,de
+Group by,Gruppe nach,de
+Groups,Gruppen,de
+Help,Hilfe,de
+Help Management,Hilfe-Management,de
+Help link,Hilfe-Link,de
+Hidden,Versteckt,de
+Hidden menu,Verstecktes Menü,de
+Hide if,"Ausblenden, wenn",de
+High,Hoch,de
+Home action,Aktion zu Hause,de
+Icon,Icon,de
+Icon background,Icon-Hintergrund,de
+Import,Importieren,de
+Important,Wichtig,de
+In Progress,In Arbeit,de
+Inbox,Posteingang,de
+Inbox is empty!,Der Posteingang ist leer!,de
+Include if,"Einschließen, wenn",de
+Increment,Inkrement,de
+Indigo,Indigo,de
+Information,Informationen,de
+Initial value,Anfangswert,de
+Inline,Inline,de
+Integer,Integer,de
+Invalid XML.,Ungültiges XML.,de
+Invalid cron :,Ungültiges cron :,de
+Invalid field value.,Ungültiger Feldwert.,de
+Invalid permission,Ungültige Erlaubnis,de
+"Invalid use of action-record: %s, must be the last action.","Ungültige Verwendung des Aktionsdatensatzes: %s, muss die letzte Aktion sein.",de
+Inverse,Umgekehrt,de
+Is archived,Wird archiviert,de
+Is directory,Ist Verzeichnis,de
+Is read,Wird gelesen,de
+Is starred,Ist sternförmig,de
+Items,Artikel,de
+Job,Job,de
+Job Management,Job Management,de
+Job has been updated.,Die Stelle wurde aktualisiert.,de
+Json,Json,de
+Json model,Json-Modell,de
+Kanban,Kanban,de
+Key,Schlüssel,de
+Label,Etikett,de
+Language,Sprache,de
+Last modified,Zuletzt geändert,de
+Last password update date,Datum der letzten Passwortaktualisierung,de
+Left menu,Linkes Menü,de
+Light,Licht,de
+Light Blue,Hellblau,de
+Light Green,Hellgrün,de
+Lime,Limette,de
+Link,Link,de
+Login,Anmeldung,de
+Low,Niedrig,de
+Mail,E-Mail,de
+Make theme available,Thema verfügbar machen,de
+ManyToMany,ManyToMany,de
+ManyToOne,Viele-zu-Eins,de
+Mapped by,Gezeichnet von,de
+Max,Max,de
+Max size,Maximale Größe,de
+Max size 4MB.,Maximale Größe 4MB.,de
+Members,Mitglieder,de
+Menu,Menü,de
+Menu Help,Menü Hilfe,de
+Menu Item,Menüpunkt,de
+Menu Items,Menüpunkte,de
+Menu background,Hintergrund des Menüs,de
+Menu icon,Menü-Symbol,de
+Menu order,Menü-Bestellung,de
+Menu parent,Übergeordnetes Menü,de
+Menu title,Titel des Menüs,de
+Menus,Menüs,de
+Message,Nachricht,de
+Messaging panel,Messaging-Panel,de
+Meta file,Meta-Datei,de
+Meta model,Meta-Modell,de
+Meta permission,Meta-Erlaubnis,de
+MetaScheduleParam,MetaScheduleParam,de
+Min,Min,de
+Min size,Minimale Größe,de
+Mobile menu,Mobiles Menü,de
+Model,Modell,de
+Model Management,Modell-Management,de
+Model field,Modellfeld,de
+Models,Modelle,de
+Modified,Geändert,de
+Module,Modul,de
+Module Management,Modul-Verwaltung,de
+Module to check,Zu prüfendes Modul,de
+Modules,Module,de
+My Documents,Meine Dokumente,de
+My Teams,Meine Teams,de
+My open tasks,Meine offenen Aufgaben,de
+Name,Name,de
+Name field,Feld Name,de
+Name length should be greater than 2.,Die Länge des Namens sollte größer als 2 sein.,de
+Navigation,Navigation,de
+New,Neu,de
+New password,Neues Passwort,de
+New password does not match pattern.,Das neue Passwort entspricht nicht dem Muster.,de
+New password must be different.,Das neue Passwort muss anders lauten.,de
+New password of the user,Neues Passwort des Benutzers,de
+Next value,Nächster Wert,de
+No archived messages!,Keine archivierten Nachrichten!,de
+No help,Keine Hilfe,de
+No important messages!,Keine wichtigen Nachrichten!,de
+No messages,Keine Meldungen,de
+Normal,Normal,de
+Not allowed,Nicht erlaubt,de
+Object,Objekt,de
+Object name,Name des Objekts,de
+On change,Über den Wandel,de
+On click,Auf Klick,de
+On create,Auf erstellen,de
+On new,Auf neue,de
+On save,Beim Speichern,de
+On update,Zur Aktualisierung,de
+OneToMany,OneToMany,de
+OneToOne,Einszu-Eins,de
+Only if,Nur wenn,de
+Only use this menu-item if the given expression is true (ie `if` condition).,"Verwenden Sie diesen Menüpunkt nur, wenn der angegebene Ausdruck wahr ist (d.h. ""wenn""-Bedingung).",de
+Only use this menu-item if the given module is installed (ie `if-module` condition).,"Verwenden Sie diesen Menüpunkt nur, wenn das angegebene Modul installiert ist (d.h. `if-module`-Bedingung).",de
+Options,Optionen,de
+Orange,Orange,de
+Order by,Bestellen bei,de
+Overview,Übersicht,de
+Owner,Eigentümer,de
+PASSWORD_RESET_EMAIL_BODY,PASSWORT_ZURUECK_EMAIL_BODY,de
+PASSWORD_RESET_EMAIL_SUBJECT,PASSWORT_ZURUECK_EMAIL_BETREFF,de
+Package,Paket,de
+Padding,Polsterung,de
+Panel,Panel,de
+Panel mail display,Panel Mail-Anzeige,de
+Params,Params,de
+Parent,Elternteil,de
+Parent menu,Übergeordnetes Menü,de
+Password,Passwort,de
+Password doesn't match configured pattern.,Das Passwort stimmt nicht mit dem konfigurierten Muster überein.,de
+Password of the new user,Passwort des neuen Benutzers,de
+Permission,Erlaubnis,de
+Permissions,Berechtigungen,de
+Permissions (fields),Berechtigungen (Felder),de
+Personal,Persönlich,de
+Personalized View,Personalisierte Ansicht,de
+Personalized Views,Personalisierte Ansichten,de
+Photo,Foto,de
+Pink,Rosa,de
+Placeholder,Platzhalter,de
+Please provide a different name for the filter.,Bitte geben Sie einen anderen Namen für den Filter an.,de
+Please refresh your browser to see updated views.,"Bitte aktualisieren Sie Ihren Browser, um aktualisierte Ansichten zu sehen.",de
+Precision,Präzision,de
+Preferences,Präferenzen,de
+Prefix,Vorsilbe,de
+Priority,Priorität,de
+Purple,Lila,de
+Read,Lesen Sie,de
+Readonly,Schreibgeschützt,de
+Readonly if,"Schreibgeschützt, wenn",de
+Recipients,Empfänger,de
+Record created,Datensatz erstellt,de
+Record updated,Datensatz aktualisiert,de
+Record was updated or deleted by another transaction.,Datensatz wurde durch eine andere Transaktion aktualisiert oder gelöscht.,de
+Red,Rot,de
+Reference error,Referenzfehler,de
+Regex,Regex,de
+Related,Verwandte Seiten,de
+Related document id,Zugehöriges Dokument id,de
+Related document model,Zugehöriges Dokumentenmodell,de
+Related document name,Name des zugehörigen Dokuments,de
+Related model,Verwandtes Modell,de
+Related name,Verwandter Name,de
+Related object,Verwandtes Objekt,de
+Relationship,Beziehung,de
+Remove,entfernen,de
+Replies,Antworten,de
+Required,Erforderlich,de
+Required if,"Erforderlich, wenn",de
+Restart jobs,Aufträge neu starten,de
+Restore all…,Alle wiederherstellen...,de
+Role,Rolle,de
+Roles,Rollen,de
+Root,Wurzel,de
+Rule,Regel,de
+Rules,Regeln,de
+SQL error,SQL-Fehler,de
+Scale,Skala,de
+Schedule,Zeitplan,de
+Schedules,Zeitpläne,de
+Schema,Schema,de
+Search,Suche,de
+Select,Wählen Sie,de
+Select Item,Artikel auswählen,de
+Selection,Auswahl,de
+Selects,Wählt,de
+Separator,Abscheider,de
+Sequence,Sequenz,de
+Sequence order,Sequenz-Reihenfolge,de
+Server expression to check whether to use this field.,"Server-Ausdruck, um zu prüfen, ob dieses Feld verwendet werden soll.",de
+Shared,Gemeinsame,de
+Shared with me,Mit mir geteilt,de
+Show Model,Modell anzeigen,de
+Show if,Zeigen wenn,de
+Show permissions,Berechtigungen anzeigen,de
+Single tab,Einzelne Registerkarte,de
+Size,Größe,de
+Size in bytes,Größe in Bytes,de
+Spacer,Abstandshalter,de
+Specify whether the members of this group are technical staff.,"Geben Sie an, ob es sich bei den Mitgliedern dieser Gruppe um technisches Personal handelt.",de
+Specify whether this action can be used as home action.,"Legen Sie fest, ob diese Aktion als Heim-Aktion verwendet werden kann.",de
+Status,Status,de
+Stop service,Dienst anhalten,de
+String,Zeichenfolge,de
+Style,Stil,de
+Subject,Thema,de
+Subscribe,Abonnieren,de
+Success,Erfolg,de
+Suffix,Nachsilbe,de
+Summary,Zusammenfassung,de
+System notification,System-Benachrichtigung,de
+Table,Tabelle,de
+Tag,Tag,de
+Tag count,Anzahl der Tags,de
+Tag label,Etikett,de
+Tag method,Tag-Methode,de
+Tag style,Tag-Stil,de
+Tags,Tags,de
+Target custom model,Benutzerdefiniertes Zielmodell,de
+Target json model,Ziel json-Modell,de
+Target model,Zielmodell,de
+Task,Aufgabe,de
+Task closed,Aufgabe abgeschlossen,de
+Task created,Aufgabe erstellt,de
+Task date,Datum der Aufgabe,de
+Task deadline,Frist für die Aufgabe,de
+Task duration,Dauer der Aufgabe,de
+Tasks,Aufgaben,de
+Tasks assigned to me,Mir zugewiesene Aufgaben,de
+Tasks created by me,Von mir erstellte Aufgaben,de
+Tasks due,Fällige Aufgaben,de
+Tasks todo,Zu erledigende Aufgaben,de
+Teal,Türkisblau,de
+Team,Team,de
+Teams,Mannschaften,de
+Teamwork,Teamarbeit,de
+Technical staff,Technisches Personal,de
+The addition data for UI widgets,Die Zusatzdaten für UI-Widgets,de
+The color to use for tags,Die Farbe für die Tags,de
+The image icon to show in UI widgets,"Das Bildsymbol, das in UI-Widgets angezeigt werden soll",de
+The record(s) are referenced by other records. Please remove all the references first.,Auf den/die Datensatz(e) wird von anderen Datensätzen verwiesen. Bitte entfernen Sie zunächst alle Verweise.,de
+The record(s) can't be updated as it violates unique constraint.,"Der/die Datensatz/e kann/können nicht aktualisiert werden, da er/sie die Eindeutigkeitsbeschränkung verletzt.",de
+The scheduler service has been stopped.,Der Scheduler-Dienst wurde gestoppt.,de
+The scheduler service is disabled.,Der Scheduler-Dienst ist deaktiviert.,de
+The select item title,Der Titel des ausgewählten Elements,de
+The select item value,Der Wert des ausgewählten Elements,de
+Theme,Thema,de
+Theme Management,Thema Management,de
+Themes,Themen,de
+This may terminate any running jobs. Are you sure you want to continue?,"Dadurch werden möglicherweise laufende Aufträge abgebrochen. Sind Sie sicher, dass Sie fortfahren möchten?",de
+This will make the theme available for users. Are you sure you want to continue?,"Dadurch wird das Thema für die Benutzer verfügbar. Sind Sie sicher, dass Sie fortfahren möchten?",de
+This will revert any users having this theme with the default theme. Are you sure you want to continue?,"Dadurch werden alle Benutzer, die dieses Thema mit dem Standardthema verwenden, zurückgesetzt. Sind Sie sicher, dass Sie fortfahren möchten?",de
+This will update job with current settings. Are you sure you want to continue?,"Dadurch wird der Auftrag mit den aktuellen Einstellungen aktualisiert. Sind Sie sicher, dass Sie fortfahren möchten?",de
+Time,Zeit,de
+Title,Titel,de
+Token,Token,de
+Tooltip,QuickInfo,de
+Topic,Thema,de
+Topic closed,Thema geschlossen,de
+Topic created,Thema erstellt,de
+Topic re-opened,Thema wiedereröffnet,de
+Topics,Themen,de
+Track change ?,Gleiswechsel ?,de
+Tracking,Nachverfolgung,de
+Translation,Übersetzung,de
+Tree,Baum,de
+True,Wahr,de
+Type,Typ,de
+Unexpected database error occurred on the server.,Auf dem Server ist ein unerwarteter Datenbankfehler aufgetreten.,de
+Unique constraint violation,Eindeutige Verletzung einer Bedingung,de
+Unique message identifier,Eindeutiger Bezeichner der Nachricht,de
+Unread,Ungelesen,de
+Unsubscribe,Abbestellen,de
+Update,Update,de
+Updated by,Aktualisiert von,de
+Updated on,Aktualisiert am,de
+Urgent,Dringend,de
+Used as home action,Verwendung als Home Action,de
+User,Benutzer,de
+User Management,Benutzerverwaltung,de
+User preferences,Benutzereinstellungen,de
+Users,Benutzer,de
+Valid cron. Next execution dates are:,Gültiges Cron. Die nächsten Ausführungstermine sind:,de
+Validate,Validieren Sie,de
+Validation error,Validierungsfehler,de
+Value,Wert,de
+Value Expression,Wertausdruck,de
+Version,Version,de
+View,Siehe,de
+View Attribute,Ansicht Attribut,de
+View Attributes,Ansicht Attribute,de
+View Help,Hilfe anzeigen,de
+View Management,Ansicht Management,de
+View customization,Anpassung der Ansicht,de
+View customization permission,Anpassungserlaubnis anzeigen,de
+Views,Ansichten,de
+Visibility,Sichtbarkeit,de
+Visible,Sichtbar,de
+Visible in grid,Sichtbar im Gitter,de
+Warning,Warnung,de
+"When making the theme available to users, make sure that the name is unique.","Wenn Sie das Thema den Benutzern zur Verfügung stellen, achten Sie darauf, dass der Name eindeutig ist.",de
+Whether to grant create access.,Ob der Zugriff zum Erstellen gewährt werden soll.,de
+Whether to grant export access.,Ob der Exportzugang gewährt werden soll.,de
+Whether to grant import access.,Ob der Importzugang gewährt werden soll.,de
+Whether to grant read access.,Ob Lesezugriff gewährt werden soll.,de
+Whether to grant remove access.,Ob der Zugriff zum Entfernen gewährt werden soll.,de
+Whether to grant write access.,Ob Schreibzugriff gewährt werden soll.,de
+Whether to show help messages.,Ob Hilfemeldungen angezeigt werden sollen.,de
+Whether to use tabbed ui.,Ob Tabbed Ui verwendet werden soll.,de
+White,Weiß,de
+Widget,Widget,de
+Widget Attributes,Widget-Attribute,de
+Widget attrs,Widget-Attribute,de
+Write,Schreiben Sie,de
+Wrong current password,Falsches aktuelles Passwort,de
+Wrong username or password,Falscher Benutzername oder falsches Passwort,de
+Xml,Xml,de
+Yellow,Gelb,de
+You are not allowed to customize views.,Sie dürfen die Ansichten nicht anpassen.,de
+You are not allowed to execute this action.,"Sie sind nicht berechtigt, diese Aktion auszuführen.",de
+You are not allowed to remove this filter,Sie dürfen diesen Filter nicht entfernen,de
+You are not allowed to share custom views.,"Sie sind nicht berechtigt, benutzerdefinierte Ansichten zu teilen.",de
+You are not authorized to create this resource.,"Sie sind nicht berechtigt, diese Ressource zu erstellen.",de
+You are not authorized to export the data.,"Sie sind nicht berechtigt, die Daten zu exportieren.",de
+You are not authorized to import the data.,"Sie sind nicht berechtigt, die Daten zu importieren.",de
+You are not authorized to read this resource.,"Sie sind nicht berechtigt, diese Ressource zu lesen.",de
+You are not authorized to remove this resource.,"Sie sind nicht berechtigt, diese Ressource zu entfernen.",de
+You are not authorized to update this resource.,"Sie sind nicht berechtigt, diese Ressource zu aktualisieren.",de
+You can't create document here.,Sie können hier kein Dokument erstellen.,de
+You can't move document here.,Sie können das Dokument hier nicht verschieben.,de
+Your current password,Ihr aktuelles Passwort,de
+Your password reset token is invalid or expired.,Ihr Passwort-Reset-Token ist ungültig oder abgelaufen.,de
+action-attrs,Aktions-Attribute,de
+action-condition,Aktionsbedingung,de
+action-export,Aktions-Export,de
+action-group,Aktionsgruppe,de
+action-import,Aktion-Import,de
+action-method,action-method,de
+action-record,Action-Record,de
+action-report,Aktionsbericht,de
+action-script,Aktionsskript,de
+action-validate,action-validate,de
+action-view,Aktions-Ansicht,de
+action-ws,action-ws,de
+added comment,Kommentar hinzugefügt,de
+aop.meta.order,aop.meta.order,de
+confirm new password,neues Passwort bestätigen,de
+confirm password,Passwort bestätigen,de
+current password,aktuelles Kennwort,de
+form::Select,form::Select,de
+login name,Anmeldename,de
+new password,neues Passwort,de
+password,Passwort,de
+updated document,aktualisiertes Dokument,de
+user group,Benutzergruppe,de
+user name,Nutzername,de
+user.password.pattern-title,user.password.pattern-title,de
+your current password,Ihr aktuelles Passwort,de
+{0} customized view is deleted.,{0} benutzerdefinierte Ansicht wird gelöscht.,de
+{0} customized views are deleted.,{0} benutzerdefinierte Ansichten werden gelöscht.,de

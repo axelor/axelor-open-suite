@@ -72,18 +72,19 @@
         onChange="action-group-base-address-country-change" required="true" form-view="country-form"
         grid-view="country-grid"/>
       <panel name="countryHiddenPanel" hideIf="country == null" colSpan="12">
-        <field name="department" x-bind="{{department|uppercase}}" colSpan="12"/>
-        <field name="subDepartment" colSpan="12" x-bind="{{subDepartment|uppercase}}"/>
-        <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
-        <field name="floor" x-bind="{{floor|uppercase}}" colSpan="12"/>
-        <field name="buildingNumber" onChange="action-address-record-change-streetName"
-          x-bind="{{buildingNumber|uppercase}}" colSpan="12"/>
+        <!-- MGM-80: Department, subdepartment, room floor, buildingNumber, distribution precision not
+          relevant for MGM processes -->
+        <!-- <field name="department" x-bind="{{department|uppercase}}" colSpan="12"/> <field name="subDepartment"
+          colSpan="12" x-bind="{{subDepartment|uppercase}}"/> <field name="room" x-bind="{{room|uppercase}}" colSpan="12"/>
+          <field name="floor" x-bind="{{floor|uppercase}}" colSpan="12"/> <field name="buildingNumber" onChange="action-address-record-change-streetName"
+          x-bind="{{buildingNumber|uppercase}}" colSpan="12"/> -->
         <field name="street" canNew="true" colSpan="12"
           onChange="action-address-record-change-streetName"
           onSelect="action-address-attrs-update-domain-street" form-view="street-form"
           grid-view="street-grid"/>
         <field name="streetName" colSpan="12" x-bind="{{streetName|uppercase}}"/>
-        <field name="postBox" colSpan="12" x-bind="{{postBox|uppercase}}"/>
+        <!-- MGM-80: postBox, distribution precision not relevant for MGM processes -->
+        <!-- <field name="postBox" colSpan="12" x-bind="{{postBox|uppercase}}"/> -->
         <field name="buildingName" colSpan="12" x-bind="{{buildingName|uppercase}}"/>
         <field name="townName" colSpan="12" x-bind="{{townName|uppercase}}"/>
         <field name="townLocationName" colSpan="12" x-bind="{{townLocationName|uppercase}}"/>

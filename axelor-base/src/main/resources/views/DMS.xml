@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <form name="dms-file-form" title="Document" model="com.axelor.dms.db.DMSFile"
+    id="base-dms-file-form-extension" extension="true">
+
+    <extend target="//field[@name='parent']">
+      <insert position="after">
+        <field name="$relatedToDisplay" title="Related to" readonly="true"
+          showIf="relatedModel != null &amp;&amp; !isDirectory">
+          <viewer depends="relatedModel"><![CDATA[
+                        <>
+                          {record.relatedModel && (() => {
+                            const simpleName = record.relatedModel.split('.').pop();
+                            const formatted = simpleName.replace(/([a-z])([A-Z])/g, '$1 $2');
+                            return <span>{formatted}</span>;
+                          })()}
+                        </>
+                    ]]></viewer>
+        </field>
+      </insert>
+    </extend>
+
+    <extend target="panel[@name='tagsPanel']">
+      <insert position="before">
+        <panel name="relatedRecordPanel" sidebar="true"
+          showIf="relatedModel != null &amp;&amp; relatedId != 0 &amp;&amp; !isDirectory">
+          <button name="viewRelatedBtn" title="View Related Record" icon="file-text"
+            onClick="action-dms-file-view-related" colSpan="12"/>
+        </panel>
+      </insert>
+    </extend>
+  </form>
+
+  <action-method name="action-dms-file-view-related">
+    <call class="com.axelor.apps.base.web.DMSFileController" method="viewRelatedRecord"/>
+  </action-method>
+
+</object-views>

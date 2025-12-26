@@ -25,6 +25,8 @@ import com.axelor.apps.hr.db.TSTimer;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -89,4 +91,16 @@ public interface TimesheetLineService {
   Product getDefaultProduct(TimesheetLine timesheetLine);
 
   void resetTimesheetLineTimer(TSTimer tsTimer);
+
+  Timesheet resolveTimesheet(Context context, TimesheetLine timesheetLine);
+
+  ProjectTask resolveProjectTask(Context context);
+
+  Project resolveProject(Context context, ProjectTask projectTask);
+
+  void splitTimesheetLine(TimesheetLine line);
+
+  void validateLine(TimesheetLine line);
+
+  void cancelTimesheetLineValidation(TimesheetLine line);
 }

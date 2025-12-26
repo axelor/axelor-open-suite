@@ -50,6 +50,20 @@ public class TimesheetDomainServiceImpl implements TimesheetDomainService {
   }
 
   @Override
+  public void createCustomDomainAllTimesheetLine(
+      User user, Employee employee, ActionView.ActionViewBuilder actionView) {
+
+    actionView
+        .domain("self.timesheet.company = :_activeCompany")
+        .context("_activeCompany", user.getActiveCompany());
+
+    // ALWAYS apply project membership restriction
+    actionView
+        .domain(actionView.get().getDomain() + " AND self.project.membersUserSet[].id = :_userId")
+        .context("_userId", user.getId());
+  }
+
+  @Override
   public void createValidateDomainTimesheetLine(
       User user, Employee employee, ActionView.ActionViewBuilder actionView) {
 

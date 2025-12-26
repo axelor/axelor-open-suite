@@ -1,0 +1,1087 @@
+key,message,language
+${fullName} plan. st. move,${fullName} plan. st. move,de
+${fullName} real st. move,${fullName} real st. move,de
+%) on the WAP of,%) auf dem WAP von,de
+%s Reverse stock move (From %s),%s Umgekehrte Aktienbewegung (von %s),de
+"<><Badge bg=""warning"">Warning : Delivery address is missing.</Badge></>","<><Badge bg=""warning"">Warnung: Die Lieferadresse fehlt.</Badge></>",de
+<B>%s or %s</B> not found,<B>%s oder %s</B> nicht gefunden,de
+A cancel reason must be selected,Es muss ein Stornogrund ausgewählt werden,de
+A partial stock move has been generated (%s),Es wurde eine Teilbestandsbewegung erzeugt (%s),de
+ABC analysis,ABC-Analyse,de
+AbcAnalysis.stockLocation,AbcAnalysis.stockLocation,de
+Account selection to carrier,Auswahl des Kontos zum Träger,de
+Accounting family,Familie Buchhaltung,de
+Accounting value,Buchhalterischer Wert,de
+Action,Aktion,de
+Actions,Aktionen,de
+Activate bar code generation for stock location,Aktivieren Sie die Barcodeerstellung für den Lagerort,de
+Activate bar code generation for tracking number,Aktivieren Sie die Strichcode-Erzeugung für die Kontrollnummer,de
+Add all the move,Alle Bewegungen hinzufügen,de
+Add concerned move lines,Hinzufügen betroffener Zeilen verschieben,de
+Address,Adresse,de
+Alert,Alarmierung,de
+All storable products used in DEB must have net mass and mass unit information for customs.,Alle in der DEB verwendeten lagerfähigen Erzeugnisse müssen für den Zoll Angaben zur Eigenmasse und zur Masseneinheit enthalten.,de
+Allocate,Zuweisen,de
+Allocate all,Zuteilung aller,de
+Allocations of costs,Zuweisung der Kosten,de
+Allows to add every product from the common stock location,Ermöglicht das Hinzufügen jedes Produkts aus dem allgemeinen Lagerbestand,de
+"An error occurred while importing the file data, product not found with code :","Beim Importieren der Dateidaten ist ein Fehler aufgetreten, Produkt nicht gefunden mit Code :",de
+"An error occurred while importing the file data, there are multiple products with code :","Beim Importieren der Dateidaten ist ein Fehler aufgetreten, es gibt mehrere Produkte mit dem Code :",de
+An error occurred while importing the file data. Please contact your application administrator to check Traceback logs.,"Beim Importieren der Dateidaten ist ein Fehler aufgetreten. Bitte wenden Sie sich an Ihren Anwendungsadministrator, um die Traceback-Protokolle zu überprüfen.",de
+An incoming partial stock move has been generated (%s),Eine eingehende Teilumlagerung wurde erzeugt (%s),de
+An outgoing partial stock move has been generated (%s),Es wurde eine ausgehende Teilumlagerung erzeugt (%s),de
+App,App,de
+App base,App-Basis,de
+App stock,App Bestand,de
+Archived,Archiviert,de
+"Are you sure you want to change status to  ""Collected "" ?","Sind Sie sicher, dass Sie den Status in ""Gesammelt"" ändern wollen?",de
+Are you sure you want to go back to provision ?,"Sind Sie sicher, dass Sie zur Vorsorge zurückkehren wollen?",de
+Are you sure you want to realize this stock move?,"Sind Sie sicher, dass Sie diese Aktienbewegung realisieren wollen?",de
+Are you sure you want to validate the carrier?,"Sind Sie sicher, dass Sie das Luftfahrtunternehmen validieren wollen?",de
+Arrival product qty,Ankunft Produktmenge,de
+Arrivals,Ankünfte,de
+Arrivals History,Ankünfte Geschichte,de
+Auto product tracking Nbr. order,Automatische Produktverfolgung Nr. der Bestellung,de
+Auto sale tracking Nbr. order,Auto-Verkaufsverfolgung Nr. der Bestellung,de
+Auto select product tracking Nbr.,Automatische Auswahl der Produktverfolgungsnummer.,de
+Auto select sale tracking Nbr.,Automatische Auswahl der Verkaufsverfolgungsnummer.,de
+Av. for product,Av. für Produkt,de
+Availability,Verfügbarkeit,de
+Availability request,Anfrage zur Verfügbarkeit,de
+Available,Verfügbar,de
+Available qty,Verfügbare Menge,de
+Available qty for product,Verfügbare Menge des Produkts,de
+Available status,Verfügbarer Status,de
+Average,Durchschnitt,de
+Average Price,Durchschnittlicher Preis,de
+Avg outgoing quantity on 12 past months (One-off sale excluded),Durchschnittliche ausgehende Menge in den letzten 12 Monaten (einmalige Verkäufe ausgeschlossen),de
+Back to provision,Zurück zu Rückstellung,de
+Backorder,Rückständige Bestellungen,de
+Backorder Id,Rückstand Id,de
+Backorder Stock Move,Rückständige Bestände bewegen,de
+Bad stock move type,Typ der schlechten Aktienbewegung,de
+Barcode,Barcode,de
+Barcode Type,Barcode Typ,de
+Barter,Tauschhandel,de
+Batchs,Chargen,de
+Both source location address and delivery (to) address are required to define the delivery itinerary,"Sowohl die Adresse des Quellortes als auch die Adresse des Zielortes sind erforderlich, um die Zustellroute zu definieren.",de
+Buyer,Käufer,de
+Buyer/Seller,Käufer/Verkäufer,de
+CSV,CSV,de
+Calculate,Berechnen Sie,de
+Can only be collected if validated,"Kann nur erhoben werden, wenn er validiert ist",de
+Can only be validated if provisioned,"Kann nur validiert werden, wenn er bereitgestellt wurde",de
+Can only cancel a planned or realized stock move.,Kann nur eine geplante oder realisierte Aktienbewegung stornieren.,de
+Can only cancel a validated inventory.,Kann nur einen bestätigten Bestand stornieren.,de
+Can only complete a started inventory.,Kann nur eine begonnene Bestandsaufnahme abschließen.,de
+Can only plan a draft inventory.,Kann nur einen Entwurf der Bestandsaufnahme planen.,de
+Can only plan a drafted stock move.,Ich kann nur eine eingezeichnete Aktienbewegung planen.,de
+Can only return to draft if cancelled.,"Kann nur zum Entwurf zurückkehren, wenn er annulliert wurde.",de
+Can only return to provision if was validated or collected,"Kann nur in die Rückstellung zurückkehren, wenn er validiert oder abgeholt wurde",de
+Can only start a draft inventory.,Kann nur einen Inventarentwurf starten.,de
+Can only validate a drafted stock correction.,Kann nur eine eingezeichnete Aktienkorrektur validieren.,de
+Can't delete a line linked to a realized stock move line.,"Eine Linie, die mit einer realisierten Aktienbewegung verknüpft ist, kann nicht gelöscht werden.",de
+Can't delete a planned stock move,Geplante Aktienbewegungen können nicht gelöscht werden,de
+Can't delete a realized stock move,Eine realisierte Aktienbewegung kann nicht gelöscht werden,de
+Can't realize this stock move because of the ongoing inventory %s.,Ich kann diese Aktienbewegung wegen der anhaltenden Lagerbestände nicht realisieren.,de
+Cancel,Abbrechen,de
+Cancel picking,Kommissionierung abbrechen,de
+Cancel reason,Grund stornieren,de
+Cancel reservation,Reservierung stornieren,de
+Cancel storage,Speicherung abbrechen,de
+Cancelation,Stornierung,de
+Canceled,Abgesagt,de
+Cancellation,Stornierung,de
+Cancellation confirmation,Bestätigung der Stornierung,de
+Cancelled Arrivals,Annullierte Ankünfte,de
+Cannot go back to draft status.,Sie können nicht zum Entwurfsstatus zurückkehren.,de
+Cannot realize a stock move that is not planned.,"Sie können keine Aktienbewegungen realisieren, die nicht geplant sind.",de
+Cannot validate an inventory that is not completed.,Ein nicht abgeschlossenes Inventar kann nicht validiert werden.,de
+Carriage (Sea/Air) to port of import,Beförderung (See/Luft) zum Einfuhrhafen,de
+Carriage to place of destination,Beförderung zum Bestimmungsort,de
+Carriage to port of export,Beförderung zum Ausfuhrhafen,de
+Carrier,Träger,de
+Carrier validated,Träger validiert,de
+Cart contents,Inhalt des Wagens,de
+Cart stock location content,Inhalt des Wagenlagers,de
+Certificate of conformity,Konformitätsbescheinigung,de
+Certificate of conformity title,Titel der Konformitätsbescheinigung,de
+Change allocated qty,Zugewiesene Menge ändern,de
+Check Duplicate,Duplikat prüfen,de
+Check expiration date at stock move realization,Prüfen Sie das Verfallsdatum bei der Realisierung des Lagerumzugs,de
+Choose a template,Wählen Sie eine Vorlage,de
+Code,Code,de
+Collected,Gesammelt,de
+Collection date,Datum der Erhebung,de
+Comment to display on picking order,Kommentar zur Anzeige auf dem Kommissionierauftrag,de
+Comment to display on stock move,Kommentar zur Anzeige bei Aktienbewegungen,de
+Comments,Kommentare,de
+Comments updated;,Kommentare aktualisiert;,de
+Commercial regularization resulting in value increase,Kommerzielle Legalisierung führt zu Wertsteigerung,de
+Commercial regularization resulting in value reduction,"Kommerzielle Regulierung, die zu einer Wertminderung führt",de
+Common destination location,Gemeinsamer Zielort,de
+Common source location,Gemeinsamer Quellort,de
+Company,Unternehmen,de
+Company Unit price W.T.,Company Unit price W.T.,de
+Company account,Firmenkonto,de
+Company address is empty.,Die Firmenadresse ist leer.,de
+Company cannot be null.,Das Unternehmen kann nicht null sein.,de
+Company missing for stock location %s,Firma fehlt für Lagerort %s,de
+Complete,Vollständig,de
+Completed,Abgeschlossen,de
+Compliant,Konform,de
+Compliant arrival product qty,Konforme Ankunft Produktmenge,de
+Computation priority,Priorität der Berechnung,de
+Configuration,Konfiguration,de
+Configuration is missing in stock configuration to see financial data,In der Bestandskonfiguration fehlt eine Konfiguration zur Anzeige von Finanzdaten,de
+Confirm,Bestätigen Sie,de
+Confirm cancellation,Stornierung bestätigen,de
+Conformity,Konformität,de
+Conformity Certificates,Konformitätsbescheinigungen,de
+Conformity certificate,Konformitätsbescheinigung,de
+Conformity certificate template,Vorlage Konformitätsbescheinigung,de
+ConformityCertificate.certificateNumber,ConformityCertificate.certificateNumber,de
+ConformityCertificate.customerName,ConformityCertificate.customerName,de
+ConformityCertificate.designation,ConformityCertificate.designation,de
+ConformityCertificate.externalReference,ConformityCertificate.externalReference,de
+ConformityCertificate.function,ConformityCertificate.function,de
+ConformityCertificate.lotNoRef,ConformityCertificate.lotNoRef,de
+ConformityCertificate.name,ConformityCertificate.name,de
+ConformityCertificate.numberAndDateDelivery,ConformityCertificate.numberAndDateDelivery,de
+ConformityCertificate.orderDate,ConformityCertificate.orderDate,de
+ConformityCertificate.orderNumber,ConformityCertificate.orderNumber,de
+ConformityCertificate.partNumber,ConformityCertificate.partNumber,de
+ConformityCertificate.qtyUnit,ConformityCertificate.qtyUnit,de
+ConformityCertificate.quantity,ConformityCertificate.quantity,de
+ConformityCertificate.sequence,ConformityCertificate.sequence,de
+ConformityCertificate.signature,ConformityCertificate.signature,de
+ConformityCertificate.stockMoveLineRowNum,ConformityCertificate.stockMoveLineRowNum,de
+Consignments by post,Sendungen per Post,de
+Control on Receipt,Kontrolle bei Erhalt,de
+Control stock rules are activated by supply chain batch.,Die Regeln für den Kontrollbestand werden durch die Lieferkettencharge aktiviert.,de
+Correction Reason,Berichtigung Grund,de
+Cost price,Selbstkostenpreis,de
+Country,Land,de
+Country of origin,Herkunftsland,de
+Create inventory,Inventar erstellen,de
+Create new tracking numbers,Neue Kontrollnummern erstellen,de
+Created by,Erstellt von,de
+Created on,Erstellt am,de
+Current,Aktuell,de
+Current Qty,Aktuelle Menge,de
+Current Quantity,Aktuelle Menge,de
+Current qty,Aktuelle Menge,de
+Current quantity problem,Aktuelles Mengenproblem,de
+Cust. Shipment to prepare,Cust. Sendung zur Vorbereitung,de
+Customer account,Kundenkonto,de
+Customer account number,Kontonummer des Kunden,de
+Customer account number to carrier,Kontonummer des Kunden beim Beförderer,de
+Customer account numbers to carriers,Kundenkontonummern an Transportunternehmen,de
+Customer average delivery delay,Durchschnittlicher Lieferverzug des Kunden,de
+Customer deliveries,Lieferungen an Kunden,de
+Customer deliveries by country,Kundenlieferungen nach Ländern,de
+Customer deliveries filters,Filter für Kundenlieferungen,de
+Customer deliveries statistics,Statistik der Kundenlieferungen,de
+Customer order ref.,Kundenauftrag Ref.,de
+Customer returns,Kundenrückgaben,de
+Customer virtual stock location,Virtueller Lagerort des Kunden,de
+Customs,Zollbehörden,de
+Customs code,Zollkodex,de
+Customs code nomenclature,Nomenklatur des Zollkodex,de
+Customs code nomenclature:all,Customs code nomenclature:all,de
+Cut off move generated,Abgeschnittene Bewegung erzeugt,de
+Dashboard,Dashboard,de
+Dashlet.Moves,Dashlet.Moves,de
+Data is null or empty,Daten sind null oder leer,de
+Date,Datum,de
+Date and time,Datum und Uhrzeit,de
+Date t,Datum t,de
+Dates,Daten,de
+Days,Tage,de
+Deallocate,Freigeben von,de
+Deallocate all,Deallokieren Sie alle,de
+Declaration of exchanges for %s is not supported.,Die Deklaration von Austauschgeräten für %s wird nicht unterstützt.,de
+Default external stock location,Externer Standardlagerort,de
+Default from stock location for sales and to stock location for purchases,Standard von Lagerort für Verkäufe und zu Lagerort für Käufe,de
+Default signatory user,Standardbenutzer mit Unterschrift,de
+Default stock location,Standard-Lagerort,de
+Default to stock location for sales and from stock location for purchases,Voreinstellung auf Lagerort für Verkäufe und ab Lagerort für Einkäufe,de
+Default unit,Standard-Einheit,de
+Defense or intergovernmental program,Verteidigungs- oder zwischenstaatliches Programm,de
+Define ideal Qty,Definieren Sie die ideale Menge,de
+Define max Qty,Maximale Menge definieren,de
+Delay,Verzögerung,de
+Delayed invoicing,Verspätete Rechnungsstellung,de
+Deliver to customer,Lieferung an den Kunden,de
+Deliver to customer is not set.,Lieferung an den Kunden ist nicht eingestellt.,de
+Deliveries,Lieferungen,de
+Deliveries Cancelled,Stornierte Lieferungen,de
+Deliveries Details,Details zu den Lieferungen,de
+Deliveries History,Lieferungen Historie,de
+Deliveries to prepare,Vorzubereitende Lieferungen,de
+Delivery delay (days),Lieferverzug (Tage),de
+Delivery for trial sale,Lieferung zum Probeverkauf,de
+Delivery number,Nummer der Lieferung,de
+Delivery stock move,Lieferung Lagerbewegung,de
+Deported stock location,Abgeschobener Lagerort,de
+Description,Beschreibung,de
+Destination location,Zielort,de
+Detail,Einzelheiten,de
+Detail line(s) not inside a parcel/pallet,Detailzeile(n) nicht innerhalb eines Pakets/Palette,de
+Detailed stock,Detaillierter Bestand,de
+Details,Einzelheiten,de
+Details of the tracking number's availables,Details der Tracking-Nummern sind verfügbar,de
+Details of the tracking number's unavailables,Einzelheiten zu den nicht verfügbaren Tracking-Nummern,de
+Details stock location lines,Details Lagerortlinien,de
+Dimension 0,Dimension 0,de
+Dimension 1,Dimension 1,de
+Dimension 2,Dimension 2,de
+Dimension 3,Dimension 3,de
+Dimensional,Abmessungen,de
+Dimensions,Abmessungen,de
+Dimensions (cm),Abmessungen (cm),de
+Dimensions and masses,Abmessungen und Massen,de
+Dimensions title,Abmessungen Titel,de
+Display accounting value in location financial data printing,Anzeige des Buchhaltungswertes beim Drucken von Finanzdaten am Standort,de
+Display available tracking numbers,Verfügbare Kontrollnummern anzeigen,de
+Display average price in printing,Durchschnittspreis im Druck anzeigen,de
+Display barcode on Picking printing,Barcode beim Kommissionierdruck anzeigen,de
+Display customer code on picking printing,Kundencode beim Kommissionierdruck anzeigen,de
+Display external ref. on certificate of conformity printing,Anzeige der externen Kennziffer auf dem Druck der Konformitätsbescheinigung,de
+Display line details on printing,Zeilendetails beim Drucken anzeigen,de
+Display order reference and order date,Auftragsnummer und Auftragsdatum anzeigen,de
+Display partner sequence on printing,Anzeige der Partnerreihenfolge beim Drucken,de
+Display price on printing,Preis beim Drucken anzeigen,de
+Display product code on printing,Anzeige des Produktcodes beim Drucken,de
+Display purchase value in location financial data printing,Anzeige des Kaufwerts im Finanzdatendruck vor Ort,de
+Display sale value in location financial data printing,Anzeige des Verkaufswerts im Finanzdatendruck vor Ort,de
+Display tracking number details on Picking printing,Anzeige von Details zur Tracking-Nummer beim Druck der Kommissionierung,de
+Display tracking number details on certificate of conformity printing,Anzeige von Angaben zur Kontrollnummer beim Druck der Konformitätsbescheinigung,de
+Do you want to allocate all the products ?,Möchten Sie alle Produkte zuordnen?,de
+Do you want to generate backorder for not delivered quantities?,Möchten Sie einen Rückstand für nicht gelieferte Mengen erzeugen?,de
+Do you want to generate backorder for not received quantities?,Möchten Sie einen Rückstand für nicht erhaltene Mengen erzeugen?,de
+Do you want to proceed?,Möchten Sie fortfahren?,de
+Does not include quantities from sub stock locations,Enthält keine Mengen aus Unterlagerungen,de
+Draft,Entwurf,de
+Draft move,Entwurf eines Umzugs,de
+Economic area,Wirtschaftsraum,de
+Electronic signature,Elektronische Unterschrift,de
+Email sent,E-Mail gesendet,de
+Enable incoterm,Incoterm einschalten,de
+Enable product description copy,Aktivieren Sie die Kopie der Produktbeschreibung,de
+Enable site management for stock,Aktivieren der Standortverwaltung für Bestände,de
+End date,Datum des Endes,de
+Error: %s and %s fields are required and can not be null,Fehler: Die Felder %s und %s sind erforderlich und können nicht leer sein,de
+Error: %s field is required and can not be null,Fehler: %s-Feld ist erforderlich und kann nicht leer sein,de
+Estimated Date,Geschätztes Datum,de
+Estimated date,Geschätztes Datum,de
+Excl. out of stock products,Exkl. nicht vorrätige Produkte,de
+Exonerated shipment and transfer,Unentgeltliche Verbringung und Überführung,de
+"Expected BigDecimal as result during the computation of field %s, please fix the corresponding formula.","Erwartetes BigDecimal als Ergebnis bei der Berechnung des Feldes %s, bitte korrigieren Sie die entsprechende Formel.",de
+Expected Qty,Erwartete Menge,de
+Expected/Future Quantity,Erwartete/künftige Menge,de
+Expired product(s): %s,Abgelaufene(s) Produkt(e): %s,de
+Export,Exportieren,de
+Export customs declaration,Ausfuhrzollanmeldung,de
+External,Extern,de
+External delivery comment,Kommentar zur externen Lieferung,de
+FIFO,FIFO,de
+Facturation ultérieure,Letzte Fakturierung,de
+Feature currently not available with Open Street Maps.,Diese Funktion ist derzeit bei Open Street Maps nicht verfügbar.,de
+Field,Feld,de
+Field's formula,Field's Formel,de
+Fields formula,Felder Formel,de
+"Fields linked to the shipment are differents, the value of the oldest will be kept.","Die mit der Sendung verbundenen Felder sind unterschiedlich, der Wert des ältesten wird beibehalten.",de
+File %s successfully imported.,Datei %s erfolgreich importiert.,de
+File (CSV),Datei (CSV),de
+File Format,Dateiformat,de
+Fill in products from movements,Ausfüllen von Produkten aus Bewegungen,de
+Fill inventory,Inventar auffüllen,de
+Fill inventory with,Inventar auffüllen mit,de
+Filter on available products,Filter auf verfügbare Produkte,de
+Filters,Filter,de
+Final product density,Dichte des Endprodukts,de
+Financial leasing,Finanzierungsleasing,de
+Firm purchase or sale,Fester Kauf oder Verkauf,de
+Fixed transport installations,Ortsfeste Transportanlagen,de
+Forecasted Stock,Prognostizierter Bestand,de
+Formula,Formel,de
+Forwarder,Forwarder,de
+Freight Carrier,Güterkraftverkehrsunternehmen,de
+Freight carrier mode,Frachtführer-Modus,de
+Freight carrier modes,Verkehrsträger des Güterverkehrs,de
+From,Von,de
+From Date,Von Datum,de
+From address,Von der Adresse,de
+From date,Vom Datum,de
+From rack,Vom Gestell,de
+From stock location,Ab Lagerort,de
+Full name,Vollständiger Name,de
+Fullname,Vollständiger Name,de
+Fully spread over logistical forms,Vollständig über logistische Formulare verteilt,de
+Future,Zukunft,de
+Future Qty,Zukünftige Menge,de
+Future qty,Zukünftige Menge,de
+Gap,Lücke,de
+Gap value,Lückenwert,de
+General,Allgemein,de
+General Stock Details,Allgemeine Angaben zum Bestand,de
+Generate a new stock move,Erzeugen Sie eine neue Lagerbewegung,de
+Generate credit note,Gutschrift generieren,de
+Generate invoice,Rechnung generieren,de
+Generate new production auto tracking Nbr.,Erzeugen Sie eine neue automatische Produktionsverfolgungsnummer.,de
+Generate new purchase auto tracking Nbr.,Neuen Kauf generieren Auto Tracking Nbr.,de
+Generate new sale auto tracking Nbr.,Neuen Verkauf generieren Auto Tracking Nbr.,de
+Generate picked products,Kommissionierte Produkte generieren,de
+Generate reversion,Reversion generieren,de
+Generate stock configurations,Bestandskonfigurationen generieren,de
+Gross Mass,Bruttomasse,de
+Gross mass,Bruttomasse,de
+Group products on printings,Produkte auf Drucksachen gruppieren,de
+Header,Kopfzeile,de
+Historical Period,Historischer Zeitraum,de
+ISPM standard required,ISPM-Standard erforderlich,de
+Ideal Qty,Ideale Menge,de
+Import customs clearance,Einfuhrzollabfertigung,de
+Import duties and taxes,Einfuhrzölle und Steuern,de
+"Impossible to create a picked product for product %s, no stock found for company %s","Es ist nicht möglich, ein kommissioniertes Produkt für das Produkt %s zu erstellen, es wurde kein Lagerbestand für die Firma %s gefunden",de
+In progress,In Arbeit,de
+Incl. obsolete products,Einschließlich veralteter Produkte,de
+Incl. sub location stock,Inklusive Unterlagerbestand,de
+Include out of stocks products,Nicht vorrätige Produkte einbeziehen,de
+Include virtual sub location,Virtuellen Unterstandort einbeziehen,de
+Incoming amount,Eingehender Betrag,de
+Incoming move,Eingehender Umzug,de
+Incoming move information,Eingehende Umzugsinformationen,de
+Incoming move lines,Eingehende Umzugslinien,de
+Incoming quantity,Eingehende Menge,de
+Incorrect product for stock correction,Falsches Produkt für Bestandskorrektur,de
+Incorrect product in inventory line,Falsches Produkt in der Bestandsliste,de
+Incoterm,Incoterm,de
+Incoterm Code,Incoterm Code,de
+Incoterm Name,Incoterm Name,de
+Incoterms,Incoterms,de
+Information,Informationen,de
+Insurance,Versicherung,de
+Internal,Intern,de
+Internal Stock Move filters,Filter für interne Lagerbewegungen,de
+Internal Stock Moves,Interne Lagerbewegungen,de
+Internal delivery comment,Kommentar zur internen Zustellung,de
+Internal move,Interner Umzug,de
+Internal move information,Interne Umzugsinformationen,de
+Internal move lines,Interne Bewegungslinien,de
+Internal number,Interne Nummer,de
+Internal stock move,Interne Lagerbewegungen,de
+Intracommunity acquisition taxable in france,Innergemeinschaftlicher Erwerb in Frankreich steuerpflichtig,de
+Invalid dimensions on packing line No. %d,Ungültige Abmessungen auf der Verpackungslinie Nr. %d,de
+Invalid field dimensions,Ungültige Feldabmessungen,de
+Inventories,Vorräte,de
+Inventories History,Vorräte Geschichte,de
+Inventories filters,Vorratsfilter,de
+Inventory,Bestandsaufnahme,de
+Inventory Calendar,Inventar-Kalender,de
+Inventory N°,Bestandsverzeichnis Nr.,de
+Inventory Title,Inventar Titel,de
+Inventory line,Inventarliste,de
+Inventory line successfully updated,Inventarzeile erfolgreich aktualisiert,de
+Inventory lines,Inventarlinien,de
+Inventory successfully updated,Inventar erfolgreich aktualisiert,de
+Inventory template,Inventarvorlage,de
+Inventory valuation type,Art der Bestandsbewertung,de
+Inventory virtual stock location,Inventarisierung des virtuellen Lagerbestands,de
+Inventory's lines' list has been filled.,Die Liste der Zeilen des Inventars ist gefüllt.,de
+Inventory.barcode,Inventory.barcode,de
+Inventory.category,Inventory.category,de
+Inventory.code,Inventory.code,de
+Inventory.company,Inventory.company,de
+Inventory.createdOn,Inventory.createdOn,de
+Inventory.date,Inventory.date,de
+Inventory.description,Inventory.description,de
+Inventory.fromRack,Inventory.fromRack,de
+Inventory.lastInventoryDate,Inventory.lastInventoryDate,de
+Inventory.plannedEndDateT,Inventory.plannedEndDateT,de
+Inventory.plannedStartDateT,Inventory.plannedStartDateT,de
+Inventory.product,Inventory.product,de
+Inventory.productCategory,Inventory.productCategory,de
+Inventory.productFamily,Inventory.productFamily,de
+Inventory.rack,Inventory.rack,de
+Inventory.realQty,Inventory.realQty,de
+Inventory.stockLocation,Inventory.stockLocation,de
+Inventory.title,Inventory.title,de
+Inventory.toRack,Inventory.toRack,de
+Inventory.trackingNumber,Inventory.trackingNumber,de
+Inventory.unit,Inventory.unit,de
+Invoiced,In Rechnung gestellt,de
+Is ISPM15 required,Ist ISPM15 erforderlich?,de
+Is avg price changed,Hat sich der Durchschnittspreis geändert?,de
+Is certificate of conformity required,Ist eine Konformitätsbescheinigung erforderlich?,de
+Is certificate of conformity signed,Ist die Konformitätsbescheinigung unterzeichnet?,de
+Is real qty modified by user,Wird die tatsächliche Menge vom Benutzer geändert,de
+Is reversion,Ist Reversion,de
+LIFO,LIFO,de
+Label,Etikett,de
+Last Future Stock Move,Letzte Aktienbewegung in der Zukunft,de
+Last Inventory date,Datum der letzten Bestandsaufnahme,de
+Last inventory,Letzte Bestandsaufnahme,de
+Last inventory date,Letztes Inventurdatum,de
+Last inventory real qty,Letzter Bestand tatsächliche Menge,de
+Late Deliveries,Verspätete Lieferungen,de
+Late customer deliveries,Verspätete Lieferungen an Kunden,de
+Late supplier arrivals,Verspätet eintreffende Lieferanten,de
+Line length too big,Zeilenlänge zu groß,de
+Line successfully added to stock move with id %s,Zeile erfolgreich zur Lagerbewegung mit der ID %s hinzugefügt,de
+Line successfully split.,Leitung erfolgreich geteilt.,de
+Line successfully updated.,Zeile erfolgreich aktualisiert.,de
+Lines,Zeilen,de
+Lines created successfully,Zeilen erfolgreich erstellt,de
+Links,Links,de
+Loading on truck in port of import,Verladung auf Lkw im Einfuhrhafen,de
+Loading on vessel/airplane in port of export,Verladung auf Schiff/Flugzeug im Ausfuhrhafen,de
+Location Content,Standort Inhalt,de
+Location Lines,Standort-Linien,de
+Location content,Inhalt des Standorts,de
+Location content details,Inhaltliche Details zum Standort,de
+Location financial data,Standort Finanzdaten,de
+Logistical form,Logistisches Formular,de
+Logistical form filters,Logistische Formularfilter,de
+Logistical form lines,Logistische Formularlinien,de
+Logistical forms,Logistische Formulare,de
+Manage backorder,Auftragsrückstände verwalten,de
+Manage backorder?,Auftragsrückstände verwalten?,de
+Manage production tracking Nbr.,Verwalten der Produktionsverfolgung Nbr.,de
+Manage purchase tracking Nbr.,Kaufverfolgung verwalten Nbr.,de
+Manage sale tracking Nbr.,Verwalten der Verkaufsverfolgung Nbr.,de
+Manage stock location on stock move lines,Verwaltung des Lagerbestands in den Umzugsstraßen,de
+Manual,Handbuch,de
+Manufacturing order,Fertigungsauftrag,de
+Map,Karte,de
+Mass,Masse,de
+Mass in kg,Masse in kg,de
+Mass move,Massenbewegung,de
+Mass move enabled,Massenbewegung aktiviert,de
+Mass moves,Masse bewegt sich,de
+Mass stock move,Massenbewegung von Aktien,de
+Mass stock move need,Bedarf an Massenumlagerungen,de
+Mass stock moves,Massenbewegung von Aktien,de
+Mass stock moves need,Massenhafte Lagerbewegungen brauchen,de
+Materials for construction contract,Materialien für Bauaufträge,de
+Max stock,Höchstbestand,de
+Max stock date,Datum des Höchstbestands,de
+Max. Qty,Max. Anzahl,de
+Maximum iteration for looking tracking numbers parent has been reached. Please check any circular parent dependencies.,Die maximale Iteration für die Suche nach übergeordneten Tracking-Nummern wurde erreicht. Bitte überprüfen Sie alle zirkulären übergeordneten Abhängigkeiten.,de
+Merge stock moves,Fusionsaktien bewegen sich,de
+Merged,Zusammengeführt,de
+Message template,Nachrichtenvorlage,de
+Message template for stock rules,Nachrichtenvorlage für Bestandsregeln,de
+Metric weight,Metrisches Gewicht,de
+Metric weight in kg/m,Metrisches Gewicht in kg/m,de
+Min stock,Mindestbestand,de
+Min stock date,Mindestbestandsdatum,de
+Min. Qty,Min. Menge,de
+Missing,Fehlt,de
+Missing logistical form sequence for company %s,Fehlende logistische Formularsequenz für Unternehmen %s,de
+Mode of transport,Verkehrsmittel,de
+Month,Monat,de
+Move canceled,Umzug abgebrochen,de
+Move created,Bewegung erstellt,de
+Move details,Details verschieben,de
+Move origin type,Ursprungstyp verschieben,de
+Move realized,Bewegung realisiert,de
+Moved qty is greater than current quantity (%s),Verschobene Menge ist größer als aktuelle Menge (%s),de
+Moved quantity is equal to 0 or less (%s),Verschobene Menge ist gleich 0 oder kleiner (%s),de
+Moves Cancelled,Stornierte Umzüge,de
+Moves History,Bewegt Geschichte,de
+Moves To Prepare,Umzüge zur Vorbereitung,de
+Must set mass unit in stock configuration for customs.,Für den Zoll muss die Masseneinheit in der Lagerkonfiguration eingestellt werden.,de
+Name,Name,de
+Nature of transaction,Art der Transaktion,de
+Nbr of incoming moves,Anzahl der eingehenden Züge,de
+Nbr of outgoing moves,Anzahl der ausgehenden Züge,de
+Net mass,Nettomasse,de
+No,Nein,de
+No Tracking Numbers Added,Keine Tracking-Nummern hinzugefügt,de
+"No dimension could be computed, please make sure that you have the necessary field to compute at least one field","Es konnte keine Dimension berechnet werden. Bitte stellen Sie sicher, dass Sie über das erforderliche Feld verfügen, um mindestens ein Feld zu berechnen.",de
+No economic area is configured for %s.,Für %s ist kein Wirtschaftsraum konfiguriert.,de
+No inventory lines has been created.,Es wurden noch keine Bestandszeilen erstellt.,de
+No move lines to split,Keine Bewegungslinien zum Teilen,de
+No new stock move was generated,Es wurde keine neue Aktienbewegung erzeugt,de
+No record found,Kein Eintrag gefunden,de
+No reversion generated,Kein Heimfall erzeugt,de
+"No stock correction needed, current quantity in stock equals real quantity.","Keine Bestandskorrektur erforderlich, aktuelle Bestandsmenge entspricht der tatsächlichen Menge.",de
+No stock location has been selected.,Es wurde kein Lagerort ausgewählt.,de
+No stock moves found for this inventory.,Keine Lagerbewegungen für diesen Bestand gefunden.,de
+Non temporary implying transfer of property without compensation,"Nicht vorübergehend, d.h. Übertragung von Eigentum ohne Entschädigung",de
+Non-compliant,Nicht konform,de
+Not invoiced,Nicht in Rechnung gestellt,de
+Note,Hinweis,de
+Notes,Anmerkungen,de
+Number Of Packages,Anzahl der Pakete,de
+Number Of Palettes,Anzahl der Paletten,de
+Number of customer deliveries,Anzahl der Kundenlieferungen,de
+Number of periods,Anzahl der Perioden,de
+Number of pieces,Anzahl der Stücke,de
+Old qty,Alte Menge,de
+OnTime Deliveries,Pünktliche Lieferungen,de
+Operation after custom work return to initial state,Betrieb nach benutzerdefinierter Arbeit Rückkehr zum Ausgangszustand,de
+Operation after custom work return to other state,Betrieb nach kundenspezifischer Arbeit Rückkehr in anderen Zustand,de
+Operations for custom work non return,Operationen für Auftragsarbeiten ohne Rückgabe,de
+Operations for custom work return,Vorgänge für die Rücksendung von Auftragsarbeiten,de
+Origin,Herkunft,de
+Origin inventory line,Ursprüngliche Bestandslinie,de
+Origin stock move,Herkunft der Aktienbewegung,de
+Origin stock move line,Ursprung Aktie bewegen Linie,de
+Other expeditions,Andere Expeditionen,de
+Other introductions,Andere Einführungen,de
+Other returns,Andere Rückgaben,de
+Other transactions,Sonstige Transaktionen,de
+Outgoing amount,Ausgehender Betrag,de
+Outgoing move,Ausgehender Umzug,de
+Outgoing move information,Ausgehende Umzugsinformationen,de
+Outgoing move lines,Ausgehende Umzugslinien,de
+Outgoing quantity,Ausgehende Menge,de
+Outsourcing receipt stock location,Outsourcing des Eingangslagers,de
+Own propulsion,Eigener Antrieb,de
+PFP authorized,PFP genehmigt,de
+PFP litigation,PFP-Rechtsstreitigkeiten,de
+Packing line,Verpackungslinie,de
+Packing lines,Verpackungslinien,de
+Pallet,Palette,de
+Pallet %d is empty.,Die Palette %d ist leer.,de
+Parcel,Parzelle,de
+Parcel %d is empty.,Die Parzelle %d ist leer.,de
+Parcel/pallet number,Paket-/Palettennummer,de
+Parent customs code,Übergeordneter Zollkodex,de
+Parent stock location,Übergeordneter Lagerort,de
+Partial stock move (From,Teilweise Umlagerung (von,de
+Partially available,Teilweise verfügbar,de
+Partially invoiced,Teilweise in Rechnung gestellt,de
+Partner,Partner,de
+Partner is missing.,Der Partner wird vermisst.,de
+Partner mismatch: %s,Partner-Fehlanpassung: %s,de
+Partner product quality rating,Bewertung der Produktqualität des Partners,de
+Partner product quality ratings,Bewertungen der Produktqualität der Partner,de
+Partner stock settings,Einstellungen des Partnerbestands,de
+Period,Zeitraum,de
+Perishable,Verderblich,de
+Perishable expiration date,Verfallsdatum von verderblichen Waren,de
+Pick,Wählen Sie,de
+Pick all / the rest,Alle / den Rest auswählen,de
+Pick products,Produkte auswählen,de
+Picked,Gewählt,de
+Picked product,Gewähltes Produkt,de
+Picked products,Ausgewählte Produkte,de
+Picked qty,Gepflückte Menge,de
+Picked qty / Qty to pick,Kommissionierte Menge / Zu kommissionierende Menge,de
+Picking order edit date,Bearbeitungsdatum des Kommissionierauftrags,de
+"Picking order has been edited for this stock move, it can not be canceled.","Der Kommissionierauftrag wurde für diese Lagerbewegung bearbeitet, er kann nicht storniert werden.",de
+Picking order is edited,Kommissionierauftrag wird bearbeitet,de
+Picking order printing detailed,Kommissionierauftragsdruck detailliert,de
+Picking printed,Kommissionierung gedruckt,de
+Picking stock move template,Vorlage für die Kommissionierung von Lagerbewegungen,de
+PickingStockMove.aspect,PickingStockMove.aspect,de
+PickingStockMove.code,PickingStockMove.code,de
+PickingStockMove.customerCode,PickingStockMove.customerCode,de
+PickingStockMove.deliveryCondition,PickingStockMove.deliveryCondition,de
+PickingStockMove.externalReference,PickingStockMove.externalReference,de
+PickingStockMove.lineNumber,PickingStockMove.lineNumber,de
+PickingStockMove.manual,PickingStockMove.manual,de
+PickingStockMove.mark,PickingStockMove.mark,de
+PickingStockMove.note,PickingStockMove.note,de
+PickingStockMove.qty,PickingStockMove.qty,de
+PickingStockMove.signaling,PickingStockMove.signaling,de
+PickingStockMove.visa,PickingStockMove.visa,de
+PickingStockMove.weekCode,PickingStockMove.weekCode,de
+PickingStockMove.withWithout,PickingStockMove.withWithout,de
+Pickup default stock location,Standardlagerort abholen,de
+Plan,Plan,de
+Planned,Geplant,de
+Planned End Date,Geplantes Enddatum,de
+Planned Inventories,Geplante Vorräte,de
+Planned Start Date,Geplanter Starttermin,de
+Planned move,Geplanter Umzug,de
+Planned stock move,Geplante Lagerbewegung,de
+Planned stock move line list,Liste geplanter Umlagerungen,de
+Planned stock move lines,Geplante Umlagerungslinien,de
+Please add a quality control default stock location for company %s in the app stock configuration,Bitte fügen Sie einen Qualitätskontroll-Standardlagerort für die Firma %s in der App-Lagerkonfiguration hinzu,de
+Please configure mass units for this product packing : %s,Bitte konfigurieren Sie Masseneinheiten für diese Produktverpackung: %s,de
+Please enter a valid split quantity,Bitte geben Sie eine gültige Splitmenge ein,de
+Please fill all inventory lines,Bitte füllen Sie alle Bestandszeilen aus,de
+Please fill estimated delivery date for product %s from %s,Bitte geben Sie das voraussichtliche Lieferdatum für das Produkt %s von %s ein,de
+Please fill in the delivery (to) address to get the delivery itinerary.,"Bitte geben Sie die Lieferadresse ein, um den Lieferplan zu erhalten.",de
+Please fill in the source (from) location address to get the delivery itinerary.,"Bitte geben Sie die Adresse des Ausgangsortes (von) ein, um die Zustellroute zu erhalten.",de
+"Please fill printing settings on following stock moves: ${__repo__(StockMove).all().filter('self.id IN ?1 AND self.printingSettings IS NULL', id?:_ids).fetch()?.collect{it.stockMoveSeq}?.join(', ')}","Please fill printing settings on following stock moves: ${__repo__(StockMove).all().filter('self.id IN ?1 AND self.printingSettings IS NULL', id?:_ids).fetch()?.collect{it.stockMoveSeq}?.join(', ')}",de
+Please fill printing settings on following stock moves: %s,Bitte geben Sie die Druckeinstellungen für folgende Lagerbewegungen ein: %s,de
+Please fill the conformity for the product(s) : %s,Bitte füllen Sie die Konformitätserklärung für das/die Produkt(e) aus: %s,de
+Please fill the tracking number for the product(s) : %s,Bitte geben Sie die Trackingnummer für das/die Produkt(e) ein: %s,de
+Please fill unit for the stock location line in %s for the product %s.,Bitte füllen Sie die Einheit für die Lagerortzeile in %s für das Produkt %s.,de
+Please fill unit for the stock location line with tracking number %s in %s for the product %s.,Bitte füllen Sie die Einheit für die Lagerortzeile mit der Trackingnummer %s in %s für das Produkt %s.,de
+Please filled supplier shipment date and supplier shipment reference.,Bitte geben Sie das Versanddatum und die Versandnummer des Lieferanten an.,de
+Please indicate a new quantity.,Bitte geben Sie eine neue Menge an.,de
+Please select at least 2 stock moves,Bitte wählen Sie mindestens 2 Aktienbewegungen aus,de
+Please select lines to split,Bitte wählen Sie die zu teilenden Zeilen aus,de
+Please select the Stock Location(s) to print.,Bitte wählen Sie den/die zu druckenden Lagerort(e).,de
+Please select the StockMove(s) to print.,Bitte wählen Sie den/die StockMove(s) zum Drucken aus.,de
+Please select the stock move(s) to print,Bitte wählen Sie die zu druckende(n) Aktienbewegung(en),de
+Please set an economic are in AppStock.,Bitte setzen Sie einen wirtschaftlichen Wert in AppStock.,de
+Prepare,Vorbereiten,de
+Prepare products to move,Produkte für den Transport vorbereiten,de
+Price,Preis,de
+Price history,Preisentwicklung,de
+Price used for WAP,Verwendeter Preis für WAP,de
+Print,Drucken,de
+Print Incoming Move,Eingehenden Umzug drucken,de
+Print Internal Move,Drucken Interner Umzug,de
+Print Outgoing Move,Ausgehende Bewegung drucken,de
+Print Picking StockMove(s),Druck Kommissionierung LagerBewegung(en),de
+Print StockMove(s),DruckbestandBewegung(en),de
+Print certificate of conformity,Druck der Konformitätsbescheinigung,de
+Print packing list,Packliste drucken,de
+Print picking order,Kommissionierauftrag drucken,de
+Printing Type,Drucktyp,de
+Printing settings,Druckeinstellungen,de
+Printing template,Druckvorlage,de
+Printings,Drucksachen,de
+Product,Produkt,de
+Product Code,Produkt-Code,de
+Product Name,Produktname,de
+Product cannot be null.,Das Produkt kann nicht null sein.,de
+Product category,Produktkategorie,de
+Product code,Produkt-Code,de
+Product deliveries in qty by country,Produktlieferungen in Mengen nach Ländern,de
+Product deliveries in qty by country by accounting family,Produktlieferungen in Menge nach Land nach Buchführungsfamilie,de
+Product description,Beschreibung des Produkts,de
+Product model,Modell des Produkts,de
+Product name,Name des Produkts,de
+Product quantity in other stock locations,Produktmenge in anderen Lagerorten,de
+Product to pick,Produkt zum Auswählen,de
+Product tracking number,Nummer der Produktverfolgung,de
+Product type,Produkttyp,de
+Product's stocks %s (%s) are not in sufficient quantity to realize the delivery,"Die Bestände des Produkts %s (%s) sind nicht in ausreichender Menge vorhanden, um die Lieferung zu realisieren",de
+Product's stocks %s (%s) exceeds maximum stock rules.,Die Bestände des Produkts %s (%s) überschreiten die Höchstbestandsregeln.,de
+"Product's stocks %s (%s), tracking number %s are not in sufficient quantity to realize the delivery","Die Bestände des Produkts %s (%s), Tracking-Nummer %s sind nicht in ausreichender Menge vorhanden, um die Lieferung zu realisieren",de
+Production Qty by tracking,Produktionsmenge nach Verfolgung,de
+Production Stock Move in Planned,Einzug der Produktionsbestände geplant,de
+Production Stock Move out Planned,Produktion Lagerauszug Geplant,de
+Production stock move in realized,Bewegung der Produktionsbestände in realisiert,de
+Production stock move out realized,Auslagerung von Produktionsbeständen realisiert,de
+Production tracking management,Verwaltung der Produktionsverfolgung,de
+Products,Produkte,de
+Products to move,Zu bewegende Produkte,de
+Products whose future quantity is less than the minimum quantity allowed,"Erzeugnisse, deren künftige Menge unter der zulässigen Mindestmenge liegt",de
+Products.items,Products.items,de
+Profile,Profil,de
+Provision,Rückstellung,de
+Purchase Qty by tracking,Kaufmenge durch Verfolgung,de
+Purchase order,Bestellung,de
+Purchase price,Anschaffungspreis,de
+"Purchase price in company currency, used for declaration of exchange.","Kaufpreis in Firmenwährung, der für die Umtauscherklärung verwendet wird.",de
+Purchase tracking management,Verwaltung der Einkaufsverfolgung,de
+Purchase value,Kaufwert,de
+Qty,Menge,de
+Qty to pick,Zu wählende Menge,de
+Quality control default stock location,Qualitätskontrolle Standardlagerort,de
+Quality rating,Bewertung der Qualität,de
+Quantities,Mengen,de
+Quantity,Menge,de
+Quantity in database,Menge in der Datenbank,de
+Quantity is required on line %d.,Die Menge wird in Zeile %d benötigt.,de
+Rack,Gestell,de
+Racks range,Racks Bereich,de
+Real Qty,Echte Menge,de
+Real Quantity,Reale Menge,de
+Real qty,Echte Menge,de
+Real qty updated;,Echte Menge aktualisiert;,de
+Real quantity must not be equal to 0 and should be less than expected quantity.,Die reale Menge darf nicht gleich 0 sein und muss unter der erwarteten Menge liegen.,de
+Real quantity problem,Problem der realen Menge,de
+Real valuation,Reale Bewertung,de
+Real/Current Quantity,Reale/aktuelle Menge,de
+Realize,Realisieren Sie,de
+Realize picking,Kommissionierung realisieren,de
+Realize stock moves upon parcel/pallet collection,Durchführung von Lagerbewegungen bei Abholung von Paketen/Paletten,de
+Realize storing,Realisieren der Speicherung,de
+Realized,Realisiert,de
+Realized stock move lines,Realisierte Aktienbewegungslinien,de
+Reason,Grund,de
+Reason updated;,Grund aktualisiert;,de
+Receipt default stock location,Standardlagerort des Belegs,de
+Receipt stock move,Wareneingang Lagerbewegung,de
+Recompute stock location lines,Lagerortlinien neu berechnen,de
+Ref.,Ref.,de
+Refill Qty,Menge nachfüllen,de
+Refill type,Art der Nachfüllung,de
+Refresh the products net mass,Auffrischen der Eigenmasse der Produkte,de
+Regime,Regime,de
+Related tracking numbers,Zugehörige Kontrollnummern,de
+Rental loan leasing more than 24 months,Mietkredite mit einer Laufzeit von mehr als 24 Monaten,de
+Replacement of non returned goods,Ersatz für nicht zurückgegebene Waren,de
+Replacement of returned goods,Ersatz von zurückgegebenen Waren,de
+Reportings,Berichte,de
+Reports,Berichte,de
+Request completed,Antrag abgeschlossen,de
+Request reservation,Reservierung anfordern,de
+Require to fill conformity for products ticked 'Control on Receipt',"Ausfüllen der Konformitätserklärung für Produkte mit dem Kontrollkästchen ""Eingangskontrolle"" erforderlich",de
+Require to fill the shipment information,Erforderlich ist das Ausfüllen der Versandinformationen,de
+Reservation requested,Reservierung erbeten,de
+Reserved qty,Reservierte Menge,de
+Return Surplus,Rückgabe Überschuss,de
+Return of goods,Rücksendung von Waren,de
+Return surplus,Rückgabeüberschuss,de
+Reversions,Umkehrungen,de
+Sale Qty by tracking,Verkaufsmenge nach Verfolgung,de
+Sale price,Verkaufspreis,de
+Sale tracking management,Verwaltung der Verkaufsverfolgung,de
+Sale value,Verkaufswert,de
+Same company,Dasselbe Unternehmen,de
+Same from stock location and to stock location,Dasselbe vom Lagerort und zum Lagerort,de
+Same manuf order,Gleicher Herstellungsauftrag,de
+Same partner,Gleicher Partner,de
+Same trading name,Gleicher Handelsname,de
+Search,Suche,de
+See stock details,Siehe Details zum Bestand,de
+See stock move lines,Bewegungslinien der Aktien sehen,de
+Select format to Export,Format für den Export auswählen,de
+Select products from location,Produkte vom Standort auswählen,de
+Select tracking numbers,Kontrollnummern auswählen,de
+Selected move lines to add,Ausgewählte Zeilen zum Hinzufügen verschieben,de
+Selected quantity,Ausgewählte Menge,de
+Seller,Verkäufer,de
+Send email on stock move realization,E-Mail über die Realisierung von Aktienbewegungen senden,de
+Send email on supplier arrival cancellation,E-Mail bei Ankunft des Lieferanten senden Stornierung,de
+Send email when planning stock move,"E-Mail senden, wenn Sie einen Lagerumzug planen",de
+Send email when saving logistical form,E-Mail senden beim Speichern des logistischen Formulars,de
+Send notification,Benachrichtigung senden,de
+Separate the shipment operations,Trennen Sie die Versandvorgänge,de
+Seq.,Seq.,de
+Sequence,Sequenz,de
+Serial Nbr,Seriennummer,de
+Ship/Receive all products,Versand/Empfang aller Produkte,de
+Shipment Mode,Versandart,de
+Shipment mode,Modus der Versendung,de
+Shipped date,Datum des Versands,de
+Shipped qty,Versandte Menge,de
+Shipping default stock location,Standardlagerort für den Versand,de
+Show Generated Stock Move,Generierte Aktienbewegung anzeigen,de
+Show detailed stock,Detaillierten Bestand anzeigen,de
+Show stock move lines,Aktienbewegungslinien anzeigen,de
+Show stock move(s),Aktienbewegung(en) anzeigen,de
+Signatory user,Unterzeichnender Benutzer,de
+Site,Website,de
+Source and destination locations are empty,Quell- und Zielorte sind leer,de
+Source location,Quelle Standort,de
+Special operations,Spezielle Operationen,de
+Special split,Besondere Aufteilung,de
+Specify the barcode type by stock location,Bestimmen Sie den Barcodetyp nach Lagerort,de
+Specify the barcode type by tracking number configuration,Spezifizieren Sie den Barcodetyp durch die Konfiguration der Trackingnummer,de
+Split,Teilen,de
+Split by tracking numbers,Aufteilung nach Kontrollnummern,de
+Split by unit,Aufteilung nach Einheiten,de
+Split in Qty of,Aufteilung in Anzahl von,de
+Split into 2,Aufteilung in 2,de
+Split into fulfilled line and unfulfilled one,Aufgeteilt in eine erfüllte und eine nicht erfüllte Linie,de
+Split quantity cannot be higher than real quantity.,Die aufgeteilte Menge kann nicht höher sein als die tatsächliche Menge.,de
+Split quantity cannot be negative.,Die Splitmenge kann nicht negativ sein.,de
+Start,Start,de
+State,Staat,de
+Status,Status,de
+Status must be planned or draft,Status muss geplant oder im Entwurf sein,de
+Status updated;,Status aktualisiert;,de
+Step,Schritt,de
+Stock,Lagerbestand,de
+Stock Batch,Lagerbestand Charge,de
+Stock Correction,Bestandskorrektur,de
+Stock Correction Reason,Bestandskorrektur Grund,de
+Stock Correction Reasons,Gründe für Aktienkorrekturen,de
+Stock Corrections,Bestandskorrekturen,de
+Stock History,Geschichte der Aktie,de
+Stock Location,Lagerort,de
+Stock Location Tree,Lagerortbaum,de
+Stock Location content,Inhalt des Lagers Standort,de
+Stock Locations,Lagerorte,de
+Stock Locations content,Inhalt der Lagerorte,de
+Stock Move,Lagerbewegung,de
+Stock Move Lines,Stock Move Lines,de
+Stock Move Origin,Lagerbewegung Ursprung,de
+Stock Moves,Aktienbewegungen,de
+Stock Moves consumption historical,Aktienbewegungen Verbrauch historisch,de
+Stock Moves consumption planned,Lagerbewegungen Verbrauch geplant,de
+Stock Moves historical,Historische Aktienbewegungen,de
+Stock Moves planned,Geplante Aktienumschichtungen,de
+Stock Rules,Aktienregeln,de
+Stock batch,Lagercharge,de
+Stock batches,Vorratschargen,de
+Stock config,Lager-Konfiguration,de
+Stock config (${ name }),Lagerkonfiguration (${ Name }),de
+Stock configuration,Bestandskonfiguration,de
+Stock configurations,Lagerbestands-Konfigurationen,de
+Stock control,Kontrolle der Bestände,de
+Stock correction,Korrektur der Bestände,de
+Stock history,Bestandsentwicklung,de
+Stock history line,Zeile Bestandsverlauf,de
+Stock history lines,Zeilen zur Bestandsentwicklung,de
+Stock location,Lagerort,de
+Stock location barcode type,Lagerort Barcode-Typ,de
+Stock location content,Inhalt des Lagerorts,de
+Stock location details,Angaben zum Lagerort,de
+Stock location filters,Lagerortfilter,de
+Stock location is missing for these lines : %s,Für diese Zeilen fehlt der Lagerort: %s,de
+Stock location line,Lagerortzeile,de
+Stock location line history,Lagerort Zeilenverlauf,de
+Stock location lines,Lagerortlinien,de
+Stock location lines by product,Lagerortlinien nach Produkt,de
+Stock location template,Lagerort-Vorlage,de
+Stock location tree,Lagerortbaum,de
+Stock location value,Wert des Lagerorts,de
+Stock location value on form view,Lagerortwert in der Formularansicht,de
+Stock location(s),Lagerort(e),de
+Stock locations,Lagerorte,de
+Stock managed,Verwaltete Bestände,de
+Stock management,Verwaltung der Bestände,de
+Stock move,Lagerbewegung,de
+Stock move content,Inhalt der Aktienbewegung,de
+Stock move information,Informationen zu Aktienbewegungen,de
+Stock move line,Bewegungslinie der Aktie,de
+Stock move line filters,Netzfilter für Lagerbewegungen,de
+Stock move line is required on line %d.,Lagerbewegungszeile ist in Zeile %d erforderlich.,de
+Stock move line quantity availability.,Verfügbarkeit von Lagerbeständen in der Produktionslinie.,de
+Stock move lines,Bewegungslinien für Aktien,de
+Stock move lines to select,Lagerbewegungslinien zum Auswählen,de
+Stock move printing settings,Druckeinstellungen für Lagerbewegungen,de
+Stock move with id %s successfully realized.,Aktienbewegung mit der ID %s erfolgreich durchgeführt.,de
+Stock moves,Aktienbewegungen,de
+Stock per day,Bestand pro Tag,de
+Stock reservation feature cannot be active when we are managing stock locations on stock move line.,"Die Funktion der Lagerreservierung kann nicht aktiv sein, wenn wir Lagerorte auf der Lagerbewegungslinie verwalten.",de
+Stock rule,Vorratsregel,de
+Stock rule information,Informationen zu den Aktienregeln,de
+Stock rules,Bestandsregeln,de
+Stock rules created,Bestandsregeln erstellt,de
+Stock's movement's type undefined,Bewegungsart der Aktie undefiniert,de
+StockLocation.accountingValue,StockLocation.accountingValue,de
+StockLocation.code,StockLocation.code,de
+StockLocation.date,StockLocation.date,de
+StockLocation.detailsByStockLocation,StockLocation.detailsByStockLocation,de
+StockLocation.location,StockLocation.location,de
+StockLocation.locationAndSubLocationsTotalContent,StockLocation.locationAndSubLocationsTotalContent,de
+StockLocation.locationFinancialData,StockLocation.locationFinancialData,de
+StockLocation.locationTotalContent,StockLocation.locationTotalContent,de
+StockLocation.locations,StockLocation.locations,de
+StockLocation.productName,StockLocation.productName,de
+StockLocation.purchaseValue,StockLocation.purchaseValue,de
+StockLocation.qtyUnit,StockLocation.qtyUnit,de
+StockLocation.saleValue,StockLocation.saleValue,de
+StockLocation.stockLocationContent,StockLocation.stockLocationContent,de
+StockLocation.total,StockLocation.total,de
+StockLocation.totalAccountingValue,StockLocation.totalAccountingValue,de
+StockLocation.totalPurchaseValue,StockLocation.totalPurchaseValue,de
+StockLocation.totalSaleValue,StockLocation.totalSaleValue,de
+StockLocation.totalWapValue,StockLocation.totalWapValue,de
+StockLocation.unitValue,StockLocation.unitValue,de
+StockLocation.wapValue,StockLocation.wapValue,de
+StockMove.barcode,StockMove.barcode,de
+StockMove.comments,StockMove.comments,de
+StockMove.customer,StockMove.customer,de
+StockMove.customerPartnerSeq,StockMove.customerPartnerSeq,de
+StockMove.date,StockMove.date,de
+StockMove.deliveryAddress,StockMove.deliveryAddress,de
+StockMove.deliveryDetails,StockMove.deliveryDetails,de
+StockMove.deliveryOrder,StockMove.deliveryOrder,de
+StockMove.description,StockMove.description,de
+StockMove.grossMass,StockMove.grossMass,de
+StockMove.internalMove,StockMove.internalMove,de
+StockMove.ispm,StockMove.ispm,de
+StockMove.lotNoRef,StockMove.lotNoRef,de
+StockMove.mass,StockMove.mass,de
+StockMove.movePreparedBy,StockMove.movePreparedBy,de
+StockMove.netMass,StockMove.netMass,de
+StockMove.numOfPackages,StockMove.numOfPackages,de
+StockMove.numOfPalettes,StockMove.numOfPalettes,de
+StockMove.orderDate,StockMove.orderDate,de
+StockMove.pickingOrder,StockMove.pickingOrder,de
+StockMove.product,StockMove.product,de
+StockMove.productionNote,StockMove.productionNote,de
+StockMove.purchaseOrder,StockMove.purchaseOrder,de
+StockMove.qtyUnit,StockMove.qtyUnit,de
+StockMove.rackNbr,StockMove.rackNbr,de
+StockMove.receivedBy,StockMove.receivedBy,de
+StockMove.receptionOrder,StockMove.receptionOrder,de
+StockMove.reference,StockMove.reference,de
+StockMove.stockPreparedBy,StockMove.stockPreparedBy,de
+StockMove.supplierPartnerSeq,StockMove.supplierPartnerSeq,de
+StockMove.unitPrice,StockMove.unitPrice,de
+StockMove.variant,StockMove.variant,de
+Stocks,Bestände,de
+Store,Laden Sie,de
+Store all / the rest,Alles / den Rest speichern,de
+Store products,Produkte speichern,de
+Stored,Gespeicherte,de
+Stored product list,Gespeicherte Produktliste,de
+Stored products,Gelagerte Produkte,de
+Stored qty,Gespeicherte Menge,de
+Stored qty / Qty to store,Gespeicherte Menge / Zu speichernde Menge,de
+Successfully updated,Erfolgreich aktualisiert,de
+Supplementary unit,Ergänzungseinheit,de
+Supplier,Anbieter,de
+Supplier Shipment Date,Lieferant Sendungsdatum,de
+Supplier Shipment Ref,Lieferant Lieferungsnummer,de
+Supplier arrival product qty,Lieferant Ankunft Produktmenge,de
+Supplier arrivals,Ankunft der Lieferanten,de
+Supplier arrivals filters,Filter für Lieferanteneingänge,de
+Supplier quality rating,Bewertung der Lieferantenqualität,de
+Supplier returns,Lieferantenrückgaben,de
+Supplier virtual stock location,Virtueller Lagerort des Lieferanten,de
+Team to alert,Team zu alarmieren,de
+Text in certificate of conformity,Text in der Konformitätsbescheinigung,de
+"The move doesn't contain any product, do you wish to continue ?","Der Umzug enthält kein Produkt, möchten Sie fortfahren?",de
+The partner's language is different from the current language. Description and product name are in :,Die Sprache des Partners ist eine andere als die aktuelle Sprache. Beschreibung und Produktname sind in :,de
+The product %s have already been stored,Das Produkt %s wurde bereits gespeichert,de
+The product %s is missing a stock location (source or dest). Please make sure that the cart stock location and stock location in the product is filled.,"Für das Produkt %s fehlt ein Lagerort (Quelle oder Ziel). Bitte stellen Sie sicher, dass der Lagerort im Warenkorb und der Lagerort im Produkt gefüllt sind.",de
+The product is not available in the stock location source indicated (%s),Das Produkt ist in der angegebenen Lagerortquelle nicht verfügbar (%s),de
+The quantity by lot must be greater than 0,Die Menge pro Los muss größer als 0 sein.,de
+The template to send message on realization is missing.,Die Vorlage zum Versenden der Nachricht bei Realisierung fehlt.,de
+The template to send message on save is missing.,Die Vorlage zum Senden der Nachricht beim Speichern fehlt.,de
+The total net mass is higher than the total gross mass.,Die Nettogesamtmasse ist höher als die Bruttogesamtmasse.,de
+"The tracking number configuration quantity is equal to zero, it must be at least one.","Die Konfigurationsmenge der Trackingnummer ist gleich Null, sie muss mindestens Eins sein.",de
+The type of cancel reason doesn't match with stock move,Die Art des Stornierungsgrundes passt nicht zur Aktienbewegung,de
+The unit is missing on a stock location line,Die Einheit fehlt auf einer Bestandsleitung,de
+There is currently no such file in the specified folder or the folder may not exists.,Es gibt derzeit keine solche Datei in dem angegebenen Ordner oder der Ordner ist nicht vorhanden.,de
+There is more than one line for same product with same tracking number.,Es gibt mehr als eine Zeile für dasselbe Produkt mit derselben Kontrollnummer.,de
+"There's already an existing storage, you must deactivate it first","Es ist bereits ein Speicher vorhanden, den Sie zuerst deaktivieren müssen",de
+There's no configured sequence for inventory for company,Es gibt keine konfigurierte Reihenfolge für die Inventarisierung für Unternehmen,de
+There's no configured sequence for mass stock move for the company %s,Es gibt keine konfigurierte Sequenz für Massenaktienbewegungen für die Firma %s,de
+There's no configured sequence for stock's delivery for the company %s,Es gibt keine konfigurierte Reihenfolge für die Lieferung von Aktien für die Firma %s,de
+There's no configured sequence for stock's intern moves for the company %s,Es gibt keine konfigurierte Sequenz für die internen Aktienbewegungen für das Unternehmen %s,de
+There's no configured sequence for stock's receptions for the company %s,Für die Firma %s gibt es keine konfigurierte Sequenz für den Empfang von Aktien.,de
+There's no configured sequence for tracking number for the product %s:%s,Es gibt keine konfigurierte Reihenfolge für die Tracking-Nummer für das Produkt %s:%s,de
+There's no destination stock location selected for the stock's movement %s,Es wurde kein Ziellagerort für die Bewegung der Aktie ausgewählt %s,de
+There's no product in stock location.,Es ist kein Produkt vorrätig.,de
+There's no source stock location selected for the stock's movement %s,Es wurde kein Quelllagerort für die Bewegung der Aktie %s ausgewählt,de
+"This batch will recompute stock location quantities and reset all WAP history lines, are you sure you want to continue ?","Dieser Batch wird die Lagerortmengen neu berechnen und alle WAP-Historienzeilen zurücksetzen. Sind Sie sicher, dass Sie fortfahren möchten?",de
+"This field can have one of the following values (Purchase, Manufacturing, Inventory, Sale, Manual). The value is fixed when the tracking number is created.","Dieses Feld kann einen der folgenden Werte haben (Einkauf, Herstellung, Inventar, Verkauf, manuell). Der Wert wird bei der Erstellung der Kontrollnummer festgelegt.",de
+This stock move will have a huge impact (more than,Diese Aktienbewegung wird enorme Auswirkungen haben (mehr als,de
+Time before expiry (in days),Zeit vor Ablauf der Gültigkeit (in Tagen),de
+Title,Titel,de
+Title of dimension name (0),Titel des Dimensionsnamens (0),de
+Title of dimension name (1),Titel der Dimensionsbezeichnung (1),de
+Title of dimension name (2),Titel der Dimensionsbezeichnung (2),de
+Title of dimension name (3),Titel der Dimensionsbezeichnung (3),de
+To,An,de
+To Date,Bis heute,de
+To address,Ansprechen,de
+To pick,Zum Auswählen,de
+To rack,Zum Gestell,de
+To stock location,Zum Lagerort,de
+To store,Zum Speichern,de
+Today,Heute,de
+Today Arrivals,Heute Ankünfte,de
+Tolerance on WAP changes (%),Toleranz bei WAP-Änderungen (%),de
+Too many iterations while trying to generate stock move line with tracking numbers.,"Zu viele Iterationen bei dem Versuch, eine Umzugslinie mit Tracking-Nummern zu erstellen.",de
+Tools,Werkzeuge,de
+Total,Insgesamt,de
+Total W.T.,Total W.T.,de
+Total gross mass,Bruttomasse insgesamt,de
+Total net mass,Nettogesamtmasse,de
+Total quantity for %s: %s (expected: %s),Gesamtmenge für %s: %s (erwartet: %s),de
+Total volume (m³),Gesamtvolumen (m³),de
+Tracking,Nachverfolgung,de
+Tracking Nbr,Verfolgung Nbr,de
+Tracking Nbr.,Tracking-Nr.,de
+Tracking Nbr. Config.,Tracking-Nr. Konfig.,de
+Tracking Number,Verfolgungsnummer,de
+Tracking Number Configuration,Konfiguration der Verfolgungsnummer,de
+Tracking Number Configuration profile,Verfolgungsnummer Konfigurationsprofil,de
+Tracking Number Configuration profiles,Verfolgungsnummer Konfigurationsprofile,de
+Tracking Number Search,Suche nach Tracking-Nummern,de
+Tracking Numbers,Tracking-Nummern,de
+Tracking no.,Tracking-Nr.,de
+Tracking number,Verfolgungsnummer,de
+Tracking number barcode type,Typ des Barcodes für die Kontrollnummer,de
+Tracking number configuration,Konfiguration der Verfolgungsnummer,de
+Tracking number configuration profile,Konfigurationsprofil der Verfolgungsnummer,de
+Tracking number search,Suche nach Tracking-Nummern,de
+Tracking number's children,Kinder der Verfolgungsnummer,de
+Tracking number's direct parents,Die direkten Eltern der Tracking-Nummer,de
+Tracking number's origin parents,Herkunft der Trackingnummer Eltern,de
+Tracking number's parents,Eltern der Verfolgungsnummer,de
+Tracking number's types,Arten von Tracking-Nummern,de
+TrackingNumber,TrackingNummer,de
+Trading Name,Handelsname,de
+Trading name,Handelsname,de
+Transaction leading to property transfer,"Transaktion, die zur Eigentumsübertragung führt",de
+Transfers under inward processing,Übertragungen im Rahmen der aktiven Veredelung,de
+Transition location (cart),Ort des Übergangs (Wagen),de
+Transport by air,Transport auf dem Luftweg,de
+Transport by inland waterway,Transport auf Binnenwasserstraßen,de
+Transport by rail,Transport mit der Bahn,de
+Transport by road,Transport auf der Straße,de
+Transport by sea,Transport auf dem Seeweg,de
+Type,Typ,de
+Type Status,Typ Status,de
+Type is required on line %d.,Typ ist in Zeile %d erforderlich.,de
+Type select,Typ auswählen,de
+Unavailable,Nicht verfügbar,de
+Unit,Einheit,de
+Unit net mass,Einheit Nettomasse,de
+Unit of mass,Einheit der Masse,de
+Unit price,Preis pro Einheit,de
+Unit weight in kg,Stückgewicht in kg,de
+Unknown account selection,Unbekannte Kontoauswahl,de
+"Unknown object, can not get service","Unbekanntes Objekt, kann den Dienst nicht abrufen",de
+Unloading in port of import,Entladung im Einfuhrhafen,de
+Unloading of truck in port of export,Entladung des Lkw im Ausfuhrhafen,de
+Upcoming arrivals,Kommende Ankünfte,de
+Upcoming customer deliveries,Bevorstehende Lieferungen an Kunden,de
+Upcoming supplier arrivals,Bevorstehende Lieferantenankünfte,de
+Update average price,Durchschnittspreis aktualisieren,de
+Update locker for product with id %s to %s,Aktualisierung des Schließfachs für das Produkt mit der ID %s auf %s,de
+Update stock location from product,Lagerort aus Produkt aktualisieren,de
+Use Case,Anwendungsfall,de
+Use signature for certificate of conformity,Signatur für Konformitätsbescheinigung verwenden,de
+Use tracking number seq as serial number,Trackingnummer seq als Seriennummer verwenden,de
+Used for MRP,Verwendet für MRP,de
+Used in DEB/DES,Verwendet in DEB/DES,de
+User,Benutzer,de
+User to alert,Benutzer zu alarmieren,de
+Validate,Validieren Sie,de
+Validated,Validiert,de
+Validated By,Bestätigt durch,de
+Validated On,Bestätigt am,de
+Validated for invoicing,Für die Rechnungsstellung validiert,de
+Validation Date,Datum der Validierung,de
+Validé pour facturation,Validé pour facturation,de
+Valued,Geschätzt,de
+View Direction,Ansicht Richtung,de
+Virtual,Virtuell,de
+Virtual outsourcing stock location,Virtuelle Auslagerung des Lagerbestands,de
+Virtual stock locations information,Informationen über virtuelle Lagerorte,de
+Volume in m³,Volumen in m³,de
+WAP,WAP,de
+WAP history,WAP-Geschichte,de
+WAP of the stock location,WAP des Lagerortes,de
+WAP value,WAP-Wert,de
+Wap correction,Wap-Korrektur,de
+Warranty,Garantie,de
+Warranty expiration date,Ablaufdatum der Garantie,de
+Warranty length (in months),Garantiedauer (in Monaten),de
+Waste default stock location,Standardlagerort für Abfall,de
+Without details by stock location,Ohne Angaben nach Lagerort,de
+Wording,Wortlaut,de
+Workshop,Workshop,de
+Workshop default stock location,Standardlagerort der Werkstatt,de
+Yes,Ja,de
+You can only split line in draft or planned stock move.,Sie können eine Linie nur bei einem Entwurf oder einer geplanten Lagerbewegung teilen.,de
+You can only split line in incoming or outgoing stock move.,Sie können Zeilen nur bei eingehenden oder ausgehenden Lagerbewegungen trennen.,de
+You cannot choose external stock locations for both fields,Sie können nicht für beide Felder externe Lagerorte wählen.,de
+You must configure a Stock module for the company %s,Sie müssen ein Aktienmodul für die Firma %s konfigurieren,de
+You must configure a customer virtual stock location for the company %s,Sie müssen einen virtuellen Kundenlagerort für die Firma %s konfigurieren.,de
+You must configure a default pickup stock location for the company %s,Sie müssen einen Standard-Abhollagerort für die Firma %s konfigurieren.,de
+You must configure a default receipt stock location for the company %s,Sie müssen einen Standard-Eingangslagerort für die Firma %s konfigurieren.,de
+You must configure a default virtual outsource stock location for the company %s,Sie müssen einen Standardlagerort für den virtuellen Auslagerungsbestand der Firma %s konfigurieren.,de
+You must configure a supplier virtual stock location for the company %s,Sie müssen einen virtuellen Lieferantenlagerort für die Firma %s konfigurieren.,de
+You must configure an inventory virtual stock location for the company %s,Sie müssen einen virtuellen Bestandslagerort für die Firma %s konfigurieren.,de
+You must select a stock location,Sie müssen einen Lagerort auswählen,de
+You will modify the volume and therefore the unit weight of your tracking number. This will not have an impact on any stock location lines linked to it. This could generate inconsistencies.,Sie ändern das Volumen und damit das Stückgewicht Ihrer Sendungsnummer. Dies hat keine Auswirkungen auf die damit verknüpften Lagerortzeilen. Dies könnte zu Inkonsistenzen führen.,de
+Your merge doesn't respect this/these condition(s) : %s,Ihr Merge beachtet diese Bedingung(en) nicht: %s,de
+import.name,import.name,de
+import.verb,import.verb,de
+stockMove.realDate,stockMove.realDate,de
+value:Manual correction,value:Manual correction,de
+value:Stock,value:Stock,de

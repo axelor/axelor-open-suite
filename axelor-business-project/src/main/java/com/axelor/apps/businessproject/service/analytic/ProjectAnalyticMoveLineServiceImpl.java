@@ -31,6 +31,10 @@ public class ProjectAnalyticMoveLineServiceImpl implements ProjectAnalyticMoveLi
 
   @Override
   public PurchaseOrder updateLines(PurchaseOrder purchaseOrder) {
+    if (ObjectUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
+      return purchaseOrder;
+    }
+
     for (PurchaseOrderLine orderLine : purchaseOrder.getPurchaseOrderLineList()) {
       orderLine.setProject(purchaseOrder.getProject());
       List<AnalyticMoveLine> analyticMoveLineList = orderLine.getAnalyticMoveLineList();

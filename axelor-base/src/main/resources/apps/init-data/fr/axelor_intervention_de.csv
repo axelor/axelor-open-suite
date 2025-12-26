@@ -1,0 +1,345 @@
+key,message,language
+Action,Aktion,de
+Activate recurrence planning,Aktivieren Sie die Wiederholungsplanung,de
+Address,Adresse,de
+Advanced monitoring,Erweiterte Überwachung,de
+Advanced monitoring address,Erweiterte Überwachungsadresse,de
+Advanced startup monitoring range,Erweiterter Bereich für die Startüberwachung,de
+After sale service sale order follow up,Service nach dem Verkauf Auftragsverfolgung,de
+Afternoon,Nachmittag,de
+All articles must belong to the same partner,Alle Artikel müssen demselben Partner gehören,de
+All required questions of the survey must be answered to finish the intervention.,"Alle erforderlichen Fragen der Umfrage müssen beantwortet werden, um die Intervention zu beenden.",de
+Already in requested status.,Bereits im Antragsstatus.,de
+Answer,Antwort,de
+Answer type,Antworttyp,de
+Answer types,Antworttypen,de
+Answer value,Antwortwert,de
+Answer values,Antwortwerte,de
+Answered,Antwortet,de
+App,App,de
+App Intervention,App Intervention,de
+App intervention,App-Intervention,de
+Are you sure you want to remove selected lines?,"Sind Sie sicher, dass Sie ausgewählte Zeilen entfernen möchten?",de
+Are you sure you want to remove selected questions?,"Sind Sie sicher, dass Sie ausgewählte Fragen entfernen möchten?",de
+Article,Artikel,de
+Assets management,Verwaltung von Vermögenswerten,de
+Assigned to,Zugewiesen an,de
+Attached file,Angehängte Datei,de
+Auto generate customer request,Automatische Erstellung von Kundenanfragen,de
+Batches,Lose,de
+By equipment,Nach Ausrüstung,de
+By equipment family,Nach Ausrüstung Familie,de
+Cancel,Abbrechen,de
+Cancelled,Abgebrochen,de
+Cannot go to requested status from current status.,Vom aktuellen Status kann nicht zum gewünschten Status gewechselt werden.,de
+Change equipment,Ausrüstung ändern,de
+Checkbox,Kontrollkästchen,de
+Checkbox name,Name des Kontrollkästchens,de
+Code,Code,de
+Comments,Kommentare,de
+Commercial,Kommerziell,de
+Commercial follow-up,Kommerzielle Folgemaßnahmen,de
+Commissioning date,Datum der Inbetriebnahme,de
+Companies,Unternehmen,de
+Company,Unternehmen,de
+Conditional,Bedingt,de
+Conditional answer values,Bedingte Antwortwerte,de
+Conditional intervention question,Frage der bedingten Intervention,de
+Conditional range question,Frage zum bedingten Bereich,de
+Configuration,Konfiguration,de
+Confirm,Bestätigen Sie,de
+Confirm planification,Planifizierung bestätigen,de
+Contact,Kontakt,de
+Contact details,Kontaktangaben,de
+Contract,Vertrag,de
+Contract template,Vertragsvorlage,de
+Contracts,Verträge,de
+Contractual,Vertragliche,de
+Could not find equipment with id %s.,Das Gerät mit der ID %s konnte nicht gefunden werden.,de
+Could not find picture with id %s.,Das Bild mit der ID %s konnte nicht gefunden werden.,de
+Create an intervention,Eine Intervention erstellen,de
+Create new equipment,Neue Geräte erstellen,de
+Create new equipment model,Neues Ausrüstungsmodell erstellen,de
+Create range question,Bereichsfrage erstellen,de
+Created by,Erstellt von,de
+Created on,Erstellt am,de
+Customer request,Kundenwunsch,de
+Customer request can't be generated as some required fields are missing.,"Eine Kundenanfrage kann nicht erstellt werden, da einige erforderliche Felder fehlen.",de
+Customer requests,Kundenwünsche,de
+Customer warranty on part end date,Kundengarantie zum Enddatum des Teils,de
+Customer.Equipments,Customer.Equipments,de
+Date,Datum,de
+Default intervention category,Standard-Interventionskategorie,de
+Default intervention category from contract batch,Standard-Interventionstyp aus Vertragscharge,de
+Default intervention description,Standard-Interventionsbeschreibung,de
+Default previsional duration,Vorgegebene voraussichtliche Dauer,de
+Default request source,Standard-Anfragequelle,de
+Default request source from contract batch,Standardauftragsquelle aus Vertragscharge,de
+Default request subject,Betreff der Standardanfrage,de
+Default request subject from contract batch,Standardantragsgegenstand aus Vertragscharge,de
+Default text value,Standard-Textwert,de
+Default type for interventions from contracts,Standardtyp für Interventionen aus Verträgen,de
+Delay to send the quotation (h),Verzögerung bei der Übermittlung des Angebots (h),de
+Delete,Löschen,de
+Delete btn,"Schaltfläche ""Löschen",de
+Delete range questions,Bereichsfragen löschen,de
+Delivered partner,Gelieferter Partner,de
+Description,Beschreibung,de
+Designation,Bezeichnung,de
+Desired unit,Gewünschte Einheit,de
+Display all linked interventions by the contract,Anzeige aller mit dem Vertrag verknüpften Interventionen,de
+Draft,Entwurf,de
+Duration,Dauer,de
+Duration in,Dauer in,de
+Durations,Laufzeiten,de
+Email sent,E-Mail gesendet,de
+End date,Datum des Endes,de
+Equipment,Ausrüstung,de
+Equipment / Contract,Ausrüstung / Vertrag,de
+Equipment families,Ausrüstungsfamilien,de
+Equipment family,Gerätefamilie,de
+Equipment filters,Ausrüstung Filter,de
+Equipment informations,Informationen zur Ausrüstung,de
+Equipment line Product label,Gerätelinie Produktetikett,de
+Equipment line filters,Netzfilter der Ausrüstung,de
+Equipment lines,Ausrüstungslinien,de
+Equipment model,Modell der Ausrüstung,de
+Equipment models,Modelle der Ausrüstung,de
+Equipment ranges,Ausrüstungsbereiche,de
+Equipment successfully added.,Ausrüstung erfolgreich hinzugefügt.,de
+Equipment successfully removed.,Ausrüstung erfolgreich entfernt.,de
+Equipments,Ausrüstungen,de
+Equipments lines,Ausrüstungslinien,de
+Equipments tree,Ausrüstungsbaum,de
+Error happened during process execution,Fehler bei der Prozessausführung aufgetreten,de
+Error opening zip file %s: %s,Fehler beim Öffnen der Zip-Datei %s: %s,de
+Estimated date,Geschätztes Datum,de
+Estimated end date time,Voraussichtliches Enddatum Uhrzeit,de
+Estimated month,Geschätzter Monat,de
+Exclusive intervention,Exklusive Intervention,de
+Fail,Fail,de
+Faulty equipments number,Anzahl der defekten Geräte,de
+File,Datei,de
+Filters,Filter,de
+Finish,Oberfläche,de
+Finish manually,Manuell beenden,de
+Finished,Fertige,de
+Finished interventions,Beendete Interventionen,de
+Following,Unter,de
+Following : No,Folgen : Nein,de
+Following : Yes,Folgen : Ja,de
+Following questions,Folgende Fragen,de
+Footer ranges,Fußzeilenbereiche,de
+GIT,GIT,de
+GIT / GRT,GIT / GRT,de
+GIT status,GIT-Status,de
+GRT,GRT,de
+GRT status,GRT-Status,de
+Generate equipments,Ausrüstungen generieren,de
+Generate intervention for active contracts,Interventionen für aktive Verträge generieren,de
+Generate interventions,Interventionen generieren,de
+Generate sale order,Verkaufsauftrag generieren,de
+Guaranteed intervention time (h),Garantierte Einsatzzeit (h),de
+Guaranteed recovery time (h),Garantierte Erholungszeit (h),de
+Header ranges,Kopfzeilenbereiche,de
+Hidden,Versteckt,de
+Home,Startseite,de
+Hour,Stunde,de
+Important,Wichtig,de
+Impossible to remove equipment model that has children's equipment models,"Es ist nicht möglich, Ausrüstungsmodelle zu entfernen, die Kinderausrüstungsmodelle enthalten",de
+Impossible to remove equipment that has children's equipment,"Es ist nicht möglich, Geräte zu entfernen, die Kindergeräte enthalten",de
+In progress,In Arbeit,de
+In progress interventions,Laufende Interventionen,de
+In service,Im Dienst,de
+Indication,Anzeige,de
+Indication text,Text der Anzeige,de
+Indicator,Indikator,de
+Information,Informationen,de
+Intervention,Intervention,de
+Intervention address,Adresse der Intervention,de
+Intervention batch,Intervention Batch,de
+Intervention batches,Interventionspartien,de
+Intervention categories,Interventionskategorien,de
+Intervention category,Kategorie der Intervention,de
+Intervention config,Konfiguration der Intervention,de
+Intervention config (${ name }),Eingreifen in die Konfiguration (${ Name }),de
+Intervention configuration,Konfiguration der Intervention,de
+Intervention configurations,Konfigurationen der Intervention,de
+Intervention note,Interventionsvermerk,de
+Intervention note type,Art der Interventionsnote,de
+Intervention note types,Arten von Interventionsvermerken,de
+Intervention notes,Anmerkungen zur Intervention,de
+Intervention question,Frage zur Intervention,de
+Intervention question state,Intervention Frage Zustand,de
+Intervention questions,Fragen zur Intervention,de
+Intervention range,Interventionsbereich,de
+Intervention ranges,Interventionsbereiche,de
+Intervention status successfully updated.,Interventionsstatus erfolgreich aktualisiert.,de
+Intervention type,Art der Intervention,de
+Intervention types,Arten von Interventionen,de
+Intervention.endDateTime,Intervention.endDateTime,de
+Intervention.lastStartDateTime,Intervention.lastStartDateTime,de
+Intervention.startDateTime,Intervention.startDateTime,de
+Interventions,Interventionen,de
+Interventions will be generated if the date of the next visit is less than this delay.,"Interventionen werden generiert, wenn das Datum des nächsten Besuchs weniger als diese Frist beträgt.",de
+Invalid data,Ungültige Daten,de
+Invoiced partner,In Rechnung gestellter Partner,de
+Is answered ?,Wird beantwortet?,de
+Is conditional ?,Ist das bedingt?,de
+Is default ?,Ist Standard ?,de
+Is private ?,Ist privat?,de
+Is required ?,Ist erforderlich?,de
+Is survey generation running,Läuft die Umfrageerstellung,de
+Justification,Rechtfertigung,de
+Last maintenance visit date done,Datum des letzten Wartungsbesuchs,de
+Link,Link,de
+Linked intervention,Verknüpfte Intervention,de
+Linked intervention types,Verknüpfte Interventionsarten,de
+Linked interventions,Verknüpfte Interventionen,de
+Linked ranges,Verknüpfte Bereiche,de
+Linked sale order,Verknüpfter Verkaufsauftrag,de
+Max GIT date time,Maximale GIT-Datumszeit,de
+Max GRT date time,Max GRT Datum Uhrzeit,de
+Measure,Maßnahme,de
+Message template,Nachrichtenvorlage,de
+Month,Monat,de
+Morning,Morgen,de
+Name,Name,de
+New btn,Neu btn,de
+Next annual visit date,Datum des nächsten jährlichen Besuchs,de
+Next intervention,Nächste Intervention,de
+Next visit delay (in months),Verzögerung des nächsten Besuchs (in Monaten),de
+No,Nein,de
+No date time in request body.,Kein Datum und keine Uhrzeit im Anfragetext.,de
+No planned duration in request body.,Keine geplante Dauer im Antragstext.,de
+No planned technician user id in request body.,Keine geplante Techniker-Benutzerkennung im Anfragetext.,de
+No preference,Keine Präferenz,de
+No valid zip file found.,Keine gültige Zip-Datei gefunden.,de
+Non conforming questions,Nicht konforme Fragen,de
+Non respected,Nicht respektiert,de
+Non-conforming,Nicht konforme,de
+Non-conforming :,Nicht-konform :,de
+Normal,Normal,de
+Not answered,Nicht beantwortet,de
+Nothing has been generated.,Es wurde nichts erzeugt.,de
+Number of elements to generate,Anzahl der zu erzeugenden Elemente,de
+Number of maintenance hours,Anzahl der Wartungsstunden,de
+Off-contract and non-operational,Außerhalb des Vertrags und nicht betriebsbereit,de
+Off-contract and operational,Außervertraglich und operativ,de
+Office,Büro,de
+Offline,Offline,de
+Ok,Ok,de
+On alert,In Alarmbereitschaft,de
+On-call management,Management des Bereitschaftsdienstes,de
+On-call planning,Planung des Bereitschaftsdienstes,de
+Open survey,Offene Umfrage,de
+Opportunity,Gelegenheit,de
+Order,Bestellung,de
+Ordered range,Bestellter Bereich,de
+Out of service,Außer Betrieb,de
+Outsourcing,Outsourcing,de
+Overview,Übersicht,de
+Parent model,Übergeordnetes Modell,de
+Parent place,Platz der Eltern,de
+Park model,Modell Park,de
+Park models,Modelle parken,de
+Partner,Partner,de
+Partner trading name,Handelsname des Partners,de
+Periodicity,Periodizität,de
+Picture,Bild,de
+Picture successfully added.,Bild erfolgreich hinzugefügt.,de
+Picture successfully removed.,Bild erfolgreich entfernt.,de
+Pictures,Bilder,de
+Place,Ort,de
+Plan,Plan,de
+Planification,Planifizierung,de
+Planification date time,Planifizierung Datum Uhrzeit,de
+Planned,Geplant,de
+Planned intervention duration,Geplante Dauer der Intervention,de
+Planning preference,Planungspräferenz,de
+Please save to add equipments to your park model.,"Bitte speichern Sie, um Ausrüstungen zu Ihrem Parkmodell hinzuzufügen.",de
+Previous intervention,Frühere Intervention,de
+Priority,Priorität,de
+Private,Privat,de
+Project,Projekt,de
+Qty,Menge,de
+Quantity,Menge,de
+Question,Frage,de
+Questions,Fragen,de
+Range,Bereich,de
+Range question,Frage zur Reichweite,de
+Range question sequence,Bereich Fragefolge,de
+Range questions,Fragen zum Bereich,de
+Range type,Bereichstyp,de
+Range types,Bereichstypen,de
+Ranges,Bereiche,de
+Real GIT (h),Echte GIT (h),de
+Real GRT (h),Reale BRT (h),de
+Recap,Rekapitulation,de
+Recap questions,Fragen zur Wiederholung,de
+Related Equipments,Verwandte Ausrüstungen,de
+Related Interventions,Verwandte Interventionen,de
+Report,Bericht,de
+Request date time,Anfrage Datum Uhrzeit,de
+Request details,Details anfordern,de
+Request source,Quelle anfordern,de
+Request subject,Betreff der Anfrage,de
+Reschedule,Umplanen,de
+Rescheduled intervention,Umgeplante Intervention,de
+Rescheduling reason,Grund für die Umplanung,de
+Respected,Geehrt,de
+Sale order,Verkaufsauftrag,de
+Sale quotations,Verkaufsangebote,de
+Schedule of operation,Zeitplan für den Betrieb,de
+Send email,E-Mail senden,de
+Send email on customer request creation,E-Mail bei Erstellung einer Kundenanfrage senden,de
+Send email on intervention planification,E-Mail zur Einsatzplanung senden,de
+Send email on intervention re-planification,E-Mail zur Neuplanung der Intervention senden,de
+Send email on intervention validation,E-Mail bei Eingriffsvalidierung senden,de
+Sequence,Sequenz,de
+Signature,Unterschrift,de
+Specific access schedule,Spezifischer Zugangszeitplan,de
+Standard,Standard,de
+Start,Start,de
+Start date,Datum des Beginns,de
+Started,Gestartet,de
+State,Staat,de
+Status,Status,de
+Stock move,Lagerbewegung,de
+Supplier partner,Lieferant Partner,de
+Supplier warranty end date,Enddatum der Lieferantengarantie,de
+Survey generation finished,Umfrageerstellung abgeschlossen,de
+Survey generation in progress,Erstellung von Umfragen im Gange,de
+Suspend,aussetzen.,de
+Suspended,Aufgehängt,de
+Take into account,Berücksichtigen Sie,de
+Taken into account,Berücksichtigt werden,de
+Technical follow up,Technische Folgemaßnahmen,de
+Technician,Techniker,de
+Text,Text,de
+The order must be strictly greater than the conditional question's order,Die Reihenfolge muss unbedingt größer sein als die Reihenfolge der bedingten Frage,de
+The survey of the intervention ID %s has been generated.,Die Übersicht der Interventions-ID %s wurde erstellt.,de
+There is no configured sequence for customer request.,Es gibt keine konfigurierte Reihenfolge für Kundenanfragen.,de
+There is no configured sequence for intervention.,Es gibt keine konfigurierte Reihenfolge für den Eingriff.,de
+This is the estimated number of hours for the maintenance of this type of Equipment and will be used to give an indication of the total number of hours required on a contract.,Dies ist die geschätzte Anzahl der Stunden für die Wartung dieser Art von Ausrüstung und wird als Hinweis auf die Gesamtzahl der für einen Vertrag erforderlichen Stunden verwendet.,de
+Title,Titel,de
+To plan,Zu planen,de
+Tools,Werkzeuge,de
+Total duration,Gesamtdauer,de
+Tracking Number,Verfolgungsnummer,de
+Trading name,Handelsname,de
+Trading names,Handelsnamen,de
+Type,Typ,de
+URGENT,URGENT,de
+Unable to create a planification for this intervention. Please check planification fields.,Für diese Intervention kann keine Planifikation erstellt werden. Bitte überprüfen Sie die Planifizierungsfelder.,de
+Under contract and non-operational,Unter Vertrag und nicht operativ,de
+Under contract and operational,Unter Vertrag und in Betrieb,de
+Under contract equipments number,Anzahl der unter Vertrag stehenden Ausrüstungen,de
+Updatable quantities,Aktualisierbare Mengen,de
+Upload a file or log in to the mobile app to sign,"Laden Sie eine Datei hoch oder melden Sie sich bei der mobilen App an, um zu unterschreiben",de
+Urgent,Dringend,de
+User in charge,Zuständiger Benutzer,de
+Value list,Werteliste,de
+Yes,Ja,de
+Zip file %s is corrupted: %s,Die Zip-Datei %s ist beschädigt: %s,de
+com.axelor.apps.intervention.service.batch.InterventionBatchService,com.axelor.apps.intervention.service.batch.InterventionBatchService,de

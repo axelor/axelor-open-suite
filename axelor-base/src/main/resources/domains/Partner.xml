@@ -6,6 +6,11 @@
   <module name="base" package="com.axelor.apps.base.db"/>
 
   <entity name="Partner">
+    <!-- MGM-78: Add a customer Number to Partner of type Customer -->
+    <long name="customerNumber" title="Customer Number"/>
+
+    <!-- MGM-80: Add a customer Cost Center to Partner of type Customer as per stakeholder feedback -->
+    <string name="customerCostCenter" title="Customer cost center"/>
 
     <!-- En-tête -->
     <many-to-one name="partnerCategory" ref="com.axelor.apps.base.db.PartnerCategory"

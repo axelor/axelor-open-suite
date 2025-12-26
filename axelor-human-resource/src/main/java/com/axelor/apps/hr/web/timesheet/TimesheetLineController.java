@@ -25,12 +25,14 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.service.timesheet.TimesheetCreateService;
-import com.axelor.apps.hr.service.timesheet.TimesheetEmployeeService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetQueryService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
+import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -39,67 +41,63 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.StringHelper;
+import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TimesheetLineController {
 
   private static final String HOURS_DURATION_FIELD = "hoursDuration";
-
   private static final String DURATION_FIELD = "duration";
+  private static final Logger log = LoggerFactory.getLogger(TimesheetLineController.class);
 
-  /**
-   * Called from timesheet line editable grid or form. Get the timesheet corresponding to
-   * timesheetline and call {@link TimesheetLineService#computeHoursDuration(Timesheet, BigDecimal,
-   * boolean)}
-   *
-   * @param request
-   * @param response
-   */
+  @Inject protected ProjectTaskRepository projectTaskRepo;
+  @Inject protected ProjectRepository projectRepo;
+
   public void setStoredDuration(ActionRequest request, ActionResponse response) {
     try {
       TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-      Timesheet timesheet;
-      Context parent = request.getContext().getParent();
-      if (parent != null && parent.getContextClass().equals(Timesheet.class)) {
-        timesheet = parent.asType(Timesheet.class);
-      } else {
-        timesheet = timesheetLine.getTimesheet();
-      }
+      Timesheet timesheet =
+          Beans.get(TimesheetLineService.class)
+              .resolveTimesheet(request.getContext(), timesheetLine);
+
       TimesheetLineService timesheetLineService = Beans.get(TimesheetLineService.class);
       BigDecimal hoursDuration =
           timesheetLineService.computeHoursDuration(timesheet, timesheetLine.getDuration(), true);
 
-      // check daily limit
       timesheetLineService.checkDailyLimit(timesheet, timesheetLine, hoursDuration);
-
       response.setValue(HOURS_DURATION_FIELD, hoursDuration);
 
     } catch (Exception e) {
-      response.setValue(DURATION_FIELD, 0);
-      response.setValue(HOURS_DURATION_FIELD, 0);
+      resetDurationFields(response);
       TraceBackService.trace(response, e);
     }
   }
 
-  /**
-   * Called from timesheet editor Get the timesheet corresponding to timesheetline and call {@link
-   * TimesheetLineService#computeHoursDuration(Timesheet, BigDecimal, boolean)}
-   *
-   * @param request
-   * @param response
-   */
+  public void validateLine(ActionRequest request, ActionResponse response) {
+    TimesheetLine line = request.getContext().asType(TimesheetLine.class);
+    line = Beans.get(TimesheetLineRepository.class).find(line.getId());
+    Beans.get(TimesheetLineService.class).validateLine(line);
+    response.setReload(true);
+  }
+
+  public void cancelTimesheetLineValidation(ActionRequest request, ActionResponse response) {
+    TimesheetLine line = request.getContext().asType(TimesheetLine.class);
+    line = Beans.get(TimesheetLineRepository.class).find(line.getId());
+    Beans.get(TimesheetLineService.class).cancelTimesheetLineValidation(line);
+    response.setReload(true);
+  }
+
   public void setDuration(ActionRequest request, ActionResponse response) {
     try {
       TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-      Timesheet timesheet;
-      Context parent = request.getContext().getParent();
-      if (parent != null && parent.getContextClass().equals(Timesheet.class)) {
-        timesheet = parent.asType(Timesheet.class);
-      } else {
-        timesheet = timesheetLine.getTimesheet();
-      }
+      Timesheet timesheet =
+          Beans.get(TimesheetLineService.class)
+              .resolveTimesheet(request.getContext(), timesheetLine);
+
       BigDecimal duration =
           Beans.get(TimesheetLineService.class)
               .computeHoursDuration(timesheet, timesheetLine.getHoursDuration(), false);
@@ -111,12 +109,6 @@ public class TimesheetLineController {
     }
   }
 
-  /**
-   * Invert value of 'toInvoice' field and save the record
-   *
-   * @param request
-   * @param response
-   */
   @Transactional
   public void updateToInvoice(ActionRequest request, ActionResponse response) {
     try {
@@ -134,18 +126,14 @@ public class TimesheetLineController {
   public void checkDailyLimit(ActionRequest request, ActionResponse response) {
     try {
       TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
-      Timesheet timesheet;
-      Context parent = request.getContext().getParent();
-      if (parent != null && parent.getContextClass().equals(Timesheet.class)) {
-        timesheet = parent.asType(Timesheet.class);
-      } else {
-        timesheet = timesheetLine.getTimesheet();
-      }
+      Timesheet timesheet =
+          Beans.get(TimesheetLineService.class)
+              .resolveTimesheet(request.getContext(), timesheetLine);
+
       Beans.get(TimesheetLineService.class)
           .checkDailyLimit(timesheet, timesheetLine, timesheetLine.getHoursDuration());
     } catch (Exception e) {
-      response.setValue(DURATION_FIELD, 0);
-      response.setValue(HOURS_DURATION_FIELD, 0);
+      resetDurationFields(response);
       TraceBackService.trace(response, e);
     }
   }
@@ -171,14 +159,12 @@ public class TimesheetLineController {
     try {
       TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
       String idList = "0";
-      if (timesheetLine == null) {
-        response.setAttr("timesheet", "domain", "self.id IN (" + idList + ")");
-        return;
-      }
 
-      List<Timesheet> timesheetList =
-          Beans.get(TimesheetQueryService.class).getTimesheetQuery(timesheetLine).fetch();
-      idList = StringHelper.getIdListString(timesheetList);
+      if (timesheetLine != null) {
+        List<Timesheet> timesheetList =
+            Beans.get(TimesheetQueryService.class).getTimesheetQuery(timesheetLine).fetch();
+        idList = StringHelper.getIdListString(timesheetList);
+      }
 
       response.setAttr("timesheet", "domain", "self.id IN (" + idList + ")");
     } catch (Exception e) {
@@ -188,32 +174,37 @@ public class TimesheetLineController {
 
   public void logTime(ActionRequest request, ActionResponse response) throws AxelorException {
     Context context = request.getContext();
-    Project project = null;
-    ProjectTask projectTask = null;
 
-    if (Project.class.equals(context.getContextClass())) {
-      project = context.asType(Project.class);
-    } else if (ProjectTask.class.equals(context.getContextClass())) {
-      projectTask = context.asType(ProjectTask.class);
-    } else if (Project.class.equals(context.getParent().getContextClass())) {
-      project = context.getParent().asType(Project.class);
-    } else if (ProjectTask.class.equals(context.getParent().getContextClass())) {
-      projectTask = context.getParent().asType(ProjectTask.class);
+    ProjectTask projectTask = Beans.get(TimesheetLineService.class).resolveProjectTask(context);
+    Project project = Beans.get(TimesheetLineService.class).resolveProject(context, projectTask);
+    Employee employee = AuthUtils.getUser().getEmployee();
+
+    buildLogTimeResponse(response, project, projectTask, employee);
+  }
+
+  public void removeProjectTimeSheetLines(ActionRequest request, ActionResponse response) {
+    List<Integer> projectTimeSheetLineIds = (List<Integer>) request.getContext().get("_ids");
+
+    if (!ObjectUtils.isEmpty(projectTimeSheetLineIds)) {
+      Beans.get(TimesheetLineRemoveService.class).removeTimesheetLines(projectTimeSheetLineIds);
     }
 
-    if (projectTask != null) {
-      project = projectTask.getProject();
-    }
+    response.setReload(true);
+  }
 
-    if (project != null && project.getId() == null) {
-      project = null;
-    }
+  private void resetDurationFields(ActionResponse response) {
+    response.setValue(DURATION_FIELD, 0);
+    response.setValue(HOURS_DURATION_FIELD, 0);
+  }
 
-    if (projectTask != null && projectTask.getId() == null) {
-      projectTask = null;
-    }
-
-    Employee employee = Beans.get(TimesheetEmployeeService.class).getEmployee(project);
+  private void buildLogTimeResponse(
+      ActionResponse response, Project project, ProjectTask projectTask, Employee employee) {
+    response.setValue("_project", project);
+    response.setValue("_projectTask", projectTask);
+    response.setValue("_employee", employee);
+    response.setValue("project", project);
+    response.setValue("projectTask", projectTask);
+    response.setValue("employee", employee);
 
     response.setView(
         ActionView.define(I18n.get("Create Timesheet line"))
@@ -226,17 +217,9 @@ public class TimesheetLineController {
             .context("_project", project)
             .context("_projectTask", projectTask)
             .context("_employee", employee)
+            .context("project", project)
+            .context("projectTask", projectTask)
+            .context("employee", employee)
             .map());
-  }
-
-  public void removeProjectTimeSheetLines(ActionRequest request, ActionResponse response) {
-
-    List<Integer> projectTimeSheetLineIds = (List<Integer>) request.getContext().get("_ids");
-
-    if (!ObjectUtils.isEmpty(projectTimeSheetLineIds)) {
-      Beans.get(TimesheetLineRemoveService.class).removeTimesheetLines(projectTimeSheetLineIds);
-    }
-
-    response.setReload(true);
   }
 }

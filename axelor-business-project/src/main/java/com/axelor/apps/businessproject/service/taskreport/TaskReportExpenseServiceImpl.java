@@ -1,0 +1,132 @@
+package com.axelor.apps.businessproject.service.taskreport;
+
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.businessproject.db.ExtraExpenseLine;
+import com.axelor.apps.businessproject.db.TaskReport;
+import com.axelor.apps.project.db.Project;
+import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
+
+  private static final Logger log = LoggerFactory.getLogger(TaskReportExpenseServiceImpl.class);
+
+  // Product codes
+  public static final String CODE_TRAVEL_EXPENSES = "11KM";
+  public static final String CODE_TOOLS_USAGE = "TOOLUSAGE";
+  public static final String CODE_DIRT_ALLOWANCE = "DIRTALLOWANCE";
+
+  protected ProductRepository productRepo;
+
+  @Inject
+  public TaskReportExpenseServiceImpl(ProductRepository productRepo) {
+    this.productRepo = productRepo;
+  }
+
+  @Override
+  public List<ExtraExpenseLine> createOrUpdateExtraExpenseLinesFromTaskReport(
+      TaskReport taskReport) {
+    Project project = taskReport.getProject();
+    if (project == null) {
+      log.warn("TaskReport has no project assigned.");
+      return new ArrayList<>();
+    }
+
+    // Get first project task
+    if (project.getProjectTaskList() == null || project.getProjectTaskList().isEmpty()) {
+      log.warn("Project has no tasks. Cannot create expense lines.");
+      return new ArrayList<>();
+    }
+
+    // Map of product codes to boolean flags from TaskReport
+    Map<String, Boolean> requiredExpenses = new HashMap<>();
+    requiredExpenses.put(CODE_TRAVEL_EXPENSES, taskReport.getTravelExpenses());
+    requiredExpenses.put(CODE_TOOLS_USAGE, taskReport.getToolsUsage());
+    requiredExpenses.put(CODE_DIRT_ALLOWANCE, taskReport.getDirtAllowance());
+
+    if (taskReport.getExtraExpenseLineList() == null) {
+      taskReport.setExtraExpenseLineList(new ArrayList<>());
+    }
+
+    // Remove lines that are no longer needed
+    List<ExtraExpenseLine> linesToRemove = new ArrayList<>();
+    for (ExtraExpenseLine line : taskReport.getExtraExpenseLineList()) {
+      String productCode =
+          line.getExpenseProduct() != null ? line.getExpenseProduct().getCode() : null;
+
+      if (productCode != null
+          && requiredExpenses.containsKey(productCode)
+          && !requiredExpenses.get(productCode)) {
+        linesToRemove.add(line);
+      }
+    }
+    taskReport.getExtraExpenseLineList().removeAll(linesToRemove);
+
+    // Get existing product codes
+    List<String> existingProductCodes = new ArrayList<>();
+    for (ExtraExpenseLine line : taskReport.getExtraExpenseLineList()) {
+      if (line.getExpenseProduct() != null && line.getExpenseProduct().getCode() != null) {
+        existingProductCodes.add(line.getExpenseProduct().getCode());
+      }
+    }
+
+    // Add new lines for required expenses that don't exist yet
+    if (taskReport.getTravelExpenses() && !existingProductCodes.contains(CODE_TRAVEL_EXPENSES)) {
+      addExpenseLine(taskReport, project, CODE_TRAVEL_EXPENSES);
+    }
+
+    if (taskReport.getToolsUsage() && !existingProductCodes.contains(CODE_TOOLS_USAGE)) {
+      addExpenseLine(taskReport, project, CODE_TOOLS_USAGE);
+    }
+
+    if (taskReport.getDirtAllowance() && !existingProductCodes.contains(CODE_DIRT_ALLOWANCE)) {
+      addExpenseLine(taskReport, project, CODE_DIRT_ALLOWANCE);
+    }
+
+    log.info("Total extra expense lines: {}", taskReport.getExtraExpenseLineList().size());
+    return taskReport.getExtraExpenseLineList();
+  }
+
+  private Product findExpenseProduct(String productCode) {
+    Product product = productRepo.findByCode(productCode);
+
+    if (product == null) {
+      log.warn("Product not found for code: {}", productCode);
+      return null;
+    }
+
+    if (!Boolean.TRUE.equals(product.getExpense())) {
+      log.warn("Product {} is not marked as expense type", productCode);
+      return null;
+    }
+
+    return product;
+  }
+
+  private void addExpenseLine(TaskReport taskReport, Project project, String productCode) {
+    Product product = findExpenseProduct(productCode);
+    if (product == null) {
+      return;
+    }
+
+    ExtraExpenseLine line = new ExtraExpenseLine();
+    line.setProject(project);
+    line.setExpenseProduct(product);
+    line.setPrice(product.getSalePrice() != null ? product.getSalePrice() : BigDecimal.ZERO);
+    line.setToInvoice(true);
+    line.setExpenseDate(LocalDate.now());
+    line.setQuantity(BigDecimal.ONE);
+    line.setTotalAmount(line.getPrice().multiply(line.getQuantity()));
+
+    // handles the bidirectional relationship
+    taskReport.addExtraExpenseLineListItem(line);
+  }
+}

@@ -123,9 +123,10 @@
     </extend>
     <extend target="//field[@name='department']">
       <insert position="after">
-        <field name="isKeyAccount" colSpan="3"/>
-        <field name="isNurturing" colSpan="3"/>
-        <field name="sizeSelect" colSpan="6"/>
+        <!-- MGM-77 Not relevant for MGM Sales Process -->
+        <field name="isKeyAccount" colSpan="3" hideIf="isCustomer"/>
+        <field name="isNurturing" colSpan="3" hideIf="isCustomer"/>
+        <field name="sizeSelect" colSpan="6" hideIf="isCustomer"/>
       </insert>
     </extend>
     <extend target="//field[@name='source']">

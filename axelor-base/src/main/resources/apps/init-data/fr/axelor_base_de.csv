@@ -1,0 +1,2619 @@
+key,message,language
+"#,###.00","#,###.00",de
+${fullName} variants,${fullName} Varianten,de
+%D : Day,%D : Tag,de
+"%FM : Full Month (01, 02, 03, ...)","%FM : Voller Monat (01, 02, 03, ...)",de
+"%M : Month (1, 2, 3, ...)","%M : Monat (1, 2, 3, ...)",de
+%WY : Week number,%WY : Wochennummer,de
+%YY : Year (17),%YY : Jahr (17),de
+%YYYY : Full Year (2017),%YYYY : Gesamtes Jahr (2017),de
+%d anomalies.,%d Anomalien.,de
+%d anomaly.,%d Anomalie.,de
+"%d record processed successfully,","%d Datensatz erfolgreich verarbeitet,",de
+"%d records processed successfully,","%d Datensätze erfolgreich verarbeitet,",de
+%s : Path to Birt template is incorrect,%s : Pfad zur Birt-Vorlage ist falsch,de
+"%s : Please, configure a currency for the company %s",%s : Bitte konfigurieren Sie eine Währung für die Firma %s,de
+%s SIRET Number required. Please configure SIRET Number for partner %s,%s SIRET-Nummer erforderlich. Bitte konfigurieren Sie die SIRET-Nummer für den Partner %s,de
+%s address processed,%s-Adresse verarbeitet,de
+%s addresses processed,%s Adressen verarbeitet,de
+%s cell is not valid.,%s Zelle ist nicht gültig.,de
+%s configuration file is not exist.,Die Konfigurationsdatei %s ist nicht vorhanden.,de
+%s file not found in %s.,%s-Datei nicht in %s gefunden.,de
+%s files imported,%s Dateien importiert,de
+%s module does not exist.,Das Modul %s existiert nicht.,de
+%s row must not be empty.,Die Zeile %s darf nicht leer sein.,de
+%s translation(s) successfully added.,%s Übersetzung(en) erfolgreich hinzugefügt.,de
+%s user processed,%s Benutzer bearbeitet,de
+%s users processed,%s verarbeitete Benutzer,de
+%s was not found in the standard application.,%s wurde in der Standardanwendung nicht gefunden.,de
+'%s' field for '%s' is invalid.,"Das Feld ""%s"" für ""%s"" ist ungültig.",de
+'OneToMany' and 'ManyToMany' fields doesn't allowed,Die Felder 'OneToMany' und 'ManyToMany' sind nicht zulässig,de
+'OneToMany' field doesn't allowed,Das Feld 'OneToMany' ist nicht erlaubt,de
+(AUX),(AUX),de
+(L'),(L'),de
+(LA),(LA),de
+(LE),(LE),de
+(LES),(LES),de
+(LOS),(LOS),de
+* %s anomaly(ies),* %s Anomalie(n),de
+- Not null :,- Nicht Null :,de
+- Succeeded :,- Erfolglos:,de
+. Using those keys will result in a Invalid private key error,". Die Verwendung dieser Schlüssel führt zu einem Fehler ""Ungültiger privater Schlüssel",de
+00,00,de
+01,01,de
+02,02,de
+03,03,de
+04,04,de
+05,05,de
+06,06,de
+07,07,de
+08,08,de
+09,09,de
+1,1,de
+1 Month,1 Monat,de
+1 Year,1 Jahr,de
+10,10,de
+11,11,de
+12,12,de
+13,13,de
+14,14,de
+15,15,de
+16,16,de
+17,17,de
+18,18,de
+19,19,de
+1st Period From,1. Periode Von,de
+2,2,de
+2 Months,2 Monate,de
+20,20,de
+21,21,de
+22,22,de
+23,23,de
+24,24,de
+25,25,de
+26,26,de
+27,27,de
+28,28,de
+2nd Period From,2. Periode Von,de
+3,3,de
+3 Months,3 Monate,de
+4,4,de
+5,5,de
+6,6,de
+6 Months,6 Monate,de
+7,7,de
+8,8,de
+9,9,de
+<,<,de
+"<><Badge bg=""warning"">Alias are mandatory inside the jpql queries</Badge></>","<><Badge bg=""warning"">Alias sind in den jpql-Abfragen obligatorisch</Badge></>",de
+"<><Badge bg=""warning"">Invalid IBAN</Badge></>","<><Badge bg=""warning"">Ungültige IBAN</Badge></>",de
+"<><Badge bg=""warning"">Please add an invoice address and a delivery address by default.</Badge></>","<><Badge bg=""warning"">Bitte fügen Sie standardmäßig eine Rechnungsadresse und eine Lieferadresse hinzu.</Badge></>",de
+"<><Badge bg=""warning"">There is already a contact with this name.</Badge></>","<><Badge bg=""warning"">Es gibt bereits einen Kontakt mit diesem Namen.</Badge></>",de
+"<><Badge bg=""warning"">There is already a partner with this name.</Badge></>","<><Badge bg=""warning"">Es gibt bereits einen Partner mit diesem Namen.</Badge></>",de
+<B>%s</B> not found,<B>%s</B> nicht gefunden,de
+<a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' />,<a class='fa fa-facebook' href='http://www.facebook.com' target='_blank' />,de
+<a class='fa fa-google' href='http://www.google.com' target='_blank' />,<a class='fa fa-google' href='http://www.google.com' target='_blank' />,de
+<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />,<a class='fa fa-linkedin' href='http://www.linkedin.com' target='_blank' />,de
+<a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' />,<a class='fa fa-twitter' href='http://www.twitter.com' target='_blank' />,de
+<a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' />,<a class='fa fa-youtube' href='http://www.youtube.com' target='_blank' />,de
+<br/>Example:<br/>Start unit : m3<br/>End unit : kg<br/><strong>$Product.netMass$ / $Product.articleVolume$</strong><br/>,<br/>Example:<br/>Start unit : m3<br/>End unit : kg<br/><strong>$Product.netMass$ / $Product.articleVolume$</strong><br/>,de
+<br>Mapping for the query :<br>First Name -> :firstName <br>Last Name -> :lastName <br>Email -> :email <br>Phone -> :phone <br>,<br>Zuordnung für die Abfrage :<br>Vorname -> :firstName <br>Nachname -> :lastName <br>Email -> :email <br>Telefon -> :phone <br>,de
+=,=,de
+>,>,de
+A product of type service can't be procured from stock.,Ein Produkt vom Typ Dienstleistung kann nicht auf Lager beschafft werden.,de
+A user with this login already exists.,Ein Benutzer mit diesem Login existiert bereits.,de
+A wizard already exists for this sharing referential.,Es gibt bereits einen Assistenten für dieses Sharing-Referenzsystem.,de
+A.T.I. by default,A.T.I. by default,de
+ABC Analysis,ABC-Analyse,de
+ABC Analysis N°,ABC-Analyse Nr.,de
+ABC Analysis line,ABC-Analysezeile,de
+ABC Analysis lines,ABC-Analyse-Linien,de
+ABC Classes,ABC-Klassen,de
+ABC class,ABC-Klasse,de
+ABC classes,ABC-Klassen,de
+API Sirene configuration,API-Sirene-Konfiguration,de
+ARTMIN,ARTMIN,de
+AZTEC,AZTEC,de
+AbcAnalysis.analysisResult,AbcAnalysis.analysisResult,de
+AbcAnalysis.company,AbcAnalysis.company,de
+AbcAnalysis.createdBy,AbcAnalysis.createdBy,de
+AbcAnalysis.description,AbcAnalysis.description,de
+AbcAnalysisLine.category,AbcAnalysisLine.category,de
+AbcAnalysisLine.class,AbcAnalysisLine.class,de
+AbcAnalysisLine.code,AbcAnalysisLine.code,de
+AbcAnalysisLine.cumulatedQty,AbcAnalysisLine.cumulatedQty,de
+AbcAnalysisLine.cumulatedWorth,AbcAnalysisLine.cumulatedWorth,de
+AbcAnalysisLine.name,AbcAnalysisLine.name,de
+AbcAnalysisLine.qty,AbcAnalysisLine.qty,de
+AbcAnalysisLine.worth,AbcAnalysisLine.worth,de
+Access to model fields,Zugriff auf Modellfelder,de
+Access token,Zugangstoken,de
+Account Number,Kontonummer,de
+Account config,Konto-Konfiguration,de
+Account management,Kontoführung,de
+Account management filters,Filter für die Kontoverwaltung,de
+Account management list,Liste der Kontoverwaltung,de
+Account managements,Kontoverwaltung,de
+Account moves,Kontoumzüge,de
+Accounting,Buchhaltung,de
+Accounting Exports,Buchhaltung Exporte,de
+Accounting family,Familie Buchhaltung,de
+Accounting situations,Buchhalterische Situationen,de
+Accounts Configurations,Konten-Konfigurationen,de
+Accounts configuration,Konfiguration der Konten,de
+Action,Aktion,de
+Action does not exists or invalid for the object(%s),Aktion existiert nicht oder ist ungültig für das Objekt (%s),de
+Action name cannot be null.,Der Aktionsname darf nicht Null sein.,de
+Actions,Aktionen,de
+Activate bar code generation for products,Aktivieren Sie die Strichcodeerstellung für Produkte,de
+Activate changes shortcut for,Änderungen aktivieren Abkürzung für,de
+Activate partner delegations,Aktivierung der Partnerdelegationen,de
+Activate sending email,Aktivieren Sie den E-Mail-Versand,de
+Activate the instance information shortcut,Aktivieren Sie die Verknüpfung für die Instanzinformationen,de
+Activation,Freischaltung,de
+Active,Aktiv,de
+Active Team,Aktive Mannschaft,de
+Active company,Aktives Unternehmen,de
+Active company changed to %s,Aktives Unternehmen auf %s geändert,de
+Active trading name,Aktiver Handelsname,de
+Active users,Aktive Nutzer,de
+Add Guests,Gäste hinzufügen,de
+Add a period,Einen Punkt hinzufügen,de
+Address,Adresse,de
+Address Field is missing : %s,Das Adressfeld fehlt: %s,de
+Address Template,Adressvorlage,de
+Address Template Line,Adressvorlage Zeile,de
+Address Template Lines,Adressvorlagenzeilen,de
+Address certified by QAS engine,Von QAS engine zertifizierte Adresse,de
+Address created,Adresse erstellt,de
+Address details,Angaben zur Adresse,de
+Address filters,Adressfilter,de
+Address found,Adresse gefunden,de
+Address line 2 template,Vorlage für Adresszeile 2,de
+Address line 3 template,Vorlage für Adresszeile 3,de
+Address line 4 template,Vorlage für Adresszeile 4,de
+Address line 5 template,Vorlage für Adresszeile 5,de
+Address line 6 template,Vorlage für Adresszeile 6,de
+Address list,Adressliste,de
+Address position,Position der Adresse,de
+Address precisions,Adressgenauigkeit,de
+Address template,Adressvorlage,de
+Address template lines,Zeilen der Adressvorlage,de
+Address templates,Adressvorlagen,de
+Address type,Art der Adresse,de
+Addresses,Adressen,de
+Addresses validation,Überprüfung der Adressen,de
+Adjust History,Geschichte anpassen,de
+Adjust period,Zeitraum anpassen,de
+Adjusting,Einstellen von,de
+Administration,Verwaltung,de
+Advance Fields Export,Vorab-Felder exportieren,de
+Advance import,Vorabeinfuhr,de
+Advanced Export,Erweiterter Export,de
+Advanced export,Erweiterter Export,de
+Advanced export line,Erweiterte Exportlinie,de
+Advanced export lines,Erweiterte Exportlinien,de
+Advanced exports,Erweiterte Exporte,de
+Advanced import,Erweiterter Import,de
+Advanced import is not validated,Erweiterter Import wird nicht validiert,de
+Advanced imports,Erweiterte Importe,de
+Advanced print templates,Erweiterte Druckvorlagen,de
+Advanced synchronization,Erweiterte Synchronisierung,de
+Agencies,Agenturen,de
+All,Alle,de
+All Actions,Alle Aktionen,de
+All Clients,Alle Kunden,de
+All Countries,Alle Länder,de
+All Employees,Alle Mitarbeiter,de
+All Enterprises,Alle Unternehmen,de
+All Individuals,Alle Einzelpersonen,de
+All Mailing lists,Alle Verteilerlisten,de
+All MetaField seem to be existing.,Alle MetaFields scheinen vorhanden zu sein.,de
+All MetaModel seem to be existing.,Alle MetaModelle scheinen vorhanden zu sein.,de
+All Prospects,Alle Aussichten,de
+All Suppliers,Alle Lieferanten,de
+All Views,Alle Ansichten,de
+All clients,Alle Kunden,de
+All connector mappers,Alle Steckverbinder-Mapper,de
+All day,Ganztägig,de
+All events,Alle Ereignisse,de
+All my calendars,Alle meine Terminkalender,de
+All permissions,Alle Berechtigungen,de
+All permissions' objects seem to be good.,Alle Objekte der Berechtigungen scheinen in Ordnung zu sein.,de
+All prospects,Alle Perspektiven,de
+All prospects and clients,Alle Interessenten und Kunden,de
+All suppliers,Alle Anbieter,de
+All tasks,Alle Aufgaben,de
+All teams,Alle Teams,de
+All users,Alle Benutzer,de
+Allow notifications to be sent by email,Erlauben Sie das Versenden von Benachrichtigungen per E-Mail,de
+Allow the user to apply a global discount on a sale order or invoice. Global discount and discount per line are not cumulative.,"Erlaubt dem Benutzer, einen globalen Rabatt auf eine Bestellung oder Rechnung anzuwenden. Globaler Rabatt und Rabatt pro Zeile sind nicht kumulierbar.",de
+Allow to force purchases quantities,Erlaubt die Erzwingung von Kaufmengen,de
+Allow to force sales quantities,"Erlauben, Verkaufsmengen zu erzwingen",de
+"Allows exporting dates by calculating the difference with the export date. During import, the data will be updated based on the import date and the previously saved offset.",Ermöglicht den Export von Daten durch Berechnung der Differenz zum Exportdatum. Beim Import werden die Daten auf der Grundlage des Importdatums und des zuvor gespeicherten Offsets aktualisiert.,de
+Alpha-2 code (ISO),Alpha-2-Code (ISO),de
+Alpha-3 code (ISO),Alpha-3-Code (ISO),de
+Alternative barcode,Alternativer Strichcode,de
+Alternative barcode type,Alternativer Barcodetyp,de
+Alternative barcode types,Alternative Barcodetypen,de
+Alternative barcodes,Alternative Strichcodes,de
+Always A.T.I.,Always A.T.I.,de
+Always W.T.,Always W.T.,de
+America/New_York,Amerika/New_York,de
+Amount/%,Betrag/%,de
+An error occured while executing '%s'.,Bei der Ausführung von '%s' ist ein Fehler aufgetreten.,de
+An error occurred while generating the address template: '%s',Bei der Erstellung der Adressvorlage ist ein Fehler aufgetreten: '%s'.,de
+An error occurred while generating the address template: '%s' - '%s',Beim Generieren der Adressvorlage ist ein Fehler aufgetreten: '%s' - '%s',de
+An error occurred while generating the sequence. Please check the configuration.,Beim Generieren der Sequenz ist ein Fehler aufgetreten. Bitte überprüfen Sie die Konfiguration.,de
+"An error occurred, please check your configuration.","Es ist ein Fehler aufgetreten, bitte überprüfen Sie Ihre Konfiguration.",de
+Analysis is already on going.,Die Analyse ist bereits im Gange.,de
+Analytics,Analytik,de
+Analyzing,Analysieren Sie,de
+Anomalies,Anomalien,de
+Anomaly,Anomalie,de
+App,App,de
+App base,App-Basis,de
+Applicable dates,Anwendbare Daten,de
+Application Config,Anwendungskonfiguration,de
+Application begin date,Datum des Beginns der Anwendung,de
+Application end date,Enddatum der Bewerbung,de
+Application start Date,Beginn der Anwendung Datum,de
+Application type,Art der Anwendung,de
+Apply,Bewerbung,de
+Apply modifications to next tasks,Änderungen auf nächste Aufgaben anwenden,de
+Apply on,Anwenden auf,de
+Apply pricings,Preise anwenden,de
+Apps management,Verwaltung von Apps,de
+April,April,de
+Archived,Archiviert,de
+Are you sure to replace ?,"Sind Sie sicher, dass Sie sie ersetzen müssen?",de
+Are you sure you want to run the analysis ? It can take a long time.,"Sind Sie sicher, dass Sie die Analyse durchführen wollen? Das kann sehr lange dauern.",de
+Are you sure you want to start the import?,"Sind Sie sicher, dass Sie den Import starten wollen?",de
+Area name,Name des Gebiets,de
+Article dimension,Dimension der Artikel,de
+Article volume,Umfang der Artikel,de
+Artmin,Artmin,de
+Ascending,Aufsteigend,de
+Assigned to,Zugewiesen an,de
+Assigned to user,Dem Benutzer zugewiesen,de
+At least one iban code you have entered for this partner is not valid. Here is the list of invalid codes : %s,"Mindestens ein iban-Code, den Sie für diesen Partner eingegeben haben, ist ungültig. Hier ist die Liste der ungültigen Codes: %s",de
+Attach,anhängen.,de
+Attach to model,Am Modell befestigen,de
+Attached files,Angehängte Dateien,de
+Attached partners,Angeschlossene Partner,de
+Attachment directory OR Application source does not exist,Anhangsverzeichnis ODER Anwendungsquelle existiert nicht,de
+Attachments,Anhänge,de
+Attachments must be in zip format,Anhänge müssen im Zip-Format sein,de
+Attempted to get a field from product '%s' but forgot to specify which field.,"Es wurde versucht, ein Feld aus dem Produkt ""%s"" abzurufen, aber es wurde vergessen, das Feld anzugeben.",de
+Attempted to get field '%s' for unspecified product.,"Es wurde versucht, das Feld '%s' für ein nicht spezifiziertes Produkt abzurufen.",de
+Attendees,Teilnehmer,de
+Attributes,Attribute,de
+Attrs,Attrs,de
+August,August,de
+Authentication failed.,Authentifizierung fehlgeschlagen.,de
+Authorization,Autorisierung,de
+Authorization details,Details zur Autorisierung,de
+Auto,Auto,de
+Auto import,Automatischer Import,de
+Availability,Verfügbarkeit,de
+Available,Verfügbar,de
+Available stock,Verfügbarer Bestand,de
+Average Price,Durchschnittlicher Preis,de
+BBAN,BBAN,de
+BBan Key,BBan Schlüssel,de
+BIC,BIC,de
+BIC (Bank Identifier),BIC (Bankleitzahl),de
+BIRT printings,BIRT-Drucke,de
+BIRT template file,BIRT-Vorlagendatei,de
+BIRT templates,BIRT-Vorlagen,de
+Back,Zurück,de
+Backup,Sicherung,de
+Backup Created,Sicherung erstellt,de
+Backup File,Sicherungsdatei,de
+Backup On,Sicherung ein,de
+Backup Restore Error,Fehler beim Sichern und Wiederherstellen,de
+Backup Restored,Sicherung wiederhergestellt,de
+Bad header row:,Schlechte Kopfzeile:,de
+Bad import file,Fehlerhafte Importdatei,de
+Bad request please check api configuration information.,"Schlechte Anfrage, bitte überprüfen Sie die Api-Konfigurationsinformationen.",de
+Bad request please check credentials.,"Falsche Anfrage, bitte überprüfen Sie Ihre Anmeldedaten.",de
+Balance,Bilanz,de
+Bank,Bank,de
+Bank Code,Bankleitzahl,de
+Bank Details,Bankverbindung,de
+Bank Details list,Liste der Bankverbindungen,de
+Bank Identifier Code,Bankleitzahl,de
+Bank Identifier Codes,Bankleitzahlen,de
+Bank Name,Name der Bank,de
+Bank accounts,Bankkonten,de
+Bank card,Bankkarte,de
+Bank cards,Bankkarten,de
+Bank detail filters,Filter für Bankdaten,de
+Bank details,Bankverbindung,de
+Bank details tree,Baum der Bankverbindung,de
+Bank payment config,Bankzahlung konfigurieren,de
+Barcode,Barcode,de
+Barcode Type,Barcode Typ,de
+Barcode format not supported,Barcode-Format nicht unterstützt,de
+Barcode type configuration,Konfiguration des Barcodetyps,de
+Barcode type configurations,Barcode-Typ-Konfigurationen,de
+Base,Basis,de
+Base Batch,Basis-Charge,de
+Base batch,Basis-Charge,de
+Base batch filters,Basis-Batch-Filter,de
+Base batches,Basis-Chargen,de
+Based on,Basierend auf,de
+Basic overview,Grundlegender Überblick,de
+Batch,Stapel,de
+Batch %s is now finished,Batch %s ist jetzt beendet,de
+Batch %s unknown,Charge %s unbekannt,de
+Batch code,Chargencode,de
+Batch execution is now finished,Die Stapelverarbeitung ist nun beendet,de
+Batch report:,Chargenbericht:,de
+Batch size used when reading data. Allows you to optimize performance based on database volume.,Beim Lesen von Daten verwendete Chargengröße. Ermöglicht die Optimierung der Leistung auf der Grundlage des Datenbankvolumens.,de
+Batch type,Art der Charge,de
+Batches,Lose,de
+Batches dashboard,Dashboard Chargen,de
+Batchs,Chargen,de
+"Be aware that the address is already in use on other documents, do you still want to modify it ?","Beachten Sie, dass die Adresse bereits in anderen Dokumenten verwendet wird. Möchten Sie sie trotzdem ändern?",de
+Bean is not an instance of,Bean ist nicht eine Instanz von,de
+BigDecimal,BigDecimal,de
+Bill of materials,Stückliste,de
+Binding,Verbindlich,de
+Binding file,Verbindliche Datei,de
+Birt,Birt,de
+Birt Template,Birt Vorlage,de
+Birt Template parameter,Birt Template Parameter,de
+Birt Template parameters,Birt Template Parameter,de
+Birt Templates,Birt-Vorlagen,de
+Birt printing wizard,Birt Druckassistent,de
+Birt template,Birt-Vorlage,de
+Block until,Blockieren bis,de
+Blocked,Blockiert,de
+Blocking,Blockieren,de
+Blocking Type,Art der Sperrung,de
+Blocking done by,Die Blockierung erfolgt durch,de
+Blocking follow-up List,Sperrung der Nachfolgeliste,de
+Blocking reason,Grund der Sperrung,de
+Blocking reasons,Gründe für die Sperrung,de
+Blockings,Sperrungen,de
+Boolean,Boolesche,de
+Both currencies must be saved before currency rate apply,"Beide Währungen müssen gespeichert werden, bevor der Wechselkurs gilt",de
+Branch Identifier (Branch Code),Kennung der Branche (Branchencode),de
+Building,Gebäude,de
+Building number,Nummer des Gebäudes,de
+Business Party Prefix (Bank Code),Geschäftspartner-Präfix (Bankleitzahl),de
+Business Party Suffix (Location Code),Geschäftspartner-Suffix (Ortscode),de
+Busy,Beschäftigt,de
+Buy,Kaufen,de
+Buy and produce,Kaufen und produzieren,de
+"By activating this option, then all related printed document will automatically be attached on dms","Wenn Sie diese Option aktivieren, werden alle zugehörigen gedruckten Dokumente automatisch an dms angehängt.",de
+"By default, filename will be the name of the printing template. Activate this option to define the filename using a groovy template.","Standardmäßig wird als Dateiname der Name der Druckvorlage verwendet. Aktivieren Sie diese Option, um den Dateinamen mit einer Groovy-Vorlage zu definieren.",de
+CALENDAR_SERVER,KALENDER_SERVER,de
+CGP,CGP,de
+CHANDLER,CHANDLER,de
+CID,CID,de
+CODABAR,CODABAR,de
+CODE_128,CODE_128,de
+CODE_39,CODE_39,de
+COG,COG,de
+CREATE,CREATE,de
+CRM config,CRM-Konfiguration,de
+CSV,CSV,de
+CSV Backup Fetch Limit,CSV-Sicherung Abrufgrenze,de
+CSV File,CSV-Datei,de
+Calculation method,Berechnungsmethode,de
+Calendar,Kalender,de
+Calendar Configurations,Kalender-Konfigurationen,de
+Calendar User,Kalender Benutzer,de
+Calendar Users,Kalender-Benutzer,de
+Calendar configuration,Konfiguration des Kalenders,de
+Calendar configuration not valid,Kalenderkonfiguration nicht gültig,de
+Calendar configurations,Kalender-Konfigurationen,de
+Calendar permission,Kalendererlaubnis,de
+Calendar permissions,Kalenderberechtigungen,de
+Calendar synchronization,Kalender-Synchronisierung,de
+Calendars,Kalendarien,de
+Calendars Configuration,Konfiguration von Kalendern,de
+"Calendars are empty, there is no event to synchronize.","Die Kalender sind leer, es gibt kein zu synchronisierendes Ereignis.",de
+Calendars permissions,Berechtigungen für Kalender,de
+Call,Rufen Sie  an.,de
+Calling code,Anrufer-Code,de
+"Calling the Sirene API will fill following partner fields: Name, First name, Title, Type, Tax number, Category, Main activity, Address.","Beim Aufruf der Sirene-API werden folgende Partnerfelder ausgefüllt: Name, Vorname, Titel, Typ, Steuernummer, Kategorie, Haupttätigkeit, Adresse.",de
+Can be used in order to keep a fixed reference to update the current existing database. Not required for loading into another database.,"Kann verwendet werden, um einen festen Verweis zur Aktualisierung der aktuell bestehenden Datenbank zu erhalten. Nicht erforderlich für das Laden in eine andere Datenbank.",de
+Can not find object.,Kann Objekt nicht finden.,de
+Can't generate draft sequence number on an unsaved record.,Es kann keine Entwurfsfolgenummer für einen nicht gespeicherten Datensatz erzeugt werden.,de
+Cancel Reason,Abbrechen Grund,de
+Cancel Reasons,Gründe stornieren,de
+Cancel reason filters,Grundfilter aufheben,de
+Cannot get information with siret: %s .,Kann keine Informationen mit siret erhalten: %s .,de
+Canton,Kanton,de
+Canton Code,Kanton-Code,de
+Cantons,Kantone,de
+Can’t convert into an individual partner from scratch.,Sie können nicht von Grund auf in einen individuellen Partner umgewandelt werden.,de
+Carrier,Träger,de
+Cash,Bargeld,de
+Catalog,Katalog,de
+Categories tree,Kategorien Baum,de
+Categorization,Kategorisierung,de
+Category,Kategorie,de
+Cause,Ursache,de
+Center,Zentrum,de
+Certificate,Zertifikat,de
+Change password,Passwort ändern,de
+Change password?,Passwort ändern?,de
+Changing manually the end date of a sequence which reset yearly or monthly could break the sequence system.,"Eine manuelle Änderung des Enddatums einer Folge, die jährlich oder monatlich zurückgesetzt wird, könnte das Folgesystem unterbrechen.",de
+Chart,Tabelle,de
+Check,Siehe,de
+Check Duplicate,Duplikat prüfen,de
+Check all error first,Prüfen Sie zuerst alle Fehler,de
+Check duplicate,Duplikat prüfen,de
+Check duplicate registration,Doppelte Registrierung prüfen,de
+Check existing sequence on generation,Vorhandene Sequenz bei der Generierung prüfen,de
+Check faker method,Faker-Methode prüfen,de
+Check log file in tabs configuration,Protokolldatei in der Registerkartenkonfiguration prüfen,de
+Check permissions' objects,Objekte mit Berechtigungen prüfen,de
+Check that if files should be imported from a connector,"Prüfen Sie, ob Dateien von einem Konnektor importiert werden sollen",de
+Check the MetaField,Prüfen Sie das MetaFeld,de
+Check the MetaModel,Überprüfen Sie das MetaModel,de
+Cheque,Scheck,de
+Choose,Wählen Sie,de
+Cities,Städte,de
+Citizenship,Staatsbürgerschaft,de
+City,Stadt,de
+City import completed,Stadtimport abgeschlossen,de
+City zip is different from address zip,Die Postleitzahl der Stadt unterscheidet sich von der Postleitzahl der Adresse,de
+Civil Year,Bürgerliches Jahr,de
+Civil year already exist for ${com.axelor.i18n.L10n.getInstance().format(fromDate)} and ${com.axelor.i18n.L10n.getInstance().format(toDate)}.,Civil year already exist for ${com.axelor.i18n.L10n.getInstance().format(fromDate)} and ${com.axelor.i18n.L10n.getInstance().format(toDate)}.,de
+Civility,Höflichkeit,de
+Class,Klasse,de
+Class name,Name der Klasse,de
+Classes and products,Klassen und Produkte,de
+Classic products,Klassische Produkte,de
+Classification,Klassifizierung,de
+Classification param 1,Klassifizierung param 1,de
+Classification param 2,Klassifizierung param 2,de
+Classification param 3,Klassifizierung param 3,de
+Classification param 4,Klassifizierung param 4,de
+Classification rule 1,Klassifizierungsregel 1,de
+Classification rule 2,Klassifizierungsregel 2,de
+Classification rule 3,Klassifizierungsregel 3,de
+Classification rule 4,Einstufungsregel 4,de
+Classification rule used: %s,Verwendete Klassifizierungsregel: %s,de
+Clean logs manually,Protokolle manuell bereinigen,de
+Clear selection,Auswahl löschen,de
+Client,Kunde,de
+Client ID,Kunden-ID,de
+Client portal access,Zugang zum Kundenportal,de
+Client situation template,Vorlage für die Kundensituation,de
+ClientSituation.12MonthTurnover,ClientSituation.12MonthTurnover,de
+ClientSituation.address,ClientSituation.address,de
+ClientSituation.amountRemainingToOrder,ClientSituation.amountRemainingToOrder,de
+ClientSituation.avgOrderAmt,ClientSituation.avgOrderAmt,de
+ClientSituation.commercialData,ClientSituation.commercialData,de
+ClientSituation.contact,ClientSituation.contact,de
+ClientSituation.contacts,ClientSituation.contacts,de
+ClientSituation.custRef,ClientSituation.custRef,de
+ClientSituation.date,ClientSituation.date,de
+ClientSituation.deliveryStockMoves,ClientSituation.deliveryStockMoves,de
+ClientSituation.dueBalance,ClientSituation.dueBalance,de
+ClientSituation.dueDate,ClientSituation.dueDate,de
+ClientSituation.dueDateTerm,ClientSituation.dueDateTerm,de
+ClientSituation.email,ClientSituation.email,de
+ClientSituation.financialData,ClientSituation.financialData,de
+ClientSituation.fixedPhone,ClientSituation.fixedPhone,de
+ClientSituation.followedBy,ClientSituation.followedBy,de
+ClientSituation.function,ClientSituation.function,de
+ClientSituation.invoices,ClientSituation.invoices,de
+ClientSituation.lastCall,ClientSituation.lastCall,de
+ClientSituation.lastMeetingDate,ClientSituation.lastMeetingDate,de
+ClientSituation.lastOrder,ClientSituation.lastOrder,de
+ClientSituation.mobile,ClientSituation.mobile,de
+ClientSituation.name,ClientSituation.name,de
+ClientSituation.nextMeetingDate,ClientSituation.nextMeetingDate,de
+ClientSituation.nextOutgoingCall,ClientSituation.nextOutgoingCall,de
+ClientSituation.num,ClientSituation.num,de
+ClientSituation.orderFreq,ClientSituation.orderFreq,de
+ClientSituation.orders,ClientSituation.orders,de
+ClientSituation.phone,ClientSituation.phone,de
+ClientSituation.quotations,ClientSituation.quotations,de
+ClientSituation.quotations/orders,ClientSituation.quotations/orders,de
+ClientSituation.realDate,ClientSituation.realDate,de
+ClientSituation.recoverableBalance,ClientSituation.recoverableBalance,de
+ClientSituation.refDoc,ClientSituation.refDoc,de
+ClientSituation.reference,ClientSituation.reference,de
+ClientSituation.saleOrder,ClientSituation.saleOrder,de
+ClientSituation.seq,ClientSituation.seq,de
+ClientSituation.status,ClientSituation.status,de
+ClientSituation.statusSM,ClientSituation.statusSM,de
+ClientSituation.team,ClientSituation.team,de
+ClientSituation.termN,ClientSituation.termN,de
+ClientSituation.title,ClientSituation.title,de
+ClientSituation.toAddressStr,ClientSituation.toAddressStr,de
+ClientSituation.toInvoice,ClientSituation.toInvoice,de
+ClientSituation.toPay,ClientSituation.toPay,de
+ClientSituation.totalATI,ClientSituation.totalATI,de
+ClientSituation.totalAtiTerm,ClientSituation.totalAtiTerm,de
+ClientSituation.totalBalance,ClientSituation.totalBalance,de
+ClientSituation.totalHT,ClientSituation.totalHT,de
+ClientSituation.totalTax,ClientSituation.totalTax,de
+ClientSituation.tradingName,ClientSituation.tradingName,de
+ClientSituation.website,ClientSituation.website,de
+ClientSituation.with,ClientSituation.with,de
+Close period,Zeitraum schließen,de
+Closed,Geschlossen,de
+Closing a period brings irrevocable integration of a move in Moves book,Das Schließen einer Periode führt zur unwiderruflichen Integration eines Zuges in das Buch der Züge,de
+Closure in progress,Schließung im Gange,de
+Code,Code,de
+Code length should be greater than 2.,Die Länge des Codes sollte größer als 2 sein.,de
+Code to use for the translations,Zu verwendender Code für die Übersetzungen,de
+Coeff,Coeff,de
+Coeff.,Koeff.,de
+Coefficient for bonus,Koeffizient für den Bonus,de
+Coefficient for leave,Koeffizient für Urlaub,de
+Color,Farbe,de
+Color code (hex),Farbcode (hex),de
+Column title,Titel der Kolumne,de
+Comment to display on delivery,Kommentar zur Anzeige bei Lieferung,de
+Comment to display on invoice,Kommentar zur Anzeige auf der Rechnung,de
+Comment to display on picking order,Kommentar zur Anzeige auf dem Kommissionierauftrag,de
+Comment to display on proforma,Kommentar zur Anzeige auf dem Proforma,de
+Comment to display on purchase order,Kommentar zur Anzeige in der Bestellung,de
+Comment to display on sale order,Kommentar zum Verkaufsauftrag,de
+Comments,Kommentare,de
+Companies,Unternehmen,de
+Companies associated to,"Unternehmen, die verbunden sind mit",de
+Company,Unternehmen,de
+Company Footer,Unternehmen Fußzeile,de
+Company Footer Height(in cm),Unternehmen Fußzeile Höhe (in cm),de
+Company Header,Unternehmen Header,de
+Company Header Height(in cm),Unternehmen Kopfhöhe (in cm),de
+Company Logo Width,Firmenlogo Breite,de
+Company Logo position,Position des Firmenlogos,de
+Company PhoneBook,Unternehmen Telefonbuch,de
+Company currency,Währung des Unternehmens,de
+Company department,Abteilung des Unternehmens,de
+Company department filters,Filter der Unternehmensabteilung,de
+Company departments,Abteilungen des Unternehmens,de
+Company filters,Betriebliche Filter,de
+Company phone book template,Unternehmen Telefonbuch Vorlage,de
+Company phoneBook,Unternehmen phoneBook,de
+Company tree,Firmenbaum,de
+Company-specific information,Unternehmensspezifische Informationen,de
+Company-specific product fields,Unternehmensspezifische Produktfelder,de
+Company.bankDetails,Company.bankDetails,de
+Complement,Ergänzung,de
+Complete,Vollständig,de
+Completed,Abgeschlossen,de
+Component,Komponente,de
+Compute Discount Separately,Getrennte Berechnung des Rabatts,de
+Compute Method for Discounts,Berechnungsmethode für Rabatte,de
+Concatenation of city name and zip code,Verkettung von Ortsname und Postleitzahl,de
+Concerned model,Besorgtes Modell,de
+Concerned models,Besorgte Modelle,de
+Condition,Zustand,de
+ConditionParams,BedingungsParameter,de
+Conditions,Bedingungen,de
+Config doesn't exist in the file. Please uncheck 'Config included in file',Config ist nicht in der Datei enthalten. Bitte deaktivieren Sie die Option 'Config in Datei enthalten'.,de
+Config exist in the file. Please check 'Config included in file',Config ist in der Datei vorhanden. Bitte prüfen Sie 'Config in Datei enthalten'.,de
+Config included in file,Config in Datei enthalten,de
+Configuration,Konfiguration,de
+Configuration error: the product category %s is among its descendants.,Konfigurationsfehler: Die Produktkategorie %s gehört zu ihren Nachkommen.,de
+Configuration error: the product category %s is an ancestor of himself.,Konfigurationsfehler: Die Produktkategorie %s ist ein Vorfahre von ihm selbst.,de
+Configuration file,Konfigurationsdatei,de
+Configuration problem,Problem bei der Konfiguration,de
+Configurations,Konfigurationen,de
+Configurator,Konfigurator,de
+Confirm,Bestätigen Sie,de
+Confirm password,Bestätigen Sie das Passwort,de
+Confirm password doesn't match with new password.,Das Bestätigungspasswort stimmt nicht mit dem neuen Passwort überein.,de
+Connect,Verbinden Sie,de
+Connection has failed,Verbindung ist fehlgeschlagen,de
+Connection settings,Verbindungseinstellungen,de
+Connection successful,Verbindung erfolgreich,de
+Connection type,Art der Verbindung,de
+Connector,Anschluss,de
+Connector mapper,Stecker-Mapper,de
+Connector mappers,Stecker-Mapper,de
+Connectors,Steckverbinder,de
+Consumer key,Verbraucherschlüssel,de
+Consumer secret,Geheimnis der Verbraucher,de
+Contact,Kontakt,de
+Contact / Partner,Kontakt / Partner,de
+Contact Dashboard,Kontakt Dashboard,de
+Contact Information,Kontaktinformationen,de
+Contact PhoneBook,Kontakt Telefonbuch,de
+Contact address,Kontaktadresse,de
+Contact details,Kontaktangaben,de
+Contact filters,Kontakt-Filter,de
+Contact function,Kontaktfunktion,de
+Contact imported,Kontakt importiert,de
+Contact phone book template,Kontakt Telefonbuch Vorlage,de
+Contact synchronisation,Synchronisierung der Kontakte,de
+Contacts,Kontakte,de
+Contacts list,Kontaktliste,de
+Contains,Enthält,de
+Content,Inhalt,de
+Content lines,Inhalt der Zeilen,de
+Content result,Inhaltliches Ergebnis,de
+Context,Kontext,de
+Contract,Vertrag,de
+ContractFile,VertragDatei,de
+Contracts,Verträge,de
+Conversion impossible because of no unit.,"Umrechnung unmöglich, da keine Einheit vorhanden.",de
+Convert,Konvertieren,de
+Convert demo file,Demodatei konvertieren,de
+Convert into a contact partner,Umwandlung in einen Ansprechpartner,de
+Convert into an individual partner,Umwandlung in einen individuellen Partner,de
+Cost price,Selbstkostenpreis,de
+Cost type,Kostenart,de
+Costs,Kosten,de
+Countries,Länder,de
+Country,Land,de
+Country Code,Ländercode,de
+Country filters,Länderfilter,de
+Country name,Name des Landes,de
+Country sub division,Unterabteilung Land,de
+Courier,Kurier,de
+Courier-Bold,Courier-Bold,de
+Courier-BoldOblique,Courier-BoldOblique,de
+Courier-Oblique,Kurier-Oblique,de
+Create,erstellen.,de
+Create Backup,Sicherung erstellen,de
+Create Partner,Partner erstellen,de
+Create a call,Einen Aufruf erstellen,de
+Create a meeting,Eine Besprechung erstellen,de
+Create a note,Eine Notiz erstellen,de
+Create a task,Eine Aufgabe erstellen,de
+Create an email,Erstellen Sie eine E-Mail,de
+Create bank order,Bankauftrag erstellen,de
+Create employee,Mitarbeiter anlegen,de
+Create file,Datei erstellen,de
+Create from Sirene API,Erstellen aus Sirene API,de
+Create menu entry,Menüeintrag erstellen,de
+Create opportunity,Gelegenheit schaffen,de
+Create print,Druck erstellen,de
+Create production order (${ name }),Produktionsauftrag erstellen (${ Name }),de
+Create purchase quotation,Kaufangebot erstellen,de
+Create sale quotation,Verkaufsangebot erstellen,de
+Created by,Erstellt von,de
+Created on,Erstellt am,de
+Creation,Erstellung,de
+Creations,Kreationen,de
+Credentials,Berechtigungsnachweise,de
+Credit Balance,Guthaben,de
+Csv generated,Csv erzeugt,de
+Cumulated qty (%),Kumulierte Menge (%),de
+Cumulated worth (%),Kumulierter Wert (%),de
+Currencies,Währungen,de
+Currency,Währung,de
+Currency Ws URL,Währung Ws URL,de
+Currency conversion,Währungsumrechnung,de
+Currency conversion line,Zeile für die Währungsumrechnung,de
+Currency conversion lines,Währungsumrechnungslinien,de
+Currency conversion rate not found over the past 7 days for the currency %s to %s. Please input the date and rate manually.,Umrechnungskurs der letzten 7 Tage für die Währung %s in %s nicht gefunden. Bitte geben Sie das Datum und den Kurs manuell ein.,de
+Currency conversion table,Tabelle zur Währungsumrechnung,de
+Currency conversion webservice not working,Webservice zur Währungsumrechnung funktioniert nicht,de
+Current Products,Aktuelle Produkte,de
+Current User,Aktueller Benutzer,de
+Current domain,Aktueller Bereich,de
+Current password,Aktuelles Passwort,de
+Current pricing,Aktuelle Preise,de
+Current user password is not provided.,Das aktuelle Benutzerkennwort wird nicht angegeben.,de
+Current user password is wrong.,Das aktuelle Benutzerkennwort ist falsch.,de
+Current user's active company address is not set,Die aktive Firmenadresse des aktuellen Benutzers ist nicht eingestellt,de
+Custom field,Benutzerdefiniertes Feld,de
+Custom fields,Benutzerdefinierte Felder,de
+Customer,Kunde,de
+Customer Situation,Situation des Kunden,de
+Customer catalog,Kundenkatalog,de
+Customer contract,Kundenvertrag,de
+Customer situation filters,Filter für die Kundensituation,de
+Customer specific note,Kundenspezifischer Hinweis,de
+Customers,Kunden,de
+Customers / prospects,Kunden / Interessenten,de
+Customers by Industry Sector,Kunden nach Industriezweigen,de
+Customers by country,Kunden nach Land,de
+Customers by saleman,Kunden von saleman,de
+Customers payment delay (Average in days),Zahlungsverzug der Kunden (Durchschnitt in Tagen),de
+Customised,Maßgeschneidert,de
+Customised products,Maßgeschneiderte Produkte,de
+Cycle counting,Zykluszählung,de
+DATA_MATRIX,DATEN_MATRIX,de
+DD/MM/YYYY,DD/MM/YYYY,de
+DELETE,DELETE,de
+DEPT,ABTEILUNG,de
+DMS Import,DMS-Einfuhr,de
+DOC,DOC,de
+DOCX,DOCX,de
+Daily Work Hours,Tägliche Arbeitsstunden,de
+Dashboard,Dashboard,de
+Data file,Die Datei,de
+Data file doesn't exist,Die Datendatei existiert nicht,de
+Data file format is invalid,Datendateiformat ist ungültig,de
+Data file name,Name der Datendatei,de
+Data from file,Daten aus der Datei,de
+Data imported successfully,Daten erfolgreich importiert,de
+Data sharing,Gemeinsame Nutzung von Daten,de
+Data sharing product assistant,Produktassistent für die gemeinsame Nutzung von Daten,de
+Data sharing referential,Gemeinsame Nutzung von Daten referenziell,de
+Data sharing referential line,Referenzlinie für die gemeinsame Nutzung von Daten,de
+Data sharing referential lines,Gemeinsame Nutzung von Daten - Referentielle Linien,de
+Data sharing referentials,Verweise auf die gemeinsame Nutzung von Daten,de
+Data type,Datentyp,de
+Data(s),Daten(s),de
+Date,Datum,de
+Date (YYYY-MM-DD),Datum (JJJJ-MM-TT),de
+Date 1,Datum 1,de
+Date Format,Datum Format,de
+Date format,Datumsformat,de
+Date or frequency changed,Datum oder Häufigkeit geändert,de
+Date research 1,Datum Forschung 1,de
+Date time,Datum Uhrzeit,de
+DateTime,DateTime,de
+Day,Tag,de
+Days,Tage,de
+Days Unit,Tage Einheit,de
+Debit Balance,Saldo im Soll,de
+Debit_block,Debit_block,de
+December,Dezember,de
+Decimal,Dezimal,de
+Default,Standard,de
+Default Bank Account,Standard-Bankkonto,de
+Default Partner Localization,Standard-Partnerlokalisierung,de
+Default address,Standardadresse,de
+Default address template,Standard-Adressvorlage,de
+Default batch fetch limit,Voreingestellte Batch-Abrufgrenze,de
+"Default fetch limit for batches. 0 will not be taken into account. In this case, the default value (10) will be used.",Standardabrufgrenze für Stapel. 0 wird nicht berücksichtigt. In diesem Fall wird der Standardwert (10) verwendet.,de
+Default home action.,Standard-Aktion zu Hause.,de
+Default if not found,"Standard, wenn nicht gefunden",de
+Default mail message template for notifications,Standard-E-Mail-Nachrichtenvorlage für Benachrichtigungen,de
+Default supplier,Standard-Lieferant,de
+Default zoom,Standard-Zoom,de
+Define prefix with a script,Präfix mit einem Skript definieren,de
+Define sub bill of material,Unterstückliste definieren,de
+Define suffix with a script,Suffix mit einem Skript definieren,de
+Define the shipping coef by partner,Definieren Sie den Versandkoeffizienten nach Partner,de
+Delegate Rights of Pfp Validator,Delegiertenrechte von Pfp Validator,de
+Delete,Löschen,de
+Delete menu entry,Menüeintrag löschen,de
+Delivery,Lieferung,de
+Delivery address,Lieferadresse,de
+Delivery status,Status der Lieferung,de
+Demography,Demografie,de
+Department,Abteilung,de
+Department Cantons List,Departement Kantone Liste,de
+Department Name,Name der Abteilung,de
+Department city List,Abteilung Stadtliste,de
+Departments,Abteilungen,de
+Dept./Div.,Abt./Div.,de
+Descending,Absteigend,de
+Description,Beschreibung,de
+Destination Currency,Zielwährung,de
+Destination folder,Zielordner,de
+Destination folder of the REMOTE server for upload.,Zielordner des REMOTE-Servers für den Upload.,de
+Details,Einzelheiten,de
+Diameter,Durchmesser,de
+Direct,Direkt,de
+Direct debit,Lastschriftverfahren,de
+Discount/Increase/Replace,Rabatt/Erhöhung/Ersatz,de
+Display an expiration date,Anzeige eines Verfallsdatums,de
+Display color,Farbe anzeigen,de
+Display type,Art der Anzeige,de
+"Distribution precisions (POB, Village...)","Verteilungsgenauigkeit (POB, Dorf...)",de
+District,Bezirk,de
+Dms file,Dms-Datei,de
+Document concerned,Betroffenes Dokument,de
+Document name,Name des Dokuments,de
+Documents,Dokumente,de
+Don't import if,"Nicht importieren, wenn",de
+Download failed: %s,Download fehlgeschlagen: %s,de
+Draft,Entwurf,de
+Draft prefix for sequences,Entwurf eines Präfixes für Sequenzen,de
+Dtype,D-Typ,de
+Duplicate,Duplizieren Sie,de
+Duplicate Object,Objekt duplizieren,de
+Duplicate finder field '%s' is not found inside model '%s',Doppeltes Sucherfeld '%s' wird nicht im Modell '%s' gefunden,de
+Duplicate records,Doppelte Datensätze,de
+Duration,Dauer,de
+Durations,Laufzeiten,de
+EAN_13,EAN_13,de
+EAN_8,EAN_8,de
+ECB,EZB,de
+EDIFACT,EDIFACT,de
+EXPORT,AUSFUHR,de
+Economic area,Wirtschaftsraum,de
+Economic areas,Wirtschaftsräume,de
+Economic manuf. qty,Wirtschaftliche Herstellungsmenge,de
+Edit product barcode type,Produkt-Barcode-Typ bearbeiten,de
+Editable,Editierbar,de
+Electronic signature,Elektronische Unterschrift,de
+Email,E-Mail,de
+Email Page,E-Mail Seite,de
+Email accounts,E-Mail-Konten,de
+Email address,E-Mail Adresse,de
+Email address already linked with another partner,E-Mail-Adresse bereits mit einem anderen Partner verknüpft,de
+Email field,E-Mail-Feld,de
+Email links,E-Mail-Links,de
+Email signature,E-Mail-Unterschrift,de
+Email template,E-Mail-Vorlage,de
+Email template list for notifications,E-Mail-Vorlagenliste für Benachrichtigungen,de
+Emails,E-Mails,de
+Employee,Mitarbeiter,de
+EmployeeFile,MitarbeiterDatei,de
+Enable global discount,Globalen Rabatt einschalten,de
+Enable multi-barcode management on products,Aktivieren Sie die Verwaltung mehrerer Barcodes auf Produkten,de
+Enable multi-company management,Ermöglichung der Verwaltung mehrerer Unternehmen,de
+Enable pricing scale,Preisstaffelung ermöglichen,de
+Enable tax numbers,Steuernummern freigeben,de
+"Enable the possibility to group lines by product on generated printing documents (sale orders, purchase orders, stock moves, invoices)","Ermöglichung der Gruppierung von Zeilen nach Produkt auf generierten Druckdokumenten (Verkaufsaufträge, Bestellungen, Lagerbewegungen, Rechnungen)",de
+Enable trading names management,Verwaltung von Handelsnamen ermöglichen,de
+End Date,Enddatum,de
+End date,Datum des Endes,de
+End date must be greater than start date,Enddatum muss größer sein als das Startdatum,de
+End date t,Enddatum t,de
+End of pack,Ende der Packung,de
+End unit cannot be void.,Die Endeinheit kann nicht ungültig sein.,de
+Ends on,Endet am,de
+Enter proper 'From' and 'To' date.,"Geben Sie das richtige ""Von""- und ""Bis""-Datum ein.",de
+Enter proper 'Start' and 'End' date.,Geben Sie das richtige Start- und Enddatum ein.,de
+Entities you wish to follow by email,"Einrichtungen, denen Sie per E-Mail folgen möchten",de
+Entity,Entität,de
+Equal,Gleichberechtigt,de
+Error,Fehler,de
+Error : Data file is unreachable.,Fehler : Die Datendatei ist nicht erreichbar.,de
+Error : Mapping file is not found.,Fehler : Mapping-Datei wird nicht gefunden.,de
+Error : Mapping file is unreachable.,Fehler : Mapping-Datei ist nicht erreichbar.,de
+Error : a request has to be set for the indicatior generator %s,Fehler: Für den Indikatorgenerator %s muss eine Anfrage gestellt werden,de
+Error : incorrect request for the indicatior generator %s,Fehler: Falsche Anfrage für den Indikatorgenerator %s,de
+Error : no code has been set,Fehler: Es wurde kein Code eingestellt,de
+Error : no export path has been set,Fehler: Es wurde kein Exportpfad festgelegt,de
+Error file,Fehlerdatei,de
+Error happened during batch execution,Fehler bei der Stapelverarbeitung aufgetreten,de
+Error in Connection,Fehler in der Verbindung,de
+Error in class name. Please check.,Fehler im Klassennamen. Bitte prüfen.,de
+Error in import. Please check log.,Fehler beim Import. Bitte prüfen Sie das Protokoll.,de
+Error in import: %s. Please check the server log,Fehler beim Import: %s. Bitte prüfen Sie das Serverprotokoll,de
+Error in method name. Please check.,Fehler im Methodennamen. Bitte prüfen.,de
+Error in print template line with sequence %s and title %s.,Fehler in Druckvorlagenzeile mit Sequenz %s und Titel %s.,de
+Error in print. Please check report configuration and print setting.,Fehler beim Drucken. Bitte überprüfen Sie die Berichtskonfiguration und die Druckeinstellungen.,de
+Error in print. Please check report configuration and print settings.,Fehler beim Drucken. Bitte überprüfen Sie die Berichtskonfiguration und die Druckeinstellungen.,de
+Error logs,Fehlerprotokolle,de
+Error when closing period %s,Fehler beim Schließen der Periode %s,de
+"Error when computing the printing filename, using template %s: %s",Fehler beim Berechnen des Druckdateinamens unter Verwendung der Vorlage %s: %s,de
+Error while accessing certificate information.,Fehler beim Zugriff auf Zertifikatsinformationen.,de
+Error while converting image to pdf : %s,Fehler beim Konvertieren von Bildern in PDF: %s,de
+Error while creating the file,Fehler beim Erstellen der Datei,de
+"Error while opening the certificate, please check the password.","Fehler beim Öffnen des Zertifikats, bitte überprüfen Sie das Passwort.",de
+Error while processing zip file,Fehler beim Verarbeiten der Zip-Datei,de
+Error while signing pdf : %s,Fehler beim Signieren von pdf: %s,de
+"Error with the certificate, please check if the file is a PFX certificate.","Fehler mit dem Zertifikat, bitte prüfen Sie, ob die Datei ein PFX-Zertifikat ist.",de
+Error: Cities cannot be imported. Please see the attached error file for more details,Fehler: Städte können nicht importiert werden. Bitte lesen Sie die beigefügte Fehlerdatei für weitere Details,de
+Error: The type of the field %s does not match the type of the value %s,Fehler: Der Typ des Feldes %s stimmt nicht mit dem Typ des Wertes %s überein,de
+Error: The type of the field %s is not managed by the adapter,Fehler: Der Typ des Feldes %s wird vom Adapter nicht verwaltet,de
+Europe/Paris,Europa/Paris,de
+Evaluation of result rule: %s,Auswertung der Ergebnisregel: %s,de
+Event,Veranstaltung,de
+Events,Veranstaltungen,de
+Events planning,Planung von Veranstaltungen,de
+Events planning line,Linie zur Planung von Veranstaltungen,de
+Events planning lines,Linien für die Planung von Veranstaltungen,de
+Every,Alle,de
+Every N weeks,Alle N Wochen,de
+Every week,Jede Woche,de
+"Example of pattern NLL : 0AA, 0AB,0AC...0ZZ,1AA.","Beispiel für das Muster NLL: 0AA, 0AB,0AC...0ZZ,1AA.",de
+Example: accessing the name of the user,Beispiel: Zugriff auf den Namen des Benutzers,de
+Examples,Beispiele,de
+Excel,Excel,de
+Exchange rate,Wechselkurse,de
+Exchanges,Tauschbörsen,de
+Exclusive,Exklusiv,de
+Execute,Ausführen,de
+Execution,Ausführung,de
+Expense,Ausgaben,de
+Expiration date,Verfallsdatum,de
+Export,Exportieren,de
+Export App configurations,App-Konfigurationen exportieren,de
+Export CSV,CSV exportieren,de
+Export Excel,Excel exportieren,de
+Export Object,Objekt exportieren,de
+Export PDF,PDF exportieren,de
+Export calendar,Kalender exportieren,de
+Export file,Datei exportieren,de
+Export format,Format exportieren,de
+Export indicators,Indikatoren für die Ausfuhr,de
+Export limit must be greater than query fetch size.,Die Exportgrenze muss größer sein als die Abfragegröße.,de
+Export limit must be greater than zero.,Die Exportgrenze muss größer als Null sein.,de
+Expression,Ausdruck,de
+External,Extern,de
+External reference,Externe Referenz,de
+FTP information,FTP-Informationen,de
+Factor,Faktor,de
+Factory not found this type of generator,Fabrik nicht gefunden diese Art von Generator,de
+Faker API field,Faker-API-Feld,de
+Faker API fields,Faker-API-Felder,de
+Faker api field,Faker api Feld,de
+Faker field parameters list,Liste der Faker-Feldparameter,de
+FakerApiField.methodName,FakerApiField.methodName,de
+Family Code,Familiengesetzbuch,de
+Family Name,Familienname,de
+Feature currently not available with Open Street Maps.,Diese Funktion ist derzeit bei Open Street Maps nicht verfügbar.,de
+February,Februar,de
+Fetch data,Daten abrufen,de
+Fetch emails,E-Mails abrufen,de
+Fetch limit,Abrufgrenze,de
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",Abrufgrenze für diese Charge. 0 wird nicht berücksichtigt. In diesem Fall wird der in der App Base konfigurierte Wert verwendet.,de
+Field,Feld,de
+Field displayed in the result of the research,Im Ergebnis der Recherche angezeigtes Feld,de
+Field permission,Genehmigung vor Ort,de
+Field to bind for the query,Zu verbindendes Feld für die Abfrage,de
+Field to populate,Zu befüllendes Feld,de
+Field to pseudonymize,Zu pseudonymisierendes Feld,de
+Field type,Feldtyp,de
+Field(%s) doesn't exist for the object(%s),Feld(%s) existiert nicht für das Objekt(%s),de
+Fields,Felder,de
+Fields can't be ignore,Felder können nicht ignoriert werden,de
+Fields configuration,Konfiguration der Felder,de
+Fields to select duplicate,Felder zur Auswahl von Duplikaten,de
+Fields to use,Zu verwendende Felder,de
+File,Datei,de
+File extension,Dateierweiterung,de
+File field,Datei-Feld,de
+File field name,Name des Dateifeldes,de
+File fields,Datei-Felder,de
+File loaded successfully,Datei erfolgreich geladen,de
+File naming rule,Regel zur Dateibenennung,de
+File source connector,Dateiquellverbinder,de
+File source connector is missing mandatory field(s) in order to create a session.,"Dem Datei-Quellkonnektor fehlt ein oder mehrere Pflichtfelder, um eine Sitzung zu erstellen.",de
+File source connector parameters,Parameter des Dateiquellverbinders,de
+File source connectors,Dateiquellverbinder,de
+File source connectors parameters,Parameter der Dateiquellverbinder,de
+File successfully exported.,Die Datei wurde erfolgreich exportiert.,de
+File successfully imported.,Datei erfolgreich importiert.,de
+File tab,"Registerkarte ""Datei",de
+File tab is not matched inside file,"Registerkarte ""Datei"" wird nicht mit der Datei übereinstimmen",de
+File tabs,Datei-Registerkarten,de
+File type,Dateityp,de
+File type select,Dateityp auswählen,de
+File types,Dateitypen,de
+FileTab,FileTab,de
+Files,Dateien,de
+Fill from Sirene API,Füllen von Sirene API,de
+Filters,Filter,de
+Find,finden.,de
+FindNew,FindeNeu,de
+Finished,Fertige,de
+Finished product,Fertiges Produkt,de
+First,Erste,de
+First Name,Vorname,de
+First line,Erste Zeile,de
+First name,Vornamen,de
+Fiscal Year,Haushaltsjahr,de
+Fiscal position,Finanzielle Lage,de
+Fiscal positions,Steuerliche Positionen,de
+Fiscal year,Steuerjahr,de
+Fixed,Festgelegt,de
+Fixed Amount/%,Fester Betrag/%,de
+Fixed phone,Festnetztelefon,de
+Fixer,Fixer,de
+Fixer Api key,Fixer Api-Schlüssel,de
+Float,Schwimmer,de
+Floor,Boden,de
+Floor or storey within a building.,Stockwerk oder Etage innerhalb eines Gebäudes.,de
+Followed users,Verfolgte Benutzer,de
+"Following variables are available: <ul> <li>Values from printed model are available with uppercased model name. Example:<b>$Product.code</b> will print the code from the product.</li> <li><b>__i18n__.get(""key.to.translate"")</b></li><li><b>__i18n__.getValue(field value to translate)</b></li> <li><b>__datetime__.date</b> to get current date format yyyyMMdd</li> <li><b>__datetime__.time</b> to get current time format HHmmss</li> <li><b>__datetime__.dateT</b> to get current date time format yyyyMMddHHmmss</li> <li><b>__datetime__.format(pattern)</b> to get current datetime with your own pattern</li> <li><b>__datetime__.date(Company)</b> to get current date using timezone from company</li> </ul>","Following variables are available: <ul> <li>Values from printed model are available with uppercased model name. Example:<b>$Product.code</b> will print the code from the product.</li> <li><b>__i18n__.get(""key.to.translate"")</b></li><li><b>__i18n__.getValue(field value to translate)</b></li> <li><b>__datetime__.date</b> to get current date format yyyyMMdd</li> <li><b>__datetime__.time</b> to get current time format HHmmss</li> <li><b>__datetime__.dateT</b> to get current date time format yyyyMMddHHmmss</li> <li><b>__datetime__.format(pattern)</b> to get current datetime with your own pattern</li> <li><b>__datetime__.date(Company)</b> to get current date using timezone from company</li> </ul>",de
+Font Color,Schriftfarbe,de
+Font Size,Schriftgröße,de
+Font Type,Schriftart,de
+For select use,Für ausgewählten Gebrauch,de
+"For the internal classification number, the starting position in the registration number should be less than the required size.",Bei der internen Klassifizierungsnummer sollte die Anfangsposition in der Registrierungsnummer kleiner als die erforderliche Größe sein.,de
+"For the internal classification number, the sum of the starting position in the registration number and length should not be greater than the required size.",Bei der internen Klassifizierungsnummer darf die Summe aus der Anfangsposition in der Registrierungsnummer und der Länge nicht größer sein als die erforderliche Größe.,de
+"For the short registration number, the starting position in the registration number should be less than the required size.",Bei der kurzen Registriernummer sollte die Anfangsposition der Registriernummer kleiner als die erforderliche Größe sein.,de
+"For the short registration number, the sum of the starting position in the registration number and length should not be greater than the required size.",Bei der kurzen Registriernummer sollte die Summe aus der Anfangsposition der Registriernummer und der Länge nicht größer sein als die erforderliche Größe.,de
+Force the users to update password the next login,Erzwingt die Aktualisierung des Passworts bei der nächsten Anmeldung,de
+Format,Format,de
+Formula,Formel,de
+Fourth,Vierte,de
+France,Frankreich,de
+Free Text,Freier Text,de
+Freight Carrier,Güterkraftverkehrsunternehmen,de
+French registration number validation,Validierung der französischen Zulassungsnummer,de
+Frequencies,Frequenzen,de
+Frequency,Frequenz,de
+Frequency end date cannot be before task date.,Das Enddatum der Frequenz kann nicht vor dem Datum der Aufgabe liegen.,de
+Frequency type,Art der Frequenz,de
+Friday,Freitag,de
+Fridays,Freitags,de
+From,Von,de
+From Date,Von Datum,de
+From Unit,Von Einheit,de
+From stock,Vom Lager,de
+From validity date,Von Gültigkeitsdatum,de
+Full Address,Vollständige Adresse,de
+Full name,Vollständiger Name,de
+Function,Funktion,de
+Function / Business card,Funktion / Visitenkarte,de
+Function Name,Funktion Name,de
+Functional anomaly,Funktionelle Anomalie,de
+Functions,Funktionen,de
+Future qty,Zukünftige Menge,de
+GCAL,GCAL,de
+General,Allgemein,de
+General contact details,Allgemeine Kontaktinformationen,de
+General data,Allgemeine Angaben,de
+General discount (%),Allgemeiner Rabatt (%),de
+Generate barcode,Barcode generieren,de
+Generate csv file for empty tables,csv-Datei für leere Tabellen generieren,de
+Generate message,Nachricht generieren,de
+Generate new random passwords,Neue Zufallspasswörter generieren,de
+Generate new random passwords and force password change,Neue Zufallspasswörter generieren und Passwortwechsel erzwingen,de
+Generate periods,Zeiträume generieren,de
+Generate product variants,Produktvarianten generieren,de
+Generate random password,Zufälliges Passwort generieren,de
+Generate sequence for partners,Sequenz für Partner generieren,de
+Generate sequence for products,Reihenfolge für Produkte generieren,de
+Generated account moves,Erstellte Kontobewegungen,de
+Generated anomalies :,Erstellte Anomalien :,de
+Generic product,Generisches Produkt,de
+Geo. coordinates,Geo-Koordinaten,de
+GeoNames,GeoNamen,de
+GeoNames Dump URL,GeoNames Dump URL,de
+GeoNames Zip URL,GeoNames Zip URL,de
+Geographical area,Geografisches Gebiet,de
+"Geoname's URL to access Geoname Dump files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Dump URL in tab Interfaces and in the panel GeoNames.","Die URL von Geoname für den Zugriff auf Geoname Dump-Dateien fehlt, um diesen Vorgang abzuschließen. In der Konfiguration der App. Base das Feld GeoNames Dump URL im Tab Interfaces und im Panel GeoNames aus.",de
+"Geoname's URL to access Zip files is missing to complete this operation. In the configuration of the App. Base, please fill in the field GeoNames Zip URL in tab Interfaces and in the panel GeoNames.","Die URL von Geoname für den Zugriff auf Zip-Dateien fehlt, um diesen Vorgang abzuschließen. In der Konfiguration der App. Base das Feld GeoNames Zip URL im Tab Interfaces und im Panel GeoNames aus.",de
+Geonames,Geonamen,de
+Get direction,Richtung erhalten,de
+Get rate,Tarif erhalten,de
+Global,Global,de
+Global tracking configuration,Globale Tracking-Konfiguration,de
+Global tracking configuration line,Globale Tracking-Konfigurationszeile,de
+Global tracking configuration lines,Globale Tracking-Konfigurationszeilen,de
+Global tracking log,Globales Verfolgungsprotokoll,de
+Global tracking log line,Globale Verfolgungsprotokollzeile,de
+Global tracking log line list,Globale Verfolgungsprotokollzeilenliste,de
+Global tracking log lines,Globale Verfolgungsprotokollzeilen,de
+Global tracking logs,Globale Verfolgungsprotokolle,de
+Google,Google,de
+Google Maps API key,Google Maps API-Schlüssel,de
+Google Maps API key is missing in configuration.,Der Google Maps API-Schlüssel fehlt in der Konfiguration.,de
+Google address,Google-Adresse,de
+Google api key,Google api Schlüssel,de
+Google email,Google E-Mail,de
+Google phone number,Google-Telefonnummer,de
+Groovy Template Help,Groovy-Vorlage Hilfe,de
+Gross mass,Bruttomasse,de
+Group,Gruppe,de
+Group Menu Assistant,Gruppenmenü-Assistent,de
+Group products on printings,Produkte auf Drucksachen gruppieren,de
+Groups,Gruppen,de
+Groups not found: %s,Gruppen nicht gefunden: %s,de
+Growth coefficient,Wachstumskoeffizient,de
+Guests,Gäste,de
+HTML,HTML,de
+Having header,Mit Kopfzeile,de
+Head office address,Adresse des Hauptsitzes,de
+Header Content Width,Kopfzeile Inhalt Breite,de
+Header is not valid.,Header ist nicht gültig.,de
+Height,Höhe,de
+Height(px),Höhe(px),de
+Help for groovy template,Hilfe für Groovy-Vorlage,de
+Helvetica,Helvetica,de
+Helvetica-Bold,Helvetica-Fett,de
+Helvetica-BoldOblique,Helvetica-BoldOblique,de
+Helvetica-Oblique,Helvetica-Oblique,de
+"Here you can write display conditions in groovy. For example : contractType?.name = ""CDI"" && partTime","Hier können Sie Anzeigebedingungen in Groovy schreiben. Zum Beispiel : contractType?.name = ""CDI"" && partTime",de
+Here you can write text using string template method (as in email models). This text will display in the generated PDF. For example : The company $EmploymentContrat.payCompany$ and the employee $EmploymentContract.employee$ agreed on the following points.,Here you can write text using string template method (as in email models). This text will display in the generated PDF. For example : The company $EmploymentContrat.payCompany$ and the employee $EmploymentContract.employee$ agreed on the following points.,de
+Here you can write the title of the PDF to print using string template method. For example : A look at $EmploymentContrat.company.name$ 's potential future projects.,Here you can write the title of the PDF to print using string template method. For example : A look at $EmploymentContrat.company.name$ 's potential future projects.,de
+Hide Discount on prints,Rabatt auf Abzüge ausblenden,de
+Hide If,Ausblenden wenn,de
+Hide print settings,Druckeinstellungen ausblenden,de
+Historic,Historisches,de
+Historical,Historisch,de
+Historize,historisieren,de
+Historize Price List,Preisliste historisieren,de
+Historize the current pricing?,Historisieren Sie die aktuellen Preise?,de
+Historized Price Lists,Historisierte Preislisten,de
+Historized Pricing,Historisierte Preisgestaltung,de
+Historized by,Historisiert von,de
+Historized pricings,Historisierte Preise,de
+History,Geschichte,de
+Home action,Aktion zu Hause,de
+Host,Gastgeber,de
+Hours Unit,Stunden Einheit,de
+Human Resources config,Personalwesen konfigurieren,de
+IBAN,IBAN,de
+IBAN / BBAN,IBAN / BBAN,de
+IBAN / BBAN + BIC,IBAN / BBAN + BIC,de
+ICAL_SERVER,ICAL_SERVER,de
+ICal events only,Nur ICal-Ereignisse,de
+ICalendars,,de
+ID,ID,de
+IEvents,IEvents,de
+INSEE Code,,de
+IPO,IPO,de
+IPO + Cheque,IPO + Scheck,de
+ISO code,ISO-Code,de
+ITF,ITF,de
+Id,Id,de
+Id on AOS,Id auf AOS,de
+Identification of a division of a large organisation or building.,Kennzeichnung einer Abteilung einer großen Organisation oder eines Gebäudes.,de
+Identification of a sub-division of a large organisation or building. Displayed if department field is filled.,"Identifikation einer Unterabteilung einer großen Organisation oder eines Gebäudes. Wird angezeigt, wenn das Feld Abteilung ausgefüllt ist.",de
+Identified pricing scale: %s,Identifizierte Preisstaffel: %s,de
+Identifier consisting of a group of letters and/or numbers that is added to a postal address to assist the sorting of mail.,"Kennung, die aus einer Gruppe von Buchstaben und/oder Ziffern besteht und einer Postanschrift hinzugefügt wird, um das Sortieren der Post zu erleichtern.",de
+"Identifies a subdivision of a country such as a state, a region, a province, a municipality which is used in the address (and commonly defined in the ISO 3166-2). For example, CA for California in the United States, ON for Ontario in Canada, BEIJING or GUANGDONG in China.","Bezeichnet eine Unterteilung eines Landes wie einen Bundesstaat, eine Region, eine Provinz, eine Gemeinde, die in der Adresse verwendet wird (und in der ISO 3166-2 allgemein definiert ist). Zum Beispiel CA für Kalifornien in den Vereinigten Staaten, ON für Ontario in Kanada, BEIJING oder GUANGDONG in China.",de
+"Identifies a subdivision within a country sub-division (hierarchically below the Country subdivision field). If the country sub-division is a State/Province, then the district name can be the County.","Bezeichnet eine Untergliederung innerhalb einer Länderuntergliederung (hierarchisch unterhalb des Feldes Länderuntergliederung). Handelt es sich bei der Länderuntergliederung um einen Bundesstaat/Provinz, kann der Name des Bezirks auch County lauten.",de
+"If you leave this field empty or fill it with an incorrect formula, the default email account's signature will be used.\nExamples of a correct formulas:\n$__user__.emailSignature$\n$first(__user__.emailAccountList).signature$","If you leave this field empty or fill it with an incorrect formula, the default email account's signature will be used.\nExamples of a correct formulas:\n$__user__.emailSignature$\n$first(__user__.emailAccountList).signature$",de
+"If you select this option, the current pricing will be historized before retrieving the historized pricing.","Wenn Sie diese Option wählen, wird der aktuelle Preis historisiert, bevor der historisierte Preis abgerufen wird.",de
+Ignore the line,Ignorieren Sie die Zeile,de
+Ignore/Empty,Ignorieren/Leeren,de
+Image,Bild,de
+Import,Importieren,de
+Import Calendar,Kalender importieren,de
+Import Configuration,Konfiguration importieren,de
+Import Histories,Historien importieren,de
+Import Print template,Importieren Druckvorlage,de
+Import batch,Batch importieren,de
+Import batches,Chargen importieren,de
+Import calendar,Kalender importieren,de
+Import city,Stadt importieren,de
+Import completed successfully,Import erfolgreich abgeschlossen,de
+Import completed successfully. Please check the log for more details.,Der Import wurde erfolgreich abgeschlossen. Bitte prüfen Sie das Protokoll für weitere Details.,de
+Import configuration,Konfiguration importieren,de
+Import contact,Kontakt importieren,de
+Import date,Datum der Einfuhr,de
+Import demo data,Demo-Daten importieren,de
+Import field,Feld importieren,de
+Import from connector,Importieren vom Verbinder,de
+Import histories,Historien importieren,de
+Import log,Protokoll importieren,de
+Import permissions,Berechtigungen importieren,de
+Import print template,Druckvorlage importieren,de
+Import successful.,Import erfolgreich.,de
+Import type,Art der Einfuhr,de
+Import/Export,Import/Export,de
+Import/Export interface,Import/Export-Schnittstelle,de
+Import/Export interfaces,Import/Export-Schnittstellen,de
+Import/Export translation,Import/Export-Übersetzung,de
+Import/Export translations,Import/Export von Übersetzungen,de
+Imported contact,Importierter Kontakt,de
+Importing,Importieren von,de
+Imports,Einfuhren,de
+"Impossible to generate report, url toward Birt viewer is not correctly configured (%s)","Bericht kann nicht erstellt werden, da die URL zum Birt-Viewer nicht korrekt konfiguriert ist (%s)",de
+Improper format of excel file.,Falsches Format der Exceldatei.,de
+In,Unter,de
+In %,In %,de
+In / Out,Ein / Aus,de
+In ATI,In ATI,de
+In Progress,In Arbeit,de
+"In addition to the main barcode, this feature allows you to enter a list of alternative barcodes to easily find the product on the application. Without the mobile app, these barcodes have only an informative value.","Zusätzlich zum Hauptbarcode können Sie mit dieser Funktion eine Liste mit alternativen Barcodes eingeben, um das Produkt in der Anwendung leicht zu finden. Ohne die mobile App haben diese Barcodes nur einen informativen Wert.",de
+In progress,In Arbeit,de
+Inactive,Inaktiv,de
+Include Discount in unit price,Rabatt in den Stückpreis einbeziehen,de
+Include Discount in unit price only for replace type,Rabatt im Einheitspreis nur für Ersatztyp einbeziehen,de
+Include archived records,Archivierte Datensätze einbeziehen,de
+Inconsistency,Inkonsistenz,de
+Incorrect BBAN Key,Falscher BBAN-Schlüssel,de
+Increase,Erhöhung,de
+Increment,Inkrement,de
+Indicator generator,Indikator-Generator,de
+Indicator generator list,Indikator-Generatorliste,de
+Indicator generators,Indikator-Generatoren,de
+Indicators generators,Indikatoren Generatoren,de
+Indicators groups,Gruppen von Indikatoren,de
+Individual,Einzelne,de
+Industry Sector,Industrie Sektor,de
+Industry sector,Sektor der Industrie,de
+Industry sectors,Industriezweige,de
+Information,Informationen,de
+Informations,Informationen,de
+Input file,Eingabedatei,de
+Instance info,Instanz-Informationen,de
+Integer,Integer,de
+Interface,Schnittstelle,de
+Interfaces,Schnittstellen,de
+Internal,Intern,de
+Internal Classification Number,Interne Klassifizierungsnummer,de
+Internal classification number,Interne Klassifikationsnummer,de
+Internal companies,Interne Unternehmen,de
+Internal description,Interne Beschreibung,de
+Internal partner,Interner Partner,de
+Inv._block,Inv._block,de
+Invalid SIRET number. It must contain exactly 14 digits.,Ungültige SIRET-Nummer. Sie muss genau 14 Ziffern enthalten.,de
+Invalid Search call for the object(%s),Ungültiger Suchaufruf für das Objekt (%s),de
+Invalid Serial Number '%s' for '%s' barcode type.Alphabets must be in uppercase only,Invalid Serial Number '%s' for '%s' barcode type.Alphabets must be in uppercase only,de
+Invalid Serial Number '%s' for '%s' barcode type.It must be alphanumeric,Invalid Serial Number '%s' for '%s' barcode type.It must be alphanumeric,de
+Invalid Serial Number '%s' for '%s' barcode type.It must be only number or only alphabets,Invalid Serial Number '%s' for '%s' barcode type.It must be only number or only alphabets,de
+Invalid Serial Number '%s' for '%s' barcode type.Its Length must be %d,Invalid Serial Number '%s' for '%s' barcode type.Its Length must be %d,de
+Invalid Serial Number '%s' for '%s' barcode type.Its length limit must be greater than %d and less than %d,Invalid Serial Number '%s' for '%s' barcode type.Its length limit must be greater than %d and less than %d,de
+Invalid data format. Please check log for more details.,Ungültiges Datenformat. Bitte prüfen Sie das Protokoll für weitere Details.,de
+Invalid duplicate finder field '%s'. Field type ManyToMany or OneToMany is not supported for duplicate check,Ungültiges Feld für die Dublettensuche '%s'. Der Feldtyp ManyToMany oder OneToMany wird für die Dublettenprüfung nicht unterstützt,de
+Invalid fields,Ungültige Felder,de
+Invalid serial number '%s' for '%s' barcode type.It must be digits only,Invalid serial number '%s' for '%s' barcode type.It must be digits only,de
+Invalid serial number '%s' for '%s' barcode type.It must be digits only with even number length.,Invalid serial number '%s' for '%s' barcode type.It must be digits only with even number length.,de
+Invalid serial number '%s' for '%s' barcode type.It must be of %d digits only.,Invalid serial number '%s' for '%s' barcode type.It must be of %d digits only.,de
+Invalid times %s afternoon,Ungültige Zeiten %s Nachmittag,de
+Invalid times %s morning,Ungültige Zeiten %s Morgen,de
+Invalid times on %s between morning and afternoon,Ungültige Zeiten am %s zwischen Morgen und Nachmittag,de
+Invalid type of data,Unzulässiger Datentyp,de
+Invalid value,Ungültiger Wert,de
+Inventory type,Art des Inventars,de
+Invoice,Rechnung,de
+Invoice status,Status der Rechnung,de
+Invoices,Rechnungen,de
+Invoicing address,Adresse der Rechnungsstellung,de
+Invoicing blocking,Sperrung der Rechnungsstellung,de
+Invoicing projects,Projekte zur Rechnungsstellung,de
+Is a carrier,Ist ein Träger,de
+Is a contact,Ist ein Kontakt,de
+Is final,Ist endgültig,de
+Is model,Ist das Modell,de
+Is shipping costs product,Ist das Produkt versandkostenfrei,de
+JPQL,JPQL,de
+JPQL filter to add to the query,"JPQL-Filter, der der Abfrage hinzugefügt werden soll",de
+January,Januar,de
+Json field can not be anonymized,Json-Feld kann nicht anonymisiert werden,de
+July,Juli,de
+June,Juni,de
+KMS,KMS,de
+Keep remote,Fernbedienung behalten,de
+Key file,Schlüssel-Datei,de
+Key file passphrase,Passphrase der Schlüsseldatei,de
+L : For Letters,L : Für Briefe,de
+LCR accounted invoices,LCR-verrechnete Rechnungen,de
+Label,Etikett,de
+Label To Printing,Etikett zum Drucken,de
+Label for grouped products,Etikett für gruppierte Produkte,de
+Label for grouped services,Etikett für gruppierte Dienste,de
+Landscape,Landschaft,de
+Language,Sprache,de
+Language is empty for the localization %s,Sprache ist leer für die Lokalisierung %s,de
+Languages,Sprachen,de
+Last,Zuletzt,de
+Last Synchronization,Letzte Synchronisierung,de
+Last production price,Letzter Produktionspreis,de
+Last purchase date,Letztes Kaufdatum,de
+Last purchase price,Letzter Einkaufspreis,de
+Last purchase price A.T.I.,Last purchase price A.T.I.,de
+Last purchase price W.T.,Last purchase price W.T.,de
+Latitude,Breitengrad,de
+Leave,Verlassen Sie,de
+Length,Länge,de
+Length unit,Einheit Länge,de
+Level of grouping,Ebene der Gruppierung,de
+Link type,Art der Verbindung,de
+Linked Adjusting Moves,Verknüpfte Anpassungsbewegungen,de
+Linked pricing,Verknüpfte Preisgestaltung,de
+Linked to a creation assistant,Verbunden mit einem Erstellungsassistenten,de
+Links,Links,de
+List of printing settings for trading names,Liste der Druckeinstellungen für Handelsnamen,de
+LocalDate,LocalDate,de
+LocalDateTime,LocalDateTime,de
+Localization,Lokalisierung,de
+Localization is empty,Lokalisierung ist leer,de
+Localizations,Lokalisierungen,de
+Location,Standort,de
+Log,Protokoll,de
+Login,Anmeldung,de
+Logo,Logo,de
+Logo position,Position des Logos,de
+Logs configuration,Konfiguration der Protokolle,de
+Long,Lang,de
+Long name,Langer Name,de
+Longitude,Längengrad,de
+M.,M.,de
+METAMODEL.DETAILS,METAMODEL.DETAILS,de
+Mail Batch,Mail-Stapel,de
+Mail account,Mail-Konto,de
+Mail batch,Poststapel,de
+Mail batch filters,Mail-Batch-Filter,de
+Mail batches,Poststapel,de
+Mail template association,Mail-Vorlagen-Zuordnung,de
+Mailing list created,Mailingliste erstellt,de
+Mailing list message,Nachricht der Mailingliste,de
+Mailing list updated,Mailingliste aktualisiert,de
+Mailing lists,Mailinglisten,de
+Main Activities,Wichtigste Aktivitäten,de
+Main Activity,Haupttätigkeit,de
+Main Template,Hauptvorlage,de
+Main address,Hauptanschrift,de
+Main calendar,Hauptkalender,de
+Main company,Hauptunternehmen,de
+Manage by amount,Verwalten nach Betrag,de
+Manage by percentage,Verwalten nach Prozentsatz,de
+Manage mail account by company,E-Mail-Konto nach Unternehmen verwalten,de
+Manage mail account by user,E-Mail-Konto nach Benutzer verwalten,de
+Manage multi banks,Verwalten mehrerer Banken,de
+Manage prices for product variants,Verwalten von Preisen für Produktvarianten,de
+Manage product variants,Verwalten von Produktvarianten,de
+Manage related CC & BCC emails,Verwalten Sie zugehörige CC- und BCC-E-Mails,de
+Manage subsidiaries on partners,Verwalten von Tochtergesellschaften bei Partnern,de
+Managed by,Verwaltet von,de
+Managed for,Verwaltet für,de
+Management coef.,Management-Koeff.,de
+Manual,Handbuch,de
+Manufacturing Year,Herstellungsjahr,de
+Map,Karte,de
+MapRest.Default,MapRest.Default,de
+MapRest.Delivery,MapRest.Delivery,de
+MapRest.Invoicing,MapRest.Invoicing,de
+MapRest.ZERO_RESULTS,MapRest.ZERO_RESULTS,de
+Mapping,Kartierung,de
+Mapping service provider,Anbieter von Kartierungsdiensten,de
+Maps,Karten,de
+March,März,de
+Marketing campaigns,Marketing-Kampagnen,de
+Mass,Masse,de
+Mass unit,Masseneinheit,de
+Match with file,Abgleich mit Datei,de
+Max discount (%),Maximaler Rabatt (%),de
+Max number of lines per file,Maximale Anzahl von Zeilen pro Datei,de
+Maximum export limit,Höchstgrenze für die Ausfuhr,de
+Maximum height should be 60 px.,Die maximale Höhe sollte 60 px betragen.,de
+Maximum number of records to export by using this advance export.,"Maximale Anzahl von Datensätzen, die mit diesem Vorab-Export exportiert werden sollen.",de
+Maximum time before a process called by an user starts running in the background,"Maximale Zeit, bevor ein von einem Benutzer aufgerufener Prozess im Hintergrund zu laufen beginnt",de
+May,Mai,de
+Maybe,Vielleicht,de
+Meeting,Treffen,de
+Menu Items,Menüpunkte,de
+Menu not found: %s,Menü nicht gefunden: %s,de
+Menus,Menüs,de
+Merge duplicated,Duplizierte zusammenführen,de
+Message,Nachricht,de
+Messaging,Nachrichtenübermittlung,de
+Meta Json Field,Meta-Json-Feld,de
+Meta Permissions,Meta-Berechtigungen,de
+Meta field,Meta-Feld,de
+Meta field name,Meta-Feldname,de
+Meta file,Meta-Datei,de
+Meta json,Meta json,de
+Meta model,Meta-Modell,de
+Meta model name,Meta-Modellname,de
+MetaSchedule.service,MetaSchedule.service,de
+Method name,Name der Methode,de
+Method parameters,Parameter der Methode,de
+Minutes Unit,Minuten Einheit,de
+Missing %s parameter(s),Fehlende(r) %s-Parameter,de
+Missing data for required fields,Fehlende Daten für Pflichtfelder,de
+Missing date format or expression,Fehlendes Datumsformat oder Ausdruck,de
+Missing field,Fehlendes Feld,de
+Missing import fields,Fehlende Importfelder,de
+Missing parameter configuration for model %s.,Fehlende Parameterkonfiguration für Modell %s.,de
+Missing required fields,Fehlende Pflichtfelder,de
+Missing sub fields for,Fehlende Unterfelder für,de
+Mobile phone,Mobiltelefon,de
+Model,Modell,de
+Model default Path,Modell Standard Pfad,de
+Model email link,Modell E-Mail-Link,de
+Model email links,Modell E-Mail-Links,de
+Model target field,Modell Zielfeld,de
+Model to pseudonymize,Modell zur Pseudonymisierung,de
+Models,Modelle,de
+Models to pseudonymize,Modelle zur Pseudonymisierung,de
+Models to search,Zu suchende Modelle,de
+Modification,Änderung,de
+Module,Modul,de
+Modules configurations,Konfigurationen der Module,de
+Monday,Montag,de
+Mondays,Montags,de
+Month,Monat,de
+Month days,Monat Tage,de
+Month/days,Monat/Tage,de
+Monthly reset,Monatliche Rückstellung,de
+Months,Monate,de
+Mother company,Muttergesellschaft,de
+Move exports,Exporte verschieben,de
+Move lines,Linien verschieben,de
+Moves,Bewegt sich,de
+Ms.,Frau,de
+"Multiple pricings found for the product/category '%s', company '%s' and model '%s', only one expected.","Mehrere Preise für das Produkt/die Kategorie ""%s"", das Unternehmen ""%s"" und das Modell ""%s"" gefunden, nur einer erwartet.",de
+Multiple qty,Mehrere Mengen,de
+Multiple quantities,Mehrere Mengen,de
+Multiple quantities of purchase,Mehrere Kaufmengen,de
+Multiple quantities of sale,Mehrere Verkaufsmengen,de
+Multiple quantity,Mehrfache Menge,de
+Mx.,Mx.,de
+My Customers,Meine Kunden,de
+My ERP calendars,Meine ERP-Kalender,de
+My Mailing lists,Meine Mailinglisten,de
+My Prospects,Meine Aussichten,de
+My Recent Contacts,Meine letzten Kontakte,de
+My calendars,Meine Terminkalender,de
+My events,Meine Veranstaltungen,de
+My open tasks,Meine offenen Aufgaben,de
+My tasks,Meine Aufgaben,de
+My teams,Meine Teams,de
+N : For numbers,N : Für Zahlen,de
+NA,NA,de
+Name,Name,de
+"Name of a built-up area, with defined boundaries, and a local government; most commonly the name of a town where the address is located. This field will be autofilled when selecting a city within a list onto the database.","Name eines bebauten Gebiets mit definierten Grenzen und einer lokalen Verwaltung; in der Regel der Name einer Stadt, in der sich die Adresse befindet. Dieses Feld wird automatisch ausgefüllt, wenn eine Stadt in einer Liste in der Datenbank ausgewählt wird.",de
+"Name of a street or thoroughfare. If the building number is not displayed, then the number that identifies the position of a building in the street must be included in this model.","Name einer Straße oder Durchgangsstraße. Wenn die Gebäudenummer nicht angezeigt wird, muss die Nummer, die die Position eines Gebäudes in der Straße kennzeichnet, in dieses Modell aufgenommen werden.",de
+Name of temporary variable,Name der temporären Variablen,de
+Name of the building or house.,Name des Gebäudes oder der Wohnung.,de
+Name of the field in the model where to save the file,"Name des Feldes im Modell, in dem die Datei gespeichert werden soll",de
+Name/Company Name,Name/Firmenname,de
+National Code,Nationaler Kodex,de
+Navigation,Navigation,de
+Nb columns,Nb-Spalten,de
+Nb of Inhabitants,Zahl der Einwohner,de
+Nb of digits for quantities,Nb von Stellen für Mengen,de
+Nb of digits for tax rate,Anzahl der Ziffern für den Steuersatz,de
+Nb of digits for unit prices,Anzahl der Stellen für Einheitspreise,de
+Nb of first lines to be ignore,Anzahl der zu ignorierenden ersten Zeilen,de
+Nb. of Inhabitants,Anzahl der Einwohner,de
+Nested batch execution!,Verschachtelte Stapelverarbeitung!,de
+Net mass,Nettomasse,de
+New,Neu,de
+New customers with first sale order,Neukunden mit Erstverkaufsbestellung,de
+New job title,Neue Berufsbezeichnung,de
+New password,Neues Passwort,de
+Newly set value,Neu eingestellter Wert,de
+Next,Weiter,de
+Next N°,Nächste Nr.,de
+Next pricing,Nächste Preisgestaltung,de
+Next task,Nächste Aufgabe,de
+No,Nein,de
+No Return Value,Kein Rückgabewert,de
+"No active company for this user, please define an active company.","Keine aktive Firma für diesen Benutzer, bitte definieren Sie eine aktive Firma.",de
+"No address found with this country, zip and street name. City name is required to create a new city.","Keine Adresse mit diesem Land, dieser Postleitzahl und diesem Straßennamen gefunden. Der Name der Stadt ist erforderlich, um eine neue Stadt zu erstellen.",de
+No city found,Keine Stadt gefunden,de
+No contact to import.,Kein Kontakt zur Einfuhr.,de
+No country found for: %s.,Kein Land gefunden für: %s.,de
+No currency conversion found from '%s' to '%s' for date %s,Keine Währungsumrechnung von '%s' nach '%s' für Datum %s gefunden,de
+No discount,Kein Rabatt,de
+No duplicate finder field configured.,Kein Feld für die Suche nach Duplikaten konfiguriert.,de
+No duplicate records found,Keine doppelten Datensätze gefunden,de
+No file found on %s.,Keine Datei auf %s gefunden.,de
+No header row found,Keine Kopfzeile gefunden,de
+No help,Keine Hilfe,de
+No imported data to reset,Keine importierten Daten zum Zurücksetzen,de
+No period found or it has been closed for the company %s for the date %s,Keine Periode gefunden oder sie wurde für das Unternehmen %s für das Datum %s geschlossen,de
+No pricing scale used for this record,Keine Preisstaffel für diesen Datensatz verwendet,de
+No tax found for product %s,Keine Steuer für Produkt %s gefunden,de
+No view configured for model %s.,Keine Ansicht für Modell %s konfiguriert.,de
+No zip found in request body or in the found city,Keine Postleitzahl im Anfragetext oder in der gefundenen Stadt gefunden,de
+Non-negotiable price list,Nicht verhandelbares Preisverzeichnis,de
+Non-unique key,Nicht eindeutiger Schlüssel,de
+None,Keine,de
+Not contains,Nicht enthalten,de
+Not implemented yet!,Noch nicht umgesetzt!,de
+Not sent,Nicht gesendet,de
+Not valid,Nicht gültig,de
+Note Bills,Anmerkung Rechnungen,de
+Note bills,Hinweis Rechnungen,de
+Notes,Anmerkungen,de
+November,November,de
+Number of days since last update,Anzahl der Tage seit der letzten Aktualisierung,de
+Number of decimals,Anzahl der Dezimalen,de
+Number of errors occurred,Anzahl der aufgetretenen Fehler,de
+Number of records imported/exported,Anzahl der importierten/exportierten Datensätze,de
+Number of records to fetch from database on one query run. It will fetch upto 'Maximum export limit'.,"Anzahl der Datensätze, die mit einem Abfragelauf aus der Datenbank geholt werden sollen. Es wird bis zum ""Maximalen Exportlimit"" geholt.",de
+Number of tasks generated at most at once,Anzahl der maximal gleichzeitig erzeugten Aufgaben,de
+Number that identifies the position of a building on a street.,"Nummer, die die Position eines Gebäudes an einer Straße angibt.",de
+"Numbered box in a post office, assigned to a person or organisation, where letters are kept until called for.","Nummeriertes Fach in einem Postamt, das einer Person oder Organisation zugewiesen ist und in dem Briefe aufbewahrt werden, bis sie abgeholt werden.",de
+Numbers Format,Zahlen Format,de
+Numeric code (ISO),Numerischer Code (ISO),de
+N° and Street label,Nr. und Straßenbezeichnung,de
+ODS,ODS,de
+ODT,ODT,de
+OK,OK,de
+Object,Objekt,de
+Object id,Objekt-ID,de
+Object is missing for tab configuration(%s),Objekt fehlt für die Registerkarte configuration(%s),de
+Object is not matched,Objekt wird nicht gefunden,de
+Object not found: %s,Objekt nicht gefunden: %s,de
+Objects,Objekte,de
+Obsolete Products,Überholte Produkte,de
+October,Oktober,de
+Old address,Alte Adresse,de
+Old email,Alte E-Mail,de
+Old job title,Alte Berufsbezeichnung,de
+Old phone number,Alte Rufnummer,de
+One month,Ein Monat,de
+One week,Eine Woche,de
+One year,Ein Jahr,de
+Only the users for which the password has not been updated since this number of days will be taken into account.,"Es werden nur die Benutzer berücksichtigt, deren Kennwort seit dieser Anzahl von Tagen nicht mehr aktualisiert wurde.",de
+Open employee form,Mitarbeiterformular öffnen,de
+Open period,Offener Zeitraum,de
+Open street map,Straßenkarte öffnen,de
+Open wizard meta model,Assistenten-Metamodell öffnen,de
+Opened,Geöffnet,de
+Operator,Betreiber,de
+Opportunities,Möglichkeiten,de
+Opportunity,Gelegenheit,de
+Or,Oder,de
+Order Bloqued Message,Bestellung Bloqued Message,de
+Order by,Bestellen bei,de
+Order by type,Bestellung nach Typ,de
+Organization,Organisation,de
+Organizer,Veranstalter,de
+Origin,Herkunft,de
+Origin Id,Herkunft Id,de
+Origin Type,Herkunft Typ,de
+Original,Original,de
+Other,Andere,de
+Other variants,Andere Varianten,de
+Out,Aus,de
+Overview,Übersicht,de
+Owner,Eigentümer,de
+Owner name,Name des Eigentümers,de
+PDF,PDF,de
+PDF_417,PDF_417,de
+PFP Validator,PFP-Prüfer,de
+PFX Certificate,PFX-Zertifikat,de
+PRINT_NOUN,DRUCK_NOUN,de
+Packing,Verpacken,de
+Padding,Polsterung,de
+Paid fixer API,Bezahlte Fixer-API,de
+Parameter,Parameter,de
+Parameters,Parameter,de
+Parent,Elternteil,de
+Parent Menu,Übergeordnetes Menü,de
+Parent Price List,Preisliste der Eltern,de
+Parent category,Übergeordnete Kategorie,de
+Parent company,Muttergesellschaft,de
+Parent product,Übergeordnetes Produkt,de
+Parent user,Übergeordneter Benutzer,de
+Partial address,Teilweise Adresse,de
+Partner,Partner,de
+Partner (Cust/Suppl),Partner (Kunden/Lieferanten),de
+Partner Dashboard,Partner-Dashboard,de
+Partner Details,Partner Details,de
+Partner Type,Partner-Typ,de
+Partner address successfully updated.,Partneradresse erfolgreich aktualisiert.,de
+Partner categories,Partner-Kategorien,de
+Partner category,Partner-Kategorie,de
+Partner default category,Partner-Standardkategorie,de
+Partner filters,Partner-Filter,de
+Partner has duplicate stock settings for same company,Partner hat doppelte Bestandseinstellungen für dasselbe Unternehmen,de
+Partner name,Name des Partners,de
+Partner not found,Partner nicht gefunden,de
+Partner price lists,,de
+Partner relation,Partnerbeziehung,de
+Partner relation type,Art der Partnerbeziehung,de
+Partner relations,Beziehungen zu Partnern,de
+Partner relations type,Art der Partnerbeziehungen,de
+Partner relations types,Arten von Partnerbeziehungen,de
+Partner sources,Quellen der Partner,de
+Partner type,Partner-Typ,de
+Partner type selection,Auswahl der Partnerart,de
+Partner/Contact,Partner/Ansprechpartner,de
+PartnerPriceList.currency,PartnerPriceList.currency,de
+Partners,Partner,de
+Partners by Industry Sector,Partner nach Industriezweig,de
+Password,Passwort,de
+Password change,Passwort ändern,de
+Password doesn't match with configured pattern.,Das Passwort stimmt nicht mit dem konfigurierten Muster überein.,de
+"Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special.","Das Passwort muss aus mindestens 8 Zeichen bestehen und mindestens drei der folgenden vier Typen enthalten: Kleinbuchstaben, Großbuchstaben, Ziffern, Sonderzeichen.",de
+Path,Pfad,de
+Path to export folder,Pfad zum Exportordner,de
+Pattern,Muster,de
+"Pay attention to the type and the order of the parameters.<br>See <a href=""https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html"" target=""_blank"">java documentation</a> for TimeUnit syntax.","Pay attention to the type and the order of the parameters.<br>See <a href=""https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/TimeUnit.html"" target=""_blank"">java documentation</a> for TimeUnit syntax.",de
+Payment,Zahlung,de
+Payment Mode,Zahlungsweise,de
+Payment condition,Zahlungsbedingungen,de
+Payment delay (Average in days),Zahlungsverzug (Durchschnitt in Tagen),de
+Payment mode,Zahlungsweise,de
+Payment mode filters,Filter für die Zahlungsart,de
+Payment vouchers,Zahlungsbelege,de
+Payroll Year,Gehaltsabrechnung Jahr,de
+Pdf Footer Settings,Pdf-Fußzeile Einstellungen,de
+Pdf Header Settings,,de
+Per product,Pro Produkt,de
+Per product category,Pro Produktkategorie,de
+Period,Zeitraum,de
+Period %s is now closed,Zeitraum %s ist jetzt geschlossen,de
+Period closed,Zeitraum abgeschlossen,de
+Period duration,Dauer des Zeitraums,de
+Periods generation assistant,,de
+Periods list,Liste der Zeiträume,de
+Permanent closure date,Datum der endgültigen Schließung,de
+Permanently Closed,Dauerhaft geschlossen,de
+Permanently close period,Dauerhaft schließen Zeitraum,de
+Permission,Erlaubnis,de
+Permission Assistant,Erlaubnis-Assistent,de
+Permissions,Berechtigungen,de
+Personalised export,Personalisierte Ausfuhr,de
+Phone Book,Telefonbuch,de
+Phonebook.companyPhonebook,Phonebook.companyPhonebook,de
+Phonebook.contactPhonebook,Phonebook.contactPhonebook,de
+Photo,Foto,de
+Pick list,Liste auswählen,de
+Picklist QAS,Auswahlliste QAS,de
+Picture,Bild,de
+Please check your parameters configuration.,Bitte überprüfen Sie Ihre Parameterkonfiguration.,de
+Please check your parameters value format.,Bitte überprüfen Sie das Format Ihrer Parameterwerte.,de
+"Please check yours params, both fields must be filled.","Bitte überprüfen Sie Ihre Parameter, beide Felder müssen ausgefüllt werden.",de
+Please clear all existing periods before generating new ones,"Bitte löschen Sie alle bestehenden Perioden, bevor Sie neue Perioden erzeugen.",de
+Please configure unit conversion from '%s' to '%s'.,Bitte konfigurieren Sie die Einheitenumrechnung von '%s' nach '%s'.,de
+Please define a print template for the model :,Bitte definieren Sie eine Druckvorlage für das Modell:,de
+Please enter a tax version for the tax %s,Bitte geben Sie eine Steuerversion für die Steuer %s ein,de
+Please enter at least one field.,Bitte geben Sie mindestens ein Feld ein.,de
+Please enter search call or search fields for the object(%s),Bitte Suchaufruf oder Suchfelder für das Objekt(%s) eingeben,de
+Please fill API Sirene access token in app base.,Bitte geben Sie das API Sirene-Zugangs-Token in der App-Basis ein.,de
+Please fill API Sirene key in app base.,Bitte geben Sie den API-Sirene-Schlüssel in der App-Basis ein.,de
+Please fill API Sirene secret in app base.,Bitte geben Sie das API Sirene Geheimnis in der App-Basis ein.,de
+Please fill API Sirene token generator url in app base.,Bitte geben Sie die URL des API-Sirene-Token-Generators in App Base ein.,de
+Please fill API Sirene url in app base.,Bitte geben Sie die API Sirene Url in der App Base ein.,de
+Please fill in or modify at least one element before saving.,"Bitte füllen Sie mindestens ein Element aus oder ändern Sie es, bevor Sie es speichern.",de
+Please fill in or modify some elements to be able to register,"Bitte füllen Sie einige Felder aus oder ändern Sie sie, um sich registrieren zu können",de
+Please fill in task date.,Bitte geben Sie das Datum der Aufgabe an.,de
+Please fill locale for the company %s,Bitte geben Sie das Gebietsschema für das Unternehmen %s ein,de
+Please fill pixel for height,Bitte geben Sie Pixel für die Höhe ein,de
+Please fill pixel for width,Bitte geben Sie Pixel für die Breite ein,de
+Please fill the default address template.,Bitte füllen Sie die Standard-Adressvorlage aus.,de
+Please import only excel file.,Bitte importieren Sie nur Excel-Dateien.,de
+Please provide valid csv file name.,Bitte geben Sie einen gültigen csv-Dateinamen an.,de
+Please remove duplicate csv file name from excel file.,Bitte entfernen Sie den doppelten csv-Dateinamen aus der Excel-Datei.,de
+Please select a language on user form.,Bitte wählen Sie im Benutzerformular eine Sprache aus.,de
+Please select active company,Bitte aktives Unternehmen auswählen,de
+Please select at least one record.,Bitte wählen Sie mindestens einen Datensatz aus.,de
+Please select export object or export format.,Bitte wählen Sie Exportobjekt oder Exportformat.,de
+Please select fields for export.,Bitte wählen Sie die Felder für den Export aus.,de
+Please select key fields to check duplicate,"Bitte wählen Sie die Schlüsselfelder aus, die Sie auf Duplikate prüfen möchten",de
+Please select multiple records,Bitte wählen Sie mehrere Datensätze aus,de
+Please select original object.,Bitte wählen Sie das Originalobjekt aus.,de
+Please select records to print,Bitte wählen Sie die zu druckenden Datensätze aus,de
+Please set a JPQL domain (For example: self.id = 1),Please set a JPQL domain (For example: self.id = 1),de
+Please set a company.,Bitte legen Sie ein Unternehmen fest.,de
+Please set an active company.,Bitte setzen Sie ein aktives Unternehmen.,de
+Please upload csv or txt or zip files only.,Bitte laden Sie nur csv- oder txt- oder zip-Dateien hoch.,de
+"Please use ',' ';' or '|' as separator between two email addresses.","Bitte verwenden Sie ',' ';' oder '|' als Trennzeichen zwischen zwei E-Mail-Adressen.",de
+Populated custom field: %s,Befülltes benutzerdefiniertes Feld: %s,de
+Populated field: %s,Befülltes Feld: %s,de
+Port,Hafen,de
+Portrait,Porträt,de
+Position.Left,Position.Left,de
+Position.Right,Position.Right,de
+Post box,Briefkasten,de
+Postal addresses,Postanschriften,de
+Preferences,Präferenzen,de
+Prefix,Vorsilbe,de
+Prefix cannot start with #.,Das Präfix darf nicht mit # beginnen.,de
+"Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true","Präfix oder Suffix müssen %M oder %FM und %YY oder %YYYY enthalten, da die monatliche Rückstellung wahr ist",de
+Prefix or suffix must contain %YY or %YYYY since yearly reset is true,"Präfix oder Suffix müssen %YY oder %YYYY enthalten, da die jährliche Rückstellung wahr ist",de
+Prefix or suffix must not contain characters forbidden in filenames.,Präfix oder Suffix dürfen keine in Dateinamen verbotenen Zeichen enthalten.,de
+Previous,Vorherige,de
+Previous pricing,Frühere Preisgestaltung,de
+Previous value,Vorheriger Wert,de
+Price Extra,Preis Extra,de
+Price list,Die Preisliste,de
+Price list content,Inhalt der Preisliste,de
+Price list line,Preislistenzeile,de
+Price list line list,Preisliste Liste,de
+Price list lines,Preislistenzeilen,de
+Price lists,Preislisten,de
+Price product fetch was successful,Preisproduktabruf war erfolgreich,de
+PriceList.currency,PriceList.currency,de
+PriceListLineSelect.Discount,PriceListLineSelect.Discount,de
+Prices updated,Preise aktualisiert,de
+Pricing,Preisgestaltung,de
+Pricing classification rules,Regeln für die Preisklassifizierung,de
+Pricing computing order,Preisberechnungsauftrag,de
+Pricing line,Preisgestaltung,de
+Pricing lines,Preisgestaltung,de
+Pricing process unavailable for this class : %s,Preisfindungsprozess nicht verfügbar für diese Klasse : %s,de
+Pricing result rules,Regeln für das Preisbildungsergebnis,de
+Pricing rule,Preisbildungsregel,de
+Pricing rules,Regeln für die Preisgestaltung,de
+Pricings,Preise,de
+Primary key,Primärschlüssel,de
+Primary keys,Primärschlüssel,de
+Print,Drucken,de
+Print Footer,Fußzeile drucken,de
+Print Header,Kopfzeile drucken,de
+Print Test,Drucktest,de
+Print line,,de
+Print lines,Zeilen drucken,de
+Print sublist,Unterliste drucken,de
+Print template,Vorlage drucken,de
+Print template line,Druckvorlage Zeile,de
+Print template line test,Druckvorlage Zeilentest,de
+Print template lines,,de
+Print template sublist,Druckvorlage Unterliste,de
+Print templates,Vorlagen drucken,de
+Printing,Drucken,de
+Printing Setting,Druckeinstellungen,de
+Printing Settings,Druckeinstellungen,de
+Printing code,Code drucken,de
+Printing settings,Druckeinstellungen,de
+Printing settings for trading name,Druckeinstellungen für den Handelsnamen,de
+Printing template,Druckvorlage,de
+Printing template line,Druckvorlagenzeile,de
+Printing template lines,Drucken von Vorlagenzeilen,de
+Printing templates,Druckvorlagen,de
+Printing wizard,Druck-Assistent,de
+Printings,Drucksachen,de
+Prints,Drucke,de
+Priority,Priorität,de
+Private,Privat,de
+Processed account moves,Verarbeitete Kontoumzüge,de
+Processed users,Bearbeitete Benutzer,de
+Procurement method,Beschaffungsmethode,de
+Procurement settings,Einstellungen für die Beschaffung,de
+Prod instance,Prod-Instanz,de
+Produce,Produzieren Sie,de
+Product,Produkt,de
+Product / Product model,Produkt / Produktmodell,de
+Product BarCode,Produkt BarCode,de
+Product Catalog,Produktkatalog,de
+Product Subtype,Produkt-Subtyp,de
+Product accounting families,Produktbuchhaltungsfamilien,de
+Product catalog PGQL template,Produktkatalog PGQL-Vorlage,de
+Product categories,Produktkategorien,de
+Product category,Produktkategorie,de
+Product category tree,Produktkategorie Baum,de
+Product dates,Produktdaten,de
+Product families,Produktfamilien,de
+Product launch Date,Produkteinführung Datum,de
+Product not renewed,Produkt nicht erneuert,de
+Product per company,Produkt pro Unternehmen,de
+Product pulled off market Date,Produkt vom Markt genommen Datum,de
+Product sequence,Reihenfolge der Produkte,de
+Product sheet,Produktblatt,de
+Product specific attributes,Produktspezifische Attribute,de
+Product types to group,Zu gruppierende Produkttypen,de
+Product typology,Produkttypologie,de
+Product unavailable for purchase,Produkt nicht zum Kauf verfügbar,de
+Product unavailable for sale,Produkt nicht zum Verkauf verfügbar,de
+Product updated,Produkt aktualisiert,de
+Product variant,Produktvariante,de
+Product variant attr,Produktvariante attr,de
+Product variant attr1,Produktvariante attr1,de
+Product variant attr2,Produktvariante attr2,de
+Product variant attr3,Produktvariante attr3,de
+Product variant attr4,Produktvariante attr4,de
+Product variant attr5,Produktvariante attr5,de
+Product variant attribute,Attribut der Produktvariante,de
+Product variant attributes,Attribute der Produktvariante,de
+Product variant config,Produktvariante konfigurieren,de
+Product variant configuration,Konfiguration der Produktvariante,de
+Product variant configurations,Konfigurationen von Produktvarianten,de
+Product variant value,Wert der Produktvariante,de
+Product variant value1,Wert der Produktvariante1,de
+Product variant value1 set,Produktvariante Wert1 eingestellt,de
+Product variant value2,Wert der Produktvariante2,de
+Product variant value2 set,Produktvariante Wert2 gesetzt,de
+Product variant value3,Wert der Produktvariante3,de
+Product variant value3 set,,de
+Product variant value4,Wert der Produktvariante4,de
+Product variant value4 set,Produktvariante value4 set,de
+Product variant value5,Wert der Produktvariante5,de
+Product variant value5 set,Produktvariante Wert5 Satz,de
+Product variant values,Werte der Produktvariante,de
+Product variants,Produktvarianten,de
+ProductCatalog.description,ProductCatalog.description,de
+ProductCatalog.price,ProductCatalog.price,de
+ProductCatalog.reference,ProductCatalog.reference,de
+ProductCatalog.summary,ProductCatalog.summary,de
+ProductSheet.description,ProductSheet.description,de
+ProductSheet.price,ProductSheet.price,de
+ProductSheet.title,ProductSheet.title,de
+ProductSheet.warranty,ProductSheet.warranty,de
+ProductType.product,ProductType.product,de
+ProductVariantValue.applicationPriceSelect,ProductVariantValue.applicationPriceSelect,de
+Production config,Produktionskonfiguration,de
+Production information,Informationen zur Produktion,de
+Products,Produkte,de
+Products (${ name }),Produkte (${ Name }),de
+Products ATI/WT,Produkte ATI/WT,de
+Products With Variant,Produkte mit Variante,de
+Products filters,Produkte Filter,de
+Products models,Produkte Modelle,de
+Products per companies,,de
+Products variant attributes,Attribute der Produktvarianten,de
+Products variants,Varianten der Produkte,de
+Products.items,Products.items,de
+Products.services,Products.services,de
+Project tasks,Projektaufgaben,de
+Projects,Projekte,de
+Properties,,de
+Prospect,Aussicht,de
+Prospects,Aussichten,de
+Prospects by Industry Sector,Perspektiven nach Industriezweigen,de
+Prospects by country,Aussichten nach Ländern,de
+Prototype,Prototyp,de
+Pseudonymization,Pseudonymisierung,de
+Pseudonymization templates,Pseudonymisierungsvorlagen,de
+Pseudonymizer,Pseudonymisierer,de
+Pseudonymizer line,Pseudonymisierungslinie,de
+Pseudonymizer lines,Pseudonymisierungslinien,de
+Pseudonymizer template,Pseudonymisierungsvorlage,de
+Pseudonymizer templates,Pseudonymisierungsvorlagen,de
+Public,Öffentlich,de
+Public Holiday Planning,Feiertagsplanung,de
+Public holidays list,Liste der gesetzlichen Feiertage,de
+Public holidays planning,Planung der Feiertage,de
+Purch._block,Purch._block,de
+Purchasable,Kaufbar,de
+Purchase,Kaufen Sie,de
+Purchase / Cost currency,Einkauf / Kostenwährung,de
+Purchase Taxes,Steuern auf den Erwerb,de
+Purchase config,Konfiguration kaufen,de
+Purchase price,Anschaffungspreis,de
+Purchase price A.T.I.,Purchase price A.T.I.,de
+Purchase price W.T.,Purchase price W.T.,de
+Purchase price lists,Einkaufspreislisten,de
+Purchase product,Produkt kaufen,de
+Purchase/Costs,Einkauf/Kosten,de
+Purchases,Käufe,de
+Purchases of fixed assets,Erwerb von Anlagegütern,de
+QAS Moniker,QAS-Moniker,de
+QAS Proposal lists,QAS Vorschlagslisten,de
+QAS certification,QAS-Zertifizierung,de
+QAS score,QAS-Punktzahl,de
+QR_CODE,QR_CODE,de
+Qty,Menge,de
+Qty (%),Menge (%),de
+Qty min (by product),Mindestmenge (nach Produkt),de
+Quality config,Qualität der Konfiguration,de
+Quantity should be a multiple of %s,Menge sollte ein Vielfaches von %s sein,de
+Query,Abfrage,de
+Query fetch size,Abfrageabrufgröße,de
+Query fetch size must be greater than zero.,Die Fetch-Größe der Abfrage muss größer als Null sein.,de
+Query fetch size must be less than export limit.,Die Fetch-Größe der Abfrage muss unter dem Exportlimit liegen.,de
+Query language,Abfragesprache,de
+Query result,Ergebnis der Abfrage,de
+Query to database,Abfrage der Datenbank,de
+Rank,Rang,de
+Rate,Bewerten Sie,de
+Rate (%),Satz (%),de
+Read,Lesen Sie,de
+Read only,Nur lesen,de
+Readonly If,Schreibgeschützt Wenn,de
+Real qty,Echte Menge,de
+Receive notifications by email,Erhalten Sie Benachrichtigungen per E-Mail,de
+Received emails,Empfangene E-Mails,de
+Recently created contacts,Kürzlich erstellte Kontakte,de
+Recently created partners,Kürzlich gegründete Partner,de
+Recipient address,Adresse des Empfängers,de
+Recipient details,Angaben zum Empfänger,de
+Recipients,Empfänger,de
+Recompute address,Adresse neu berechnen,de
+Recompute addresses batch,Stapel von neu zu berechnenden Adressen,de
+Recompute all addresses,Neuberechnung aller Adressen,de
+Reconciled move lines,Abgestimmte Umzugslinien,de
+Record date,Stichtag,de
+Record title,Titel der Aufzeichnung,de
+Record value,Wert aufzeichnen,de
+Recovering the scale,Die Wiederherstellung der Waage,de
+Reference,Referenz,de
+Reference ID,Referenz-ID,de
+Referential,Referentielle,de
+Refund blocking,Sperrung der Erstattung,de
+Region,Region,de
+Region code,Code der Region,de
+Region name,Name der Region,de
+Regions,Regionen,de
+Registration code is invalid.,Der Registrierungscode ist ungültig.,de
+Registration code is required for companies,Für Unternehmen ist ein Registrierungscode erforderlich,de
+Registration code is required.,Ein Registrierungscode ist erforderlich.,de
+Registration number,Zulassungsnummer,de
+Registration number already exists for partner %s.,Die Registrierungsnummer existiert bereits für den Partner %s.,de
+Registration number template,Vorlage Registrierungsnummer,de
+Registration number templates,Vorlagen für Registrierungsnummern,de
+Regroup products on printings,Umgruppierung von Produkten auf Drucksachen,de
+Reimb._block,Reimb._block,de
+Reimbursements,Rückerstattungen,de
+Related document name,Name des zugehörigen Dokuments,de
+Related id,Verwandte Id,de
+Related reference,Verwandte Referenz,de
+Related to,Verwandt mit,de
+Relation 1,Relation 1,de
+Relation 2,Relation 2,de
+Relationship,Beziehung,de
+Relative dates,Relative Daten,de
+Reload standard rptdesign file,Standard rptdesign-Datei neu laden,de
+Remin._block,Remin._block,de
+Remind Timesheet Validation Batch,Arbeitsstundenzettel-Validierungsstapel erinnern,de
+Remind time sheets validation,Erinnern Sie an die Validierung von Stundenzetteln,de
+Reminder blocking,Erinnerungsblockierung,de
+Remove duplicates,Duplikate entfernen,de
+Replace,Ersetzen Sie,de
+Replacement Tax,Ersatzsteuer,de
+Reportings,Berichte,de
+Reports,Berichte,de
+Reports to,Berichte an,de
+Request performed,Anfrage durchgeführt,de
+Requests,Anfragen an,de
+Required,Erforderlich,de
+Required for companies,Erforderlich für Unternehmen,de
+Required size,Erforderliche Größe,de
+Research 1,Forschung 1,de
+Research 2,Forschung 2,de
+Research 3,Forschung 3,de
+Research 4,Forschung 4,de
+Research configurations,Konfigurationen für die Forschung,de
+Research parameters,Parameter der Forschung,de
+Research request,Forschungsantrag,de
+Research result lines,Ergebnislinien der Forschung,de
+ResearchRequest.title,ResearchRequest.title,de
+Reset import,Import zurücksetzen,de
+Reset imported data successfully,Importierte Daten erfolgreich zurücksetzen,de
+Reset to draft,Auf Entwurf zurücksetzen,de
+Response error from map API: %s,Antwortfehler von der Karten-API: %s,de
+Restore,Wiederherstellen,de
+Restore Backup,Backup wiederherstellen,de
+Restored On,Wiederhergestellt am,de
+Result,Ergebnis,de
+Result exported,Ergebnis exportiert,de
+Result of the classification rule evaluation: %s,Ergebnis der Bewertung der Klassifizierungsregel: %s,de
+Result of the evaluation of the result rule: %s,Ergebnis der Auswertung der Ergebnisregel: %s,de
+Result param 1,Ergebnis param 1,de
+Result param 2,Ergebnis param 2,de
+Result param 3,Ergebnis param 3,de
+Result param 4,Ergebnis param 4,de
+Result rule 1,Ergebnis Regel 1,de
+Result rule 2,Ergebnis Regel 2,de
+Result rule 3,Ergebnis Regel 3,de
+Result rule 4,Ergebnis Regel 4,de
+Results,Ergebnisse,de
+Return to draft status,Rückkehr zum Entwurfsstatus,de
+Reverse Charge,Reverse Charge,de
+Reverse Charge Tax,Reverse-Charge-Steuer,de
+Rights,Rechte,de
+Role,Rolle,de
+Roles,Rollen,de
+Roles not found: %s,Rollen nicht gefunden: %s,de
+Room,Zimmer,de
+Routing,Weiterleitung,de
+Routing action,Routing-Aktion,de
+Routing action create,Routing-Aktion erstellen,de
+Routing actions,Routing-Aktionen,de
+Routing rule,Routing-Regel,de
+Routing rules,Routing-Regeln,de
+Routings,Leitwege,de
+Rule,Regel,de
+Run analysis,Analyse durchführen,de
+Run batch,Batch ausführen,de
+Run off Date,Datum des Auslaufens,de
+Run off date cannot be inferior to start date,Das Abwicklungsdatum kann nicht unter dem Startdatum liegen,de
+SFTP,SFTP,de
+SQL,SQL,de
+SSL,SSL,de
+SWIFT address,SWIFT-Adresse,de
+SWIFT codes,SWIFT-Codes,de
+Sale,Verkauf,de
+Sale Taxes,Verkaufssteuern,de
+Sale config,Verkauf Konfiguration,de
+Sale currency,Verkaufswährung,de
+Sale order,Verkaufsauftrag,de
+Sale order status,Status des Verkaufsauftrags,de
+Sale price,Verkaufspreis,de
+Sale price A.T.I.,Sale price A.T.I.,de
+Sale price W.T.,Sale price W.T.,de
+Sale price lists,Verkaufspreislisten,de
+Sale product,Verkauf Produkt,de
+Sale supply default method on sale order,Standardmethode der Verkaufslieferung bei Verkaufsaufträgen,de
+Sale_block,Verkauf_Block,de
+Sales,Vertrieb,de
+Sales Turnover,Umsatzerlöse,de
+Sales orders,Kundenaufträge,de
+Saturday,Samstag,de
+Saturdays,Samstags,de
+Scale,Skala,de
+Schedule,Zeitplan,de
+Schedule Event,,de
+Schedule lines,Einteilungen,de
+Scheduled,Geplant,de
+Schedules,Zeitpläne,de
+Script field name,Name des Skriptfeldes,de
+Search,Suche,de
+Search Call,Aufruf zur Suche,de
+Search configuration,Konfiguration suchen,de
+Search configuration parameter,Konfigurationsparameter für die Suche,de
+Search configuration parameters,Konfigurationsparameter für die Suche,de
+Search fields,Suchfelder,de
+Second,Zweite,de
+Second line,Zweite Zeile,de
+See stock details,Siehe Details zum Bestand,de
+Select all fields,Alle Felder auswählen,de
+Select print template,Druckvorlage auswählen,de
+Select record,Datensatz auswählen,de
+Select target field,Zielfeld auswählen,de
+Select template,Vorlage auswählen,de
+Selected imported/synchronized calendars,Ausgewählte importierte/synchronisierte Terminkalender,de
+Selection,Auswahl,de
+Selection language,Sprache der Auswahl,de
+Sellable,Verkaufbar,de
+Semi-finished product,Halbfertiges Produkt,de
+Send Email,E-Mail senden,de
+Send email,E-Mail senden,de
+Send email upon password change,E-Mail bei Passwortänderung senden,de
+Sender,Sender,de
+Sent emails,Gesendete Emails,de
+Separator,Abscheider,de
+September,September,de
+Seq.,Seq.,de
+Sequence,Sequenz,de
+Sequence Definition,Definition von Sequenzen,de
+Sequence filters,Sequenzfilter,de
+Sequence letters type select,Sequenzbuchstaben Typ auswählen,de
+Sequence prefix cannot start with the draft prefix '%s'.,"Das Sequenzpräfix kann nicht mit dem Entwurfspräfix ""%s"" beginnen.",de
+Sequence product type,Sequenz Produkttyp,de
+Sequence type,Art der Sequenz,de
+Sequence type select,Sequenztyp auswählen,de
+Sequences,Sequenzen,de
+Serial Nbr,Seriennummer,de
+Service,Dienst,de
+Service Products,Service Produkte,de
+"Service unavailable, please contact a administrator","Der Dienst ist nicht verfügbar, bitte kontaktieren Sie einen Administrator",de
+Services,Dienstleistungen,de
+Settings,Einstellungen,de
+Share with,Teilen mit,de
+Shared address,Gemeinsame Adresse,de
+Shared with,Geteilt mit,de
+Shared with me,Mit mir geteilt,de
+Sharing settings,Einstellungen für die gemeinsame Nutzung,de
+Shipment Mode,Versandart,de
+Shipping Coef.,Versand Coef.,de
+Shipping Coef. Table,Versand Coef. Tabelle,de
+Short name,Kurzer Name,de
+Short registration number,Kurze Registrierungsnummer,de
+Show,anzeigen,de
+Show all events,Alle Ereignisse anzeigen,de
+Show all stock moves,Alle Aktienbewegungen anzeigen,de
+Show bank order,,de
+Show permissions,Berechtigungen anzeigen,de
+Show record,,de
+Show the batch,Anzeigen der Charge,de
+Show the reference,Zeigen Sie die Referenz,de
+Show tracebacks,Rückverfolgungen anzeigen,de
+Signature,Unterschrift,de
+Signature certificate is expired. Please change to a new certificate.,Das Signaturzertifikat ist abgelaufen. Bitte wechseln Sie zu einem neuen Zertifikat.,de
+Single tab,Einzelne Registerkarte,de
+Sirene API call,Sirene API-Aufruf,de
+Sirene access token generation url,URL für die Generierung von Sirene-Zugangstoken,de
+Sirene url,Sirene url,de
+Siret number,Siret Nummer,de
+Site,Website,de
+Site management,Verwaltung der Website,de
+Sites,Standorte,de
+Six months,Sechs Monate,de
+Some times are null and should not on %s,Einige Zeiten sind null und sollten nicht auf %s,de
+Sort Code,Sortiercode,de
+Source,Quelle,de
+Source Currency,Quelle Währung,de
+Source folder,Quellennachweis,de
+Source folder of the REMOTE server for download,Quellordner des REMOTE-Servers zum Herunterladen,de
+Spatial information,Räumliche Informationen,de
+Specific information,Spezifische Informationen,de
+"Specific location name within the town (GB : Village/Hamlets, DE/AT: Stadtteil,Bezirk ...)","Spezifische Ortsbezeichnung innerhalb der Stadt (GB: Village/Hamlets, DE/AT: Stadtteil,Bezirk ...)",de
+Specific note,Besonderer Hinweis,de
+Specific notes,Besondere Hinweise,de
+Specify whether the members of this group are technical staff.,"Geben Sie an, ob es sich bei den Mitgliedern dieser Gruppe um technisches Personal handelt.",de
+Specify whether to block the user for an indefinite period.,"Geben Sie an, ob der Benutzer für einen unbestimmten Zeitraum gesperrt werden soll.",de
+Split by,Geteilt durch,de
+Standard,Standard,de
+"Standard operation like +, -, *, / can be used and will work correctly with BigDecimal.","Standardoperationen wie +, -, *, / können verwendet werden und funktionieren korrekt mit BigDecimal.",de
+Standards,Normen,de
+Start Date,Datum des Beginns,de
+Start date,Datum des Beginns,de
+Start date must be lower than end date,Das Anfangsdatum muss niedriger sein als das Enddatum,de
+Start date t,Startdatum t,de
+Start of pack,Beginn der Packung,de
+Start unit cannot be void.,Die Starteinheit kann nicht ungültig sein.,de
+Starting position in the registration number,Startposition in der Registrierungsnummer,de
+Status,Status,de
+Status select,Status auswählen,de
+Step status select,Schritt Status auswählen,de
+Stock,Lagerbestand,de
+Stock Unit,Lagereinheit,de
+Stock and produce,Lagerbestände und Erzeugnisse,de
+Stock config,Lager-Konfiguration,de
+Stock history line,Zeile Bestandsverlauf,de
+Stock move,Lagerbewegung,de
+Stock move lines,Bewegungslinien für Aktien,de
+Stock moves,Aktienbewegungen,de
+Storable Products,Lagerfähige Produkte,de
+Store streets,Straßen speichern,de
+Street,Straße,de
+Streets,Straßen,de
+String,Zeichenfolge,de
+String Template Help,,de
+String interpolation can also be used,Die String-Interpolation kann auch verwendet werden,de
+Sub Department,Unterabteilung,de
+Sub Field,Unterfeld,de
+Sub field doesn't exist of field(%s) for the object(%s),Unterfeld existiert nicht von Feld(%s) für das Objekt(%s),de
+Sub field(%s) doesn't exist of field(%s) for the object(%s),Unterfeld(%s) existiert nicht von Feld(%s) für das Objekt(%s),de
+Sub import field,Feld für Untereinfuhr,de
+Subcontractor,Unterauftragnehmer,de
+Subject,Thema,de
+Subject team,Thema Team,de
+Subscribe,Abonnieren,de
+Subsidiaries,Tochtergesellschaften,de
+Substitute PFP Validator,Ersatz-PFP-Prüfer,de
+Succeeded,Gefolgt von,de
+Successful connection,Erfolgreiche Verbindung,de
+Successful send,Erfolgreicher Versand,de
+Suffix,Nachsilbe,de
+Summary,Zusammenfassung,de
+Sunday,Sonntag,de
+Sundays,Sonntags,de
+Supplier,Anbieter,de
+Supplier catalog,Lieferantenkatalog,de
+Supplier contract,Lieferantenvertrag,de
+Supplier delivery time (days),Lieferzeit des Lieferanten (Tage),de
+Supplier list,Liste der Lieferanten,de
+Suppliers,Anbieter,de
+Suppliers by country,Lieferanten nach Land,de
+Suppliers payment delay (Average in days),Zahlungsverzug der Lieferanten (Durchschnitt in Tagen),de
+Supply Chain config,Lieferkette konfigurieren,de
+Symbol,Symbol,de
+SyncContact,SyncContact,de
+Synchronization duration (week),Dauer der Synchronisierung (Woche),de
+Synchronize calendar,Kalender synchronisieren,de
+THE_PLURAL,THE_PLURAL,de
+THE_SINGULAR,THE_SINGULAR,de
+Tab Config in file,Registerkarte Config in Datei,de
+Table font size,Schriftgröße der Tabelle,de
+Tabs configuration,Konfiguration der Registerkarten,de
+Tag,Tag,de
+Tags,Tags,de
+Target,Ziel,de
+Target Id,Ziel-Id,de
+Target field,Zielfeld,de
+Target model,Zielmodell,de
+Target type,Zieltyp,de
+Task,Aufgabe,de
+Task templates,Aufgabenvorlagen,de
+Tasks,Aufgaben,de
+Tasks created by me,Von mir erstellte Aufgaben,de
+Tasks due,Fällige Aufgaben,de
+Tasks open,Offene Aufgaben,de
+Tasks todo,Zu erledigende Aufgaben,de
+Tax,Steuer,de
+Tax N°,Steuer-Nr.,de
+Tax Rate,Steuersatz,de
+Tax Rates,Steuersätze,de
+Tax active version,Steuerlich aktive Version,de
+Tax amount management type,Art der Verwaltung des Steuerbetrags,de
+Tax configuration is missing for Product: %s (company: %s),Die Steuerkonfiguration fehlt für Produkt: %s (Unternehmen: %s),de
+Tax equivalence,Steuerliche Äquivalenz,de
+Tax equivalences,Steuerliche Äquivalenzen,de
+Tax filters,Steuerliche Filter,de
+Tax is missing,Die Steuer fehlt,de
+Tax rate list,Liste der Steuersätze,de
+Tax to replace,Steuer als Ersatz,de
+Tax type,Steuerart,de
+Tax types,Steuerarten,de
+Tax versions history,Geschichte der Steuerversionen,de
+Taxes equivalences,Steuerliche Äquivalenzen,de
+Team,Team,de
+Team Management,Teamleitung,de
+Team task filters,Filter für Teamaufgaben,de
+Teams,Mannschaften,de
+Teamwork,Teamarbeit,de
+Technical anomaly,Technische Anomalie,de
+Technical maintenance,Technische Wartung,de
+Technical staff,Technisches Personal,de
+Template,Vorlage,de
+Template Content,Vorlage Inhalt,de
+Template Footer,Vorlage Fußzeile,de
+Template Header,Vorlage Kopfzeile,de
+Template Rules,Vorlage Regeln,de
+Template engine,Template-Engine,de
+Template file name,Name der Vorlagendatei,de
+Template for changed password,Vorlage für geändertes Passwort,de
+Template for changed password is missing.,Die Vorlage für das geänderte Passwort fehlt.,de
+Template rule,Vorlage Regel,de
+Template rule line,Vorlage Regelzeile,de
+Template rule line list,Vorlage Regelzeilenliste,de
+Template rule lines,Vorlage Regelzeilen,de
+Template rules,Regeln für Vorlagen,de
+Templates,Schablonen,de
+Templates with description,Schablonen mit Beschreibung,de
+Templates.title,Templates.title,de
+Temporarily Closed,Vorübergehend geschlossen,de
+Temporarily close period,Vorübergehend geschlossener Zeitraum,de
+Temporarily closure date,Datum der vorübergehenden Schließung,de
+Territories,Territorien,de
+Test,Test,de
+Test connection,Verbindung testen,de
+Test connection to QAS webservice,Verbindung zum QAS-Webservice testen,de
+Test instance,Test-Instanz,de
+Test mapping service connection,Verbindung zum Mapping-Dienst testen,de
+Test query,Test-Abfrage,de
+Test template,Testvorlage,de
+Testing,Prüfung,de
+Text Alignment,Textausrichtung,de
+The analysis must be completed before the report can be printed.,"Die Analyse muss abgeschlossen sein, bevor der Bericht gedruckt werden kann.",de
+The application does not support key starting with -----BEGIN OPENSSH PRIVATE KEY-----,"Die Anwendung unterstützt keine Schlüssel, die mit -----BEGIN OPENSSH PRIVATE KEY----- beginnen.",de
+The binding file should be only an XML file.,Die Bindungsdatei sollte nur eine XML-Datei sein.,de
+The cart was emptied successfully.,Der Wagen wurde erfolgreich geleert.,de
+The city and postcode cannot be empty at the same time.,Der Ort und die Postleitzahl können nicht gleichzeitig leer sein.,de
+The class '%s' doesn't exist in the Faker API.,Die Klasse '%s' existiert nicht in der Faker-API.,de
+The classes total quantity and total worth must equal 100%.,Die Gesamtmenge und der Gesamtwert der Klasse müssen 100% betragen.,de
+The coefficient for unit conversion from %s to %s should not be 0.,Der Koeffizient für die Einheitenumrechnung von %s nach %s sollte nicht 0 sein.,de
+The configuration to print this model has not been found,Die Konfiguration zum Drucken dieses Modells wurde nicht gefunden,de
+The currency exchange rate from '%s' to '%s' for date %s must be different from zero.,"Der Wechselkurs von ""%s"" nach ""%s"" für das Datum %s muss von Null verschieden sein.",de
+The data file should be only a CSV or ZIP file.,Die Datendatei sollte nur eine CSV- oder ZIP-Datei sein.,de
+The data file should be only an XML or ZIP file.,Die Datendatei sollte nur eine XML- oder ZIP-Datei sein.,de
+The default value is #,Der Standardwert ist #,de
+The duration '%s' is unknown. Valid durations are in months or years.,Die Dauer '%s' ist unbekannt. Gültige Dauern sind in Monaten oder Jahren.,de
+The end date has to be greater than or equal to the start date.,Das Enddatum muss größer oder gleich dem Startdatum sein.,de
+The end date is before the begin date.,Das Enddatum liegt vor dem Anfangsdatum.,de
+"The entered IBAN code is not valid . <br> Either the code doesn't respect the norm, or the format you have entered is not correct. It has to be without any blank space, as the following : <br> FR0000000000000000000000000","Der eingegebene IBAN-Code ist nicht gültig.<br> Entweder entspricht der Code nicht der Norm, oder das eingegebene Format ist nicht korrekt. Er muss ohne Leerzeichen eingegeben werden, wie z.B.: <br> FR0000000000000000000000000",de
+"The export process may take some time, please refresh the record to see the result.","Der Exportvorgang kann einige Zeit dauern. Bitte aktualisieren Sie den Datensatz, um das Ergebnis zu sehen.",de
+The faker API field is valide. An example output is : %s.,Das API-Feld faker ist valide. Eine Beispielausgabe ist: %s.,de
+The fields are empty,Die Felder sind leer,de
+The file could not be generated.,Die Datei konnte nicht erstellt werden.,de
+The file transfert session is not configured,Die Dateiübertragungssitzung ist nicht konfiguriert,de
+The file transfert session is not started,Die Dateiübertragungssitzung ist nicht gestartet,de
+The following address is invalid. Please use '+' button to create a new one :,"Die folgende Adresse ist ungültig. Bitte verwenden Sie die Schaltfläche ""+"", um eine neue Adresse zu erstellen:",de
+The from date is incorrect,Das Ab-Datum ist falsch,de
+The generated sequence %s already exists. Please fix the configuration of sequence %s.,Die generierte Sequenz %s existiert bereits. Bitte korrigieren Sie die Konfiguration der Sequenz %s.,de
+The geonames file type is invalid.,Der Dateityp geonames ist ungültig.,de
+The groovy condition result must be a boolean,Das Ergebnis der Groovy-Bedingung muss ein boolescher Wert sein,de
+The import configuration executed successfully.,Die Importkonfiguration wurde erfolgreich ausgeführt.,de
+The line cannot be imported (import : %s),Die Zeile kann nicht importiert werden (import : %s),de
+The method '%s' doesn't exist in the Faker API.,Die Methode '%s' existiert nicht in der Faker-API.,de
+The number of a room on the floor where the adressee is located.,"Die Nummer eines Zimmers auf der Etage, in der sich der Adressat befindet.",de
+The pattern length should be equal to padding .,Die Länge des Musters sollte gleich der Füllung sein.,de
+The previous period is not closed or temporarily closed while it should be.,"Der vorangegangene Zeitraum ist nicht oder nur vorübergehend geschlossen, obwohl er geschlossen sein sollte.",de
+The previous period is not closed.,Die vorherige Periode ist nicht abgeschlossen.,de
+The price list %s will still be active when the price list %s will become active.,"Die Preisliste %s wird noch aktiv sein, wenn die Preisliste %s aktiv wird.",de
+"The product %s comes in multiple quantities, so the quantity provided should be a multiple of at least one from the list %s.","Das Produkt %s ist in mehreren Mengen erhältlich, daher sollte die angegebene Menge ein Vielfaches von mindestens einer Menge in der Liste %s sein.",de
+The product %s is missing stock unit or purchase unit to make the conversion of last purchase price.,"Dem Produkt %s fehlt eine Bestandseinheit oder eine Einkaufseinheit, um die Umrechnung des letzten Einkaufspreises vorzunehmen.",de
+The product pulled-off date must be greater than the launch date.,"Das Datum, an dem das Produkt vom Markt genommen wird, muss größer sein als das Datum der Markteinführung.",de
+The product was added to the cart successfully,Das Produkt wurde erfolgreich in den Warenkorb gelegt,de
+The same bank details are already active.,Die gleiche Bankverbindung ist bereits aktiv.,de
+The scheduler service is enabled.,Der Scheduler-Dienst ist aktiviert.,de
+"The selected replacement account shall have similar property to the Source account. In this case, the replacement account is not set with compulsory anaytic distribution line on Move validation.",Das ausgewählte Ersatzkonto muss ähnliche Eigenschaften wie das Ursprungskonto haben. In diesem Fall wird das Ersatzkonto nicht mit der obligatorischen anaytischen Verteilungslinie bei der Validierung des Umzugs festgelegt.,de
+The sequence letter type '%s' is not handled.,Der Sequenzbuchstabentyp '%s' wird nicht behandelt.,de
+The sequence letter type can't be null.,Der Typ der Buchstabenfolge kann nicht Null sein.,de
+The sequence type '%s' is not handled.,Der Sequenztyp '%s' wird nicht behandelt.,de
+The start date cannot be later than the end date.,Das Anfangsdatum kann nicht nach dem Enddatum liegen.,de
+The status has been changed successfully.,Der Status wurde erfolgreich geändert.,de
+The syntax of the script is correct.,Die Syntax des Skripts ist korrekt.,de
+The tags below can be used as a prefix or a suffix,Die folgenden Tags können als Präfix oder Suffix verwendet werden,de
+The tags below can be used to specify the pattern,Die folgenden Tags können zur Angabe des Musters verwendet werden,de
+The temporary closure of an accounting period will restrict operations on the journal of accounting entries. Do you want to continue ?,Die vorübergehende Schließung einer Buchungsperiode schränkt die Operationen im Buchungsjournal ein. Möchten Sie fortfahren?,de
+The to date is incorrect,Das Bis-Datum ist falsch,de
+The webservice URL to retrieve exchange rate is not configured. Please select the method to retrieve exchange rates in the App Base configuration > Tab Interfaces > Panel Webservices,Die Webservice-URL zum Abrufen von Wechselkursen ist nicht konfiguriert. Bitte wählen Sie die Methode zum Abrufen von Wechselkursen in der App Base Konfiguration > Registerkarte Schnittstellen > Panel Webservices,de
+The worth and quantity value of each class must be greater than 0.,Der Wert und der Mengenwert jeder Klasse müssen größer als 0 sein.,de
+There is a type error on parameters of the method '%s'.,Es liegt ein Typfehler bei den Parametern der Methode '%s' vor.,de
+"There is already a pricing that has the selected pricing as previous pricing, for the formula '%s', company '%s' and model '%s'.","Es gibt bereits eine Preisgestaltung, die die ausgewählte Preisgestaltung als vorherige Preisgestaltung für die Formel ""%s"", die Firma ""%s"" und das Modell ""%s"" hat.",de
+There is an archived partner with this name.,Es gibt einen archivierten Partner mit diesem Namen.,de
+There is an error in the import configuration.,Es liegt ein Fehler in der Importkonfiguration vor.,de
+There is no configured daily work hours in the app base config,Es gibt keine konfigurierten täglichen Arbeitszeiten in der App-Basis-Konfiguration,de
+There is no configured sequence for product,Es gibt keine konfigurierte Reihenfolge für das Produkt,de
+There is no configured sequence for the category,Es gibt keine konfigurierte Reihenfolge für die Kategorie,de
+There is no configured unit days in the app base config,Es gibt keine konfigurierten Einheitstage in der App-Basiskonfiguration,de
+There is no configured unit hours in the app base config,Es gibt keine konfigurierte Einheit Stunden in der App-Basiskonfiguration,de
+There is no configured unit minutes in the app base config,Es gibt keine konfigurierte Einheit Minuten in der App-Basiskonfiguration,de
+There is no date to determine which rate to take for the tax. Please define a tax active version for : %s.,"Es gibt kein Datum, um den Steuersatz zu bestimmen. Bitte definieren Sie eine aktive Steuerversion für: %s.",de
+There is no field for tab configuration(%s),Es gibt kein Feld für die Registerkartenkonfiguration (%s),de
+There is no matching address in the QAS base,Es gibt keine passende Adresse in der QAS-Basis,de
+There is no records to export.,Es sind keine Datensätze zu exportieren.,de
+There is no sequence set for the partners,Es ist keine Reihenfolge für die Partner festgelegt,de
+There was no exchange rate found for %1$tm/%1$td/%1$tY. The retrieved exchange rate was the applicable rate at %2$tm/%2$td/%2$tY,Es wurde kein Wechselkurs für %1$tm/%1$td/%1$tY gefunden. Der gefundene Wechselkurs war der gültige Kurs von %2$tm/%2$td/%2$tY,de
+Third,Dritte,de
+Third line,Dritte Zeile,de
+This batch is not runnable!,Dieser Stapel ist nicht lauffähig!,de
+This certificate makes pdf files intangible when they are generated by the software (only used for Expense Notes and Invoices for the moment). It must be delivered by a certification authority.,"Dieses Zertifikat macht pdf-Dateien ungreifbar, wenn sie von der Software erzeugt werden (derzeit nur für Spesenabrechnungen und Rechnungen verwendet). Es muss von einer Zertifizierungsstelle ausgestellt werden.",de
+This code is already use by another batch.,Dieser Code wird bereits von einer anderen Charge verwendet.,de
+This configuration adds a warning when a partner is created if the registration code entered already exists in the database.,"Diese Konfiguration fügt beim Anlegen eines Partners eine Warnung hinzu, wenn der eingegebene Registrierungscode bereits in der Datenbank vorhanden ist.",de
+This configuration allows quick access to the type of environment and the configured date and time,Diese Konfiguration ermöglicht einen schnellen Zugriff auf die Art der Umgebung sowie auf das konfigurierte Datum und die Uhrzeit,de
+This configuration allows to display a shortcut to switch active company/trading name/project of the current user.,"Diese Konfiguration ermöglicht es, eine Verknüpfung zum Wechsel des aktiven Unternehmens/Handelsnamens/Projekts des aktuellen Benutzers anzuzeigen.",de
+This field %s doesn't exist.,Dieses Feld %s existiert nicht.,de
+This field allows to filter files and download only those that respect specified naming without sensitive case. Example : 'ABCD' will filter on files that contain 'ABCD' in their name.,"Dieses Feld ermöglicht es, Dateien zu filtern und nur solche herunterzuladen, die den angegebenen Namen ohne Berücksichtigung der Groß- und Kleinschreibung enthalten. Beispiel: ""ABCD"" filtert nach Dateien, die ""ABCD"" im Namen enthalten.",de
+This field is used to enter the name of the data file used in the XML binding file.        This will be used to temporaly rename all the data files imported from the FTP server in order to use them with a binding file.,"In dieses Feld wird der Name der Datendatei eingegeben, die in der XML-Bindungsdatei verwendet wird.        Dies wird verwendet, um alle vom FTP-Server importierten Datendateien vorübergehend umzubenennen, um sie mit einer Verbindungsdatei zu verwenden.",de
+This maximal discount,Dieser maximale Rabatt,de
+This partner is categorized as a customer due to existing records in the database. This category can't be removed.,Dieser Partner ist aufgrund bestehender Datensätze in der Datenbank als Kunde kategorisiert. Diese Kategorie kann nicht entfernt werden.,de
+This partner is categorized as a factor due to existing records in the database. This category can't be removed.,"Dieser Partner ist als Faktor eingestuft, da er bereits in der Datenbank erfasst ist. Diese Kategorie kann nicht entfernt werden.",de
+This partner is categorized as a supplier due to existing records in the database. This category can't be removed.,Dieser Partner ist aufgrund bestehender Datensätze in der Datenbank als Lieferant kategorisiert. Diese Kategorie kann nicht entfernt werden.,de
+This period is closed and you do not have the necessary permissions to create entries,"Dieser Zeitraum ist geschlossen und Sie haben nicht die erforderlichen Rechte, um Einträge zu erstellen",de
+"This product comes in multiple quantities, so please specify a quantity that is a multiple of at least one from the list %s.","Dieses Produkt ist in mehreren Mengen erhältlich. Bitte geben Sie daher eine Menge an, die ein Vielfaches von mindestens einer Menge aus der Liste %s ist.",de
+Three months,Drei Monate,de
+Thursday,Donnerstag,de
+Thursdays,Donnerstags,de
+Ticket,Ticket,de
+Time,Zeit,de
+Time Zone,Zeitzone,de
+Time logging preference,Präferenz für die Zeiterfassung,de
+Time unit,Zeiteinheit,de
+TimeUnit,ZeitEinheit,de
+Timeout for processes (seconds),Zeitüberschreitung für Prozesse (Sekunden),de
+Timer,Zeitschaltuhr,de
+Timer history,Timer-Verlauf,de
+Timer history list,Timer-Verlaufsliste,de
+Times,Zeiten,de
+Times-Bold,Times-Bold,de
+Times-BoldItalic,Times-BoldItalic,de
+Times-Italic,Times-Italienisch,de
+Times-Roman,Times-Roman,de
+Timesheets Reminder,Stundenzettel-Erinnerung,de
+Timestamp (YYYY-MM-DD),Zeitstempel (JJJJ-MM-TT),de
+Tips,Tipps,de
+Title,Titel,de
+Title to display,Anzuzeigender Titel,de
+Titles,Titel,de
+To,An,de
+To Date,Bis heute,de
+To Unit,An Einheit,de
+To access company name of productCompanyList,So greifen Sie auf den Firmennamen von productCompanyList zu,de
+To access product's ProductCategory,So greifen Sie auf die Produktkategorie ProductCategory zu,de
+To access product's full name,So rufen Sie den vollständigen Namen des Produkts auf,de
+To access trading name of tradingNameSellerSet of product,Zugriff auf den Handelsnamen des tradingNameSellerSet des Produkts,de
+"To display the classification number, please set up a sequence","Um die Klassifizierungsnummer anzuzeigen, richten Sie bitte eine Sequenz ein",de
+To display title of costTypeSelect of product,So zeigen Sie den Titel des costTypeSelect des Produkts an,de
+To display value of custom field of product,So zeigen Sie den Wert eines benutzerdefinierten Feldes eines Produkts an,de
+To display value of productTypeSelect of product,So zeigen Sie den Wert von productTypeSelect des Produkts an,de
+"To generate periods, please fill in the Period duration.","Um Zeiträume zu erzeugen, geben Sie bitte die Dauer des Zeitraums an.",de
+"To generate periods, please fill in the limits of the year.","Um Zeiträume zu generieren, geben Sie bitte die Grenzen des Jahres ein.",de
+To validity date,Bis Gültigkeitsdatum,de
+Today date,Datum heute,de
+Too much iterations.,Zu viele Iterationen.,de
+Tools,Werkzeuge,de
+Total :,Insgesamt :,de
+Total sequence length must be less than 15 characters.,Die Gesamtlänge der Sequenz muss weniger als 15 Zeichen betragen.,de
+Total variants,Varianten insgesamt,de
+Town,Stadt,de
+Town Location,Stadt Standort,de
+Trace,Spurensuche,de
+TraceBack,TraceBack,de
+Tracebacks,Rückverfolgungen,de
+Track creation,Erstellung von Spuren,de
+Track deletion,Löschen von Spuren,de
+Track export,Export verfolgen,de
+Track reading,Lesen verfolgen,de
+Track update,Aktualisierung der Strecke,de
+Tracking condition,Bedingung für die Verfolgung,de
+Tracking logs persistence (in months),Dauerhaftigkeit der Verfolgungsprotokolle (in Monaten),de
+Trading name,Handelsname,de
+Trading name changed to %s,Handelsname geändert in %s,de
+Trading name printing settings list,Liste der Druckeinstellungen für den Handelsnamen,de
+Trading names,Handelsnamen,de
+Trading names that can buy this product,"Handelsnamen, die dieses Produkt kaufen können",de
+Trading names that can sell this product,"Handelsnamen, die dieses Produkt verkaufen können",de
+Transfer,Übertragung,de
+Transient password,Vorübergehendes Passwort,de
+Translated titles,Übersetzte Titel,de
+Translations already up-to-date.,Die Übersetzungen sind bereits auf dem neuesten Stand.,de
+Tuesday,Dienstag,de
+Tuesdays,Dienstags,de
+Turnover,Umsatz,de
+Two months,Zwei Monate,de
+Two weeks,Zwei Wochen,de
+Type,Typ,de
+Type of Bank Details Id,Art der Bankverbindung Id,de
+UID,UID,de
+UPC_A,UPC_A,de
+UPDATE,UPDATE,de
+URL,URL,de
+URL to QAS WSDL,URL zu QAS WSDL,de
+Unable to connect to Geonames server,Keine Verbindung zum Geonames-Server möglich,de
+Unable to generate Birt report file,Birt-Berichtsdatei kann nicht erstellt werden,de
+Unique,Einzigartig,de
+Unit,Einheit,de
+Unit conversion,Umrechnung in Einheiten,de
+Unit conversions,Umrechnung von Einheiten,de
+Unit of length,Einheit der Länge,de
+Unit of mass,Einheit der Masse,de
+Unit type,Typ der Einheit,de
+Units,Einheiten,de
+Unknown action %s for the %s treatment,Unbekannte Aktion %s für die Behandlung %s,de
+Unrenewed,Unverlängert,de
+Unsaved record,Nicht gespeicherter Datensatz,de
+Unsubscribe,Abbestellen,de
+Update & Historize conversion rate,Update & Historisierung der Konversionsrate,de
+Update Import Id,Import-ID aktualisieren,de
+Update contact field,Kontaktfeld aktualisieren,de
+Update products prices,Produktpreise aktualisieren,de
+Update sale price from cost price,Verkaufspreis aus Einstandspreis aktualisieren,de
+Update stock location,Lagerort aktualisieren,de
+Upload failed: %s,Upload fehlgeschlagen: %s,de
+Uploaded File,Hochgeladene Datei,de
+Uploaded file is not a valid zip file,Hochgeladene Datei ist keine gültige Zip-Datei,de
+Uploaded file must have the same format as the selected type.,Die hochgeladene Datei muss das gleiche Format wie der ausgewählte Typ haben.,de
+Uppercase / lowercase,Großbuchstaben / Kleinbuchstaben,de
+Url,Url,de
+Use QAS Validation,QAS-Validierung verwenden,de
+Use alphanumeric,Alphanumerische Zeichen verwenden,de
+Use fake data,Gefälschte Daten verwenden,de
+Use for stock only,Nur für Lagerbestände verwenden,de
+Use internal classification number,Interne Klassifikationsnummer verwenden,de
+Use letters,Buchstaben verwenden,de
+Use lowercases,Kleinbuchstaben verwenden,de
+Use numbers,Zahlen verwenden,de
+Use script field name,Skriptfeldname verwenden,de
+Use short registration number,Kurze Registrierungsnummer verwenden,de
+Use signature for purchase quotations,Verwendung der Unterschrift bei Kaufangeboten,de
+Use signature for sales quotations,Unterschrift für Verkaufsangebote verwenden,de
+Use tax nbr,Verbrauchssteuer nbr,de
+Use tax number,Steuernummer verwenden,de
+Use uppercases,Großbuchstaben verwenden,de
+Used in DEB,Verwendet in DEB,de
+Used in DES,Verwendet in DES,de
+"Used on sale order, purchase order and invoice.","Wird für Verkaufsaufträge, Bestellungen und Rechnungen verwendet.",de
+User,Benutzer,de
+User cannot be null.,Benutzer kann nicht null sein.,de
+User context cannot be null.,Der Benutzerkontext kann nicht null sein.,de
+User field,Benutzerfeld,de
+User filters,Benutzer-Filter,de
+User preferences,Benutzereinstellungen,de
+Users,Benutzer,de
+Users list,Liste der Benutzer,de
+Users/Companies,Nutzer/Unternehmen,de
+VAT,MEHRWERTSTEUER,de
+VAT Regularization,Mehrwertsteuer-Regelung,de
+Valid,Gültig,de
+Valid Latitude Longitude,Gültiger Breitengrad Längengrad,de
+Validate,Validieren Sie,de
+Validate values,Werte validieren,de
+Validated,Validiert,de
+Validation log,Validierungsprotokoll,de
+Validation method select,Validierungsmethode auswählen,de
+Value,Wert,de
+Value 1,Wert 1,de
+Value 2,Wert 2,de
+Value 3,Wert 3,de
+Value 4,Wert 4,de
+Values,Werte,de
+Values list,Liste der Werte,de
+Variants,Varianten,de
+Variants generated,Erstellte Varianten,de
+Variation,Variation,de
+Version,Version,de
+Versions,Versionen,de
+View Products,Produkte anzeigen,de
+View global tracking logs,Globale Verfolgungsprotokolle anzeigen,de
+View map,Karte ansehen,de
+Visibility,Sichtbarkeit,de
+Visible,Sichtbar,de
+W.T. by default,W.T. by default,de
+"WARNING : For the specified currencies %s/%s, please first close the current open conversion period starting %3$tm/%3$td/%3$tY (by filling the end date) to then create a new one. Periods dates shouldn't overlap.","WARNUNG : Für die angegebenen Währungen %s/%s, schließen Sie bitte zuerst die aktuelle offene Umrechnungsperiode ab %3$tm/%3$td/%3$tY (indem Sie das Enddatum ausfüllen), um dann eine neue zu erstellen. Die Daten der Perioden sollten sich nicht überschneiden.",de
+"WARNING : For the specified currencies %s/%s, the input fromDate is overlapping with an already existing conversion record. Period dates shouldn't overlap and are set on an included-included basis e.g. [From Date - To Date].","WARNING : For the specified currencies %s/%s, the input fromDate is overlapping with an already existing conversion record. Period dates shouldn't overlap and are set on an included-included basis e.g. [From Date - To Date].",de
+WARNING : Please close the current conversion period before creating new one,"WARNUNG: Bitte schließen Sie den aktuellen Umrechnungszeitraum, bevor Sie einen neuen erstellen.",de
+WARNING : Process to retrieve exchange rate didn't work due to incorrect value in 'Currency Ws URL' in AppBase. Please contact support team for further investigation.,WARNUNG: Der Prozess zum Abrufen des Wechselkurses hat aufgrund eines falschen Wertes in 'Currency Ws URL' in AppBase nicht funktioniert. Bitte kontaktieren Sie das Support-Team für weitere Untersuchungen.,de
+WARNING : To Date must be after or equals to From Date,WARNUNG: Das Bis-Datum muss nach dem Von-Datum liegen oder gleich diesem sein.,de
+WORD,WORD,de
+Warning !,Warnung!,de
+Warning : Exported maximum export limit records.,Warnung: Die maximale Anzahl von Datensätzen für den Export wurde exportiert.,de
+Warning : the pay period %s is closed.,Warnung: Die Lohnperiode %s ist abgeschlossen.,de
+"Warning, modifying those configuration can have technical repercussions.","Achtung, eine Änderung dieser Konfiguration kann technische Auswirkungen haben.",de
+"Warning, the price list contains at least one product that is not available for purchase.","Achtung, die Preisliste enthält mindestens ein Produkt, das nicht zum Kauf angeboten wird.",de
+"Warning, the price list contains at least one product that is not renewed or not available for sale.","Achtung, die Preisliste enthält mindestens ein Produkt, das nicht verlängert wurde oder nicht zum Verkauf steht.",de
+"Warning, this product is present in at least one price list","Achtung, dieses Produkt ist in mindestens einer Preisliste enthalten",de
+"Warning: locale %s is invalid, please enter a valid locale.","Warnung: Gebietsschema %s ist ungültig, bitte geben Sie ein gültiges Gebietsschema ein.",de
+We can access custom fields same as normal fields,Wir können auf benutzerdefinierte Felder genauso zugreifen wie auf normale Felder,de
+We can access direct/o2o/m2o fields of template model by specifying field path surrounded by,"Wir können auf direkte/o2o/m2o-Felder des Vorlagenmodells zugreifen, indem wir den Feldpfad angeben, der von",de
+We can access o2m/m2m fields of template model with this syntax,Wir können auf die o2m/m2m-Felder des Vorlagenmodells mit folgender Syntax zugreifen,de
+We can access selection fields as follows,Wir können auf die Auswahlfelder wie folgt zugreifen,de
+Web,Web,de
+Webservices,Webservices,de
+Website,Website,de
+Wednesday,Mittwoch,de
+Wednesdays,Mittwochs,de
+Week days,Wochentage,de
+Weekly Planning,Wöchentliche Planung,de
+Weekly planning,Wöchentliche Planung,de
+"When selected, this is the pricing scale computation order.","Wenn diese Option ausgewählt ist, ist dies die Reihenfolge der Preisstaffelberechnung.",de
+Whether to show help messages.,Ob Hilfemeldungen angezeigt werden sollen.,de
+Whether to use tabbed ui.,Ob Tabbed Ui verwendet werden soll.,de
+Width,Breite,de
+Width(px),Breite(px),de
+With page break,Mit Seitenumbruch,de
+Wizard model,Zauberer-Modell,de
+Wizard reference id,Assistenten-Referenz-ID,de
+Worth,Worth,de
+Worth (%),Wert (%),de
+Write,Schreiben Sie,de
+Wrong JPQL syntax : %s,Falsche JPQL-Syntax: %s,de
+X,X,de
+XLS,XLS,de
+XLSX,XLSX,de
+XML File,XML-Datei,de
+Year,Jahr,de
+Year filters,Jahresfilter,de
+Year is not in adjusting mode,Jahr ist nicht im Einstellmodus,de
+Yearly,Jährlich,de
+Yearly reset,Jährliche Rückstellung,de
+Years,Jahre,de
+Yes,Ja,de
+You are about to overwrite an existing exchange rate. This rate may already be in use in the system. Do you wish to continue ?,"Sie sind dabei, einen bestehenden Wechselkurs zu überschreiben. Möglicherweise wird dieser Kurs bereits im System verwendet. Möchten Sie fortfahren?",de
+"You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal.","Sie verwenden ein Produkt, für das der ""%s""-Preis gelten sollte.</br>Er konnte jedoch nicht angewendet werden.</br>Bitte überprüfen Sie Ihre Preise, wenn dies nicht normal erscheint.",de
+"You can download import files <a href=""https://download.geonames.org/export/zip/"" target=""_blank"">here</a>","You can download import files <a href=""https://download.geonames.org/export/zip/"" target=""_blank"">here</a>",de
+"You can find classes and methods name <a href=""https://javadoc.io/doc/net.datafaker/datafaker/1.6.0/index.html"" target=""_blank"">here</a>","You can find classes and methods name <a href=""https://javadoc.io/doc/net.datafaker/datafaker/1.6.0/index.html"" target=""_blank"">here</a>",de
+You can not turn-off this configuration because more than one company is configurated in the system.,"Sie können diese Konfiguration nicht deaktivieren, da mehr als eine Firma im System konfiguriert ist.",de
+You can select only one default delivery address.,Sie können nur eine Standardlieferadresse auswählen.,de
+You can select only one default invoicing address.,Sie können nur eine Standard-Rechnungsadresse auswählen.,de
+You can't compute a duration ratio without end date.,Ohne Enddatum kann man keine Duration Ratio berechnen.,de
+You can't compute a duration ratio without start date.,Ohne Startdatum kann man kein Laufzeitverhältnis berechnen.,de
+You can't start a timer that has already started,"Sie können keinen Timer starten, der bereits begonnen hat.",de
+You can't stop a timer that hasn't been started,Sie können einen nicht gestarteten Timer nicht stoppen.,de
+You must select a connection type in order to create a session,"Sie müssen einen Verbindungstyp auswählen, um eine Sitzung zu erstellen",de
+You will lost all configuration. Are you sure ?,Sie werden alle Konfigurationen verlieren. Sind Sie sicher?,de
+Your password,Ihr Passwort,de
+Your selection is valid,Ihre Auswahl ist gültig,de
+ZIMBRA,ZIMBRA,de
+ZapfDingbats,ZapfDingbats,de
+Zip,Reißverschluss,de
+Zip code,Postleitzahl,de
+Zip/City,Postleitzahl/Stadt,de
+\n,\n,de
+advanced.export.button.export.csv,advanced.export.button.export.csv,de
+and,und,de
+batch,Charge,de
+batch.manual,batch.manual,de
+blue,blau,de
+boolean,boolean,de
+btn.import,btn.import,de
+calendar.owner,calendar.owner,de
+com.axelor.apps.base.job.BatchJob,com.axelor.apps.base.job.BatchJob,de
+com.axelor.apps.base.job.CurrencyConversionJob,com.axelor.apps.base.job.CurrencyConversionJob,de
+com.axelor.apps.base.job.GlobalTrackingLogCleaningJob,com.axelor.apps.base.job.GlobalTrackingLogCleaningJob,de
+com.axelor.apps.base.job.MailJob,com.axelor.apps.base.job.MailJob,de
+com.axelor.apps.base.service.batch.BaseBatchService,com.axelor.apps.base.service.batch.BaseBatchService,de
+com.axelor.apps.base.service.batch.ImportBatchService,com.axelor.apps.base.service.batch.ImportBatchService,de
+com.axelor.apps.base.service.batch.MailBatchService,com.axelor.apps.base.service.batch.MailBatchService,de
+com.axelor.mail.service.MailFetchJob,com.axelor.mail.service.MailFetchJob,de
+confirm password,Passwort bestätigen,de
+cost price,Selbstkostenpreis,de
+current password,aktuelles Kennwort,de
+cyan,cyanfarben,de
+dark-gray,dunkelgrau,de
+day,Tag,de
+days,Tage,de
+double,doppelt,de
+each month,jeden Monat,de
+first,erste,de
+fourth,vierte,de
+gives access to a repository with the same syntax as the repositories in java,ermöglicht den Zugriff auf ein Repository mit der gleichen Syntax wie die Repositories in java,de
+gives access to connected user.,gibt dem angeschlossenen Benutzer Zugang.,de
+gives access to today date and,ermöglicht den Zugriff auf das heutige Datum und,de
+gray,grau,de
+green,grün,de
+http://www.url.com,http://www.url.com,de
+iCalendars,iCalendars,de
+iEvents,iEvents,de
+import.name,import.name,de
+import.verb,import.verb,de
+importconfig.btn,importconfig.btn,de
+"in percantage or pixel like (50%, 50px)","in Prozenten oder Pixeln wie (50%, 50px)",de
+int,int,de
+is used for concatenation,wird für die Verkettung verwendet,de
+last,zuletzt,de
+light-gray,hellgrau,de
+login name,Anmeldename,de
+long,lang,de
+magenta,magenta,de
+menu.citizenship,menu.citizenship,de
+month,Monat,de
+months,Monate,de
+name,Name,de
+new password,neues Passwort,de
+of,von,de
+or,oder,de
+orange,orange,de
+password,Passwort,de
+pink,rosa,de
+px,px,de
+red,rot,de
+searching Partners that are suppliers and with a name starting with “A”,"Suche nach Partnern, die Lieferanten sind und deren Name mit ""A"" beginnt",de
+searching for Product with id = 1:,Suche nach Produkt mit id = 1:,de
+searching for ProductFamily with the code ‘SERV’,Suche nach ProductFamily mit dem Code 'SERV',de
+second,zweite,de
+territory.department,territory.department,de
+territory.departments,territory.departments,de
+third,dritte,de
+to current date time.,auf die aktuelle Datumszeit.,de
+until,bis,de
+user group,Benutzergruppe,de
+user name,Nutzername,de
+v1,v1,de
+v2,v2,de
+v3,v3,de
+v4,v4,de
+v5,v5,de
+value:Base,value:Base,de
+weekdays,wochentags,de
+weekends,Wochenenden,de
+weeks,Wochen,de
+whatever@example.com,whatever@example.com,de
+white,weiß,de
+will not be applied to following children categories,wird nicht auf folgende Kinderkategorien angewandt,de
+will override discounts applied to parents categories,"hat Vorrang vor Rabatten, die für Elternkategorien gelten",de
+yellow,gelb,de
+your password,Ihr Kennwort,de

@@ -4,12 +4,19 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <dashboard name="project-my-projects" title="My projects">
+    <!-- [ MGM-85 - @fwagni ] START dashlet - feature/homeAction/ongoingProjects -->
+    <dashlet action="business.project.mine"/>
+    <!-- [ MGM-85 - @fwagni ] END dashlet - feature/homeAction/ongoingProjects -->
     <dashlet action="action-project-db-my-tasks-to-do"/>
     <dashlet action="action-project-db-my-tasks-due"/>
     <dashlet action="action-project-db-my-today-planning"
       if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
     <dashlet action="action-project-db-my-upcomming-planning"
       if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
+  </dashboard>
+  <dashboard name="project-my-tasks" title="My Tasks">
+    <dashlet action="action-project-db-my-tasks-to-do" colSpan="12"/>
+    <dashlet action="action-project-db-my-tasks-done" colSpan="12"/>
   </dashboard>
 
   <dashboard name="project-planned-charge" title="Planned charge">
@@ -32,7 +39,7 @@
 					        <Table striped>
 					            <TableHead>
 					              	<TableRow>
-						                <TableCell as="th"></TableCell>
+						                <TableCell as="th">Category</TableCell>
 						                <TableCell as="th">{_t('Open')}</TableCell>
 						                <TableCell as="th">{_t('Closed')}</TableCell>
 						                <TableCell as="th">{_t('Total')}</TableCell>
@@ -229,11 +236,22 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="grid" name="project-task-grid"/>
     <view type="form" name="project-task-form"/>
+    <view-param name="forceEdit" value="true"/>
     <domain><![CDATA[
       (self.assignedTo = :__user__ AND self.status.isCompleted = false) AND
       (self.taskDeadline <= current_date OR self.taskDate <= current_date)
     ]]></domain>
   </action-view>
+
+  <!-- [ MGM-85 - @fwagni ] START action-view - feature/homeAction/ongoingProjects -->
+  <action-view name="action.business.project.my.ongoing.projects"
+    model="com.axelor.apps.project.db.Project" title="My ongoing projects" home="true">
+    <view name="business-project-grid" type="grid"/>
+    <domain>
+      self.projectStatus.isCompleted = false
+    </domain>
+  </action-view>
+  <!-- [ MGM-85 - @fwagni ] END action-view - feature/homeAction/ongoingProjects -->
 
   <action-view name="action-project-db-my-tasks-due" title="My tasks due"
     model="com.axelor.apps.project.db.ProjectTask">
@@ -242,6 +260,15 @@
     <domain><![CDATA[
       (self.assignedTo = :__user__  AND self.status.isCompleted = false) AND
       (self.taskDeadline <= current_date)
+    ]]></domain>
+  </action-view>
+  <action-view name="action-project-db-my-tasks-done" title="My tasks done"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="project-task-grid"/>
+    <view type="form" name="project-task-form"/>
+    <view-param name="forceEdit" value="true"/>
+    <domain><![CDATA[
+      (self.assignedTo = :__user__  AND self.status.isCompleted = true)
     ]]></domain>
   </action-view>
 

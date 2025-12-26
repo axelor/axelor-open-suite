@@ -1,0 +1,792 @@
+key,message,language
+%s : You must configure Sales module for company %s,%s : Sie müssen das Verkaufsmodul für die Firma %s konfigurieren,de
+%s has been added to your cart.,%s wurde zu Ihrem Warenkorb hinzugefügt.,de
+A JavaScript boolean expression against the current form values.,Ein boolescher JavaScript-Ausdruck gegen die aktuellen Formularwerte.,de
+A cancel reason must be selected,Es muss ein Stornogrund ausgewählt werden,de
+ABC analysis,ABC-Analyse,de
+ATI,ATI,de
+AbcAnalysis.endDate,AbcAnalysis.endDate,de
+AbcAnalysis.startDate,AbcAnalysis.startDate,de
+Accepted Credit,Akzeptierter Kredit,de
+Access to parent sale order,Zugang zur Bestellung der Eltern,de
+Accounted Revenue,Verbuchte Einnahmen,de
+Accounting Family sale turnover (Excl. Tax) per month,Buchhaltung Familienverkaufsumsatz (ohne Steuern) pro Monat,de
+Action,Aktion,de
+Actions,Aktionen,de
+Activate,Aktivieren Sie,de
+Activate past versions recovery,Aktivierung der Wiederherstellung früherer Versionen,de
+Actual version overwritten.,Aktuelle Version überschrieben.,de
+"Actual version saved, past version recovered.","Aktuelle Version gespeichert, frühere Version wiederhergestellt.",de
+Add Line from Configurator,Zeile aus Konfigurator hinzufügen,de
+Add Pack,Packung hinzufügen,de
+Add a new sale order line,Eine neue Auftragszeile hinzufügen,de
+Add a pack,Eine Packung hinzufügen,de
+Add to cart,In den Warenkorb legen,de
+Adv. payment amount,Vorauszahlungsbetrag,de
+Advance Payment,Vorschusszahlung,de
+Advance Payments,Vorschuss-Zahlungen,de
+Advance payment A.T.I. total,Advance payment A.T.I. total,de
+Advance payment amount needed,Erforderlicher Vorschussbetrag,de
+Advance payment needed,Vorauszahlung erforderlich,de
+Advance payment total,Vorauszahlung insgesamt,de
+Advance payments,Vorschusszahlungen,de
+All customer credit will be updated.,Alle Kundenguthaben werden aktualisiert.,de
+Allocate,Zuweisen,de
+Allocate all,Zuteilung aller,de
+Allocated stock,Zugewiesener Bestand,de
+Allow pending order modification,Änderung ausstehender Aufträge zulassen,de
+Allow the duplication of sale quotation line. The line will be recomputed from its configurator if possible.,"Erlaubt die Duplizierung von Verkaufsangebotszeilen. Die Zeile wird, wenn möglich, von ihrem Konfigurator neu berechnet.",de
+Allow the user to apply a global discount on a sale order. Global discount and discount per line are not cumulative.,Ermöglicht dem Benutzer die Anwendung eines globalen Rabatts auf einen Verkaufsauftrag. Globaler Rabatt und Rabatt pro Zeile sind nicht kumulierbar.,de
+Allow the user to put products aside to generate an order at a later date.,"Erlauben Sie dem Benutzer, Produkte zur Seite zu legen, um zu einem späteren Zeitpunkt eine Bestellung aufzugeben.",de
+Allow to edit configurator values inside the generated sale order line. Product will then be modified and line regenerated.,Ermöglicht die Bearbeitung von Konfiguratorwerten innerhalb der generierten Bestellzeile. Das Produkt wird dann geändert und die Zeile neu generiert.,de
+Amount,Betrag,de
+Amount A.T.I.,Amount A.T.I.,de
+Amount Tax,Betrag Steuer,de
+Amount Tax (via percentages),Betrag Steuer (über Prozentsätze),de
+Amount invoiced W.T.,Amount invoiced W.T.,de
+Amount remaining to order,Noch zu bestellender Betrag,de
+Amount to be spread over the timetable,Über den Fahrplan zu verteilender Betrag,de
+An attribute with the same name already exists.,Ein Attribut mit demselben Namen existiert bereits.,de
+"An error occurred during the duplication of sale order line. Therefore, only a simple copy has been made, please see tracebacks for more details.",Bei der Duplizierung der Verkaufsauftragszeile ist ein Fehler aufgetreten. Daher wurde nur eine einfache Kopie erstellt. Weitere Einzelheiten finden Sie unter Rückverfolgungen.,de
+"An error occurred during the generation of the product with configurator, please see tracebacks for more details.",Bei der Generierung des Produkts mit dem Konfigurator ist ein Fehler aufgetreten. Weitere Details finden Sie in den Tracebacks.,de
+Analytic distribution,Analytische Verteilung,de
+Analytic distribution required on sale order line,Analytische Verteilung in der Auftragszeile erforderlich,de
+App,App,de
+App sale,App-Verkauf,de
+At least one sale order line has a stock move with availability request.,Mindestens eine Kundenauftragszeile hat eine Lagerbewegung mit Verfügbarkeitsanforderung.,de
+Attributes,Attribute,de
+Authorizations,Berechtigungen,de
+Authorized groups,Autorisierte Gruppen,de
+Authorized users,Autorisierte Benutzer,de
+Availability Request,Anfrage zur Verfügbarkeit,de
+Availability request,Anfrage zur Verfügbarkeit,de
+Available stock,Verfügbarer Bestand,de
+Average margin rate,Durchschnittliche Gewinnspanne,de
+Average margin rate per customer,Durchschnittliche Gewinnspanne pro Kunde,de
+Average markup,Durchschnittlicher Aufschlag,de
+Average markup per customer,Durchschnittlicher Aufschlag pro Kunde,de
+Average price,Durchschnittlicher Preis,de
+Back to confirmed order,Zurück zur bestätigten Bestellung,de
+Base W.T.,Base W.T.,de
+Batchs,Chargen,de
+Bi-monthly,Zweimonatlich,de
+Block order creation,Erstellung von Blockaufträgen,de
+Blocked,Blockiert,de
+Business Project,Geschäftliches Projekt,de
+Business project,Geschäftliches Projekt,de
+Calculated fields on configurator,Berechnete Felder im Konfigurator,de
+Can only cancel a drafted or finalized sale order.,Sie können nur einen ausgearbeiteten oder abgeschlossenen Verkaufsauftrag stornieren.,de
+Can only complete a confirmed sale order.,Kann nur einen bestätigten Verkaufsauftrag abschließen.,de
+Can only confirm a finalized quotation.,Kann nur ein abgeschlossenes Angebot bestätigen.,de
+Can only finalize a drafted quotation.,Kann nur einen Entwurf eines Angebots fertigstellen.,de
+Cancel,Abbrechen,de
+Cancel Reason,Abbrechen Grund,de
+Cancel Reasons,Gründe stornieren,de
+Cancel reason,Grund stornieren,de
+Cancel reservation,Reservierung stornieren,de
+Canceled,Abgesagt,de
+Cancellation,Stornierung,de
+Cancellation confirmation,Bestätigung der Stornierung,de
+Cart,Wagen,de
+Cart line,Wagenlinie,de
+Cart line list,Warenkorb-Liste,de
+Cart lines,Wagenlinien,de
+Carts,Karren,de
+Catalog,Katalog,de
+Category,Kategorie,de
+Category sale turnover (Excl. Tax) per month,Kategorie Verkaufsumsatz (exkl. MwSt.) pro Monat,de
+Change allocated qty,Zugewiesene Menge ändern,de
+Change requested reserved qty,Änderungswunsch reservierte Menge,de
+Changes were made to the configurator creator. Please activate the configurator creator to use it.,"Es wurden Änderungen am Konfigurator-Ersteller vorgenommen. Bitte aktivieren Sie den Konfigurator-Ersteller, um ihn zu verwenden.",de
+Characteristics,Merkmale,de
+Check Duplicate,Duplikat prüfen,de
+Check the script,Prüfen Sie das Skript,de
+Children sale orders,Kinder Verkaufsaufträge,de
+Client box in sale order,Kundenbox im Verkaufsauftrag,de
+Client is sale blocked:,Der Kunde ist für den Verkauf gesperrt:,de
+Close opportunity when one of the linked sale orders is confirmed,"Opportunity schließen, wenn einer der verknüpften Verkaufsaufträge bestätigt wird",de
+Code,Code,de
+Coefficient on invoice line must be enabled for progress billing.,Der Koeffizient in der Rechnungszeile muss für die Abschlagsrechnung aktiviert sein.,de
+Comment,Kommentar,de
+Comment to display,Kommentar zur Anzeige,de
+Comment to display on delivery,Kommentar zur Anzeige bei Lieferung,de
+Comment to display on invoice,Kommentar zur Anzeige auf der Rechnung,de
+Comment to display on picking order,Kommentar zur Anzeige auf dem Kommissionierauftrag,de
+Comment to display on proforma,Kommentar zur Anzeige auf dem Proforma,de
+Company,Unternehmen,de
+Company bank,Unternehmen Bank,de
+Company currency,Währung des Unternehmens,de
+Complementary lines,Komplementäre Linien,de
+Complementary product,Komplementäres Produkt,de
+Complementary product list,Ergänzende Produktliste,de
+Complementary product(s),Ergänzende(s) Produkt(e),de
+Complementary products,Ergänzende Produkte,de
+Complete manually sale order,Verkaufsauftrag manuell ausfüllen,de
+Components,Komponenten,de
+Compute price with sublines,Preis mit Unterzeilen berechnen,de
+Conditions,Bedingungen,de
+Configuration,Konfiguration,de
+Configurator,Konfigurator,de
+Configurator BoM,Konfigurator BoM,de
+Configurator creator filters,Filter für den Konfigurator-Ersteller,de
+Configurator creator name,Name des Erstellers des Konfigurators,de
+Configurator creators,Ersteller des Konfigurators,de
+Configurator formula list,Konfigurator-Formelliste,de
+Configurator is not activated.,Der Konfigurator ist nicht aktiviert.,de
+Configurator model,Konfigurator-Modell,de
+Configurator version is different than its configurator creator.,Die Version des Konfigurators unterscheidet sich von seinem Ersteller.,de
+"Configurator version is different than the version of its configurator creator, therefore only a simple duplicate will be created, proceed ?","Die Version des Konfigurators unterscheidet sich von der Version seines Konfigurator-Erstellers, daher wird nur ein einfaches Duplikat erstellt, weiter ?",de
+ConfiguratorCreator,ConfiguratorCreator,de
+ConfiguratorCreators,ConfiguratorCreators,de
+Configurators,Konfiguratoren,de
+Configure,Konfigurieren Sie,de
+Confirm cancellation,Stornierung bestätigen,de
+Confirm merge sale order,Bestätigen Sie den Merge-Verkaufsauftrag,de
+Confirm order,Bestellung bestätigen,de
+Confirmation,Konfirmation,de
+Confirmation date,Datum der Bestätigung,de
+Confirmed by,Bestätigt durch,de
+Confirmer,Konfirmand,de
+Consider zero cost and zero price lines in the margin,Berücksichtigung von Nullkosten- und Nullpreislinien in der Marge,de
+Contact partner,Kontaktperson,de
+Contacts,Kontakte,de
+Content,Inhalt,de
+Contract end date,Datum des Vertragsendes,de
+Contract period in months,Vertragsdauer in Monaten,de
+Contract start date,Datum des Vertragsbeginns,de
+Copy needing update,Zu aktualisierende Kopie,de
+Country,Land,de
+Create Order from this Template,Auftrag aus dieser Vorlage erstellen,de
+Create order with missing products,Auftrag mit fehlenden Produkten erstellen,de
+Create the quotation,Erstellen Sie das Angebot,de
+Create the sale order,Erstellen Sie den Verkaufsauftrag,de
+Created by,Erstellt von,de
+Created on,Erstellt am,de
+Creation date,Datum der Erstellung,de
+Creation for every sale order lines,Erstellung für jede Verkaufsauftragszeile,de
+Creation for the sale order,Erstellung für den Verkaufsauftrag,de
+Currency,Währung,de
+Current Login user,Aktueller Login-Benutzer,de
+Current User,Aktueller Benutzer,de
+Currently ordered A.T.I.,Currently ordered A.T.I.,de
+Currently ordered W.T.,Currently ordered W.T.,de
+Custom css class to apply.,"Benutzerdefinierte Css-Klasse, die angewendet werden soll.",de
+Custom field,Benutzerdefiniertes Feld,de
+Custom fields,Benutzerdefinierte Felder,de
+Customer,Kunde,de
+Customer Catalog,Kundenkatalog,de
+Customer Catalog Lines,Kundenkatalog-Zeilen,de
+Customer Credit,Kundenkredit,de
+Customer catalog lines,Kundenkatalogzeilen,de
+Customer contact,Kontakt zum Kunden,de
+Customer deliveries,Lieferungen an Kunden,de
+Customer deliveries details,Details zu Kundenlieferungen,de
+Customer information,Informationen für Kunden,de
+Customer partner price list,Kundenpartner-Preisliste,de
+Customer partner price lists,Preislisten der Kundenpartner,de
+Customer reference,Kundenreferenz,de
+Customers,Kunden,de
+Customers / prospects,Kunden / Interessenten,de
+Customised,Maßgeschneidert,de
+Dashboard,Dashboard,de
+Data file,Die Datei,de
+Date,Datum,de
+Dates,Daten,de
+Day,Tag,de
+Deallocate,Freigeben von,de
+Deallocate all,Deallokieren Sie alle,de
+Decimal,Dezimal,de
+Default holdback percentage,Standard-Holdback-Prozentsatz,de
+Default unit,Standard-Einheit,de
+Define as template,Als Vorlage definieren,de
+Delivered,Geliefert,de
+Delivered quantity,Gelieferte Menge,de
+Delivery,Lieferung,de
+Delivery address,Lieferadresse,de
+Delivery conditions,Lieferbedingungen,de
+Description,Beschreibung,de
+Desired delivery date,Gewünschtes Lieferdatum,de
+Details Lines,Details Linien,de
+Discount,Rabatt,de
+Discount amount,Rabattbetrag,de
+Discount derogation (%),Ausnahmeregelung für Rabatte (%),de
+Discount rate,Abzinsungssatz,de
+Discount type,Rabatt-Typ,de
+Discounts need review,Ermäßigungen müssen überprüft werden,de
+Display customer code on printing,Kundencode beim Drucken anzeigen,de
+Display delivery condition on printing,Lieferkondition beim Drucken anzeigen,de
+Display estimated shipping dates on printing,Anzeige des voraussichtlichen Versanddatums beim Drucken,de
+Display lines,Zeilen anzeigen,de
+Display product code on printing,Anzeige des Produktcodes beim Drucken,de
+Display product picture on printing,Produktbild beim Drucken anzeigen,de
+Display sale order line number,Verkaufsauftragszeilennummer anzeigen,de
+Display saleman on printing,Anzeige Verkäufer auf Druck,de
+Display sublines on report,Unterzeilen im Bericht anzeigen,de
+Display tax detail on printing,Steuerdetails beim Drucken anzeigen,de
+Displayed Product name,Angezeigter Produktname,de
+Do not display the header and end of pack,Kopf und Ende des Pakets nicht anzeigen,de
+Do you want to proceed ?,Möchten Sie fortfahren?,de
+Draft,Entwurf,de
+Draft quotation,Entwurf eines Angebots,de
+Duplicate with configurator,Duplizieren mit Konfigurator,de
+Durations,Laufzeiten,de
+Edit order,Bestellung bearbeiten,de
+Editable,Editierbar,de
+Editable tree,Bearbeitbarer Baum,de
+Editor,Herausgeber,de
+Either the sale order or the product is null.,Entweder ist der Verkaufsauftrag oder das Produkt ungültig.,de
+Empty cart,Wagen leeren,de
+Enable business configurator,Business-Konfigurator einschalten,de
+Enable calculation of the entire quotation's prices,Ermöglicht die Berechnung der Preise für das gesamte Angebot,de
+Enable cart management,Aktivieren der Warenkorbverwaltung,de
+Enable customer catalog management,Ermöglichung der Verwaltung von Kundenkatalogen,de
+Enable discount on editable lines,Rabatt für bearbeitbare Zeilen aktivieren,de
+Enable edition of configurators,Freigabe der Ausgabe von Konfiguratoren,de
+Enable global discount on sale order,Globalen Rabatt für Verkaufsbestellungen aktivieren,de
+Enable line duplication,Leitungsduplizierung einschalten,de
+Enable product description copy,Aktivieren Sie die Kopie der Produktbeschreibung,de
+End date,Datum des Endes,de
+End of current contract period,Ende der laufenden Vertragslaufzeit,de
+End of validity,Ende der Gültigkeit,de
+Estimated delivery date,Geschätztes Lieferdatum,de
+Estimated shipping date,Geschätztes Versanddatum,de
+Every lines have been completely ordered.,Alle Zeilen sind vollständig geordnet worden.,de
+Example: accessing the name of the user,Beispiel: Zugriff auf den Namen des Benutzers,de
+Examples,Beispiele,de
+Excel,Excel,de
+Export,Exportieren,de
+Fetch limit,Abrufgrenze,de
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",Abrufgrenze für diese Charge. 0 wird nicht berücksichtigt. In diesem Fall wird der in der App Base konfigurierte Wert verwendet.,de
+Fill incoterm,Incoterm ausfüllen,de
+Filter products by trading name,Produkte nach Handelsnamen filtern,de
+Finalize,Fertigstellen,de
+Finalized quotation,Abgeschlossenes Angebot,de
+Financial terms,Finanzielle Bedingungen,de
+Fiscal position,Finanzielle Lage,de
+Formula,Formel,de
+Fortnightly,Vierzehntägig,de
+Freeze fields,Felder einfrieren,de
+From Date,Von Datum,de
+Full name,Vollständiger Name,de
+Generate,Erzeugen Sie,de
+Generate Product,Produkt generieren,de
+Generate advance payment invoice,Vorauszahlungsrechnung generieren,de
+Generate configurator,Konfigurator generieren,de
+Generate customer deliveries,Generierung von Kundenlieferungen,de
+Generate invoice,Rechnung generieren,de
+Generate product,Produkt generieren,de
+Generate production order,Produktionsauftrag generieren,de
+Generate purchase order,Bestellung generieren,de
+Generate sale configurations,Verkaufskonfigurationen generieren,de
+Generate the order,Erzeugen Sie den Auftrag,de
+Generate the pdf printing during sale order finalization,Generierung des PDF-Drucks während des Abschlusses der Bestellung,de
+Generated purchase orders,Erstellte Bestellungen,de
+Generation type,Art der Erzeugung,de
+Global discount,Globaler Rabatt,de
+Go to last version,Zur letzten Version gehen,de
+Gross Profit,Bruttogewinn,de
+Group products on printings,Produkte auf Drucksachen gruppieren,de
+Half-yearly,Halbjährlich,de
+Help,Hilfe,de
+Hide Discount on prints,Rabatt auf Abzüge ausblenden,de
+Hide Unit Amounts,Beträge pro Einheit ausblenden,de
+Hide unit amounts,Beträge pro Einheit ausblenden,de
+Historical,Historisch,de
+"If you want to enable this configuration, interco sale order can not be created at finalized quotation. Please change the configuration in supplychain application.","Wenn Sie diese Konfiguration aktivieren möchten, kann der Interco-Verkaufsauftrag nicht zum abgeschlossenen Angebot erstellt werden. Bitte ändern Sie die Konfiguration in der Supplychain-Anwendung.",de
+Ignore missing products,Fehlende Produkte ignorieren,de
+Import configurator creators,Konfigurator-Ersteller importieren,de
+Import log,Protokoll importieren,de
+In ATI,In ATI,de
+Indicators,Indikatoren,de
+Industry Sector,Industrie Sektor,de
+Info.,Infos.,de
+Information,Informationen,de
+Internal Note,Interne Notiz,de
+Internal Number,Interne Nummer,de
+Internal note,Interne Notiz,de
+Invoice Lines,Rechnungszeilen,de
+Invoice an advance payment,Eine Vorauszahlung in Rechnung stellen,de
+Invoice by delivery impose that all sale order lines must have service or stockable product with provision from stock,"Die Rechnung nach Lieferung setzt voraus, dass alle Auftragspositionen eine Dienstleistung oder ein lagerfähiges Produkt mit Bereitstellung aus dem Lager haben müssen.",de
+Invoiced,In Rechnung gestellt,de
+Invoicing,Rechnungsstellung,de
+Invoicing mode,Modus der Rechnungsstellung,de
+Is Active,Ist aktiv,de
+Is amount in % ?,Ist der Betrag in %?,de
+Is complementary partner products handled,Werden komplementäre Partnerprodukte behandelt,de
+Is complementary products unhandled yet,Sind ergänzende Produkte noch nicht abgewickelt,de
+Is sol price total of sub lines,Ist der Solpreis die Summe der Unterzeilen,de
+It is not possible to delete a confirmed order.,"Es ist nicht möglich, einen bestätigten Auftrag zu löschen.",de
+Label,Etikett,de
+Label to be displayed on sale orders,"Etikett, das bei Verkaufsbestellungen angezeigt wird",de
+Last Year To Date,Letztes Jahr bis heute,de
+Last reminder,Letzte Erinnerung,de
+Legal note on sale order,Rechtlicher Hinweis zum Verkaufsauftrag,de
+Level,Ebene,de
+Line list display type,Art der Anzeige der Zeilenliste,de
+Line production commentary,Kommentar zur Linienproduktion,de
+Lines to confirm,Zu bestätigende Zeilen,de
+Lines to recover,Linien zur Wiederherstellung,de
+List of sale orders to merge is empty,Die Liste der zusammenzuführenden Verkaufsaufträge ist leer,de
+Main sale order line,Hauptauftragslinie für den Verkauf,de
+Main/Invoicing address,Haupt-/Fakturierungsadresse,de
+Manage multiple sale quantity,Mehrere Verkaufsmengen verwalten,de
+Manage partner complementary product,Komplementärprodukt des Partners verwalten,de
+Manage sale order versions,Verwalten von Verkaufsauftragsversionen,de
+Manage sales unit on products,Verwaltung der Verkaufseinheit für Produkte,de
+Manual,Handbuch,de
+Manual Unblock,Manuelle Entsperrung,de
+Manufacturing Orders,Fertigungsaufträge,de
+Maps,Karten,de
+Margin,Marge,de
+Margin (%),Gewinnspanne (%),de
+Markup (%),Aufschlag (%),de
+Max,Max,de
+Max discount,Maximaler Rabatt,de
+Merge into single quotation,Zusammenführen zu einem einfachen Zitat,de
+Merge into single sale order,Zusammenführung zu einem einzigen Verkaufsauftrag,de
+Merge quotations,Zitate zusammenführen,de
+Merge sale orders,Verkaufsaufträge zusammenführen,de
+Merge sale quotation,Verkaufsangebot zusammenführen,de
+Meta field,Meta-Feld,de
+Meta json,Meta json,de
+Min,Min,de
+Missing mapped by: unidirectional one-to-many are not supported by the configurator.,Fehlendes Mapping durch: Unidirektionale One-to-Many werden vom Konfigurator nicht unterstützt.,de
+Month,Monat,de
+Monthly,Monatlich,de
+My Opportunities,Meine Chancen,de
+My Proposals,Meine Vorschläge,de
+My Sales,Meine Verkäufe,de
+My Sales Orders,Meine Kundenbestellungen,de
+My Team Proposals,Mein Team Vorschläge,de
+My Team Sales,Mein Team Vertrieb,de
+My Templates,Meine Vorlagen,de
+My Today Activities,Meine heutigen Aktivitäten,de
+My Turnover per month,Mein Umsatz pro Monat,de
+My templates,Meine Vorlagen,de
+Name,Name,de
+Name to use in scripts,In Skripten zu verwendender Name,de
+Nbr of Units sold (Orders) by category,Anzahl der verkauften Einheiten (Aufträge) nach Kategorie,de
+New version,Neue Version,de
+Next invoicing date,Nächstes Rechnungsstellungsdatum,de
+Next invoicing end period date,Nächstes Enddatum der Rechnungsperiode,de
+Next invoicing start period date,Datum des Beginns des nächsten Abrechnungszeitraums,de
+Next pricing,Nächste Preisgestaltung,de
+No Of Units,Anzahl der Einheiten,de
+No lines were generated. Please check that at least one line has a quantity to order.,"Es wurden keine Zeilen erzeugt. Bitte prüfen Sie, ob mindestens eine Zeile eine zu bestellende Menge hat.",de
+No order line needs to be generated for this cart.,Für diesen Wagen muss keine Bestellzeile erstellt werden.,de
+No pricing scale used for this record,Keine Preisstaffel für diesen Datensatz verwendet,de
+No product family is set for this product: %s,Für dieses Produkt ist keine Produktfamilie eingestellt: %s,de
+No unit is set for this product: %s,Für dieses Produkt ist keine Einheit eingestellt: %s,de
+Not delivered,Nicht geliefert,de
+Not invoiced,Nicht in Rechnung gestellt,de
+Notice period in days,Kündigungsfrist in Tagen,de
+OR,OR,de
+Old qty,Alte Menge,de
+Old version sale order,Alte Version Verkaufsauftrag,de
+On change,Über den Wandel,de
+One of the lines has its quantity inferior to its ordered quantity.,Bei einer der Zeilen ist die Menge kleiner als die bestellte Menge.,de
+"One product is sold at loss, are you sure you want to finalize the quotation ?","Ein Produkt wird mit Verlust verkauft, sind Sie sicher, dass Sie das Angebot abschließen wollen?",de
+One-off sale,Einmaliger Verkauf,de
+Only if,Nur wenn,de
+Opportunity,Gelegenheit,de
+Optional,Optional,de
+Options,Optionen,de
+Order Date,Datum der Bestellung,de
+Order Number,Bestellnummer,de
+Order all,Alle bestellen,de
+Order being edited,Auftrag wird bearbeitet,de
+Order bloqued message,Blockierte Nachricht bestellen,de
+Order completed,Bestellung abgeschlossen,de
+Order confirmed,Bestellung bestätigt,de
+Order creation for cart when stock is missing,Auftragserstellung für Warenkorb bei fehlendem Bestand,de
+Ordered qty,Bestellte Menge,de
+Ordering status,Status der Bestellung,de
+Origin sale quotation,Ursprung Verkauf Angebot,de
+Original product,Ursprüngliches Produkt,de
+Original sale order,Ursprünglicher Verkaufsauftrag,de
+Other information,Andere Informationen,de
+Overview,Übersicht,de
+PDF,PDF,de
+Pack,Packen Sie,de
+Pack Management,Pack-Management,de
+PackLine,PackLine,de
+Parent,Elternteil,de
+Parent sale order line,Parent sale order line,de
+Partially delivered,Teilweise geliefert,de
+Partially invoiced,Teilweise in Rechnung gestellt,de
+Partially ordered,Teilweise bestellt,de
+Partner,Partner,de
+Partner Type,Partner-Typ,de
+Past versions,Frühere Versionen,de
+Period duration,Dauer des Zeitraums,de
+Periodicity type,Art der Periodizität,de
+Please enter at least one detail line.,Bitte geben Sie mindestens eine Detailzeile an.,de
+Please fill printing settings on sale order %s.,Bitte füllen Sie die Druckeinstellungen für den Verkaufsauftrag %s aus.,de
+Please select a customer,Bitte wählen Sie einen Kunden,de
+Please select a customer to be able to convert opportunity into quotation.,"Bitte wählen Sie einen Kunden aus, um eine Verkaufschance in ein Angebot umwandeln zu können.",de
+Please select product variant for following product(s) :,Bitte wählen Sie eine Produktvariante für folgende(s) Produkt(e):,de
+Please select the sale order(s) to print.,Bitte wählen Sie die zu druckende(n) Bestellung(en) aus.,de
+Previous pricing,Frühere Preisgestaltung,de
+Price,Preis,de
+Price List,Die Preisliste,de
+Price calculation details,Details zur Preisberechnung,de
+Price list,Die Preisliste,de
+Price lists,Preislisten,de
+Pricing,Preisgestaltung,de
+Pricing rules,Regeln für die Preisgestaltung,de
+Print,Drucken,de
+Print subtotal / line,Zwischensumme/Zeile drucken,de
+Print subtotal per line,Zwischensumme pro Zeile drucken,de
+Printing,Drucken,de
+Printing config per Sale Order,Druckkonfiguration pro Verkaufsauftrag,de
+Printing settings,Druckeinstellungen,de
+Printings,Drucksachen,de
+Product,Produkt,de
+Product Accounting Family,Produktbuchhaltung Familie,de
+Product Accounting Family Sales Turnover this year vs last year,Produktbuchhaltung Familie Umsatz dieses Jahr im Vergleich zum letzten Jahr,de
+Product Category,Produktkategorie,de
+Product Name,Produktname,de
+Product code on catalog,Produktcode im Katalog,de
+Product creator,Produktschöpfer,de
+Product generated,Erzeugnis erzeugt,de
+Product meta field,Produkt-Meta-Feld,de
+Product name on catalog,Produktname im Katalog,de
+Product sale turnover (Excl. Tax) last 12 month,Produktverkaufsumsatz (ohne Steuern) in den letzten 12 Monaten,de
+Product sale turnover (Excl. Tax) per month,Produktverkaufsumsatz (exkl. MwSt.) pro Monat,de
+Product should not be null,Produkt sollte nicht null sein,de
+Product type icon select,Produkttyp-Symbol auswählen,de
+Product variant,Produktvariante,de
+Production,Produktion,de
+Production canceled,Produktion gestrichen,de
+Production finished,Produktion beendet,de
+Production in draft,Produktion im Entwurf,de
+Production in progress,Laufende Produktion,de
+Production note,Anmerkung zur Produktion,de
+Production on standby,Produktion in Bereitschaft,de
+Production planned,Geplante Produktion,de
+Production process,Produktionsprozess,de
+Products,Produkte,de
+Products & services,Produkte und Dienstleistungen,de
+Proforma invoice,Proforma-Rechnung,de
+Project/Task,Projekt/Aufgabe,de
+Prospects,Aussichten,de
+Prototype,Prototyp,de
+Qty,Menge,de
+Qty to order,Zu bestellende Menge,de
+Quantity,Menge,de
+"Quantity in generated sale order line, 1 if left empty.","Menge in der generierten Verkaufsauftragszeile, 1 wenn leer gelassen.",de
+Quantity should not be less than the ordered quantity.,Die Menge sollte nicht geringer sein als die bestellte Menge.,de
+Quarterly,Vierteljährlich,de
+Query to database,Abfrage der Datenbank,de
+Quotation,Angebot,de
+Quotation lines,Anführungsstriche,de
+Quotation/sale order created,Angebot/Verkaufsauftrag erstellt,de
+Quotations template,Vorlage für Kostenvoranschläge,de
+Quotations to merge,Angebote zum Zusammenführen,de
+Quote/Order,Angebot/Bestellung,de
+Recompute prices,Preise neu berechnen,de
+Recover from this version,Erholen Sie sich von dieser Version,de
+Reference,Referenz,de
+Reference already existing,Referenz bereits vorhanden,de
+References,Referenzen,de
+Regenerate Product,Produkt regenerieren,de
+Regenerate line,Linie regenerieren,de
+Register a deposit,Einzahlung registrieren,de
+Related tasks,Verwandte Aufgaben,de
+Report type,Berichtstyp,de
+Reportings,Berichte,de
+Reports,Berichte,de
+Request reservation,Reservierung anfordern,de
+Reservation requested,Reservierung erbeten,de
+Reserve all,Alle reservieren,de
+SO Tax line,SO Steuerlinie,de
+SO Tax lines,SO Steuerlinien,de
+SO line,SO-Linie,de
+SO lines,SO-Linien,de
+Sale,Verkauf,de
+Sale Batch,Verkauf Charge,de
+Sale Order,Verkaufsauftrag,de
+Sale batch,Verkaufscharge,de
+Sale batch filters,Verkauf von Chargenfiltern,de
+Sale batches,Verkaufschargen,de
+Sale blocking,Verkaufssperre,de
+Sale config,Verkauf Konfiguration,de
+Sale config (${ name }),Verkauf Konfiguration (${ Name }),de
+Sale configuration,Verkauf Konfiguration,de
+Sale configurations,Verkauf Konfigurationen,de
+Sale details by product,Verkaufsdetails nach Produkt,de
+Sale order,Verkaufsauftrag,de
+Sale order does not have configurator to duplicate.,Verkaufsauftrag hat keinen Konfigurator zum Duplizieren.,de
+Sale order generated,Verkaufsauftrag generiert,de
+Sale order id,Verkaufsauftragsnummer,de
+Sale order line,Verkaufsauftragszeile,de
+Sale order line field,Feld für die Verkaufsauftragszeile,de
+Sale order line list,Verkaufsauftragszeilenliste,de
+Sale order lines,Verkaufsauftragszeilen,de
+Sale order lines filter,Filter für Verkaufsauftragszeilen,de
+Sale order quotation,Angebot für Verkaufsaufträge,de
+Sale order template,Vorlage Verkaufsauftrag,de
+Sale orders,Verkaufsaufträge,de
+Sale orders ATI/WT,Verkaufsaufträge ATI/WT,de
+Sale orders to merge,Verkaufsaufträge zur Verschmelzung,de
+Sale quotation,Verkaufspreis,de
+Sale quotations,Verkaufsangebote,de
+Sale quotations/orders,Verkaufsangebote/Aufträge,de
+Sale.Pricing,Sale.Pricing,de
+SaleOrder.afterDiscount,SaleOrder.afterDiscount,de
+SaleOrder.bank,SaleOrder.bank,de
+SaleOrder.base,SaleOrder.base,de
+SaleOrder.cheque,SaleOrder.cheque,de
+SaleOrder.customer,SaleOrder.customer,de
+SaleOrder.customerCode,SaleOrder.customerCode,de
+SaleOrder.customerRef,SaleOrder.customerRef,de
+SaleOrder.date,SaleOrder.date,de
+SaleOrder.deliveryAddress,SaleOrder.deliveryAddress,de
+SaleOrder.deliveryCondition,SaleOrder.deliveryCondition,de
+SaleOrder.description,SaleOrder.description,de
+SaleOrder.discountAmount,SaleOrder.discountAmount,de
+SaleOrder.duration,SaleOrder.duration,de
+SaleOrder.endOfValidityDate,SaleOrder.endOfValidityDate,de
+SaleOrder.estimatedDeliveryDate,SaleOrder.estimatedDeliveryDate,de
+SaleOrder.invoicingAddrs,SaleOrder.invoicingAddrs,de
+SaleOrder.isIspmRequired,SaleOrder.isIspmRequired,de
+SaleOrder.no,SaleOrder.no,de
+SaleOrder.note,SaleOrder.note,de
+SaleOrder.order,SaleOrder.order,de
+SaleOrder.others,SaleOrder.others,de
+SaleOrder.paymentCondition,SaleOrder.paymentCondition,de
+SaleOrder.paymentMode,SaleOrder.paymentMode,de
+SaleOrder.periodicity,SaleOrder.periodicity,de
+SaleOrder.priceExclTax,SaleOrder.priceExclTax,de
+SaleOrder.priceInclTax,SaleOrder.priceInclTax,de
+SaleOrder.productCode,SaleOrder.productCode,de
+SaleOrder.productDescription,SaleOrder.productDescription,de
+SaleOrder.productName,SaleOrder.productName,de
+SaleOrder.productSequence,SaleOrder.productSequence,de
+SaleOrder.proforma,SaleOrder.proforma,de
+SaleOrder.qtyUnit,SaleOrder.qtyUnit,de
+SaleOrder.quote,SaleOrder.quote,de
+SaleOrder.salemanEmail,SaleOrder.salemanEmail,de
+SaleOrder.salemanName,SaleOrder.salemanName,de
+SaleOrder.salemanPhone,SaleOrder.salemanPhone,de
+SaleOrder.shipmentDate,SaleOrder.shipmentDate,de
+SaleOrder.subscriptionContract,SaleOrder.subscriptionContract,de
+SaleOrder.supplier,SaleOrder.supplier,de
+SaleOrder.supplyRef,SaleOrder.supplyRef,de
+SaleOrder.tax,SaleOrder.tax,de
+SaleOrder.taxAmount,SaleOrder.taxAmount,de
+SaleOrder.taxCode,SaleOrder.taxCode,de
+SaleOrder.taxes,SaleOrder.taxes,de
+SaleOrder.totalDiscount,SaleOrder.totalDiscount,de
+SaleOrder.totalExclTax,SaleOrder.totalExclTax,de
+SaleOrder.totalExclTaxWithoutDiscount,SaleOrder.totalExclTaxWithoutDiscount,de
+SaleOrder.totalInclTax,SaleOrder.totalInclTax,de
+SaleOrder.totalTax,SaleOrder.totalTax,de
+SaleOrder.totalTaxes,SaleOrder.totalTaxes,de
+SaleOrder.type,SaleOrder.type,de
+SaleOrder.unitPrice,SaleOrder.unitPrice,de
+SaleOrder.validityDate,SaleOrder.validityDate,de
+SaleOrderLine.endOfPack,SaleOrderLine.endOfPack,de
+SaleOrderLine.total,SaleOrderLine.total,de
+Sales,Vertrieb,de
+Sales Manager,Verkaufsleiter,de
+Sales Manager Details,Vertriebsleiter Details,de
+Sales Order filters,Filter für Kundenaufträge,de
+Sales TurnOver by Product this year vs last year,Umsatz nach Produkt in diesem Jahr im Vergleich zum letzten Jahr,de
+Sales Turnover (Orders) by month by category,Verkaufsumsatz (Aufträge) nach Monat und Kategorie,de
+Sales Turnover This year vs Last year,Umsatz Dieses Jahr im Vergleich zum letzten Jahr,de
+Sales Turnover YTD vs Last year by Product Accounting Family,Umsatz YTD vs. letztes Jahr nach Produktbuchhaltungsfamilie,de
+Sales distribution per product accounting family,Umsatzverteilung nach Produktbuchhaltungsfamilie,de
+Sales distribution per product category,Umsatzverteilung nach Produktkategorien,de
+Sales follow-up,Follow-up der Verkäufe,de
+Sales order,Kundenauftrag,de
+Sales per country,Verkäufe pro Land,de
+Sales turnover comparison per month this year vs past years,Vergleich des Umsatzes pro Monat in diesem Jahr und in den vergangenen Jahren,de
+Sales turnover comparison per month this year vs past years by accounting family,Vergleich des Umsatzes pro Monat in diesem Jahr und in den vergangenen Jahren nach Buchführungsfamilien,de
+Sales turnover this year vs last year,Umsatz in diesem Jahr im Vergleich zum letzten Jahr,de
+Sales turnover this year vs past years,Umsatz in diesem Jahr im Vergleich zu den vergangenen Jahren,de
+Sales unit,Verkaufseinheit,de
+Salesperson,Vertriebsmitarbeiter,de
+Salesperson Details,Verkäufer Details,de
+Save actual version,Aktuelle Version speichern,de
+See quotation lines,Siehe Zitatzeilen,de
+See sale orders lines,Siehe Linien für Verkaufsaufträge,de
+See stock details,Siehe Details zum Bestand,de
+Select this optional complementary product,Wählen Sie dieses optionale Ergänzungsprodukt,de
+Selected,Ausgewählte,de
+Send email,E-Mail senden,de
+Separate in a new quotation,Getrennt in einem neuen Angebot,de
+Seq.,Seq.,de
+Shipping costs,Kosten für den Versand,de
+Short legal note to be displayed on sales order,"Kurzer rechtlicher Hinweis, der auf dem Kundenauftrag angezeigt werden muss",de
+Show Total,Gesamt anzeigen,de
+Show on configurator,Im Konfigurator anzeigen,de
+Show total,Summe anzeigen,de
+So line creator,Also Zeilenersteller,de
+Specific notes,Besondere Hinweise,de
+Specific package,Spezifisches Paket,de
+Specific tax note,Spezifischer Steuerhinweis,de
+Specify a boolean expression to collapse/expend this panel.,"Geben Sie einen booleschen Ausdruck an, um dieses Panel ein-/auszublenden.",de
+Specify the default span for child items. Default value is 6.,Geben Sie die Standardspanne für untergeordnete Elemente an. Der Standardwert ist 6.,de
+"Specify the number of columns taken by the widget (1,2,..12). Default value is 6.","Geben Sie die Anzahl der Spalten an, die das Widget einnimmt (1, 2,...12). Der Standardwert ist 6.",de
+Specify whether given custom field is panel-tab or not. Default value is false (true or false).,"Legt fest, ob das angegebene benutzerdefinierte Feld ein Panel-Tab ist oder nicht. Der Standardwert ist false (wahr oder falsch).",de
+Specify whether the panel is collapsible. Default value is false (true or false).,"Geben Sie an, ob das Panel zusammenklappbar ist. Der Standardwert ist false (wahr oder falsch).",de
+Specify whether to show the title. Default value is true (true or false).,"Geben Sie an, ob der Titel angezeigt werden soll. Der Standardwert ist true (true oder false).",de
+Split quotations and orders,Aufteilung von Angeboten und Aufträgen,de
+Standard,Standard,de
+"Standard operation like +, -, *, / can be used and will work correctly with BigDecimal.","Standardoperationen wie +, -, *, / können verwendet werden und funktionieren korrekt mit BigDecimal.",de
+"Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.","Standard: Kundenauftragszeilen auf klassische Weise anzeigen.<br>Bearbeitbar: Diese Konfiguration ermöglicht es Ihnen, ein editierbares Raster für Angebots-/Kundenauftragszeilen zu aktivieren, so dass Sie schnell Angebotszeilen aus der Rasteransicht heraus hinzufügen und vervollständigen können.<br>Editierbarer Baum: Aktivieren Sie mehrstufige Verkaufsauftragszeilen.",de
+Start date,Datum des Beginns,de
+Status,Status,de
+Stock Moves,Aktienbewegungen,de
+Stock location,Lagerort,de
+Stock moves,Aktienbewegungen,de
+String,Zeichenfolge,de
+String interpolation can also be used,Die String-Interpolation kann auch verwendet werden,de
+Sub Total gross profit,Sub Total Bruttogewinn,de
+Sub Total markup,Sub Total Aufschlag,de
+Sub margin rate,Untermargensatz,de
+SubTotal cost price,Zwischensumme Selbstkostenpreis,de
+Subscription,Abonnement,de
+Subscription text to display,Anzuzeigender Abonnementtext,de
+Supplier,Anbieter,de
+Swap discount type,Rabatttyp tauschen,de
+Tacit agreement,Stillschweigende Vereinbarung,de
+Target custom model,Benutzerdefiniertes Zielmodell,de
+Tax,Steuer,de
+Tax Equiv,Steueräquivalent,de
+Tax Lines,Steuerzeilen,de
+Tax number,Steuernummer,de
+Tax type,Steuerart,de
+Taxes,Steuern,de
+Team,Team,de
+Template,Vorlage,de
+Template created by,Vorlage erstellt von,de
+Templates,Schablonen,de
+Test this creator,Testen Sie diesen Ersteller,de
+The ATI configuration must be the same for all sale orders,Die ATI-Konfiguration muss für alle Verkaufsaufträge gleich sein,de
+The client Partner is required and must be the same for all sale orders,Der Kunde Partner ist erforderlich und muss für alle Verkaufsaufträge derselbe sein.,de
+The client provided is not a customer of the given company: %s.,Der angegebene Kunde ist kein Kunde des angegebenen Unternehmens: %s.,de
+The company %s doesn't have any configured sequence for sale orders,Das Unternehmen %s hat keine konfigurierte Reihenfolge für Verkaufsaufträge,de
+The company configuration doesn't allow you to manage the exclusion or inclusion of taxes.,"Die Unternehmenskonfiguration erlaubt es Ihnen nicht, den Ausschluss oder die Einbeziehung von Steuern zu verwalten.",de
+The company is required and must be the same for all sale orders,Die Firma ist erforderlich und muss für alle Verkaufsaufträge dieselbe sein,de
+The contact provided is not a contact partner of the client.,Der angegebene Ansprechpartner ist kein Ansprechpartner des Auftraggebers.,de
+The currency is required and must be the same for all sale orders,Die Währung ist erforderlich und muss für alle Verkaufsaufträge gleich sein.,de
+"The field %s is of type %s, but the configured script returned value is of type %s.","Das Feld %s ist vom Typ %s, aber der vom konfigurierten Skript zurückgegebene Wert ist vom Typ %s.",de
+The fiscal position must be the same for all sale orders,Die Steuerposition muss für alle Verkaufsaufträge gleich sein.,de
+The partner's language is different from the current language. Description and product name are in :,Die Sprache des Partners ist eine andere als die aktuelle Sprache. Beschreibung und Produktname sind in :,de
+The sale order was canceled,Der Verkaufsauftrag wurde storniert,de
+The script must be written in,Das Skript muss geschrieben sein in,de
+"The selected price list is no longer valid, do you still want to continue?","Die ausgewählte Preisliste ist nicht mehr gültig, möchten Sie trotzdem fortfahren?",de
+The syntax of the script is correct.,Die Syntax des Skripts ist korrekt.,de
+The tax number must be the same for all sale orders,Die Steuernummer muss für alle Verkaufsaufträge gleich sein,de
+The total amount of quotation is zero.,Der Gesamtbetrag der Notierung ist Null.,de
+"The width can be specified as percentage or fixed value.The fix width can be either in \'px\' or \'em\', \'px\' is assumed if not specified.","The width can be specified as percentage or fixed value.The fix width can be either in \'px\' or \'em\', \'px\' is assumed if not specified.",de
+There are lines with a discount superior to the maximal authorized discount.,"Es gibt Linien mit einem Rabatt, der über dem maximal zulässigen Rabatt liegt.",de
+This Year To Date,Dieses Jahr bis heute,de
+"This configuration blocks the creation of orders, or ignores missing products, if there are products missing from the cart.","Diese Konfiguration blockiert die Erstellung von Bestellungen oder ignoriert fehlende Produkte, wenn Produkte im Warenkorb fehlen.",de
+"This configuration enables you to recalculate line prices using a quotation. The recalculation will take into account pricing, if any, then the partner's price lists.","Mit dieser Konfiguration können Sie die Zeilenpreise anhand eines Angebots neu kalkulieren. Bei der Neuberechnung werden die Preise, falls vorhanden, aus den Preislisten des Partners berücksichtigt.",de
+This product currency is empty: %s,Diese Produktwährung ist leer: %s,de
+This sale order is completed.,Dieser Verkaufsauftrag ist abgeschlossen.,de
+"This script has errors, please see server logs for more details.","Dieses Skript hat Fehler, bitte sehen Sie die Serverprotokolle für weitere Details.",de
+"This script returned value is of type %s, it should return a value of type %s instead.","Der von diesem Skript zurückgegebene Wert ist vom Typ %s, er sollte stattdessen einen Wert vom Typ %s zurückgeben.",de
+"This will duplicate lines and their configurator when possible, do you want to proceed ?","Dies wird Zeilen und ihre Konfigurator, wenn möglich zu duplizieren, wollen Sie fortfahren?",de
+Timetable,Fahrplan,de
+Title,Titel,de
+Title type line can not have sublines.,Titelzeilen können keine Unterzeilen haben.,de
+To Date,Bis heute,de
+Tools,Werkzeuge,de
+Total A.T.I.,Total A.T.I.,de
+Total A.T.I. in company currency,Total A.T.I. in company currency,de
+Total V.A.T.,Total V.A.T.,de
+Total W.T.,Total W.T.,de
+Total W.T. before discount,Total W.T. before discount,de
+Total W.T. in company currency,Total W.T. in company currency,de
+Total cost in company currency,Gesamtkosten in Firmenwährung,de
+Total cost price,Gesamter Selbstkostenpreis,de
+Total order amount per salesman,Gesamtauftragswert pro Verkäufer,de
+Total ordered A.T.I.,Total ordered A.T.I.,de
+Total ordered W.T.,Total ordered W.T.,de
+Total price,Gesamtpreis,de
+Total quantity sold,Verkaufte Gesamtmenge,de
+Total stock,Gesamtbestand,de
+Total tax,Steuer insgesamt,de
+Trading name,Handelsname,de
+TurnOver,TurnOver,de
+Turnover,Umsatz,de
+Turnover (excl. Tax) per team,Umsatz (exkl. Steuern) pro Team,de
+Turnover Study,Umsatzstudie,de
+Turnover per customer category,Umsatz pro Kundenkategorie,de
+Turnover per customer sector,Umsatz pro Kundenbereich,de
+Turnover per customer type,Umsatz pro Kundentyp,de
+Turnover per month per salesman,Umsatz pro Monat und Verkäufer,de
+Type,Typ,de
+Type select normal,Typ wählen normal,de
+Unit,Einheit,de
+Unit cost price in company currency,Selbstkostenpreis in Firmenwährung,de
+Unit price A.T.I.,Unit price A.T.I.,de
+Unit price W.T.,Unit price W.T.,de
+Unit price discounted,Ermäßigter Stückpreis,de
+Unrenewed,Unverlängert,de
+Unselect this optional complementary product,Deaktivieren Sie dieses optionale Zusatzprodukt,de
+Update customer's accepted credit,Aktualisierung der akzeptierten Kredite des Kunden,de
+Update from,Update von,de
+Update from configurator,Update vom Konfigurator,de
+Update from product,Update vom Produkt,de
+Used credit has been exceeded. The quotation must be manually unblocked to generate the order.,"Das verbrauchte Guthaben wurde überschritten. Das Angebot muss manuell entsperrt werden, um den Auftrag zu generieren.",de
+User,Benutzer,de
+User assigned to customer,Dem Kunden zugeordneter Benutzer,de
+User to fill salesperson,Benutzer zum Ausfüllen von Verkäufern,de
+Validate and generate the line,Validierung und Generierung der Zeile,de
+Validate changes,Änderungen validieren,de
+Validated,Validiert,de
+Validity duration,Gültigkeitsdauer,de
+Validity duration per default,Gültigkeitsdauer per Default,de
+Value,Wert,de
+Version,Version,de
+Version Number,Versionsnummer,de
+Version date,Datum der Version,de
+Version number,Versionsnummer,de
+WT,WT,de
+"Warning, a completed order can't be changed anymore, do you want to continue?","Warnung, eine abgeschlossene Bestellung kann nicht mehr geändert werden, möchten Sie fortfahren?",de
+"Watch out, a sale order was already created with this external reference.","Achtung, es wurde bereits ein Verkaufsauftrag mit dieser externen Referenz erstellt.",de
+Weekly,Wöchentlich,de
+"When activated, the total margin of a sale order will take into account sale order lines where the cost price or the sale price is zero.","Wenn diese Funktion aktiviert ist, werden bei der Gesamtspanne eines Verkaufsauftrags auch Verkaufsauftragszeilen berücksichtigt, bei denen der Einstandspreis oder der Verkaufspreis Null ist.",de
+"When enabled, confirming a sale quotation will generate a new sale order. This configuration allow the partial validation of a sale quotation.","Wenn diese Option aktiviert ist, wird durch die Bestätigung eines Verkaufsangebots ein neuer Verkaufsauftrag erzeugt. Diese Konfiguration ermöglicht die teilweise Validierung eines Verkaufsangebots.",de
+"When enabled, sale order lines price will be computed based on theirs sub lines","Wenn diese Option aktiviert ist, wird der Preis für die Verkaufsauftragszeilen auf der Grundlage ihrer Unterzeilen berechnet.",de
+Widget Attributes,Widget-Attribute,de
+Word,Wort,de
+Workshop,Workshop,de
+Would you like to update all lines with this new address?,Möchten Sie alle Zeilen mit dieser neuen Adresse aktualisieren?,de
+Year,Jahr,de
+Year 1 To Date,Jahr 1 Bis heute,de
+Year 2 To Date,Jahr 2 Bis heute,de
+Yearly,Jährlich,de
+"You are using a product for which the '%s' pricing should be applied.</br>However, it could not be applied.</br>Please check your pricing if this does not seem normal.","Sie verwenden ein Produkt, für das der ""%s""-Preis gelten sollte.</br>Er konnte jedoch nicht angewendet werden.</br>Bitte überprüfen Sie Ihre Preise, wenn dies nicht normal erscheint.",de
+You can not choose this product for this order: %s,Sie können dieses Produkt für diese Bestellung nicht auswählen: %s,de
+You can not create sale order as some products are not in stock.,"Sie können keine Verkaufsbestellung erstellen, da einige Produkte nicht auf Lager sind.",de
+You can not delete lines with an ordered quantity superior to 0.,Sie können keine Zeilen mit einer Bestellmenge größer als 0 löschen.,de
+You can not enable quotation and order split if past version recovery is enabled.,"Sie können Angebot und Auftragssplit nicht aktivieren, wenn die Wiederherstellung früherer Versionen aktiviert ist.",de
+You can not order more than %s for the line with the product %s.,Sie können nicht mehr als %s für die Zeile mit dem Produkt %s bestellen.,de
+You can not order more than the quantity to order left.,"Sie können nicht mehr bestellen als die Menge, die Sie noch bestellen können.",de
+You can only add a line to a draft sale order.,Sie können nur eine Zeile zu einem Entwurf eines Verkaufsauftrags hinzufügen.,de
+You cannot bill together lines that do not have the same delivery address. Please use partial billing for lines with the same delivery address.,"Es ist nicht möglich, Leitungen, die nicht dieselbe Lieferadresse haben, zusammen abzurechnen. Bitte verwenden Sie die Teilrechnung für Zeilen mit derselben Lieferadresse.",de
+You have to choose at least one sale order,Sie müssen mindestens einen Verkaufsauftrag auswählen,de
+You have to choose at least one sale quotation,Sie müssen mindestens ein Verkaufsangebot auswählen,de
+You must configure a script to fill the created product code.,"Sie müssen ein Skript konfigurieren, um den erstellten Produktcode zu füllen.",de
+You must configure a script to fill the created product name.,"Sie müssen ein Skript konfigurieren, um den erstellten Produktnamen zu füllen.",de
+You must configure a script to fill the product name in the created sale order line.,"Sie müssen ein Skript konfigurieren, um den Produktnamen in die erstellte Auftragszeile einzutragen.",de
+You must fill a partner for the opportunity %s.,Sie müssen einen Partner für die Gelegenheit %s füllen.,de
+copy,kopieren.,de
+gives access to a repository with the same syntax as the repositories in java,ermöglicht den Zugriff auf ein Repository mit der gleichen Syntax wie die Repositories in java,de
+gives access to connected user.,gibt dem angeschlossenen Benutzer Zugang.,de
+gives access to the id of parent sale order (when adding a sale order line with this configurator),ermöglicht den Zugriff auf die ID des übergeordneten Verkaufsauftrags (beim Hinzufügen einer Verkaufsauftragszeile mit diesem Konfigurator),de
+gives access to today date and,ermöglicht den Zugriff auf das heutige Datum und,de
+import.verb,import.verb,de
+is used for concatenation,wird für die Verkettung verwendet,de
+orderingStatus.closed,orderingStatus.closed,de
+searching Partners that are suppliers and with a name starting with “A”,"Suche nach Partnern, die Lieferanten sind und deren Name mit ""A"" beginnt",de
+searching for Product with id = 1:,Suche nach Produkt mit id = 1:,de
+searching for ProductFamily with the code ‘SERV’,Suche nach ProductFamily mit dem Code 'SERV',de
+to current date time.,auf die aktuelle Datumszeit.,de
+value:Sale,value:Sale,de

@@ -39,7 +39,6 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
-import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -113,9 +112,16 @@ public class InvoicingProjectService {
     return;
   }
 
+  @Transactional
+  public InvoicingProject refreshInvoicingProject(
+      InvoicingProject invoicingProject, Project project) {
+    clearLines(invoicingProject);
+    setLines(invoicingProject, project, 0);
+    return invoicingProjectRepo.save(invoicingProject);
+  }
+
   public void fillLines(InvoicingProject invoicingProject, Project project) {
-    String commonQuery =
-        "self.project = :project AND self.toInvoice = true AND self.invoiced = false";
+    String commonQuery = "self.project = :project AND self.toInvoice = true";
 
     StringBuilder solQueryBuilder = new StringBuilder(commonQuery);
     solQueryBuilder.append(
@@ -140,8 +146,8 @@ public class InvoicingProjectService {
       Map<String, Object> logTimesQueryMap = new HashMap<>();
       logTimesQueryMap.put("project", project);
 
-      logTimesQueryBuilder.append(" AND self.timesheet.statusSelect = :statusValidated");
-      logTimesQueryMap.put("statusValidated", TimesheetRepository.STATUS_VALIDATED);
+      logTimesQueryBuilder.append(" AND self.isValidated = true");
+      logTimesQueryBuilder.append(" AND self.toInvoice = true");
 
       if (invoicingProject.getDeadlineDate() != null) {
         logTimesQueryBuilder.append(" AND self.date <= :deadlineDate");

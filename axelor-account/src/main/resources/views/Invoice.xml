@@ -637,6 +637,10 @@
           grid-view="invoice-line-grid" onChange="action-invoice-group-invoice-line-list-on-change"
           canMove="true" orderBy="sequence" height="30"/>
       </panel>
+      <panel name="invoiceBreakdownPanel" title="Invoice Breakdown">
+        <field name="$breakdownHtml" showTitle="false" colSpan="12" widget="html"
+          hidden="true" showIf="$breakdownHtml != null" readonly="true"/>
+      </panel>
       <panel name="invoiceTaxPanel" title="Tax" showTitle="false"
         readonlyIf="statusSelect != 1">
         <panel-related name="invoiceLineTaxListPanel" readonlyIf="statusSelect != 1"
@@ -1159,7 +1163,7 @@
       </panel>
     </panel-stack>
 
-    <panel-mail name="mailPanel">
+    <panel-mail name="mailPanel" if="__user__.group.code ==  'admins' ">
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>
@@ -1666,6 +1670,7 @@
     <action name="action-invoice-method-set-invoice-line-list-scale"/>
     <action name="action-invoice-attrs-display-line-coefficient"/>
     <action name="action-invoice-method-set-discount-dummies"/>
+    <action name="action-invoice-generate-breakdown" if="id != null"/>
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
@@ -1854,6 +1859,7 @@
     <action name="action-invoice-method-generate-pfp-partial-terms"
       if="statusSelect == 3 || statusSelect == 2"/>
     <action name="action-invoice-method-round-invoice-term-percentages"/>
+    <action name="action-invoice-generate-breakdown" if="id != null"/>
   </action-group>
 
   <action-group name="action-invoice-group-validate-and-ventilate-onclick">
@@ -1895,6 +1901,11 @@
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-update-invoice-terms"/>
   </action-group>
+
+  <action-method name="action-invoice-generate-breakdown">
+    <call class="com.axelor.apps.businessproject.web.InvoicingProjectController"
+      method="generateBreakdown"/>
+  </action-method>
 
   <action-group name="action-invoice-group-invoice-line-list-report-onchange">
     <action name="action-invoice-method-compute"/>
@@ -2346,6 +2357,11 @@
 
   <action-method name="action-invoice-method-set-payment-visibility">
     <call class="com.axelor.apps.account.web.InvoiceController" method="setPaymentVisibility"/>
+  </action-method>
+
+  <action-method name="action-invoice-generate-breakdown">
+    <call class="com.axelor.apps.businessproject.web.InvoicingProjectController"
+      method="generateBreakdown"/>
   </action-method>
 
   <action-validate name="action-invoice-validate-regenerate-invoice">

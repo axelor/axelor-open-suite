@@ -15,7 +15,9 @@
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList"
       title="Price list"/>
 
-
+    <!-- MGM-84 -->
+    <many-to-one name="priority" title="Priority"
+      ref="com.axelor.apps.project.db.ProjectPriority"/>
     <decimal name="totalTimesPlanned" title="Planned Times Total" readonly="true"/>
     <decimal name="totalTimesRealised" title="Realised Times Total" readonly="true"/>
 
@@ -67,7 +69,8 @@
       ref="com.axelor.apps.businessproject.db.ProjectFolder" title="Project Folders"/>
 
     <!-- planification fields -->
-    <integer name="spentTimeCostComputationMethod" default="1"
+    <!-- MGM-69 -->
+    <integer name="spentTimeCostComputationMethod" default="2"
       title="Spent time actual cost computation method"
       selection="business.project.spent.time.computation.method.select"
       help="This will determine the way of computing actual costs for time spent : Sale order (using sale order line's unitary cost), Product (using task product's cost price), or Employee (using Employee hourly rate). If Sale order is selected, then product's cost price will be used if there's no sale order line linked to the task."/>

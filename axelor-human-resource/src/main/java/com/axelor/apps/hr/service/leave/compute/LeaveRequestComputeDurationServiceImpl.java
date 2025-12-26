@@ -115,7 +115,14 @@ public class LeaveRequestComputeDurationServiceImpl implements LeaveRequestCompu
       throws AxelorException {
 
     BigDecimal duration = BigDecimal.ZERO;
-
+    if (from != null && to == null && leave.getLeaveReason() != null) {
+      if (leave.getStartOnSelect().equals(leave.getEndOnSelect())) {
+        return BigDecimal.valueOf(0.5);
+      }
+      if (leave.getStartOnSelect() < (leave.getEndOnSelect())) {
+        return BigDecimal.ONE;
+      }
+    }
     if (from != null && to != null && leave.getLeaveReason() != null) {
       Employee employee = leave.getEmployee();
 

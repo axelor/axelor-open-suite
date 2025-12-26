@@ -23,11 +23,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeServiceImpl
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
-import com.axelor.apps.businessproject.db.repo.AppBusinessProjectManagementRepository;
-import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
-import com.axelor.apps.businessproject.db.repo.InvoicingProjectManagementRepository;
-import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
-import com.axelor.apps.businessproject.db.repo.ProjectTaskBusinessProjectRepository;
+import com.axelor.apps.businessproject.db.repo.*;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlService;
 import com.axelor.apps.businessproject.service.BusinessProjectClosingControlServiceImpl;
 import com.axelor.apps.businessproject.service.BusinessProjectService;
@@ -102,6 +98,10 @@ import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigService;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigServiceImpl;
+import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownDisplayService;
+import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownDisplayServiceImpl;
+import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseInvoiceService;
+import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoiceMergingServiceBusinessProjectImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectService;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectServiceImpl;
@@ -119,12 +119,18 @@ import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUp
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingServiceImpl;
 import com.axelor.apps.businessproject.service.projecttask.TaskTemplateBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.pushnotification.TaskAssignmentNotificationRule;
+import com.axelor.apps.businessproject.service.taskreport.TaskReportExpenseService;
+import com.axelor.apps.businessproject.service.taskreport.TaskReportExpenseServiceImpl;
+import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
+import com.axelor.apps.businessproject.service.taskreport.TaskReportServiceImpl;
 import com.axelor.apps.contract.service.ContractInvoicingServiceImpl;
 import com.axelor.apps.contract.service.ContractLineServiceImpl;
 import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
 import com.axelor.apps.contract.service.SaleOrderInvoiceContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
 import com.axelor.apps.contract.service.WorkflowVentilationContractServiceImpl;
+import com.axelor.apps.hr.db.repo.ProjectHRRepository;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.hr.event.ICalendarEventObserver;
 import com.axelor.apps.hr.service.expense.ExpenseInvoiceLineServiceImpl;
@@ -243,5 +249,12 @@ public class BusinessProjectModule extends AxelorModule {
     bind(InvoiceTermDateComputeServiceImpl.class)
         .to(InvoiceTermDateComputeProjectServiceImpl.class);
     bind(SaleOrderCopyProjectService.class).to(SaleOrderCopyProjectServiceImpl.class);
+    bind(TaskReportExpenseService.class).to(TaskReportExpenseServiceImpl.class);
+    bind(ExtraExpenseInvoiceService.class).to(ExtraExpenseInvoiceServiceImpl.class);
+    bind(TaskReportRepository.class).to(TaskReportBusinessRepository.class);
+    bind(InvoiceBreakdownDisplayService.class).to(InvoiceBreakdownDisplayServiceImpl.class);
+    bind(TaskReportService.class).to(TaskReportServiceImpl.class);
+    bind(TaskAssignmentNotificationRule.class).asEagerSingleton();
+    bind(ProjectHRRepository.class).to(BusinessProjectManagementRepository.class);
   }
 }

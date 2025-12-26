@@ -38,7 +38,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewServiceImpl {
+public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewServiceImpl
+    implements SaleOrderLineViewServiceSupplychain {
 
   protected AnalyticAttrsService analyticAttrsService;
   protected SaleOrderLineViewSupplychainService saleOrderLineViewSupplychainService;
@@ -69,7 +70,7 @@ public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewSe
     return attrs;
   }
 
-  protected Map<String, Map<String, Object>> hideDeliveryPanel(SaleOrderLine saleOrderLine) {
+  public Map<String, Map<String, Object>> hideDeliveryPanel(SaleOrderLine saleOrderLine) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     String productTypeSelect =
         Optional.ofNullable(saleOrderLine.getProduct())

@@ -12,4 +12,5 @@ dependsOn:
    - account
    - project
    - employee
+   - business-project
 sequence: 19

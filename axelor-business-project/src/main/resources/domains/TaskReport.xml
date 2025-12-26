@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="business-project" package="com.axelor.apps.businessproject.db"/>
+
+  <entity name="TaskReport">
+    <one-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"
+      unique="true"/>
+    <many-to-one name="customer" ref="com.axelor.apps.base.db.Partner" title="Customer"/>
+    <many-to-one name="location" ref="com.axelor.apps.base.db.Address" title="Location"/>
+    <many-to-one name="employee" ref="com.axelor.auth.db.User" title="Report Created By"/>
+    <one-to-many name="taskMemberReports"
+      ref="com.axelor.apps.businessproject.db.TaskMemberReport" mappedBy="taskReport"
+      orphanRemoval="true"/>
+    <decimal name="totalWorkHours" title="Total working time (hours)" precision="6"
+      scale="2" readonly="true"/>
+    <date name="taskDate" title="Report Date"/>
+    <boolean name="travelExpenses" title="Travel expenses"/>
+    <boolean name="toolsUsage" title="Tools usage"/>
+    <boolean name="dirtAllowance" title="Dirt Allowance"/>
+    <string name="material" title="Materials" large="true"/>
+    <string name="comments" title="Comments" large="true"/>
+    <boolean name="customerNotAvailable" default="false" title="Customer Not Available"/>
+    <string name="customerName" title="Customer name"/>
+    <binary name="employeeSignature" title="Employee signature"/>
+    <binary name="customerSignature" title="Customer signature"/>
+    <one-to-many name="extraExpenseLineList"
+      ref="com.axelor.apps.businessproject.db.ExtraExpenseLine" mappedBy="taskReport"
+      title="Extra Expenses"/>
+
+    <!-- MGM Initially added to hide conditionaly hide sign-off panel -->
+    <boolean name="reportedAllTasks" title="Reported all project tasks"/>
+  </entity>
+
+</domain-models>

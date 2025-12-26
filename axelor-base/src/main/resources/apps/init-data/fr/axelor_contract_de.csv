@@ -1,0 +1,324 @@
+key,message,language
+%d contract(s) treated and %d anomaly(ies) reported !,%d behandelte(r) Vertrag/Verträge und %d gemeldete Anomalien !,de
+"<><Badge bg=""warning"">{_t('This pricing is already used by another contract line. Use the + button to create a new copy.')}</Badge></>","<><Badge bg=""warning"">{_t('Dieser Preis wird bereits von einer anderen Vertragslinie verwendet. Verwenden Sie die Schaltfläche +, um eine neue Kopie zu erstellen.')}</Badge></>",de
+"A billing contract is used to generate invoices, whereas a framework contract is used to generate orders. Invoices from framework contracts are generated either from orders, stock move or business project.","Ein Fakturierungsvertrag wird zur Erstellung von Rechnungen verwendet, während ein Rahmenvertrag zur Erstellung von Bestellungen dient. Rechnungen aus Rahmenverträgen werden entweder aus Aufträgen, Lagerbewegungen oder Geschäftsprojekten erstellt.",de
+Account management,Kontoführung,de
+Action,Aktion,de
+Action %s has no Batch implementation.,Aktion %s hat keine Batch-Implementierung.,de
+Actions,Aktionen,de
+Activate contract,Vertrag aktivieren,de
+Activated By,Aktiviert durch,de
+Activation date,Datum der Aktivierung,de
+Active,Aktiv,de
+Additional Benefit Management,Zusätzliches Benefit Management,de
+Additional benefit,Zusätzlicher Nutzen,de
+Additional benefit lines,Zusätzliche Leistungslinien,de
+Additional benefit management,Verwaltung von Zusatzleistungen,de
+Additional products,Zusätzliche Produkte,de
+Advanced,Fortgeschrittene,de
+Amendment,Abänderung,de
+Amendment management,Verwaltung der Änderungsanträge,de
+Amendment status,Status der Änderung,de
+Amendments,Änderungsanträge,de
+Analytic Move Line,Analytic Move Line,de
+Analytic distribution template,Vorlage für die analytische Verteilung,de
+Analytic move line,Analytische Bewegungslinie,de
+Analytic move lines,Analytische Bewegungslinien,de
+Analytics,Analytik,de
+App,App,de
+App contract,App-Vertrag,de
+Are you sure you want to remove the selected lines?,"Sind Sie sicher, dass Sie die ausgewählten Zeilen entfernen möchten?",de
+"Attention the contract will have as starting date the provisional activation         date ${currentContractVersion.supposedActivationDate}, Are you sure?","Attention the contract will have as starting date the provisional activation         date ${currentContractVersion.supposedActivationDate}, Are you sure?",de
+Auto enable version on renew,Automatische Aktivierung der Version bei Erneuerung,de
+Automatic invoicing,Automatische Rechnungsstellung,de
+Available variables :\n         ind1i = value for the contract's index1 for date 1 \n ind2i = value for the contract's index 2 for date         2 \n ind1f : value for the contract's index 1 for the next revaluation date \n ind2f :         value for the contract's index 2 for the next revaluation date \n ind1py :         value for the contract's index 1 for the next revaluation - 1 year \n ind2py :         value for the contract's index 2 for the next revaluation - 1 year \n P0 : original price of the contract line         \n Pf : last revaluated price of the contract line,Verfügbare Variablen :\n ind1i = Wert für den Index 1 des Kontrakts für Datum 1 \n ind2i = Wert für den Index 2 des Kontrakts für Datum 2 \n ind1f : Wert für den Index 1 des Kontrakts für das nächste Aufwertungsdatum \n ind2f : Wert für den Index 2 des Kontrakts für das nächste Aufwertungsdatum \n ind1py :         Wert für den Index 1 des Vertrags für die nächste Neubewertung - 1 Jahr \n ind2py : Wert für den Index 2 des Vertrags für die nächste Neubewertung - 1 Jahr \n P0 : ursprünglicher Preis der Vertragszeile \n Pf : zuletzt neu bewerteter Preis der Vertragszeile,de
+Back,Zurück,de
+Batches,Lose,de
+Batchs,Chargen,de
+Billing contract,Abrechnungsvertrag,de
+Can only activate waiting contract.,Kann nur Warteverträge aktivieren.,de
+Can only put on hold drafted contract.,Kann nur den Entwurf eines Vertrages auf Eis legen.,de
+Can only terminate ongoing contract.,Kann nur laufenden Vertrag kündigen.,de
+Cancel,Abbrechen,de
+Close contract,Vertrag schließen,de
+Closed,Geschlossen,de
+Code,Code,de
+Comment to be included on invoice,Kommentar auf der Rechnung,de
+Commercial condition,Kommerzielle Bedingungen,de
+Company,Unternehmen,de
+Company currency,Währung des Unternehmens,de
+Config.,Konfig.,de
+Configurable contract,Konfigurierbarer Vertrag,de
+Configuration,Konfiguration,de
+Consumption Line,Verbrauchslinie,de
+Consumption Lines,Verbrauchszeilen,de
+Consumption for next invoice,Verbrauch für die nächste Rechnung,de
+Consumption line quantities exceed the max quantity defined in the contract line.,Die Mengen der Verbrauchszeile überschreiten die in der Vertragszeile festgelegte Höchstmenge.,de
+Consumption management,Verwaltung des Verbrauchs,de
+Consumption max quantity,Verbrauch maximale Menge,de
+Consumptions,Verbräuche,de
+Content,Inhalt,de
+Contract,Vertrag,de
+Contract Dates,Vertragsdaten,de
+Contract Line,Vertragslinie,de
+Contract Lines,Vertragslinien,de
+Contract N°,Vertrag Nr.,de
+Contract batch,Vertragscharge,de
+Contract batch filters,Vertragsbatch-Filter,de
+Contract batches,Vertragschargen,de
+Contract can't be empty for compute contract line price.,"Der Vertrag kann nicht leer sein, um den Preis der Vertragslinie zu berechnen.",de
+Contract closing invoice,Vertragsabschlussrechnung,de
+Contract filters,Vertragsfilter,de
+Contract has already been generated for this opportunity.,Für diese Gelegenheit wurde bereits ein Vertrag erstellt.,de
+Contract has already been generated for this opportunity,Für diese Gelegenheit wurde bereits ein Vertrag erstellt,de
+Contract information,Informationen zum Vertrag,de
+Contract invoice,Vertragsrechnung,de
+Contract line,Vertragslinie,de
+Contract lines must have a product.,Vertragslinien müssen ein Produkt haben.,de
+Contract template,Vertragsvorlage,de
+Contract template filters,Filter für Vertragsvorlagen,de
+Contract template to use,Zu verwendende Vertragsvorlage,de
+Contract templates,Vertragsvorlagen,de
+Contract type,Vertragsart,de
+Contract version,Vertragsversion,de
+Contracts,Verträge,de
+Copy,Kopieren,de
+Cpte Ana. AXIS1,Cpte Ana. AXIS1,de
+Cpte Ana. AXIS2,Cpte Ana. AXIS2,de
+Cpte Ana. AXIS3,Cpte Ana. AXIS3,de
+Cpte Ana. AXIS4,Cpte Ana. AXIS4,de
+Cpte Ana. AXIS5,Cpte Ana. AXIS5,de
+Create PO,PO erstellen,de
+Create an amendment,Einen Änderungsantrag erstellen,de
+Created by,Erstellt von,de
+Created on,Erstellt am,de
+Currency,Währung,de
+Current amendment,Aktuelle Änderung,de
+Current invoice period,Aktueller Rechnungszeitraum,de
+Current version,Aktuelle Version,de
+Current version activation,Aktivierung der aktuellen Version,de
+Customer,Kunde,de
+Customer contracts,Kundenverträge,de
+Customer price lists,Kundenpreislisten,de
+Customer year end bonus,Kundenbonus zum Jahresende,de
+Date,Datum,de
+Delete next amendment,Nächste Änderung streichen,de
+Description,Beschreibung,de
+Discount amount,Rabattbetrag,de
+Discount type,Rabatt-Typ,de
+Display an alert if the consumption quantities exceed the defined max quantity,"Anzeige einer Warnung, wenn die Verbrauchsmengen die festgelegte Höchstmenge überschreiten",de
+Display the concerned contracts,Anzeige der betroffenen Verträge,de
+Displayed Product name,Angezeigter Produktname,de
+Dms file,Dms-Datei,de
+Do not renew,Nicht verlängern,de
+Do you really wish to fill your contract based on this template ?,Möchten Sie Ihren Vertrag wirklich auf der Grundlage dieser Vorlage ausfüllen?,de
+Draft,Entwurf,de
+Duration,Dauer,de
+Durations,Laufzeiten,de
+Enable configuration by product family for YEB,Aktivieren Sie die Konfiguration nach Produktfamilie für YEB,de
+End date,Datum des Endes,de
+End of application,Ende der Anwendung,de
+End of next invoicing period,Ende des nächsten Abrechnungszeitraums,de
+End of next invoicing period should be after Start of next invoicing period.,Das Ende des nächsten Abrechnungszeitraums sollte nach dem Beginn des nächsten Abrechnungszeitraums liegen.,de
+End of period,Ende der Periode,de
+End of period plus,Ende der Periode plus,de
+Engagement,Verlobung,de
+Engagement duration,Dauer des Engagements,de
+Engagement duration is not fulfilled.,Die Bindungsdauer ist nicht erfüllt.,de
+Engagement start date,Datum des Beginns des Engagements,de
+Engagement start from version,Engagement ab der Version,de
+Error,Fehler,de
+Expiration date,Verfallsdatum,de
+Fetch limit,Abrufgrenze,de
+"Fetch limit for this batch. 0 will not be taken into account. In this case, the value configured in app Base will be used.",Abrufgrenze für diese Charge. 0 wird nicht berücksichtigt. In diesem Fall wird der in der App Base konfigurierte Wert verwendet.,de
+File,Datei,de
+File type,Dateityp,de
+Files,Dateien,de
+Filter products by trading name,Produkte nach Handelsnamen filtern,de
+First period end date,Erstes Enddatum des Zeitraums,de
+First period invoicing end date,Enddatum der ersten Periode der Rechnungsstellung,de
+Fiscal position,Finanzielle Lage,de
+Forecast (contract),Vorhersage (Vertrag),de
+Formula,Formel,de
+Framework contract,Rahmenvertrag,de
+Framework contracts,Rahmenverträge,de
+From,Von,de
+From date,Vom Datum,de
+Full name,Vollständiger Name,de
+General,Allgemein,de
+Generate a contract,Einen Vertrag generieren,de
+Generate contract,Vertrag generieren,de
+Generate purchase order,Bestellung generieren,de
+Generate sale order,Verkaufsauftrag generieren,de
+Generated purchase order,Erstellte Bestellung,de
+Generated sale order,Erstellter Verkaufsauftrag,de
+Grouped Invoicing,Gruppierte Fakturierung,de
+Index 1,Index 1,de
+Index 1 date,Index 1 Datum,de
+Index 2,Index 2,de
+Index 2 date,Index 2 Datum,de
+Index revaluation,Index-Neubewertung,de
+Index value,Indexwert,de
+Index value list,Liste der Indexwerte,de
+Index values,Index-Werte,de
+Indexes revaluation,Neubewertung der Indizes,de
+Information,Informationen,de
+Initial ex tax total per year,Ursprünglicher Gesamtbetrag ab Steuer pro Jahr,de
+Initial price per year,Anfangspreis pro Jahr,de
+Initial unit price,Ursprünglicher Stückpreis,de
+Invoice,Rechnung,de
+Invoice N°,Rechnung Nr.,de
+Invoice from consumption,Rechnung aus Verbrauch,de
+Invoice line,Linie der Rechnung,de
+Invoice period,Zeitraum der Rechnungsstellung,de
+Invoice period history,Historie der Rechnungsperiode,de
+Invoice periods,Rechnungsperioden,de
+Invoiced,In Rechnung gestellt,de
+Invoiced partner,In Rechnung gestellter Partner,de
+Invoices,Rechnungen,de
+Invoicing,Rechnungsstellung,de
+Invoicing Frequency,Häufigkeit der Rechnungsstellung,de
+Invoicing date,Datum der Rechnungsstellung,de
+Invoicing management,Verwaltung von Rechnungen,de
+Invoicing moment,Zeitpunkt der Rechnungsstellung,de
+Is invoiced,Wird in Rechnung gestellt,de
+Last Invoicing period,Letzter Abrechnungszeitraum,de
+Last renewal date,Letztes Verlängerungsdatum,de
+Last revaluation date,Datum der letzten Neubewertung,de
+Linked invoice,Verknüpfte Rechnung,de
+Meta file,Meta-Datei,de
+Missing index value for this date : %s,Fehlender Indexwert für dieses Datum : %s,de
+Missing revaluation period for this contract.,Fehlender Neubewertungszeitraum für diesen Vertrag.,de
+Name,Name,de
+New File,Neue Datei,de
+Next Invoice Additional Benefit,Nächste Rechnung Zusatznutzen,de
+Next amendment,Nächste Änderung,de
+Next revaluation date,Nächster Neubewertungszeitpunkt,de
+Next version,Nächste Version,de
+Next version activation,Nächste Version Aktivierung,de
+No contract is associated to version.,Mit der Version ist kein Vertrag verbunden.,de
+Not invoiced,Nicht in Rechnung gestellt,de
+Notes,Anmerkungen,de
+Number of days,Anzahl der Tage,de
+Number of finished periods,Anzahl der beendeten Perioden,de
+Number of renewal,Anzahl der Verlängerungen,de
+Ongoing,Laufend,de
+Only invoice consumption before Invoice period end Date,Nur Rechnungsverbrauch vor Enddatum des Rechnungszeitraums,de
+Opportunity,Gelegenheit,de
+Partner,Partner,de
+Payment condition,Zahlungsbedingungen,de
+Payment mode,Zahlungsweise,de
+Periodic Invoicing,Regelmäßige Fakturierung,de
+Periodic contract,Regelmäßiger Vertrag,de
+Pick a template,Wählen Sie eine Vorlage,de
+Please enter a engagement date.,Bitte geben Sie ein Verlobungsdatum ein.,de
+Please enter a terminated date for this version.,Bitte geben Sie ein Beendigungsdatum für diese Version ein.,de
+Please fill the first period end date and the invoice frequency.,Bitte geben Sie das Enddatum des ersten Zeitraums und die Häufigkeit der Rechnungsstellung an.,de
+Please select a customer to be able to convert opportunity into contract.,"Bitte wählen Sie einen Kunden aus, um eine Verkaufschance in einen Vertrag umwandeln zu können.",de
+Price list,Die Preisliste,de
+Price revalued yearly,Jährlich neu bewerteter Preis,de
+Prices per year,Preise pro Jahr,de
+Pricing,Preisgestaltung,de
+Pricing rules,Regeln für die Preisgestaltung,de
+Print,Drucken,de
+Prior notice,Vorankündigung,de
+Prior notice duration,Dauer der Vorankündigung,de
+Prior notice duration is not respected.,Die Vorankündigungsfrist wird nicht beachtet.,de
+Product,Produkt,de
+Product management,Produktmanagement,de
+Prorate from versions,Anteilig aus Versionen,de
+Prorated Invoice,Anteilige Rechnung,de
+Prorated Starting periods,Anteilige Anfangszeiträume,de
+Prorated finished periods,Anteilig beendete Perioden,de
+Prorated temporally,Zeitlich anteilig,de
+Protrate temporally,Zeitlich vorstehen,de
+Purchase orders,Kaufaufträge,de
+Put on-hold,In die Warteschleife stellen,de
+Qty,Menge,de
+Quantity,Menge,de
+Record date,Stichtag,de
+Recurring product,Wiederkehrendes Produkt,de
+Reference,Referenz,de
+Remove files,Dateien entfernen,de
+Renew,Erneuern Sie,de
+Renewal,Erneuerung,de
+Renewal duration,Dauer der Erneuerung,de
+Renewal management,Verwaltung der Erneuerung,de
+Revaluate contracts,Verträge neu bewerten,de
+Revaluation formula,Formel für die Neubewertung,de
+Revaluation formulas,Formeln für die Neubewertung,de
+Revaluation period,Zeitraum der Neubewertung,de
+Run batch,Batch ausführen,de
+Sale orders,Verkaufsaufträge,de
+Search,Suche,de
+Sequence,Sequenz,de
+Show contract,Vertrag anzeigen,de
+Show lines,Linien anzeigen,de
+Show next amendment,Nächste Änderung anzeigen,de
+Start date,Datum des Beginns,de
+Start of next invoicing period,Beginn des nächsten Abrechnungszeitraums,de
+Start of period,Beginn des Zeitraums,de
+Start of period plus,Beginn der Periode plus,de
+Status,Status,de
+Statut,Statut,de
+Supplier,Anbieter,de
+Supplier contracts,Verträge mit Lieferanten,de
+Supplier price lists,Preislisten der Lieferanten,de
+Supplier year end bonus,Lieferantenbonus zum Jahresende,de
+Supposed activation date,Voraussichtliches Aktivierungsdatum,de
+Supposed end date,Voraussichtliches Enddatum,de
+Tacit renewal,Stillschweigende Erneuerung,de
+Tax,Steuer,de
+Terminate,Beenden Sie,de
+Terminated,Beendet,de
+Terminated By,Beendet von,de
+Terminated contracts,Beendete Verträge,de
+Terminated date,Datum der Beendigung,de
+Terminated manually,Manuelle Beendigung,de
+Termination,Terminierung,de
+Termination demand date,Datum des Kündigungsantrags,de
+The company %s doesn't have any configured sequence for contracts,Das Unternehmen %s hat keine konfigurierte Reihenfolge für Verträge,de
+The next contract field is not set on the current contract version.,Das Feld für den nächsten Vertrag ist in der aktuellen Vertragsversion nicht gesetzt.,de
+There is an error in the formula.,Es gibt einen Fehler in der Formel.,de
+There is no contract associated with this version.,Mit dieser Version ist kein Vertrag verbunden.,de
+This period is used to compute the next revaluation date.,Dieser Zeitraum wird für die Berechnung des nächsten Neubewertungszeitpunkts herangezogen.,de
+This pricing is already used by another contract line.,Dieser Preis wird bereits von einer anderen Vertragslinie verwendet.,de
+This pricing is already used by another contract line. Use the + button to create a new copy.,"Dieser Preis wird bereits von einer anderen Vertragslinie verwendet. Verwenden Sie die Schaltfläche +, um eine neue Kopie zu erstellen.",de
+To,An,de
+To closed,Geschlossen,de
+To revaluate,Aufwerten,de
+Total A.T.I.,Total A.T.I.,de
+Total W.T.,Total W.T.,de
+Total invoiced amount,Gesamtrechnungsbetrag,de
+Total paid amount,Gezahlter Gesamtbetrag,de
+Trading name,Handelsname,de
+Type,Typ,de
+Unchangable contract,Unveränderlicher Vertrag,de
+Unit,Einheit,de
+Unit price,Preis pro Einheit,de
+Unit price discounted,Ermäßigter Stückpreis,de
+Use this template,Verwenden Sie diese Vorlage,de
+Value,Wert,de
+Version,Version,de
+Version history,Versionsgeschichte,de
+Waiting,Warten,de
+Warning,Warnung,de
+"Warning! The yearly price is calculated based on unit price and ""Invoicing duration"" from the config panel. Please be careful when using products with unit being a time unit. In case you have contract lines with different invoicing duration, you can activate and use the Addtional Benefits management feature.","Achtung! Der Jahrespreis wird auf der Grundlage des Stückpreises und der ""Rechnungsdauer"" aus dem Konfigurationspanel berechnet. Bitte seien Sie vorsichtig, wenn Sie Produkte verwenden, deren Einheit eine Zeiteinheit ist. Falls Sie Vertragslinien mit unterschiedlichen Abrechnungszeiträumen haben, können Sie die Funktion Zusatzleistungen aktivieren und nutzen.",de
+With engagement,Mit Engagement,de
+With prior notice,Mit vorheriger Ankündigung,de
+YEB/YER,YEB/YER,de
+YEB/YER Customer,YEB/YER Kunde,de
+YEB/YER Customer contracts,YEB/YER Kundenverträge,de
+YEB/YER Purchase account,YEB/YER Einkaufskonto,de
+YEB/YER Sale account,YEB/YER Verkaufskonto,de
+YEB/YER Supplier,YEB/YER Lieferant,de
+YEB/YER Supplier contracts,YEB/YER Lieferantenverträge,de
+Year end bonus product,Bonusprodukt zum Jahresende,de
+Year end bonus product account must be filled in account configuration.,Das Konto für das Jahresendbonusprodukt muss in der Kontokonfiguration ausgefüllt werden.,de
+Year end bonus product must be filled in account configuration.,Das Produkt Jahresendbonus muss in der Kontenkonfiguration ausgefüllt werden.,de
+Yearly ex tax total revalued,Jährlich ex Steuer insgesamt neu bewertet,de
+You cannot remove a line which has been already invoiced.,Sie können eine bereits fakturierte Zeile nicht entfernen.,de
+You cannot terminate a contract before version activation date.,Sie können einen Vertrag nicht vor dem Aktivierungsdatum der Version kündigen.,de
+com.axelor.apps.contract.batch.service.BatchContractService,com.axelor.apps.contract.batch.service.BatchContractService,de
+to,zu,de
+value:Contract,value:Contract,de

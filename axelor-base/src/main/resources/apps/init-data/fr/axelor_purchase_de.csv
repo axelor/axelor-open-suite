@@ -1,0 +1,422 @@
+key,message,language
+50 Latest Supplier Orders,50 Letzte Lieferantenbestellungen,de
+A message template is needed to send a mail,Zum Versenden einer E-Mail wird eine Nachrichtenvorlage benötigt,de
+A tax line is missing,Es fehlt eine Steuerzeile,de
+ABC analysis,ABC-Analyse,de
+ATI,ATI,de
+AbcAnalysis.endDate,AbcAnalysis.endDate,de
+AbcAnalysis.startDate,AbcAnalysis.startDate,de
+Accept,Akzeptieren,de
+Accepted,Angenommen,de
+Actions,Aktionen,de
+Advance payment A.T.I. total,Advance payment A.T.I. total,de
+Advance payment total,Vorauszahlung insgesamt,de
+Amount,Betrag,de
+Amount A.T.I.,Amount A.T.I.,de
+Amount Tax,Betrag Steuer,de
+Amount Tax (via percentages),Betrag Steuer (über Prozentsätze),de
+Amount invoiced W.T.,Amount invoiced W.T.,de
+Amount to be spread over the timetable,Über den Fahrplan zu verteilender Betrag,de
+Analytic distribution,Analytische Verteilung,de
+Analytic distribution required on purchase order line,Analytische Verteilung in der Bestellzeile erforderlich,de
+App,App,de
+App purchase,App-Kauf,de
+Attachment,Anlage,de
+Back to validated order,Zurück zur validierten Bestellung,de
+Base W.T.,Base W.T.,de
+Business Project,Geschäftliches Projekt,de
+Business project,Geschäftliches Projekt,de
+Buyer,Käufer,de
+Calculated price/Qty,Berechneter Preis/Qualität,de
+Call for tender,Aufruf zur Einreichung von Angeboten,de
+Call for tender mail template,Ausschreibung Mail Vorlage,de
+Call for tenders,Aufruf zur Einreichung von Angeboten,de
+Call tender,Ausschreibung aufrufen,de
+Call tender need,Ausschreibungsbedarf,de
+Call tender supplier,Ausschreibungsanbieter anrufen,de
+Can not cancel already canceled purchase request.,Eine bereits stornierte Kaufanfrage kann nicht storniert werden.,de
+Can only accept requested purchase request.,Kann nur angeforderte Kaufanträge annehmen.,de
+"Can only cancel drafted, requested or validated purchase order.","Kann nur gezeichnete, angeforderte oder bestätigte Bestellungen stornieren.",de
+Can only finish validated purchase order.,Kann nur bestätigte Bestellungen abschließen.,de
+Can only purchase accepted purchase request.,Es können nur akzeptierte Kaufanträge erworben werden.,de
+Can only refuse requested purchase request.,Kann nur beantragte Kaufanträge ablehnen.,de
+Can only request drafted purchase order.,Kann nur einen Bestellungsentwurf anfordern.,de
+Can only request drafted purchase request.,Kann nur den Entwurf einer Kaufanfrage anfordern.,de
+Can only return to draft from canceled purchase request.,Kann nur von einer stornierten Kaufanfrage zum Entwurf zurückkehren.,de
+Can only return to draft from cancelled purchase order.,Kann nur auf den Entwurf einer stornierten Bestellung zurückgehen.,de
+Can only validate requested purchase order.,Kann nur die angeforderte Bestellung validieren.,de
+Cancel,Abbrechen,de
+Cancel receipt,Beleg stornieren,de
+Canceled,Abgesagt,de
+Characteristics,Merkmale,de
+ChartPO.saleOrder,ChartPO.saleOrder,de
+Closed Purchase orders,Abgeschlossene Bestellungen,de
+Code,Code,de
+Comment,Kommentar,de
+Company,Unternehmen,de
+Company bank,Unternehmen Bank,de
+Company currency,Währung des Unternehmens,de
+Configuration,Konfiguration,de
+Confirm,Bestätigen Sie,de
+Confirm merge purchase order,Merge-Bestellung bestätigen,de
+Confirmation,Konfirmation,de
+Contact,Kontakt,de
+Contact partner,Kontaktperson,de
+Contacts,Kontakte,de
+Content,Inhalt,de
+Currency,Währung,de
+Current purchase quotations / orders,Aktuelle Kaufangebote / Aufträge,de
+Dashboard,Dashboard,de
+Date,Datum,de
+Dates,Daten,de
+Default unit,Standard-Einheit,de
+Delivery,Lieferung,de
+Description,Beschreibung,de
+Description To Display,Beschreibung Zur Anzeige,de
+Desired receipt date,Gewünschtes Eingangsdatum,de
+Discount amount,Rabattbetrag,de
+Discount rate,Abzinsungssatz,de
+Discount type,Rabatt-Typ,de
+Display buyer on printing,Käufer beim Drucken anzeigen,de
+Display price on requested purchase printing,Preis bei gewünschtem Kaufdruck anzeigen,de
+Display product code on printing,Anzeige des Produktcodes beim Drucken,de
+Display product detail on printing,Anzeige von Produktdetails beim Drucken,de
+Display purchase order line number,Bestellzeilennummer anzeigen,de
+Display supplier code on printing,Anzeige des Lieferantencodes beim Drucken,de
+Display tax detail on printing,Steuerdetails beim Drucken anzeigen,de
+Displayed Product name,Angezeigter Produktname,de
+Draft,Entwurf,de
+Enable product description copy,Aktivieren Sie die Kopie der Produktbeschreibung,de
+End date,Datum des Endes,de
+Estim. receipt date,Schätzung des Eingangsdatums,de
+Estimated receipt date,Voraussichtliches Eingangsdatum,de
+Filter on supplier,Filter auf Anbieter,de
+Filter products by trading name,Produkte nach Handelsnamen filtern,de
+Finish the order,Beenden Sie den Auftrag,de
+Finished,Fertige,de
+Fiscal position,Finanzielle Lage,de
+Fixed Assets,Anlagevermögen,de
+Follow-up,Nachbereitung,de
+Freeze fields,Felder einfrieren,de
+From Date,Von Datum,de
+Full name,Vollständiger Name,de
+Generate PO,PO generieren,de
+Generate call for tenders,Erstellung von Ausschreibungen,de
+Generate control invoice,Kontrollrechnung generieren,de
+Generate purchase configurations,Kaufkonfigurationen generieren,de
+Generate supplier arrival,Ankunft der Lieferanten generieren,de
+Generate suppliers requests,Lieferantenanfragen generieren,de
+Group by product,Gruppe nach Produkt,de
+Group by supplier,Gruppe nach Lieferant,de
+Group products on printings,Produkte auf Drucksachen gruppieren,de
+Historical,Historisch,de
+Historical Period,Historischer Zeitraum,de
+In ATI,In ATI,de
+In Stock Moves,Bewegungen auf Lager,de
+Information,Informationen,de
+Internal Note,Interne Notiz,de
+Internal Ref.,Interne Ref.,de
+Internal note,Interne Notiz,de
+Internal purchase requests,Interne Kaufanträge,de
+Invoice Lines,Rechnungszeilen,de
+Invoiced,In Rechnung gestellt,de
+Invoices,Rechnungen,de
+Invoicing,Rechnungsstellung,de
+It is not possible to delete a validated order.,"Es ist nicht möglich, einen validierten Auftrag zu löschen.",de
+Last update,Letzte Aktualisierung,de
+List of purchase orders to merge is empty,Liste der zusammenzuführenden Bestellungen ist leer,de
+Mail template,Mail-Vorlage,de
+Mails successfully planned for sending.,Mails erfolgreich für den Versand geplant.,de
+Manage call for tender,Verwaltung von Ausschreibungen,de
+Manage multiple purchase quantity,Verwalten von Mehrfachabnahmemengen,de
+Manage purchase order versions,Bestellungsversionen verwalten,de
+Manage purchases unit on products,"Verwaltung der Einheit ""Käufe von Produkten",de
+Manage supplier catalog,Verwalten des Lieferantenkatalogs,de
+Manual,Handbuch,de
+Maps,Karten,de
+Max purchase price,Maximaler Einkaufspreis,de
+Merge into single purchase order,Zusammenführen zu einer einzigen Bestellung,de
+Merge purchase orders,Bestellungen zusammenführen,de
+Merge quotations,Zitate zusammenführen,de
+Message for requesting prices,Nachricht für Preisanfragen,de
+Month,Monat,de
+Multiple quantities,Mehrere Mengen,de
+My Closed Purchase orders,Meine abgeschlossenen Bestellungen,de
+My Ongoing Purchase orders,Meine laufenden Bestellungen,de
+My Orders to process,Meine Aufträge zur Bearbeitung,de
+My Purchase orders,Meine Bestellungen,de
+My RFQs,Meine RFQs,de
+My RFQs and POs To Validate,Meine RFQs und POs zur Validierung,de
+My Sales,Meine Verkäufe,de
+My Validated POs,Meine validierten POs,de
+My purchased amount by product accounting family,Meine gekaufte Menge nach Produktbuchhaltungsfamilie,de
+My purchased qty by product accounting family,Meine gekaufte Menge nach Produktbuchhaltungsfamilie,de
+Name,Name,de
+Nbr of PO by month,Anzahl der PO nach Monat,de
+New product,Neues Produkt,de
+New version,Neue Version,de
+Not invoiced,Nicht in Rechnung gestellt,de
+Not received,Nicht erhalten,de
+OR,OR,de
+Offer mail,Angebot Mail,de
+Offered date,Angebotenes Datum,de
+Offered price,Angebotener Preis,de
+Offered quantity,Angebotene Menge,de
+Offers,Angebote,de
+Ongoing Purchase orders,Laufende Bestellungen,de
+Order Date,Datum der Bestellung,de
+Order history,Geschichte der Bestellung,de
+Ordered,Bestellt,de
+PO Management,PO-Verwaltung,de
+PO Tax line,PO Steuerzeile,de
+PO Tax lines,PO Steuerzeilen,de
+PO line,PO-Zeile,de
+PO lines,PO-Zeilen,de
+PO lines detail,PO-Zeilen Detail,de
+POs Volume by buyer by accounting family,POs Volumen nach Käufern nach Buchungskreis,de
+Partially invoiced,Teilweise in Rechnung gestellt,de
+Partially received,Teilweise erhalten,de
+Percent,Prozentsatz,de
+Please enter at least one detail line.,Bitte geben Sie mindestens eine Detailzeile an.,de
+Please enter supplier for following purchase request : %s,Bitte geben Sie den Lieferanten für folgende Kaufanfrage ein: %s,de
+Please fill printing settings on purchase order %s,Bitte geben Sie die Druckeinstellungen für die Bestellung %s ein.,de
+Please provide product information.,Bitte geben Sie Informationen zum Produkt an.,de
+Please select a product.,Bitte wählen Sie ein Produkt aus.,de
+Please select the purchase order(s) to print.,Bitte wählen Sie die zu druckende(n) Bestellung(en) aus.,de
+Price List,Die Preisliste,de
+Price list,Die Preisliste,de
+Price lists,Preislisten,de
+Print,Drucken,de
+Printing,Drucken,de
+Printing settings,Druckeinstellungen,de
+Printings,Drucksachen,de
+Product,Produkt,de
+Product Accounting Family,Produktbuchhaltung Familie,de
+Product code,Produkt-Code,de
+Product code on catalog,Produktcode im Katalog,de
+Product name,Name des Produkts,de
+Product name on catalog,Produktname im Katalog,de
+Product needs,Produktbedarf,de
+Products & services,Produkte und Dienstleistungen,de
+Products list,Liste der Produkte,de
+Project Task,Projekt Aufgabe,de
+Proposal,Vorschlag,de
+Proposed date,Vorgeschlagenes Datum,de
+Proposed price,Vorgeschlagener Preis,de
+Proposed quantity,Vorgeschlagene Menge,de
+Proposed unit,Vorgeschlagene Einheit,de
+Purchase,Kaufen Sie,de
+Purchase Buyer,Kauf Käufer,de
+Purchase Manager,Einkaufsleiter,de
+Purchase Request Line,Linie für Kaufanträge,de
+Purchase Request Lines,Kaufantragszeilen,de
+Purchase blocking,Kaufsperrung,de
+Purchase config,Konfiguration kaufen,de
+Purchase config (${ name }),Konfiguration kaufen (${ Name }),de
+Purchase configuration,Konfiguration kaufen,de
+Purchase configurations,Konfigurationen kaufen,de
+Purchase order,Bestellung,de
+Purchase order created,Bestellung erstellt,de
+Purchase order information,Informationen zur Bestellung,de
+Purchase order template,Vorlage für eine Bestellung,de
+Purchase orders,Kaufaufträge,de
+Purchase orders ATI/WT,Kaufaufträge ATI/WT,de
+Purchase orders to merge,Zusammenzuführende Bestellungen,de
+Purchase quotation,Angebot kaufen,de
+Purchase quotations,Kostenvoranschläge,de
+Purchase request,Anfrage zum Kauf,de
+Purchase request filters,Filter für Kaufanträge,de
+Purchase request successfully updated.,Kaufantrag erfolgreich aktualisiert.,de
+PurchaseOrder.afterDiscount,PurchaseOrder.afterDiscount,de
+PurchaseOrder.base,PurchaseOrder.base,de
+PurchaseOrder.buyer,PurchaseOrder.buyer,de
+PurchaseOrder.buyerEmail,PurchaseOrder.buyerEmail,de
+PurchaseOrder.buyerPhone,PurchaseOrder.buyerPhone,de
+PurchaseOrder.canceled,PurchaseOrder.canceled,de
+PurchaseOrder.customer,PurchaseOrder.customer,de
+PurchaseOrder.customerRef,PurchaseOrder.customerRef,de
+PurchaseOrder.deliveryAddress,PurchaseOrder.deliveryAddress,de
+PurchaseOrder.description,PurchaseOrder.description,de
+PurchaseOrder.desiredReceiptDate,PurchaseOrder.desiredReceiptDate,de
+PurchaseOrder.discountAmount,PurchaseOrder.discountAmount,de
+PurchaseOrder.draft,PurchaseOrder.draft,de
+PurchaseOrder.estimatedReceiptDate,PurchaseOrder.estimatedReceiptDate,de
+PurchaseOrder.finished,PurchaseOrder.finished,de
+PurchaseOrder.invoicingAddress,PurchaseOrder.invoicingAddress,de
+PurchaseOrder.note,PurchaseOrder.note,de
+PurchaseOrder.order,PurchaseOrder.order,de
+PurchaseOrder.orderDate,PurchaseOrder.orderDate,de
+PurchaseOrder.paymentCondition,PurchaseOrder.paymentCondition,de
+PurchaseOrder.paymentMode,PurchaseOrder.paymentMode,de
+PurchaseOrder.priceExclTax,PurchaseOrder.priceExclTax,de
+PurchaseOrder.priceInclTax,PurchaseOrder.priceInclTax,de
+PurchaseOrder.productSequence,PurchaseOrder.productSequence,de
+PurchaseOrder.productStandard,PurchaseOrder.productStandard,de
+PurchaseOrder.purchaseInfo,PurchaseOrder.purchaseInfo,de
+PurchaseOrder.qtyUnit,PurchaseOrder.qtyUnit,de
+PurchaseOrder.quote,PurchaseOrder.quote,de
+PurchaseOrder.ref,PurchaseOrder.ref,de
+PurchaseOrder.reference,PurchaseOrder.reference,de
+PurchaseOrder.requested,PurchaseOrder.requested,de
+PurchaseOrder.state,PurchaseOrder.state,de
+PurchaseOrder.statusCanceled,PurchaseOrder.statusCanceled,de
+PurchaseOrder.statusDraft,PurchaseOrder.statusDraft,de
+PurchaseOrder.statusFinished,PurchaseOrder.statusFinished,de
+PurchaseOrder.statusRequested,PurchaseOrder.statusRequested,de
+PurchaseOrder.statusValidated,PurchaseOrder.statusValidated,de
+PurchaseOrder.supplier,PurchaseOrder.supplier,de
+PurchaseOrder.supplierCode,PurchaseOrder.supplierCode,de
+PurchaseOrder.supplyRef,PurchaseOrder.supplyRef,de
+PurchaseOrder.tax,PurchaseOrder.tax,de
+PurchaseOrder.taxAmount,PurchaseOrder.taxAmount,de
+PurchaseOrder.taxCode,PurchaseOrder.taxCode,de
+PurchaseOrder.taxes,PurchaseOrder.taxes,de
+PurchaseOrder.totalDiscount,PurchaseOrder.totalDiscount,de
+PurchaseOrder.totalExclTax,PurchaseOrder.totalExclTax,de
+PurchaseOrder.totalExclTaxWithoutDiscount,PurchaseOrder.totalExclTaxWithoutDiscount,de
+PurchaseOrder.totalInclTax,PurchaseOrder.totalInclTax,de
+PurchaseOrder.totalTax,PurchaseOrder.totalTax,de
+PurchaseOrder.totalTaxes,PurchaseOrder.totalTaxes,de
+PurchaseOrder.type,PurchaseOrder.type,de
+PurchaseOrder.unitPrice,PurchaseOrder.unitPrice,de
+PurchaseOrder.validated,PurchaseOrder.validated,de
+Purchased,Gekauft,de
+Purchased amount by accounting family,Gekaufter Betrag nach Buchführungsfamilie,de
+Purchased amount by product accounting family,Gekaufte Menge nach Produktbuchhaltungsfamilie,de
+Purchased amount distribution by accounting family,Verteilung des gekauften Betrags nach Buchführungsfamilien,de
+Purchases,Käufe,de
+Purchases Order filters,Käufe Bestellfilter,de
+Purchases follow-up,Follow-up der Einkäufe,de
+Purchases order line filters,Käufe bestellen Netzfilter,de
+Purchases unit,Kauft Einheit,de
+Qty,Menge,de
+Quantity,Menge,de
+Quantity max,Menge max,de
+Quantity min,Menge min,de
+Quotation,Angebot,de
+RFQ And PO To Validate,RFQ und PO zur Validierung,de
+Receipt State,Empfangsstatus,de
+Received,Empfangen,de
+Received quantity,Erhaltene Menge,de
+Ref.,Ref.,de
+Reference already existing,Referenz bereits vorhanden,de
+References,Referenzen,de
+Refuse,Abfälle,de
+Refused,Verweigert,de
+Rejected,Abgelehnt,de
+Replied,Repliziert,de
+Reportings,Berichte,de
+Reports,Berichte,de
+Request,Anfrage,de
+Requested,Angefordert,de
+Requested date,Gewünschtes Datum,de
+Requested quantity,Angefragte Menge,de
+Requested unit,Gewünschte Einheit,de
+Requester,Antragsteller,de
+Reverse charged,Rückwärts geladen,de
+Sale quotations,Verkaufsangebote,de
+See purchase order lines,Siehe Bestellzeilen,de
+See quotation lines,Siehe Zitatzeilen,de
+Selected,Ausgewählte,de
+Send Email,E-Mail senden,de
+Send call for tenders,Ausschreibungen versenden,de
+Send email,E-Mail senden,de
+Sent,Gesendet,de
+Sent message,Gesendete Nachricht,de
+Separate in a new quotation,Getrennt in einem neuen Angebot,de
+Seq.,Seq.,de
+Shipping Coefficients,Versand-Koeffizienten,de
+Show invoice,Rechnung anzeigen,de
+Specific notes,Besondere Hinweise,de
+Specific tax note,Spezifischer Steuerhinweis,de
+Standard,Standard,de
+Standard purchases,Standard-Käufe,de
+Start date,Datum des Beginns,de
+Status,Status,de
+Status select,Status auswählen,de
+Stock location,Lagerort,de
+Stock move,Lagerbewegung,de
+Supplier,Anbieter,de
+Supplier Catalog,Lieferantenkatalog,de
+Supplier Catalog Lines,Lieferantenkatalog-Linien,de
+Supplier Comment,Kommentar des Lieferanten,de
+Supplier RFQ/PO,Lieferant RFQ/PO,de
+Supplier RFQs/POs,Lieferanten RFQs/POs,de
+Supplier box in purchase order,Lieferantenbox in der Bestellung,de
+Supplier catalog,Lieferantenkatalog,de
+Supplier code,Code des Lieferanten,de
+Supplier invoices,Lieferantenrechnungen,de
+Supplier is required to generate a purchase order.,"Der Lieferant ist verpflichtet, eine Bestellung zu erstellen.",de
+Supplier offer,Angebot des Lieferanten,de
+Supplier offers,Anbieter bietet,de
+Supplier partner,Lieferant Partner,de
+Supplier partner price list,Preisliste für Lieferantenpartner,de
+Supplier partner price lists,Preislisten der Lieferpartner,de
+Supplier partners,Partner der Lieferanten,de
+Supplier ref.,Lieferant ref.,de
+Suppliers,Anbieter,de
+Suppliers requests,Anfragen von Lieferanten,de
+Take product multiple qty,Produkt nehmen mehrere Menge,de
+Take product purchase price,Produktkaufpreis nehmen,de
+Tax,Steuer,de
+Tax Equiv,Steueräquivalent,de
+Tax Lines,Steuerzeilen,de
+Tax number,Steuernummer,de
+Tax type,Steuerart,de
+Taxes,Steuern,de
+Team,Team,de
+The ATI configuration must be the same for all purchase orders,Die ATI-Konfiguration muss für alle Bestellungen gleich sein.,de
+The company %s doesn't have any configured sequence for the purchase orders,Die Firma %s hat keine konfigurierte Reihenfolge für die Bestellungen,de
+The company is required and must be the same for all purchase orders,Die Firma ist erforderlich und muss für alle Bestellungen dieselbe sein,de
+The contact partner and price list must be the same for all purchase orders.,Der Ansprechpartner und die Preisliste müssen für alle Bestellungen identisch sein.,de
+The currency is required and must be the same for all purchase orders,Die Währung ist erforderlich und muss für alle Bestellungen gleich sein.,de
+The field 'Stock Location' must be filled.,"Das Feld ""Lagerort"" muss ausgefüllt werden.",de
+The fiscal position must be the same for all purchase orders,Die Steuerposition muss für alle Bestellungen gleich sein.,de
+The line cannot be null.,Die Zeile kann nicht null sein.,de
+The maximum order quantity of %s to the supplier is not respected. Unit price might be different than the supplier catalog one.,Die maximale Bestellmenge von %s beim Lieferanten wird nicht eingehalten. Der Stückpreis kann sich vom Katalogpreis des Lieferanten unterscheiden.,de
+The minimum order quantity of %s to the supplier is not respected. Unit price might be different than the supplier catalog one.,Die Mindestbestellmenge von %s beim Lieferanten wird nicht eingehalten. Der Stückpreis kann sich vom Katalogpreis des Lieferanten unterscheiden.,de
+The partner's language is different from the current language. Description and product name are in :,Die Sprache des Partners ist eine andere als die aktuelle Sprache. Beschreibung und Produktname sind in :,de
+The supplier Partner is required and must be the same for all purchase orders,Der Lieferant Partner ist erforderlich und muss für alle Bestellungen derselbe sein.,de
+The supplier catalog's unit is different from the current unit.,Die Einheit des Lieferantenkatalogs unterscheidet sich von der aktuellen Einheit.,de
+The supplier of the purchase order is different from the default supplier of the product.,Der Lieferant der Bestellung ist ein anderer als der Standardlieferant des Produkts.,de
+The trading name must be the same for all purchase orders,Der Handelsname muss für alle Bestellungen derselbe sein.,de
+There is no sequence set for the purchase requests for the company %s,Es ist keine Reihenfolge für die Kaufanträge der Firma %s festgelegt,de
+This product is not available from the supplier.,Dieses Produkt ist beim Lieferanten nicht erhältlich.,de
+This supplier is blocked:,Dieser Anbieter ist gesperrt:,de
+Timetable,Fahrplan,de
+Title,Titel,de
+Title Line,Titelzeile,de
+To Date,Bis heute,de
+Tools,Werkzeuge,de
+Total A.T.I.,Total A.T.I.,de
+Total A.T.I. in company currency,Total A.T.I. in company currency,de
+Total Purchased Amount by month,Gekaufter Gesamtbetrag pro Monat,de
+Total Purchased Qty by month,Gekaufte Gesamtmenge pro Monat,de
+Total Tax,Gesamtsteuer,de
+Total W.T.,Total W.T.,de
+Total W.T. in company currency,Total W.T. in company currency,de
+Total tax,Steuer insgesamt,de
+Trading name,Handelsname,de
+Type,Typ,de
+Unit,Einheit,de
+Unit price,Preis pro Einheit,de
+Unit price A.T.I.,Unit price A.T.I.,de
+Unit price W.T.,Unit price W.T.,de
+Unit price discounted,Ermäßigter Stückpreis,de
+Units,Einheiten,de
+Validate,Validieren Sie,de
+Validated,Validiert,de
+Validated by,Bestätigt durch,de
+Validation date,Datum der Validierung,de
+Validator,Prüfer,de
+Version Number,Versionsnummer,de
+WT,WT,de
+"Warning, a completed order can't be changed anymore, do you want to continue?","Warnung, eine abgeschlossene Bestellung kann nicht mehr geändert werden, möchten Sie fortfahren?",de
+You can create a purchase request only with the status 'Draft' or 'Requested'.,"Sie können eine Kaufanfrage nur mit dem Status ""Entwurf"" oder ""Angefordert"" erstellen.",de
+You can not generate supplier requests if the order is not saved.,"Sie können keine Lieferantenanfragen erstellen, wenn die Bestellung nicht gespeichert ist.",de
+You have to choose at least one purchase order,Sie müssen mindestens eine Bestellung auswählen,de
+You have to choose at least one purchase quotation,Sie müssen mindestens ein Kaufangebot auswählen,de
+You must configure Purchase module for the company %s,Sie müssen das Modul Einkauf für die Firma %s konfigurieren,de
+You need a purchase order associated to line.,"Sie benötigen eine Bestellung, die mit der Linie verbunden ist.",de
+value:Purchase,value:Purchase,de
+value:Purchase Request,value:Purchase Request,de

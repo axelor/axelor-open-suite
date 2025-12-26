@@ -192,8 +192,10 @@
   </selection>
 
   <selection name="employee.hr.sex.select">
-    <option value="F">F</option>
-    <option value="M">M</option>
+    <option value="F">Weiblich</option>
+    <option value="M">Männlich</option>
+    <option value="D">Divers</option>
+    <option value="X">Unbestimmt</option>
   </selection>
 
   <selection name="hr.leave.reason.unit.select">
@@ -264,6 +266,11 @@
 
   <selection name="account.year.type.select" id="hr.account.year.type.select">
     <option value="4">Allocation Year</option>
+  </selection>
+
+  <selection name="hr.timesheet.shift.type">
+    <option value="01-normal">Normal Shift</option>
+    <option value="02-night">Night Shift</option>
   </selection>
 
 </object-views>

@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.budget.web;
 
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -147,9 +146,10 @@ public class GlobalBudgetViewController {
 
     String domain =
         String.format(
-            "(self.invoiceLine.invoice.purchaseOrder is not null OR self.invoiceLine.invoice.saleOrder is not null) "
-                + "AND self.invoiceLine.invoice.statusSelect = %d AND self.budget.id IN (:budgetList)",
-            InvoiceRepository.STATUS_VENTILATED);
+            "self.moveLine IS NOT NULL AND self.moveLine.move.invoice IS NOT NULL AND self.moveLine.move.statusSelect in (%d,%d) AND "
+                + "(self.moveLine.move.invoice.purchaseOrder IS NOT NULL OR self.moveLine.move.invoice.saleOrder IS NOT NULL) "
+                + "AND self.budget.id IN (:budgetList)",
+            MoveRepository.STATUS_DAYBOOK, MoveRepository.STATUS_ACCOUNTED);
 
     response.setView(
         ActionView.define(I18n.get("Display realized with po"))
@@ -173,12 +173,11 @@ public class GlobalBudgetViewController {
 
     String domain =
         String.format(
-            "((self.invoiceLine.invoice.purchaseOrder is null AND self.invoiceLine.invoice.saleOrder is null AND self.invoiceLine.invoice.statusSelect = %d) "
-                + "OR (self.moveLine IS NOT NULL AND self.moveLine.move.statusSelect in (%d,%d) AND self.moveLine.move.invoice IS NULL)) "
+            "self.moveLine IS NOT NULL AND self.moveLine.move.statusSelect in (%d,%d) AND "
+                + "(self.moveLine.move.invoice IS NULL OR "
+                + "(self.moveLine.move.invoice.purchaseOrder is null AND self.moveLine.move.invoice.saleOrder is null))"
                 + "AND self.budget.id IN (:budgetIdList)",
-            InvoiceRepository.STATUS_VENTILATED,
-            MoveRepository.STATUS_DAYBOOK,
-            MoveRepository.STATUS_ACCOUNTED);
+            MoveRepository.STATUS_DAYBOOK, MoveRepository.STATUS_ACCOUNTED);
 
     response.setView(
         ActionView.define(I18n.get("Display realized with no po"))

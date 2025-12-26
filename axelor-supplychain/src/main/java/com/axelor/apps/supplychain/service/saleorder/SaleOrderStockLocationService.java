@@ -26,7 +26,8 @@ import com.axelor.apps.stock.db.StockLocation;
 import java.util.Map;
 
 public interface SaleOrderStockLocationService {
-  Map<String, Object> getStockLocation(SaleOrder saleOrder) throws AxelorException;
+  Map<String, Object> getStockLocation(SaleOrder saleOrder, boolean updateStockLocation)
+      throws AxelorException;
 
   Map<String, Object> getToStockLocation(SaleOrder saleOrder) throws AxelorException;
 

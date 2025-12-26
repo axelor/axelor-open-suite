@@ -110,4 +110,13 @@
     <option value="1">Non-blocking</option>
     <option value="2">AppBusinessProject.Blocking</option>
   </selection>
+
+  <selection name="invoice.line.source.type.select">
+    <option value="TIMESHEET">Timesheet</option>
+    <option value="EXPENSE">Expense</option>
+    <option value="SALE_ORDER">Sale Order</option>
+    <option value="PURCHASE_ORDER">Purchase Order</option>
+    <option value="SURCHARGE">Surcharge</option>
+  </selection>
+
 </object-views>

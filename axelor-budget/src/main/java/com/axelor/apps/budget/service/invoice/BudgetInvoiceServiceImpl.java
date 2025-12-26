@@ -21,7 +21,6 @@ package com.axelor.apps.budget.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
-import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -162,76 +161,6 @@ public class BudgetInvoiceServiceImpl implements BudgetInvoiceService {
       }
     }
     return false;
-  }
-
-  @Override
-  public void updateBudgetLinesFromInvoice(Invoice invoice) throws AxelorException {
-    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
-
-    if (CollectionUtils.isEmpty(invoiceLineList)) {
-      return;
-    }
-
-    for (InvoiceLine invoiceLine : invoiceLineList) {
-      updateLinesFromInvoice(invoiceLine.getBudgetDistributionList(), invoice, invoiceLine);
-    }
-  }
-
-  @Transactional
-  protected void updateLinesFromInvoice(
-      List<BudgetDistribution> budgetDistributionList, Invoice invoice, InvoiceLine invoiceLine)
-      throws AxelorException {
-    if (!ObjectUtils.isEmpty(budgetDistributionList)) {
-      for (BudgetDistribution budgetDistribution : budgetDistributionList) {
-        updateLineAmounts(
-            budgetDistribution,
-            invoice,
-            invoiceLine,
-            invoiceLine.getBudgetFromDate(),
-            invoiceLine.getBudgetToDate());
-
-        Budget budget = budgetDistribution.getBudget();
-        if (budget != null) {
-          budgetService.computeTotalAmountRealized(budget);
-          budgetService.computeTotalFirmGap(budget);
-          budgetService.computeTotalAmountCommitted(budget);
-          budgetRepository.save(budget);
-        }
-      }
-    }
-  }
-
-  @Override
-  @Transactional
-  public void updateLineAmounts(
-      BudgetDistribution budgetDistribution,
-      Invoice invoice,
-      InvoiceLine invoiceLine,
-      LocalDate fromDate,
-      LocalDate toDate)
-      throws AxelorException {
-
-    if (budgetDistribution != null && budgetDistribution.getBudget() != null) {
-      LocalDate imputationDate = computeImputationDate(invoice, invoiceLine);
-
-      budgetDistribution.setImputationDate(imputationDate);
-      Budget budget = budgetDistribution.getBudget();
-      BigDecimal totalAmount = budgetDistribution.getAmount();
-      if ((invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
-              && !InvoiceToolService.isRefund(invoice))
-          || (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_DEFAULT
-              && InvoiceToolService.isRefund(invoice))) {
-        totalAmount = totalAmount.negate();
-      }
-
-      budgetLineComputeService.updateBudgetLineAmounts(
-          invoiceLine,
-          budget,
-          totalAmount,
-          invoiceLine.getBudgetFromDate(),
-          invoiceLine.getBudgetToDate(),
-          imputationDate);
-    }
   }
 
   protected LocalDate computeImputationDate(Invoice invoice, InvoiceLine invoiceLine) {

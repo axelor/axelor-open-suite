@@ -43,6 +43,9 @@
   <menuitem name="all-expense" parent="my-hr-root" title="Expenses" action="expense.all"
     order="310" if="__config__.app.isApp('expense')" icon="list-task" icon-background="#84429f"/>
 
+  <menuitem name="all-expense-projects-menu" title="Expenses" action="expense.all"
+    order="360" if="__config__.app.isApp('expense')" groups="CUSTOM-PT" icon="list-task"/>
+
   <action-view name="expense.all" model="com.axelor.apps.hr.db.Expense"
     title="My Expenses">
     <view name="expense-grid" type="grid"/>
@@ -140,10 +143,28 @@
     <context name="user_id" expr="eval:__user__.id"/>
   </action-view>
 
+  <!-- MyHR related documents -->
+  <menuitem name="my-documents" parent="my-hr-root" title="My Documents"
+    action="my.documents.view" groups="admins" order="600" icon="folder2-open"
+    icon-background="#84429f"/>
+
+  <action-view name="my.documents.view" title="My Documents"
+    model="com.axelor.dms.db.DMSFile">
+    <view type="grid" name="dms-file-grid"/>
+    <view type="form" name="dms-file-form"/>
+    <domain>self.relatedModel = 'com.axelor.apps.hr.db.Employee'
+      AND self.relatedId = :employeeId AND
+      self.isDirectory = true</domain>
+    <context name="employeeId" expr="eval: __user__.employee?.id"/>
+  </action-view>
+
   <!-- RH -->
 
   <menuitem name="hr-root" order="-1600" title="HR" icon="diagram-3-fill"
-    if="__config__.app.isApp('employee')" icon-background="#84429f"/>
+    if="__config__.app.isApp('employee')" groups="CUSTOM-EM" icon-background="#84429f"/>
+
+  <menuitem name="mgm-tm-hr-root" order="-1600" title="Approvals items"
+    icon="diagram-3-fill" groups="CUSTOM-TM, " icon-background="#84429f"/>
 
   <menuitem name="hr-root-emp-mgt" parent="hr-root" title="Employees Management"
     icon="person-vcard" icon-background="#84429f" order="100"/>
@@ -201,6 +222,16 @@
     <view-param name="search-filters" value="employee-bonus-mgt-filters"/>
   </action-view>
 
+  <!-- see all employee related documents -->
+  <menuitem name="hr-employee-documents" parent="hr-root-emp-mgt"
+    title="Employee Related Documents" action="employee.documents.all" order="600"/>
+
+  <action-method name="employee.documents.all">
+    <call class="com.axelor.apps.hr.web.EmployeeDocumentController"
+      method="showEmployeeDocuments"/>
+  </action-method>
+
+
   <menuitem name="hr-employee-dpae" title="DPAEs" parent="hr-root-emp-mgt"
     action="employee.dpae.all" if="__user__.activeCompany?.hrConfig?.enableDPAE" order="600"/>
   <action-view name="employee.dpae.all" title="DPAEs" model="com.axelor.apps.hr.db.DPAE">
@@ -213,7 +244,7 @@
     icon="fa-cog" order="700"/>
 
   <menuitem name="hr-conf-product-activity" parent="hr-root-emp-mgt-conf"
-    title="Product Activities" action="conf.product.activity" order="100"/>
+    title="Product Activities" action="conf.product.activity" order="100" hidden="true"/>
 
   <action-view name="conf.product.activity" title="Product Activities"
     model="com.axelor.apps.base.db.Product">
@@ -232,7 +263,8 @@
     <view type="form" name="end-of-contract-reason-form"/>
   </action-view>
 
-  <menuitem name="employment-contract-template-all" parent="hr-root-emp-mgt-conf"
+  <menuitem name="employment-contract-template-all"
+    parent="hr-root-configuration-employment-contract-amendment"
     title="Employment Contract Templates" action="employment.contract.templat.all" order="300"/>
 
   <action-view name="employment.contract.templat.all"
@@ -251,8 +283,9 @@
     <view type="form" name="employee-bonus-type-form"/>
   </action-view>
 
-  <menuitem name="hr-employment-contract-type" parent="hr-root-emp-mgt-conf"
-    title="Employment contract type" action="employment.contract.type.all" order="500"/>
+  <menuitem name="hr-employment-contract-type"
+    parent="hr-root-configuration-employment-contract-amendment" title="Employment contract type"
+    action="employment.contract.type.all" order="500"/>
 
   <action-view name="employment.contract.type.all" title="Employment contract type"
     model="com.axelor.apps.hr.db.EmploymentContractType">
@@ -260,7 +293,7 @@
     <view type="form" name="employment-contract-type-form"/>
   </action-view>
 
-  <menuitem name="hr-conf-payroll-year" parent="hr-root-emp-mgt-conf" title="Payroll years"
+  <menuitem name="hr-conf-payroll-year" parent="plannings-all" title="Payroll years"
     action="hr.conf.payroll.year" order="600"/>
 
   <action-view name="hr.conf.payroll.year" title="Payroll years"
@@ -271,8 +304,8 @@
     <domain>self.typeSelect = 2</domain>
   </action-view>
 
-  <menuitem name="hr-conf-payroll-period" parent="hr-root-emp-mgt-conf"
-    title="Payroll periods" action="hr.conf.payroll.period" order="700"/>
+  <menuitem name="hr-conf-payroll-period" parent="plannings-all" title="Payroll periods"
+    action="hr.conf.payroll.period" order="700"/>
 
   <action-view name="hr.conf.payroll.period" title="Payroll periods"
     model="com.axelor.apps.base.db.Period">
@@ -281,8 +314,8 @@
     <domain>self.year.typeSelect = 2</domain>
   </action-view>
 
-  <menuitem name="hr-conf-fiscal-period" parent="hr-root-emp-mgt-conf"
-    title="Fiscal periods" action="hr.conf.fiscal.period" order="800"/>
+  <menuitem name="hr-conf-fiscal-period" parent="plannings-all" title="Fiscal periods"
+    action="hr.conf.fiscal.period" order="800"/>
 
   <action-view name="hr.conf.fiscal.period" title="Fiscal periods"
     model="com.axelor.apps.base.db.Period">
@@ -420,7 +453,7 @@
   </action-view>
 
   <menuitem name="hr-root-configuration-health-mutual" parent="hr-root-emp-mgt-conf"
-    title="Health mutual" order="1300"/>
+    title="Health mutual" order="1300" hidden="true"/>
 
   <menuitem name="hr-root-configuration-health-mutual-rejection-reason"
     parent="hr-root-configuration-health-mutual" title="Health mutual rejection reasons"
@@ -564,9 +597,38 @@
   <menuitem title="All timesheets" name="all-timesheet" parent="timesheet-root"
     action="action.timesheet.method.all.timesheet" order="100"/>
 
+  <menuitem title="Timesheet Lines to validate" name="mgm-tm-timesheet-lines-to-validate"
+    parent="mgm-tm-hr-root" groups="CUSTOM-TM"
+    action="action.timesheet.method.all.timesheet-lines-custom" order="110"/>
+
+  <menuitem name="mgm-tm-validate-expense" parent="mgm-tm-hr-root"
+    title="Expenses to Validate" action="expense.validate" tag-style="default"
+    tag-get="com.axelor.apps.hr.web.expense.ExpenseController:expenseValidateMenuTag()" order="100"/>
+
   <action-method name="action.timesheet.method.all.timesheet">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="allTimesheet"/>
   </action-method>
+
+  <action-method name="action.timesheet.method.all.timesheet-lines">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="allTimesheetLine"/>
+  </action-method>
+
+  <action-method name="action.timesheet.method.all.timesheet-lines-custom">
+    <call class="com.axelor.apps.hr.web.timesheet.TimesheetController"
+      method="allTimesheetLineCustom"/>
+  </action-method>
+
+  <action-view name="timesheet-line-project-lines" title="Timesheet Lines to Validate"
+    model="com.axelor.apps.hr.db.TimesheetLine">
+    <view type="grid" name="timesheet-line-grid"/>
+    <domain>
+      (self.project.membersUserSet[].id = :userId)
+      OR
+      (self.projectTask.project.membersUserSet[].id = :userId)
+    </domain>
+    <context name="userId" expr="eval: __user__.id"/>
+  </action-view>
 
   <action-method name="edit.timesheet">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="editTimesheet"/>
@@ -662,7 +724,7 @@
   </action-view>
 
   <menuitem name="hr-report-root" parent="hr-root" title="Reportings" order="900"
-    icon="fa-bar-chart"/>
+    icon="fa-bar-chart" groups="admins"/>
 
   <menuitem name="menu-hr-manager-dashboard" parent="hr-report-root"
     title="Human Resources Manager" action="hr.manager.dashboard.view" order="100"/>

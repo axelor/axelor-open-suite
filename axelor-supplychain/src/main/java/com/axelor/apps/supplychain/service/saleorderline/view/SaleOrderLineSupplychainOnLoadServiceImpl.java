@@ -28,6 +28,7 @@ import com.axelor.apps.base.utils.MapTools;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychain;
 import com.google.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,13 +39,16 @@ public class SaleOrderLineSupplychainOnLoadServiceImpl
 
   protected AnalyticAttrsService analyticAttrsService;
   protected SaleOrderLineViewSupplychainService saleOrderLineViewSupplychainService;
+  protected SaleOrderLineViewServiceSupplychain saleOrderLineViewServiceSupplychain;
 
   @Inject
   public SaleOrderLineSupplychainOnLoadServiceImpl(
       AnalyticAttrsService analyticAttrsService,
-      SaleOrderLineViewSupplychainService saleOrderLineViewSupplychainService) {
+      SaleOrderLineViewSupplychainService saleOrderLineViewSupplychainService,
+      SaleOrderLineViewServiceSupplychain saleOrderLineViewServiceSupplychain) {
     this.analyticAttrsService = analyticAttrsService;
     this.saleOrderLineViewSupplychainService = saleOrderLineViewSupplychainService;
+    this.saleOrderLineViewServiceSupplychain = saleOrderLineViewServiceSupplychain;
   }
 
   @Override
@@ -53,6 +57,7 @@ public class SaleOrderLineSupplychainOnLoadServiceImpl
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     MapTools.addMap(attrs, saleOrderLineViewSupplychainService.hideSupplychainPanels(saleOrder));
     MapTools.addMap(attrs, saleOrderLineViewSupplychainService.hideDeliveredQty(saleOrder));
+    MapTools.addMap(attrs, saleOrderLineViewServiceSupplychain.hideDeliveryPanel(saleOrderLine));
     MapTools.addMap(
         attrs, saleOrderLineViewSupplychainService.hideAllocatedQtyBtn(saleOrder, saleOrderLine));
     MapTools.addMap(attrs, hideReservedQty(saleOrder, saleOrderLine));

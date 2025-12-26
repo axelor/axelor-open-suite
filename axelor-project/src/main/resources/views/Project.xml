@@ -17,25 +17,25 @@
           action="action-project-open-popup-select-projects"/>
       </menu>
     </menubar>
-    <field name="name"/>
+    <field name="name" required="false"/>
     <field name="company" form-view="company-form" grid-view="company-grid"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="code"/>
-    <field name="parentProject"/>
+    <!-- MGM-80, @gkouete: Parent Project, gant view not relevant for MGM -->
+    <!-- <field name="parentProject"/> -->
     <field name="clientPartner"/>
     <field name="assignedTo"/>
     <field name="fromDate"/>
     <field name="toDate"/>
     <field name="projectStatus"/>
-    <button name="openGanttBtn" title="Gantt" icon="bar-chart-steps"
-      onClick="action-project-open-gantt"/>
+    <!-- <button name="openGanttBtn" title="Gantt" icon="bar-chart-steps" onClick="action-project-open-gantt"/> -->
     <button name="openTasks" onClick="action-project-view-show-related-tasks"
       icon="list-task"/>
   </grid>
 
   <grid name="project-child-grid" title="Projects" model="com.axelor.apps.project.db.Project"
     orderBy="projectStatus, name">
-    <field name="name"/>
+    <field name="name" required="false"/>
     <field name="code"/>
   </grid>
 
@@ -107,7 +107,7 @@
         <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"/>
         <field name="company" form-view="company-form" grid-view="company-grid" colSpan="2"/>
         <field name="fromDate" colSpan="2"/>
-        <field name="toDate" colSpan="2"/>
+        <field name="toDate" onChange="action-project-group-to-date-onchange" colSpan="2"/>
         <panel-include view="incl-project-overview-panel-form"/>
       </panel>
 
@@ -130,7 +130,7 @@
         <panel-include view="incl-project-config-panel-form"/>
       </panel>
     </panel-tabs>
-    <panel-mail name="mailPanel">
+    <panel-mail name="mailPanel" if="__user__.group.code == 'admins'">
       <mail-messages limit="4"/>
       <mail-followers/>
     </panel-mail>
@@ -141,8 +141,9 @@
     <panel colSpan="12">
       <field name="description" colSpan="12" widget="html"/>
     </panel>
+    <!-- MGM-80: dashboard not relevant for common users, admin only -->
     <panel name="dashboardPanel" title="Dashboard" showTitle="false" colSpan="12"
-      canCollapse="true" collapseIf="false">
+      canCollapse="true" collapseIf="false" if="__user__.group.code == admins">
       <panel-include view="project-dashboard-form"/>
     </panel>
     <panel name="sitePanel" title="Sites" canCollapse="true" colSpan="12" collapseIf="true"
@@ -153,8 +154,9 @@
           OR (self.typeSelect = 2 AND self.isUsableOnProject = true AND self.company = :company AND self.partner = :clientPartner)"
         canEdit="false"/>
     </panel>
+    <!-- MGM-80: Activities and audit trail not relevant for common users, admin only -->
     <panel title="Activities" name="activityPanel" canCollapse="true" collapseIf="true"
-      colSpan="12" showIf="id">
+      colSpan="12" showIf="id" if="__user__.group.code == admins">
       <panel-include view="project-activity-dashboard-form"/>
     </panel>
   </form>
@@ -165,15 +167,17 @@
       <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
         <editor x-show-titles="false">
           <panel name="seq" colSpan="3">
-            <field name="code" showTitle="false" colSpan="12" readonly="true"
+            <field name="code" showTitle="true" colSpan="12" readonly="true"
+              placeholder="Auftragsnummer"
               if="__config__.app.getApp('project')?.generateProjectSequence"
               css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
-            <field name="code" showTitle="false" colSpan="12" required="true"
-              if="!__config__.app.getApp('project')?.generateProjectSequence"
+            <field name="code" showTitle="true" placeholder="Auftragsnummer" colSpan="12"
+              required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
               css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
           </panel>
-          <field name="name" showTitle="false" colSpan="6" required="true"
-            css="label-bold bold large"/>
+          <field name="name" showTitle="false" colSpan="6" placeholder="Bezeichnung"
+            css="label-bold bold
+            large"/>
         </editor>
       </field>
     </panel>
@@ -199,13 +203,14 @@
           canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
           grid-view="user-grid" colSpan="3"/>
       </panel>
-      <panel name="characteristicsPanel" title="Characteristics" colSpan="12">
-        <field name="parentProject" canEdit="false" form-view="project-form"
-          grid-view="project-grid" onSelect="action-project-attrs-set-parent-project-domain"/>
-        <field name="isShowPhasesElements" widget="boolean-switch"/>
-        <field name="childProjectList" readonly="true" colSpan="12" form-view="project-form"
-          grid-view="project-child-grid" showIf="isShowPhasesElements"/>
-      </panel>
+      <!-- MGM-66 -->
+      <!-- <panel name="characteristicsPanel" title="Characteristics" colSpan="12"> -->
+      <!-- <field name="parentProject" canEdit="false" form-view="project-form" -->
+      <!-- grid-view="project-grid" onSelect="action-project-attrs-set-parent-project-domain"/> -->
+      <!-- <field name="isShowPhasesElements" widget="boolean-switch"/> -->
+      <!-- <field name="childProjectList" readonly="true" colSpan="12" form-view="project-form" -->
+      <!-- grid-view="project-child-grid" showIf="isShowPhasesElements"/> -->
+      <!-- </panel> -->
       <panel name="resourceBookingListPanel" title="Resource booking" colSpan="12"
         if="__config__.app.getApp('project')?.resourceManagement">
         <panel-related name="resourceBookingListPanel" field="resourceBookingList"
@@ -218,14 +223,15 @@
   <form name="incl-log-times-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
     <panel title="Log Times" name="logTimesPanel" showTitle="false" colSpan="12" itemSpan="12">
-      <panel-dashlet name="validatedTimesheetsPanel" x-show-bars="true"
-        if="__config__.app.getApp('timesheet')?.needValidation" height="200%"
-        action="action-project-dashlet-validated-timesheet-lines" title="Validated Timesheet lines"
-        colSpan="12" canSearch="true"/>
+      <!-- MGM-80: Inverted wating timesheet and validated timesheet to improve user experience -->
       <panel-dashlet name="waitingTimesheetLinesPanel" x-show-bars="true"
         if="__config__.app.getApp('timesheet')?.needValidation" height="200%"
         action="action-project-dashlet-project-waiting-timesheet-lines"
         title="Waiting Timesheet lines" colSpan="12" canSearch="true"/>
+      <panel-dashlet name="validatedTimesheetsPanel" x-show-bars="true"
+        if="__config__.app.getApp('timesheet')?.needValidation" height="200%"
+        action="action-project-dashlet-validated-timesheet-lines" title="Validated Timesheet lines"
+        colSpan="12" canSearch="true"/>
       <panel-dashlet name="allTimesheetsLinesPanel" x-show-bars="true"
         if="!__config__.app.getApp('timesheet')?.needValidation" height="200%"
         action="action-project-dashlet-project-all-timesheet-lines" title="TimesheetLine.timeSpent"
@@ -234,7 +240,9 @@
   </form>
 
   <form name="incl-wiki-panel-form" title="Project" model="com.axelor.apps.project.db.Project">
-    <panel title="Wiki" name="wikiPanel" canCollapse="true" collapseIf="true" colSpan="12">
+    <!--- MGM-66: display panel to only selected group e.g admins -->
+    <panel title="Wiki" name="wikiPanel" canCollapse="true" collapseIf="true" colSpan="12"
+      if="__user__.group.code == 'admins'">
       <field name="wikiDescription" colSpan="12" widget="html"/>
       <panel-related name="wikiListPanel" field="wikiList" colSpan="12"
         form-view="wiki-form" grid-view="wiki-grid-incl-project" canSearch="true"/>
@@ -245,11 +253,11 @@
     model="com.axelor.apps.project.db.Project">
     <panel-include view="incl-project-structure-panel-form"/>
     <panel title="General configuration" name="generalConfigurationsPanel" colSpan="12"
-      canCollapse="true" collapseIf="false">
-      <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
-        name="productSet" widget="TagSelect" canEdit="false"
-        domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-activity-form"
-        grid-view="product-activity-grid"/>
+      canCollapse="true" collapseIf="false" if="__user__.group.code == 'admins'">
+      <!-- MGM-66 -->
+      <!-- <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource" name="productSet"
+        widget="TagSelect" canEdit="false" domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-activity-form"
+        grid-view="product-activity-grid"/> -->
       <field name="projectTimeUnit" onSelect="action-project-attrs-set-time-unit-domain"/>
       <field name="numberHoursADay"/>
       <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
@@ -257,20 +265,24 @@
       <field name="manageTimeSpent" widget="inline-checkbox"
         onChange="action-project-record-manage-timespent-reset-values, action-attrs-project-show-log-time-panel"
         if="__config__.app.isApp('timesheet')"/>
-      <field name="sprintManagementSelect" widget="RadioSelect"/>
+      <!-- MGM-66 -->
+      <!-- <field name="sprintManagementSelect" widget="RadioSelect"/> -->
     </panel>
     <panel name="taskConfigurationPanel" title="Task configuration" colSpan="12"
-      canCollapse="true" collapseIf="false">
+      canCollapse="true" collapseIf="true">
       <field name="taskStatusManagementSelect" widget="RadioSelect"
         readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
         onChange="action-project-record-manage-task-status-set, action-project-record-activate-task-status-by-category"/>
+      <!-- <field name="projectTaskStatusSet" widget="TagSelect" readonlyIf="projectTaskList.length &gt;
+        0" showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2" canEdit="false"
+        onChange="action-project-method-manage-completed-task-status"/> -->
       <field name="projectTaskStatusSet" widget="TagSelect"
         readonlyIf="projectTaskList.length &gt; 0" showIf="taskStatusManagementSelect == 2"
-        requiredIf="taskStatusManagementSelect == 2" canEdit="false"
-        onChange="action-project-method-manage-completed-task-status"/>
+        canEdit="false" onChange="action-project-method-manage-completed-task-status"/>
+      <!-- <field name="completedTaskStatus" grid-view="task-status-grid" form-view="task-status-form"
+        showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2" onSelect="action-project-attrs-set-completed-task-status-domain"/> -->
       <field name="completedTaskStatus" grid-view="task-status-grid"
         form-view="task-status-form" showIf="taskStatusManagementSelect == 2"
-        requiredIf="taskStatusManagementSelect == 2"
         onSelect="action-project-attrs-set-completed-task-status-domain"/>
       <panel name="taskStatusManagementPanel" colSpan="12"
         showIf="projectTaskList.length &gt; 0 &amp;&amp; taskStatusManagementSelect == 2 &amp;&amp; !$readonly()">
@@ -289,24 +301,27 @@
       </panel>
       <field name="isShowPriority" widget="inline-checkbox"
         onChange="action-project-record-priority-reset-values"/>
+      <!-- <field name="projectTaskPrioritySet" widget="TagSelect" showIf="isShowPriority" requiredIf="isShowPriority"
+        canEdit="false"/> -->
       <field name="projectTaskPrioritySet" widget="TagSelect" showIf="isShowPriority"
-        requiredIf="isShowPriority" canEdit="false"/>
+        canEdit="false"/>
       <field name="isShowTaskCategory" widget="inline-checkbox"
         onChange="action-project-record-change-show-task-category, action-project-record-manage-task-status-set"
         canEdit="false"/>
+      <!-- <field name="projectTaskCategorySet" widget="TagSelect" showIf="isShowTaskCategory" canEdit="false"
+        requiredIf="taskStatusManagementSelect == 4 || enableStatusProgressByCategory"/> -->
       <field name="projectTaskCategorySet" widget="TagSelect" showIf="isShowTaskCategory"
-        canEdit="false"
-        requiredIf="taskStatusManagementSelect == 4 || enableStatusProgressByCategory"/>
+        canEdit="false"/>
       <field name="isShowProgress" widget="inline-checkbox"/>
       <field name="enableStatusProgressByCategory"
         if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask"
         showIf="isShowTaskCategory"/>
-      <field name="projectTaskLinkTypeSet" colSpan="12" widget="TagSelect" canEdit="false"
-        placeholder="All"/>
+      <!-- MGM-66 -->
+      <!-- <field name="projectTaskLinkTypeSet" colSpan="12" widget="TagSelect" canEdit="false" placeholder="All"/> -->
       <field name="projectTaskList" hidden="true"/>
     </panel>
     <panel title="View configuration" name="viewConfig" colSpan="12" canCollapse="true"
-      collapseIf="false">
+      collapseIf="true">
       <field name="isShowPlanning" colSpan="4" widget="inline-checkbox"
         if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
       <field name="isShowFrequency" colSpan="4" widget="inline-checkbox"/>
@@ -321,8 +336,8 @@
         showIf="isShowTaskCategory"/>
       <field name="isShowCalendarPerUser" colSpan="4" widget="inline-checkbox"/>
     </panel>
-    <panel-include view="incl-custom-fields-to-display-panel-form"/>
-    <panel-include view="incl-project-customized-field-panel-form"/>
+    <!-- MGM-66 -->
+    <!-- <panel-include view="incl-custom-fields-to-display-panel-form"/> <panel-include view="incl-project-customized-field-panel-form"/> -->
   </form>
 
   <form name="project-select-wizard-form" title="Select Projects"
@@ -359,7 +374,7 @@
 
   <form name="incl-checklist-panel-form" title="Check list"
     model="com.axelor.apps.project.db.Project">
-    <panel name="templatePanel" title="Check list">
+    <panel name="templatePanel" title="Check list" if="__user__.group.code == 'admins'">
       <field name="$projectCheckListTemplate" title="Check list template" type="Many-to-one"
         target="com.axelor.apps.project.db.ProjectCheckListTemplate"
         domain="self.typeSelect = 'project'"/>
@@ -376,7 +391,8 @@
 
   <form name="incl-project-roadmap-panel-form" title="Project"
     model="com.axelor.apps.project.db.Project">
-    <panel title="Roadmap" name="roadmapPanel">
+    <!--- MGM-66: display panel to only selected group e.g admins -->
+    <panel title="Roadmap" name="roadmapPanel" if="__user__.group.code == 'admins'">
       <panel-related name="roadmapSetPanel" field="roadmapSet" colSpan="12"
         form-view="project-version-form" grid-view="project-version-grid"/>
       <panel name="sprintPanel" title="Sprints" colSpan="12"
@@ -518,6 +534,10 @@
     <action name="action-attrs-project-show-log-time-panel"/>
   </action-group>
 
+  <action-group name="action-project-group-to-date-onchange">
+    <action name="action-project-validate-toDate"/>
+  </action-group>
+
   <action-group name="action-project-group-on-new-project">
     <action name="action-project-defaults"/>
     <action name="action-project-record-status-new"/>
@@ -526,8 +546,10 @@
   </action-group>
 
   <action-group name="action-project-group-on-save">
+    <action name="action-set-default-project-priority"/>
     <action name="action-project-method-check-resource-availibility"/>
     <action name="action-project-method-check-sprint-overlap"/>
+    <action name="action-project-validate-toDate"/>
   </action-group>
 
   <action-group name="action-project-group-finish-project">
@@ -592,7 +614,7 @@
     <attribute name="value" for="numberHoursADay"
       expr="eval: __config__.app.getApp('base')?.dailyWorkHours"/>
     <attribute name="value" for="projectTimeUnit"
-      expr="eval: __config__.app.getApp('base')?.unitDays"/>
+      expr="eval: __config__.app.getApp('base')?.unitHours"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-set-completed-task-status-domain">
@@ -621,7 +643,7 @@
 
   <action-attrs name="action-project-attrs-set-time-unit-domain">
     <attribute name="domain" for="projectTimeUnit"
-      expr="eval: &quot; self.id = ${__config__.app.getApp('base')?.unitDays?.id} OR self.id = ${__config__.app.getApp('base')?.unitHours?.id}&quot;"/>
+      expr="eval: &quot; self.id = ${__config__.app.getApp('base')?.unitHours?.id} OR self.id = ${__config__.app.getApp('base')?.unitDays?.id}&quot;"/>
   </action-attrs>
 
   <action-attrs name="action-project-attrs-status-to-add-domain">
@@ -667,6 +689,8 @@
       expr="eval: __config__.app.getApp('project')?.getDefaultPrioritySet()"/>
     <field name="completedTaskStatus"
       expr="eval: __config__.app.getApp('project')?.completedTaskStatus"/>
+    <field name="projectTaskCategorySet"
+      expr="eval: __repo__(ProjectTaskCategory).all().fetch()"/>
   </action-record>
 
   <action-record name="action-project-record-priority-reset-values"
@@ -710,6 +734,11 @@
   <action-record name="action-project-record-activate-task-status-by-category"
     model="com.axelor.apps.project.db.Project">
     <field name="isShowTaskCategory" expr="eval: true" if="taskStatusManagementSelect == 4"/>
+  </action-record>
+
+  <action-record name="action-project-null-toDate"
+    model="com.axelor.apps.project.db.Project">
+    <field name="toDate" expr="eval: null"/>
   </action-record>
 
   <!-- ACTION METHOD -->
@@ -889,6 +918,7 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="tree" name="project-project-task-tree"/>
     <view type="form" name="project-task-form"/>
+    <view-param name="forceEdit" value="true"/>
     <domain>self.project.id = :_id AND self.parentTask = null</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
@@ -924,6 +954,13 @@
     <alert message="Your current check list will be erased, do you want to continue ?"
       if="projectCheckListItemList &amp;&amp; !projectCheckListItemList.isEmpty()"/>
   </action-validate>
+
+  <action-validate name="action-project-validate-toDate">
+    <error message="Invalid date."
+      if="fromDate != null &amp;&amp; toDate != null &amp;&amp; toDate &lt; fromDate"
+      action="action-project-null-toDate"/>
+  </action-validate>
+
 
 
   <search-filters name="project-project-filters"

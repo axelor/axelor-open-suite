@@ -1,0 +1,37 @@
+"importId";"name";"labelToPrinting";"unitTypeSelect"
+1;"Unit";"Unit";
+2;"Piece";"Piece";
+3;"Box of 2 Pces";"Box of 2 Pces";
+4;"Box of 6 Pces";"Box of 6 Pces";
+5;"Box of 12 Pces";"Box of 12 Pces";
+6;"Box of 24 Pces";"Box of 24 Pces";
+7;"Box of 50 Pces";"Box of 50 Pces";
+8;"Box of 100 Pces";"Box of 100 Pces";
+9;"Box of 500 Pces";"Box of 500 Pces";
+10;"Box of 1000 Pces";"Box of 1000 Pces";
+100;"Minute";"Minute";3
+101;"Hour";"Hour";3
+102;"Half-Day";"Half-Day";3
+103;"Day";"Day";3
+104;"Week";"Week";3
+105;"Month";"Month";3
+106;"Year";"Year";3
+200;"Percent";"Percent";
+300;"Milligrams";"mg";1
+301;"Centigrams";"cg";1
+302;"Decigrams";"dg";1
+303;"Grams";"g";1
+304;"Decagrams";"dag";1
+305;"Hectograms";"hg";1
+306;"Kilograms";"kg";1
+307;"Quintal";"q";1
+308;"Ton";"t";1
+400;"Millimeter";"mm";2
+401;"Centimeter";"cm";2
+402;"Decimeter";"dm";2
+403;"Meter";"m";2
+404;"Decameter";"dam";2
+405;"Hectometer";"hm";2
+406;"Kilometer";"km";2
+407;"Miles";"miles";2
+501;"Cubic meter";"m3";

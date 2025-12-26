@@ -98,7 +98,7 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
       }
 
       if (project.getFromDate() != null) {
-        return project.getFromDate().toLocalDate();
+        return project.getFromDate();
       } else {
         return appBaseService.getTodayDate(project.getCompany());
       }
@@ -133,7 +133,7 @@ public class SprintGeneratorServiceImpl implements SprintGeneratorService {
 
   protected LocalDate getToDate(Project project, ProjectVersion projectVersion) {
     if (project != null && project.getToDate() != null) {
-      return project.getToDate().toLocalDate();
+      return project.getToDate();
     } else if (projectVersion != null) {
       return projectVersion.getTestingServerDate();
     }

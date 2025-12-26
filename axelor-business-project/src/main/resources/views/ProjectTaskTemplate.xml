@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+
+  <grid name="custom-mgm-business-project-task-template-grid" title="Tasks"
+    model="com.axelor.apps.project.db.ProjectTask" edit-icon="true"
+    orderBy="-priority.technicalTypeSelect">
+    <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
+    <!-- <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/> -->
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
+    <!-- <field name="ticketNumber" if="__config__.app.getApp('project')?.getIsEnablePerProjectTaskSequence()"/> -->
+    <field name="name"/>
+    <field name="project"/>
+    <!-- <field name="taskDate"/> -->
+    <field name="startTime"/>
+    <field name="endTime"/>
+    <!-- <field name="status"/> -->
+    <field name="priority"/>
+    <field name="projectTaskCategory"/>
+    <field if="__config__.app.getApp('timesheet')?.enableActivity" name="product"
+      form-view="product-activity-form" grid-view="product-activity-grid"/>
+    <field name="targetVersion" if-module="axelor-business-support"
+      if="__config__.app.isApp('business-support')"/>
+    <field name="taskEndDate" hidden="true"/>
+    <field name="priority.technicalTypeSelect" hidden="true"/>
+    <field name="project.completedTaskStatus.id" hidden="true"/>
+    <!-- mgm-fix-gk: Don't show financial status in the grid -->
+    <!-- <button name="showFinancialReport" title="Show financial reports" icon="bar-chart-fill" onClick="action-project-task-view-show-financial-datas-panel"/> -->
+  </grid>
+
+  <form name="custom-mgm-business-project-task-template-form" title="Task Template"
+    model="com.axelor.apps.project.db.ProjectTask"
+    onNew="action-business-project-project-task-group-on-new"
+    onLoad="action-business-project-project-task-group-on-load" width="large"
+    onSave="action-project-task-validate-toDate">
+    <!-- MGM-80, @gkouete: the following toolbar item are not relevant for MGM -->
+    <!-- <toolbar> <button name="grabEventBtn" icon="fa-suitcase" help="Take charge" onClick="action-project-task-record-assigned-yourself,save"/>
+      <button name="doneBtn" icon="fa-check" onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
+      showIf="project.taskStatusManagementSelect != 1"/> <button name="showPlanningBtn" icon="calendar-week"
+      title="Show planning" onClick="save,action-business-project-task-view-show-planning" if="__config__.app.isApp('employee')
+      &amp;&amp; __config__.app.getApp('project')?.enablePlanification" showIf="project.isShowPlanning"/> <button
+      name="showFinancialDatas" icon="clipboard-data" title="Show financial datas" onClick="save,action-project-task-view-show-financial-datas-panel"/>
+      </toolbar> -->
+    <menubar>
+      <menu name="projectTaskMenu" title="Tools"
+        if="__config__.app.getApp('project')?.resourceManagement">
+        <item name="bookResourceItem" title="Book resource"
+          action="save,action-project-task-book-resource"
+          if="__config__.app.getApp('project')?.resourceManagement"/>
+      </menu>
+    </menubar>
+
+    <panel showIf="nextProjectTask">
+      <field name="doApplyToAllNextTasks" widget="InlineCheckbox" colSpan="12"/>
+      <field name="project.taskStatusManagementSelect" hidden="true"/>
+      <field name="project.isShowPlanning" hidden="true"/>
+    </panel>
+
+    <panel name="mainPanel" colSpan="12">
+      <panel name="statusPanel" stacked="true" colSpan="6">
+        <field name="status" widget="NavSelect" showTitle="false"
+          hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
+          x-order="sequence" onChange="action-project-task-method-auto-change-progress"/>
+        <field name="typeSelect" hidden="true"/>
+        <field name="project.isShowPlanning" hidden="true"/>
+      </panel>
+
+      <panel name="projectDetailsPanel" colSpan="12">
+        <panel name="detailsPanel" colSpan="8">
+          <field name="fullName" showTitle="false" colSpan="12">
+            <viewer depends="name">
+                            <![CDATA[
+							<>
+								<h3>
+									<span>{name}</span>
+								</h3>
+							</>
+						]]>
+            </viewer>
+            <editor>
+              <field name="name" title="Subject" colSpan="12" css="label-bold bold large"
+                required="true"/>
+            </editor>
+          </field>
+        </panel>
+      </panel>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel-include
+        view="custom-mgm-incl-overview-business-project-task-template-panel-form"/>
+
+      <!-- MGM: The task template form does not need a log times panel -->
+      <!-- <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource" -->
+      <!-- if="__config__.app.isApp('timesheet') &amp;&amp; __user__.group.code != 'CUSTOM-PM'" -->
+      <!-- showIf="project.manageTimeSpent"> -->
+      <!-- <panel-include view="incl-log-times-projec-task-panel-form"/> -->
+      <!-- <field name="project.manageTimeSpent" hidden="true"/> -->
+      <!-- </panel> -->
+      <!-- MGM-80: @gkouete - Time follow up, tree view not relevant for MGM, adding show if admin -->
+      <panel name="timeFollowUpPanel" title="Time follow-up"
+        if="__user__.group.code == admins">
+        <panel-include view="incl-time-follow-task-panel-form"/>
+      </panel>
+
+      <panel name="treeViewPanel" title="Tree view" colSpan="12" showIf="id"
+        if="__user__.group.code == admins">
+        <panel-dashlet name="taskTreePanel" title="Task Tree" colSpan="12"
+          action="action-business-view-show-task-tree"/>
+        <panel-related name="finishToStartSetPanel" field="finishToStartSet"
+          colSpan="12">
+          <field name="name"/>
+        </panel-related>
+        <panel-include view="incl-frequency-panel-task-form"/>
+      </panel>
+      <!-- MGM-68 -->
+      <!-- MGM-80: @gkouete - financial data not hidden using show if admin, commenting it out -->
+      <!-- <panel name="financialDataPanel" title="Financial Data" colSpan="12" if-module="axelor-business-project"
+        if="__config__.app.isApp('business-project') || __user__.group.code == admins"> <field name="invoicingType"
+        onChange="action-project-task-attrs-onchange-invoice-type" readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length
+        > 0"/> <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true"> <field name="product"
+        colSpan="3" canEdit="false" onChange="action-business-project-project-task-group-product-onchange" onSelect="action-project-task-attrs-set-product-domain"
+        form-view="product-form" grid-view="product-grid"/> <field name="quantity" colSpan="3" onChange="action-project-task-method-update-financial-datas"
+        readonlyIf="saleOrderLine"/> <field name="unitPrice" colSpan="3" onChange="action-project-task-group-unit-price-onchange"
+        readonlyIf="saleOrderLine || frameworkCustomerContract"/> <field name="unitCost" colSpan="3" readonlyIf="saleOrderLine
+        || frameworkSupplierContract" onChange="action-project-task-method-compute"/> <field name="invoicingUnit"
+        colSpan="3" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"
+        readonlyIf="saleOrderLine" onChange="action-project-task-method-update-quantity"/> <field name="currency"
+        colSpan="3" grid-view="currency-grid" form-view="currency-form" canEdit="false" readonlyIf="saleOrderLine"/>
+        <field name="exTaxTotal" readonly="true" colSpan="3"/> <field name="totalCosts" colSpan="3"/> <field
+        name="toInvoice" colSpan="2" readonly="true" if="__config__.app.getApp('business-project').automaticInvoicing"/>
+        <field name="toInvoice" colSpan="2" readonlyIf="invoiced" if="!__config__.app.getApp('business-project').automaticInvoicing"/>
+        <field name="isPaid" showIf="project.invoicingSequenceSelect == 1" colSpan="2"/> <field name="isTaskRefused"
+        colSpan="2"/> <field name="invoiced" hidden="true" showIf="id &amp;&amp; !($readonly())" colSpan="1"/>
+        <field name="invoiced" hidden="true" showIf="id &amp;&amp; $readonly()" showTitle="false" colSpan="1">
+        <viewer><![CDATA[ <> <Box d="flex" justifyContent="flex-end"> <Badge bg={invoiced ? "success" : "danger"}>{invoiced
+        ? _t('Invoiced') : _t('Not invoiced')}</Badge> </Box> </> ]]></viewer> </field> <panel name="discountPanel"
+        readonly="true" colSpan="12" hideIf="discountTypeSelect == 3 || discountTypeSelect == 0" if="__config__.app.isApp('business-project')"
+        if-module="axelor-business-project"> <field name="discountTypeSelect" colSpan="3" onChange="action-project-task-attrs-discountamount-title"/>
+        <field name="discountAmount" colSpan="3"/> <field name="priceDiscounted" colSpan="3"/> </panel> <field
+        name="project.invoicingSequenceSelect" hidden="true" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
+        <field name="invoiceLineSet" readonly="true" showIf="invoiceLineSet" form-view="invoice-line-form" grid-view="invoice-line-grid"
+        colSpan="12"/> <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile" width="120"
+        widget="drawing"/> </panel> </panel> -->
+
+      <!-- MGM-68 -->
+      <panel-include view="incl-checklist-task-panel-form"
+        if="__user__.group.code == admins"/>
+      <!--<panel-include view="incl-links-panel-form"/> -->
+    </panel-tabs>
+
+    <panel name="templateIndicatorPanel" showIf="isTemplate" colSpan="12" showFrame="false">
+      <panel colSpan="12">
+        <help css="alert-info">
+                    <![CDATA[
+                Template Task - Changes affect all assigned users task
+              ]]>
+        </help>
+      </panel>
+    </panel>
+    <panel name="attrsPanel">
+      <field name="attrs" colSpan="12"/>
+    </panel>
+    <panel-mail name="mailPanel" if="__user__.group.code == 'admins'">
+      <mail-messages/>
+      <mail-followers/>
+    </panel-mail>
+  </form>
+
+  <form name="custom-mgm-incl-overview-business-project-task-template-panel-form"
+    title="Overview" model="com.axelor.apps.project.db.ProjectTask">
+    <panel name="overviewPanel" title="Overview">
+      <field name="ticketNumber"
+        if="__config__.app.getApp('project')?.isEnablePerProjectTaskSequence"/>
+      <field name="project" colSpan="6" form-view="business-project-form"
+        grid-view="business-project-grid"
+        onChange="action-business-project-task-group-project-onchange"
+        domain="self.projectStatus.isCompleted = false" required="true" canView="false"
+        readonlyIf="id != null || _project != null"/>
+      <field if="__config__.app.isApp('business-project')" name="project.customerAddress"
+        readonly="true" colSpan="6" showIf="project"
+        domain="self IN (SELECT address FROM PartnerAddress where partner = :project.clientPartner)"
+        form-view="address-form" grid-view="address-grid"/>
+      <!-- MGM-68 -->
+      <!-- <field name="parentTask" readonlyIf="project == null" colSpan="6" form-view="business-project-task-form"
+        grid-view="business-project-task-grid" onChange="action-project-task-record-get-parent-timeunit" onSelect="action-project-task-attrs-project-parent-task-configurations"/> -->
+      <field name="frameworkCustomerContract"
+        onSelect="action-project-task-method-set-customer-contract-domain"
+        showIf="project.allowToGetPricesFromFrameworkContract"
+        onChange="action-project-task-group-set-price-from-contract"/>
+      <field name="frameworkSupplierContract"
+        onSelect="action-project-task-method-set-supplier-contract-domain"
+        showIf="project.allowToGetPricesFromFrameworkContract"
+        onChange="action-project-task-group-set-price-from-contract"/>
+      <!-- MGM-68 -->
+      <field name="assignedTo" hidden="true"/>
+      <field name="saleOrderLine" readonly="true" showIf="saleOrderLine"
+        form-view="sale-order-line-form" grid-view="sale-order-line-grid"/>
+      <field name="project.allowToGetPricesFromFrameworkContract" hidden="true"/>
+      <field name="site" onSelect="action-project-task-attrs-set-site-domain"
+        form-view="site-form" grid-view="site-grid"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+
+      <!-- MGM-68 -->
+      <!-- <panel name="characteristicsPanel" title="Characteristics" colSpan="12" collapseIf="false"
+        canCollapse="true"> -->
+      <panel-include view="incl-characteristics-panel-form"/>
+      <field name="assignedEmployees" showIf="id == null || isTemplate" colSpan="6"
+        canNew="false" canView="false" canEdit="false" readonlyIf="project == null"
+        onSelect="action-project-task-attrs-project-assigned-to-configurations"
+        form-view="user-form" grid-view="user-grid" widget="TagSelect" required="true"/>
+
+      <field name="invoicingProgress" readonly="true" colSpan="4" showIf="invoicingType == 4"/>
+      <field name="description" colSpan="12" widget="html"/>
+
+      <field name="isTemplate" hidden="true"/>
+      <field name="templateTaskId" hidden="true"/>
+      <field name="assignedTo" hidden="true"/>
+      <!-- </panel> -->
+      <!-- <panel-include view="incl-customized-field-panel-form"/> -->
+    </panel>
+  </form>
+
+  <!-- Action to open template from individual task -->
+  <action-view name="action-project-task-view-template" title="Task Template"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="form" name="custom-mgm-business-project-task-template-form"/>
+    <context name="_showRecord" expr="eval: __self__.templateTaskId"/>
+  </action-view>
+
+</object-views>

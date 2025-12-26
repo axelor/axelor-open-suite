@@ -55,7 +55,7 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
       TimesheetRepository timesheetRepo,
       EmployeeRepository employeeRepository,
       ProjectRepository projectRepo,
-      ProjectTaskRepository projectTaskaRepo,
+      ProjectTaskRepository projectTaskRepo,
       TimesheetLineRepository timesheetLineRepo,
       AppHumanResourceService appHumanResourceService,
       UserHrService userHrService,
@@ -67,10 +67,12 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
         timesheetRepo,
         appHumanResourceService,
         userHrService,
-        dateService);
+        dateService,
+        projectTaskRepo,
+        projectRepo);
 
     this.projectRepo = projectRepo;
-    this.projectTaskRepo = projectTaskaRepo;
+    this.projectTaskRepo = projectTaskRepo;
     this.timesheetLineRepo = timesheetLineRepo;
     this.timesheetRepo = timesheetRepo;
     this.timesheetCreateService = timesheetCreateService;

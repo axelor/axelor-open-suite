@@ -1,0 +1,126 @@
+key,message,language
+0 %,0 %,de
+10 %,10 %,de
+100 %,100 %,de
+20 %,20 %,de
+30 %,30 %,de
+40 %,40 %,de
+50 %,50 %,de
+60 %,60 %,de
+70 %,70 %,de
+80 %,80 %,de
+90 %,90 %,de
+ALL,ALLE,de
+All SLA,Alle SLA,de
+All ticket types,Alle Ticketarten,de
+All tickets,Alle Fahrkarten,de
+App,App,de
+App helpdesk,App-Helpdesk,de
+Apply on,Anwenden auf,de
+Assign to me,Mir zuweisen,de
+Assigned to,Zugewiesen an,de
+Cancel,Abbrechen,de
+Characteristics,Merkmale,de
+Close,Schließen Sie,de
+Closed,Geschlossen,de
+Closed status,Abgeschlossener Status,de
+Closed ticket status does not exist. Please configure at least one.,"Der Status ""Geschlossenes Ticket"" ist nicht vorhanden. Bitte konfigurieren Sie mindestens einen.",de
+Code,Code,de
+Configuration,Konfiguration,de
+Current tickets,Aktuelle Tickets,de
+Customer,Kunde,de
+Customer contact,Kontakt zum Kunden,de
+Dates,Daten,de
+Deadline,Deadline,de
+Default status,Standard-Status,de
+Default ticket status does not exist. Please configure at least one.,Der Standard-Ticketstatus ist nicht vorhanden. Bitte konfigurieren Sie mindestens einen.,de
+Description,Beschreibung,de
+Duration,Dauer,de
+End date,Datum des Endes,de
+Follow-up,Nachbereitung,de
+From Date,Von Datum,de
+Full name,Vollständiger Name,de
+Helpdesk,Helpdesk,de
+High,Hoch,de
+In progress,In Arbeit,de
+Late tickets,Verspätete Tickets,de
+Low,Niedrig,de
+Manage Timer,Timer verwalten,de
+Minimum priority,Minimale Priorität,de
+My team tickets,Meine Mannschaftskarten,de
+My tickets,Meine Karten,de
+Name,Name,de
+New,Neu,de
+Normal,Normal,de
+Not assigned tickets,Nicht zugewiesene Tickets,de
+Number of tickets per SLA & per team,Anzahl der Tickets pro SLA und pro Team,de
+Number of tickets per SLA & per user,Anzahl der Tickets pro SLA und pro Benutzer,de
+On going status,Aktueller Stand,de
+On going ticket status does not exist. Please configure at least one.,Der Status eines laufenden Tickets ist nicht vorhanden. Bitte konfigurieren Sie mindestens einen.,de
+Overview,Übersicht,de
+Partner,Partner,de
+Percentage,Prozentsatz,de
+Percentage of repartition tickets per state,Prozentualer Anteil der Repartitionstickets pro Staat,de
+Percentage of tickets per SLA & per team,Prozentsatz der Tickets pro SLA und pro Team,de
+Percentage of tickets per SLA & per user,Prozentsatz der Tickets pro SLA und pro Benutzer,de
+Please select tickets,Bitte wählen Sie Tickets,de
+Priority,Priorität,de
+Progress,Fortschritt,de
+Progress (%),Fortschritt (%),de
+Project,Projekt,de
+Projects,Projekte,de
+Reach in,Erreichen,de
+Reach stage,Stufe erreichen,de
+Real total duration (Hours),Tatsächliche Gesamtdauer (in Stunden),de
+Reportings,Berichte,de
+Resolve,Lösen Sie  auf.,de
+Resolved,Aufgelöst,de
+Resolved status,Gelöster Status,de
+Resolved ticket status does not exist. Please configure at least one.,Der Status Gelöstes Ticket existiert nicht. Bitte konfigurieren Sie mindestens einen.,de
+SLA,SLA,de
+SLA Policy,SLA-Politik,de
+SLA completed,SLA abgeschlossen,de
+SLA dashboard,SLA-Dashboard,de
+SLA policies,SLA-Richtlinien,de
+SLA policy name,Name der SLA-Richtlinie,de
+Sequence,Sequenz,de
+Solved,Gelöst,de
+Stage to reach,Zu erreichende Stufe,de
+Start,Start,de
+Start date,Datum des Beginns,de
+Status,Status,de
+Stop,Stopp,de
+Subject,Thema,de
+Take charge,Verantwortung übernehmen,de
+Target,Ziel,de
+Team,Team,de
+Ticket,Ticket,de
+Ticket Number,Ticket-Nummer,de
+Ticket N°,Fahrschein-Nr.,de
+Ticket Type,Ticket-Typ,de
+Ticket created,Ticket erstellt,de
+Ticket dashboard,Ticket-Dashboard,de
+Ticket filters,Ticket-Filter,de
+Ticket status,Ticket-Status,de
+Ticket statuses,Ticket-Status,de
+Ticket type,Ticket-Typ,de
+Ticket types,Ticket-Typen,de
+Ticket updated.,Ticket aktualisiert.,de
+Tickets,Eintrittskarten,de
+Tickets by ticket type,Tickets nach Ticketart,de
+Timer,Zeitschaltuhr,de
+Timer list,Timer-Liste,de
+Timer state,Timer-Status,de
+To Date,Bis heute,de
+Total duration (Hours),Gesamtdauer (Stunden),de
+Total tickets,Fahrkarten insgesamt,de
+Unsolved,Ungelöst,de
+Urgent,Dringend,de
+User,Benutzer,de
+User in charge of the issue,Für die Ausgabe zuständiger Benutzer,de
+Workflow to update status to value provided is not supported by ticket.,Der Workflow zur Aktualisierung des Status auf den angegebenen Wert wird vom Ticket nicht unterstützt.,de
+Working Days,Arbeitstage,de
+chart.resolved,chart.resolved,de
+days,Tage,de
+hours,Stunden,de
+value:Helpdesk,value:Helpdesk,de
