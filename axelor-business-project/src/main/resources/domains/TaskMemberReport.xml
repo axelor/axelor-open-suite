@@ -7,7 +7,7 @@
 
   <entity name="TaskMemberReport">
     <many-to-one name="taskReport" ref="com.axelor.apps.businessproject.db.TaskReport"
-      title="Task Report"/>
+      title="Task Report" required="true"/>
     <many-to-one name="employee" ref="com.axelor.auth.db.User" title="Employee"/>
     <many-to-one name="task" ref="com.axelor.apps.project.db.ProjectTask" title="Task"/>
     <datetime name="startTime" title="Start Time"/>

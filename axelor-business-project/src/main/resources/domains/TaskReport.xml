@@ -12,7 +12,8 @@
     <many-to-one name="location" ref="com.axelor.apps.base.db.Address" title="Location"/>
     <many-to-one name="employee" ref="com.axelor.auth.db.User" title="Report Created By"/>
     <one-to-many name="taskMemberReports"
-      ref="com.axelor.apps.businessproject.db.TaskMemberReport"/>
+      ref="com.axelor.apps.businessproject.db.TaskMemberReport" mappedBy="taskReport"
+      orphanRemoval="true"/>
     <decimal name="totalWorkHours" title="Total working time (hours)" precision="6"
       scale="2" readonly="true"/>
     <date name="taskDate" title="Report Date"/>
