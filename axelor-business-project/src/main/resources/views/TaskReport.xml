@@ -45,10 +45,11 @@
     onNew="action-task-report-default, action-task-report-attrs-filter-projects"
     onLoad="action-task-report-group-on-load" onSave="action-task-report-group-on-save"
     width="large">
-    <toolbar>
-      <button name="viewTaskReportbtn" title="View Report" icon="fa-eye"
-        onClick="save,action-task-report-method-preview"/>
-    </toolbar>
+    <!-- we do not want to use this button yet as theres a print button doing the preview already -->
+    <!-- <toolbar> -->
+    <!-- <button name="viewTaskReportbtn" title="View Report" icon="fa-eye" -->
+    <!-- onClick="save,action-task-report-method-preview"/> -->
+    <!-- </toolbar> -->
     <panel colSpan="12" name="taskReportMainPanel">
       <panel colSpan="12" name="parentPanel" showFrame="true">
         <panel title="General Information" showFrame="false">
