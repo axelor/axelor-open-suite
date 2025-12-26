@@ -4,8 +4,10 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
   <dashboard title="Business Projects" name="custom-mgm-business-project-status-dashboard">
-    <dashlet action="custom-mgm-business-project-ongoing" colSpan="12"/>
-    <dashlet action="custom-mgm-business-project-completed" colSpan="12"/>
+    <dashlet action="custom-mgm-business-project-ongoing" colSpan="12" height="600"
+      canSearch="true"/>
+    <dashlet action="custom-mgm-business-project-completed" colSpan="12" height="400"
+      canSearch="true"/>
   </dashboard>
 
   <action-view name="custom-mgm-business-project-ongoing" title="Ongoing Projects"
