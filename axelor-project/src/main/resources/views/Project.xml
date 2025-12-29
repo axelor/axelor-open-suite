@@ -30,7 +30,7 @@
     <field name="projectStatus"/>
     <!-- <button name="openGanttBtn" title="Gantt" icon="bar-chart-steps" onClick="action-project-open-gantt"/> -->
     <button name="openTasks" onClick="action-project-view-show-related-tasks"
-      icon="list-task"/>
+      icon="list-task" if="__user__.group.code == admins"/>
   </grid>
 
   <grid name="project-child-grid" title="Projects" model="com.axelor.apps.project.db.Project"
@@ -43,7 +43,8 @@
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-group-on-save" width="large">
     <menubar>
-      <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
+      <!-- MGM-80 @gkouete: show task menu only to admins -->
+      <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks" if="__user__.group.code == admins">
         <item name="myOpenTasks" title="My open tasks"
           action="save,action-project-method-my-open-tasks"
           showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
