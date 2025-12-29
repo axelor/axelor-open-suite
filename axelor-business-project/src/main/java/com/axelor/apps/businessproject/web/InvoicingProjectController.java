@@ -29,6 +29,7 @@ import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectGenerateInvoiceService;
 import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownDisplayService;
+import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownPdfService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -38,7 +39,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -133,92 +133,30 @@ public class InvoicingProjectController {
 
     List<Map<String, Object>> displayData =
         Beans.get(InvoiceBreakdownDisplayService.class).generateBreakdownFromInvoice(invoice);
-    String html = buildHtmlFromData(displayData);
+    String html = Beans.get(InvoiceBreakdownPdfService.class).buildHtmlFromData(displayData);
     log.debug("Finished building view for invoice line breakdown");
 
     // Set HTML in response
     response.setValue("$breakdownHtml", html);
   }
 
-  private String buildHtmlFromData(List<Map<String, Object>> data) {
-
-    StringBuilder html = new StringBuilder();
-    html.append("<table style='width: 100%; border-collapse: collapse;'>");
-    html.append("<thead><tr>");
-    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>#</th>");
-    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
-        .append(I18n.get("Description"))
-        .append("</th>");
-    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
-        .append(I18n.get("Quantity"))
-        .append("</th>");
-    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
-        .append(I18n.get("Unit"))
-        .append("</th>");
-    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
-        .append(I18n.get("Price"))
-        .append("</th>");
-    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
-        .append(I18n.get("Amount"))
-        .append("</th>");
-    html.append("<th style='padding: 10px; border: 1px solid #ddd; text-align: center;'>")
-        .append(I18n.get("Billing Details"))
-        .append("</th>");
-    html.append("</tr></thead><tbody>");
-
-    for (Map<String, Object> line : data) {
-      String sectionStyle = (String) line.get("sectionStyle");
-
-      if ("SPACING".equals(sectionStyle)) {
-        html.append("<tr style='height: 15px;'>");
-        html.append("<td colspan='7' style='border: none;'>&nbsp;</td>");
-        html.append("</tr>");
-        continue;
+  public void downloadInvoiceBreakdownPdf(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      if (invoice.getId() != null) {
+        invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
       }
 
-      String style = "";
-      if (Boolean.TRUE.equals(line.get("isBold"))) {
-        style = "font-weight: bold;";
-      }
+      String fileLink = Beans.get(InvoiceBreakdownPdfService.class).printInvoiceBreakdown(invoice);
 
-      html.append("<tr style='").append(style).append("'>");
-      html.append("<td style='padding: 10px; border: 1px solid #ddd;'>")
-          .append(line.get("sequence") != null ? line.get("sequence") : "")
-          .append("</td>");
-      html.append("<td style='padding: 10px; border: 1px solid #ddd;'>")
-          .append(line.get("description"))
-          .append("</td>");
-      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
-          .append(formatValue(line.get("quantity")))
-          .append("</td>");
-      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
-          .append(line.get("unit") != null ? line.get("unit") : "")
-          .append("</td>");
-      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
-          .append(formatValue(line.get("price")))
-          .append("</td>");
-      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
-          .append(formatValue(line.get("amount")))
-          .append("</td>");
-      html.append("<td style='padding: 10px; border: 1px solid #ddd; text-align: right;'>")
-          .append(formatValue(line.get("billingDetails") != null ? line.get("billingDetails") : ""))
-          .append("</td>");
-      html.append("</tr>");
-    }
+      String title = I18n.get("Invoice Breakdown");
 
-    html.append("</tbody></table>");
-    return html.toString();
-  }
+      response.setView(ActionView.define(title).add("html", fileLink).map());
 
-  /** Formats numeric values to 2 decimal places, returns empty string for null */
-  private String formatValue(Object value) {
-    if (value == null) {
-      return "";
+    } catch (Exception e) {
+      log.error("Error generating PDF breakdown", e);
+      TraceBackService.trace(response, e);
+      response.setError(I18n.get("Error generating PDF: ") + e.getMessage());
     }
-    if (value instanceof BigDecimal) {
-      BigDecimal bd = (BigDecimal) value;
-      return String.format("%.2f", bd);
-    }
-    return value.toString();
   }
 }
