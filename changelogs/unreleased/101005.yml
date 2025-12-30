@@ -1,0 +1,3 @@
+---
+title: "Prod process : fixed 'Stock move realize order select' doesn't take into account production config."
+module: axelor-production
