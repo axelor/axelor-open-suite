@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.22.0.v202509121501</property>
+    <property name="units">in</property>
+    <property name="iconFile">/templates/first_report.gif</property>
+    <property name="cheatSheet">org.eclipse.birt.report.designer.ui.cheatsheet.firstreport</property>
+    <property name="bidiLayoutOrientation">ltr</property>
+    <property name="imageDPI">72</property>
+    <data-sources>
+        <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="246">
+            <list-property name="privateDriverProperties">
+                <ex-property>
+                    <name>contentBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+                <ex-property>
+                    <name>disabledContentBidiFormatStr</name>
+                </ex-property>
+                <ex-property>
+                    <name>disabledMetadataBidiFormatStr</name>
+                </ex-property>
+                <ex-property>
+                    <name>metadataBidiFormatStr</name>
+                    <value>ILYNN</value>
+                </ex-property>
+            </list-property>
+            <property name="odaDriverClass">org.postgresql.Driver</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/mgm_db</property>
+            <property name="odaUser">postgres</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bmppZGRh</encrypted-property>
+        </oda-data-source>
+    </data-sources>
+    <data-sets>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="Data Set" id="247">
+            <structure name="cachedMetaData"/>
+            <property name="dataSource">Data Source</property>
+            <xml-property name="queryText"><![CDATA[select 
+from ]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[]]></xml-property>
+        </oda-data-set>
+    </data-sets>
+    <styles>
+        <style name="report" id="110">
+            <property name="fontFamily">sans-serif</property>
+            <property name="fontSize">10pt</property>
+        </style>
+    </styles>
+    <page-setup>
+        <simple-master-page name="Simple MasterPage" id="2"/>
+    </page-setup>
+    <body>
+        <grid name="headerGrid" id="255">
+            <property name="borderBottomStyle">none</property>
+            <property name="borderLeftStyle">none</property>
+            <property name="borderRightStyle">none</property>
+            <property name="borderTopStyle">none</property>
+            <column id="256"/>
+            <column id="257"/>
+            <row id="258">
+                <cell id="259">
+                    <image id="261">
+                        <property name="borderBottomStyle">none</property>
+                        <property name="borderLeftStyle">none</property>
+                        <property name="borderRightStyle">none</property>
+                        <property name="borderTopStyle">none</property>
+                        <property name="height">1.5694444444444444in</property>
+                        <property name="width">3.7083333333333335in</property>
+                        <property name="source">embed</property>
+                        <property name="imageName">mgm-logo.png</property>
+                    </image>
+                </cell>
+                <cell id="260">
+                    <label id="262">
+                        <property name="fontSize">18pt</property>
+                        <property name="fontWeight">bold</property>
+                        <property name="paddingTop">50pt</property>
+                        <property name="paddingBottom">50pt</property>
+                        <property name="textAlign">center</property>
+                        <property name="display">block</property>
+                        <text-property name="text">MGM REPORT</text-property>
+                    </label>
+                </cell>
+            </row>
+        </grid>
+        <grid id="272">
+            <property name="height">1.3472222222222223in</property>
+            <column id="273"/>
+            <column id="274"/>
+            <row id="275">
+                <property name="height">0.6805555555555556in</property>
+                <cell id="276">
+                    <property name="diagonalStyle">none</property>
+                    <property name="antidiagonalStyle">none</property>
+                    <property name="borderBottomStyle">none</property>
+                    <property name="borderLeftStyle">none</property>
+                    <property name="borderRightStyle">none</property>
+                    <property name="borderTopStyle">none</property>
+                    <property name="paddingTop">25pt</property>
+                </cell>
+                <cell id="277">
+                    <property name="paddingTop">25pt</property>
+                    <label id="283">
+                        <property name="fontSize">14pt</property>
+                        <text-property name="text">Order: </text-property>
+                    </label>
+                </cell>
+            </row>
+            <row id="278">
+                <cell id="279">
+                    <property name="paddingTop">25pt</property>
+                    <label id="285">
+                        <property name="fontSize">14pt</property>
+                        <property name="paddingLeft">15pt</property>
+                        <text-property name="text">Customer:</text-property>
+                    </label>
+                </cell>
+                <cell id="280">
+                    <property name="paddingTop">25pt</property>
+                    <label id="286">
+                        <property name="fontSize">14pt</property>
+                        <text-property name="text">Location:</text-property>
+                    </label>
+                </cell>
+            </row>
+        </grid>
+    </body>
+    <list-property name="images">
+        <structure>
+            <property name="name">mgm-logo.png</property>
+            <property name="type">image/png</property>
+            <property name="data">
+                iVBORw0KGgoAAAANSUhEUgAAAUAAAABxCAMAAACTH4okAAAAeFBMVEVHcEy1qbEkpcm5rba1qLEJocoa
+                nsO5rbUgnL2yqa8GockMn8UEocsMnsW2rbQXn8MIoMcJn8e5rbYTn8O2rbR0obJxn7K2rbS3rrR/mqbv
+                RSALoMe1rLMOnsS2q7O3q7R7h4bDs7a3rLS6rbYBocsAosu7rLYBoc5VNVUmAAAAI3RSTlMAehT0h81N
+                2jga4nP6okMj7vbnX1IGC2MiAgG3M4rFtgEBpfxwB5wAAAgnSURBVHja7Z2LYqI6EIYrFkQuAlKwKcu2
+                XQh5/zc8M5OAaEHQnt2WOr/WCl569jv/ZJJJjA8PLBaLxWKx7lli+zypLWO6oMNmv5nQ7x1jGle2WjdV
+                Tw0cNfQbVdHBhgmOKH+Dn9W6GpXG2DDBsfjdaQ9WU9o8MawhPZK1wIMmXpujmOAsgNXml/HgB2SnoVzt
+                meAQwKb63RG8yK9igiMAjwSnxAQHATYNERSHyx4kggcmNuBA8ODzLIINExwG2FSvSDA7rCf4oQffGdpH
+                B1aaoDjMaAeZ4CDAEYJnHUK8vz8IxjYAsHrdEsHfm8nKwi/GNgTQENxOK2dsgwA1wWkJwa3gIMCm+sOF
+                0085sFlz6/ZJgFz0Y4AMcMEAKwbIADmEGSADZDFABsgAGSDrSoDNCcAscicVMb1xgC+OF0/JdhnfKMCH
+                LI2VqqWEm75UX0xwBKCIMrhNY4kE6xHBA9JzGOAQwKz035CghwSNA+W5EKFigoMAX8IkRYKOp2r1EV0P
+                IntwBGAdpw9EsB7np53pEWoGeAZQGmsBQVVfVpwKBtgBfGodqGpN0LW9CcX2fXuwD7DqAEL3pfaok2JF
+                k7IY4BBAKed28ziEP4awUpgkbB6s3dwGavnMhwF+JcCAAbIDvygLswP/F4DswGtDuDmwAz8HkB34tQ58
+                y0DswGEHRj4qtfSRq4/6tHLXD4uiCMs0ak879CxHH2b6yL1TB4oUi/gq0QXULKxxtsS2usdfnCLWhWsl
+                vVKv4xehxBd5ekQYefSe5b060Kc5pro0MLCeKr1usJz7sWznnGoZas/lBdZdVaChOwGWYVV4Rw48AVgq
+                mgaxyVxOQgCTNh5FmdRU4ifF5rRlkwM1dFHq9wyz+3QghCMBJDgvpY7VpJ0RSROl0dm27XWMLE/X/Yuc
+                aNbHg58KsBp3YFZog6lUW0thzTVIW6sphbEaupZlRakxoIg8PR+ApVnhJnp2r9du3hXA3JYUjwrt5cZ6
+                wlOaJ6QB8pOQO0S/vurG5n2Qs2/ue9F9AoxsPc2ODhI+TjXhcdm5U/ZTStuLScz7hAISipmd8n5YP+ax
+                mgmQZtlB0O5RdsUQlqEwHRScQA7Pa/vU80EBdApnbEUT56cB1J8Hbi4DhCZMSXIgnASYMgiARkAZQWBE
+                K3zAclKSo9s5iFr9PMjWAFMG/Xbzp2i3r+YAhF4cIPJiyB1FlgIU2ztmBDwGPOmD69VBgHPFOkyx4xLY
+                GMc+JvHARpj1DwMonvazQhjzhCoKcJoXhXA3tGl1kQaILLG/DFakyNYABbyNCkoP4BaRDWfLBLtC330o
+                8p4fPxg9oOxE+ILD/tgMjgP0cS1RiEGZ+JCQY4eSis4bPYA19geVBpgVCDDFBtPzoQWwUwQov/tQROx+
+                n+sVr68D+rM7EpxwIA1ESuq/YFDaUdFZTTgB5gcIYcsv0YMmhHObsAJ6mSBu/WpZfPd55P5mdrRlRG9P
+                sZPNxZp2O6zD3jx2IYmEmEN8YFLTkK4Ee0E462Ful0QehOXBYNiEMIw9JOQPsCV2uyH9GoDffijyTgSb
+                ppohIvh2WE8lEeAFDPyHkhatIrgQSCrKCHrEIVVJo7cOIJ5GM+Y0IoYwjrAEIesFDEWmt2I7I2j2LLoA
+                EAZrhAv7xkAQ2r5SohX9XtUFySDANoRdzNn4TOr+QJ+RajhqCUMRAUE5jx9G8Xu7Z9E5QNkDiGstwXdY
+                EpA0niupHqMLLT71kZNU1w9agA72buyIfsPJVBcXVLyEoUh2TK0TABu9kY7AsL/gQDIP9IexayIRxoOP
+                QzOTUjFYcS2NY7neMYmkZhBi6R6PS3fUsQb2vUUEmzkWPBK84EBo/3XOxf6gvkPJpKCeUObXlEYS2w5U
+                50Afx3eQMnRhGu7k2K8xiWcZBGc2hGskSHv5jjoQeypUSKHCPCZSGH4ci/pWSF1BjNRjCGPPhwhTscbH
+                TET1iIXM9b3DEGNoK9RRgvnjetyBKeZcBIjpmBBAOlHdCjhhhYley48/iqIUoh0OsfqFhQhiGlJJcSmz
+                IjhIa2Y2hC3BUQf6NRiO7Oabkj1072Dc26ZUkadFTAvPoUftlRblZvRk+EZTUPq1ZR2ogarNt9XT5mwz
+                6HGtVxkSHG8DqciCDZ4Fv7ErnOvCy7FTZ7l+GYZh6TsRERJUmnHNq9239l1SdzlLWnebeUHcEdyODuVm
+                uj4TL5NLfhe0JFjsNkTHjHQvt4Orbog14MC71a/VbB22ZwAlr425US+UPyEDMMCbAdKUUV0yi9uaTp9W
+                adQM8FZZIXWIrwEoXOcKpe11plyxQILXAczCJDiRPDlK8FEFFzgvT84PKzY/eANXL10eQQjiqwAWynwG
+                truVvY0CTj74bh6iz5Pp+0Ftbtqf06cv8DOhmQVArgrhwuCQev6cSqxKyUmNfCK5pazofWD4uDwPFkpd
+                5cCj3U68c7t6ewsAx+URjArlX+PA0383tgBK1Z+SdrAyNk0WSPB6Bxp2vSAc3S+gv3HAkP1qCl79f0Hh
+                XGDsL4ygiJyrHGhoaDi41ld+zoAdZmoH4R0Tf2GrW19ergBY2n9fxU/eIyS3/oF4F/9PhgQj+EvaHlZ/
+                R4+rxwtXuJxf4fxtWn3p9xjglGIz9q2W/cVAzb/TsYI9+WfpWX++mmC1dH0Dgk07E97MXRr0XURG/FqC
+                +eP6dJ7x7FKtb9L+/Lq/RRu6dkdj37W0+tJ+br57ulK788tH/Tq/zNDzjG8Mf95un+lyqi8eaom+/tLf
+                eBdi8s/oR7JZ/yn8DWksFovFYt2n/gM2TL9cWXWWUAAAAABJRU5ErkJggg==
+</property>
+        </structure>
+    </list-property>
+</report>
