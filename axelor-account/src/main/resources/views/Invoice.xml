@@ -638,6 +638,11 @@
           canMove="true" orderBy="sequence" height="30"/>
       </panel>
       <panel name="invoiceBreakdownPanel" title="Invoice Breakdown">
+        <button name="downloadBreakDownPdf" icon="fa-file-pdf-o"
+          onClick="action-invoice-breakdown-pdf" hidden="true"/>
+        <button name="downloadBreakDownPdf" icon="fa-file-pdf-o"
+          onClick="action-invoice-breakdown-pdf" showIf="$breakdownHtml != null"
+          title="Print breakdown PDF"/>
         <field name="$breakdownHtml" showTitle="false" colSpan="12" widget="html"
           hidden="true" showIf="$breakdownHtml != null" readonly="true"/>
       </panel>
@@ -3021,6 +3026,11 @@
   <action-method name="action-invoice-method-estimated-payment-date">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="fillEstimatedPaymentDate"/>
+  </action-method>
+
+  <action-method name="action-invoice-breakdown-pdf">
+    <call class="com.axelor.apps.businessproject.web.InvoicingProjectController"
+      method="downloadInvoiceBreakdownPdf"/>
   </action-method>
 
   <action-group name="action-invoice-group-report-button">

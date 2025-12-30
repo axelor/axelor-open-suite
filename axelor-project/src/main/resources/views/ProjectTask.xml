@@ -61,7 +61,7 @@
 
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
-    width="large">
+    onSave="action-project-task-validate-task-reported" width="large">
     <!-- MGM-80, @gkouete: the following toolbar item are not relevant for MGM -->
     <!-- <toolbar> <button name="grabEventBtn" icon="fa-suitcase" help="Take charge" onClick="action-project-task-record-assigned-yourself,save"/>
       <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done" showIf="project.taskStatusManagementSelect
@@ -84,7 +84,8 @@
       <panel name="statusPanel" stacked="true" colSpan="6">
         <field name="status" widget="NavSelect" showTitle="false"
           hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
-          x-order="sequence" onChange="action-project-task-method-auto-change-progress"/>
+          x-order="sequence"
+          onChange="action-project-task-validate-task-reported, action-project-task-method-auto-change-progress"/>
         <field name="typeSelect" hidden="true"/>
         <field name="project.isShowPlanning" hidden="true"/>
 
@@ -982,6 +983,12 @@
   <action-validate name="action-project-task-validate-finish-status">
     <error message="Please fill completed task status in Project configuration."
       if="!project?.completedTaskStatus"/>
+  </action-validate>
+
+  <action-validate name="action-project-task-validate-task-reported">
+    <error
+      if="id != null &amp;&amp; __config__.app.isApp('business-project') &amp;&amp; status.id == __config__.app.getApp('project')?.completedTaskStatus.id &amp;&amp; __repo__(TaskMemberReport).all().filter('self.task.id = ?1', id).count() == 0"
+      message="You cannot set a task to done without reporting it first"/>
   </action-validate>
 
   <search-filters name="project-task-filters"

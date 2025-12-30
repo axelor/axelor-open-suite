@@ -23,8 +23,8 @@
     <!-- mgm-fix-gk: Add status for better filtering purposes -->
     <field name="projectStatus"/>
     <!-- button not needed @nsalifu -->
-<!--    <button name="openTasks" onClick="action-business-project-view-show-related-tasks"-->
-<!--      icon="list-task"/>-->
+    <!-- <button name="openTasks" onClick="action-business-project-view-show-related-tasks" -->
+    <!-- icon="list-task"/> -->
   </grid>
 
   <grid name="folder-project-grid" title="Projects" model="com.axelor.apps.project.db.Project">
@@ -67,7 +67,9 @@
         if="__user__.group.code == admins"/>
     </toolbar>
     <menubar>
-      <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
+      <!-- MGM-80 @gkouete: show task menu only to admins -->
+      <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks"
+        if="__user__.group.code == admins">
         <item name="myOpenTasks" title="My open tasks"
           action="save,action-project-method-my-open-tasks"
           showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
@@ -159,8 +161,7 @@
         <panel name="generalInfoPanel" colSpan="12" title="General information"
           canCollapse="true" collapseIf="false">
           <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
-            onChange="action-business-project-group-project-status-on-change-with-validation"
-            colSpan="12"/>
+            onChange="action-business-project-group-project-status-on-change" colSpan="12"/>
           <field name="fromDate" colSpan="6"/>
           <field name="toDate" onChange="action-project-group-to-date-onchange" colSpan="6"/>
           <field name="company" form-view="company-form" grid-view="company-grid" colSpan="6"
@@ -675,6 +676,7 @@
   </action-group>
 
   <action-group name="action-project-group-on-save">
+    <action name="action-business-project-validate-task-report-exists"/>
     <action name="action-set-default-project-priority"/>
     <action name="action-project-validate-toDate"/>
   </action-group>
@@ -718,7 +720,7 @@
   </action-validate>
 
   <action-validate name="action-business-project-validate-task-report-exists">
-    <alert message="This project has no task report."
+    <error message="You can not set a project without a Task Report to done"
       if="id != null &amp;&amp; __repo__(TaskReport).all().filter('self.project.id = ?1', id).count() == 0"/>
   </action-validate>
 
@@ -1405,6 +1407,8 @@
   </action-group>
 
   <action-group name="action-business-project-group-project-status-on-change">
+    <action name="action-business-project-validate-task-report-exists"
+      if="__config__.app.isApp('business-project') &amp;&amp; projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus.id"/>
     <action name="action-business-project-method-check-project-state"
       if="__config__.app.isApp('business-project') &amp;&amp; projectStatus.id == __config__.app.getApp('project')?.completedProjectStatus.id"/>
     <action name="action-project-group-finish-project"
@@ -1415,13 +1419,14 @@
     <action name="action-project-validate-toDate"/>
   </action-group>
 
-  <action-group
-    name="action-business-project-group-project-status-on-change-with-validation">
-    <action name="action-business-project-validate-task-report-exists"
-      if="projectStatus?.isCompleted == true"/>
-    <action name="action-business-project-group-project-status-on-change"
-      if="projectStatus?.isCompleted != true || __repo__(com.axelor.apps.businessproject.db.TaskReport).all().filter('self.project.id = ?1', id).count() > 0"/>
-  </action-group>
+  <!-- <action-group -->
+  <!-- name="action-business-project-group-project-status-on-change-with-validation"> -->
+  <!-- <action name="action-business-project-validate-task-report-exists" -->
+  <!-- if="projectStatus?.isCompleted == true"/> -->
+  <!-- <action name="action-business-project-group-project-status-on-change" -->
+  <!-- if="projectStatus?.isCompleted != true || __repo__(com.axelor.apps.businessproject.db.TaskReport).all().filter('self.project.id
+    = ?1', id).count() > 0"/> -->
+  <!-- </action-group> -->
 
   <action-method name="action-business-project-method-check-project-state">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
