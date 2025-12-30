@@ -21,6 +21,13 @@
     <context name="_fromBusinessProject" expr="eval:true"/>
   </action-view>
 
+  <!-- adding custom menus for Technician role: @nsalifu -->
+  <menuitem name="my-business-projects" title="My Business Projects" icon="list-task"
+    order="200" action="business.project.mine" groups="CUSTOM-PT"/>
+
+  <menuitem name="project-my-open-tasks" title="My Tasks" icon="tool"
+    action="action-project-db-my-tasks-to-do" order="300" groups="CUSTOM-PT"/>
+
   <menuitem name="business-project-task-all" parent="menu-project-root" order="300"
     title="Business project tasks" action="business.project.task.all"/>
 

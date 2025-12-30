@@ -44,7 +44,8 @@
     onSave="action-project-group-on-save" width="large">
     <menubar>
       <!-- MGM-80 @gkouete: show task menu only to admins -->
-      <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks" if="__user__.group.code == admins">
+      <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks"
+        if="__user__.group.code == admins">
         <item name="myOpenTasks" title="My open tasks"
           action="save,action-project-method-my-open-tasks"
           showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
