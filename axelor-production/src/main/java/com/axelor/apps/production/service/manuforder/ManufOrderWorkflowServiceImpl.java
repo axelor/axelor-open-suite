@@ -237,6 +237,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
           product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
     }
     manufOrderStockMoveService.updatePrices(manufOrder, costPrice);
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
 
     manufOrder.setRealEndDateT(
         Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
@@ -245,14 +246,13 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         new BigDecimal(
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
-    manufOrderRepo.save(manufOrder);
-
     updateProductCostPrice(manufOrder, product, company, costPrice);
 
     manufOrderOutgoingStockMoveService.setManufOrderOnOutgoingMove(manufOrder);
     manufOrderTrackingNumberService.setParentTrackingNumbers(manufOrder);
 
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
+    manufOrderRepo.save(manufOrder);
   }
 
   protected void updateProductCostPrice(
