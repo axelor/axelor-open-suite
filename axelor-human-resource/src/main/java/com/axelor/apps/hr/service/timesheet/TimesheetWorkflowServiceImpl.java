@@ -307,6 +307,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public Message complete(Timesheet timesheet)
       throws AxelorException, JSONException, IOException, ClassNotFoundException {
     confirm(timesheet);
