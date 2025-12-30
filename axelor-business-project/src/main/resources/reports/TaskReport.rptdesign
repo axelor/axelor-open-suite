@@ -42,7 +42,7 @@
             <property name="odaDriverClass">org.postgresql.Driver</property>
             <property name="odaURL">jdbc:postgresql://localhost:5432/mgm_db</property>
             <property name="odaUser">postgres</property>
-            <encrypted-property name="odaPassword" encryptionID="base64">bmppZGRh</encrypted-property>
+            <encrypted-property name="odaPassword" encryptionID="base64">cG9zdGdyZXM=</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -588,6 +588,161 @@ LEFT JOIN auth_user emp
        ON emp.id = tr.employee
 WHERE tr.id = ?]]></xml-property>
         </oda-data-set>
+        <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TranslationDS" id="5894">
+            <list-property name="columnHints">
+                <structure>
+                    <property name="columnName">message_key</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">message_key</text-property>
+                    <text-property name="heading">message_key</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">translation</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">translation</text-property>
+                    <text-property name="heading">translation</text-property>
+                </structure>
+            </list-property>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">1</property>
+                    <property name="isInput">true</property>
+                </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">__locale</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
+            <structure name="cachedMetaData">
+                <list-property name="resultSet">
+                    <structure>
+                        <property name="position">1</property>
+                        <property name="name">message_key</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">2</property>
+                        <property name="name">translation</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                </list-property>
+            </structure>
+            <property name="dataSource">Data Source</property>
+            <list-property name="resultSet">
+                <structure>
+                    <property name="position">1</property>
+                    <property name="name">message_key</property>
+                    <property name="nativeName">message_key</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+                <structure>
+                    <property name="position">2</property>
+                    <property name="name">translation</property>
+                    <property name="nativeName">translation</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
+                </structure>
+            </list-property>
+            <xml-property name="queryText"><![CDATA[select LangTranslate.message_key, LangTranslate.message_value as "translation" 
+from meta_translation as LangTranslate 
+where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^[a-zA-Z]+')]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>1</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+  <design:ResultSets derivedMetaData="true">
+    <design:resultSetDefinitions>
+      <design:resultSetColumns>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>message_key</design:name>
+              <design:position>1</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1024</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>NotNullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>message_key</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>message_key</design:label>
+            <design:formattingHints>
+              <design:displaySize>1024</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+        <design:resultColumnDefinitions>
+          <design:attributes>
+            <design:identifier>
+              <design:name>translation</design:name>
+              <design:position>2</design:position>
+            </design:identifier>
+            <design:nativeDataTypeCode>12</design:nativeDataTypeCode>
+            <design:precision>1024</design:precision>
+            <design:scale>0</design:scale>
+            <design:nullability>Nullable</design:nullability>
+            <design:uiHints>
+              <design:displayName>translation</design:displayName>
+            </design:uiHints>
+          </design:attributes>
+          <design:usageHints>
+            <design:label>translation</design:label>
+            <design:formattingHints>
+              <design:displaySize>1024</design:displaySize>
+            </design:formattingHints>
+          </design:usageHints>
+        </design:resultColumnDefinitions>
+      </design:resultSetColumns>
+      <design:criteria/>
+    </design:resultSetDefinitions>
+  </design:ResultSets>
+</model:DesignValues>]]></xml-property>
+        </oda-data-set>
     </data-sets>
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2"/>
@@ -615,16 +770,39 @@ WHERE tr.id = ?]]></xml-property>
                     </image>
                 </cell>
                 <cell id="445">
-                    <label id="447">
+                    <text id="5901">
                         <property name="fontSize">14pt</property>
                         <property name="fontWeight">bold</property>
                         <property name="paddingTop">35pt</property>
                         <property name="paddingLeft">10pt</property>
                         <property name="paddingBottom">30pt</property>
                         <property name="paddingRight">100pt</property>
-                        <property name="textAlign">center</property>
-                        <text-property name="text">MGM REPORT</text-property>
-                    </label>
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'MGM REPORT'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
             </row>
         </grid>
@@ -654,26 +832,65 @@ WHERE tr.id = ?]]></xml-property>
                     <property name="borderLeftStyle">none</property>
                     <property name="borderRightStyle">none</property>
                     <property name="borderTopStyle">none</property>
-                    <label id="213">
+                    <text id="5897">
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
-                        <property name="textUnderline">none</property>
-                        <property name="marginTop">0pt</property>
-                        <property name="textAlign">left</property>
-                        <text-property name="text">General Informatioon</text-property>
-                    </label>
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'General information'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                 </cell>
                 <cell id="205">
-                    <label id="156">
-                        <property name="fontSize">10pt</property>
+                    <text id="5902">
                         <property name="fontWeight">bold</property>
-                        <property name="color">black</property>
-                        <property name="textUnderline">none</property>
-                        <property name="marginTop">10pt</property>
-                        <property name="paddingTop">1pt</property>
-                        <property name="textAlign">left</property>
-                        <text-property name="text">Order:</text-property>
-                    </label>
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'PurchaseOrder.order'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
                     <data id="348">
                         <property name="paddingTop">3pt</property>
                         <property name="paddingBottom">3pt</property>
@@ -692,13 +909,34 @@ WHERE tr.id = ?]]></xml-property>
             </row>
             <row id="206">
                 <cell id="207">
-                    <label id="210">
-                        <property name="fontSize">10pt</property>
+                    <text id="5903">
                         <property name="fontWeight">bold</property>
-                        <property name="color">black</property>
-                        <property name="textUnderline">none</property>
-                        <text-property name="text">Customer:</text-property>
-                    </label>
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Customer'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
                     <data id="493">
                         <property name="dataSet">TaskReportSet</property>
                         <list-property name="boundDataColumns">
@@ -713,13 +951,34 @@ WHERE tr.id = ?]]></xml-property>
                     </data>
                 </cell>
                 <cell id="208">
-                    <label id="209">
-                        <property name="fontSize">10pt</property>
+                    <text id="5904">
                         <property name="fontWeight">bold</property>
-                        <property name="color">black</property>
-                        <property name="textUnderline">none</property>
-                        <text-property name="text">Location:</text-property>
-                    </label>
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Location'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                    </text>
                     <data id="349">
                         <property name="paddingTop">3pt</property>
                         <property name="paddingBottom">3pt</property>
@@ -754,15 +1013,6 @@ WHERE tr.id = ?]]></xml-property>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
                     <property name="paddingTop">1pt</property>
-                    <label id="215">
-                        <property name="fontSize">12pt</property>
-                        <property name="fontWeight">bold</property>
-                        <property name="textUnderline">none</property>
-                        <property name="paddingTop">10pt</property>
-                        <property name="paddingBottom">3pt</property>
-                        <property name="textAlign">left</property>
-                        <text-property name="text">Task Member Reports</text-property>
-                    </label>
                     <grid id="291">
                         <column id="292"/>
                         <row id="293">
@@ -777,6 +1027,35 @@ WHERE tr.id = ?]]></xml-property>
                                 <property name="borderLeftStyle">none</property>
                                 <property name="borderRightStyle">none</property>
                                 <property name="borderTopStyle">none</property>
+                                <text id="5905">
+                                    <property name="fontSize">12pt</property>
+                                    <property name="fontWeight">bold</property>
+                                    <property name="dataSet">TranslationDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Task Member Report'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                </text>
                                 <table id="242">
                                     <property name="borderBottomStyle">none</property>
                                     <property name="borderLeftStyle">none</property>
@@ -863,13 +1142,34 @@ WHERE tr.id = ?]]></xml-property>
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="borderTopStyle">solid</property>
                                                 <property name="borderTopWidth">thin</property>
-                                                <label id="245">
-                                                    <property name="borderBottomStyle">none</property>
-                                                    <property name="borderLeftStyle">none</property>
-                                                    <property name="borderRightStyle">none</property>
-                                                    <property name="borderTopStyle">none</property>
-                                                    <text-property name="text">Employee</text-property>
-                                                </label>
+                                                <text id="5926">
+                                                    <property name="fontSize">12pt</property>
+                                                    <property name="dataSet">TranslationDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'Employee.name'</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">message_key</property>
+                                                            <text-property name="displayName">message_key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                </text>
                                             </cell>
                                             <cell id="246">
                                                 <property name="borderBottomStyle">solid</property>
@@ -880,13 +1180,34 @@ WHERE tr.id = ?]]></xml-property>
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="borderTopStyle">solid</property>
                                                 <property name="borderTopWidth">thin</property>
-                                                <label id="247">
-                                                    <property name="borderBottomStyle">none</property>
-                                                    <property name="borderLeftStyle">none</property>
-                                                    <property name="borderRightStyle">none</property>
-                                                    <property name="borderTopStyle">none</property>
-                                                    <text-property name="text">Task</text-property>
-                                                </label>
+                                                <text id="5927">
+                                                    <property name="fontSize">12pt</property>
+                                                    <property name="dataSet">TranslationDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'Task'</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">message_key</property>
+                                                            <text-property name="displayName">message_key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                </text>
                                             </cell>
                                             <cell id="404">
                                                 <property name="borderBottomStyle">solid</property>
@@ -897,9 +1218,34 @@ WHERE tr.id = ?]]></xml-property>
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="borderTopStyle">solid</property>
                                                 <property name="borderTopWidth">thin</property>
-                                                <label id="408">
-                                                    <text-property name="text">Task Category</text-property>
-                                                </label>
+                                                <text id="5928">
+                                                    <property name="fontSize">12pt</property>
+                                                    <property name="dataSet">TranslationDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'Start Time'</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">message_key</property>
+                                                            <text-property name="displayName">message_key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                </text>
                                             </cell>
                                             <cell id="248">
                                                 <property name="borderBottomStyle">solid</property>
@@ -910,9 +1256,34 @@ WHERE tr.id = ?]]></xml-property>
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="borderTopStyle">solid</property>
                                                 <property name="borderTopWidth">thin</property>
-                                                <label id="249">
-                                                    <text-property name="text">Start Time</text-property>
-                                                </label>
+                                                <text id="5929">
+                                                    <property name="fontSize">12pt</property>
+                                                    <property name="dataSet">TranslationDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'Total working Time (H)'</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">message_key</property>
+                                                            <text-property name="displayName">message_key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                </text>
                                             </cell>
                                             <cell id="250">
                                                 <property name="borderBottomStyle">solid</property>
@@ -923,9 +1294,34 @@ WHERE tr.id = ?]]></xml-property>
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="borderTopStyle">solid</property>
                                                 <property name="borderTopWidth">thin</property>
-                                                <label id="253">
-                                                    <text-property name="text">Break Time (M)</text-property>
-                                                </label>
+                                                <text id="5930">
+                                                    <property name="fontSize">12pt</property>
+                                                    <property name="dataSet">TranslationDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'Break Time (M)'</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">message_key</property>
+                                                            <text-property name="displayName">message_key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                </text>
                                             </cell>
                                             <cell id="252">
                                                 <property name="borderBottomStyle">solid</property>
@@ -936,9 +1332,34 @@ WHERE tr.id = ?]]></xml-property>
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="borderTopStyle">solid</property>
                                                 <property name="borderTopWidth">thin</property>
-                                                <label id="251">
-                                                    <text-property name="text">End Time</text-property>
-                                                </label>
+                                                <text id="5931">
+                                                    <property name="fontSize">12pt</property>
+                                                    <property name="dataSet">TranslationDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'End Time'</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">message_key</property>
+                                                            <text-property name="displayName">message_key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                </text>
                                             </cell>
                                             <cell id="254">
                                                 <property name="borderBottomStyle">solid</property>
@@ -949,9 +1370,34 @@ WHERE tr.id = ?]]></xml-property>
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="borderTopStyle">solid</property>
                                                 <property name="borderTopWidth">thin</property>
-                                                <label id="255">
-                                                    <text-property name="text">Work Hours (H)</text-property>
-                                                </label>
+                                                <text id="5932">
+                                                    <property name="fontSize">12pt</property>
+                                                    <property name="dataSet">TranslationDS</property>
+                                                    <list-property name="paramBindings">
+                                                        <structure>
+                                                            <property name="paramName">param_1</property>
+                                                            <simple-property-list name="expression">
+                                                                <value type="javascript">'Work Hours (H)'</value>
+                                                            </simple-property-list>
+                                                        </structure>
+                                                    </list-property>
+                                                    <list-property name="boundDataColumns">
+                                                        <structure>
+                                                            <property name="name">message_key</property>
+                                                            <text-property name="displayName">message_key</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                        <structure>
+                                                            <property name="name">translation</property>
+                                                            <text-property name="displayName">translation</text-property>
+                                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                                            <property name="dataType">string</property>
+                                                        </structure>
+                                                    </list-property>
+                                                    <property name="contentType">html</property>
+                                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                                </text>
                                             </cell>
                                         </row>
                                     </header>
@@ -1092,14 +1538,34 @@ WHERE tr.id = ?]]></xml-property>
                         </column>
                         <row id="451">
                             <cell id="452">
-                                <label id="298">
+                                <text id="5906">
                                     <property name="fontSize">12pt</property>
-                                    <property name="color">black</property>
-                                    <property name="textUnderline">none</property>
-                                    <property name="paddingTop">1pt</property>
-                                    <property name="paddingBottom">1pt</property>
-                                    <text-property name="text">Total working time (H):</text-property>
-                                </label>
+                                    <property name="dataSet">TranslationDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Total working Time (H)'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>: ]]></text-property>
+                                </text>
                             </cell>
                             <cell id="453">
                                 <data id="351">
@@ -1137,15 +1603,35 @@ WHERE tr.id = ?]]></xml-property>
                     <property name="borderRightWidth">thin</property>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
-                    <label id="216">
+                    <text id="5907">
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
-                        <property name="textUnderline">none</property>
-                        <property name="paddingTop">1pt</property>
-                        <property name="paddingBottom">1pt</property>
-                        <property name="textAlign">left</property>
-                        <text-property name="text">Extra Charges</text-property>
-                    </label>
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Extra Charges'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                     <grid id="479">
                         <property name="borderBottomStyle">none</property>
                         <property name="borderLeftStyle">none</property>
@@ -1265,7 +1751,7 @@ WHERE tr.id = ?]]></xml-property>
                                 <property name="borderTopStyle">none</property>
                                 <text-data id="316">
                                     <property name="fontWeight">normal</property>
-                                    <expression name="valueExpr" type="javascript">row["travel_expenses"] == true ? "Travel Expenses: √" : ""</expression>
+                                    <expression name="valueExpr">row["travel_expenses"] == true ? "Reisekosten: √" : ""</expression>
                                     <property name="contentType">html</property>
                                 </text-data>
                             </cell>
@@ -1278,7 +1764,7 @@ WHERE tr.id = ?]]></xml-property>
                                 <property name="borderTopStyle">none</property>
                                 <text-data id="490">
                                     <property name="fontWeight">normal</property>
-                                    <expression name="valueExpr" type="javascript">row["tools_usage"] == true ? "Tools Usage: √" : ""</expression>
+                                    <expression name="valueExpr">row["tools_usage"] == true ? "Werkzeugnutzung: √" : ""</expression>
                                     <property name="contentType">html</property>
                                 </text-data>
                             </cell>
@@ -1291,7 +1777,7 @@ WHERE tr.id = ?]]></xml-property>
                                 <property name="borderTopStyle">none</property>
                                 <text-data id="491">
                                     <property name="fontWeight">normal</property>
-                                    <expression name="valueExpr" type="javascript">row["dirt_allowance"] == true ? "Dirt Allowance: √" : ""</expression>
+                                    <expression name="valueExpr">row["dirt_allowance"] == true ? "Schmutzzulage: √" : ""</expression>
                                     <property name="contentType">html</property>
                                 </text-data>
                             </cell>
@@ -1313,14 +1799,35 @@ WHERE tr.id = ?]]></xml-property>
             <column id="459"/>
             <row id="460">
                 <cell id="461">
-                    <label id="319">
+                    <text id="5908">
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
-                        <property name="textUnderline">none</property>
-                        <property name="paddingTop">1pt</property>
-                        <property name="paddingBottom">1pt</property>
-                        <text-property name="text">Materials</text-property>
-                    </label>
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Materials'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                     <data id="320">
                         <property name="paddingTop">2pt</property>
                         <property name="paddingBottom">2pt</property>
@@ -1352,13 +1859,35 @@ WHERE tr.id = ?]]></xml-property>
             <column id="455"/>
             <row id="456">
                 <cell id="457">
-                    <label id="308">
+                    <text id="5909">
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
-                        <property name="textUnderline">none</property>
-                        <property name="paddingTop">1pt</property>
-                        <text-property name="text">Comments</text-property>
-                    </label>
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Comments'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                     <data id="314">
                         <property name="paddingTop">2pt</property>
                         <property name="paddingBottom">2pt</property>
@@ -1377,8 +1906,115 @@ WHERE tr.id = ?]]></xml-property>
             </row>
         </grid>
         <grid id="436">
+            <property name="height">3.0208333333333335in</property>
+            <property name="dataSet">TaskReportSet</property>
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">task_report_id</property>
+                    <text-property name="displayName">task_report_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["task_report_id"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">task_date</property>
+                    <text-property name="displayName">task_date</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["task_date"]</expression>
+                    <property name="dataType">date</property>
+                </structure>
+                <structure>
+                    <property name="name">project_name</property>
+                    <text-property name="displayName">project_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["project_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">partner_name</property>
+                    <text-property name="displayName">partner_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["partner_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">customer_not_available</property>
+                    <text-property name="displayName">customer_not_available</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["customer_not_available"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">location_name</property>
+                    <text-property name="displayName">location_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["location_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">employee_name</property>
+                    <text-property name="displayName">employee_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["employee_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">customer_name</property>
+                    <text-property name="displayName">customer_name</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["customer_name"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">total_work_hours</property>
+                    <text-property name="displayName">total_work_hours</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["total_work_hours"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">travel_expenses</property>
+                    <text-property name="displayName">travel_expenses</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["travel_expenses"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">tools_usage</property>
+                    <text-property name="displayName">tools_usage</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["tools_usage"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">dirt_allowance</property>
+                    <text-property name="displayName">dirt_allowance</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["dirt_allowance"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">reported_all_tasks</property>
+                    <text-property name="displayName">reported_all_tasks</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["reported_all_tasks"]</expression>
+                    <property name="dataType">integer</property>
+                </structure>
+                <structure>
+                    <property name="name">material</property>
+                    <text-property name="displayName">material</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["material"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">comments</property>
+                    <text-property name="displayName">comments</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["comments"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">employee_signature</property>
+                    <text-property name="displayName">employee_signature</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["employee_signature"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+                <structure>
+                    <property name="name">customer_signature</property>
+                    <text-property name="displayName">customer_signature</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["customer_signature"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
+            </list-property>
             <column id="437"/>
             <row id="438">
+                <property name="height">3.0208333333333335in</property>
                 <cell id="439">
                     <property name="borderBottomStyle">solid</property>
                     <property name="borderBottomWidth">thin</property>
@@ -1388,14 +2024,35 @@ WHERE tr.id = ?]]></xml-property>
                     <property name="borderRightWidth">thin</property>
                     <property name="borderTopStyle">solid</property>
                     <property name="borderTopWidth">thin</property>
-                    <label id="321">
+                    <text id="5911">
                         <property name="fontSize">12pt</property>
                         <property name="fontWeight">bold</property>
-                        <property name="textUnderline">none</property>
-                        <property name="paddingTop">10pt</property>
-                        <property name="paddingBottom">3pt</property>
-                        <text-property name="text">Sign-Off</text-property>
-                    </label>
+                        <property name="dataSet">TranslationDS</property>
+                        <list-property name="paramBindings">
+                            <structure>
+                                <property name="paramName">param_1</property>
+                                <simple-property-list name="expression">
+                                    <value type="javascript">'Sign-off'</value>
+                                </simple-property-list>
+                            </structure>
+                        </list-property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">message_key</property>
+                                <text-property name="displayName">message_key</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                            <structure>
+                                <property name="name">translation</property>
+                                <text-property name="displayName">translation</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="contentType">html</property>
+                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                    </text>
                     <grid id="398">
                         <property name="width">7.833333333333333in</property>
                         <column id="399">
@@ -1407,14 +2064,35 @@ WHERE tr.id = ?]]></xml-property>
                         <row id="401">
                             <cell id="402">
                                 <property name="paddingLeft">0pt</property>
-                                <label id="383">
+                                <text id="5933">
+                                    <property name="fontSize">10pt</property>
                                     <property name="fontWeight">normal</property>
-                                    <property name="paddingTop">3pt</property>
-                                    <property name="paddingLeft">1pt</property>
-                                    <property name="paddingBottom">3pt</property>
-                                    <property name="paddingRight">0pt</property>
-                                    <text-property name="text">Report Date:</text-property>
-                                </label>
+                                    <property name="dataSet">TranslationDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Report.date'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                </text>
                             </cell>
                             <cell id="403">
                                 <data id="327">
@@ -1435,158 +2113,182 @@ WHERE tr.id = ?]]></xml-property>
                             </cell>
                         </row>
                     </grid>
-                    <grid id="388">
-                        <property name="borderBottomStyle">none</property>
-                        <property name="borderLeftStyle">none</property>
-                        <property name="borderRightStyle">none</property>
-                        <property name="borderTopStyle">none</property>
-                        <property name="marginTop">5pt</property>
-                        <property name="dataSet">TaskReportSet</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">customer_not_available</property>
-                                <text-property name="displayName">customer_not_available</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["customer_not_available"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                        </list-property>
-                        <column id="389"/>
-                        <column id="390"/>
-                        <row id="391">
-                            <cell id="392">
-                                <label id="337">
+                    <grid id="6005">
+                        <column id="6006"/>
+                        <column id="6007"/>
+                        <row id="6008">
+                            <cell id="6009">
+                                <text id="6003">
+                                    <property name="fontSize">10pt</property>
                                     <property name="fontWeight">bold</property>
-                                    <property name="textUnderline">none</property>
-                                    <property name="paddingBottom">3pt</property>
-                                    <text-property name="text">Employee Name</text-property>
-                                </label>
-                                <data id="340">
-                                    <property name="textUnderline">none</property>
-                                    <property name="paddingTop">2pt</property>
-                                    <property name="paddingBottom">2pt</property>
-                                    <property name="dataSet">TaskReportSet</property>
-                                    <list-property name="boundDataColumns">
+                                    <property name="dataSet">TranslationDS</property>
+                                    <list-property name="paramBindings">
                                         <structure>
-                                            <property name="name">employee_name</property>
-                                            <text-property name="displayName">employee_name</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["employee_name"]</expression>
-                                            <property name="dataType">string</property>
-                                            <property name="allowExport">true</property>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Employee.name'</value>
+                                            </simple-property-list>
                                         </structure>
                                     </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="6010">
+                                <text-data id="6022">
+                                    <property name="fontWeight">normal</property>
+                                    <expression name="valueExpr">row["customer_not_available"] == true ? "Kunde nicht verfügbar: √" : ""</expression>
+                                    <property name="contentType">html</property>
+                                </text-data>
+                            </cell>
+                        </row>
+                        <row id="6011">
+                            <cell id="6012">
+                                <data id="6025">
                                     <property name="resultSetColumn">employee_name</property>
                                 </data>
                             </cell>
-                            <cell id="393">
-                                <label id="492">
-                                    <property name="fontSize">12pt</property>
+                            <cell id="6013"/>
+                        </row>
+                        <row id="6014">
+                            <cell id="6015"/>
+                            <cell id="6016">
+                                <text id="6021">
+                                    <property name="fontSize">10pt</property>
                                     <property name="fontWeight">bold</property>
-                                    <list-property name="visibility">
+                                    <property name="dataSet">TranslationDS</property>
+                                    <list-property name="paramBindings">
                                         <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row["customer_not_available"] == false</expression>
-                                        </structure>
-                                    </list-property>
-                                    <text-property name="text">Customer Not Available</text-property>
-                                </label>
-                                <grid id="494">
-                                    <property name="dataSet">TaskReportSet</property>
-                                    <list-property name="visibility">
-                                        <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row["customer_not_available"] == true</expression>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Customer.name'</value>
+                                            </simple-property-list>
                                         </structure>
                                     </list-property>
                                     <list-property name="boundDataColumns">
                                         <structure>
-                                            <property name="name">customer_not_available</property>
-                                            <text-property name="displayName">customer_not_available</text-property>
-                                            <expression name="expression" type="javascript">dataSetRow["customer_not_available"]</expression>
-                                            <property name="dataType">integer</property>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
                                         </structure>
                                     </list-property>
-                                    <column id="495"/>
-                                    <row id="496">
-                                        <cell id="497">
-                                            <label id="338">
-                                                <property name="fontWeight">bold</property>
-                                                <property name="textUnderline">none</property>
-                                                <property name="paddingTop">1pt</property>
-                                                <property name="paddingBottom">3pt</property>
-                                                <list-property name="visibility">
-                                                    <structure>
-                                                        <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">row["customer_not_available"] == true</expression>
-                                                    </structure>
-                                                </list-property>
-                                                <text-property name="text">Customer Name</text-property>
-                                            </label>
-                                            <data id="339">
-                                                <property name="textUnderline">none</property>
-                                                <property name="paddingTop">2pt</property>
-                                                <property name="paddingBottom">2pt</property>
-                                                <property name="dataSet">TaskReportSet</property>
-                                                <list-property name="visibility">
-                                                    <structure>
-                                                        <property name="format">all</property>
-                                                        <expression name="valueExpr" type="javascript">row["customer_not_available"] == true</expression>
-                                                    </structure>
-                                                </list-property>
-                                                <list-property name="boundDataColumns">
-                                                    <structure>
-                                                        <property name="name">customer_name</property>
-                                                        <text-property name="displayName">customer_name</text-property>
-                                                        <expression name="expression" type="javascript">dataSetRow["customer_name"]</expression>
-                                                        <property name="dataType">string</property>
-                                                    </structure>
-                                                </list-property>
-                                                <property name="resultSetColumn">customer_name</property>
-                                            </data>
-                                        </cell>
-                                    </row>
-                                </grid>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="6017">
+                            <cell id="6018"/>
+                            <cell id="6019">
+                                <data id="6026">
+                                    <property name="dataSet">TaskReportSet</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">partner_name</property>
+                                            <text-property name="displayName">partner_name</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["partner_name"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">partner_name</property>
+                                </data>
                             </cell>
                         </row>
                     </grid>
-                    <grid id="468">
-                        <property name="dataSet">TaskReportSet</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">customer_not_available</property>
-                                <text-property name="displayName">customer_not_available</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["customer_not_available"]</expression>
-                                <property name="dataType">integer</property>
-                            </structure>
-                        </list-property>
-                        <column id="469"/>
-                        <column id="470"/>
-                        <row id="471">
-                            <cell id="472">
-                                <label id="474">
+                    <grid id="5978">
+                        <property name="height">1.03125in</property>
+                        <column id="5979"/>
+                        <column id="5980"/>
+                        <row id="5981">
+                            <property name="height">0.23958333333333334in</property>
+                            <cell id="5982">
+                                <text id="5989">
+                                    <property name="fontSize">10pt</property>
                                     <property name="fontWeight">bold</property>
-                                    <property name="textUnderline">none</property>
-                                    <property name="marginTop">5pt</property>
-                                    <property name="paddingTop">2pt</property>
-                                    <property name="paddingBottom">50pt</property>
-                                    <text-property name="text">Employee Signature</text-property>
-                                </label>
-                            </cell>
-                            <cell id="473">
-                                <label id="342">
-                                    <property name="fontWeight">bold</property>
-                                    <property name="textUnderline">none</property>
-                                    <property name="marginTop">5pt</property>
-                                    <property name="paddingTop">2pt</property>
-                                    <property name="paddingBottom">50pt</property>
-                                    <list-property name="visibility">
+                                    <property name="dataSet">TranslationDS</property>
+                                    <list-property name="paramBindings">
                                         <structure>
-                                            <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">row["customer_not_available"] == true</expression>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Employee.signature'</value>
+                                            </simple-property-list>
                                         </structure>
                                     </list-property>
-                                    <text-property name="text">Customer Signature</text-property>
-                                </label>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                </text>
                             </cell>
+                            <cell id="5983">
+                                <text id="5990">
+                                    <property name="fontSize">10pt</property>
+                                    <property name="fontWeight">bold</property>
+                                    <property name="dataSet">TranslationDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Customer.signature'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+                                </text>
+                            </cell>
+                        </row>
+                        <row id="5984">
+                            <property name="height">0.7916666666666666in</property>
+                            <cell id="5985"/>
+                            <cell id="5986"/>
                         </row>
                     </grid>
                 </cell>
