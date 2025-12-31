@@ -1079,6 +1079,7 @@
 "ChequeDepositSlip.payer","Payer",,
 "ChequeDepositSlip.paymentDate","Payment date",,
 "ChequeDepositSlip.printedOn","Printed on",,
+"ChequeDepositSlip.reference","Reference",,
 "ChequeDepositSlip.reminderNote","Don’t forget to put your account number and signature on the back of each cheque.",,
 "ChequeDepositSlip.signature","Signature :",,
 "ChequeDepositSlip.title","Cheque deposit",,
