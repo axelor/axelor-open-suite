@@ -753,7 +753,8 @@
       </panel>
     </panel>
     <panel-related name="partnerRoleSetPanel" field="partnerRoleSet"
-      form-view="partner-role-form" grid-view="partner-role-grid" canNew="false"/>
+      form-view="partner-role-form" grid-view="partner-role-grid" canNew="false"
+      if="__user__.group.code == 'admins'"/>
 
     <panel-tabs name="mainPanelTab">
       <panel name="contactDetailsPanel" title="Contact details">
