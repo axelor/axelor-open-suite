@@ -10,6 +10,9 @@
         onClick="action-method-accounting-reconcile"/>
       <button name="calculateBtn" title="Calculation of totals"
         onClick="action-account-move-line-method-calculate-balance"/>
+      <button name="debitBtn" title="Debit :" onClick=""/>
+      <button name="creditBtn" title="Credit :" onClick=""/>
+      <button name="balanceBtn" title="Balance :" onClick=""/>
     </toolbar>
     <hilite color="info" if="$get('move.statusSelect') == 1"/>
     <hilite color="danger" if="$get('move.statusSelect') == 4"/>
@@ -79,6 +82,9 @@
         onClick="action-method-accounting-reconcile"/>
       <button name="calculateBtn" title="Calculation of totals"
         onClick="action-account-move-line-method-calculate-balance"/>
+      <button name="debitBtn" title="Debit :" onClick=""/>
+      <button name="creditBtn" title="Credit :" onClick=""/>
+      <button name="balanceBtn" title="Balance :" onClick=""/>
     </toolbar>
     <field name="name"/>
     <field name="date"/>
@@ -699,16 +705,6 @@
     </panel-mail>
   </form>
 
-  <form name="account-move-line-calculation-wizard-form" title="Calculation"
-    model="com.axelor.utils.db.Wizard" onNew="action-account-move-line-record-calculate-balance"
-    canArchive="false">
-    <panel name="mainPanel" colSpan="12" title="Total of the selected lines (without New) :">
-      <field name="$debit" title="Debit :" readonly="true" colSpan="4"/>
-      <field name="$credit" title="Credit :" readonly="true" colSpan="4"/>
-      <field name="$balance" title="Balance :" readonly="true" colSpan="4"/>
-    </panel>
-  </form>
-
   <action-group name="action-group-account-moveline-usher-process-onchange">
     <action name="save"/>
     <action name="action-method-account-moveline-usher-process"/>
@@ -864,13 +860,6 @@
     <call class="com.axelor.apps.account.web.MoveLineController"
       method="analyticMoveLineOnChange"/>
   </action-method>
-
-  <action-record name="action-account-move-line-record-calculate-balance"
-    model="com.axelor.utils.db.Wizard">
-    <field name="$credit" expr="eval: _credit" if="_credit != null"/>
-    <field name="$debit" expr="eval: _debit" if="_debit != null"/>
-    <field name="$balance" expr="eval: _balance" if="_balance != null"/>
-  </action-record>
 
   <action-method
     name="action-method-batch-auto-lettering-validate-all-reconcile-groups">
