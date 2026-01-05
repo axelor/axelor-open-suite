@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.budget.db.Budget;
@@ -62,6 +63,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
   protected BudgetService budgetService;
   protected BudgetToolsService budgetToolsService;
   private final int RETURN_SCALE = 2;
+  protected AppBudgetService appBudgetService;
+  protected BudgetAccountConfigService budgetAccountConfigService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public BudgetDistributionServiceImpl(
@@ -70,13 +74,19 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       BudgetLevelService budgetLevelService,
       BudgetRepository budgetRepo,
       BudgetService budgetService,
-      BudgetToolsService budgetToolsService) {
+      BudgetToolsService budgetToolsService,
+      AppBudgetService appBudgetService,
+      BudgetAccountConfigService budgetAccountConfigService,
+      AccountConfigService accountConfigService) {
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.budgetLineService = budgetLineService;
     this.budgetLevelService = budgetLevelService;
     this.budgetRepo = budgetRepo;
     this.budgetService = budgetService;
     this.budgetToolsService = budgetToolsService;
+    this.appBudgetService = appBudgetService;
+    this.budgetAccountConfigService = budgetAccountConfigService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -220,6 +230,11 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       if (CollectionUtils.isEmpty(authorizedAxis)) {
         return "";
       }
+
+      BigDecimal remainingAmount = amount;
+      BigDecimal numberOfAxisWithBudgetKey =
+          budgetAccountConfigService.getNumberOfAxisWithBudgetKey(
+              accountConfigService.getAccountConfig(company));
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         if (authorizedAxis.contains(analyticMoveLine.getAnalyticAxis())) {
           String key = budgetService.computeKey(account, company, analyticMoveLine);
@@ -228,14 +243,29 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
             Budget budget = budgetService.findBudgetWithKey(key, date);
 
             if (budget != null) {
+              BigDecimal imputedAmount = amount;
+              if (numberOfAxisWithBudgetKey.signum() > 0) {
+                imputedAmount =
+                    amount
+                        .divide(numberOfAxisWithBudgetKey)
+                        .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
+              }
+
+              imputedAmount =
+                  amount
+                      .multiply(analyticMoveLine.getPercentage())
+                      .divide(new BigDecimal(100))
+                      .setScale(RETURN_SCALE, RoundingMode.HALF_UP);
+
+              if (imputedAmount.subtract(remainingAmount).abs().compareTo(new BigDecimal(0.01))
+                  == 0) {
+                imputedAmount = remainingAmount;
+              }
+
+              remainingAmount = remainingAmount.subtract(imputedAmount);
+
               BudgetDistribution budgetDistribution =
-                  createDistributionFromBudget(
-                      budget,
-                      amount
-                          .multiply(analyticMoveLine.getPercentage())
-                          .divide(new BigDecimal(100))
-                          .setScale(RETURN_SCALE, RoundingMode.HALF_UP),
-                      date);
+                  createDistributionFromBudget(budget, imputedAmount, date);
               linkBudgetDistributionWithParent(budgetDistribution, object);
 
             } else {
