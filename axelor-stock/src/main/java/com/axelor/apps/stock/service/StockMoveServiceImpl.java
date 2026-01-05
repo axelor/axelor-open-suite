@@ -410,10 +410,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     LOG.debug("Stock move planification : {} ", stockMove.getStockMoveSeq());
 
-    if (stockMove.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
-      stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
-    }
-
     // This call will split move line by tracking number
     // But only works if the line has not been already splited
     if (splitByTrackingNumber) {
@@ -446,6 +442,8 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMove.setCancelReason(null);
     stockMove.setRealDate(null);
+
+    stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
 
     stockMoveRepo.save(stockMove);
   }
@@ -550,6 +548,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMoveLineService.checkExpirationDates(stockMove);
 
     setRealizedStatus(stockMove);
+    stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
+
     stockMoveLineService.updateLocations(
         initialStatus,
         StockMoveRepository.STATUS_CANCELED,

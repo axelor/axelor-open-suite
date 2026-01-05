@@ -32,6 +32,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -40,6 +41,7 @@ import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +78,23 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
     BigDecimal exTaxTotal = BigDecimal.ZERO;
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+        exTaxTotal =
+            exTaxTotal.add(
+                stockMoveLine
+                    .getRealQty()
+                    .multiply(stockMoveLine.getUnitPriceUntaxed())
+                    .setScale(2, RoundingMode.HALF_UP));
+      }
+    }
+    return exTaxTotal;
+  }
+
+  @Override
+  public BigDecimal computeFromContext(StockMove stockMove) {
+    BigDecimal exTaxTotal = BigDecimal.ZERO;
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (ObjectUtils.notEmpty(stockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
         exTaxTotal =
             exTaxTotal.add(
                 stockMoveLine
