@@ -381,10 +381,9 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     StockLocation stockLocation = stockCorrection.getStockLocation();
     TrackingNumber trackingNumber = stockCorrection.getTrackingNumber();
     if (trackingNumber == null) {
-      return stockLocationLineFetchService.getStockLocationLine(stockLocation, product) != null;
+      return stockLocationLineService.getStockLocationLine(stockLocation, product) != null;
     }
-    return stockLocationLineFetchService.getDetailLocationLine(
-            stockLocation, product, trackingNumber)
+    return stockLocationLineService.getDetailLocationLine(stockLocation, product, trackingNumber)
         != null;
   }
 }
