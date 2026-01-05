@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Batch;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
@@ -30,11 +31,6 @@ import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingBatchService extends AbstractBatchService {
 
@@ -215,16 +211,17 @@ public class AccountingBatchService extends AbstractBatchService {
   }
 
   public boolean checkIfAnomalyInBatch(AccountingBatch accountingBatch) {
-    if (!CollectionUtils.isEmpty(accountingBatch.getBatchList())) {
-      List<Batch> batchList =
-          new ArrayList<>(accountingBatch.getBatchList())
-              .stream()
-                  .sorted(Comparator.comparing(Batch::getStartDate))
-                  .collect(Collectors.toList());
-      if (batchList.get(batchList.size() - 1).getAnomaly() > 0) {
-        return true;
-      }
+    if (accountingBatch.getId() == null) {
+      return false;
     }
-    return false;
+
+    Batch latestBatch =
+        Beans.get(BatchRepository.class)
+            .all()
+            .filter("self.accountingBatch.id = ?1", accountingBatch.getId())
+            .order("-startDate")
+            .fetchOne();
+
+    return latestBatch != null && latestBatch.getAnomaly() > 0;
   }
 }

@@ -24,7 +24,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.AbstractBatchService;
 import com.axelor.apps.hr.db.HrBatch;
-import com.axelor.apps.hr.db.repo.HrBatchHRRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.db.Model;
@@ -63,7 +62,7 @@ public class HrBatchService extends AbstractBatchService {
       case HrBatchRepository.ACTION_EMPLOYMENT_CONTRACT_EXPORT:
         batch = employmentContractExport(hrBatch);
         break;
-      case HrBatchHRRepository.ACTION_TIMESHEET_REMINDER:
+      case HrBatchRepository.ACTION_TIMESHEET_REMINDER:
         batch = runTimesheetReminderBatch(hrBatch);
         break;
       case HrBatchRepository.ACTION_INCREMENT_LEAVE:

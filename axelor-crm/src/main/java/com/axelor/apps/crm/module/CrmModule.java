@@ -25,8 +25,6 @@ import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.partner.api.PartnerGenerateServiceImpl;
 import com.axelor.apps.crm.db.Event;
-import com.axelor.apps.crm.db.repo.CrmBatchCrmRepository;
-import com.axelor.apps.crm.db.repo.CrmBatchRepository;
 import com.axelor.apps.crm.db.repo.EventManagementRepository;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.crm.db.repo.LeadManagementRepository;
@@ -82,7 +80,6 @@ public class CrmModule extends AxelorModule {
     bind(ICalendarService.class).to(CalendarService.class);
     bind(AppCrmService.class).to(AppCrmServiceImpl.class);
     bind(EventService.class).to(EventServiceImpl.class);
-    bind(CrmBatchRepository.class).to(CrmBatchCrmRepository.class);
     bind(LeadService.class).to(LeadServiceImpl.class);
     ICalendarEventFactory.register(ICalendarRepository.CRM_SYNCHRO, Event::new);
     bind(MessageServiceBaseImpl.class).to(MessageServiceCrmImpl.class);

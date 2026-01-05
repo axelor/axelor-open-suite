@@ -17,8 +17,6 @@
     <!-- OTHER INFORMATION -->
     <integer name="fetchLimit" title="Fetch limit" min="0"/>
     <string name="description" title="Description" large="true"/>
-    <one-to-many name="batchList" ref="com.axelor.apps.base.db.Batch"
-      mappedBy="supplychainBatch" title="Batches"/>
 
     <!-- INVOICE ORDERS CONFIGURATION -->
     <integer name="invoiceOrdersTypeSelect"
