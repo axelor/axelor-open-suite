@@ -1,0 +1,3 @@
+---
+title: "BudgetDistribution : fixed the automatic compute via budget key when using multiple axis."
+module: axelor-budget
