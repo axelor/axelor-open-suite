@@ -56,7 +56,7 @@
 
     <panel-related name="invoiceSetPanel" title="Invoices" field="invoiceSet"
       grid-view="invoice-account-grid" form-view="invoice-form"
-      domain="self.partner = :partner and self.schedulePaymentOk = 'f' and self.company=:company and self.statusSelect = 3 and self.companyInTaxTotalRemaining > 0.0 AND self.currency = :currency AND self.operationTypeSelect = 3"
+      domain="self.partner = :partner and self.schedulePaymentOk = false and self.company=:company and self.statusSelect = 3 and self.companyInTaxTotalRemaining > 0.0 AND self.currency = :currency AND self.operationTypeSelect = 3"
       readonlyIf="statusSelect != 1" onChange="action-payment-schedule-record-in-tax-amount"
       hideIf="typeSelect == 2" canNew="false"/>
 
