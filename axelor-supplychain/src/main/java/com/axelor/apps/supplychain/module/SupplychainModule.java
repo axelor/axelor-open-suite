@@ -130,8 +130,6 @@ import com.axelor.apps.supplychain.db.repo.SaleOrderLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.SaleOrderSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
-import com.axelor.apps.supplychain.db.repo.SupplychainBatchRepository;
-import com.axelor.apps.supplychain.db.repo.SupplychainBatchSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.UnitCostCalculationManagementRepository;
 import com.axelor.apps.supplychain.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.supplychain.rest.PartnerCreationServiceSupplychainImpl;
@@ -473,7 +471,6 @@ public class SupplychainModule extends AxelorModule {
     bind(SaleOrderLineQtyToDeliverService.class).to(SaleOrderLineQtyToDeliverServiceImpl.class);
     bind(SaleOrderLineSublineService.class).to(SaleOrderLineSublineServiceImpl.class);
     bind(SupplyChainConfigService.class).to(SupplyChainConfigServiceImpl.class);
-    bind(SupplychainBatchRepository.class).to(SupplychainBatchSupplychainRepository.class);
     bind(SubscriptionInvoiceService.class).to(SubscriptionInvoiceServiceImpl.class);
     bind(TimetableService.class).to(TimetableServiceImpl.class);
     bind(StockMoveLineServiceSupplychain.class).to(StockMoveLineServiceSupplychainImpl.class);

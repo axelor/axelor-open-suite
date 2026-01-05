@@ -36,8 +36,6 @@ import com.axelor.apps.production.db.repo.ProdProductProductionRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
 import com.axelor.apps.production.db.repo.ProductCompanyProductionRepository;
 import com.axelor.apps.production.db.repo.ProductProductionRepository;
-import com.axelor.apps.production.db.repo.ProductionBatchManagementRepository;
-import com.axelor.apps.production.db.repo.ProductionBatchRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementProductionRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementRepository;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsManagementRepository;
@@ -387,7 +385,6 @@ public class ProductionModule extends AxelorModule {
     bind(RawMaterialRequirementService.class).to(RawMaterialRequirementServiceImpl.class);
     bind(RawMaterialRequirementRepository.class)
         .to(RawMaterialRequirementProductionRepository.class);
-    bind(ProductionBatchRepository.class).to(ProductionBatchManagementRepository.class);
     bind(UnitCostCalculationService.class).to(UnitCostCalculationServiceImpl.class);
     bind(UnitCostCalcLineService.class).to(UnitCostCalcLineServiceImpl.class);
     bind(ProductStockRepository.class).to(ProductProductionRepository.class);
