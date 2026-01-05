@@ -29,7 +29,7 @@
       readonlyIf="statusSelect == 2">
       <field name="rejectionDate"
         onChange="action-account-chaque-rejection-validate-if-rejection-date-is-not-from-the-future"/>
-      <field name="interbankCodeLine" domain="self.chequeOk = 't'"
+      <field name="interbankCodeLine" domain="self.chequeOk = true"
         form-view="interbank-code-line-form" grid-view="interbank-code-line-grid"/>
       <field name="description"/>
       <field name="amountRejected"/>
