@@ -1653,6 +1653,7 @@
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="action-invoice-attrs-display-line-coefficient"/>
+    <action name="action-invoice-method-set-default-company-tax-number"/>
   </action-group>
 
   <action-group name="action-account-invoice-onload-group">
