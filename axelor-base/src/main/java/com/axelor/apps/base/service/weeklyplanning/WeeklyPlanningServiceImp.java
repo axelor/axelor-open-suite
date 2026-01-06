@@ -37,6 +37,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
@@ -324,5 +325,19 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
           ? dayPlanning.getMorningFrom().plusHours(timeInHours.longValue())
           : dateTime.toLocalTime().plusHours(timeInHours.longValue());
     }
+  }
+
+  @Override
+  public boolean isWorkingDay(WeeklyPlanning weeklyPlanning, LocalDate date) {
+    Objects.requireNonNull(weeklyPlanning);
+    Objects.requireNonNull(date);
+
+    var dayPlanning = findDayPlanning(weeklyPlanning, date);
+
+    if (dayPlanning == null) {
+      return false;
+    }
+
+    return dayPlanning.getMorningFrom() != null || dayPlanning.getAfternoonFrom() != null;
   }
 }

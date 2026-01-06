@@ -26,13 +26,18 @@ import com.axelor.apps.base.db.UnitConversion;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.leave.LeaveRequestService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.common.ObjectUtils;
@@ -44,10 +49,13 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class TimesheetProjectPlanningTimeServiceImpl
     implements TimesheetProjectPlanningTimeService {
@@ -59,6 +67,9 @@ public class TimesheetProjectPlanningTimeServiceImpl
   protected UserHrService userHrService;
   protected UnitConversionRepository unitConversionRepository;
   protected UnitConversionForProjectService unitConversionForProjectService;
+  protected WeeklyPlanningService weeklyPlanningService;
+  protected LeaveRequestService leaveRequestService;
+  protected PublicHolidayHrService publicHolidayHrService;
 
   @Inject
   public TimesheetProjectPlanningTimeServiceImpl(
@@ -67,13 +78,19 @@ public class TimesheetProjectPlanningTimeServiceImpl
       AppBaseService appBaseService,
       UserHrService userHrService,
       UnitConversionRepository unitConversionRepository,
-      UnitConversionForProjectService unitConversionForProjectService) {
+      UnitConversionForProjectService unitConversionForProjectService,
+      WeeklyPlanningService weeklyPlanningService,
+      LeaveRequestService leaveRequestService,
+      PublicHolidayHrService publicHolidayHrService) {
     this.projectPlanningTimeRepository = projectPlanningTimeRepository;
     this.timesheetLineService = timesheetLineService;
     this.appBaseService = appBaseService;
     this.userHrService = userHrService;
     this.unitConversionRepository = unitConversionRepository;
     this.unitConversionForProjectService = unitConversionForProjectService;
+    this.weeklyPlanningService = weeklyPlanningService;
+    this.leaveRequestService = leaveRequestService;
+    this.publicHolidayHrService = publicHolidayHrService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -81,8 +98,7 @@ public class TimesheetProjectPlanningTimeServiceImpl
   public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException {
     List<ProjectPlanningTime> planningList = getExpectedProjectPlanningTimeList(timesheet);
     for (ProjectPlanningTime projectPlanningTime : planningList) {
-      TimesheetLine timesheetLine = createTimeSheetLineFromPPT(timesheet, projectPlanningTime);
-      timesheet.addTimesheetLineListItem(timesheetLine);
+      createTimeSheetLinesFromPPT(timesheet, projectPlanningTime);
     }
   }
 
@@ -126,35 +142,87 @@ public class TimesheetProjectPlanningTimeServiceImpl
     return planningList;
   }
 
-  protected TimesheetLine createTimeSheetLineFromPPT(
+  protected void createTimeSheetLinesFromPPT(
       Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
-    TimesheetLine timesheetLine = new TimesheetLine();
-    Project project = projectPlanningTime.getProject();
+    LocalDate startDate =
+        Optional.ofNullable(projectPlanningTime.getStartDateTime())
+            .map(LocalDateTime::toLocalDate)
+            .orElse(null);
+    LocalDate endDate =
+        Optional.ofNullable(projectPlanningTime.getEndDateTime())
+            .map(LocalDateTime::toLocalDate)
+            .orElse(null);
+    if (startDate == null || endDate == null) {
+      return;
+    }
     BigDecimal plannedTime = getConvertedPlannedTime(timesheet, projectPlanningTime);
+    Project project = projectPlanningTime.getProject();
+    Employee employee = timesheet.getEmployee();
+    ProjectTask projectTask = projectPlanningTime.getProjectTask();
+    Site site = projectPlanningTime.getSite();
+    Product product = projectPlanningTime.getProduct();
+    if (product == null) {
+      product = userHrService.getTimesheetProduct(employee, projectTask);
+    }
+    List<LocalDate> dateList = new ArrayList<>();
+
+    while (!startDate.isAfter(endDate)) {
+      if (weeklyPlanningService.isWorkingDay(employee.getWeeklyPlanning(), startDate)
+          && !leaveRequestService.isLeaveDay(employee, startDate)
+          && !publicHolidayHrService.checkPublicHolidayDay(startDate, employee)) {
+        dateList.add(startDate);
+      }
+      startDate = startDate.plusDays(1);
+    }
+    if (CollectionUtils.isEmpty(dateList) || dateList.size() <= 0) {
+      return;
+    }
+    int totalLines = dateList.size();
+    BigDecimal duration =
+        plannedTime.divide(
+            BigDecimal.valueOf(totalLines),
+            AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+            RoundingMode.HALF_UP);
+    for (int i = 0; i < totalLines; i++) {
+      TimesheetLine timesheetLine =
+          createTimeSheetLineFromPPT(
+              timesheet,
+              projectPlanningTime,
+              dateList.get(i),
+              duration,
+              project,
+              product,
+              projectTask,
+              site);
+      timesheet.addTimesheetLineListItem(timesheetLine);
+    }
+  }
+
+  protected TimesheetLine createTimeSheetLineFromPPT(
+      Timesheet timesheet,
+      ProjectPlanningTime projectPlanningTime,
+      LocalDate date,
+      BigDecimal plannedTime,
+      Project project,
+      Product product,
+      ProjectTask projectTask,
+      Site site)
+      throws AxelorException {
+    TimesheetLine timesheetLine = new TimesheetLine();
     timesheetLine.setDuration(plannedTime);
     timesheetLine.setHoursDuration(
         timesheetLineService.computeHoursDuration(timesheet, plannedTime, true));
     timesheetLine.setTimesheet(timesheet);
     timesheetLine.setEmployee(timesheet.getEmployee());
-    Product product = projectPlanningTime.getProduct();
-    if (product == null) {
-      product =
-          userHrService.getTimesheetProduct(
-              timesheetLine.getEmployee(), projectPlanningTime.getProjectTask());
-    }
     timesheetLine.setProduct(product);
     if (project.getManageTimeSpent()) {
-      timesheetLine.setProjectTask(projectPlanningTime.getProjectTask());
-      timesheetLine.setProject(projectPlanningTime.getProject());
-      Site site = projectPlanningTime.getSite();
+      timesheetLine.setProjectTask(projectTask);
+      timesheetLine.setProject(project);
       if (site != null && site.getIsUsableOnTimesheet()) {
         timesheetLine.setSite(site);
       }
     }
-    LocalDateTime startDateTime = projectPlanningTime.getStartDateTime();
-    if (!Objects.isNull(startDateTime)) {
-      timesheetLine.setDate(startDateTime.toLocalDate());
-    }
+    timesheetLine.setDate(date);
     timesheetLine.setProjectPlanningTime(projectPlanningTime);
     return timesheetLine;
   }
