@@ -53,6 +53,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
@@ -833,10 +834,18 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
 
-    Integer vatSystem = moveLine.getVatSystemSelect();
-    if (moveLine.getVatSystemSelect() == null
-        || moveLine.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
+    int vatSystem = AccountRepository.VAT_SYSTEM_DEFAULT;
+    try {
       vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
+    } catch (AxelorException e) {
+      if (moveLine.getVatSystemSelect() == null
+          && moveLine.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
+        TraceBackService.trace(e);
+      }
+    }
+
+    if (vatSystem == AccountRepository.VAT_SYSTEM_DEFAULT) {
+      vatSystem = moveLine.getVatSystemSelect();
     }
 
     String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId() + " " + vatSystem;
