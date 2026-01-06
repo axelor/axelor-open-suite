@@ -38,4 +38,13 @@
     <call class="com.axelor.apps.base.web.DMSFileController" method="viewRelatedRecord"/>
   </action-method>
 
+  <action-view name="custom.mgm.dms.my" model="com.axelor.dms.db.DMSFile"
+    title="My Documents">
+    <view name="dms-file-grid" type="grid"/>
+    <view-param name="ui-template:grid" value="dms-file-list"/>
+    <view-param name="search-filters" value="dms-file-filters"/>
+    <domain>(self.createdBy = :__user__ OR (self.isDirectory = true AND :__user__ MEMBER OF
+      self.accessUsers))</domain>
+  </action-view>
+
 </object-views>
