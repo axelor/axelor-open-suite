@@ -19,19 +19,28 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Site;
 import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.leave.LeaveRequestService;
+import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.hr.service.timesheet.TimesheetProjectPlanningTimeServiceImpl;
 import com.axelor.apps.hr.service.user.UserHrService;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectPlanningTime;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.common.ObjectUtils;
 import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 public class TimesheetProjectPPTServiceImpl extends TimesheetProjectPlanningTimeServiceImpl {
 
@@ -42,20 +51,36 @@ public class TimesheetProjectPPTServiceImpl extends TimesheetProjectPlanningTime
       AppBaseService appBaseService,
       UserHrService userHrService,
       UnitConversionRepository unitConversionRepository,
-      UnitConversionForProjectService unitConversionForProjectService) {
+      UnitConversionForProjectService unitConversionForProjectService,
+      WeeklyPlanningService weeklyPlanningService,
+      LeaveRequestService leaveRequestService,
+      PublicHolidayHrService publicHolidayHrService) {
     super(
         projectPlanningTimeRepository,
         timesheetLineService,
         appBaseService,
         userHrService,
         unitConversionRepository,
-        unitConversionForProjectService);
+        unitConversionForProjectService,
+        weeklyPlanningService,
+        leaveRequestService,
+        publicHolidayHrService);
   }
 
   @Override
   protected TimesheetLine createTimeSheetLineFromPPT(
-      Timesheet timesheet, ProjectPlanningTime projectPlanningTime) throws AxelorException {
-    TimesheetLine line = super.createTimeSheetLineFromPPT(timesheet, projectPlanningTime);
+      Timesheet timesheet,
+      ProjectPlanningTime projectPlanningTime,
+      LocalDate date,
+      BigDecimal plannedTime,
+      Project project,
+      Product product,
+      ProjectTask projectTask,
+      Site site)
+      throws AxelorException {
+    TimesheetLine line =
+        super.createTimeSheetLineFromPPT(
+            timesheet, projectPlanningTime, date, plannedTime, project, product, projectTask, site);
     if (ObjectUtils.notEmpty(projectPlanningTime.getProjectTask())
         && projectPlanningTime.getProjectTask().getInvoicingType()
             == ProjectTaskRepository.INVOICING_TYPE_TIME_SPENT) {

@@ -82,4 +82,6 @@ public interface WeeklyPlanningService {
   public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date);
 
   public DayPlanning findDayWithName(WeeklyPlanning planning, String name);
+
+  boolean isWorkingDay(WeeklyPlanning weeklyPlanning, LocalDate date);
 }
