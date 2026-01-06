@@ -116,6 +116,7 @@ public class SaleOrderController {
   public void autoComputeBudgetDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
     SaleOrderBudgetService saleOrderBudgetService = Beans.get(SaleOrderBudgetService.class);
     if (saleOrder != null
         && !CollectionUtils.isEmpty(saleOrder.getSaleOrderLineList())

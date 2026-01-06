@@ -144,6 +144,14 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
                       new BigDecimal(100),
                       AppBaseService.COMPUTATION_SCALING,
                       RoundingMode.HALF_UP));
+
+      if (purchaseOrderLineTax.getPurchaseOrder() != null) {
+        BigDecimal diff =
+            taxTotal.subtract(purchaseOrderLineTax.getInTaxTotal().subtract(exTaxBase)).abs();
+        if (diff.compareTo(BigDecimal.ZERO) >= 0 && diff.compareTo(new BigDecimal("0.01")) <= 0) {
+          taxTotal = purchaseOrderLineTax.getInTaxTotal().subtract(exTaxBase);
+        }
+      }
     }
 
     return taxTotal;

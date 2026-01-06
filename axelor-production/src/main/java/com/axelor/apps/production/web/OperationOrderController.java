@@ -203,6 +203,17 @@ public class OperationOrderController {
     }
   }
 
+  public void setConsumedStockMoveLineStockLocation(
+      ActionRequest request, ActionResponse response) {
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      Beans.get(OperationOrderService.class).setConsumedStockMoveLineStockLocation(operationOrder);
+      response.setValue("consumedStockMoveLineList", operationOrder.getConsumedStockMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   /**
    * Called from operation order form, on consumed stock move line change.
    *

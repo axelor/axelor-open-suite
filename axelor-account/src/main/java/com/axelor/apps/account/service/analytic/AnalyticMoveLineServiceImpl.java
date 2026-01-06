@@ -256,7 +256,16 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
                 Collectors.groupingBy(
                     AnalyticMoveLine::getAnalyticAxis,
                     Collectors.reducing(
-                        BigDecimal.ZERO, AnalyticMoveLine::getPercentage, BigDecimal::add)))
+                        BigDecimal.ZERO,
+                        analyticMoveLine -> {
+                          BigDecimal percentage = analyticMoveLine.getPercentage();
+                          if (analyticMoveLine.getSubTypeSelect()
+                              == AnalyticMoveLineRepository.SUB_TYPE_REVERSE) {
+                            percentage = percentage.negate();
+                          }
+                          return percentage;
+                        },
+                        BigDecimal::add)))
             .values()
             .stream()
             .allMatch(percentage -> percentage.compareTo(BigDecimal.valueOf(100)) == 0);

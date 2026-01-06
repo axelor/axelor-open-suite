@@ -971,7 +971,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               .multiply(taxAccountService.getTotalTaxRateInPercentage(Set.of(taxLine)))
               .divide(
                   BigDecimal.valueOf(100),
-                  AppBaseService.COMPUTATION_SCALING,
+                  currencyScaleService.getCompanyScale(moveLine),
                   RoundingMode.HALF_UP);
       if (amountByTaxLineMap.get(taxLine) != null) {
         amountByTaxLineMap.replace(taxLine, amountByTaxLineMap.get(taxLine).add(taxAmount));
@@ -1006,12 +1006,17 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected boolean isFinancialDiscount(Move move) throws AxelorException {
 
     AppAccount account = appAccountService.getAppAccount();
-    if (account == null || !account.getManageFinancialDiscount()) {
+    if (account == null
+        || !account.getManageFinancialDiscount()
+        || (move.getInvoice() != null && move.getInvoice().getFinancialDiscount() == null)) {
       return false;
     }
 
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+      if (moveLineFinancialDiscountService.isFinancialDiscountLine(
+          moveLine,
+          move.getCompany(),
+          move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)) {
         return true;
       }
     }

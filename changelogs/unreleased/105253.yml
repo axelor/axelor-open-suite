@@ -1,0 +1,3 @@
+---
+title: "Expense : changed expense so that could not be editable once validated."
+module: axelor-human-resource

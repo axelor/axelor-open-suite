@@ -571,7 +571,7 @@
         <field name="serialNbr" title="Serial Nbr" readonly="true"/>
         <field name="$availableQty" title="Available qty" type="decimal" width="120"
           readonly="true" x-scale="$nbDecimalDigitForQty"/>
-        <field name="counter" title="Selected quantity"
+        <field name="counter" title="Selected quantity" type="decimal"
           readonlyIf="( $availableQty == null || $availableQty &lt; 1 ) &amp;&amp; $moveTypeSelect == 2"
           x-scale="$nbDecimalDigitForQty"/>
         <field name="hasWarranty"/>

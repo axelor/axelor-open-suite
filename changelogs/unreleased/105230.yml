@@ -1,0 +1,3 @@
+---
+title: "Sale/Purchase order: fixed the error when auto computing budget distribution."
+module: axelor-budget

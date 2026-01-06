@@ -588,6 +588,14 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
   /** Remove old sale orders after merge */
   protected void removeOldSaleOrders(List<SaleOrder> saleOrderList) {
     for (SaleOrder saleOrder : saleOrderList) {
+      List<SaleOrderLine> saleOrderLineList =
+          saleOrderLineRepository
+              .all()
+              .filter("self.saleOrder = ?1 OR self.oldVersionSaleOrder = ?1", saleOrder)
+              .fetch();
+      for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+        saleOrderLineRepository.remove(saleOrderLine);
+      }
       saleOrderRepository.remove(saleOrder);
     }
   }

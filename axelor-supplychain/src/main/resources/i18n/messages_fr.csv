@@ -572,7 +572,7 @@
 "Purchase",,,
 "Purchase order","Commande fournisseur",,
 "Purchase order line","Lignes de devis fournisseur",,
-"Purchase order or sale order without estimated delivery date and manufacturing order without planned date. In this case, we use the MRP start date (today)","Les commandes fournisseurs et clients sans date de livraison et les ordres de fabrication sans date de planification. Dans ce cas, nous utilisons la date de lancement du CBN (date du jour)",,
+"Purchase order or sale order without estimated delivery date and manufacturing order without planned date. In this case, we use the MRP start date (today)","Les commandes fournisseurs sans date de réception , les commandes clients sans date d'expédition et les ordres de fabrication sans date de planification. Dans ce cas, nous utilisons la date de lancement du CBN (date du jour)",,
 "Purchase order quantity","Quantité en commande fournisseur",,
 "Purchase order without incoming stock move","Commandes fournisseurs en attente de BR",,
 "Purchase order without stock move","Commandes en attente de BR",,

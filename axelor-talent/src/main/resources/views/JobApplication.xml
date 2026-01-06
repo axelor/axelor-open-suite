@@ -16,7 +16,7 @@
   </grid>
 
   <form title="Job applicant" name="job-application-form"
-    model="com.axelor.apps.talent.db.JobApplication" width="large"
+    model="com.axelor.apps.talent.db.JobApplication" width="*"
     onNew="action-job-application-defaults" onLoad="action-job-application-group-onload">
     <menubar>
       <menu name="jobApplicationToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
@@ -25,7 +25,7 @@
       </menu>
     </menubar>
     <panel name="generalInfoPanel" title="General information">
-      <field name="picture" widget="Image" showTitle="false" colSpan="3" rowSpan="3">
+      <field name="picture" widget="Image" showTitle="false" colSpan="2" rowSpan="3">
         <viewer>
           <![CDATA[
               <>
@@ -35,7 +35,7 @@
           ]]>
         </viewer>
       </field>
-      <panel name="infoPanel" colSpan="9" itemSpan="12">
+      <panel name="infoPanel" colSpan="10" itemSpan="12">
         <field name="hiringStage" widget="NavSelect" showTitle="false"/>
         <field name="fullName" showTitle="false">
           <viewer depends="fullName">
@@ -115,7 +115,7 @@
           grid-view="employment-contract-employee-grid"/>
         <field name="commentary" widget="html" colSpan="12"/>
       </panel>
-      <panel name="actionPanel" title="Actions">
+      <panel name="eventPanel" title="Actions">
         <button name="meetingBtn" title="Create a meeting" colSpan="3"
           icon="fa-pencil-square-o" link="" onClick="save,action-job-application-view-meeting-event"/>
         <button name="callBtn" title="Create a call" colSpan="3" icon="fa-phone" link=""
@@ -131,6 +131,10 @@
           canDelete="true" height="550" action="action-job-application-events"/>
       </panel>
     </panel-tabs>
+    <panel name="actionPanel" sidebar="true" hidden="true">
+      <button name="hireButton" onClick="save,action-job-application-method-hire"
+        title="Hire candidate" hidden="true"/>
+    </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="4"/>
       <mail-followers/>
@@ -282,7 +286,7 @@
   </action-method>
 
   <action-attrs name="action-job-application-attrs-hide-hire-button">
-    <attribute for="hireButton" name="hidden"
+    <attribute for="hireButton,actionPanel" name="hidden"
       expr="eval: employee || __self__.hiringStage != __config__.app.getApp('recruitment')?.getHiringStatus() || !firstName || !fullName"
       if="hiringStage"/>
   </action-attrs>

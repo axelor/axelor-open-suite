@@ -138,6 +138,8 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
       Pair<Integer, Boolean> pair = moveLineMap.get(id);
       String debtPassReason = this.getDebtPassReason(company.getAccountConfig(), pair.getLeft());
       Invoice invoice = pair.getRight() ? moveLine.getInvoiceReject() : move.getInvoice();
+      String invoiceId =
+          Optional.ofNullable(invoice).map(Invoice::getInvoiceId).orElse(move.getOrigin());
 
       try {
         this._processMoveLine(
@@ -145,22 +147,20 @@ public class BatchDoubtfulCustomer extends PreviewBatch {
       } catch (AxelorException e) {
         TraceBackService.trace(
             new AxelorException(
-                e,
-                e.getCategory(),
-                String.format("%s %s", I18n.get("Invoice"), invoice.getInvoiceId())),
+                e, e.getCategory(), String.format("%s %s", I18n.get("Invoice"), invoiceId)),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
 
         incrementAnomaly();
       } catch (Exception e) {
         TraceBackService.trace(
-            new Exception(String.format("%s %s", I18n.get("Invoice"), invoice.getInvoiceId()), e),
+            new Exception(String.format("%s %s", I18n.get("Invoice"), invoiceId), e),
             ExceptionOriginRepository.DOUBTFUL_CUSTOMER,
             batch.getId());
 
         incrementAnomaly();
 
-        log.error("Anomaly generated for the invoice {}", invoice.getInvoiceId());
+        log.error("Anomaly generated for the invoice {}", invoiceId);
       }
     }
   }

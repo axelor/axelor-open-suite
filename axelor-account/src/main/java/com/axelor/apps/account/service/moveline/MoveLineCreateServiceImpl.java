@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
@@ -55,6 +56,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
@@ -100,6 +102,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
   protected AppBaseService appBaseService;
   protected AnalyticLineService analyticLineService;
   protected CurrencyScaleService currencyScaleService;
+  protected MoveLineRecordService moveLineRecordService;
+  protected AccountManagementService accountManagementService;
 
   @Inject
   public MoveLineCreateServiceImpl(
@@ -119,7 +123,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       TaxService taxService,
       AppBaseService appBaseService,
       AnalyticLineService analyticLineService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      MoveLineRecordService moveLineRecordService,
+      AccountManagementService accountManagementService) {
     this.companyConfigService = companyConfigService;
     this.currencyService = currencyService;
     this.fiscalPositionAccountService = fiscalPositionAccountService;
@@ -137,6 +143,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
     this.appBaseService = appBaseService;
     this.analyticLineService = analyticLineService;
     this.currencyScaleService = currencyScaleService;
+    this.moveLineRecordService = moveLineRecordService;
+    this.accountManagementService = accountManagementService;
   }
 
   /**
@@ -485,6 +493,9 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         moveLines.add(moveLine);
       }
     }
+    for (MoveLine moveLine : moveLines) {
+      moveLineRecordService.refreshAccountInformation(moveLine, move);
+    }
 
     // Creation of tax move lines for each invoice line tax
     for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
@@ -516,6 +527,10 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
                 moveLineId++,
                 origin,
                 null);
+
+        if (tax.getIsNonDeductibleTax()) {
+          fillIfChargeOnOriginalAccount(tax, invoice, move, moveLine);
+        }
 
         moveLine.setTaxLineSet(Sets.newHashSet(invoiceLineTax.getTaxLine()));
         moveLine.setTaxRate(invoiceLineTax.getTaxLine().getValue());
@@ -577,6 +592,26 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       moveLine.setCutOffEndDate(invoiceLine.getCutOffEndDate());
     }
     return moveLine;
+  }
+
+  protected void fillIfChargeOnOriginalAccount(
+      Tax tax, Invoice invoice, Move move, MoveLine moveLine) throws AxelorException {
+    if (!Optional.ofNullable(
+            accountManagementService.getAccountManagement(
+                tax.getAccountManagementList(), move.getCompany()))
+        .map(AccountManagement::getChargeOnOriginalAccount)
+        .orElse(false)) {
+      return;
+    }
+
+    Set<InvoiceLine> invoiceLineSet =
+        invoice.getInvoiceLineList().stream()
+            .filter(line -> line.getAccount().equals(moveLine.getAccount()))
+            .collect(Collectors.toSet());
+    if (ObjectUtils.notEmpty(invoiceLineSet) && invoiceLineSet.size() == 1) {
+      fillMoveLineWithInvoiceLine(
+          moveLine, invoiceLineSet.stream().findFirst().orElse(null), move.getCompany());
+    }
   }
 
   protected List<MoveLine> addInvoiceTermMoveLines(
@@ -820,7 +855,26 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
         newMoveLineDebit,
         newMoveLineCredit);
 
+    if (Optional.of(taxLine).map(TaxLine::getTax).map(Tax::getIsNonDeductibleTax).orElse(false)) {
+      fillIfChargeOnOriginalAccount(taxLine.getTax(), moveLine, newOrUpdatedMoveLine, move);
+    }
+
     return newOrUpdatedMoveLine;
+  }
+
+  protected void fillIfChargeOnOriginalAccount(
+      Tax tax, MoveLine oldMoveLine, MoveLine newMoveLine, Move move) throws AxelorException {
+    if (!Optional.ofNullable(
+                accountManagementService.getAccountManagement(
+                    tax.getAccountManagementList(), move.getCompany()))
+            .map(AccountManagement::getChargeOnOriginalAccount)
+            .orElse(false)
+        || oldMoveLine == null) {
+      return;
+    }
+
+    moveLineComputeAnalyticService.copyAnalyticsDataFromMoveLine(
+        oldMoveLine, newMoveLine, newMoveLine.getCredit().max(newMoveLine.getDebit()));
   }
 
   protected BigDecimal computeTaxLineValue(TaxLine taxLine, List<TaxLine> nonDeductibleTaxList) {

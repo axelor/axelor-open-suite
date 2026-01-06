@@ -19,8 +19,16 @@
 package com.axelor.apps.account.service.invoice.tax;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLineTax;
+import java.math.BigDecimal;
 
 public interface InvoiceTaxComputeService {
 
   void recomputeInvoiceTaxAmounts(Invoice invoice);
+
+  BigDecimal computeTaxAmount(
+      InvoiceLineTax invoiceLineTax,
+      BigDecimal exTaxBase,
+      BigDecimal taxValue,
+      BigDecimal inTaxTotal);
 }
