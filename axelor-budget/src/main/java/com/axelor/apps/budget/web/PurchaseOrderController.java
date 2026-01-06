@@ -182,6 +182,7 @@ public class PurchaseOrderController {
   public void autoComputeBudgetDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
     PurchaseOrderBudgetService purchaseOrderBudgetService =
         Beans.get(PurchaseOrderBudgetService.class);
     if (purchaseOrder != null
