@@ -19,6 +19,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.11
+        cache: 'gradle'
     - name: Install webapp
       run: git clone -b dev https://github.com/axelor/open-suite-webapp.git open-suite-webapp
     - name: move to the right place
