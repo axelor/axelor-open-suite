@@ -1,0 +1,5 @@
+---
+title: "Timesheet: fixed the generation of timesheet lines from the expected planning."
+module: axelor-human-resource
+developer: |
+  - Added WeeklyPlanningService, LeaveRequestService and PublicHolidayHrService in TimesheetProjectPlanningTimeServiceImpl constructor

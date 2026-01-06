@@ -36,6 +36,7 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
@@ -268,5 +269,19 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
         I18n.get(Character.toUpperCase(dayPlanningName.charAt(0)) + dayPlanningName.substring(1))
             .toLowerCase()); // Because day of week are traduced with a upperCase at the first
     // letter
+  }
+
+  @Override
+  public boolean isWorkingDay(WeeklyPlanning weeklyPlanning, LocalDate date) {
+    Objects.requireNonNull(weeklyPlanning);
+    Objects.requireNonNull(date);
+
+    var dayPlanning = findDayPlanning(weeklyPlanning, date);
+
+    if (dayPlanning == null) {
+      return false;
+    }
+
+    return dayPlanning.getMorningFrom() != null || dayPlanning.getAfternoonFrom() != null;
   }
 }
