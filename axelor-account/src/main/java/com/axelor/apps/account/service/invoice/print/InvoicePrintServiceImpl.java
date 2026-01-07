@@ -158,12 +158,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         return reportType != null
                 && reportType == InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS
             ? print(invoice, reportType, invoicePrintTemplate, locale)
-            : printAndSave(
-                invoice,
-                reportType,
-                invoicePrintTemplate,
-                locale,
-                invoicePrintTemplate.getToAttach());
+            : printAndSave(invoice, reportType, invoicePrintTemplate, locale);
       }
     } else {
       // invoice is not ventilated (or validated for advance payment invoices) --> generate and
@@ -191,11 +186,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   }
 
   public File printAndSave(
-      Invoice invoice,
-      Integer reportType,
-      PrintingTemplate invoicePrintTemplate,
-      String locale,
-      boolean toAttach)
+      Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale)
       throws AxelorException {
     PrintingGenFactoryContext factoryContext =
         buildPrintingContext(invoice, reportType, invoicePrintTemplate, locale);
@@ -210,7 +201,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(file.getName()))
               ? getSignedPdf(metaFile)
               : metaFile;
-      if (toAttach) {
+      if (invoicePrintTemplate.getToAttach()) {
         metaFiles.attach(signedMetaFile, signedMetaFile.getFileName(), invoice);
       }
       invoice.setPrintedPDF(signedMetaFile);

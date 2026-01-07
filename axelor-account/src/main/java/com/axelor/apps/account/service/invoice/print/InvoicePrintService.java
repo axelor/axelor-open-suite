@@ -117,11 +117,7 @@ public interface InvoicePrintService {
    * @throws AxelorException
    */
   File printAndSave(
-      Invoice invoice,
-      Integer reportType,
-      PrintingTemplate invoicePrintTemplate,
-      String locale,
-      boolean toAttach)
+      Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale)
       throws AxelorException;
 
   /**
