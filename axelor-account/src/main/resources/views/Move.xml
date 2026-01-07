@@ -909,14 +909,14 @@
   <action-attrs name="action-move-attrs-partner-onselect">
     <attribute name="domain" expr="eval: 'self.isContact = false'" for="partner"/>
     <attribute name="domain"
-      expr="eval: &quot;self.isContact = false AND ${company.id} member of self.companySet&quot;"
+      expr="eval: &quot;self.isContact = false AND :company member of self.companySet&quot;"
       for="partner" if="company"/>
     <attribute name="domain" for="partner"
       if="!company &amp;&amp; journal &amp;&amp; journal.compatiblePartnerTypeSelect"
       expr="eval: 'self.isContact = false AND (' + journal.compatiblePartnerTypeSelect.split(',').collect{ it.trim() }.collect{ 'self.' + it + ' = true' }.join(' OR ') + ')'"/>
     <attribute name="domain" for="partner"
       if="company &amp;&amp; journal &amp;&amp; journal.compatiblePartnerTypeSelect"
-      expr="eval: 'self.isContact = false AND ' + company.id + ' member of self.companySet AND (' + journal.compatiblePartnerTypeSelect.split(',').collect{ it.trim() }.collect{ 'self.' + it + ' = true' }.join(' OR ') + ')'"/>
+      expr="eval: 'self.isContact = false AND :company member of self.companySet AND (' + journal.compatiblePartnerTypeSelect.split(',').collect{ it.trim() }.collect{ 'self.' + it + ' = true' }.join(' OR ') + ')'"/>
   </action-attrs>
 
   <!-- ACTION CONDITION -->
