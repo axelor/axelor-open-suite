@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
 import java.math.BigDecimal;
 import java.util.Map;
@@ -97,4 +98,7 @@ public interface ContractLineService {
   PriceListLine getPriceListLine(ContractLine contractLine, PriceList priceList, BigDecimal price);
 
   String computeProductDomain(Contract contract);
+
+  ContractLine fill(ContractLine contractLine, ContractTemplate contractTemplate, Product product)
+      throws AxelorException;
 }
