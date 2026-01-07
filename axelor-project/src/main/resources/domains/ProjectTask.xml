@@ -106,6 +106,7 @@
 
     <many-to-many name="watcherUserSet" ref="com.axelor.auth.db.User"
       title="User watchers"/>
+    <string name="levelIndicator" title="Level"/>
 
     <extra-code>
 

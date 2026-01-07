@@ -122,7 +122,7 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
-
+    Beans.get(ProjectTaskService.class).computeProjectTaskLevels(project);
     return super.save(projectTask);
   }
 
