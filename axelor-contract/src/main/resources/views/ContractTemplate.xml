@@ -76,7 +76,8 @@
         <panel if="__config__.app.getApp('contract')?.isInvoicingManagement" title="Invoicing"
           colSpan="12" name="subConfigPanel" hidden="true"
           showIf="contractTypeSelect == 1 &amp;&amp; isInvoicingManagement">
-
+          <field name="isGroupedInvoicing" widget="boolean-switch" colSpan="4"/>
+          <spacer/>
           <field if="__config__.app.getApp('contract')?.isConsumptionManagement"
             name="isConsumptionManagement" colSpan="6" widget="boolean-switch"/>
           <field if="__config__.app.getApp('contract')?.isConsumptionManagement"
