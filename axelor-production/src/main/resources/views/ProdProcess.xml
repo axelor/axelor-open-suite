@@ -212,7 +212,7 @@
   <action-record name="action-prod-process-record-set-realize-order-select"
     model="com.axelor.apps.production.db.ProdProcess">
     <field name="stockMoveRealizeOrderSelect"
-      expr="__config__.app.getApp('production')?.getStockMoveRealizeOrderSelect()"/>
+      expr="eval: company?.productionConfig?.stockMoveRealizeOrderSelect"/>
   </action-record>
 
   <action-record name="action-prod-process-record-count-number-of-phases"
