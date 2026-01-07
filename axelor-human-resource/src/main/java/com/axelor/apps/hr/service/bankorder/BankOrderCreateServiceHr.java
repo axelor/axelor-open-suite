@@ -71,7 +71,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             .subtract(expense.getAdvanceAmount())
             .subtract(expense.getWithdrawnCash())
             .subtract(expense.getPersonalExpenseAmount());
-    Currency currency = company.getCurrency();
+    Currency currency = expense.getCurrency();
     LocalDate paymentDate =
         expense.getPaymentDate() != null
             ? expense.getPaymentDate()
