@@ -118,6 +118,7 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsFolderCreationAllowed(),
         appMobileSettings.getIsFileCreationAllowed(),
         appMobileSettings.getIsFileDeletionAllowed(),
+        getFreightCarrierModeTrackingIds(appMobileSettings.getFreightCarrierModeTrackingIds()),
         appMobileSettings.getDefaultQiDetectionId());
   }
 
@@ -322,6 +323,17 @@ public class MobileSettingsResponseComputeServiceImpl
           ProductRepository.PRODUCT_TYPE_STORABLE, ProductRepository.PRODUCT_TYPE_SERVICE);
     }
     return Arrays.stream(productTypesToDisplay.split(",")).collect(Collectors.toList());
+  }
+
+  protected List<Long> getFreightCarrierModeTrackingIds(String freightCarrierModeTrackingIds) {
+    if (StringUtils.isEmpty(freightCarrierModeTrackingIds)) {
+      return List.of();
+    }
+    return Arrays.stream(freightCarrierModeTrackingIds.split(","))
+        .map(String::trim)
+        .filter(token -> !token.isEmpty())
+        .map(Long::valueOf)
+        .collect(Collectors.toList());
   }
 
   protected List<String> getReportingTypesToDisplay(AppMobileSettings appMobileSettings) {
