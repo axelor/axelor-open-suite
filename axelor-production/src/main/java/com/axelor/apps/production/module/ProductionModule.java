@@ -43,6 +43,8 @@ import com.axelor.apps.production.db.repo.SaleOrderLineDetailsManagementReposito
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
 import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
 import com.axelor.apps.production.db.repo.StockMoveProductionRepository;
+import com.axelor.apps.production.db.repo.TempBomTreeManagementRepository;
+import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.rest.ManufOrderProductRestService;
@@ -432,5 +434,6 @@ public class ProductionModule extends AxelorModule {
     bind(ProductCompanyStockRepository.class).to(ProductCompanyProductionRepository.class);
     bind(SaleOrderLineComputeQtyServiceImpl.class)
         .to(SaleOrderLineComputeQtyProductionServiceImpl.class);
+    bind(TempBomTreeRepository.class).to(TempBomTreeManagementRepository.class);
   }
 }
