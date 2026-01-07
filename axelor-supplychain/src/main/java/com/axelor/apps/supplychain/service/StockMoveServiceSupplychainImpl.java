@@ -593,6 +593,15 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Optional<StockMove> generateNewStockMove(StockMove stockMove) throws AxelorException {
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      stockMoveLine.setQtyInvoiced(stockMoveLine.getQty().subtract(stockMoveLine.getQtyInvoiced()));
+    }
+    return super.generateNewStockMove(stockMove);
+  }
+
+  @Override
   public boolean isAllocatedStockMoveLineRemoved(StockMove stockMove) {
 
     StockMove storedStockMove = stockMoveRepo.find(stockMove.getId());
