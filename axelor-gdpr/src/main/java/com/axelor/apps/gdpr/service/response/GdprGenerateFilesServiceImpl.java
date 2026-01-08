@@ -49,7 +49,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.lang.invoke.MethodHandles;
 import java.nio.file.Files;
 import java.time.format.DateTimeFormatter;
@@ -159,10 +158,7 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
           (Class<? extends AuditableModel>) Class.forName(metaField.getMetaModel().getFullName());
       List<? extends AuditableModel> records;
 
-      Annotation[] annotations =
-          Class.forName(metaField.getMetaModel().getFullName()).getDeclaredAnnotations();
-      if (Arrays.stream(annotations)
-          .noneMatch(annotation -> Entity.class.equals(annotation.annotationType()))) {
+      if (!klass.isAnnotationPresent(Entity.class)) {
         continue;
       }
 
