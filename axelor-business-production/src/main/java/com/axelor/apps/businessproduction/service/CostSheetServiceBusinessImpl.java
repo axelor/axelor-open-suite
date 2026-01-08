@@ -18,9 +18,9 @@
  */
 package com.axelor.apps.businessproduction.service;
 
-import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.CostSheetLine;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
@@ -31,6 +31,7 @@ import com.axelor.apps.production.service.costsheet.CostSheetServiceImpl;
 import com.google.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Period;
 import org.slf4j.Logger;
@@ -57,59 +58,41 @@ public class CostSheetServiceBusinessImpl extends CostSheetServiceImpl {
   }
 
   @Override
-  protected void computeRealHumanResourceCost(
+  protected BigDecimal getHumanResourceCostDuration(
       OperationOrder operationOrder,
-      int priority,
-      int bomLevel,
       CostSheetLine parentCostSheetLine,
-      LocalDate previousCostSheetDate)
-      throws AxelorException {
-
+      LocalDate previousCostSheetDate,
+      BigDecimal ratio) {
     if (!appProductionService.isApp("production")
         || !appProductionService.getAppProduction().getManageBusinessProduction()) {
-      super.computeRealHumanResourceCost(
-          operationOrder, priority, bomLevel, parentCostSheetLine, previousCostSheetDate);
-      return;
+      return super.getHumanResourceCostDuration(
+          operationOrder, parentCostSheetLine, previousCostSheetDate, ratio);
     }
-    BigDecimal duration =
-        BigDecimal.ZERO; // Declaring duration as BigDecimal to use it with manufOrderProducedRatio
+    BigDecimal duration = BigDecimal.ZERO;
 
-    if (operationOrder.getTimesheetLineList() != null) {
-      if (parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
-              == CostSheetRepository.CALCULATION_END_OF_PRODUCTION
-          || parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
-              == CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION) {
-        Period period =
-            previousCostSheetDate != null
-                ? Period.between(
-                    parentCostSheetLine.getCostSheet().getCalculationDate(), previousCostSheetDate)
-                : null;
-        duration =
-            period != null
-                ? new BigDecimal(period.getDays() * 24)
-                : new BigDecimal(operationOrder.getRealDuration());
-      } else if (parentCostSheetLine.getCostSheet().getCalculationTypeSelect()
-          == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS) {
-
-        BigDecimal ratio = costSheet.getManufOrderProducedRatio();
-
-        /*
-         * Using BigDecimal value of plannedDuration and realDuration for calculation with manufOrderProducedRatio
-         */
-        duration =
-            (new BigDecimal(operationOrder.getRealDuration()))
-                .subtract((new BigDecimal(operationOrder.getPlannedDuration()).multiply(ratio)));
-      }
-
-      // TODO get the timesheet Line done when we run the calculation.
-
-      this.computeRealHumanResourceCost(
-          operationOrder.getProdProcessLine(),
-          operationOrder.getWorkCenter(),
-          priority,
-          bomLevel,
-          parentCostSheetLine,
-          duration);
+    if (operationOrder.getTimesheetLineList() == null) {
+      return duration;
     }
+
+    BigDecimal realDuration = new BigDecimal(operationOrder.getRealDuration());
+    CostSheet parentLineCostSheet = parentCostSheetLine.getCostSheet();
+    if (parentLineCostSheet.getCalculationTypeSelect()
+            == CostSheetRepository.CALCULATION_END_OF_PRODUCTION
+        || parentLineCostSheet.getCalculationTypeSelect()
+            == CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION) {
+      Period period =
+          previousCostSheetDate != null
+              ? Period.between(parentLineCostSheet.getCalculationDate(), previousCostSheetDate)
+              : null;
+      duration = period != null ? new BigDecimal(period.getDays() * 24) : realDuration;
+    } else if (parentLineCostSheet.getCalculationTypeSelect()
+        == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS) {
+      BigDecimal plannedDuration = new BigDecimal(operationOrder.getPlannedDuration());
+      duration = realDuration.subtract(plannedDuration.multiply(ratio));
+    }
+    return duration.divide(
+        new BigDecimal(3600),
+        appProductionService.getNbDecimalDigitForUnitPrice(),
+        RoundingMode.HALF_UP);
   }
 }
