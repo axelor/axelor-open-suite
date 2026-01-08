@@ -310,7 +310,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           invoice,
           InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
           accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
-          null);
+          null,
+          true);
     }
   }
 
