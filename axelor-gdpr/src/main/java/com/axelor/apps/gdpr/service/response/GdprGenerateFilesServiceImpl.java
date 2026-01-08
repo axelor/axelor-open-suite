@@ -57,6 +57,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import javax.persistence.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -156,6 +157,10 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
       Class<? extends AuditableModel> klass =
           (Class<? extends AuditableModel>) Class.forName(metaField.getMetaModel().getFullName());
       List<? extends AuditableModel> records;
+
+      if (!klass.isAnnotationPresent(Entity.class)) {
+        continue;
+      }
 
       if (!"OneToMany".equals(metaField.getRelationship())) {
         records =
