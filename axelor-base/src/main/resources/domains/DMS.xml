@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="dms" package="com.axelor.dms.db"/>
+
+  <entity name="DMSFile" table="DMS_FILE" repository="none">
+    <many-to-many name="accessUsers" ref="com.axelor.auth.db.User"/>
+  </entity>
+</domain-models>

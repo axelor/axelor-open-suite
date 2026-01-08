@@ -1,5 +1,6 @@
 package com.axelor.apps.base.db.repo.dms;
 
+import com.axelor.auth.db.User;
 import com.axelor.common.Inflector;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaRepository;
@@ -13,6 +14,7 @@ import com.axelor.rpc.filter.JPQLFilter;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
@@ -29,6 +31,17 @@ public class CustomDMSFileRepository extends DMSFileRepository {
 
   private static final DMSFolderConfiguration.FolderStructureConfig[] FOLDER_CONFIGS =
       DMSFolderConfiguration.FOLDER_CONFIGS;
+
+  @Override
+  public DMSFile save(DMSFile entity) {
+    DMSFile saved = super.save(entity);
+
+    if (!Boolean.TRUE.equals(saved.getIsDirectory()) && saved.getCreatedBy() != null) {
+      grantAccessToFolderHierarchy(saved.getParent(), saved.getCreatedBy());
+    }
+
+    return saved;
+  }
 
   /**
    * Finds or creates the appropriate home folder for an entity based on configured relationships
@@ -588,9 +601,31 @@ public class CustomDMSFileRepository extends DMSFileRepository {
     file.setFileName(expectedName);
 
     // Use super.save to avoid triggering DMS folder creation logic
-    super.save(file);
+    //    super.save(file);
+    JpaRepository.of(DMSFile.class).persist(file);
 
     return true;
+  }
+
+  /** Adds a user to the accessUsers of a folder and all it's parents up to the root */
+  @Transactional
+  public void grantAccessToFolderHierarchy(DMSFile folder, User user) {
+    if (folder == null || user == null) {
+      return;
+    }
+
+    DMSFile current = folder;
+    while (current != null) {
+      if (current.getAccessUsers() == null) {
+        current.setAccessUsers(new HashSet<>());
+      }
+
+      current.getAccessUsers().add(user);
+      // Skip DMS saving logic
+      JpaRepository.of(DMSFile.class).persist(current);
+
+      current = current.getParent();
+    }
   }
 
   /**
