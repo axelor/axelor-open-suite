@@ -110,7 +110,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     StringBuilder messageBuilder = new StringBuilder();
 
     for (ManufOrder manufOrder : manufOrderList) {
-      this.plan(manufOrder);
+      manufOrder = this.plan(manufOrder);
       if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
         messageBuilder.append(manufOrder.getMoCommentFromSaleOrder());
       }
