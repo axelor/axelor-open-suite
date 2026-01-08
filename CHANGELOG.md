@@ -1,3 +1,32 @@
+## [7.2.58] (2026-01-08)
+
+### Fixes
+#### Base
+
+* Partner: fixed wrong registration code and VAT Number on the Axelor demo data partner.
+
+#### Account
+
+* Fixed asset: fixed the wrong depreciation move amount on the disposal year.
+* MoveLine/VatSystem: fixed wrong vat system computation on generate counterpart action.
+
+#### Budget
+
+* BudgetDistribution : fixed the automatic compute via budget key when using multiple axis.
+
+#### CRM
+
+* Dashboard: removed duplicated dashlet 'dashlet.created.leads.by.industry.sector'.
+* Dashboard: fixed the status issue on charts 'chart.leads.by.team.by.status.bar' and 'chart.leads.by.saleman.by.status.bar'.
+
+#### Production
+
+* Prod process : fixed 'Stock move realize order select' doesn't take into account production config.
+
+#### Stock
+
+* Inventory: Corrected PDF printing of inventories
+
 ## [7.2.57] (2025-12-18)
 
 ### Fixes
@@ -2637,6 +2666,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.58]: https://github.com/axelor/axelor-open-suite/compare/v7.2.57...v7.2.58
 [7.2.57]: https://github.com/axelor/axelor-open-suite/compare/v7.2.56...v7.2.57
 [7.2.56]: https://github.com/axelor/axelor-open-suite/compare/v7.2.55...v7.2.56
 [7.2.55]: https://github.com/axelor/axelor-open-suite/compare/v7.2.54...v7.2.55
