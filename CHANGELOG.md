@@ -1,3 +1,19 @@
+## [8.1.39] (2026-01-08)
+
+### Fixes
+#### Human Resource
+
+* Expense/BankOrder: fixed the wrong bank details used on multi currency expense
+
+#### Production
+
+* Manufacturing order: include per-piece work center cost in cost sheets.
+
+#### Stock
+
+* Stock move : fixed invoiced quantity issue on stock move lines of a new stock move from reversion.
+* Stock correction: stock move now uses product average price when stock location line is not present
+
 ## [8.1.38] (2025-12-18)
 
 ### Fixes
@@ -1826,6 +1842,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.39]: https://github.com/axelor/axelor-open-suite/compare/v8.1.38...v8.1.39
 [8.1.38]: https://github.com/axelor/axelor-open-suite/compare/v8.1.37...v8.1.38
 [8.1.37]: https://github.com/axelor/axelor-open-suite/compare/v8.1.36...v8.1.37
 [8.1.36]: https://github.com/axelor/axelor-open-suite/compare/v8.1.35...v8.1.36
