@@ -91,10 +91,14 @@ public class InvoicePrintBusinessProjectServiceImpl extends InvoicePrintServiceI
 
   @Override
   public File printAndSave(
-      Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale)
+      Invoice invoice,
+      Integer reportType,
+      PrintingTemplate invoicePrintTemplate,
+      String locale,
+      boolean toAttach)
       throws AxelorException {
     try {
-      File file = super.printAndSave(invoice, reportType, invoicePrintTemplate, locale);
+      File file = super.printAndSave(invoice, reportType, invoicePrintTemplate, locale, toAttach);
       File printExpenses = printExpenses(invoice, locale);
       if (printExpenses != null) {
         MetaFile expenseMetaFile = metaFiles.upload(printExpenses);
