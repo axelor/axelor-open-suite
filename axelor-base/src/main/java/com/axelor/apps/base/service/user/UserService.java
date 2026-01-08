@@ -197,8 +197,7 @@ public interface UserService {
    * @param user
    * @return
    */
-  @Transactional
-  public Partner setUserPartner(Partner partner, User user);
+  public void setUserPartner(Partner partner, User user);
 
   public void generateRandomPasswordForUser(User user);
 

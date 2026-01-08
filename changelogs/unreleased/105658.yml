@@ -1,0 +1,3 @@
+---
+title: "User: fixed concurrent modification error when creating a contact for another user."
+module: axelor-base
