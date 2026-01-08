@@ -30,9 +30,11 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.PurchaseOrderSequenceService;
 import com.axelor.apps.supplychain.db.repo.PurchaseOrderSupplychainRepository;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -61,9 +63,13 @@ public class PurchaseOrderManagementBudgetRepository extends PurchaseOrderSupply
           .validatePurchaseAmountWithBudgetDistribution(purchaseOrder);
 
       if (purchaseOrder.getStatusSelect() != null
-          && purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_REQUESTED) {
-        Beans.get(PurchaseOrderBudgetService.class)
-            .updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+          && purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_VALIDATED) {
+        BigDecimal sumInvoices =
+            Beans.get(OrderInvoiceService.class).amountToBeInvoiced(purchaseOrder);
+        if (sumInvoices.compareTo(BigDecimal.ZERO) == 0) {
+          Beans.get(PurchaseOrderBudgetService.class)
+              .updateBudgetLinesFromPurchaseOrder(purchaseOrder);
+        }
       }
 
     } catch (AxelorException e) {
