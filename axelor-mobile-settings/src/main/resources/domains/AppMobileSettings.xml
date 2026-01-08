@@ -39,6 +39,8 @@
       title="Enable addition of new lines in customer delivery." default="false"/>
     <boolean name="isSupplierArrivalLineAdditionEnabled"
       title="Enable addition of new lines in supplier arrival." default="false"/>
+    <string name="freightCarrierModeTrackingIds"
+      title="Freight carrier mode requiring a tracking number during shipment"/>
 
     <string name="minimalRequiredMobileAppVersion"
       title="Minimal required version of the mobile application."
@@ -188,6 +190,7 @@
       <field name="isVerifyInventoryLineEnabled" on="UPDATE"/>
       <field name="isCustomerDeliveryLineAdditionEnabled" on="UPDATE"/>
       <field name="isSupplierArrivalLineAdditionEnabled" on="UPDATE"/>
+      <field name="freightCarrierModeTrackingIds" on="UPDATE"/>
       <field name="minimalRequiredMobileAppVersion" on="UPDATE"/>
       <field name="isMultiCurrencyEnabled" on="UPDATE"/>
       <field name="isExpenseProjectInvoicingEnabled" on="UPDATE"/>

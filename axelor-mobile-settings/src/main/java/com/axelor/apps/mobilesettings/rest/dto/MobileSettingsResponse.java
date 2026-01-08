@@ -65,6 +65,7 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isFolderCreationAllowed;
   protected final Boolean isFileCreationAllowed;
   protected final Boolean isFileDeletionAllowed;
+  protected final List<Long> freightCarrierModeTrackingIds;
   protected final Long defaultQiDetectionId;
 
   public MobileSettingsResponse(
@@ -108,6 +109,7 @@ public class MobileSettingsResponse extends ResponseStructure {
       Boolean isFolderCreationAllowed,
       Boolean isFileCreationAllowed,
       Boolean isFileDeletionAllowed,
+      List<Long> freightCarrierModeTrackingIds,
       Long defaultQiDetectionId) {
     super(version);
     this.apps = apps;
@@ -149,6 +151,7 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.isFolderCreationAllowed = isFolderCreationAllowed;
     this.isFileCreationAllowed = isFileCreationAllowed;
     this.isFileDeletionAllowed = isFileDeletionAllowed;
+    this.freightCarrierModeTrackingIds = freightCarrierModeTrackingIds;
     this.defaultQiDetectionId = defaultQiDetectionId;
   }
 
@@ -342,6 +345,11 @@ public class MobileSettingsResponse extends ResponseStructure {
   @JsonProperty(value = "isFileDeletionAllowed")
   public Boolean getIsFileDeletionAllowed() {
     return isFileDeletionAllowed;
+  }
+
+  @JsonProperty(value = "freightCarrierModeTrackingIds")
+  public List<Long> getFreightCarrierModeTrackingIds() {
+    return freightCarrierModeTrackingIds;
   }
 
   @JsonProperty(value = "defaultQiDetectionId")
