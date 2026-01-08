@@ -366,6 +366,7 @@
 "Inventory.description","Description",,
 "Inventory.fromRack","from",,
 "Inventory.lastInventoryDate","Last Inventory",,
+"Inventory.lineStockLocation","Stock Location",,
 "Inventory.plannedEndDateT","Planned End Date",,
 "Inventory.plannedStartDateT","Planned Start Date",,
 "Inventory.product","Product",,
