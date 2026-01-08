@@ -540,7 +540,7 @@ public class FixedAssetServiceImpl implements FixedAssetService {
       filterListsByDates(fixedAsset, disposalDate);
     }
     fixedAssetLineGenerationService.generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
-    fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true, true);
+    fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true, false);
     fixedAsset.setAssetDisposalReason(assetDisposalReason);
     fixedAssetRepo.save(fixedAsset);
     if (createdFixedAsset != null) {
