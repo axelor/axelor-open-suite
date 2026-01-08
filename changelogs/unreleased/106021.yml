@@ -1,0 +1,3 @@
+---
+title: "Fixed asset: fixed the wrong depreciation move amount on the disposal year."
+module: axelor-account
