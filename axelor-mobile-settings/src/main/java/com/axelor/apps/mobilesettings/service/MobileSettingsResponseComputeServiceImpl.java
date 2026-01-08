@@ -101,6 +101,7 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsEditionOfDateAllowed(),
         appMobileSettings.getIsTimesheetProjectInvoicingEnabled(),
         appMobileSettings.getIsStockLocationManagementEnabled(),
+        appMobileSettings.getIsSimplifiedStockMoveLineDisplayEnabled(),
         appMobileSettings.getIsOneLineShortcut(),
         appMobileSettings.getMinimalRequiredMobileAppVersion(),
         getFieldsToShowOnTimesheet(appMobileSettings.getFieldsToShowOnTimesheet()),

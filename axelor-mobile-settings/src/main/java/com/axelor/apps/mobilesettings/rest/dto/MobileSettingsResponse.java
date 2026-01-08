@@ -48,6 +48,7 @@ public class MobileSettingsResponse extends ResponseStructure {
   protected final Boolean isEditionOfDateAllowed;
   protected final Boolean isTimesheetProjectInvoicingEnabled;
   protected final Boolean isStockLocationManagementEnabled;
+  protected final Boolean isSimplifiedStockMoveLineDisplayEnabled;
   protected final Boolean isOneLineShortcut;
   protected final String minimalRequiredMobileAppVersion;
   protected final List<String> fieldsToShowOnTimesheet;
@@ -92,6 +93,7 @@ public class MobileSettingsResponse extends ResponseStructure {
       Boolean isEditionOfDateAllowed,
       Boolean isTimesheetProjectInvoicingEnabled,
       Boolean isStockLocationManagementEnabled,
+      Boolean isSimplifiedStockMoveLineDisplayEnabled,
       Boolean isOneLineShortcut,
       String minimalRequiredMobileAppVersion,
       List<String> fieldsToShowOnTimesheet,
@@ -134,6 +136,7 @@ public class MobileSettingsResponse extends ResponseStructure {
     this.isEditionOfDateAllowed = isEditionOfDateAllowed;
     this.isTimesheetProjectInvoicingEnabled = isTimesheetProjectInvoicingEnabled;
     this.isStockLocationManagementEnabled = isStockLocationManagementEnabled;
+    this.isSimplifiedStockMoveLineDisplayEnabled = isSimplifiedStockMoveLineDisplayEnabled;
     this.isOneLineShortcut = isOneLineShortcut;
     this.minimalRequiredMobileAppVersion = minimalRequiredMobileAppVersion;
     this.fieldsToShowOnTimesheet = fieldsToShowOnTimesheet;
@@ -262,6 +265,11 @@ public class MobileSettingsResponse extends ResponseStructure {
   @JsonProperty(value = "isStockLocationManagementEnabled")
   public Boolean getStockLocationManagementEnabled() {
     return isStockLocationManagementEnabled;
+  }
+
+  @JsonProperty(value = "isSimplifiedStockMoveLineDisplayEnabled")
+  public Boolean getSimplifiedStockMoveLineDisplayEnabled() {
+    return isSimplifiedStockMoveLineDisplayEnabled;
   }
 
   @JsonProperty(value = "isOneLineShortcut")
