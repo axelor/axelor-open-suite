@@ -1,3 +1,162 @@
+## [8.3.26] (2026-01-08)
+
+### Fixes
+#### Base
+
+* User: fixed concurrent modification error when creating a contact for another user.
+* Sequence: fixed unit tests after sequence management refactoring.
+* Partner: fixed wrong registration code and VAT Number on the Axelor demo data partner.
+* Sequence: added reserved sequence management system to address deadlock issues.
+
+#### Account
+
+* Invoice: fixed the printing file generation on invoice ventilation when auto generation is enabled in invoice app, independent of the printing template toAttach flag.
+* Sale invoice details: fixed the date format on report.
+* Fixed asset: fixed the wrong depreciation move amount on the disposal year.
+* MoveLine/VatSystem: fixed wrong vat system computation on generate counterpart action.
+
+#### Budget
+
+* Sale/Purchase order: fixed the error when auto computing budget distribution.
+* BudgetDistribution : fixed the automatic compute via budget key when using multiple axis.
+
+#### Contract
+
+* Contract template: fixed the display of 'Grouped Invoicing' and taxes on change of product on contract lines.
+
+#### CRM
+
+* Dashboard: removed duplicated dashlet 'dashlet.created.leads.by.industry.sector'.
+* Dashboard: fixed the status issue on charts 'chart.leads.by.team.by.status.bar' and 'chart.leads.by.saleman.by.status.bar'.
+* Dashboard: fixed the country issue on 'chart.leads.by.country.bar' chart.
+
+#### Helpdesk
+
+* Ticket: fixed the display of some fields.
+
+#### Human Resource
+
+* Expense : changed expense so that could not be editable once validated.
+* Timesheet: fixed an issue with timesheet completion when public holiday events planning is not set on the employee.
+* Timesheet: fixed the generation of timesheet lines from the expected planning.
+
+#### Production
+
+* Prod process : fixed 'Stock move realize order select' doesn't take into account production config.
+* Bom tree: fixed the qty scale based on nbDecimalDigitForBomQty.
+* Manufacturing order: include per-piece work center cost in cost sheets.
+
+#### Stock
+
+* Stock move : fixed invoiced quantity issue on stock move lines of a new stock move from reversion.
+* Inventory: Corrected PDF printing of inventories
+
+#### Supply Chain
+
+* Sale order: fixed the percentage of the time table lines on change of sale order lines.
+* SaleOrder : fixed set analytic on sale order line when loading pack.
+
+
+### Developer
+
+#### Base
+
+Following the sequence management refactoring (ticket 105427), unit tests in TestSequenceService
+were failing because they relied on mocked SequenceComputationService.
+
+Changes made:
+- Removed TestSequenceService.java: tests were redundant as the same functionality
+  is now tested in SequenceComputationServiceTest
+- Updated SequenceComputationServiceTest.java: added missing test cases migrated from
+  TestSequenceService (uppercase/lowercase letter sequences, null lettersType handling)
+- Removed unused method isSequenceAlreadyExisting() from SequenceService.java
+
+---
+
+Added new entity ReservedSequence to track sequence reservations with three statuses:
+PENDING (0), CONFIRMED (1), RELEASED (2).
+
+New services added:
+- SequenceIncrementExecutor: executes sequence increments in isolated transactions
+- SequenceReservationService: manages sequence reservations with transaction synchronization
+- SequenceComputationService: computes sequence numbers (pure logic, no DB access)
+- ReservedSequenceCleanupService: cleans up orphaned reservations
+
+New batch added: Reserved sequence cleanup
+
+New configuration in AppBase:
+- sequenceIncrementTimeout: timeout in seconds for sequence increment (default: 5)
+
+This feature can require a new base batch and a scheduler. 
+There are init datas on the ticket PR for it : https://github.com/axelor/axelor-open-suite/pull/15416/files
+Please add this to your instance and use the scheduler every day by default.
+
+Database migration required - see SQL script below.
+
+```sql
+-- Create new table BASE_RESERVED_SEQUENCE
+create table if not exists base_reserved_sequence
+(
+id                  bigint    not null primary key,
+archived            boolean,
+import_id           varchar(255) unique,
+import_origin       varchar(255),
+process_instance_id varchar(255),
+version             integer,
+created_on          timestamp,
+updated_on          timestamp,
+attrs               jsonb,
+caller_class        varchar(255),
+caller_field        varchar(255),
+generated_sequence  text      not null,
+reserved_at         timestamp not null,
+reserved_num        bigint    not null,
+status              integer,
+created_by          bigint references auth_user,
+updated_by          bigint references auth_user,
+sequence            bigint    not null references base_sequence,
+sequence_version    bigint    not null references base_sequence_version
+);
+
+create index if not exists base_reserved_sequence_sequence_idx
+on base_reserved_sequence (sequence);
+
+create index if not exists base_reserved_sequence_sequence_version_idx
+on base_reserved_sequence (sequence_version);
+
+create index if not exists idx_reserved_seq_seq_version_status
+on base_reserved_sequence (sequence, sequence_version, status);
+
+create index if not exists idx_reserved_seq_status_reserved_at
+on base_reserved_sequence (status, reserved_at);
+
+-- Add new column to studio_app_base
+alter table studio_app_base
+add if not exists sequence_increment_timeout integer
+constraint studio_app_base_sequence_increment_timeout_check
+check ((sequence_increment_timeout >= 1) AND (sequence_increment_timeout <= 60));
+
+-- Add new columns to base_batch
+alter table base_base_batch
+add if not exists orphan_reservation_timeout_minutes integer
+constraint base_base_batch_orphan_reservation_timeout_minutes_check
+check (orphan_reservation_timeout_minutes >= 1);
+alter table base_base_batch
+add if not exists confirmed_reservation_retention_days integer
+constraint base_base_batch_confirmed_reservation_retention_days_check
+check (confirmed_reservation_retention_days >= 1);
+alter table base_base_batch
+add if not exists delete_old_confirmed_reservations boolean;
+```
+
+#### Account
+
+- Changed method signature from printAndSave(Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale) to printAndSave(Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale, boolean toAttach) in InvoicePrintService
+
+#### Human Resource
+
+- Added WeeklyPlanningService, LeaveRequestService and PublicHolidayHrService in TimesheetProjectPlanningTimeServiceImpl constructor
+
 ## [8.3.25] (2025-12-18)
 
 ### Fixes
@@ -2219,6 +2378,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.26]: https://github.com/axelor/axelor-open-suite/compare/v8.3.25...v8.3.26
 [8.3.25]: https://github.com/axelor/axelor-open-suite/compare/v8.3.24...v8.3.25
 [8.3.24]: https://github.com/axelor/axelor-open-suite/compare/v8.3.23...v8.3.24
 [8.3.23]: https://github.com/axelor/axelor-open-suite/compare/v8.3.22...v8.3.23
