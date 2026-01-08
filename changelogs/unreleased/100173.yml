@@ -1,0 +1,3 @@
+---
+title: "Declaration of exchanges: fixed the issue with stockMoveTypeSelect and productTypeSelect."
+module: axelor-supplychain
