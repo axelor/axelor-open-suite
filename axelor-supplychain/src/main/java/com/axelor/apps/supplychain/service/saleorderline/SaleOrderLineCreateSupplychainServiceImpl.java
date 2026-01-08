@@ -72,7 +72,7 @@ public class SaleOrderLineCreateSupplychainServiceImpl extends SaleOrderLineCrea
     if (soLine != null && soLine.getProduct() != null) {
       soLine.setSaleSupplySelect(soLine.getProduct().getSaleSupplySelect());
 
-      AnalyticLineModel analyticLineModel = new AnalyticLineModel(soLine, null);
+      AnalyticLineModel analyticLineModel = new AnalyticLineModel(soLine, saleOrder);
       analyticLineModelService.getAndComputeAnalyticDistribution(analyticLineModel);
 
       if (ObjectUtils.notEmpty(soLine.getAnalyticMoveLineList())) {
