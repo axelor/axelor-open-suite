@@ -1,5 +1,0 @@
----
-title: "Invoice: fixed the printing file generation on invoice ventilation when auto generation is enabled in invoice app, independent of the printing template toAttach flag."
-module: axelor-account
-developer: |
-  - Changed method signature from printAndSave(Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale) to printAndSave(Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale, boolean toAttach) in InvoicePrintService
