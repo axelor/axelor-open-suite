@@ -361,12 +361,11 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     if (CollectionUtils.isNotEmpty(timetableList)) {
       if (invoicingState == SaleOrderRepository.INVOICING_STATE_PARTIALLY_INVOICED
           || invoicingState == SaleOrderRepository.INVOICING_STATE_INVOICED) {
-        BigDecimal amount =
-            saleOrder.getInAti() ? saleOrder.getInTaxTotal() : saleOrder.getExTaxTotal();
         timetableList.forEach(
             timetable ->
                 timetable.setPercentage(
-                    amount
+                    timetable
+                        .getAmount()
                         .multiply(BigDecimal.valueOf(100))
                         .divide(
                             saleOrder.getExTaxTotal(),
@@ -376,11 +375,12 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
             I18n.get(SupplychainExceptionMessage.SALE_ORDER_TIMETABLE_CAN_NOT_BE_UPDATED),
             saleOrder.getAmountToBeSpreadOverTheTimetable());
       }
+      BigDecimal amount =
+          saleOrder.getInAti() ? saleOrder.getInTaxTotal() : saleOrder.getExTaxTotal();
       timetableList.forEach(
           timetable ->
               timetable.setAmount(
-                  saleOrder
-                      .getExTaxTotal()
+                  amount
                       .multiply(
                           timetable
                               .getPercentage()
