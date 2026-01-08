@@ -1,3 +1,26 @@
+## [8.2.34] (2026-01-08)
+
+### Fixes
+#### Budget
+
+* BudgetDistribution : fixed the automatic compute via budget key when using multiple axis.
+
+#### Human Resource
+
+* Expense: fixed wrong hidden condition on refuse button.
+
+#### Production
+
+* Product: fixed an error occurring when deleting a product variant.
+
+#### Sale
+
+* Sale order: fixed price list date validity check.
+
+#### Stock
+
+* Stock : prohibited selection of product model in inventory, stock correction and stock details by product.
+
 ## [8.2.33] (2025-12-18)
 
 ### Fixes
@@ -2198,6 +2221,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.34]: https://github.com/axelor/axelor-open-suite/compare/v8.2.33...v8.2.34
 [8.2.33]: https://github.com/axelor/axelor-open-suite/compare/v8.2.32...v8.2.33
 [8.2.32]: https://github.com/axelor/axelor-open-suite/compare/v8.2.31...v8.2.32
 [8.2.31]: https://github.com/axelor/axelor-open-suite/compare/v8.2.30...v8.2.31
