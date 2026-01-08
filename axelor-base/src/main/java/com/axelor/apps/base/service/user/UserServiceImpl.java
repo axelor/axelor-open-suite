@@ -422,12 +422,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Partner setUserPartner(Partner partner, User user) {
-    partner.setUser(user);
-    partner.setTeam(user.getActiveTeam());
+  public void setUserPartner(Partner partner, User user) {
     user.setPartner(partner);
     userRepo.save(user);
-    return partner;
   }
 
   @Override
