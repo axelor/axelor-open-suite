@@ -102,8 +102,6 @@ public class StockLocationStockRepository extends StockLocationRepository {
 
     StockLocation copy = super.copy(entity, deep);
 
-    copy.clearDetailsStockLocationLineList();
-    copy.clearStockLocationLineList();
     copy.setBarCode(null);
     copy.setSerialNumber(null);
     return copy;

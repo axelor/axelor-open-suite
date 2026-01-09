@@ -26,16 +26,12 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import org.apache.commons.collections.CollectionUtils;
 
 public class StockLocationController {
 
   public void addToCart(ActionRequest request, ActionResponse response) {
     try {
       StockLocation stockLocation = request.getContext().asType(StockLocation.class);
-      if (CollectionUtils.isEmpty(stockLocation.getStockLocationLineList())) {
-        return;
-      }
       Beans.get(CartStockLocationService.class).addToCart(stockLocation);
       response.setNotify(
           String.format(

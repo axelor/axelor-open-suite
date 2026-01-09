@@ -524,7 +524,6 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     StockLocationLine detailLocationLine = new StockLocationLine();
 
     detailLocationLine.setDetailsStockLocation(stockLocation);
-    stockLocation.addDetailsStockLocationLineListItem(detailLocationLine);
     detailLocationLine.setProduct(product);
     detailLocationLine.setUnit(product.getUnit());
     detailLocationLine.setCurrentQty(qty);
