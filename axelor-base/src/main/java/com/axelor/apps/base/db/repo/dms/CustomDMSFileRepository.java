@@ -36,6 +36,8 @@ public class CustomDMSFileRepository extends DMSFileRepository {
   public DMSFile save(DMSFile entity) {
     DMSFile saved = super.save(entity);
 
+    // Ensures that all files uploaded by a user shows in their "My Documents" menu
+    // Even if the directory uploaded to was created by the upload operation of another user.
     if (!Boolean.TRUE.equals(saved.getIsDirectory()) && saved.getCreatedBy() != null) {
       grantAccessToFolderHierarchy(saved.getParent(), saved.getCreatedBy());
     }

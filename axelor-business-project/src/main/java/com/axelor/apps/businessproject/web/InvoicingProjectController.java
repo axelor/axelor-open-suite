@@ -29,7 +29,7 @@ import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.ProjectGenerateInvoiceService;
 import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownDisplayService;
-import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownPdfService;
+import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownPrintService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -39,7 +39,6 @@ import com.axelor.rpc.ActionResponse;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -134,7 +133,7 @@ public class InvoicingProjectController {
 
     List<Map<String, Object>> displayData =
         Beans.get(InvoiceBreakdownDisplayService.class).generateBreakdownFromInvoice(invoice);
-    String html = Beans.get(InvoiceBreakdownPdfService.class).buildHtmlFromData(displayData);
+    String html = Beans.get(InvoiceBreakdownPrintService.class).buildHtmlFromData(displayData);
     log.debug("Finished building view for invoice line breakdown");
 
     // Set HTML in response
@@ -148,7 +147,8 @@ public class InvoicingProjectController {
         invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
       }
 
-      String fileLink = Beans.get(InvoiceBreakdownPdfService.class).printInvoiceBreakdown(invoice);
+      String fileLink =
+          Beans.get(InvoiceBreakdownPrintService.class).printInvoiceBreakdown(invoice);
 
       String title = I18n.get("Invoice Breakdown");
 

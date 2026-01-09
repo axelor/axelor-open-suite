@@ -100,8 +100,8 @@ import com.axelor.apps.businessproject.service.config.BusinessProjectConfigServi
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigServiceImpl;
 import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownDisplayService;
 import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownDisplayServiceImpl;
-import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownPdfService;
-import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownPdfServiceImpl;
+import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownPrintService;
+import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownPrintServiceImpl;
 import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseInvoiceService;
 import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseInvoiceServiceImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoiceMergingServiceBusinessProjectImpl;
@@ -258,6 +258,6 @@ public class BusinessProjectModule extends AxelorModule {
     bind(TaskReportService.class).to(TaskReportServiceImpl.class);
     bind(TaskAssignmentNotificationRule.class).asEagerSingleton();
     bind(ProjectHRRepository.class).to(BusinessProjectManagementRepository.class);
-    bind(InvoiceBreakdownPdfService.class).to(InvoiceBreakdownPdfServiceImpl.class);
+    bind(InvoiceBreakdownPrintService.class).to(InvoiceBreakdownPrintServiceImpl.class);
   }
 }

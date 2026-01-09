@@ -4,7 +4,7 @@ import com.axelor.apps.account.db.Invoice;
 import java.util.List;
 import java.util.Map;
 
-public interface InvoiceBreakdownPdfService {
+public interface InvoiceBreakdownPrintService {
   String printInvoiceBreakdown(Invoice invoice) throws Exception;
 
   String buildHtmlFromData(List<Map<String, Object>> data);
