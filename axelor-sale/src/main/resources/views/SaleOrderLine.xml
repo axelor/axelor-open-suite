@@ -299,7 +299,7 @@
             <panel name="discountAmountPanel" colSpan="9" hideIf="discountTypeSelect == 0">
               <field name="discountAmount" colSpan="3" readonlyIf="$nonNegotiable"
                 validIf="!$maxDiscount || (discountTypeSelect == 1 &amp;&amp; $number(discountAmount) &lt;= ($number(discountDerogation) || $number($maxDiscount))) || (discountTypeSelect == 2 &amp;&amp; 100*$number(discountAmount)/$number(price) &lt;= ($number(discountDerogation) || $number($maxDiscount)))"
-                onChange="action-sale-order-line-method-discount-amount-onchange"
+                onChange="action-sale-order-line-group-discount-amount-onchange"
                 x-scale="$nbDecimalDigitForUnitPrice"/>
               <field name="discountDerogation" colSpan="3"
                 onChange="action-sale-order-line-record-fill-discount-amount-from-derogation,action-sale-order-line-group-discount-amount-onchange"/>
