@@ -138,9 +138,9 @@
               <field name="customerName" title="Customer Name" hideIf="customerNotAvailable"/>
 
               <field name="employeeSignature" title="Employee Signature" widget="drawing"
-                colSpan="6"/>
+                colSpan="6" hidden="true"/>
               <field name="customerSignature" title="Customer Signature" widget="drawing"
-                colSpan="6" hideIf="customerNotAvailable"/>
+                hidden="true" colSpan="6"/>
               <field name="reportedAllTasks" hidden="true" x-dirty="false"/>
             </panel>
           </panel>
@@ -172,7 +172,7 @@
 
   <action-attrs name="action-customer-available-attrs">
     <attribute for="customerName" name="hidden" expr="customerNotAvailable"/>
-    <attribute for="customerSignature" name="hidden" expr="customerNotAvailable"/>
+    <!-- <attribute for="customerSignature" name="hidden" expr="customerNotAvailable"/> -->
   </action-attrs>
 
   <action-attrs name="action-task-member-report-attrs-task-domain">

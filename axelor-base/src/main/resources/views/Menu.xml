@@ -107,6 +107,9 @@
   <menuitem name="admin-root-general-unit" parent="admin-root-general" order="100"
     title="Units" action="admin.root.general.unit"/>
 
+  <menuitem name="mgm-admin-root-general-unit" parent="mgm-admin" order="100" title="Units"
+    action="admin.root.general.unit"/>
+
   <action-view name="admin.root.general.unit" title="Units"
     model="com.axelor.apps.base.db.Unit">
     <view type="grid" name="unit-grid"/>

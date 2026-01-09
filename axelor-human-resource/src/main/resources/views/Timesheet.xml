@@ -119,14 +119,14 @@
         <field name="employee" colSpan="5" form-view="employee-form"
           onChange="action-timesheet-group-employee-onchange"
           onSelect="action-hr-attrs-set-employee-domain" grid-view="employee-grid" canNew="false"
-          canEdit="false" canView="false"/>
+          canEdit="true" canView="false"/>
         <field if-module="axelor-business-production"
           if=" __config__.app.getApp('production')?.getManageBusinessProduction()"
           name="employee.timesheetImputationSelect" hidden="true"/>
-        <field name="fromDate"
+        <field name="fromDate" canEdit="true"
           onChange="action-timesheet-validate-fromDate,action-timesheet-record-to-date" colSpan="5"/>
-        <field name="toDate" readonlyIf="isCompleted"
-          onChange="action-timesheet-group-to-date-onchange" colSpan="5"/>
+        <field name="toDate" canEdit="true" onChange="action-timesheet-group-to-date-onchange"
+          colSpan="5"/>
         <button name="createBtn" title="Create" colSpan="2" hideIf="id"
           if="__config__.app.getApp('timesheet')?.getTimesheetEditor()"
           onClick="save,action-timesheet-set-show-editor,action-timesheet-attrs-refresh-editor,action-timesheet-attrs-panels,save"/>
@@ -340,7 +340,7 @@
     <action name="action-timesheet-group-buttons"/>
     <action name="action-timesheet-attrs-set-visible-duration-title"/>
     <action name="action-timesheet-attrs-title-project"/>
-    <action name="action-timesheet-attrs-from-date"/>
+    <!-- <action name="action-timesheet-attrs-from-date"/> -->
     <action name="action-timesheet-attrs-panels"/>
     <action name="action-timesheet-attrs-refresh-editor"/>
     <action name="action-timesheet-method-timesheet-compute-period-total"/>
