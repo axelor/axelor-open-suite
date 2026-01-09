@@ -218,6 +218,20 @@ public class ExpenseController {
     response.setView(actionView.map());
   }
 
+  public void createValidateForTechnicianManagers(ActionRequest request, ActionResponse response) {
+
+    User user = AuthUtils.getUser();
+    ActionViewBuilder actionView =
+        ActionView.define(I18n.get("Expenses to Validate"))
+            .model(Expense.class.getName())
+            .add("grid", "expense-validate-grid")
+            .add("form", "expense-form")
+            .param("search-filters", "expense-filters");
+
+    Beans.get(HRMenuValidateService.class).createValidateForTechnicianManagers(user, actionView);
+    response.setView(actionView.map());
+  }
+
   public void historicExpense(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();

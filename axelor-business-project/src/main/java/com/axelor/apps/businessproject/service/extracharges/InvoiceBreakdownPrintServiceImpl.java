@@ -1,13 +1,17 @@
 package com.axelor.apps.businessproject.service.extracharges;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.helpers.file.PdfHelper;
 import com.itextpdf.html2pdf.ConverterProperties;
 import com.itextpdf.html2pdf.HtmlConverter;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.nio.file.Path;
@@ -16,15 +20,13 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class InvoiceBreakdownPdfServiceImpl implements InvoiceBreakdownPdfService {
+public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintService {
 
-  private static final Logger log =
-      LoggerFactory.getLogger(InvoiceBreakdownDisplayServiceImpl.class);
+  private static final Logger log = LoggerFactory.getLogger(InvoiceBreakdownPrintServiceImpl.class);
 
   @Override
   public String printInvoiceBreakdown(Invoice invoice) throws Exception {
     log.debug("Generating PDF breakdown for invoice {}", invoice.getId());
-
     List<Map<String, Object>> displayData =
         Beans.get(InvoiceBreakdownDisplayService.class).generateBreakdownFromInvoice(invoice);
 
@@ -33,15 +35,25 @@ public class InvoiceBreakdownPdfServiceImpl implements InvoiceBreakdownPdfServic
 
     byte[] pdfBytes = convertHtmlToPdf(fullHtml);
 
-    String fileName =
-        String.format(
-            "invoice-breakdown-%s.pdf",
-            invoice.getInvoiceId() != null ? invoice.getInvoiceId() : invoice.getId());
+    String fileName = getFileName(invoice);
+    log.debug("Filename {}", fileName);
 
+    MetaFiles metaFiles = Beans.get(MetaFiles.class);
+
+    // Delete all existing invoice breakdown attachments
+    List<DMSFile> existingBreakdowns = findExistingAttachments(invoice, fileName);
+    for (DMSFile existing : existingBreakdowns) {
+      metaFiles.delete(existing);
+    }
+
+    // create temp file to write breakdown content
     Path tempFile = MetaFiles.createTempFile(null, ".pdf");
     try (FileOutputStream fos = new FileOutputStream(tempFile.toFile())) {
       fos.write(pdfBytes);
     }
+
+    MetaFile metaFile = metaFiles.upload(new FileInputStream(tempFile.toFile()), fileName);
+    metaFiles.attach(metaFile, fileName, invoice);
 
     return PdfHelper.getFileLinkFromPdfFile(tempFile.toFile(), fileName);
   }
@@ -170,5 +182,22 @@ public class InvoiceBreakdownPdfServiceImpl implements InvoiceBreakdownPdfServic
       HtmlConverter.convertToPdf(html, os, props);
       return os.toByteArray();
     }
+  }
+
+  private List<DMSFile> findExistingAttachments(Invoice invoice, String fileName) {
+    return Beans.get(DMSFileRepository.class)
+        .all()
+        .filter(
+            "self.relatedId = ?1 AND self.relatedModel = ?2 AND self.fileName = ?3",
+            invoice.getId(),
+            Invoice.class.getName(),
+            fileName)
+        .fetch();
+  }
+
+  private String getFileName(Invoice invoice) {
+    return String.format(
+        "invoice-breakdown-%s.pdf",
+        invoice.getInvoiceId() != null ? invoice.getInvoiceId() : invoice.getId());
   }
 }

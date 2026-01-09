@@ -27,6 +27,8 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.expense.ExpenseCreateWizardService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainService;
+import com.axelor.apps.project.db.Project;
+import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
@@ -85,6 +87,31 @@ public class ExpenseLineController {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
     String domain = Beans.get(ExpenseLineService.class).computeProjectTaskDomain(expenseLine);
     response.setAttr("projectTask", "domain", domain);
+  }
+
+  public void setProjectTaskDomain(ActionRequest request, ActionResponse response) {
+    ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
+    Expense expense = request.getContext().getParent().asType(Expense.class);
+
+    if (expense == null || expense.getProject() == null || expense.getEmployee() == null) {
+      response.setAttr("projectTask", "domain", "self.id IS NULL");
+      return;
+    }
+
+    Project project = expense.getProject();
+    User user = expense.getEmployee().getUser();
+
+    boolean isMember = project.getMembersUserSet().contains(user);
+    boolean isAssigned = project.getAssignedTo() != null && project.getAssignedTo().equals(user);
+
+    if (isMember || isAssigned) {
+      response.setAttr(
+          "projectTask",
+          "domain",
+          "self.project.id = " + project.getId() + " AND self.assignedTo.id = " + user.getId());
+    } else {
+      response.setAttr("projectTask", "domain", "self.id IS NULL");
+    }
   }
 
   public void setInvitedCollaboratorSetDomain(ActionRequest request, ActionResponse response) {

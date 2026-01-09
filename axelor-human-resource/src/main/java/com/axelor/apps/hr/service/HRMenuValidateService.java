@@ -45,4 +45,22 @@ public class HRMenuValidateService {
       }
     }
   }
+
+  // allow technician managers to validate expenses too
+  public void createValidateForTechnicianManagers(
+      User user, ActionView.ActionViewBuilder actionView) {
+    actionView.domain("self.statusSelect IN (1, 2)");
+
+    // If the user is NOT a technician manager, hide all records
+    if (user == null || user.getGroup() == null || !"CUSTOM-TM".equals(user.getGroup().getCode())) {
+      actionView.domain("self.id IS NULL");
+      return;
+    }
+    actionView
+        .domain(
+            actionView.get().getDomain()
+                + " AND ("
+                + "self.project.membersUserSet[].id = :_userId)")
+        .context("_userId", user.getId());
+  }
 }

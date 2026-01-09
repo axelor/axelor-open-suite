@@ -138,9 +138,9 @@
               <field name="customerName" title="Customer Name" hideIf="customerNotAvailable"/>
 
               <field name="employeeSignature" title="Employee Signature" widget="drawing"
-                colSpan="6"/>
+                colSpan="6" hidden="true"/>
               <field name="customerSignature" title="Customer Signature" widget="drawing"
-                colSpan="6" hideIf="customerNotAvailable"/>
+                hidden="true" colSpan="6"/>
               <field name="reportedAllTasks" hidden="true" x-dirty="false"/>
             </panel>
           </panel>
@@ -152,15 +152,18 @@
   <!-- Define the form view for Task Member Report -->
   <form name="task-member-report-form" title="Team Member Report"
     onLoad="action-task-member-report-group-on-load" onNew="action-task-member-report-group-on-new"
+    onSave="action-task-member-report-validate-start-time-after-end-time"
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <panel colSpan="12" canCollapse="true" collapseIf="false">
       <field name="task" title="Task" widget="Select"
         onChange="action-task-member-report-on-change-task" required="true"/>
       <field name="employee" title="Employee" readonly="true"/>
-      <field name="startTime" onChange="action-task-report-on-change-time"/>
+      <field name="startTime"
+        onChange="action-task-report-on-change-time, action-task-member-report-validate-start-time-after-end-time"/>
       <field name="breakTimeMinutes" title="Break Time (minutes)"
         onChange="action-task-member-report-sync-minutes-to-hours,action-task-report-on-change-time"/>
-      <field name="endTime" onChange="action-task-report-on-change-time"/>
+      <field name="endTime"
+        onChange="action-task-report-on-change-time, action-task-member-report-validate-start-time-after-end-time"/>
       <field name="task.projectTaskCategory" title="Task Category" readonly="true"/>
       <field name="workHours"/>
       <field name="breakTimeHours" hidden="true"/>
@@ -169,7 +172,7 @@
 
   <action-attrs name="action-customer-available-attrs">
     <attribute for="customerName" name="hidden" expr="customerNotAvailable"/>
-    <attribute for="customerSignature" name="hidden" expr="customerNotAvailable"/>
+    <!-- <attribute for="customerSignature" name="hidden" expr="customerNotAvailable"/> -->
   </action-attrs>
 
   <action-attrs name="action-task-member-report-attrs-task-domain">
@@ -183,6 +186,14 @@
     'self.projectStatus.isCompleted = false AND (self.membersUserSet[].id = ' + __user__.id + ' OR self.assignedTo.id = ' + __user__.id + ')' :
            'self.projectStatus.isCompleted = false'"/>
   </action-attrs>
+
+
+  <action-validate
+    name="action-task-member-report-validate-start-time-after-end-time">
+    <error message="Start time must be before or at end time"
+      if="startTime != null &amp;&amp; endTime != null &amp;&amp; startTime.isAfter(endTime)"
+      action="action-task-member-report-reset-invalid-time"/>
+  </action-validate>
 
   <action-method name="action-task-report-method-preview">
     <call class="com.axelor.apps.businessproject.web.TaskReportController"
@@ -225,6 +236,11 @@
   <action-record name="action-task-member-report-record-default-start-time"
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <field name="startTime" expr="eval: __datetime__"/>
+  </action-record>
+
+  <action-record name="action-task-member-report-reset-invalid-time"
+    model="com.axelor.apps.businessproject.db.TaskMemberReport">
+    <field name="endTime" expr="eval: null"/>
   </action-record>
 
   <action-view name="action-task-report-dashlet" title="Task Reports"
