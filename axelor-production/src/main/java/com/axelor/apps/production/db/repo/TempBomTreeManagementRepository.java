@@ -19,7 +19,7 @@
 package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.service.app.AppProductionService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class TempBomTreeManagementRepository extends TempBomTreeRepository {
