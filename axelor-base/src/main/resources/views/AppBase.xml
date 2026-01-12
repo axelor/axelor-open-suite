@@ -62,6 +62,7 @@
         <field name="manageProductVariants" widget="boolean-switch"/>
         <field name="activatePartnerRelations" widget="boolean-switch"
           if="['supplychain','account'].any{module -> __config__.app.isApp(module)}"/>
+        <field name="enableProductsSafety" widget="boolean-switch"/>
         <panel name="productSequenceManagement" colSpan="12" itemSpan="4">
           <field name="generateProductSequence" widget="boolean-switch"/>
           <field name="productSequenceTypeSelect" showIf="generateProductSequence"/>

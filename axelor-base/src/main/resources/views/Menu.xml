@@ -1252,7 +1252,8 @@
     <view type="form" name="base-hazard-phrase-form"/>
   </action-view>
 
-  <menuitem name="base-referential-root-product-settings" title="Settings" order="400"
-    parent="referential-root-product-root"/>
+  <menuitem name="base-referential-root-product-settings" title="Product Safety Config"
+    order="1800" parent="referential-conf"
+    if="__config__.app.getApp('base')?.getEnableProductsSafety()"/>
 
 </object-views>

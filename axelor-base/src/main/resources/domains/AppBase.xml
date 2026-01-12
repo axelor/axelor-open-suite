@@ -206,6 +206,9 @@
 
     <string name="importErrorPath" title="Import error directory path"/>
 
+    <boolean name="enableProductsSafety" title="Enable products safety" default="false"
+      help="By enabling this option, a safety panel becomes accessible from the product form view, allowing you to configure the product's safety information."/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -307,6 +310,7 @@
       <field name="contactPhoneBookPrintTemplate" on="UPDATE"/>
       <field name="productCatalogPGQLPrintTemplate" on="UPDATE"/>
       <field name="importErrorPath" on="UPDATE"/>
+      <field name="enableProductsSafety" on="UPDATE"/>
       <!-- 32 fields -->
     </track>
 
