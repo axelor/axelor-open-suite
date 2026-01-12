@@ -276,8 +276,7 @@
       <field name="excludeTimesheetEditor" if="__config__.app.isApp('timesheet')"
         if-module="axelor-human-resource"/>
       <field name="manageTimeSpent" widget="inline-checkbox"
-        onChange="action-project-record-manage-timespent-reset-values, action-attrs-project-show-log-time-panel"
-        if="__config__.app.isApp('timesheet')"/>
+        onChange="action-attrs-project-show-log-time-panel" if="__config__.app.isApp('timesheet')"/>
       <field name="sprintManagementSelect" widget="RadioSelect"/>
     </panel>
     <panel name="taskConfigurationPanel" title="Task configuration" colSpan="12"
@@ -679,11 +678,6 @@
   <action-record name="action-project-record-bind-customer-parent"
     model="com.axelor.apps.project.db.Project">
     <field name="clientPartner" expr="eval: __parent__?.clientPartner"/>
-  </action-record>
-
-  <action-record name="action-project-record-manage-timespent-reset-values"
-    model="com.axelor.apps.project.db.Project">
-    <field name="isInvoicingTimesheet" expr="eval: false" if="!manageTimeSpent"/>
   </action-record>
 
   <action-record name="action-project-record-status-new"
