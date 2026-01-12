@@ -38,6 +38,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
+import com.axelor.apps.stock.service.inventory.dto.InventoryCsvRowDto;
 import com.axelor.apps.stock.utils.BatchProcessorHelper;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
@@ -79,17 +80,6 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-  private static final String PRODUCT_NAME = I18n.get("Product Name");
-  private static final String PRODUCT_CODE = I18n.get("Product Code");
-  private static final String PRODUCT_CATEGORY = I18n.get("Product category");
-  private static final String RACK = I18n.get("Rack");
-  private static final String TRACKING_NUMBER = I18n.get("Tracking Number");
-  private static final String CURRENT_QUANTITY = I18n.get("Current Quantity");
-  private static final String REAL_QUANTITY = I18n.get("Real Quantity");
-  private static final String DESCRIPTION = I18n.get("Description");
-  private static final String LAST_INVENTORY_DATE = I18n.get("Last Inventory date");
-  private static final String STOCK_LOCATION = I18n.get("Stock Location");
-  private static final String PRICE = I18n.get("Price");
   private static final String X_MARK = "X";
 
   protected final AppBaseService appBaseService;
@@ -272,19 +262,7 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
 
     log.debug("File Located at: {}", file.getPath());
 
-    String[] headers = {
-      PRODUCT_NAME,
-      PRODUCT_CODE,
-      PRODUCT_CATEGORY,
-      RACK,
-      TRACKING_NUMBER,
-      CURRENT_QUANTITY,
-      REAL_QUANTITY,
-      DESCRIPTION,
-      LAST_INVENTORY_DATE,
-      STOCK_LOCATION,
-      PRICE
-    };
+    String[] headers = InventoryCsvRowDto.headers();
     CsvHelper.csvWriter(file.getParent(), file.getName(), separator.charAt(0), '"', headers, list);
 
     try (InputStream is = new FileInputStream(file)) {
@@ -358,20 +336,22 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
           I18n.get(StockExceptionMessage.INVENTORY_3));
     }
 
-    String code = line.get(PRODUCT_CODE).replace("\"", "");
-    String rack = line.get(RACK).replace("\"", "");
-    String trackingNumberSeq = line.get(TRACKING_NUMBER).replace("\"", "");
-    String description = line.get(DESCRIPTION).replace("\"", "");
-    String stockLocationName = line.get(STOCK_LOCATION).replace("\"", "");
+    InventoryCsvRowDto row = InventoryCsvRowDto.from(line);
+
+    String code = row.getProductCode();
+    String rack = row.getRack();
+    String trackingNumberSeq = row.getTrackingNumber();
+    String description = row.getDescription();
+    String stockLocationName = row.getStockLocation();
     StockLocation stockLocation = null;
     if (stockLocationName != null) {
       stockLocation = stockLocationRepository.findByName(stockLocationName);
     }
     String key = code + trackingNumberSeq + stockLocationName;
-    BigDecimal realQty = getRealQty(inventory, line);
-    BigDecimal currentQty = getCurrentQty(inventory, line);
+    BigDecimal realQty = getRealQty(inventory, row.getRealQuantity());
+    BigDecimal currentQty = getCurrentQty(inventory, row.getCurrentQuantity());
     Product product = getProduct(inventory, code);
-    BigDecimal price = getPrice(line.get(PRICE));
+    BigDecimal price = getPrice(row.getPrice());
 
     if (product == null
         || !product.getProductTypeSelect().equals(ProductRepository.PRODUCT_TYPE_STORABLE)) {
@@ -479,11 +459,11 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
     return trackingNumber;
   }
 
-  protected BigDecimal getRealQty(Inventory inventory, CSVRecord line) throws AxelorException {
+  protected BigDecimal getRealQty(Inventory inventory, String realQtyValue) throws AxelorException {
     int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
     try {
-      if (!StringUtils.isBlank(line.get(REAL_QUANTITY))) {
-        return new BigDecimal(line.get(REAL_QUANTITY)).setScale(qtyScale, RoundingMode.HALF_UP);
+      if (!StringUtils.isBlank(realQtyValue)) {
+        return new BigDecimal(realQtyValue).setScale(qtyScale, RoundingMode.HALF_UP);
       }
     } catch (NumberFormatException e) {
       throw new AxelorException(
@@ -495,11 +475,11 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
     return null;
   }
 
-  protected BigDecimal getCurrentQty(Inventory inventory, CSVRecord line) throws AxelorException {
+  protected BigDecimal getCurrentQty(Inventory inventory, String currentQtyValue)
+      throws AxelorException {
     int qtyScale = appBaseService.getAppBase().getNbDecimalDigitForQty();
     try {
-      return new BigDecimal(line.get(CURRENT_QUANTITY).replace("\"", ""))
-          .setScale(qtyScale, RoundingMode.HALF_UP);
+      return new BigDecimal(currentQtyValue).setScale(qtyScale, RoundingMode.HALF_UP);
     } catch (NumberFormatException e) {
       throw new AxelorException(
           new Throwable(I18n.get(StockExceptionMessage.INVENTORY_3_CURRENT_QUANTITY)),

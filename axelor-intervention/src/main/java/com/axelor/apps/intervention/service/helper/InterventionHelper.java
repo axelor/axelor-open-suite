@@ -83,9 +83,9 @@ public class InterventionHelper {
         countNonConforming.from(InterventionQuestion.class);
     countNonConforming.select(cb.count(rootNonConforming));
     Predicate questionHasNonConforming =
-        cb.equal(rootFollowing.get("listAnswer").get("nonConforming"), Boolean.TRUE);
+        cb.equal(rootNonConforming.get("listAnswer").get("nonConforming"), Boolean.TRUE);
     countNonConforming.where(
-        belongToInterventionFromInterventionQuestion(cb, rootFollowing, intervention.getId()),
+        belongToInterventionFromInterventionQuestion(cb, rootNonConforming, intervention.getId()),
         questionHasNonConforming);
     intervention.setNonConforming(
         JPA.em().createQuery(countNonConforming).getSingleResult().intValue());

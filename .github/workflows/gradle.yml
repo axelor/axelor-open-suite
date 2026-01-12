@@ -14,12 +14,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Set up JDK 21
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: 21
+        java-version: '21'
+        cache: 'gradle'
     - name: Install webapp
       run: git clone -b wip https://github.com/axelor/open-suite-webapp.git open-suite-webapp
     - name: move to the right place

@@ -412,12 +412,6 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     LOG.debug("Stock move planification : {} ", stockMove.getStockMoveSeq());
 
-    if (stockMove.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
-      stockMoveRepo.save(stockMove);
-      stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
-      stockMove = JpaModelHelper.ensureManaged(stockMove);
-    }
-
     // This call will split move line by tracking number
     // But only works if the line has not been already splited
     if (splitByTrackingNumber) {
@@ -451,6 +445,8 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove = JpaModelHelper.ensureManaged(stockMove);
     stockMove.setCancelReason(null);
     stockMove.setRealDate(null);
+
+    stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
 
     stockMoveRepo.save(stockMove);
   }
@@ -564,9 +560,11 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     stockMoveLineService.checkExpirationDates(stockMove);
 
+    BigDecimal exTaxTotal = stockMoveToolService.compute(stockMove);
     stockMove = JpaModelHelper.ensureManaged(stockMove);
     setRealizedStatus(stockMove);
     stockMove.setRealDate(appBaseService.getTodayDate(stockMove.getCompany()));
+    stockMove.setExTaxTotal(exTaxTotal);
 
     stockMove = stockMoveRepo.save(stockMove);
 
@@ -898,6 +896,24 @@ public class StockMoveServiceImpl implements StockMoveService {
     }
     StockMoveLine newStockMoveLine = copySplittedStockMoveLine(stockMoveLine);
     newStockMove.addStockMoveLineListItem(newStockMoveLine);
+
+    Product product = newStockMoveLine.getProduct();
+    if (product != null) {
+      TrackingNumberConfiguration trackingNumberConfiguration =
+          (TrackingNumberConfiguration)
+              productCompanyService.get(
+                  product, "trackingNumberConfiguration", newStockMove.getCompany());
+
+      newStockMoveLine.setTrackingNumber(null);
+      stockMoveLineService.assignOrGenerateTrackingNumber(
+          newStockMoveLine,
+          newStockMove,
+          product,
+          trackingNumberConfiguration,
+          newStockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              ? StockMoveLineService.TYPE_SALES
+              : StockMoveLineService.TYPE_PURCHASES);
+    }
   }
 
   @Override

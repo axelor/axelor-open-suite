@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="move-grid" orderBy="-date" canArchive="false" title="Account moves"
     model="com.axelor.apps.account.db.Move" canDelete="false">
@@ -909,14 +909,14 @@
   <action-attrs name="action-move-attrs-partner-onselect">
     <attribute name="domain" expr="eval: 'self.isContact = false'" for="partner"/>
     <attribute name="domain"
-      expr="eval: &quot;self.isContact = false AND ${company.id} member of self.companySet&quot;"
+      expr="eval: &quot;self.isContact = false AND :company member of self.companySet&quot;"
       for="partner" if="company"/>
     <attribute name="domain" for="partner"
       if="!company &amp;&amp; journal &amp;&amp; journal.compatiblePartnerTypeSelect"
       expr="eval: 'self.isContact = false AND (' + journal.compatiblePartnerTypeSelect.split(',').collect{ it.trim() }.collect{ 'self.' + it + ' = true' }.join(' OR ') + ')'"/>
     <attribute name="domain" for="partner"
       if="company &amp;&amp; journal &amp;&amp; journal.compatiblePartnerTypeSelect"
-      expr="eval: 'self.isContact = false AND ' + company.id + ' member of self.companySet AND (' + journal.compatiblePartnerTypeSelect.split(',').collect{ it.trim() }.collect{ 'self.' + it + ' = true' }.join(' OR ') + ')'"/>
+      expr="eval: 'self.isContact = false AND :company member of self.companySet AND (' + journal.compatiblePartnerTypeSelect.split(',').collect{ it.trim() }.collect{ 'self.' + it + ' = true' }.join(' OR ') + ')'"/>
   </action-attrs>
 
   <!-- ACTION CONDITION -->

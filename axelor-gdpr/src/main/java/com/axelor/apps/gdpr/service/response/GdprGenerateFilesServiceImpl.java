@@ -46,6 +46,7 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import jakarta.persistence.Entity;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -157,6 +158,10 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
       Class<? extends AuditableModel> klass =
           (Class<? extends AuditableModel>) Class.forName(metaField.getMetaModel().getFullName());
       List<? extends AuditableModel> records;
+
+      if (!klass.isAnnotationPresent(Entity.class)) {
+        continue;
+      }
 
       if (!"OneToMany".equals(metaField.getRelationship())) {
         records =

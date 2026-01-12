@@ -184,7 +184,7 @@ public interface UserService {
    * @param user
    * @return
    */
-  Partner setUserPartner(Partner partner, User user);
+  void setUserPartner(Partner partner, User user);
 
   void generateRandomPasswordForUser(User user);
 
