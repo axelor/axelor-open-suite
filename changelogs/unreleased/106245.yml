@@ -1,0 +1,3 @@
+---
+title: "BankOrderFile/CFONB: fixed the length of the ustrd to 140 to match CFONB norm."
+module: axelor-bank-payment
