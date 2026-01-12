@@ -1,3 +1,5 @@
 ---
 title: "Move template: fixed missing analytic axis when generating moves."
 module: axelor-account
+developer : |
+ - Added AnalyticLineService in the MoveTemplateServiceImpl constructor
