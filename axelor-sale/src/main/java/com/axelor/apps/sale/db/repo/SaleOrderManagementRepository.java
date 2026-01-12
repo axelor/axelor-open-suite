@@ -32,6 +32,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSale;
@@ -84,6 +85,8 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       if (appSale.getIsQuotationAndOrderSplitEnabled()) {
         saleOrderOrderingStatusService.updateOrderingStatus(saleOrder);
       }
+      Beans.get(SaleOrderLineComputeService.class)
+          .computeLevels(saleOrder.getSaleOrderLineList(), null);
       return super.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

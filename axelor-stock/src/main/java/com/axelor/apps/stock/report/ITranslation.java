@@ -77,6 +77,8 @@ public interface ITranslation {
   public static final String INVENTORY_FROM_RACK = /*$$(*/ "Inventory.fromRack"; /*)*/
   public static final String INVENTORY_TO_RACK = /*$$(*/ "Inventory.toRack"; /*)*/
   public static final String INVENTORY_CATEGORY = /*$$(*/ "Inventory.category"; /*)*/
+  public static final String INVENTORY_LINE_STOCK_LOCATION = /*$$(*/
+      "Inventory.lineStockLocation"; /*)*/
 
   public static final String STOCK_MOVE_INTERNAL_MOVE = /*$$(*/ "StockMove.internalMove"; /*)*/
   public static final String STOCK_MOVE_DELIVERY_ORDER = /*$$(*/ "StockMove.deliveryOrder"; /*)*/

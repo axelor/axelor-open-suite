@@ -6,6 +6,12 @@
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
 
+  <selection name="reserved.sequence.status.select">
+    <option value="0">Pending</option>
+    <option value="1">Confirmed</option>
+    <option value="2">Released</option>
+  </selection>
+
   <selection name="grade.1.up.to.10.select">
     <option value="1">1</option>
     <option value="2">2</option>
@@ -124,6 +130,7 @@
     <option value='2'>Calendar synchronization</option>
     <option value='3'>Password change</option>
     <option value='4'>Recompute all addresses</option>
+    <option value='5'>Reserved sequence cleanup</option>
   </selection>
 
   <selection name="base.routing.rule.type.select">
