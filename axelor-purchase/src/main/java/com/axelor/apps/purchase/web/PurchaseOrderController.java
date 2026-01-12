@@ -450,4 +450,11 @@ public class PurchaseOrderController {
     Beans.get(PurchaseOrderService.class).validateChanges(purchaseOrder);
     response.setReload(true);
   }
+
+  public void updatePurchaseOrderLineList(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    Beans.get(PurchaseOrderLineService.class).updatePurchaseOrderLineList(purchaseOrder);
+    response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
+  }
 }
