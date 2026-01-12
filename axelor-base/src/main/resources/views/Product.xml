@@ -794,7 +794,7 @@
 
   <action-attrs name="action-product-attrs-enable-product-company-list">
     <attribute name="hidden" for="productCompanyList"
-      expr="eval: __config__.app.getApp('base')?.getCompanySpecificProductFieldsSet().isEmpty()"/>
+      expr="eval: !__config__.app.getApp('base')?.showProductCompanies || __config__.app.getApp('base')?.getCompanySpecificProductFieldsSet().isEmpty()"/>
   </action-attrs>
 
   <action-group name="action-product-group-default-new">
