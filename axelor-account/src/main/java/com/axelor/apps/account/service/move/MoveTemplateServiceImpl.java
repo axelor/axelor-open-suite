@@ -31,6 +31,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateTypeRepository;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
@@ -69,6 +70,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
   protected MoveRepository moveRepo;
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected AnalyticLineService analyticLineService;
   protected PartnerRepository partnerRepo;
   protected TaxService taxService;
   protected BankDetailsService bankDetailsService;
@@ -88,6 +90,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
       PartnerRepository partnerRepo,
       TaxService taxService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      AnalyticLineService analyticLineService,
       BankDetailsService bankDetailsService,
       MoveTemplateRepository moveTemplateRepo,
       MoveLineTaxService moveLineTaxService,
@@ -101,6 +104,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
     this.partnerRepo = partnerRepo;
     this.taxService = taxService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.analyticLineService = analyticLineService;
     this.bankDetailsService = bankDetailsService;
     this.moveTemplateRepo = moveTemplateRepo;
     this.moveLineTaxService = moveLineTaxService;
@@ -275,6 +279,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
               moveLine.setAnalyticMoveLineList(analyticMoveLineList);
             }
 
+            analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
             moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
             moveRecordUpdateService.updateDueDate(move, false, false);
 
@@ -396,6 +401,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
             if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
               moveLine.setAnalyticMoveLineList(analyticMoveLineList);
             }
+            analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
             counter++;
           } else {
             taxLineDescription = moveTemplateLine.getName();
