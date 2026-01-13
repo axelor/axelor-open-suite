@@ -1,0 +1,3 @@
+---
+title: "Sequence management: fix the transactional missing error."
+module: axelor-base
