@@ -117,7 +117,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
             + "AND self.stockLocation.typeSelect != :virtualType ";
 
     if (company != null) {
-      jpql += " AND self.stockLocation.company.id = " + company.getId();
+      jpql += " AND self.stockLocation.company.id = :companyId";
     }
 
     Query query = JPA.em().createQuery(jpql);
