@@ -132,10 +132,9 @@
   </action-view>
 
   <!-- MGM - Project Task Template menu -->
-  <menuitem name="business-project-task-template-all" parent="menu-project-root"
-    groups="admins, CUSTOM-OM"
-    if="[ 'admins','CUSTOM-OM'].any(g -> __user__.group.code.contains(g))" order="301"
-    title="Business project tasks templates" action="business.project.task.template.all"/>
+  <menuitem name="business-project-task-template-all" parent="mgm-admin"
+    groups="admins, CUSTOM-OM" order="301" title="Business project tasks templates"
+    action="business.project.task.template.all"/>
 
   <action-view name="business.project.task.template.all" title="Task Templates"
     model="com.axelor.apps.project.db.ProjectTask">
