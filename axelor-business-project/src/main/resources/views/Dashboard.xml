@@ -14,18 +14,24 @@
     model="com.axelor.apps.project.db.Project">
     <view type="grid" name="business-project-grid"/>
     <view type="form" name="business-project-form"/>
+    <view name="project-calendar" type="calendar"/>
+    <view-param name="search-filters" value="project-filters"/>
     <domain>
-      self.projectStatus.isCompleted = false
+      self.isBusinessProject = true AND self.projectStatus.isCompleted = false
     </domain>
+    <context name="_fromBusinessProject" expr="eval:true"/>
   </action-view>
 
   <action-view name="custom-mgm-business-project-completed" title="Completed Projects"
     model="com.axelor.apps.project.db.Project">
     <view type="grid" name="business-project-grid"/>
     <view type="form" name="business-project-form"/>
+    <view name="project-calendar" type="calendar"/>
+    <view-param name="search-filters" value="project-filters"/>
     <domain>
-      self.projectStatus.isCompleted = true
+      self.isBusinessProject = true AND self.projectStatus.isCompleted = true
     </domain>
+    <context name="_fromBusinessProject" expr="eval:true"/>
   </action-view>
 
   <action-view name="custom.mgm.business.project.status.dashboard"
