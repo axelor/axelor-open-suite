@@ -1,0 +1,3 @@
+---
+title: "Sequence management: fixed an error occurring when generating sequence for some models."
+module: axelor-base
