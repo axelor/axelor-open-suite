@@ -1,3 +1,5 @@
 ---
 title: "Inventory: block stock moves when an inventory is in progress on a parent location."
 module: axelor-stock
+developer: |
+ - Added StockLocationService in the StockMoveServiceImpl constructor
