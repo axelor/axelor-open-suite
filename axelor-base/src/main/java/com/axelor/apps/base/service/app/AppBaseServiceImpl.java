@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,31 +24,33 @@ import com.axelor.apps.base.db.AddressTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.Localization;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
+import com.axelor.meta.loader.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.app.service.AppServiceImpl;
-import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
 import com.axelor.utils.helpers.date.LocalDateTimeHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
-import javax.inject.Singleton;
 
 @Singleton
 public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {
@@ -60,23 +62,15 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
       MetaFileRepository metaFileRepo) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
   }
 
   @Override
   public AppBase getAppBase() {
-    return Query.of(AppBase.class).fetchOne();
+    return Query.of(AppBase.class).cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
@@ -242,6 +236,58 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
     return duration;
   }
 
+  @Override
+  public Unit getUnitDays() throws AxelorException {
+    AppBase appBase = getAppBase();
+    Unit daysUnit = appBase.getUnitDays();
+    if (daysUnit == null) {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_NO_UNIT_DAYS));
+    }
+    return daysUnit;
+  }
+
+  @Override
+  public Unit getUnitHours() throws AxelorException {
+    AppBase appBase = getAppBase();
+    Unit hoursUnit = appBase.getUnitHours();
+    if (hoursUnit == null) {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_NO_UNIT_HOURS));
+    }
+    return hoursUnit;
+  }
+
+  @Override
+  public Unit getUnitMinutes() throws AxelorException {
+    AppBase appBase = getAppBase();
+    Unit minuteUnit = appBase.getUnitMinutes();
+    if (minuteUnit == null) {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_NO_UNIT_MINUTES));
+    }
+    return minuteUnit;
+  }
+
+  @Override
+  public BigDecimal getDailyWorkHours() throws AxelorException {
+    AppBase appBase = getAppBase();
+    BigDecimal dailyWorkHours = appBase.getDailyWorkHours();
+    if (dailyWorkHours == null || dailyWorkHours.signum() <= 0) {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_NO_UNIT_DAILY_WORK_HOURS));
+    }
+    return dailyWorkHours;
+  }
+
   /** {@inheritDoc} */
   @Override
   @Transactional
@@ -257,5 +303,29 @@ public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService
     } else {
       return processTimeout;
     }
+  }
+
+  @Override
+  public String getSireneUrl() throws AxelorException {
+    AppBase appBase = getAppBase();
+    String sireneUrl = appBase.getSireneUrl();
+    if (sireneUrl != null) {
+      return sireneUrl;
+    } else {
+      throw new AxelorException(
+          appBase,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.APP_BASE_SIRENE_API_URL_MISSING));
+    }
+  }
+
+  @Override
+  public String getImportErrorPath() {
+    String importErrorPath = AppService.getFileUploadDir();
+    AppBase appBase = getAppBase();
+    if (appBase != null && StringUtils.notEmpty(appBase.getImportErrorPath())) {
+      return importErrorPath + appBase.getImportErrorPath();
+    }
+    return importErrorPath;
   }
 }

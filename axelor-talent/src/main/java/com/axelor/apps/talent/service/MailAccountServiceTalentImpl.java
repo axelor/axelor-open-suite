@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.talent.service;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.inject.Beans;
@@ -31,22 +32,32 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.studio.db.AppRecruitment;
 import com.axelor.studio.db.repo.AppRecruitmentRepository;
 import com.axelor.utils.service.CipherService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.mail.MessagingException;
 import java.util.Date;
-import javax.mail.MessagingException;
 
 public class MailAccountServiceTalentImpl extends MailAccountServiceBaseImpl {
 
   @Inject
   public MailAccountServiceTalentImpl(
-      EmailAccountRepository mailAccountRepo,
+      EmailAccountRepository emailAccountRepo,
       CipherService cipherService,
       EmailAddressRepository emailAddressRepo,
       MessageRepository messageRepo,
       MetaFiles metaFiles,
-      UserService userService) {
-    super(mailAccountRepo, cipherService, emailAddressRepo, messageRepo, metaFiles, userService);
+      UserService userService,
+      AppBaseService appBaseService,
+      AppRecruitmentRepository appRecruitmentRepo) {
+    super(
+        emailAccountRepo,
+        cipherService,
+        emailAddressRepo,
+        messageRepo,
+        metaFiles,
+        userService,
+        appBaseService);
+    this.appRecruitmentRepo = appRecruitmentRepo;
   }
 
   @Inject private AppRecruitmentRepository appRecruitmentRepo;

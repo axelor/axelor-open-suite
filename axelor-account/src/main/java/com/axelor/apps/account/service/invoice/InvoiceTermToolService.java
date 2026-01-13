@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,8 +30,6 @@ import java.util.List;
 public interface InvoiceTermToolService {
   boolean isPartiallyPaid(InvoiceTerm invoiceTerm);
 
-  boolean isEnoughAmountToPay(List<InvoiceTerm> invoiceTermList, BigDecimal amount, LocalDate date);
-
   boolean isNotReadonly(InvoiceTerm invoiceTerm);
 
   boolean isNotReadonlyExceptPfp(InvoiceTerm invoiceTerm);
@@ -49,4 +47,6 @@ public interface InvoiceTermToolService {
 
   List<InvoiceTerm> getPaymentVoucherInvoiceTerms(InvoicePayment invoicePayment, Invoice invoice)
       throws AxelorException;
+
+  void checkHoldbackBeforeReconcile(List<InvoiceTerm> invoiceTermList) throws AxelorException;
 }

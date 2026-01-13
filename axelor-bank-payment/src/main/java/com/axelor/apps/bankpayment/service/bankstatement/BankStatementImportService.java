@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.db.repo.BankStatementFileFormatRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.bankstatement.afb120.BankStatementImportAFB120Service;
+import com.axelor.apps.bankpayment.service.bankstatement.camt53.BankStatementImportCAMT53Service;
 import com.axelor.apps.bankpayment.service.bankstatement.classic.BankStatementImportClassicService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
@@ -57,6 +58,9 @@ public class BankStatementImportService {
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_REP:
       case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_XXX_CFONB120_STM:
         Beans.get(BankStatementImportAFB120Service.class).runImport(bankStatement);
+        break;
+      case BankStatementFileFormatRepository.FILE_FORMAT_CAMT_053_001_02_STM:
+        Beans.get(BankStatementImportCAMT53Service.class).runImport(bankStatement);
         break;
 
       default:

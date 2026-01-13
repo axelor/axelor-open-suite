@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="qi-analysis-cause-grid" title="QI Analysis Causes"
     model="com.axelor.apps.quality.db.QIAnalysisCause">
@@ -13,7 +13,7 @@
   <form name="qi-analysis-cause-form" title="QI Analysis Cause"
     model="com.axelor.apps.quality.db.QIAnalysisCause">
     <panel name="mainPanel">
-      <field name="qiResolutionDefaultsSet" widget="TagSelect" canNew="false" canEdit="false"
+      <field name="qiResolutionDefaultsSet" widget="Tags" canNew="false" canEdit="false"
         onSelect="action-qi-analysis-cause-attrs-set-qi-resolution-defaults-set-domain"
         form-view="qi-resolution-default-form" grid-view="qi-resolution-default-grid"/>
       <field name="causeLevel"/>
@@ -35,19 +35,19 @@
 
   <action-attrs name="action-qi-analysis-cause-attrs-set-qi-cause-domain">
     <attribute name="domain" for="qiCause"
-      expr="eval: &quot; self.company = ${__parent__?.qi?.company?.id} AND self.branch.analysisMethod = ${__parent__?.qi?.analysisMethod?.id} &quot;"
+      expr="eval: &quot; self.company.id = ${__parent__?.qi?.company?.id} AND self.branch.analysisMethod.id = ${__parent__?.qi?.analysisMethod?.id} &quot;"
       if="__parent__?._model == 'com.axelor.apps.quality.db.QIAnalysis'"/>
     <attribute name="domain" for="qiCause"
-      expr="eval: &quot; self.company = ${qiAnalysis?.qi?.company?.id} AND self.branch.analysisMethod = ${qiAnalysis.qi?.analysisMethod?.id} &quot;"
+      expr="eval: &quot; self.company.id = ${qiAnalysis?.qi?.company?.id} AND self.branch.analysisMethod.id = ${qiAnalysis.qi?.analysisMethod?.id} &quot;"
       if="qiAnalysis &amp;&amp; __parent__?._model != 'com.axelor.apps.quality.db.QIAnalysis'"/>
   </action-attrs>
 
   <action-attrs name="action-qi-analysis-cause-attrs-set-qi-process-domain">
     <attribute name="domain" for="qiProcess"
-      expr="eval: &quot; self.company = ${__parent__?.qi?.company?.id} &quot;"
+      expr="eval: &quot; self.company.id = ${__parent__?.qi?.company?.id} &quot;"
       if="__parent__?._model == 'com.axelor.apps.quality.db.QIAnalysis'"/>
     <attribute name="domain" for="qiProcess"
-      expr="eval: &quot; self.company = ${qiAnalysis?.qi?.company?.id} &quot;"
+      expr="eval: &quot; self.company.id = ${qiAnalysis?.qi?.company?.id} &quot;"
       if="qiAnalysis &amp;&amp; __parent__?._model != 'com.axelor.apps.quality.db.QIAnalysis'"/>
   </action-attrs>
 
@@ -59,10 +59,10 @@
     <attribute name="domain" for="responsiblePartner"
       expr="eval: &quot; self.isSupplier = true &quot;" if="responsiblePartnerTypeSelect == 3"/>
     <attribute name="domain" for="responsiblePartner"
-      expr="eval: &quot; self.isContact = true AND EXISTS (SELECT p FROM Partner p WHERE p.isCustomer = true AND self.id IN (SELECT id FROM p.contactPartnerSet)) &quot;"
+      expr="eval: &quot; self.isContact = true AND EXISTS (SELECT p FROM Partner p WHERE p.isCustomer = true AND self.id IN (SELECT cp.id FROM p.contactPartnerSet cp)) &quot;"
       if="responsiblePartnerTypeSelect == 4"/>
     <attribute name="domain" for="responsiblePartner"
-      expr="eval: &quot; self.isContact = true AND EXISTS (SELECT p FROM Partner p WHERE p.isSupplier = true AND self.id IN (SELECT id FROM p.contactPartnerSet)) &quot;"
+      expr="eval: &quot; self.isContact = true AND EXISTS (SELECT p FROM Partner p WHERE p.isSupplier = true AND self.id IN (SELECT cp.id FROM p.contactPartnerSet cp)) &quot;"
       if="responsiblePartnerTypeSelect == 5"/>
   </action-attrs>
 

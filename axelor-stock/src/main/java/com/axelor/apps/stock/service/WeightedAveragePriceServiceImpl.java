@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,11 +30,12 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.math.BigDecimal;
-import java.util.List;
+import java.math.RoundingMode;
 import java.util.Set;
 
 @RequestScoped
@@ -67,6 +68,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
         break;
       }
     }
+    ProductService productService = Beans.get(ProductService.class);
     if (avgPriceHandledByCompany
         && product.getProductCompanyList() != null
         && !product.getProductCompanyList().isEmpty()) {
@@ -82,7 +84,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
             == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
           productCompanyService.set(product, "costPrice", productAvgPrice, company);
           if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
-            Beans.get(ProductService.class).updateSalePrice(product, company);
+            productService.updateSalePrice(product, company);
           }
         }
       }
@@ -97,44 +99,49 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
       if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
         product.setCostPrice(productAvgPrice);
         if (product.getAutoUpdateSalePrice()) {
-          Beans.get(ProductService.class).updateSalePrice(product, null);
+          productService.updateSalePrice(product, null);
         }
       }
     }
-    productRepo.save(product);
+    JPA.save(product);
   }
 
   @Override
   public BigDecimal computeAvgPriceForCompany(Product product, Company company) {
     Long productId = product.getId();
-    String query =
-        "SELECT new list(self.id, self.avgPrice, self.currentQty) FROM StockLocationLine as self "
-            + "WHERE self.product.id = "
-            + productId
-            + " AND self.stockLocation.typeSelect != "
-            + StockLocationRepository.TYPE_VIRTUAL;
+
+    String jpql =
+        "SELECT COALESCE(SUM(self.avgPrice * self.currentQty), 0), COALESCE(SUM(self.currentQty), 0) "
+            + "FROM StockLocationLine self "
+            + "WHERE self.product.id = :productId "
+            + "AND self.stockLocation.typeSelect != :virtualType ";
 
     if (company != null) {
-      query += " AND self.stockLocation.company = " + company.getId();
+      jpql += " AND self.stockLocation.company.id = " + company.getId();
+    }
+
+    Query query = JPA.em().createQuery(jpql);
+    query.setParameter("productId", productId);
+    query.setParameter("virtualType", StockLocationRepository.TYPE_VIRTUAL);
+
+    if (company != null) {
+      query.setParameter("companyId", company.getId());
+    }
+
+    Object[] result = (Object[]) query.getSingleResult();
+
+    if (result == null || result.length == 0) {
+      return BigDecimal.ZERO;
+    }
+
+    BigDecimal totalWeightedValue = (BigDecimal) result[0];
+    BigDecimal totalQty = (BigDecimal) result[1];
+
+    if (totalQty.compareTo(BigDecimal.ZERO) == 0) {
+      return BigDecimal.ZERO;
     }
 
     int scale = appBaseService.getNbDecimalDigitForUnitPrice();
-    BigDecimal productAvgPrice = BigDecimal.ZERO;
-    BigDecimal qtyTot = BigDecimal.ZERO;
-    List<List<Object>> results = JPA.em().createQuery(query).getResultList();
-    if (results.isEmpty()) {
-      return BigDecimal.ZERO;
-    }
-    for (List<Object> result : results) {
-      BigDecimal avgPrice = (BigDecimal) result.get(1);
-      BigDecimal qty = (BigDecimal) result.get(2);
-      productAvgPrice = productAvgPrice.add(avgPrice.multiply(qty));
-      qtyTot = qtyTot.add(qty);
-    }
-    if (qtyTot.compareTo(BigDecimal.ZERO) == 0) {
-      return BigDecimal.ZERO;
-    }
-    productAvgPrice = productAvgPrice.divide(qtyTot, scale, BigDecimal.ROUND_HALF_UP);
-    return productAvgPrice;
+    return totalWeightedValue.divide(totalQty, scale, RoundingMode.HALF_UP);
   }
 }

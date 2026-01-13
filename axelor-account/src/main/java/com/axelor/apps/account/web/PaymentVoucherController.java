@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,10 +44,11 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -131,7 +132,8 @@ public class PaymentVoucherController {
         Journal journal =
             Beans.get(PaymentModeService.class)
                 .getPaymentModeJournal(paymentMode, company, companyBankDetails);
-        if (journal.getExcessPaymentOk()) {
+        if (journal.getExcessPaymentOk()
+            && CollectionUtils.isEmpty(paymentVoucher.getPayVoucherElementToPayList())) {
           response.setAlert(I18n.get("No items have been selected. Do you want to continue?"));
         }
         if (!Beans.get(PaymentVoucherControlService.class).controlMoveAmounts(paymentVoucher)) {

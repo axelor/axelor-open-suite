@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,8 +24,10 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.move.MoveCustAccountService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentAlertService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentComputeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
@@ -40,6 +42,8 @@ import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -47,12 +51,12 @@ import com.axelor.utils.helpers.ContextHelper;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.inject.Singleton;
+import jakarta.annotation.Nullable;
+import jakarta.inject.Singleton;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 
 @Singleton
@@ -346,5 +350,37 @@ public class InvoicePaymentController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void validateBeforeUnlink(ActionRequest request, ActionResponse response) {
+    InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+
+    try {
+      Beans.get(InvoicePaymentCancelService.class).validateBeforeUnlink(invoicePayment);
+    } catch (AxelorException e) {
+      response.setAlert(I18n.get(AccountExceptionMessage.INVOICE_PAYMENT_UNLINK_ALERT));
+    }
+  }
+
+  public void reversePaymentMove(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+
+    Beans.get(InvoicePaymentCancelService.class).reversePaymentMove(invoicePayment);
+
+    response.setReload(true);
+  }
+
+  public void validateBeforeReversePaymentMove(ActionRequest request, ActionResponse response) {
+    InvoicePayment invoicePayment = request.getContext().asType(InvoicePayment.class);
+
+    String alert =
+        Beans.get(InvoicePaymentAlertService.class).validateBeforeReverse(invoicePayment);
+
+    if (StringUtils.isEmpty(alert)) {
+      return;
+    }
+
+    response.setAlert(I18n.get(alert));
   }
 }

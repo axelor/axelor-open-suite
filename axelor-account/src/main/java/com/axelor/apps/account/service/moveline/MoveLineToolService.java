@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -73,11 +73,17 @@ public interface MoveLineToolService {
   void setDecimals(MoveLine moveLine, Move move);
 
   List<MoveLine> getMoveExcessDueList(
-      boolean excessPayment, Company company, Partner partner, Long invoiceId);
+      boolean excessPayment, Company company, Partner partner, Invoice originInvoice);
 
   boolean isMoveLineTaxAccount(MoveLine moveLine);
+
+  boolean isMoveLineTaxAccountOrNonDeductibleTax(MoveLine moveLine);
 
   void setIsNonDeductibleTax(MoveLine moveLine, Tax tax);
 
   BigDecimal computeCurrencyAmountSign(BigDecimal currencyAmount, boolean isDebit);
+
+  boolean isMoveLineSpecialAccount(MoveLine moveLine);
+
+  boolean isMoveLineCommitmentAccount(MoveLine moveLine);
 }

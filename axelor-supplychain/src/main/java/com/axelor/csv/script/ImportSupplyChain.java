@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.script.ImportPurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
+import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowService;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -41,9 +42,9 @@ import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.axelor.apps.stock.service.InventoryLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.service.inventory.InventoryLineService;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.PurchaseOrderStockServiceImpl;
 import com.axelor.apps.supplychain.service.SupplychainSaleConfigService;
@@ -51,8 +52,8 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -88,6 +89,8 @@ public class ImportSupplyChain {
   @Inject protected InvoiceTermService invoiceTermService;
 
   @Inject protected SaleOrderConfirmService saleOrderConfirmService;
+
+  @Inject protected PurchaseOrderTypeSelectService purchaseOrderTypeSelectService;
 
   @SuppressWarnings("rawtypes")
   public Object importSupplyChain(Object bean, Map values) {
@@ -134,6 +137,7 @@ public class ImportSupplyChain {
         purchaseOrder.setValidationDateTime(purchaseOrder.getOrderDate().atStartOfDay());
         purchaseOrder.setValidatedByUser(AuthUtils.getUser());
         purchaseOrder.setSupplierPartner(purchaseOrderService.validateSupplier(purchaseOrder));
+        purchaseOrderTypeSelectService.setTypeSelect(purchaseOrder);
         Invoice invoice =
             Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
 

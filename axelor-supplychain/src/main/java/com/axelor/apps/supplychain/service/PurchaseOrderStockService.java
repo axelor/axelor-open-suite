@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,8 +57,6 @@ public interface PurchaseOrderStockService {
   // Check if existing at least one stockMove not canceled for the purchaseOrder
   public boolean existActiveStockMoveForPurchaseOrder(Long purchaseOrderId);
 
-  public void updateReceiptState(PurchaseOrder purchaseOrder) throws AxelorException;
-
   /**
    * Create a query to find purchase order line of a product of a specific/all company and a
    * specific/all stock location
@@ -70,4 +68,6 @@ public interface PurchaseOrderStockService {
    */
   public String getPurchaseOrderLineListForAProduct(
       Long productId, Long companyId, Long stockLocationId);
+
+  public List<PurchaseOrderLine> updatePurchaseOrderLinesStockLocation(PurchaseOrder purchaseOrder);
 }

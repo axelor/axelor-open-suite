@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +105,7 @@ public class AccountingSituationAttrsServiceImpl implements AccountingSituationA
         "analyticsPanel",
         "hidden",
         partner == null
+            || company == null
             || company.getAccountConfig() == null
             || company.getAccountConfig().getAnalyticDistributionTypeSelect()
                 != AccountConfigRepository.DISTRIBUTION_TYPE_PARTNER,
@@ -146,7 +147,6 @@ public class AccountingSituationAttrsServiceImpl implements AccountingSituationA
     }
     String domain = "(self.archived = false OR self.archived is null)";
     List<AccountingSituation> partnerAccountingSituationList = partner.getAccountingSituationList();
-    partnerAccountingSituationList.remove(accountingSituation);
     if (ObjectUtils.isEmpty(partnerAccountingSituationList)) {
       return domain;
     }

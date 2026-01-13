@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,11 +32,12 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,6 +60,7 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
       CompanyService companyService,
       SaleOrderUserService saleOrderUserService,
       SaleOrderProductPrintingService saleOrderProductPrintingService,
+      SaleOrderService saleOrderService,
       SaleOrderShipmentService saleOrderShipmentService,
       SaleOrderIntercoService saleOrderIntercoService,
       SaleOrderStockLocationService saleOrderStockLocationService,
@@ -71,7 +73,8 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
         saleConfigService,
         companyService,
         saleOrderUserService,
-        saleOrderProductPrintingService);
+        saleOrderProductPrintingService,
+        saleOrderService);
     this.saleOrderShipmentService = saleOrderShipmentService;
     this.saleOrderIntercoService = saleOrderIntercoService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
@@ -140,7 +143,7 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
 
   protected Map<String, Object> getShipmentCostLine(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> saleOrderMap = new HashMap<>();
-    saleOrderShipmentService.createShipmentCostLine(saleOrder);
+    saleOrderShipmentService.createShipmentCostLine(saleOrder, saleOrder.getShipmentMode());
     saleOrderMap.put("saleOrderLineList", saleOrder.getSaleOrderLineList());
     return saleOrderMap;
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeServiceImpl;
@@ -31,12 +32,19 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
-import com.google.inject.Inject;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
+import jakarta.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLineChangeServiceImpl {
 
   protected SaleOrderSupplychainService saleOrderSupplychainService;
   protected SaleOrderShipmentService saleOrderShipmentService;
+  protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
 
   @Inject
   public SaleOrderOnLineChangeSupplyChainServiceImpl(
@@ -48,8 +56,10 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
       SaleOrderComplementaryProductService saleOrderComplementaryProductService,
+      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
       SaleOrderSupplychainService saleOrderSupplychainService,
-      SaleOrderShipmentService saleOrderShipmentService) {
+      SaleOrderShipmentService saleOrderShipmentService,
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
     super(
         appSaleService,
         saleOrderService,
@@ -58,17 +68,30 @@ public class SaleOrderOnLineChangeSupplyChainServiceImpl extends SaleOrderOnLine
         saleOrderLineRepository,
         saleOrderLineComputeService,
         saleOrderLinePackService,
-        saleOrderComplementaryProductService);
+        saleOrderComplementaryProductService,
+        saleOrderGlobalDiscountService);
     this.saleOrderSupplychainService = saleOrderSupplychainService;
     this.saleOrderShipmentService = saleOrderShipmentService;
+    this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
   }
 
   @Override
-  public void onLineChange(SaleOrder saleOrder) throws AxelorException {
+  public String onLineChange(SaleOrder saleOrder) throws AxelorException {
     super.onLineChange(saleOrder);
+    List<String> messages = new ArrayList<>();
     saleOrderSupplychainService.setAdvancePayment(saleOrder);
-    saleOrderSupplychainService.updateTimetableAmounts(saleOrder);
+    try {
+      saleOrderLineAnalyticService.checkAnalyticAxisByCompany(saleOrder);
+    } catch (AxelorException e) {
+      messages.add(e.getMessage());
+    }
+    messages.add(saleOrderSupplychainService.updateTimetableAmounts(saleOrder));
     saleOrderSupplychainService.updateAmountToBeSpreadOverTheTimetable(saleOrder);
-    saleOrderShipmentService.createShipmentCostLine(saleOrder);
+    messages.add(
+        saleOrderShipmentService.createShipmentCostLine(saleOrder, saleOrder.getShipmentMode()));
+    return messages.stream()
+        .filter(Objects::nonNull)
+        .filter(Predicate.not(String::isEmpty))
+        .collect(Collectors.joining("<br>"));
   }
 }

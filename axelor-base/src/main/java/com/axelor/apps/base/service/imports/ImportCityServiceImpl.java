@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,7 @@ import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.studio.db.AppBase;
 import com.axelor.utils.helpers.net.UrlHelper;
 import com.google.common.io.Files;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -424,7 +424,7 @@ public class ImportCityServiceImpl implements ImportCityService {
               cityLine[8], // canton code
               cityLine[9], // latitude
               cityLine[10], // longitude
-              cityLine[11])); // accuracy
+              cityLine.length > 11 ? cityLine[11] : null)); // accuracy
     }
 
     return this.createCityFileZipImport(cityList, cityTextFile);

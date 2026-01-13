@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,7 +41,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.apps.supplychain.utils.StockLocationUtilsServiceSupplychain;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -134,7 +134,7 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
             .setScale(scale, RoundingMode.HALF_UP));
     map.put(
         "$availableQty",
-        this.getNonReservedAvailableQuantity(product, company, stockLocation, reservedQty)
+        this.getAvailableQty(product, company, stockLocation)
             .setScale(scale, RoundingMode.HALF_UP));
 
     return map;
@@ -314,11 +314,5 @@ public class ProductStockLocationServiceImpl implements ProductStockLocationServ
       }
     }
     return sumAvailableQty;
-  }
-
-  protected BigDecimal getNonReservedAvailableQuantity(
-      Product product, Company company, StockLocation stockLocation, BigDecimal reservedQty)
-      throws AxelorException {
-    return getAvailableQty(product, company, stockLocation).subtract(reservedQty);
   }
 }

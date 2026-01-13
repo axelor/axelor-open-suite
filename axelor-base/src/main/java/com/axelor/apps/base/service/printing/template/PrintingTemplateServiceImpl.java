@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -68,9 +68,12 @@ public class PrintingTemplateServiceImpl implements PrintingTemplateService {
     return printingTemplateRepository
         .all()
         .filter(
-            "self.metaModel.fullName = :modelName AND (:statusSelects IS NULL OR self.statusSelect IN :statusSelects)")
+            "self.metaModel.fullName = :modelName AND (:areStatusEmpty IS TRUE OR self.statusSelect IN :statusSelects)")
         .bind("modelName", modelName)
-        .bind("statusSelects", statusSelects)
+        .bind("areStatusEmpty", statusSelects.isEmpty())
+        .bind(
+            "statusSelects",
+            statusSelects) // Fix for type resolution, TODO: Find maybe another workaround
         .cacheable()
         .fetch();
   }

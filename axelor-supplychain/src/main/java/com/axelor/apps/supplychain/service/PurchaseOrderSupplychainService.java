@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,11 +21,8 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.purchase.db.PurchaseOrder;
-import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.stock.db.StockLocation;
-import java.math.BigDecimal;
 
 public interface PurchaseOrderSupplychainService {
 
@@ -33,19 +30,10 @@ public interface PurchaseOrderSupplychainService {
 
   void updateAmountToBeSpreadOverTheTimetable(PurchaseOrder purchaseOrder);
 
-  String createShipmentCostLine(PurchaseOrder purchaseOrder) throws AxelorException;
-
-  PurchaseOrderLine createShippingCostLine(PurchaseOrder purchaseOrder, Product shippingCostProduct)
-      throws AxelorException;
-
-  boolean alreadyHasShippingCostLine(PurchaseOrder purchaseOrder, Product shippingCostProduct);
-
-  String removeShipmentCostLine(PurchaseOrder purchaseOrder);
-
-  BigDecimal computeExTaxTotalWithoutShippingLines(PurchaseOrder purchaseOrder);
-
   StockLocation getStockLocation(Partner supplierPartner, Company company) throws AxelorException;
 
   StockLocation getFromStockLocation(Partner supplierPartner, Company company)
       throws AxelorException;
+
+  void checkAnalyticAxisByCompany(PurchaseOrder purchaseOrder) throws AxelorException;
 }

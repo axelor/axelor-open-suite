@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,8 @@ import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.YearService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 
 public class YearAccountServiceImpl implements YearAccountService {
@@ -44,7 +44,7 @@ public class YearAccountServiceImpl implements YearAccountService {
       Company company,
       LocalDate fromDate,
       LocalDate toDate,
-      Integer periodDuration,
+      String periodDuration,
       LocalDate reportedBalancedDate)
       throws AxelorException {
     String name = I18n.get(ITranslation.FISCAL_YEAR_CODE) + " " + fromDate.getYear();
@@ -70,7 +70,7 @@ public class YearAccountServiceImpl implements YearAccountService {
       String code,
       LocalDate fromDate,
       LocalDate toDate,
-      Integer periodDuration,
+      String periodDuration,
       int typeSelect,
       LocalDate reportedBalanceDate) {
     Year year =

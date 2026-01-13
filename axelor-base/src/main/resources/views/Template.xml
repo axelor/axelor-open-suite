@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="template-grid" id="template-grid-base" title="Templates"
     model="com.axelor.message.db.Template">
@@ -16,7 +16,8 @@
     onNew="action-template-record-new">
     <toolbar>
       <button name="testTemplateBtn" title="Test template"
-        onClick="save,action-template-view-test-template" readonlyIf="metaModel == null"/>
+        onClick="save,action-template-view-test-template"
+        readonlyIf="metaModel == null &amp;&amp; (!isJson || metaJsonModel == null)"/>
     </toolbar>
     <panel name="mainPanel" colSpan="12">
       <field name="name" showTitle="false" colSpan="12">
@@ -32,7 +33,7 @@
         </editor>
       </field>
       <field name="mediaTypeSelect"/>
-      <field name="localizationSet" widget="TagSelect" canEdit="false" canNew="false"
+      <field name="localizationSet" widget="Tags" canEdit="false" canNew="false"
         form-view="localization-form" grid-view="localization-grid"/>
       <field name="templateEngineSelect"/>
       <field name="isJson" onChange="action-template-record-is-json-change"/>
@@ -81,7 +82,7 @@
         <panel-related name="templateContextPanel" field="templateContextList"
           colSpan="12"/>
         <panel name="attachedFilesPanel" title="Attached files" colSpan="12">
-          <field name="printTemplateSet" colSpan="12" widget="TagSelect" canEdit="false"
+          <field name="printTemplateSet" colSpan="12" widget="Tags" canEdit="false"
             form-view="printing-template-form" grid-view="printing-template-grid"/>
         </panel>
       </panel>
@@ -184,5 +185,17 @@
   <action-method name="action-template-check-receptor">
     <call class="com.axelor.apps.base.web.TemplateController" method="checkTargetReceptor"/>
   </action-method>
+
+  <action-record id="action-base-template-record-new"
+    name="action-template-record-new" model="com.axelor.message.db.Template">
+    <field name="metaModel"
+      expr="eval: __parent__?.targetSelect == 1 ? __repo__(MetaModel).all().filter('self.name = \'Partner\'').fetchOne() : (__parent__?.targetSelect == 2 ? __repo__(MetaModel).all().filter('self.name = \'Lead\'').fetchOne() : null)"
+      if="__parent__?.targetSelect"/>
+    <field name="metaModel" expr="eval: __parent__?.metaModel" if="__parent__?.metaModel"/>
+    <field name="metaModel" expr="eval: __parent__?.__parent__?.metaModel"
+      if="__parent__?.__parent__?.metaModel"/>
+    <field if="_mediaType != null" name="mediaTypeSelect" expr="eval:_mediaType"/>
+    <field name="mailAccount" expr="eval: null"/>
+  </action-record>
 
 </object-views>

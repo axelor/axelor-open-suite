@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.repo.BankRepository;
@@ -28,7 +29,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import org.iban4j.IbanFormatException;
 import org.iban4j.InvalidCheckDigitException;
 import org.iban4j.UnsupportedCountryException;
@@ -64,6 +65,22 @@ public class BankDetailsController {
           response.setValue("accountNbr", bankDetails.getAccountNbr());
           response.setValue("bbanKey", bankDetails.getBbanKey());
         }
+      }
+    }
+  }
+
+  public void setIbanInfo(ActionRequest request, ActionResponse response) throws AxelorException {
+    BankDetails bankDetails = request.getContext().asType(BankDetails.class);
+    Bank bank = bankDetails.getBank();
+    if (bankDetails.getIban() != null
+        && bank != null
+        && bank.getBankDetailsTypeSelect() == BankRepository.BANK_IDENTIFIER_TYPE_IBAN) {
+      bankDetails = Beans.get(BankDetailsServiceImpl.class).detailsIban(bankDetails);
+      if (bank.getCountry() != null && bank.getCountry().getAlpha2Code().equals("FR")) {
+        response.setValue("bankCode", bankDetails.getBankCode());
+        response.setValue("sortCode", bankDetails.getSortCode());
+        response.setValue("accountNbr", bankDetails.getAccountNbr());
+        response.setValue("bbanKey", bankDetails.getBbanKey());
       }
     }
   }

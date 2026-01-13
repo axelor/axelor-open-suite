@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,9 @@ import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.rest.dto.InventoryLinePostRequest;
 import com.axelor.apps.stock.rest.dto.InventoryLinePutRequest;
 import com.axelor.apps.stock.rest.dto.InventoryLineResponse;
-import com.axelor.apps.stock.service.InventoryLineService;
+import com.axelor.apps.stock.service.inventory.InventoryLineService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -32,14 +34,14 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @Path("/aos/inventory-line")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -62,11 +64,15 @@ public class InventoryLineRestController {
         ObjectFinder.find(InventoryLine.class, inventoryLineId, requestBody.getVersion());
 
     Beans.get(InventoryLineService.class)
-        .updateInventoryLine(inventoryLine, requestBody.getRealQty(), requestBody.getDescription());
+        .updateInventoryLine(
+            inventoryLine,
+            requestBody.getRealQty(),
+            requestBody.getDescription(),
+            requestBody.fetchStockLocation());
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Inventory line successfully updated",
+        I18n.get(ITranslation.INVENTORY_LINE_UPDATED),
         new InventoryLineResponse(inventoryLine));
   }
 
@@ -90,7 +96,8 @@ public class InventoryLineRestController {
                 requestBody.fetchProduct(),
                 requestBody.fetchTrackingNumber(),
                 requestBody.getRack(),
-                requestBody.getRealQty());
+                requestBody.getRealQty(),
+                requestBody.fetchStockLocation());
 
     return ResponseConstructor.buildCreateResponse(
         inventoryLine, new InventoryLineResponse(inventoryLine));

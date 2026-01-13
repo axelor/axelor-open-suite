@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -86,6 +86,8 @@ public interface BudgetToolsService {
 
   Map<String, BigDecimal> buildMapWithAmounts(
       List<Budget> budgetList, List<BudgetLevel> budgetLevelList);
+
+  Map<String, BigDecimal> computeBudgetAmountMap(Budget budget);
 
   BigDecimal getBudgetRemainingAmountToAllocate(
       List<BudgetDistribution> budgetDistributionList, BigDecimal maxAmount);

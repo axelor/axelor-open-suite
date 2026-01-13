@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,7 @@ import com.axelor.apps.base.service.imports.importer.ExcelToCSV;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -119,8 +120,8 @@ public class ConvertDemoDataFileServiceImpl implements ConvertDemoDataFileServic
     if (fileNameRow != null) {
       Cell fileNameCell = fileNameRow.getCell(0);
       if (fileNameCell != null
-          && fileNameCell.getCellType() != Cell.CELL_TYPE_BLANK
-          && fileNameCell.getCellType() == Cell.CELL_TYPE_STRING) {
+          && fileNameCell.getCellType() != CellType.BLANK
+          && fileNameCell.getCellType() == CellType.STRING) {
 
         fileName = fileNameCell.getStringCellValue() + ".csv";
       } else {

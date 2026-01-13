@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid model="com.axelor.apps.intervention.db.Equipment" title="Equipments"
     name="equipment-grid">
@@ -17,8 +17,6 @@
     <field name="equipmentFamily"/>
     <field name="indicatorSelect" widget="single-select"/>
     <field name="contract" massUpdate="true" hidden="true"/>
-    <field name="partner.tradingName.name" title="Partner trading name"
-      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </grid>
 
   <grid model="com.axelor.apps.intervention.db.Equipment" title="Equipments"
@@ -34,8 +32,6 @@
     <field name="equipmentFamily"/>
     <field name="indicatorSelect" widget="single-select"/>
     <field name="contract" massUpdate="true" hidden="true"/>
-    <field name="partner.tradingName.name" title="Partner trading name"
-      if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </grid>
 
   <form name="equipment-tree-partner-filter-form" width="large" title="Equipments tree"
@@ -83,7 +79,7 @@
     <column name="newBtn" type="button"/>
     <column name="deleteBtn" type="button"/>
     <node model="com.axelor.apps.intervention.db.Equipment"
-      onClick="action-equipment-view-equipment-from-tree">
+      onClick="action-equipment-view-equipment-from-tree" domain="self.parentEquipment is null">
       <field as="sequence" name="sequence"/>
       <field as="partner" name="partner"/>
       <field as="code" name="code"/>
@@ -91,8 +87,8 @@
       <field as="type" name="typeSelect"/>
       <field as="indicator" name="indicatorSelect"/>
       <field as="_inService" name="_inService"/>
-      <button name="newBtn" icon="fa-plus" onClick="action-equipment-method-new-item-on-tree"/>
-      <button name="deleteBtn" icon="fa-trash"
+      <button name="newBtn" icon="plus-lg" onClick="action-equipment-method-new-item-on-tree"/>
+      <button name="deleteBtn" icon="trash"
         onClick="com.axelor.apps.intervention.web.EquipmentController:removeEquipment"/>
     </node>
     <node model="com.axelor.apps.intervention.db.Equipment" parent="parentEquipment"
@@ -104,8 +100,8 @@
       <field as="type" name="typeSelect"/>
       <field as="indicator" name="indicatorSelect"/>
       <field as="_inService" name="_inService"/>
-      <button name="newBtn" icon="fa-plus" onClick="action-equipment-method-new-item-on-tree"/>
-      <button name="deleteBtn" icon="fa-trash"
+      <button name="newBtn" icon="plus-lg" onClick="action-equipment-method-new-item-on-tree"/>
+      <button name="deleteBtn" icon="trash"
         onClick="com.axelor.apps.intervention.web.EquipmentController:removeEquipment"/>
     </node>
   </tree>
@@ -118,16 +114,16 @@
     </toolbar>
     <panel name="mainPanel">
       <field name="sequence" showTitle="false" readonly="true">
-        <viewer depends="sequence"><![CDATA[<h3>{{record.sequence}}</h3>]]></viewer>
+        <viewer depends="sequence"><![CDATA[<h3>{{sequence}}</h3>]]></viewer>
       </field>
       <field name="$viewerTags" showTitle="false" readonly="true">
         <viewer depends="indicatorSelect">
           <![CDATA[
               <h4 style="text-align: right;">
-                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #4CAF50;" ng-show="record.indicatorSelect == 1" x-translate>Under contract and operational</span>
-                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #F44336;" ng-show="record.indicatorSelect == 2" x-translate>Under contract and non-operational</span>
-                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #2196F3;" ng-show="record.indicatorSelect == 3" x-translate>Off-contract and operational</span>
-                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #FF9800; color: #372100" ng-show="record.indicatorSelect == 4" x-translate>Off-contract and non-operational</span>
+                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #4CAF50;" ng-show="indicatorSelect == 1" x-translate>Under contract and operational</span>
+                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #F44336;" ng-show="indicatorSelect == 2" x-translate>Under contract and non-operational</span>
+                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #2196F3;" ng-show="indicatorSelect == 3" x-translate>Off-contract and operational</span>
+                  <span class="label" style="margin: 5px 0 !important; display: inline-table; line-height: initial; border-radius: 10px; background-color: #FF9800; color: #372100" ng-show="indicatorSelect == 4" x-translate>Off-contract and non-operational</span>
               </h4>
           ]]>
         </viewer>
@@ -266,7 +262,7 @@
 
   <search-filters name="equipment-filters"
     model="com.axelor.apps.intervention.db.Equipment" title="Equipment filters">
-    <field name="partner.tradingName.name" title="Partner trading name"
+    <field name="partner.tradingNameSet.name" title="Partner trading name"
       if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"/>
   </search-filters>
 

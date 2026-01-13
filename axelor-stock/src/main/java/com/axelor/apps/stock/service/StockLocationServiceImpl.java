@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,9 +37,9 @@ import com.axelor.db.JPA;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,6 +47,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -276,25 +277,14 @@ public class StockLocationServiceImpl implements StockLocationService {
   @Override
   @Transactional
   public void changeProductLocker(StockLocation stockLocation, Product product, String newLocker) {
-    List<StockLocationLine> stockLocationLineList = stockLocation.getStockLocationLineList();
-    for (StockLocationLine stockLocationLine : stockLocationLineList) {
-      if (stockLocationLine.getProduct() == product) {
-        stockLocationLine.setRack(newLocker);
-      }
-    }
-    stockLocationRepo.save(stockLocation);
-  }
-
-  @Override
-  public String computeStockLocationChildren(StockLocation stockLocation) {
-    if (stockLocation == null) {
-      return "self.id in (0)";
-    }
-    return String.format(
-        "self.id in (%s)",
-        getAllLocationAndSubLocation(stockLocation, false).stream()
-            .map(location -> location.getId().toString())
-            .collect(Collectors.joining(",")));
+    Optional.ofNullable(
+            stockLocationLineRepository
+                .all()
+                .filter("self.product = :product AND self.stockLocation = :stockLocation")
+                .bind("product", product)
+                .bind("stockLocation", stockLocation)
+                .fetchOne())
+        .ifPresent(sml -> sml.setRack(newLocker));
   }
 
   @Override

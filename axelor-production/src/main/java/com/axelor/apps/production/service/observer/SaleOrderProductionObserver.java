@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,15 +20,24 @@ package com.axelor.apps.production.service.observer;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionService;
+import com.axelor.apps.production.service.SaleOrderCopyProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.event.SaleOrderConfirm;
+import com.axelor.apps.sale.service.event.SaleOrderCopy;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
+import jakarta.annotation.Priority;
 
 public class SaleOrderProductionObserver {
 
-  public void productionConfirmSaleOrder(@Observes SaleOrderConfirm event) throws AxelorException {
+  public void productionConfirmSaleOrder(@Observes @Priority(value = 30) SaleOrderConfirm event)
+      throws AxelorException {
     SaleOrder saleOrder = event.getSaleOrder();
     Beans.get(SaleOrderConfirmProductionService.class).confirmProcess(saleOrder);
+  }
+
+  public void copySaleOrder(@Observes @Priority(value = 30) SaleOrderCopy event) {
+    SaleOrder saleOrder = event.getSaleOrder();
+    Beans.get(SaleOrderCopyProductionService.class).copySaleOrderProductionProcess(saleOrder);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,8 +49,8 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -295,7 +295,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
                   purchaseOrder.getCurrency(),
                   purchaseOrder.getCompany().getCurrency(),
                   lastPurchasePrice,
-                  currencyService.getDateToConvert(null));
+                  appPurchaseService.getTodayDate(purchaseOrder.getCompany()));
 
           productCompanyService.set(
               product, "lastPurchasePrice", lastPurchasePrice, purchaseOrder.getCompany());
@@ -358,5 +358,23 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
       }
       purchaseOrderRepo.save(purchaseOrder);
     }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void enableEditOrder(PurchaseOrder purchaseOrder) throws AxelorException {
+    if (purchaseOrder.getStatusSelect() == PurchaseOrderRepository.STATUS_FINISHED) {
+      throw new AxelorException(
+          purchaseOrder,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(PurchaseExceptionMessage.PURCHASE_ORDER_FINISHED));
+    }
+    purchaseOrder.setOrderBeingEdited(true);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void validateChanges(PurchaseOrder purchaseOrder) throws AxelorException {
+    purchaseOrder.setOrderBeingEdited(false);
   }
 }

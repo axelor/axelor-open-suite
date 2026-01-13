@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,8 +40,8 @@ import com.axelor.apps.production.service.operationorder.OperationOrderOutsource
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
 
@@ -119,6 +119,7 @@ public class ManufOrderWorkflowMaintenanceServiceImpl extends ManufOrderWorkflow
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public boolean partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getTypeSelect() != ManufOrderRepository.TYPE_MAINTENANCE) {
       return super.partialFinish(manufOrder);

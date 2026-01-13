@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.production.rest.dto;
 
-import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.utils.api.ResponseStructure;
 import java.util.List;
 
@@ -27,8 +26,8 @@ public class ManufOrderProductListResponse extends ResponseStructure {
   private final List<ManufOrderProductResponse> productList;
 
   public ManufOrderProductListResponse(
-      List<ManufOrderProductResponse> productList, ManufOrder manufOrder) {
-    super(manufOrder.getVersion());
+      List<ManufOrderProductResponse> productList, Integer version) {
+    super(version);
     this.productList = productList;
   }
 

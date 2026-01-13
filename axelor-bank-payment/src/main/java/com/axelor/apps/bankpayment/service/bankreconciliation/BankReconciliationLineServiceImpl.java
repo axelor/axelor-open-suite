@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,8 +31,8 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -235,19 +235,5 @@ public class BankReconciliationLineServiceImpl implements BankReconciliationLine
     MoveLine moveLine = bankReconciliationLine.getMoveLine();
 
     moveLine.setBankReconciledAmount(bankReconciledAmount);
-  }
-
-  @Override
-  @Transactional
-  public BankReconciliationLine setSelected(BankReconciliationLine bankReconciliationLineContext) {
-    BankReconciliationLine bankReconciliationLine =
-        bankReconciliationLineRepository.find(bankReconciliationLineContext.getId());
-    if (bankReconciliationLine.getIsSelectedBankReconciliation() != null) {
-      bankReconciliationLine.setIsSelectedBankReconciliation(
-          !bankReconciliationLineContext.getIsSelectedBankReconciliation());
-    } else {
-      bankReconciliationLine.setIsSelectedBankReconciliation(true);
-    }
-    return bankReconciliationLineRepository.save(bankReconciliationLine);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -48,6 +48,7 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -55,8 +56,8 @@ import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.EmailAccountRepository;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.temporal.ChronoUnit;
@@ -204,8 +205,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         }
       }
     }
-
-    manufOrderStockMoveService.finish(manufOrder);
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+    manufOrder = manufOrderStockMoveService.finish(manufOrder);
 
     // create cost sheet
     Beans.get(CostSheetService.class)
@@ -217,13 +218,14 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     // update price in product
     Product product = manufOrder.getProduct();
     Company company = manufOrder.getCompany();
+    BigDecimal costPrice = computeOneUnitProductionPrice(manufOrder);
+
     if (((Integer) productCompanyService.get(product, "realOrEstimatedPriceSelect", company))
         == ProductRepository.PRICE_METHOD_FORECAST) {
       productCompanyService.set(
           product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
     } else if (((Integer) productCompanyService.get(product, "realOrEstimatedPriceSelect", company))
         == ProductRepository.PRICE_METHOD_REAL) {
-      BigDecimal costPrice = computeOneUnitProductionPrice(manufOrder);
       if (costPrice.signum() != 0) {
         productCompanyService.set(product, "lastProductionPrice", costPrice, company);
       }
@@ -234,6 +236,8 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
       productCompanyService.set(
           product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
     }
+    manufOrderStockMoveService.updatePrices(manufOrder, costPrice);
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
 
     manufOrder.setRealEndDateT(
         Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
@@ -242,22 +246,22 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         new BigDecimal(
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
-    manufOrderRepo.save(manufOrder);
-
-    updateProductCostPrice(manufOrder, product, company);
+    updateProductCostPrice(manufOrder, product, company, costPrice);
 
     manufOrderOutgoingStockMoveService.setManufOrderOnOutgoingMove(manufOrder);
     manufOrderTrackingNumberService.setParentTrackingNumbers(manufOrder);
 
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
+    manufOrderRepo.save(manufOrder);
   }
 
-  protected void updateProductCostPrice(ManufOrder manufOrder, Product product, Company company)
+  protected void updateProductCostPrice(
+      ManufOrder manufOrder, Product product, Company company, BigDecimal costPrice)
       throws AxelorException {
     // update costprice in product
     if (((Integer) productCompanyService.get(product, "costTypeSelect", company))
         == ProductRepository.COST_TYPE_LAST_PRODUCTION_PRICE) {
-      productCompanyService.set(product, "costPrice", manufOrder.getCostPrice(), company);
+      productCompanyService.set(product, "costPrice", costPrice, company);
       if ((Boolean) productCompanyService.get(product, "autoUpdateSalePrice", company)) {
         productService.updateSalePrice(product, company);
       }
@@ -292,12 +296,13 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         }
       }
     }
-    manufOrderStockMoveService.partialFinish(manufOrder);
+    manufOrder = manufOrderStockMoveService.partialFinish(manufOrder);
     Beans.get(CostSheetService.class)
         .computeCostPrice(
             manufOrder,
             CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION,
             Beans.get(AppBaseService.class).getTodayDate(manufOrder.getCompany()));
+    manufOrderStockMoveService.updatePrices(manufOrder, computeOneUnitProductionPrice(manufOrder));
     return sendPartialFinishMail(manufOrder);
   }
 

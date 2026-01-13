@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -83,8 +83,6 @@ public interface ReconcileService {
       throws AxelorException;
 
   public void balanceCredit(MoveLine creditMoveLine) throws AxelorException;
-
-  public List<Reconcile> getReconciles(MoveLine moveLine);
 
   public static boolean isReconcilable(MoveLine acc1, MoveLine acc2) {
     return acc1.getAccount().getReconcileOk()

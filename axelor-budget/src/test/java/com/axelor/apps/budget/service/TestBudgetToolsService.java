@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,12 +37,11 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.loader.LoaderHelper;
 import com.axelor.studio.db.AppBudget;
 import com.axelor.studio.db.repo.AppBudgetRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -221,14 +220,14 @@ public class TestBudgetToolsService extends BudgetTest {
     givenGetAvailableAmount(
         1011L, GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_DEFAULT_VALUE);
     Assertions.assertEquals(
-        200, budgetToolsService.getAvailableAmountOnBudget(budget, LocalDate.now()).intValue());
+        200, budgetToolsService.getAvailableAmountOnBudget(budget, budget.getToDate()).intValue());
   }
 
   @Test
   void testGetAvailableAmountOnBudgetBudget() {
     givenGetAvailableAmount(1011L, GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_BUDGET);
     Assertions.assertEquals(
-        400, budgetToolsService.getAvailableAmountOnBudget(budget, LocalDate.now()).intValue());
+        400, budgetToolsService.getAvailableAmountOnBudget(budget, budget.getToDate()).intValue());
   }
 
   @Test
@@ -236,7 +235,7 @@ public class TestBudgetToolsService extends BudgetTest {
     givenGetAvailableAmount(
         1011L, GlobalBudgetRepository.GLOBAL_BUDGET_AVAILABLE_AMOUNT_GLOBAL_BUDGET);
     Assertions.assertEquals(
-        4300, budgetToolsService.getAvailableAmountOnBudget(budget, LocalDate.now()).intValue());
+        4300, budgetToolsService.getAvailableAmountOnBudget(budget, budget.getToDate()).intValue());
   }
 
   @Test

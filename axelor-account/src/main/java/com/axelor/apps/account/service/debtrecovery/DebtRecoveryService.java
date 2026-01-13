@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -54,8 +54,8 @@ import com.axelor.inject.Beans;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.db.repo.MultiRelatedRepository;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -68,7 +68,6 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
 
 public class DebtRecoveryService {
 
@@ -230,7 +229,7 @@ public class DebtRecoveryService {
     LocalDate todayDate = appAccountService.getTodayDate(company);
     int mailTransitTime = company.getAccountConfig().getMailTransitTime();
 
-    javax.persistence.Query invoiceTermQuery =
+    jakarta.persistence.Query invoiceTermQuery =
         JPA.em()
             .createQuery(computeQuery(tradingName))
             .setParameter("partner", partner)
@@ -247,8 +246,8 @@ public class DebtRecoveryService {
     idList.addAll(invoiceTermQuery.getResultList());
   }
 
-  protected javax.persistence.Query addTradingNameBinding(
-      TradingName tradingName, javax.persistence.Query invoiceTermQuery) {
+  protected jakarta.persistence.Query addTradingNameBinding(
+      TradingName tradingName, jakarta.persistence.Query invoiceTermQuery) {
     if (tradingName != null) {
       invoiceTermQuery = invoiceTermQuery.setParameter("tradingName", tradingName);
     }
@@ -269,7 +268,7 @@ public class DebtRecoveryService {
         "WHERE (paymentsession.id IS NULL OR paymentsession.statusSelect != :paymentSessionStatus) ");
     query.append("AND invoiceterm.amountRemaining > 0 ");
     query.append("AND invoiceterm.isPaid IS FALSE ");
-    query.append("AND invoiceterm.debtRecoveryBlockingOk IS FALSE ");
+    query.append("AND move.ignoreInDebtRecoveryOk IS FALSE ");
     query.append("AND moveline.id IS NOT NULL ");
     query.append("AND moveline.partner = :partner ");
     query.append("AND move.company = :company ");
@@ -290,9 +289,9 @@ public class DebtRecoveryService {
     query.append("SELECT DISTINCT invoiceterm.id ");
     query.append("FROM InvoiceTerm invoiceterm ");
     query.append(
-        "LEFT JOIN PaymentSession paymentsession ON paymentsession.id = invoiceterm.paymentSession ");
-    query.append("LEFT JOIN MoveLine moveline ON moveline.id = invoiceterm.moveLine ");
-    query.append("LEFT JOIN Move move ON move.id = moveline.move ");
+        "LEFT JOIN PaymentSession paymentsession ON paymentsession.id = invoiceterm.paymentSession.id ");
+    query.append("LEFT JOIN MoveLine moveline ON moveline.id = invoiceterm.moveLine.id ");
+    query.append("LEFT JOIN Move move ON move.id = moveline.move.id ");
   }
 
   /**
@@ -432,8 +431,7 @@ public class DebtRecoveryService {
           ClassNotFoundException,
           InstantiationException,
           IllegalAccessException,
-          IOException,
-          JSONException {
+          IOException {
     boolean remindedOk = false;
 
     DebtRecovery debtRecovery =

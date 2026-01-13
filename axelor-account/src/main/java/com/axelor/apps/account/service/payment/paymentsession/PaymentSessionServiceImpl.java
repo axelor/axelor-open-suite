@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,9 +53,10 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -223,7 +224,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
     return invoiceTermRepository
         .all()
         .filter(
-            "self.paymentSession = :paymentSession AND (self.isSelectedOnPaymentSession IS :isSelectedOnPaymentSession )")
+            "self.paymentSession = :paymentSession AND self.isSelectedOnPaymentSession = :isSelectedOnPaymentSession")
         .bind("paymentSession", paymentSession.getId())
         .bind("isSelectedOnPaymentSession", isSelectedOnPaymentSession);
   }
@@ -314,15 +315,20 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
 
   public void filterInvoiceTerms(
       Query<InvoiceTerm> eligibleInvoiceTermQuery, PaymentSession paymentSession) {
-    List<InvoiceTerm> invoiceTermList;
+    List<Long> invoiceTermIdList =
+        eligibleInvoiceTermQuery.select("id").fetch(0, 0).stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(Collectors.toList());
 
-    while (!(invoiceTermList = eligibleInvoiceTermQuery.fetch(jpaLimit)).isEmpty()) {
-      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+    for (List<Long> idList : Lists.partition(invoiceTermIdList, jpaLimit)) {
+      for (InvoiceTerm invoiceTerm :
+          invoiceTermRepository.all().filter("self.id in :ids").bind("ids", idList).fetch()) {
         if (this.isNotAwaitingPayment(invoiceTerm)
             && !this.isBlocking(invoiceTerm, paymentSession)) {
           this.saveFilledInvoiceTermWithPaymentSession(paymentSession, invoiceTerm);
         }
       }
+
       JPA.clear();
       paymentSession = paymentSessionRepository.find(paymentSession.getId());
     }

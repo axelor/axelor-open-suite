@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,7 @@ import com.axelor.studio.db.AppHelpdesk;
 import com.axelor.studio.db.repo.AppHelpdeskRepository;
 import com.axelor.utils.helpers.date.DurationHelper;
 import com.axelor.utils.helpers.date.LocalDateHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -85,13 +85,13 @@ public class TicketServiceImpl implements TicketService {
               .all()
               .filter(
                   "self.team = :team AND self.prioritySelect = :prioritySelect AND self.ticketType = :ticketType OR "
-                      + "(self.team = :team AND self.prioritySelect = :prioritySelect AND self.ticketType = null OR "
-                      + "(self.team = null AND self.prioritySelect = :prioritySelect AND self.ticketType = :ticketType) OR "
-                      + "(self.team = :team AND self.prioritySelect = null AND self.ticketType = :ticketType)) OR "
-                      + "(self.team = :team AND self.prioritySelect = null AND self.ticketType = null OR "
-                      + "(self.team = null AND self.prioritySelect = :prioritySelect AND self.ticketType = null) OR "
-                      + "(self.team = null AND self.prioritySelect = null AND self.ticketType = :ticketType)) OR "
-                      + "(self.team = null AND self.prioritySelect = null AND self.ticketType = null)")
+                      + "(self.team = :team AND self.prioritySelect = :prioritySelect AND self.ticketType IS null OR "
+                      + "(self.team IS null AND self.prioritySelect = :prioritySelect AND self.ticketType = :ticketType) OR "
+                      + "(self.team = :team AND self.prioritySelect IS null AND self.ticketType = :ticketType)) OR "
+                      + "(self.team = :team AND self.prioritySelect IS null AND self.ticketType IS null OR "
+                      + "(self.team IS null AND self.prioritySelect = :prioritySelect AND self.ticketType = null) OR "
+                      + "(self.team IS null AND self.prioritySelect IS null AND self.ticketType = :ticketType)) OR "
+                      + "(self.team IS null AND self.prioritySelect IS null AND self.ticketType IS null)")
               .bind(
                   "team",
                   ticket.getAssignedToUser() == null

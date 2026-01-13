@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,11 +37,10 @@ import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
-import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -104,10 +103,8 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
   }
 
   @Override
-  @Transactional
   public void fillBudgetStrOnLine(PurchaseOrderLine purchaseOrderLine, boolean multiBudget) {
     purchaseOrderLine.setBudgetStr(this.searchAndFillBudgetStr(purchaseOrderLine, multiBudget));
-    purchaseOrderLineRepo.save(purchaseOrderLine);
   }
 
   @Override
@@ -138,11 +135,6 @@ public class PurchaseOrderLineBudgetServiceImpl implements PurchaseOrderLineBudg
       }
       if (purchaseOrder.getOrderDate() != null) {
         date = purchaseOrder.getOrderDate();
-      }
-
-      if (purchaseOrder.getProject() != null
-          && !ObjectUtils.isEmpty(purchaseOrder.getProject().getGlobalBudgetSet())) {
-        globalBudgetSet = purchaseOrder.getProject().getGlobalBudgetSet();
       }
     }
 

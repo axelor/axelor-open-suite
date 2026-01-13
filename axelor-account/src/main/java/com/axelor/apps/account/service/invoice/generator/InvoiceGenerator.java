@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,12 +25,14 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.account.service.invoice.InvoiceLineCheckService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.service.invoice.generator.tax.TaxInvoiceLine;
@@ -87,6 +89,7 @@ public abstract class InvoiceGenerator {
   protected BankDetails companyBankDetails;
   protected TradingName tradingName;
   protected Boolean groupProductsOnPrintings;
+  protected TaxNumber companyTaxNumber;
   protected static int DEFAULT_INVOICE_COPY = 1;
 
   protected InvoiceGenerator(
@@ -104,7 +107,8 @@ public abstract class InvoiceGenerator {
       Boolean inAti,
       BankDetails companyBankDetails,
       TradingName tradingName,
-      Boolean groupProductsOnPrintings)
+      Boolean groupProductsOnPrintings,
+      TaxNumber companyTaxNumber)
       throws AxelorException {
 
     this.operationType = operationType;
@@ -123,6 +127,7 @@ public abstract class InvoiceGenerator {
     this.tradingName = tradingName;
     this.groupProductsOnPrintings = groupProductsOnPrintings;
     this.today = Beans.get(AppAccountService.class).getTodayDate(company);
+    this.companyTaxNumber = companyTaxNumber;
   }
 
   /**
@@ -263,6 +268,8 @@ public abstract class InvoiceGenerator {
     }
     invoice.setGroupProductsOnPrintings(groupProductsOnPrintings);
 
+    invoice.setCompanyTaxNumber(companyTaxNumber);
+
     // Set ATI mode on invoice
     AccountConfigService accountConfigService = Beans.get(AccountConfigService.class);
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
@@ -290,6 +297,8 @@ public abstract class InvoiceGenerator {
     }
 
     invoice.setInvoicesCopySelect(getInvoiceCopy());
+
+    invoice.setCompanyTaxNumber(companyTaxNumber);
 
     InvoiceToolService.setPfpStatus(invoice);
 
@@ -419,6 +428,10 @@ public abstract class InvoiceGenerator {
    */
   public void computeInvoice(Invoice invoice) throws AxelorException {
     CurrencyScaleService currencyScaleService = Beans.get(CurrencyScaleService.class);
+    InvoiceLineCheckService invoiceLineCheckService = Beans.get(InvoiceLineCheckService.class);
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    invoiceLineCheckService.checkTaxLinesNotOnlyNonDeductibleTaxes(invoiceLineList);
+    invoiceLineCheckService.checkSumOfNonDeductibleTaxes(invoiceLineList);
 
     // In the invoice currency
     invoice.setExTaxTotal(BigDecimal.ZERO);
@@ -426,7 +439,7 @@ public abstract class InvoiceGenerator {
     // In the company accounting currency
     invoice.setCompanyExTaxTotal(BigDecimal.ZERO);
 
-    for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
+    for (InvoiceLine invoiceLine : invoiceLineList) {
 
       if (invoiceLine.getTypeSelect() != InvoiceLineRepository.TYPE_NORMAL) {
         continue;
@@ -447,10 +460,12 @@ public abstract class InvoiceGenerator {
 
     invoice.setHasPendingPayments(false);
 
-    if (!ObjectUtils.isEmpty(invoice.getInvoiceLineList())
+    if (!ObjectUtils.isEmpty(invoiceLineList)
         && ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
       Beans.get(InvoiceTermService.class).computeInvoiceTerms(invoice);
     }
+
+    invoice.setAmountRemaining(invoice.getInTaxTotal().subtract(invoice.getAmountPaid()));
 
     logger.debug(
         "Invoice amounts : W.T. = {}, Tax = {}, A.T.I. = {}",

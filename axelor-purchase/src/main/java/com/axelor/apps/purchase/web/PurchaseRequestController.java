@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,8 @@
 package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -34,21 +36,30 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Singleton
 public class PurchaseRequestController {
 
+  @SuppressWarnings("unchecked")
   public void generatePo(ActionRequest request, ActionResponse response) {
-    @SuppressWarnings("unchecked")
     List<Long> requestIds = (List<Long>) request.getContext().get("_ids");
     if (requestIds != null && !requestIds.isEmpty()) {
       Boolean groupBySupplier = (Boolean) request.getContext().get("groupBySupplier");
       groupBySupplier = groupBySupplier == null ? false : groupBySupplier;
       Boolean groupByProduct = (Boolean) request.getContext().get("groupByProduct");
       groupByProduct = groupByProduct == null ? false : groupByProduct;
+      Company company = null;
+      LinkedHashMap<String, Object> companyMap =
+          (LinkedHashMap<String, Object>) request.getContext().get("company");
+      if (companyMap != null) {
+        company =
+            Beans.get(CompanyRepository.class).find(((Integer) companyMap.get("id")).longValue());
+      }
       try {
         List<PurchaseRequest> purchaseRequests =
             Beans.get(PurchaseRequestRepository.class)
@@ -69,7 +80,7 @@ public class PurchaseRequestController {
         response.setCanClose(true);
         List<PurchaseOrder> purchaseOrderList =
             Beans.get(PurchaseRequestService.class)
-                .generatePo(purchaseRequests, groupBySupplier, groupByProduct);
+                .generatePo(purchaseRequests, groupBySupplier, groupByProduct, company);
         ActionViewBuilder actionViewBuilder =
             ActionView.define(
                     String.format(
@@ -150,6 +161,17 @@ public class PurchaseRequestController {
       purchaseRequest = Beans.get(PurchaseRequestRepository.class).find(purchaseRequest.getId());
       Beans.get(PurchaseRequestWorkflowService.class).draftPurchaseRequest(purchaseRequest);
       response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void setDefaultValues(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseRequest purchaseRequest = request.getContext().asType(PurchaseRequest.class);
+      Map<String, Object> values =
+          Beans.get(PurchaseRequestService.class).getDefaultValues(purchaseRequest, null);
+      response.setValues(values);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <menuitem name="invoice-root" title="Invoicing" order="-1000"
     if="__config__.app.isApp('invoice')" icon="file-text" icon-background="#31b4a9"/>
@@ -135,8 +135,8 @@
   </action-view>
 
 
-  <menuitem name="invoice-root-report" parent="invoice-root" order="1000"
-    icon="fa-bar-chart" title="Reportings"/>
+  <menuitem name="invoice-root-report" parent="invoice-root" order="1000" icon="bar-chart"
+    title="Reportings"/>
 
   <menuitem name="account-root" title="Accounting" order="-900"
     if="__config__.app.isApp('account')" icon="calculator-fill" icon-background="#2fa042"/>
@@ -257,7 +257,7 @@
     <context name="_operationTypeSelect" expr="eval:1"/>
     <context name="todayDate" expr="eval:__config__.date"/>
     <context name="_pfpStatus"
-      expr="eval:__config__.app.getApp('account')?.getActivatePassedForPayment()?[2]:[0,1,2,3]"/>
+      expr="eval:__config__.app.getApp('account')?.getActivatePassedForPayment() ? [2] : [0,1,2,3]"/>
   </action-view>
 
   <menuitem name="account-root-payments-cheque-deposit-slip-all"
@@ -412,7 +412,7 @@
   </action-view>
 
   <menuitem name="debt-recovery-root-conf" parent="account-root-debt-recovery"
-    title="Configuration" order="400" icon="fa-cog"/>
+    title="Configuration" order="400" icon="gear"/>
 
   <menuitem name="debt-recovery-root-conf-debt-recovery-method"
     parent="debt-recovery-root-conf" title="Debt recovery methods"
@@ -451,7 +451,7 @@
 
   <menuitem name="account-root-accounting-accounting-reports"
     parent="account-root-accounting" title="Accounting reports"
-    action="account.root.accounting.accounting.reports" icon="fa-bar-chart" order="200"/>
+    action="account.root.accounting.accounting.reports" icon="bar-chart" order="200"/>
 
   <action-view name="account.root.accounting.accounting.reports"
     title="Accounting reports" model="com.axelor.apps.account.db.AccountingReport">
@@ -557,7 +557,7 @@
   </action-view>
 
   <menuitem title="Configurations" name="account-root-asset-management-conf"
-    parent="account-root-asset-management" icon="fa-cog" order="200"/>
+    parent="account-root-asset-management" icon="gear" order="200"/>
 
   <menuitem title="Fixed asset categories"
     name="account-root-asset-management-conf-asset-categories"
@@ -594,11 +594,11 @@
 
 
   <menuitem name="account-root-report" parent="account-root" title="Reportings"
-    order="1200" icon="fa-bar-chart"/>
+    order="1200" icon="bar-chart"/>
 
 
   <menuitem name="account-conf" parent="account-root" title="Configuration" order="1300"
-    icon="fa-cog"/>
+    icon="gear"/>
 
   <menuitem name="account-conf-financial" parent="account-conf" title="Financial"
     order="100"/>
@@ -847,64 +847,6 @@
     <view-param name="search-filters" value="accounting-batch-filters"/>
   </action-view>
 
-  <!-- Top Menus -->
-
-
-  <menuitem name="top-invoicing" title="Invoicing" order="5" top="true"
-    if="__config__.app.isApp('invoice')" left="false"/>
-
-  <menuitem name="top-invoicing-custinvoices" title="Cust. Invoices"
-    action="top.invoicing.custinvoices" parent="top-invoicing" top="true"/>
-
-  <action-view name="top.invoicing.custinvoices" title="Cust. Invoices"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-grid"/>
-    <view type="form" name="invoice-form"/>
-    <view-param name="search-filters" value="customer-invoices-filters"/>
-    <domain>self.operationTypeSelect = 3</domain>
-    <context name="_operationTypeSelect" expr="eval:3"/>
-  </action-view>
-
-
-  <menuitem name="top-invoicing-cust-credit-note" title="Cust. Credit notes"
-    action="top.invoicing.custrefunds" parent="top-invoicing" top="true"/>
-
-  <action-view name="top.invoicing.custrefunds" title="Cust. Credit notes"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-refund-grid"/>
-    <view type="form" name="invoice-form"/>
-    <view-param name="search-filters" value="customer-refunds-filters"/>
-    <domain>self.operationTypeSelect = 4</domain>
-    <context name="_operationSubTypeSelect" expr="eval:1"/>
-    <context name="_operationTypeSelect" expr="eval:4"/>
-  </action-view>
-
-  <menuitem name="top-invoicing-supplinvoices" title="Suppl. Invoices"
-    action="top.invoicing.supplinvoices" parent="top-invoicing" top="true"/>
-
-  <action-view name="top.invoicing.supplinvoices" title="Suppl. Invoices"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-supplier-grid"/>
-    <view type="form" name="invoice-form"/>
-    <view-param name="search-filters" value="supplier-invoices-filters"/>
-    <domain>self.operationTypeSelect = 1</domain>
-
-    <context name="_operationTypeSelect" expr="eval:1"/>
-  </action-view>
-
-  <menuitem name="top-invoicing-suppl-credit-note" title="Suppl. Credit notes"
-    action="top.invoicing.supplrefunds" parent="top-invoicing" top="true"/>
-
-  <action-view name="top.invoicing.supplrefunds" title="Suppl. Credit notes"
-    model="com.axelor.apps.account.db.Invoice">
-    <view type="grid" name="invoice-supplier-refund-grid"/>
-    <view type="form" name="invoice-form"/>
-    <view-param name="search-filters" value="supplier-refunds-filters"/>
-    <domain>self.operationTypeSelect = 2</domain>
-    <context name="_operationTypeSelect" expr="eval:2"/>
-    <context name="_operationSubTypeSelect" expr="eval:1"/>
-  </action-view>
-
   <menuitem name="menu-account-sale-invoice-dashboard-1" parent="invoice-root-report"
     title="Sale Invoices" action="account.sale.invoice.dashboard.1.view" order="100"/>
 
@@ -967,7 +909,7 @@
   <!-- Move template -->
 
   <menuitem name="move-template-wizard" title="Move From Template"
-    parent="account-root-move" action="move.template.wizard" top="true" order="400"/>
+    parent="account-root-move" action="move.template.wizard" order="400"/>
   <action-view name="move.template.wizard" title="Move From Template"
     model="com.axelor.utils.db.Wizard">
     <view type="form" name="move-template-wizard-form"/>
@@ -986,7 +928,7 @@
     order="400"/>
 
   <menuitem name="move-template" title="Move Templates" parent="move-template-root"
-    action="move.template" top="true" order="100"/>
+    action="move.template" order="100"/>
 
   <action-view name="move.template" title="Move Templates"
     model="com.axelor.apps.account.db.MoveTemplate">
@@ -996,7 +938,7 @@
   </action-view>
 
   <menuitem name="move-template-type" title="Move Template Types"
-    parent="move-template-root" action="move.template.type" top="true" order="200"/>
+    parent="move-template-root" action="move.template.type" order="200"/>
   <action-view name="move.template.type" title="Move Template Types"
     model="com.axelor.apps.account.db.MoveTemplateType">
     <view type="grid" name="move-template-type-grid"/>
@@ -1004,7 +946,7 @@
   </action-view>
 
   <menuitem name="invoice-conf" parent="invoice-root" title="Configuration" order="1100"
-    icon="fa-cog" if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
+    icon="gear" if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
 
   <menuitem name="invoice-conf-refusalreason" parent="invoice-conf"
     title="Reason of refusal" action="invoice.conf.refusalreason"
@@ -1078,7 +1020,7 @@
 
 
   <menuitem name="account-analytic-structure" parent="account-conf-analytic"
-    action="account.conf.analytic.axis.tree" title="Analytic Structure" icon="fa-sitemap"
+    action="account.conf.analytic.axis.tree" title="Analytic Structure" icon="diagram-3-fill"
     order="100"/>
 
   <action-view name="account.conf.analytic.axis.tree" title="Analytic Tree"

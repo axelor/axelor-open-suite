@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,9 +29,10 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -72,7 +73,7 @@ public class PartnerSaleController {
           averagePrice =
               qtyAndPrice
                   .get("price")
-                  .divide(qty, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_EVEN);
+                  .divide(qty, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("name", product.getName());
@@ -95,8 +96,12 @@ public class PartnerSaleController {
 
     try {
 
-      String fromDate = (String) context.get("fromDate");
-      String toDate = (String) context.get("toDate");
+      LocalDate fromDate =
+          context.get("fromDate") != null
+              ? LocalDate.parse(context.get("fromDate").toString())
+              : null;
+      LocalDate toDate =
+          context.get("toDate") != null ? LocalDate.parse(context.get("toDate").toString()) : null;
 
       List<Map<String, Object>> dataList =
           Beans.get(PartnerSaleService.class).averageByCustomer(averageElement, fromDate, toDate);
@@ -123,7 +128,7 @@ public class PartnerSaleController {
             Beans.get(SaleOrderRepository.class)
                 .all()
                 .filter("self.clientPartner = :partner")
-                .bind("partner", partner.getId())
+                .bind("partner", partner)
                 .count();
         if (saleOrderCount > 0) {
           response.setValue("customerCantBeRemoved", true);

@@ -21,8 +21,8 @@ dependencies {
 	implementation libs.xalan
 	implementation libs.xmlbeans
 
-	implementation libs.bcprov_jdk15on
-	implementation libs.bcpkix_jdk15on
+	implementation libs.bcprov_jdk18on
+	implementation libs.bcpkix_jdk18on
 
 	implementation libs.ical4j
 	implementation libs.iban4j

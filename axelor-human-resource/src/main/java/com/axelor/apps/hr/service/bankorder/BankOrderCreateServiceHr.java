@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
+import com.axelor.apps.bankpayment.service.bankorder.BankOrderCheckService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCreateService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderLineService;
 import com.axelor.apps.base.AxelorException;
@@ -32,7 +33,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -49,8 +50,9 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
       BankOrderRepository bankOrderRepository,
       BankOrderLineService bankOrderLineService,
       InvoiceService invoiceService,
+      BankOrderCheckService bankOrderCheckService,
       AppBaseService appBaseService) {
-    super(bankOrderRepository, bankOrderLineService, invoiceService);
+    super(bankOrderRepository, bankOrderLineService, invoiceService, bankOrderCheckService);
     this.appBaseService = appBaseService;
   }
 
@@ -71,7 +73,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             .subtract(expense.getAdvanceAmount())
             .subtract(expense.getWithdrawnCash())
             .subtract(expense.getPersonalExpenseAmount());
-    Currency currency = company.getCurrency();
+    Currency currency = expense.getCurrency();
     LocalDate paymentDate =
         expense.getPaymentDate() != null
             ? expense.getPaymentDate()
@@ -90,7 +92,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
             expense.getFullName(),
             BankOrderRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             BankOrderRepository.FUNCTIONAL_ORIGIN_EXPENSE,
-            PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE);
+            getAccountingTriggerSelect(paymentMode));
 
     bankOrder.addBankOrderLineListItem(
         bankOrderLineService.createBankOrderLine(
@@ -107,7 +109,14 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
     return bankOrder;
   }
 
-  public BankOrder createBankOrder(Expense expense) throws AxelorException {
-    return createBankOrder(expense, expense.getCompany().getDefaultBankDetails());
+  protected int getAccountingTriggerSelect(PaymentMode paymentMode) {
+    int accountingTriggerSelect = paymentMode.getAccountingTriggerSelect();
+    switch (accountingTriggerSelect) {
+      case PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION:
+      case PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION:
+        return accountingTriggerSelect;
+      default:
+        return PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION;
+    }
   }
 }

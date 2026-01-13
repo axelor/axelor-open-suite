@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="sequence-grid" title="Sequences" model="com.axelor.apps.base.db.Sequence">
     <field name="name"/>
@@ -136,6 +136,7 @@
     <action name="action-sequence-validate"/>
     <action name="action-method-sequence-validate-before-save"/>
     <action name="action-sequence-method-verify-pattern"/>
+    <action name="action-sequence-method-compute-fullname"/>
   </action-group>
 
   <action-group name="action-sequence-version-form-on-change-date-group">

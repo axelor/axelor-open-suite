@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,7 @@ package com.axelor.apps.supplychain.web;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
+import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -51,7 +51,7 @@ public class InvoiceLineController {
       InvoiceLine invoiceLine = context.asType(InvoiceLine.class);
       Invoice invoice = request.getContext().getParent().asType(Invoice.class);
 
-      Beans.get(InvoiceLineSupplychainService.class)
+      Beans.get(InvoiceLineSupplierCatalogService.class)
           .checkMinQty(invoice, invoiceLine, request, response);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

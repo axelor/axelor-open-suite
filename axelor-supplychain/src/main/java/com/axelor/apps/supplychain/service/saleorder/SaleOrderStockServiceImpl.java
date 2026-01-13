@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.supplychain.service.saleorder;
 
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -34,6 +35,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.stock.db.PartnerStockSettings;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
@@ -42,7 +44,9 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveLineStockLocationService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
@@ -50,11 +54,13 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineBlockingSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -63,11 +69,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
@@ -85,6 +90,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
   protected ProductCompanyService productCompanyService;
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected TaxService taxService;
+  protected SaleOrderDeliveryAddressService saleOrderDeliveryAddressService;
+  protected final SaleOrderLineBlockingSupplychainService saleOrderLineBlockingSupplychainService;
+  protected AppStockService appStockService;
+  protected StockMoveLineStockLocationService stockMoveLineStockLocationService;
 
   @Inject
   public SaleOrderStockServiceImpl(
@@ -101,7 +110,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
       SupplyChainConfigService supplyChainConfigService,
       ProductCompanyService productCompanyService,
       PartnerStockSettingsService partnerStockSettingsService,
-      TaxService taxService) {
+      TaxService taxService,
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
+      SaleOrderLineBlockingSupplychainService saleOrderLineBlockingSupplychainService,
+      AppStockService appStockService,
+      StockMoveLineStockLocationService stockMoveLineStockLocationService) {
     this.stockMoveService = stockMoveService;
     this.stockMoveLineService = stockMoveLineService;
     this.stockConfigService = stockConfigService;
@@ -116,6 +129,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     this.productCompanyService = productCompanyService;
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.taxService = taxService;
+    this.saleOrderDeliveryAddressService = saleOrderDeliveryAddressService;
+    this.saleOrderLineBlockingSupplychainService = saleOrderLineBlockingSupplychainService;
+    this.appStockService = appStockService;
+    this.stockMoveLineStockLocationService = stockMoveLineStockLocationService;
   }
 
   @Override
@@ -136,38 +153,41 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     List<Long> stockMoveList = new ArrayList<>();
 
-    Map<LocalDate, List<SaleOrderLine>> saleOrderLinePerDateMap =
-        getAllSaleOrderLinePerDate(saleOrder);
+    Map<Pair<String, LocalDate>, List<SaleOrderLine>> saleOrderLineMap =
+        getSaleOrderLineMap(saleOrder);
 
-    for (LocalDate estimatedDeliveryDate :
-        saleOrderLinePerDateMap.keySet().stream()
-            .filter(Objects::nonNull)
-            .sorted((x, y) -> x.compareTo(y))
-            .collect(Collectors.toList())) {
+    for (Map.Entry<Pair<String, LocalDate>, List<SaleOrderLine>> entry :
+        saleOrderLineMap.entrySet()) {
 
-      List<SaleOrderLine> saleOrderLineList = saleOrderLinePerDateMap.get(estimatedDeliveryDate);
+      Pair<String, LocalDate> key = entry.getKey();
+      String deliveryAddressStr = key.getLeft();
+      LocalDate estimatedDeliveryDate = key.getRight();
 
-      Optional<StockMove> stockMove =
-          createStockMove(saleOrder, estimatedDeliveryDate, saleOrderLineList);
+      List<SaleOrderLine> saleOrderLineList = entry.getValue();
 
-      stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
-    }
-    Optional<List<SaleOrderLine>> saleOrderLineList =
-        Optional.ofNullable(saleOrderLinePerDateMap.get(null));
-    if (saleOrderLineList.isPresent()) {
-
-      Optional<StockMove> stockMove = createStockMove(saleOrder, null, saleOrderLineList.get());
-
-      stockMove.map(StockMove::getId).ifPresent(stockMoveList::add);
+      Optional<StockMove> stockMoveOpt =
+          createStockMove(saleOrder, deliveryAddressStr, estimatedDeliveryDate, saleOrderLineList);
+      if (!stockMoveOpt.isPresent()) {
+        continue;
+      }
+      saleOrder = saleOrderRepository.find(saleOrder.getId());
+      StockMove stockMove = JPA.find(StockMove.class, stockMoveOpt.get().getId());
+      saleOrder.addStockMoveListItem(stockMove);
+      stockMoveList.add(stockMove.getId());
     }
     return stockMoveList;
   }
 
   protected Optional<StockMove> createStockMove(
-      SaleOrder saleOrder, LocalDate estimatedDeliveryDate, List<SaleOrderLine> saleOrderLineList)
+      SaleOrder saleOrder,
+      String deliveryAddressStr,
+      LocalDate estimatedDeliveryDate,
+      List<SaleOrderLine> saleOrderLineList)
       throws AxelorException {
     Company company = saleOrder.getCompany();
-    StockMove stockMove = this.createStockMove(saleOrder, company, estimatedDeliveryDate);
+    StockMove stockMove =
+        this.createStockMove(
+            saleOrder, company, saleOrderLineList, deliveryAddressStr, estimatedDeliveryDate);
     stockMove.setDeliveryCondition(saleOrder.getDeliveryCondition());
 
     StockLocation toStockLocation = saleOrder.getToStockLocation();
@@ -184,10 +204,27 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       if (saleOrderLine.getProduct() != null) {
+        if (saleOrderLineBlockingSupplychainService.isDeliveryBlocked(saleOrderLine)) {
+          continue;
+        }
         BigDecimal qty = saleOrderLineServiceSupplyChain.computeUndeliveredQty(saleOrderLine);
         if (qty.signum() > 0 && !existActiveStockMoveForSaleOrderLine(saleOrderLine)) {
-          createStockMoveLine(
-              stockMove, saleOrderLine, qty, saleOrder.getStockLocation(), toStockLocation);
+          StockLocation fromStockLocation = saleOrder.getStockLocation();
+          if (appBaseService.getAppBase().getEnableSiteManagementForStock()
+              && appStockService.getAppStock().getIsManageStockLocationOnStockMoveLine()) {
+            fromStockLocation =
+                Optional.ofNullable(
+                        stockMoveLineStockLocationService.getDefaultFromStockLocation(
+                            saleOrderLine.getProduct(), stockMove))
+                    .orElse(fromStockLocation);
+          }
+
+          StockMoveLine stockMoveLine =
+              createStockMoveLine(
+                  stockMove, saleOrderLine, qty, fromStockLocation, toStockLocation);
+          if (stockMoveLine != null) {
+            stockMoveLine.getStockMove().addStockMoveLineListItem(stockMoveLine);
+          }
         }
       }
     }
@@ -235,9 +272,10 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     return Optional.of(stockMove);
   }
 
-  protected Map<LocalDate, List<SaleOrderLine>> getAllSaleOrderLinePerDate(SaleOrder saleOrder) {
+  protected Map<Pair<String, LocalDate>, List<SaleOrderLine>> getSaleOrderLineMap(
+      SaleOrder saleOrder) {
 
-    Map<LocalDate, List<SaleOrderLine>> saleOrderLinePerDateMap = new HashMap<>();
+    Map<Pair<String, LocalDate>, List<SaleOrderLine>> saleOrderLineMap = new HashMap<>();
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
@@ -245,26 +283,29 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
         continue;
       }
 
-      LocalDate dateKey = saleOrderLine.getEstimatedShippingDate();
+      Pair<String, LocalDate> key = getDeliveryInformation(saleOrderLine);
 
-      if (dateKey == null) {
-        dateKey = saleOrderLine.getSaleOrder().getEstimatedShippingDate();
-      }
-      if (dateKey == null) {
-        dateKey = saleOrderLine.getDesiredDeliveryDate();
-      }
-
-      List<SaleOrderLine> saleOrderLineLists = saleOrderLinePerDateMap.get(dateKey);
-
-      if (saleOrderLineLists == null) {
-        saleOrderLineLists = new ArrayList<>();
-        saleOrderLinePerDateMap.put(dateKey, saleOrderLineLists);
-      }
-
-      saleOrderLineLists.add(saleOrderLine);
+      saleOrderLineMap.computeIfAbsent(key, k -> new ArrayList<>()).add(saleOrderLine);
     }
 
-    return saleOrderLinePerDateMap;
+    return saleOrderLineMap;
+  }
+
+  protected Pair<String, LocalDate> getDeliveryInformation(SaleOrderLine saleOrderLine) {
+    String addressKey = saleOrderLine.getDeliveryAddressStr();
+    if (addressKey == null) {
+      addressKey = saleOrderLine.getSaleOrder().getDeliveryAddressStr();
+    }
+
+    LocalDate dateKey = saleOrderLine.getEstimatedShippingDate();
+    if (dateKey == null) {
+      dateKey = saleOrderLine.getSaleOrder().getEstimatedShippingDate();
+    }
+    if (dateKey == null) {
+      dateKey = saleOrderLine.getDesiredDeliveryDate();
+    }
+
+    return Pair.of(addressKey, dateKey);
   }
 
   protected boolean isSaleOrderWithProductsToDeliver(SaleOrder saleOrder) throws AxelorException {
@@ -285,7 +326,11 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
   @Override
   public StockMove createStockMove(
-      SaleOrder saleOrder, Company company, LocalDate estimatedDeliveryDate)
+      SaleOrder saleOrder,
+      Company company,
+      List<SaleOrderLine> saleOrderLineList,
+      String deliveryAddressStr,
+      LocalDate estimatedDeliveryDate)
       throws AxelorException {
     StockLocation toStockLocation = saleOrder.getToStockLocation();
     if (toStockLocation == null) {
@@ -300,11 +345,13 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
     }
 
     Partner partner = computePartnerToUseForStockMove(saleOrder);
+    Address deliveryAddress =
+        saleOrderDeliveryAddressService.getDeliveryAddress(saleOrder, saleOrderLineList);
 
     StockMove stockMove =
         stockMoveService.createStockMove(
             null,
-            saleOrder.getDeliveryAddress(),
+            deliveryAddress,
             company,
             partner,
             saleOrder.getStockLocation(),
@@ -319,7 +366,7 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
             saleOrder.getIncoterm(),
             StockMoveRepository.TYPE_OUTGOING);
 
-    stockMove.setToAddressStr(saleOrder.getDeliveryAddressStr());
+    stockMove.setToAddressStr(deliveryAddressStr);
     stockMove.setSaleOrderSet(Sets.newHashSet(saleOrder));
     stockMove.setOrigin(saleOrder.getSaleOrderSeq());
     stockMove.setStockMoveLineList(new ArrayList<>());
@@ -495,6 +542,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
               fromStockLocation,
               toStockLocation);
 
+      stockMoveLine.setQtyRemainingToPackage(
+          stockMoveLine.getRealQty().setScale(3, RoundingMode.HALF_UP));
+
       if (saleOrderLine.getDeliveryState() == 0) {
         saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
       }
@@ -563,6 +613,9 @@ public class SaleOrderStockServiceImpl implements SaleOrderStockService {
 
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
+      if (saleOrderLine.getQty().signum() == 0) {
+        continue;
+      }
       if (this.isStockMoveProduct(saleOrderLine, saleOrder)) {
 
         if (saleOrderLine.getDeliveryState() == SaleOrderLineRepository.DELIVERY_STATE_DELIVERED) {

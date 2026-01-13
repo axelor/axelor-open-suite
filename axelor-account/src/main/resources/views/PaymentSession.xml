@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="payment-session-grid" title="Payment sessions" canDelete="false"
     model="com.axelor.apps.account.db.PaymentSession" orderBy="-paymentDate,-sequence">
     <toolbar>
-      <button name="removePaymentSessionBtn" title="Delete" icon="fa-trash"
+      <button name="removePaymentSessionBtn" title="Delete" icon="trash"
         onClick="action-payment-session-validate-remove-multiple-payment-session,action-payment-session-method-remove-multiple-payment-session"/>
     </toolbar>
     <field name="sequence"/>
@@ -74,7 +74,7 @@
             <![CDATA[<>{(sessionTotalAmountFormula < 0) && <Badge bg="info">{_t('Session total amount is negative')}</Badge>}</>]]>
           </viewer>
         </field>
-        <button name="sessionTotalAmountBtn" title="Session total amount" icon="fa-money"
+        <button name="sessionTotalAmountBtn" title="Session total amount" icon="cash"
           widget="info-button" onClick="action-payment-session-view-invoice-terms"
           showIf="sessionTotalAmountFormula &gt; 0 || $hasUnselectedInvoiceTerm"
           x-field="sessionTotalAmountFormula"/>
@@ -132,7 +132,7 @@
         onSelect="action-payment-session-method-set-journal-domain"/>
       <field name="currency" form-view="currency-form" grid-view="currency-grid"
         readonly="true"/>
-      <field name="partnerSet" widget="TagSelect" canNew="false" canEdit="false"
+      <field name="partnerSet" widget="Tags" canNew="false" canEdit="false"
         onSelect="action-payment-session-attrs-set-partner-domain" form-view="partner-form"
         readonlyIf="!company || !partnerTypeSelect"/>
     </panel>

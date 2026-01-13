@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <calendar name="operation-order-planned-calendar"
     model="com.axelor.apps.production.db.OperationOrder" eventStart="plannedStartDateT"
@@ -37,25 +37,25 @@
     <field name="plannedEndDateT"/>
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="prodProcessLine.optional" hidden="true"/>
     <field name="manufOrder.statusSelect" hidden="true"/>
     <field name="manufOrder.prodProcess" hidden="true"/>
     <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
     <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
-    <button name="planBtn" icon="fa-calendar" onClick="action-operation-order-method-plan"
+    <button name="planBtn" icon="calendar" onClick="action-operation-order-method-plan"
       readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
-    <button name="startBtn" icon="fa-play"
+    <button name="startBtn" icon="play-fill"
       onClick="action-operation-order-group-start-or-resume"
       readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority'))))"/>
-    <button name="pauseBtn" icon="fa-pause" onClick="action-operation-order-group-pause,save"
+    <button name="pauseBtn" icon="pause-fill"
+      onClick="action-operation-order-group-pause,save" readonlyIf="statusSelect != 4"/>
+    <button name="finishBtn" icon="power" onClick="action-operation-order-group-finish"
       readonlyIf="statusSelect != 4"/>
-    <button name="finishBtn" icon="fa-power-off"
-      onClick="action-operation-order-group-finish" readonlyIf="statusSelect != 4"/>
-    <button name="cancelBtn" icon="fa-times-circle"
+    <button name="cancelBtn" icon="x-circle-fill"
       onClick="action-operation-order-group-cancel,save"
       readonlyIf="statusSelect == 2 || statusSelect == 6"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="printer"
       onClick="action-method-print-template"/>
   </grid>
 
@@ -70,27 +70,26 @@
     <field name="plannedEndDateT"/>
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="prodProcessLine.optional" hidden="true"/>
     <field name="manufOrder.statusSelect" hidden="true"/>
     <field name="manufOrder.prodProcess" hidden="true"/>
     <field name="outsourcing" hidden="true"/>
     <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
     <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
-    <button name="planBtn" icon="fa-calendar"
-      onClick="save,action-operation-order-method-plan"
+    <button name="planBtn" icon="calendar" onClick="save,action-operation-order-method-plan"
       readonlyIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"/>
-    <button name="startBtn" icon="fa-play"
+    <button name="startBtn" icon="play-fill"
       onClick="save,action-operation-order-group-start-or-resume"
       readonlyIf="(statusSelect != 3 &amp;&amp; statusSelect != 5) || ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; !((!$get('prodProcessLine.optional') &amp;&amp; priority == $get('manufOrder.operationOrderMaxPriority')) || ($get('prodProcessLine.optional') &amp;&amp; priority &lt; $get('manufOrder.operationOrderMaxPriority'))))"/>
-    <button name="pauseBtn" icon="fa-pause"
+    <button name="pauseBtn" icon="pause-fill"
       onClick="save,action-operation-order-group-pause,save" readonlyIf="statusSelect != 4"/>
-    <button name="finishBtn" icon="fa-power-off"
-      onClick="action-operation-order-group-finish" readonlyIf="statusSelect != 4"/>
-    <button name="cancelBtn" icon="fa-times-circle"
+    <button name="finishBtn" icon="power" onClick="action-operation-order-group-finish"
+      readonlyIf="statusSelect != 4"/>
+    <button name="cancelBtn" icon="x-circle-fill"
       onClick="save,action-operation-order-group-cancel,save"
       readonlyIf="statusSelect == 2 || statusSelect == 6"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="printer"
       onClick="save,action-method-print-template"/>
   </grid>
 
@@ -117,7 +116,8 @@
           showIf="outsourcing &amp;&amp; !manufOrder.outsourcing"
           domain="self.isSubcontractor = true" colSpan="4"/>
       </panel>
-      <field name="isToInvoice" colSpan="3"/>
+      <field name="isToInvoice" colSpan="3" if-module="axelor-business-production"
+        if="__config__.app.getApp('production')?.getManageBusinessProduction()"/>
       <field name="prodProcessLine" hidden="true"/>
       <field name="generatePurchaseOrderOnMoPlanning" hidden="true"/>
       <field name="prodProcessLine.optional" colSpan="3" readonly="true" showTitle="false">
@@ -167,6 +167,13 @@
       <field name="prodProcessLine.objectDescriptionList" colSpan="12" height="20"/>
     </panel>
 
+    <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
+      colSpan="12">
+      <button name="addControlEntryBtn" title="Add a control entry"
+        onClick="save,action-operation-order-view-add-control-entry" colOffset="6"/>
+      <panel-dashlet action="action-operation-order-view-control-entry" colSpan="12"/>
+    </panel>
+
     <panel name="stockMovesPanel" hidden="true" title="Stock moves" colSpan="12"
       readonlyIf="statusSelect == 6">
       <field name="inStockMoveList" form-view="stock-move-form" grid-view="stock-move-grid"
@@ -178,7 +185,7 @@
           form-view="prod-product-form" grid-view="prod-product-grid"/>
         <panel-related name="consumedStockMoveLineListPanel"
           field="consumedStockMoveLineList"
-          onChange="action-operation-order-method-check-consumed-stock-move,save,action-operation-order-method-update-consumed-stock-move"
+          onChange="action-operation-order-group-on-change-consumed-stock-move-line"
           form-view="stock-move-line-production-form"
           grid-view="stock-move-line-consumed-production-grid" colSpan="12"/>
         <panel-related name="diffConsumeProdProductListPanel"
@@ -191,37 +198,31 @@
       <field name="manufOrder.prodProcess" hidden="true"/>
       <field name="manufOrder.prodProcess.operationContinuity" hidden="true"/>
       <field name="manufOrder.operationOrderMaxPriority" hidden="true"/>
-      <button name="planBtn" title="Plan" icon="fa-calendar" colSpan="12"
+      <button name="planBtn" title="Plan" icon="calendar" colSpan="12"
         hideIf="statusSelect != 2 || $get('manufOrder.statusSelect') &lt; 3"
         onClick="save,action-operation-order-method-plan" hidden="true"/>
-      <button name="startBtn" title="Start" icon="fa-play"
+      <button name="startBtn" title="Start" icon="play-fill"
         showIf="(statusSelect == 3 &amp;&amp; !($get('manufOrder.prodProcess.operationContinuity'))) || (statusSelect == 3 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; (!$get('prodProcessLine.optional') &amp;&amp; (priority == $get('manufOrder.operationOrderMaxPriority'))))) || (statusSelect == 3 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; ($get('prodProcessLine.optional') &amp;&amp; (priority &lt; $get('manufOrder.operationOrderMaxPriority')))))"
         colSpan="12" onClick="save,action-operation-order-group-start,save" hidden="true"/>
-      <button name="cancelBtn" title="Cancel" icon="fa-times-circle"
+      <button name="cancelBtn" title="Cancel" icon="x-circle-fill"
         showIf="statusSelect != 2 &amp;&amp; statusSelect != 6" colSpan="12"
         onClick="save,action-operation-order-group-cancel,save" hidden="true"/>
-      <button name="finishBtn" title="Finish" icon="fa-power-off" showIf="statusSelect == 4"
+      <button name="finishBtn" title="Finish" icon="power" showIf="statusSelect == 4"
         colSpan="12" onClick="save,action-operation-order-group-finish" hidden="true"/>
-      <button name="finishPart" icon="fa-power-off" title="Partial Finish" colSpan="12"
+      <button name="finishPart" icon="power" title="Partial Finish" colSpan="12"
         showIf="statusSelect == 4" onClick="save, action-operation-order-method-part-finish"
         hidden="true"/>
-      <button name="pauseBtn" title="Pause" icon="fa-pause" showIf="statusSelect == 4"
+      <button name="pauseBtn" title="Pause" icon="pause-fill" showIf="statusSelect == 4"
         colSpan="12" onClick="save,action-operation-order-group-pause,save" hidden="true"/>
-      <button name="resumeBtn" title="Resume" icon="fa-step-forward"
+      <button name="resumeBtn" title="Resume" icon="forward-fill"
         showIf="(statusSelect == 5 &amp;&amp; !($get('manufOrder.prodProcess.operationContinuity'))) || (statusSelect == 5 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; (!$get('prodProcessLine.optional') &amp;&amp; (priority == $get('manufOrder.operationOrderMaxPriority'))))) || (statusSelect == 5 &amp;&amp; ($get('manufOrder.prodProcess.operationContinuity') &amp;&amp; ($get('prodProcessLine.optional') &amp;&amp; (priority &lt; $get('manufOrder.operationOrderMaxPriority')))))"
         colSpan="12" onClick="save,action-operation-order-method-resume,save" hidden="true"/>
     </panel>
 
     <panel-related name="operationOrderDurationListPanel"
       field="operationOrderDurationList" canNew="false" canEdit="false" canRemove="false"
-      sidebar="true" showIf="id"
-      if="!__config__.app.getApp('production') || !__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
+      sidebar="true" showIf="id"/>
 
-    <panel-related name="operationOrderDurationListPanel" field="timesheetLineList"
-      grid-view="timesheet-line-timesheet-operation-order-grid"
-      form-view="timesheet-line-timesheet-manuf-order-form" colSpan="12" canNew="false"
-      canEdit="false" canRemove="false" if-module="axelor-business-production"
-      if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
   </form>
 
   <action-record name="action-operation-order-default-record"
@@ -312,6 +313,18 @@
     <call class="com.axelor.apps.production.web.OperationOrderController" method="plan"/>
   </action-method>
 
+  <action-group name="action-operation-order-group-on-change-consumed-stock-move-line">
+    <action name="action-operation-order-method-check-consumed-stock-move"/>
+    <action name="action-operation-order-method-set-stock-location-consumed-sml"/>
+    <action name="save"/>
+    <action name="action-operation-order-method-update-consumed-stock-move"/>
+  </action-group>
+
+  <action-method name="action-operation-order-method-set-stock-location-consumed-sml">
+    <call class="com.axelor.apps.production.web.OperationOrderController"
+      method="setConsumedStockMoveLineStockLocation"/>
+  </action-method>
+
   <action-method name="action-operation-order-method-check-consumed-stock-move">
     <call class="com.axelor.apps.production.web.OperationOrderController"
       method="checkConsumedStockMoveLineList"/>
@@ -367,12 +380,26 @@
     <context name="_machineId" expr="eval: id"/>
   </action-view>
 
+  <action-view name="action-operation-order-view-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="grid" name="control-entry-grid"/>
+    <view type="form" name="control-entry-form"/>
+    <domain>self.relatedToSelectId = :operationOrderId AND self.relatedToSelect =
+      'com.axelor.apps.production.db.OperationOrder'</domain>
+    <context name="operationOrderId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-operation-order-view-add-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="form" name="control-entry-form"/>
+    <view type="grid" name="control-entry-grid"/>
+    <view-param name="popup" value="reload"/>
+    <context name="relatedTo" expr="eval: 'com.axelor.apps.production.db.OperationOrder'"/>
+    <context name="relatedToId" expr="eval:__self__?.id"/>
+  </action-view>
+
   <search-filters name="operation-order-filters"
     model="com.axelor.apps.production.db.OperationOrder" title="Manufacturing order filters">
-    <field name="operationOrderDurationList" hidden="true"
-      if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
-    <field name="timesheetLineList" hidden="true"
-      if="!__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"/>
     <filter name="operation-order-filters-draft-operations" title="Draft Operations">
       <domain>self.statusSelect = 1</domain>
     </filter>

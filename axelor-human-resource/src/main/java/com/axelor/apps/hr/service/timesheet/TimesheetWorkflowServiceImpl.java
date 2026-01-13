@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,12 +33,11 @@ import com.axelor.i18n.I18n;
 import com.axelor.message.db.Message;
 import com.axelor.message.db.Template;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import wslite.json.JSONException;
 
 public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
 
@@ -77,7 +76,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message sendConfirmationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getSentTimesheetTemplate();
@@ -92,7 +91,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message confirmAndSendConfirmationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException {
     confirm(timesheet);
     return sendConfirmationEmail(timesheet);
   }
@@ -112,7 +111,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message sendValidationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getValidatedTimesheetTemplate();
@@ -128,7 +127,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message validateAndSendValidationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException {
     validate(timesheet);
     return sendValidationEmail(timesheet);
   }
@@ -146,7 +145,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   @Transactional(rollbackOn = Exception.class)
   @Override
   public void refuseAndSendRefusalEmail(Timesheet timesheet, String groundForRefusal)
-      throws AxelorException, JSONException, IOException, ClassNotFoundException {
+      throws AxelorException, IOException, ClassNotFoundException {
     timesheet.setGroundForRefusal(groundForRefusal);
     refuseAndSendRefusalEmail(timesheet);
   }
@@ -154,7 +153,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message sendRefusalEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getRefusedTimesheetTemplate();
@@ -170,7 +169,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message refuseAndSendRefusalEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException {
     refuse(timesheet);
     return sendRefusalEmail(timesheet);
   }
@@ -191,7 +190,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message sendCancellationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException {
 
     HRConfig hrConfig = hrConfigService.getHRConfig(timesheet.getCompany());
     Template template = hrConfig.getCanceledTimesheetTemplate();
@@ -207,7 +206,7 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Message cancelAndSendCancellationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException {
+      throws AxelorException, ClassNotFoundException, IOException {
     cancel(timesheet);
     return sendCancellationEmail(timesheet);
   }
@@ -307,15 +306,16 @@ public class TimesheetWorkflowServiceImpl implements TimesheetWorkflowService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public Message complete(Timesheet timesheet)
-      throws AxelorException, JSONException, IOException, ClassNotFoundException {
+      throws AxelorException, IOException, ClassNotFoundException {
     confirm(timesheet);
     return validateAndSendValidationEmail(timesheet);
   }
 
   @Override
   public void completeOrConfirm(Timesheet timesheet)
-      throws AxelorException, JSONException, IOException, ClassNotFoundException {
+      throws AxelorException, IOException, ClassNotFoundException {
     if (appHumanResourceService.getAppTimesheet().getNeedValidation()) {
       confirmAndSendConfirmationEmail(timesheet);
     } else {

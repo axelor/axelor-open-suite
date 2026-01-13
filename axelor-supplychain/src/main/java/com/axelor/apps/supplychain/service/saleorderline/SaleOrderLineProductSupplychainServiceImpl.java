@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,8 +24,11 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.service.BlockingService;
+import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.InternationalService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
@@ -38,10 +41,13 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
+import com.axelor.apps.supplychain.db.FreightCarrierPricing;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.google.inject.Inject;
+import com.axelor.apps.supplychain.service.pricing.FreightCarrierApplyPricingService;
+import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +58,9 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
   protected AnalyticLineModelService analyticLineModelService;
   protected AppSupplychainService appSupplychainService;
   protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
+  protected FreightCarrierPricingService freightCarrierPricingService;
+  protected FreightCarrierApplyPricingService freightCarrierApplyPricingService;
+  protected PublicHolidayService publicHolidayService;
 
   @Inject
   public SaleOrderLineProductSupplychainServiceImpl(
@@ -65,10 +74,15 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
       SaleOrderLineDiscountService saleOrderLineDiscountService,
       SaleOrderLinePriceService saleOrderLinePriceService,
       SaleOrderLineTaxService saleOrderLineTaxService,
+      ProductCompanyService productCompanyService,
+      CurrencyScaleService currencyScaleService,
       BlockingService blockingService,
       AnalyticLineModelService analyticLineModelService,
       AppSupplychainService appSupplychainService,
-      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService,
+      FreightCarrierPricingService freightCarrierPricingService,
+      FreightCarrierApplyPricingService freightCarrierApplyPricingService,
+      PublicHolidayService publicHolidayService) {
     super(
         appSaleService,
         appBaseService,
@@ -79,11 +93,16 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
         saleOrderLinePricingService,
         saleOrderLineDiscountService,
         saleOrderLinePriceService,
-        saleOrderLineTaxService);
+        saleOrderLineTaxService,
+        productCompanyService,
+        currencyScaleService);
     this.blockingService = blockingService;
     this.analyticLineModelService = analyticLineModelService;
     this.appSupplychainService = appSupplychainService;
     this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
+    this.freightCarrierPricingService = freightCarrierPricingService;
+    this.freightCarrierApplyPricingService = freightCarrierApplyPricingService;
+    this.publicHolidayService = publicHolidayService;
   }
 
   @Override
@@ -106,9 +125,28 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
 
       saleOrderLineMap.putAll(
           saleOrderLineAnalyticService.printAnalyticAccounts(saleOrder, saleOrderLine));
+      saleOrderLineMap.putAll(setShippingCostPrice(saleOrderLine, saleOrder));
+
+      if (saleOrder.getEstimatedShippingDate() == null
+          && product.getAvailabilityMeanTime() != null) {
+        saleOrderLineMap.putAll(setEstimatedShippingDate(saleOrder, product));
+      }
+
     } else {
       return saleOrderLineMap;
     }
+    return saleOrderLineMap;
+  }
+
+  protected Map<String, Object> setEstimatedShippingDate(SaleOrder saleOrder, Product product) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+    var company = saleOrder.getCompany();
+    var todayDate = appBaseService.getTodayDate(company);
+    var freeDateDay =
+        publicHolidayService.getFreeDay(
+            todayDate.plusDays(product.getAvailabilityMeanTime()), company);
+    saleOrderLineMap.put("estimatedShippingDate", freeDateDay);
+
     return saleOrderLineMap;
   }
 
@@ -194,6 +232,32 @@ public class SaleOrderLineProductSupplychainServiceImpl extends SaleOrderLinePro
   protected Map<String, Object> resetProductInformationMap(SaleOrderLine line) {
     Map<String, Object> saleOrderLineMap = super.resetProductInformationMap(line);
     saleOrderLineMap.put("saleSupplySelect", null);
+
+    return saleOrderLineMap;
+  }
+
+  protected Map<String, Object> setShippingCostPrice(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
+    Map<String, Object> saleOrderLineMap = new HashMap<>();
+
+    if (saleOrder.getFreightCarrierMode() == null
+        || !saleOrderLine.getProduct().getIsShippingCostsProduct()
+        || !appBaseService.getAppBase().getEnablePricingScale()) {
+      return saleOrderLineMap;
+    }
+
+    FreightCarrierPricing freightCarrierPricing =
+        freightCarrierPricingService.createFreightCarrierPricing(
+            saleOrder.getFreightCarrierMode(), saleOrder);
+
+    if (freightCarrierPricing == null) {
+      return saleOrderLineMap;
+    }
+
+    freightCarrierApplyPricingService.applyPricing(freightCarrierPricing);
+    saleOrderLine.setPrice(freightCarrierPricing.getPricingAmount());
+
+    saleOrderLineMap.put("price", saleOrderLine.getPrice());
 
     return saleOrderLineMap;
   }

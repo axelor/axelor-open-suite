@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.account.db.Journal;
@@ -51,8 +53,9 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -64,10 +67,11 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,6 +96,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
   protected static final String DATE_FORMAT_YYYYMMDD = "yyyyMMdd";
   protected static final String DATE_FORMAT_YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
+  protected static final int EXPORT_LINES_LIMIT = 10000;
 
   @Inject
   public MoveLineExportServiceImpl(
@@ -351,85 +356,34 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
 
     LocalDate interfaceDate = accountingReport.getDate();
 
-    List<String> moveLineQueryList = new ArrayList<>();
-
-    moveLineQueryList.add(
-        String.format(
-            "self.move.statusSelect IN (%d, %d)",
-            MoveRepository.STATUS_ACCOUNTED,
-            administration ? MoveRepository.STATUS_ACCOUNTED : MoveRepository.STATUS_DAYBOOK));
-
-    moveLineQueryList.add(String.format("self.move.company = %s", company.getId()));
-    if (accountingReport.getYear() != null) {
-      moveLineQueryList.add(
-          String.format("self.move.period.year = %s", accountingReport.getYear().getId()));
-    }
-
-    if (accountingReport.getPeriod() != null) {
-      moveLineQueryList.add(
-          String.format("self.move.period = %s", accountingReport.getPeriod().getId()));
-    } else {
-      if (accountingReport.getDateFrom() != null) {
-        moveLineQueryList.add(
-            String.format("self.date >= '%s'", accountingReport.getDateFrom().toString()));
-      }
-      if (accountingReport.getDateTo() != null) {
-        moveLineQueryList.add(
-            String.format("self.date <= '%s'", accountingReport.getDateTo().toString()));
-      }
-    }
-
-    if (accountingReport.getDate() != null) {
-      moveLineQueryList.add(
-          String.format("self.date <= '%s'", accountingReport.getDate().toString()));
-    }
-
-    moveLineQueryList.add("self.move.ignoreInAccountingOk = false");
-
-    if (!administration) {
-      moveLineQueryList.add("self.move.journal.notExportOk = false");
-
-      if (accountingReport.getJournal() != null) {
-        moveLineQueryList.add(
-            String.format("self.move.journal.id = %s", accountingReport.getJournal().getId()));
-      }
-
-      if (replay) {
-        moveLineQueryList.add(
-            String.format(
-                "self.move.accountingOk = true AND self.move.accountingReport.id = %s",
-                accountingReport.getId()));
-      } else {
-        moveLineQueryList.add("self.move.accountingOk = false");
-      }
-    }
-
-    String moveLineQueryStr = StringUtils.join(moveLineQueryList, " AND ");
-
-    com.axelor.db.Query<MoveLine> moveLineQuery =
+    List<Long> idList =
         moveLineRepo
             .all()
-            .filter(moveLineQueryStr)
+            .filter(getMoveLineQueryForType1000(accountingReport, administration, replay))
+            .bind(getMoveLineBindingsForType1000(accountingReport, administration, replay, company))
             .order("move.accountingDate")
             .order("date")
-            .order("name");
+            .order("name")
+            .select("id")
+            .fetch(0, 0)
+            .stream()
+            .map(m -> (Long) m.get("id"))
+            .collect(Collectors.toList());
 
     int offset = 0;
     List<Long> moveLineIdList;
     List<Move> moveList = new ArrayList<>();
     String exportNumber = null;
-
-    while (!(moveLineIdList =
-            moveLineQuery
-                .fetchStream(10000, offset)
-                .map(MoveLine::getId)
-                .collect(Collectors.toList()))
-        .isEmpty()) {
-
+    int endSubListIndex = Math.min(idList.size(), EXPORT_LINES_LIMIT);
+    BigDecimal debitBalance = BigDecimal.ZERO;
+    BigDecimal creditBalance = BigDecimal.ZERO;
+    while (!(moveLineIdList = idList.subList(offset, endSubListIndex)).isEmpty()) {
       for (Long id : moveLineIdList) {
         MoveLine moveLine = moveLineRepo.find(id);
         offset++;
         allMoveLineData.add(createItemForExportMoveLine(moveLine, moveList));
+        debitBalance = debitBalance.add(moveLine.getDebit());
+        creditBalance = creditBalance.add(moveLine.getCredit());
       }
 
       JPA.clear();
@@ -440,14 +394,106 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       }
 
       moveList.clear();
+      endSubListIndex = Math.min(idList.size(), (endSubListIndex + EXPORT_LINES_LIMIT));
     }
 
     accountingReport = accountingReportRepo.find(accountingReport.getId());
 
     String fileName = this.setFileName(accountingReport);
+    accountingReport.setTotalDebit(debitBalance);
+    accountingReport.setTotalCredit(creditBalance);
+    accountingReport.setBalance(debitBalance.subtract(creditBalance));
     accountingReportRepo.save(accountingReport);
     return writeMoveLineToCsvFile(
         company, fileName, this.createHeaderForJournalEntry(), allMoveLineData, accountingReport);
+  }
+
+  protected String getMoveLineQueryForType1000(
+      AccountingReport accountingReport, boolean administration, boolean replay) {
+    List<String> moveLineQueryList = new ArrayList<>();
+
+    moveLineQueryList.add("self.move.statusSelect IN (:accountedStatus, :daybookStatus)");
+
+    moveLineQueryList.add("self.move.company = :company");
+    if (accountingReport.getYear() != null) {
+      moveLineQueryList.add("self.move.period.year = :year");
+    }
+
+    if (accountingReport.getPeriod() != null) {
+      moveLineQueryList.add("self.move.period = :period");
+    } else {
+      if (accountingReport.getDateFrom() != null) {
+        moveLineQueryList.add("self.date >= :toDate");
+      }
+      if (accountingReport.getDateTo() != null) {
+        moveLineQueryList.add("self.date <= :fromDate");
+      }
+    }
+
+    if (accountingReport.getDate() != null) {
+      moveLineQueryList.add("self.date <= :date");
+    }
+
+    moveLineQueryList.add("self.move.ignoreInAccountingOk = false");
+
+    if (!administration) {
+      moveLineQueryList.add("self.move.journal.notExportOk = false");
+
+      if (accountingReport.getJournal() != null) {
+        moveLineQueryList.add("self.move.journal = :journal");
+      }
+
+      if (replay) {
+        moveLineQueryList.add(
+            "self.move.accountingOk = true AND self.move.accountingReport = :accountingReport");
+      } else {
+        moveLineQueryList.add("self.move.accountingOk = false");
+      }
+    }
+
+    return StringUtils.join(moveLineQueryList, " AND ");
+  }
+
+  protected Map<String, Object> getMoveLineBindingsForType1000(
+      AccountingReport accountingReport, boolean administration, boolean replay, Company company) {
+    Map<String, Object> moveLineBindingMap = new HashMap<>();
+
+    moveLineBindingMap.put(":accountedStatus", MoveRepository.STATUS_ACCOUNTED);
+    moveLineBindingMap.put(
+        ":daybookStatus",
+        administration ? MoveRepository.STATUS_ACCOUNTED : MoveRepository.STATUS_DAYBOOK);
+
+    moveLineBindingMap.put(":company", company);
+    if (accountingReport.getYear() != null) {
+      moveLineBindingMap.put(":year", accountingReport.getYear());
+    }
+
+    if (accountingReport.getPeriod() != null) {
+      moveLineBindingMap.put(":period", accountingReport.getPeriod());
+    } else {
+      if (accountingReport.getDateFrom() != null) {
+        moveLineBindingMap.put(":fromDate'", accountingReport.getDateFrom());
+      }
+      if (accountingReport.getDateTo() != null) {
+        moveLineBindingMap.put(":toDate", accountingReport.getDateTo());
+      }
+    }
+
+    if (accountingReport.getDate() != null) {
+      moveLineBindingMap.put(":date", accountingReport.getDate());
+    }
+
+    if (!administration) {
+      if (accountingReport.getJournal() != null) {
+        moveLineBindingMap.put(":journal", accountingReport.getJournal());
+      }
+
+      if (replay) {
+        moveLineBindingMap.put(":accountingReport", accountingReport);
+      }
+    }
+
+    return moveLineBindingMap;
   }
 
   protected String[] createItemForExportMoveLine(MoveLine moveLine, List<Move> moveList) {
@@ -514,7 +560,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       throws AxelorException, IOException {
 
     String filePath = accountConfigService.getAccountConfig(company).getExportPath();
-    String dataExportDir = appAccountService.getDataExportDir();
+    String dataExportDir = AppSettings.get().get(AvailableAppSettings.DATA_UPLOAD_DIR);
 
     for (String[] items : allMoveData) {
       for (int i = 0; i < items.length; i++) {

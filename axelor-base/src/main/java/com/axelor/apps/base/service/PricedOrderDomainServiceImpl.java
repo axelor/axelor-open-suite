@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,7 +35,7 @@ public class PricedOrderDomainServiceImpl implements PricedOrderDomainService {
         if (pricedOrder.getPriceList() != null) {
           newDomain.append(
               String.format(
-                  " AND %d IN self.salePartnerPriceList.priceListSet.id",
+                  " AND %d IN (self.salePartnerPriceList.priceListSet.id)",
                   pricedOrder.getPriceList().getId()));
         } else {
           newDomain.append(" AND self.salePartnerPriceList is NULL");
@@ -44,7 +44,7 @@ public class PricedOrderDomainServiceImpl implements PricedOrderDomainService {
         if (pricedOrder.getPriceList() != null) {
           newDomain.append(
               String.format(
-                  " AND %d IN self.purchasePartnerPriceList.priceListSet.id",
+                  " AND %d IN (self.purchasePartnerPriceList.priceListSet.id)",
                   pricedOrder.getPriceList().getId()));
         } else {
           newDomain.append(" AND self.purchasePartnerPriceList is NULL");

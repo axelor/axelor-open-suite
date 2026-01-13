@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="address-grid" title="Address list" model="com.axelor.apps.base.db.Address">
     <toolbar>
@@ -9,7 +9,7 @@
         onClick="action-base-method-show-duplicate"/>
     </toolbar>
     <field name="fullName"/>
-    <button name="mapBtn" icon="fa-map-marker" onClick="action-base-address-method-view-map"/>
+    <button name="mapBtn" icon="geo-alt-fill" onClick="action-base-address-method-view-map"/>
     <button name="directionsBtn" icon="near_me"
       onClick="action-base-address-method-view-direction"/>
   </grid>
@@ -18,6 +18,55 @@
     width="large" onLoad="action-group-base-address-onload"
     onSave="action-group-base-address-onsave" onNew="action-group-base-address-onnnew"
     onCopy="action-group-base-address-onload">
+    <panel-include view="incl-address-main-panel-form"/>
+    <panel name="addressTypePanel">
+      <field name="isInvoicingAddr" title="Invoicing address"
+        showIf="$popup() &amp;&amp; id == null" type="boolean"/>
+      <field name="isDeliveryAddr" title="Delivery address"
+        showIf="$popup() &amp;&amp; id == null" type="boolean"/>
+      <field name="isDefault" title="Default" showIf="$popup() &amp;&amp; id == null"
+        type="boolean"/>
+    </panel>
+
+    <panel sidebar="true" name="actionsPanel" title="Actions" colSpan="12">
+      <panel name="mapBtnPanel" colSpan="12">
+        <button-group hideIf="$popup()" readonlyIf="!id" colSpan="12">
+          <button name="mapBtn" title="View map" icon="geo-alt-fill"
+            onClick="action-base-address-method-view-map"/>
+          <button name="directionsBtn" title="Get direction" icon="near_me"
+            onClick="action-base-address-method-view-direction"/>
+        </button-group>
+        <spacer name="btnGrpSpacer" colSpan="12"/>
+        <button-group showIf="$popup()" readonlyIf="!id" colSpan="12">
+          <button name="mapBtn" title="View map" icon="geo-alt-fill"
+            onClick="action-base-address-method-view-map,close"/>
+          <button name="directionsBtn" title="Get direction" icon="near_me"
+            onClick="action-base-address-method-view-direction,close"/>
+        </button-group>
+      </panel>
+      <field name="isUsed" hidden="true" type="boolean"/>
+      <field name="isValidLatLong" hidden="true"/>
+      <field name="formattedFullName" readonly="true" colSpan="12" height="4"/>
+
+      <panel if="__config__.app.getApp('base')?.getHasQasValidation()"
+        name="qasCertificationPanel" title="QAS certification" colSpan="12">
+        <field name="certifiedOk" colSpan="4"/>
+        <panel name="actionsPanel" colSpan="4">
+          <button name="validateBtn" title="Validate"
+            onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
+          <button name="selectBtn" title="Choose"
+            onClick="com.axelor.apps.base.web.AddressController:select,save"/>
+        </panel>
+        <panel-related name="pickListPanel" title="Pick list" colSpan="12"
+          field="pickList" grid-view="pick-list-entry-grid" form="pick-list-entry-form"/>
+      </panel>
+
+    </panel>
+  </form>
+
+  <form name="incl-address-main-panel-form" title="Address"
+    model="com.axelor.apps.base.db.Address" onNew="action-group-base-address-onnnew"
+    onLoad="action-group-base-address-onload" onSave="action-group-base-address-onsave">
     <panel name="mainPanel" title="Address details" colSpan="12">
       <field name="country" colSpan="12" canEdit="false"
         onChange="action-group-base-address-country-change" required="true" form-view="country-form"
@@ -46,50 +95,7 @@
           onSelect="action-address-attrs-update-domain-city" form-view="city-form"
           grid-view="city-grid"/>
         <field name="zip" colSpan="12" onChange="action-address-method-autocomplete-address"/>
-        <panel name="addressTypePanel">
-          <field name="isInvoicingAddr" title="Invoicing address"
-            showIf="$popup() &amp;&amp; id == null" type="boolean"/>
-          <field name="isDeliveryAddr" title="Delivery address"
-            showIf="$popup() &amp;&amp; id == null" type="boolean"/>
-          <field name="isDefault" title="Default" showIf="$popup() &amp;&amp; id == null"
-            type="boolean"/>
-        </panel>
       </panel>
-    </panel>
-
-    <panel sidebar="true" name="actionsPanel" title="Actions" colSpan="12">
-      <panel name="mapBtnPanel" colSpan="12">
-        <button-group hideIf="$popup()" readonlyIf="!id" colSpan="12">
-          <button name="mapBtn" title="View map" icon="fa-map-marker"
-            onClick="action-base-address-method-view-map"/>
-          <button name="directionsBtn" title="Get direction" icon="near_me"
-            onClick="action-base-address-method-view-direction"/>
-        </button-group>
-        <spacer name="btnGrpSpacer" colSpan="12"/>
-        <button-group showIf="$popup()" readonlyIf="!id" colSpan="12">
-          <button name="mapBtn" title="View map" icon="fa-map-marker"
-            onClick="action-base-address-method-view-map,close"/>
-          <button name="directionsBtn" title="Get direction" icon="near_me"
-            onClick="action-base-address-method-view-direction,close"/>
-        </button-group>
-      </panel>
-      <field name="isUsed" hidden="true" type="boolean"/>
-      <field name="isValidLatLong" hidden="true"/>
-      <field name="formattedFullName" readonly="true" colSpan="12" height="4"/>
-
-      <panel if="__config__.app.getApp('base')?.getHasQasValidation()"
-        name="qasCertificationPanel" title="QAS certification" colSpan="12">
-        <field name="certifiedOk" colSpan="4"/>
-        <panel name="actionsPanel" colSpan="4">
-          <button name="validateBtn" title="Validate"
-            onClick="com.axelor.apps.base.web.AddressController:validate,save"/>
-          <button name="selectBtn" title="Choose"
-            onClick="com.axelor.apps.base.web.AddressController:select,save"/>
-        </panel>
-        <panel-related name="pickListPanel" title="Pick list" colSpan="12"
-          field="pickList" grid-view="pick-list-entry-grid" form="pick-list-entry-form"/>
-      </panel>
-
     </panel>
   </form>
 
@@ -175,11 +181,11 @@
 
   <action-attrs name="action-address-attrs-update-domain-street">
     <attribute name="domain" for="street" if="country &amp;&amp; zip"
-      expr="eval: &quot;self.city IN (SELECT id FROM City WHERE zip LIKE '${zip + '%'}' AND country = ${country.id})&quot;"/>
+      expr="eval: &quot;self.city.id IN (SELECT id FROM City WHERE zip LIKE '${zip + '%'}' AND country.id = ${country.id})&quot;"/>
     <attribute name="domain" for="street" if="!country &amp;&amp; zip"
-      expr="eval: &quot;self.city IN (SELECT id FROM City WHERE zip LIKE '${zip + '%'}')&quot;"/>
+      expr="eval: &quot;self.city.id IN (SELECT id FROM City WHERE zip LIKE '${zip + '%'}')&quot;"/>
     <attribute name="domain" for="street" if="country &amp;&amp; !zip"
-      expr="eval: &quot;self.city IN (SELECT id FROM City WHERE country = ${country.id})&quot;"/>
+      expr="eval: &quot;self.city.id IN (SELECT id FROM City WHERE country.id = ${country.id})&quot;"/>
     <attribute name="domain" for="street" if="!country &amp;&amp; !zip" expr="eval: null"/>
   </action-attrs>
 

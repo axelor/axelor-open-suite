@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,8 +38,8 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDomainService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGeneratorService {
@@ -95,7 +95,7 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       throws AxelorException {
     checkSaleOrderAndProduct(saleOrder, product);
     SaleOrderLine saleOrderLine = new SaleOrderLine();
-    saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine);
+    saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine, null);
     checkProduct(saleOrder, saleOrderLine, product);
     saleOrderLine.setProduct(product);
     if (appSaleService.getAppSale().getManageMultipleSaleQuantity()) {
@@ -110,8 +110,8 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
     saleOrderLineRepository.save(saleOrderLine);
 
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
-    saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderComplementaryProductService.handleComplementaryProducts(saleOrder);
+    saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderRepository.save(saleOrder);
 
     return saleOrderLine;

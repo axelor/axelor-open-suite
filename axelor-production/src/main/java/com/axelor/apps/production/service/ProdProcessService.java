@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,8 +39,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -177,11 +177,11 @@ public class ProdProcessService {
   @Transactional(rollbackOn = {Exception.class})
   public ProdProcess createCustomizedProdProcess(SaleOrderLine saleOrderLine) {
     ProdProcess prodProcess = saleOrderLine.getProdProcess();
-    return createCustomizedProdProcess(prodProcess);
+    return createCustomizedProdProcess(prodProcess, true);
   }
 
   @Transactional(rollbackOn = {Exception.class})
-  public ProdProcess createCustomizedProdProcess(ProdProcess prodProcess) {
+  public ProdProcess createCustomizedProdProcess(ProdProcess prodProcess, boolean deep) {
 
     if (prodProcess == null) {
       return null;
@@ -194,7 +194,7 @@ public class ProdProcessService {
                 .bind("product", prodProcess.getProduct())
                 .count()
             + 1;
-    ProdProcess personalizedProdProcess = JPA.copy(prodProcess, true);
+    ProdProcess personalizedProdProcess = JPA.copy(prodProcess, deep);
     String name =
         personalizedProdProcess.getName()
             + " ("

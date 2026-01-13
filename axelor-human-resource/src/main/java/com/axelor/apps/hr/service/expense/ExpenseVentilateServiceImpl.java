@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
+import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
@@ -54,9 +55,9 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.AccountConfigHRService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -85,6 +86,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
   protected AccountManagementAccountService accountManagementAccountService;
   protected AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService;
   protected ExpenseRepository expenseRepository;
+  protected MoveLineRecordService moveLineRecordService;
 
   @Inject
   public ExpenseVentilateServiceImpl(
@@ -104,7 +106,8 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
       MoveValidateService moveValidateService,
       AccountManagementAccountService accountManagementAccountService,
       AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService,
-      ExpenseRepository expenseRepository) {
+      ExpenseRepository expenseRepository,
+      MoveLineRecordService moveLineRecordService) {
     this.appAccountService = appAccountService;
     this.sequenceService = sequenceService;
     this.hrConfigService = hrConfigService;
@@ -122,6 +125,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     this.accountManagementAccountService = accountManagementAccountService;
     this.analyticMoveLineGenerateRealService = analyticMoveLineGenerateRealService;
     this.expenseRepository = expenseRepository;
+    this.moveLineRecordService = moveLineRecordService;
   }
 
   @Override
@@ -265,18 +269,30 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
       }
     }
 
-    BigDecimal totalMoveLines =
-        moveLines.stream().map(MoveLine::getDebit).reduce(BigDecimal::add).orElse(BigDecimal.ZERO);
+    BigDecimal totalAmount =
+        expenseLineList.stream()
+            .map(ExpenseLine::getTotalAmount)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
 
     Account employeeAccount = accountingSituationService.getEmployeeAccount(partner, company);
+
+    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
+    BigDecimal currencyRate =
+        currencyService.getCurrencyConversionRate(move.getCurrency(), companyCurrency, moveDate);
+
+    BigDecimal amountConvertedInCompanyCurrency =
+        currencyService.getAmountCurrencyConvertedUsingExchangeRate(
+            totalAmount, currencyRate, companyCurrency);
+
     moveLines.add(
         moveLineCreateService.createMoveLine(
             move,
             partner,
             employeeAccount,
-            totalMoveLines,
-            totalMoveLines,
-            BigDecimal.ONE,
+            totalAmount,
+            amountConvertedInCompanyCurrency,
+            currencyRate,
             false,
             moveDate,
             moveDate,
@@ -285,6 +301,9 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
             expense.getExpenseSeq(),
             expense.getFullName()));
 
+    for (MoveLine moveLine : moveLines) {
+      moveLineRecordService.refreshAccountInformation(moveLine, move);
+    }
     move.getMoveLineList().addAll(moveLines);
     move.setExpense(expense);
     moveValidateService.accounting(move);
@@ -351,17 +370,13 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
         currencyService.getCurrencyConversionRate(
             currency, companyCurrency, expenseLine.getExpenseDate());
 
-    BigDecimal amountConvertedInCompanyCurrency =
-        currencyService.getAmountCurrencyConvertedUsingExchangeRate(
-            expenseLine.getUntaxedAmount(), currencyRate, companyCurrency);
-
     MoveLine moveLine =
         moveLineCreateService.createMoveLine(
             move,
             partner,
             productAccount,
             expenseLine.getUntaxedAmount(),
-            amountConvertedInCompanyCurrency,
+            expenseLine.getCompanyUntaxedAmount(),
             currencyRate,
             true,
             moveDate,

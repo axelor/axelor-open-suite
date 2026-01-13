@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="in-stock-move-manuf-order-grid" title="Stock moves"
     model="com.axelor.apps.stock.db.StockMove" orderBy="-estimatedDate" edit-icon="true">
@@ -11,9 +11,9 @@
     <field name="estimatedDate"/>
     <field name="realDate"/>
     <field name="availableStatusSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printStockMoveBtn" title="Print" readonlyIf="statusSelect == 1" width="32"
-      icon="fa-print" onClick="action-stock-move-group-print-stock-move"/>
+      icon="printer" onClick="action-stock-move-group-print-stock-move"/>
     <button name="viewDirectionBtn" readonlyIf="typeSelect != 2 || statusSelect == 1"
       width="32" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
@@ -27,9 +27,9 @@
     <field name="estimatedDate"/>
     <field name="realDate"/>
     <field name="availableStatusSelect"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <button name="printStockMoveBtn" title="Print" readonlyIf="statusSelect == 1" width="32"
-      icon="fa-print" onClick="action-stock-move-group-print-stock-move"/>
+      icon="printer" onClick="action-stock-move-group-print-stock-move"/>
     <button name="viewDirectionBtn" readonlyIf="typeSelect != 2 || statusSelect == 1"
       width="32" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"/>
@@ -45,7 +45,7 @@
     <field name="fromAddressStr" hidden="true"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="availableStatusSelect">
       <hilite strong="true" color="success" if="availableStatusSelect == 1"/>
       <hilite strong="true" color="warning" if="availableStatusSelect == 2"/>
@@ -55,7 +55,7 @@
       <hilite strong="true" color="warning" if="statusSelect==2"/>
       <hilite strong="true" color="success" if="statusSelect==3"/>
     </field>
-    <button name="printStockMoveBtn" title="Print" icon="fa-print"
+    <button name="printStockMoveBtn" title="Print" icon="printer"
       onClick="action-stock-move-group-print-stock-move" readonlyIf="statusSelect == 1"/>
     <button name="viewDirectionBtn" icon="near_me"
       onClick="action-stock-move-validate-address,action-stock-move-method-view-direction"
@@ -158,7 +158,7 @@
         widget="SuggestBox" showIf="paymentModeToCheck"/>
       <field name="$contactPartner" title="Contact partner"
         target="com.axelor.apps.base.db.Partner"
-        domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
+        domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT cp.id FROM part.contactPartnerSet cp))"
         colSpan="12" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"/>
       <button name="confirmBtn" title="Confirm"
         onClick="action-supplychain-stock-move-method-generate-concat-cust-invoice" colSpan="12"
@@ -179,7 +179,7 @@
         widget="SuggestBox" showIf="paymentModeToCheck"/>
       <field name="$contactPartner" title="Contact partner"
         target="com.axelor.apps.base.db.Partner"
-        domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
+        domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT cp.id FROM part.contactPartnerSet cp))"
         colSpan="12" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"/>
       <button name="confirm" title="Confirm"
         onClick="action-supplychain-stock-move-confirm-concat-invoice-check, action-supplychain-stock-move-method-generate-concat-suppl-invoice"
@@ -195,8 +195,9 @@
         selection="supplychain.stock.move.invoicing.wizard.select"/>
     </panel>
     <panel-related name="stockMoveLineListPanel" field="$stockMoveLines"
-      canNew="false" target="com.axelor.apps.stock.db.StockMoveLine" type="one-to-many"
-      editable="true" showIf="operationSelect == 2" form-view="partial-invoice-stock-move-line-form">
+      title="Stock move lines" canNew="false" target="com.axelor.apps.stock.db.StockMoveLine"
+      type="one-to-many" editable="true" showIf="operationSelect == 2"
+      form-view="partial-invoice-stock-move-line-form">
       <field name="productCode" readonly="true"/>
       <field name="productName" readonly="true"/>
       <field name="realQty" readonly="true" aggregate="sum" title="Real Qty"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="inventory-line-grid" title="Inventory lines"
     model="com.axelor.apps.stock.db.InventoryLine" editable="true" orderBy="product.code"
@@ -9,8 +9,8 @@
     <hilite if="!isPresentInStockLocation" color="lightgreen"/>
     <field name="product" canEdit="false"
       onChange="action-inventory-line-group-on-change-product-stock-location"
-      domain="self.stockManaged = true AND self.dtype = 'Product'" grid-view="product-grid"
-      form-view="product-form"/>
+      domain="self.stockManaged = true AND self.dtype = 'Product' AND self.isModel = false"
+      grid-view="product-grid" form-view="product-form"/>
     <field name="stockLocation"
       onSelect="action-inventory-line-method-set-stock-location-domain"
       onChange="action-inventory-line-group-on-change-product-stock-location"/>
@@ -21,14 +21,14 @@
     <field name="description"/>
     <field name="rack" width="150"/>
     <field name="trackingNumber" canNew="true" width="150" domain="self.product = :product"
-      onChange="action-inventory-line-group-update-inventory-line"/>
+      onChange="action-inventory-line-method-update-inventory-line"/>
     <field name="gap"/>
     <field name="gapValue"/>
     <field name="realValue"/>
     <field name="price" readonlyIf="isPresentInStockLocation"
       x-scale="nbDecimalDigitForUnitPrice"/>
     <field name="isPresentInStockLocation" type="boolean" x-dirty="false" hidden="true"/>
-    <button name="showDetailStockProduct" icon="fa-cubes"
+    <button name="showDetailStockProduct" icon="boxes"
       onClick="action-inventory-line-view-for-a-product-from-product-view" readonlyIf="!product"
       if="__config__.app.isApp('supplychain')"/>
     <field name="nbDecimalDigitForUnitPrice" x-dirty="false" hidden="true" type="integer"/>
@@ -41,7 +41,7 @@
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-inventory-line-group-on-change-product-stock-location"
-        domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and self.dtype = 'Product'"
+        domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and self.dtype = 'Product' AND self.isModel = false"
         form-view="product-form" grid-view="product-grid"/>
       <field name="stockLocation"
         onSelect="action-inventory-line-method-set-stock-location-domain"
@@ -53,13 +53,13 @@
       <field name="description"/>
       <field name="rack"/>
       <field name="trackingNumber" canNew="true" domain="self.product = :product"
-        onChange="action-inventory-line-group-update-inventory-line"/>
+        onChange="action-inventory-line-method-update-inventory-line"/>
       <field name="price" hideIf="isPresentInStockLocation"/>
       <field name="isPresentInStockLocation" type="boolean" x-dirty="false" hidden="true"/>
       <field name="inventory" readonly="true"/>
       <button name="showDetailStockProduct" title="See stock details" colSpan="3"
         onClick="action-inventory-line-view-for-a-product-from-product-view"
-        if="__config__.app.isApp('supplychain')" widget="info-button" icon="fa-cubes"/>
+        if="__config__.app.isApp('supplychain')" widget="info-button" icon="boxes"/>
     </panel>
   </form>
 
@@ -72,24 +72,14 @@
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
 
-  <action-attrs name="action-inventory-line-attrs-reset-price">
-    <attribute for="price" name="value" expr="0"/>
-  </action-attrs>
-
   <action-method name="action-inventory-line-method-on-change-tracking-number">
     <call class="com.axelor.apps.stock.web.InventoryLineController"
       method="updateInventoryLine"/>
   </action-method>
 
-  <action-group name="action-inventory-line-group-update-inventory-line">
-    <action name="action-inventory-line-method-update-inventory-line"/>
-    <action name="action-inventory-line-method-compute"/>
-  </action-group>
-
   <action-group name="action-inventory-line-group-on-change-product-stock-location">
-    <action name="action-inventory-line-attrs-reset-price"/>
     <action name="action-inventory-line-method-check-presence-in-stock-location"/>
-    <action name="action-inventory-line-group-update-inventory-line"/>
+    <action name="action-inventory-line-method-update-inventory-line"/>
   </action-group>
 
   <action-method name="action-inventory-line-method-update-inventory-line">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,8 +21,12 @@ package com.axelor.apps.sale.service.configurator;
 import com.axelor.apps.sale.db.Configurator;
 import com.axelor.apps.sale.db.ConfiguratorCreator;
 import com.axelor.apps.sale.db.repo.ConfiguratorRepository;
-import com.google.inject.Inject;
+import com.axelor.meta.db.MetaJsonField;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import java.util.List;
 
 public class ConfiguratorInitServiceImpl implements ConfiguratorInitService {
 
@@ -36,9 +40,31 @@ public class ConfiguratorInitServiceImpl implements ConfiguratorInitService {
   @Override
   @Transactional
   public Configurator create(ConfiguratorCreator configuratorCreator) {
+    ObjectMapper mapper = new ObjectMapper();
+
     Configurator configurator = new Configurator();
     configurator.setConfiguratorCreator(configuratorCreator);
     configurator.setConfiguratorCreatorName(configuratorCreator.getName());
+
+    // Generate default attributes JSON
+    ObjectNode attributesJson = getDefaultValuesAsJson(configuratorCreator, mapper);
+    configurator.setAttributes(attributesJson.toString());
+
     return configuratorRepository.save(configurator);
+  }
+
+  protected ObjectNode getDefaultValuesAsJson(
+      ConfiguratorCreator configuratorCreator, ObjectMapper mapper) {
+    List<MetaJsonField> attributes = configuratorCreator.getAttributes();
+    ObjectNode attributesJson = mapper.createObjectNode();
+
+    for (MetaJsonField attribute : attributes) {
+      try {
+        attributesJson.put(attribute.getName(), attribute.getDefaultValue());
+      } catch (Exception e) {
+        // Ignore exceptions
+      }
+    }
+    return attributesJson;
   }
 }

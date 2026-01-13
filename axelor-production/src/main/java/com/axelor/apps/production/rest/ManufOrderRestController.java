@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,8 +32,10 @@ import com.axelor.apps.production.rest.dto.ManufOrderStockMoveLineResponse;
 import com.axelor.apps.production.rest.dto.WastedProductPostRequest;
 import com.axelor.apps.production.rest.dto.WastedProductPutRequest;
 import com.axelor.apps.production.rest.dto.WastedProductResponse;
+import com.axelor.apps.production.translation.ITranslation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -41,16 +43,16 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.List;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @Path("/aos/manuf-order")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -77,8 +79,9 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Request successfully completed",
-        new ManufOrderProductListResponse(consumedProductList, requestBody.fetchManufOrder()));
+        I18n.get(ITranslation.REQUEST_COMPLETED),
+        new ManufOrderProductListResponse(
+            consumedProductList, requestBody.fetchManufOrder().getVersion()));
   }
 
   @Operation(
@@ -101,8 +104,9 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Request successfully completed",
-        new ManufOrderProductListResponse(producedProductList, requestBody.fetchManufOrder()));
+        I18n.get(ITranslation.REQUEST_COMPLETED),
+        new ManufOrderProductListResponse(
+            producedProductList, requestBody.fetchManufOrder().getVersion()));
   }
 
   @Operation(
@@ -123,7 +127,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Quantity successfully updated.",
+        I18n.get(ITranslation.QUANTITY_UPDATED),
         new ManufOrderStockMoveLineResponse(stockMoveLine));
   }
 
@@ -147,7 +151,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Manufacturing order successfully updated.",
+        I18n.get(ITranslation.MANUFACTURING_ORDER_UPDATED),
         new ManufOrderResponse(manufOrder));
   }
 
@@ -198,7 +202,7 @@ public class ManufOrderRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Wasted product quantity successfully updated.",
+        I18n.get(ITranslation.WASTED_PRODUCT_QUANTITY_UPDATED),
         new WastedProductResponse(prodProduct));
   }
 

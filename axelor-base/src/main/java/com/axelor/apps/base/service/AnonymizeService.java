@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.FakerApiField;
 import com.axelor.db.mapper.Property;
 import com.axelor.meta.db.MetaJsonField;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
-import wslite.json.JSONObject;
 
 public interface AnonymizeService {
   /**
@@ -56,7 +56,7 @@ public interface AnonymizeService {
    * @return
    * @throws AxelorException
    */
-  JSONObject createAnonymizedJson(Object object, HashMap<MetaJsonField, FakerApiField> fakerMap)
+  ObjectNode createAnonymizedJson(Object object, HashMap<MetaJsonField, FakerApiField> fakerMap)
       throws AxelorException;
 
   /**

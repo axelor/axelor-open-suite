@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,4 @@ public interface ITranslation {
   public static final String LEAD_SOURCE = /*$$(*/ "Lead.source"; /*)*/
   public static final String LEAD_STATUS = /*$$(*/ "Lead.status"; /*)*/
   public static final String LEAD_ADDRESS_INFORMATION = /*$$(*/ "Lead.address_information"; /*)*/
-  public static final String LEAD_PRIMARY_ADDRESS = /*$$(*/ "Lead.primary_address"; /*)*/
-  public static final String LEAD_OTHER_ADDRESS = /*$$(*/ "Lead.other_address"; /*)*/
 }

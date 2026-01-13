@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.bankpayment.web;
 
 import com.axelor.apps.bankpayment.db.BankOrder;
+import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
@@ -39,7 +40,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.collect.Lists;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -245,5 +246,12 @@ public class BankOrderController {
       return;
     }
     Beans.get(BankOrderEncryptionService.class).encryptUploadedBankOrderFile(originalFile);
+  }
+
+  public void checkBankOrderLineBankDetails(ActionRequest request, ActionResponse response) {
+    BankOrder bankOrder = request.getContext().asType(BankOrder.class);
+    List<BankOrderLine> bankOrderLines =
+        Beans.get(BankOrderCheckService.class).checkBankOrderLineBankDetails(bankOrder);
+    response.setValue("bankOrderLineList", bankOrderLines);
   }
 }

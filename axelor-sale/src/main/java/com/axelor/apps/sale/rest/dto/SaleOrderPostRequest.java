@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,15 +23,18 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 public class SaleOrderPostRequest extends RequestPostStructure {
 
   @NotNull
   @Min(0)
   private Long clientPartnerId;
+
+  @Min(0)
+  private Long deliveredPartnerId;
 
   private Long companyId;
   private Long contactId;
@@ -63,6 +66,10 @@ public class SaleOrderPostRequest extends RequestPostStructure {
     return clientPartnerId;
   }
 
+  public Long getDeliveredPartnerId() {
+    return deliveredPartnerId;
+  }
+
   public void setCompanyId(Long companyId) {
     this.companyId = companyId;
   }
@@ -79,6 +86,10 @@ public class SaleOrderPostRequest extends RequestPostStructure {
     this.clientPartnerId = clientPartnerId;
   }
 
+  public void setDeliveredPartnerId(Long deliveredPartnerId) {
+    this.deliveredPartnerId = deliveredPartnerId;
+  }
+
   public Boolean getInAti() {
     return inAti;
   }
@@ -92,6 +103,13 @@ public class SaleOrderPostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(Partner.class, clientPartnerId, ObjectFinder.NO_VERSION);
+  }
+
+  public Partner fetchDeliveredPartner() {
+    if (deliveredPartnerId == null || deliveredPartnerId == 0L) {
+      return null;
+    }
+    return ObjectFinder.find(Partner.class, deliveredPartnerId, ObjectFinder.NO_VERSION);
   }
 
   public Partner fetchContact() {

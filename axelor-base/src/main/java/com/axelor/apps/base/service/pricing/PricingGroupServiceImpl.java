@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,7 @@ import com.axelor.apps.base.db.Pricing;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +47,7 @@ public class PricingGroupServiceImpl implements PricingGroupService {
     if (product != null) {
       formula =
           String.format(
-              "product.id == %d || product?.parentProduct?.id == %d",
+              "product?.id == %d || product?.parentProduct?.id == %d",
               product.getId(), product.getId());
 
       if (productCategory != null) {
@@ -56,7 +56,7 @@ public class PricingGroupServiceImpl implements PricingGroupService {
                 String.format(" || product?.productCategory?.id == %d", productCategory.getId()));
       }
     } else {
-      formula = String.format("product.productCategory.id == %d", productCategory.getId());
+      formula = String.format("product?.productCategory?.id == %d", productCategory.getId());
     }
     return formula;
   }

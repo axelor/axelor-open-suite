@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,29 +21,36 @@ package com.axelor.apps.account.service.fecimport;
 import com.axelor.apps.account.db.FECImport;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.FECImportRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.imports.importer.ExcelToCSV;
 import com.axelor.apps.base.service.imports.importer.Importer;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.meta.MetaFiles;
 import com.google.common.base.Throwables;
-import com.google.inject.Inject;
+import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FECImporter extends Importer {
 
@@ -52,29 +59,37 @@ public class FECImporter extends Importer {
   protected MoveRepository moveRepository;
   protected FECImportRepository fecImportRepository;
   protected CompanyRepository companyRepository;
+  protected MoveLineTaxService moveLineTaxService;
   private final List<Move> moveList = new ArrayList<>();
   private FECImport fecImport;
   private Company company;
 
   @Inject
   public FECImporter(
+      ExcelToCSV excelToCSV,
+      MetaFiles metaFiles,
+      AppBaseService appBaseService,
       MoveValidateService moveValidateService,
       AppAccountService appAccountService,
       MoveRepository moveRepository,
       FECImportRepository fecImportRepository,
-      CompanyRepository companyRepository) {
+      CompanyRepository companyRepository,
+      MoveLineTaxService moveLineTaxService) {
+    super(excelToCSV, metaFiles, appBaseService);
     this.moveValidateService = moveValidateService;
     this.appAccountService = appAccountService;
     this.moveRepository = moveRepository;
     this.fecImportRepository = fecImportRepository;
     this.companyRepository = companyRepository;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   @Override
-  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
-      throws IOException {
+  protected ImportHistory process(
+      String bind, String data, String errorDir, Map<String, Object> importContext)
+      throws IOException, AxelorException {
 
-    CSVImporter importer = new CSVImporter(bind, data);
+    CSVImporter importer = new CSVImporter(bind, data, errorDir);
 
     ImporterListener listener =
         new ImporterListener(getConfiguration().getName()) {
@@ -117,7 +132,7 @@ public class FECImporter extends Importer {
     importer.setContext(importContext);
     importer.run();
     saveFecImport();
-    return addHistory(listener);
+    return addHistory(listener, errorDir);
   }
 
   @Transactional
@@ -147,8 +162,20 @@ public class FECImporter extends Importer {
   }
 
   @Override
-  protected ImportHistory process(String bind, String data) throws IOException {
-    return process(bind, data, null);
+  protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
+    return process(bind, data, getErrorDirectory());
+  }
+
+  @Override
+  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
+      throws IOException, AxelorException {
+    return process(bind, data, getErrorDirectory(), importContext);
+  }
+
+  @Override
+  protected ImportHistory process(String bind, String data, String errorDir)
+      throws IOException, AxelorException {
+    return process(bind, data, errorDir, null);
   }
 
   public List<Move> getMoves() {
@@ -170,6 +197,7 @@ public class FECImporter extends Importer {
         // We do this in two parts because reference for move must be unique, and in case there is
         // an error the rollback must not undo description and fecImport.
         move = setDescriptionAndFecImport(fecImport, listener, move);
+        move = setVatSystemSelect(listener, move);
         move = setReferenceAndValidate(fecImport, listener, move);
         if (i % 10 == 0) {
           JPA.clear();
@@ -180,6 +208,54 @@ public class FECImporter extends Importer {
         this.company = companyRepository.find(companyId);
       }
     }
+  }
+
+  @Transactional
+  protected Move setVatSystemSelect(ImporterListener listener, Move move) {
+    try {
+      if (move != null) {
+        // Set vatSystemSelect on charge/income/immobilisation lines
+        for (MoveLine moveLine : move.getMoveLineList()) {
+          String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
+          boolean accountTypeCondition =
+              accountType.equals(AccountTypeRepository.TYPE_CHARGE)
+                  || accountType.equals(AccountTypeRepository.TYPE_INCOME)
+                  || accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION);
+          if (accountTypeCondition) {
+            moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
+          }
+        }
+
+        // Set vatSystemSelect on tax lines
+        List<Integer> vatSystemSelectList =
+            move.getMoveLineList().stream()
+                .filter(
+                    ml ->
+                        Lists.newArrayList(
+                                AccountTypeRepository.TYPE_CHARGE,
+                                AccountTypeRepository.TYPE_INCOME,
+                                AccountTypeRepository.TYPE_IMMOBILISATION)
+                            .contains(ml.getAccount().getAccountType().getTechnicalTypeSelect()))
+                .map(MoveLine::getVatSystemSelect)
+                .distinct()
+                .collect(Collectors.toList());
+        if (vatSystemSelectList.size() == 1) {
+          int vatSystemSelect = vatSystemSelectList.get(0);
+          for (MoveLine moveLine : move.getMoveLineList()) {
+            String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
+            if (accountType.equals(AccountTypeRepository.TYPE_TAX)) {
+              moveLine.setVatSystemSelect(vatSystemSelect);
+            }
+          }
+        }
+
+        return moveRepository.save(move);
+      }
+
+    } catch (Exception e) {
+      listener.handle(move, e);
+    }
+    return null;
   }
 
   @Transactional
@@ -231,7 +307,7 @@ public class FECImporter extends Importer {
 
   protected String extractCSVMoveReference(String reference) {
     if (reference != null) {
-      int indexOfSeparator = reference.indexOf("-");
+      int indexOfSeparator = reference.indexOf("@");
       if (indexOfSeparator < 0) {
         return reference.replaceFirst("#", "");
       } else {

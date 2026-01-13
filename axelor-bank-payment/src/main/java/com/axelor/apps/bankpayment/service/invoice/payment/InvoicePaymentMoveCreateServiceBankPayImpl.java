@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -45,10 +45,11 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
+import java.util.Optional;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 public class InvoicePaymentMoveCreateServiceBankPayImpl
@@ -144,5 +145,13 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
     if (invoicePayment.getPaymentMode().getAutoConfirmBankOrder()) {
       bankOrderValidationService.confirm(bankOrder);
     }
+  }
+
+  @Override
+  public String getOriginFromInvoicePayment(InvoicePayment invoicePayment) {
+    return Optional.of(invoicePayment)
+        .map(InvoicePayment::getBankOrder)
+        .map(BankOrder::getBankOrderSeq)
+        .orElseGet(() -> super.getOriginFromInvoicePayment(invoicePayment));
   }
 }

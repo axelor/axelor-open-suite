@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -85,7 +86,7 @@ public class ExcelToCSV {
           for (int cell = startColumn; cell < headerRow.getLastCellNum(); cell++) {
             Cell headerCell = headerRow.getCell(cell);
             if (headerCell == null
-                || headerCell.getCellType() != Cell.CELL_TYPE_STRING
+                || headerCell.getCellType() != CellType.STRING
                 || headerCell.getStringCellValue().isEmpty()) {
               throw new AxelorException(
                   TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -113,12 +114,12 @@ public class ExcelToCSV {
               if (dataCell != null) {
 
                 switch (dataCell.getCellType()) {
-                  case Cell.CELL_TYPE_STRING:
+                  case CellType.STRING:
                     String strData = dataCell.getStringCellValue();
                     value = "\"" + strData + "\"";
                     break;
 
-                  case Cell.CELL_TYPE_NUMERIC:
+                  case CellType.NUMERIC:
                     if (DateUtil.isCellDateFormatted(dataCell)) {
                       String dateInString = getDateValue(dataCell);
                       value = "\"" + dateInString + "\"";
@@ -129,10 +130,10 @@ public class ExcelToCSV {
                     }
                     break;
 
-                  case Cell.CELL_TYPE_BOOLEAN:
-                    value = new Boolean(dataCell.getBooleanCellValue()).toString();
+                  case CellType.BOOLEAN:
+                    value = Boolean.valueOf(dataCell.getBooleanCellValue()).toString();
                     break;
-                  case Cell.CELL_TYPE_BLANK:
+                  case CellType.BLANK:
                   default:
                     break;
                 }

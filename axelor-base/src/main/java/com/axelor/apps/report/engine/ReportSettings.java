@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.report.engine;
 
 import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerServiceImpl;
@@ -27,17 +28,15 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.db.Model;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
-import com.axelor.studio.app.service.AppService;
 import com.axelor.utils.helpers.StringHelper;
+import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.common.collect.Maps;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.lang.invoke.MethodHandles;
-import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -101,17 +100,7 @@ public class ReportSettings {
       return null;
     }
 
-    String fileLink = "ws/files/report/" + output.getName();
-
-    try {
-      fileLink += "?name=" + URLEncoder.encode(fileName, "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      logger.error(e.getLocalizedMessage());
-    }
-
-    logger.debug("URL : {}", fileLink);
-
-    return fileLink;
+    return PdfHelper.getFileLinkFromPdfFile(output, fileName);
   }
 
   public String getOutputName() {
@@ -217,7 +206,7 @@ public class ReportSettings {
 
     String attachmentPath = null;
     try {
-      attachmentPath = AppService.getFileUploadDir();
+      attachmentPath = AppSettings.get().get(AvailableAppSettings.DATA_UPLOAD_DIR);
     } catch (Exception e) {
       TraceBackService.trace(e);
     }

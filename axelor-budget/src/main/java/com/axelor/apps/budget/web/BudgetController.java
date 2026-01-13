@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,8 +49,7 @@ public class BudgetController {
   public void computeTotalAmount(ActionRequest request, ActionResponse response) {
     try {
       Budget budget = request.getContext().asType(Budget.class);
-      response.setValue(
-          "totalAmountExpected", Beans.get(BudgetService.class).computeTotalAmount(budget));
+      response.setValues(Beans.get(BudgetToolsService.class).computeBudgetAmountMap(budget));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -60,16 +59,6 @@ public class BudgetController {
     try {
       Budget budget = request.getContext().asType(Budget.class);
       response.setValue("budgetLineList", Beans.get(BudgetService.class).generatePeriods(budget));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void computeToBeCommittedAndFirmGap(ActionRequest request, ActionResponse response) {
-    try {
-      Budget budget = request.getContext().asType(Budget.class);
-      BudgetService budgetService = Beans.get(BudgetService.class);
-      response.setValue("totalFirmGap", budgetService.computeFirmGap(budget));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -189,9 +178,12 @@ public class BudgetController {
         response.setValue("analyticAccount", null);
       } else {
         GlobalBudget globalBudget = getGlobalBudget(request);
+        BudgetStructure budgetStructure = getBudgetStructure(request);
         Company company = null;
         if (globalBudget != null) {
           company = globalBudget.getCompany();
+        } else if (budgetStructure != null) {
+          company = budgetStructure.getCompany();
         }
 
         List<Long> idList = Beans.get(BudgetService.class).getAnalyticAxisInConfig(company);
@@ -218,9 +210,12 @@ public class BudgetController {
             "self.analyticAxis.id = " + budget.getAnalyticAxis().getId());
       } else {
         GlobalBudget globalBudget = getGlobalBudget(request);
+        BudgetStructure budgetStructure = getBudgetStructure(request);
         Company company = null;
         if (globalBudget != null) {
           company = globalBudget.getCompany();
+        } else if (budgetStructure != null) {
+          company = budgetStructure.getCompany();
         }
 
         List<Long> idList = Beans.get(BudgetService.class).getAnalyticAxisInConfig(company);
@@ -343,10 +338,6 @@ public class BudgetController {
     if (budgetStructure != null) {
       return budgetStructure;
     }
-    if (context == null) {
-      return null;
-    }
-
     if (context.getParent() != null
         && BudgetStructure.class.isAssignableFrom(context.getParent().getContextClass())) {
       return context.getParent().asType(BudgetStructure.class);

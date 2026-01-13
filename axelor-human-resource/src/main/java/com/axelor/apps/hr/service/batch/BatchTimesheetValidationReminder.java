@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,11 +39,11 @@ import com.axelor.message.db.repo.EmailAccountRepository;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.mail.MessagingException;
 import java.util.HashSet;
 import java.util.List;
-import javax.mail.MessagingException;
 
 public class BatchTimesheetValidationReminder extends MailBatchStrategy {
 

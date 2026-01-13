@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
 
   <menuitem name="sc-root-sale" title="Sales" order="-1900"
@@ -142,7 +142,7 @@
   </action-view>
 
   <menuitem name="sc-root-sale-report" parent="sc-root-sale" title="Reportings"
-    order="1300" icon="fa-bar-chart"/>
+    order="1300" icon="bar-chart"/>
 
   <menuitem name="sc-root-sale-maps" parent="sc-root-sale-report" title="Maps" order="500"/>
 
@@ -154,7 +154,7 @@
     action="action-show-prospects-on-map-page" order="200"/>
 
   <menuitem name="sc-root-sale-conf" parent="sc-root-sale" title="Configuration"
-    order="1400" icon="fa-cog"/>
+    order="1400" icon="gear"/>
 
   <menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf" title="Cancel Reasons"
     action="sale.conf.cancelreason" order="200"/>
@@ -210,7 +210,7 @@
     model="com.axelor.apps.base.db.PriceList">
     <view type="grid" name="price-list-grid"/>
     <view type="form" name="price-list-form"/>
-    <domain>self.typeSelect = 1</domain>
+    <domain>self.typeSelect = :_typeSelect AND self.parentPriceList IS NULL</domain>
     <context name="_typeSelect" expr="eval: 1"/>
   </action-view>
 
@@ -286,48 +286,6 @@
     <view-param name="search-filters" value="sale-batch-filters"/>
   </action-view>
 
-
-  <!-- TOP MENU -->
-
-  <menuitem name="top-menu-sales" top="true" order="2" title="Sales"
-    if="__config__.app.isApp('sale')" left="false"/>
-
-  <menuitem name="top-menu-sales-quotations" parent="top-menu-sales"
-    title="Sale quotations" action="top.menu.sales.quotations" top="true"/>
-
-  <action-view name="top.menu.sales.quotations" title="Sale quotations"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <view type="cards" name="sale-order-quotation-cards"/>
-    <view type="grid" name="sale-order-quotation-grid"/>
-    <view type="calendar" name="sale-order-calendar"/>
-    <view type="form" name="sale-order-form"/>
-    <view-param name="search-filters" value="sale-order-filters"/>
-    <view-param name="forceTitle" value="true"/>
-    <domain>self.template = false and self.statusSelect &lt; 3</domain>
-    <context name="_internalUser" expr="eval: __user__.id"/>
-    <context name="_myActiveTeam"
-      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    <context name="_template" expr="eval:false"/>
-  </action-view>
-
-  <menuitem name="top-menu-sales-sale-orders" parent="top-menu-sales" title="Sale orders"
-    action="top.menu.sales.sale.orders" top="true"/>
-
-  <action-view name="top.menu.sales.sale.orders" title="Sale orders"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <view type="cards" name="sale-order-cards"/>
-    <view type="grid" name="sale-order-grid"/>
-    <view type="calendar" name="sale-order-calendar"/>
-    <view type="form" name="sale-order-form"/>
-    <view-param name="search-filters" value="sale-order-filters"/>
-    <domain>self.template = false and self.statusSelect = 3</domain>
-    <context name="_internalUser" expr="eval: __user__.id"/>
-    <context name="_myActiveTeam"
-      expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"/>
-    <context name="_template" expr="eval:false"/>
-    <context name="status" expr="3"/>
-  </action-view>
-
   <menuitem name="menu-saleman-dashboard-sample" parent="sc-root-sale-report" order="100"
     title="Salesperson" action="saleman.dashboard.view.sample"/>
 
@@ -384,7 +342,7 @@
     model="com.axelor.apps.base.db.PricingRule">
     <view type="grid" name="pricing-rule-grid"/>
     <view type="form" name="pricing-rule-form"/>
-    <domain>self.concernedModel.name IS NOT 'InvoiceLine'</domain>
+    <domain>self.concernedModel.name != 'InvoiceLine'</domain>
   </action-view>
 
 </object-views>

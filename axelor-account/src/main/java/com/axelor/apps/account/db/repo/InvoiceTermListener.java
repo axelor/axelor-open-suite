@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,21 +21,22 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.DebtRecovery;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.InvoiceTermPayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PayVoucherDueElement;
 import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
-import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
+import com.axelor.apps.account.service.move.MovePfpToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.repo.AppAccountRepository;
+import jakarta.persistence.PostUpdate;
+import jakarta.persistence.PreRemove;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import javax.persistence.PostUpdate;
-import javax.persistence.PreRemove;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,8 +47,8 @@ public class InvoiceTermListener {
   @PostUpdate
   protected void updateMovePfpValidateStatus(InvoiceTerm invoiceTerm) throws AxelorException {
     if (invoiceTerm.getMoveLine() != null) {
-      Beans.get(MoveRecordUpdateService.class)
-          .updateInvoiceTerms(invoiceTerm.getMoveLine().getMove(), false, false);
+      Move move = invoiceTerm.getMoveLine().getMove();
+      Beans.get(MovePfpToolService.class).fillMovePfpValidateStatus(move);
     }
   }
 

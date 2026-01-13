@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <menuitem name="fleet-root" title="Fleet" order="-400" if="__config__.app.isApp('fleet')"
     icon="car-front" icon-background="#ff9800"/>
@@ -70,7 +70,7 @@
     <view type="form" name="vehicle-cost-form"/>
   </action-view>
 
-  <menuitem name="fleet-conf" title="Configuration" parent="fleet-root" icon="fa-cog"
+  <menuitem name="fleet-conf" title="Configuration" parent="fleet-root" icon="gear"
     order="800"/>
 
   <menuitem name="fleet-conf-recurring-cost" title="Recurring Costs"

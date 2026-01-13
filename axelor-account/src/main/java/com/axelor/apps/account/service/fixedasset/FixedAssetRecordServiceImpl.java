@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,7 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class FixedAssetRecordServiceImpl implements FixedAssetRecordService {
@@ -34,20 +34,11 @@ public class FixedAssetRecordServiceImpl implements FixedAssetRecordService {
   }
 
   @Override
-  public void resetAssetDisposalReason(FixedAsset fixedAsset) {
-    fixedAsset.setAssetDisposalReason(null);
-  }
-
-  @Override
-  public void setDisposalQtySelect(FixedAsset fixedAsset, int disposalTypeSelect) {
-    if (disposalTypeSelect != FixedAssetRepository.DISPOSABLE_TYPE_SELECT_CESSION) {
-      fixedAsset.setDisposalQtySelect(FixedAssetRepository.DISPOSABLE_QTY_SELECT_TOTAL);
-    }
-  }
-
-  @Override
-  public BigDecimal setDisposalAmount(FixedAsset fixedAsset, int disposalTypeSelect) {
+  public BigDecimal setDisposalAmount(FixedAsset fixedAsset, Integer disposalTypeSelect) {
     BigDecimal disposalAmount;
+    if (fixedAsset == null || disposalTypeSelect == null) {
+      return BigDecimal.ZERO;
+    }
 
     switch (disposalTypeSelect) {
       case FixedAssetRepository.DISPOSABLE_TYPE_SELECT_SCRAPPING:

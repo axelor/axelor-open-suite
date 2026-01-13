@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,7 +32,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -252,9 +252,9 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
       BankStatementLine finalBankStatementLine)
       throws AxelorException {
     BigDecimal initialBankStatementLineSum =
-        initialBankStatementLine.getDebit().max(initialBankStatementLine.getCredit());
+        initialBankStatementLine.getDebit().subtract(initialBankStatementLine.getCredit());
     BigDecimal finalBankStatementLineSum =
-        finalBankStatementLine.getDebit().max(finalBankStatementLine.getCredit());
+        finalBankStatementLine.getDebit().subtract(finalBankStatementLine.getCredit());
 
     BigDecimal movementLineSum =
         orderBankStatementLineQuery(
@@ -265,7 +265,7 @@ public class BankStatementImportCheckServiceImpl implements BankStatementImportC
             .stream()
             .map(
                 bankStatementLine ->
-                    bankStatementLine.getCredit().subtract(bankStatementLine.getDebit()))
+                    bankStatementLine.getDebit().subtract(bankStatementLine.getCredit()))
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO);
     if (initialBankStatementLineSum.add(movementLineSum).compareTo(finalBankStatementLineSum)

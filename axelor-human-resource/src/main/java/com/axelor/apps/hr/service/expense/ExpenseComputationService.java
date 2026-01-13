@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,16 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Expense;
 import java.math.BigDecimal;
 
 public interface ExpenseComputationService {
+  void recomputeAmountsUsingLines(Expense expense) throws AxelorException;
+
   public Expense compute(Expense expense);
 
   public BigDecimal computePersonalExpenseAmount(Expense expense);
 
-  public BigDecimal computeAdvanceAmount(Expense expense);
+  public BigDecimal computeAdvanceAmount(Expense expense) throws AxelorException;
 }

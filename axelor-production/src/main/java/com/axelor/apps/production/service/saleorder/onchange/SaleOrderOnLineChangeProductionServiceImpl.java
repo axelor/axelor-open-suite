@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,9 +23,11 @@ import com.axelor.apps.production.service.SaleOrderProductionSyncService;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderGlobalDiscountService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
@@ -33,8 +35,9 @@ import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.studio.db.repo.AppSaleRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class SaleOrderOnLineChangeProductionServiceImpl
     extends SaleOrderOnLineChangeSupplyChainServiceImpl {
@@ -54,6 +57,8 @@ public class SaleOrderOnLineChangeProductionServiceImpl
       SaleOrderComplementaryProductService saleOrderComplementaryProductService,
       SaleOrderSupplychainService saleOrderSupplychainService,
       SaleOrderShipmentService saleOrderShipmentService,
+      SaleOrderGlobalDiscountService saleOrderGlobalDiscountService,
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService,
       AppProductionService appProductionService,
       SaleOrderProductionSyncService saleOrderProductionSyncService) {
     super(
@@ -65,20 +70,25 @@ public class SaleOrderOnLineChangeProductionServiceImpl
         saleOrderLineComputeService,
         saleOrderLinePackService,
         saleOrderComplementaryProductService,
+        saleOrderGlobalDiscountService,
         saleOrderSupplychainService,
-        saleOrderShipmentService);
+        saleOrderShipmentService,
+        saleOrderLineAnalyticService);
     this.appProductionService = appProductionService;
     this.saleOrderProductionSyncService = saleOrderProductionSyncService;
   }
 
   @Override
-  public void onLineChange(SaleOrder saleOrder) throws AxelorException {
-    super.onLineChange(saleOrder);
+  public String onLineChange(SaleOrder saleOrder) throws AxelorException {
+    String message = super.onLineChange(saleOrder);
 
     if (appProductionService.isApp("production")
         && appSaleService.getAppSale().getListDisplayTypeSelect()
-            == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
-      saleOrderProductionSyncService.syncSaleOrderLineList(saleOrder);
+            == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_DRAFT_QUOTATION) {
+      saleOrderProductionSyncService.syncSaleOrderLineList(
+          saleOrder, saleOrder.getSaleOrderLineList());
     }
+    return message;
   }
 }

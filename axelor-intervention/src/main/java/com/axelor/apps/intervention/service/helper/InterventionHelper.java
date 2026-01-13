@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,14 +31,14 @@ import com.axelor.apps.intervention.repo.EquipmentRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.StringJoiner;
-import javax.persistence.NoResultException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 public class InterventionHelper {
   private InterventionHelper() {}
@@ -55,7 +55,7 @@ public class InterventionHelper {
                 .orElse(null)));
     domain.add(
         String.format(
-            "%s in self.exclusiveInterventionSet.id",
+            "%s in (SELECT exclusiveIntervention.id FROM self.exclusiveInterventionSet exclusiveIntervention)",
             Optional.ofNullable(intervention).map(Intervention::getId).orElse(null)));
 
     return domain.toString();
@@ -83,9 +83,9 @@ public class InterventionHelper {
         countNonConforming.from(InterventionQuestion.class);
     countNonConforming.select(cb.count(rootNonConforming));
     Predicate questionHasNonConforming =
-        cb.equal(rootFollowing.get("listAnswer").get("nonConforming"), Boolean.TRUE);
+        cb.equal(rootNonConforming.get("listAnswer").get("nonConforming"), Boolean.TRUE);
     countNonConforming.where(
-        belongToInterventionFromInterventionQuestion(cb, rootFollowing, intervention.getId()),
+        belongToInterventionFromInterventionQuestion(cb, rootNonConforming, intervention.getId()),
         questionHasNonConforming);
     intervention.setNonConforming(
         JPA.em().createQuery(countNonConforming).getSingleResult().intValue());

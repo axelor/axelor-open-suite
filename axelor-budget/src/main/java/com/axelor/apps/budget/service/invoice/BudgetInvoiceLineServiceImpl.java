@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.budget.db.BudgetDistribution;
@@ -35,9 +36,9 @@ import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -100,6 +101,10 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
     if (invoiceLine.getBudgetDistributionList() != null
         && !invoiceLine.getBudgetDistributionList().isEmpty()) {
       BigDecimal amountSum = BigDecimal.ZERO;
+      String product =
+          Optional.ofNullable(invoiceLine.getProduct())
+              .map(Product::getCode)
+              .orElse(invoiceLine.getProductName());
       for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
         if (budgetDistribution.getAmount().abs().compareTo(invoiceLine.getCompanyExTaxTotal())
             > 0) {
@@ -107,7 +112,7 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_GREATER_INVOICE),
               budgetDistribution.getBudget().getCode(),
-              invoiceLine.getProduct().getCode());
+              product);
         } else {
           amountSum = amountSum.add(budgetDistribution.getAmount());
         }
@@ -116,7 +121,7 @@ public class BudgetInvoiceLineServiceImpl implements BudgetInvoiceLineService {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
             I18n.get(BudgetExceptionMessage.BUDGET_DISTRIBUTION_LINE_SUM_LINES_GREATER_INVOICE),
-            invoiceLine.getProduct().getCode());
+            product);
       }
     }
   }

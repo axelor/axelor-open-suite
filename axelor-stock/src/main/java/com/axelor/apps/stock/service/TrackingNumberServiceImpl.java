@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,13 +21,14 @@ package com.axelor.apps.stock.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.TrackingNumberConfigurationProfile;
 import com.axelor.apps.stock.db.repo.TrackingNumberConfigurationRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
@@ -36,12 +37,15 @@ import java.util.Set;
 public class TrackingNumberServiceImpl implements TrackingNumberService {
 
   protected static final int MAX_ITERATION = 1000;
+  protected final UserService userService;
 
   protected TrackingNumberConfigurationProfileService trackingNumberConfigurationProfileService;
 
   @Inject
   public TrackingNumberServiceImpl(
+      UserService userService,
       TrackingNumberConfigurationProfileService trackingNumberConfigurationProfileService) {
+    this.userService = userService;
     this.trackingNumberConfigurationProfileService = trackingNumberConfigurationProfileService;
   }
 

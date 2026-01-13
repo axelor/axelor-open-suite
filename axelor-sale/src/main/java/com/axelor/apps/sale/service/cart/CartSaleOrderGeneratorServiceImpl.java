@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,8 +32,8 @@ import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGenerato
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -75,7 +75,7 @@ public class CartSaleOrderGeneratorServiceImpl implements CartSaleOrderGenerator
     checkProduct(cartLineList);
     SaleOrder saleOrder =
         saleOrderGeneratorService.createSaleOrder(
-            cart.getPartner(), cart.getCompany(), null, null, null);
+            cart.getPartner(), null, cart.getCompany(), null, null, null);
 
     for (CartLine cartLine : cartLineList) {
       createSaleOrderLine(cartLine, saleOrder);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,6 +28,7 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.repo.ProjectRepository;
@@ -35,8 +36,8 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   protected TimesheetLineCreateService timesheetLineCreateService;
   protected TimesheetQueryService timesheetQueryService;
   protected EmployeeRepository employeeRepository;
+  protected EmployeeService employeeService;
 
   @Inject
   public TimesheetCreateServiceImpl(
@@ -61,7 +63,8 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
       TimesheetRepository timesheetRepository,
       TimesheetLineCreateService timesheetLineCreateService,
       TimesheetQueryService timesheetQueryService,
-      EmployeeRepository employeeRepository) {
+      EmployeeRepository employeeRepository,
+      EmployeeService employeeService) {
     this.userHrService = userHrService;
     this.projectRepository = projectRepository;
     this.timesheetLineService = timesheetLineService;
@@ -69,6 +72,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
     this.timesheetLineCreateService = timesheetLineCreateService;
     this.timesheetQueryService = timesheetQueryService;
     this.employeeRepository = employeeRepository;
+    this.employeeService = employeeService;
   }
 
   @Transactional
@@ -76,15 +80,7 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   public Timesheet createTimesheet(Employee employee, LocalDate fromDate, LocalDate toDate) {
     Timesheet timesheet = new Timesheet();
 
-    Company company = null;
-    if (employee != null) {
-      employee = employeeRepository.find(employee.getId());
-      if (employee.getMainEmploymentContract() != null) {
-        company = employee.getMainEmploymentContract().getPayCompany();
-      } else if (employee.getUser() != null) {
-        company = employee.getUser().getActiveCompany();
-      }
-    }
+    Company company = employeeService.getDefaultCompany(employee);
 
     String timeLoggingPreferenceSelect =
         employee == null ? null : employee.getTimeLoggingPreferenceSelect();
@@ -158,16 +154,25 @@ public class TimesheetCreateServiceImpl implements TimesheetCreateService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Timesheet getOrCreateTimesheet(TimesheetLine timesheetLine) {
-    return getOrCreateTimesheet(
-        timesheetLine.getEmployee(), timesheetLine.getProject(), timesheetLine.getDate());
+    Employee employee = timesheetLine.getEmployee();
+    if (employee == null) {
+      return null;
+    }
+    return getOrCreateTimesheet(employee, timesheetLine.getProject(), timesheetLine.getDate());
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Timesheet getOrCreateTimesheet(Employee employee, Project project, LocalDate date) {
+    if (employee != null) {
+      employee = employeeRepository.find(employee.getId());
+    }
     Company company = null;
     if (project != null) {
       company = project.getCompany();
+    }
+    if (company == null) {
+      company = employeeService.getDefaultCompany(employee);
     }
     Timesheet timesheet =
         timesheetQueryService.getTimesheetQuery(employee, company, date).order("id").fetchOne();

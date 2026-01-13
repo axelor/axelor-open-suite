@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,8 +31,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -188,7 +188,9 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
       Invoice invoice,
       List<InvoiceTerm> newInvoiceTermList,
       List<InvoiceTerm> invoiceTermListToRemove) {
-    if (ObjectUtils.isEmpty(newInvoiceTermList) || ObjectUtils.isEmpty(invoiceTermListToRemove)) {
+    if (invoice == null
+        || ObjectUtils.isEmpty(newInvoiceTermList)
+        || ObjectUtils.isEmpty(invoiceTermListToRemove)) {
       return;
     }
 
@@ -197,7 +199,6 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
     }
 
     for (InvoiceTerm invoiceTerm : invoiceTermListToRemove) {
-      invoice.removeInvoiceTermListItem(invoiceTerm);
       invoiceTerm.setInvoice(null);
     }
 
@@ -212,9 +213,7 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
       invoiceTerm.setPaymentSession(null);
       MoveLine moveLine = invoiceTerm.getMoveLine();
       moveLine.addInvoiceTermListItem(newInvoiceTerm);
-      moveLine.removeInvoiceTermListItem(invoiceTerm);
       invoiceTerm.setMoveLine(null);
-      invoiceTermRepo.remove(invoiceTerm);
     }
   }
 

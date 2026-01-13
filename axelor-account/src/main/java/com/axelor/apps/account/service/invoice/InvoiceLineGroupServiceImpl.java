@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,7 @@ package com.axelor.apps.account.service.invoice;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.invoice.attributes.InvoiceLineAttrsService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class InvoiceLineGroupServiceImpl implements InvoiceLineGroupService {
@@ -41,6 +41,14 @@ public class InvoiceLineGroupServiceImpl implements InvoiceLineGroupService {
       invoiceLineAttrsService.addExTaxTotalScale(invoice, attrsMap, prefix);
       invoiceLineAttrsService.addInTaxTotalScale(invoice, attrsMap, prefix);
       invoiceLineAttrsService.addCoefficientScale(invoice, attrsMap, prefix);
+    }
+  }
+
+  @Override
+  public void setInvoiceLineTaxLineSetDomain(
+      Invoice invoice, Map<String, Map<String, Object>> attrsMap) {
+    if (invoice != null) {
+      invoiceLineAttrsService.addTaxLineSetDomain(invoice.getOperationTypeSelect(), attrsMap);
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,7 @@ import com.axelor.message.db.repo.EmailAddressRepository;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.message.service.MailAccountService;
-import com.axelor.message.service.MailMessageActionService;
+import com.axelor.message.service.MessageActionService;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateContextService;
 import com.axelor.message.service.TemplateMessageServiceImpl;
@@ -37,14 +37,12 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.Templates;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.invoke.MethodHandles;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
@@ -66,7 +64,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
       MailAccountService mailAccountService,
       MessageService messageService,
       TemplateContextService templateContextService,
-      MailMessageActionService mailMessageActionService,
+      MessageActionService messageActionService,
       PrintingTemplatePrintService printTemplatePrintService) {
     super(
         emailAddressRepository,
@@ -76,7 +74,7 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
         mailAccountService,
         messageService,
         templateContextService,
-        mailMessageActionService);
+        messageActionService);
     this.printTemplatePrintService = printTemplatePrintService;
   }
 
@@ -109,15 +107,13 @@ public class TemplateMessageServiceBaseImpl extends TemplateMessageServiceImpl {
       throws AxelorException, IOException {
 
     logger.debug("Generate birt metafile: {}", printingTemplate.getName());
+    PrintingGenFactoryContext templatesPrintingContext =
+        new PrintingGenFactoryContext(templatesContext);
 
     String fileName =
-        printingTemplate.getName()
-            + "-"
-            + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        printTemplatePrintService.getPrintFileName(printingTemplate, templatesPrintingContext);
 
-    File file =
-        printTemplatePrintService.getPrintFile(
-            printingTemplate, new PrintingGenFactoryContext(templatesContext));
+    File file = printTemplatePrintService.getPrintFile(printingTemplate, templatesPrintingContext);
 
     try (InputStream is = new FileInputStream(file)) {
       return Beans.get(MetaFiles.class)

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,99 +28,106 @@ import com.axelor.auth.db.User;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaPermissionRule;
+import com.axelor.script.ScriptAllowed;
 import com.axelor.team.db.Team;
-import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.mail.MessagingException;
-import wslite.json.JSONException;
 
 /** UserService is a class that implement all methods for user information */
+@ScriptAllowed
 public interface UserService {
 
   /**
-   * Method that return the current connected user
+   * Return the current connected user.
    *
    * @return user the current connected user
    */
-  public User getUser();
+  User getUser();
 
   /**
-   * Method that return the id of the current connected user
+   * Return the id of the current connected user.
    *
    * @return user the id of current connected user
    */
-  public Long getUserId();
+  Long getUserId();
 
   /**
-   * Method that return the active company of the current connected user
+   * Return the active company of the current connected user.
    *
    * @return Company the active company
    */
   @CallMethod
-  public Company getUserActiveCompany();
+  Company getUserActiveCompany();
 
   /**
-   * Method that return the Trading name of the current connected user
+   * Return the trading name of the current connected user.
    *
    * @return Company the active company
    */
-  public TradingName getTradingName();
+  TradingName getTradingName();
 
   /**
-   * Method that return the active company id of the current connected user
+   * Return the active company id of the current connected user.
    *
    * @return Company the active company id
    */
-  public Long getUserActiveCompanyId();
+  Long getUserActiveCompanyId();
 
   /**
-   * Method that return the active team of the current connected user
+   * Retrieves the appropriate company logo for the currently authenticated user, based on the
+   * user's selected theme logo mode (dark or light).
    *
-   * @return Team the active team
-   */
-  public MetaFile getUserActiveCompanyLogo();
-
-  /**
-   * Method that return company logo link
+   * <p>If the user's theme specifies a dark or light logo mode, the corresponding logo is returned.
+   * If the selected logo is not available or the theme mode is invalid, the default company logo is
+   * returned as a fallback.
    *
-   * @return the logo Link
+   * @param mode an theme mode indicator (currently unused)
+   * @return the selected {@link MetaFile} logo, or the default company logo if none is set or
+   *     applicable
    */
-  public String getUserActiveCompanyLogoLink();
+  MetaFile getUserActiveCompanyLogo(String mode);
 
   /**
-   * Method that return the active team of the current connected user
+   * Returns the download URL for the current user’s company logo based on their theme, falling back
+   * to the default logo if the theme-specific one is unavailable.
+   *
+   * @param mode theme mode indicator (unused)
+   * @return the logo’s download URL, or null if no logo (or company) is available
+   */
+  String getUserActiveCompanyLogoLink(String mode);
+
+  /**
+   * Return the active team of the current connected user.
    *
    * @return Team the active team
    */
   @CallMethod
-  public Team getUserActiveTeam();
+  Team getUserActiveTeam();
 
   /**
-   * Method that return the active team of the current connected user
+   * Return the active team ID of the current connected user.
    *
    * @return Team the active team id
    */
   @CallMethod
-  public Long getUserActiveTeamId();
+  Long getUserActiveTeamId();
 
   /**
-   * Method that return the partner of the current connected user
+   * Return the partner of the current connected user.
    *
    * @return Partner the user partner
    */
   @CallMethod
-  public Partner getUserPartner();
+  Partner getUserPartner();
 
-  @Transactional
-  public void createPartner(User user);
+  void createPartner(User user);
 
-  public String getLocalizationCode();
+  String getLocalizationCode();
 
   /**
-   * Get user's active company address.
+   * Get the active company address of the user.
    *
    * @return
    */
@@ -132,34 +139,23 @@ public interface UserService {
    * @param user
    * @param values
    * @return
-   * @throws ClassNotFoundException
-   * @throws InstantiationException
-   * @throws IllegalAccessException
-   * @throws MessagingException
-   * @throws IOException
-   * @throws AxelorException
    */
-  User changeUserPassword(User user, Map<String, Object> values)
-      throws ClassNotFoundException,
-          InstantiationException,
-          IllegalAccessException,
-          MessagingException,
-          IOException,
-          AxelorException;
+  User changeUserPassword(User user, Map<String, Object> values);
 
   /**
-   * Processs changed user password.
+   * Trigger post processes after a change of the user password.
    *
    * @param user
+   * @throws AxelorException
    * @throws ClassNotFoundException
    * @throws IOException
-   * @throws AxelorException
    */
   void processChangedPassword(User user)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   /**
-   * Match password with configured pattern.
+   * Return whether the password matches the pattern in {@code user.password.pattern} property, with
+   * a fallback to the default password pattern if property is not set.
    *
    * @param password
    * @return
@@ -182,20 +178,21 @@ public interface UserService {
   String getPasswordPatternDescription();
 
   /**
-   * Setting user's partner
+   * Set the partner of the user.
    *
    * @param partner
    * @param user
    * @return
    */
-  @Transactional
-  public Partner setUserPartner(Partner partner, User user);
+  void setUserPartner(Partner partner, User user);
 
-  public void generateRandomPasswordForUser(User user);
+  void generateRandomPasswordForUser(User user);
 
   List<Permission> getPermissions(User user);
 
   List<MetaPermissionRule> getMetaPermissionRules(User user);
 
   void setActiveCompany(User user, Company company);
+
+  void setTradingName(User user, TradingName tradingName);
 }

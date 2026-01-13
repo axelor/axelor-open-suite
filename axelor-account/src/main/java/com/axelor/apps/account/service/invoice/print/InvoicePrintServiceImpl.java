@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,9 +49,9 @@ import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
 import com.axelor.utils.helpers.file.PdfHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -150,7 +150,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           && reportType != null
           && reportType != InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS) {
 
-        Path path = MetaFiles.getPath(invoice.getPrintedPDF().getFilePath());
+        Path path = MetaFiles.getPath(invoice.getPrintedPDF());
         return path.toFile();
       } else {
 
@@ -158,7 +158,12 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         return reportType != null
                 && reportType == InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS
             ? print(invoice, reportType, invoicePrintTemplate, locale)
-            : printAndSave(invoice, reportType, invoicePrintTemplate, locale);
+            : printAndSave(
+                invoice,
+                reportType,
+                invoicePrintTemplate,
+                locale,
+                invoicePrintTemplate.getToAttach());
       }
     } else {
       // invoice is not ventilated (or validated for advance payment invoices) --> generate and
@@ -179,7 +184,49 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               invoice.getInvoiceId()),
           invoice);
     }
+    PrintingGenFactoryContext factoryContext =
+        buildPrintingContext(invoice, reportType, invoicePrintTemplate, locale);
+    return printingTemplatePrintService.getPrintFile(
+        invoicePrintTemplate, factoryContext, invoicePrintTemplate.getToAttach());
+  }
 
+  public File printAndSave(
+      Invoice invoice,
+      Integer reportType,
+      PrintingTemplate invoicePrintTemplate,
+      String locale,
+      boolean toAttach)
+      throws AxelorException {
+    PrintingGenFactoryContext factoryContext =
+        buildPrintingContext(invoice, reportType, invoicePrintTemplate, locale);
+    File file =
+        printingTemplatePrintService.getPrintFile(invoicePrintTemplate, factoryContext, false);
+    MetaFile metaFile;
+
+    try {
+      MetaFiles metaFiles = Beans.get(MetaFiles.class);
+      metaFile = metaFiles.upload(file);
+      MetaFile signedMetaFile =
+          ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(file.getName()))
+              ? getSignedPdf(metaFile)
+              : metaFile;
+      if (toAttach) {
+        metaFiles.attach(signedMetaFile, signedMetaFile.getFileName(), invoice);
+      }
+      invoice.setPrintedPDF(signedMetaFile);
+      return MetaFiles.getPath(metaFile).toFile();
+    } catch (IOException e) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.INVOICE_PRINTING_IO_ERROR)
+              + " "
+              + e.getLocalizedMessage());
+    }
+  }
+
+  protected PrintingGenFactoryContext buildPrintingContext(
+      Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale)
+      throws AxelorException {
     AccountConfig accountConfig = accountConfigRepo.findByCompany(invoice.getCompany());
     if (Strings.isNullOrEmpty(locale)) {
       String userLocalizationCode =
@@ -200,11 +247,13 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
               ? companyLocalizationCode
               : partnerLocalizationCode;
     }
+
     String watermark = null;
     MetaFile invoiceWatermark = accountConfig.getInvoiceWatermark();
     if (invoiceWatermark != null) {
       watermark = MetaFiles.getPath(invoiceWatermark).toString();
     }
+
     Map<String, Object> paramMap = new HashedMap<>();
     paramMap.put("ReportType", reportType == null ? 0 : reportType);
     paramMap.put("locale", locale);
@@ -213,33 +262,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     PrintingGenFactoryContext factoryContext =
         new PrintingGenFactoryContext(EntityHelper.getEntity(invoice));
     factoryContext.setContext(paramMap);
-    return printingTemplatePrintService.getPrintFile(invoicePrintTemplate, factoryContext);
-  }
-
-  public File printAndSave(
-      Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale)
-      throws AxelorException {
-
-    File file = print(invoice, reportType, invoicePrintTemplate, locale);
-    MetaFile metaFile;
-
-    try {
-      MetaFiles metaFiles = Beans.get(MetaFiles.class);
-      metaFile = metaFiles.upload(file);
-      MetaFile signedMetaFile =
-          ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(file.getName()))
-              ? getSignedPdf(metaFile)
-              : metaFile;
-      metaFiles.attach(signedMetaFile, signedMetaFile.getFileName(), invoice);
-      invoice.setPrintedPDF(signedMetaFile);
-      return MetaFiles.getPath(metaFile).toFile();
-    } catch (IOException e) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.INVOICE_PRINTING_IO_ERROR)
-              + " "
-              + e.getLocalizedMessage());
-    }
+    return factoryContext;
   }
 
   protected MetaFile getSignedPdf(MetaFile metaFile) throws AxelorException {
@@ -247,8 +270,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
     if (pfxCertificate == null) {
       return metaFile;
     }
-    return pdfSignatureService.digitallySignPdf(
-        metaFile, pfxCertificate.getCertificate(), pfxCertificate.getPassword(), "Invoice");
+    return pdfSignatureService.digitallySignPdf(metaFile, pfxCertificate, "Invoice");
   }
 
   @Override
@@ -275,7 +297,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
                       printCopiesToFile(
                           invoice,
                           false,
-                          null,
+                          InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
                           accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
                           null));
                 } catch (Exception e) {

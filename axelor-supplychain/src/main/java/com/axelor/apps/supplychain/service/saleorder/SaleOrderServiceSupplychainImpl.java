@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,6 +37,7 @@ import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineCreateService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
@@ -51,20 +52,23 @@ import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
+import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.TrackingNumberSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.common.base.MoreObjects;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     implements SaleOrderSupplychainService {
@@ -75,6 +79,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   protected TrackingNumberSupplychainService trackingNumberSupplychainService;
 
   protected PartnerLinkSupplychainService partnerLinkSupplychainService;
+  protected SaleInvoicingStateService saleInvoicingStateService;
+  protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
 
   @Inject
   public SaleOrderServiceSupplychainImpl(
@@ -88,11 +94,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       SaleOrderLineComplementaryProductService saleOrderLineComplementaryProductService,
       SaleOrderLinePackService saleOrderLinePackService,
       SaleOrderLineDiscountService saleOrderLineDiscountService,
+      SaleOrderLineComputeService saleOrderLineComputeService,
       AppSupplychainService appSupplychainService,
       SaleOrderStockService saleOrderStockService,
       AccountingSituationSupplychainService accountingSituationSupplychainService,
       TrackingNumberSupplychainService trackingNumberSupplychainService,
-      PartnerLinkSupplychainService partnerLinkSupplychainService) {
+      PartnerLinkSupplychainService partnerLinkSupplychainService,
+      SaleInvoicingStateService saleInvoicingStateService,
+      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
     super(
         appBaseService,
         saleOrderLineRepo,
@@ -103,12 +112,15 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
         saleOrderLineCreateService,
         saleOrderLineComplementaryProductService,
         saleOrderLinePackService,
-        saleOrderLineDiscountService);
+        saleOrderLineDiscountService,
+        saleOrderLineComputeService);
     this.appSupplychainService = appSupplychainService;
     this.saleOrderStockService = saleOrderStockService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
     this.trackingNumberSupplychainService = trackingNumberSupplychainService;
     this.partnerLinkSupplychainService = partnerLinkSupplychainService;
+    this.saleInvoicingStateService = saleInvoicingStateService;
+    this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
   }
 
   public SaleOrder getClientInformations(SaleOrder saleOrder) {
@@ -130,7 +142,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   @Override
   public void updateAmountToBeSpreadOverTheTimetable(SaleOrder saleOrder) {
     List<Timetable> timetableList = saleOrder.getTimetableList();
-    BigDecimal totalHT = saleOrder.getExTaxTotal();
+    BigDecimal totalHT =
+        saleOrder.getInAti() ? saleOrder.getInTaxTotal() : saleOrder.getExTaxTotal();
     BigDecimal sumTimetableAmount = BigDecimal.ZERO;
     if (timetableList != null) {
       for (Timetable timetable : timetableList) {
@@ -207,6 +220,9 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       return;
     }
 
+    checkTimetable(saleOrderView);
+    saleOrderLineAnalyticService.checkAnalyticAxisByCompany(saleOrder);
+
     List<SaleOrderLine> saleOrderLineList =
         MoreObjects.firstNonNull(saleOrder.getSaleOrderLineList(), Collections.emptyList());
     List<SaleOrderLine> saleOrderViewLineList =
@@ -241,6 +257,19 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
   }
 
+  protected void checkTimetable(SaleOrder saleOrderView) throws AxelorException {
+    List<BigDecimal> percentageList =
+        saleOrderView.getTimetableList().stream()
+            .map(Timetable::getPercentage)
+            .collect(Collectors.toList());
+    if (percentageList.stream()
+        .anyMatch(percentage -> percentage.compareTo(BigDecimal.valueOf(100)) > 0)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SupplychainExceptionMessage.SALE_ORDER_TIMETABLE_PERCENTAGE_ERROR));
+    }
+  }
+
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validateChanges(SaleOrder saleOrder) throws AxelorException {
@@ -251,6 +280,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
 
     saleOrderStockService.fullyUpdateDeliveryState(saleOrder);
+    saleInvoicingStateService.updateInvoicingState(saleOrder);
     saleOrder.setOrderBeingEdited(false);
 
     if (appSupplychainService.getAppSupplychain().getCustomerStockMoveGenerationAuto()) {
@@ -319,7 +349,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
           saleOrder.getPaymentCondition().getAdvancePaymentNeeded().compareTo(BigDecimal.ZERO) > 0);
       saleOrder.setAdvancePaymentAmountNeeded(
           saleOrder
-              .getInTaxTotal()
+              .getExTaxTotal()
               .multiply(
                   saleOrder
                       .getPaymentCondition()
@@ -330,27 +360,46 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   }
 
   @Override
-  public void updateTimetableAmounts(SaleOrder saleOrder) {
-    if (saleOrder.getTimetableList() != null) {
-      saleOrder
-          .getTimetableList()
-          .forEach(
-              timetable ->
-                  timetable.setAmount(
-                      saleOrder
-                          .getExTaxTotal()
-                          .multiply(
-                              timetable
-                                  .getPercentage()
-                                  .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP))
-                          .setScale(
-                              appBaseService.getAppBase().getNbDecimalDigitForUnitPrice(),
-                              RoundingMode.HALF_UP)));
+  public String updateTimetableAmounts(SaleOrder saleOrder) throws AxelorException {
+    int invoicingState = saleOrder.getInvoicingState();
+    List<Timetable> timetableList = saleOrder.getTimetableList();
+    if (CollectionUtils.isNotEmpty(timetableList)) {
+      if (invoicingState == SaleOrderRepository.INVOICING_STATE_PARTIALLY_INVOICED
+          || invoicingState == SaleOrderRepository.INVOICING_STATE_INVOICED) {
+        timetableList.forEach(
+            timetable ->
+                timetable.setPercentage(
+                    timetable
+                        .getAmount()
+                        .multiply(BigDecimal.valueOf(100))
+                        .divide(
+                            saleOrder.getExTaxTotal(),
+                            appBaseService.getNbDecimalDigitForUnitPrice(),
+                            RoundingMode.HALF_UP)));
+        return String.format(
+            I18n.get(SupplychainExceptionMessage.SALE_ORDER_TIMETABLE_CAN_NOT_BE_UPDATED),
+            saleOrder.getAmountToBeSpreadOverTheTimetable());
+      }
+      BigDecimal amount =
+          saleOrder.getInAti() ? saleOrder.getInTaxTotal() : saleOrder.getExTaxTotal();
+      timetableList.forEach(
+          timetable ->
+              timetable.setAmount(
+                  amount
+                      .multiply(
+                          timetable
+                              .getPercentage()
+                              .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP))
+                      .setScale(
+                          appBaseService.getAppBase().getNbDecimalDigitForUnitPrice(),
+                          RoundingMode.HALF_UP)));
     }
+    return "";
   }
 
   @Override
   public boolean isIncotermRequired(SaleOrder saleOrder) {
+    Partner clientPartner = saleOrder.getClientPartner();
     return saleOrder.getSaleOrderLineList() != null
         && saleOrder.getSaleOrderLineList().stream()
             .anyMatch(
@@ -361,7 +410,8 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
                             .getProductTypeSelect()
                             .equals(ProductRepository.PRODUCT_TYPE_STORABLE))
         && isSameAlpha2Code(saleOrder)
-        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION;
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_FINALIZED_QUOTATION
+            & clientPartner.getPartnerTypeSelect() == PartnerRepository.PARTNER_TYPE_COMPANY;
   }
 
   protected boolean isSameAlpha2Code(SaleOrder saleOrder) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,13 +23,13 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.apps.stock.service.InventoryLineService;
-import com.axelor.apps.stock.service.InventoryService;
+import com.axelor.apps.stock.service.inventory.InventoryLineService;
+import com.axelor.apps.stock.service.inventory.InventoryService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
@@ -45,10 +45,18 @@ public class InventoryLineController {
         request.getContext().getParent() != null
             ? request.getContext().getParent().asType(Inventory.class)
             : inventoryLine.getInventory();
-    inventoryLine =
-        Beans.get(InventoryLineService.class).updateInventoryLine(inventoryLine, inventory);
+
+    InventoryLineService inventoryLineService = Beans.get(InventoryLineService.class);
+    inventoryLineService.updateInventoryLine(inventoryLine, inventory);
+    inventoryLineService.compute(inventoryLine, inventory);
+
+    response.setValue("price", inventoryLine.getPrice());
     response.setValue("rack", inventoryLine.getRack());
     response.setValue("currentQty", inventoryLine.getCurrentQty());
+    response.setValue("unit", inventoryLine.getUnit());
+    response.setValue("gap", inventoryLine.getGap());
+    response.setValue("gapValue", inventoryLine.getGapValue());
+    response.setValue("realValue", inventoryLine.getRealValue());
   }
 
   public void compute(ActionRequest request, ActionResponse response) {

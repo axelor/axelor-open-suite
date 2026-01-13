@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,18 +20,12 @@ package com.axelor.apps.crm.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.City;
 import com.axelor.apps.base.db.Company;
-import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
-import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
-import com.axelor.apps.base.service.address.AddressCreationService;
-import com.axelor.apps.base.service.address.AddressFetchService;
-import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
 import com.axelor.apps.base.service.wizard.ConvertWizardService;
@@ -50,8 +44,8 @@ import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.MultiRelated;
 import com.axelor.message.db.repo.MultiRelatedRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -63,9 +57,6 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
   protected LeadService leadService;
 
   protected ConvertWizardService convertWizardService;
-
-  protected AddressService addressService;
-  protected AddressCreationService addressCreationService;
 
   protected PartnerService partnerService;
 
@@ -81,18 +72,10 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
   protected PartnerRepository partnerRepository;
 
-  protected AddressRepository addressRepository;
-
-  protected AddressFetchService addressFetchService;
-
   @Inject
   public ConvertLeadWizardServiceImpl(
       LeadService leadService,
       ConvertWizardService convertWizardService,
-      AddressService addressService,
-      AddressCreationService addressCreationService,
-      AddressFetchService addressFetchService,
-      AddressRepository addressRepository,
       PartnerService partnerService,
       CountryRepository countryRepo,
       AppBaseService appBaseService,
@@ -102,10 +85,6 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       PartnerRepository partnerRepository) {
     this.leadService = leadService;
     this.convertWizardService = convertWizardService;
-    this.addressService = addressService;
-    this.addressCreationService = addressCreationService;
-    this.addressFetchService = addressFetchService;
-    this.addressRepository = addressRepository;
     this.partnerService = partnerService;
     this.countryRepo = countryRepo;
     this.appBaseService = appBaseService;
@@ -121,7 +100,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
    * @return
    * @throws AxelorException
    */
-  protected Partner createPartner(Partner partner, Address primaryAddress) throws AxelorException {
+  protected Partner createPartner(Partner partner, Address address) throws AxelorException {
 
     this.setEmailAddress(partner);
 
@@ -131,7 +110,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
     partnerService.setPartnerFullName(partner);
 
-    this.setAddress(partner, primaryAddress);
+    this.setAddress(partner, address);
 
     Company activeCompany =
         Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
@@ -141,7 +120,9 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
         partner.setCurrency(activeCompany.getCurrency());
       }
     }
-    Beans.get(BaseConvertLeadWizardService.class).setPartnerFields(partner);
+    if (appBaseService.isApp("supplychain")) {
+      Beans.get(BaseConvertLeadWizardService.class).setPartnerFields(partner);
+    }
 
     return partner;
   }
@@ -155,39 +136,14 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
     }
   }
 
-  protected void setAddress(Partner partner, Address primaryAddress) {
+  protected void setAddress(Partner partner, Address address) throws AxelorException {
 
-    if (primaryAddress != null) {
-      primaryAddress.setFullName(addressService.computeFullName(primaryAddress));
+    if (address != null) {
       if (!partner.getIsContact()) {
-        partnerService.addPartnerAddress(partner, primaryAddress, true, true, true);
+        partnerService.addPartnerAddress(partner, address, true, true, true);
       }
-      partner.setMainAddress(primaryAddress);
+      partner.setMainAddress(address);
     }
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public Address createPrimaryAddress(Lead lead) {
-    String streetName = lead.getPrimaryAddress();
-    if (streetName == null) {
-      return null;
-    }
-    String postBox = lead.getPrimaryState() != null ? lead.getPrimaryState().getName() : null;
-
-    Country country = lead.getPrimaryCountry();
-    String zip = lead.getPrimaryPostalCode();
-    City city = lead.getPrimaryCity();
-
-    Address address =
-        addressFetchService.getAddress(null, null, streetName, postBox, zip, city, country);
-
-    if (address == null) {
-      address =
-          addressCreationService.createAddress(null, null, streetName, postBox, zip, city, country);
-    }
-
-    return address;
   }
 
   protected EmailAddress createEmailAddress(String address, Partner partner) {
@@ -305,9 +261,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
       throws AxelorException {
 
     if (partnerMap != null) {
-      Address primaryAddress = this.createPrimaryAddress(lead);
-      if (primaryAddress != null
-          && (primaryAddress.getAddressL6() == null || primaryAddress.getCountry() == null)) {
+      Address address = lead.getAddress();
+      if (address != null && (address.getAddressL6() == null || address.getCountry() == null)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(CrmExceptionMessage.LEAD_PARTNER_MISSING_ADDRESS));
@@ -317,7 +272,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
           (Partner)
               convertWizardService.createObject(
                   partnerMap, Mapper.toBean(Partner.class, null), Mapper.of(Partner.class));
-      partner = this.createPartner(partner, primaryAddress);
+      partner = this.createPartner(partner, address);
       partner.setIsProspect(true);
       // TODO check all required fields...
     } else if (partner != null) {
@@ -335,9 +290,8 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
 
     if (contactPartnerMap != null) {
       Partner contactPartner = null;
-      Address primaryAddress = this.createPrimaryAddress(lead);
-      if (primaryAddress != null
-          && (primaryAddress.getAddressL6() == null || primaryAddress.getCountry() == null)) {
+      Address address = lead.getAddress();
+      if (address != null && (address.getAddressL6() == null || address.getCountry() == null)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_MISSING_FIELD,
             I18n.get(CrmExceptionMessage.LEAD_CONTACT_MISSING_ADDRESS));
@@ -347,7 +301,7 @@ public class ConvertLeadWizardServiceImpl implements ConvertLeadWizardService {
               convertWizardService.createObject(
                   contactPartnerMap, Mapper.toBean(Partner.class, null), Mapper.of(Partner.class));
 
-      contactPartner = this.createPartner(contactPartner, primaryAddress);
+      contactPartner = this.createPartner(contactPartner, address);
       contactPartner.setIsContact(true);
       contactPartnerList.add(contactPartner);
       // TODO check all required fields...

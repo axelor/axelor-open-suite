@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,8 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.date.BudgetInitDateService;
 import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderBudgetService;
-import com.axelor.apps.budget.service.purchaseorder.PurchaseOrderLineBudgetService;
 import com.axelor.apps.budget.web.tool.BudgetControllerTool;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -100,17 +100,7 @@ public class PurchaseOrderController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
-      if (purchaseOrder != null
-          && !CollectionUtils.isEmpty(purchaseOrder.getPurchaseOrderLineList())) {
-        PurchaseOrderLineBudgetService purchaseOrderLineBudgetService =
-            Beans.get(PurchaseOrderLineBudgetService.class);
-        boolean multiBudget =
-            Beans.get(AppBudgetRepository.class).all().fetchOne().getManageMultiBudget();
-        for (PurchaseOrderLine purchaseOrderLine : purchaseOrder.getPurchaseOrderLineList()) {
-          purchaseOrderLineBudgetService.fillBudgetStrOnLine(purchaseOrderLine, multiBudget);
-        }
-        response.setReload(true);
-      }
+      Beans.get(PurchaseOrderBudgetService.class).fillBudgetStrOnLine(purchaseOrder);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -193,6 +183,7 @@ public class PurchaseOrderController {
   public void autoComputeBudgetDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
     PurchaseOrderBudgetService purchaseOrderBudgetService =
         Beans.get(PurchaseOrderBudgetService.class);
     if (purchaseOrder != null
@@ -216,5 +207,13 @@ public class PurchaseOrderController {
         BudgetControllerTool.verifyMissingBudget(response);
       }
     }
+  }
+
+  public void initializeBudgetDates(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    Beans.get(BudgetInitDateService.class).initializeBudgetDates(purchaseOrder);
+
+    response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
   }
 }

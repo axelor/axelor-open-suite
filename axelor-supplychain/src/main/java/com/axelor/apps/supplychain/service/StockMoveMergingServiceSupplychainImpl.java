@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,9 +30,9 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.utils.helpers.StringHtmlListBuilder;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -56,7 +56,7 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
   }
 
   @Override
-  protected void checkErrors(List<StockMove> stockMoveList, StringHtmlListBuilder errors) {
+  protected void checkErrors(List<StockMove> stockMoveList, List<String> errors) {
     super.checkErrors(stockMoveList, errors);
     if (!checkAllSame(
         stockMoveList,
@@ -64,7 +64,7 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
             stockMove.getSaleOrderSet().stream()
                 .map(SaleOrder::getFiscalPosition)
                 .collect(Collectors.toSet()))) {
-      errors.append(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_SO));
+      errors.add(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_SO));
     }
     if (!checkAllSame(
         stockMoveList,
@@ -72,7 +72,7 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
             stockMove.getPurchaseOrderSet().stream()
                 .map(PurchaseOrder::getFiscalPosition)
                 .collect(Collectors.toSet()))) {
-      errors.append(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_PO));
+      errors.add(I18n.get(SupplychainExceptionMessage.STOCK_MOVE_MULTI_FISCAL_POSITION_PO));
     }
   }
 
@@ -88,10 +88,12 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
       List<StockMove> stockMoveList, StockMove stockMove, StockMove mergedStockMove) {
     super.fillStockMoveFields(stockMoveList, stockMove, mergedStockMove);
     mergedStockMove.setDeliveryCondition(stockMove.getDeliveryCondition());
-    mergedStockMove.setSaleOrderSet(
+    Set<SaleOrder> saleOrderSet =
         stockMoveList.stream()
             .flatMap(s -> s.getSaleOrderSet().stream())
-            .collect(Collectors.toSet()));
+            .collect(Collectors.toSet());
+    mergedStockMove.setSaleOrderSet(saleOrderSet);
+    saleOrderSet.forEach(saleOrder -> saleOrder.addStockMoveListItem(mergedStockMove));
     mergedStockMove.setPurchaseOrderSet(
         stockMoveList.stream()
             .flatMap(p -> p.getPurchaseOrderSet().stream())

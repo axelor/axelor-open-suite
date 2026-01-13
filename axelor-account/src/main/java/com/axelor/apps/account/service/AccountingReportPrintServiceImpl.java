@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,9 +27,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
-import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,11 +81,7 @@ public class AccountingReportPrintServiceImpl implements AccountingReportPrintSe
       throws AxelorException {
     String file = "";
     if (accountingReport.getReportType().getTemplate() != null) {
-      file =
-          String.format(
-              "%s/%s",
-              AppService.getFileUploadDir(),
-              accountingReport.getReportType().getTemplate().getFilePath());
+      file = MetaFiles.getPath(accountingReport.getReportType().getTemplate()).toString();
 
     } else {
       final Integer typeSelect = accountingReport.getReportType().getTypeSelect();
@@ -104,6 +100,7 @@ public class AccountingReportPrintServiceImpl implements AccountingReportPrintSe
             accountingReport.getCompany() != null
                 ? accountingReport.getCompany().getTimezone()
                 : null)
+        .addParam("ExportTypeSelect", accountingReport.getExportTypeSelect())
         .addFormat(accountingReport.getExportTypeSelect())
         .toAttach(accountingReport)
         .generate()

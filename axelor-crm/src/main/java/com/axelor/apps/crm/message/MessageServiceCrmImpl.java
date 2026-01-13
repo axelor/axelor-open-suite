@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,8 +38,8 @@ import com.axelor.message.service.AppSettingsMessageService;
 import com.axelor.message.service.SendMailQueueService;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.db.repo.MetaAttachmentRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 
 public class MessageServiceCrmImpl extends MessageServiceBaseImpl {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,7 @@ import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.service.cartline.CartLineCreateService;
 import com.axelor.apps.sale.service.cartline.CartLineRetrievalService;
 import com.axelor.apps.sale.service.cartline.CartLineUpdateService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class CartProductServiceImpl implements CartProductService {

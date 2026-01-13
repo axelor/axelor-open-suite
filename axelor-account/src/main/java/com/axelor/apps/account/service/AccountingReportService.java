@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.AccountingReportType;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.meta.db.MetaFile;
 import java.io.IOException;
@@ -86,4 +87,7 @@ public interface AccountingReportService {
       AccountingReport accountingReport) throws AxelorException;
 
   void checkReportType(AccountingReport accountingReport) throws AxelorException;
+
+  AccountingReportType resolveReportTypeForCompany(
+      AccountingReport accountingReport, boolean isCustom);
 }

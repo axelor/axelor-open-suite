@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,8 +37,8 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -118,6 +118,8 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
     invoiceTerm.setReasonOfRefusalToPay(reasonOfRefusalToPay);
     invoiceTerm.setReasonOfRefusalToPayStr(
         reasonOfRefusalToPayStr != null ? reasonOfRefusalToPayStr : reasonOfRefusalToPay.getName());
+
+    refreshInvoicePfpStatus(invoiceTerm.getInvoice());
   }
 
   @Override
@@ -227,27 +229,19 @@ public class InvoiceTermPfpServiceImpl implements InvoiceTermPfpService {
   }
 
   @Override
-  public Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
-    if (CollectionUtils.isEmpty(invoiceTermList)) {
-      return null;
-    }
-    InvoiceTerm firstInvoiceTerm = invoiceTermList.get(0);
-    int pfpStatus = invoiceTermPfpToolService.getPfpValidateStatusSelect(firstInvoiceTerm);
-    int otherPfpStatus;
-    for (InvoiceTerm otherInvoiceTerm : invoiceTermList) {
-      if (otherInvoiceTerm.getId() != null
-          && firstInvoiceTerm.getId() != null
-          && !otherInvoiceTerm.getId().equals(firstInvoiceTerm.getId())) {
-        otherPfpStatus = invoiceTermPfpToolService.getPfpValidateStatusSelect(otherInvoiceTerm);
-
-        if (otherPfpStatus != pfpStatus) {
-          pfpStatus = InvoiceTermRepository.PFP_STATUS_AWAITING;
-          break;
-        }
-      }
+  @Transactional(rollbackOn = {Exception.class})
+  public void refreshInvoicePfpStatus(Invoice invoice) {
+    if (invoice == null || ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return;
     }
 
-    return pfpStatus;
+    Integer pfpStatus =
+        invoiceTermPfpToolService.checkOtherInvoiceTerms(invoice.getInvoiceTermList());
+
+    if (pfpStatus != null && pfpStatus != invoice.getPfpValidateStatusSelect()) {
+      invoice.setPfpValidateStatusSelect(pfpStatus);
+      invoiceRepo.save(invoice);
+    }
   }
 
   @Override

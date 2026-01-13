@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,25 +19,33 @@
 package com.axelor.apps.sale.service.saleorderline.creation;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.google.inject.Inject;
-import java.math.BigDecimal;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyService;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 public class SaleOrderLineInitValueServiceImpl implements SaleOrderLineInitValueService {
 
+  protected SaleOrderLineComputeQtyService saleOrderLineComputeQtyService;
+
   @Inject
-  public SaleOrderLineInitValueServiceImpl() {}
+  public SaleOrderLineInitValueServiceImpl(
+      SaleOrderLineComputeQtyService saleOrderLineComputeQtyService) {
+    this.saleOrderLineComputeQtyService = saleOrderLineComputeQtyService;
+  }
 
   @Override
-  public Map<String, Object> onNewInitValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+  public Map<String, Object> onNewInitValues(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol)
       throws AxelorException {
     Map<String, Object> values = new HashMap<>();
     values.putAll(fillEstimatedDate(saleOrder, saleOrderLine));
-    values.putAll(initQty(saleOrderLine));
+    values.putAll(saleOrderLineComputeQtyService.initQty(saleOrderLine));
+    values.putAll(fillDeliveryAddress(saleOrder, saleOrderLine));
     return values;
   }
 
@@ -50,10 +58,11 @@ public class SaleOrderLineInitValueServiceImpl implements SaleOrderLineInitValue
 
   @Override
   public Map<String, Object> onNewEditableInitValues(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol) {
     Map<String, Object> values = new HashMap<>();
     values.putAll(fillEstimatedDate(saleOrder, saleOrderLine));
-    values.putAll(initQty(saleOrderLine));
+    values.putAll(saleOrderLineComputeQtyService.initQty(saleOrderLine));
+    values.putAll(fillDeliveryAddress(saleOrder, saleOrderLine));
     return values;
   }
 
@@ -66,10 +75,15 @@ public class SaleOrderLineInitValueServiceImpl implements SaleOrderLineInitValue
     return values;
   }
 
-  protected Map<String, Object> initQty(SaleOrderLine saleOrderLine) {
+  protected Map<String, Object> fillDeliveryAddress(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
     Map<String, Object> values = new HashMap<>();
-    saleOrderLine.setQty(BigDecimal.ONE);
-    values.put("qty", saleOrderLine.getQty());
+    Address deliveryAddress = saleOrder.getDeliveryAddress();
+    String deliveryAddressStr = saleOrder.getDeliveryAddressStr();
+    saleOrderLine.setDeliveryAddress(deliveryAddress);
+    saleOrderLine.setDeliveryAddressStr(deliveryAddressStr);
+    values.put("deliveryAddress", deliveryAddress);
+    values.put("deliveryAddressStr", deliveryAddressStr);
     return values;
   }
 }

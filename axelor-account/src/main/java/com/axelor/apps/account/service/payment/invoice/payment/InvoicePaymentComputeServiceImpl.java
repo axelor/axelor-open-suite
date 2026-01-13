@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.base.AxelorException;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,7 +59,8 @@ public class InvoicePaymentComputeServiceImpl implements InvoicePaymentComputeSe
           invoiceTerms.stream().map(InvoiceTerm::getId).collect(Collectors.toList());
 
       if (!invoicePayment.getApplyFinancialDiscount()
-          && invoicePayment.getCurrency().equals(invoicePayment.getCompanyCurrency())) {
+          && invoicePayment.getCurrency().equals(invoicePayment.getCompanyCurrency())
+          && invoicePayment.getTotalAmountWithFinancialDiscount().signum() > 0) {
         invoicePayment.setAmount(invoicePayment.getTotalAmountWithFinancialDiscount());
       }
       invoicePayment.clearInvoiceTermPaymentList();
@@ -77,13 +78,6 @@ public class InvoicePaymentComputeServiceImpl implements InvoicePaymentComputeSe
           companyAvailableAmount);
 
       invoicePaymentFinancialDiscountService.computeFinancialDiscount(invoicePayment);
-
-      if (invoicePayment.getApplyFinancialDiscount()) {
-        invoicePayment.setTotalAmountWithFinancialDiscount(invoicePayment.getAmount());
-
-        invoicePayment.setAmount(
-            invoicePayment.getAmount().subtract(invoicePayment.getFinancialDiscountTotalAmount()));
-      }
     }
     return invoiceTermIdList;
   }

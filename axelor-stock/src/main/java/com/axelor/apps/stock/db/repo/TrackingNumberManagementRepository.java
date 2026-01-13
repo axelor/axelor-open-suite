@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BarcodeTypeConfig;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -27,15 +28,16 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
+import com.axelor.apps.stock.service.TrackingNumberCompanyService;
 import com.axelor.apps.stock.service.TrackingNumberService;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.db.JPA;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppStock;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class TrackingNumberManagementRepository extends TrackingNumberRepository {
 
@@ -44,6 +46,7 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
   protected ProductCompanyService productCompanyService;
   protected StockLocationLineFetchService stockLocationLineFetchService;
   protected TrackingNumberService trackingNumberService;
+  protected final TrackingNumberCompanyService trackingNumberCompanyService;
 
   @Inject
   public TrackingNumberManagementRepository(
@@ -51,12 +54,14 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
       BarcodeGeneratorService barcodeGeneratorService,
       ProductCompanyService productCompanyService,
       StockLocationLineFetchService stockLocationLineFetchService,
-      TrackingNumberService trackingNumberService) {
+      TrackingNumberService trackingNumberService,
+      TrackingNumberCompanyService trackingNumberCompanyService) {
     this.appStockService = appStockService;
     this.barcodeGeneratorService = barcodeGeneratorService;
     this.productCompanyService = productCompanyService;
     this.stockLocationLineFetchService = stockLocationLineFetchService;
     this.trackingNumberService = trackingNumberService;
+    this.trackingNumberCompanyService = trackingNumberCompanyService;
   }
 
   @SuppressWarnings({"unchecked", "rawtypes"})
@@ -87,6 +92,12 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
         json.put(
             "$availableQty",
             stockLocationLineFetchService.getTrackingNumberAvailableQty(trackingNumber));
+        Company company = trackingNumberCompanyService.getCompany(trackingNumber).orElse(null);
+        json.put(
+            "productTrackingNumberConfiguration",
+            productCompanyService.get(
+                trackingNumber.getProduct(), "trackingNumberConfiguration", company));
+
       } else {
         json.put("$availableQty", BigDecimal.ZERO);
       }

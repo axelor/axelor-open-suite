@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ import java.util.Objects;
 public class AppGdprServiceImpl implements AppGdprService {
   @Override
   public AppGdpr getAppGDPR() {
-    return Query.of(AppGdpr.class).fetchOne();
+    return Query.of(AppGdpr.class).cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

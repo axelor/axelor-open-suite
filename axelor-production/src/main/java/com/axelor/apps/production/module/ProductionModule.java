@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,19 +27,25 @@ import com.axelor.apps.production.db.repo.MachineManagementRepository;
 import com.axelor.apps.production.db.repo.MachineRepository;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
+import com.axelor.apps.production.db.repo.MrpLineProductionRepository;
 import com.axelor.apps.production.db.repo.OperationOrderManagementRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessManagementRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProdProductProductionRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
+import com.axelor.apps.production.db.repo.ProductCompanyProductionRepository;
 import com.axelor.apps.production.db.repo.ProductProductionRepository;
 import com.axelor.apps.production.db.repo.ProductionBatchManagementRepository;
 import com.axelor.apps.production.db.repo.ProductionBatchRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementProductionRepository;
 import com.axelor.apps.production.db.repo.RawMaterialRequirementRepository;
+import com.axelor.apps.production.db.repo.SaleOrderLineDetailsManagementRepository;
+import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
 import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
 import com.axelor.apps.production.db.repo.StockMoveProductionRepository;
+import com.axelor.apps.production.db.repo.TempBomTreeManagementRepository;
+import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.rest.ManufOrderProductRestService;
@@ -48,14 +54,25 @@ import com.axelor.apps.production.rest.ManufOrderRestService;
 import com.axelor.apps.production.rest.ManufOrderRestServiceImpl;
 import com.axelor.apps.production.rest.OperationOrderRestService;
 import com.axelor.apps.production.rest.OperationOrderRestServiceImpl;
+import com.axelor.apps.production.rest.QualityImprovementParseProductionServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialCheckService;
+import com.axelor.apps.production.service.BillOfMaterialCheckServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialDummyService;
+import com.axelor.apps.production.service.BillOfMaterialDummyServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.apps.production.service.BillOfMaterialLineServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialMrpLineService;
 import com.axelor.apps.production.service.BillOfMaterialMrpLineServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialRemoveService;
+import com.axelor.apps.production.service.BillOfMaterialRemoveServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
+import com.axelor.apps.production.service.BomLineCreationService;
+import com.axelor.apps.production.service.BomLineCreationServiceImpl;
+import com.axelor.apps.production.service.BomTreeRemoveService;
+import com.axelor.apps.production.service.BomTreeRemoveServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
 import com.axelor.apps.production.service.MpsChargeServiceImpl;
 import com.axelor.apps.production.service.MpsWeeklyScheduleService;
@@ -64,6 +81,12 @@ import com.axelor.apps.production.service.MrpForecastProductionService;
 import com.axelor.apps.production.service.MrpForecastProductionServiceImpl;
 import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
 import com.axelor.apps.production.service.MrpServiceProductionImpl;
+import com.axelor.apps.production.service.ProdProcessComputationService;
+import com.axelor.apps.production.service.ProdProcessComputationServiceImpl;
+import com.axelor.apps.production.service.ProdProcessLineComputationService;
+import com.axelor.apps.production.service.ProdProcessLineComputationServiceImpl;
+import com.axelor.apps.production.service.ProdProcessLineHourlyCostComputeService;
+import com.axelor.apps.production.service.ProdProcessLineHourlyCostComputeServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineOutsourceService;
 import com.axelor.apps.production.service.ProdProcessLineOutsourceServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineService;
@@ -76,31 +99,87 @@ import com.axelor.apps.production.service.ProdProductAttrsService;
 import com.axelor.apps.production.service.ProdProductAttrsServiceImpl;
 import com.axelor.apps.production.service.ProdProductService;
 import com.axelor.apps.production.service.ProdProductServiceImpl;
-import com.axelor.apps.production.service.ProductVariantServiceProductionImpl;
 import com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl;
 import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl;
+import com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl;
+import com.axelor.apps.production.service.QIIdentificationProductionServiceImpl;
+import com.axelor.apps.production.service.QualityImprovementCheckValuesProductionServiceImpl;
+import com.axelor.apps.production.service.QualityImprovementUpdateProductionServiceImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
+import com.axelor.apps.production.service.SaleOrderBlockingProductionService;
+import com.axelor.apps.production.service.SaleOrderBlockingProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderCheckBlockingServiceProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderComputeServiceProductionImpl;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionService;
 import com.axelor.apps.production.service.SaleOrderConfirmProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderCopyProductionService;
+import com.axelor.apps.production.service.SaleOrderCopyProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineBlockingProductionService;
+import com.axelor.apps.production.service.SaleOrderLineBlockingProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineBomLineMappingService;
 import com.axelor.apps.production.service.SaleOrderLineBomLineMappingServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineBomService;
 import com.axelor.apps.production.service.SaleOrderLineBomServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineBomSyncService;
+import com.axelor.apps.production.service.SaleOrderLineBomSyncServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineCheckProductionService;
+import com.axelor.apps.production.service.SaleOrderLineCheckProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineComputeQtyProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineCostPriceComputeProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsBomLineMappingServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineDetailsBomService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsBomServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineDetailsBomSyncService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsBomSyncServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineDetailsPriceService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsPriceServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineDetailsProdProcessService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsProdProcessServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineDetailsService;
+import com.axelor.apps.production.service.SaleOrderLineDetailsServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionService;
 import com.axelor.apps.production.service.SaleOrderLineDomainProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineDummyProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineOnChangeProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineOnSaleSupplyChangeServiceProductionImpl;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionService;
 import com.axelor.apps.production.service.SaleOrderLineProductProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineProductionOnLoadService;
+import com.axelor.apps.production.service.SaleOrderLineProductionOnLoadServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineProductionService;
+import com.axelor.apps.production.service.SaleOrderLineProductionServiceImpl;
 import com.axelor.apps.production.service.SaleOrderLineViewProductionService;
 import com.axelor.apps.production.service.SaleOrderLineViewProductionServiceImpl;
+import com.axelor.apps.production.service.SaleOrderLineViewProductionServiceSupplychainImpl;
 import com.axelor.apps.production.service.SaleOrderProductionSyncService;
 import com.axelor.apps.production.service.SaleOrderProductionSyncServiceImpl;
+import com.axelor.apps.production.service.SolBomCustomizationService;
+import com.axelor.apps.production.service.SolBomCustomizationServiceImpl;
+import com.axelor.apps.production.service.SolBomUpdateService;
+import com.axelor.apps.production.service.SolBomUpdateServiceImpl;
+import com.axelor.apps.production.service.SolDetailsBomUpdateService;
+import com.axelor.apps.production.service.SolDetailsBomUpdateServiceImpl;
+import com.axelor.apps.production.service.SolDetailsDurationService;
+import com.axelor.apps.production.service.SolDetailsDurationServiceImpl;
+import com.axelor.apps.production.service.SolDetailsProdProcessComputeQtyService;
+import com.axelor.apps.production.service.SolDetailsProdProcessComputeQtyServiceImpl;
+import com.axelor.apps.production.service.SolDetailsProdProcessLineMappingService;
+import com.axelor.apps.production.service.SolDetailsProdProcessLineMappingServiceImpl;
+import com.axelor.apps.production.service.SolDetailsProdProcessLineUpdateService;
+import com.axelor.apps.production.service.SolDetailsProdProcessLineUpdateServiceImpl;
+import com.axelor.apps.production.service.SolProdProcessCustomizationService;
+import com.axelor.apps.production.service.SolProdProcessCustomizationServiceImpl;
 import com.axelor.apps.production.service.SopService;
 import com.axelor.apps.production.service.SopServiceImpl;
 import com.axelor.apps.production.service.StockMoveLineProductionServiceImpl;
 import com.axelor.apps.production.service.StockMoveMergingServiceProductionImpl;
+import com.axelor.apps.production.service.StockMoveProductionService;
 import com.axelor.apps.production.service.StockMoveServiceProductionImpl;
 import com.axelor.apps.production.service.StockRulesSupplychainServiceProductionImpl;
+import com.axelor.apps.production.service.SubSaleOrderLineComputeServiceProductionImpl;
+import com.axelor.apps.production.service.TrackingNumberCompanyProductionServiceImpl;
 import com.axelor.apps.production.service.WorkCenterService;
 import com.axelor.apps.production.service.WorkCenterServiceImpl;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -113,6 +192,7 @@ import com.axelor.apps.production.service.bomimport.BillOfMaterialImportServiceI
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomService;
 import com.axelor.apps.production.service.configurator.ConfiguratorBomServiceImpl;
+import com.axelor.apps.production.service.configurator.ConfiguratorCheckServiceProductionImpl;
 import com.axelor.apps.production.service.configurator.ConfiguratorCreatorImportServiceProductionImpl;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessLineService;
 import com.axelor.apps.production.service.configurator.ConfiguratorProdProcessLineServiceImpl;
@@ -154,6 +234,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyServic
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderResidualProductService;
 import com.axelor.apps.production.service.manuforder.ManufOrderResidualProductServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderSaleOrderService;
+import com.axelor.apps.production.service.manuforder.ManufOrderSaleOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderSetStockMoveLineService;
@@ -194,25 +276,49 @@ import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateS
 import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateServiceImpl;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderWizardServiceImpl;
+import com.axelor.apps.production.service.productionorder.manuforder.ManufOrderGenerationService;
+import com.axelor.apps.production.service.productionorder.manuforder.ManufOrderGenerationServiceImpl;
+import com.axelor.apps.production.service.productionorder.manuforder.SaleOrderLineMOGenerationMultiLineService;
+import com.axelor.apps.production.service.productionorder.manuforder.SaleOrderLineMOGenerationMultiLineServiceImpl;
+import com.axelor.apps.production.service.productionorder.manuforder.SaleOrderLineMOGenerationService;
+import com.axelor.apps.production.service.productionorder.manuforder.SaleOrderLineMOGenerationServiceImpl;
+import com.axelor.apps.production.service.productionorder.manuforder.SaleOrderLineMOGenerationSingleLineService;
+import com.axelor.apps.production.service.productionorder.manuforder.SaleOrderLineMOGenerationSingleLineServiceImpl;
 import com.axelor.apps.production.service.saleorder.onchange.SaleOrderOnLineChangeProductionServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectServiceImpl;
+import com.axelor.apps.quality.rest.service.QualityImprovementParseServiceImpl;
+import com.axelor.apps.quality.service.QIIdentificationServiceImpl;
+import com.axelor.apps.quality.service.QualityImprovementCheckValuesServiceImpl;
+import com.axelor.apps.quality.service.QualityImprovementUpdateServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
+import com.axelor.apps.stock.db.repo.ProductCompanyStockRepository;
 import com.axelor.apps.stock.db.repo.ProductStockRepository;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.supplychain.db.repo.MrpLineManagementRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveLineSupplychainRepository;
 import com.axelor.apps.supplychain.db.repo.StockMoveSupplychainRepository;
+import com.axelor.apps.supplychain.service.ConfiguratorCheckServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.MrpLineServiceImpl;
 import com.axelor.apps.supplychain.service.MrpServiceImpl;
 import com.axelor.apps.supplychain.service.ProductStockLocationServiceImpl;
-import com.axelor.apps.supplychain.service.ProductVariantServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.PurchaseOrderMergingServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveMergingServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockRulesSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.TrackingNumberCompanySupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderCheckBlockingSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderComputeServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineDummySupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineOnChangeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineProductSupplychainServiceImpl;
-import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineOnSaleSupplyChangeServiceImpl;
 
 public class ProductionModule extends AxelorModule {
 
@@ -264,12 +370,12 @@ public class ProductionModule extends AxelorModule {
     bind(ManufOrderReservedQtyService.class).to(ManufOrderReservedQtyServiceImpl.class);
     bind(WorkCenterService.class).to(WorkCenterServiceImpl.class);
     bind(ConfiguratorProdProductService.class).to(ConfiguratorProdProductServiceImpl.class);
-    bind(ProductVariantServiceSupplyChainImpl.class).to(ProductVariantServiceProductionImpl.class);
     bind(ManufOrderProductRestService.class).to(ManufOrderProductRestServiceImpl.class);
     bind(ManufOrderRestService.class).to(ManufOrderRestServiceImpl.class);
     bind(OperationOrderRestService.class).to(OperationOrderRestServiceImpl.class);
     bind(ManufOrderWorkflowService.class).to(ManufOrderWorkflowServiceImpl.class);
     bind(StockMoveServiceSupplychainImpl.class).to(StockMoveServiceProductionImpl.class);
+    bind(StockMoveProductionService.class).to(StockMoveServiceProductionImpl.class);
     bind(MachineService.class).to(MachineServiceImpl.class);
     bind(OperationOrderWorkflowService.class).to(OperationOrderWorkflowServiceImpl.class);
     bind(OperationOrderPlanningService.class).to(OperationOrderPlanningServiceImpl.class);
@@ -315,13 +421,17 @@ public class ProductionModule extends AxelorModule {
         .to(SaleOrderLineProductProductionServiceImpl.class);
     bind(SaleOrderLineProductSupplychainServiceImpl.class)
         .to(SaleOrderLineProductProductionServiceImpl.class);
-    bind(SaleOrderLineViewSupplychainServiceImpl.class)
-        .to(SaleOrderLineViewProductionServiceImpl.class);
+    bind(SaleOrderLineViewServiceSupplychainImpl.class)
+        .to(SaleOrderLineViewProductionServiceSupplychainImpl.class);
+    bind(SaleOrderLineOnSaleSupplyChangeServiceImpl.class)
+        .to(SaleOrderLineOnSaleSupplyChangeServiceProductionImpl.class);
     bind(ManufOrderCreateBarcodeService.class).to(ManufOrderCreateBarcodeServiceImpl.class);
     bind(OperationOrderCreateBarcodeService.class).to(OperationOrderCreateBarcodeServiceImpl.class);
     bind(SaleOrderLineDomainProductionService.class)
         .to(SaleOrderLineDomainProductionServiceImpl.class);
     bind(SaleOrderLineViewProductionService.class).to(SaleOrderLineViewProductionServiceImpl.class);
+    bind(SaleOrderLineProductionOnLoadService.class)
+        .to(SaleOrderLineProductionOnLoadServiceImpl.class);
     bind(SaleOrderLineProductionObserver.class);
     bind(SaleOrderProductionObserver.class);
     bind(SaleOrderConfirmProductionService.class).to(SaleOrderConfirmProductionServiceImpl.class);
@@ -330,8 +440,84 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderLineBomLineMappingService.class).to(SaleOrderLineBomLineMappingServiceImpl.class);
     bind(SaleOrderOnLineChangeSupplyChainServiceImpl.class)
         .to(SaleOrderOnLineChangeProductionServiceImpl.class);
-    bind(SaleOrderProductionSyncService.class).to(SaleOrderProductionSyncServiceImpl.class);
     bind(ProdProductAttrsService.class).to(ProdProductAttrsServiceImpl.class);
     bind(ProdProductService.class).to(ProdProductServiceImpl.class);
+    bind(SaleOrderLineBomSyncService.class).to(SaleOrderLineBomSyncServiceImpl.class);
+    bind(SaleOrderLineDetailsService.class).to(SaleOrderLineDetailsServiceImpl.class);
+    bind(SaleOrderLineDetailsRepository.class).to(SaleOrderLineDetailsManagementRepository.class);
+    bind(SaleOrderLineDetailsService.class).to(SaleOrderLineDetailsServiceImpl.class);
+    bind(SaleOrderLineDetailsRepository.class).to(SaleOrderLineDetailsManagementRepository.class);
+    bind(SaleOrderLineDetailsBomService.class).to(SaleOrderLineDetailsBomServiceImpl.class);
+    bind(SaleOrderLineDetailsBomLineMappingService.class)
+        .to(SaleOrderLineDetailsBomLineMappingServiceImpl.class);
+    bind(SaleOrderComputeServiceSupplychainImpl.class)
+        .to(SaleOrderComputeServiceProductionImpl.class);
+    bind(SubSaleOrderLineComputeServiceImpl.class)
+        .to(SubSaleOrderLineComputeServiceProductionImpl.class);
+    bind(BomLineCreationService.class).to(BomLineCreationServiceImpl.class);
+    bind(SolBomCustomizationService.class).to(SolBomCustomizationServiceImpl.class);
+    bind(SolBomUpdateService.class).to(SolBomUpdateServiceImpl.class);
+    bind(SolDetailsBomUpdateService.class).to(SolDetailsBomUpdateServiceImpl.class);
+    bind(PurchaseOrderTypeSelectServiceImpl.class)
+        .to(PurchaseOrderTypeSelectProductionServiceImpl.class);
+    bind(SaleOrderLineDetailsBomSyncService.class).to(SaleOrderLineDetailsBomSyncServiceImpl.class);
+    bind(SaleOrderProductionSyncService.class).to(SaleOrderProductionSyncServiceImpl.class);
+    bind(TrackingNumberCompanySupplychainServiceImpl.class)
+        .to(TrackingNumberCompanyProductionServiceImpl.class);
+    bind(SaleOrderLineCostPriceComputeServiceImpl.class)
+        .to(SaleOrderLineCostPriceComputeProductionServiceImpl.class);
+    bind(ConfiguratorCheckServiceSupplychainImpl.class)
+        .to(ConfiguratorCheckServiceProductionImpl.class);
+    bind(BillOfMaterialRemoveService.class).to(BillOfMaterialRemoveServiceImpl.class);
+    bind(BillOfMaterialCheckService.class).to(BillOfMaterialCheckServiceImpl.class);
+    bind(SaleOrderLineDetailsPriceService.class).to(SaleOrderLineDetailsPriceServiceImpl.class);
+    bind(ProdProcessLineComputationService.class).to(ProdProcessLineComputationServiceImpl.class);
+    bind(SaleOrderLineOnChangeSupplychainServiceImpl.class)
+        .to(SaleOrderLineOnChangeProductionServiceImpl.class);
+    bind(SaleOrderLineProductionService.class).to(SaleOrderLineProductionServiceImpl.class);
+    bind(SaleOrderLineDummySupplychainServiceImpl.class)
+        .to(SaleOrderLineDummyProductionServiceImpl.class);
+    bind(ProdProcessComputationService.class).to(ProdProcessComputationServiceImpl.class);
+    bind(BillOfMaterialDummyService.class).to(BillOfMaterialDummyServiceImpl.class);
+    bind(BomTreeRemoveService.class).to(BomTreeRemoveServiceImpl.class);
+    bind(SaleOrderLineCheckProductionService.class)
+        .to(SaleOrderLineCheckProductionServiceImpl.class);
+    bind(SaleOrderLineDetailsProdProcessService.class)
+        .to(SaleOrderLineDetailsProdProcessServiceImpl.class);
+    bind(SolDetailsProdProcessLineMappingService.class)
+        .to(SolDetailsProdProcessLineMappingServiceImpl.class);
+    bind(ProdProcessLineHourlyCostComputeService.class)
+        .to(ProdProcessLineHourlyCostComputeServiceImpl.class);
+    bind(ManufOrderGenerationService.class).to(ManufOrderGenerationServiceImpl.class);
+    bind(SaleOrderLineMOGenerationService.class).to(SaleOrderLineMOGenerationServiceImpl.class);
+    bind(SaleOrderLineMOGenerationSingleLineService.class)
+        .to(SaleOrderLineMOGenerationSingleLineServiceImpl.class);
+    bind(SaleOrderLineMOGenerationMultiLineService.class)
+        .to(SaleOrderLineMOGenerationMultiLineServiceImpl.class);
+    bind(SaleOrderCopyProductionService.class).to(SaleOrderCopyProductionServiceImpl.class);
+    bind(ManufOrderSaleOrderService.class).to(ManufOrderSaleOrderServiceImpl.class);
+    bind(MrpLineManagementRepository.class).to(MrpLineProductionRepository.class);
+    bind(SaleOrderLineBlockingProductionService.class)
+        .to(SaleOrderLineBlockingProductionServiceImpl.class);
+    bind(ProductCompanyStockRepository.class).to(ProductCompanyProductionRepository.class);
+    bind(SolDetailsProdProcessLineUpdateService.class)
+        .to(SolDetailsProdProcessLineUpdateServiceImpl.class);
+    bind(SolProdProcessCustomizationService.class).to(SolProdProcessCustomizationServiceImpl.class);
+    bind(SolDetailsProdProcessComputeQtyService.class)
+        .to(SolDetailsProdProcessComputeQtyServiceImpl.class);
+    bind(SolDetailsDurationService.class).to(SolDetailsDurationServiceImpl.class);
+    bind(SaleOrderCheckBlockingSupplychainServiceImpl.class)
+        .to(SaleOrderCheckBlockingServiceProductionServiceImpl.class);
+    bind(SaleOrderBlockingProductionService.class).to(SaleOrderBlockingProductionServiceImpl.class);
+    bind(SaleOrderLineComputeQtyServiceImpl.class)
+        .to(SaleOrderLineComputeQtyProductionServiceImpl.class);
+    bind(TempBomTreeRepository.class).to(TempBomTreeManagementRepository.class);
+    bind(QualityImprovementCheckValuesServiceImpl.class)
+        .to(QualityImprovementCheckValuesProductionServiceImpl.class);
+    bind(QIIdentificationServiceImpl.class).to(QIIdentificationProductionServiceImpl.class);
+    bind(QualityImprovementUpdateServiceImpl.class)
+        .to(QualityImprovementUpdateProductionServiceImpl.class);
+    bind(QualityImprovementParseServiceImpl.class)
+        .to(QualityImprovementParseProductionServiceImpl.class);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,8 @@ import com.axelor.apps.intervention.rest.dto.InterventionEquipmentPutRequest;
 import com.axelor.apps.intervention.rest.dto.InterventionResponse;
 import com.axelor.apps.intervention.rest.dto.InterventionStatusPutRequest;
 import com.axelor.apps.intervention.service.InterventionRestService;
+import com.axelor.apps.intervention.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -31,13 +33,13 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @Path("/aos/intervention")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -62,7 +64,7 @@ public class InterventionRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Intervention status successfully updated.",
+        I18n.get(ITranslation.INTERVENTION_STATUS_UPDATED),
         new InterventionResponse(intervention));
   }
 
@@ -86,7 +88,7 @@ public class InterventionRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Equipment successfully added.",
+        I18n.get(ITranslation.EQUIPMENT_ADDED),
         new InterventionResponse(intervention));
   }
 
@@ -110,7 +112,7 @@ public class InterventionRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Equipment successfully removed.",
+        I18n.get(ITranslation.EQUIPMENT_REMOVED),
         new InterventionResponse(intervention));
   }
 }

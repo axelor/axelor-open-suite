@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -43,7 +44,7 @@ import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 
 public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl {
@@ -68,6 +69,7 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
       CurrencyScaleService currencyScaleService,
       UnreconcileService unReconcileService,
       MoveInvoiceTermService moveInvoiceTermService,
+      AnalyticLineService analyticLineService,
       ExpensePaymentService expensePaymentService,
       AppService appService,
       BudgetDistributionService budgetDistributionService,
@@ -88,6 +90,7 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
         currencyScaleService,
         unReconcileService,
         moveInvoiceTermService,
+        analyticLineService,
         expensePaymentService,
         appService);
     this.budgetDistributionService = budgetDistributionService;

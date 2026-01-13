@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,7 +27,8 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import wslite.json.JSONObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class UserController {
 
@@ -35,9 +36,12 @@ public class UserController {
     try {
       User user = request.getContext().asType(User.class);
       String url = AppSettings.get().getBaseURL();
-      JSONObject json = new JSONObject();
+
+      ObjectMapper mapper = new ObjectMapper();
+      ObjectNode json = mapper.createObjectNode();
       json.put("url", url);
       json.put("username", user.getCode());
+
       MetaFile qrCode =
           Beans.get(BarcodeGeneratorService.class)
               .createBarCode(

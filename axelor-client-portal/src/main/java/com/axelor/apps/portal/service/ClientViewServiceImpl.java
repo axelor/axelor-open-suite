@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,7 +39,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.filter.Filter;
 import com.axelor.rpc.filter.JPQLFilter;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -596,7 +596,7 @@ public class ClientViewServiceImpl implements ClientViewService {
             "self.clientPartner.id = "
                 + user.getPartner().getId()
                 + " AND self.projectStatus.isCompleted = false");
-    if (user.getActiveCompany() != null && appService.isApp("business-project")) {
+    if (user.getActiveCompany() != null && appService.isApp("project")) {
       filter =
           Filter.and(
               filter, new JPQLFilter(" self.company.id = " + user.getActiveCompany().getId()));
@@ -619,7 +619,7 @@ public class ClientViewServiceImpl implements ClientViewService {
                 + ProjectTaskRepository.TYPE_TASK
                 + "' AND self.project.clientPartner.id = "
                 + user.getPartner().getId());
-    if (user.getActiveCompany() != null && appService.isApp("business-project")) {
+    if (user.getActiveCompany() != null && appService.isApp("project")) {
       filter =
           Filter.and(
               filter,

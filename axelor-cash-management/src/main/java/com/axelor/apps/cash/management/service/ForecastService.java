@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,8 +26,8 @@ import com.axelor.apps.cash.management.db.ForecastGenerator;
 import com.axelor.apps.cash.management.db.ForecastRecapLineType;
 import com.axelor.apps.cash.management.db.repo.ForecastGeneratorRepository;
 import com.axelor.apps.cash.management.db.repo.ForecastRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

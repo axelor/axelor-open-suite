@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
@@ -44,8 +45,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -79,7 +80,8 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       BankReconciliationLineUnreconciliationService bankReconciliationLineUnreconciliationService,
       CurrencyScaleService currencyScaleService,
       UnreconcileService unReconcileService,
-      MoveInvoiceTermService moveInvoiceTermService) {
+      MoveInvoiceTermService moveInvoiceTermService,
+      AnalyticLineService analyticLineService) {
     super(
         moveCreateService,
         reconcileService,
@@ -91,7 +93,8 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
         invoicePaymentCancelService,
         moveLineToolService,
         unReconcileService,
-        moveInvoiceTermService);
+        moveInvoiceTermService,
+        analyticLineService);
     this.bankReconciliationService = bankReconciliationService;
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankReconciliationLineUnreconciliationService =
@@ -222,10 +225,16 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
     MoveLine reverseMoveLine =
         super.generateReverseMoveLine(reverseMove, orgineMoveLine, dateOfReversion, isDebit);
     if (reverseMoveLine
-        .getAccount()
-        .getAccountType()
-        .getTechnicalTypeSelect()
-        .equals(AccountTypeRepository.TYPE_CASH)) {
+            .getAccount()
+            .getAccountType()
+            .getTechnicalTypeSelect()
+            .equals(AccountTypeRepository.TYPE_CASH)
+        && (bankReconciliationLineRepository
+                .all()
+                .filter("self.moveLine.id = ?", reverseMoveLine.getId())
+                .count()
+            > 0)) {
+
       BigDecimal amount =
           currencyScaleService.getScaledValue(
               reverseMoveLine,
@@ -247,12 +256,18 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
   protected void fillBankReconciledAmount(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (Optional.of(moveLine)
-          .map(MoveLine::getAccount)
-          .map(Account::getAccountType)
-          .map(
-              accountType ->
-                  AccountTypeRepository.TYPE_CASH.equals(accountType.getTechnicalTypeSelect()))
-          .orElse(false)) {
+              .map(MoveLine::getAccount)
+              .map(Account::getAccountType)
+              .map(
+                  accountType ->
+                      AccountTypeRepository.TYPE_CASH.equals(accountType.getTechnicalTypeSelect()))
+              .orElse(false)
+          && (bankReconciliationLineRepository
+                  .all()
+                  .filter("self.moveLine.id = ?", moveLine.getId())
+                  .count()
+              > 0)) {
+
         BigDecimal amount =
             currencyScaleService.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
         moveLine.setBankReconciledAmount(amount);

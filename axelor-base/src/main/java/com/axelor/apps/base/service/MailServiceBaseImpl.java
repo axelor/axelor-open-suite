@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,10 +29,12 @@ import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.concurrent.ContextAware;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
+import com.axelor.db.tenants.TenantResolver;
 import com.axelor.inject.Beans;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailException;
@@ -46,6 +48,7 @@ import com.axelor.message.db.EmailAccount;
 import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.message.service.MailAccountService;
+import com.axelor.message.service.MailMessageActionService;
 import com.axelor.message.service.MailServiceMessageImpl;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.MetaFiles;
@@ -57,13 +60,17 @@ import com.axelor.text.StringTemplates;
 import com.axelor.text.Templates;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -76,17 +83,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.inject.Singleton;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@Singleton
 public class MailServiceBaseImpl extends MailServiceMessageImpl {
 
   private final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -99,11 +100,16 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
   protected static final String RECIPIENTS_SPLIT_REGEX = "\\s*(;|,|\\|)\\s*|\\s+";
 
   protected final AppBaseService appBaseService;
+  protected final MailMessageActionService mailMessageActionService;
 
   @Inject
-  public MailServiceBaseImpl(MailAccountService mailAccountService, AppBaseService appBaseService) {
+  public MailServiceBaseImpl(
+      MailAccountService mailAccountService,
+      AppBaseService appBaseService,
+      MailMessageActionService mailMessageActionService) {
     super(mailAccountService);
     this.appBaseService = appBaseService;
+    this.mailMessageActionService = mailMessageActionService;
   }
 
   @Override
@@ -314,6 +320,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     final Model related = findEntity(message);
     final MailSender sender = getMailSender(emailAccount);
 
+    mailMessageActionService.executePreMailMessageActions(message, related);
+
     final Set<String> recipients = recipients(message, related);
     if (recipients.isEmpty()) {
       return;
@@ -352,14 +360,19 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     }
 
     // send email using a separate process to void thread blocking
+    String currentTenantId = TenantResolver.currentTenantIdentifier();
     executor.submit(
-        new Callable<Boolean>() {
-          @Override
-          public Boolean call() throws Exception {
-            send(sender, email);
-            return true;
-          }
-        });
+        ContextAware.of()
+            .withTransaction(false)
+            .withTenantId(currentTenantId)
+            .build(
+                () -> {
+                  try {
+                    send(sender, email);
+                  } catch (Exception e) {
+                    throw new RuntimeException(e);
+                  }
+                }));
   }
 
   @Override
@@ -386,7 +399,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     return templates.fromText(subject).make(templatesContext).render();
   }
 
-  void updateTemplateAndContext(MailMessage message, Model entity) {
+  protected void updateTemplateAndContext(MailMessage message, Model entity) {
     if (entity == null) {
       return;
     }
@@ -435,7 +448,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     if (isDefaultTemplate) {
       templatesContext.put("entity", entity);
     } else {
-      templatesContext.put(klass.getSimpleName(), entity);
+      templatesContext.put(
+          CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, klass.getSimpleName()), entity);
     }
     templates = createTemplates(messageTemplate);
   }
@@ -486,7 +500,7 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     builder.cc(ccRcp);
   }
 
-  void updateRecipientsTemplatesContext(Set<String> recipients) {
+  protected void updateRecipientsTemplatesContext(Set<String> recipients) {
     String contRecipients = String.join(", ", recipients);
 
     if (templatesContext == null) {

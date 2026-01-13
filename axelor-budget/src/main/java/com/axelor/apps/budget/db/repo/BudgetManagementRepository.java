@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.budget.db.repo;
 
 import com.axelor.apps.budget.db.Budget;
+import com.axelor.apps.budget.service.compute.BudgetComputeService;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
 import com.axelor.inject.Beans;
 
@@ -28,6 +29,9 @@ public class BudgetManagementRepository extends BudgetRepository {
   public Budget save(Budget entity) {
 
     GlobalBudgetService globalBudgetService = Beans.get(GlobalBudgetService.class);
+    BudgetComputeService budgetComputeService = Beans.get(BudgetComputeService.class);
+
+    budgetComputeService.computeBudgetFieldsWithLines(entity);
     globalBudgetService.computeBudgetLevelTotals(entity);
 
     entity = super.save(entity);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,15 +18,18 @@
  */
 package com.axelor.apps.sale.rest.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductResponse {
 
   protected Long productId;
   protected List<PriceResponse> prices;
   protected CurrencyResponse currency;
   protected UnitResponse unitResponse;
+  protected String errorMessage;
 
   public UnitResponse getUnit() {
     return unitResponse;
@@ -43,6 +46,11 @@ public class ProductResponse {
     this.unitResponse = unitResponse;
   }
 
+  public ProductResponse(Long productId, String errorMessage) {
+    this.productId = productId;
+    this.errorMessage = errorMessage;
+  }
+
   public Long getProductId() {
     return productId;
   }
@@ -53,5 +61,9 @@ public class ProductResponse {
 
   public CurrencyResponse getCurrency() {
     return currency;
+  }
+
+  public String getErrorMessage() {
+    return errorMessage;
   }
 }

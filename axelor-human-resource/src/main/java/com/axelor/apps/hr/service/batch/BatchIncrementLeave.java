@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -82,6 +82,7 @@ public class BatchIncrementLeave extends BatchStrategy {
     LeaveReason leaveReason = leaveReasonRepository.find(id);
     Query<Employee> query = getEmployeeQuery(leaveReason);
     while (!(employeeList = query.fetch(getFetchLimit(), offset)).isEmpty()) {
+      leaveReason = leaveReasonRepository.find(id);
       for (Employee employee : employeeList) {
         ++offset;
         employee = employeeRepository.find(employee.getId());

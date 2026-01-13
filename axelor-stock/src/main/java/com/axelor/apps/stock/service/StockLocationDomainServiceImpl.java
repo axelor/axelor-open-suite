@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,17 +33,17 @@ public class StockLocationDomainServiceImpl implements StockLocationDomainServic
 
     Company company = stockLocation.getCompany();
     if (company != null) {
-      domain.append(String.format(" AND self.company = %d", company.getId()));
+      domain.append(String.format(" AND self.company.id = %d", company.getId()));
     }
 
     Partner partner = stockLocation.getPartner();
     if (partner != null && typeSelect == StockLocationRepository.TYPE_EXTERNAL) {
-      domain.append(String.format(" AND self.partner = %d", partner.getId()));
+      domain.append(String.format(" AND self.partner.id = %d", partner.getId()));
     }
 
     TradingName tradingName = stockLocation.getTradingName();
     if (tradingName != null) {
-      domain.append(String.format(" AND self.tradingName = %d", tradingName.getId()));
+      domain.append(String.format(" AND self.tradingName.id = %d", tradingName.getId()));
     }
     return domain.toString();
   }

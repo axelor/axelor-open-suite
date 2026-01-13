@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,41 +18,63 @@
  */
 package com.axelor.apps.project.service;
 
-import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.meta.db.repo.MetaModelRepository;
-import com.google.inject.Inject;
+import com.axelor.apps.project.db.Sprint;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.common.StringUtils;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class ProjectTaskAttrsServiceImpl implements ProjectTaskAttrsService {
 
-  protected MetaModelRepository metaModelRepository;
+  protected AppBaseService appBaseService;
 
   @Inject
-  public ProjectTaskAttrsServiceImpl(MetaModelRepository metaModelRepository) {
-    this.metaModelRepository = metaModelRepository;
+  public ProjectTaskAttrsServiceImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
   }
 
   @Override
-  public String getTagDomain(ProjectTask projectTask) {
-    Company company =
+  public String getActiveSprintDomain(ProjectTask projectTask) {
+    String domain = "self.id = 0";
+
+    String sprintManagementSelect =
         Optional.ofNullable(projectTask)
             .map(ProjectTask::getProject)
-            .map(Project::getCompany)
-            .orElse(null);
-    String domain =
-        String.format(
-            "(self.concernedModelSet IS EMPTY OR %s member of self.concernedModelSet)",
-            metaModelRepository.findByName("ProjectTask").getId());
-
-    if (company != null) {
-      domain =
-          domain.concat(
-              String.format(
-                  " AND (self.companySet IS EMPTY OR %s member of self.companySet)",
-                  company.getId()));
+            .map(Project::getSprintManagementSelect)
+            .orElse(ProjectRepository.SPRINT_MANAGEMENT_NONE);
+    if (StringUtils.isEmpty(sprintManagementSelect)
+        || ProjectRepository.SPRINT_MANAGEMENT_NONE.equals(sprintManagementSelect)) {
+      return domain;
     }
+
+    if (ProjectRepository.SPRINT_MANAGEMENT_VERSION.equals(sprintManagementSelect)) {
+      domain = "(self.targetVersion = :targetVersion";
+    } else {
+      domain = "(self.project = :project";
+    }
+
+    domain =
+        domain.concat(
+            String.format(
+                " AND self.toDate > CAST('%s' AS date))",
+                appBaseService.getTodayDate(
+                    Optional.of(projectTask)
+                        .map(ProjectTask::getProject)
+                        .map(Project::getCompany)
+                        .orElse(null))));
+
+    domain =
+        domain.concat(
+            String.format(
+                " OR self.id = %s",
+                Optional.of(projectTask)
+                    .map(ProjectTask::getProject)
+                    .map(Project::getBacklogSprint)
+                    .map(Sprint::getId)
+                    .orElse(0L)));
 
     return domain;
   }

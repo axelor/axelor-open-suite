@@ -1,4 +1,4 @@
-"importId";"product.importId";"name";"qty";"defineSubBillOfMaterial";"unit.importId";"prodProcess.importId";"costPrice";"company.importId";"hasNoManageStock";"statusSelect"
+"importId";"product_importId";"name";"qty";"defineSubBillOfMaterial";"unit.importId";"prodProcess.importId";"costPrice";"company.importId";"hasNoManageStock";"statusSelect"
 1;110;"Serveur Classique";1;"true";1;1;;1;"false";3
 2;200;"Disque dur SATA 1To";2;"false";1;;;1;"false";3
 3;210;"Processeur 4x3,4 GHz";1;"false";1;;;1;"false";3

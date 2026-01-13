@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,8 +38,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -50,7 +51,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
@@ -505,7 +505,7 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void generateResultMove(
+  public Move generateResultMove(
       Company company,
       LocalDate date,
       String description,
@@ -597,5 +597,6 @@ public class AccountingCloseAnnualServiceImpl implements AccountingCloseAnnualSe
     if (generatedMoveStatusSelect == MoveRepository.STATUS_ACCOUNTED) {
       moveValidateService.accounting(move);
     }
+    return move;
   }
 }

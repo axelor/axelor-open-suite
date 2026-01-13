@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,11 +29,12 @@ import com.axelor.apps.crm.db.repo.OpportunityRepository;
 import com.axelor.apps.crm.db.repo.OpportunityStatusRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.apps.crm.service.app.AppCrmService;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppCrm;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -111,7 +112,7 @@ public class OpportunityServiceImpl implements OpportunityService {
     setOpportunityStatusStagedClosedWon(opportunity);
 
     Partner partner = opportunity.getPartner();
-
+    partner = EntityHelper.getEntity(partner);
     partner.setIsCustomer(map.get("isCustomer"));
     partner.setIsProspect(map.get("isProspect"));
     partner.setIsSupplier(map.get("isSupplier"));

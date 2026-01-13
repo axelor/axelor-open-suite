@@ -1,4 +1,4 @@
-"importId";"code";"name";"company.importId";"branch.importId"
+"importId";"code";"name";"company_importId";"branch_importId"
 "1";"MAN1";"Shock or clumsiness";"1";"2"
 "2";"MIL1";"Temperature/humidity fault";"1";"5"
 "3";"MAT1";"Material defect";"1";"1"

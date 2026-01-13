@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,11 +33,16 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.MapGoogleService;
+import com.axelor.apps.base.service.MapOsmService;
+import com.axelor.apps.base.service.PartnerConvertService;
+import com.axelor.apps.base.service.PartnerPriceListDomainService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.partner.api.PartnerGenerateService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberValidator;
 import com.axelor.apps.base.service.partner.registrationnumber.factory.PartnerRegistrationValidatorFactoryService;
@@ -47,6 +52,8 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.Message;
@@ -57,10 +64,11 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.repo.AppBaseRepository;
+import com.axelor.utils.helpers.StringHelper;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -71,6 +79,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
 import org.iban4j.IbanFormatException;
@@ -335,7 +344,7 @@ public class PartnerController {
           I18n.get(BaseExceptionMessage.PARTNER_3));
     }
     partner = Beans.get(PartnerRepository.class).find(id);
-    Beans.get(PartnerService.class).convertToIndividualPartner(partner);
+    Beans.get(PartnerConvertService.class).convertToIndividualPartner(partner);
     response.setView(
         ActionView.define(I18n.get("Partner"))
             .model(Partner.class.getName())
@@ -387,8 +396,8 @@ public class PartnerController {
                   "html",
                   Beans.get(AppBaseService.class).getAppBase().getMapApiSelect()
                           == AppBaseRepository.MAP_API_GOOGLE
-                      ? Beans.get(MapService.class).getMapURI("partner", partner.getId())
-                      : Beans.get(MapService.class).getOsmMapURI("partner", partner.getId()))
+                      ? Beans.get(MapGoogleService.class).getMapURI("partner", partner.getId())
+                      : Beans.get(MapOsmService.class).getOsmMapURI("partner", partner.getId()))
               .map());
     } catch (Exception e) {
       TraceBackService.trace(e);
@@ -442,8 +451,14 @@ public class PartnerController {
     RegistrationNumberValidator validator =
         Beans.get(PartnerRegistrationValidatorFactoryService.class)
             .getRegistrationNumberValidator(partner);
-    if (validator != null && !validator.isRegistrationCodeValid(partner)) {
-      response.setError(I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
+    boolean notValidRegistrationCode =
+        validator != null && !validator.isRegistrationCodeValid(partner);
+    response.setAttr("isValidRegistrationCode", "hidden", !notValidRegistrationCode);
+    if (notValidRegistrationCode) {
+      response.setAttr(
+          "isValidRegistrationCode",
+          "title",
+          I18n.get(BaseExceptionMessage.PARTNER_INVALID_REGISTRATION_CODE));
     }
   }
 
@@ -459,5 +474,103 @@ public class PartnerController {
     response.setValue(
         "$positiveBalanceBtn",
         Beans.get(CurrencyScaleService.class).getCompanyScaledValue(company, balance.abs()));
+  }
+
+  public void setParentPartnerDomain(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    List<Partner> parentPartnerList = Beans.get(PartnerService.class).getParentPartnerList(partner);
+    if (ObjectUtils.notEmpty(parentPartnerList)) {
+      response.setAttr(
+          "parentPartner",
+          "domain",
+          String.format(
+              "self.id IN (%s)",
+              parentPartnerList.stream()
+                  .map(Partner::getId)
+                  .map(String::valueOf)
+                  .collect(Collectors.joining(","))));
+    }
+  }
+
+  public void setContactPartnerDomain(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    response.setAttr(
+        "contactPartner",
+        "domain",
+        String.format(
+            "self.id IN (%s)",
+            StringHelper.getIdListString(
+                Beans.get(PartnerService.class).getContactFilteredPartners(partner))));
+  }
+
+  public void setMainPartnerDomain(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    response.setAttr(
+        "mainPartner",
+        "domain",
+        String.format(
+            "self.id IN (%s)",
+            StringHelper.getIdListString(
+                Beans.get(PartnerService.class).getFilteredPartners(partner))));
+  }
+
+  public void checkIfRegistrationCodeExists(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    String message = Beans.get(PartnerService.class).checkIfRegistrationCodeExists(partner);
+    if (StringUtils.isEmpty(message)) {
+      return;
+    }
+    if (Beans.get(AppBaseService.class).getAppBase().getIsRegistrationCodeCheckBlocking()) {
+      response.setError(message);
+    } else {
+      response.setAlert(message);
+    }
+  }
+
+  @ErrorException
+  public void apiSireneFetchData(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    String siret = request.getContext().get("siretNumber").toString();
+
+    Object partnerId = request.getContext().get("_id");
+    Partner partner;
+    if (partnerId != null) {
+      partner = JPA.find(Partner.class, Long.parseLong(partnerId.toString()));
+    } else {
+      partner = new Partner();
+    }
+
+    Beans.get(PartnerGenerateService.class).configurePartner(partner, siret);
+
+    if (partnerId != null) {
+      response.setValues(partner);
+      response.setCanClose(true);
+    } else {
+      ActionView.ActionViewBuilder actionViewBuilder =
+          ActionView.define(I18n.get("Partner"))
+              .model(Partner.class.getName())
+              .add("form", "partner-form")
+              .add("grid", "partner-grid")
+              .context("_showRecord", partner.getId());
+
+      response.setView(actionViewBuilder.map());
+      response.setCanClose(true);
+    }
+  }
+
+  public void getSalePartnerPriceListDomain(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    response.setAttr(
+        "salePartnerPriceList",
+        "domain",
+        Beans.get(PartnerPriceListDomainService.class).getSalePartnerPriceListDomain(partner));
+  }
+
+  public void getPurchasePartnerPriceListDomain(ActionRequest request, ActionResponse response) {
+    Partner partner = request.getContext().asType(Partner.class);
+    response.setAttr(
+        "purchasePartnerPriceList",
+        "domain",
+        Beans.get(PartnerPriceListDomainService.class).getPurchasePartnerPriceListDomain(partner));
   }
 }

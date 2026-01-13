@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,16 +25,15 @@ import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.db.repo.SupplyChainConfigRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.meta.loader.AppVersionService;
 import com.axelor.studio.db.AppSupplychain;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppSupplychainRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 @Singleton
@@ -51,21 +50,13 @@ public class AppSupplychainServiceImpl extends AppBaseServiceImpl implements App
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
       MetaFileRepository metaFileRepo,
       AppSupplychainRepository appSupplychainRepo,
       CompanyRepository companyRepo,
       SupplyChainConfigRepository supplyChainConfigRepo) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
     this.appSupplychainRepo = appSupplychainRepo;
     this.companyRepo = companyRepo;
     this.supplyChainConfigRepo = supplyChainConfigRepo;
@@ -73,7 +64,7 @@ public class AppSupplychainServiceImpl extends AppBaseServiceImpl implements App
 
   @Override
   public AppSupplychain getAppSupplychain() {
-    return appSupplychainRepo.all().fetchOne();
+    return appSupplychainRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

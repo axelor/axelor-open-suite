@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,7 @@ public interface YearAccountService {
       Company company,
       LocalDate fromDate,
       LocalDate toDate,
-      Integer periodDuration,
+      String periodDuration,
       LocalDate reportedBalancedDate)
       throws AxelorException;
 
@@ -38,7 +38,7 @@ public interface YearAccountService {
       String code,
       LocalDate fromDate,
       LocalDate toDate,
-      Integer periodDuration,
+      String periodDuration,
       int typeSelect,
       LocalDate reportedBalanceDate);
 }

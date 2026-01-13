@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -79,7 +79,7 @@ public class AccountingConfigTemplateController {
     AccountConfig accountConfig = context.asType(AccountConfig.class);
     LocalDate fiscalYearFromDate = null;
     LocalDate fiscalYearToDate = null;
-    Integer accountingPeriodDuration = null;
+    String accountingPeriodDuration = null;
 
     if (context.get("fiscalYearFromDate") != null) {
       fiscalYearFromDate =
@@ -92,7 +92,7 @@ public class AccountingConfigTemplateController {
     }
 
     if (context.get("accountingPeriodDuration") != null) {
-      accountingPeriodDuration = (Integer) context.get("accountingPeriodDuration");
+      accountingPeriodDuration = (String) context.get("accountingPeriodDuration");
     }
 
     if (fiscalYearFromDate == null

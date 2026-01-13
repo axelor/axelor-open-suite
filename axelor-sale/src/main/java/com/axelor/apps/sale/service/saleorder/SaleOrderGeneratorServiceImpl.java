@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,9 +34,8 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
 import com.axelor.i18n.I18n;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService {
   protected SaleOrderRepository saleOrderRepository;
@@ -72,11 +71,12 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   @Override
   public SaleOrder createSaleOrder(
       Partner clientPartner,
+      Partner deliveredPartner,
       Company company,
       Partner contactPartner,
       Currency currency,
       Boolean inAti)
-      throws AxelorException, JsonProcessingException {
+      throws AxelorException {
     SaleOrder saleOrder = new SaleOrder();
     boolean isTemplate = false;
     saleOrderInitValueService.setIsTemplate(saleOrder, isTemplate);

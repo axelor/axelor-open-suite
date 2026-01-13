@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,12 +29,14 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.rest.dto.StockProductResponse;
 import com.axelor.apps.stock.rest.dto.StockProductVariantAttributeResponse;
 import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.ResponseConstructor;
+import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.core.Response;
 
 public class StockProductRestServiceImpl implements StockProductRestService {
   @Override
@@ -56,7 +58,7 @@ public class StockProductRestServiceImpl implements StockProductRestService {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Request completed",
+        I18n.get(ITranslation.REQUEST_COMPLETED),
         new StockProductResponse(product, stockIndicators));
   }
 

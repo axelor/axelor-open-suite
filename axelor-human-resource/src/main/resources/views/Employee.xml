@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee"
     orderBy="contactPartner.simpleFullName">
     <toolbar>
-      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print"
+      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="printer"
         onClick="action-print-employee-phonebook"/>
     </toolbar>
     <field name="contactPartner.partnerSeq" width="120"/>
@@ -26,7 +26,7 @@
       form-view="partner-contact-form"/>
     <field name="managerUser" form-view="user-form" grid-view="user-grid"/>
     <field name="$employeeStatus" title="Employee status"
-      selection="hr.employee.employee.status.select" type="string"/>
+      selection="hr.employee.employee.status.select" type="string" widget="single-select"/>
     <field name="mainEmploymentContract.companyDepartment" form-view="company-department-form"
       grid-view="company-department-grid"/>
   </grid>
@@ -43,12 +43,12 @@
 
     <!-- New employee wizard -->
     <panel name="stepByStepControlsPanel" showIf="stepByStepSelect &lt; 5" colSpan="12">
-      <button name="previousSBSBtn" colSpan="1" icon="fa-caret-left"
+      <button name="previousSBSBtn" colSpan="1" icon="caret-left-fill"
         readonlyIf="stepByStepSelect &lt; 2"
         onClick="validate,action-employee-record-previous-step,save"/>
       <field name="stepByStepSelect" colSpan="8" css="text-center" readonly="true"
         showTitle="false" widget="NavSelect" selection-in="[1, 2, 3, 4]"/>
-      <button name="nextSBSBtn" colSpan="1" icon="fa-caret-right"
+      <button name="nextSBSBtn" colSpan="1" icon="caret-right-fill"
         readonlyIf="(user &amp;&amp; stepByStepSelect &gt;= 3) || (user == null &amp;&amp; stepByStepSelect &gt; 3) "
         onClick="validate,action-employee-record-next-step,save"/>
       <button name="finishBtn" colSpan="2" title="Finish"
@@ -57,8 +57,12 @@
     </panel>
 
     <panel name="contactSBSPanel" colSpan="12" showIf="stepByStepSelect &lt; 5" sidebar="true">
+      <panel colSpan="12">
+        <field name="hrManager" colSpan="6" widget="InlineCheckbox"/>
+        <field name="external" colSpan="6" widget="InlineCheckbox"/>
+      </panel>
       <field name="contactPartner" colSpan="12"
-        domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
+        domain="self.employee IS null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
         form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false"
         onChange="action-employee-attrs-fill-user">
         <editor x-viewer="true">
@@ -137,11 +141,6 @@
         <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4"
           form-view="events-planning-form" grid-view="events-planning-grid"/>
       </panel>
-
-      <panel colSpan="12">
-        <field name="hrManager" colSpan="4" widget="InlineCheckbox"/>
-        <field name="external" colSpan="4" widget="InlineCheckbox"/>
-      </panel>
     </panel>
     <!-- END OF Basic info -->
 
@@ -154,10 +153,11 @@
       <field name="profitSharingBeneficiary" colSpan="3"/>
 
       <field name="weeklyWorkHours" colSpan="3"/>
-      <field name="dailyWorkHours" colSpan="3"/>
-      <field name="hourlyRate" colSpan="3"/>
-      <field name="$dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"
-        x-bind="{{hourlyRate * dailyWorkHours}}"/>
+      <field name="dailyWorkHours" colSpan="3"
+        onChange="action-employee-record-set-daily-salary-cost"/>
+      <field name="hourlyRate" colSpan="3"
+        onChange="action-employee-record-set-daily-salary-cost"/>
+      <field name="dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"/>
     </panel>
 
     <panel name="mainEmploymentContractSBSPanel" title="Main employment contract"
@@ -193,16 +193,11 @@
 
     <panel name="timesheetsSBSPanel" title="Timesheets" if="__config__.app.isApp('timesheet')"
       showIf="stepByStepSelect == 3">
-      <field name="timeLoggingPreferenceSelect" colSpan="3"
-        validIf="(timesheetImputationSelect == 2 &amp;&amp; timeLoggingPreferenceSelect != 'days') || timesheetImputationSelect != 2"/>
+      <field name="timeLoggingPreferenceSelect" colSpan="3"/>
       <field name="product" canEdit="false" colSpan="3"
         domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
         grid-view="product-grid"/>
       <field name="timesheetReminder" colSpan="3"/>
-      <field name="timesheetImputationSelect" colSpan="3"
-        if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"
-        if-module="axelor-business-production"
-        onChange="action-employee-attrs-timesheet-imputation-select-selection-in"/>
     </panel>
     <!-- END OF Leaves and timesheets -->
 
@@ -348,7 +343,7 @@
         <field name="exportCode" colSpan="6"/>
       </panel>
       <field name="contactPartner" colSpan="12"
-        domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
+        domain="self.employee IS null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
         form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false"
         onChange="action-employee-attrs-fill-user">
         <editor x-viewer="true">
@@ -424,10 +419,11 @@
           <field name="profitSharingBeneficiary" colSpan="6"/>
 
           <field name="weeklyWorkHours" colSpan="3"/>
-          <field name="dailyWorkHours" colSpan="3"/>
-          <field name="hourlyRate" colSpan="3"/>
-          <field name="$dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"
-            x-bind="{{hourlyRate * dailyWorkHours}}"/>
+          <field name="dailyWorkHours" colSpan="3"
+            onChange="action-employee-record-set-daily-salary-cost"/>
+          <field name="hourlyRate" colSpan="3"
+            onChange="action-employee-record-set-daily-salary-cost"/>
+          <field name="dailySalaryCost" title="Daily cost" colSpan="3" readonly="true"/>
 
           <panel name="planningPanel" title="Plannings" colSpan="12" canCollapse="true"
             collapseIf="true">
@@ -472,10 +468,6 @@
           domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-form"
           grid-view="product-grid"/>
         <field name="timesheetReminder" colSpan="3"/>
-        <field name="timesheetImputationSelect" colSpan="3"
-          if="__config__.app.getApp('production')?.getEnableTimesheetOnManufOrder()"
-          if-module="axelor-business-production"
-          onChange="action-employee-attrs-timesheet-imputation-select-selection-in"/>
 
         <panel-dashlet name="employeeUserTimesheetsPanel"
           action="action-employee-view-user-timesheets" colSpan="12"/>
@@ -497,7 +489,7 @@
             colSpan="12" form-view="lunch-voucher-advance-form"
             grid-view="lunch-voucher-advance-grid"/>
           <button name="addLunchVoucherAdvanceBtn" title="Add an advance" colSpan="3"
-            icon="fa-ticket" onClick="save,action-lunch-voucher-advance-new"/>
+            icon="ticket-fill" onClick="save,action-lunch-voucher-advance-new"/>
         </panel>
 
         <panel name="expensesPanel" title="Expenses" canCollapse="true" collapseIf="true">
@@ -508,7 +500,8 @@
           <field name="analyticDistributionTemplate"
             grid-view="analytic-distribution-template-grid"
             form-view="analytic-distribution-template-form"
-            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"/>
+            if="__config__.app.isApp('account') &amp;&amp; __config__.app.getApp('account')?.getManageAnalyticAccounting()"
+            onSelect="action-employee-method-set-domain-analytic-distribution-template"/>
           <panel-related name="expenseLimitListPanel" title="Expense limits"
             field="expenseLimitList" colSpan="12" form-view="expense-limit-form"
             grid-view="expense-limit-grid"/>
@@ -639,7 +632,7 @@
   </action-attrs>
 
   <action-attrs name="action-employee-attrs-bank-details-on-select">
-    <attribute name="domain" expr="eval: &quot;self = null&quot;" for="bankDetails"/>
+    <attribute name="domain" expr="eval: &quot;self IS null&quot;" for="bankDetails"/>
     <attribute if="!mainEmploymentContract?.payCompany?.bankDetailsList?.isEmpty()"
       name="domain"
       expr="eval: &quot;self.id IN (${mainEmploymentContract?.payCompany?.bankDetailsList?.collect{it.id}?.join(',')}) AND self.active = true&quot;"
@@ -659,7 +652,7 @@
   <cards name="employee-card" title="Employee" model="com.axelor.apps.hr.db.Employee"
     css="rect-image" orderBy="contactPartner.simpleFullName">
     <toolbar>
-      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print"
+      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="printer"
         onClick="action-print-employee-phonebook"/>
     </toolbar>
     <field name="contactPartner.picture"/>
@@ -731,7 +724,8 @@
       expr="eval:__config__.app.getApp('leave')?.getAllowNegativeLeaveEmployees()"
       if="__config__.app.isApp('leave')"/>
     <field name="publicHolidayEventsPlanning"
-      expr="eval: __user__.activeCompany?.hrConfig?.publicHolidayEventsPlanning"/>
+      expr="eval: __user__.activeCompany?.publicHolidayEventsPlanning"/>
+    <field name="weeklyPlanning" expr="eval: __user__.activeCompany?.weeklyPlanning"/>
   </action-record>
 
   <action-record name="action-hr-record-reset-company-cb-details"
@@ -822,10 +816,10 @@
 
   <action-attrs name="action-employee-attrs-change-domain">
     <attribute for="user" name="domain"
-      expr="eval: &quot;self.employee = null AND self.partner = null&quot;"
+      expr="eval: &quot;self.employee IS null AND self.partner IS null&quot;"
       if="__this__.contactPartner.linkedUser == null"/>
     <attribute for="user" name="domain"
-      expr="eval: &quot;self.employee = null AND self.partner = :contactPartner&quot;"
+      expr="eval: &quot;self.employee IS null AND self.partner = :contactPartner&quot;"
       if="__this__.contactPartner.linkedUser != null"/>
   </action-attrs>
 
@@ -847,12 +841,21 @@
       method="updateEmployeeFilesWithMedicalVisit"/>
   </action-method>
 
+  <action-method
+    name="action-employee-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.hr.web.EmployeeController"
+      method="setDomainAnalyticDistributionTemplate"/>
+  </action-method>
+
+  <action-record name="action-employee-record-set-daily-salary-cost"
+    model="com.axelor.apps.hr.db.Employee">
+    <field name="dailySalaryCost" expr="eval: dailyWorkHours * hourlyRate"/>
+  </action-record>
+
   <search-filters name="employee-filters" model="com.axelor.apps.hr.db.Employee"
     title="Employee filters">
     <field name="bankDetails" hidden="true"
       if="!__config__.app.getApp('base')?.getManageMultiBanks()"/>
-    <field name="timesheetImputationSelect" hidden="true"
-      if="!(__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getEnableTimesheetOnManufOrder())"/>
     <field name="lunchVoucherFormatSelect" hidden="true"
       if="!(__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('employee')?.getLunchVoucher())"/>
     <field name="lunchVoucherAdvanceList" hidden="true"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
 
   <menuitem name="sc-root-purchase" title="Purchases" order="-1800"
@@ -119,7 +119,7 @@
   </action-view>
 
   <menuitem name="sc-root-purchase-report" parent="sc-root-purchase" title="Reportings"
-    order="1300" icon="fa-bar-chart"/>
+    order="1300" icon="bar-chart"/>
 
   <menuitem name="purchase-report-maps" parent="sc-root-purchase-report" title="Maps"
     order="300"/>
@@ -132,7 +132,7 @@
   </action-method>
 
   <menuitem name="sc-root-purchase-conf" parent="sc-root-purchase" title="Configuration"
-    order="1400" icon="fa-cog"/>
+    order="1400" icon="gear"/>
 
   <menuitem name="sc-root-purchase-conf-partner-price-list" parent="sc-root-purchase-conf"
     title="Supplier partner price lists" action="sc.root.purchase.conf.partner.price.list"
@@ -154,48 +154,9 @@
     model="com.axelor.apps.base.db.PriceList">
     <view type="grid" name="price-list-grid"/>
     <view type="form" name="price-list-form"/>
-    <domain>self.typeSelect = 2 and self.id not in (select priceList.id from PriceList priceList
-      where parentPriceList IS NOT NULL ) and self.id not in (select priceList.id from PriceList
-      priceList join PartnerPriceList partnerPriceList on priceList member of
-      partnerPriceList.priceListSet where priceList.typeSelect = 2 and partnerPriceList.isExclusive
-      IS TRUE )</domain>
+    <domain>self.typeSelect = :_typeSelect AND self.parentPriceList IS NULL</domain>
     <context name="_typeSelect" expr="eval: 2"/>
   </action-view>
-
-  <!-- TOP MENU -->
-
-  <menuitem name="top-menu-purchase" title="Purchases" order="3" top="true" left="false"
-    if="__config__.app.isApp('purchase')"/>
-
-  <menuitem name="top-menu-purchase-quotations" title="Purchase quotations" top="true"
-    action="top.menu.purchase.quotations" parent="top-menu-purchase"/>
-
-  <action-view name="top.menu.purchase.quotations" title="Purchase quotations"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <view type="cards" name="purchase-order-cards"/>
-    <view type="grid" name="purchase-order-quotation-grid"/>
-    <view type="form" name="purchase-order-form"/>
-    <view-param name="search-filters" value="purchase-order-filters"/>
-    <domain>self.statusSelect &lt; 3</domain>
-    <context name="_internalUser" expr="eval: __user__.id"/>
-  </action-view>
-
-  <menuitem name="top-menu-purchase-purchase-orders" title="Purchase orders" top="true"
-    action="top.menu.purchase.purchase.orders" parent="top-menu-purchase"/>
-
-  <action-view name="top.menu.purchase.purchase.orders" title="Purchase orders"
-    model="com.axelor.apps.purchase.db.PurchaseOrder">
-    <view type="cards" name="purchase-order-cards"/>
-    <view type="grid" name="purchase-order-grid"/>
-    <view type="form" name="purchase-order-form"/>
-    <view-param name="search-filters" value="purchase-order-filters"/>
-    <domain>self.statusSelect &gt; 2</domain>
-    <context name="_internalUser" expr="eval: __user__.id"/>
-  </action-view>
-
-  <!-- <menuitem name="top-purchase-reqeust-my-current-cart" order="-65" title="My current cart" action="sc.root.purchase.request.my.current.cart"
-    parent="top-purchase" top="true" left="false"/> -->
-
 
   <menuitem name="menu-purchase-dashboard-1" parent="sc-root-purchase-report"
     title="Purchase Buyer" action="purchase.dashboard.1" order="100"/>
@@ -210,6 +171,16 @@
 
   <action-view name="purchase.dashboard.2" title="Purchase Manager">
     <view type="dashboard" name="purchase.dashboard.2"/>
+  </action-view>
+
+  <menuitem name="purchase-root-call-for-tenders" title="Call for tenders" order="1200"
+    action="purchase.root.call.for.tenders" parent="sc-root-purchase"
+    if="__config__.app.getApp('purchase')?.manageCallForTender"/>
+
+  <action-view name="purchase.root.call.for.tenders" title="Call for tenders"
+    model="com.axelor.apps.purchase.db.CallTender">
+    <view type="grid" name="call-tender-grid"/>
+    <view type="form" name="call-tender-form"/>
   </action-view>
 
 

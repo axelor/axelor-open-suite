@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -99,8 +99,8 @@ public interface SaleOrderLinePackService {
    * @return
    * @throws AxelorException
    */
-  Map<String, Object> fillPriceFromPackLine(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException;
+  Map<String, Object> fillPriceFromPackLine(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, PackLine packLine) throws AxelorException;
 
   /**
    * A function used to get the ex tax unit price of a sale order line from pack line
@@ -111,7 +111,7 @@ public interface SaleOrderLinePackService {
    * @throws AxelorException
    */
   BigDecimal getExTaxUnitPriceFromPackLine(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Set<TaxLine> taxLineSet)
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Set<TaxLine> taxLineSet, PackLine packLine)
       throws AxelorException;
 
   /**
@@ -123,6 +123,6 @@ public interface SaleOrderLinePackService {
    * @throws AxelorException
    */
   BigDecimal getInTaxUnitPriceFromPackLine(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Set<TaxLine> taxLineSet)
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, Set<TaxLine> taxLineSet, PackLine packLine)
       throws AxelorException;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -36,8 +37,8 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -46,6 +47,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ContractVersionServiceImpl implements ContractVersionService {
 
@@ -218,26 +220,51 @@ public class ContractVersionServiceImpl implements ContractVersionService {
     }
     contractVersion.setInitialExTaxTotalPerYear(initialExTaxTotalPerYear);
     contractVersion.setYearlyExTaxTotalRevalued(yearlyExTaxTotalRevalued);
+    computeTotalInvoicedAmount(contractVersion);
+    computeTotalPaidAmount(contractVersion);
+  }
 
+  @Override
+  public ContractVersion getContractVersion(Invoice invoice) {
+    List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();
+    if (CollectionUtils.isEmpty(invoiceLineList)) {
+      return null;
+    }
+    return invoiceLineList.stream()
+        .map(InvoiceLine::getContractLine)
+        .filter(Objects::nonNull)
+        .map(ContractLine::getContractVersion)
+        .filter(Objects::nonNull)
+        .findFirst()
+        .orElse(null);
+  }
+
+  @Override
+  public void computeTotalInvoicedAmount(ContractVersion contractVersion) {
     List<InvoiceLine> invoiceLineList =
         invoiceLineRepository
             .all()
             .filter("self.contractLine.contractVersion = :contractVersion")
             .bind("contractVersion", contractVersion)
             .fetch();
+    if (CollectionUtils.isEmpty(invoiceLineList)) {
+      return;
+    }
     contractVersion.setTotalInvoicedAmount(
         invoiceLineList.stream()
             .filter(
-                invoiceLine -> {
-                  if (invoiceLine != null && invoiceLine.getInvoice() != null) {
-                    return invoiceLine.getInvoice().getStatusSelect()
-                        == InvoiceRepository.STATUS_VENTILATED;
-                  }
-                  return false;
-                })
-            .map(InvoiceLine::getInTaxTotal)
+                invoiceLine ->
+                    invoiceLine.getInvoice().getStatusSelect()
+                        == InvoiceRepository.STATUS_VENTILATED)
+            .map(
+                invoiceLine ->
+                    getInvoiceLineAmount(invoiceLine.getInvoice(), invoiceLine.getInTaxTotal()))
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO));
+  }
+
+  @Override
+  public void computeTotalPaidAmount(ContractVersion contractVersion) {
     List<Invoice> invoiceList =
         invoiceRepository
             .all()
@@ -246,10 +273,32 @@ public class ContractVersionServiceImpl implements ContractVersionService {
             .bind("contractVersion", contractVersion)
             .bind("ventilatedStatus", InvoiceRepository.STATUS_VENTILATED)
             .fetch();
+    if (CollectionUtils.isEmpty(invoiceList)) {
+      return;
+    }
     contractVersion.setTotalPaidAmount(
         invoiceList.stream()
-            .map(Invoice::getAmountPaid)
+            .map(inv -> getInvoiceLineAmount(inv, inv.getAmountPaid()))
             .reduce(BigDecimal::add)
             .orElse(BigDecimal.ZERO));
+  }
+
+  protected BigDecimal getInvoiceLineAmount(Invoice invoice, BigDecimal amount) {
+    if (invoice == null) {
+      return amount;
+    }
+
+    boolean isRefund = false;
+    try {
+      isRefund = InvoiceToolService.isRefund(invoice);
+    } catch (Exception e) {
+      return amount;
+    }
+
+    if (isRefund) {
+      amount = amount.negate();
+    }
+
+    return amount;
   }
 }

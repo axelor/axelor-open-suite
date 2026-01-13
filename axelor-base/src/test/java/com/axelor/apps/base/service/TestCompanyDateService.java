@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
 class TestCompanyDateService {
 
   private static final String DD_MM_YYYY_HH_MM = "dd/MM/yyyy HH:mm";
-  private static final String M_D_YYYY_H_MM_A = "M/d/yyyy, h:mm a";
+  private static final String M_D_YYYY_H_MM_A = "M/d/yyyy, h:mm a";
   private static final String DD_MM_YYYY = "dd/MM/yyyy";
   private static final String M_D_YYYY = "M/d/yyyy";
 

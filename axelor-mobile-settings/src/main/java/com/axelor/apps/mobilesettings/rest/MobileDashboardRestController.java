@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,21 +22,22 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.mobilesettings.db.MobileDashboard;
 import com.axelor.apps.mobilesettings.rest.dto.MobileDashboardResponse;
 import com.axelor.apps.mobilesettings.service.MobileDashboardResponseComputeService;
+import com.axelor.apps.mobilesettings.translation.MobileSettingsTranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.Optional;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import wslite.json.JSONException;
 
 @Path("/aos/mobiledashboard")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -49,7 +50,7 @@ public class MobileDashboardRestController {
   @GET
   @HttpExceptionHandler
   public Response getMobileDashboard(@PathParam("mobileDashboardId") Long mobileDashboardId)
-      throws AxelorException, JSONException {
+      throws AxelorException {
     new SecurityCheck().readAccess(MobileDashboard.class, mobileDashboardId).check();
     MobileDashboard mobileDashboard =
         ObjectFinder.find(MobileDashboard.class, mobileDashboardId, ObjectFinder.NO_VERSION);
@@ -60,10 +61,10 @@ public class MobileDashboardRestController {
 
     if (response.isEmpty()) {
       return ResponseConstructor.build(
-          Response.Status.FORBIDDEN, "You do not have access to this record");
+          Response.Status.FORBIDDEN, I18n.get(MobileSettingsTranslation.NO_ACCESS_TO_RECORD));
     }
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Response of the query of the chart", response);
+        Response.Status.OK, I18n.get(MobileSettingsTranslation.QUERY_RESPONSE_CHART), response);
   }
 }

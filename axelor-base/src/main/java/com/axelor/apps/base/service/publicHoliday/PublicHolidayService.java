@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,90 +18,33 @@
  */
 package com.axelor.apps.base.service.publicHoliday;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
-import com.axelor.apps.base.db.EventsPlanningLine;
 import com.axelor.apps.base.db.WeeklyPlanning;
-import com.axelor.apps.base.db.repo.EventsPlanningLineRepository;
-import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
 
-public class PublicHolidayService {
+public interface PublicHolidayService {
 
-  protected WeeklyPlanningService weeklyPlanningService;
-  protected EventsPlanningLineRepository eventsPlanningLineRepo;
-
-  @Inject
-  public PublicHolidayService(
-      WeeklyPlanningService weeklyPlanningService,
-      EventsPlanningLineRepository eventsPlanningLineRepo) {
-
-    this.weeklyPlanningService = weeklyPlanningService;
-    this.eventsPlanningLineRepo = eventsPlanningLineRepo;
-  }
-
-  public BigDecimal computePublicHolidayDays(
+  BigDecimal computePublicHolidayDays(
       LocalDate fromDate,
       LocalDate toDate,
       WeeklyPlanning weeklyPlanning,
-      EventsPlanning publicHolidayPlanning) {
-    BigDecimal publicHolidayDays = BigDecimal.ZERO;
+      EventsPlanning publicHolidayPlanning);
 
-    List<EventsPlanningLine> publicHolidayDayList =
-        eventsPlanningLineRepo
-            .all()
-            .filter(
-                "self.eventsPlanning = ?1 AND self.date BETWEEN ?2 AND ?3",
-                publicHolidayPlanning,
-                fromDate,
-                toDate)
-            .fetch();
-    for (EventsPlanningLine publicHolidayDay : publicHolidayDayList) {
-      publicHolidayDays =
-          publicHolidayDays.add(
-              BigDecimal.valueOf(
-                  weeklyPlanningService.getWorkingDayValueInDays(
-                      weeklyPlanning, publicHolidayDay.getDate())));
-    }
-    return publicHolidayDays;
-  }
+  boolean checkPublicHolidayDay(LocalDate date, EventsPlanning publicHolidayEventsPlanning);
+
+  void generateEventsPlanningLines(
+      EventsPlanning eventsPlanning, LocalDate startDate, LocalDate endDate, String description);
 
   /**
-   * Returns true if the given date is a public holiday in the given public holiday events planning.
+   * This method will check if the current date is free of public holiday day and is a workind day
+   * for company.<br>
+   * If not the case, it will try next day until finding one and return it.
    *
    * @param date
-   * @param publicHolidayEventsPlanning
-   * @return
+   * @param company
+   * @return holiday free local date.
    */
-  public boolean checkPublicHolidayDay(LocalDate date, EventsPlanning publicHolidayEventsPlanning) {
-
-    if (publicHolidayEventsPlanning == null) {
-      return false;
-    }
-
-    List<EventsPlanningLine> publicHolidayDayList =
-        eventsPlanningLineRepo
-            .all()
-            .filter(
-                "self.eventsPlanning = ?1 AND self.date = ?2", publicHolidayEventsPlanning, date)
-            .fetch();
-    return ObjectUtils.notEmpty(publicHolidayDayList);
-  }
-
-  @Transactional
-  public void generateEventsPlanningLines(
-      EventsPlanning eventsPlanning, LocalDate startDate, LocalDate endDate, String description) {
-    for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
-      EventsPlanningLine eventsPlanningLine = new EventsPlanningLine();
-      eventsPlanningLine.setYear(date.getYear());
-      eventsPlanningLine.setDate(date);
-      eventsPlanningLine.setDescription(description);
-      eventsPlanningLine.setEventsPlanning(eventsPlanning);
-      eventsPlanningLineRepo.save(eventsPlanningLine);
-    }
-  }
+  LocalDate getFreeDay(LocalDate date, Company company);
 }

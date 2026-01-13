@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,16 +22,16 @@ import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementFileFormat;
 import com.axelor.apps.bankpayment.service.bankstatement.BankStatementCreateService;
 import java.time.LocalDate;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class TestBankStatementCreateService {
 
-  protected BankStatementCreateService bankStatementCreateService;
+  protected static BankStatementCreateService bankStatementCreateService;
 
-  @Before
-  public void prepare() {
+  @BeforeAll
+  public static void prepare() {
     bankStatementCreateService = new BankStatementCreateService();
   }
 
@@ -47,7 +47,7 @@ public class TestBankStatementCreateService {
     bankStatement.setFromDate(LocalDate.of(2022, 7, 16));
     bankStatement.setToDate(LocalDate.of(2022, 7, 18));
 
-    Assert.assertEquals(
+    Assertions.assertEquals(
         "camt.xxx.cfonb120.stm - Relevé de compte-2022/07/16-2022/07/18",
         bankStatementCreateService.computeName(bankStatement));
   }

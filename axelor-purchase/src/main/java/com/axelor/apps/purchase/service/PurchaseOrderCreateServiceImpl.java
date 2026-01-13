@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,7 +31,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -43,10 +43,17 @@ public class PurchaseOrderCreateServiceImpl implements PurchaseOrderCreateServic
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected PurchaseConfigService purchaseConfigService;
+  protected final PurchaseOrderTypeSelectService purchaseOrderTypeSelectService;
+  protected final PurchaseOrderTaxService purchaseOrderTaxService;
 
   @Inject
-  public PurchaseOrderCreateServiceImpl(PurchaseConfigService purchaseConfigService) {
+  public PurchaseOrderCreateServiceImpl(
+      PurchaseConfigService purchaseConfigService,
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
+      PurchaseOrderTaxService purchaseOrderTaxService) {
     this.purchaseConfigService = purchaseConfigService;
+    this.purchaseOrderTypeSelectService = purchaseOrderTypeSelectService;
+    this.purchaseOrderTaxService = purchaseOrderTaxService;
   }
 
   @Override
@@ -120,9 +127,11 @@ public class PurchaseOrderCreateServiceImpl implements PurchaseOrderCreateServic
 
     purchaseOrder.setStatusSelect(PurchaseOrderRepository.STATUS_DRAFT);
     purchaseOrder.setSupplierPartner(supplierPartner);
+    purchaseOrderTypeSelectService.setTypeSelect(purchaseOrder);
     purchaseOrder.setFiscalPosition(supplierPartner.getFiscalPosition());
     purchaseOrder.setDisplayPriceOnQuotationRequest(
         purchaseConfigService.getPurchaseConfig(company).getDisplayPriceOnQuotationRequest());
+    purchaseOrderTaxService.setPurchaseOrderInAti(purchaseOrder);
     return purchaseOrder;
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -130,11 +130,8 @@ public class PlanningDateTimeProcessorImpl implements PlanningDateTimeProcessor 
     if (company == null) {
       return false;
     }
-    if (company.getHrConfig() == null) {
-      return false;
-    }
     return publicHolidayService.checkPublicHolidayDay(
-        date, company.getHrConfig().getPublicHolidayEventsPlanning());
+        date, company.getPublicHolidayEventsPlanning());
   }
 
   protected <T> T postProcess(T t) {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -117,7 +117,11 @@ public interface InvoicePrintService {
    * @throws AxelorException
    */
   File printAndSave(
-      Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale)
+      Invoice invoice,
+      Integer reportType,
+      PrintingTemplate invoicePrintTemplate,
+      String locale,
+      boolean toAttach)
       throws AxelorException;
 
   /**

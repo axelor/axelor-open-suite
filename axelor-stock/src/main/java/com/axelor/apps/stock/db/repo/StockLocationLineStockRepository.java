@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,11 +19,14 @@
 package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.service.WeightedAveragePriceService;
-import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import com.axelor.inject.Beans;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
+import java.util.Map;
 
 public class StockLocationLineStockRepository extends StockLocationLineRepository {
 
@@ -46,5 +49,15 @@ public class StockLocationLineStockRepository extends StockLocationLineRepositor
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
+    json.put(
+        "$nbDecimalDigitForUnitPrice",
+        Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
+
+    return super.populate(json, context);
   }
 }

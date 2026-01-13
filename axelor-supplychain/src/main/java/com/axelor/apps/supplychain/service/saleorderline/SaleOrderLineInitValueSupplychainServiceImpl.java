@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,11 +21,12 @@ package com.axelor.apps.supplychain.service.saleorderline;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValueServiceImpl;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.studio.db.AppSupplychain;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,18 +39,21 @@ public class SaleOrderLineInitValueSupplychainServiceImpl
 
   @Inject
   public SaleOrderLineInitValueSupplychainServiceImpl(
+      SaleOrderLineComputeQtyService saleOrderLineComputeQtyService,
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
       AppSupplychainService appSupplychainService,
       SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
+    super(saleOrderLineComputeQtyService);
     this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
     this.appSupplychainService = appSupplychainService;
     this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
   }
 
   @Override
-  public Map<String, Object> onNewInitValues(SaleOrder saleOrder, SaleOrderLine saleOrderLine)
+  public Map<String, Object> onNewInitValues(
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol)
       throws AxelorException {
-    Map<String, Object> values = super.onNewInitValues(saleOrder, saleOrderLine);
+    Map<String, Object> values = super.onNewInitValues(saleOrder, saleOrderLine, parentSol);
     AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
     if (appSupplychain.getManageStockReservation()) {
       values.putAll(saleOrderLineServiceSupplyChain.updateRequestedReservedQty(saleOrderLine));
@@ -69,8 +73,9 @@ public class SaleOrderLineInitValueSupplychainServiceImpl
 
   @Override
   public Map<String, Object> onNewEditableInitValues(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-    Map<String, Object> values = super.onNewEditableInitValues(saleOrder, saleOrderLine);
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, SaleOrderLine parentSol) {
+    Map<String, Object> values = super.onNewEditableInitValues(saleOrder, saleOrderLine, parentSol);
+    values.putAll(fillRequestQty(saleOrder, saleOrderLine));
     return values;
   }
 

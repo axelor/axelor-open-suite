@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import com.axelor.apps.base.rest.dto.AddressResponse;
 import com.axelor.apps.base.service.address.AddressCreationService;
 import com.axelor.apps.base.service.address.CityService;
 import com.axelor.apps.base.service.address.CountryService;
+import com.axelor.apps.base.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -36,13 +37,13 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.Optional;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @Path("/aos/address")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -90,12 +91,14 @@ public class AddressRestController {
         }
         return ResponseConstructor.build(
             Response.Status.CREATED,
-            I18n.get("Address created"),
+            I18n.get(ITranslation.ADDRESS_CREATED),
             new AddressResponse(
                 addressCreationService.createAndSaveAddress(country, city, zip, streetName)));
       }
       return ResponseConstructor.build(
-          Response.Status.OK, I18n.get("Address found"), new AddressResponse(address.get()));
+          Response.Status.OK,
+          I18n.get(ITranslation.ADDRESS_FOUND),
+          new AddressResponse(address.get()));
     } catch (AxelorException e) {
       return ResponseConstructor.build(Response.Status.INTERNAL_SERVER_ERROR, e.getMessage());
     }

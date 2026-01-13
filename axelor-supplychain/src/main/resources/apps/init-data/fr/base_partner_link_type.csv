@@ -1,4 +1,4 @@
 "importId";"name";"typeSelect";"link1Name";"link2Name"
-1;"Facture";"Invoiced by";"Facturé pour";"Facturé par"
+1;"Facture";"Invoiced to";"Facturé à la place de";"Facturé à"
 2;"Commande";"Ordered by";"Commandé pour";"Commandé par"
-3;"Livraison";"Delivered by";"Livré pour";"Livré par"
+3;"Livraison";"Delivered to";"Livré à la place de";"Livré chez"

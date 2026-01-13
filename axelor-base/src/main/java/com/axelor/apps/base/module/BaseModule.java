@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,7 +18,6 @@
  */
 package com.axelor.apps.base.module;
 
-import com.axelor.app.AppSettings;
 import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.db.repo.TaxRepository;
 import com.axelor.apps.base.db.PartnerAddress;
@@ -44,16 +43,24 @@ import com.axelor.apps.base.db.repo.ICalendarEventManagementRepository;
 import com.axelor.apps.base.db.repo.ICalendarEventRepository;
 import com.axelor.apps.base.db.repo.ImportConfigurationBaseRepository;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
+import com.axelor.apps.base.db.repo.IndicatorConfigBaseRepository;
+import com.axelor.apps.base.db.repo.IndicatorConfigRepository;
 import com.axelor.apps.base.db.repo.LanguageBaseRepository;
 import com.axelor.apps.base.db.repo.LanguageRepository;
+import com.axelor.apps.base.db.repo.LocalizationBaseRepository;
+import com.axelor.apps.base.db.repo.LocalizationRepository;
 import com.axelor.apps.base.db.repo.MailBatchBaseRepository;
 import com.axelor.apps.base.db.repo.MailBatchRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageBaseRepository;
 import com.axelor.apps.base.db.repo.MailingListMessageRepository;
+import com.axelor.apps.base.db.repo.MapViewBaseRepository;
+import com.axelor.apps.base.db.repo.MapViewRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
+import com.axelor.apps.base.db.repo.ProductCompanyBaseRepository;
+import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.SequenceBaseRepository;
 import com.axelor.apps.base.db.repo.SequenceRepository;
@@ -65,10 +72,15 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.listener.BaseServerStartListener;
 import com.axelor.apps.base.quickmenu.ActiveCompanyUpdateQuickMenuCreator;
 import com.axelor.apps.base.quickmenu.InstanceInfoQuickMenuCreator;
+import com.axelor.apps.base.quickmenu.TradingNameUpdateQuickMenuCreator;
+import com.axelor.apps.base.rest.PartnerRestService;
+import com.axelor.apps.base.rest.PartnerRestServiceImpl;
 import com.axelor.apps.base.rest.TranslationRestService;
 import com.axelor.apps.base.rest.TranslationRestServiceImpl;
 import com.axelor.apps.base.service.ABCAnalysisService;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
+import com.axelor.apps.base.service.AlternativeBarcodeService;
+import com.axelor.apps.base.service.AlternativeBarcodeServiceImpl;
 import com.axelor.apps.base.service.AnonymizeService;
 import com.axelor.apps.base.service.AnonymizeServiceImpl;
 import com.axelor.apps.base.service.AnonymizerLineService;
@@ -115,14 +127,28 @@ import com.axelor.apps.base.service.ImportExportTranslationServiceImpl;
 import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.InternationalServiceImpl;
 import com.axelor.apps.base.service.MailServiceBaseImpl;
+import com.axelor.apps.base.service.MapGoogleService;
+import com.axelor.apps.base.service.MapGoogleServiceImpl;
+import com.axelor.apps.base.service.MapOsmService;
+import com.axelor.apps.base.service.MapOsmServiceImpl;
 import com.axelor.apps.base.service.MapRestService;
 import com.axelor.apps.base.service.MapRestServiceImpl;
+import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.MapServiceImpl;
+import com.axelor.apps.base.service.MapToolService;
+import com.axelor.apps.base.service.MapToolServiceImpl;
 import com.axelor.apps.base.service.MetaFileService;
 import com.axelor.apps.base.service.MetaFileServiceImpl;
 import com.axelor.apps.base.service.ModelEmailLinkService;
 import com.axelor.apps.base.service.ModelEmailLinkServiceImpl;
+import com.axelor.apps.base.service.PartnerConvertService;
+import com.axelor.apps.base.service.PartnerConvertServiceImpl;
 import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.PartnerLinkServiceImpl;
+import com.axelor.apps.base.service.PartnerMailQueryService;
+import com.axelor.apps.base.service.PartnerMailQueryServiceImpl;
+import com.axelor.apps.base.service.PartnerPriceListDomainService;
+import com.axelor.apps.base.service.PartnerPriceListDomainServiceImpl;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerPriceListServiceImpl;
 import com.axelor.apps.base.service.PartnerService;
@@ -131,6 +157,8 @@ import com.axelor.apps.base.service.PaymentModeService;
 import com.axelor.apps.base.service.PaymentModeServiceImpl;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.PeriodServiceImpl;
+import com.axelor.apps.base.service.PfxCertificateCheckService;
+import com.axelor.apps.base.service.PfxCertificateCheckServiceImpl;
 import com.axelor.apps.base.service.PfxCertificateService;
 import com.axelor.apps.base.service.PfxCertificateServiceImpl;
 import com.axelor.apps.base.service.PricedOrderDomainService;
@@ -147,6 +175,10 @@ import com.axelor.apps.base.service.ProductConversionService;
 import com.axelor.apps.base.service.ProductConversionServiceImpl;
 import com.axelor.apps.base.service.ProductMultipleQtyService;
 import com.axelor.apps.base.service.ProductMultipleQtyServiceImpl;
+import com.axelor.apps.base.service.ProductPackagingService;
+import com.axelor.apps.base.service.ProductPackagingServiceImpl;
+import com.axelor.apps.base.service.ProductPriceListService;
+import com.axelor.apps.base.service.ProductPriceListServiceImpl;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.base.service.ProductPriceServiceImpl;
 import com.axelor.apps.base.service.ProductService;
@@ -183,6 +215,14 @@ import com.axelor.apps.base.service.address.CityService;
 import com.axelor.apps.base.service.address.CityServiceImpl;
 import com.axelor.apps.base.service.address.CountryService;
 import com.axelor.apps.base.service.address.CountryServiceImpl;
+import com.axelor.apps.base.service.administration.ReservedSequenceCleanupService;
+import com.axelor.apps.base.service.administration.ReservedSequenceCleanupServiceImpl;
+import com.axelor.apps.base.service.administration.SequenceComputationService;
+import com.axelor.apps.base.service.administration.SequenceComputationServiceImpl;
+import com.axelor.apps.base.service.administration.SequenceIncrementExecutor;
+import com.axelor.apps.base.service.administration.SequenceIncrementExecutorImpl;
+import com.axelor.apps.base.service.administration.SequenceReservationService;
+import com.axelor.apps.base.service.administration.SequenceReservationServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorQueryService;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorQueryServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceVersionGeneratorService;
@@ -205,6 +245,14 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.base.service.birt.template.BirtTemplateService;
 import com.axelor.apps.base.service.birt.template.BirtTemplateServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperCreateServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperFetchService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperFetchServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperManagementService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperManagementServiceImpl;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceService;
+import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceServiceImpl;
 import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.dayplanning.DayPlanningServiceImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
@@ -217,12 +265,40 @@ import com.axelor.apps.base.service.imports.ImportConfigurationService;
 import com.axelor.apps.base.service.imports.ImportConfigurationServiceImpl;
 import com.axelor.apps.base.service.imports.ImportDemoDataService;
 import com.axelor.apps.base.service.imports.ImportDemoDataServiceImpl;
+import com.axelor.apps.base.service.indicator.IndicatorChartService;
+import com.axelor.apps.base.service.indicator.IndicatorChartServiceImpl;
+import com.axelor.apps.base.service.indicator.IndicatorConfigService;
+import com.axelor.apps.base.service.indicator.IndicatorConfigServiceImpl;
+import com.axelor.apps.base.service.indicator.IndicatorEvaluationService;
+import com.axelor.apps.base.service.indicator.IndicatorEvaluationServiceImpl;
+import com.axelor.apps.base.service.indicator.IndicatorExportService;
+import com.axelor.apps.base.service.indicator.IndicatorExportServiceImpl;
+import com.axelor.apps.base.service.indicator.IndicatorFormService;
+import com.axelor.apps.base.service.indicator.IndicatorFormServiceImpl;
+import com.axelor.apps.base.service.indicator.IndicatorMetaService;
+import com.axelor.apps.base.service.indicator.IndicatorMetaServiceImpl;
+import com.axelor.apps.base.service.indicator.IndicatorQueryService;
+import com.axelor.apps.base.service.indicator.IndicatorQueryServiceImpl;
+import com.axelor.apps.base.service.indicator.IndicatorResultLineService;
+import com.axelor.apps.base.service.indicator.IndicatorResultLineServiceImpl;
+import com.axelor.apps.base.service.indicator.IndicatorResultService;
+import com.axelor.apps.base.service.indicator.IndicatorResultServiceImpl;
+import com.axelor.apps.base.service.indicator.IndicatorService;
+import com.axelor.apps.base.service.indicator.IndicatorServiceImpl;
+import com.axelor.apps.base.service.indicator.evaluator.ExpressionEvaluator;
+import com.axelor.apps.base.service.indicator.evaluator.GroovyExpressionEvaluator;
+import com.axelor.apps.base.service.indicator.evaluator.JpqlExpressionEvaluator;
+import com.axelor.apps.base.service.indicator.evaluator.JsExpressionEvaluator;
 import com.axelor.apps.base.service.language.LanguageCheckerService;
 import com.axelor.apps.base.service.language.LanguageCheckerServiceImpl;
 import com.axelor.apps.base.service.language.LanguageService;
 import com.axelor.apps.base.service.language.LanguageServiceImpl;
 import com.axelor.apps.base.service.localization.LocalizationService;
 import com.axelor.apps.base.service.localization.LocalizationServiceImpl;
+import com.axelor.apps.base.service.mapConfigurator.MapGroupService;
+import com.axelor.apps.base.service.mapConfigurator.MapGroupServiceImpl;
+import com.axelor.apps.base.service.mapConfigurator.MapViewService;
+import com.axelor.apps.base.service.mapConfigurator.MapViewServiceImpl;
 import com.axelor.apps.base.service.message.MailAccountServiceBaseImpl;
 import com.axelor.apps.base.service.message.MessageBaseService;
 import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
@@ -232,6 +308,12 @@ import com.axelor.apps.base.service.meta.MetaViewServiceImpl;
 import com.axelor.apps.base.service.observer.ProductFireService;
 import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
+import com.axelor.apps.base.service.partner.PartnerCreationService;
+import com.axelor.apps.base.service.partner.PartnerCreationServiceImpl;
+import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
+import com.axelor.apps.base.service.partner.api.PartnerApiFetchServiceImpl;
+import com.axelor.apps.base.service.partner.api.PartnerGenerateService;
+import com.axelor.apps.base.service.partner.api.PartnerGenerateServiceImpl;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewService;
 import com.axelor.apps.base.service.partner.registrationnumber.PartnerRegistrationCodeViewServiceImpl;
 import com.axelor.apps.base.service.partner.registrationnumber.RegistrationNumberTemplateService;
@@ -272,6 +354,8 @@ import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServi
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintServiceImpl;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateServiceImpl;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayServiceImpl;
 import com.axelor.apps.base.service.research.ResearchRequestService;
 import com.axelor.apps.base.service.research.ResearchRequestServiceImpl;
 import com.axelor.apps.base.service.signature.SignatureService;
@@ -284,14 +368,16 @@ import com.axelor.apps.base.service.tax.OrderLineTaxService;
 import com.axelor.apps.base.service.tax.OrderLineTaxServiceImpl;
 import com.axelor.apps.base.service.tax.TaxEquivService;
 import com.axelor.apps.base.service.tax.TaxEquivServiceImpl;
+import com.axelor.apps.base.service.theme.MetaThemeFetchService;
+import com.axelor.apps.base.service.theme.MetaThemeFetchServiceImpl;
 import com.axelor.apps.base.service.user.UserPermissionResponseComputeService;
 import com.axelor.apps.base.service.user.UserPermissionResponseComputeServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningServiceImp;
+import com.axelor.apps.base.tracking.AosHibernateConfigurator;
 import com.axelor.apps.base.tracking.ExportObserver;
-import com.axelor.apps.base.tracking.GlobalAuditInterceptor;
 import com.axelor.apps.base.tracking.GlobalTrackingLogService;
 import com.axelor.apps.base.tracking.GlobalTrackingLogServiceImpl;
 import com.axelor.auth.db.repo.UserRepository;
@@ -315,7 +401,9 @@ import com.axelor.team.db.repo.TeamTaskRepository;
 import com.axelor.utils.service.translation.TranslationBaseService;
 import com.axelor.utils.service.translation.TranslationBaseServiceImpl;
 import com.google.inject.matcher.AbstractMatcher;
+import com.google.inject.multibindings.Multibinder;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
@@ -331,7 +419,7 @@ public class BaseModule extends AxelorModule {
           public boolean matches(Class<?> aClass) {
             return aClass.getSimpleName().endsWith("Controller")
                 && aClass.getPackageName().startsWith("com.axelor.apps")
-                && aClass.getPackageName().endsWith("web");
+                && aClass.getPackageName().contains(".web");
           }
         },
         new AbstractMatcher<>() {
@@ -342,13 +430,16 @@ public class BaseModule extends AxelorModule {
                 && parameters.stream()
                     .anyMatch(parameter -> ActionRequest.class.equals(parameter.getType()))
                 && parameters.stream()
-                    .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()));
+                    .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()))
+                && Modifier.isPublic(method.getModifiers())
+                && method.getReturnType().equals(Void.TYPE);
           }
         },
         new ControllerMethodInterceptor());
 
     addQuickMenu(InstanceInfoQuickMenuCreator.class);
     addQuickMenu(ActiveCompanyUpdateQuickMenuCreator.class);
+    addQuickMenu(TradingNameUpdateQuickMenuCreator.class);
 
     bind(AddressService.class).to(AddressServiceImpl.class);
     bind(AdvancedExportService.class).to(AdvancedExportServiceImpl.class);
@@ -407,15 +498,11 @@ public class BaseModule extends AxelorModule {
     bind(FileFieldService.class).to(FileFieldServiceImpl.class);
     bind(ActionService.class).to(ActionServiceImpl.class);
     bind(PartnerService.class).to(PartnerServiceImpl.class);
+    bind(PartnerMailQueryService.class).to(PartnerMailQueryServiceImpl.class);
     bind(ProductCompanyService.class).to(ProductCompanyServiceImpl.class);
     bind(SearchCallService.class).to(SearchCallServiceImpl.class);
     bind(ProductCategoryService.class).to(ProductCategoryServiceImpl.class);
     bind(GlobalTrackingLogService.class).to(GlobalTrackingLogServiceImpl.class);
-    if (AppSettings.get()
-        .get("hibernate.session_factory.interceptor", "")
-        .equals(GlobalAuditInterceptor.class.getName())) {
-      bind(ExportObserver.class);
-    }
     bind(ReportGenerator.class).to(BaseReportGenerator.class);
     bind(PrintTemplateService.class).to(PrintTemplateServiceImpl.class);
     bind(PrintService.class).to(PrintServiceImpl.class);
@@ -438,6 +525,10 @@ public class BaseModule extends AxelorModule {
     bind(SequenceVersionGeneratorService.class).to(SequenceVersionGeneratorServiceImpl.class);
     bind(SequenceVersionGeneratorQueryService.class)
         .to(SequenceVersionGeneratorQueryServiceImpl.class);
+    bind(SequenceIncrementExecutor.class).to(SequenceIncrementExecutorImpl.class);
+    bind(SequenceReservationService.class).to(SequenceReservationServiceImpl.class);
+    bind(SequenceComputationService.class).to(SequenceComputationServiceImpl.class);
+    bind(ReservedSequenceCleanupService.class).to(ReservedSequenceCleanupServiceImpl.class);
     bind(TranslationRestService.class).to(TranslationRestServiceImpl.class);
     bind(DataBackupService.class).to(DataBackupServiceImpl.class);
     bind(AnonymizeService.class).to(AnonymizeServiceImpl.class);
@@ -507,5 +598,48 @@ public class BaseModule extends AxelorModule {
     bind(DataSharingProductWizardRepository.class)
         .to(DataSharingProductWizardManagementRepository.class);
     bind(LanguageCheckerService.class).to(LanguageCheckerServiceImpl.class);
+    bind(ConnectorMapperCreateService.class).to(ConnectorMapperCreateServiceImpl.class);
+    bind(ConnectorMapperFetchService.class).to(ConnectorMapperFetchServiceImpl.class);
+    bind(ConnectorMapperReferenceService.class).to(ConnectorMapperReferenceServiceImpl.class);
+    bind(ConnectorMapperManagementService.class).to(ConnectorMapperManagementServiceImpl.class);
+    bind(PartnerApiFetchService.class).to(PartnerApiFetchServiceImpl.class);
+    bind(PartnerGenerateService.class).to(PartnerGenerateServiceImpl.class);
+    bind(LocalizationRepository.class).to(LocalizationBaseRepository.class);
+    bind(PartnerRestService.class).to(PartnerRestServiceImpl.class);
+    bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
+    bind(AlternativeBarcodeService.class).to(AlternativeBarcodeServiceImpl.class);
+    bind(PartnerPriceListDomainService.class).to(PartnerPriceListDomainServiceImpl.class);
+    bind(PfxCertificateCheckService.class).to(PfxCertificateCheckServiceImpl.class);
+    bind(PartnerConvertService.class).to(PartnerConvertServiceImpl.class);
+    bind(ProductCompanyRepository.class).to(ProductCompanyBaseRepository.class);
+    bind(MetaThemeFetchService.class).to(MetaThemeFetchServiceImpl.class);
+    bind(PartnerCreationService.class).to(PartnerCreationServiceImpl.class);
+    bind(PublicHolidayService.class).to(PublicHolidayServiceImpl.class);
+    bind(MapGroupService.class).to(MapGroupServiceImpl.class);
+    bind(MapViewService.class).to(MapViewServiceImpl.class);
+    bind(MapViewRepository.class).to(MapViewBaseRepository.class);
+    bind(ProductPackagingService.class).to(ProductPackagingServiceImpl.class);
+    bind(IndicatorConfigRepository.class).to(IndicatorConfigBaseRepository.class);
+    bind(IndicatorService.class).to(IndicatorServiceImpl.class);
+    bind(IndicatorResultService.class).to(IndicatorResultServiceImpl.class);
+    bind(IndicatorResultLineService.class).to(IndicatorResultLineServiceImpl.class);
+    bind(IndicatorEvaluationService.class).to(IndicatorEvaluationServiceImpl.class);
+    bind(IndicatorQueryService.class).to(IndicatorQueryServiceImpl.class);
+    bind(IndicatorConfigService.class).to(IndicatorConfigServiceImpl.class);
+    bind(IndicatorExportService.class).to(IndicatorExportServiceImpl.class);
+    bind(IndicatorChartService.class).to(IndicatorChartServiceImpl.class);
+    bind(IndicatorFormService.class).to(IndicatorFormServiceImpl.class);
+    Multibinder<ExpressionEvaluator> mb =
+        Multibinder.newSetBinder(binder(), ExpressionEvaluator.class);
+    mb.addBinding().to(GroovyExpressionEvaluator.class);
+    mb.addBinding().to(JsExpressionEvaluator.class);
+    mb.addBinding().to(JpqlExpressionEvaluator.class);
+    bind(IndicatorMetaService.class).to(IndicatorMetaServiceImpl.class);
+    bind(ExportObserver.class);
+    addHibernateListenerConfigurator(AosHibernateConfigurator.class);
+    bind(MapService.class).to(MapServiceImpl.class);
+    bind(MapOsmService.class).to(MapOsmServiceImpl.class);
+    bind(MapGoogleService.class).to(MapGoogleServiceImpl.class);
+    bind(MapToolService.class).to(MapToolServiceImpl.class);
   }
 }

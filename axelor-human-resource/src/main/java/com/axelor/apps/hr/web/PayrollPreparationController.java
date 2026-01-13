@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ import com.axelor.apps.hr.service.PayrollPreparationService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class PayrollPreparationController {
     PayrollPreparation payrollPreparation = request.getContext().asType(PayrollPreparation.class);
     EmploymentContract employmentContract =
         Beans.get(EmploymentContractRepository.class)
-            .find(new Long(request.getContext().get("_idEmploymentContract").toString()));
+            .find(Long.parseLong(request.getContext().get("_idEmploymentContract").toString()));
 
     response.setValues(
         Beans.get(PayrollPreparationService.class)

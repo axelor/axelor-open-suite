@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,8 +38,8 @@ import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
@@ -138,18 +138,20 @@ public class BillOfMaterialImportServiceImpl implements BillOfMaterialImportServ
   }
 
   protected void attachMetaFile(BillOfMaterialImport billOfMaterialImport) throws AxelorException {
+    billOfMaterialImport = billOfMaterialImportRepository.find(billOfMaterialImport.getId());
     MetaFile metaFile = billOfMaterialImport.getDocumentMetaFile();
-
-    if (metaFile != null) {
+    BillOfMaterial mainBillOfMaterialGenerated =
+        billOfMaterialImport.getMainBillOfMaterialGenerated();
+    if (metaFile != null && mainBillOfMaterialGenerated != null) {
       if (metaFile.getFileType().equals("application/zip")
           || metaFile.getFileType().equals("application/x-zip-compressed")) {
         String zipFilePath = MetaFiles.getPath(metaFile).toFile().getAbsolutePath();
-        dmsService.unzip(zipFilePath, billOfMaterialImport.getMainBillOfMaterialGenerated());
+        dmsService.unzip(zipFilePath, mainBillOfMaterialGenerated);
       } else {
         metaFiles.attach(
             billOfMaterialImport.getDocumentMetaFile(),
             billOfMaterialImport.getDocumentMetaFile().getFileName(),
-            billOfMaterialImport.getMainBillOfMaterialGenerated());
+            mainBillOfMaterialGenerated);
       }
     }
   }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -51,8 +51,8 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -419,7 +419,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             dummyInvoice.getInAti(),
             null,
             dummyInvoice.getTradingName(),
-            dummyInvoice.getGroupProductsOnPrintings()) {
+            dummyInvoice.getGroupProductsOnPrintings(),
+            dummyInvoice.getCompanyTaxNumber()) {
 
           @Override
           public Invoice generate() throws AxelorException {
@@ -446,6 +447,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     }
 
     invoice.setDeliveryAddressStr(deliveryAddressStr.toString());
+
+    fillInvoiceCommentsFromMultiOutStockMove(stockMoveList, invoice);
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
 
@@ -536,7 +539,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
             dummyInvoice.getInAti(),
             null,
             dummyInvoice.getTradingName(),
-            null) {
+            null,
+            dummyInvoice.getCompanyTaxNumber()) {
 
           @Override
           public Invoice generate() throws AxelorException {
@@ -948,5 +952,30 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
     invoiceLine.setCompanyInTaxTotal(invoiceLine.getCompanyInTaxTotal().negate());
     invoiceLine.setExTaxTotal(invoiceLine.getExTaxTotal().negate());
     invoiceLine.setCompanyExTaxTotal(invoiceLine.getCompanyExTaxTotal().negate());
+  }
+
+  protected void fillInvoiceCommentsFromMultiOutStockMove(
+      List<StockMove> stockMoveList, Invoice invoice) {
+    StringBuilder notes = new StringBuilder();
+    StringBuilder proformaComments = new StringBuilder();
+
+    for (StockMove stockMove : stockMoveList) {
+      Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
+
+      if (ObjectUtils.isEmpty(saleOrderSet)) {
+        continue;
+      }
+      String note = stockMoveInvoiceService.fillInvoiceNoteFromOutStockMove(saleOrderSet);
+      if (StringUtils.notEmpty(note)) {
+        notes.append(note);
+      }
+      String proformaComment =
+          stockMoveInvoiceService.fillInvoiceProformaCommentsFromOutStockMove(saleOrderSet);
+      if (StringUtils.notEmpty(proformaComment)) {
+        proformaComments.append(proformaComment);
+      }
+    }
+    invoice.setNote(notes.toString());
+    invoice.setProformaComments(proformaComments.toString());
   }
 }

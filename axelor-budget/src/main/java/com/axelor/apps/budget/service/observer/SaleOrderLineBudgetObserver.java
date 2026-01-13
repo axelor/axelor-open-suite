@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,24 +28,27 @@ import com.axelor.apps.sale.service.event.SaleOrderLineViewOnLoad;
 import com.axelor.apps.sale.service.event.SaleOrderLineViewOnNew;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
+import jakarta.annotation.Priority;
 import java.util.Map;
 
 public class SaleOrderLineBudgetObserver {
 
-  void onSaleOrderLineOnNew(@Observes SaleOrderLineViewOnNew event) throws AxelorException {
-    SaleOrder saleOrder = event.getSaleOrder();
-    Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
-    saleOrderLineMap.putAll(Beans.get(SaleOrderLineViewBudgetService.class).checkBudget(saleOrder));
-  }
-
-  void onSaleOrderLineOnLoad(@Observes SaleOrderLineViewOnLoad event) throws AxelorException {
-    SaleOrder saleOrder = event.getSaleOrder();
-    Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
-    saleOrderLineMap.putAll(Beans.get(SaleOrderLineViewBudgetService.class).checkBudget(saleOrder));
-  }
-
-  void onSaleOrderLineProductOnChange(@Observes SaleOrderLineProductOnChange event)
+  void onSaleOrderLineOnNew(@Observes @Priority(value = 50) SaleOrderLineViewOnNew event)
       throws AxelorException {
+    SaleOrder saleOrder = event.getSaleOrder();
+    Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
+    saleOrderLineMap.putAll(Beans.get(SaleOrderLineViewBudgetService.class).checkBudget(saleOrder));
+  }
+
+  void onSaleOrderLineOnLoad(@Observes @Priority(value = 50) SaleOrderLineViewOnLoad event)
+      throws AxelorException {
+    SaleOrder saleOrder = event.getSaleOrder();
+    Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
+    saleOrderLineMap.putAll(Beans.get(SaleOrderLineViewBudgetService.class).checkBudget(saleOrder));
+  }
+
+  void onSaleOrderLineProductOnChange(
+      @Observes @Priority(value = 40) SaleOrderLineProductOnChange event) throws AxelorException {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Object> saleOrderLineMap = event.getSaleOrderLineMap();

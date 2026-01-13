@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -52,7 +52,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -541,20 +541,6 @@ public class MoveLineController {
     }
   }
 
-  public void accountOnSelect(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = this.getMove(request, moveLine);
-      if (move != null) {
-        response.setAttrs(
-            Beans.get(MoveLineGroupService.class)
-                .getAccountOnSelectAttrsMap(move.getJournal(), move.getCompany()));
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
   public void partnerOnSelect(ActionRequest request, ActionResponse response) {
     try {
       MoveLine moveLine = request.getContext().asType(MoveLine.class);
@@ -574,7 +560,7 @@ public class MoveLineController {
 
       response.setAttrs(
           Beans.get(MoveLineGroupService.class)
-              .getAnalyticDistributionTemplateOnSelectAttrsMap(move));
+              .getAnalyticDistributionTemplateOnSelectAttrsMap(move, moveLine));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
@@ -681,6 +667,19 @@ public class MoveLineController {
       response.setAttrs(moveLineGroupService.getAnalyticMoveLineOnChangeAttrsMap(moveLine, move));
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    }
+  }
+
+  public void computeInvoiceTermsDueDates(ActionRequest request, ActionResponse response) {
+    MoveLine moveLine = request.getContext().asType(MoveLine.class);
+    Move move = request.getContext().getParent().asType(Move.class);
+    try {
+      InvoiceTermService invoiceTermService = Beans.get(InvoiceTermService.class);
+      invoiceTermService.computeInvoiceTermsDueDates(moveLine, move);
+      response.setValue("invoiceTermList", moveLine.getInvoiceTermList());
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

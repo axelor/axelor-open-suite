@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,6 +41,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
@@ -54,7 +55,7 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -205,7 +206,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       return null;
     }
 
-    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    SaleOrder saleOrder = SaleOrderLineUtils.getParentSol(saleOrderLine).getSaleOrder();
 
     // Update invoiced amount on sale order line
     BigDecimal invoicedAmountToAdd = invoiceLine.getExTaxTotal();
@@ -297,27 +298,30 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       if (stockMoveLine == null) {
         continue;
       }
-      if (isStockMoveInvoicingPartiallyActivated(invoice, stockMoveLine)) {
+      if (isStockMoveInvoicingPartiallyActivated(invoice)) {
         BigDecimal qty = stockMoveLine.getQtyInvoiced();
         StockMove stockMove = stockMoveLine.getStockMove();
+        Unit movUnit = stockMoveLine.getUnit();
+        Unit invUnit = invoiceLine.getUnit();
 
-        if (stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMove, invoice)) {
-          qty = qty.subtract(invoiceLine.getQty());
-        } else {
-          qty = qty.add(invoiceLine.getQty());
-        }
+        BigDecimal invoiceQty = invoiceLine.getQty();
 
-        Unit movUnit = stockMoveLine.getUnit(), invUnit = invoiceLine.getUnit();
         try {
-          qty =
+          invoiceQty =
               unitConversionService.convert(
-                  invUnit, movUnit, qty, appBaseService.getNbDecimalDigitForQty(), null);
+                  invUnit, movUnit, invoiceQty, appBaseService.getNbDecimalDigitForQty(), null);
         } catch (AxelorException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY,
               I18n.get(SupplychainExceptionMessage.STOCK_MOVE_INVOICE_QTY_INVONVERTIBLE_UNIT)
                   + "\n"
                   + e.getMessage());
+        }
+
+        if (stockMoveInvoiceService.isInvoiceRefundingStockMove(stockMove, invoice)) {
+          qty = qty.subtract(invoiceQty);
+        } else {
+          qty = qty.add(invoiceQty);
         }
 
         if (stockMoveLine.getRealQty().compareTo(qty) >= 0) {
@@ -388,13 +392,9 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  protected boolean isStockMoveInvoicingPartiallyActivated(
-      Invoice invoice, StockMoveLine stockMoveLine) throws AxelorException {
+  protected boolean isStockMoveInvoicingPartiallyActivated(Invoice invoice) throws AxelorException {
     SupplyChainConfig supplyChainConfig =
         supplyChainConfigService.getSupplyChainConfig(invoice.getCompany());
-    return stockMoveLine.getSaleOrderLine() != null
-            && supplyChainConfig.getActivateOutStockMovePartialInvoicing()
-        || stockMoveLine.getPurchaseOrderLine() != null
-            && supplyChainConfig.getActivateIncStockMovePartialInvoicing();
+    return supplyChainConfig.getActivateOutStockMovePartialInvoicing();
   }
 }

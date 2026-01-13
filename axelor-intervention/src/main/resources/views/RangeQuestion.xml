@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid model="com.axelor.apps.intervention.db.RangeQuestion" title="Range question"
     name="range-question-grid" orderBy="orderSeq">
@@ -24,7 +24,7 @@
             onSelect="action-range-question-attrs-set-conditional-question-domain"/>
           <field name="conditionalAnswerValueSet" grid-view="answer-value-grid"
             form-view="answer-value-form" hidden="true" showIf="conditionalRangeQuestion"
-            requiredIf="isConditional" canNew="false" widget="TagSelect" colSpan="12"
+            requiredIf="isConditional" canNew="false" widget="Tags" colSpan="12"
             onSelect="action-range-question-attrs-set-conditional-answer-domain"
             validIf="isConditional === null || isConditional === false || conditionalAnswerValueSet.length > 0"/>
         </panel>

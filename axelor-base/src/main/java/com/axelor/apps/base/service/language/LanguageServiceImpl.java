@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,8 @@ import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectItemRepository;
 import com.axelor.meta.db.repo.MetaSelectRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class LanguageServiceImpl implements LanguageService {
   protected MetaSelectRepository metaSelectRepository;
@@ -148,7 +148,7 @@ public class LanguageServiceImpl implements LanguageService {
    * @param orderNumber
    */
   protected void updateOrderNumber(int orderNumber) {
-    javax.persistence.Query query =
+    jakarta.persistence.Query query =
         JPA.em()
             .createQuery(
                 "UPDATE MetaSelectItem self "

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,7 +27,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.studio.db.AppStock;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class TrackingNumberConfigurationServiceImpl implements TrackingNumberConfigurationService {
 

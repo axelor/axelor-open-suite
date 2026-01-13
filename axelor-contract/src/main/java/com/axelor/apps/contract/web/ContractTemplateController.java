@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,28 +21,30 @@ package com.axelor.apps.contract.web;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class ContractTemplateController {
 
   public void changeProduct(ActionRequest request, ActionResponse response) {
     ContractLineService contractLineService = Beans.get(ContractLineService.class);
-    ContractLine contractLine = new ContractLine();
+    ContractLine contractLine = request.getContext().asType(ContractLine.class);
+    ContractTemplate contractTemplate =
+        request.getContext().getParent().asType(ContractTemplate.class);
 
     try {
-      contractLine = request.getContext().asType(ContractLine.class);
       Product product = contractLine.getProduct();
       if (product == null) {
         contractLine = contractLineService.resetProductInformation(contractLine);
         response.setValues(contractLine);
         return;
       }
-      contractLine = contractLineService.fill(contractLine, null, product);
+      contractLine = contractLineService.fill(contractLine, contractTemplate, product);
 
       response.setValues(contractLine);
     } catch (Exception e) {

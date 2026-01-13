@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,12 +19,12 @@
 package com.axelor.apps.supplychain.service.saleorder;
 
 import com.axelor.apps.account.db.Invoice;
-import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
@@ -33,7 +33,7 @@ import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLine
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.List;
@@ -43,6 +43,7 @@ import org.slf4j.LoggerFactory;
 public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServiceImpl {
 
   protected AdvancePaymentRefundService refundService;
+  protected SaleOrderAdvancePaymentFetchService saleOrderAdvancePaymentFetchService;
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -51,13 +52,17 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
       SubSaleOrderLineComputeService subSaleOrderLineComputeService,
-      AdvancePaymentRefundService refundService) {
+      AppSaleService appSaleService,
+      AdvancePaymentRefundService refundService,
+      SaleOrderAdvancePaymentFetchService saleOrderAdvancePaymentFetchService) {
     super(
         saleOrderLineCreateTaxLineService,
         saleOrderLineComputeService,
         saleOrderLinePackService,
-        subSaleOrderLineComputeService);
+        subSaleOrderLineComputeService,
+        appSaleService);
     this.refundService = refundService;
+    this.saleOrderAdvancePaymentFetchService = saleOrderAdvancePaymentFetchService;
   }
 
   @Override
@@ -100,14 +105,7 @@ public class SaleOrderComputeServiceSupplychainImpl extends SaleOrderComputeServ
     }
 
     List<Invoice> advancePaymentInvoiceList =
-        Beans.get(InvoiceRepository.class)
-            .all()
-            .filter(
-                "self.saleOrder.id = :saleOrderId AND self.operationSubTypeSelect = :operationSubTypeSelect AND self.operationTypeSelect = :operationTypeSelect")
-            .bind("saleOrderId", saleOrder.getId())
-            .bind("operationSubTypeSelect", InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
-            .bind("operationTypeSelect", InvoiceRepository.OPERATION_TYPE_CLIENT_SALE)
-            .fetch();
+        saleOrderAdvancePaymentFetchService.getAdvancePayments(saleOrder);
     if (advancePaymentInvoiceList == null || advancePaymentInvoiceList.isEmpty()) {
       return total;
     }

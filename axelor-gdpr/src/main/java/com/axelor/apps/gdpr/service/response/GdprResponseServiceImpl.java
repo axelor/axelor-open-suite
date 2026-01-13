@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,13 +26,12 @@ import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.meta.db.MetaField;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import javax.persistence.Query;
-import wslite.json.JSONException;
 
 public class GdprResponseServiceImpl implements GdprResponseService {
 
@@ -85,7 +84,7 @@ public class GdprResponseServiceImpl implements GdprResponseService {
 
   @Override
   public void generateResponse(GDPRRequest gdprRequest)
-      throws AxelorException, IOException, ClassNotFoundException, JSONException {
+      throws AxelorException, IOException, ClassNotFoundException {
     if (gdprRequest.getTypeSelect() == GDPRRequestRepository.REQUEST_TYPE_ACCESS) {
       gdprResponseAccessService.generateAccessResponseDataFile(gdprRequest);
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,7 +35,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppSale;
 import com.axelor.studio.db.repo.AppSaleRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,17 +51,20 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
   protected AppBaseService appBaseService;
   protected SaleOrderRepository saleOrderRepository;
   protected AppSaleService appSaleService;
+  protected SaleOrderAttrsService saleOrderAttrsService;
 
   @Inject
   public SaleOrderViewServiceImpl(
       SaleConfigService saleConfigService,
       AppBaseService appBaseService,
       SaleOrderRepository saleOrderRepository,
-      AppSaleService appSaleService) {
+      AppSaleService appSaleService,
+      SaleOrderAttrsService saleOrderAttrsService) {
     this.saleConfigService = saleConfigService;
     this.appBaseService = appBaseService;
     this.saleOrderRepository = saleOrderRepository;
     this.appSaleService = appSaleService;
+    this.saleOrderAttrsService = saleOrderAttrsService;
   }
 
   @Override
@@ -85,6 +88,7 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     MapTools.addMap(attrs, hideContactPartner(saleOrder));
     MapTools.addMap(attrs, hideDiscount());
+    saleOrderAttrsService.setSaleOrderGlobalDiscountDummies(saleOrder, attrs);
     return attrs;
   }
 
@@ -96,9 +100,11 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder) {
+  public Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder)
+      throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     MapTools.addMap(attrs, hideContactPartner(saleOrder));
+    MapTools.addMap(attrs, inAti(saleOrder));
     return attrs;
   }
 
@@ -110,7 +116,6 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
 
   protected Map<String, Map<String, Object>> inAti(SaleOrder saleOrder) throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
-    SaleConfig saleConfig = saleConfigService.getSaleConfig(saleOrder.getCompany());
     AppSale appSale = appSaleService.getAppSale();
     boolean isClassicLineList =
         appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_CLASSIC;
@@ -123,6 +128,7 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
 
     Company company = saleOrder.getCompany();
     if (company != null) {
+      SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
       int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
       boolean hideInAti =
           saleOrderInAtiSelect == SaleConfigRepository.SALE_WT_ALWAYS

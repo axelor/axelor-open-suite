@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,14 +28,16 @@ import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppAccount;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
-import javax.persistence.PersistenceException;
+import java.util.List;
 
 public class FixedAssetManagementRepository extends FixedAssetRepository {
 
@@ -153,5 +155,14 @@ public class FixedAssetManagementRepository extends FixedAssetRepository {
           I18n.get(AccountExceptionMessage.FIXED_ASSET_CAN_NOT_BE_REMOVE));
     }
     super.remove(entity);
+  }
+
+  public Query<FixedAsset> findValidatedAndDepreciatedByIds(List<Integer> ids) {
+    return Query.of(FixedAsset.class)
+        .filter(
+            "(self.statusSelect = :statusValidated OR self.statusSelect = :statusDepreciated) AND id IN (:ids)")
+        .bind("statusValidated", FixedAssetRepository.STATUS_VALIDATED)
+        .bind("statusDepreciated", FixedAssetRepository.STATUS_DEPRECIATED)
+        .bind("ids", ids);
   }
 }

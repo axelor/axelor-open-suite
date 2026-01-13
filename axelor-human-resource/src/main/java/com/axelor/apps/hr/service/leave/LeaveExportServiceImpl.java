@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,11 +28,12 @@ import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.csv.CSVFile;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.helpers.MetaSelectHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -73,7 +74,7 @@ public class LeaveExportServiceImpl implements LeaveExportService {
 
     List<LeaveRequest> leaveRequests = leaveRequestRepo.findByIds(ids);
 
-    File tempFile = MetaFiles.createTempFile(null, ".csv").toFile();
+    File tempFile = TempFiles.createTempFile(null, ".csv").toFile();
     try (CSVPrinter printer = CSVFile.DEFAULT.withDelimiter(';').withQuoteAll().write(tempFile)) {
       Map<Integer, String> selectionMap =
           Map.of(

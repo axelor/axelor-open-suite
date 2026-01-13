@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.mobilesettings.db.MobileChart;
 import com.axelor.apps.mobilesettings.rest.dto.MobileChartResponse;
 import com.axelor.meta.db.MetaAction;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class MobileChartResponseComputeServiceImpl implements MobileChartResponseComputeService {
   protected MobileChartService mobileChartService;

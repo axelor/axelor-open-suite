@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,13 +37,13 @@ import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateMessageService;
 import com.axelor.meta.db.MetaModel;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.mail.MessagingException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import javax.mail.MessagingException;
 
 public class BatchTimesheetReminder extends BatchStrategy {
 
@@ -108,7 +108,7 @@ public class BatchTimesheetReminder extends BatchStrategy {
         employeeRepository
             .all()
             .filter(
-                "self.timesheetReminder = 't' AND self.mainEmploymentContract.payCompany = :companyId")
+                "self.timesheetReminder = true AND self.mainEmploymentContract.payCompany = :companyId")
             .bind("companyId", batch.getHrBatch().getCompany().getId())
             .fetch();
 

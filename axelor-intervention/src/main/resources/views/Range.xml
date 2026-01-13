@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid model="com.axelor.apps.intervention.db.Range" title="Range" name="range-grid">
     <field name="title"/>
@@ -53,12 +53,13 @@
     <view type="grid" name="intervention-type-grid"/>
     <view type="form" name="intervention-type-form"/>
     <domain>
-      :rangeId in self.advancedStartupMonitoringRange.id
+      :rangeId in (self.advancedStartupMonitoringRange.id)
       OR :rangeId in
-      self.headerRangeList.rangeVal.id
-      OR :rangeId in self.equipmentRangeList.rangeVal.id
-      OR :rangeId
-      in self.footerRangeList.rangeVal.id
+      (self.headerRangeList.rangeVal.id)
+      OR :rangeId in (self.equipmentRangeList.rangeVal.id)
+      OR
+      :rangeId
+      in (self.footerRangeList.rangeVal.id)
     </domain>
     <context name="rangeId" expr="eval: id == null ? 0 : id"/>
   </action-view>
@@ -92,7 +93,7 @@
   </action-view>
 
   <action-validate name="action-range-validate-remove-range-questions">
-    <alert message="Are you sure wants to remove selected questions?"/>
+    <alert message="Are you sure you want to remove selected questions?"/>
   </action-validate>
 
   <action-script name="action-range-script-remove-range-questions"

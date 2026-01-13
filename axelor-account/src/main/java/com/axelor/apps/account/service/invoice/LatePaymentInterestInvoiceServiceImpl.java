@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,8 +38,8 @@ import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppAccount;
 import com.axelor.utils.helpers.date.LocalDateHelper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -223,6 +223,7 @@ public class LatePaymentInterestInvoiceServiceImpl implements LatePaymentInteres
         null,
         null,
         invoice.getTradingName(),
+        null,
         null) {
       @Override
       public Invoice generate() throws AxelorException {

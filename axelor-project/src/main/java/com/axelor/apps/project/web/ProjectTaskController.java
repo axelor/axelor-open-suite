@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,9 @@ package com.axelor.apps.project.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Timer;
+import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TimerRepository;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -35,6 +37,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskLinkTypeRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectCheckListTemplateService;
 import com.axelor.apps.project.service.ProjectTaskAttrsService;
+import com.axelor.apps.project.service.ProjectTaskGroupService;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.TaskStatusToolService;
 import com.axelor.apps.project.service.TimerProjectTaskService;
@@ -44,9 +47,11 @@ import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.helpers.StringHelper;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -286,7 +291,15 @@ public class ProjectTaskController {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
     response.setAttr(
-        "tagSet", "domain", Beans.get(ProjectTaskAttrsService.class).getTagDomain(projectTask));
+        "tagSet",
+        "domain",
+        Beans.get(TagService.class)
+            .getTagDomain(
+                "ProjectTask",
+                Optional.of(projectTask)
+                    .map(ProjectTask::getProject)
+                    .map(Project::getCompany)
+                    .orElse(null)));
   }
 
   @ErrorException
@@ -306,5 +319,44 @@ public class ProjectTaskController {
     Beans.get(ProjectCheckListTemplateService.class)
         .generateCheckListItemsFromTemplate(projectTask, template);
     response.setValue("projectCheckListItemList", projectTask.getProjectCheckListItemList());
+  }
+
+  public void computeSprintDomain(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    String domain = Beans.get(ProjectTaskAttrsService.class).getActiveSprintDomain(projectTask);
+
+    response.setAttr("activeSprint", "domain", domain);
+  }
+
+  @ErrorException
+  public void updateBudgetedTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+
+    Unit oldTimeUnit = null;
+    if (projectTask.getId() != null && projectTask.getTimeUnit() != null) {
+      oldTimeUnit =
+          Optional.ofNullable(Beans.get(ProjectTaskRepository.class).find(projectTask.getId()))
+              .map(ProjectTask::getTimeUnit)
+              .orElse(null);
+      if (oldTimeUnit == null || Objects.equals(oldTimeUnit, projectTask.getTimeUnit())) {
+        oldTimeUnit = null;
+      }
+    }
+
+    response.setValues(
+        Beans.get(ProjectTaskGroupService.class).updateBudgetedTime(projectTask, oldTimeUnit));
+  }
+
+  @ErrorException
+  public void statusOnSelect(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    Project project = projectTask.getProject();
+
+    Set<TaskStatus> taskStatusSet =
+        Beans.get(TaskStatusToolService.class).getTaskStatusSet(project, projectTask);
+    String filter = String.format("self.id IN (%s)", StringHelper.getIdListString(taskStatusSet));
+    response.setAttr("status", "domain", filter);
   }
 }

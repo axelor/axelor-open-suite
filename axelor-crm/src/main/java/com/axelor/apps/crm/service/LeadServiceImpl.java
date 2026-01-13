@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,8 +40,8 @@ import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.repo.MultiRelatedRepository;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -125,25 +125,31 @@ public class LeadServiceImpl implements LeadService {
     searchName = searchName == null ? "" : searchName;
     urlMap.put(
         "linkedin",
-        "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
+        "<a href='http://www.linkedin.com/pub/dir/"
             + searchName.replace("+", "/")
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/linkedin.svg'/>"
+            + "</a>");
     if (companyName != null) {
       urlMap.put(
           "google",
-          "<a class='fa fa-google' href='https://www.google.com/search?q="
+          "<a href='https://www.google.com/search?q="
               + companyName
               + "+"
               + searchName
               + "&gws_rd=cr"
-              + "' target='_blank' />");
+              + "' target='_blank' >"
+              + "<img src='img/social/google.svg'/>"
+              + "</a>");
     } else {
       urlMap.put(
           "google",
-          "<a class='fa fa-google' href='https://www.google.com/search?q="
+          "<a href='https://www.google.com/search?q="
               + searchName
               + "&gws_rd=cr"
-              + "' target='_blank' />");
+              + "' target='_blank' >"
+              + "<img src='img/social/google.svg'/>"
+              + "</a>");
     }
     return urlMap;
   }
@@ -242,8 +248,9 @@ public class LeadServiceImpl implements LeadService {
     LeadStatus leadStatus = lead.getLeadStatus();
     LeadStatus lostLeadStatus = appCrmService.getLostLeadStatus();
     LeadStatus convertedLeadStatus = appCrmService.getConvertedLeadStatus();
+    LeadStatus previousStatus = leadRepo.find(lead.getId()).getLeadStatus();
 
-    if (Objects.isNull(leadStatus)) {
+    if (Objects.isNull(leadStatus) || previousStatus.equals(leadStatus)) {
       return;
     }
     if (leadStatus.equals(convertedLeadStatus)) {
@@ -255,6 +262,11 @@ public class LeadServiceImpl implements LeadService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(CrmExceptionMessage.LEAD_LOSE_KANBAN));
+    }
+    if (previousStatus.equals(convertedLeadStatus)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(CrmExceptionMessage.LEAD_CONVERT_WRONG_STATUS_KANBAN));
     }
   }
 

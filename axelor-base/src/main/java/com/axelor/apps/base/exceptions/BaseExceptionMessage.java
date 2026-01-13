@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -75,6 +75,9 @@ public final class BaseExceptionMessage {
 
   public static final String UNIT_CONVERSION_4 = /*$$(*/ "End unit cannot be void." /*)*/;
 
+  public static final String COEFFICIENT_SHOULD_NOT_BE_ZERO = /*$$(*/
+      "The coefficient for unit conversion from %s to %s should not be 0." /*)*/;
+
   public static final String CURRENCY_CONVERSION_1 = /*$$(*/
       "WARNING : Please close the current conversion period before creating new one" /*)*/;
   public static final String CURRENCY_CONVERSION_2 = /*$$(*/
@@ -92,6 +95,7 @@ public final class BaseExceptionMessage {
 
   public static final String PERIOD_2 = /*$$(*/ "Period closed" /*)*/;
   public static final String PERIOD_3 = /*$$(*/ "Too much iterations." /*)*/;
+  public static final String PERIOD_4 = /*$$(*/ "Years in 360 days" /*)*/;
   public static final String PAY_PERIOD_CLOSED = /*$$(*/
       "Warning : the pay period %s is closed." /*)*/;
 
@@ -257,10 +261,6 @@ public final class BaseExceptionMessage {
   public static final String GENERAL_10 = /*$$(*/ "No duplicate finder field configured." /*)*/;
   public static final String GENERAL_11 = /*$$(*/ "Please select original object." /*)*/;
 
-  /** Messsage controller */
-  public static final String MESSAGE_1 = /*$$(*/
-      "Error in print. Please check report configuration and print setting." /*)*/;
-
   /** Partner controller */
   public static final String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
 
@@ -355,6 +355,8 @@ public final class BaseExceptionMessage {
       "Password must have at least 8 characters with at least three of these four types: lowercase, uppercase, digit, special." /*)*/;
   public static final String USER_PATTERN_MISMATCH_CUSTOM = /*$$(*/
       "Password doesn't match with configured pattern." /*)*/;
+  public static final String USER_CODE_LENGTH_SHOULD_BE_GREATER_THAN_2 = /*$$(*/
+      "Code length should be greater than 2." /*)*/;
 
   /** Convert demo data file */
   public static final String DUPLICATE_CSV_FILE_NAME_EXISTS = /*$$(*/
@@ -466,8 +468,6 @@ public final class BaseExceptionMessage {
   /* Print template */
   public static final String PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN = /*$$(*/
       "The groovy condition result must be a boolean" /*)*/;
-  public static final String PRINT_ERROR = /*$$(*/
-      "Error in print. Please check report configuration and print settings." /*)*/;
   public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
       "Error in print template line with sequence %s and title %s." /*)*/;
 
@@ -623,6 +623,15 @@ public final class BaseExceptionMessage {
   public static final String SEQUENCE_GROOVY_CONFIGURATION = /*$$(*/
       "An error occurred while generating the sequence. Please check the configuration." /*)*/;
 
+  public static final String SEQUENCE_INCREMENT_TIMEOUT = /*$$(*/
+      "Timeout while acquiring sequence lock for sequence ID %s. Please retry." /*)*/;
+
+  public static final String SEQUENCE_INCREMENT_FAILED = /*$$(*/
+      "Failed to increment sequence ID %s. Please contact administrator." /*)*/;
+
+  public static final String SEQUENCE_INCREMENT_INTERRUPTED = /*$$(*/
+      "Sequence generation was interrupted for sequence ID %s." /*)*/;
+
   public static final String ADDRESS_TEMPLATE_ERROR = /*$$(*/
       "An error occurred while generating the address template: '%s'" /*)*/;
 
@@ -649,6 +658,9 @@ public final class BaseExceptionMessage {
 
   public static final String IMPORT_CONFIGURATION_WRONG_DATA_FILE_TYPE_XML_MESSAGE = /*$$(*/
       "The data file should be only an XML or ZIP file." /*)*/;
+
+  public static final String IMPORT_CONFIGURATION_TYPE_MISSING = /*$$(*/
+      "The import configuration type is missing." /*)*/;
 
   public static final String MISSING_ADDRESS_FIELD = /*$$(*/ "Address Field is missing : %s" /*)*/;
 
@@ -685,4 +697,64 @@ public final class BaseExceptionMessage {
 
   public static final String LOCALIZATION_LANGUAGE_EMPTY = /*$$(*/
       "Language is empty for the localization %s" /*)*/;
+
+  public static final String DATA_SHARING_REFERENTIAL_LINE_JPQL_SYNTAX_IS_WRONG = /*$$(*/
+      "Wrong JPQL syntax : %s" /*)*/;
+  public static final String DATA_SHARING_REFERENTIAL_LINE_JPQL_SYNTAX_IS_CORRECT = /*$$(*/
+      "The syntax of the script is correct." /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_DAYS = /*$$(*/
+      "There is no configured unit days in the app base config" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_HOURS = /*$$(*/
+      "There is no configured unit hours in the app base config" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_MINUTES = /*$$(*/
+      "There is no configured unit minutes in the app base config" /*)*/;
+
+  public static final String APP_BASE_NO_UNIT_DAILY_WORK_HOURS = /*$$(*/
+      "There is no configured daily work hours in the app base config" /*)*/;
+
+  public static final String API_BAD_REQUEST = /*$$(*/
+      "Bad request please check api configuration information." /*)*/;
+
+  public static final String API_WRONG_CREDENTIALS = /*$$(*/
+      "Bad request please check credentials." /*)*/;
+
+  public static final String API_WRONG_SIRET_NUMBER = /*$$(*/
+      "Cannot get information with siret: %s ." /*)*/;
+
+  public static final String API_INVALID_SIRET_NUMBER = /*$$(*/
+      "Invalid SIRET number. It must contain exactly 14 digits." /*)*/;
+
+  public static final String PARTNER_REGISTRATION_CODE_ALREADY_EXISTS = /*$$(*/
+      "Registration number already exists for partner %s." /*)*/;
+
+  public static final String APP_BASE_SIRENE_API_URL_MISSING = /*$$(*/
+      "Please fill API Sirene url in app base." /*)*/;
+
+  public static final String PFX_CERTIFICATE_VALIDITY_ERROR = /*$$(*/
+      "Signature certificate is expired. Please change to a new certificate." /*)*/;
+
+  public static final String DATABACKUP_ERROR_1 = /*$$(*/ "The entry file %s is not secured." /*)*/;
+
+  public static final String PARTNER_BOOLEAN_MISSING = /*$$(*/
+      "At least one of isContact, isCustomer, isSupplier or isProspect must be true." /*)*/;
+
+  public static final String PARTNER_INVALID_BOOLEAN_1 = /*$$(*/
+      "A partner cannot be both a contact and a customer, supplier, or prospect." /*)*/;
+
+  public static final String PARTNER_INVALID_BOOLEAN_2 = /*$$(*/
+      "A partner cannot be both a customer and a prospect." /*)*/;
+
+  public static final String PACKAGING_MAX_WEIGHT_EXCEEDED = /*$$(*/
+      "The products' total weight exceeds the maximum weight carried by the packaging." /*)*/;
+
+  public static final String SEND_EMAIL_EXCEPTION = /*$$(*/ "Error when sending email: %s" /*)*/;
+
+  public static final String GOOGLE_MAP_API_ERROR_1 = /*$$(*/
+      "Error while reading the google map response." /*)*/;
+
+  public static final String GOOGLE_MAP_API_ERROR_2 = /*$$(*/
+      "Error while fetching data from Google API." /*)*/;
 }

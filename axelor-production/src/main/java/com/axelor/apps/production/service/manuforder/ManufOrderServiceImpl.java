@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,6 +46,7 @@ import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.db.repo.ProdProductRepository;
+import com.axelor.apps.production.db.repo.ProductionConfigRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -73,8 +74,8 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -89,6 +90,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -165,10 +167,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Override
   public boolean areLinesOutsourced(ManufOrder manufOrder) {
 
-    if (manufOrder.getOutsourcing()) {
+    List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
+    if (manufOrder.getOutsourcing() || CollectionUtils.isEmpty(operationOrderList)) {
       return false;
     }
-    return manufOrder.getOperationOrderList().stream().anyMatch(OperationOrder::getOutsourcing);
+    return operationOrderList.stream().anyMatch(OperationOrder::getOutsourcing);
   }
 
   @Override
@@ -984,13 +987,27 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       }
     }
 
-    Optional<LocalDateTime> minDate =
-        manufOrderList.stream()
-            .filter(mo -> mo.getPlannedStartDateT() != null)
-            .map(ManufOrder::getPlannedStartDateT)
-            .min(LocalDateTime::compareTo);
+    ProductionConfigService productionConfigService = Beans.get(ProductionConfigService.class);
+    ProductionConfig productionConfig = productionConfigService.getProductionConfig(company);
+    int scheduling = productionConfig.getScheduling();
 
-    minDate.ifPresent(mergedManufOrder::setPlannedStartDateT);
+    if (scheduling == ProductionConfigRepository.AS_SOON_AS_POSSIBLE_SCHEDULING) {
+      Optional<LocalDateTime> minStartDate =
+          manufOrderList.stream()
+              .map(ManufOrder::getPlannedStartDateT)
+              .filter(Objects::nonNull)
+              .min(LocalDateTime::compareTo);
+
+      minStartDate.ifPresent(mergedManufOrder::setPlannedStartDateT);
+    } else {
+      Optional<LocalDateTime> minEndDate =
+          manufOrderList.stream()
+              .map(ManufOrder::getPlannedEndDateT)
+              .filter(Objects::nonNull)
+              .min(LocalDateTime::compareTo);
+
+      minEndDate.ifPresent(mergedManufOrder::setPlannedEndDateT);
+    }
 
     /* Update the created manuf order */
     mergedManufOrder.setStatusSelect(ManufOrderRepository.STATUS_DRAFT);
@@ -1108,6 +1125,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
+  @Transactional
   public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
       throws AxelorException {
     List<Long> ids = new ArrayList<>();
@@ -1245,6 +1263,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     BigDecimal bomQty = billOfMaterial.getQty();
 
     for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
+      if (billOfMaterialLine.getHasNoManageStock()) {
+        continue;
+      }
       Product product = billOfMaterialLine.getProduct();
       BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
       BigDecimal qtyNeeded = billOfMaterialLine.getQty();
@@ -1311,6 +1332,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     Map<Product, Pair<BigDecimal, Unit>> bomLineMap =
         billOfMaterial.getBillOfMaterialLineList().stream()
+            .filter(bomLine -> !bomLine.getHasNoManageStock())
             .collect(
                 Collectors.toMap(
                     BillOfMaterialLine::getProduct,

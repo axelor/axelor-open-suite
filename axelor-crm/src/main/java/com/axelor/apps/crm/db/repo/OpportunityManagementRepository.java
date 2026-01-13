@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,9 +24,9 @@ import com.axelor.apps.crm.db.OpportunityStatus;
 import com.axelor.apps.crm.service.OpportunitySequenceService;
 import com.axelor.apps.crm.service.app.AppCrmService;
 import com.axelor.studio.db.AppCrm;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class OpportunityManagementRepository extends OpportunityRepository {
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,7 +36,7 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -88,6 +88,7 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
   @Override
   public BigDecimal computeCurrentRate(
       BigDecimal currencyRate,
+      Company company,
       List<MoveLineMassEntry> moveLineList,
       Currency currency,
       Currency companyCurrency,
@@ -100,7 +101,9 @@ public class MoveLineMassEntryServiceImpl implements MoveLineMassEntryService {
           currencyRate =
               currencyService.getCurrencyConversionRate(currency, companyCurrency, originDate);
         } else {
-          currencyRate = currencyService.getCurrencyConversionRate(currency, companyCurrency);
+          currencyRate =
+              currencyService.getCurrencyConversionRate(
+                  currency, companyCurrency, appBaseService.getTodayDate(company));
         }
       } else {
         if (moveLineList.stream()

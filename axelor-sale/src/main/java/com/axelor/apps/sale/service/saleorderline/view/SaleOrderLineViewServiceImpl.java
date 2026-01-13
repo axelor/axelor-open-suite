@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,7 +37,7 @@ import com.axelor.auth.db.Group;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppSale;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,11 +47,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
-  public static final String HIDDEN_ATTR = "hidden";
-  public static final String TITLE_ATTR = "title";
-  public static final String SCALE_ATTR = "scale";
-  public static final String SELECTION_IN_ATTR = "selection-in";
-  public static final String READONLY_ATTR = "readonly";
 
   protected AppBaseService appBaseService;
   protected AppSaleService appSaleService;
@@ -91,6 +86,7 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
     MapTools.addMap(attrs, getPriceAndQtyScale());
     MapTools.addMap(attrs, getTypeSelectSelection());
     MapTools.addMap(attrs, getMultipleQtyLabel(saleOrderLine));
+    MapTools.addMap(attrs, getDeliveryAddressAttrs(saleOrder));
     return attrs;
   }
 
@@ -253,6 +249,15 @@ public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
 
     attrs.put("multipleQtyNotRespectedLabel", attrsMap);
 
+    return attrs;
+  }
+
+  protected Map<String, Map<String, Object>> getDeliveryAddressAttrs(SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    int statusSelect = saleOrder.getStatusSelect();
+    boolean orderBeingEdited = saleOrder.getOrderBeingEdited();
+    attrs.put("deliveryAddress", Map.of(HIDDEN_ATTR, statusSelect > 1 && !orderBeingEdited));
+    attrs.put("deliveryAddressStr", Map.of(READONLY_ATTR, statusSelect > 1 && !orderBeingEdited));
     return attrs;
   }
 }

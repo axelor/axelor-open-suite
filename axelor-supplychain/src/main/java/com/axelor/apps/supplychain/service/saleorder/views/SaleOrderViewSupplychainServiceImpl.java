@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,9 +28,11 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.views.SaleOrderAttrsService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewServiceImpl;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
-import com.google.inject.Inject;
+import com.axelor.studio.db.AppSale;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,9 +47,15 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
       AppBaseService appBaseService,
       SaleOrderRepository saleOrderRepository,
       AppSaleService appSaleService,
+      SaleOrderAttrsService saleOrderAttrsService,
       StockMoveRepository stockMoveRepository,
       CompanyRepository companyRepository) {
-    super(saleConfigService, appBaseService, saleOrderRepository, appSaleService);
+    super(
+        saleConfigService,
+        appBaseService,
+        saleOrderRepository,
+        appSaleService,
+        saleOrderAttrsService);
     this.stockMoveRepository = stockMoveRepository;
     this.companyRepository = companyRepository;
   }
@@ -59,6 +67,15 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
     MapTools.addMap(attrs, hideAvailability(saleOrder));
     MapTools.addMap(attrs, hideAvailabilityLabel(saleOrder));
     MapTools.addMap(attrs, hideInterco(saleOrder));
+    MapTools.addMap(attrs, hideTimetable(saleOrder));
+    return attrs;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getOnLoadAttrs(SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Map<String, Object>> attrs = super.getOnLoadAttrs(saleOrder);
+    MapTools.addMap(attrs, hideTimetable(saleOrder));
     return attrs;
   }
 
@@ -78,7 +95,7 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
         stockMoveRepository
                 .all()
                 .filter(
-                    ":saleOrderId MEMBER OF self.saleOrderSet AND self.availabilityRequest IS TRUE AND self.statusSelect = :plannedStatus")
+                    ":saleOrderId IN (SELECT so.id FROM self.saleOrderSet so) AND self.availabilityRequest IS TRUE AND self.statusSelect = :plannedStatus")
                 .bind("saleOrderId", saleOrder.getId())
                 .bind("plannedStatus", StockMoveRepository.STATUS_PLANNED)
                 .count()
@@ -121,6 +138,21 @@ public class SaleOrderViewSupplychainServiceImpl extends SaleOrderViewServiceImp
     attrsMap.put(HIDDEN_ATTRS, createdByInterco || clientPartner == null || company == null);
     attrsMap.put(READONLY_ATTRS, statusSelect > SaleOrderRepository.STATUS_ORDER_CONFIRMED);
     attrs.put("interco", attrsMap);
+    return attrs;
+  }
+
+  protected Map<String, Map<String, Object>> hideTimetable(SaleOrder saleOrder) {
+    Map<String, Map<String, Object>> attrs = new HashMap<>();
+    AppSale appSale = appSaleService.getAppSale();
+    boolean isQuotationAndOrderSplit = appSale.getIsQuotationAndOrderSplitEnabled();
+    if (!appBaseService.isApp("supplychain") || !isQuotationAndOrderSplit) {
+      return attrs;
+    }
+
+    int statusSelect = saleOrder.getStatusSelect();
+    attrs.put(
+        "timetablePanel",
+        Map.of(HIDDEN_ATTRS, statusSelect <= SaleOrderRepository.STATUS_FINALIZED_QUOTATION));
     return attrs;
   }
 }

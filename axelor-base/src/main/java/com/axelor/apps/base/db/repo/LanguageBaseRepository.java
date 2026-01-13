@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,8 +21,8 @@ package com.axelor.apps.base.db.repo;
 import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.service.language.LanguageService;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
-import javax.persistence.EntityManager;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 
 public class LanguageBaseRepository extends LanguageRepository {
 

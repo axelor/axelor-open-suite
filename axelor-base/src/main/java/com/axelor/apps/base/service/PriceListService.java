@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,8 +30,8 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.repo.AppBaseRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -208,7 +208,7 @@ public class PriceListService {
     if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_FIXED) {
       return unitPrice
           .subtract(discountAmount)
-          .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
+          .setScale(PriceListLineRepository.DISCOUNT_SCALE, RoundingMode.HALF_UP);
     } else if (discountTypeSelect == PriceListLineRepository.AMOUNT_TYPE_PERCENT) {
       return unitPrice
           .multiply(new BigDecimal(100).subtract(discountAmount))

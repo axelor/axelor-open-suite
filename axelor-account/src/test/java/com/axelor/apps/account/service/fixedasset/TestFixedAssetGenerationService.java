@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -643,6 +643,41 @@ class TestFixedAssetGenerationService {
     return fixedAsset;
   }
 
+  protected FixedAsset generateAndComputeLinesProrataDegressiveFixedAssetOnFebruaryMonthly()
+      throws AxelorException {
+    LocalDate firstDepreciationDate = LocalDate.of(2024, 2, 29);
+    FixedAsset fixedAsset = generateDegressiveFixedAssetOnFebruary(60, 1, firstDepreciationDate);
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
+        .thenReturn(firstDepreciationDate);
+    fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
+    return fixedAsset;
+  }
+
+  protected FixedAsset generateAndComputeLinesProrataDegressiveFixedAssetOnFebruaryYearly()
+      throws AxelorException {
+    LocalDate firstDepreciationDate = LocalDate.of(2024, 12, 31);
+    FixedAsset fixedAsset = generateDegressiveFixedAssetOnFebruary(5, 12, firstDepreciationDate);
+    when(fixedAssetDateService.computeLastDayOfPeriodicity(
+            fixedAsset.getPeriodicityTypeSelect(), fixedAsset.getFirstServiceDate()))
+        .thenReturn(firstDepreciationDate);
+    fixedAssetGenerationService.generateAndComputeLines(fixedAsset);
+    return fixedAsset;
+  }
+
+  protected FixedAsset generateDegressiveFixedAssetOnFebruary(
+      int numberOfDepreciation, int periodicityInMonth, LocalDate firstDepreciationDate) {
+    return createFixedAsset(
+        FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE,
+        new BigDecimal("1.75"),
+        LocalDate.of(2024, 2, 1),
+        firstDepreciationDate,
+        numberOfDepreciation,
+        periodicityInMonth,
+        createFixedAssetCategoryFromIsProrataTemporis(true, false),
+        new BigDecimal("6000.00"));
+  }
+
   @Test
   void testGenerateAndComputeLinesProrataDegressiveFixedAsset() throws AxelorException {
     FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAsset();
@@ -761,5 +796,33 @@ class TestFixedAssetGenerationService {
     Assertions.assertEquals(
         LocalDate.of(2027, 12, 31),
         fixedAsset.getFixedAssetLineList().get(6).getDepreciationDate());
+  }
+
+  @Test
+  void testGenerateAndComputeLinesProrataDegressiveFixedAssetFirstLineOnFebruaryMonthly()
+      throws AxelorException {
+    FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAssetOnFebruaryMonthly();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2024, 2, 29),
+            new BigDecimal("6000.00"),
+            new BigDecimal("175.00"),
+            new BigDecimal("175.00"),
+            new BigDecimal("5825.00")),
+        fixedAsset.getFixedAssetLineList().get(0));
+  }
+
+  @Test
+  void testGenerateAndComputeLinesProrataDegressiveFixedAssetFirstLineOnFebruaryYearly()
+      throws AxelorException {
+    FixedAsset fixedAsset = generateAndComputeLinesProrataDegressiveFixedAssetOnFebruaryYearly();
+    assertFixedAssetLineEquals(
+        createFixedAssetLine(
+            LocalDate.of(2024, 12, 31),
+            new BigDecimal("6000.00"),
+            new BigDecimal("1925.00"),
+            new BigDecimal("1925.00"),
+            new BigDecimal("4075.00")),
+        fixedAsset.getFixedAssetLineList().get(0));
   }
 }

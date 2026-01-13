@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,29 +22,28 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.ExtraHours;
 import com.axelor.message.db.Message;
 import java.io.IOException;
-import wslite.json.JSONException;
 
 public interface ExtraHoursService {
 
   public void cancel(ExtraHours extraHours) throws AxelorException;
 
   public Message sendCancellationEmail(ExtraHours extraHours)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   public void confirm(ExtraHours extraHours) throws AxelorException;
 
   public Message sendConfirmationEmail(ExtraHours extraHours)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   public void validate(ExtraHours extraHours) throws AxelorException;
 
   public Message sendValidationEmail(ExtraHours extraHours)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   public void refuse(ExtraHours extraHours) throws AxelorException;
 
   public Message sendRefusalEmail(ExtraHours extraHours)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   public void compute(ExtraHours extraHours);
 

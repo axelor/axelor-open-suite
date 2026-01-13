@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -117,10 +117,10 @@ public interface InvoiceTermService {
   /**
    * Check if invoice term were customized
    *
-   * @param invoice
+   * @param invoiceTermList
    * @return
    */
-  public boolean checkIfCustomizedInvoiceTerms(Invoice invoice);
+  public boolean checkIfCustomizedInvoiceTerms(List<InvoiceTerm> invoiceTermList);
 
   /**
    * Check if the sum of invoice terms amounts equals invoice inTaxTotal
@@ -145,6 +145,8 @@ public interface InvoiceTermService {
    * @throws AxelorException
    */
   public BigDecimal computePercentageSum(Invoice invoice);
+
+  MoveLine recomputeFreeDueDates(MoveLine moveLine, LocalDate dueDate);
 
   /**
    * Initialize invoiceTerms sequences based on due date the method sorts the invoice term list
@@ -279,6 +281,8 @@ public interface InvoiceTermService {
   void computeCustomizedPercentage(InvoiceTerm invoiceTerm);
 
   void computeInvoiceTermsDueDates(Invoice invoice) throws AxelorException;
+
+  void computeInvoiceTermsDueDates(MoveLine moveLine, Move move);
 
   void checkAndComputeInvoiceTerms(Invoice invoice) throws AxelorException;
 

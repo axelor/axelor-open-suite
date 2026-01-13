@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,11 +25,10 @@ import java.util.Map;
 
 public interface FixedAssetGroupService {
 
-  Map<String, Object> getDisposalWizardValuesMap(
-      FixedAsset disposal, FixedAsset fixedAsset, int disposalTypeSelect);
+  Map<String, Object> getDisposalWizardValuesMap(FixedAsset fixedAsset, Integer disposalTypeSelect);
 
   Map<String, Map<String, Object>> getDisposalWizardAttrsMap(
-      int disposalTypeSelect, FixedAsset fixedAsset);
+      Integer disposalTypeSelect, FixedAsset fixedAsset);
 
   Map<String, Map<String, Object>> getInitSplitWizardAttrsMap(BigDecimal qty, Company company);
 }

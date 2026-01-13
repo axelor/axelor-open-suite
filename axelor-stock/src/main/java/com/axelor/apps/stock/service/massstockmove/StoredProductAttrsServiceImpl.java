@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ public class StoredProductAttrsServiceImpl implements StoredProductAttrsService 
 
     if (massStockMove.getCartStockLocation() != null) {
       String domain =
-          "(self IN (SELECT stockLocationLine.product FROM StockLocationLine stockLocationLine WHERE stockLocationLine.currentQty > 0 AND stockLocationLine.stockLocation = %d))";
+          "(self IN (SELECT stockLocationLine.product FROM StockLocationLine stockLocationLine WHERE stockLocationLine.currentQty > 0 AND stockLocationLine.stockLocation.id = %d))";
 
       return String.format(domain, massStockMove.getCartStockLocation().getId());
     }
@@ -48,7 +48,7 @@ public class StoredProductAttrsServiceImpl implements StoredProductAttrsService 
     if (storedProduct.getStoredProduct() != null && massStockMove.getCartStockLocation() != null) {
       String domain =
           "self.product.id = %d AND"
-              + " (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine WHERE stockLocationLine.detailsStockLocation = %d AND stockLocationLine.currentQty > 0))";
+              + " (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine WHERE stockLocationLine.detailsStockLocation.id = %d AND stockLocationLine.currentQty > 0))";
 
       return String.format(
           domain,

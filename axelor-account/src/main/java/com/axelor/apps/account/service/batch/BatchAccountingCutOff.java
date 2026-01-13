@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,8 +32,8 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.List;
@@ -60,13 +60,18 @@ public class BatchAccountingCutOff extends PreviewBatch {
 
   @Override
   protected void process() {
-    AccountingBatch accountingBatch = batch.getAccountingBatch();
+    try {
+      AccountingBatch accountingBatch = batch.getAccountingBatch();
 
-    LocalDate moveDate = accountingBatch.getMoveDate();
-    int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
-    this.updateBatch(moveDate, accountingCutOffTypeSelect);
+      LocalDate moveDate = accountingBatch.getMoveDate();
+      int accountingCutOffTypeSelect = accountingBatch.getAccountingCutOffTypeSelect();
+      this.updateBatch(moveDate, accountingCutOffTypeSelect);
 
-    super.process();
+      super.process();
+    } catch (Exception e) {
+      TraceBackService.trace(e, null, batch.getId());
+      incrementAnomaly();
+    }
   }
 
   @Override

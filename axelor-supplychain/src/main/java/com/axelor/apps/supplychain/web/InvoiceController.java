@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,13 +24,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychain;
 import com.axelor.apps.supplychain.service.invoice.SubscriptionInvoiceService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -78,5 +79,20 @@ public class InvoiceController {
       TraceBackService.trace(response, e);
     }
     response.setReload(true);
+  }
+
+  public void refreshFiscalPositionWarning(ActionRequest request, ActionResponse response) {
+    try {
+
+      if (!Beans.get(AppSupplychainService.class).isApp("supplychain")) {
+        return;
+      }
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      boolean hideWarning =
+          !Beans.get(InvoiceServiceSupplychain.class).hasFiscalPositionMismatch(invoice);
+      response.setAttr("$fiscalPositionWarning", "hidden", hideWarning);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

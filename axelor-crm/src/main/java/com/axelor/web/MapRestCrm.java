@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,15 +39,15 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 @Path("/map")
 @Deprecated
@@ -90,29 +90,7 @@ public class MapRestCrm {
           objectNode.put("emailAddress", lead.getEmailAddress().getAddress());
         }
 
-        StringBuilder addressString = new StringBuilder();
-
-        if (lead.getPrimaryAddress() != null) {
-          addressString.append(lead.getPrimaryAddress() + "<br/>");
-        }
-
-        if (lead.getPrimaryCity() != null) {
-          addressString.append(lead.getPrimaryCity() + "<br/>");
-        }
-
-        if (lead.getPrimaryPostalCode() != null) {
-          addressString.append(lead.getPrimaryPostalCode() + "<br/>");
-        }
-
-        if (lead.getPrimaryState() != null) {
-          addressString.append(lead.getPrimaryState() + "<br/>");
-        }
-
-        if (lead.getPrimaryCountry() != null) {
-          addressString.append(lead.getPrimaryCountry().getName());
-        }
-
-        String addressFullname = addressString.toString();
+        String addressFullname = lead.getAddress() != null ? lead.getAddress().getFullName() : "";
         objectNode.put("address", addressFullname);
 
         Map<String, Object> result = Beans.get(MapService.class).getMap(addressFullname);

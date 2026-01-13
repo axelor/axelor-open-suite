@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,18 +38,24 @@ import com.axelor.db.Query;
 import com.axelor.db.internal.DBHelper;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
+import com.axelor.db.mapper.PropertyType;
+import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
+import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.repo.MetaModelRepository;
+import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.studio.db.App;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.inject.Inject;
 import com.thoughtworks.xstream.XStream;
+import jakarta.inject.Inject;
+import jakarta.persistence.OneToOne;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -57,6 +63,7 @@ import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -68,15 +75,18 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import javax.naming.NamingException;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.csv.CSVPrinter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,17 +103,12 @@ public class DataBackupCreateService {
   protected List<String> fileNameList;
   protected static Set<String> exceptColumnNameList =
       ImmutableSet.of(
-          "importOrigin",
-          "importId",
-          "updatedBy",
-          "createdBy",
-          "updatedOn",
-          "createdOn",
-          "archived",
-          "version",
-          "attrs");
+          "importId", "updatedBy", "createdBy", "updatedOn", "createdOn", "version", "attrs");
 
   StringBuilder sb = new StringBuilder();
+
+  protected static List<String> headerList =
+      Arrays.asList("importId", "importOrigin", "code", "name");
 
   protected static Map<Object, Object> AutoImportModelMap =
       ImmutableMap.builder()
@@ -128,6 +133,7 @@ public class DataBackupCreateService {
   protected AnonymizerLineRepository anonymizerLineRepository;
   protected Logger LOG = LoggerFactory.getLogger(getClass());
   protected DataBackupAnonymizeService dataBackupAnonymizeService;
+  protected DataBackupService dataBackupService;
 
   @Inject
   public DataBackupCreateService(
@@ -136,13 +142,15 @@ public class DataBackupCreateService {
       MetaFiles metaFiles,
       AnonymizeService anonymizeService,
       AnonymizerLineRepository anonymizerLineRepository,
-      DataBackupAnonymizeService dataBackupAnonymizeService) {
+      DataBackupAnonymizeService dataBackupAnonymizeService,
+      DataBackupService dataBackupService) {
     this.dataBackupRepository = dataBackupRepository;
     this.metaModelRepo = metaModelRepo;
     this.metaFiles = metaFiles;
     this.anonymizeService = anonymizeService;
     this.anonymizerLineRepository = anonymizerLineRepository;
     this.dataBackupAnonymizeService = dataBackupAnonymizeService;
+    this.dataBackupService = dataBackupService;
   }
 
   /* Generate csv Files for each individual MetaModel and single config file */
@@ -150,27 +158,31 @@ public class DataBackupCreateService {
     File tempDir = Files.createTempDirectory(null).toFile();
     String tempDirectoryPath = tempDir.getAbsolutePath();
     int fetchLimit = dataBackup.getFetchLimit();
+    boolean anonymizeData = dataBackup.getAnonymizer() != null;
+    boolean isExportApp = dataBackup.getIsExportApp();
+    char separator = dataBackupService.getSeparator(dataBackup.getFieldSeparatorSelect());
     int errorsCount = 0;
     byte[] salt = null;
 
     fileNameList = new ArrayList<>();
-    List<MetaModel> metaModelList = getMetaModels(dataBackup.getAnonymizer() != null);
+    List<MetaModel> metaModelList = getMetaModels(anonymizeData, isExportApp);
 
     LinkedList<CSVInput> simpleCsvs = new LinkedList<>();
     LinkedList<CSVInput> refernceCsvs = new LinkedList<>();
     LinkedList<CSVInput> notNullReferenceCsvs = new LinkedList<>();
-    Map<String, List<String>> subClassesMap = getSubClassesMap(dataBackup.getAnonymizer() != null);
+    Map<String, List<String>> subClassesMap = getSubClassesMap(anonymizeData, isExportApp);
 
     if (dataBackup.getCheckAllErrorFirst()) {
       dataBackup.setFetchLimit(1);
 
-      errorsCount = checkErrors(dataBackup, metaModelList, tempDirectoryPath, subClassesMap);
+      errorsCount =
+          checkErrors(dataBackup, metaModelList, tempDirectoryPath, subClassesMap, separator);
 
       dataBackup.setFetchLimit(fetchLimit);
       fileNameList.clear();
     }
 
-    if (dataBackup.getAnonymizer() != null) {
+    if (anonymizeData) {
       salt = anonymizeService.getSalt();
     }
 
@@ -190,11 +202,18 @@ public class DataBackupCreateService {
 
           File templateFile = new File(tempDirectoryPath, metaModel.getName() + ".csv");
           CSVFile csvFormat =
-              CSVFile.DEFAULT.withDelimiter(SEPARATOR).withQuoteAll().withFirstRecordAsHeader();
+              CSVFile.DEFAULT.withDelimiter(separator).withQuoteAll().withFirstRecordAsHeader();
           CSVPrinter printer = csvFormat.write(templateFile);
           CSVInput csvInput =
               writeCSVData(
-                  metaModel, printer, dataBackup, totalRecord, subClasses, tempDirectoryPath, salt);
+                  metaModel,
+                  printer,
+                  dataBackup,
+                  totalRecord,
+                  subClasses,
+                  tempDirectoryPath,
+                  salt,
+                  separator);
           printer.close();
 
           if (notNullReferenceFlag) {
@@ -204,6 +223,7 @@ public class DataBackupCreateService {
             CSVInput temcsv = new CSVInput();
             temcsv.setFileName(csvInput.getFileName());
             temcsv.setTypeName(csvInput.getTypeName());
+            temcsv.setSeparator(separator);
 
             if (dataBackup.getIsRelativeDate()) {
               temcsv.setBindings(new ArrayList<>());
@@ -211,12 +231,10 @@ public class DataBackupCreateService {
             }
             if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
               temcsv.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
-            }
-            if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
-              temcsv.setSearch("self.code = :code");
-            }
-            if (!AutoImportModelMap.containsKey(csvInput.getTypeName())
-                && !((Class.forName(metaModel.getFullName()).getSuperclass()).equals(App.class))) {
+            } else if (metaModel.getName().startsWith("App")
+                && isAppOneToOneProperty(metaModel.getFullName())) {
+              temcsv.setSearch("self.app.code = :code");
+            } else {
               temcsv.setSearch("self.importId = :importId");
             }
             simpleCsvs.add(temcsv);
@@ -296,24 +314,28 @@ public class DataBackupCreateService {
   }
 
   /* Get All MetaModels */
-  protected List<MetaModel> getMetaModels(boolean anonymizeData) {
-    String filterStr = "";
+  protected List<MetaModel> getMetaModels(boolean anonymizeData, boolean isExportApp) {
+    StringBuilder filter =
+        new StringBuilder(
+            "self.packageName NOT LIKE '%meta%' AND self.name != 'DataBackup' AND self.tableName IS NOT NULL");
+    filter.append(" AND (self.packageName != 'com.axelor.studio.db'");
+    if (isExportApp) {
+      filter.append(" OR self.name LIKE 'App%'");
+    }
+    filter.append(")");
     if (anonymizeData) {
-      filterStr =
-          "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name NOT IN ('DataBackup','MailMessage') AND self.tableName IS NOT NULL";
-    } else {
-      filterStr =
-          "self.packageName NOT LIKE '%meta%' AND self.packageName !='com.axelor.studio.db' AND self.name!='DataBackup' AND self.tableName IS NOT NULL";
+      filter.append(" AND self.name != 'MailMessage'");
     }
 
-    List<MetaModel> metaModels = metaModelRepo.all().filter(filterStr).order("fullName").fetch();
+    List<MetaModel> metaModels =
+        metaModelRepo.all().filter(filter.toString()).order("fullName").fetch();
     metaModels.add(metaModelRepo.findByName(MetaFile.class.getSimpleName()));
     metaModels.add(metaModelRepo.findByName(MetaJsonField.class.getSimpleName()));
     return metaModels;
   }
 
-  protected Map<String, List<String>> getSubClassesMap(boolean anonymizeData) {
-    List<MetaModel> metaModels = getMetaModels(anonymizeData);
+  protected Map<String, List<String>> getSubClassesMap(boolean anonymizeData, boolean isExportApp) {
+    List<MetaModel> metaModels = getMetaModels(anonymizeData, isExportApp);
     List<String> subClasses;
     Map<String, List<String>> subClassMap = new HashMap<>();
     for (MetaModel metaModel : metaModels) {
@@ -431,13 +453,18 @@ public class DataBackupCreateService {
       long totalRecord,
       List<String> subClasses,
       String dirPath,
-      byte[] salt)
+      byte[] salt,
+      char separator)
       throws AxelorException, IOException {
 
     CSVInput csvInput = new CSVInput();
     boolean headerFlag = true;
+    boolean templateFlag = true;
     List<String> dataArr;
     List<String> headerArr = new ArrayList<>();
+    List<String> titleArr = new ArrayList<>();
+    List<String> helpArr = new ArrayList<>();
+    List<String> attrsArr = new ArrayList<>();
     List<Model> dataList;
 
     try {
@@ -446,12 +473,18 @@ public class DataBackupCreateService {
       Integer fetchLimit = dataBackup.getFetchLimit();
       boolean isRelativeDate = dataBackup.getIsRelativeDate();
       boolean updateImportId = dataBackup.getUpdateImportId();
+      boolean isTemplateWithDescription = dataBackup.getIsTemplateWithDescription();
+      int count = 0;
+      Integer maxLinesPerFile = dataBackup.getMaxLinesPerFile();
+      LocalDateTime relativeDateTime = dataBackup.getRelativeDateTime();
+      List<String> sortedHeaderArr = new ArrayList<>();
 
       csvInput.setFileName(metaModel.getName() + ".csv");
       csvInput.setTypeName(metaModel.getFullName());
       csvInput.setBindings(new ArrayList<>());
+      csvInput.setSeparator(separator);
 
-      if (totalRecord > 0) {
+      if (totalRecord > 0 && (maxLinesPerFile == null || maxLinesPerFile > 0)) {
         for (int i = 0; i < totalRecord; i = i + fetchLimit) {
 
           dataList = getMetaModelDataList(metaModel, i, fetchLimit, subClasses);
@@ -459,6 +492,9 @@ public class DataBackupCreateService {
           if (dataList != null && !dataList.isEmpty()) {
             dataBackup = dataBackupRepository.find(dataBackup.getId());
             for (Object dataObject : dataList) {
+              if (maxLinesPerFile != null && count >= maxLinesPerFile) {
+                break;
+              }
               dataArr = new ArrayList<>();
 
               for (Property property : pro) {
@@ -476,16 +512,24 @@ public class DataBackupCreateService {
                           dirPath,
                           isRelativeDate,
                           updateImportId,
-                          dataBackup));
+                          dataBackup,
+                          relativeDateTime));
+                  if (templateFlag && isTemplateWithDescription) {
+                    titleArr.add(getFieldTitle(property));
+                    helpArr.add(getFieldHelp(property));
+                    attrsArr.add(getFieldAttrs(property));
+                  }
                 }
               }
+              templateFlag = false;
               if (headerFlag) {
                 if (byteArrFieldFlag) {
                   csvInput.setCallable(
                       "com.axelor.apps.base.service.DataBackupRestoreService:importObjectWithByteArray");
                   byteArrFieldFlag = false;
                 }
-                printer.printRecord(headerArr);
+                sortedHeaderArr = sortHeader(headerArr);
+                printer.printRecord(sortedHeaderArr);
                 headerFlag = false;
               }
 
@@ -498,16 +542,31 @@ public class DataBackupCreateService {
                 dataBackupAnonymizeService.csvAnonymizeImportId(dataArr, headerArr, salt);
               }
 
-              printer.printRecord(dataArr);
+              printer.printRecord(sortData(headerArr, dataArr, sortedHeaderArr));
+              count++;
+            }
+            if (maxLinesPerFile != null && count >= maxLinesPerFile) {
+              break;
             }
           }
           JPA.clear();
+        }
+        if (isTemplateWithDescription) {
+          printer.println();
+          printer.printRecord(sortData(headerArr, titleArr, sortedHeaderArr));
+          printer.printRecord(sortData(headerArr, attrsArr, sortedHeaderArr));
+          printer.printRecord(sortData(headerArr, helpArr, sortedHeaderArr));
         }
       } else {
         for (Property property : pro) {
           if (isPropertyExportable(property)) {
             String headerStr = getMetaModelHeader(property, csvInput, isRelativeDate);
             headerArr.add(headerStr);
+            if (isTemplateWithDescription) {
+              titleArr.add(getFieldTitle(property));
+              attrsArr.add(getFieldAttrs(property));
+              helpArr.add(getFieldHelp(property));
+            }
           }
         }
         if (byteArrFieldFlag) {
@@ -515,13 +574,21 @@ public class DataBackupCreateService {
               "com.axelor.apps.base.service.DataBackupRestoreService:importObjectWithByteArray");
           byteArrFieldFlag = false;
         }
-        printer.printRecord(headerArr);
+        sortedHeaderArr = sortHeader(headerArr);
+        printer.printRecord(sortedHeaderArr);
+        if (isTemplateWithDescription) {
+          printer.println();
+          printer.printRecord(sortData(headerArr, titleArr, sortedHeaderArr));
+          printer.printRecord(sortData(headerArr, attrsArr, sortedHeaderArr));
+          printer.printRecord(sortData(headerArr, helpArr, sortedHeaderArr));
+        }
       }
 
       if (AutoImportModelMap.containsKey(csvInput.getTypeName())) {
         csvInput.setSearch(AutoImportModelMap.get(csvInput.getTypeName()).toString());
-      } else if (Class.forName(metaModel.getFullName()).getSuperclass() == App.class) {
-        csvInput.setSearch("self.code = :code");
+      } else if (metaModel.getName().startsWith("App")
+          && isAppOneToOneProperty(metaModel.getFullName())) {
+        csvInput.setSearch("self.app.code = :code");
       } else {
         csvInput.setSearch("self.importId = :importId");
       }
@@ -609,6 +676,12 @@ public class DataBackupCreateService {
               ? "self.name = :" + columnName
               : "self.name in :" + columnName;
     }
+    if (property.getTarget() != null
+        && property.getTarget() == App.class
+        && property.getType() == PropertyType.ONE_TO_ONE) {
+      columnName = "code";
+      search = "self.code = :" + columnName;
+    }
     csvBind.setColumn(columnName);
     csvBind.setField(property.getName());
     csvBind.setSearch(search);
@@ -633,7 +706,8 @@ public class DataBackupCreateService {
       String dirPath,
       boolean isRelativeDate,
       boolean updateImportId,
-      DataBackup dataBackup)
+      DataBackup dataBackup,
+      LocalDateTime relativeDateTime)
       throws AxelorException {
     String id = metaModelMapper.get(dataObject, "id").toString();
     Object value = metaModelMapper.get(dataObject, property.getName());
@@ -661,16 +735,17 @@ public class DataBackupCreateService {
         return value.toString();
       case "DATE":
         if (isRelativeDate) {
-          return createRelativeDate((LocalDate) value);
+          return createRelativeDate((LocalDate) value, relativeDateTime);
         }
         return value.toString();
 
       case "DATETIME":
         if (isRelativeDate) {
           if (property.getJavaType() == ZonedDateTime.class) {
-            return createRelativeDateTime(((ZonedDateTime) value).toLocalDateTime());
+            return createRelativeDateTime(
+                ((ZonedDateTime) value).toLocalDateTime(), relativeDateTime);
           }
-          return createRelativeDateTime((LocalDateTime) value);
+          return createRelativeDateTime((LocalDateTime) value, relativeDateTime);
         }
         return property.getJavaType() == ZonedDateTime.class
             ? ((ZonedDateTime) value).toLocalDateTime().toString()
@@ -698,8 +773,9 @@ public class DataBackupCreateService {
     }
   }
 
-  public String createRelativeDateTime(LocalDateTime dateT) {
-    LocalDateTime currentDateTime = LocalDateTime.now();
+  public String createRelativeDateTime(LocalDateTime dateT, LocalDateTime relativeDateTime) {
+    LocalDateTime currentDateTime =
+        relativeDateTime != null ? relativeDateTime : LocalDateTime.now();
 
     long years = currentDateTime.until(dateT, ChronoUnit.YEARS);
     currentDateTime = currentDateTime.plusYears(years);
@@ -737,8 +813,12 @@ public class DataBackupCreateService {
         + "]";
   }
 
-  public String createRelativeDate(LocalDate date) {
-    LocalDate currentDate = LocalDateHelper.getTodayDate(null);
+  public String createRelativeDate(LocalDate date, LocalDateTime relativeDateTime) {
+    LocalDate currentDate =
+        relativeDateTime != null
+            ? relativeDateTime.toLocalDate()
+            : LocalDateHelper.getTodayDate(null);
+
     long years = currentDate.until(date, ChronoUnit.YEARS);
     currentDate = currentDate.plusYears(years);
 
@@ -789,6 +869,10 @@ public class DataBackupCreateService {
       } catch (Exception e) {
         return (updateImportId) ? ((Model) val).getImportId() : ((Model) val).getId().toString();
       }
+    } else if (property.getTarget() != null
+        && property.getTarget() == App.class
+        && property.getType() == PropertyType.ONE_TO_ONE) {
+      return Mapper.of(val.getClass()).get(val, "code").toString();
     } else {
       return (updateImportId) ? ((Model) val).getImportId() : ((Model) val).getId().toString();
     }
@@ -848,7 +932,8 @@ public class DataBackupCreateService {
       DataBackup dataBackup,
       List<MetaModel> metaModelList,
       String tempDirectoryPath,
-      Map<String, List<String>> subClassesMap) {
+      Map<String, List<String>> subClassesMap,
+      char separator) {
     int errorsCount = 0;
 
     for (MetaModel metaModel : metaModelList) {
@@ -861,7 +946,7 @@ public class DataBackupCreateService {
 
           File templateFile = new File(tempDirectoryPath, metaModel.getName() + ".csv");
           CSVFile csvFormat =
-              CSVFile.DEFAULT.withDelimiter(SEPARATOR).withQuoteAll().withFirstRecordAsHeader();
+              CSVFile.DEFAULT.withDelimiter(separator).withQuoteAll().withFirstRecordAsHeader();
           CSVPrinter printer = csvFormat.write(templateFile);
 
           writeCSVData(
@@ -871,7 +956,8 @@ public class DataBackupCreateService {
               1,
               subClasses,
               tempDirectoryPath,
-              anonymizeService.getSalt());
+              anonymizeService.getSalt(),
+              separator);
           printer.close();
         }
       } catch (ClassNotFoundException e) {
@@ -888,5 +974,140 @@ public class DataBackupCreateService {
       }
     }
     return errorsCount;
+  }
+
+  protected boolean isAppOneToOneProperty(String className) {
+    try {
+      Class<?> klass = Class.forName(className);
+      Field field = klass.getDeclaredField("app");
+      return field.isAnnotationPresent(OneToOne.class);
+    } catch (NoSuchFieldException | SecurityException | ClassNotFoundException e) {
+      return false;
+    }
+  }
+
+  protected String getFieldTitle(Property property) {
+    if ("id".equalsIgnoreCase(property.getName())) {
+      return I18n.get("Import ID");
+    }
+    return I18n.get(property.getTitle());
+  }
+
+  protected String getFieldHelp(Property property) {
+    if ("id".equalsIgnoreCase(property.getName())) {
+      return "";
+    }
+    return I18n.get(property.getHelp());
+  }
+
+  protected String getFieldAttrs(Property property) {
+    boolean isIdProperty = "id".equalsIgnoreCase(property.getName());
+    PropertyType type = property.getType();
+    List<String> attributes = new ArrayList<>();
+    if (isIdProperty) {
+      type = PropertyType.STRING;
+    }
+    attributes.add(I18n.get(getPropertyTitle(type)));
+    if (property.isRequired() && !isIdProperty) {
+      attributes.add(I18n.get("Required"));
+    }
+    if (property.isUnique() || isIdProperty) {
+      attributes.add(I18n.get("Unique"));
+    }
+    String attrs = String.join(" | ", attributes);
+    if (property.getSelection() != null) {
+      String selectionInfo = getSelectionInformation(property.getSelection());
+      if (!StringUtils.isEmpty(selectionInfo)) {
+        return attrs + "\n" + selectionInfo;
+      }
+    }
+    return attrs;
+  }
+
+  protected String getPropertyTitle(PropertyType type) {
+    switch (type) {
+      case STRING:
+        return "String";
+      case TEXT:
+        return "Large text";
+      case BOOLEAN:
+        return "Boolean";
+      case INTEGER:
+        return "Integer";
+      case LONG:
+        return "Long";
+      case DOUBLE:
+        return "Double";
+      case DECIMAL:
+        return "Decimal";
+      case DATE:
+        return "Date";
+      case TIME:
+        return "Time";
+      case DATETIME:
+        return "Datetime";
+      case BINARY:
+        return "Binary";
+      case ENUM:
+        return "Enum";
+      case ONE_TO_ONE:
+        return "One to One";
+      case MANY_TO_ONE:
+        return "Many to One";
+      case ONE_TO_MANY:
+        return "One to Many";
+      case MANY_TO_MANY:
+        return "Many to Many";
+      default:
+        return type.toString();
+    }
+  }
+
+  protected String getSelectionInformation(String selectionName) {
+    List<MetaSelect> selections =
+        Beans.get(MetaSelectRepository.class).all().filter("self.name = ?", selectionName).fetch();
+    if (CollectionUtils.isEmpty(selections)) {
+      return "";
+    }
+    StringBuilder builder = new StringBuilder();
+    builder.append(I18n.get("Selection")).append(": ").append(selectionName);
+    selections.stream()
+        .flatMap(sel -> sel.getItems().stream())
+        .filter(item -> item.getValue() != null && item.getTitle() != null)
+        .forEach(
+            item ->
+                builder
+                    .append("\n")
+                    .append(item.getValue())
+                    .append(" : ")
+                    .append(I18n.get(item.getTitle())));
+    return builder.toString();
+  }
+
+  protected List<String> sortHeader(List<String> headerArr) {
+    List<String> sortedHeaderArr = new ArrayList<>();
+    for (String header : headerList) {
+      if (headerArr.contains(header)) {
+        sortedHeaderArr.add(header);
+      }
+    }
+    List<String> remainingHeaderArr =
+        headerArr.stream()
+            .filter(h -> !sortedHeaderArr.contains(h))
+            .sorted()
+            .collect(Collectors.toList());
+    sortedHeaderArr.addAll(remainingHeaderArr);
+    return sortedHeaderArr;
+  }
+
+  protected List<String> sortData(
+      List<String> headerArr, List<String> dataArr, List<String> sortedHeaderArr) {
+    Map<String, String> map = new HashMap<>();
+    for (int i = 0; i < headerArr.size(); i++) {
+      map.put(headerArr.get(i), dataArr.get(i));
+    }
+    return sortedHeaderArr.stream()
+        .map(header -> map.getOrDefault(header, ""))
+        .collect(Collectors.toList());
   }
 }

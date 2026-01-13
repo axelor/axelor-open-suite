@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,11 +24,12 @@ import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtRepository;
 import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.common.csv.CSVFile;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -57,7 +58,7 @@ public class LunchVoucherExportServiceImpl implements LunchVoucherExportService 
   @Transactional(rollbackOn = {Exception.class})
   public void export(LunchVoucherMgt lunchVoucherMgt) throws IOException {
 
-    File tempFile = MetaFiles.createTempFile(null, ".csv").toFile();
+    File tempFile = TempFiles.createTempFile(null, ".csv").toFile();
     try (CSVPrinter printer = CSVFile.DEFAULT.withDelimiter(';').withQuoteAll().write(tempFile)) {
 
       printer.printRecord(createHeader());

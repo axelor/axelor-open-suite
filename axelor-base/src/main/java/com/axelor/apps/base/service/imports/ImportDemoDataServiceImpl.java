@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ import com.axelor.meta.MetaScanner;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.google.common.io.ByteStreams;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -41,6 +41,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -204,7 +205,7 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
       for (int cell = 1; cell < headerRow.getLastCellNum(); cell++) {
         Cell headerCell = headerRow.getCell(cell);
 
-        if (headerCell == null || headerCell.getCellType() != Cell.CELL_TYPE_STRING) {
+        if (headerCell == null || headerCell.getCellType() != CellType.STRING) {
           errorList.append("\n" + I18n.get(BaseExceptionMessage.INVALID_HEADER));
           flag = false;
         }
@@ -229,7 +230,7 @@ public class ImportDemoDataServiceImpl implements ImportDemoDataService {
   protected boolean validateCell(Cell cell, StringBuilder errorList, String cellName)
       throws IOException {
 
-    if (cell == null || cell.getCellType() != Cell.CELL_TYPE_STRING) {
+    if (cell == null || cell.getCellType() != CellType.STRING) {
       errorList.append(
           String.format("\n" + I18n.get(BaseExceptionMessage.CELL_NOT_VALID), cellName));
       return false;

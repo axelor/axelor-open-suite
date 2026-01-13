@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProdProduct;
+import com.axelor.apps.production.service.StockMoveProductionService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
@@ -29,7 +30,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ public class ManufOrderCreateStockMoveLineServiceImpl
   protected ProductCompanyService productCompanyService;
   protected StockMoveLineService stockMoveLineService;
   protected ManufOrderStockMoveService manufOrderStockMoveService;
+  protected final StockMoveProductionService stockMoveProductionService;
 
   @Inject
   public ManufOrderCreateStockMoveLineServiceImpl(
@@ -53,13 +55,15 @@ public class ManufOrderCreateStockMoveLineServiceImpl
       StockMoveService stockMoveService,
       ProductCompanyService productCompanyService,
       StockMoveLineService stockMoveLineService,
-      ManufOrderStockMoveService manufOrderStockMoveService) {
+      ManufOrderStockMoveService manufOrderStockMoveService,
+      StockMoveProductionService stockMoveProductionService) {
     this.manufOrderResidualProductService = manufOrderResidualProductService;
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.stockMoveService = stockMoveService;
     this.productCompanyService = productCompanyService;
     this.stockMoveLineService = stockMoveLineService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
+    this.stockMoveProductionService = stockMoveProductionService;
   }
 
   @Override
@@ -191,23 +195,26 @@ public class ManufOrderCreateStockMoveLineServiceImpl
       StockLocation toStockLocation)
       throws AxelorException {
 
-    return stockMoveLineService.createStockMoveLine(
-        prodProduct.getProduct(),
-        (String)
-            productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
-        (String)
-            productCompanyService.get(
-                prodProduct.getProduct(), "description", stockMove.getCompany()),
-        qty,
-        costPrice,
-        costPrice,
-        prodProduct.getUnit(),
-        stockMove,
-        inOrOutType,
-        false,
-        BigDecimal.ZERO,
-        fromStockLocation,
-        toStockLocation);
+    StockMoveLine stockMoveLine =
+        stockMoveLineService.createStockMoveLine(
+            prodProduct.getProduct(),
+            (String)
+                productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
+            (String)
+                productCompanyService.get(
+                    prodProduct.getProduct(), "description", stockMove.getCompany()),
+            qty,
+            costPrice,
+            costPrice,
+            prodProduct.getUnit(),
+            stockMove,
+            inOrOutType,
+            false,
+            BigDecimal.ZERO,
+            fromStockLocation,
+            toStockLocation);
+    stockMoveLine.getStockMove().addStockMoveLineListItem(stockMoveLine);
+    return stockMoveLine;
   }
 
   /**
@@ -227,7 +234,7 @@ public class ManufOrderCreateStockMoveLineServiceImpl
     }
     StockMove stockMove = stockMoveOpt.get();
 
-    stockMoveService.cancel(stockMove);
+    stockMoveProductionService.cancelFromManufOrder(stockMove);
 
     // clear all lists
     manufOrder
@@ -236,6 +243,7 @@ public class ManufOrderCreateStockMoveLineServiceImpl
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
                     == StockMoveRepository.STATUS_CANCELED);
+    clearTrackingNumberOriginStockMoveLine(stockMove);
     stockMove.clearStockMoveLineList();
 
     // create a new list
@@ -265,6 +273,14 @@ public class ManufOrderCreateStockMoveLineServiceImpl
     }
     stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
+  }
+
+  protected void clearTrackingNumberOriginStockMoveLine(StockMove stockMove) {
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      if (stockMoveLine.getTrackingNumber() != null) {
+        stockMoveLine.getTrackingNumber().setOriginStockMoveLine(null);
+      }
+    }
   }
 
   /**
@@ -350,7 +366,7 @@ public class ManufOrderCreateStockMoveLineServiceImpl
 
     StockMove stockMove = stockMoveOpt.get();
 
-    stockMoveService.cancel(stockMove);
+    stockMoveProductionService.cancelFromManufOrder(stockMove);
 
     // clear all lists from planned lines
     manufOrder

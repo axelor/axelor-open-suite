@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="opportunity-grid" title="Opportunities"
     model="com.axelor.apps.crm.db.Opportunity"
     orderBy="opportunityStatus.sequence,expectedCloseDate">
     <toolbar>
-      <button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge"
+      <button name="grabOpportunityBtn" icon="briefcase-fill" help="Take charge"
         onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"/>
       <!-- <button name="showMap" title="Map" onClick="action-show-opportunities-on-map-page"/> -->
     </toolbar>
@@ -28,16 +28,16 @@
     <field name="user" form-view="user-form" grid-view="user-grid"/>
     <field name="$closedWonId" hidden="true"/>
     <field name="$closedLostId" hidden="true"/>
-    <button name="grabOpportunityBtn" icon="fa-suitcase" help="Take charge"
+    <button name="grabOpportunityBtn" icon="briefcase-fill" help="Take charge"
       onClick="com.axelor.apps.crm.web.OpportunityController:assignToMe"
       hideIf="user.id == _internalUserId"/>
-    <button name="next-stage-gridBtn" icon="fa-chevron-circle-right" help="Next stage"
+    <button name="next-stage-gridBtn" icon="chevron-right" help="Next stage"
       onClick="action-method-opportunity-set-next-stage"
       hideIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"/>
-    <button name="closed-wonBtn" icon="fa-check-circle" help="Closed won"
+    <button name="closed-wonBtn" icon="check-circle-fill" help="Closed won"
       onClick="action-method-opportunity-set-stage-closed-won"
       hideIf="$get('opportunityStatus.id') == $closedWonId"/>
-    <button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost"
+    <button name="closed-lostBtn" icon="dash-circle-fill" help="Closed lost"
       onClick="action-method-opportunity-set-stage-closed-lost"
       hideIf="$get('opportunityStatus.id') == $closedLostId"/>
   </grid>
@@ -61,13 +61,13 @@
     <field name="expectedCloseDate"/>
     <field name="$closedWonId" hidden="true"/>
     <field name="$closedLostId" hidden="true"/>
-    <button name="next-stageBtn" icon="fa-chevron-circle-right" help="Next stage"
+    <button name="next-stageBtn" icon="chevron-right" help="Next stage"
       onClick="action-method-opportunity-set-next-stage"
       hideIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"/>
-    <button name="closed-wonBtn" icon="fa-check-circle" help="Closed won"
+    <button name="closed-wonBtn" icon="check-circle-fill" help="Closed won"
       onClick="action-method-opportunity-set-stage-closed-won"
       hideIf="$get('opportunityStatus.id') == $closedWonId"/>
-    <button name="closed-lostBtn" icon="fa-minus-circle" help="Closed lost"
+    <button name="closed-lostBtn" icon="dash-circle-fill" help="Closed lost"
       onClick="action-method-opportunity-set-stage-closed-lost"
       hideIf="$get('opportunityStatus.id') == $closedLostId"/>
   </grid>
@@ -118,7 +118,7 @@
   <form name="opportunity-form" title="Opportunity" model="com.axelor.apps.crm.db.Opportunity"
     onNew="action-opportunity-group-new" onLoad="action-opportunity-attrs-set-attrs-on-load">
     <menubar>
-      <menu name="opportunityToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+      <menu name="opportunityToolsMenu" title="Tools" showTitle="true" icon="wrench">
         <item name="convertIntoQuotationItem" if="__config__.app.isApp('sale')"
           if-module="axelor-sale" title="Create a quotation"
           action="save,action-sale-group-generate-sale-order"/>
@@ -177,16 +177,16 @@
           colSpan="12" widget="html"/>
       </panel>
       <panel name="eventPanel" title="Events">
-        <button name="meetingBtn" title="Create a meeting" link="" icon="fa-pencil-square-o"
+        <button name="meetingBtn" title="Create a meeting" link="" icon="pencil-square"
           onClick="save,action-opportunity-view-meeting-event" colSpan="3"/>
-        <button name="callBtn" title="Create a call" link="" icon="fa-phone"
+        <button name="callBtn" title="Create a call" link="" icon="telephone"
           onClick="save,action-opportunity-view-call-event" colSpan="3"/>
-        <button name="taskBtn" title="Create a task" link="" icon="fa-tasks"
+        <button name="taskBtn" title="Create a task" link="" icon="list-task"
           onClick="save,action-opportunity-view-task-event" colSpan="3"/>
-        <button name="noteBtn" title="Create a note" link="" icon="fa-sticky-note-o"
+        <button name="noteBtn" title="Create a note" link="" icon="sticky"
           onClick="save,action-opportunity-view-note-event" colSpan="3"/>
         <button name="showAllEventsBtn" title="Show all events" css="btn-custom text-left"
-          icon="fa-tasks" onClick="action-opportunity-view-all-events" readonlyIf="id == null"/>
+          icon="list-task" onClick="action-opportunity-view-all-events" readonlyIf="id == null"/>
         <field name="lastEventDateT" readonly="true" colSpan="3"/>
         <field name="nextScheduledEventDateT" readonly="true" colSpan="3"/>
         <panel-dashlet name="eventPanelDashlet"
@@ -205,9 +205,13 @@
         if="__config__.app.getApp('crm')?.displayCustomerDescriptionInOpportunity">
         <field name="customerDescription" showTitle="false" colSpan="12" widget="html"/>
       </panel>
-      <panel-related name="saleOrderListPanel" if="__config__.app.isApp('sale')"
-        if-module="axelor-sale" title="Sale quotations/orders" field="saleOrderList"
-        form-view="sale-order-form" grid-view="sale-order-opportunity-grid" canNew="false"/>
+      <panel if="__config__.app.isApp('sale')" if-module="axelor-sale"
+        name="saleOrderListPanel" title="Sale quotations/orders">
+        <button name="convertIntoQuotationItemBtn" title="Create a quotation" link=""
+          icon="file-earmark-text" onClick="save,action-sale-group-generate-sale-order"/>
+        <field name="saleOrderList" form-view="sale-order-form"
+          grid-view="sale-order-opportunity-grid" canNew="false" colSpan="12"/>
+      </panel>
     </panel-tabs>
 
     <panel name="otherDetailsPanel" sidebar="true">
@@ -217,11 +221,14 @@
         readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
         canCollapse="true">
         <field name="user" canNew="false" canView="false" canEdit="false"
-          form-view="user-form" grid-view="user-grid"/>
+          form-view="user-form" grid-view="user-grid"
+          onChange="action-opportunity-group-set-default-values"
+          onSelect="action-opportunity-attrs-set-user-domain"/>
         <field name="company" widget="SuggestBox" canEdit="false" form-view="company-form"
           grid-view="company-grid" required="true"/>
         <field if="__config__.app.getApp('base')?.getTeamManagement()" name="team"
-          canEdit="false" form-view="team-form" grid-view="team-grid"/>
+          canEdit="false" form-view="team-form" grid-view="team-grid"
+          onSelect="action-opportunity-attrs-set-team-domain"/>
         <field if="__config__.app.getApp('base')?.enableTradingNamesManagement"
           name="tradingName" canEdit="false" domain="self.company = :company"
           form-view="trading-name-form" grid-view="trading-name-grid"/>
@@ -241,11 +248,13 @@
         <field name="partner" canEdit="false" requiredIf="contact == null"
           readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
           domain="self.isContact = false AND :company member of self.companySet"
-          form-view="partner-form" grid-view="partner-grid"/>
+          form-view="partner-form" grid-view="partner-grid"
+          onChange="action-opportunity-record-set-contact"/>
         <field name="contact" canEdit="false" requiredIf="partner == null"
           readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
-          domain="self.isContact = true AND :company member of self.companySet"
-          form-view="partner-contact-form" grid-view="partner-contact-grid"/>
+          form-view="partner-contact-form" grid-view="partner-contact-grid"
+          onSelect="action-opportunity-attrs-set-contact-domain"
+          onChange="action-opportunity-record-set-partner"/>
       </panel>
       <panel name="postitPanel" title="Memo" canCollapse="true">
         <field name="memo" showTitle="false" colSpan="12"/>
@@ -263,7 +272,7 @@
 
   <kanban columnBy="opportunityStatus" sequenceBy="orderByState" limit="10"
     name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity"
-    onMove="action-opportunity-method-cancel-saleorders, action-opportunity-method-kanban-onmove">
+    onMove="action-opportunity-method-cancel-saleorders, action-opportunity-method-kanban-onmove,action-opportunity-group-status-onchange">
     <field name="opportunitySeq"/>
     <field name="name"/>
     <field name="description"/>
@@ -707,5 +716,55 @@
     <call class="com.axelor.apps.crm.web.OpportunityController"
       method="kanbanOpportunityOnMove"/>
   </action-method>
+
+  <action-attrs name="action-opportunity-attrs-set-contact-domain">
+    <attribute for="contact" if="partner &amp;&amp; !partner?.contactPartnerSet?.empty"
+      name="domain"
+      expr="eval: &quot; self.id IN (${partner?.contactPartnerSet?.collect{it.id}.join(',')}) &quot;"/>
+    <attribute for="contact" if="partner &amp;&amp; partner?.contactPartnerSet?.empty"
+      name="domain" expr="eval: &quot; self.id IN (0) &quot;"/>
+    <attribute for="contact" if="!partner" name="domain"
+      expr="eval: &quot; self.isContact = true AND :company member of self.companySet &quot;"/>
+  </action-attrs>
+
+  <action-record name="action-opportunity-record-set-contact"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="contact"
+      expr="eval: partner?.contactPartnerSet?.size() == 1 ? partner?.contactPartnerSet[0] : null"/>
+  </action-record>
+
+  <action-record name="action-opportunity-record-set-partner"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="partner" expr="eval: contact?.mainPartner" if="!partner"/>
+  </action-record>
+
+  <action-group name="action-opportunity-group-set-default-values">
+    <action name="action-opportunity-record-set-team"/>
+    <action name="action-opportunity-record-set-company"/>
+  </action-group>
+
+  <action-record name="action-opportunity-record-set-team"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="team" expr="eval: user?.activeTeam"/>
+  </action-record>
+
+  <action-record name="action-opportunity-record-set-company"
+    model="com.axelor.apps.crm.db.Opportunity">
+    <field name="company" expr="eval: user?.activeCompany"/>
+  </action-record>
+
+  <action-attrs name="action-opportunity-attrs-set-team-domain">
+    <attribute for="team" if="user" name="domain"
+      expr="eval: &quot; :user member of self.members &quot;"/>
+    <attribute for="team" if="!user" name="domain" expr="eval: &quot; self.id != 0 &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-opportunity-attrs-set-user-domain">
+    <attribute for="user" if="team &amp;&amp; !team?.members?.empty" name="domain"
+      expr="eval: &quot; self.id IN (${team?.members?.collect{it.id}.join(',')}) &quot;"/>
+    <attribute for="user" if="team &amp;&amp; team?.members?.empty" name="domain"
+      expr="eval: &quot; self.id IN (0) &quot;"/>
+    <attribute for="user" if="!team" name="domain" expr="eval: &quot; self.id != 0 &quot;"/>
+  </action-attrs>
 
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,13 +30,13 @@ import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.TemplateRepository;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.mail.MessagingException;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.mail.MessagingException;
 
 public class AppraisalServiceImpl implements AppraisalService {
 

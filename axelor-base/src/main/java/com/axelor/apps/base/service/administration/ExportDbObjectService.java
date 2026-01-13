@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.app.AppSettings;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.Group;
 import com.axelor.auth.db.repo.GroupRepository;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.MetaScanner;
@@ -36,8 +37,8 @@ import com.axelor.meta.loader.ModuleManager;
 import com.axelor.studio.app.service.AppService;
 import com.axelor.utils.helpers.file.CsvHelper;
 import com.axelor.utils.xml.XPathParser;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
@@ -136,7 +137,8 @@ public class ExportDbObjectService {
       List<? extends MetaMenu> menuList =
           Beans.get(MetaMenuRepository.class)
               .all()
-              .filter("self.parent = null AND self.left = true AND ?1 MEMBER OF self.groups", group)
+              .filter(
+                  "self.parent IS null AND self.left = true AND ?1 MEMBER OF self.groups", group)
               .order("-priority")
               .order("id")
               .fetch();
@@ -272,7 +274,7 @@ public class ExportDbObjectService {
       List<URL> urls = MetaScanner.findAll(module, "domains", "(.*?)\\.xml$");
 
       for (URL url : urls) {
-        File file = MetaFiles.createTempFile("tempXml", ".xml").toFile();
+        File file = TempFiles.createTempFile("tempXml", ".xml").toFile();
         org.apache.commons.io.FileUtils.copyURLToFile(url, file);
         String objectName = Paths.get(url.getPath()).getFileName().toString().split("\\.")[0];
         parser.parse(new InputSource(new FileInputStream(file)), xmlHandler);

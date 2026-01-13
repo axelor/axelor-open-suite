@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,9 +23,11 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.db.Mrp;
+import com.axelor.script.ScriptAllowed;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
 
+@ScriptAllowed
 public interface MrpService extends Callable<Mrp> {
 
   /**

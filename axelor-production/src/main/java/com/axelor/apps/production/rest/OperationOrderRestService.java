@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,11 +19,19 @@
 package com.axelor.apps.production.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.OperationOrder;
-import javax.ws.rs.core.Response;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumber;
+import jakarta.ws.rs.core.Response;
+import java.math.BigDecimal;
 
 public interface OperationOrderRestService {
 
   Response updateStatusOfOperationOrder(OperationOrder operationOrder, Integer targetStatus)
+      throws AxelorException;
+
+  StockMoveLine addOperationOrderProduct(
+      Product product, BigDecimal qty, TrackingNumber trackingNumber, OperationOrder operationOrder)
       throws AxelorException;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.production.service.manuforder;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
@@ -32,6 +33,7 @@ import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.StockMoveProductionService;
 import com.axelor.apps.production.service.config.StockConfigProductionService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.stock.db.StockConfig;
@@ -41,13 +43,15 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
-import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.service.StockMoveToolService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -66,7 +70,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   public static final int STOCK_LOCATION_IN = 1;
   public static final int STOCK_LOCATION_OUT = 2;
   private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-  protected StockMoveService stockMoveService;
+  protected StockMoveProductionService stockMoveProductionService;
   protected StockMoveLineService stockMoveLineService;
   protected AppBaseService appBaseService;
   protected SupplyChainConfigService supplyChainConfigService;
@@ -79,10 +83,12 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   protected ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService;
   protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
   protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
+  protected StockMoveToolService stockMoveToolService;
+  protected StockMoveRepository stockMoveRepository;
 
   @Inject
   public ManufOrderStockMoveServiceImpl(
-      StockMoveService stockMoveService,
+      StockMoveProductionService stockMoveProductionService,
       StockMoveLineService stockMoveLineService,
       AppBaseService appBaseService,
       SupplyChainConfigService supplyChainConfigService,
@@ -93,9 +99,11 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       StockMoveLineRepository stockMoveLineRepository,
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
-      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
+      ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
+      StockMoveToolService stockMoveToolService,
+      StockMoveRepository stockMoveRepository) {
     this.supplyChainConfigService = supplyChainConfigService;
-    this.stockMoveService = stockMoveService;
+    this.stockMoveProductionService = stockMoveProductionService;
     this.stockMoveLineService = stockMoveLineService;
     this.appBaseService = appBaseService;
     this.productCompanyService = productCompanyService;
@@ -106,6 +114,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     this.manufOrderOutgoingStockMoveService = manufOrderOutgoingStockMoveService;
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
+    this.stockMoveToolService = stockMoveToolService;
+    this.stockMoveRepository = stockMoveRepository;
   }
 
   @Override
@@ -134,8 +144,12 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   protected StockLocation _getDefaultInOutsourcingStockLocation(
       ManufOrder manufOrder, Company company) throws AxelorException {
     StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
-    // Because it will be send to outsource.
-    return stockConfigProductionService.getPickupDefaultStockLocation(stockConfig);
+
+    return Optional.ofNullable(manufOrder)
+        .map(ManufOrder::getProdProcess)
+        .map(ProdProcess::getStockLocation)
+        .filter(StockLocation::getIsConsignmentStock)
+        .orElse(stockConfigProductionService.getPickupDefaultStockLocation(stockConfig));
   }
 
   @Override
@@ -189,7 +203,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     }
   }
 
-  public void finish(ManufOrder manufOrder) throws AxelorException {
+  public ManufOrder finish(ManufOrder manufOrder) throws AxelorException {
     // clear empty stock move
     manufOrder
         .getInStockMoveList()
@@ -202,35 +216,19 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     for (StockMove stockMove : manufOrder.getInStockMoveList()) {
       this.finishStockMove(stockMove);
     }
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     for (StockMove stockMove : manufOrder.getOutStockMoveList()) {
-      updateRealPrice(manufOrder, stockMove);
       this.finishStockMove(stockMove);
     }
-  }
-
-  /**
-   * Update price in stock move line: if the product price is configured to be real, then we use the
-   * cost price from costsheet. Else, we do nothing as the planned price is already filled.
-   *
-   * @param manufOrder
-   * @param stockMove
-   */
-  protected void updateRealPrice(ManufOrder manufOrder, StockMove stockMove) {
-    stockMove.getStockMoveLineList().stream()
-        .filter(
-            stockMoveLine ->
-                stockMoveLine.getProduct() != null
-                    && stockMoveLine.getProduct().getRealOrEstimatedPriceSelect()
-                        == ProductRepository.PRICE_METHOD_REAL)
-        .forEach(stockMoveLine -> stockMoveLine.setUnitPriceUntaxed(manufOrder.getCostPrice()));
+    return JpaModelHelper.ensureManaged(manufOrder);
   }
 
   public void finishStockMove(StockMove stockMove) throws AxelorException {
 
     if (stockMove != null && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
       stockMove.setIsWithBackorder(false);
-      stockMoveService.copyQtyToRealQty(stockMove);
-      stockMoveService.realize(stockMove);
+      stockMoveProductionService.copyQtyToRealQty(stockMove);
+      stockMoveProductionService.realize(stockMove);
     }
   }
 
@@ -241,7 +239,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
    * @param manufOrder
    */
   @Transactional(rollbackOn = {Exception.class})
-  public void partialFinish(ManufOrder manufOrder) throws AxelorException {
+  public ManufOrder partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getIsConsProOnOperation()) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
         if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
@@ -249,10 +247,10 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
         }
       }
     } else {
-      partialFinish(manufOrder, PART_FINISH_IN);
+      manufOrder = partialFinish(manufOrder, PART_FINISH_IN);
     }
-    partialFinish(manufOrder, PART_FINISH_OUT);
-    Beans.get(ManufOrderRepository.class).save(manufOrder);
+    manufOrder = partialFinish(manufOrder, PART_FINISH_OUT);
+    return Beans.get(ManufOrderRepository.class).save(manufOrder);
   }
 
   /**
@@ -261,15 +259,16 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
    * @param manufOrder
    * @param inOrOut can be {@link ManufOrderStockMoveServiceImpl#PART_FINISH_IN} or {@link
    *     ManufOrderStockMoveServiceImpl#PART_FINISH_OUT}
+   * @return
    * @throws AxelorException
    */
-  protected void partialFinish(ManufOrder manufOrder, int inOrOut) throws AxelorException {
+  protected ManufOrder partialFinish(ManufOrder manufOrder, int inOrOut) throws AxelorException {
 
     if (inOrOut != PART_FINISH_IN && inOrOut != PART_FINISH_OUT) {
       throw new IllegalArgumentException(
           I18n.get(ProductionExceptionMessage.IN_OR_OUT_INVALID_ARG));
     }
-
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     Company company = manufOrder.getCompany();
     StockConfig stockConfig = stockConfigProductionService.getStockConfig(company);
 
@@ -296,14 +295,14 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     Optional<StockMove> stockMoveToRealize =
         manufOrderGetStockMoveService.getPlannedStockMove(stockMoveList);
     if (stockMoveToRealize.isPresent()) {
-      updateRealPrice(manufOrder, stockMoveToRealize.get());
       finishStockMove(stockMoveToRealize.get());
+      manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     }
 
     // generate new stock move
 
     StockMove newStockMove =
-        stockMoveService.createStockMove(
+        stockMoveProductionService.createStockMove(
             null,
             null,
             company,
@@ -322,7 +321,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
     if (!newStockMove.getStockMoveLineList().isEmpty()) {
       // plan the stockmove
-      stockMoveService.plan(newStockMove);
+      stockMoveProductionService.plan(newStockMove);
 
       if (inOrOut == PART_FINISH_IN) {
         manufOrder.addInStockMoveListItem(newStockMove);
@@ -333,6 +332,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
         newStockMove.getStockMoveLineList().forEach(manufOrder::addProducedStockMoveLineListItem);
       }
     }
+    return manufOrder;
   }
 
   public void cancel(ManufOrder manufOrder) throws AxelorException {
@@ -349,7 +349,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
     if (stockMove != null) {
 
-      stockMoveService.cancel(stockMove);
+      stockMoveProductionService.cancelFromManufOrder(stockMove);
 
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 
@@ -482,10 +482,48 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
     return stockMoveLineRepository
         .all()
-        .filter("self.saleOrderLine = :saleOrderLine AND self.stockMove != null")
+        .filter("self.saleOrderLine = :saleOrderLine AND self.stockMove IS NOT null")
         .bind("saleOrderLine", manufOrder.getSaleOrderLine())
         .fetchStream()
         .map(l -> l.getStockMove().getId())
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public void updatePrices(ManufOrder manufOrder, BigDecimal costPrice) throws AxelorException {
+    List<StockMove> outStockMoveList = manufOrder.getOutStockMoveList();
+    if (ObjectUtils.isEmpty(outStockMoveList)) {
+      return;
+    }
+    for (StockMove stockMove : outStockMoveList) {
+      stockMove = JpaModelHelper.ensureManaged(stockMove);
+      updatePrices(stockMove, costPrice);
+      BigDecimal exTaxTotal = stockMoveToolService.compute(stockMove);
+      stockMove = JpaModelHelper.ensureManaged(stockMove);
+      stockMove.setExTaxTotal(exTaxTotal);
+      stockMoveRepository.save(stockMove);
+    }
+  }
+
+  protected void updatePrices(StockMove stockMove, BigDecimal costPrice) throws AxelorException {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (ObjectUtils.isEmpty(stockMoveLineList)) {
+      return;
+    }
+    for (StockMoveLine stockMoveLine : stockMoveLineList) {
+      Product product = stockMoveLine.getProduct();
+      if (product != null
+          && product.getRealOrEstimatedPriceSelect() == ProductRepository.PRICE_METHOD_REAL) {
+        stockMoveLine.setUnitPriceUntaxed(costPrice);
+      }
+      stockMoveLine.setCompanyUnitPriceUntaxed(costPrice);
+      stockMoveLineService.updateAveragePriceAndLocationLineHistory(
+          stockMoveLine.getToStockLocation(),
+          stockMoveLine,
+          StockMoveRepository.STATUS_DRAFT,
+          StockMoveRepository.STATUS_REALIZED,
+          null,
+          null);
+    }
   }
 }

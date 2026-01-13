@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,14 +38,14 @@ import com.axelor.apps.hr.service.leave.LeaveLineService;
 import com.axelor.apps.hr.service.leave.management.LeaveManagementService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.validation.constraints.Digits;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import javax.validation.constraints.Digits;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BatchLeaveManagement extends BatchStrategy {

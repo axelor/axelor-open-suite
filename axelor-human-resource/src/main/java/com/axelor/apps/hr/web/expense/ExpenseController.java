@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,23 +15,6 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-/*
-< * Axelor Business Solutions
- *
- * Copyright (C) 2019 Axelor (<http://axelor.com>).
- *
- * This program is free software: you can redistribute it and/or  modify
- * it under the terms of the GNU Affero General Public License, version 3,
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Affero General Public License for more details.
- *
- * You should have received a copy of the GNU Affero General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.web.expense;
 
@@ -55,6 +38,7 @@ import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.HRMenuTagService;
 import com.axelor.apps.hr.service.HRMenuValidateService;
+import com.axelor.apps.hr.service.KilometricExpenseService;
 import com.axelor.apps.hr.service.KilometricService;
 import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.expense.ExpenseAnalyticService;
@@ -63,12 +47,15 @@ import com.axelor.apps.hr.service.expense.ExpenseComputationService;
 import com.axelor.apps.hr.service.expense.ExpenseConfirmationService;
 import com.axelor.apps.hr.service.expense.ExpenseKilometricService;
 import com.axelor.apps.hr.service.expense.ExpenseLineService;
+import com.axelor.apps.hr.service.expense.ExpenseLineUpdateService;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.apps.hr.service.expense.ExpensePrintService;
+import com.axelor.apps.hr.service.expense.ExpenseRecordService;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
+import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -89,7 +76,7 @@ import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -149,16 +136,18 @@ public class ExpenseController {
       response.setView(
           ActionView.define(I18n.get("Expense"))
               .model(Expense.class.getName())
-              .add("form", "expense-form")
+              .add("form", "complete-my-expense-form")
               .context("_payCompany", Beans.get(UserHrService.class).getPayCompany(user))
+              .context("_isEmployeeReadOnly", true)
               .map());
     } else if (expenseList.size() == 1) {
       response.setView(
           ActionView.define(I18n.get("Expense"))
               .model(Expense.class.getName())
-              .add("form", "expense-form")
+              .add("form", "complete-my-expense-form")
               .param("forceEdit", "true")
               .context("_showRecord", String.valueOf(expenseList.get(0).getId()))
+              .context("_isEmployeeReadOnly", true)
               .map());
     } else {
       response.setView(
@@ -189,10 +178,11 @@ public class ExpenseController {
     response.setView(
         ActionView.define(I18n.get("Expense"))
             .model(Expense.class.getName())
-            .add("form", "expense-form")
+            .add("form", "complete-my-expense-form")
             .param("forceEdit", "true")
             .domain("self.id = " + expenseId)
             .context("_showRecord", expenseId)
+            .context("_isEmployeeReadOnly", true)
             .map());
   }
 
@@ -375,6 +365,13 @@ public class ExpenseController {
     }
   }
 
+  public void backToDraft(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+    expense = Beans.get(ExpenseRepository.class).find(expense.getId());
+    Beans.get(ExpenseWorkflowService.class).backToDraft(expense);
+    response.setReload(true);
+  }
+
   public void addPayment(ActionRequest request, ActionResponse response) {
     Expense expense = request.getContext().asType(Expense.class);
     expense = Beans.get(ExpenseRepository.class).find(expense.getId());
@@ -513,7 +510,8 @@ public class ExpenseController {
     }
   }
 
-  public void validateAndCompute(ActionRequest request, ActionResponse response) {
+  public void validateAndCompute(ActionRequest request, ActionResponse response)
+      throws AxelorException {
 
     Expense expense = request.getContext().asType(Expense.class);
     ExpenseLineService expenseLineService = Beans.get(ExpenseLineService.class);
@@ -553,6 +551,7 @@ public class ExpenseController {
     }
 
     compute(request, response);
+    Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
   }
 
   public void computeKilometricExpense(ActionRequest request, ActionResponse response)
@@ -583,7 +582,8 @@ public class ExpenseController {
 
     BigDecimal amount = BigDecimal.ZERO;
     try {
-      amount = Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee);
+      amount =
+          Beans.get(KilometricExpenseService.class).computeKilometricExpense(expenseLine, employee);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -717,7 +717,8 @@ public class ExpenseController {
             AuthUtils.getUser().getName());
       }
 
-      amount = kilometricService.computeKilometricExpense(expenseLine, employee);
+      amount =
+          Beans.get(KilometricExpenseService.class).computeKilometricExpense(expenseLine, employee);
       response.setValue("totalAmount", amount);
       response.setValue("untaxedAmount", amount);
 
@@ -752,5 +753,32 @@ public class ExpenseController {
       response.setValue("generalExpenseLineList", generalExpenseLineList);
       response.setValue("kilometricExpenseLineList", kilometricExpenseLineList);
     }
+  }
+
+  public void checkAnalyticAxis(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Expense expense = request.getContext().asType(Expense.class);
+    Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
+  }
+
+  public void computeDummyAmounts(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Expense expense = request.getContext().asType(Expense.class);
+    response.setValues(Beans.get(ExpenseRecordService.class).computeDummyAmounts(expense));
+  }
+
+  public void computeLineCompanyAmounts(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Expense expense = request.getContext().asType(Expense.class);
+    Beans.get(ExpenseComputationService.class).recomputeAmountsUsingLines(expense);
+    response.setValues(expense);
+  }
+
+  public void updateCurrencyOnLine(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Expense expense = request.getContext().asType(Expense.class);
+    Beans.get(ExpenseLineUpdateService.class).updateCurrencyOnLines(expense);
+    response.setValue("generalExpenseLineList", expense.getGeneralExpenseLineList());
+    response.setValue("kilometricExpenseLineList", expense.getKilometricExpenseLineList());
   }
 }

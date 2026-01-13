@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -58,7 +58,9 @@ public interface MoveLineAttrsService {
 
   void addPartnerDomain(Move move, Map<String, Map<String, Object>> attrsMap);
 
-  void addAnalyticDistributionTemplateDomain(Move move, Map<String, Map<String, Object>> attrsMap);
+  void addAnalyticDistributionTemplateDomain(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException;
 
   void changeFocus(Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 
@@ -70,5 +72,8 @@ public interface MoveLineAttrsService {
       Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 
   void addCutOffDatesRequired(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
+
+  void addVatSystemSelectReadonly(
       Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap);
 }

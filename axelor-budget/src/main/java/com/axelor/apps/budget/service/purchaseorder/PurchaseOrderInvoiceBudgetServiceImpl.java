@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,23 +20,20 @@ package com.axelor.apps.budget.service.purchaseorder;
 
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
+import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
-import com.axelor.apps.base.service.PriceListService;
-import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.businessproject.service.PurchaseOrderInvoiceProjectServiceImpl;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.supplychain.db.repo.TimetableRepository;
 import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -45,11 +42,11 @@ import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
 import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Objects;
 
-public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceProjectServiceImpl {
+public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceContractServiceImpl {
 
   protected BudgetDistributionRepository budgetDistributionRepository;
   protected BudgetToolsService budgetToolsService;
@@ -70,10 +67,7 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
       CurrencyScaleService currencyScaleService,
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
-      PriceListService priceListService,
-      PurchaseOrderLineService purchaseOrderLineService,
-      AppBusinessProjectService appBusinessProjectService,
-      ProductCompanyService productCompanyService,
+      InvoiceLineRepository invoiceLineRepository,
       BudgetDistributionRepository budgetDistributionRepository,
       BudgetToolsService budgetToolsService,
       AppBudgetService appBudgetService) {
@@ -91,10 +85,7 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
         currencyScaleService,
         orderInvoiceService,
         invoiceTaxService,
-        priceListService,
-        purchaseOrderLineService,
-        appBusinessProjectService,
-        productCompanyService);
+        invoiceLineRepository);
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
@@ -123,6 +114,9 @@ public class PurchaseOrderInvoiceBudgetServiceImpl extends PurchaseOrderInvoiceP
         invoiceLine.setBudget(purchaseOrderLine.getBudget());
         invoiceLine.setBudgetRemainingAmountToAllocate(
             purchaseOrderLine.getBudgetRemainingAmountToAllocate());
+        invoiceLine.setBudgetFromDate(purchaseOrderLine.getBudgetFromDate());
+        invoiceLine.setBudgetToDate(purchaseOrderLine.getBudgetToDate());
+
         if (!ObjectUtils.isEmpty(purchaseOrderLine.getBudgetDistributionList())) {
           for (BudgetDistribution budgetDistribution :
               purchaseOrderLine.getBudgetDistributionList()) {

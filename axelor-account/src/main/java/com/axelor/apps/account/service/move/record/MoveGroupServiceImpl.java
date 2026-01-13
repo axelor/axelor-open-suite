@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,12 +25,14 @@ import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MovePfpToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
-import com.axelor.apps.account.service.move.massentry.MassEntryService;
+import com.axelor.apps.account.service.move.massentry.MassEntryCheckService;
 import com.axelor.apps.account.service.move.massentry.MassEntryVerificationService;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
+import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecordService;
 import com.axelor.apps.account.service.period.PeriodCheckService;
@@ -40,8 +42,8 @@ import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,12 +66,14 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected MoveLineTaxService moveLineTaxService;
   protected PeriodService periodService;
   protected MoveRepository moveRepository;
-  protected MassEntryService massEntryService;
+  protected MassEntryCheckService massEntryCheckService;
   protected MassEntryVerificationService massEntryVerificationService;
   protected MoveLineMassEntryRecordService moveLineMassEntryRecordService;
   protected PfpService pfpService;
   protected AnalyticAttrsService analyticAttrsService;
   protected MoveLineRecordService moveLineRecordService;
+  protected MoveLineService moveLineService;
+  protected MovePfpToolService movePfpToolService;
 
   @Inject
   public MoveGroupServiceImpl(
@@ -86,12 +90,14 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       MoveLineTaxService moveLineTaxService,
       PeriodService periodService,
       MoveRepository moveRepository,
-      MassEntryService massEntryService,
+      MassEntryCheckService massEntryCheckService,
       MassEntryVerificationService massEntryVerificationService,
       MoveLineMassEntryRecordService moveLineMassEntryRecordService,
       PfpService pfpService,
       AnalyticAttrsService analyticAttrsService,
-      MoveLineRecordService moveLineRecordService) {
+      MoveLineRecordService moveLineRecordService,
+      MoveLineService moveLineService,
+      MovePfpToolService movePfpToolService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodCheckService = periodCheckService;
@@ -105,12 +111,14 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.moveLineTaxService = moveLineTaxService;
     this.periodService = periodService;
     this.moveRepository = moveRepository;
-    this.massEntryService = massEntryService;
+    this.massEntryCheckService = massEntryCheckService;
     this.massEntryVerificationService = massEntryVerificationService;
     this.moveLineMassEntryRecordService = moveLineMassEntryRecordService;
     this.pfpService = pfpService;
     this.analyticAttrsService = analyticAttrsService;
     this.moveLineRecordService = moveLineRecordService;
+    this.moveLineService = moveLineService;
+    this.movePfpToolService = movePfpToolService;
   }
 
   protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
@@ -139,7 +147,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveCheckService.checkDates(move);
     moveCheckService.checkPeriodPermission(move);
     moveCheckService.checkRemovedLines(move);
-    moveCheckService.checkAnalyticAccount(move);
+    moveCheckService.checkAnalyticAxisByCompany(move);
     moveCheckService.checkCurrencyAmountSum(move);
   }
 
@@ -175,7 +183,9 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveCheckService.checkPeriodPermission(move);
     moveDefaultService.setDefaultValues(move);
-    moveRecordSetService.setJournal(move);
+    if (move.getJournal() == null) {
+      moveRecordSetService.setJournal(move);
+    }
     moveRecordSetService.setPeriod(move);
 
     moveRecordSetService.setFunctionalOriginSelect(move);
@@ -196,7 +206,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     if (pfpService.isManagePassedForPayment(move.getCompany())) {
       moveRecordSetService.setPfpStatus(move);
-      valuesMap.put("pfpValidateStatusSelect", move.getOriginDate());
+      valuesMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());
     }
 
     if (isMassEntry) {
@@ -258,6 +268,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveAttrsService.addDueDateHidden(move, attrsMap);
     moveAttrsService.addThirdPartyPayerPartnerReadonly(move, attrsMap);
+    moveAttrsService.addFiscalPositionWarningHidden(move, attrsMap);
 
     return attrsMap;
   }
@@ -366,6 +377,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveRecordSetService.setCurrencyByPartner(move);
     moveRecordSetService.setPaymentMode(move);
+    moveRecordSetService.setCompanyBankDetails(move);
     moveRecordSetService.setPaymentCondition(move);
     moveRecordSetService.setPartnerBankDetails(move);
     moveRecordSetService.setThirdPartyPayerPartner(move);
@@ -405,11 +417,12 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   @Override
   public Map<String, Object> getMoveLineListOnChangeValuesMap(
       Move move, boolean paymentConditionChange, boolean dateChange) throws AxelorException {
+    moveCheckService.checkAnalyticAxisByCompany(move);
     Map<String, Object> valuesMap = moveRecordSetService.computeTotals(move);
 
     moveRecordUpdateService.updateDueDate(move, paymentConditionChange, dateChange);
     if (move.getMassEntryStatusSelect() != MoveRepository.MASS_ENTRY_STATUS_NULL) {
-      massEntryService.verifyFieldsAndGenerateTaxLineAndCounterpart(move, move.getDate());
+      massEntryCheckService.verifyFieldsAndGenerateTaxLineAndCounterpart(move, move.getDate());
       valuesMap.put("massEntryErrors", move.getMassEntryErrors());
       valuesMap.put("moveLineMassEntryList", move.getMoveLineMassEntryList());
     }
@@ -420,7 +433,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
                 MoveRepository.STATUS_SIMULATED)
             .contains(move.getStatusSelect())
         && pfpService.isManagePassedForPayment(move.getCompany())) {
-      Integer pfpStatus = moveInvoiceTermService.checkOtherInvoiceTerms(move);
+      Integer pfpStatus = movePfpToolService.checkOtherInvoiceTerms(move);
       if (pfpStatus != null) {
         valuesMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());
       }
@@ -591,26 +604,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Object> getPaymentModeOnChangeValuesMap(Move move) throws AxelorException {
-    Map<String, Object> valuesMap = new HashMap<>();
-
-    moveRecordSetService.setCompanyBankDetails(move);
-
-    valuesMap.put("companyBankDetails", move.getCompanyBankDetails());
-
-    return valuesMap;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getHeaderChangeAttrsMap() {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addHeaderChangeValue(true, attrsMap);
-
-    return attrsMap;
-  }
-
-  @Override
   public Map<String, Object> getCurrencyOnChangeValuesMap(Move move) {
     Map<String, Object> valuesMap = new HashMap<>();
 
@@ -633,6 +626,14 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     valuesMap.put("moveLineList", move.getMoveLineList());
 
     return valuesMap;
+  }
+
+  @Override
+  public Map<String, Map<String, Object>> getFiscalPositionOnChangeAttrsMap(Move move)
+      throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+    moveAttrsService.addFiscalPositionWarningHidden(move, attrsMap);
+    return attrsMap;
   }
 
   @Override
@@ -699,15 +700,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(Move move) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addPartnerDomain(move, attrsMap);
-
-    return attrsMap;
-  }
-
-  @Override
   public Map<String, Map<String, Object>> getPaymentModeOnSelectAttrsMap(Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
@@ -721,15 +713,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addPartnerBankDetailsDomain(move, attrsMap);
-
-    return attrsMap;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getTradingNameOnSelectAttrsMap(Move move) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addTradingNameDomain(move, attrsMap);
 
     return attrsMap;
   }
@@ -775,10 +758,10 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getCompanyOnSelectAttrsMap(Move move) {
+  public Map<String, Map<String, Object>> getCompanyBankDetailsOnSelectAttrsMap(Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
-    moveAttrsService.addCompanyDomain(move, attrsMap);
+    moveAttrsService.addCompanyBankDetailsDomain(move, attrsMap);
 
     return attrsMap;
   }

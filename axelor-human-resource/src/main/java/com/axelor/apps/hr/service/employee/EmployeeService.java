@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.service.employee;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.DPAE;
@@ -51,4 +52,6 @@ public interface EmployeeService extends UserService {
   public PrintingTemplate getAnnualReportPrintingTemplate(Employee employee) throws AxelorException;
 
   public PrintingTemplate getEmpPhoneBookPrintingTemplate() throws AxelorException;
+
+  Company getDefaultCompany(Employee employee);
 }

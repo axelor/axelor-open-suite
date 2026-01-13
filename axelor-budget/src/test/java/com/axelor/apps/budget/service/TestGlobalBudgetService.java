@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,9 +36,9 @@ import com.axelor.apps.budget.module.BudgetTest;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.loader.LoaderHelper;
-import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveReservedQtyService;
@@ -34,6 +35,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.math.BigDecimal;
 
 public class StockMoveController {
 
@@ -108,7 +110,7 @@ public class StockMoveController {
       String strFilter =
           Beans.get(PartnerLinkService.class)
               .computePartnerFilter(
-                  stockMove.getPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_BY);
+                  stockMove.getPartner(), PartnerLinkTypeRepository.TYPE_SELECT_INVOICED_TO);
 
       response.setAttr("invoicedPartner", "domain", strFilter);
     } catch (Exception e) {
@@ -152,9 +154,9 @@ public class StockMoveController {
       StockMove stockMove = request.getContext().asType(StockMove.class);
 
       Beans.get(StockMoveServiceSupplychain.class).fillRealQuantities(stockMove);
-
+      BigDecimal exTaxTotal = Beans.get(StockMoveToolService.class).compute(stockMove);
       response.setValue("stockMoveLineList", stockMove.getStockMoveLineList());
-
+      response.setValue("exTaxTotal", exTaxTotal);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

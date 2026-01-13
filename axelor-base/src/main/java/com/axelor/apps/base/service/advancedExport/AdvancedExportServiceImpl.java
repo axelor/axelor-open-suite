@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,7 +47,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.io.File;
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -57,7 +58,6 @@ import java.util.Optional;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.persistence.Query;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -238,7 +238,7 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
             + ("msi_" + (msi))
             + ".value AND "
             + ("msi_" + (msi))
-            + ".select IN ("
+            + ".select.id IN ("
             + metaSelectIds
             + ")";
 
@@ -329,9 +329,9 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
         (!Strings.isNullOrEmpty(selectionJoinField)) ? selectionJoinField + " " : "");
     queryBuilder.append((!Strings.isNullOrEmpty(criteria)) ? criteria : "");
     if (!advancedExport.getIncludeArchivedRecords() && Strings.isNullOrEmpty(criteria)) {
-      queryBuilder.append("WHERE self.archived = 'f' OR self.archived IS NULL");
+      queryBuilder.append("WHERE self.archived = false OR self.archived IS NULL");
     } else if (!advancedExport.getIncludeArchivedRecords() && !Strings.isNullOrEmpty(criteria)) {
-      queryBuilder.append(" AND (self.archived = 'f' OR self.archived IS NULL)");
+      queryBuilder.append(" AND (self.archived = false OR self.archived IS NULL)");
     }
     queryBuilder.append((!Strings.isNullOrEmpty(orderByCol)) ? orderByCol : "");
 

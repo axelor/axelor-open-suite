@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -61,7 +61,7 @@ public interface ManufOrderStockMoveService {
    */
   void consumeInStockMoves(ManufOrder manufOrder) throws AxelorException;
 
-  void finish(ManufOrder manufOrder) throws AxelorException;
+  ManufOrder finish(ManufOrder manufOrder) throws AxelorException;
 
   void finishStockMove(StockMove stockMove) throws AxelorException;
 
@@ -70,8 +70,9 @@ public interface ManufOrderStockMoveService {
    * given manufacturing order.
    *
    * @param manufOrder
+   * @return
    */
-  void partialFinish(ManufOrder manufOrder) throws AxelorException;
+  ManufOrder partialFinish(ManufOrder manufOrder) throws AxelorException;
 
   void cancel(ManufOrder manufOrder) throws AxelorException;
 
@@ -108,4 +109,6 @@ public interface ManufOrderStockMoveService {
       throws AxelorException;
 
   public List<Long> getOutgoingStockMoves(ManufOrder manufOrder);
+
+  void updatePrices(ManufOrder manufOrder, BigDecimal costPrice) throws AxelorException;
 }

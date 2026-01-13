@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,10 +28,12 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderTaxService;
+import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import org.slf4j.Logger;
@@ -46,8 +48,11 @@ public class PurchaseOrderCreateServiceSupplychainImpl extends PurchaseOrderCrea
 
   @Inject
   public PurchaseOrderCreateServiceSupplychainImpl(
-      PurchaseConfigService purchaseConfigService, AccountConfigService accountConfigService) {
-    super(purchaseConfigService);
+      PurchaseConfigService purchaseConfigService,
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
+      PurchaseOrderTaxService purchaseOrderTaxService,
+      AccountConfigService accountConfigService) {
+    super(purchaseConfigService, purchaseOrderTypeSelectService, purchaseOrderTaxService);
     this.accountConfigService = accountConfigService;
   }
 

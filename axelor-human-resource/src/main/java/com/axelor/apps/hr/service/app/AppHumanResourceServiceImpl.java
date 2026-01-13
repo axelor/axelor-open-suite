@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,11 +25,10 @@ import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.meta.db.repo.MetaModuleRepository;
+import com.axelor.meta.loader.AppVersionService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.axelor.studio.app.service.AppVersionService;
 import com.axelor.studio.db.AppExpense;
 import com.axelor.studio.db.AppLeave;
 import com.axelor.studio.db.AppTimesheet;
@@ -38,9 +37,9 @@ import com.axelor.studio.db.repo.AppLeaveRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppTimesheetRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +61,6 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
       AppRepository appRepo,
       MetaFiles metaFiles,
       AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
       AppSettingsStudioService appSettingsService,
       MetaModuleRepository metaModuleRepo,
       MetaFileRepository metaFileRepo,
@@ -71,14 +69,7 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
       AppExpenseRepository appExpenseRepo,
       CompanyRepository companyRepo,
       HRConfigRepository hrConfigRepo) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
     this.appTimesheetRepo = appTimesheetRepo;
     this.appLeaveRepo = appLeaveRepo;
     this.appExpenseRepo = appExpenseRepo;
@@ -88,17 +79,17 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
 
   @Override
   public AppTimesheet getAppTimesheet() {
-    return appTimesheetRepo.all().fetchOne();
+    return appTimesheetRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
   public AppLeave getAppLeave() {
-    return appLeaveRepo.all().fetchOne();
+    return appLeaveRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
   public AppExpense getAppExpense() {
-    return appExpenseRepo.all().fetchOne();
+    return appExpenseRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

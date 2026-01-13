@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -72,6 +72,8 @@ public final class CrmExceptionMessage {
   public static final String LEAD_CONVERT_KANBAN = /*$$(*/
       "Can only convert leads in form view." /*)*/;
   public static final String LEAD_LOSE_KANBAN = /*$$(*/ "Can only lose leads in form view." /*)*/;
+  public static final String LEAD_CONVERT_WRONG_STATUS_KANBAN = /*$$(*/
+      "Can not re-open converted leads." /*)*/;
 
   /** Opportunity */
   public static final String LEAD_PARTNER = /*$$(*/ "Please select a lead" /*)*/;

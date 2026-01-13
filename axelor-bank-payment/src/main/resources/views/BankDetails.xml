@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="bank-details-bank-order-grid" title="Bank details"
     model="com.axelor.apps.base.db.BankDetails">
@@ -31,7 +31,7 @@
       <hilite if="balance == 0" color="warning"/>
       <hilite if="balance &lt; 0" color="danger"/>
     </field>
-    <button name="showBalanceBtn" icon="fa-search" if-module="axelor-bank-payment"
+    <button name="showBalanceBtn" icon="search" if-module="axelor-bank-payment"
       if="__config__.app.isApp('bank-payment')"
       onClick="action-bank-details-view-show-bank-statement-lines"/>
   </grid>
@@ -74,9 +74,9 @@
       <field name="active" as="active"/>
       <field name="balanceUpdatedDate" as="balanceUpdatedDate"/>
       <field name="balance" as="balance"/>
-      <button name="balanceBtn" icon="fa-search"
+      <button name="balanceBtn" icon="search"
         onClick="action-bank-details-view-show-bank-statement-lines"/>
-      <button name="finalBalanceBtn" icon="fa-indent"
+      <button name="finalBalanceBtn" icon="text-indent-left"
         onClick="action-bank-details-view-show-bank-statement-lines-final-balance"/>
     </node>
   </tree>

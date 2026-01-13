@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -66,6 +67,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -76,8 +78,8 @@ import com.axelor.utils.helpers.ModelHelper;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -198,7 +200,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     Invoice invoice1 = invoiceGenerator.generate();
     Map<String, Object> invoiceMap = this.getComputeInvoiceMap(invoice1);
 
-    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        && invoice1.getAdvancePaymentInvoiceSet() == null) {
       invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
       invoiceMap.put("advancePaymentInvoiceSet", invoice1.getAdvancePaymentInvoiceSet());
     }
@@ -233,7 +236,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   public void validateAndVentilate(Invoice invoice) throws AxelorException {
     validate(invoice);
-    ventilate(invoice);
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      ventilate(invoice);
+    }
   }
 
   /**
@@ -244,6 +249,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
    */
   @Override
   public void validate(Invoice invoice) throws AxelorException {
+    if (invoice.getStatusSelect() == null
+        || invoice.getStatusSelect() != InvoiceRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_VALIDATE_WRONG_STATUS));
+    }
     validateProcess(invoice);
     if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
         && invoice.getInvoiceAutomaticMailOnValidate()) {
@@ -275,7 +286,10 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public void ventilate(Invoice invoice) throws AxelorException {
     ventilateProcess(invoice);
-    if (invoice.getInvoiceAutomaticMail()) {
+    int operationTypeSelect = invoice.getOperationTypeSelect();
+    if (invoice.getInvoiceAutomaticMail()
+        && operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE
+        && operationTypeSelect != InvoiceRepository.OPERATION_TYPE_SUPPLIER_REFUND) {
       sendMail(invoice, invoice.getInvoiceMessageTemplate());
     }
   }
@@ -296,12 +310,20 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           invoice,
           InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
           accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
-          null);
+          null,
+          true);
     }
   }
 
   @Override
   public void checkPreconditions(Invoice invoice) throws AxelorException {
+    if (invoice.getStatusSelect() == null
+        || invoice.getStatusSelect() != InvoiceRepository.STATUS_VALIDATED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_VENTILATE_WRONG_STATUS));
+    }
+
     if (invoice.getPaymentCondition() == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,
@@ -371,11 +393,32 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public void cancel(Invoice invoice) throws AxelorException {
+    List<Integer> authorizedStatus = new ArrayList<>();
+    authorizedStatus.add(InvoiceRepository.STATUS_DRAFT);
+    authorizedStatus.add(InvoiceRepository.STATUS_VALIDATED);
+    if (invoice.getStatusSelect() == null
+        || !authorizedStatus.contains(invoice.getStatusSelect())) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_CANCEL_WRONG_STATUS));
+    }
     log.debug("Canceling invoice {}", invoice.getInvoiceId());
 
     cancelFactory.getCanceller(invoice).process();
 
     invoiceRepo.save(invoice);
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  @Override
+  public void backToDraft(Invoice invoice) throws AxelorException {
+    if (invoice.getStatusSelect() == null
+        || invoice.getStatusSelect() != InvoiceRepository.STATUS_CANCELED) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(AccountExceptionMessage.INVOICE_DRAFT_WRONG_STATUS));
+    }
+    invoice.setStatusSelect(InvoiceRepository.STATUS_DRAFT);
   }
 
   protected void sendMail(Invoice invoice, Template template) {
@@ -417,7 +460,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Override
   public String checkNotImputedRefunds(Invoice invoice) throws AxelorException {
     AccountConfig accountConfig = accountConfigService.getAccountConfig(invoice.getCompany());
-    if (!accountConfig.getAutoReconcileOnInvoice()) {
+    if (!accountConfig.getAutoReconcileOnInvoice()
+        || !Optional.of(invoice)
+            .map(Invoice::getPartner)
+            .map(Partner::getIsCompensation)
+            .orElse(true)) {
       if (invoice.getOperationTypeSelect() == InvoiceRepository.OPERATION_TYPE_CLIENT_SALE) {
         long clientRefundsAmount =
             getRefundsAmount(
@@ -568,6 +615,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             null,
             null,
             tradingName,
+            null,
             null) {
 
           @Override
@@ -667,6 +715,7 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
             null,
             null,
             tradingName,
+            null,
             null) {
 
           @Override
@@ -1087,11 +1136,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .createQuery(
             "Select moveLine.id "
                 + "FROM  MoveLine moveLine "
-                + "LEFT JOIN Move move on moveLine.move = move.id "
-                + "LEFT JOIN Invoice invoice on move.id = invoice.move "
-                + "LEFT JOIN Account account on moveLine.account = account.id "
-                + "LEFT JOIN AccountType accountType on account.accountType = accountType.id "
-                + "LEFT JOIN Partner partner on moveLine.partner = partner.id "
+                + "LEFT JOIN Move move on moveLine.move.id = move.id "
+                + "LEFT JOIN Invoice invoice on move.id = invoice.move.id "
+                + "LEFT JOIN Account account on moveLine.account.id = account.id "
+                + "LEFT JOIN AccountType accountType on account.accountType.id = accountType.id "
+                + "LEFT JOIN Partner partner on moveLine.partner.id = partner.id "
                 + "WHERE invoice.move = null "
                 + "AND moveLine.debit > 0 "
                 + "AND moveLine.amountRemaining > 0 "
@@ -1127,15 +1176,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   @Override
-  public void applyCutOffDates(
-      Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate) {
+  public void applyCutOffDates(Invoice invoice) {
     if (CollectionUtils.isNotEmpty(invoice.getInvoiceLineList())) {
       invoice
           .getInvoiceLineList()
-          .forEach(
-              invoiceLine ->
-                  invoiceLineService.applyCutOffDates(
-                      invoiceLine, invoice, cutOffStartDate, cutOffEndDate));
+          .forEach(invoiceLine -> invoiceLineService.applyCutOffDates(invoiceLine, invoice));
     }
   }
 
@@ -1157,8 +1202,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   protected void updateUnpaidInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm) {
-    invoiceTerm.setPaymentMode(invoice.getPaymentMode());
-    invoiceTerm.setBankDetails(invoice.getBankDetails());
+    if (invoiceTerm.getPaymentMode() == null) {
+      invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+    }
+    if (invoiceTerm.getBankDetails() == null) {
+      invoiceTerm.setBankDetails(invoice.getBankDetails());
+    }
   }
 
   @Override
@@ -1232,5 +1281,39 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           .filter(it -> it.getAmount().compareTo(it.getAmountRemaining()) == 0)
           .forEach(it -> it.setThirdPartyPayerPartner(invoice.getThirdPartyPayerPartner()));
     }
+  }
+
+  @Override
+  public FiscalPosition manageFiscalPositionFromCompanyTaxNumber(Invoice invoice) {
+    FiscalPosition fiscalPosition = invoice.getFiscalPosition();
+    TaxNumber companyTaxNumber = invoice.getCompanyTaxNumber();
+
+    if (companyTaxNumber != null) {
+      Set<FiscalPosition> fiscalPositionSet = companyTaxNumber.getFiscalPositionSet();
+      fiscalPosition = (fiscalPositionSet.size() == 1) ? fiscalPositionSet.iterator().next() : null;
+    }
+
+    return fiscalPosition;
+  }
+
+  @Override
+  public TaxNumber getDefaultCompanyTaxNumber(Invoice invoice) {
+    TaxNumber taxNumber = null;
+    Company company = invoice.getCompany();
+
+    if (company != null) {
+      Partner partner = company.getPartner();
+      if (partner != null) {
+        String partnerTaxNumber = partner.getTaxNbr();
+        if (StringUtils.notEmpty(partnerTaxNumber)) {
+          taxNumber =
+              company.getTaxNumberList().stream()
+                  .filter(taxNb -> partnerTaxNumber.equals(taxNb.getTaxNbr()))
+                  .findFirst()
+                  .orElse(null);
+        }
+      }
+    }
+    return taxNumber;
   }
 }
