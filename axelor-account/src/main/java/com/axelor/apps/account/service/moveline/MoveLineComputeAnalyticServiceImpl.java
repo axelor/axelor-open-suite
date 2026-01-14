@@ -287,10 +287,12 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
           analyticMoveLineRepository.copy(originalAnalyticMoveLine, false);
 
       if (newAmount.signum() != 0 && analyticMoveLine.getPercentage().signum() != 0) {
+        int signum = analyticMoveLine.getAmount().signum();
         BigDecimal amount =
             newAmount.multiply(
                 analyticMoveLine
                     .getPercentage()
+                    .multiply(BigDecimal.valueOf(signum))
                     .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP));
 
         analyticMoveLine.setAmount(amount);
