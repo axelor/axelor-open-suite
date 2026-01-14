@@ -126,10 +126,15 @@ public class MoveLineController {
 
       MoveLineService moveLineService = Beans.get(MoveLineService.class);
 
-      moveLineService.reconcileMoveLinesWithCacheManagement(
-          moveLineService.getReconcilableMoveLines(idList));
+      int errorNumber =
+          moveLineService.reconcileMoveLinesWithCacheManagement(
+              moveLineService.getReconcilableMoveLines(idList));
 
       response.setReload(true);
+      if (errorNumber > 0) {
+        response.setInfo(I18n.get(AccountExceptionMessage.RECONCILE_MASS_ERRORS));
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
