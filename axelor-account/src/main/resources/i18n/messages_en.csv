@@ -1582,6 +1582,7 @@
 "Error on uploading printed invoice:",,,
 "Error or anomaly detected making it impossible to proceed for the following move accounting operation : %s . Please check the logs.",,,
 "Error(s) during moves control",,,
+"Errors happened during the reconcile process, please check the tracebacks.",,,
 "Errors in move : %s",,,
 "Estimated payment date",,,
 "Every invoice term from the payment session cannot be considered so it is not possible to continue.",,,
