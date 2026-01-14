@@ -160,7 +160,7 @@ public class MoveLineServiceImpl implements MoveLineService {
    * @param moveLineList
    */
   @Override
-  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList)
+  public int reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList)
       throws AxelorException {
 
     if (moveLineList.isEmpty()) {
@@ -172,7 +172,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     moveLineTaxService.checkEmptyTaxLines(moveLineList);
 
     if (paymentService.reconcileMoveLinesWithCompatibleAccounts(moveLineList)) {
-      return;
+      return 0;
     }
 
     Map<List<Object>, Pair<List<MoveLine>, List<MoveLine>>> moveLineMap =
@@ -181,11 +181,13 @@ public class MoveLineServiceImpl implements MoveLineService {
     Comparator<MoveLine> byDate = Comparator.comparing(MoveLine::getDate);
 
     int i = 0;
+    int errorNumber = 0;
 
     for (Pair<List<MoveLine>, List<MoveLine>> moveLineLists : moveLineMap.values()) {
       try {
         moveLineLists = this.findMoveLineLists(moveLineLists);
-        this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
+        errorNumber +=
+            this.useExcessPaymentOnMoveLinesDontThrow(byDate, paymentService, moveLineLists);
       } catch (Exception e) {
         TraceBackService.trace(e);
         log.debug(e.getMessage());
@@ -196,6 +198,8 @@ public class MoveLineServiceImpl implements MoveLineService {
         }
       }
     }
+
+    return errorNumber;
   }
 
   @Override
@@ -242,7 +246,7 @@ public class MoveLineServiceImpl implements MoveLineService {
   }
 
   @Transactional
-  protected void useExcessPaymentOnMoveLinesDontThrow(
+  protected int useExcessPaymentOnMoveLinesDontThrow(
       Comparator<MoveLine> byDate,
       PaymentService paymentService,
       Pair<List<MoveLine>, List<MoveLine>> moveLineLists) {
@@ -250,7 +254,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     List<MoveLine> companyPartnerDebitMoveLineList = moveLineLists.getRight();
     companyPartnerCreditMoveLineList.sort(byDate);
     companyPartnerDebitMoveLineList.sort(byDate);
-    paymentService.useExcessPaymentOnMoveLinesDontThrow(
+    return paymentService.useExcessPaymentOnMoveLinesDontThrow(
         companyPartnerDebitMoveLineList, companyPartnerCreditMoveLineList);
   }
 

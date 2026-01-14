@@ -37,7 +37,7 @@ public interface MoveLineService {
 
   public void usherProcess(MoveLine moveLine);
 
-  public void reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList)
+  public int reconcileMoveLinesWithCacheManagement(List<MoveLine> moveLineList)
       throws AxelorException;
 
   public void reconcileMoveLines(List<MoveLine> moveLineList);
