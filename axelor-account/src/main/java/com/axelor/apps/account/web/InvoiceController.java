@@ -901,35 +901,26 @@ public class InvoiceController {
   }
 
   public void syncPfpValidatorToInvoiceTerms(ActionRequest request, ActionResponse response) {
-    try {
-      Invoice invoice = request.getContext().asType(Invoice.class);
+    Invoice invoice = request.getContext().asType(Invoice.class);
 
-      Beans.get(InvoiceTermPfpValidatorSyncService.class)
-          .syncPfpValidatorFromInvoiceToTerms(invoice);
+    Beans.get(InvoiceTermPfpValidatorSyncService.class).syncPfpValidatorFromInvoiceToTerms(invoice);
 
-      response.setValue("invoiceTermList", invoice.getInvoiceTermList());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
+    response.setValue("invoiceTermList", invoice.getInvoiceTermList());
   }
 
   public void syncPfpValidatorFromInvoiceTerms(ActionRequest request, ActionResponse response) {
-    try {
-      Invoice invoice = request.getContext().asType(Invoice.class);
+    Invoice invoice = request.getContext().asType(Invoice.class);
 
-      InvoiceTermPfpValidatorSyncService syncService =
-          Beans.get(InvoiceTermPfpValidatorSyncService.class);
+    InvoiceTermPfpValidatorSyncService syncService =
+        Beans.get(InvoiceTermPfpValidatorSyncService.class);
 
-      List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
-      if (invoiceTermList != null && !invoiceTermList.isEmpty()) {
-        InvoiceTerm firstTerm = invoiceTermList.get(0);
-        firstTerm.setInvoice(invoice);
-        if (syncService.syncPfpValidatorFromTermToInvoice(firstTerm)) {
-          response.setValue("pfpValidatorUser", invoice.getPfpValidatorUser());
-        }
+    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+    if (ObjectUtils.isEmpty(invoiceTermList)) {
+      InvoiceTerm firstTerm = invoiceTermList.get(0);
+      firstTerm.setInvoice(invoice);
+      if (syncService.syncPfpValidatorFromTermToInvoice(firstTerm)) {
+        response.setValue("pfpValidatorUser", invoice.getPfpValidatorUser());
       }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
   }
 

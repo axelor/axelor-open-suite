@@ -457,21 +457,17 @@ public class InvoiceTermController {
   }
 
   public void syncPfpValidatorToInvoice(ActionRequest request, ActionResponse response) {
-    try {
-      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
 
-      Invoice invoice = invoiceTerm.getInvoice();
-      if (invoice == null && request.getContext().getParent() != null) {
-        invoice = request.getContext().getParent().asType(Invoice.class);
-        invoiceTerm.setInvoice(invoice);
-      }
+    Invoice invoice = invoiceTerm.getInvoice();
+    if (invoice == null && request.getContext().getParent() != null) {
+      invoice = request.getContext().getParent().asType(Invoice.class);
+      invoiceTerm.setInvoice(invoice);
+    }
 
-      if (invoice != null) {
-        Beans.get(InvoiceTermPfpValidatorSyncService.class)
-            .syncPfpValidatorFromTermToInvoice(invoiceTerm);
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
+    if (invoice != null) {
+      Beans.get(InvoiceTermPfpValidatorSyncService.class)
+          .syncPfpValidatorFromTermToInvoice(invoiceTerm);
     }
   }
 

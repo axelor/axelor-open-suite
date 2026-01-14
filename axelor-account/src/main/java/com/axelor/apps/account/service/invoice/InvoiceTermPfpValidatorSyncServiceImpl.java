@@ -80,8 +80,4 @@ public class InvoiceTermPfpValidatorSyncServiceImpl implements InvoiceTermPfpVal
 
     return firstValidator;
   }
-
-  protected boolean allTermsHaveNullValidator(List<InvoiceTerm> invoiceTermList) {
-    return invoiceTermList.stream().allMatch(it -> it.getPfpValidatorUser() == null);
-  }
 }
