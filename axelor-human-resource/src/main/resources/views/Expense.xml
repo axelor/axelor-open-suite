@@ -111,8 +111,7 @@
           <field name="advanceAmount" hidden="true"/>
         </panel>
         <panel name="projectPanel" itemSpan="12" colSpan="12">
-          <field name="project" readonlyIf="id != null" canView="false"
-            onSelect="action-expense-attrs-project-domain"/>
+          <field name="project" readonlyIf="id != null" canView="false" onSelect="action-expense-attrs-project-domain"/>
         </panel>
       </panel>
       <panel name="sidePanel" itemSpan="12" colSpan="3">
