@@ -72,10 +72,9 @@ public class BankStatementLineImporter extends Importer {
   }
 
   @Override
-  protected ImportHistory process(
-      String bind, String data, String errorDir, Map<String, Object> importContext)
+  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
       throws IOException, AxelorException {
-    CSVImporter importer = new CSVImporter(bind, data, errorDir);
+    CSVImporter importer = new CSVImporter(bind, data);
 
     ImporterListener listener =
         new ImporterListener(getConfiguration().getName()) {
@@ -127,7 +126,7 @@ public class BankStatementLineImporter extends Importer {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BankPaymentExceptionMessage.BANK_STATEMENT_IMPORT_ERROR));
     }
-    return addHistory(listener, errorDir);
+    return addHistory(listener);
   }
 
   protected void linkLineToBankStatement(
@@ -153,23 +152,6 @@ public class BankStatementLineImporter extends Importer {
     bankStatementDateService.updateBankStatementDate(
         bankStatement, bankStatementLine.getOperationDate(), bankStatementLine.getLineTypeSelect());
     bankStatementLineRepository.save(bankStatementLine);
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
-    return process(bind, data, getErrorDirectory());
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
-      throws IOException, AxelorException {
-    return process(bind, data, getErrorDirectory(), importContext);
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data, String errorDir)
-      throws IOException, AxelorException {
-    return process(bind, data, errorDir, null);
   }
 
   public void setBankStatement(BankStatement bankStatement) {

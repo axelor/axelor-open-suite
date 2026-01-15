@@ -143,16 +143,6 @@ public abstract class Importer {
       String bind, String data, Map<String, Object> importContext)
       throws IOException, AxelorException;
 
-  protected abstract ImportHistory process(String bind, String data)
-      throws IOException, AxelorException;
-
-  protected abstract ImportHistory process(String bind, String data, String errorDir)
-      throws IOException, AxelorException;
-
-  protected abstract ImportHistory process(
-      String bind, String data, String errorDir, Map<String, Object> importContext)
-      throws IOException, AxelorException;
-
   protected void deleteFinalWorkspace(File workspace) throws IOException {
 
     if (workspace.isDirectory()) {
@@ -236,8 +226,7 @@ public abstract class Importer {
    * @return
    * @throws IOException
    */
-  protected ImportHistory addHistory(ImporterListener listener, String errorDir)
-      throws IOException {
+  protected ImportHistory addHistory(ImporterListener listener) throws IOException {
 
     ImportHistory importHistory = new ImportHistory(AuthUtils.getUser(), getDataMetaFile());
     File logFile = File.createTempFile("importLog", ".log");
@@ -252,7 +241,6 @@ public abstract class Importer {
             "importLog-" + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + ".log");
     importHistory.setLogMetaFile(logMetaFile);
     importHistory.setImportConfiguration(configuration);
-    importHistory.setErrorMetaFile(getErrorMetaFile(errorDir));
     return importHistory;
   }
 
