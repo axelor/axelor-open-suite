@@ -637,7 +637,12 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
        * Information supplied to enable the matching of an entry with the items that the transfer is intended
        * to settle, eg, commercial invoices in an accounts' receivable system in an unstructured form.
        */
-      remittanceInformation1.getUstrd().add(bankOrderLine.getReceiverReference());
+      remittanceInformation1
+          .getUstrd()
+          .add(
+              bankOrderLine
+                  .getReceiverReference()
+                  .substring(0, Math.min(140, bankOrderLine.getReceiverReference().length() - 1)));
 
       /*
        * Structured   (choice 2 of 2)

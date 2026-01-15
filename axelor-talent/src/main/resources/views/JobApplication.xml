@@ -231,7 +231,8 @@
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
     <domain>self.relatedToSelect = 'com.axelor.apps.talent.db.JobApplication' and
-      self.relatedToSelectId = :id</domain>
+      self.relatedToSelectId = :_jobApplicationId</domain>
+    <context name="_jobApplicationId" expr="eval:id"/>
   </action-view>
 
   <action-view name="action-job-application-schedule-event" title="Schedule Event"
