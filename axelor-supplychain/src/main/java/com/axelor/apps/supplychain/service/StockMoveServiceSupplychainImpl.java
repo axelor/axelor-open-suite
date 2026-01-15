@@ -280,7 +280,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void cancel(StockMove stockMove) throws AxelorException {
 
     cancelStockMove(stockMove);
-    StockConfig stockConfig = stockConfigService.getStockConfig(stockMove.getCompany());
+    Company company = JpaModelHelper.ensureManaged(stockMove.getCompany());
+    StockConfig stockConfig = stockConfigService.getStockConfig(company);
     Boolean supplierArrivalCancellationAutomaticMail =
         stockConfig.getSupplierArrivalCancellationAutomaticMail();
     if (!supplierArrivalCancellationAutomaticMail
