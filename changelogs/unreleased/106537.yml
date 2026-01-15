@@ -1,0 +1,8 @@
+---
+title: "Move line consolidation: fixed an issue where the process could hang indefinitely when consolidating move lines with analytic distributions of the same size but different values."
+module: axelor-account
+developer: |
+  Refactored MoveLineConsolidateServiceImpl.findConsolidateMoveLine() method:
+  - Removed unnecessary while loop that could cause infinite iteration
+  - Added proper return statement when analytic move lines have same size but different values
+  - Simplified null checks for analytic move line lists
