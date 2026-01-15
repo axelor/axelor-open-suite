@@ -428,10 +428,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           if (isReverse
               != (accountingCutOffTypeSelect
                   == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES)) {
-            cutOffMoveLine.setDebit(cutOffMoveLine.getDebit().add(convertedAmount));
+            cutOffMoveLine.setDebit(cutOffMoveLine.getDebit().add(convertedAmount.abs()));
             cutOffMoveLine.setCurrencyAmount(currencyAmount.abs());
           } else {
-            cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(convertedAmount));
+            cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(convertedAmount.abs()));
             currencyAmount = moveToolService.computeCurrencyAmountSign(currencyAmount, false);
             cutOffMoveLine.setCurrencyAmount(currencyAmount);
           }
@@ -442,7 +442,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
                   cutOffMove,
                   partner,
                   moveLineAccount,
-                  amountInCurrency,
+                  amountInCurrency.abs(),
                   isReverse
                       != (accountingCutOffTypeSelect
                           == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES),
