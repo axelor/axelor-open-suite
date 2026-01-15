@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
@@ -106,6 +107,7 @@ public class BankReconciliationMoveGenerationServiceImpl
   protected MoveLineToolService moveLineToolService;
   protected AccountManagementRepository accountManagementRepository;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected AnalyticLineService analyticLineService;
 
   @Inject
   public BankReconciliationMoveGenerationServiceImpl(
@@ -126,7 +128,8 @@ public class BankReconciliationMoveGenerationServiceImpl
       CurrencyScaleService currencyScaleService,
       MoveLineToolService moveLineToolService,
       AccountManagementRepository accountManagementRepository,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      AnalyticLineService analyticLineService) {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankStatementRuleRepository = bankStatementRuleRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
@@ -145,6 +148,7 @@ public class BankReconciliationMoveGenerationServiceImpl
     this.moveLineToolService = moveLineToolService;
     this.accountManagementRepository = accountManagementRepository;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.analyticLineService = analyticLineService;
   }
 
   @Override
@@ -535,6 +539,7 @@ public class BankReconciliationMoveGenerationServiceImpl
 
     if (moveLine.getAnalyticDistributionTemplate() != null) {
       moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine);
+      analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
     }
 
     move.addMoveLineListItem(moveLine);
