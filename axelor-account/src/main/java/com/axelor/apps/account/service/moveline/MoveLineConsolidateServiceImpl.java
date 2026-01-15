@@ -50,56 +50,58 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
   @Override
   public MoveLine findConsolidateMoveLine(
       Map<List<Object>, MoveLine> map, MoveLine moveLine, List<Object> keys) {
-    if (map != null && !map.isEmpty()) {
 
-      Map<List<Object>, MoveLine> copyMap = new HashMap<List<Object>, MoveLine>(map);
-      while (!copyMap.isEmpty()) {
+    if (map == null || map.isEmpty() || !map.containsKey(keys)) {
+      return null;
+    }
 
-        if (map.containsKey(keys)) {
+    MoveLine moveLineIt = map.get(keys);
 
-          MoveLine moveLineIt = map.get(keys);
+    // Check cut off dates
+    if (moveLineToolService.isCutOffActive(moveLine)
+        && (!moveLine.getCutOffStartDate().equals(moveLineIt.getCutOffStartDate())
+            || !moveLine.getCutOffEndDate().equals(moveLineIt.getCutOffEndDate()))) {
+      return null;
+    }
 
-          // Check cut off dates
-          if (moveLineToolService.isCutOffActive(moveLine)
-              && (!moveLine.getCutOffStartDate().equals(moveLineIt.getCutOffStartDate())
-                  || !moveLine.getCutOffEndDate().equals(moveLineIt.getCutOffEndDate()))) {
-            return null;
-          }
+    List<AnalyticMoveLine> list1 = moveLineIt.getAnalyticMoveLineList();
+    List<AnalyticMoveLine> list2 = moveLine.getAnalyticMoveLineList();
 
-          int count = 0;
-          if (moveLineIt.getAnalyticMoveLineList() == null
-              && moveLine.getAnalyticMoveLineList() == null) {
-            return moveLineIt;
-          } else if (moveLineIt.getAnalyticMoveLineList() == null
-              || moveLine.getAnalyticMoveLineList() == null) {
-            break;
-          }
-          List<AnalyticMoveLine> list1 = moveLineIt.getAnalyticMoveLineList();
-          List<AnalyticMoveLine> list2 = moveLine.getAnalyticMoveLineList();
-          List<AnalyticMoveLine> copyList = new ArrayList<AnalyticMoveLine>(list1);
-          if (list1.size() == list2.size()) {
-            for (AnalyticMoveLine analyticDistributionLine : list2) {
-              for (AnalyticMoveLine analyticDistributionLineIt : copyList) {
-                if (checkAnalyticDistributionLine(
-                    analyticDistributionLine, analyticDistributionLineIt)) {
-                  copyList.remove(analyticDistributionLineIt);
-                  count++;
-                  break;
-                }
-              }
-            }
-            if (count == list1.size()) {
-              return moveLineIt;
-            }
-          } else {
-            return moveLineIt;
-          }
-        } else {
-          return null;
+    // Both null = consolidate
+    if (list1 == null && list2 == null) {
+      return moveLineIt;
+    }
+
+    // One null = don't consolidate
+    if (list1 == null || list2 == null) {
+      return null;
+    }
+
+    // Different sizes = consolidate
+    if (list1.size() != list2.size()) {
+      return moveLineIt;
+    }
+
+    // Same size - compare analytic lines one by one
+    List<AnalyticMoveLine> copyList = new ArrayList<>(list1);
+    int count = 0;
+
+    for (AnalyticMoveLine analyticDistributionLine : list2) {
+      for (AnalyticMoveLine analyticDistributionLineIt : copyList) {
+        if (checkAnalyticDistributionLine(analyticDistributionLine, analyticDistributionLineIt)) {
+          copyList.remove(analyticDistributionLineIt);
+          count++;
+          break;
         }
       }
     }
 
+    // All lines match = consolidate
+    if (count == list1.size()) {
+      return moveLineIt;
+    }
+
+    // Lines don't match - don't consolidate
     return null;
   }
 
