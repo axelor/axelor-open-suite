@@ -41,8 +41,7 @@ class ImporterXML extends Importer {
   }
 
   @Override
-  protected ImportHistory process(
-      String bind, String data, String errorDir, Map<String, Object> importContext)
+  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
       throws IOException, AxelorException {
 
     XMLImporter importer = new XMLImporter(bind, data);
@@ -52,24 +51,7 @@ class ImporterXML extends Importer {
     importer.setContext(importContext);
     importer.run();
 
-    return addHistory(listener, errorDir);
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
-    return process(bind, data, getErrorDirectory());
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
-      throws IOException, AxelorException {
-    return process(bind, data, getErrorDirectory(), importContext);
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data, String errorDir)
-      throws IOException, AxelorException {
-    return process(bind, data, errorDir, null);
+    return addHistory(listener);
   }
 
   @Override
