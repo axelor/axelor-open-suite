@@ -1,0 +1,3 @@
+---
+title: "MRP line: fixed the issue where maturity date is not computed at the start of operations."
+module: axelor-production
