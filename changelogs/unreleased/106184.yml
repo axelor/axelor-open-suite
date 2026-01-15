@@ -1,0 +1,3 @@
+---
+title: "App service: fixed the method to get hours unit to avoid error when business project app is not installed."
+module: axelor-business-project
