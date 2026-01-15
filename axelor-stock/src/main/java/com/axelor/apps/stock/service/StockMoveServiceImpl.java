@@ -103,6 +103,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected StockConfigService stockConfigService;
   protected AppStockService appStockService;
   protected ProductCompanyService productCompanyService;
+  protected StockLocationService stockLocationService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -116,7 +117,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AppStockService appStockService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      StockLocationService stockLocationService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -128,6 +130,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.stockConfigService = stockConfigService;
     this.appStockService = appStockService;
     this.productCompanyService = productCompanyService;
+    this.stockLocationService = stockLocationService;
   }
 
   /**
@@ -680,9 +683,21 @@ public class StockMoveServiceImpl implements StockMoveService {
           StockLocation to = sml.getToStockLocation();
           if (from != null && from.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
             stockLocationIds.add(from.getId());
+            Set<Long> locationIds =
+                stockLocationService
+                    .getLocationAndAllParentLocationsIdsOrderedFromTheClosestToTheFurthest(from);
+            if (locationIds != null) {
+              stockLocationIds.addAll(locationIds);
+            }
           }
           if (to != null && to.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
             stockLocationIds.add(to.getId());
+            Set<Long> locationIds =
+                stockLocationService
+                    .getLocationAndAllParentLocationsIdsOrderedFromTheClosestToTheFurthest(to);
+            if (locationIds != null) {
+              stockLocationIds.addAll(locationIds);
+            }
           }
 
           if (sml.getProduct() != null) {
@@ -701,11 +716,11 @@ public class StockMoveServiceImpl implements StockMoveService {
             .all()
             .filter(
                 "self.inventory.statusSelect BETWEEN :startStatus AND :endStatus\n"
-                    + "AND self.inventory.stockLocation.id IN (:stockLocationList)\n"
+                    + "AND self.inventory.stockLocation.id IN (:stockLocationIds)\n"
                     + "AND self.product.id IN (:productList)")
             .bind("startStatus", InventoryRepository.STATUS_IN_PROGRESS)
             .bind("endStatus", InventoryRepository.STATUS_COMPLETED)
-            .bind("stockLocationList", stockLocationIds)
+            .bind("stockLocationIds", stockLocationIds)
             .bind("productList", productIds)
             .fetchOne();
 

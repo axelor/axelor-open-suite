@@ -294,7 +294,7 @@ public abstract class Importer {
     }
   }
 
-  protected String getErrorDirectory() {
+  protected String getErrorDirectory() throws IOException {
     String importErrorPath = appBaseService.getImportErrorPath();
     return new File(importErrorPath).toString();
   }

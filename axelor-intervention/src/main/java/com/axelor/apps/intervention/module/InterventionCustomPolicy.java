@@ -16,26 +16,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.production.db.repo;
+package com.axelor.apps.intervention.module;
 
-import com.axelor.apps.production.service.app.AppProductionService;
-import jakarta.inject.Inject;
-import java.util.Map;
+import com.axelor.apps.intervention.service.helper.InterventionQuestionHelper;
+import com.axelor.script.ScriptPolicyConfigurator;
+import java.util.List;
 
-public class TempBomTreeManagementRepository extends TempBomTreeRepository {
-
-  protected AppProductionService appProductionService;
-
-  @Inject
-  public TempBomTreeManagementRepository(AppProductionService appProductionService) {
-    this.appProductionService = appProductionService;
-  }
+public class InterventionCustomPolicy implements ScriptPolicyConfigurator {
 
   @Override
-  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    json.put(
-        "$nbDecimalDigitForBomQty",
-        appProductionService.getAppProduction().getNbDecimalDigitForBomQty());
-    return super.populate(json, context);
+  public void configure(
+      List<String> allowPackages,
+      List<Class<?>> allowClasses,
+      List<String> denyPackages,
+      List<Class<?>> denyClasses) {
+    allowClasses.add(InterventionQuestionHelper.class);
   }
 }
