@@ -140,6 +140,11 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       return;
     }
 
+    // Tax movelines don't need a taxLineSet - they ARE the tax line
+    if (moveLineToolService.isMoveLineTaxAccount(moveLine)) {
+      return;
+    }
+
     Set<TaxLine> taxLineSet =
         moveLoadDefaultConfigService.getTaxLineSet(move, moveLine, accountingAccount);
     Set<TaxLine> taxLineBeforeReverseSet = moveLine.getTaxLineBeforeReverseSet();
