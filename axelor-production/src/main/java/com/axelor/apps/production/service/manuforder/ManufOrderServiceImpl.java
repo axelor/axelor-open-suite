@@ -1269,6 +1269,17 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       Product product = billOfMaterialLine.getProduct();
       BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
       BigDecimal qtyNeeded = billOfMaterialLine.getQty();
+      Unit bomLineUnit = billOfMaterialLine.getUnit();
+      Unit productUnit = product.getUnit();
+      if (productUnit != null && bomLineUnit != null && !bomLineUnit.equals(productUnit)) {
+        availableQty =
+            unitConversionService.convert(
+                productUnit,
+                bomLineUnit,
+                availableQty,
+                appBaseService.getNbDecimalDigitForQty(),
+                product);
+      }
       if (availableQty.compareTo(BigDecimal.ZERO) >= 0
           && qtyNeeded.compareTo(BigDecimal.ZERO) > 0) {
         BigDecimal qtyToUse = availableQty.divideToIntegralValue(qtyNeeded);
