@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.repo.PricingRepository;
 import com.axelor.apps.base.service.pricing.PricingGenericService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

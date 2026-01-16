@@ -32,7 +32,7 @@ import com.axelor.apps.purchase.service.purchase.request.PurchaseRequestToPoCrea
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class PurchaseRequestToPoCreateServiceSupplychainImpl
     extends PurchaseRequestToPoCreateServiceImpl {

@@ -26,7 +26,7 @@ import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
 import com.axelor.apps.purchase.service.purchase.request.PurchaseRequestToPoCreateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServiceImpl {
