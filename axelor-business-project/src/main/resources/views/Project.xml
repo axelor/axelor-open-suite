@@ -663,6 +663,7 @@
     <action name="action-business-project-method-get-analytic-distribution-template"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
     <action name="action-project-attrs-sale-order-panel-display"/>
+    <action name="action-record-business-project-set-default-priority"/>
   </action-group>
 
   <action-group name="action-business-project-project-group-on-load">
@@ -684,6 +685,12 @@
     model="com.axelor.apps.project.db.Project">
     <field name="priority" if="!priority"
       expr="select: com.axelor.apps.project.db.ProjectPriority where technicalTypeSelect = 2 limit 1"/>
+  </action-record>
+
+  <action-record name="action-record-business-project-set-default-priority"
+    model="com.axelor.apps.project.db.Project">
+    <field name="priority"
+      expr="eval: __repo__(ProjectPriority).all().filter('self.technicalTypeSelect = ?', 2).fetchOne()"/>
   </action-record>
 
   <action-method name="action-project-method-generate-quotation">

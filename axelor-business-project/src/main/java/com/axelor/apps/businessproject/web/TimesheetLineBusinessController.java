@@ -20,6 +20,7 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.utils.TimeOverlapValidator;
 import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.TaskReportRepository;
@@ -237,5 +238,28 @@ public class TimesheetLineBusinessController {
     values.put("toInvoice", true);
 
     response.setValues(values);
+  }
+
+  public void checkTimeOverlap(ActionRequest request, ActionResponse response) {
+    TimesheetLine timesheetLine = request.getContext().asType(TimesheetLine.class);
+
+    boolean hasOverlap =
+        Beans.get(TimeOverlapValidator.class)
+            .hasOverlap(
+                TimesheetLine.class,
+                timesheetLine.getStartTime(),
+                timesheetLine.getEndTime(),
+                timesheetLine.getEmployee().getId(),
+                timesheetLine.getId(),
+                "startTime",
+                "endTime",
+                "employee");
+
+    if (hasOverlap) {
+      response.setError(
+          "This time range overlaps with an existing timesheet line for this employee");
+      response.setValue("startTime", null);
+      response.setValue("endTime", null);
+    }
   }
 }

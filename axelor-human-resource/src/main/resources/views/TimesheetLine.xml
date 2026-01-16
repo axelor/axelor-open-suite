@@ -368,9 +368,9 @@
     onLoad="action-timesheet-line-attrs-overview-readonly-for-project-task,action-timesheet-line-sync-hours-to-minutes">
     <panel name="overviewPanel" title="Overview">
       <field name="startTime" colSpan="6" required="true"
-        onChange="action-timesheet-line-validate-and-calculate"/>
+        onChange="action-timesheet-line-validate-and-calculate, action-validate-timesheet-line-project-task-no-time-overlap"/>
       <field name="endTime" colSpan="6"
-        onChange="action-timesheet-line-validate-and-calculate"/>
+        onChange="action-timesheet-line-validate-and-calculate, action-validate-timesheet-line-project-task-no-time-overlap"/>
       <field name="project" readonlyIf="_project" colSpan="6"
         onChange="action-timesheet-line-record-set-project-task"
         onSelect="action-timesheet-line-attrs-domain-project" required="true"
@@ -481,6 +481,7 @@
   </action-group>
 
   <action-group name="action-timesheet-line-group-project-task-form-on-save">
+    <action name="action-validate-timesheet-line-project-task-no-time-overlap"/>
     <action name="action-timesheet-line-validate-start-time-and-end-time"/>
     <action name="action-timesheet-line-set-date-and-duration"/>
     <action name="action-project-task-validate-check-timesheet-line-date"/>
@@ -667,6 +668,12 @@
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetLineController"
       method="removeProjectTimeSheetLines"/>
   </action-method>
+
+  <action-method name="action-validate-timesheet-line-project-task-no-time-overlap">
+    <call class="com.axelor.apps.businessproject.web.TimesheetLineBusinessController"
+      method="checkTimeOverlap"/>
+  </action-method>
+
   <action-validate name="action-project-task-validate-check-employee">
     <error message="Please create an employee for the user ${assignedTo.name}"
       if="assignedTo.employee == null"/>

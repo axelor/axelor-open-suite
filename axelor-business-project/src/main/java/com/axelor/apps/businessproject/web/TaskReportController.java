@@ -2,6 +2,7 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.utils.TimeOverlapValidator;
 import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
@@ -18,6 +19,8 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class TaskReportController {
@@ -121,5 +124,46 @@ public class TaskReportController {
     String domain = taskReportService.buildTaskDomainFilter(taskReport, currentTaskId, currentUser);
 
     response.setAttr("task", "domain", domain);
+  }
+
+  public void filterTaskMemberReports(ActionRequest request, ActionResponse response) {
+    TaskReport report = request.getContext().asType(TaskReport.class);
+
+    User user = AuthUtils.getUser();
+
+    List<TaskMemberReport> taskMemberReports = report.getTaskMemberReports();
+
+    if (user.getGroup() != null && !"CUSTOM-PT".equals(user.getGroup().getCode())) {
+      response.setValue("taskMemberReports", taskMemberReports);
+      return;
+    }
+    List<TaskMemberReport> filtered =
+        taskMemberReports.stream()
+            .filter(r -> r.getEmployee() != null && r.getEmployee().getId().equals(user.getId()))
+            .collect(Collectors.toList());
+
+    response.setValue("taskMemberReports", filtered);
+  }
+
+  public void checkTimeOverlap(ActionRequest request, ActionResponse response) {
+    TaskMemberReport report = request.getContext().asType(TaskMemberReport.class);
+
+    boolean hasOverlap =
+        Beans.get(TimeOverlapValidator.class)
+            .hasOverlap(
+                TaskMemberReport.class,
+                report.getStartTime(),
+                report.getEndTime(),
+                report.getEmployee().getId(),
+                report.getId(),
+                "startTime",
+                "endTime",
+                "employee");
+
+    if (hasOverlap) {
+      response.setError("This time range overlaps with an existing task report for this employee");
+      response.setValue("startTime", null);
+      response.setValue("endTime", null);
+    }
   }
 }
