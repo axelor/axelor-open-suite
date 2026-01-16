@@ -748,4 +748,10 @@ public final class BaseExceptionMessage {
 
   public static final String PACKAGING_MAX_WEIGHT_EXCEEDED = /*$$(*/
       "The products' total weight exceeds the maximum weight carried by the packaging." /*)*/;
+
+  public static final String SEQUENCE_YEAR_VALIDITY_ERROR = /*$$(*/
+      "Prefix or suffix must contain %YY or %YYYY since yearly reset is true" /*)*/;
+
+  public static final String SEQUENCE_MONTH_VALIDITY_ERROR = /*$$(*/
+      "Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true" /*)*/;
 }
