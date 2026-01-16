@@ -218,7 +218,7 @@ public class ExpenseController {
     response.setView(actionView.map());
   }
 
-  public void createValidateForTechnicianManagers(ActionRequest request, ActionResponse response) {
+  public void createValidateDomainForManagers(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();
     ActionViewBuilder actionView =
@@ -228,7 +228,7 @@ public class ExpenseController {
             .add("form", "expense-form")
             .param("search-filters", "expense-filters");
 
-    Beans.get(HRMenuValidateService.class).createValidateForTechnicianManagers(user, actionView);
+    Beans.get(HRMenuValidateService.class).createValidateDomainForManagers(user, actionView);
     response.setView(actionView.map());
   }
 

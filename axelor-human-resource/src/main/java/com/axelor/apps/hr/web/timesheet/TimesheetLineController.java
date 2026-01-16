@@ -177,7 +177,10 @@ public class TimesheetLineController {
 
     ProjectTask projectTask = Beans.get(TimesheetLineService.class).resolveProjectTask(context);
     Project project = Beans.get(TimesheetLineService.class).resolveProject(context, projectTask);
-    Employee employee = AuthUtils.getUser().getEmployee();
+    Employee employee = projectTask.getAssignedTo().getEmployee();
+    if (employee == null) {
+      employee = AuthUtils.getUser().getEmployee();
+    }
 
     buildLogTimeResponse(response, project, projectTask, employee);
   }

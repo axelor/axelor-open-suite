@@ -114,13 +114,6 @@
     <panel-tabs name="mainPanelTab">
       <panel-include view="incl-overview-project-task-panel-form"/>
 
-      <panel if="__user__.group.code == 'CUSTOM-PT'" name="taskReportsPanel"
-        title="Task Report">
-        <panel-dashlet name="taskReportsDashlet" title="Task Reports" colSpan="12"
-          action="action-task-report-task-dashlet" canNew="true" x-show-bars="true"
-          reload-dotted="true"/>
-      </panel>
-
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
         if="__config__.app.isApp('timesheet') &amp;&amp; __user__.group.code != 'CUSTOM-PM'"
         showIf="project.manageTimeSpent">
