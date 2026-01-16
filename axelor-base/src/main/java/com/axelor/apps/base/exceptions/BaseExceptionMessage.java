@@ -757,4 +757,10 @@ public final class BaseExceptionMessage {
 
   public static final String GOOGLE_MAP_API_ERROR_2 = /*$$(*/
       "Error while fetching data from Google API." /*)*/;
+
+  public static final String SEQUENCE_YEAR_VALIDITY_ERROR = /*$$(*/
+      "Prefix or suffix must contain %YY or %YYYY since yearly reset is true" /*)*/;
+
+  public static final String SEQUENCE_MONTH_VALIDITY_ERROR = /*$$(*/
+      "Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true" /*)*/;
 }
