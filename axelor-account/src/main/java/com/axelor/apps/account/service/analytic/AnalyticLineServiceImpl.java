@@ -42,6 +42,7 @@ import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -172,7 +173,11 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
           || analyticAxisByCompanyList.size() < position) {
         return false;
       }
-      return Optional.ofNullable(analyticAxisByCompanyList.get(position - 1))
+      return Optional.ofNullable(
+              analyticAxisByCompanyList.stream()
+                  .sorted(Comparator.comparing(AnalyticAxisByCompany::getSequence))
+                  .collect(Collectors.toList())
+                  .get(position - 1))
           .map(AnalyticAxisByCompany::getIsRequired)
           .orElse(false);
 
