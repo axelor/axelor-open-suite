@@ -736,4 +736,10 @@ public final class BaseExceptionMessage {
       "Please fill API Sirene url in app base." /*)*/;
 
   public static final String DATABACKUP_ERROR_1 = /*$$(*/ "The entry file %s is not secured." /*)*/;
+
+  public static final String SEQUENCE_YEAR_VALIDITY_ERROR = /*$$(*/
+      "Prefix or suffix must contain %YY or %YYYY since yearly reset is true" /*)*/;
+
+  public static final String SEQUENCE_MONTH_VALIDITY_ERROR = /*$$(*/
+      "Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true" /*)*/;
 }
