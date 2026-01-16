@@ -133,6 +133,8 @@
 
   <action-group name="action-sequence-group-onsave">
     <action name="action-sequence-method-is-length-valid"/>
+    <action name="action-sequence-method-check-year-validity"/>
+    <action name="action-sequence-method-check-month-validity"/>
     <action name="action-sequence-validate"/>
     <action name="action-method-sequence-validate-before-save"/>
     <action name="action-sequence-method-verify-pattern"/>
@@ -168,11 +170,6 @@
   </action-attrs>
 
   <action-validate name="action-sequence-validate">
-    <error message="Prefix or suffix must contain %YY or %YYYY since yearly reset is true"
-      if="!com.axelor.apps.base.service.administration.SequenceService.isYearValid(__this__)"/>
-    <error
-      message="Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true"
-      if="!com.axelor.apps.base.service.administration.SequenceService.isMonthValid(__this__)"/>
     <error message="Prefix or suffix must not contain characters forbidden in filenames."
       if="p = ~/^[^\/\\?*:\|&quot;&lt;>]*$/; prefixe &amp;&amp; !(prefixe ==~ p) || suffixe &amp;&amp; !(suffixe ==~ p)"/>
     <error message="Prefix cannot start with #." if="prefixe ==~ /^#.*$/"/>
@@ -242,6 +239,14 @@
     <field name="prefixe" expr="eval:' '" if="prefixGroovyOk"/>
     <field name="suffixe" expr="eval:' '" if="suffixGroovyOk"/>
   </action-record>
+
+  <action-method name="action-sequence-method-check-year-validity">
+    <call class="com.axelor.apps.base.web.SequenceController" method="checkYearValidity"/>
+  </action-method>
+
+  <action-method name="action-sequence-method-check-month-validity">
+    <call class="com.axelor.apps.base.web.SequenceController" method="checkMonthValidity"/>
+  </action-method>
 
   <search-filters name="sequence-filters" model="com.axelor.apps.base.db.Sequence"
     title="Sequence filters">

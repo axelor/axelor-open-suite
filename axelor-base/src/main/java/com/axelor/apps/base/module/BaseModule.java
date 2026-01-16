@@ -191,6 +191,8 @@ import com.axelor.apps.base.service.administration.ReservedSequenceCleanupServic
 import com.axelor.apps.base.service.administration.ReservedSequenceCleanupServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceComputationService;
 import com.axelor.apps.base.service.administration.SequenceComputationServiceImpl;
+import com.axelor.apps.base.service.administration.SequenceDateCheckService;
+import com.axelor.apps.base.service.administration.SequenceDateCheckServiceImpl;
 import com.axelor.apps.base.service.administration.SequenceIncrementExecutor;
 import com.axelor.apps.base.service.administration.SequenceIncrementExecutorImpl;
 import com.axelor.apps.base.service.administration.SequenceReservationService;
@@ -528,5 +530,6 @@ public class BaseModule extends AxelorModule {
         .to(DataSharingProductWizardManagementRepository.class);
     bind(LanguageCheckerService.class).to(LanguageCheckerServiceImpl.class);
     bind(ProductPriceListService.class).to(ProductPriceListServiceImpl.class);
+    bind(SequenceDateCheckService.class).to(SequenceDateCheckServiceImpl.class);
   }
 }
