@@ -567,6 +567,9 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     BigDecimal holidayHours = calculateHolidayOverlap(line);
     if (holidayHours.compareTo(BigDecimal.ZERO) > 0) {
       breakdown.put(ExtrachargeType.HOLIDAY.name(), holidayHours);
+      // holiday overrides weekend
+      breakdown.remove(ExtrachargeType.SATURDAY.name());
+      breakdown.remove(ExtrachargeType.SUNDAY.name());
     }
 
     if (nightHours.compareTo(BigDecimal.ZERO) > 0) {

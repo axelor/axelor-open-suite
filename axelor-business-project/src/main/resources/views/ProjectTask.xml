@@ -199,8 +199,7 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel-include view="incl-overview-business-project-task-panel-form"/>
-      <panel
-        if="['CUSTOM-PM','CUSTOM-PT' ].any(g -> __user__.group.code.contains(g))"
+      <panel if="['CUSTOM-PM','CUSTOM-PT' ].any(g -> __user__.group.code.contains(g))"
         name="taskReportsPanel" title="Task Report">
         <panel-dashlet name="taskReportsDashlet" title="Task Reports" colSpan="12"
           action="action-task-report-task-dashlet" canNew="true" x-show-bars="true"
