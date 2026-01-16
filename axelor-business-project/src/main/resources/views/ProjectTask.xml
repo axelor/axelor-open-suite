@@ -7,7 +7,6 @@
     model="com.axelor.apps.project.db.ProjectTask" edit-icon="false"
     orderBy="-priority.technicalTypeSelect">
     <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
-    <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>

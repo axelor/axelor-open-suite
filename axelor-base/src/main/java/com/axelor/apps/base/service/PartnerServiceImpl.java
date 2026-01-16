@@ -281,7 +281,7 @@ public class PartnerServiceImpl implements PartnerService {
     return ComputeNameHelper.computeFullName(
         partner.getFirstName(),
         partner.getName(),
-        partner.getPartnerSeq(),
+        partner.getCustomerCostCenter(),
         String.valueOf(partner.getId()));
   }
 
