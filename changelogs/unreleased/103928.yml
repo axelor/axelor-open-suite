@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed incorrect view extension caused by swapped view name and id in 'supplychain-sale-order-line-editable-grid'."
+module: axelor-supplychain
