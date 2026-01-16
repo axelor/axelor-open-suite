@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -16,26 +16,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.purchase.service;
+package com.axelor.apps.purchase.service.purchase.request;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseRequest;
-import com.axelor.apps.purchase.service.purchase.request.PurchaseRequestToPoGenerationResult;
 import java.util.List;
-import java.util.Map;
 
-public interface PurchaseRequestService {
-  public PurchaseRequestToPoGenerationResult generatePo(
+public interface PurchaseRequestToPoCreateService {
+
+  PurchaseRequestToPoGenerationResult createFromRequests(
       List<PurchaseRequest> purchaseRequests,
       Boolean groupBySupplier,
       Boolean groupByProduct,
       Company company)
       throws AxelorException;
 
-  public Map<String, Object> getDefaultValues(PurchaseRequest purchaseRequest, Company company)
-      throws AxelorException;
-
-  public PurchaseRequest createPurchaseRequest(
-      Company fetchCompany, Integer status, String description) throws AxelorException;
+  PurchaseOrder createFromRequest(PurchaseRequest purchaseRequest) throws AxelorException;
 }

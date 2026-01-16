@@ -39,6 +39,8 @@
       title="Enable addition of new lines in customer delivery." default="false"/>
     <boolean name="isSupplierArrivalLineAdditionEnabled"
       title="Enable addition of new lines in supplier arrival." default="false"/>
+    <string name="freightCarrierModeTrackingIds"
+      title="Freight carrier mode requiring a tracking number during shipment"/>
 
     <string name="minimalRequiredMobileAppVersion"
       title="Minimal required version of the mobile application."
@@ -83,6 +85,9 @@
       selection="mobilesettings.employee.timesheet.imputation.select"/>
     <boolean name="isStockLocationManagementEnabled"
       title="Enable default stock location management"/>
+    <boolean name="isSimplifiedStockMoveLineDisplayEnabled"
+      title="Simplified display of stock move lines" default="true"
+      help="Allows stock move lines to be displayed one by one on the mobile app, with a link to the full list. If the option is unchecked, all lines are displayed directly. By default, the simplified mode is enabled."/>
 
     <many-to-many name="inventoryValidationRoleSet" ref="com.axelor.auth.db.Role"
       title="Authorized roles"
@@ -188,6 +193,7 @@
       <field name="isVerifyInventoryLineEnabled" on="UPDATE"/>
       <field name="isCustomerDeliveryLineAdditionEnabled" on="UPDATE"/>
       <field name="isSupplierArrivalLineAdditionEnabled" on="UPDATE"/>
+      <field name="freightCarrierModeTrackingIds" on="UPDATE"/>
       <field name="minimalRequiredMobileAppVersion" on="UPDATE"/>
       <field name="isMultiCurrencyEnabled" on="UPDATE"/>
       <field name="isExpenseProjectInvoicingEnabled" on="UPDATE"/>
@@ -211,6 +217,7 @@
       <field name="isFileDeletionAllowed" on="UPDATE"/>
       <field name="fieldsToShowOnTimesheet" on="UPDATE"/>
       <field name="isStockLocationManagementEnabled" on="UPDATE"/>
+      <field name="isSimplifiedStockMoveLineDisplayEnabled" on="UPDATE"/>
       <field name="isOneLineShortcut" on="UPDATE"/>
       <field name="defaultQiDetectionId" on="UPDATE"/>
     </track>

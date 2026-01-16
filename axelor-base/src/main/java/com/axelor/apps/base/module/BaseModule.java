@@ -307,6 +307,7 @@ import com.axelor.apps.base.service.message.MessageServiceBaseImpl;
 import com.axelor.apps.base.service.message.TemplateMessageServiceBaseImpl;
 import com.axelor.apps.base.service.meta.MetaViewService;
 import com.axelor.apps.base.service.meta.MetaViewServiceImpl;
+import com.axelor.apps.base.service.observer.PricingLogsObserver;
 import com.axelor.apps.base.service.observer.ProductFireService;
 import com.axelor.apps.base.service.observer.ProductFireServiceImpl;
 import com.axelor.apps.base.service.pac4j.BaseAuthPac4jUserService;
@@ -644,5 +645,6 @@ public class BaseModule extends AxelorModule {
     bind(MapOsmService.class).to(MapOsmServiceImpl.class);
     bind(MapGoogleService.class).to(MapGoogleServiceImpl.class);
     bind(MapToolService.class).to(MapToolServiceImpl.class);
+    bind(PricingLogsObserver.class);
   }
 }

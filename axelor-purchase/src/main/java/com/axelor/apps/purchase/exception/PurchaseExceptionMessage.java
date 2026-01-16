@@ -95,6 +95,10 @@ public final class PurchaseExceptionMessage {
       "Can not cancel already canceled purchase request." /*)*/;
   public static final String PURCHASE_REQUEST_DRAFT_WRONG_STATUS = /*$$(*/
       "Can only return to draft from canceled purchase request." /*)*/;
+  public static final String PURCHASE_REQUEST_PO_ALREADY_LINKED = /*$$(*/
+      "The purchase request %s is already linked to a purchaseOrder" /*)*/;
+  public static final String PURCHASE_REQUEST_NOT_ACCEPTED_FOR_PO = /*$$(*/
+      "The purchase request %s must be accepted before proceeding with the purchase." /*)*/;
 
   public static final String DIFFERENT_SUPPLIER = /*$$(*/
       "The supplier of the purchase order is different from the default supplier of the product." /*)*/;

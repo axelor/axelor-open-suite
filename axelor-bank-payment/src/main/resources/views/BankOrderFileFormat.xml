@@ -47,9 +47,10 @@
       </panel>
     </panel>
     <panel name="specificAttributesPanel" title="Specific attributes" hidden="true"
-      showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' || orderFileFormatSelect == 'pain.xxx.cfonb160.ict'">
+      showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' || orderFileFormatSelect == 'pain.xxx.cfonb160.ict' || orderFileFormatSelect == 'pain.xxx.cfonb160.dco'">
       <field name="qualifyingOfDate" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"/>
-      <field name="isMultiDate" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"
+      <field name="isMultiDate"
+        showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct' || orderFileFormatSelect == 'pain.xxx.cfonb160.dco'"
         onChange="action-bank-order-file-format-reset-order-debit-type"/>
       <field name="isMultiCurrency" showIf="orderFileFormatSelect == 'pain.xxx.cfonb320.xct'"
         onChange="action-bank-order-file-format-reset-order-debit-type"/>

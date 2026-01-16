@@ -107,4 +107,6 @@ public interface PurchaseOrderLineService {
       PurchaseOrder purchaseOrder, PurchaseOrderLine purchaseOrderLine) throws AxelorException;
 
   public void validateDeletion(PurchaseOrderLine purchaseOrderLine) throws AxelorException;
+
+  void updatePurchaseOrderLineList(PurchaseOrder purchaseOrder) throws AxelorException;
 }
