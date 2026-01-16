@@ -21,6 +21,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.service.administration.SequenceDateCheckService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -109,5 +110,17 @@ public class SequenceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void checkYearValidity(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    Beans.get(SequenceDateCheckService.class).isYearValid(sequence);
+  }
+
+  public void checkMonthValidity(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    Beans.get(SequenceDateCheckService.class).isMonthValid(sequence);
   }
 }
