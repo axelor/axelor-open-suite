@@ -28,6 +28,7 @@ import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
@@ -56,38 +57,46 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
   @Override
   public ProjectTask save(ProjectTask projectTask) {
     Integer version = projectTask.getVersion();
-
     boolean isNew = (version == null || version == 0);
-    // Saving new template task with, create template and individual tasks
-    if (isNew
-        && hasMultipleUsers(projectTask)
-        && !Boolean.TRUE.equals(projectTask.getIsTemplate())) {
 
-      return createTemplateAndIndividualTask(projectTask);
+    if (isNew && !Boolean.TRUE.equals(projectTask.getIsTemplate())) {
+      if (hasMultipleUsers(projectTask)) {
+        return createTemplateAndIndividualTask(projectTask);
+      } else {
+        // Using ifPresent for a cleaner, null-safe flow
+        projectTask.getAssignedEmployees().stream()
+            .filter(Objects::nonNull)
+            .findFirst()
+            .ifPresent(
+                user -> {
+                  projectTask.setAssignedTo(user);
+                  projectTask.getAssignedEmployees().clear();
+                  projectTask.setIsTemplate(false);
+                });
+      }
     }
 
-    // Updating a template task should take effect on all task created from it
     if (!isNew && Boolean.TRUE.equals(projectTask.getIsTemplate())) {
-      log.debug("Check two success!!");
       return updateTemplateAndCascade(projectTask);
     }
 
-    projectTask = super.save(projectTask);
+    ProjectTask savedTask = super.save(projectTask);
     try {
-      projectTask =
+      savedTask =
           projectTaskProgressUpdateService.updateChildrenProgress(
-              projectTask, projectTask.getProgress());
-      projectTask = projectTaskProgressUpdateService.updateParentsProgress(projectTask);
+              savedTask, savedTask.getProgress());
+      savedTask = projectTaskProgressUpdateService.updateParentsProgress(savedTask);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
-    return projectTask;
+
+    return savedTask;
   }
 
   /** check if task has multiple users */
   private static boolean hasMultipleUsers(ProjectTask task) {
-    return task.getAssignedEmployees() != null && !task.getAssignedEmployees().isEmpty();
+    return task.getAssignedEmployees() != null && task.getAssignedEmployees().size() > 1;
   }
 
   /** Create template task and individual assigned tasks */

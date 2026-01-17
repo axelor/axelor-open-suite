@@ -7,11 +7,9 @@
     edit-icon="false" orderBy="-priority.technicalTypeSelect">
     <hilite if="$get('status.isCompleted') &amp;&amp; $get('status.isDefaultCompleted')"
       color="success"/>
-    <!-- <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/> -->
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
-    <!-- <field name="ticketNumber"/> -->
     <field name="name"/>
     <field name="project"/>
     <field name="assignedTo"/>
@@ -114,13 +112,6 @@
     <panel-tabs name="mainPanelTab">
       <panel-include view="incl-overview-project-task-panel-form"/>
 
-      <panel if="__user__.group.code == 'CUSTOM-PT'" name="taskReportsPanel"
-        title="Task Report">
-        <panel-dashlet name="taskReportsDashlet" title="Task Reports" colSpan="12"
-          action="action-task-report-task-dashlet" canNew="true" x-show-bars="true"
-          reload-dotted="true"/>
-      </panel>
-
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
         if="__config__.app.isApp('timesheet') &amp;&amp; __user__.group.code != 'CUSTOM-PM'"
         showIf="project.manageTimeSpent">
@@ -218,7 +209,6 @@
         required="true"/>
       <field name="endTime" colSpan="6"
         onChange="action-project-task-record-sync-end-time-to-date,action-project-task-attrs-set-task-duration,action-project-task-validate-toDate"/>
-      <field name="taskDeadline" title="Task deadline" colSpan="6"/>
       <!-- MGM-68 -->
       <!-- <field name="tagSet" widget="TagSelect" x-color-field="color" form-view="tag-form" grid-view="tag-simplified-grid"
         colSpan="4" onSelect="action-project-task-method-set-tag-domain"/> -->
@@ -256,6 +246,7 @@
       <field name="taskEndDate" colSpan="6"
         onChange="action-project-task-attrs-set-task-duration, action-project-task-validate-toDate"
         hidden="true"/>
+      <field name="taskDeadline" title="Task deadline" colSpan="6" hidden="true"/>
     </panel>
   </form>
 
@@ -561,6 +552,7 @@
   </calendar>
 
   <action-group name="action-project-task-group-onnew">
+    <action name="action-method-business-project-task-resolve-project"/>
     <action name="action-project-task-defaults"/>
     <action name="action-project-task-attrs-set-time-unit-default"/>
     <action name="action-project-task-record-set-default"/>

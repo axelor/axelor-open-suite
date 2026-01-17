@@ -152,18 +152,18 @@
   <!-- Define the form view for Task Member Report -->
   <form name="task-member-report-form" title="Team Member Report"
     onLoad="action-task-member-report-group-on-load" onNew="action-task-member-report-group-on-new"
-    onSave="action-task-member-report-validate-start-time-after-end-time"
+    onSave="action-group-task-member-report-on-save"
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <panel colSpan="12" canCollapse="true" collapseIf="false">
       <field name="task" title="Task" widget="Select"
         onChange="action-task-member-report-on-change-task" required="true"/>
       <field name="employee" title="Employee" readonly="true"/>
       <field name="startTime"
-        onChange="action-task-report-on-change-time, action-task-member-report-validate-start-time-after-end-time"/>
+        onChange="action-task-report-on-change-time, action-task-member-report-validate-start-time-after-end-time, action-validate-task-member-report-no-time-overlap"/>
       <field name="breakTimeMinutes" title="Break Time (minutes)"
         onChange="action-task-member-report-sync-minutes-to-hours,action-task-report-on-change-time"/>
       <field name="endTime"
-        onChange="action-task-report-on-change-time, action-task-member-report-validate-start-time-after-end-time"/>
+        onChange="action-task-report-on-change-time, action-task-member-report-validate-start-time-after-end-time, action-validate-task-member-report-no-time-overlap"/>
       <field name="task.projectTaskCategory" title="Task Category" readonly="true"/>
       <field name="workHours"/>
       <field name="breakTimeHours" hidden="true"/>
@@ -218,6 +218,16 @@
   <action-method name="action-task-member-report-method-filter-tasks">
     <call class="com.axelor.apps.businessproject.web.TaskReportController"
       method="filterTasksForMemberReport"/>
+  </action-method>
+
+  <action-method name="action-method-task-report-filter-task-member-reports">
+    <call class="com.axelor.apps.businessproject.web.TaskReportController"
+      method="filterTaskMemberReports"/>
+  </action-method>
+
+  <action-method name="action-validate-task-member-report-no-time-overlap">
+    <call class="com.axelor.apps.businessproject.web.TaskReportController"
+      method="checkTimeOverlap"/>
   </action-method>
 
   <!-- Action when project changes - autofill all related fields -->
@@ -326,6 +336,11 @@
   <action-group name="action-task-member-report-group-onChange">
     <action name="action-update-total-work-hours"/>
     <action name="action-task-report-method-updated-reported-task-count"/>
+  </action-group>
+
+  <action-group name="action-group-task-member-report-on-save">
+    <action name="action-validate-task-member-report-no-time-overlap"/>
+    <action name="action-task-member-report-validate-start-time-after-end-time"/>
   </action-group>
 
 </object-views>

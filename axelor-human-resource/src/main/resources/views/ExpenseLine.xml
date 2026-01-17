@@ -222,8 +222,8 @@
     <panel name="expensePanel">
       <panel name="kilometricAllowancePanel" title="Kilometric Allowance" colSpan="12"
         readonlyIf="expense.statusSelect &gt; 1">
-        <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false" canView="false"
-          onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
+        <field name="project" requiredIf="toInvoice" edit-icon="false" canEdit="false"
+          canView="false" onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
           form-view="business-project-form" grid-view="project-grid"/>
         <field name="projectTask" edit-icon="false" canEdit="false"
           onSelect="action-expense-line-method-compute-project-task-domain"

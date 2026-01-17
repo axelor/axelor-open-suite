@@ -164,7 +164,7 @@
     if="__config__.app.isApp('employee')" groups="CUSTOM-EM" icon-background="#84429f"/>
 
   <menuitem name="mgm-tm-hr-root" order="-1600" title="Approvals items"
-    icon="diagram-3-fill" groups="CUSTOM-TM, " icon-background="#84429f"/>
+    icon="diagram-3-fill" groups="CUSTOM-TM,CUSTOM-OM" icon-background="#84429f"/>
 
   <menuitem name="hr-root-emp-mgt" parent="hr-root" title="Employees Management"
     icon="person-vcard" icon-background="#84429f" order="100"/>
@@ -545,7 +545,7 @@
 
   <action-method name="custom.mgm.expense.validate">
     <call class="com.axelor.apps.hr.web.expense.ExpenseController"
-      method="createValidateForTechnicianManagers"/>
+      method="createValidateDomainForManagers"/>
   </action-method>
 
   <menuitem name="ventilate-expense" parent="expense-root" title="Expenses to Ventilate"
@@ -603,12 +603,12 @@
     action="action.timesheet.method.all.timesheet" order="100"/>
 
   <menuitem title="Timesheet Lines to validate" name="mgm-tm-timesheet-lines-to-validate"
-    parent="mgm-tm-hr-root" groups="CUSTOM-TM"
+    parent="mgm-tm-hr-root" groups="CUSTOM-TM,CUSTOM-OM"
     action="action.timesheet.method.all.timesheet-lines-custom" order="110"/>
 
   <menuitem name="mgm-tm-validate-expense" parent="mgm-tm-hr-root"
-    title="Expenses to Validate" action="custom.mgm.expense.validate" tag-style="default"
-    order="100"/>
+    groups="CUSTOM-TM,CUSTOM-OM" title="Expenses to Validate" action="custom.mgm.expense.validate"
+    tag-style="default" order="100"/>
 
   <action-method name="action.timesheet.method.all.timesheet">
     <call class="com.axelor.apps.hr.web.timesheet.TimesheetController" method="allTimesheet"/>

@@ -143,6 +143,8 @@ public class ProjectController {
     Project project = request.getContext().asType(Project.class);
     Partner partner = project.getClientPartner();
 
+    if (partner == null) return;
+
     project = Beans.get(BusinessProjectService.class).computePartnerData(project, partner);
 
     if (project != null) {

@@ -29,7 +29,9 @@ import com.axelor.apps.businessproject.service.ProjectFrameworkContractService;
 import com.axelor.apps.businessproject.service.PurchaseOrderProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskGroupBusinessService;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -39,6 +41,7 @@ import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.google.inject.persist.Transactional;
 import java.util.List;
 import java.util.Map;
@@ -46,7 +49,6 @@ import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskController {
-
   public void compute(ActionRequest request, ActionResponse response) {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
@@ -211,6 +213,18 @@ public class ProjectTaskController {
     String domain =
         Beans.get(ProjectFrameworkContractService.class).getSupplierContractDomain(projectTask);
     response.setAttr("frameworkSupplierContract", "domain", domain);
+  }
+
+  public void resolveProjectContext(ActionRequest request, ActionResponse response) {
+    Context context = request.getContext();
+
+    Integer projectId = (Integer) context.get("_projectId");
+    if (projectId != null) {
+      Project project = Beans.get(ProjectRepository.class).find(projectId.longValue());
+      if (project != null) {
+        response.setValue("_project", project);
+      }
+    }
   }
 
   @ErrorException

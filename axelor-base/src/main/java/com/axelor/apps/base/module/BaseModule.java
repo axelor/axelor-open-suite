@@ -333,6 +333,8 @@ import com.axelor.apps.base.tracking.ExportObserver;
 import com.axelor.apps.base.tracking.GlobalAuditInterceptor;
 import com.axelor.apps.base.tracking.GlobalTrackingLogService;
 import com.axelor.apps.base.tracking.GlobalTrackingLogServiceImpl;
+import com.axelor.apps.base.utils.TimeOverlapValidator;
+import com.axelor.apps.base.utils.TimeOverlapValidatorImpl;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.auth.pac4j.AuthPac4jUserService;
 import com.axelor.auth.service.PermissionService;
@@ -570,6 +572,7 @@ public class BaseModule extends AxelorModule {
     bind(DMSFileRepository.class).to(CustomDMSFileRepository.class);
     bind(PushTokenRepository.class).to(PushTokenBaseRepository.class);
     bind(PushNotificationService.class).to(PushNotificationServiceImpl.class);
+    bind(TimeOverlapValidator.class).to(TimeOverlapValidatorImpl.class);
 
     bind(FirebaseInitializer.class).asEagerSingleton();
   }

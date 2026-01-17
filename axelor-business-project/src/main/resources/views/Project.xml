@@ -663,6 +663,7 @@
     <action name="action-business-project-method-get-analytic-distribution-template"/>
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
     <action name="action-project-attrs-sale-order-panel-display"/>
+    <action name="action-record-business-project-set-default-priority"/>
   </action-group>
 
   <action-group name="action-business-project-project-group-on-load">
@@ -684,6 +685,12 @@
     model="com.axelor.apps.project.db.Project">
     <field name="priority" if="!priority"
       expr="select: com.axelor.apps.project.db.ProjectPriority where technicalTypeSelect = 2 limit 1"/>
+  </action-record>
+
+  <action-record name="action-record-business-project-set-default-priority"
+    model="com.axelor.apps.project.db.Project">
+    <field name="priority"
+      expr="eval: __repo__(ProjectPriority).all().filter('self.technicalTypeSelect = ?', 2).fetchOne()"/>
   </action-record>
 
   <action-method name="action-project-method-generate-quotation">
@@ -786,14 +793,14 @@
 
   <action-view name="action-business-project-add-task"
     model="com.axelor.apps.project.db.ProjectTask" title="Task">
-    <view name="business-project-task-form" type="form"/>
+    <view type="form" name="custom-mgm-business-project-task-template-form"/>
     <view name="business-project-task-grid" type="grid"/>
     <view-param name="details-view" value="true"/>
     <view-param name="popup" value="reload"/>
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_project" expr="eval:__parent__"/>
+    <context name="_projectId" expr="eval: _id"/>
     <context name="_typeSelect"
       expr="eval: com.axelor.apps.project.db.repo.ProjectTaskRepository.TYPE_TASK"/>
   </action-view>
@@ -832,6 +839,8 @@
     <domain>self.project.id = :_id AND self.parentTask = null</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
+
+
 
   <!-- Sales -->
 
@@ -1397,6 +1406,11 @@
   <action-method name="action-business-project-view-show-related-tasks">
     <call class="com.axelor.apps.businessproject.web.ProjectMenuController"
       method="allProjectRelatedTasks"/>
+  </action-method>
+
+  <action-method name="action-method-business-project-task-resolve-project">
+    <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
+      method="resolveProjectContext"/>
   </action-method>
 
   <action-group name="action-business-project-group-finish-project">

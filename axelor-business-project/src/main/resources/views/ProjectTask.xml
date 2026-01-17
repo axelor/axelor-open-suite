@@ -7,7 +7,6 @@
     model="com.axelor.apps.project.db.ProjectTask" edit-icon="false"
     orderBy="-priority.technicalTypeSelect">
     <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
-    <hilite if="$moment(taskEndDate).diff(todayDate,'days') &lt; 0" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
@@ -200,9 +199,16 @@
     </panel>
     <panel-tabs name="mainPanelTab">
       <panel-include view="incl-overview-business-project-task-panel-form"/>
+      <panel if="['CUSTOM-PM','CUSTOM-PT' ].any(g -> __user__.group.code.contains(g))"
+        name="taskReportsPanel" title="Task Report">
+        <panel-dashlet name="taskReportsDashlet" title="Task Reports" colSpan="12"
+          action="action-task-report-task-dashlet" canNew="true" x-show-bars="true"
+          reload-dotted="true"/>
+      </panel>
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet') &amp;&amp; __user__.group.code != 'CUSTOM-PM'"
+        if="__config__.app.isApp('timesheet') &amp;&amp; ['admins','CUSTOM-OM','CUSTOM-PM','CUSTOM-PT' ]
+             .any(g -> __user__.group.code.contains(g))"
         showIf="project.manageTimeSpent">
         <panel-include view="incl-log-times-projec-task-panel-form"/>
         <field name="project.manageTimeSpent" hidden="true"/>
@@ -223,35 +229,6 @@
         </panel-related>
         <panel-include view="incl-frequency-panel-task-form"/>
       </panel>
-      <!-- MGM-68 -->
-      <!-- MGM-80: @gkouete - financial data not hidden using show if admin, commenting it out -->
-      <!-- <panel name="financialDataPanel" title="Financial Data" colSpan="12" if-module="axelor-business-project"
-        if="__config__.app.isApp('business-project') || __user__.group.code == admins"> <field name="invoicingType"
-        onChange="action-project-task-attrs-onchange-invoice-type" readonlyIf="invoiceLineSet &amp;&amp; invoiceLineSet.length
-        > 0"/> <panel name="contentPanel" title="Content" colSpan="12" canCollapse="true"> <field name="product"
-        colSpan="3" canEdit="false" onChange="action-business-project-project-task-group-product-onchange" onSelect="action-project-task-attrs-set-product-domain"
-        form-view="product-form" grid-view="product-grid"/> <field name="quantity" colSpan="3" onChange="action-project-task-method-update-financial-datas"
-        readonlyIf="saleOrderLine"/> <field name="unitPrice" colSpan="3" onChange="action-project-task-group-unit-price-onchange"
-        readonlyIf="saleOrderLine || frameworkCustomerContract"/> <field name="unitCost" colSpan="3" readonlyIf="saleOrderLine
-        || frameworkSupplierContract" onChange="action-project-task-method-compute"/> <field name="invoicingUnit"
-        colSpan="3" domain="self.unitTypeSelect=3" form-view="unit-form" grid-view="unit-grid" canEdit="false"
-        readonlyIf="saleOrderLine" onChange="action-project-task-method-update-quantity"/> <field name="currency"
-        colSpan="3" grid-view="currency-grid" form-view="currency-form" canEdit="false" readonlyIf="saleOrderLine"/>
-        <field name="exTaxTotal" readonly="true" colSpan="3"/> <field name="totalCosts" colSpan="3"/> <field
-        name="toInvoice" colSpan="2" readonly="true" if="__config__.app.getApp('business-project').automaticInvoicing"/>
-        <field name="toInvoice" colSpan="2" readonlyIf="invoiced" if="!__config__.app.getApp('business-project').automaticInvoicing"/>
-        <field name="isPaid" showIf="project.invoicingSequenceSelect == 1" colSpan="2"/> <field name="isTaskRefused"
-        colSpan="2"/> <field name="invoiced" hidden="true" showIf="id &amp;&amp; !($readonly())" colSpan="1"/>
-        <field name="invoiced" hidden="true" showIf="id &amp;&amp; $readonly()" showTitle="false" colSpan="1">
-        <viewer><![CDATA[ <> <Box d="flex" justifyContent="flex-end"> <Badge bg={invoiced ? "success" : "danger"}>{invoiced
-        ? _t('Invoiced') : _t('Not invoiced')}</Badge> </Box> </> ]]></viewer> </field> <panel name="discountPanel"
-        readonly="true" colSpan="12" hideIf="discountTypeSelect == 3 || discountTypeSelect == 0" if="__config__.app.isApp('business-project')"
-        if-module="axelor-business-project"> <field name="discountTypeSelect" colSpan="3" onChange="action-project-task-attrs-discountamount-title"/>
-        <field name="discountAmount" colSpan="3"/> <field name="priceDiscounted" colSpan="3"/> </panel> <field
-        name="project.invoicingSequenceSelect" hidden="true" if="__config__.app.isApp('business-project')" if-module="axelor-business-project"/>
-        <field name="invoiceLineSet" readonly="true" showIf="invoiceLineSet" form-view="invoice-line-form" grid-view="invoice-line-grid"
-        colSpan="12"/> <field if="__config__.app.getApp('project')?.isEnableSignature" name="metaFile" width="120"
-        widget="drawing"/> </panel> </panel> -->
 
       <!-- MGM-68 -->
       <panel-include view="incl-checklist-task-panel-form"
@@ -404,7 +381,8 @@
 
       <!-- MGM - Open template task for current task if it was created from a template -->
       <button name="viewTemplateBtn" title="View Template Task" colSpan="4"
-        showIf="templateTaskId &amp;&amp; !isTemplate" onClick="action-project-task-view-template"/>
+        showIf="templateTaskId &amp;&amp; !isTemplate" onClick="action-project-task-view-template"
+        if="__user__.group?.code == 'admins' || __user__.group?.code == 'CUSTOM-OM'"/>
       <field name="invoicingProgress" readonly="true" colSpan="4" showIf="invoicingType == 4"/>
       <field name="description" colSpan="12" widget="html"/>
 

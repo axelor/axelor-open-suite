@@ -53,11 +53,22 @@ public class TimesheetDomainServiceImpl implements TimesheetDomainService {
   public void createCustomDomainAllTimesheetLine(
       User user, Employee employee, ActionView.ActionViewBuilder actionView) {
 
+    // Always restrict by company
     actionView
         .domain("self.timesheet.company = :_activeCompany")
         .context("_activeCompany", user.getActiveCompany());
+    if (user.getGroup() == null) {
+      actionView.domain("self.id IS NULL");
+      return;
+    }
 
-    // ALWAYS apply project membership restriction
+    String groupCode = user.getGroup().getCode();
+    // CUSTOM-OM can see everything (no project restriction)
+    if ("CUSTOM-OM".equals(groupCode)) {
+      return;
+    }
+
+    // Others: restrict to project members
     actionView
         .domain(actionView.get().getDomain() + " AND self.project.membersUserSet[].id = :_userId")
         .context("_userId", user.getId());

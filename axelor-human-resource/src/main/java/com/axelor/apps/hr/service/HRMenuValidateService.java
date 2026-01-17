@@ -47,20 +47,29 @@ public class HRMenuValidateService {
   }
 
   // allow technician managers to validate expenses too
-  public void createValidateForTechnicianManagers(
-      User user, ActionView.ActionViewBuilder actionView) {
+  public void createValidateDomainForManagers(User user, ActionView.ActionViewBuilder actionView) {
     actionView.domain("self.statusSelect IN (1, 2)");
 
-    // If the user is NOT a technician manager, hide all records
-    if (user == null || user.getGroup() == null || !"CUSTOM-TM".equals(user.getGroup().getCode())) {
+    // If the user is NOT a technician or operations manager, hide all records
+    if (user == null || user.getGroup() == null) {
       actionView.domain("self.id IS NULL");
       return;
     }
-    actionView
-        .domain(
-            actionView.get().getDomain()
-                + " AND ("
-                + "self.project.membersUserSet[].id = :_userId)")
-        .context("_userId", user.getId());
+
+    String groupCode = user.getGroup().getCode();
+
+    // CUSTOM-OM: can see all expenses (no extra filter)
+    if ("CUSTOM-OM".equals(groupCode)) {
+      return;
+    }
+
+    // CUSTOM-TM: must be member of the project
+    if ("CUSTOM-TM".equals(groupCode)) {
+      actionView
+          .domain(actionView.get().getDomain() + " AND self.project.membersUserSet[].id = :_userId")
+          .context("_userId", user.getId());
+      return;
+    }
+    actionView.domain("self.id IS NULL");
   }
 }
