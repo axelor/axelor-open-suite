@@ -40,8 +40,9 @@
                 </ex-property>
             </list-property>
             <property name="odaDriverClass">org.postgresql.Driver</property>
-            <property name="odaURL">jdbc:postgresql://localhost:5432/mgm_db</property>
+            <property name="odaURL">jdbc:postgresql://localhost:5432/prod</property>
             <property name="odaUser">postgres</property>
+            <encrypted-property name="odaPassword" encryptionID="base64">bmppZGRh</encrypted-property>
         </oda-data-source>
     </data-sources>
     <data-sets>
@@ -158,48 +159,56 @@
                     <property name="name">member_report_id</property>
                     <property name="nativeName">member_report_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">employee_name</property>
                     <property name="nativeName">employee_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">task_name</property>
                     <property name="nativeName">task_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">task_category</property>
                     <property name="nativeName">task_category</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">start_time</property>
                     <property name="nativeName">start_time</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">end_time</property>
                     <property name="nativeName">end_time</property>
                     <property name="dataType">date-time</property>
+                    <property name="nativeDataType">93</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">break_time_minutes</property>
                     <property name="nativeName">break_time_minutes</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">4</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">work_hours</property>
                     <property name="nativeName">work_hours</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
@@ -222,12 +231,12 @@ LEFT JOIN auth_user u
 
 LEFT JOIN project_project_task pt
        ON pt.id = tmr.task
+
 LEFT JOIN project_project_task_category cat
-       ON cat.id = pt.project_task_category
+       ON cat.id = tmr.task_category
 
 WHERE tmr.task_report = ?
-ORDER BY tmr.start_time
-]]></xml-property>
+ORDER BY tmr.start_time]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="TaskReportSet" id="282">
             <property name="nullsOrdering">nulls lowest</property>
@@ -254,11 +263,23 @@ ORDER BY tmr.start_time
                     <text-property name="heading">project_name</text-property>
                 </structure>
                 <structure>
+                    <property name="columnName">project_full_name</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">project_full_name</text-property>
+                    <text-property name="heading">project_full_name</text-property>
+                </structure>
+                <structure>
                     <property name="columnName">partner_name</property>
                     <property name="alias">partner_name</property>
                     <property name="analysis">dimension</property>
                     <text-property name="displayName">partner_name</text-property>
                     <text-property name="heading">partner_name</text-property>
+                </structure>
+                <structure>
+                    <property name="columnName">customer_cost_center</property>
+                    <property name="analysis">dimension</property>
+                    <text-property name="displayName">customer_cost_center</text-property>
+                    <text-property name="heading">customer_cost_center</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">customer_not_available</property>
@@ -393,66 +414,71 @@ ORDER BY tmr.start_time
                     </structure>
                     <structure>
                         <property name="position">6</property>
+                        <property name="name">customer_cost_center</property>
+                        <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">7</property>
                         <property name="name">customer_not_available</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">7</property>
+                        <property name="position">8</property>
                         <property name="name">location_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">8</property>
+                        <property name="position">9</property>
                         <property name="name">employee_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">9</property>
+                        <property name="position">10</property>
                         <property name="name">customer_name</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">10</property>
+                        <property name="position">11</property>
                         <property name="name">total_work_hours</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">11</property>
+                        <property name="position">12</property>
                         <property name="name">travel_expenses</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">12</property>
+                        <property name="position">13</property>
                         <property name="name">tools_usage</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">13</property>
+                        <property name="position">14</property>
                         <property name="name">dirt_allowance</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">14</property>
+                        <property name="position">15</property>
                         <property name="name">reported_all_tasks</property>
                         <property name="dataType">integer</property>
                     </structure>
                     <structure>
-                        <property name="position">15</property>
+                        <property name="position">16</property>
                         <property name="name">material</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">16</property>
+                        <property name="position">17</property>
                         <property name="name">comments</property>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">17</property>
+                        <property name="position">18</property>
                         <property name="name">employee_signature</property>
                         <property name="dataType">decimal</property>
                     </structure>
                     <structure>
-                        <property name="position">18</property>
+                        <property name="position">19</property>
                         <property name="name">customer_signature</property>
                         <property name="dataType">decimal</property>
                     </structure>
@@ -465,108 +491,133 @@ ORDER BY tmr.start_time
                     <property name="name">task_report_id</property>
                     <property name="nativeName">task_report_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">task_date</property>
                     <property name="nativeName">task_date</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">91</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">project_name</property>
                     <property name="nativeName">project_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">project_full_name</property>
                     <property name="nativeName">project_full_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">partner_name</property>
                     <property name="nativeName">partner_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">customer_not_available</property>
-                    <property name="nativeName">customer_not_available</property>
-                    <property name="dataType">integer</property>
+                    <property name="name">customer_cost_center</property>
+                    <property name="nativeName">customer_cost_center</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
-                    <property name="name">location_name</property>
-                    <property name="nativeName">location_name</property>
-                    <property name="dataType">string</property>
+                    <property name="name">customer_not_available</property>
+                    <property name="nativeName">customer_not_available</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">employee_name</property>
-                    <property name="nativeName">employee_name</property>
+                    <property name="name">location_name</property>
+                    <property name="nativeName">location_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
-                    <property name="name">customer_name</property>
-                    <property name="nativeName">customer_name</property>
+                    <property name="name">employee_name</property>
+                    <property name="nativeName">employee_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
-                    <property name="name">total_work_hours</property>
-                    <property name="nativeName">total_work_hours</property>
-                    <property name="dataType">decimal</property>
+                    <property name="name">customer_name</property>
+                    <property name="nativeName">customer_name</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
-                    <property name="name">travel_expenses</property>
-                    <property name="nativeName">travel_expenses</property>
-                    <property name="dataType">integer</property>
+                    <property name="name">total_work_hours</property>
+                    <property name="nativeName">total_work_hours</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">2</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
-                    <property name="name">tools_usage</property>
-                    <property name="nativeName">tools_usage</property>
+                    <property name="name">travel_expenses</property>
+                    <property name="nativeName">travel_expenses</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
-                    <property name="name">dirt_allowance</property>
-                    <property name="nativeName">dirt_allowance</property>
+                    <property name="name">tools_usage</property>
+                    <property name="nativeName">tools_usage</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
-                    <property name="name">reported_all_tasks</property>
-                    <property name="nativeName">reported_all_tasks</property>
+                    <property name="name">dirt_allowance</property>
+                    <property name="nativeName">dirt_allowance</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">material</property>
-                    <property name="nativeName">material</property>
-                    <property name="dataType">string</property>
+                    <property name="name">reported_all_tasks</property>
+                    <property name="nativeName">reported_all_tasks</property>
+                    <property name="dataType">integer</property>
+                    <property name="nativeDataType">-7</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
-                    <property name="name">comments</property>
-                    <property name="nativeName">comments</property>
+                    <property name="name">material</property>
+                    <property name="nativeName">material</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
-                    <property name="name">employee_signature</property>
-                    <property name="nativeName">employee_signature</property>
-                    <property name="dataType">decimal</property>
+                    <property name="name">comments</property>
+                    <property name="nativeName">comments</property>
+                    <property name="dataType">string</property>
+                    <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
+                    <property name="name">employee_signature</property>
+                    <property name="nativeName">employee_signature</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
+                <structure>
+                    <property name="position">19</property>
                     <property name="name">customer_signature</property>
                     <property name="nativeName">customer_signature</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT
@@ -575,6 +626,7 @@ ORDER BY tmr.start_time
   p.name                             AS project_name,
   p.full_name						 AS project_full_name,
   partner.simple_full_name           AS partner_name,
+  partner.customer_cost_center       AS customer_cost_center,
   tr.customer_not_available          AS customer_not_available,
   addr.full_name                     AS location_name,
   emp.full_name						 AS employee_name,
@@ -587,15 +639,22 @@ ORDER BY tmr.start_time
   tr.material                        AS material,
   tr.comments                        AS comments,
   tr.employee_signature              AS employee_signature,
-  tr.customer_signature              AS customer_signature
+  tr.customer_signature              AS customer_signature,
+  
+    -- Using lo_get to fetch the actual binary data from the OID
+  lo_get(tr.employee_signature)      AS employee_signature_blob,
+  lo_get(tr.customer_signature)      AS customer_signature_blob
 
 FROM businessproject_task_report tr
 LEFT JOIN project_project p
        ON p.id = tr.project
+       
 LEFT JOIN base_partner partner
        ON partner.id = tr.customer
+       
 LEFT JOIN base_address addr
        ON addr.id = tr.location
+       
 LEFT JOIN auth_user emp
        ON emp.id = tr.employee
 WHERE tr.id = ?]]></xml-property>
@@ -818,63 +877,45 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 </cell>
             </row>
         </grid>
-        <grid id="200">
-            <property name="borderBottomStyle">none</property>
-            <property name="borderLeftStyle">none</property>
-            <property name="borderRightStyle">none</property>
-            <property name="borderTopStyle">none</property>
-            <property name="marginTop">2pt</property>
-            <property name="marginBottom">10pt</property>
-            <list-property name="boundDataColumns">
+        <text id="5897">
+            <property name="fontSize">12pt</property>
+            <property name="fontWeight">bold</property>
+            <property name="marginTop">5pt</property>
+            <property name="marginBottom">0pt</property>
+            <property name="dataSet">TranslationDS</property>
+            <list-property name="paramBindings">
                 <structure>
-                    <property name="name">Column Binding</property>
-                    <text-property name="displayName">project_name</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["project_name"]</expression>
-                    <property name="dataType">string</property>
-                    <property name="allowExport">true</property>
+                    <property name="paramName">param_1</property>
+                    <simple-property-list name="expression">
+                        <value type="javascript">'General information'</value>
+                    </simple-property-list>
                 </structure>
             </list-property>
-            <column id="201"/>
-            <column id="202"/>
-            <row id="203">
-                <cell id="204">
-                    <property name="diagonalStyle">none</property>
-                    <property name="antidiagonalStyle">none</property>
-                    <property name="borderBottomStyle">none</property>
-                    <property name="borderLeftStyle">none</property>
-                    <property name="borderRightStyle">none</property>
-                    <property name="borderTopStyle">none</property>
-                    <text id="5897">
-                        <property name="fontSize">12pt</property>
-                        <property name="fontWeight">bold</property>
-                        <property name="dataSet">TranslationDS</property>
-                        <list-property name="paramBindings">
-                            <structure>
-                                <property name="paramName">param_1</property>
-                                <simple-property-list name="expression">
-                                    <value type="javascript">'General information'</value>
-                                </simple-property-list>
-                            </structure>
-                        </list-property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">message_key</property>
-                                <text-property name="displayName">message_key</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
-                                <property name="name">translation</property>
-                                <text-property name="displayName">translation</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="contentType">html</property>
-                        <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
-                    </text>
-                </cell>
-                <cell id="205">
+            <list-property name="boundDataColumns">
+                <structure>
+                    <property name="name">message_key</property>
+                    <text-property name="displayName">message_key</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+                <structure>
+                    <property name="name">translation</property>
+                    <text-property name="displayName">translation</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                    <property name="dataType">string</property>
+                </structure>
+            </list-property>
+            <property name="contentType">html</property>
+            <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
+        </text>
+        <grid id="6051">
+            <property name="marginTop">0pt</property>
+            <property name="marginBottom">5pt</property>
+            <column id="6052"/>
+            <column id="6053"/>
+            <row id="6054">
+                <cell id="6055"/>
+                <cell id="6056">
                     <text id="5902">
                         <property name="fontWeight">bold</property>
                         <property name="dataSet">TranslationDS</property>
@@ -903,10 +944,22 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                         <property name="contentType">html</property>
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
+                    <data id="6030">
+                        <property name="dataSet">TaskReportSet</property>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">project_full_name</property>
+                                <text-property name="displayName">project_full_name</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["project_full_name"]</expression>
+                                <property name="dataType">string</property>
+                            </structure>
+                        </list-property>
+                        <property name="resultSetColumn">project_full_name</property>
+                    </data>
                 </cell>
             </row>
-            <row id="206">
-                <cell id="207">
+            <row id="6057">
+                <cell id="6058">
                     <text id="5903">
                         <property name="fontWeight">bold</property>
                         <property name="dataSet">TranslationDS</property>
@@ -948,19 +1001,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                         <property name="resultSetColumn">partner_name</property>
                     </data>
                 </cell>
-                <cell id="208">
-                    <data id="6030">
-                        <property name="dataSet">TaskReportSet</property>
-                        <list-property name="boundDataColumns">
-                            <structure>
-                                <property name="name">project_full_name</property>
-                                <text-property name="displayName">project_full_name</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["project_full_name"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                        </list-property>
-                        <property name="resultSetColumn">project_full_name</property>
-                    </data>
+                <cell id="6059">
                     <text id="5904">
                         <property name="fontWeight">bold</property>
                         <property name="dataSet">TranslationDS</property>
@@ -1004,6 +1045,63 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                         <property name="resultSetColumn">location_name</property>
                     </data>
                 </cell>
+            </row>
+            <row id="6060">
+                <cell id="6061">
+                    <grid id="6063">
+                        <column id="6064"/>
+                        <column id="6065"/>
+                        <row id="6066">
+                            <cell id="6067">
+                                <text id="6049">
+                                    <property name="fontWeight">bold</property>
+                                    <property name="dataSet">TranslationDS</property>
+                                    <list-property name="paramBindings">
+                                        <structure>
+                                            <property name="paramName">param_1</property>
+                                            <simple-property-list name="expression">
+                                                <value type="javascript">'Customer cost center'</value>
+                                            </simple-property-list>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">message_key</property>
+                                            <text-property name="displayName">message_key</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["message_key"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">translation</property>
+                                            <text-property name="displayName">translation</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["translation"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="contentType">html</property>
+                                    <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
+                                </text>
+                            </cell>
+                            <cell id="6068">
+                                <data id="6050">
+                                    <property name="fontSize">12pt</property>
+                                    <property name="fontWeight">bold</property>
+                                    <property name="dataSet">TaskReportSet</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">customer_cost_center</property>
+                                            <text-property name="displayName">customer_cost_center</text-property>
+                                            <expression name="expression" type="javascript">dataSetRow["customer_cost_center"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                    </list-property>
+                                    <property name="resultSetColumn">customer_cost_center</property>
+                                </data>
+                            </cell>
+                        </row>
+                    </grid>
+                </cell>
+                <cell id="6062"/>
             </row>
         </grid>
         <grid id="374">
@@ -1228,14 +1326,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="borderTopStyle">solid</property>
                                                 <property name="borderTopWidth">thin</property>
-                                                <text id="5928">
+                                                <text id="5929">
                                                     <property name="fontSize">12pt</property>
                                                     <property name="dataSet">TranslationDS</property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'Start Time'</value>
+                                                                <value type="javascript">'Task categories'</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -1266,14 +1364,14 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="borderTopStyle">solid</property>
                                                 <property name="borderTopWidth">thin</property>
-                                                <text id="5929">
+                                                <text id="5928">
                                                     <property name="fontSize">12pt</property>
                                                     <property name="dataSet">TranslationDS</property>
                                                     <list-property name="paramBindings">
                                                         <structure>
                                                             <property name="paramName">param_1</property>
                                                             <simple-property-list name="expression">
-                                                                <value type="javascript">'Total working Time (H)'</value>
+                                                                <value type="javascript">'Start Time'</value>
                                                             </simple-property-list>
                                                         </structure>
                                                     </list-property>
@@ -1455,7 +1553,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                                                 <property name="borderRightWidth">thin</property>
                                                 <property name="borderTopStyle">solid</property>
                                                 <property name="borderTopWidth">thin</property>
-                                                <data id="409">
+                                                <data id="6033">
                                                     <property name="resultSetColumn">task_category</property>
                                                 </data>
                                             </cell>
@@ -1761,7 +1859,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                                 <property name="borderTopStyle">none</property>
                                 <text-data id="316">
                                     <property name="fontWeight">normal</property>
-                                    <expression name="valueExpr">row["travel_expenses"] == true ? "Reisekosten √" : ""</expression>
+                                    <expression name="valueExpr">row["travel_expenses"] == true ? "Fahrtkosten √" : ""</expression>
                                     <property name="contentType">html</property>
                                 </text-data>
                             </cell>
@@ -1774,7 +1872,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                                 <property name="borderTopStyle">none</property>
                                 <text-data id="490">
                                     <property name="fontWeight">normal</property>
-                                    <expression name="valueExpr">row["tools_usage"] == true ? "Werkzeugnutzung √" : ""</expression>
+                                    <expression name="valueExpr">row["tools_usage"] == true ? "Werkzeug √" : ""</expression>
                                     <property name="contentType">html</property>
                                 </text-data>
                             </cell>
@@ -2276,17 +2374,17 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                         </row>
                     </grid>
                     <grid id="5978">
-                        <property name="height">0.8194444444444444in</property>
+                        <property name="height">1.1979166666666667in</property>
                         <column id="5979"/>
                         <column id="5980"/>
                         <row id="5984">
-                            <property name="height">0.8194444444444444in</property>
+                            <property name="height">1.1979166666666667in</property>
                             <cell id="5985">
                                 <text id="5989">
                                     <property name="fontSize">10pt</property>
                                     <property name="fontWeight">bold</property>
                                     <property name="paddingTop">2pt</property>
-                                    <property name="paddingBottom">50pt</property>
+                                    <property name="paddingBottom">2pt</property>
                                     <property name="dataSet">TranslationDS</property>
                                     <list-property name="paramBindings">
                                         <structure>
@@ -2313,13 +2411,141 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                 </text>
+                                <image id="6069">
+                                    <property name="display">inline</property>
+                                    <property name="height">0.8020833333333334in</property>
+                                    <property name="width">89px</property>
+                                    <property name="dataSet">TaskReportSet</property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">task_report_id</property>
+                                            <expression name="expression" type="javascript">dataSetRow["task_report_id"]</expression>
+                                            <property name="dataType">decimal</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">task_date</property>
+                                            <expression name="expression" type="javascript">dataSetRow["task_date"]</expression>
+                                            <property name="dataType">date</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">project_name</property>
+                                            <expression name="expression" type="javascript">dataSetRow["project_name"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">project_full_name</property>
+                                            <expression name="expression" type="javascript">dataSetRow["project_full_name"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">partner_name</property>
+                                            <expression name="expression" type="javascript">dataSetRow["partner_name"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">customer_not_available</property>
+                                            <expression name="expression" type="javascript">dataSetRow["customer_not_available"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">location_name</property>
+                                            <expression name="expression" type="javascript">dataSetRow["location_name"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">employee_name</property>
+                                            <expression name="expression" type="javascript">dataSetRow["employee_name"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">customer_name</property>
+                                            <expression name="expression" type="javascript">dataSetRow["customer_name"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">total_work_hours</property>
+                                            <expression name="expression" type="javascript">dataSetRow["total_work_hours"]</expression>
+                                            <property name="dataType">decimal</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">travel_expenses</property>
+                                            <expression name="expression" type="javascript">dataSetRow["travel_expenses"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">tools_usage</property>
+                                            <expression name="expression" type="javascript">dataSetRow["tools_usage"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">dirt_allowance</property>
+                                            <expression name="expression" type="javascript">dataSetRow["dirt_allowance"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">reported_all_tasks</property>
+                                            <expression name="expression" type="javascript">dataSetRow["reported_all_tasks"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">material</property>
+                                            <expression name="expression" type="javascript">dataSetRow["material"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">comments</property>
+                                            <expression name="expression" type="javascript">dataSetRow["comments"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">employee_signature_blob</property>
+                                            <expression name="expression" type="javascript">dataSetRow["employee_signature_blob"]</expression>
+                                            <property name="dataType">blob</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">customer_signature_blob</property>
+                                            <expression name="expression" type="javascript">dataSetRow["customer_signature_blob"]</expression>
+                                            <property name="dataType">blob</property>
+                                        </structure>
+                                    </list-property>
+                                    <structure name="toc"/>
+                                    <method name="onCreate"><![CDATA[java.lang.System.out.println("Start- BIRT Template employee signature decoding logs");
+
+try {
+    var blobData = row["employee_signature_blob"];
+    
+    if (blobData != null) {
+        var wrappedString = new java.lang.String(blobData, "UTF-8");
+        
+        var base64Only = wrappedString;
+        if (base64Only.contains(",")) {
+
+            base64Only = base64Only.substring(base64Only.indexOf(",") + 1);
+        }
+        
+        base64Only = base64Only.replaceAll("\\s", "");
+        
+        this.data = java.util.Base64.getDecoder().decode(base64Only);
+        
+        java.lang.System.out.println("LOG From BIRT Template: Successfully decoded. Byte length: " + this.data.length);
+    }
+} catch (e) {
+    java.lang.System.out.println("LOG From BIRT Template: Conversion failed:) " + e);
+    this.data = null;
+}
+
+java.lang.System.out.println("End- BIRT Template employee signature decoding logs");
+]]></method>
+                                    <property name="source">expr</property>
+                                    <expression name="valueExpr">row["employee_signature_blob"]</expression>
+                                </image>
                             </cell>
                             <cell id="5986">
                                 <text id="5990">
                                     <property name="fontSize">10pt</property>
                                     <property name="fontWeight">bold</property>
                                     <property name="paddingTop">2pt</property>
-                                    <property name="paddingBottom">50pt</property>
+                                    <property name="paddingBottom">2pt</property>
                                     <property name="dataSet">TranslationDS</property>
                                     <list-property name="visibility">
                                         <structure>
@@ -2352,6 +2578,139 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                                     <property name="contentType">html</property>
                                     <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF>]]></text-property>
                                 </text>
+                                <image id="6070">
+                                    <property name="height">0.7708333333333334in</property>
+                                    <property name="width">85px</property>
+                                    <property name="dataSet">TaskReportSet</property>
+                                    <list-property name="visibility">
+                                        <structure>
+                                            <property name="format">all</property>
+                                            <expression name="valueExpr" type="javascript">row["customer_not_available"] == true</expression>
+                                        </structure>
+                                    </list-property>
+                                    <list-property name="boundDataColumns">
+                                        <structure>
+                                            <property name="name">task_report_id</property>
+                                            <expression name="expression" type="javascript">dataSetRow["task_report_id"]</expression>
+                                            <property name="dataType">decimal</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">task_date</property>
+                                            <expression name="expression" type="javascript">dataSetRow["task_date"]</expression>
+                                            <property name="dataType">date</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">project_name</property>
+                                            <expression name="expression" type="javascript">dataSetRow["project_name"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">project_full_name</property>
+                                            <expression name="expression" type="javascript">dataSetRow["project_full_name"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">partner_name</property>
+                                            <expression name="expression" type="javascript">dataSetRow["partner_name"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">customer_not_available</property>
+                                            <expression name="expression" type="javascript">dataSetRow["customer_not_available"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">location_name</property>
+                                            <expression name="expression" type="javascript">dataSetRow["location_name"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">employee_name</property>
+                                            <expression name="expression" type="javascript">dataSetRow["employee_name"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">customer_name</property>
+                                            <expression name="expression" type="javascript">dataSetRow["customer_name"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">total_work_hours</property>
+                                            <expression name="expression" type="javascript">dataSetRow["total_work_hours"]</expression>
+                                            <property name="dataType">decimal</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">travel_expenses</property>
+                                            <expression name="expression" type="javascript">dataSetRow["travel_expenses"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">tools_usage</property>
+                                            <expression name="expression" type="javascript">dataSetRow["tools_usage"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">dirt_allowance</property>
+                                            <expression name="expression" type="javascript">dataSetRow["dirt_allowance"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">reported_all_tasks</property>
+                                            <expression name="expression" type="javascript">dataSetRow["reported_all_tasks"]</expression>
+                                            <property name="dataType">integer</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">material</property>
+                                            <expression name="expression" type="javascript">dataSetRow["material"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">comments</property>
+                                            <expression name="expression" type="javascript">dataSetRow["comments"]</expression>
+                                            <property name="dataType">string</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">employee_signature_blob</property>
+                                            <expression name="expression" type="javascript">dataSetRow["employee_signature_blob"]</expression>
+                                            <property name="dataType">blob</property>
+                                        </structure>
+                                        <structure>
+                                            <property name="name">customer_signature_blob</property>
+                                            <expression name="expression" type="javascript">dataSetRow["customer_signature_blob"]</expression>
+                                            <property name="dataType">blob</property>
+                                        </structure>
+                                    </list-property>
+                                    <structure name="toc"/>
+                                    <method name="onCreate"><![CDATA[java.lang.System.out.println("Start- BIRT Template customer signature decoding logs");
+
+try {
+    var blobData = row["customer_signature_blob"];
+    
+    if (blobData != null) {
+        var wrappedString = new java.lang.String(blobData, "UTF-8");
+        
+        var base64Only = wrappedString;
+        if (base64Only.contains(",")) {
+
+            base64Only = base64Only.substring(base64Only.indexOf(",") + 1);
+        }
+        
+        base64Only = base64Only.replaceAll("\\s", "");
+        
+        this.data = java.util.Base64.getDecoder().decode(base64Only);
+        
+        java.lang.System.out.println("LOG From BIRT Template: Successfully decoded. Byte length: " + this.data.length);
+    }
+} catch (e) {
+    java.lang.System.out.println("LOG From BIRT Template: Conversion failed:) " + e);
+    this.data = null;
+}
+
+java.lang.System.out.println("End- BIRT Template customer signature decoding logs");
+]]></method>
+                                    <property name="source">expr</property>
+                                    <expression name="valueExpr">row["customer_signature_blob"]</expression>
+                                </image>
                             </cell>
                         </row>
                     </grid>

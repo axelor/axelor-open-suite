@@ -206,8 +206,7 @@
           canSearch="true"/>
       </panel>
       <!-- MGM-66 task reports -->
-      <panel title="Task Report" name="taskReportsPanel"
-        if="__user__.group.code == 'CUSTOM-PT'">
+      <panel title="Task Report" name="taskReportsPanel">
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
           action="action-task-report-dashlet" colSpan="12" canNew="true" x-show-bars="true"
           reload-dotted="true"/>

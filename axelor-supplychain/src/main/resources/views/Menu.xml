@@ -87,7 +87,7 @@
 
   <menuitem name="invoice-root-subscription-invoice" parent="invoice-root"
     title="Subscription invoices to validate" action="invoice.root.subscription.invoice" order="900"
-    hidden="true"/>
+    hidden="false"/>
 
   <action-view name="invoice.root.subscription.invoice"
     title="Subscription invoices to validate" model="com.axelor.apps.account.db.Invoice">

@@ -169,8 +169,7 @@
       <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
         <editor x-show-titles="false">
           <panel name="seq" colSpan="3">
-            <field name="code" showTitle="true" colSpan="12" readonly="true"
-              placeholder="Auftragsnummer"
+            <field name="code" showTitle="true" colSpan="12" placeholder="Auftragsnummer"
               if="__config__.app.getApp('project')?.generateProjectSequence"
               css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
             <field name="code" showTitle="true" placeholder="Auftragsnummer" colSpan="12"
