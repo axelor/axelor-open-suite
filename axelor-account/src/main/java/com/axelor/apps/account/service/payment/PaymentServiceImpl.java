@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PayVoucherElementToPay;
 import com.axelor.apps.account.db.PaymentScheduleLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.invoice.AdvancePaymentMoveLineCreateService;
@@ -39,6 +40,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
+import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
@@ -75,6 +77,7 @@ public class PaymentServiceImpl implements PaymentService {
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService;
+  protected MoveLineRepository moveLineRepository;
 
   @Inject
   public PaymentServiceImpl(
@@ -85,7 +88,8 @@ public class PaymentServiceImpl implements PaymentService {
       CurrencyService currencyService,
       MoveInvoiceTermService moveInvoiceTermService,
       InvoicePaymentRepository invoicePaymentRepository,
-      AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService) {
+      AdvancePaymentMoveLineCreateService advancePaymentMoveLineCreateService,
+      MoveLineRepository moveLineRepository) {
 
     this.reconcileService = reconcileService;
     this.moveLineCreateService = moveLineCreateService;
@@ -95,6 +99,7 @@ public class PaymentServiceImpl implements PaymentService {
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.advancePaymentMoveLineCreateService = advancePaymentMoveLineCreateService;
+    this.moveLineRepository = moveLineRepository;
   }
 
   /**
@@ -176,10 +181,15 @@ public class PaymentServiceImpl implements PaymentService {
       debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
     }
 
+    int i = 0;
+
     for (MoveLine creditMoveLine : creditMoveLines) {
+      creditMoveLine = moveLineRepository.find(creditMoveLine.getId());
       for (MoveLine debitMoveLine : debitMoveLines) {
+        debitMoveLine = moveLineRepository.find(debitMoveLine.getId());
         if (creditMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
             && debitMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
+          i++;
           try {
             createReconcile(
                 debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
@@ -190,6 +200,10 @@ public class PaymentServiceImpl implements PaymentService {
               errorNumber++;
             } else {
               throw e;
+            }
+          } finally {
+            if (i % 2 == 0) { // AbstractBatch.FETCH_LIMIT == 0) {
+              JPA.clear();
             }
           }
         }
@@ -420,20 +434,26 @@ public class PaymentServiceImpl implements PaymentService {
     int i = creditMoveLines.size();
 
     if (i != 0) {
+      int offset = 0;
       Query q =
           JPA.em()
               .createQuery(
                   "select new map(ml.account, SUM(ml.amountRemaining)) FROM MoveLine as ml "
-                      + "WHERE ml in ?1 group by ml.account");
+                      + "WHERE ml in ?1 group by ml.account order by ml.account.id");
       q.setParameter(1, creditMoveLines);
 
       List<Map<Account, BigDecimal>> allMap = new ArrayList<Map<Account, BigDecimal>>();
       allMap = q.getResultList();
-      for (Map<Account, BigDecimal> map : allMap) {
-        Account accountMap = (Account) map.values().toArray()[0];
-        BigDecimal amountMap = (BigDecimal) map.values().toArray()[1];
-        BigDecimal amountDebit = amountMap.abs().min(remainingPaidAmount2);
-        if (amountDebit.compareTo(BigDecimal.ZERO) > 0) {
+      while (!(allMap = getResultListByLimitAndOffset(q, offset)).isEmpty()) {
+        for (Map<Account, BigDecimal> map : allMap) {
+          offset++;
+
+          Account accountMap = (Account) map.values().toArray()[0];
+          BigDecimal amountMap = (BigDecimal) map.values().toArray()[1];
+          BigDecimal amountDebit = amountMap.abs().min(remainingPaidAmount2);
+          if (amountDebit.compareTo(BigDecimal.ZERO) <= 0) {
+            continue;
+          }
           BigDecimal currencyRate;
 
           Optional<MoveLine> optionalMoveLine =
@@ -606,5 +626,11 @@ public class PaymentServiceImpl implements PaymentService {
       }
     }
     return false;
+  }
+
+  protected List<Map<Account, BigDecimal>> getResultListByLimitAndOffset(Query q, int offset) {
+    q.setFirstResult(offset);
+    q.setMaxResults(AbstractBatch.FETCH_LIMIT);
+    return q.getResultList();
   }
 }

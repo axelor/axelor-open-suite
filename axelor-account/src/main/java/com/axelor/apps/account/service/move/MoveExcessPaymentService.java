@@ -45,16 +45,19 @@ public class MoveExcessPaymentService {
   protected MoveLineRepository moveLineRepository;
   protected MoveToolService moveToolService;
   protected MoveLineToolService moveLineToolService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public MoveExcessPaymentService(
       MoveLineRepository moveLineRepository,
       MoveToolService moveToolService,
-      MoveLineToolService moveLineToolService) {
+      MoveLineToolService moveLineToolService,
+      AccountConfigService accountConfigService) {
 
     this.moveLineRepository = moveLineRepository;
     this.moveToolService = moveToolService;
     this.moveLineToolService = moveLineToolService;
+    this.accountConfigService = accountConfigService;
   }
 
   /**
@@ -66,7 +69,7 @@ public class MoveExcessPaymentService {
    */
   public List<MoveLine> getExcessPayment(Invoice invoice) throws AxelorException {
     Company company = invoice.getCompany();
-    AccountConfig accountConfig = Beans.get(AccountConfigService.class).getAccountConfig(company);
+    AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
     // get advance payments
     List<MoveLine> advancePaymentMoveLines =
@@ -80,7 +83,12 @@ public class MoveExcessPaymentService {
 
     if (accountConfig.getAutoReconcileOnInvoice()) {
       List<MoveLine> creditMoveLines =
-          moveLineToolService.getMoveExcessDueList(true, company, invoice.getPartner(), invoice);
+          moveLineToolService.getMoveExcessDueList(
+              true,
+              company,
+              invoice.getPartner(),
+              invoice,
+              accountConfigService.getMaxMoveLineOnAutoReconcile(accountConfig));
 
       log.debug("Number of overpayment to attribute to the invoice : {}", creditMoveLines.size());
       advancePaymentMoveLines.addAll(creditMoveLines);

@@ -782,4 +782,12 @@ public class AccountConfigService {
 
     return account;
   }
+
+  public Integer getMaxMoveLineOnAutoReconcile(AccountConfig accountConfig) throws AxelorException {
+    if (accountConfig == null || !accountConfig.getAutoReconcileOnInvoice()) {
+      return 0;
+    }
+
+    return accountConfig.getMaxMoveLineOnAutoReconcile();
+  }
 }
