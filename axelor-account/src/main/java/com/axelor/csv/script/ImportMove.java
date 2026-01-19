@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,8 +38,8 @@ import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -79,7 +79,7 @@ public class ImportMove {
                 .getTodayDateTime(company)
                 .format(DateTimeFormatter.ofPattern("yyyyMMddHH:mm:ss"));
       }
-      String importReference = String.format("#%s-%s", csvReference, lastImportDate);
+      String importReference = String.format("#%s@%s", csvReference, lastImportDate);
 
       if (values.get("EcritureDate") != null) {
         moveLine.setDate(parseDate(values.get("EcritureDate").toString()));

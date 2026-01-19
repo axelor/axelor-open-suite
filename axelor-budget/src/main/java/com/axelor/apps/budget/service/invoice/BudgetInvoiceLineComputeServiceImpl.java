@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,16 +39,18 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.compute.BudgetDistributionComputeService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineSupplychainService {
 
   protected BudgetToolsService budgetToolsService;
   protected AppBudgetService appBudgetService;
+  protected BudgetDistributionComputeService budgetDistributionComputeService;
 
   @Inject
   public BudgetInvoiceLineComputeServiceImpl(
@@ -71,7 +73,8 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineSupplychainS
       InvoiceLineCheckService invoiceLineCheckService,
       InvoiceLineSupplierCatalogService invoiceLineSupplierCatalogService,
       BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetDistributionComputeService budgetDistributionComputeService) {
     super(
         currencyService,
         priceListService,
@@ -93,6 +96,7 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineSupplychainS
         invoiceLineSupplierCatalogService);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
+    this.budgetDistributionComputeService = budgetDistributionComputeService;
   }
 
   @Override
@@ -101,11 +105,15 @@ public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineSupplychainS
     Map<String, Object> invoiceLineMap = super.compute(invoice, invoiceLine);
 
     if (appBudgetService.isApp("budget")) {
+      budgetDistributionComputeService.updateMonoBudgetAmounts(
+          invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal());
+
       invoiceLine.setBudgetRemainingAmountToAllocate(
           budgetToolsService.getBudgetRemainingAmountToAllocate(
               invoiceLine.getBudgetDistributionList(), invoiceLine.getCompanyExTaxTotal()));
       invoiceLineMap.put(
           "budgetRemainingAmountToAllocate", invoiceLine.getBudgetRemainingAmountToAllocate());
+      invoiceLineMap.put("budgetDistributionList", invoiceLine.getBudgetDistributionList());
     }
 
     return invoiceLineMap;

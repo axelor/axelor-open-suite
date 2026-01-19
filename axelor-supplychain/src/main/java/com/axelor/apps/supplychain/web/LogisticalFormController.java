@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,9 +19,11 @@
 package com.axelor.apps.supplychain.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.repo.LogisticalFormRepository;
-import com.axelor.apps.supplychain.service.packaging.PackagingStockMoveLineService;
+import com.axelor.apps.supplychain.service.LogisticalFormStockMoveService;
+import com.axelor.apps.supplychain.service.LogisticalFormSupplychainService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -40,7 +42,7 @@ public class LogisticalFormController {
       savedLogisticalForm = Beans.get(LogisticalFormRepository.class).find(logisticalForm.getId());
     }
     String error =
-        Beans.get(PackagingStockMoveLineService.class)
+        Beans.get(LogisticalFormStockMoveService.class)
             .validateAndUpdateStockMoveList(savedLogisticalForm, logisticalForm);
     if (!error.isEmpty()) {
       response.setError(error);
@@ -51,6 +53,17 @@ public class LogisticalFormController {
       response.setValue("packagingList", logisticalForm.getPackagingList());
     } else {
       response.setValue("packagingList", savedLogisticalForm.getPackagingList());
+    }
+  }
+
+  public void processCollected(ActionRequest request, ActionResponse response) {
+    try {
+      LogisticalForm logisticalForm = request.getContext().asType(LogisticalForm.class);
+      logisticalForm = Beans.get(LogisticalFormRepository.class).find(logisticalForm.getId());
+      Beans.get(LogisticalFormSupplychainService.class).processCollected(logisticalForm);
+      response.setReload(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 }

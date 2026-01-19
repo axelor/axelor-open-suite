@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,8 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.repo.PackagingRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
-import com.axelor.apps.supplychain.service.packaging.PackagingLineService;
+import com.axelor.apps.supplychain.service.packaging.PackagingLineCreationService;
+import com.axelor.apps.supplychain.service.packaging.PackagingMassService;
 import com.axelor.apps.supplychain.service.packaging.PackagingService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -93,7 +94,9 @@ public class PackagingController {
         return;
       }
       Packaging packaging = Beans.get(PackagingRepository.class).find(packagingId);
-      Beans.get(PackagingLineService.class).addPackagingLines(packaging, selectedStockMoveLineList);
+      Beans.get(PackagingLineCreationService.class)
+          .addPackagingLines(packaging, selectedStockMoveLineList);
+      Beans.get(PackagingMassService.class).updatePackagingMass(packaging);
       response.setCanClose(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

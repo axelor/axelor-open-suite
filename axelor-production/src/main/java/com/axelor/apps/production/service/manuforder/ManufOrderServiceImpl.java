@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -74,8 +74,8 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -1125,6 +1125,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
+  @Transactional
   public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
       throws AxelorException {
     List<Long> ids = new ArrayList<>();
@@ -1268,6 +1269,17 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       Product product = billOfMaterialLine.getProduct();
       BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
       BigDecimal qtyNeeded = billOfMaterialLine.getQty();
+      Unit bomLineUnit = billOfMaterialLine.getUnit();
+      Unit productUnit = product.getUnit();
+      if (productUnit != null && bomLineUnit != null && !bomLineUnit.equals(productUnit)) {
+        availableQty =
+            unitConversionService.convert(
+                productUnit,
+                bomLineUnit,
+                availableQty,
+                appBaseService.getNbDecimalDigitForQty(),
+                product);
+      }
       if (availableQty.compareTo(BigDecimal.ZERO) >= 0
           && qtyNeeded.compareTo(BigDecimal.ZERO) > 0) {
         BigDecimal qtyToUse = availableQty.divideToIntegralValue(qtyNeeded);

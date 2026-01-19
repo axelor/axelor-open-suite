@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,7 +42,7 @@ public class CallTenderSupplierController {
       if (callTender.getCompany() != null) {
         var domain =
             String.format(
-                "self.isSupplier IS true and %s MEMBER OF self.companySet",
+                "self.isSupplier IS true and %s IN (SELECT c.id FROM self.companySet c)",
                 callTender.getCompany().getId());
         response.setAttr("supplierPartner", "domain", domain);
       } else {

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.expense;
 
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
@@ -41,8 +42,8 @@ import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -60,6 +61,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
   protected ExpenseProofFileService expenseProofFileService;
   protected ExpenseLineToolService expenseLineToolService;
   protected EmployeeFetchService employeeFetchService;
+  protected ExpenseAnalyticService expenseAnalyticService;
+  protected AppAccountService appAccountService;
 
   @Inject
   public ExpenseLineCreateServiceImpl(
@@ -70,7 +73,9 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
       AppBaseService appBaseService,
       ExpenseProofFileService expenseProofFileService,
       ExpenseLineToolService expenseLineToolService,
-      EmployeeFetchService employeeFetchService) {
+      EmployeeFetchService employeeFetchService,
+      ExpenseAnalyticService expenseAnalyticService,
+      AppAccountService appAccountService) {
     this.expenseLineRepository = expenseLineRepository;
     this.appHumanResourceService = appHumanResourceService;
     this.kilometricService = kilometricService;
@@ -79,6 +84,8 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     this.expenseProofFileService = expenseProofFileService;
     this.expenseLineToolService = expenseLineToolService;
     this.employeeFetchService = employeeFetchService;
+    this.expenseAnalyticService = expenseAnalyticService;
+    this.appAccountService = appAccountService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -223,6 +230,12 @@ public class ExpenseLineCreateServiceImpl implements ExpenseLineCreateService {
     expenseLine.setComments(comments);
     expenseLine.setTotalAmount(BigDecimal.ZERO);
     expenseLine.setProjectTask(projectTask);
+    if (appAccountService.isApp("account")
+        && appAccountService.getAppAccount().getManageAnalyticAccounting()) {
+      expenseLine.setAnalyticDistributionTemplate(employee.getAnalyticDistributionTemplate());
+      expenseAnalyticService.createAnalyticDistributionWithTemplate(expenseLine);
+    }
+
     return expenseLine;
   }
 

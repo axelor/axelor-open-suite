@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -460,4 +460,25 @@ public final class SupplychainExceptionMessage {
 
   public static final String STOCK_MOVE_REMOVAL_NOT_ALLOWED = /*$$(*/
       "This stock move cannot be removed from the logisticsal form, as it shares one of its packaging %s with another stock move." /*)*/;
+
+  public static final String LOGISTICAL_FORM_COLLECT_WRONG_STATUS = /*$$(*/
+      "Can only be collected if validated." /*)*/;
+
+  public static final String STOCK_MOVE_NOT_FULLY_PACKAGED = /*$$(*/
+      "One or several stock move lines are not fully packaged." /*)*/;
+
+  public static final String SALE_ORDER_LINE_LINKED_WITH_PACKAGING_LINE = /*$$(*/
+      "This sale order line is linked to a packaging line, please remove it first from the sale order's packaging." /*)*/;
+
+  public static final String PACKAGING_PARENT_ERROR = /*$$(*/
+      "Logistical form or parent packaging must be provided." /*)*/;
+
+  public static final String LOGISTICAL_FORM_STOCK_MOVE_NOT_VALID = /*$$(*/
+      "This stock move is not valid for this logistical form." /*)*/;
+
+  public static final String LOGISTICAL_FORM_STOCK_LOCATION_MUST_BE_USABLE_ON_SO = /*$$(*/
+      "The stock location must be usable on sale order." /*)*/;
+
+  public static final String PACKAGING_LINE_STOCK_MOVE_LINE_NOT_VALID = /*$$(*/
+      "This stock move line can not be chosen." /*)*/;
 }

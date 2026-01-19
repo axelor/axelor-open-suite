@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -48,8 +48,9 @@ import com.axelor.message.db.EmailAddress;
 import com.axelor.utils.helpers.ComputeNameHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -61,7 +62,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -217,7 +217,7 @@ public class PartnerServiceImpl implements PartnerService {
     } else if (address == null) {
       partner.removePartnerAddressListItem(
           JPA.all(PartnerAddress.class)
-              .filter("self.partner = :partnerId AND self.isDefaultAddr = 't'")
+              .filter("self.partner.id = :partnerId AND self.isDefaultAddr = true")
               .bind("partnerId", partner.getId())
               .fetchOne());
 
@@ -305,21 +305,27 @@ public class PartnerServiceImpl implements PartnerService {
     name = name == null ? "" : name;
     urlMap.put(
         "google",
-        "<a class='fa fa-google' href='https://www.google.com/search?q="
+        "<a href='https://www.google.com/search?q="
             + name
             + "&gws_rd=cr"
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/google.svg'/>"
+            + "</a>");
     urlMap.put(
         "linkedin",
-        "<a class='fa fa-linkedin' href='https://www.linkedin.com/company/"
+        "<a href='https://www.linkedin.com/company/"
             + name
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/linkedin.svg'/>"
+            + "</a>");
     if (typeSelect == 2) {
       urlMap.put(
           "linkedin",
-          "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
+          "<a href='http://www.linkedin.com/pub/dir/"
               + name.replace("+", "/")
-              + "' target='_blank' />");
+              + "' target='_blank' >"
+              + "<img src='img/social/linkedin.svg'/>"
+              + "</a>");
     }
 
     return urlMap;
@@ -659,7 +665,8 @@ public class PartnerServiceImpl implements PartnerService {
     return parentPartnerList;
   }
 
-  protected List<Partner> getFilteredPartners(Partner partner) {
+  @Override
+  public List<Partner> getFilteredPartners(Partner partner) {
     List<Long> companySet =
         ObjectUtils.notEmpty(partner.getCompanySet())
             ? partner.getCompanySet().stream().map(Company::getId).collect(Collectors.toList())
@@ -671,6 +678,21 @@ public class PartnerServiceImpl implements PartnerService {
                 + "AND self.partnerTypeSelect = :partnerType "
                 + "AND self in (SELECT p FROM Partner p join p.companySet c where c.id in :companySet) ")
         .bind("partnerType", PartnerRepository.PARTNER_TYPE_COMPANY)
+        .bind("companySet", companySet)
+        .fetch();
+  }
+
+  @Override
+  public List<Partner> getContactFilteredPartners(Partner partner) {
+    List<Long> companySet =
+        ObjectUtils.notEmpty(partner.getCompanySet())
+            ? partner.getCompanySet().stream().map(Company::getId).collect(Collectors.toList())
+            : List.of(0l);
+    return partnerRepo
+        .all()
+        .filter(
+            "self.isContact = true "
+                + "AND self in (SELECT p FROM Partner p join p.companySet c where c.id in :companySet) ")
         .bind("companySet", companySet)
         .fetch();
   }

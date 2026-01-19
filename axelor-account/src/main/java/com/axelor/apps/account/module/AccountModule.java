@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -77,6 +77,8 @@ import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseManagementRepository;
 import com.axelor.apps.account.db.repo.SubrogationReleaseRepository;
 import com.axelor.apps.account.service.*;
+import com.axelor.apps.account.service.AccountManagementAttrsService;
+import com.axelor.apps.account.service.AccountManagementAttrsServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationAttrsService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationAttrsServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationCheckService;
@@ -298,6 +300,8 @@ import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigServiceImpl;
 import com.axelor.apps.account.service.move.MovePfpService;
 import com.axelor.apps.account.service.move.MovePfpServiceImpl;
+import com.axelor.apps.account.service.move.MovePfpToolService;
+import com.axelor.apps.account.service.move.MovePfpToolServiceImpl;
 import com.axelor.apps.account.service.move.MovePfpValidateService;
 import com.axelor.apps.account.service.move.MovePfpValidateServiceImpl;
 import com.axelor.apps.account.service.move.MoveRemoveService;
@@ -390,6 +394,8 @@ import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.PaymentModeServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentService;
 import com.axelor.apps.account.service.payment.PaymentServiceImpl;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentAlertService;
+import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentAlertServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentComputeService;
@@ -479,6 +485,8 @@ public class AccountModule extends AxelorModule {
   @Override
   protected void configure() {
     bind(AddressServiceAccountImpl.class);
+
+    bind(AccountManagementAttrsService.class).to(AccountManagementAttrsServiceImpl.class);
 
     bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
 
@@ -1019,7 +1027,9 @@ public class AccountModule extends AxelorModule {
     bind(BankDetailsServiceAccount.class).to(BankDetailsServiceAccountImpl.class);
 
     bind(AnalyticMoveLineParentService.class).to(AnalyticMoveLineParentServiceImpl.class);
-
     bind(PaymentScheduleRepository.class).to(PaymentScheduleAccountRepository.class);
+    bind(InvoicePaymentAlertService.class).to(InvoicePaymentAlertServiceImpl.class);
+
+    bind(MovePfpToolService.class).to(MovePfpToolServiceImpl.class);
   }
 }

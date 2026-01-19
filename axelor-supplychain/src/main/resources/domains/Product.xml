@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -20,6 +20,8 @@
       selection="base.product.packaging.group.select" default="1"/>
     <boolean name="limitedQty" title="Limited qty"/>
     <boolean name="isReturnable" title="Returnable"/>
+    <string name="labelNumber" title="Label number"/>
+    <string name="hazardNumber" title="Hazard number"/>
 
     <extra-code>
     	<![CDATA[

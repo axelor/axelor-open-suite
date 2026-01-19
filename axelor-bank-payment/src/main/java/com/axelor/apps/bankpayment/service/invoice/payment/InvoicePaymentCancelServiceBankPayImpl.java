@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,10 +19,12 @@
 package com.axelor.apps.bankpayment.service.invoice.payment;
 
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.move.MoveCancelService;
+import com.axelor.apps.account.service.move.MoveReverseService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelServiceImpl;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
 import com.axelor.apps.account.service.reconcile.ReconcileToolService;
@@ -34,9 +36,10 @@ import com.axelor.apps.bankpayment.service.bankorder.BankOrderCancelService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,6 +59,7 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
       InvoiceTermService invoiceTermService,
       ReconcileToolService reconcileToolService,
       UnreconcileService unreconcileService,
+      MoveReverseService moveReverseService,
       BankOrderCancelService bankOrderCancelService,
       AppBankPaymentService appBankPaymentService) {
     super(
@@ -64,7 +68,8 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
         invoicePaymentToolService,
         invoiceTermService,
         reconcileToolService,
-        unreconcileService);
+        unreconcileService,
+        moveReverseService);
     this.bankOrderCancelService = bankOrderCancelService;
     this.appBankPaymentService = appBankPaymentService;
   }
@@ -122,5 +127,13 @@ public class InvoicePaymentCancelServiceBankPayImpl extends InvoicePaymentCancel
   protected void removeAllLinks(InvoicePayment invoicePayment) {
     super.removeAllLinks(invoicePayment);
     invoicePayment.setBankOrder(null);
+  }
+
+  @Override
+  protected Map<String, Object> buildReverseMap(Move move) {
+    Map<String, Object> assistantMap = super.buildReverseMap(move);
+    assistantMap.put("isHiddenMoveLinesInBankReconciliation", true);
+
+    return assistantMap;
   }
 }

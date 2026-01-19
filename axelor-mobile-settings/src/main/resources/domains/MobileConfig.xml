@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="mobile-settings" package="com.axelor.apps.mobilesettings.db"/>
 
@@ -18,6 +18,8 @@
     <many-to-many name="authorizedRoles" ref="com.axelor.auth.db.Role"
       title="Authorized roles"
       help="List of roles that have access to this application. If the field is empty then everyone has access to the application. If it contains at least one role then only users with one of the roles present have access to the application."/>
+
+    <finder-method name="findBySequence" using="sequence"/>
 
     <extra-code><![CDATA[
 

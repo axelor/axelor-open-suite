@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,7 +27,7 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
 import com.axelor.apps.stock.service.config.StockConfigService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -49,15 +49,13 @@ public class SaleOrderStockLocationServiceImpl implements SaleOrderStockLocation
   }
 
   @Override
-  public Map<String, Object> getStockLocation(SaleOrder saleOrder, boolean updateStockLocation)
-      throws AxelorException {
+  public Map<String, Object> getStockLocation(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> saleOrderMap = new HashMap<>();
     StockLocation shippingDefaultStockLocation =
         Optional.ofNullable(saleOrder.getTradingName())
             .map(TradingName::getShippingDefaultStockLocation)
             .orElse(null);
-    if (!updateStockLocation
-        && (shippingDefaultStockLocation != null || saleOrder.getStockLocation() != null)) {
+    if (shippingDefaultStockLocation != null && saleOrder.getStockLocation() != null) {
       return saleOrderMap;
     }
     Partner clientPartner = saleOrder.getClientPartner();

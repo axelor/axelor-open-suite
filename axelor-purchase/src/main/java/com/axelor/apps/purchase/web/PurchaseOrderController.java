@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,7 +57,8 @@ import com.axelor.rpc.Context;
 import com.google.common.base.Function;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.inject.Singleton;
+import jakarta.annotation.Nullable;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -65,7 +66,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -449,5 +449,12 @@ public class PurchaseOrderController {
         JPA.find(PurchaseOrder.class, request.getContext().asType(PurchaseOrder.class).getId());
     Beans.get(PurchaseOrderService.class).validateChanges(purchaseOrder);
     response.setReload(true);
+  }
+
+  public void updatePurchaseOrderLineList(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    Beans.get(PurchaseOrderLineService.class).updatePurchaseOrderLineList(purchaseOrder);
+    response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
   }
 }

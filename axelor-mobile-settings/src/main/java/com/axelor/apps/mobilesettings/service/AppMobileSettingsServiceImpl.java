@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,8 +22,8 @@ import com.axelor.apps.mobilesettings.db.MobileConfig;
 import com.axelor.apps.mobilesettings.db.repo.MobileConfigRepository;
 import com.axelor.db.Query;
 import com.axelor.studio.db.AppMobileSettings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
 
@@ -36,7 +36,7 @@ public class AppMobileSettingsServiceImpl implements AppMobileSettingsService {
 
   @Override
   public AppMobileSettings getAppMobileSettings() {
-    return Query.of(AppMobileSettings.class).fetchOne();
+    return Query.of(AppMobileSettings.class).cacheable().autoFlush(false).fetchOne();
   }
 
   @Transactional(rollbackOn = {Exception.class})

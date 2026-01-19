@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -95,6 +95,7 @@ public final class BaseExceptionMessage {
 
   public static final String PERIOD_2 = /*$$(*/ "Period closed" /*)*/;
   public static final String PERIOD_3 = /*$$(*/ "Too much iterations." /*)*/;
+  public static final String PERIOD_4 = /*$$(*/ "Years in 360 days" /*)*/;
   public static final String PAY_PERIOD_CLOSED = /*$$(*/
       "Warning : the pay period %s is closed." /*)*/;
 
@@ -259,10 +260,6 @@ public final class BaseExceptionMessage {
       "Invalid duplicate finder field '%s'. Field type ManyToMany or OneToMany is not supported for duplicate check" /*)*/;
   public static final String GENERAL_10 = /*$$(*/ "No duplicate finder field configured." /*)*/;
   public static final String GENERAL_11 = /*$$(*/ "Please select original object." /*)*/;
-
-  /** Messsage controller */
-  public static final String MESSAGE_1 = /*$$(*/
-      "Error in print. Please check report configuration and print setting." /*)*/;
 
   /** Partner controller */
   public static final String PARTNER_1 = /*$$(*/ "There is no sequence set for the partners" /*)*/;
@@ -471,8 +468,6 @@ public final class BaseExceptionMessage {
   /* Print template */
   public static final String PRINT_TEMPLATE_CONDITION_MUST_BE_BOOLEAN = /*$$(*/
       "The groovy condition result must be a boolean" /*)*/;
-  public static final String PRINT_ERROR = /*$$(*/
-      "Error in print. Please check report configuration and print settings." /*)*/;
   public static final String PRINT_TEMPLATE_ERROR_ON_LINE_WITH_SEQUENCE_AND_TITLE = /*$$(*/
       "Error in print template line with sequence %s and title %s." /*)*/;
 
@@ -628,6 +623,15 @@ public final class BaseExceptionMessage {
   public static final String SEQUENCE_GROOVY_CONFIGURATION = /*$$(*/
       "An error occurred while generating the sequence. Please check the configuration." /*)*/;
 
+  public static final String SEQUENCE_INCREMENT_TIMEOUT = /*$$(*/
+      "Timeout while acquiring sequence lock for sequence ID %s. Please retry." /*)*/;
+
+  public static final String SEQUENCE_INCREMENT_FAILED = /*$$(*/
+      "Failed to increment sequence ID %s. Please contact administrator." /*)*/;
+
+  public static final String SEQUENCE_INCREMENT_INTERRUPTED = /*$$(*/
+      "Sequence generation was interrupted for sequence ID %s." /*)*/;
+
   public static final String ADDRESS_TEMPLATE_ERROR = /*$$(*/
       "An error occurred while generating the address template: '%s'" /*)*/;
 
@@ -745,4 +749,18 @@ public final class BaseExceptionMessage {
 
   public static final String PACKAGING_MAX_WEIGHT_EXCEEDED = /*$$(*/
       "The products' total weight exceeds the maximum weight carried by the packaging." /*)*/;
+
+  public static final String SEND_EMAIL_EXCEPTION = /*$$(*/ "Error when sending email: %s" /*)*/;
+
+  public static final String GOOGLE_MAP_API_ERROR_1 = /*$$(*/
+      "Error while reading the google map response." /*)*/;
+
+  public static final String GOOGLE_MAP_API_ERROR_2 = /*$$(*/
+      "Error while fetching data from Google API." /*)*/;
+
+  public static final String SEQUENCE_YEAR_VALIDITY_ERROR = /*$$(*/
+      "Prefix or suffix must contain %YY or %YYYY since yearly reset is true" /*)*/;
+
+  public static final String SEQUENCE_MONTH_VALIDITY_ERROR = /*$$(*/
+      "Prefix or suffix must contain %M or %FM, and %YY or %YYYY since monthly reset is true" /*)*/;
 }

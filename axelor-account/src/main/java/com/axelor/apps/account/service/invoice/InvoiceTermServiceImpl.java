@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -55,9 +55,9 @@ import com.axelor.common.StringUtils;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.studio.db.AppAccount;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -1288,6 +1288,8 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       throws AxelorException {
     List<InvoiceTermPayment> invoiceTermPaymentList = new ArrayList<>();
     if (invoiceTermList != null) {
+      invoiceTermToolService.checkHoldbackBeforeReconcile(invoiceTermList);
+
       BigDecimal currencyAmount =
           invoicePayment != null
               ? currencyService.getAmountCurrencyConvertedAtDate(
@@ -1516,6 +1518,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return defaultDate;
     }
     return invoiceTermList.stream()
+        .filter(it -> it.getDueDate() != null)
         .map(InvoiceTerm::getDueDate)
         .max(LocalDate::compareTo)
         .orElse(defaultDate);
@@ -1744,7 +1747,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
     PaymentCondition paymentCondition =
         Optional.ofNullable(move).map(Move::getPaymentCondition).orElse(null);
-    if (paymentCondition == null || !paymentCondition.getIsFree()) {
+    if (paymentCondition == null) {
       return;
     }
 
@@ -1769,7 +1772,7 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
       return;
     }
 
-    invoice = computeInvoiceTerms(invoice);
+    computeInvoiceTerms(invoice);
   }
 
   @Override

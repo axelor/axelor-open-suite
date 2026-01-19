@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,27 +21,33 @@ package com.axelor.apps.supplychain.db.repo;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.supplychain.db.Packaging;
+import com.axelor.apps.supplychain.service.packaging.PackagingMassService;
 import com.axelor.apps.supplychain.service.packaging.PackagingSequenceService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class PackagingSupplychainRepository extends PackagingRepository {
 
   protected AppBaseService appBaseService;
   protected PackagingSequenceService packagingSequenceService;
+  protected PackagingMassService packagingMassService;
 
   @Inject
   public PackagingSupplychainRepository(
-      AppBaseService appBaseService, PackagingSequenceService packagingSequenceService) {
+      AppBaseService appBaseService,
+      PackagingSequenceService packagingSequenceService,
+      PackagingMassService packagingMassService) {
     this.appBaseService = appBaseService;
     this.packagingSequenceService = packagingSequenceService;
+    this.packagingMassService = packagingMassService;
   }
 
   @Override
   public Packaging save(Packaging packaging) {
     try {
       packagingSequenceService.generatePackagingNumber(packaging);
+      packagingMassService.updatePackagingMass(packaging);
       return super.save(packaging);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

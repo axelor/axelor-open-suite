@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,8 +26,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import java.util.Map;
 
 public interface SaleOrderStockLocationService {
-  Map<String, Object> getStockLocation(SaleOrder saleOrder, boolean updateStockLocation)
-      throws AxelorException;
+  Map<String, Object> getStockLocation(SaleOrder saleOrder) throws AxelorException;
 
   Map<String, Object> getToStockLocation(SaleOrder saleOrder) throws AxelorException;
 

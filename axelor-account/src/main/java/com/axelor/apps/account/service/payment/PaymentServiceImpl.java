@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,11 +43,13 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -57,8 +59,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.persistence.Query;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,14 +125,17 @@ public class PaymentServiceImpl implements PaymentService {
    * @param creditMoveLines
    */
   @Override
-  public void useExcessPaymentOnMoveLinesDontThrow(
+  public int useExcessPaymentOnMoveLinesDontThrow(
       List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) {
+    int errorNumber = 0;
     try {
-      useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
+      errorNumber = useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
     } catch (Exception e) {
       TraceBackService.trace(e);
       log.debug(e.getMessage());
     }
+
+    return errorNumber;
   }
 
   /**
@@ -144,12 +147,13 @@ public class PaymentServiceImpl implements PaymentService {
    * @param dontThrow
    * @throws AxelorException
    */
-  protected void useExcessPaymentOnMoveLines(
+  protected int useExcessPaymentOnMoveLines(
       List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, boolean dontThrow)
       throws AxelorException {
+    int errorNumber = 0;
 
     if (ObjectUtils.isEmpty(debitMoveLines) || ObjectUtils.isEmpty(creditMoveLines)) {
-      return;
+      return errorNumber;
     }
 
     log.debug(
@@ -186,7 +190,6 @@ public class PaymentServiceImpl implements PaymentService {
         if (creditMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
             && debitMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
           i++;
-
           try {
             createReconcile(
                 debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
@@ -194,6 +197,7 @@ public class PaymentServiceImpl implements PaymentService {
             if (dontThrow) {
               TraceBackService.trace(e);
               log.debug(e.getMessage());
+              errorNumber++;
             } else {
               throw e;
             }
@@ -205,6 +209,8 @@ public class PaymentServiceImpl implements PaymentService {
         }
       }
     }
+
+    return errorNumber;
   }
 
   /**

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,7 +35,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -49,16 +49,19 @@ public class BankOrderCreateService {
   protected BankOrderRepository bankOrderRepository;
   protected BankOrderLineService bankOrderLineService;
   protected InvoiceService invoiceService;
+  protected BankOrderCheckService bankOrderCheckService;
 
   @Inject
   public BankOrderCreateService(
       BankOrderRepository bankOrderRepository,
       BankOrderLineService bankOrderLineService,
-      InvoiceService invoiceService) {
+      InvoiceService invoiceService,
+      BankOrderCheckService bankOrderCheckService) {
 
     this.bankOrderRepository = bankOrderRepository;
     this.bankOrderLineService = bankOrderLineService;
     this.invoiceService = invoiceService;
+    this.bankOrderCheckService = bankOrderCheckService;
   }
 
   /**
@@ -81,6 +84,9 @@ public class BankOrderCreateService {
       int functionalOriginSelect,
       int accountingTriggerSelect)
       throws AxelorException {
+
+    bankOrderCheckService.checkPreconditions(
+        paymentMode, partnerType, bankOrderDate, senderCompany, senderBankDetails);
 
     BankOrderFileFormat bankOrderFileFormat = paymentMode.getBankOrderFileFormat();
 

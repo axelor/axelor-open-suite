@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_8.0.xsd">
 
   <!-- IMPORT DU PACKAGE 'AUTH' -->
 
@@ -67,7 +67,7 @@
   </input>
 
   <input file="meta_file.csv" separator=";" type="com.axelor.meta.db.MetaFile"
-    search="self.fileName = :fileName">
+    search="self.fileName = :fileName" call="com.axelor.csv.script.ImportMetaFile:importMetaFile">
     <bind column="fileName" to="fileName"
       check="com.axelor.utils.helpers.ImportHelper.isValuePresent(fileName)"
       check-message="File name must not be null"/>
@@ -1012,7 +1012,7 @@
       check="com.axelor.utils.helpers.ImportHelper.isValuePresent(Reading)"
       check-message="Track reading must not be null"/>
     <bind column="Condition" to="trackingCondition"/>
-    <bind to="appBase" search="self.id = '1'"
+    <bind to="appBase" search="self.id = 1"
       check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.studio.db.AppBase', 'id', '1')"
       check-message="App base with id 1 doesn't exist"/>
   </input>
@@ -1069,6 +1069,27 @@
     <bind to="blockingToDate"
       eval="call:com.axelor.csv.script.ImportDateTime:importDate(blockingToDate)"
       column="blockingToDate"/>
+  </input>
+
+  <input file="base_indicatorConfig.csv" separator=";"
+    type="com.axelor.apps.base.db.IndicatorConfig" search="self.importId = :importId">
+    <bind column="targetModelFullName" to="targetModel"
+      search="self.fullName = :targetModelFullName"
+      check="com.axelor.utils.helpers.ImportHelper.isRecordPresent('com.axelor.meta.db.MetaModel', 'fullName', targetModelFullName)"
+      check-message="Target model doesn't exist"/>
+    <bind column="metaModelTargetName" to="metaModelTargetName"/>
+    <bind column="expressionTypeSelect" to="expressionTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.IndicatorConfig', 'expressionTypeSelect', expressionTypeSelect)"
+      check-message="Invalid expressionTypeSelect"/>
+    <bind column="targetExpressionTypeSelect" to="targetExpressionTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.IndicatorConfig', 'targetExpressionTypeSelect', targetExpressionTypeSelect)"
+      check-message="Invalid targetExpressionTypeSelect"/>
+    <bind column="alertExpressionTypeSelect" to="alertExpressionTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.IndicatorConfig', 'alertExpressionTypeSelect', alertExpressionTypeSelect)"
+      check-message="Invalid alertExpressionTypeSelect"/>
+    <bind column="displayInRecordViewTypeSelect" to="displayInRecordViewTypeSelect"
+      check="com.axelor.utils.helpers.ImportHelper.checkSelection('com.axelor.apps.base.db.IndicatorConfig', 'displayInRecordViewTypeSelect', displayInRecordViewTypeSelect)"
+      check-message="Invalid displayInRecordViewTypeSelect"/>
   </input>
 
 </csv-inputs>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.web;
 
+import com.axelor.apps.base.db.IndicatorConfig;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -25,7 +26,7 @@ import com.axelor.db.mapper.Property;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.util.Optional;
 
 @Singleton
@@ -34,7 +35,11 @@ public class BirtPrinintingWizardController {
   @SuppressWarnings("unchecked")
   public void onChangeMetaModel(ActionRequest request, ActionResponse response) {
     try {
-      MetaModel metaModel = (MetaModel) request.getContext().get("metaModel");
+      String key = request.getBeanClass() == IndicatorConfig.class ? "targetModel" : "metaModel";
+      MetaModel metaModel =
+          Optional.ofNullable(request.getContext().get(key))
+              .map(MetaModel.class::cast)
+              .orElse(null);
       String metaModelTargetName = null;
       if (metaModel != null) {
         Class<? extends Model> klass =

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MovePfpToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
@@ -41,8 +42,8 @@ import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,6 +73,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   protected AnalyticAttrsService analyticAttrsService;
   protected MoveLineRecordService moveLineRecordService;
   protected MoveLineService moveLineService;
+  protected MovePfpToolService movePfpToolService;
 
   @Inject
   public MoveGroupServiceImpl(
@@ -94,7 +96,8 @@ public class MoveGroupServiceImpl implements MoveGroupService {
       PfpService pfpService,
       AnalyticAttrsService analyticAttrsService,
       MoveLineRecordService moveLineRecordService,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      MovePfpToolService movePfpToolService) {
     this.moveDefaultService = moveDefaultService;
     this.moveAttrsService = moveAttrsService;
     this.periodCheckService = periodCheckService;
@@ -115,6 +118,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     this.analyticAttrsService = analyticAttrsService;
     this.moveLineRecordService = moveLineRecordService;
     this.moveLineService = moveLineService;
+    this.movePfpToolService = movePfpToolService;
   }
 
   protected void addPeriodDummyFields(Move move, Map<String, Object> valuesMap)
@@ -202,7 +206,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     if (pfpService.isManagePassedForPayment(move.getCompany())) {
       moveRecordSetService.setPfpStatus(move);
-      valuesMap.put("pfpValidateStatusSelect", move.getOriginDate());
+      valuesMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());
     }
 
     if (isMassEntry) {
@@ -264,6 +268,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
 
     moveAttrsService.addDueDateHidden(move, attrsMap);
     moveAttrsService.addThirdPartyPayerPartnerReadonly(move, attrsMap);
+    moveAttrsService.addFiscalPositionWarningHidden(move, attrsMap);
 
     return attrsMap;
   }
@@ -428,7 +433,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
                 MoveRepository.STATUS_SIMULATED)
             .contains(move.getStatusSelect())
         && pfpService.isManagePassedForPayment(move.getCompany())) {
-      Integer pfpStatus = moveInvoiceTermService.checkOtherInvoiceTerms(move);
+      Integer pfpStatus = movePfpToolService.checkOtherInvoiceTerms(move);
       if (pfpStatus != null) {
         valuesMap.put("pfpValidateStatusSelect", move.getPfpValidateStatusSelect());
       }
@@ -624,6 +629,14 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
+  public Map<String, Map<String, Object>> getFiscalPositionOnChangeAttrsMap(Move move)
+      throws AxelorException {
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
+    moveAttrsService.addFiscalPositionWarningHidden(move, attrsMap);
+    return attrsMap;
+  }
+
+  @Override
   public Map<String, Map<String, Object>> getCurrencyOnChangeAttrsMap(Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
@@ -687,15 +700,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(Move move) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addPartnerDomain(move, attrsMap);
-
-    return attrsMap;
-  }
-
-  @Override
   public Map<String, Map<String, Object>> getPaymentModeOnSelectAttrsMap(Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
@@ -709,15 +713,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addPartnerBankDetailsDomain(move, attrsMap);
-
-    return attrsMap;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getTradingNameOnSelectAttrsMap(Move move) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addTradingNameDomain(move, attrsMap);
 
     return attrsMap;
   }
@@ -758,15 +753,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveAttrsService.addMassEntryHidden(move, attrsMap);
     moveAttrsService.addMassEntryPaymentConditionRequired(move, attrsMap);
     moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
-
-    return attrsMap;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getCompanyOnSelectAttrsMap(Move move) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addCompanyDomain(move, attrsMap);
 
     return attrsMap;
   }

@@ -58,6 +58,7 @@
 "Could not find equipment with id %s.",,,
 "Could not find picture with id %s.",,,
 "Create an intervention",,,
+"Create intervention",,,
 "Create new equipment",,,
 "Create new equipment model",,,
 "Create range question",,,

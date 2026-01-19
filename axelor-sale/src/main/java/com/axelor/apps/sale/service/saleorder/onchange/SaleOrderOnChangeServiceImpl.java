@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.service.saleorder.onchange;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -38,7 +39,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -99,6 +100,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     values.putAll(getContactPartner(saleOrder));
     values.putAll(updateSaleOrderLineList(saleOrder));
     values.putAll(saleOrderProductPrintingService.getGroupProductsOnPrintings(saleOrder));
+    values.putAll(getFiscalPosition(saleOrder));
     values.putAll(updateLinesAfterFiscalPositionChange(saleOrder));
     values.putAll(getComputeSaleOrderMap(saleOrder));
     values.putAll(getEndOfValidityDate(saleOrder));
@@ -212,6 +214,18 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
       saleOrderCreateService.updateSaleOrderLineList(saleOrder);
     }
     values.put("saleOrderLineList", saleOrder.getSaleOrderLineList());
+    return values;
+  }
+
+  protected Map<String, Object> getFiscalPosition(SaleOrder saleOrder) {
+    Map<String, Object> values = new HashMap<>();
+    FiscalPosition fiscalPosition = null;
+    Partner clientPartner = saleOrder.getClientPartner();
+    if (clientPartner != null) {
+      fiscalPosition = clientPartner.getFiscalPosition();
+    }
+    saleOrder.setFiscalPosition(fiscalPosition);
+    values.put("fiscalPosition", saleOrder.getFiscalPosition());
     return values;
   }
 

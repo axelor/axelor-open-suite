@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,9 +31,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.address.AddressHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
@@ -44,7 +44,6 @@ import java.util.function.Function;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
 
 @Singleton
 public class AddressServiceImpl implements AddressService {
@@ -99,7 +98,7 @@ public class AddressServiceImpl implements AddressService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
-      throws AxelorException, JSONException {
+      throws AxelorException {
     Preconditions.checkNotNull(address, I18n.get(BaseExceptionMessage.ADDRESS_CANNOT_BE_NULL));
     Optional<Pair<BigDecimal, BigDecimal>> latLong = getLatLong(address);
 
@@ -113,7 +112,7 @@ public class AddressServiceImpl implements AddressService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address)
-      throws AxelorException, JSONException {
+      throws AxelorException {
     Preconditions.checkNotNull(address, I18n.get(BaseExceptionMessage.ADDRESS_CANNOT_BE_NULL));
 
     if (mapService.isConfigured() && StringUtils.notBlank(address.getFullName())) {

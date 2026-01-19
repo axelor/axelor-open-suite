@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,8 +40,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -215,11 +215,13 @@ public class PartnerGenerateServiceImpl implements PartnerGenerateService {
     }
 
     String cityName = adresseEtablissement.getLibelleCommuneEtablissement();
-    City currentCity = cityRepository.findByName(cityName);
-    if (currentCity != null) {
-      address.setCity(currentCity);
-    } else {
-      createCity(address, cityName, currentCountry);
+    if (cityName != null) {
+      City currentCity = cityRepository.findByName(cityName);
+      if (currentCity != null) {
+        address.setCity(currentCity);
+      } else {
+        createCity(address, cityName, currentCountry);
+      }
     }
 
     String numeroVoieEtablissement = adresseEtablissement.getNumeroVoieEtablissement();

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,10 +32,11 @@ import com.axelor.apps.hr.db.repo.KilometricAllowanceRateRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.apps.hr.service.expense.ExpenseComputationService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineComputeService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -48,17 +49,20 @@ public class KilometricExpenseServiceImpl implements KilometricExpenseService {
   protected final KilometricAllowanceRateRepository kilometricAllowanceRateRepository;
   protected final HRConfigService hrConfigService;
   protected final ExpenseComputationService expenseComputationService;
+  protected ExpenseLineComputeService expenseLineComputeService;
 
   @Inject
   public KilometricExpenseServiceImpl(
       KilometricLogService kilometricLogService,
       KilometricAllowanceRateRepository kilometricAllowanceRateRepository,
       HRConfigService hrConfigService,
-      ExpenseComputationService expenseComputationService) {
+      ExpenseComputationService expenseComputationService,
+      ExpenseLineComputeService expenseLineComputeService) {
     this.kilometricLogService = kilometricLogService;
     this.kilometricAllowanceRateRepository = kilometricAllowanceRateRepository;
     this.hrConfigService = hrConfigService;
     this.expenseComputationService = expenseComputationService;
+    this.expenseLineComputeService = expenseLineComputeService;
   }
 
   @Override
@@ -146,6 +150,7 @@ public class KilometricExpenseServiceImpl implements KilometricExpenseService {
         BigDecimal amount = computeKilometricExpense(line, expense.getEmployee());
         line.setTotalAmount(amount);
         line.setUntaxedAmount(amount);
+        expenseLineComputeService.setCompanyAmounts(line, expense);
 
         kilometricLogService.updateKilometricLog(line, expense.getEmployee());
       }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,18 +33,20 @@ import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.ProductVariantConfigRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -64,6 +66,7 @@ public class ProductServiceImpl implements ProductService {
   protected ProductCompanyService productCompanyService;
   protected CompanyRepository companyRepo;
   protected ProductCompanyRepository productCompanyRepository;
+  protected ProductVariantConfigRepository productVariantConfigRepository;
 
   @Inject
   public ProductServiceImpl(
@@ -73,7 +76,8 @@ public class ProductServiceImpl implements ProductService {
       AppBaseService appBaseService,
       ProductRepository productRepo,
       ProductCompanyService productCompanyService,
-      ProductCompanyRepository productCompanyRepository) {
+      ProductCompanyRepository productCompanyRepository,
+      ProductVariantConfigRepository productVariantConfigRepository) {
     this.productVariantService = productVariantService;
     this.productVariantRepo = productVariantRepo;
     this.sequenceService = sequenceService;
@@ -81,6 +85,7 @@ public class ProductServiceImpl implements ProductService {
     this.productRepo = productRepo;
     this.productCompanyService = productCompanyService;
     this.productCompanyRepository = productCompanyRepository;
+    this.productVariantConfigRepository = productVariantConfigRepository;
   }
 
   @Inject private MetaFiles metaFiles;
@@ -252,6 +257,32 @@ public class ProductServiceImpl implements ProductService {
         productVariant, "managPriceCoef", productCompany.getManagPriceCoef(), company);
   }
 
+  protected void setPriceOfVariantProductCompanyWithExtra(Product productVariant, Company company)
+      throws AxelorException {
+    updateProductCompanyPrice(
+        "costPrice", productVariant, company, ProductVariantValueRepository.APPLICATION_COST_PRICE);
+
+    updateProductCompanyPrice(
+        "purchasePrice",
+        productVariant,
+        company,
+        ProductVariantValueRepository.APPLICATION_PURCHASE_PRICE);
+
+    updateProductCompanyPrice(
+        "salePrice", productVariant, company, ProductVariantValueRepository.APPLICATION_SALE_PRICE);
+  }
+
+  protected void updateProductCompanyPrice(
+      String fieldName, Product productVariant, Company company, int applicationCostPrice)
+      throws AxelorException {
+    if (productCompanyService.isCompanySpecificProductFields(fieldName)) {
+      BigDecimal price = (BigDecimal) productCompanyService.get(productVariant, fieldName, company);
+      BigDecimal extraPrice =
+          this.getProductExtraPrice(productVariant.getProductVariant(), applicationCostPrice);
+      productCompanyService.set(productVariant, fieldName, price.add(extraPrice), company);
+    }
+  }
+
   public boolean hasActivePriceList(Product product) {
     return product.getPriceListLineList() != null
         && product.getPriceListLineList().stream()
@@ -308,6 +339,8 @@ public class ProductServiceImpl implements ProductService {
     description += "<br>" + productVariant.getName();
     internalDescription += "<br>" + productVariant.getName();
 
+    productModel.setIsModel(false);
+
     Product generatedProduct = productRepo.copy(productModel, true);
 
     generatedProduct.setName(productModel.getName() + " (" + productVariant.getName() + ")");
@@ -322,6 +355,14 @@ public class ProductServiceImpl implements ProductService {
     generatedProduct.setProductVariant(productVariant);
 
     this.updateSalePrice(generatedProduct, null);
+
+    if (ObjectUtils.isEmpty(generatedProduct.getProductCompanyList())) {
+      return generatedProduct;
+    }
+
+    for (ProductCompany productCompany : generatedProduct.getProductCompanyList()) {
+      setPriceOfVariantProductCompanyWithExtra(generatedProduct, productCompany.getCompany());
+    }
 
     return generatedProduct;
   }
@@ -587,6 +628,13 @@ public class ProductServiceImpl implements ProductService {
     copy.setLastPurchaseDate(null);
     copy.setCode(null);
     copy.setSerialNumber(null);
+    if (copy.getIsModel()) {
+      ProductVariantConfig productVariantConfig =
+          productVariantConfigRepository.copy(product.getProductVariantConfig(), false);
+      copy.setProductVariantConfig(productVariantConfig);
+    } else {
+      copy.setProductVariantConfig(null);
+    }
   }
 
   @Override

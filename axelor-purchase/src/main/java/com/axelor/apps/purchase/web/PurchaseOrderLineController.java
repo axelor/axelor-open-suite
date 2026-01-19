@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,7 +44,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Set;
@@ -60,13 +60,13 @@ public class PurchaseOrderLineController {
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
 
-      Map<String, BigDecimal> map =
+      Map<String, Object> map =
           Beans.get(PurchaseOrderLineService.class).compute(purchaseOrderLine, purchaseOrder);
       response.setValues(map);
       response.setAttr(
           "priceDiscounted",
           "hidden",
-          map.getOrDefault("priceDiscounted", BigDecimal.ZERO)
+          new BigDecimal(String.valueOf(map.getOrDefault("priceDiscounted", BigDecimal.ZERO)))
                   .compareTo(
                       purchaseOrder.getInAti()
                           ? purchaseOrderLine.getInTaxPrice()
@@ -399,7 +399,7 @@ public class PurchaseOrderLineController {
       domain += "self.id = 0";
     }
 
-    domain += " AND " + company.getId() + " in (SELECT id FROM self.companySet)";
+    domain += " AND " + company.getId() + " in (SELECT c.id FROM self.companySet c)";
 
     response.setAttr("supplierPartner", "domain", domain);
   }

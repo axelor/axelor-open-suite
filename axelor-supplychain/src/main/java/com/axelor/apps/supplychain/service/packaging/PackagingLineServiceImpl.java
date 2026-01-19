@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,62 +18,33 @@
  */
 package com.axelor.apps.supplychain.service.packaging;
 
-import com.axelor.apps.stock.db.LogisticalForm;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.PackagingLine;
-import com.axelor.apps.supplychain.db.repo.PackagingLineRepository;
-import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
-import com.google.inject.persist.Transactional;
-import java.util.List;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingDimensionService;
+import jakarta.inject.Inject;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class PackagingLineServiceImpl implements PackagingLineService {
 
-  protected PackagingLineRepository packagingLineRepository;
+  protected SaleOrderPackagingDimensionService saleOrderPackagingDimensionService;
 
   @Inject
-  public PackagingLineServiceImpl(PackagingLineRepository packagingLineRepository) {
-    this.packagingLineRepository = packagingLineRepository;
+  public PackagingLineServiceImpl(
+      SaleOrderPackagingDimensionService saleOrderPackagingDimensionService) {
+    this.saleOrderPackagingDimensionService = saleOrderPackagingDimensionService;
   }
 
   @Override
-  public void addPackagingLines(Packaging packaging, List<StockMoveLine> stockMoveLineList) {
-    if (packaging == null || CollectionUtils.isEmpty(stockMoveLineList)) {
-      return;
-    }
-    for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      createPackagingLine(packaging, stockMoveLine);
-    }
-  }
-
-  @Transactional(rollbackOn = Exception.class)
-  protected void createPackagingLine(Packaging packaging, StockMoveLine stockMoveLine) {
-    PackagingLine packagingLine = new PackagingLine();
-    packagingLine.setPackaging(packaging);
-    packagingLine.setStockMoveLine(stockMoveLine);
-    packagingLine.setQty(stockMoveLine.getQtyRemainingToPackage());
-    packagingLineRepository.save(packagingLine);
-  }
-
-  @Override
-  public String getStockMoveLineDomain(LogisticalForm logisticalForm) {
-    if (logisticalForm == null) {
-      return "self.stockMove.typeSelect = 2 AND self.qtyRemainingToPackage > 0";
-    }
-    String stockMoveIds = StringHelper.getIdListString(logisticalForm.getStockMoveList());
-    if (stockMoveIds.isEmpty()) {
-      return "self.id = 0";
-    }
-    return String.format(
-        "self.stockMove.typeSelect = 2 AND self.qtyRemainingToPackage > 0 AND self.stockMove.id IN (%s)",
-        stockMoveIds);
-  }
-
-  @Override
-  public void updateStockMoveSet(PackagingLine packagingLine, boolean add) {
+  public void updateStockMoveSet(PackagingLine packagingLine, boolean add) throws AxelorException {
     StockMoveLine stockMoveLine = packagingLine.getStockMoveLine();
     Packaging packaging = packagingLine.getPackaging();
     if (stockMoveLine == null || packaging == null) {
@@ -85,10 +56,12 @@ public class PackagingLineServiceImpl implements PackagingLineService {
     }
     if (add) {
       addStockMove(packaging, stockMove);
+      updateStockMoveGrossMass(packagingLine, stockMove, add);
     } else {
       Packaging root = getRootPackaging(packaging);
       if (!isStockMoveReferenced(root, stockMove, packagingLine)) {
         removeStockMove(packaging, stockMove);
+        updateStockMoveGrossMass(packagingLine, stockMove, add);
       }
     }
   }
@@ -104,6 +77,7 @@ public class PackagingLineServiceImpl implements PackagingLineService {
     while (packaging != null) {
       if (!packaging.getStockMoveSet().contains(stockMove)) {
         packaging.getStockMoveSet().add(stockMove);
+        updateStockMovePackagingInfo(packaging, stockMove, true);
       }
       packaging = packaging.getParentPackaging();
     }
@@ -113,6 +87,7 @@ public class PackagingLineServiceImpl implements PackagingLineService {
     while (packaging != null) {
       if (packaging.getStockMoveSet().contains(stockMove)) {
         packaging.getStockMoveSet().remove(stockMove);
+        updateStockMovePackagingInfo(packaging, stockMove, false);
       }
       packaging = packaging.getParentPackaging();
     }
@@ -155,6 +130,107 @@ public class PackagingLineServiceImpl implements PackagingLineService {
     } else {
       stockMoveLine.setQtyRemainingToPackage(
           stockMoveLine.getQtyRemainingToPackage().add(packagingLine.getQty()));
+    }
+  }
+
+  @Override
+  public void updatePackagingMass(PackagingLine packagingLine, boolean add) throws AxelorException {
+    Packaging packaging = packagingLine.getPackaging();
+    BigDecimal[] mass = computePackagingLineMass(packagingLine);
+    updatePackagingMass(packaging, mass[0], mass[1], add);
+  }
+
+  @Override
+  public BigDecimal[] computePackagingLineMass(PackagingLine packagingLine) throws AxelorException {
+    Product product = getPackagingLineProduct(packagingLine);
+    if (product == null) {
+      return new BigDecimal[] {BigDecimal.ZERO, BigDecimal.ZERO};
+    }
+    BigDecimal qty = packagingLine.getQty();
+
+    BigDecimal grossMass =
+        saleOrderPackagingDimensionService
+            .getConvertedWeight(product.getGrossMass(), product)
+            .multiply(qty)
+            .setScale(3, RoundingMode.HALF_UP);
+
+    BigDecimal netMass =
+        saleOrderPackagingDimensionService
+            .getConvertedWeight(product.getNetMass(), product)
+            .multiply(qty)
+            .setScale(3, RoundingMode.HALF_UP);
+
+    return new BigDecimal[] {grossMass, netMass};
+  }
+
+  protected Product getPackagingLineProduct(PackagingLine packagingLine) {
+    Product product =
+        Optional.ofNullable(packagingLine.getStockMoveLine())
+            .map(StockMoveLine::getProduct)
+            .orElse(null);
+    if (product == null) {
+      product =
+          Optional.ofNullable(packagingLine.getSaleOrderLine())
+              .map(SaleOrderLine::getProduct)
+              .orElse(null);
+    }
+    return product;
+  }
+
+  protected void updatePackagingMass(
+      Packaging packaging, BigDecimal grossMass, BigDecimal netMass, boolean add) {
+    while (packaging != null) {
+      if (add) {
+        packaging.setTotalGrossMass(packaging.getTotalGrossMass().add(grossMass));
+        packaging.setTotalNetMass(packaging.getTotalNetMass().add(netMass));
+      } else {
+        packaging.setTotalGrossMass(packaging.getTotalGrossMass().subtract(grossMass));
+        packaging.setTotalNetMass(packaging.getTotalNetMass().subtract(netMass));
+      }
+      packaging = packaging.getParentPackaging();
+    }
+  }
+
+  protected void updateStockMovePackagingInfo(
+      Packaging packaging, StockMove stockMove, boolean add) {
+    int packagingLevelSelect = packaging.getPackagingLevelSelect();
+    BigDecimal grossMass = stockMove.getGrossMass();
+    BigDecimal packagingMass = packaging.getGrossMass();
+
+    if (add) {
+      if (packagingLevelSelect == ProductRepository.PACKAGING_LEVEL_BOX) {
+        stockMove.setNumOfPackages(stockMove.getNumOfPackages() + 1);
+      } else if (packagingLevelSelect == ProductRepository.PACKAGING_LEVEL_PALLET) {
+        stockMove.setNumOfPalettes(stockMove.getNumOfPalettes() + 1);
+      }
+      stockMove.setGrossMass(grossMass.add(packagingMass));
+    } else {
+      if (packagingLevelSelect == ProductRepository.PACKAGING_LEVEL_BOX) {
+        stockMove.setNumOfPackages(stockMove.getNumOfPackages() - 1);
+      } else if (packagingLevelSelect == ProductRepository.PACKAGING_LEVEL_PALLET) {
+        stockMove.setNumOfPalettes(stockMove.getNumOfPalettes() - 1);
+      }
+      stockMove.setGrossMass(grossMass.subtract(packagingMass));
+    }
+  }
+
+  protected void updateStockMoveGrossMass(
+      PackagingLine packagingLine, StockMove stockMove, boolean add) throws AxelorException {
+    Product product =
+        Optional.of(packagingLine.getStockMoveLine()).map(StockMoveLine::getProduct).orElse(null);
+    if (product == null) {
+      return;
+    }
+    BigDecimal grossMass = stockMove.getGrossMass();
+    BigDecimal productMass =
+        saleOrderPackagingDimensionService
+            .getConvertedWeight(product.getGrossMass(), product)
+            .multiply(packagingLine.getQty())
+            .setScale(3, RoundingMode.HALF_UP);
+    if (add) {
+      stockMove.setGrossMass(grossMass.add(productMass));
+    } else {
+      stockMove.setGrossMass(grossMass.subtract(productMass));
     }
   }
 }

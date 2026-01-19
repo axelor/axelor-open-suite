@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,6 +43,8 @@ import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -56,7 +58,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -117,7 +119,8 @@ public class FixedAssetController {
                 (Integer) fieldMap.get("disposalTypeSelect"),
                 (BigDecimal) fieldMap.get("disposalAmount"),
                 (AssetDisposalReason) fieldMap.get("assetDisposalReason"),
-                (String) fieldMap.get("comments"));
+                (String) fieldMap.get("comments"),
+                (Partner) fieldMap.get("customer"));
 
     if (ObjectUtils.isEmpty(createdFixedAssetList)) {
       response.setCanClose(true);
@@ -578,6 +581,16 @@ public class FixedAssetController {
             .map(Object::toString)
             .map(Boolean::parseBoolean)
             .orElse(false));
+
+    PartnerRepository partnerRepository = Beans.get(PartnerRepository.class);
+    fieldMap.put(
+        "customer",
+        Optional.ofNullable(context.get("customerId"))
+            .map(Object::toString)
+            .filter(StringUtils::notEmpty)
+            .map(Long::valueOf)
+            .map(partnerRepository::find)
+            .orElse(null));
 
     FixedAssetManagementRepository fixedAssetManagementRepository =
         Beans.get(FixedAssetManagementRepository.class);

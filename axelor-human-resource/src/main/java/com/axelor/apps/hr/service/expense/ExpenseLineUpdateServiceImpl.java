@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,11 +32,12 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.employee.EmployeeFetchService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -373,6 +374,26 @@ public class ExpenseLineUpdateServiceImpl implements ExpenseLineUpdateService {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_EXPENSE_NOT_DRAFT));
+    }
+  }
+
+  @Override
+  public void updateCurrencyOnLines(Expense expense) {
+    if (expense == null || expense.getCurrency() == null) {
+      return;
+    }
+
+    Currency currency = expense.getCurrency();
+    if (ObjectUtils.notEmpty(expense.getGeneralExpenseLineList())) {
+      for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
+        expenseLine.setCurrency(currency);
+      }
+    }
+
+    if (ObjectUtils.notEmpty(expense.getKilometricExpenseLineList())) {
+      for (ExpenseLine expenseLine : expense.getKilometricExpenseLineList()) {
+        expenseLine.setCurrency(currency);
+      }
     }
   }
 }

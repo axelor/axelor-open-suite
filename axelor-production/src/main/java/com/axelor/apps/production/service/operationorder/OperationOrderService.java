@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import com.axelor.apps.production.db.OperationOrderDuration;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.ProdProduct;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -89,6 +90,11 @@ public interface OperationOrderService {
    */
   void checkConsumedStockMoveLineList(
       OperationOrder operationOrder, OperationOrder oldOperationOrder) throws AxelorException;
+
+  StockMove getConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
+      throws AxelorException;
+
+  void setConsumedStockMoveLineStockLocation(OperationOrder operationOrder) throws AxelorException;
 
   /**
    * On changing {@link OperationOrder#consumedStockMoveLineList}, we update {@link

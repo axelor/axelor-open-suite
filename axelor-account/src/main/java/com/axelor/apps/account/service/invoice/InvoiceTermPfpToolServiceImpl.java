@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,11 +28,12 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermPfpToolServiceImpl implements InvoiceTermPfpToolService {
 
@@ -136,5 +137,29 @@ public class InvoiceTermPfpToolServiceImpl implements InvoiceTermPfpToolService 
             || (invoiceTerm != null
                 && invoiceTerm.getPfpValidatorUser() != null
                 && user.equals(invoiceTerm.getPfpValidatorUser())));
+  }
+
+  @Override
+  public Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return null;
+    }
+    InvoiceTerm firstInvoiceTerm = invoiceTermList.get(0);
+    int pfpStatus = getPfpValidateStatusSelect(firstInvoiceTerm);
+    int otherPfpStatus;
+    for (InvoiceTerm otherInvoiceTerm : invoiceTermList) {
+      if (otherInvoiceTerm.getId() != null
+          && firstInvoiceTerm.getId() != null
+          && !otherInvoiceTerm.getId().equals(firstInvoiceTerm.getId())) {
+        otherPfpStatus = getPfpValidateStatusSelect(otherInvoiceTerm);
+
+        if (otherPfpStatus != pfpStatus) {
+          pfpStatus = InvoiceTermRepository.PFP_STATUS_AWAITING;
+          break;
+        }
+      }
+    }
+
+    return pfpStatus;
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="invoice-payment-grid" title="Payments"
     model="com.axelor.apps.account.db.InvoicePayment" orderBy="paymentDate">
@@ -16,7 +16,7 @@
     <field name="typeSelect"/>
     <field name="move" width="120" form-view="move-form" grid-view="move-grid"/>
     <field name="statusSelect" widget="single-select"/>
-    <button name="cancelBtn" icon="fa-times-circle"
+    <button name="cancelBtn" icon="x-circle-fill"
       onClick="action-invoice-payment-group-cancel" readonlyIf="statusSelect == 2"/>
   </grid>
 
@@ -99,9 +99,20 @@
       <field name="statusSelect" widget="single-select"
         hideIf="(paymentMode.typeSelect == 2 || paymentMode.typeSelect  == 9) &amp;&amp; paymentMode.inOutSelect == 2"
         selection-in="[0,1,2]"/>
-      <button name="cancelBtn" title="Remove this payment" icon="fa-times-circle"
+      <spacer/>
+      <button name="cancelBtn" title="Remove this payment" icon="x-circle-fill"
         showIf="statusSelect != 2" onClick="action-invoice-payment-group-cancel"/>
       <field name="move.statusSelect" hidden="true" readonly="true"/>
+      <panel name="reversePaymentMovePanel"
+        showIf="move &amp;&amp; statusSelect != 2 &amp;&amp; (typeSelect &lt; 3 || typeSelect &gt; 9)"
+        colSpan="12">
+        <field name="cancelReason" title="Cancel reason (Required to execute the process)"/>
+        <button name="reversePaymentMoveBtn"
+          onClick="action-invoice-payment-group-reverse-move" title="Cancel the payment entry"
+          readonlyIf="!cancelReason"/>
+      </panel>
+      <field name="cancelReason" readonly="true"
+        showIf="statusSelect == 2 &amp;&amp; cancelReason"/>
     </panel>
     <panel name="newInvoicePaymentPanel" hideIf="id">
       <button name="saveBtn" title="OK" colOffset="11" colspan="1" width="50"
@@ -187,6 +198,11 @@
   <action-group name="action-invoice-payment-group-cancel">
     <action name="action-invoice-payment-method-validate-before-unlink"/>
     <action name="action-invoice-payment-method-cancel"/>
+  </action-group>
+
+  <action-group name="action-invoice-payment-group-reverse-move">
+    <action name="action-invoice-payment-method-validate-reverse-move"/>
+    <action name="action-invoice-payment-method-reverse-payment-move"/>
   </action-group>
 
   <action-validate name="action-invoice-payment-validate-mass-payment">
@@ -309,6 +325,16 @@
   <action-method name="action-invoice-payment-method-set-is-multi-currency">
     <call class="com.axelor.apps.account.web.InvoicePaymentController"
       method="setIsMultiCurrency"/>
+  </action-method>
+
+  <action-method name="action-invoice-payment-method-reverse-payment-move">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="reversePaymentMove"/>
+  </action-method>
+
+  <action-method name="action-invoice-payment-method-validate-reverse-move">
+    <call class="com.axelor.apps.account.web.InvoicePaymentController"
+      method="validateBeforeReversePaymentMove"/>
   </action-method>
 
   <action-record name="action-invoice-payment-record-manual-change"

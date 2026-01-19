@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,20 +22,24 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.supplychain.db.PackagingLine;
 import com.axelor.apps.supplychain.service.packaging.PackagingLineService;
 import com.axelor.inject.Beans;
-import javax.persistence.PrePersist;
-import javax.persistence.PreRemove;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreRemove;
 
 public class PackagingLineListener {
 
   @PrePersist
   public void onSave(PackagingLine packagingLine) throws AxelorException {
-    Beans.get(PackagingLineService.class).updateStockMoveSet(packagingLine, true);
-    Beans.get(PackagingLineService.class).updateQtyRemainingToPackage(packagingLine, true);
+    PackagingLineService packagingLineService = Beans.get(PackagingLineService.class);
+    packagingLineService.updateStockMoveSet(packagingLine, true);
+    packagingLineService.updateQtyRemainingToPackage(packagingLine, true);
+    packagingLineService.updatePackagingMass(packagingLine, true);
   }
 
   @PreRemove
   public void onRemove(PackagingLine packagingLine) throws AxelorException {
-    Beans.get(PackagingLineService.class).updateStockMoveSet(packagingLine, false);
-    Beans.get(PackagingLineService.class).updateQtyRemainingToPackage(packagingLine, false);
+    PackagingLineService packagingLineService = Beans.get(PackagingLineService.class);
+    packagingLineService.updateStockMoveSet(packagingLine, false);
+    packagingLineService.updateQtyRemainingToPackage(packagingLine, false);
+    packagingLineService.updatePackagingMass(packagingLine, false);
   }
 }

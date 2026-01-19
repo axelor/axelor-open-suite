@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,8 +43,8 @@ import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -136,19 +136,12 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
     globalBudget.setRealizedWithPo(amountByField.get("realizedWithPo"));
     globalBudget.setTotalAmountAvailable(
         currencyScaleService.getCompanyScaledValue(
-            globalBudget,
-            (amountByField
-                    .get("totalAmountExpected")
-                    .subtract(amountByField.get("realizedWithPo"))
-                    .subtract(amountByField.get("realizedWithNoPo")))
-                .max(BigDecimal.ZERO)));
+            globalBudget, (amountByField.get("totalAmountAvailable"))));
     globalBudget.setTotalFirmGap(amountByField.get("totalFirmGap"));
     globalBudget.setSimulatedAmount(amountByField.get("simulatedAmount"));
     globalBudget.setAvailableAmountWithSimulated(
         currencyScaleService.getCompanyScaledValue(
-            globalBudget,
-            (globalBudget.getTotalAmountAvailable().subtract(amountByField.get("simulatedAmount")))
-                .max(BigDecimal.ZERO)));
+            globalBudget, amountByField.get("availableAmountWithSimulated")));
   }
 
   @Override

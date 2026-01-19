@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -64,9 +64,9 @@ import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -234,6 +234,21 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       PurchaseOrderLine purchaseOrderLine = stockMoveLine.getPurchaseOrderLine();
       unitPriceUntaxed = purchaseOrderLine.getPriceDiscounted();
       unitPriceTaxed = purchaseOrderLine.getInTaxPrice();
+
+      if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && stockMove.getIsReversion())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && !stockMove.getIsReversion())) {
+        BigDecimal shippingCoef =
+            shippingCoefService.getShippingCoef(
+                stockMoveLine.getProduct(),
+                stockMove.getPartner(),
+                stockMove.getCompany(),
+                stockMoveLine.getRealQty());
+
+        unitPriceUntaxed = unitPriceUntaxed.multiply(shippingCoef);
+        unitPriceTaxed = unitPriceTaxed.multiply(shippingCoef);
+      }
       orderUnit = purchaseOrderLine.getUnit();
     }
 

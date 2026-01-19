@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,8 +32,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,7 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
   protected AnalyticToolService analyticToolService;
   protected AppAccountService appAccountService;
   protected CurrencyScaleService currencyScaleService;
+  protected AnalyticMoveLineRepository analyticMoveLineRepository;
 
   @Inject
   public MoveLineComputeAnalyticServiceImpl(
@@ -55,13 +57,15 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
       AnalyticAccountRepository analyticAccountRepository,
       AnalyticToolService analyticToolService,
       AppAccountService appAccountService,
-      CurrencyScaleService currencyScaleService) {
+      CurrencyScaleService currencyScaleService,
+      AnalyticMoveLineRepository analyticMoveLineRepository) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.accountConfigService = accountConfigService;
     this.analyticAccountRepository = analyticAccountRepository;
     this.analyticToolService = analyticToolService;
     this.appAccountService = appAccountService;
     this.currencyScaleService = currencyScaleService;
+    this.analyticMoveLineRepository = analyticMoveLineRepository;
   }
 
   @Override
@@ -272,5 +276,43 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
           .forEach(analyticMoveLine -> analyticMoveLine.setMoveLine(null));
       moveLine.getAnalyticMoveLineList().clear();
     }
+  }
+
+  @Override
+  public void copyAnalyticsDataFromMoveLine(
+      MoveLine oldMoveLine, MoveLine newMoveLine, BigDecimal newAmount) {
+    clearAnalyticAccounting(newMoveLine);
+    initializeAnalyticFields(oldMoveLine, newMoveLine);
+
+    for (AnalyticMoveLine originalAnalyticMoveLine : oldMoveLine.getAnalyticMoveLineList()) {
+      AnalyticMoveLine analyticMoveLine =
+          analyticMoveLineRepository.copy(originalAnalyticMoveLine, false);
+
+      if (newAmount.signum() != 0 && analyticMoveLine.getPercentage().signum() != 0) {
+        int signum = analyticMoveLine.getAmount().signum();
+        BigDecimal amount =
+            newAmount.multiply(
+                analyticMoveLine
+                    .getPercentage()
+                    .multiply(BigDecimal.valueOf(signum))
+                    .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP));
+        analyticMoveLine.setAmount(
+            currencyScaleService.getCompanyScaledValue(analyticMoveLine, amount));
+      }
+
+      analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
+      analyticMoveLine.setMoveLine(null);
+      newMoveLine.addAnalyticMoveLineListItem(analyticMoveLine);
+    }
+  }
+
+  protected void initializeAnalyticFields(MoveLine oldMoveLine, MoveLine newMoveLine) {
+    newMoveLine.setAnalyticDistributionTemplate(oldMoveLine.getAnalyticDistributionTemplate());
+
+    newMoveLine.setAxis1AnalyticAccount(oldMoveLine.getAxis1AnalyticAccount());
+    newMoveLine.setAxis2AnalyticAccount(oldMoveLine.getAxis2AnalyticAccount());
+    newMoveLine.setAxis3AnalyticAccount(oldMoveLine.getAxis3AnalyticAccount());
+    newMoveLine.setAxis4AnalyticAccount(oldMoveLine.getAxis4AnalyticAccount());
+    newMoveLine.setAxis5AnalyticAccount(oldMoveLine.getAxis5AnalyticAccount());
   }
 }

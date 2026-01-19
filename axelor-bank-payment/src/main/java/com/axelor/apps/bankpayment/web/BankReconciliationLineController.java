@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -89,19 +89,6 @@ public class BankReconciliationLineController {
             bankReconciliationLineRepository.find(bankReconciliationLineContext.getId()), moveLine);
       }
 
-      response.setReload(true);
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void setSelected(ActionRequest request, ActionResponse response) {
-    try {
-      BankReconciliationLine bankReconciliationLineContext =
-          request.getContext().asType(BankReconciliationLine.class);
-
-      bankReconciliationLineContext =
-          Beans.get(BankReconciliationLineService.class).setSelected(bankReconciliationLineContext);
       response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);

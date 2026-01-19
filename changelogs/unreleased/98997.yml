@@ -1,6 +1,0 @@
----
-title: "SaleOrder/Analytic : fixed the blocking of sale order when analytic template is required and there is no values"
-module: axelor-supplychain
-developer:
-  Added AnalyticToolSupplychainService in SaleOrderFinalizeSupplychainServiceImpl constructor.
-  Added AnalyticToolSupplychainService in SaleOrderFinalizeBudgetServiceImpl constructor.

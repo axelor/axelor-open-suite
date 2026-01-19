@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <selection name="training.register.rating.select">
     <option value="0">0 %</option>
@@ -70,6 +70,16 @@
 
   <selection name="sequence.generic.code.select" id="talent.sequence.generic.code.select">
     <option value="jobPosition">Job position</option>
+  </selection>
+
+  <selection name="job.application.family.status.select">
+    <option value="0">Single</option>
+    <option value="1">Married</option>
+    <option value="2">In a civil partnership / In a domestic partnership</option>
+    <option value="3">Cohabiting / Living together</option>
+    <option value="4">Divorced</option>
+    <option value="5">Widowed</option>
+    <option value="6">Separated</option>
   </selection>
 
 </object-views>

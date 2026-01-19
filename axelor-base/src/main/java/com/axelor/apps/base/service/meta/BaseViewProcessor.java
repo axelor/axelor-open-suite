@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,28 +18,33 @@
  */
 package com.axelor.apps.base.service.meta;
 
+import com.axelor.apps.base.service.indicator.IndicatorMetaService;
 import com.axelor.apps.base.service.pricing.PricingMetaService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplateMetaService;
 import com.axelor.meta.schema.views.AbstractView;
 import com.axelor.meta.service.ViewProcessor;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class BaseViewProcessor implements ViewProcessor {
 
   protected PricingMetaService pricingMetaService;
   protected PrintingTemplateMetaService printingTemplateMetaService;
+  protected IndicatorMetaService indicatorMetaService;
 
   @Inject
   public BaseViewProcessor(
       PricingMetaService pricingMetaService,
-      PrintingTemplateMetaService printingTemplateMetaService) {
+      PrintingTemplateMetaService printingTemplateMetaService,
+      IndicatorMetaService indicatorMetaService) {
     this.pricingMetaService = pricingMetaService;
     this.printingTemplateMetaService = printingTemplateMetaService;
+    this.indicatorMetaService = indicatorMetaService;
   }
 
   @Override
   public void process(AbstractView view) {
     pricingMetaService.managePricing(view);
     printingTemplateMetaService.addPrintButton(view);
+    indicatorMetaService.process(view);
   }
 }

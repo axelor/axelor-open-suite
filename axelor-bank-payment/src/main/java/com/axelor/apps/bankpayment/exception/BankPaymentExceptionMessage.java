@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -63,18 +63,17 @@ public final class BankPaymentExceptionMessage {
       "%s : Please configure an ICS number for the company %s." /*)*/;
 
   /** BankOrder service */
-  public static final String BANK_ORDER_DATE = /*$$(*/ "Bank Order date can't be in the past" /*)*/;
-
   public static final String BANK_ORDER_DATE_MISSING = /*$$(*/ "Please fill bank order date" /*)*/;
+
   public static final String BANK_ORDER_TYPE_MISSING = /*$$(*/ "Please fill bank order type" /*)*/;
+  public static final String BANK_ORDER_FILE_FORMAT_MISSING = /*$$(*/
+      "Please fill the bank order file format on the payment mode %s" /*)*/;
   public static final String BANK_ORDER_PARTNER_TYPE_MISSING = /*$$(*/
       "Please fill partner type for the bank order" /*)*/;
   public static final String BANK_ORDER_COMPANY_MISSING = /*$$(*/
       "Please fill the sender company" /*)*/;
   public static final String BANK_ORDER_BANK_DETAILS_MISSING = /*$$(*/
       "Please fill the bank details" /*)*/;
-  public static final String BANK_ORDER_CURRENCY_MISSING = /*$$(*/
-      "Please fill currency for the bank order" /*)*/;
   public static final String BANK_ORDER_AMOUNT_NEGATIVE = /*$$(*/
       "Amount value of the bank order is not valid" /*)*/;
   public static final String BANK_ORDER_PAYMENT_MODE_MISSING = /*$$(*/
@@ -347,4 +346,10 @@ public final class BankPaymentExceptionMessage {
 
   public static final String BANK_STATEMENT_BANK_DETAILS_NOT_EXIST_ERROR = /*$$(*/
       "Error: The bank details doesn't exist." /*)*/;
+
+  public static final String INVOICE_PAYMENT_ALERT_BANK_ORDER_REVERSE = /*$$(*/
+      "Warning: this payment is related to a carried out bank order. Do you want to reverse the payment accounting entry ?" /*)*/;
+
+  public static final String BANK_ORDER_MISSING_RECEIVER_BANK_DETAILS = /*$$(*/
+      "The recipient partner attached to the employee does not have an associated bank account, please create one." /*)*/;
 }

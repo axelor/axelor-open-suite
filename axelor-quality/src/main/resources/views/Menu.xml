@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <menuitem name="menu-quality-root" order="-1700" if="__config__.app.isApp('quality')"
     title="Quality" icon="check" icon-background="#3f6bb9"/>
@@ -104,7 +104,7 @@
   </action-view>
 
   <menuitem name="quality-reportings" parent="menu-quality-root" title="Reportings"
-    icon="fa-bar-chart" order="500"/>
+    icon="bar-chart" order="500"/>
 
   <menuitem name="quality-reportings-dashboard" parent="quality-reportings"
     title="Quality Dashboard" action="quality.dashboard.view" order="100"/>
@@ -114,7 +114,7 @@
   </action-view>
 
   <menuitem name="quality-configurations" parent="menu-quality-root" title="Configuration"
-    icon="fa-cog" order="600"/>
+    icon="gear" order="600"/>
 
   <menuitem name="quality-control-plan-frequencies" parent="quality-configurations"
     title="Control plan frequencies" action="quality.control.plan.frequencies.view" order="80"/>
@@ -170,7 +170,7 @@
   <action-view name="quality.tags" title="Tags" model="com.axelor.apps.base.db.Tag">
     <view type="grid" name="tag-simplified-grid"/>
     <view type="form" name="tag-form"/>
-    <domain>:_packageName IN self.concernedModelSet.packageName OR self.concernedModelSet IS EMPTY</domain>
+    <domain>:_packageName IN (self.concernedModelSet.packageName) OR self.concernedModelSet IS EMPTY</domain>
     <context name="_packageName" expr="eval: 'com.axelor.apps.quality.db'"/>
   </action-view>
 

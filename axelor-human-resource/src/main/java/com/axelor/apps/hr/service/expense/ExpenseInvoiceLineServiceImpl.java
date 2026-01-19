@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,9 +64,9 @@ public class ExpenseInvoiceLineServiceImpl implements ExpenseInvoiceLineService 
               invoice,
               product,
               product.getName(),
-              expenseLine.getUntaxedAmount(),
-              expenseLine.getTotalAmount(),
-              expenseLine.getUntaxedAmount(),
+              expenseLine.getCompanyUntaxedAmount(),
+              expenseLine.getCompanyTotalAmount(),
+              expenseLine.getCompanyUntaxedAmount(),
               expenseLine.getComments(),
               BigDecimal.ONE,
               product.getUnit(),
@@ -74,8 +74,8 @@ public class ExpenseInvoiceLineServiceImpl implements ExpenseInvoiceLineService 
               priority,
               BigDecimal.ZERO,
               PriceListLineRepository.AMOUNT_TYPE_NONE,
-              expenseLine.getUntaxedAmount(),
-              expenseLine.getTotalAmount(),
+              expenseLine.getCompanyUntaxedAmount(),
+              expenseLine.getCompanyTotalAmount(),
               false) {
 
             @Override
@@ -95,9 +95,9 @@ public class ExpenseInvoiceLineServiceImpl implements ExpenseInvoiceLineService 
               invoice,
               product,
               product.getName(),
-              expenseLine.getUntaxedAmount(),
-              expenseLine.getTotalAmount(),
-              expenseLine.getTotalAmount(),
+              expenseLine.getCompanyUntaxedAmount(),
+              expenseLine.getCompanyTotalAmount(),
+              expenseLine.getCompanyTotalAmount(),
               expenseLine.getComments(),
               BigDecimal.ONE,
               product.getUnit(),
@@ -105,8 +105,8 @@ public class ExpenseInvoiceLineServiceImpl implements ExpenseInvoiceLineService 
               priority,
               BigDecimal.ZERO,
               PriceListLineRepository.AMOUNT_TYPE_NONE,
-              expenseLine.getUntaxedAmount(),
-              expenseLine.getTotalAmount(),
+              expenseLine.getCompanyUntaxedAmount(),
+              expenseLine.getCompanyTotalAmount(),
               false) {
 
             @Override

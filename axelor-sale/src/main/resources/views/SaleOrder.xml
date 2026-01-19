@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="sale-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
     <toolbar>
       <button name="printBtn" title="Print"
-        onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
+        onClick="action-sale-order-method-show-sale-order" icon="printer"/>
     </toolbar>
     <menubar>
-      <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="saleOrderToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-sale-order-method-convert-selected-lines-to-merge-lines"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
@@ -39,9 +39,9 @@
     <field name="statusSelect" widget="single-select"/>
     <field name="lastReminderDate"/>
     <field name="lastReminderComments"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="printer"
       onClick="action-sale-order-method-show-sale-order"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -49,10 +49,10 @@
     orderBy="-creationDate">
     <toolbar>
       <button name="printBtn" title="Print"
-        onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
+        onClick="action-sale-order-method-show-sale-order" icon="printer"/>
     </toolbar>
     <menubar>
-      <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="saleOrderToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="seeSaleOrderLinesItem" title="See sale orders lines"
           action="action-view-open-sale-order-lines"/>
       </menu>
@@ -81,9 +81,9 @@
     <field name="deliveryState" if="__config__.app.isApp('supplychain')"/>
     <field name="statusSelect" widget="single-select"/>
     <field name="salespersonUser"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="printer"
       onClick="action-sale-order-method-show-sale-order"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -91,10 +91,10 @@
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
     <toolbar>
       <button name="printBtn" title="Print"
-        onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
+        onClick="action-sale-order-method-show-sale-order" icon="printer"/>
     </toolbar>
     <menubar>
-      <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="saleOrderToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="seeSaleOrderLinesItem" title="See sale orders lines"
           action="action-view-open-sale-order-lines"/>
       </menu>
@@ -111,9 +111,9 @@
     <field name="exTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" x-scale="currency.numberOfDecimals"/>
     <field name="statusSelect" widget="single-select"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="printer"
       onClick="action-sale-order-method-show-sale-order"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -133,9 +133,9 @@
     <field name="inTaxTotalRemainingToOrder" aggregate="sum"
       x-scale="currency.numberOfDecimals"/>
     <field name="statusSelect" widget="single-select"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="printer"
       onClick="action-sale-order-method-show-sale-order"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -153,9 +153,9 @@
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" widget="single-select"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="printer"
       onClick="action-sale-order-method-show-sale-order"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -210,7 +210,7 @@
         grid-view="stock-location-grid" if="__config__.app.isApp('supplychain')"/>
       <field name="$contactPartner" title="Contact partner" type="many-to-one"
         target="com.axelor.apps.base.db.Partner" x-image-field="picture"
-        domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
+        domain="self.isContact IS TRUE AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT cp.id FROM part.contactPartnerSet cp))"
         colSpan="6" colOffset="3" width="200px" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <field name="$tradingName"
@@ -275,16 +275,13 @@
     model="com.axelor.apps.sale.db.SaleOrder" onLoad="action-group-sale-saleorder-onload"
     onNew="action-sale-order-method-onnew">
     <toolbar>
-      <button name="printBtn" title="Reports" icon="fa-print" hideIf="clientPartner == null"
+      <button name="printBtn" title="Reports" icon="printer" hideIf="clientPartner == null"
         readonlyIf="!id" onClick="save,action-sale-order-view-reports-wizard"/>
-      <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+      <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
         onClick="action-send-by-email-with-template" hidden="true" showIf="id"/>
-      <button name="estimatePackagingBtn" title="Estimate packaging" icon="fa-envelope"
-        onClick="save,action-sale-order-method-estimate-packaging"
-        readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
       <button name="recomputePricesBtn" title="Recompute prices"
         onClick="action-sale-order-group-recompute-prices-btn" showIf="statusSelect == 1"
-        icon="fa-calculator"
+        icon="calculator"
         if="__config__.app.getApp('sale')?.getIsEnableCalculationEntireQuotation()"/>
     </toolbar>
     <menubar>
@@ -602,12 +599,16 @@
           form-view="partner-form" grid-view="partner-grid"/>
         <field name="incoterm" canEdit="false" form-view="incoterm-form"
           grid-view="incoterm-grid" if="__config__.app.getApp('stock')?.isIncotermEnabled"/>
+        <field name="shippingCost" title="SaleOrder.shippingCost"
+          x-scale="company.currency.numberOfDecimals"
+          onChange="action-sale-order-method-compute-margin"/>
         <field name="isNeedingConformityCertificate" colSpan="3"/>
         <field name="isIspmRequired" readonly="true" colSpan="3"/>
         <button name="customerDeliveriesDetailsBtn" title="Customer deliveries details"
           showIf="statusSelect >= 3" colSpan="6" onClick="action-view-show-stock-move-line"/>
-        <panel-dashlet name="customerDeliveriesPanel" title="Customer deliveries"
-          showIf="statusSelect >= 3" colSpan="12" action="action-sale-order-view-stock-moves"/>
+        <panel-related name="stockMovesPanel" field="stockMoveList"
+          grid-view="stock-move-sale-order-grid" form-view="stock-move-form"
+          showIf="statusSelect >= 3" colSpan="12" readonly="true"/>
         <panel name="deliveryCommentsPanel" title="Comment to display on delivery"
           colSpan="12">
           <field name="deliveryComments" widget="html" colSpan="12" showTitle="false"/>
@@ -692,13 +693,14 @@
           colSpan="4" widget="boolean-switch"
           if="__config__.app.getApp('sale')?.isPastVersionRecovery"/>
         <spacer colSpan="4" if="!__config__.app.getApp('sale')?.isPastVersionRecovery"/>
-        <button name="lastVersionBtn" title="Go to last version" icon="fa-arrow-right"
+        <button name="lastVersionBtn" title="Go to last version" icon="arrow-right"
           css="btn-custom text-left" onClick="action-sale-order-method-get-last-version" colSpan="4"
           showIf="(statusSelect == 1 || statusSelect == 2) &amp;&amp; $previousVersionNumber != versionNumber - 1"/>
         <spacer colSpan="4"/>
-        <button name="versionRecoveryBtn" title="Recover from this version" icon="fa-upload"
-          css="btn-custom text-left" onClick="action-sale-order-group-version-recovery-btn"
-          colSpan="4" if="__config__.app.getApp('sale')?.isPastVersionRecovery"
+        <button name="versionRecoveryBtn" title="Recover from this version"
+          icon="restore_page" css="btn-custom text-left"
+          onClick="action-sale-order-group-version-recovery-btn" colSpan="4"
+          if="__config__.app.getApp('sale')?.isPastVersionRecovery"
           showIf="(statusSelect == 1 || statusSelect == 2) "/>
         <spacer colSpan="6" if="!__config__.app.getApp('sale')?.isPastVersionRecovery"/>
 
@@ -1163,7 +1165,7 @@
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" widget="single-select"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="printer"
       onClick="action-sale-order-method-show-sale-order"/>
   </grid>
 
@@ -1172,7 +1174,7 @@
     onLoad="action-group-sale-saleorder-onload" onSave="action-group-sale-order-onsave"
     onNew="action-sale-order-method-onnew" width="large">
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
+      <button name="printBtn" title="Print" icon="printer"
         onClick="save,action-sale-order-method-show-sale-order"/>
     </toolbar>
     <panel name="mainPanel" readonly="true">
@@ -1397,7 +1399,7 @@
   <cards name="sale-order-cards" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     width="360px" css="rect-image" orderBy="-orderDate">
     <menubar>
-      <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="saleOrderToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="seeSaleOrderLinesItem" title="See sale orders lines"
           action="action-view-open-sale-order-lines"/>
       </menu>
@@ -1468,10 +1470,10 @@
     model="com.axelor.apps.sale.db.SaleOrder" width="360px" css="rect-image" orderBy="-orderDate">
     <toolbar>
       <button name="printBtn" title="Print"
-        onClick="action-sale-order-method-show-sale-order" icon="fa-print"/>
+        onClick="action-sale-order-method-show-sale-order" icon="printer"/>
     </toolbar>
     <menubar>
-      <menu name="saleOrderToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="saleOrderToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="mergeQuotationsItem" title="Merge quotations"
           action="action-open-sale-quotation-merge-form"/>
         <item name="seeQuotationLinesItem" title="See quotation lines"
@@ -1850,6 +1852,8 @@
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"
       if="__config__.app.getApp('sale')?.getSalespersonSelect() == 1"/>
+    <field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"
+      if="__config__.app.isApp('supplychain') &amp;&amp; clientPartner?.shipmentMode != null"/>
   </action-record>
 
   <action-record name="action-sale-order-record-hide-discount"
@@ -2032,21 +2036,11 @@
     <view type="form" name="stock-move-line-all-form"/>
     <domain>self.id in (SELECT smLine.id FROM StockMoveLine smLine
       JOIN StockMove sm ON
-      (smLine.stockMove = sm.id)
+      (smLine.stockMove.id = sm.id)
       JOIN SaleOrder so ON (so MEMBER OF sm.saleOrderSet AND so.id =
       :saleOrder))</domain>
     <context name="saleOrder" expr="eval: __self__.id"/>
   </action-view>
-
-  <action-view name="action-sale-order-view-stock-moves" title="Stock moves"
-    model="com.axelor.apps.stock.db.StockMove">
-    <view type="grid" name="stock-move-sale-order-grid"/>
-    <view type="form" name="stock-move-form"/>
-    <domain>:saleOrder MEMBER OF self.saleOrderSet</domain>
-    <context name="saleOrder" expr="eval: __this__.id"/>
-    <context name="_userType" expr="eval: __repo__(StockMove).USER_TYPE_SALESPERSON"/>
-  </action-view>
-
 
   <action-view name="action-view-open-quotation-lines" title="Quotation lines"
     model="com.axelor.apps.sale.db.SaleOrderLine">
@@ -2354,8 +2348,8 @@
     <domain>self.originSaleQuotation.id = :id</domain>
   </action-view>
 
-  <action-method name="action-sale-order-method-estimate-packaging">
-    <call class="com.axelor.apps.sale.web.SaleOrderController" method="estimatePackaging"/>
+  <action-method name="action-sale-order-method-compute-margin">
+    <call class="com.axelor.apps.sale.web.SaleOrderController" method="computeMargin"/>
   </action-method>
 
 </object-views>

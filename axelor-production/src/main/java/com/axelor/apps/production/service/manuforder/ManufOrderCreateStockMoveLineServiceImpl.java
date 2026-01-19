@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -195,23 +195,26 @@ public class ManufOrderCreateStockMoveLineServiceImpl
       StockLocation toStockLocation)
       throws AxelorException {
 
-    return stockMoveLineService.createStockMoveLine(
-        prodProduct.getProduct(),
-        (String)
-            productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
-        (String)
-            productCompanyService.get(
-                prodProduct.getProduct(), "description", stockMove.getCompany()),
-        qty,
-        costPrice,
-        costPrice,
-        prodProduct.getUnit(),
-        stockMove,
-        inOrOutType,
-        false,
-        BigDecimal.ZERO,
-        fromStockLocation,
-        toStockLocation);
+    StockMoveLine stockMoveLine =
+        stockMoveLineService.createStockMoveLine(
+            prodProduct.getProduct(),
+            (String)
+                productCompanyService.get(prodProduct.getProduct(), "name", stockMove.getCompany()),
+            (String)
+                productCompanyService.get(
+                    prodProduct.getProduct(), "description", stockMove.getCompany()),
+            qty,
+            costPrice,
+            costPrice,
+            prodProduct.getUnit(),
+            stockMove,
+            inOrOutType,
+            false,
+            BigDecimal.ZERO,
+            fromStockLocation,
+            toStockLocation);
+    stockMoveLine.getStockMove().addStockMoveLineListItem(stockMoveLine);
+    return stockMoveLine;
   }
 
   /**

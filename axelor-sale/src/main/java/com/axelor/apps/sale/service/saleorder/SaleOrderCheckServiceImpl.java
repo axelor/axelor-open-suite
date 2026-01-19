@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,7 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppSale;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,16 +94,26 @@ public class SaleOrderCheckServiceImpl implements SaleOrderCheckService {
   @Override
   public boolean priceListIsNotValid(SaleOrder saleOrder) {
     PriceList priceList = saleOrder.getPriceList();
+
     if (priceList == null) {
       return false;
     }
     LocalDate todayDate = appBaseService.getTodayDate(null);
     LocalDate priceListBeginDate = priceList.getApplicationBeginDate();
     LocalDate priceListEndDate = priceList.getApplicationEndDate();
+    if (priceListBeginDate == null && priceListEndDate == null) {
+      return false;
+    }
 
-    boolean beginDateNotValid =
-        priceListBeginDate == null || priceListBeginDate.isBefore(todayDate);
-    boolean endDateNotValid = priceListEndDate == null || priceListEndDate.isAfter(todayDate);
+    boolean beginDateNotValid = false;
+    boolean endDateNotValid = false;
+    if (priceListBeginDate != null) {
+      beginDateNotValid = todayDate.isBefore(priceListBeginDate);
+    }
+    if (priceListEndDate != null) {
+      endDateNotValid = todayDate.isAfter(priceListEndDate);
+    }
+
     return !priceList.getIsActive() || beginDateNotValid || endDateNotValid;
   }
 

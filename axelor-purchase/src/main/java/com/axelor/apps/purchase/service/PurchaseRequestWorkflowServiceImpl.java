@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,11 +23,21 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.purchase.db.PurchaseRequest;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
+import com.axelor.apps.purchase.service.purchase.request.PurchaseRequestToPoCreateService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkflowService {
+
+  protected final PurchaseRequestToPoCreateService purchaseRequestToPoCreateService;
+
+  @Inject
+  public PurchaseRequestWorkflowServiceImpl(
+      PurchaseRequestToPoCreateService purchaseRequestToPoCreateService) {
+    this.purchaseRequestToPoCreateService = purchaseRequestToPoCreateService;
+  }
 
   @Transactional(rollbackOn = {Exception.class})
   @Override
@@ -64,6 +74,11 @@ public class PurchaseRequestWorkflowServiceImpl implements PurchaseRequestWorkfl
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(PurchaseExceptionMessage.PURCHASE_REQUEST_PURCHASE_WRONG_STATUS));
     }
+
+    if (purchaseRequest.getPurchaseOrder() == null) {
+      purchaseRequestToPoCreateService.createFromRequest(purchaseRequest);
+    }
+
     purchaseRequest.setStatusSelect(PurchaseRequestRepository.STATUS_PURCHASED);
   }
 

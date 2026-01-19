@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,21 +19,29 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.base.db.Frequency;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
+import com.axelor.apps.project.service.ProjectTaskProgressUpdateService;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.app.AppProjectService;
+import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.mail.db.repo.MailFollowerRepository;
+import jakarta.persistence.PersistenceException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.PersistenceException;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,6 +109,20 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
 
     projectTask.setDescription(projectTaskService.getTaskLink(projectTask.getDescription()));
 
+    updateMailFollowers(projectTask);
+
+    try {
+      ProjectTaskProgressUpdateService projectTaskProgressUpdateService =
+          Beans.get(ProjectTaskProgressUpdateService.class);
+      projectTask =
+          projectTaskProgressUpdateService.updateChildrenProgress(
+              projectTask, projectTask.getProgress());
+      projectTask = projectTaskProgressUpdateService.updateParentsProgress(projectTask);
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
+    Beans.get(ProjectTaskService.class).computeProjectTaskLevels(project);
     return super.save(projectTask);
   }
 
@@ -140,7 +162,7 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
           json.put("taskDuration", durationHours.multiply(new BigDecimal(3600)).intValue());
         }
       } else if (json.get("taskDuration") != null) {
-        Integer taskDuration = new Integer(json.get("taskDuration").toString());
+        Integer taskDuration = Integer.parseInt(json.get("taskDuration").toString());
         logger.debug("Updating durationHours: {}", taskDuration / 3600);
         json.put("durationHours", new BigDecimal(taskDuration / 3600));
       }
@@ -152,7 +174,7 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
         json.put("plannedProgress", progress);
       }
       if (json.get("taskDuration") != null) {
-        Integer taskDuration = new Integer(json.get("taskDuration").toString());
+        Integer taskDuration = Integer.parseInt(json.get("taskDuration").toString());
         json.put("durationHours", new BigDecimal(taskDuration / 3600));
       }
     }
@@ -168,7 +190,18 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
     task.setPriority(null);
     task.setProgress(null);
     task.setTaskEndDate(null);
-    task.setMetaFile(null);
     return task;
+  }
+
+  protected void updateMailFollowers(ProjectTask projectTask) {
+    MailFollowerRepository followers = Beans.get(MailFollowerRepository.class);
+
+    Stream<User> assignedTo = Stream.ofNullable(projectTask.getAssignedTo());
+    Stream<User> watchers =
+        Optional.ofNullable(projectTask.getWatcherUserSet()).stream().flatMap(Collection::stream);
+    Stream.concat(assignedTo, watchers)
+        .filter(Objects::nonNull)
+        .distinct()
+        .forEach(user -> followers.follow(projectTask, user));
   }
 }

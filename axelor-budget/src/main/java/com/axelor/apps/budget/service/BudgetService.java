@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -86,14 +86,6 @@ public interface BudgetService {
    * @return BigDecimal
    */
   public BigDecimal computeToBeCommittedAmount(Budget budget);
-
-  /**
-   * Compute all firm gap amount in budget lines, set the total firm gap on budget and return it
-   *
-   * @param budget
-   * @return BigDecimal
-   */
-  public BigDecimal computeFirmGap(Budget budget);
 
   /**
    * Check if budget key are filled in all budgets if needed, validate budget and save it Throw an

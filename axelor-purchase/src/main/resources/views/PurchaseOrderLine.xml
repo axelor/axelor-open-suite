@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="purchase-order-line-purchase-order-grid" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -11,7 +11,7 @@
     <hilite color="success" if="receiptState == 3"/>
     <field name="$hasWarning" hidden="true"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
-      icon="fa-exclamation-triangle"/>
+      icon="exclamation-triangle"/>
     <field name="sequence"
       if="__config__.app.getApp('purchase')?.isDisplayPurchaseOrderLineNumber" width="51"/>
     <field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')"/>
@@ -43,7 +43,7 @@
     name="purchase-order-line-grid" canNew="false" canDelete="false" canEdit="false">
     <field name="$hasWarning" hidden="true"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
-      icon="fa-exclamation-triangle"/>
+      icon="exclamation-triangle"/>
     <field name="purchaseOrder.purchaseOrderSeq" width="120"/>
     <field name="purchaseOrder.supplierPartner" form-view="partner-form"
       grid-view="partner-grid"/>
@@ -199,8 +199,8 @@
           </panel>
           <field name="taxLineSet" canEdit="false" canNew="false"
             onChange="action-group-purchase-purchase-orderline-taxline-onchange"
-            domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
-            form-view="tax-line-form" widget="TagSelect"/>
+            domain="self.endDate IS null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
+            form-view="tax-line-form" widget="Tags"/>
           <field name="exTaxTotal" colSpan="3" readonly="true"
             x-scale="$currency.numberOfDecimals"/>
           <field name="inTaxTotal" colSpan="3" readonly="true"
@@ -264,6 +264,10 @@
         <field name="amountInvoiced" x-scale="$nbDecimalDigitForUnitPrice"/>
         <panel-dashlet name="POLineInvoicelinesPanel"
           action="action-purchase-order-line-view-show-invoice-lines" colSpan="12"/>
+      </panel>
+      <panel name="settingsPanel" title="Configuration"
+        showIf="pricingScaleLogs &amp;&amp; product">
+        <field name="pricingScaleLogs" colSpan="12"/>
       </panel>
     </panel-tabs>
     <panel name="attrsPanel">
@@ -453,7 +457,7 @@
   <action-attrs name="action-purchase-order-line-attrs-product-domain">
     <attribute name="domain" for="product"
       if="!__config__.app.getApp('purchase')?.enablePurchasesProductByTradName || _parent?.company?.tradingNameList == null || _parent?.company?.tradingNameList.isEmpty()"
-      expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.dtype = 'Product'&quot;
+      expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate IS null or self.endDate &gt; :__date__) and self.purchasable = true and self.dtype = 'Product'&quot;
 			+ (isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog() ? &quot; and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.supplierPartner?.id})&quot; : &quot;&quot;)
       + (__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.find({it.name == 'purchasable'}) ? &quot; and (SELECT purchasable FROM ProductCompany productCompany WHERE productCompany.product.id = self.id AND productCompany.company.id = ${__parent__ ? __parent__.company.id : purchaseOrder.company.id}) IS TRUE&quot; : &quot;&quot;)
 			+ (__config__.app.getApp('purchase')?.enablePurchasesProductByTradName &amp;&amp; _parent?.company?.tradingNameList != null &amp;&amp; !_parent?.company?.tradingNameList.isEmpty() ? &quot; and ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet &quot; : &quot;&quot;)"/>

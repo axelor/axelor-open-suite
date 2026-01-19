@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@ import com.axelor.apps.hr.rest.dto.ProjectPlanningTimeRestrictedValueResponse;
 import com.axelor.apps.project.db.PlannedTimeValue;
 import com.axelor.apps.project.db.ProjectConfig;
 import com.axelor.apps.project.service.config.ProjectConfigService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 

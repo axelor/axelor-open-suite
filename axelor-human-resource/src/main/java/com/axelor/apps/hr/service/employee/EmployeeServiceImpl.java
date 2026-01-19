@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
+import com.axelor.apps.base.service.theme.MetaThemeFetchService;
 import com.axelor.apps.base.service.user.UserServiceImpl;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.DPAE;
@@ -39,11 +40,13 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import com.axelor.meta.MetaFiles;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
@@ -61,10 +64,14 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
   @Inject
   public EmployeeServiceImpl(
+      UserRepository userRepo,
+      MetaFiles metaFiles,
+      MetaThemeFetchService metaThemeFetchService,
       WeeklyPlanningService weeklyPlanningService,
       HRConfigService hrConfigService,
       AppBaseService appBaseService,
       EmployeeRepository employeeRepository) {
+    super(userRepo, metaFiles, metaThemeFetchService);
     this.weeklyPlanningService = weeklyPlanningService;
     this.hrConfigService = hrConfigService;
     this.appBaseService = appBaseService;
@@ -165,25 +172,33 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     name = name == null ? "" : name;
     urlMap.put(
         "facebook",
-        "<a class='fa fa-facebook' href='https://www.facebook.com/search/more/?q="
+        "<a href='https://www.facebook.com/search/more/?q="
             + name
             + "&init=public"
-            + "' target='_blank'/>");
+            + "' target='_blank' >"
+            + "<img src='img/social/facebook.svg'/>"
+            + "</a>");
     urlMap.put(
         "twitter",
-        "<a class='fa fa-twitter' href='https://twitter.com/search?q="
+        "<a href='https://x.com/search?q="
             + name
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/twitter-x.svg'/>"
+            + "</a>");
     urlMap.put(
         "linkedin",
-        "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
+        "<a href='http://www.linkedin.com/pub/dir/"
             + name.replace("+", "/")
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/linkedin.svg'/>"
+            + "</a>");
     urlMap.put(
         "youtube",
-        "<a class='fa fa-youtube' href='https://www.youtube.com/results?search_query="
+        "<a href='https://www.youtube.com/results?search_query="
             + name
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/youtube.svg'/>"
+            + "</a>");
 
     return urlMap;
   }

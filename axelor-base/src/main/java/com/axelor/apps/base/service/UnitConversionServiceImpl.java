@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,9 +36,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.utils.template.TemplateMaker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.inject.Inject;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -92,7 +92,7 @@ public class UnitConversionServiceImpl implements UnitConversionService {
       throws AxelorException {
     List<UnitConversion> unitConversionList = new ArrayList<>();
     if (startUnit != null && endUnit != null && startUnit != endUnit) {
-      unitConversionList = fetchUnitConversionList(startUnit, endUnit);
+      unitConversionList = fetchUnitConversionList(startUnit, endUnit, true);
     }
     return convert(unitConversionList, startUnit, endUnit, value, scale, product, "Product");
   }
@@ -164,7 +164,7 @@ public class UnitConversionServiceImpl implements UnitConversionService {
       throws AxelorException, CompilationFailedException, ClassNotFoundException, IOException {
     List<UnitConversion> unitConversionList = new ArrayList<>();
     if (startUnit != null && endUnit != null && startUnit != endUnit) {
-      unitConversionList = fetchUnitConversionList(startUnit, endUnit);
+      unitConversionList = fetchUnitConversionList(startUnit, endUnit, true);
     }
     return getCoefficient(unitConversionList, startUnit, endUnit, product, "Product");
   }
@@ -245,7 +245,8 @@ public class UnitConversionServiceImpl implements UnitConversionService {
         endUnit.getName());
   }
 
-  protected List<UnitConversion> fetchUnitConversionList(Unit startUnit, Unit endUnit) {
+  protected List<UnitConversion> fetchUnitConversionList(
+      Unit startUnit, Unit endUnit, boolean autoFlush) {
     String key = getKey(startUnit, endUnit);
     List<UnitConversion> unitConversionList = unitConversionCache.getIfPresent(key);
     if (unitConversionList != null) {
@@ -254,6 +255,7 @@ public class UnitConversionServiceImpl implements UnitConversionService {
     unitConversionList =
         unitConversionRepo
             .all()
+            .autoFlush(autoFlush)
             .filter(
                 "self.entitySelect = :entitySelect AND ((self.startUnit = :startUnit AND self.endUnit = :endUnit) OR (self.startUnit = :endUnit AND self.endUnit = :startUnit))")
             .bind("entitySelect", UnitConversionRepository.ENTITY_ALL)
@@ -269,5 +271,16 @@ public class UnitConversionServiceImpl implements UnitConversionService {
         .sorted()
         .map(String::valueOf)
         .collect(Collectors.joining("::"));
+  }
+
+  @Override
+  public BigDecimal convertWithAutoFlushFalse(
+      Unit startUnit, Unit endUnit, BigDecimal value, int scale, Product product)
+      throws AxelorException {
+    List<UnitConversion> unitConversionList = new ArrayList<>();
+    if (startUnit != null && endUnit != null && startUnit != endUnit) {
+      unitConversionList = fetchUnitConversionList(startUnit, endUnit, false);
+    }
+    return convert(unitConversionList, startUnit, endUnit, value, scale, product, "Product");
   }
 }

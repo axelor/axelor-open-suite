@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,8 +30,8 @@ import com.axelor.apps.supplychain.db.FreightCarrierPricing;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -72,6 +72,7 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
           freightCarrierModeRepository.find(freightCarrierPricing.getFreightCarrierMode().getId()));
       saleOrder.setCarrierPartner(
           partnerRepository.find(freightCarrierPricing.getCarrierPartner().getId()));
+      saleOrder.setShippingCost(freightCarrierPricing.getPricingAmount());
 
       if (saleOrder.getEstimatedShippingDate() != null) {
         saleOrder.setEstimatedDeliveryDate(

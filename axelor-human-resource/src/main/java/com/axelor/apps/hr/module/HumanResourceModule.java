@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -78,8 +78,16 @@ import com.axelor.apps.hr.service.HRDashboardService;
 import com.axelor.apps.hr.service.HRDashboardServiceImpl;
 import com.axelor.apps.hr.service.KilometricExpenseService;
 import com.axelor.apps.hr.service.KilometricExpenseServiceImpl;
+import com.axelor.apps.hr.service.KilometricGoogleService;
+import com.axelor.apps.hr.service.KilometricGoogleServiceImpl;
 import com.axelor.apps.hr.service.KilometricLogService;
 import com.axelor.apps.hr.service.KilometricLogServiceImpl;
+import com.axelor.apps.hr.service.KilometricOsmService;
+import com.axelor.apps.hr.service.KilometricOsmServiceImpl;
+import com.axelor.apps.hr.service.KilometricResponseToolService;
+import com.axelor.apps.hr.service.KilometricResponseToolServiceImpl;
+import com.axelor.apps.hr.service.KilometricService;
+import com.axelor.apps.hr.service.KilometricServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitService;
 import com.axelor.apps.hr.service.MedicalVisitServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowService;
@@ -156,6 +164,8 @@ import com.axelor.apps.hr.service.expense.ExpensePrintService;
 import com.axelor.apps.hr.service.expense.ExpensePrintServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseRecordService;
+import com.axelor.apps.hr.service.expense.ExpenseRecordServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseRefusalServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
@@ -168,6 +178,8 @@ import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.service.expense.ExpenseWorkflowServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseServiceImpl;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineComputeService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineComputeServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineDomainServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineResponseComputeService;
@@ -511,7 +523,13 @@ public class HumanResourceModule extends AxelorModule {
         .to(ProjectPlanningTimeCreateUpdateServiceImpl.class);
     bind(KilometricLogService.class).to(KilometricLogServiceImpl.class);
     bind(KilometricExpenseService.class).to(KilometricExpenseServiceImpl.class);
+    bind(ExpenseRecordService.class).to(ExpenseRecordServiceImpl.class);
+    bind(ExpenseLineComputeService.class).to(ExpenseLineComputeServiceImpl.class);
     bind(PublicHolidayServiceImpl.class).to(PublicHolidayHrServiceImpl.class);
     bind(PublicHolidayHrService.class).to(PublicHolidayHrServiceImpl.class);
+    bind(KilometricService.class).to(KilometricServiceImpl.class);
+    bind(KilometricGoogleService.class).to(KilometricGoogleServiceImpl.class);
+    bind(KilometricOsmService.class).to(KilometricOsmServiceImpl.class);
+    bind(KilometricResponseToolService.class).to(KilometricResponseToolServiceImpl.class);
   }
 }

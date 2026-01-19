@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,12 +43,13 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImp
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
 import com.axelor.studio.db.AppSale;
 import com.axelor.utils.junit.BaseTest;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -121,7 +122,10 @@ class TestSaleOrderDiscountService extends BaseTest {
   protected SaleOrderLineCostPriceComputeService createSaleOrderLineCostPriceComputeService(
       AppSaleService appSaleService) {
     return new SaleOrderLineCostPriceComputeServiceImpl(
-        appSaleService, mock(ProductCompanyService.class), currencyScaleService);
+        appSaleService,
+        mock(ProductCompanyService.class),
+        currencyScaleService,
+        mock(SaleOrderLineProductService.class));
   }
 
   protected SubSaleOrderLineComputeService createSubSaleOrderLineComputeService(

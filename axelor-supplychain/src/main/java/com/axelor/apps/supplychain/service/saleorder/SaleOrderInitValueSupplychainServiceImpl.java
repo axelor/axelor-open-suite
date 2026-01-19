@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,7 +37,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -87,7 +87,7 @@ public class SaleOrderInitValueSupplychainServiceImpl extends SaleOrderInitValue
     Map<String, Object> initValues = super.getOnNewInitValues(saleOrder);
     initValues.putAll(getPaymentMode(saleOrder));
     initValues.putAll(getBankDetails(saleOrder));
-    initValues.putAll(saleOrderStockLocationService.getStockLocation(saleOrder, true));
+    initValues.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
     initValues.putAll(saleOrderIntercoService.getInterco(saleOrder));
     initValues.putAll(getShipmentCostLine(saleOrder));
     initValues.putAll(saleOrderTaxNumberService.getTaxNumber(saleOrder));

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,10 +21,10 @@ package com.axelor.apps.production.db.repo;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.inject.Beans;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 
 public class ProdProcessLineListener {
 

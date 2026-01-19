@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.address.AddressServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.utils.helpers.address.AddressHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AddressServiceAccountImpl extends AddressServiceImpl {
   static {

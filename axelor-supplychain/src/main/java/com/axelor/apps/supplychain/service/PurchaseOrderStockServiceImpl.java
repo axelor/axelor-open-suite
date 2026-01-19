@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -61,7 +61,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -274,8 +274,12 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
           purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
 
       if (qty.signum() > 0 && !existActiveStockMoveForPurchaseOrderLine(purchaseOrderLine)) {
-        this.createStockMoveLine(
-            stockMove, qualityStockMove, purchaseOrderLine, qty, startLocation, endLocation);
+        StockMoveLine stockMoveLine =
+            this.createStockMoveLine(
+                stockMove, qualityStockMove, purchaseOrderLine, qty, startLocation, endLocation);
+        if (stockMoveLine != null) {
+          stockMoveLine.getStockMove().addStockMoveLineListItem(stockMoveLine);
+        }
       }
     }
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
@@ -543,7 +547,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         Beans.get(StockMoveRepository.class)
             .all()
             .filter(
-                "? MEMBER OF self.purchaseOrderSet AND self.statusSelect = 2",
+                "? IN (SELECT po.id FROM self.purchaseOrderSet po) AND self.statusSelect = 2",
                 purchaseOrder.getId())
             .fetch();
 
@@ -596,7 +600,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         Beans.get(StockMoveRepository.class)
             .all()
             .filter(
-                "? MEMBER OF self.purchaseOrderSet AND self.statusSelect <> ?",
+                "? IN (SELECT po.id FROM self.purchaseOrderSet po) AND self.statusSelect <> ?",
                 purchaseOrderId,
                 StockMoveRepository.STATUS_CANCELED)
             .count();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="budget-grid" title="Budget Line" model="com.axelor.apps.budget.db.Budget"
     orderBy="budgetLevel.id,code">
@@ -147,8 +147,8 @@
       onChange="action-budget-method-compute-total-amount" readonlyIf="statusSelect != 1"
       colSpan="12"/>
     <panel name="budgetKeyPanel" colSpan="12" readonlyIf="statusSelect != 1">
-      <field name="accountSet" widget="TagSelect" canSelect="true" canNew="false"
-        canEdit="false" colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
+      <field name="accountSet" widget="Tags" canSelect="true" canNew="false" canEdit="false"
+        colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onChange="action-axis-change-remove-account"
         onSelect="action-method-budget-analytic-axis-set-domain"/>
@@ -182,8 +182,8 @@
       <field name="category" required="true" colSpan="3"/>
     </panel>
     <panel colSpan="12" name="keyPanel">
-      <field name="accountSet" widget="TagSelect" canSelect="true" canNew="false"
-        canEdit="false" colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
+      <field name="accountSet" widget="Tags" canSelect="true" canNew="false" canEdit="false"
+        colSpan="12" onSelect="action-budget-method-set-account-set-domain"/>
       <field name="analyticAxis" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
         onChange="action-axis-change-remove-account"
         onSelect="action-method-budget-analytic-axis-set-domain"/>
@@ -334,8 +334,6 @@
     <action name="action-budget-validate-generate-period"/>
     <action name="action-budget-budget-method-generate-periods"/>
     <action name="action-budget-method-compute-total-amount"/>
-    <action name="action-budget-budget-compute-amounts"/>
-    <action name="save"/>
   </action-group>
 
   <action-view name="action-view-budget-budget-export" title="Budget level export"
@@ -403,7 +401,7 @@
     model="com.axelor.apps.budget.db.BudgetDistribution" title="Committed lines">
     <view name="budget-budget-distribution-purchase-order-line-global-dashlet-grid" type="grid"/>
     <view name="budget-budget-distribution-purchase-order-line-dashlet-form" type="form"/>
-    <domain>self.budget.id = :_budgetId and self.purchaseOrderLine != null and
+    <domain>self.budget.id = :_budgetId and self.purchaseOrderLine IS NOT null and
       self.purchaseOrderLine.purchaseOrder.statusSelect in (2,3,4)</domain>
     <context name="_budgetId" expr="eval: __this__.id"/>
   </action-view>
@@ -412,7 +410,7 @@
     model="com.axelor.apps.budget.db.BudgetDistribution" title="Committed lines">
     <view name="budget-budget-distribution-sale-order-line-global-dashlet-grid" type="grid"/>
     <view name="sale-order-budget-distribution-form" type="form"/>
-    <domain>self.budget.id = :_budgetId and self.saleOrderLine != null and
+    <domain>self.budget.id = :_budgetId and self.saleOrderLine IS NOT null and
       self.saleOrderLine.saleOrder.statusSelect in (3,4)</domain>
     <context name="_budgetId" expr="eval: __this__.id"/>
   </action-view>

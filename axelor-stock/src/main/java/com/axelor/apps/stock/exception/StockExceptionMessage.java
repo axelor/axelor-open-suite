@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -337,4 +337,16 @@ public final class StockExceptionMessage {
 
   public static final String LOGISTICAL_FORM_STATUS_MISMATCH = /*$$(*/
       "Stock move(s) status must be planned." /*)*/;
+
+  public static final String LOGISTICAL_FORM_PARTNER_NOT_A_CARRIER = /*$$(*/
+      "The chosen partner is not a carrier." /*)*/;
+
+  public static final String LOGISTICAL_FORM_DELIVER_PARTNER_NOT_A_CUSTOMER = /*$$(*/
+      "The partner to deliver to is not a customer or is not part of the company." /*)*/;
+
+  public static final String LOGISTICAL_FORM_MISSING_DELIVER_TO_PARTNER_CUSTOMER = /*$$(*/
+      "The partner to deliver to is required." /*)*/;
+
+  public static final String LOGISTICAL_FORM_STOCK_LOCATION_MUST_BE_VIRTUAL = /*$$(*/
+      "The stock location must not be virtual and part of the company." /*)*/;
 }

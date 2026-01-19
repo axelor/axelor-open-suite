@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -78,8 +78,8 @@ import com.axelor.utils.helpers.ModelHelper;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -200,7 +200,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     Invoice invoice1 = invoiceGenerator.generate();
     Map<String, Object> invoiceMap = this.getComputeInvoiceMap(invoice1);
 
-    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+        && invoice1.getAdvancePaymentInvoiceSet() == null) {
       invoice1.setAdvancePaymentInvoiceSet(this.getDefaultAdvancePaymentInvoice(invoice1));
       invoiceMap.put("advancePaymentInvoiceSet", invoice1.getAdvancePaymentInvoiceSet());
     }
@@ -235,7 +236,9 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   @Transactional(rollbackOn = {Exception.class})
   public void validateAndVentilate(Invoice invoice) throws AxelorException {
     validate(invoice);
-    ventilate(invoice);
+    if (invoice.getOperationSubTypeSelect() != InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE) {
+      ventilate(invoice);
+    }
   }
 
   /**
@@ -307,7 +310,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           invoice,
           InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
           accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
-          null);
+          null,
+          true);
     }
   }
 
@@ -1132,11 +1136,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .createQuery(
             "Select moveLine.id "
                 + "FROM  MoveLine moveLine "
-                + "LEFT JOIN Move move on moveLine.move = move.id "
-                + "LEFT JOIN Invoice invoice on move.id = invoice.move "
-                + "LEFT JOIN Account account on moveLine.account = account.id "
-                + "LEFT JOIN AccountType accountType on account.accountType = accountType.id "
-                + "LEFT JOIN Partner partner on moveLine.partner = partner.id "
+                + "LEFT JOIN Move move on moveLine.move.id = move.id "
+                + "LEFT JOIN Invoice invoice on move.id = invoice.move.id "
+                + "LEFT JOIN Account account on moveLine.account.id = account.id "
+                + "LEFT JOIN AccountType accountType on account.accountType.id = accountType.id "
+                + "LEFT JOIN Partner partner on moveLine.partner.id = partner.id "
                 + "WHERE invoice.move = null "
                 + "AND moveLine.debit > 0 "
                 + "AND moveLine.amountRemaining > 0 "
@@ -1198,8 +1202,12 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
   }
 
   protected void updateUnpaidInvoiceTerm(Invoice invoice, InvoiceTerm invoiceTerm) {
-    invoiceTerm.setPaymentMode(invoice.getPaymentMode());
-    invoiceTerm.setBankDetails(invoice.getBankDetails());
+    if (invoiceTerm.getPaymentMode() == null) {
+      invoiceTerm.setPaymentMode(invoice.getPaymentMode());
+    }
+    if (invoiceTerm.getBankDetails() == null) {
+      invoiceTerm.setBankDetails(invoice.getBankDetails());
+    }
   }
 
   @Override

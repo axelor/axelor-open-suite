@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,8 +43,8 @@ import com.axelor.db.Model;
 import com.axelor.meta.MetaFiles;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -85,11 +85,10 @@ public class FECImporter extends Importer {
   }
 
   @Override
-  protected ImportHistory process(
-      String bind, String data, String errorDir, Map<String, Object> importContext)
+  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
       throws IOException, AxelorException {
 
-    CSVImporter importer = new CSVImporter(bind, data, errorDir);
+    CSVImporter importer = new CSVImporter(bind, data);
 
     ImporterListener listener =
         new ImporterListener(getConfiguration().getName()) {
@@ -132,7 +131,7 @@ public class FECImporter extends Importer {
     importer.setContext(importContext);
     importer.run();
     saveFecImport();
-    return addHistory(listener, errorDir);
+    return addHistory(listener);
   }
 
   @Transactional
@@ -159,23 +158,6 @@ public class FECImporter extends Importer {
   public FECImporter addFecImport(FECImport fecImport) {
     this.fecImport = fecImport;
     return this;
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
-    return process(bind, data, getErrorDirectory());
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
-      throws IOException, AxelorException {
-    return process(bind, data, getErrorDirectory(), importContext);
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data, String errorDir)
-      throws IOException, AxelorException {
-    return process(bind, data, errorDir, null);
   }
 
   public List<Move> getMoves() {
@@ -307,7 +289,7 @@ public class FECImporter extends Importer {
 
   protected String extractCSVMoveReference(String reference) {
     if (reference != null) {
-      int indexOfSeparator = reference.indexOf("-");
+      int indexOfSeparator = reference.indexOf("@");
       if (indexOfSeparator < 0) {
         return reference.replaceFirst("#", "");
       } else {

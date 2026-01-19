@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,11 +32,11 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Query;
 
 public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
 

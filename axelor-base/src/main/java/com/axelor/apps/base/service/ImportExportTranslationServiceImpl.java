@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,13 +29,16 @@ import com.axelor.apps.base.db.repo.ImportExportTranslationRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.utils.helpers.file.CsvHelper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
+import jakarta.persistence.TypedQuery;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -48,8 +51,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Stream;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +99,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     List<String[]> translationList =
         addRecordRowIntoList(map, languageNumber, importExportTranslationHistory);
     String fileName = "Exported Translations" + " - " + java.time.LocalDateTime.now();
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    File file = TempFiles.createTempFile(fileName, ".csv").toFile();
     CsvHelper.csvWriter(
         file.getParent(), file.getName(), separator, '\"', headers, translationList);
     try (InputStream is = new FileInputStream(file)) {
@@ -130,6 +131,8 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     importExportTranslationHistory.setErrorNumber(errorNumber);
     importExportTranslation.addImportExportTranslationHistoryListItem(
         importExportTranslationHistory);
+    importExportTranslationHistory.setStatusSelect(
+        ImportExportTranslationHistoryRepository.DATA_BACKUP_STATUS_IN_PROGRESS);
     importExportTranslationRepository.save(importExportTranslation);
     return importExportTranslationHistory;
   }
@@ -138,6 +141,8 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
   protected void saveHistory(ImportExportTranslationHistory importExportTranslationHistory) {
     importExportTranslationHistory.setRecordNumber(countRecords);
     importExportTranslationHistory.setErrorNumber(errorNumber);
+    importExportTranslationHistory.setStatusSelect(
+        ImportExportTranslationHistoryRepository.DATA_BACKUP_STATUS_COMPLETED);
     importExportTranslationHistoryRepository.save(importExportTranslationHistory);
   }
 
@@ -342,7 +347,7 @@ public class ImportExportTranslationServiceImpl implements ImportExportTranslati
     if (data == null) {
       return null;
     }
-    for (int i = 1; i < data.size(); i++) {
+    for (int i = 0; i < data.size(); i++) {
       if (i % FETCH_LIMIT == 0) {
         JPA.clear();
       }

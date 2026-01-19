@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,13 +37,15 @@ import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowS
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
@@ -108,7 +110,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     StringBuilder messageBuilder = new StringBuilder();
 
     for (ManufOrder manufOrder : manufOrderList) {
-      this.plan(manufOrder);
+      manufOrder = this.plan(manufOrder);
       if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
         messageBuilder.append(manufOrder.getMoCommentFromSaleOrder());
       }
@@ -130,8 +132,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
 
     initFieldsNeededForPlan(manufOrder);
     planSchedulingDates(manufOrder);
-    updateStatusToPlan(manufOrder);
-
+    manufOrder = updateStatusToPlan(manufOrder);
     return manufOrderRepo.save(manufOrder);
   }
 
@@ -164,51 +165,58 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     }
   }
 
-  protected void updateStatusToPlan(ManufOrder manufOrder) throws AxelorException {
+  protected ManufOrder updateStatusToPlan(ManufOrder manufOrder) throws AxelorException {
 
     if (manufOrder.getBillOfMaterial() != null) {
       manufOrder.setUnit(manufOrder.getBillOfMaterial().getUnit());
     }
-
-    planStockMoves(manufOrder);
+    manufOrder = planStockMoves(manufOrder);
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_PLANNED);
     manufOrder.setCancelReason(null);
     manufOrder.setCancelReasonStr(null);
 
-    manufOrderRepo.save(manufOrder);
     productionOrderService.updateStatus(manufOrder.getProductionOrderSet());
+    return manufOrder;
   }
 
-  protected void planStockMoves(ManufOrder manufOrder) throws AxelorException {
+  protected ManufOrder planStockMoves(ManufOrder manufOrder) throws AxelorException {
     if (!manufOrder.getIsConsProOnOperation()) {
-      manufOrderPlanStockMoveService
-          .createAndPlanToConsumeStockMoveWithLines(manufOrder)
-          .ifPresent(
-              stockMove -> {
-                manufOrder.addInStockMoveListItem(stockMove);
-                // fill here the consumed stock move line list item to manage the
-                // case where we had to split tracked stock move lines
-                addToConsumedStockMoveLineList(manufOrder, stockMove);
-              });
+      Optional<StockMove> stockMoveOpt =
+          manufOrderPlanStockMoveService.createAndPlanToConsumeStockMoveWithLines(manufOrder);
+
+      if (stockMoveOpt.isPresent()) {
+        StockMove sm = JpaModelHelper.ensureManaged(stockMoveOpt.get());
+        manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+        manufOrder.addInStockMoveListItem(sm);
+        // fill here the consumed stock move line list item to manage the
+        // case where we had to split tracked stock move lines
+        addToConsumedStockMoveLineList(manufOrder, sm);
+      }
     }
 
-    manufOrderPlanStockMoveService
-        .createAndPlanToProduceStockMoveWithLines(manufOrder)
-        .ifPresent(
-            sm -> {
-              manufOrder.addOutStockMoveListItem(sm);
-              addToProducedStockMoveLineList(manufOrder, sm);
-            });
+    Optional<StockMove> produceStockMoveOpt =
+        manufOrderPlanStockMoveService.createAndPlanToProduceStockMoveWithLines(manufOrder);
 
+    if (produceStockMoveOpt.isPresent()) {
+      StockMove sm = JpaModelHelper.ensureManaged(produceStockMoveOpt.get());
+      manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+      manufOrder.addOutStockMoveListItem(sm);
+      addToProducedStockMoveLineList(manufOrder, sm);
+    }
+
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     if (manufOrderResidualProductService.hasResidualProduct(manufOrder)) {
-      manufOrderPlanStockMoveService
-          .createAndPlanResidualStockMoveWithLines(manufOrder)
-          .ifPresent(
-              sm -> {
-                manufOrder.addOutStockMoveListItem(sm);
-                addToResidualStockMoveLineList(manufOrder, sm);
-              });
+      Optional<StockMove> residualStockMoveOpt =
+          manufOrderPlanStockMoveService.createAndPlanResidualStockMoveWithLines(manufOrder);
+
+      if (residualStockMoveOpt.isPresent()) {
+        StockMove sm = JpaModelHelper.ensureManaged(residualStockMoveOpt.get());
+        manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+        manufOrder.addOutStockMoveListItem(sm);
+        addToResidualStockMoveLineList(manufOrder, sm);
+      }
     }
+    return manufOrder;
   }
 
   protected void addToProducedStockMoveLineList(ManufOrder manufOrder, StockMove stockMove) {

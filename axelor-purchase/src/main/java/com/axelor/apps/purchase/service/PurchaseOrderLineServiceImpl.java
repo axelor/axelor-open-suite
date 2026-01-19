@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,13 +47,15 @@ import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.pricing.PurchaseOrderLinePricingService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.AppPurchase;
 import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -90,13 +92,15 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
   @Inject protected FiscalPositionService fiscalPositionService;
 
+  @Inject protected PurchaseOrderLinePricingService purchaseOrderLinePricingService;
+
   @Deprecated private int sequence = 0;
 
   @Override
-  public Map<String, BigDecimal> compute(
+  public Map<String, Object> compute(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
 
-    HashMap<String, BigDecimal> map = new HashMap<>();
+    HashMap<String, Object> map = new HashMap<>();
     if (purchaseOrder == null
         || purchaseOrderLine.getPrice() == null
         || purchaseOrderLine.getInTaxPrice() == null
@@ -226,6 +230,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Product product = line.getProduct();
     Partner supplierPartner = purchaseOrder.getSupplierPartner();
     Company company = purchaseOrder.getCompany();
+    BigDecimal oldPrice = line.getPrice();
 
     Map<String, String> productSupplierInfos =
         supplierCatalogService.getProductSupplierInfos(supplierPartner, company, product);
@@ -252,9 +257,15 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     Set<TaxLine> taxLineSet = getTaxLineSet(purchaseOrder, line);
     line.setTaxLineSet(taxLineSet);
 
-    BigDecimal price = getExTaxUnitPrice(purchaseOrder, line, taxLineSet);
-    BigDecimal inTaxPrice = getInTaxUnitPrice(purchaseOrder, line, taxLineSet);
+    line.setPrice(getExTaxUnitPrice(purchaseOrder, line, taxLineSet));
+    line.setInTaxPrice(getInTaxUnitPrice(purchaseOrder, line, taxLineSet));
 
+    if (appBaseService.getAppBase().getEnablePricingScale()) {
+      purchaseOrderLinePricingService.computePricingScale(line, purchaseOrder);
+    }
+
+    BigDecimal price = line.getPrice();
+    BigDecimal inTaxPrice = line.getInTaxPrice();
     if (price == null || inTaxPrice == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
@@ -305,8 +316,8 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       }
       line.setDiscountTypeSelect((Integer) discounts.get("discountTypeSelect"));
     }
-    if (!line.getEnableFreezeFields()) {
-      line.setPrice(price);
+    if (line.getEnableFreezeFields()) {
+      line.setPrice(oldPrice);
     }
     line.setInTaxPrice(inTaxPrice);
 
@@ -697,4 +708,20 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
 
   @Override
   public void validateDeletion(PurchaseOrderLine purchaseOrderLine) throws AxelorException {}
+
+  @Override
+  public void updatePurchaseOrderLineList(PurchaseOrder purchaseOrder) throws AxelorException {
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (ObjectUtils.isEmpty(purchaseOrderLineList)) {
+      return;
+    }
+
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+      if (purchaseOrderLine.getProduct() != null) {
+        reset(purchaseOrderLine);
+        fill(purchaseOrderLine, purchaseOrder);
+        compute(purchaseOrderLine, purchaseOrder);
+      }
+    }
+  }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -518,7 +518,7 @@ AND (AccountingReport.display_opening_accounting_moves is true
 	OR(AccountingReport.display_opening_accounting_moves is false 
 		AND (Move.functional_origin_select IS NULL OR Move.functional_origin_select != 1)))
 AND Partner.is_customer IS TRUE
-AND Invoice.operation_type_select IN (3, 4)
+AND (Invoice.operation_type_select IN (3, 4) OR Invoice.id IS NULL )
 group by MoveLine.name,MoveLine.partner_full_name,MoveLine.partner_seq,AccountingReport.ref,MoveLine.credit,MoveLine.debit,Invoice.invoice_id,
 InvoiceReconciled.invoice_id,YYear.reported_balance_date,AccountingReport.date_from,Reconcile.amount,ABS(MoveLine.amount_remaining),Currency.number_of_decimals]]></xml-property>
         </oda-data-set>

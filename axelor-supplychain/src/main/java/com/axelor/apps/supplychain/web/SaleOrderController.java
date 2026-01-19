@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,6 +28,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
 import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
+import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerLinkService;
@@ -53,19 +54,20 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderShipmentService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnChangeSupplychainService;
+import com.axelor.apps.supplychain.service.saleorder.packaging.SaleOrderPackagingService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.message.exception.MessageExceptionMessage;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -126,7 +128,7 @@ public class SaleOrderController {
                   traceback ->
                       response.setNotify(
                           String.format(
-                              I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
+                              I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
         } else if (stockMoveList != null && stockMoveList.size() > 1) {
           response.setView(
@@ -152,7 +154,7 @@ public class SaleOrderController {
                   traceback ->
                       response.setNotify(
                           String.format(
-                              I18n.get(MessageExceptionMessage.SEND_EMAIL_EXCEPTION),
+                              I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                               traceback.getMessage())));
         } else {
           response.setInfo(
@@ -296,6 +298,30 @@ public class SaleOrderController {
                     Beans.get(AppSupplychainService.class).getTodayDate(saleOrder.getCompany()))
                 .map());
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void deliveredPartnerChange(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Map<String, Object> values =
+          Beans.get(SaleOrderOnChangeSupplychainService.class)
+              .getDeliveredPartnerOnChangeValues(saleOrder);
+      response.setValues(values);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void invoicedPartnerChange(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      Map<String, Object> values =
+          Beans.get(SaleOrderOnChangeSupplychainService.class)
+              .getInvoicedPartnerOnChangeValues(saleOrder);
+      response.setValues(values);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -466,7 +492,8 @@ public class SaleOrderController {
       if (!Strings.isNullOrEmpty(blockedPartnerQuery)) {
         domain += String.format(" AND self.id NOT in (%s)", blockedPartnerQuery);
       }
-      domain += " AND " + saleOrder.getCompany().getId() + " in (SELECT id FROM self.companySet)";
+      domain +=
+          " AND " + saleOrder.getCompany().getId() + " in (SELECT c.id FROM self.companySet c)";
     }
     response.setAttr("supplierPartnerSelect", "domain", domain);
   }
@@ -546,7 +573,7 @@ public class SaleOrderController {
         stockMoveRepo
             .all()
             .filter(
-                ":saleOrderId MEMBER OF self.saleOrderSet AND self.statusSelect = :statusSelect")
+                ":saleOrderId IN (SELECT so.id FROM self.saleOrderSet so) AND self.statusSelect = :statusSelect")
             .bind("saleOrderId", saleOrder.getId())
             .bind("statusSelect", StockMoveRepository.STATUS_PLANNED)
             .fetchOne();
@@ -875,6 +902,17 @@ public class SaleOrderController {
           response.setNotify(message);
         }
       }
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void estimatePackaging(ActionRequest request, ActionResponse response) {
+    try {
+      SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrder.getId());
+      Beans.get(SaleOrderPackagingService.class).estimatePackaging(saleOrder);
+      response.setReload(true);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

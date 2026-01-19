@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,9 +31,9 @@ import com.axelor.studio.db.AppSupplychain;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppSupplychainRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 @Singleton
@@ -64,7 +64,7 @@ public class AppSupplychainServiceImpl extends AppBaseServiceImpl implements App
 
   @Override
   public AppSupplychain getAppSupplychain() {
-    return appSupplychainRepo.all().fetchOne();
+    return appSupplychainRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

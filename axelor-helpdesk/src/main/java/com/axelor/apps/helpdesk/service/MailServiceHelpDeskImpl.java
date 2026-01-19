@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,11 +23,12 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.MailMessage;
 import com.axelor.message.service.MailAccountService;
+import com.axelor.message.service.MailMessageActionService;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import java.io.IOException;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -35,8 +36,10 @@ public class MailServiceHelpDeskImpl extends MailServiceBaseImpl {
 
   @Inject
   public MailServiceHelpDeskImpl(
-      MailAccountService mailAccountService, AppBaseService appBaseService) {
-    super(mailAccountService, appBaseService);
+      MailAccountService mailAccountService,
+      AppBaseService appBaseService,
+      MailMessageActionService mailMessageActionService) {
+    super(mailAccountService, appBaseService, mailMessageActionService);
   }
 
   @Override

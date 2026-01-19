@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,12 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockHistoryLine;
+import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -31,5 +34,15 @@ public class StockHistoryLineManagementRepository extends StockHistoryLineReposi
     Objects.requireNonNull(stockHistoryLineList);
 
     return stockHistoryLineList.stream().map(this::save).collect(Collectors.toList());
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    AppBaseService appBaseService = Beans.get(AppBaseService.class);
+
+    json.put("$nbDecimalDigitForQty", appBaseService.getNbDecimalDigitForQty());
+    json.put("$nbDecimalDigitForUnitPrice", appBaseService.getNbDecimalDigitForUnitPrice());
+
+    return super.populate(json, context);
   }
 }
