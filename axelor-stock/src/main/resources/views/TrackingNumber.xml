@@ -225,7 +225,8 @@
 
   <search name="tracking-number-search" title="Tracking number search" limit="50">
     <search-fields>
-      <field name="product" type="reference" target="com.axelor.apps.base.db.Product"/>
+      <field name="product" type="reference" target="com.axelor.apps.base.db.Product"
+        domain="self.dtype = 'Product'"/>
       <field name="trackingNumber" type="reference"
         target="com.axelor.apps.stock.db.TrackingNumber" widget="SuggestBox"
         domain="self.product = :product"/>
