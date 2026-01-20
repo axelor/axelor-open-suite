@@ -45,7 +45,7 @@ import com.axelor.auth.db.Role;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -162,7 +162,7 @@ public class MoveAttrsServiceImpl implements MoveAttrsService {
 
     String domain =
         String.format(
-            "self.id IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company.id = %d)",
+            "self IN (SELECT am.paymentMode FROM AccountManagement am WHERE am.company.id = %d)",
             move.getCompany().getId());
 
     this.addAttr("paymentMode", "domain", domain, attrsMap);

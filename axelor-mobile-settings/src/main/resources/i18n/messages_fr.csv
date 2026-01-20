@@ -213,6 +213,7 @@
 "Submenu needs a parent menu.","Les sous-menus nécessitent un menu parent.",,
 "Technical name","Nom technique",,
 "Technical name should be the menu key used in module export on mobile application.","Le nom technique correspond à la clé du menu utilisée dans l'export du module sur l'application mobile.",,
+"The query contains forbidden keyword such as UPDATE, DELETE or FUNCTION.","La requête contient des mots-clés interdits comme UPDATE, DELETE ou FUNCTION.",,
 "There is an error with the query : \n",,,
 "This configuration allows all users to access their inbox.","Cette configuration permet à tous les utilisateurs d'accéder à leur boîte de réception.",,
 "Timesheets","Feuilles de temps",,

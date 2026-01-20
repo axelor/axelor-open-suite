@@ -50,8 +50,8 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -84,6 +84,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
   protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
   protected StockMoveToolService stockMoveToolService;
+  protected StockMoveRepository stockMoveRepository;
 
   @Inject
   public ManufOrderStockMoveServiceImpl(
@@ -99,7 +100,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
       ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
-      StockMoveToolService stockMoveToolService) {
+      StockMoveToolService stockMoveToolService,
+      StockMoveRepository stockMoveRepository) {
     this.supplyChainConfigService = supplyChainConfigService;
     this.stockMoveProductionService = stockMoveProductionService;
     this.stockMoveLineService = stockMoveLineService;
@@ -113,6 +115,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
+    this.stockMoveRepository = stockMoveRepository;
   }
 
   @Override
@@ -479,7 +482,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
 
     return stockMoveLineRepository
         .all()
-        .filter("self.saleOrderLine = :saleOrderLine AND self.stockMove != null")
+        .filter("self.saleOrderLine = :saleOrderLine AND self.stockMove IS NOT null")
         .bind("saleOrderLine", manufOrder.getSaleOrderLine())
         .fetchStream()
         .map(l -> l.getStockMove().getId())
@@ -493,8 +496,12 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       return;
     }
     for (StockMove stockMove : outStockMoveList) {
+      stockMove = JpaModelHelper.ensureManaged(stockMove);
       updatePrices(stockMove, costPrice);
-      stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
+      BigDecimal exTaxTotal = stockMoveToolService.compute(stockMove);
+      stockMove = JpaModelHelper.ensureManaged(stockMove);
+      stockMove.setExTaxTotal(exTaxTotal);
+      stockMoveRepository.save(stockMove);
     }
   }
 

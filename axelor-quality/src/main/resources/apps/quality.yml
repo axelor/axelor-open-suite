@@ -9,6 +9,6 @@ image: app-quality.png
 modules: 
    axelor-quality
 dependsOn:
-   - production
+   - supplychain
    - employee
 sequence: 16

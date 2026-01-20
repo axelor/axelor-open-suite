@@ -40,7 +40,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceService;
 import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class WorkflowVentilationContractServiceImpl
     extends WorkflowVentilationServiceSupplychainImpl {

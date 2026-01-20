@@ -21,7 +21,7 @@ package com.axelor.apps.budget.service.invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.budget.db.BudgetDistribution;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;

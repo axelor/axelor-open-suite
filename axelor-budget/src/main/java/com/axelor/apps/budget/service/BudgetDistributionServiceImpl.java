@@ -47,8 +47,8 @@ import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -329,7 +329,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     if (date != null) {
       query =
           query.concat(
-              String.format(" AND self.fromDate <= '%s' AND self.toDate >= '%s'", date, date));
+              String.format(
+                  " AND self.fromDate <= CAST('%s' AS date) AND self.toDate >= CAST('%s' AS date)",
+                  date, date));
     }
     if (AccountTypeRepository.TYPE_INCOME.equals(technicalTypeSelect)) {
       query =
@@ -358,7 +360,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     }
 
     if (account != null && budgetToolsService.checkBudgetKeyInConfig(company)) {
-      query = query.concat(String.format(" AND %d MEMBER OF self.accountSet ", account.getId()));
+      query = query.concat(String.format(" AND %d IN (self.accountSet.id) ", account.getId()));
     }
 
     return query;

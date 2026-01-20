@@ -35,8 +35,8 @@ import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.apps.intervention.db.Equipment;
 import com.axelor.apps.intervention.repo.EquipmentRepository;
 import com.axelor.apps.supplychain.service.PartnerLinkSupplychainService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 

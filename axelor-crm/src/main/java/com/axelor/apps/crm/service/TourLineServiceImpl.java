@@ -21,8 +21,8 @@ package com.axelor.apps.crm.service;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.crm.db.TourLine;
 import com.axelor.apps.crm.db.repo.TourLineRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class TourLineServiceImpl implements TourLineService {
 

@@ -23,7 +23,7 @@ import com.axelor.apps.account.service.moveline.MoveLineConsolidateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class MoveLineConsolidateBudgetServiceImpl extends MoveLineConsolidateServiceImpl {
 

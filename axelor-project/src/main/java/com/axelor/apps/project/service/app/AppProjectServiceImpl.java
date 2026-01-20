@@ -36,9 +36,9 @@ import com.axelor.studio.db.AppProject;
 import com.axelor.studio.db.repo.AppProjectRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 @Singleton
@@ -67,7 +67,7 @@ public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProj
 
   @Override
   public AppProject getAppProject() {
-    return appProjectRepo.all().fetchOne();
+    return appProjectRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

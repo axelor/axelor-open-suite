@@ -69,8 +69,9 @@ import com.axelor.script.ScriptBindings;
 import com.axelor.utils.helpers.MetaHelper;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.time.LocalTime;
@@ -81,7 +82,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.validation.constraints.NotNull;
 
 public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorService {
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <chart onInit="action.base.default.month.value"
     name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
@@ -67,8 +67,9 @@
       stockMove.statusSelect = 3 AND
       stockMove.company = :activeCompany
       AND
-      stockMove.realDate BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
-      self.stockMove = stockMove
+      DATE(stockMove.realDate) BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
+      self.stockMove =
+      stockMove
       AND
       self.toStockLocation = stockLocation AND
       stockLocation.typeSelect = 3
@@ -108,8 +109,9 @@
       stockMove.statusSelect = 3 AND
       stockMove.company = :activeCompany
       AND
-      stockMove.realDate BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
-      self.stockMove = stockMove
+      DATE(stockMove.realDate) BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
+      self.stockMove =
+      stockMove
       AND
       self.toStockLocation = stockLocation AND
       stockLocation.typeSelect = 3
@@ -117,7 +119,8 @@
       stockMove.toAddress
       = address AND
       address.country = country AND
-      self.product.productFamily = productFamily
+      self.product.productFamily =
+      productFamily
       GROUP BY
       country.name, productFamily.name
     </dataset>

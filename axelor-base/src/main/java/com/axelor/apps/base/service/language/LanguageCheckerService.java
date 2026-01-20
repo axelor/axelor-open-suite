@@ -19,7 +19,7 @@
 package com.axelor.apps.base.service.language;
 
 import com.axelor.apps.base.db.Localization;
-import javax.ws.rs.NotFoundException;
+import jakarta.ws.rs.NotFoundException;
 
 public interface LanguageCheckerService {
 

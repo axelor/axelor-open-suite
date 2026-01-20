@@ -27,7 +27,7 @@ import com.axelor.apps.contract.db.repo.ContractVersionRepository;
 import com.axelor.apps.contract.service.ContractInvoicingService;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.Query;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.format.DateTimeFormatter;
 
 public class BatchContractFactoryNextActivation extends BatchContractFactory {

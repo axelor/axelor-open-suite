@@ -21,9 +21,9 @@ package com.axelor.apps.account.db.repo;
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.account.service.AccountingReportService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
-import javax.persistence.PersistenceException;
 
 public class AccountingReportManagementRepository extends AccountingReportRepository {
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202201280001</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -683,11 +683,10 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     <text-property name="heading">report_date_edition</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="alias">logo_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
+                    <property name="columnName">logo_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <text-property name="heading">logo_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">period_name</property>
@@ -811,8 +810,8 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">7</property>
@@ -915,10 +914,10 @@ order by account, MoveLine.date_val, MoveLine.name]]></xml-property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
@@ -1011,7 +1010,7 @@ AccountingReport.date_from,
 AccountingReport.date_to, 
 AccountingReport.date_val as report_date,
 AccountingReport.publication_date_time as report_date_edition, 
-MetaFile.file_path as logo_path,
+MetaFile.id as logo_id,
 Period.name as period_name, 
 Journal.name as journal_name, 
 AccountingReport.global, 
@@ -1241,10 +1240,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
-                            <property name="name">logo_path</property>
-                            <text-property name="displayName">logo_path</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                            <property name="dataType">string</property>
+                            <property name="name">logo_id</property>
+                            <text-property name="displayName">logo_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                            <property name="dataType">decimal</property>
                         </structure>
                     </list-property>
                     <column id="4158">
@@ -1266,13 +1265,17 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"]==null</expression>
+                                        <expression name="valueExpr" type="javascript">row["logo_id"]==null</expression>
                                     </structure>
                                 </list-property>
                                 <structure name="toc"/>
-                                <property name="source">file</property>
+                                <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                <property name="source">expr</property>
                                 <property name="proportionalScale">true</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"]+row["logo_path"]</expression>
                             </image>
                         </cell>
                         <cell id="3121">
@@ -1461,12 +1464,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <property name="name">payment_mode</property>
                     <text-property name="displayName">payment_mode</text-property>
                     <expression name="expression" type="javascript">dataSetRow["payment_mode"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>

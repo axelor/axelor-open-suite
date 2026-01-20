@@ -71,7 +71,7 @@ public final class QualityExceptionMessage {
       "Quality improvement successfully updated." /*)*/;
 
   public static final String API_TYPE_SYSTEM_PRODUCT_MANUF_ORDER_FILLED = /*$$(*/
-      "Product/ManufOrder fields should not be filled if type is 'System'." /*)*/;
+      "Product fields should not be filled if type is 'System'." /*)*/;
 
   public static final String API_QI_CREATION_MESSAGE = /*$$(*/
       "The QualityImprovement has been correctly created with the id : %s." /*)*/;

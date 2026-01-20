@@ -24,7 +24,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.util.Map;
 
 @Singleton
@@ -60,7 +60,7 @@ public class GenerateMessageController {
               + model
               + "' and self.isSystem != true and "
               + localization.getId()
-              + " MEMBER OF self.localizationSet ";
+              + " IN (self.localizationSet.id)";
     }
 
     response.setAttr("_xTemplate", "domain", domain);

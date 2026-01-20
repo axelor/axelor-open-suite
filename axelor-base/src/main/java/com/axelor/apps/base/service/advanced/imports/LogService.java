@@ -18,7 +18,7 @@
  */
 package com.axelor.apps.base.service.advanced.imports;
 
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;

@@ -27,7 +27,7 @@ import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class UserBaseRepository extends UserRepository {
 

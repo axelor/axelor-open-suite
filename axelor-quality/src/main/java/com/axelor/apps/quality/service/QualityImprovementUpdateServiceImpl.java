@@ -29,8 +29,8 @@ import com.axelor.apps.quality.exception.QualityExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -98,8 +98,6 @@ public class QualityImprovementUpdateServiceImpl implements QualityImprovementUp
     baseQiIdentification.setSupplierPurchaseOrderLine(
         newQiIdentification.getSupplierPurchaseOrderLine());
 
-    baseQiIdentification.setManufOrder(newQiIdentification.getManufOrder());
-    baseQiIdentification.setOperationOrder(newQiIdentification.getOperationOrder());
     baseQiIdentification.setProduct(newQiIdentification.getProduct());
     baseQiIdentification.setNonConformingQuantity(newQiIdentification.getNonConformingQuantity());
   }

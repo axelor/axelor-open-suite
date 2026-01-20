@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 

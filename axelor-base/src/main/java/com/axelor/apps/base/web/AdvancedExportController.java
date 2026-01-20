@@ -45,7 +45,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
 import com.google.common.base.Splitter;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -244,12 +244,13 @@ public class AdvancedExportController {
         Filter filter =
             Beans.get(AdvancedExportService.class)
                 .getJpaSecurityFilter(advancedExport.getMetaModel());
-        Stream<? extends Model> listObj =
+        try (Stream<? extends Model> listObj =
             parentRequest
                 .getCriteria()
                 .createQuery(klass, filter)
-                .fetchStream(advancedExport.getMaxExportLimit());
-        return listObj.map(it -> it.getId()).collect(Collectors.toList());
+                .fetchStream(advancedExport.getMaxExportLimit())) {
+          return listObj.map(it -> it.getId()).collect(Collectors.toList());
+        }
       }
     }
     return null;

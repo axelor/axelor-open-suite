@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="job-position-grid" title="Job positions"
     model="com.axelor.apps.talent.db.JobPosition">
@@ -56,7 +56,7 @@
         showIf="statusSelect == 1 || statusSelect == 2" colSpan="12"/>
       <button name="cancelBtn" title="Cancel"
         onClick="save,action-job-position-record-status-cancel,save" hideIf="statusSelect == 4"
-        colSpan="12" icon="fa-times-circle" css="btn-danger"/>
+        colSpan="12" icon="x-circle-fill" css="btn-danger"/>
     </panel>
     <panel name="otherDetailPanel" sidebar="true" readonlyIf="statusSelect == 4">
       <field name="contractType" colSpan="6"/>

@@ -38,8 +38,8 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineDomainService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGeneratorService {

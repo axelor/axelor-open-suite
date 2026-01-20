@@ -19,6 +19,7 @@
 package com.axelor.apps.intervention.service;
 
 import com.axelor.apps.intervention.db.Equipment;
+import com.axelor.apps.intervention.db.EquipmentModel;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -43,4 +44,6 @@ public interface EquipmentModelService {
       LocalDate customerWarrantyOnPartEndDate,
       LocalDate customerMoWarrantyEndDate,
       Long contractId);
+
+  void removeEquipmentModel(EquipmentModel equipmentModel);
 }

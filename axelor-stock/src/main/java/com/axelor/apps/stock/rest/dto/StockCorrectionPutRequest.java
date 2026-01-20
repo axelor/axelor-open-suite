@@ -22,9 +22,9 @@ import com.axelor.apps.stock.db.StockCorrectionReason;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import java.math.BigDecimal;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 
 public class StockCorrectionPutRequest extends RequestStructure {
 

@@ -23,7 +23,7 @@ import com.axelor.apps.account.service.reconcilegroup.ReconcileGroupSequenceServ
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class ReconcileGroupAccountRepository extends ReconcileGroupRepository {
 

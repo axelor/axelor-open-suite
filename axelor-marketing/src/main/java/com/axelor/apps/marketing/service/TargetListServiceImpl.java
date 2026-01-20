@@ -29,7 +29,7 @@ import com.axelor.apps.marketing.db.repo.TargetListRepository;
 import com.axelor.apps.marketing.exception.MarketingExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.service.filter.FilterJpqlService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashSet;
 import java.util.Set;
 

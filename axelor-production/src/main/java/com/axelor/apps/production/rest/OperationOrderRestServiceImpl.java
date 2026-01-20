@@ -39,11 +39,11 @@ import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.api.ResponseConstructor;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.Optional;
-import javax.ws.rs.core.Response;
 
 public class OperationOrderRestServiceImpl implements OperationOrderRestService {
 

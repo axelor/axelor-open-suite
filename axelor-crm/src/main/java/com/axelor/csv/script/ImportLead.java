@@ -22,7 +22,7 @@ import com.axelor.apps.crm.db.Lead;
 import com.axelor.apps.crm.db.repo.LeadRepository;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ImportLead {

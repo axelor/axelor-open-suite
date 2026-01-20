@@ -26,8 +26,8 @@ import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.repo.PackagingRepository;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class PackagingCreateServiceImpl implements PackagingCreateService {
 

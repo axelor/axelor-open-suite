@@ -27,7 +27,7 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppSale;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class SaleOrderLineCheckServiceImpl implements SaleOrderLineCheckService {
 

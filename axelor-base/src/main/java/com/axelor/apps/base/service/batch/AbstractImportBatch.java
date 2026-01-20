@@ -31,8 +31,8 @@ import com.axelor.apps.base.translation.ITranslation;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public abstract class AbstractImportBatch extends AbstractBatch {

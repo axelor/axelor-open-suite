@@ -21,8 +21,10 @@ package com.axelor.apps.base.service.partner.api;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.common.net.HttpHeaders;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -31,8 +33,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
-import javax.ws.rs.core.MediaType;
-import wslite.json.JSONException;
 
 public abstract class GenericApiFetchService {
 
@@ -50,7 +50,7 @@ public abstract class GenericApiFetchService {
   }
 
   protected abstract String treatResponse(HttpResponse<String> response, String identifier)
-      throws JSONException;
+      throws JsonProcessingException;
 
   protected Map<String, String> getHeaders() throws AxelorException {
     Map<String, String> headers = new HashMap<>();
@@ -62,7 +62,7 @@ public abstract class GenericApiFetchService {
     try {
       HttpResponse<String> response = getApiSireneData(identifier);
       return treatResponse(response, identifier);
-    } catch (URISyntaxException | IOException | JSONException e) {
+    } catch (URISyntaxException | IOException e) {
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     } catch (InterruptedException e) {
       Thread.currentThread().interrupt();

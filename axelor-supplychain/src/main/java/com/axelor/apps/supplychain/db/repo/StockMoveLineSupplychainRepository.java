@@ -30,8 +30,8 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import jakarta.persistence.PersistenceException;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class StockMoveLineSupplychainRepository extends StockMoveLineStockRepository {
 

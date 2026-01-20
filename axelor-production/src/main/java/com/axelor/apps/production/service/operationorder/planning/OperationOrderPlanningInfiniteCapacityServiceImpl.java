@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.WeeklyPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDateTime;
 
 public class OperationOrderPlanningInfiniteCapacityServiceImpl

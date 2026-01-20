@@ -30,13 +30,13 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaField;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Set;
-import javax.persistence.Query;
 
 @RequestScoped
 public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceService {
@@ -117,7 +117,7 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
             + "AND self.stockLocation.typeSelect != :virtualType ";
 
     if (company != null) {
-      jpql += "AND self.stockLocation.company.id = :companyId";
+      jpql += " AND self.stockLocation.company.id = :companyId";
     }
 
     Query query = JPA.em().createQuery(jpql);

@@ -19,9 +19,9 @@
 package com.axelor.apps.base.service.administration;
 
 import com.axelor.db.tenants.TenantAware;
+import jakarta.transaction.Status;
+import jakarta.transaction.Synchronization;
 import java.lang.invoke.MethodHandles;
-import javax.transaction.Status;
-import javax.transaction.Synchronization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

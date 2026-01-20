@@ -66,7 +66,7 @@ public class BlockingService {
             + "LEFT JOIN partner.blockingList blocking "
             + "LEFT JOIN blocking.companySet company "
             + "WHERE blocking.blockingSelect = %d "
-            + "AND blocking.blockingToDate >= '%s' "
+            + "AND blocking.blockingToDate >= CAST('%s' AS date) "
             + "AND company.id = %d",
         blockingType,
         Beans.get(AppBaseService.class)

@@ -22,8 +22,8 @@ import com.axelor.apps.base.service.event.ProductPopulate;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
+import jakarta.annotation.Priority;
 import java.util.Map;
-import javax.annotation.Priority;
 
 public class ProductPopulateSaleObserver {
 

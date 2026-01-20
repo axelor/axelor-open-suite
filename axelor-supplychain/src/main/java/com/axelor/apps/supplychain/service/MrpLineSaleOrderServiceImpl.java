@@ -28,7 +28,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.studio.db.AppSale;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;

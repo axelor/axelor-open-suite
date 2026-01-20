@@ -25,7 +25,7 @@ import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.message.db.Message;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.IOException;
 
 public class LeaveRequestMailServiceImpl implements LeaveRequestMailService {

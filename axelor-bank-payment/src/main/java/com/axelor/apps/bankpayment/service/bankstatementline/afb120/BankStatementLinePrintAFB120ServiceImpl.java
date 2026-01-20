@@ -28,7 +28,7 @@ import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -88,7 +88,7 @@ public class BankStatementLinePrintAFB120ServiceImpl
               bankStatementLinesPrintTemplate,
               new PrintingGenFactoryContext(
                   Map.of(
-                      "FromDate", fromDate, "ToDate", toDate, "BankDetails", bankDetails.getId())),
+                      "FromDate", fromDate, "ToDate", toDate, "bankDetails", bankDetails.getId())),
               "Bank statement lines - " + fromDate + " to " + toDate);
     }
     return fileLink;

@@ -19,7 +19,7 @@
 package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class PackagingLineSupplychainRepository extends PackagingLineRepository {

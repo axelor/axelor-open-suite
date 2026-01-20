@@ -30,7 +30,7 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaStore;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ContractLineManagementRepository extends ContractLineRepository {

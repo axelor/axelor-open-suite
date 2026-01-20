@@ -20,7 +20,7 @@ package com.axelor.apps.quality.db.repo;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.quality.db.ControlEntry;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ControlEntryManagementRepository extends ControlEntryRepository {
 

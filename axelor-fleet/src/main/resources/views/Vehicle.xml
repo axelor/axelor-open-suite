@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="vehicle-grid" title="Vehicle" model="com.axelor.apps.fleet.db.Vehicle">
     <field name="plateNo"/>
@@ -26,7 +26,7 @@
         <field name="vehicleModel" onChange="action-fleet-set-vehicle-name" required="true"/>
         <field name="name" readonly="true"/>
         <field name="plateNo" onChange="action-fleet-set-vehicle-name"/>
-        <field name="vehicleTagSet" widget="TagSelect"/>
+        <field name="vehicleTagSet" widget="Tags"/>
         <field name="vehicleState" widget="html"/>
       </panel>
       <panel name="generalPropertiesPanel" colSpan="12" title="General Properties">

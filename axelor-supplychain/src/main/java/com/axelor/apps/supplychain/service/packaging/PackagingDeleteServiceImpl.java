@@ -22,8 +22,8 @@ import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.PackagingLine;
 import com.axelor.apps.supplychain.db.repo.PackagingLineRepository;
 import com.axelor.apps.supplychain.db.repo.PackagingRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 

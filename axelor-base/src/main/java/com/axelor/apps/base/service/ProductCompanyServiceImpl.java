@@ -29,7 +29,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
 import com.axelor.meta.db.MetaField;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Set;
 
 public class ProductCompanyServiceImpl implements ProductCompanyService {

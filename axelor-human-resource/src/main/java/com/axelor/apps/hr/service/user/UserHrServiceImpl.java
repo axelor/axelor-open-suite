@@ -33,8 +33,8 @@ import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppLeave;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Optional;
 
