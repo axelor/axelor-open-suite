@@ -19,10 +19,12 @@
       <field name="metaModel"/>
       <field name="statusSelect" widget="single-select"/>
       <field name="toAttach" colSpan="3"/>
+      <field name="overrideAttachment" colSpan="3" showIf="toAttach" widget="boolean-switch"
+        help="When enabled, printing will replace existing attachments with the same name instead of creating duplicates."/>
       <field name="$toUseScriptFieldName" type="boolean" widget="boolean-switch"
         title="Use script field name"
         help="By default, filename will be the name of the printing template. Activate this option to define the filename using a groovy template."
-        colSpan="3" onChange="action-printing-template-attrs-reset-script-field-name"/>
+        colSpan="6" onChange="action-printing-template-attrs-reset-script-field-name"/>
       <panel colSpan="12" name="scriptFieldNamePanel" showIf="$toUseScriptFieldName">
         <panel colSpan="12" title="Help for groovy template" name="scriptFieldNameHelpPanel"
           collapseIf="$readonly()" canCollapse="true">
