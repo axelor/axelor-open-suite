@@ -52,6 +52,7 @@ public class OpportunityManagementRepository extends OpportunityRepository {
     }
     copy.setLostReason(null);
     copy.setOpportunitySeq(null);
+    copy.setExpectedCloseDate(null);
     return copy;
   }
 
