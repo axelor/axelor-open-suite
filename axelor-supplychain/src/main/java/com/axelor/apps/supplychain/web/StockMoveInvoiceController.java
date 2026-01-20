@@ -57,7 +57,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Joiner;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -319,7 +319,7 @@ public class StockMoveInvoiceController {
       String stockMoveListStr = (String) request.getContext().get("customerStockMoveToInvoice");
 
       for (String stockMoveId : stockMoveListStr.split(",")) {
-        stockMoveList.add(JPA.em().find(StockMove.class, new Long(stockMoveId)));
+        stockMoveList.add(JPA.em().find(StockMove.class, Long.valueOf(stockMoveId)));
       }
 
       // Check if paymentCondition, paymentMode or contactPartner are content in parameters
@@ -491,7 +491,7 @@ public class StockMoveInvoiceController {
       String stockMoveListStr = (String) request.getContext().get("supplierStockMoveToInvoice");
 
       for (String stockMoveId : stockMoveListStr.split(",")) {
-        stockMoveList.add(JPA.em().find(StockMove.class, new Long(stockMoveId)));
+        stockMoveList.add(JPA.em().find(StockMove.class, Long.valueOf(stockMoveId)));
       }
 
       PaymentCondition paymentCondition = null;

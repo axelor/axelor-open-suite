@@ -26,7 +26,7 @@ import com.axelor.apps.budget.module.BudgetTest;
 import com.axelor.apps.budget.service.globalbudget.GlobalBudgetToolsService;
 import com.axelor.inject.Beans;
 import com.axelor.meta.loader.LoaderHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;

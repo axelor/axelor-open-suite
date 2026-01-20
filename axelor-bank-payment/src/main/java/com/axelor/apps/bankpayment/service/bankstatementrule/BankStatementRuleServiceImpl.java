@@ -27,7 +27,7 @@ import com.axelor.apps.bankpayment.service.bankstatementquery.BankStatementQuery
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Objects;
 import java.util.Optional;
 

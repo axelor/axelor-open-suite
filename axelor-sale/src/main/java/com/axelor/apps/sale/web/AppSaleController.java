@@ -22,7 +22,7 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class AppSaleController {

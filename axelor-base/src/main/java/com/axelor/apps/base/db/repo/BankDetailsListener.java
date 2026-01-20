@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.i18n.I18n;
-import javax.persistence.PostUpdate;
+import jakarta.persistence.PostUpdate;
 
 public class BankDetailsListener {
   @PostUpdate

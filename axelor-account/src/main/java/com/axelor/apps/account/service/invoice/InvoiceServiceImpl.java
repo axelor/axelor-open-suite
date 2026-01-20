@@ -78,8 +78,8 @@ import com.axelor.utils.helpers.ModelHelper;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -1136,11 +1136,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .createQuery(
             "Select moveLine.id "
                 + "FROM  MoveLine moveLine "
-                + "LEFT JOIN Move move on moveLine.move = move.id "
-                + "LEFT JOIN Invoice invoice on move.id = invoice.move "
-                + "LEFT JOIN Account account on moveLine.account = account.id "
-                + "LEFT JOIN AccountType accountType on account.accountType = accountType.id "
-                + "LEFT JOIN Partner partner on moveLine.partner = partner.id "
+                + "LEFT JOIN Move move on moveLine.move.id = move.id "
+                + "LEFT JOIN Invoice invoice on move.id = invoice.move.id "
+                + "LEFT JOIN Account account on moveLine.account.id = account.id "
+                + "LEFT JOIN AccountType accountType on account.accountType.id = accountType.id "
+                + "LEFT JOIN Partner partner on moveLine.partner.id = partner.id "
                 + "WHERE invoice.move = null "
                 + "AND moveLine.debit > 0 "
                 + "AND moveLine.amountRemaining > 0 "

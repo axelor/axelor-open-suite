@@ -19,8 +19,8 @@
 package com.axelor.apps.hr.rest.dto;
 
 import com.axelor.utils.api.RequestPostStructure;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
-import javax.validation.constraints.NotNull;
 
 public class LeaveRequestCheckDurationPostRequest extends RequestPostStructure {
 

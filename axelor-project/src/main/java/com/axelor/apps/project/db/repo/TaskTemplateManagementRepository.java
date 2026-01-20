@@ -23,7 +23,7 @@ import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.apps.project.service.TaskTemplateService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class TaskTemplateManagementRepository extends TaskTemplateRepository {
 

@@ -40,7 +40,7 @@ import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;

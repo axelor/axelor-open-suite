@@ -32,7 +32,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.db.Wizard;
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.Lists;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;

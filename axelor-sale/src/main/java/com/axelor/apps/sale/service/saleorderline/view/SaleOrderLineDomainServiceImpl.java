@@ -23,7 +23,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.meta.loader.ModuleManager;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderLineDomainServiceImpl implements SaleOrderLineDomainService {
@@ -43,8 +43,8 @@ public class SaleOrderLineDomainServiceImpl implements SaleOrderLineDomainServic
       SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean isSubLine) {
     String domain =
         "self.isModel = false"
-            + " and (self.startDate = null or self.startDate <= :__date__)"
-            + " and (self.endDate = null or self.endDate > :__date__)"
+            + " and (self.startDate IS null or self.startDate <= :__date__)"
+            + " and (self.endDate IS null or self.endDate > :__date__)"
             + " and self.dtype = 'Product'";
 
     if (appBaseService.getAppBase().getCompanySpecificProductFieldsSet() != null
@@ -69,7 +69,9 @@ public class SaleOrderLineDomainServiceImpl implements SaleOrderLineDomainServic
         && saleOrder.getCompany() != null
         && !CollectionUtils.isEmpty(saleOrder.getCompany().getTradingNameList())) {
       domain +=
-          " AND " + saleOrder.getTradingName().getId() + " member of self.tradingNameSellerSet";
+          " AND ("
+              + saleOrder.getTradingName().getId()
+              + " IN (SELECT tn.id FROM self.tradingNameSellerSet tn))";
     }
 
     // The standard way to do this would be to override the method in HR module.

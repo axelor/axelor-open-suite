@@ -1,0 +1,3 @@
+---
+title: "Move: fixed VAT system not computed when account is set from partner defaults."
+module: axelor-account

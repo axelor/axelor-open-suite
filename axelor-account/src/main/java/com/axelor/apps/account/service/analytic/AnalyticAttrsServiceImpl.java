@@ -36,7 +36,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -185,7 +185,7 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
     List<AnalyticDistributionTemplate> analyticDistributionTemplateList =
         analyticDistributionTemplateRepository
             .all()
-            .filter("self.company.id = ?1 AND self.isSpecific ='false'", company.getId())
+            .filter("self.company.id = ?1 AND self.isSpecific = false", company.getId())
             .fetch();
     analyticDistributionTemplateList.add(
         analyticMoveLineService.getAnalyticDistributionTemplate(

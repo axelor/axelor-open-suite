@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="expense-grid" title="Expenses" model="com.axelor.apps.hr.db.Expense"
     orderBy="-sentDateTime" groupBy="period">
@@ -53,7 +53,7 @@
     onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false"
     canCopy="false">
     <menubar>
-      <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
+      <menu name="expenseReportsMenu" title="Reports" icon="files">
         <item name="printAll" title="Print report and files"
           action="save,action-expense-method-print-report-and-proof-file"/>
       </menu>
@@ -119,7 +119,7 @@
           <button name="refuseBtn" onClick="action-expense-group-refuse" title="Refuse"
             hidden="true"/>
           <button name="cancelBtn" onClick="action-expense-group-cancel" hidden="true"
-            title="Cancel" icon="fa-times-circle" css="btn-danger"/>
+            title="Cancel" icon="x-circle-fill" css="btn-danger"/>
           <button name="draftBtn" onClick="action-expense-method-draft"
             title="Return to draft status" showIf="statusSelect &gt; 4 "/>
           <button name="addPaymentBtn" title="Register payment"

@@ -25,8 +25,8 @@ import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.YearService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 
 public class YearAccountServiceImpl implements YearAccountService {

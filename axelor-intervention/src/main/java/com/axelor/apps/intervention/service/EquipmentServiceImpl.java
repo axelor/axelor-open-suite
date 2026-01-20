@@ -23,8 +23,8 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.intervention.db.Equipment;
 import com.axelor.apps.intervention.db.repo.EquipmentLineRepository;
 import com.axelor.apps.intervention.repo.EquipmentRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class EquipmentServiceImpl implements EquipmentService {
 

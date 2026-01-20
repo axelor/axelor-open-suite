@@ -51,9 +51,9 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -270,7 +270,7 @@ public class BudgetServiceImpl implements BudgetService {
 
     String query = "self.budget.id = ?1 AND self.moveLine.move.statusSelect = ?2";
     if (excludeMoveInSimulated) {
-      query += " AND self.moveLine.move != " + move.getId();
+      query += " AND self.moveLine.move.id != " + move.getId();
     }
     List<BudgetDistribution> budgetDistributionList =
         budgetDistributionRepository
@@ -514,7 +514,7 @@ public class BudgetServiceImpl implements BudgetService {
               .all()
               .filter(
                   "self.budgetKey != null and self.id != ?1 AND self.globalBudget.statusSelect != ?2",
-                  budget.getId() != null ? budget.getId() : new Long(0),
+                  budget.getId() != null ? budget.getId() : Long.valueOf(0),
                   GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_ARCHIVED)
               .fetch();
 

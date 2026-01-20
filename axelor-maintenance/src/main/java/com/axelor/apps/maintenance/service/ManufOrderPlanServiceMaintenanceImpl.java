@@ -38,8 +38,8 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ManufOrderPlanServiceMaintenanceImpl extends ManufOrderPlanServiceImpl {

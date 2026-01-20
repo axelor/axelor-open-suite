@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.supplychain.service.packaging.PackagingMassService;
 import com.axelor.apps.supplychain.service.packaging.PackagingStockMoveLineService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class LogisticalFormComputeServiceImpl implements LogisticalFormComputeService {
 

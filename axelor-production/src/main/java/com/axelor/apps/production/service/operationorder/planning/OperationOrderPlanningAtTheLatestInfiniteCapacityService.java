@@ -32,7 +32,7 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.utils.helpers.date.DurationHelper;
 import com.axelor.utils.helpers.date.LocalDateTimeHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.Duration;
 import java.time.LocalDateTime;
 

@@ -33,7 +33,7 @@ import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.model.machine.MachineTimeSlot;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.DurationHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

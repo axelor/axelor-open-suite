@@ -20,7 +20,7 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AnalyticLevel;
 import com.axelor.apps.account.db.repo.AnalyticLevelRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AccountingReportAnalyticConfigLineServiceImpl
     implements AccountingReportAnalyticConfigLineService {

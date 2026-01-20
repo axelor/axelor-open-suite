@@ -25,8 +25,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.partner.PartnerCreationServiceImpl;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.service.wizard.BaseConvertLeadWizardService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class PartnerCreationServiceSupplychainImpl extends PartnerCreationServiceImpl {
 

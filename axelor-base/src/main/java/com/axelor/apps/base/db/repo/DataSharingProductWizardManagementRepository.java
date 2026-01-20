@@ -20,7 +20,7 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.DataSharingProductWizard;
 import com.axelor.apps.base.service.DataSharingReferentialLineService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class DataSharingProductWizardManagementRepository
     extends DataSharingProductWizardRepository {

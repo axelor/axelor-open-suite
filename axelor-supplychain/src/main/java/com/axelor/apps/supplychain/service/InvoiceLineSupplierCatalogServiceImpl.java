@@ -29,7 +29,7 @@ import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class InvoiceLineSupplierCatalogServiceImpl implements InvoiceLineSupplierCatalogService {

@@ -32,8 +32,9 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,7 +43,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.TypedQuery;
 
 public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQueryService {
 
@@ -79,7 +79,7 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
             + " AND ";
 
     query +=
-        "NOT EXISTS (SELECT 1 FROM AnalyticMoveLine l WHERE l.originAnalyticMoveLine = self.id) AND ";
+        "NOT EXISTS (SELECT 1 FROM AnalyticMoveLine l WHERE l.originAnalyticMoveLine.id = self.id) AND ";
     query += "self.moveLine.move.company.id = " + analyticMoveLineQuery.getCompany().getId();
 
     if (appBaseService.getAppBase().getEnableTradingNamesManagement()

@@ -38,13 +38,14 @@ import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineWarningService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.purchaseorderline.view.PurchaseOrderLineViewService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Set;
@@ -399,7 +400,7 @@ public class PurchaseOrderLineController {
       domain += "self.id = 0";
     }
 
-    domain += " AND " + company.getId() + " in (SELECT id FROM self.companySet)";
+    domain += " AND " + company.getId() + " in (SELECT c.id FROM self.companySet c)";
 
     response.setAttr("supplierPartner", "domain", domain);
   }
@@ -462,5 +463,18 @@ public class PurchaseOrderLineController {
         "hidden",
         !Beans.get(PurchaseOrderLineWarningService.class)
             .checkSupplierCatalogUnit(purchaseOrderLine, purchaseOrder));
+  }
+
+  public void updateDeliveryPanelVisibility(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+
+      Map<String, Map<String, Object>> attrs =
+          Beans.get(PurchaseOrderLineViewService.class).hideDeliveryPanel(purchaseOrderLine);
+
+      response.setAttrs(attrs);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

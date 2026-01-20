@@ -450,4 +450,7 @@ public final class ProductionExceptionMessage {
 
   public static final String OPERATION_ORDER_CANNOT_ADD_PRODUCT = /*$$(*/
       "Phase consumption is not enabled for this operation. Please add the consumed products directly to the manufacturing order." /*)*/;
+
+  public static final String API_TYPE_SYSTEM_PRODUCT_MANUF_ORDER_FILLED = /*$$(*/
+      "Product/ManufOrder fields should not be filled if type is 'System'." /*)*/;
 }

@@ -30,7 +30,7 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.studio.db.AppSupplychain;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class PurchaseOrderEditStockMoveServiceImpl implements PurchaseOrderEditStockMoveService {

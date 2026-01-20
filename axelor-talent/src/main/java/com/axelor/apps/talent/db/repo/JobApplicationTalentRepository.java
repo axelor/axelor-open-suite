@@ -20,7 +20,7 @@ package com.axelor.apps.talent.db.repo;
 
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.apps.talent.service.JobApplicationComputeNameService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class JobApplicationTalentRepository extends JobApplicationRepository {
 

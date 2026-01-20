@@ -36,12 +36,7 @@ dependencies {
 	implementation libs.iban4j
 
 	implementation libs.jaxb_bind_api
-}
-
-license {
-	// Don't generate license header on java classes generated from xsd
-	// exclude "**/xsd/pain_001_001_*/**"
-	exclude "**/xsd/sepa/**"
+	testImplementation libs.mockito
 }
 
 task xjc () {

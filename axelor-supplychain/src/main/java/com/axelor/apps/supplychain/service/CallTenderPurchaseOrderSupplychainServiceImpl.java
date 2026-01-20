@@ -33,7 +33,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderCreateService;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
 import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.auth.AuthUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class CallTenderPurchaseOrderSupplychainServiceImpl
     extends CallTenderPurchaseOrderServiceImpl {

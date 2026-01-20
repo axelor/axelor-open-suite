@@ -25,7 +25,7 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.event.SaleOrderConfirm;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderBudgetObserver {

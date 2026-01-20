@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankAddress;
 import com.axelor.apps.base.db.repo.BankAddressRepository;
 import com.axelor.apps.base.service.BankAddressService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ImportBankAddress {

@@ -20,9 +20,9 @@ package com.axelor.apps.production.rest.dto;
 
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
 import com.axelor.utils.api.RequestStructure;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 public class OperationOrderPutRequest extends RequestStructure {
 

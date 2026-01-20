@@ -25,6 +25,7 @@ import com.axelor.apps.hr.db.repo.EmploymentContractRepository;
 import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.EmploymentContractService;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -93,7 +94,7 @@ public class BatchEmploymentContractExport extends BatchStrategy {
     }
 
     File tempFile =
-        MetaFiles.createTempFile(
+        TempFiles.createTempFile(
                 Beans.get(EmploymentContractService.class).employmentContractExportName(), ".csv")
             .toFile();
 

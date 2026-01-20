@@ -37,14 +37,14 @@ import com.axelor.apps.base.service.YearServiceImpl;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,23 +75,7 @@ public class YearServiceAccountImpl extends YearServiceImpl {
    * @throws AxelorException
    */
   public void closeYearProcess(Year year) throws AxelorException {
-    boolean hasPreviousYearOpened =
-        yearRepository
-                .all()
-                .filter(
-                    "self.toDate < :fromDate AND self.statusSelect = :opened AND self.typeSelect = :fiscalYear")
-                .bind("fromDate", year.getFromDate())
-                .bind("opened", YearRepository.STATUS_OPENED)
-                .bind("fiscalYear", YearRepository.TYPE_FISCAL)
-                .count()
-            > 0;
-    if (hasPreviousYearOpened) {
-      throw new AxelorException(
-          year,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(AccountExceptionMessage.YEAR_2),
-          year.getName());
-    }
+    this.checkOpenedYear(year);
 
     year = yearRepository.find(year.getId());
 
@@ -166,6 +150,27 @@ public class YearServiceAccountImpl extends YearServiceImpl {
 
     if (this.allPeriodClosed(year)) {
       closeYear(year);
+    }
+  }
+
+  protected void checkOpenedYear(Year year) throws AxelorException {
+    boolean hasPreviousYearOpened =
+        yearRepository
+                .all()
+                .filter(
+                    "self.toDate < :fromDate AND self.statusSelect = :opened AND self.typeSelect = :fiscalYear AND self.company = :company")
+                .bind("fromDate", year.getFromDate())
+                .bind("opened", YearRepository.STATUS_OPENED)
+                .bind("fiscalYear", YearRepository.TYPE_FISCAL)
+                .bind("company", year.getCompany())
+                .count()
+            > 0;
+    if (hasPreviousYearOpened) {
+      throw new AxelorException(
+          year,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.YEAR_2),
+          year.getName());
     }
   }
 

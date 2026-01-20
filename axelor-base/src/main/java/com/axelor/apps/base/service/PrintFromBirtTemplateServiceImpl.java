@@ -30,13 +30,12 @@ import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.Model;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.schema.actions.ActionExport;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
 import com.axelor.utils.helpers.file.PdfHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -153,7 +152,7 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
     if (CollectionUtils.isEmpty(fileList)) {
       return null;
     }
-    Path zipFile = MetaFiles.createTempFile(zipFileName, ".zip");
+    Path zipFile = TempFiles.createTempFile(zipFileName, ".zip");
 
     try (ZipOutputStream zout = new ZipOutputStream(Files.newOutputStream(zipFile))) {
       for (File file : fileList) {
@@ -165,7 +164,7 @@ public class PrintFromBirtTemplateServiceImpl implements PrintFromBirtTemplateSe
   }
 
   protected void moveToExportDir(String fileName, Path filePath) throws IOException {
-    Path exportDirPath = Paths.get(ActionExport.getExportPath().getAbsolutePath(), fileName);
+    Path exportDirPath = Paths.get(TempFiles.getTempPath().toFile().getAbsolutePath(), fileName);
     Files.move(filePath, exportDirPath, StandardCopyOption.REPLACE_EXISTING);
   }
 

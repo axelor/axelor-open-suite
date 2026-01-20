@@ -25,8 +25,8 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class SimulatedMoveServiceImpl implements SimulatedMoveService {

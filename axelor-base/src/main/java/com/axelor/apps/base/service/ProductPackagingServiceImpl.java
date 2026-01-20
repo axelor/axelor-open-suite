@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.ProductPackaging;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.UnitRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class ProductPackagingServiceImpl implements ProductPackagingService {

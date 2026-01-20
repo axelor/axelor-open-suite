@@ -27,9 +27,9 @@ import com.axelor.apps.base.service.indicator.evaluator.ExpressionEvaluatorRegis
 import com.axelor.common.StringUtils;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 

@@ -38,7 +38,7 @@ import com.axelor.meta.db.repo.MetaModelRepository;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;

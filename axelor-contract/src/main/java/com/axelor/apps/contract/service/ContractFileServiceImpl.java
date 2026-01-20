@@ -23,8 +23,8 @@ import com.axelor.apps.base.db.repo.FileRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.meta.MetaFiles;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class ContractFileServiceImpl implements ContractFileService {

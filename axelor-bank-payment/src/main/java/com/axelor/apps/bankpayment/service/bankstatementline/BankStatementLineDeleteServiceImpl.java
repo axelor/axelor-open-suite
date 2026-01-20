@@ -21,8 +21,8 @@ package com.axelor.apps.bankpayment.service.bankstatementline;
 import com.axelor.apps.bankpayment.db.BankStatement;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class BankStatementLineDeleteServiceImpl implements BankStatementLineDeleteService {

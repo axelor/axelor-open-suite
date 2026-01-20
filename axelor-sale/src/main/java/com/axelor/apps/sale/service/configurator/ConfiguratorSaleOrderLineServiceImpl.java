@@ -27,8 +27,8 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGeneratorService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Objects;
 
 public class ConfiguratorSaleOrderLineServiceImpl implements ConfiguratorSaleOrderLineService {

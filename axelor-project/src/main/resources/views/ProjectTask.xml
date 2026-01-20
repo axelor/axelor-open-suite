@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
@@ -27,14 +27,14 @@
 
   <grid name="project-task-project-grid" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask" edit-icon="true"
-    orderBy="-priority.technicalTypeSelect">
+    orderBy="levelIndicator,-priority.technicalTypeSelect">
     <toolbar>
-      <button name="newLineBtn" title="New line" icon="fa-plus"
+      <button name="newLineBtn" title="New line" icon="plus-lg"
         onClick="action-project-add-task"/>
-      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+      <button name="removeLineBtn" title="Remove lines" icon="trash"
         onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/>
       <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-        icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
+        icon="list-task" onClick="save,action-project-view-show-related-tasks"/>
     </toolbar>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
@@ -46,9 +46,9 @@
     <field name="taskDate" width="100"/>
     <field name="status" width="100"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
-    <button name="createSubtaskBtn" icon="fa-plus"
+    <button name="createSubtaskBtn" icon="plus-lg"
       onClick="save, action-project-view-add-subtask"/>
-    <button name="deleteTaskBtn" icon="fa-times-circle"
+    <button name="deleteTaskBtn" icon="x-circle-fill"
       onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
   </grid>
 
@@ -74,7 +74,8 @@
     <field name="projectTaskCategory" width="150"/>
     <field name="priority" onSelect="action-project-task-atts-priority-on-select"
       canView="false" width="150"/>
-    <field name="status" onSelect="action-project-task-method-status-on-select"
+    <field name="status" widget="Tag" x-color-field="color"
+      onSelect="action-project-task-method-status-on-select"
       hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
       onChange="action-project-task-method-auto-change-progress" width="125"/>
     <field name="createdOn" width="125"/>
@@ -105,7 +106,8 @@
     <field name="projectTaskCategory"/>
     <field name="priority" onSelect="action-project-task-atts-priority-on-select"
       canView="false"/>
-    <field name="status" onSelect="action-project-task-method-status-on-select"
+    <field name="status" widget="Tag" x-color-field="color"
+      onSelect="action-project-task-method-status-on-select"
       hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
       onChange="action-project-task-method-auto-change-progress"/>
     <field name="createdOn"/>
@@ -121,9 +123,9 @@
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
     width="large">
     <toolbar>
-      <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
+      <button name="grabEventBtn" icon="briefcase-fill" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
-      <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
+      <button name="doneBtn" icon="check" onClick="action-project-task-group-click-done"
         showIf="project.taskStatusManagementSelect != 1"/>
     </toolbar>
     <menubar>
@@ -226,7 +228,7 @@
       <field name="site" onSelect="action-project-task-attrs-set-site-domain"
         form-view="site-form" grid-view="site-grid"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
-      <field name="watcherUserSet" widget="TagSelect" canNew="false" colSpan="6"
+      <field name="watcherUserSet" widget="Tags" canNew="false" colSpan="6"
         form-view="user-form" grid-view="user-grid" canEdit="false"/>
 
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
@@ -271,7 +273,7 @@
       <field name="taskEndDate" colSpan="4"
         onChange="action-project-task-attrs-set-task-duration"/>
       <field name="taskDeadline" title="Task deadline" colSpan="4"/>
-      <field name="tagSet" widget="TagSelect" x-color-field="color" form-view="tag-form"
+      <field name="tagSet" widget="Tags" x-color-field="color" form-view="tag-form"
         grid-view="tag-simplified-grid" colSpan="4"
         onSelect="action-project-task-method-set-tag-domain"/>
       <field name="progress" onChange="action-project-task-group-progress-onchange"
@@ -384,11 +386,11 @@
       if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')" canCollapse="true"
       collapseIf="false">
       <panel name="actionsPanel" title="Actions">
-        <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12" hidden="true"
-          onClick="action-project-task-method-start-timer"/>
-        <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="12" hidden="true"
+        <button name="startTimerBtn" title="Start" icon="play-fill" colSpan="12"
+          hidden="true" onClick="action-project-task-method-start-timer"/>
+        <button name="stopTimerBtn" title="Stop" icon="pause-fill" colSpan="12" hidden="true"
           onClick="action-project-task-method-stop-timer"/>
-        <button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="12"
+        <button name="cancelTimerBtn" title="Cancel" icon="x-circle-fill" colSpan="12"
           hidden="true" onClick="action-project-task-method-cancel-timer"/>
       </panel>
       <panel name="durationPanel">
@@ -773,13 +775,13 @@
   <action-attrs name="action-project-task-attrs-project-task-category-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain" for="projectTaskCategory"
-      expr="eval: (project?.projectTaskCategorySet !=  null &amp;&amp; project?.projectTaskCategorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectTaskCategorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+      expr="eval: (project?.projectTaskCategorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectTaskCategorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"/>
   </action-attrs>
 
   <action-attrs name="action-project-task-attrs-project-assigned-to-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain"
-      expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN(${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
+      expr="eval: (project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN(${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
       for="assignedTo" if="project &amp;&amp; !project.isAllowTaskToBeAssignedToAnyUser"/>
     <attribute name="domain" expr="eval:null" for="assignedTo"
       if="project &amp;&amp; project.isAllowTaskToBeAssignedToAnyUser"/>
@@ -788,7 +790,7 @@
   <action-attrs name="action-project-task-attrs-parent-task-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain"
-      expr="eval: (project?.projectTaskList !=null &amp;&amp; project?.projectTaskList?.size() > 0 ) ? &quot;self.id != ${id} AND self.id IN(${project?.projectTaskList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
+      expr="eval: (project?.projectTaskList?.size() > 0 ) ? &quot;self.id != ${id} AND self.id IN(${project?.projectTaskList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
       for="parentTask"/>
   </action-attrs>
 
@@ -875,14 +877,14 @@
 
   <action-attrs name="action-project-task-atts-priority-on-select">
     <attribute name="domain"
-      expr="eval: (project?.projectTaskPrioritySet !=  null &amp;&amp; project?.projectTaskPrioritySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectTaskPrioritySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
+      expr="eval: (project?.projectTaskPrioritySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectTaskPrioritySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
       for="priority"/>
   </action-attrs>
 
   <action-attrs name="action-project-task-attrs-project-parent-task-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain"
-      expr="eval: (project?.projectTaskList !=null &amp;&amp; project?.projectTaskList?.size() > 0 ) ? &quot;self.id != ${id} AND self.id IN(${project?.projectTaskList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
+      expr="eval: (project?.projectTaskList?.size() &gt; 0) ? &quot;self.id != ${id} AND self.id IN(${project?.projectTaskList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
       for="parentTask"/>
   </action-attrs>
 
@@ -890,7 +892,7 @@
     name="action-project-task-attrs-project-members-user-set-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain"
-      expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN (${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
+      expr="eval: (project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN (${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
       for="membersUserSet"/>
   </action-attrs>
 
