@@ -73,8 +73,8 @@
     <!-- MGM-80, @gkouete, following data are irrelevant for MGM processes -->
     <!-- <button name="createSubtaskBtn" icon="fa-plus" onClick="save, action-business-project-view-add-subtask"/>
       <button name="generatePurchaseOrderBtn" icon="fa-shopping-cart" onClick="save, action-project-task-method-generate-purchase-order"/> -->
-    <button name="deleteTaskBtn" icon="fa-times-circle"
-      onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/>
+    <!-- mgm-86, @nsalifu do not show this btn on the task tree grid -->
+    <!-- <button name="deleteTaskBtn" icon="fa-times-circle" onClick="action-project-task-validate-delete-team-task-confirmation,action-project-task-method-delete-project-task"/> -->
   </grid>
 
   <!-- MGM-80, @gkouete, won't display invoicing data to technicians -->

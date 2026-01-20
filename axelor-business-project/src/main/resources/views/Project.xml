@@ -202,7 +202,7 @@
           action="action-view-show-business-project-task" x-show-bars="true" canSearch="true"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
-          if="__config__.app.isApp('business-project') &amp;&amp; __user__.group.code != 'CUSTOM-PM' &amp;&amp; __user__.group.code != 'CUSTOM-PT'"
+          if="__config__.app.isApp('business-project') &amp;&amp; !['CUSTOM-PM','CUSTOM-PT','CUSTOM-TM'].any(g -> __user__.group.code == g)"
           canSearch="true"/>
       </panel>
       <!-- MGM-66 task reports -->
