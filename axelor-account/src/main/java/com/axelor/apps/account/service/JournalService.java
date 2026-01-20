@@ -23,14 +23,14 @@ import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.Query;
 
 public class JournalService {
   protected JournalRepository journalRepository;
@@ -53,7 +53,7 @@ public class JournalService {
     String query =
         "select sum(self.debit),sum(self.credit)"
             + " from MoveLine self where self.move.journal.id = :journal "
-            + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN (:statusDaybook, :statusValidated) and self.account.accountType MEMBER OF self.move.journal.journalType.accountTypeSet";
+            + "and self.move.ignoreInAccountingOk IN (false, null) and self.move.statusSelect IN (:statusDaybook, :statusValidated) and self.account.accountType MEMBER OF self.move.journal.journalType.accountTypeSet";
 
     Query resultQuery = JPA.em().createQuery(query);
 

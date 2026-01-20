@@ -32,9 +32,9 @@ import com.axelor.meta.loader.AppVersionService;
 import com.axelor.studio.db.AppProduction;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 @Singleton
@@ -55,7 +55,7 @@ public class AppProductionServiceImpl extends AppBaseServiceImpl implements AppP
 
   @Override
   public AppProduction getAppProduction() {
-    return Query.of(AppProduction.class).autoFlush(false).fetchOne();
+    return Query.of(AppProduction.class).cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

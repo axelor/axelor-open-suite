@@ -23,8 +23,8 @@ import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class CountryServiceImpl implements CountryService {

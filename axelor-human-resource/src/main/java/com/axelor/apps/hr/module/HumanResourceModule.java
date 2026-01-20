@@ -78,8 +78,16 @@ import com.axelor.apps.hr.service.HRDashboardService;
 import com.axelor.apps.hr.service.HRDashboardServiceImpl;
 import com.axelor.apps.hr.service.KilometricExpenseService;
 import com.axelor.apps.hr.service.KilometricExpenseServiceImpl;
+import com.axelor.apps.hr.service.KilometricGoogleService;
+import com.axelor.apps.hr.service.KilometricGoogleServiceImpl;
 import com.axelor.apps.hr.service.KilometricLogService;
 import com.axelor.apps.hr.service.KilometricLogServiceImpl;
+import com.axelor.apps.hr.service.KilometricOsmService;
+import com.axelor.apps.hr.service.KilometricOsmServiceImpl;
+import com.axelor.apps.hr.service.KilometricResponseToolService;
+import com.axelor.apps.hr.service.KilometricResponseToolServiceImpl;
+import com.axelor.apps.hr.service.KilometricService;
+import com.axelor.apps.hr.service.KilometricServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitService;
 import com.axelor.apps.hr.service.MedicalVisitServiceImpl;
 import com.axelor.apps.hr.service.MedicalVisitWorkflowService;
@@ -519,5 +527,9 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseLineComputeService.class).to(ExpenseLineComputeServiceImpl.class);
     bind(PublicHolidayServiceImpl.class).to(PublicHolidayHrServiceImpl.class);
     bind(PublicHolidayHrService.class).to(PublicHolidayHrServiceImpl.class);
+    bind(KilometricService.class).to(KilometricServiceImpl.class);
+    bind(KilometricGoogleService.class).to(KilometricGoogleServiceImpl.class);
+    bind(KilometricOsmService.class).to(KilometricOsmServiceImpl.class);
+    bind(KilometricResponseToolService.class).to(KilometricResponseToolServiceImpl.class);
   }
 }

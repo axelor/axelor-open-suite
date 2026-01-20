@@ -32,12 +32,12 @@ import com.axelor.i18n.I18nBundle;
 import com.axelor.meta.db.MetaTranslation;
 import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.utils.service.TranslationService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.NotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.ws.rs.NotFoundException;
 
 public class TranslationBaseServiceImpl implements TranslationBaseService {
 

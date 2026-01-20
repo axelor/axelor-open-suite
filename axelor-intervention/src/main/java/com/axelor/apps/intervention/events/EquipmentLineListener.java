@@ -19,7 +19,7 @@
 package com.axelor.apps.intervention.events;
 
 import com.axelor.apps.intervention.db.EquipmentLine;
-import javax.persistence.PostUpdate;
+import jakarta.persistence.PostUpdate;
 
 public class EquipmentLineListener {
 

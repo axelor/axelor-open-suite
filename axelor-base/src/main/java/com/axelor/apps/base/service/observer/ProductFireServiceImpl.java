@@ -20,7 +20,7 @@ package com.axelor.apps.base.service.observer;
 
 import com.axelor.apps.base.service.event.ProductPopulate;
 import com.axelor.event.Event;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ProductFireServiceImpl implements ProductFireService {

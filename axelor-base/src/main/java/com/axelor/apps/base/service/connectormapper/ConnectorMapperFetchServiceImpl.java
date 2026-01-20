@@ -26,7 +26,7 @@ import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.service.MetaModelService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;

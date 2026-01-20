@@ -29,8 +29,8 @@ import com.axelor.apps.intervention.exception.InterventionExceptionMessage;
 import com.axelor.apps.intervention.service.helper.CustomerRequestHelper;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 
 public class CustomerRequestManagementRepository extends CustomerRequestRepository {
 

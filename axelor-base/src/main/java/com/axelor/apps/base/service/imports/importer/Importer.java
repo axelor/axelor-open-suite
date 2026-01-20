@@ -27,11 +27,14 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.FileUtils;
+import com.axelor.file.store.FileStoreFactory;
+import com.axelor.file.store.Store;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -96,7 +99,7 @@ public abstract class Importer {
   }
 
   public Importer init(ImportConfiguration configuration) {
-    return init(configuration, DEFAULT_WORKSPACE);
+    return init(configuration, createDefaultWorkspace());
   }
 
   public Importer init(ImportConfiguration configuration, File workspace) {
@@ -107,10 +110,11 @@ public abstract class Importer {
   }
 
   public ImportHistory run(Map<String, Object> importContext) throws AxelorException, IOException {
-
-    File bind = MetaFiles.getPath(configuration.getBindMetaFile()).toFile();
-    File data = MetaFiles.getPath(configuration.getDataMetaFile()).toFile();
-    checkEntryFilesType(bind, data);
+    MetaFile bindMetaFile = configuration.getBindMetaFile();
+    MetaFile dataMetaFile = configuration.getDataMetaFile();
+    File bind = MetaFiles.getPath(bindMetaFile).toFile();
+    File data = MetaFiles.getPath(dataMetaFile).toFile();
+    checkEntryFilesType(bindMetaFile, dataMetaFile);
 
     if (!bind.exists()) {
       throw new AxelorException(
@@ -154,7 +158,7 @@ public abstract class Importer {
     File finalWorkspace = new File(workspace, computeFinalWorkspaceName(data));
     finalWorkspace.mkdir();
 
-    if (isZip(data)) {
+    if (isZip(metaFile)) {
       unZip(data, finalWorkspace);
     } else {
       org.apache.commons.io.FileUtils.copyFile(
@@ -174,8 +178,8 @@ public abstract class Importer {
         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd")));
   }
 
-  protected boolean isZip(File file) {
-    return FileUtils.getExtension(file.getName()).equals("zip");
+  protected boolean isZip(MetaFile file) {
+    return FileUtils.getExtension(file.getFilePath()).equals("zip");
   }
 
   protected void unZip(File file, File directory) throws IOException {
@@ -243,7 +247,7 @@ public abstract class Importer {
   private static File createDefaultWorkspace() {
     File file = null;
     try {
-      file = Files.createTempDirectory(null).toFile();
+      file = TempFiles.createTempDir(null).toFile();
       file.deleteOnExit();
     } catch (IOException e) {
       LOG.error(e.getMessage());
@@ -270,8 +274,8 @@ public abstract class Importer {
     }
   }
 
-  public void checkEntryFilesType(File bind, File data) throws AxelorException {
-    if (!FileUtils.getExtension(bind.getAbsolutePath()).equals("xml")) {
+  public void checkEntryFilesType(MetaFile bind, MetaFile data) throws AxelorException {
+    if (!FileUtils.getExtension(bind.getFilePath()).equals("xml")) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(BaseExceptionMessage.IMPORT_CONFIGURATION_WRONG_BINDING_FILE_TYPE_MESSAGE));
@@ -304,7 +308,8 @@ public abstract class Importer {
   protected MetaFile getDataMetaFile() throws IOException {
     MetaFile dataMetaFile = configuration.getDataMetaFile();
     Path path = MetaFiles.getPath(dataMetaFile);
-    if (!Files.exists(path)) {
+    Store store = FileStoreFactory.getStore();
+    if (!store.hasFile(path.toString())) {
       return null;
     }
     try (FileInputStream in = new FileInputStream(path.toFile())) {

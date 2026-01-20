@@ -25,7 +25,6 @@ import com.axelor.apps.quality.db.QualityProcess;
 import com.google.inject.persist.Transactional;
 import java.io.IOException;
 import java.util.List;
-import wslite.json.JSONException;
 
 public interface QualityControlService {
 
@@ -37,6 +36,5 @@ public interface QualityControlService {
   public void preFillOperationsFromOptionals(
       QualityControl qualityControl, List<ControlPoint> optionalControlPointList);
 
-  void sendEmail(QualityControl qualityControl)
-      throws ClassNotFoundException, IOException, JSONException;
+  void sendEmail(QualityControl qualityControl) throws ClassNotFoundException, IOException;
 }

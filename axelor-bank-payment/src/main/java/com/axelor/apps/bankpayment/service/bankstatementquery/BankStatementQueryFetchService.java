@@ -20,7 +20,7 @@ package com.axelor.apps.bankpayment.service.bankstatementquery;
 
 import com.axelor.apps.bankpayment.db.BankStatementQuery;
 import com.axelor.apps.bankpayment.db.repo.BankStatementQueryRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 

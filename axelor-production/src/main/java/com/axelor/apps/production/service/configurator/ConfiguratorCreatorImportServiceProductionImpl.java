@@ -32,7 +32,7 @@ import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServic
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;

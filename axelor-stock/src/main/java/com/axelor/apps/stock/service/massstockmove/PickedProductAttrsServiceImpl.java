@@ -28,7 +28,7 @@ public class PickedProductAttrsServiceImpl implements PickedProductAttrsService 
 
     if (pickedProduct.getFromStockLocation() != null) {
       String domain =
-          "(self IN (SELECT stockLocationLine.product FROM StockLocationLine stockLocationLine WHERE stockLocationLine.currentQty > 0 AND stockLocationLine.stockLocation = %d))";
+          "(self IN (SELECT stockLocationLine.product FROM StockLocationLine stockLocationLine WHERE stockLocationLine.currentQty > 0 AND stockLocationLine.stockLocation.id = %d))";
 
       return String.format(domain, pickedProduct.getFromStockLocation().getId());
     }
@@ -43,7 +43,7 @@ public class PickedProductAttrsServiceImpl implements PickedProductAttrsService 
     if (pickedProduct.getPickedProduct() != null && pickedProduct.getFromStockLocation() != null) {
       String domain =
           "self.product.id = %d AND"
-              + " (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine WHERE stockLocationLine.detailsStockLocation = %d AND stockLocationLine.currentQty > 0))";
+              + " (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine WHERE stockLocationLine.detailsStockLocation.id = %d AND stockLocationLine.currentQty > 0))";
 
       return String.format(
           domain,

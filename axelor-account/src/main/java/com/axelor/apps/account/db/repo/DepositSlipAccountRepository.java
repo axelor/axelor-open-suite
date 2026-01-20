@@ -29,7 +29,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class DepositSlipAccountRepository extends DepositSlipRepository {
 

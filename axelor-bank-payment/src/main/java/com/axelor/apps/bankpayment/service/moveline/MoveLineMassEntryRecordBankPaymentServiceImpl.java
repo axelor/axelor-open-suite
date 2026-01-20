@@ -34,7 +34,7 @@ import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class MoveLineMassEntryRecordBankPaymentServiceImpl
     extends MoveLineMassEntryRecordServiceImpl {

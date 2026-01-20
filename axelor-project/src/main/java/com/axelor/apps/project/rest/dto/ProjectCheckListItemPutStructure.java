@@ -19,7 +19,7 @@
 package com.axelor.apps.project.rest.dto;
 
 import com.axelor.utils.api.RequestStructure;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public class ProjectCheckListItemPutStructure extends RequestStructure {
 

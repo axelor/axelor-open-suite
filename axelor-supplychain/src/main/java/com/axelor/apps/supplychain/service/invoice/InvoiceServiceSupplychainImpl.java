@@ -57,8 +57,8 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -379,7 +379,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       List<StockMove> stockMoveList =
           stockMoveRepository
               .all()
-              .filter(":invoiceId in self.invoiceSet.id")
+              .filter(":invoiceId in (self.invoiceSet.id)")
               .bind("invoiceId", invoice.getId())
               .fetch();
       for (StockMove stockMove : stockMoveList) {

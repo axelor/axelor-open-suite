@@ -54,8 +54,10 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
+import com.axelor.utils.helpers.StringHelper;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -68,7 +70,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -194,7 +195,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
           paramStr += ((Model) object).getId().toString();
         }
       } else if (param instanceof LocalDate) {
-        paramStr = "'" + param.toString() + "'";
+        paramStr = "CAST('" + param.toString() + "' AS date)";
       } else {
         paramStr = param.toString();
       }
@@ -212,11 +213,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.initQuery();
 
     if (accountingReport.getCompany() != null) {
-      this.addParams("self.move.company = ?%d", accountingReport.getCompany());
+      this.addParams("self.move.company.id = ?%d", accountingReport.getCompany().getId());
     }
 
     if (accountingReport.getCurrency() != null) {
-      this.addParams("self.move.currency = ?%d", accountingReport.getCurrency());
+      this.addParams("self.move.currency.id = ?%d", accountingReport.getCurrency().getId());
     }
 
     AccountingReportType accountingReportType = accountingReport.getReportType();
@@ -240,20 +241,20 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     if (accountingReport.getJournal() != null) {
-      this.addParams("self.move.journal = ?%d", accountingReport.getJournal());
+      this.addParams("self.move.journal.id = ?%d", accountingReport.getJournal().getId());
     }
 
     if (accountingReport.getPeriod() != null) {
-      this.addParams("self.move.period = ?%d", accountingReport.getPeriod());
+      this.addParams("self.move.period.id = ?%d", accountingReport.getPeriod().getId());
     }
 
     if (accountingReport.getAccountSet() != null && !accountingReport.getAccountSet().isEmpty()) {
       this.addParams(
-          "(self.account in (?%d) or self.account.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
-          accountingReport.getAccountSet());
+          "(self.account.id in (?%d) or self.account.parentAccount.id in (?%d) "
+              + "or self.account.parentAccount.parentAccount.id in (?%d) or self.account.parentAccount.parentAccount.parentAccount.id in (?%d) "
+              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.id in (?%d) or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.id in (?%d) "
+              + "or self.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.id in (?%d))",
+          StringHelper.getIdListString(accountingReport.getAccountSet()));
     }
 
     List<String> technicalTypeToExclude = new ArrayList<>();
@@ -274,13 +275,15 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
 
     if (accountingReport.getPartnerSet() != null && !accountingReport.getPartnerSet().isEmpty()) {
-      this.addParams("self.partner in (?%d)", accountingReport.getPartnerSet());
+      this.addParams(
+          "self.partner.id in (?%d)",
+          StringHelper.getIdListString(accountingReport.getPartnerSet()));
     }
 
     if (accountingReport.getYear() != null
         && accountingReportType != null
         && typeSelect != AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
-      this.addParams("self.move.period.year = ?%d", accountingReport.getYear());
+      this.addParams("self.move.period.year.id = ?%d", accountingReport.getYear().getId());
 
     } else if (accountingReportType != null
         && typeSelect == AccountingReportRepository.REPORT_FEES_DECLARATION_SUPPORT) {
@@ -293,7 +296,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       JournalType journalType =
           accountingReport.getCompany().getAccountConfig().getDasReportJournalType();
       if (journalType != null) {
-        this.addParams("self.move.journal.journalType = ?%d", journalType);
+        this.addParams("self.move.journal.journalType.id = ?%d", journalType.getId());
       }
       String dateFromStr = "'" + accountingReport.getDateFrom().toString() + "'";
       String dateToStr = "'" + accountingReport.getDateTo().toString() + "'";
@@ -305,19 +308,19 @@ public class AccountingReportServiceImpl implements AccountingReportService {
           "(self.reconcileGroup IS NOT null AND self.reconcileGroup.letteringDateTime IS NOT null "
               + "AND EXISTS (SELECT 1 FROM Reconcile AS reconcile WHERE "
               + reconcileDateConditionQuery
-              + " AND self.reconcileGroup = reconcile.reconcileGroup AND (reconcile.debitMoveLine = self.id OR reconcile.creditMoveLine = self.id)))";
+              + " AND self.reconcileGroup = reconcile.reconcileGroup AND (reconcile.debitMoveLine.id = self.id OR reconcile.creditMoveLine.id = self.id)))";
       String otherLinedReconciledQuery =
           "EXISTS (SELECT 1 FROM MoveLine AS ml WHERE ml.reconcileGroup IS NOT null AND ml.reconcileGroup.letteringDateTime IS NOT null AND ml.move.id = self.move.id "
               + "AND EXISTS (SELECT 1 FROM Reconcile AS reconcile WHERE "
               + reconcileDateConditionQuery
-              + " AND ml.reconcileGroup = reconcile.reconcileGroup AND (reconcile.debitMoveLine = ml.id OR reconcile.creditMoveLine = ml.id)))";
+              + " AND ml.reconcileGroup = reconcile.reconcileGroup AND (reconcile.debitMoveLine.id = ml.id OR reconcile.creditMoveLine.id = ml.id)))";
       String reconcileQuery =
           String.format("(%s OR %s)", selfReconciledQuery, otherLinedReconciledQuery);
       this.addParams(reconcileQuery);
     }
 
     if (accountingReport.getPaymentMode() != null) {
-      this.addParams("self.move.paymentMode = ?%d", accountingReport.getPaymentMode());
+      this.addParams("self.move.paymentMode.id = ?%d", accountingReport.getPaymentMode().getId());
     }
 
     if (accountingReportType != null) {
@@ -326,22 +329,22 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       }
 
       if (typeSelect == AccountingReportRepository.REPORT_AGED_BALANCE) {
-        this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
+        this.addParams("(self.account is null OR self.account.reconcileOk = true)");
         this.addParams("self.amountRemaining != 0 AND self.debit > 0");
       }
 
       if (typeSelect == AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER) {
-        this.addParams("self.account.useForPartnerBalance = 'true'");
+        this.addParams("self.account.useForPartnerBalance = true");
       }
 
       if (typeSelect == AccountingReportRepository.REPORT_BALANCE) {
-        this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
+        this.addParams("(self.account is null OR self.account.reconcileOk = true)");
       }
 
       if (typeSelect == AccountingReportRepository.REPORT_CASH_PAYMENTS) {
         this.addParams("self.move.paymentMode.typeSelect = ?%d", PaymentModeRepository.TYPE_CASH);
         this.addParams("self.credit > 0");
-        this.addParams("(self.account is null OR self.account.reconcileOk = 'true')");
+        this.addParams("(self.account is null OR self.account.reconcileOk = true)");
       }
     }
 
@@ -362,7 +365,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         accountSet.add(cashPositionVariationCreditAccount);
       }
       if (!CollectionUtils.isEmpty(accountSet)) {
-        this.addParams("self.account.id in (?%d)", accountSet);
+        this.addParams("self.account.id in (?%d)", StringHelper.getIdListString(accountSet));
       } else {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
@@ -378,7 +381,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.vatSystemSelect = ?%d", MoveLineRepository.VAT_CASH_PAYMENTS);
     }
 
-    this.addParams("self.move.ignoreInAccountingOk = 'false'");
+    this.addParams("self.move.ignoreInAccountingOk = false");
 
     List<Integer> statusSelects = new ArrayList<>(List.of(MoveRepository.STATUS_ACCOUNTED));
 
@@ -403,8 +406,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     if (accountingReportType != null) {
       if (typeSelect > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
         this.addParams(
-            "(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.accountingReport = ?%d))",
-            accountingReport);
+            "(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.accountingReport.id = ?%d))",
+            accountingReport.getId());
       }
 
       if (typeSelect >= AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
@@ -544,16 +547,13 @@ public class AccountingReportServiceImpl implements AccountingReportService {
    */
   public BigDecimal getDebitBalance() {
 
+    String domainQuery = this.buildDomainFromQuery();
+
     Query q =
         JPA.em()
             .createQuery(
-                "select SUM(self.debit) FROM MoveLine as self WHERE " + query, BigDecimal.class);
-
-    int i = 1;
-
-    for (Object param : params.toArray()) {
-      q.setParameter(i++, param);
-    }
+                "select SUM(self.debit) FROM MoveLine as self WHERE " + domainQuery,
+                BigDecimal.class);
 
     BigDecimal result = (BigDecimal) q.getSingleResult();
     log.debug("Total debit : {}", result);
@@ -570,16 +570,12 @@ public class AccountingReportServiceImpl implements AccountingReportService {
    */
   public BigDecimal getCreditBalance() {
 
+    String domainQuery = this.buildDomainFromQuery();
     Query q =
         JPA.em()
             .createQuery(
-                "select SUM(self.credit) FROM MoveLine as self WHERE " + query, BigDecimal.class);
-
-    int i = 1;
-
-    for (Object param : params.toArray()) {
-      q.setParameter(i++, param);
-    }
+                "select SUM(self.credit) FROM MoveLine as self WHERE " + domainQuery,
+                BigDecimal.class);
 
     BigDecimal result = (BigDecimal) q.getSingleResult();
     log.debug("Total debit : {}", result);
@@ -593,17 +589,12 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
   public BigDecimal getDebitBalanceType4() {
 
+    String domainQuery = this.buildDomainFromQuery();
     Query q =
         JPA.em()
             .createQuery(
-                "select SUM(self.amountRemaining) FROM MoveLine as self WHERE " + query,
+                "select SUM(self.amountRemaining) FROM MoveLine as self WHERE " + domainQuery,
                 BigDecimal.class);
-
-    int i = 1;
-
-    for (Object param : params.toArray()) {
-      q.setParameter(i++, param);
-    }
 
     BigDecimal result = (BigDecimal) q.getSingleResult();
     log.debug("Total debit : {}", result);
@@ -680,7 +671,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         return fixedAssetRepo.all().filter(this.getFixedAssetList(accountingReport)).count()
             + JPA.em()
                 .createQuery(
-                    "Select invoiceLine FROM InvoiceLine invoiceLine LEFT JOIN FixedAsset fixedAsset on fixedAsset.invoiceLine = invoiceLine.id WHERE invoiceLine.fixedAssets = true and fixedAsset.invoiceLine is null ")
+                    "Select invoiceLine FROM InvoiceLine invoiceLine LEFT JOIN FixedAsset fixedAsset on fixedAsset.invoiceLine.id = invoiceLine.id WHERE invoiceLine.fixedAssets = true and fixedAsset.invoiceLine is null ")
                 .getResultList()
                 .size();
       case AccountingReportRepository.REPORT_GROSS_VALUES_AND_DEPRECIATION:
@@ -719,11 +710,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.initQuery();
 
     if (accountingReport.getCurrency() != null) {
-      this.addParams("self.moveLine.move.companyCurrency = ?%d", accountingReport.getCurrency());
+      this.addParams("self.moveLine.move.companyCurrency.id = ?%d", accountingReport.getCurrency());
     }
 
     if (accountingReport.getJournal() != null) {
-      this.addParams("self.moveLine.move.journal = ?%d", accountingReport.getJournal());
+      this.addParams("self.moveLine.move.journal.id = ?%d", accountingReport.getJournal());
     }
 
     if (accountingReport.getDateFrom() != null) {
@@ -737,12 +728,12 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.addParams("self.date <= ?%d", accountingReport.getDate());
 
     if (accountingReport.getAnalyticJournal() != null) {
-      this.addParams("self.analyticJournal = ?%d", accountingReport.getAnalyticJournal());
+      this.addParams("self.analyticJournal.id = ?%d", accountingReport.getAnalyticJournal());
     }
 
     this.addParams("self.typeSelect = ?%d", AnalyticMoveLineRepository.STATUS_REAL_ACCOUNTING);
 
-    this.addParams("self.moveLine.move.ignoreInAccountingOk = 'false'");
+    this.addParams("self.moveLine.move.ignoreInAccountingOk = false");
 
     this.addParams(
         "(self.moveLine.move.statusSelect = "
@@ -803,11 +794,11 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.initQuery();
 
     if (accountingReport.getCompany() != null) {
-      this.addParams("self.moveLine.move.company = ?%d", accountingReport.getCompany());
+      this.addParams("self.moveLine.move.company.id = ?%d", accountingReport.getCompany());
     }
 
     if (accountingReport.getCurrency() != null) {
-      this.addParams("self.moveLine.move.companyCurrency = ?%d", accountingReport.getCurrency());
+      this.addParams("self.moveLine.move.companyCurrency.id = ?%d", accountingReport.getCurrency());
     }
 
     if (accountingReport.getDateFrom() != null) {
@@ -818,7 +809,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
       this.addParams("self.moveLine.date <= ?%d", accountingReport.getDateTo());
     }
 
-    this.addParams("self.moveLine.move.ignoreInAccountingOk = 'false'");
+    this.addParams("self.moveLine.move.ignoreInAccountingOk = false");
 
     this.addParams("self.vatSystemSelect = ?%d", TaxPaymentMoveLineRepository.VAT_SYSTEM_PAYMENT);
 
@@ -833,10 +824,10 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (accountingReport.getAccountSet() != null && !accountingReport.getAccountSet().isEmpty()) {
       this.addParams(
-          "(self.moveLine.account in (?%d) or self.moveLine.account.parentAccount in (?%d) "
-              + "or self.moveLine.account.parentAccount.parentAccount in (?%d) or self.moveLine.account.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
+          "(self.moveLine.account.id in (?%d) or self.moveLine.account.parentAccount.id in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount.id in (?%d) or self.moveLine.account.parentAccount.parentAccount.parentAccount.id in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount.id in (?%d) or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.id in (?%d) "
+              + "or self.moveLine.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.id in (?%d))",
           accountingReport.getAccountSet());
     }
 
@@ -857,18 +848,18 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.initQuery();
 
     if (accountingReport.getCompany() != null) {
-      this.addParams("self.move.company = ?%d", accountingReport.getCompany());
+      this.addParams("self.move.company.id = ?%d", accountingReport.getCompany());
     }
 
     if (accountingReport.getCurrency() != null) {
-      this.addParams("self.move.companyCurrency = ?%d", accountingReport.getCurrency());
+      this.addParams("self.move.companyCurrency.id = ?%d", accountingReport.getCurrency());
     }
 
     if (accountingReport.getDateTo() != null) {
       this.addParams("self.move.moveLineList.date <= ?%d", accountingReport.getDateTo());
     }
 
-    this.addParams("self.move.ignoreInAccountingOk = 'false'");
+    this.addParams("self.move.ignoreInAccountingOk = false");
 
     List<Integer> statusSelects =
         moveToolService.getMoveStatusSelect(
@@ -881,15 +872,15 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     if (accountingReport.getAccountSet() != null && !accountingReport.getAccountSet().isEmpty()) {
       this.addParams(
-          "(self.move.moveLineList.account in (?%d) or self.move.moveLineList.account.parentAccount in (?%d) "
-              + "or self.move.moveLineList.account.parentAccount.parentAccount in (?%d) or self.move.moveLineList.account.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.move.moveLineList.account.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) or self.move.moveLineList.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d) "
-              + "or self.move.moveLineList.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount in (?%d))",
+          "(self.move.moveLineList.account.id in (?%d) or self.move.moveLineList.account.parentAccount.id in (?%d) "
+              + "or self.move.moveLineList.account.parentAccount.parentAccount.id in (?%d) or self.move.moveLineList.account.parentAccount.parentAccount.parentAccount.id in (?%d) "
+              + "or self.move.moveLineList.account.parentAccount.parentAccount.parentAccount.parentAccount.id in (?%d) or self.move.moveLineList.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.id in (?%d) "
+              + "or self.move.moveLineList.account.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.parentAccount.id in (?%d))",
           accountingReport.getAccountSet());
     }
 
     if (accountingReport.getPartnerSet() != null && !accountingReport.getPartnerSet().isEmpty()) {
-      this.addParams("self.move.partner in (?%d)", accountingReport.getPartnerSet());
+      this.addParams("self.move.partner.id in (?%d)", accountingReport.getPartnerSet());
     }
 
     this.addParams("self.move.moveLineList.amountRemaining != 0");

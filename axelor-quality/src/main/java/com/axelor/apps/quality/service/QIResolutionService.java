@@ -22,10 +22,10 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.quality.db.QIDecisionDistribution;
 import com.axelor.apps.quality.db.QIResolution;
 import com.axelor.message.db.Template;
+import jakarta.mail.MessagingException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
-import javax.mail.MessagingException;
 
 public interface QIResolutionService {
 

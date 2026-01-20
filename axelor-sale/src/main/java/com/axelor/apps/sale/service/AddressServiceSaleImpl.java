@@ -23,7 +23,7 @@ import com.axelor.apps.base.service.address.AddressServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.db.JPA;
 import com.axelor.utils.helpers.address.AddressHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AddressServiceSaleImpl extends AddressServiceImpl {
   static {

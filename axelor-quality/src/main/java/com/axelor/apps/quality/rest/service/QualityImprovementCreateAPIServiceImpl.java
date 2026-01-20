@@ -34,7 +34,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class QualityImprovementCreateAPIServiceImpl implements QualityImprovementCreateAPIService {
 

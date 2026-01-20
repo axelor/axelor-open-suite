@@ -22,7 +22,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ProductionOrderUpdateServiceImpl implements ProductionOrderUpdateService {
 

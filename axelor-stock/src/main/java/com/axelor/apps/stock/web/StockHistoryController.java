@@ -64,7 +64,7 @@ public class StockHistoryController {
       List<StockHistoryLine> stockHistoryLineList = getStockHistoryLineList(request);
       String productName =
           Beans.get(ProductRepository.class)
-              .find(new Long((Integer) ((Map) request.getContext().get("product")).get("id")))
+              .find(Long.valueOf((Integer) ((Map) request.getContext().get("product")).get("id")))
               .getCode();
       String fileName =
           Beans.get(StockHistoryService.class).getStockHistoryLineExportName(productName);

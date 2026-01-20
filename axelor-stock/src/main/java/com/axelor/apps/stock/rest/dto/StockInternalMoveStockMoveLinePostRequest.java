@@ -23,9 +23,9 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.utils.api.ObjectFinder;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 public class StockInternalMoveStockMoveLinePostRequest {
 

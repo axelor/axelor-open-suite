@@ -22,7 +22,7 @@ import com.axelor.db.JPA;
 import com.axelor.db.JpaSupport;
 import com.axelor.test.GuiceExtension;
 import com.axelor.test.GuiceModules;
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.TestMethodOrder;

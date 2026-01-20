@@ -21,7 +21,7 @@ package com.axelor.apps.contract.service.attributes;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.contract.db.Contract;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 

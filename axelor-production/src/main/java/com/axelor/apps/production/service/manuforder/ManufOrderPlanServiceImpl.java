@@ -40,8 +40,8 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -110,7 +110,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     StringBuilder messageBuilder = new StringBuilder();
 
     for (ManufOrder manufOrder : manufOrderList) {
-      this.plan(manufOrder);
+      manufOrder = this.plan(manufOrder);
       if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
         messageBuilder.append(manufOrder.getMoCommentFromSaleOrder());
       }

@@ -29,9 +29,9 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.service.TranslationService;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class ProductBaseRepository extends ProductRepository {
 
@@ -71,6 +71,9 @@ public class ProductBaseRepository extends ProductRepository {
     product = super.save(product);
 
     // Barcode generation
+    if (Strings.isNullOrEmpty(product.getSerialNumber())) {
+      product.setSerialNumber(product.getCode());
+    }
     if (product.getBarCode() == null
         && appBaseService.getAppBase().getActivateBarCodeGeneration()) {
       boolean addPadding = false;

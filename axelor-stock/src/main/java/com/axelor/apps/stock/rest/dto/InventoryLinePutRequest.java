@@ -21,9 +21,9 @@ package com.axelor.apps.stock.rest.dto;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 public class InventoryLinePutRequest extends RequestStructure {
 

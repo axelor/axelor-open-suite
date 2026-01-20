@@ -29,8 +29,8 @@ import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.ResponseConstructor;
+import jakarta.ws.rs.core.Response;
 import java.util.Map;
-import javax.ws.rs.core.Response;
 
 public class StockProductRestServiceSupplychainImpl extends StockProductRestServiceImpl {
 

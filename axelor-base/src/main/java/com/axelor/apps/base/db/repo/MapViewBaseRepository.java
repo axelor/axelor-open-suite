@@ -20,7 +20,7 @@ package com.axelor.apps.base.db.repo;
 
 import com.axelor.apps.base.db.MapView;
 import com.axelor.apps.base.service.mapConfigurator.MapViewService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class MapViewBaseRepository extends MapViewRepository {
 

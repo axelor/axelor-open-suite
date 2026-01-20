@@ -22,8 +22,8 @@ import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.PeriodRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 
 public class PeriodManagementRepository extends PeriodRepository {
 

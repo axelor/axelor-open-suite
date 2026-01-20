@@ -31,9 +31,9 @@ import com.axelor.studio.db.AppBankPayment;
 import com.axelor.studio.db.repo.AppBankPaymentRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 @Singleton
@@ -62,7 +62,7 @@ public class AppBankPaymentServiceImpl extends AppBaseServiceImpl implements App
 
   @Override
   public AppBankPayment getAppBankPayment() {
-    return appBankPaymentRepo.all().fetchOne();
+    return appBankPaymentRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

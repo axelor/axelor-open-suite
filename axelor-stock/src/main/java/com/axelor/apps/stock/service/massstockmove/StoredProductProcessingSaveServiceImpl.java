@@ -20,8 +20,8 @@ package com.axelor.apps.stock.service.massstockmove;
 
 import com.axelor.apps.stock.db.StoredProduct;
 import com.axelor.apps.stock.db.repo.StoredProductRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Objects;
 
 public class StoredProductProcessingSaveServiceImpl

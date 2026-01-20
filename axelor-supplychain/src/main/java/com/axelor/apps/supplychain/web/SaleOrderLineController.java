@@ -51,7 +51,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -209,7 +209,8 @@ public class SaleOrderLineController {
     }
 
     if (saleOrder.getCompany() != null) {
-      domain += " AND " + saleOrder.getCompany().getId() + " in (SELECT id FROM self.companySet)";
+      domain +=
+          " AND " + saleOrder.getCompany().getId() + " in (SELECT c.id FROM self.companySet c)";
     }
 
     response.setAttr("supplierPartner", "domain", domain);

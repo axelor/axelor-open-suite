@@ -20,7 +20,7 @@ package com.axelor.apps.contract.db.repo;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ConsumptionLineManagementRepository extends ConsumptionLineRepository {

@@ -20,7 +20,7 @@ package com.axelor.apps.production.db.repo;
 
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.operationorder.OperationOrderCreateBarcodeService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class OperationOrderManagementRepository extends OperationOrderRepository {
 

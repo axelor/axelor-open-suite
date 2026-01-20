@@ -46,8 +46,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 
 @RequestScoped
 public class MoveValidateHRServiceImpl extends MoveValidateServiceImpl

@@ -37,8 +37,8 @@ import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeServiceImpl {
 

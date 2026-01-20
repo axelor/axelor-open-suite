@@ -38,8 +38,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.message.db.EmailAddress;
 import com.axelor.message.db.repo.EmailAddressRepository;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
@@ -501,7 +501,7 @@ public class EventServiceImpl implements EventService {
           CrmExceptionMessage.RECURRENCE_RECURRENCE_TYPE);
     }
 
-    int recurrenceType = new Integer(conf.getRecurrenceType().toString());
+    int recurrenceType = Integer.parseInt(conf.getRecurrenceType().toString());
 
     if (conf.getPeriodicity() == null) {
       throw new AxelorException(
@@ -509,7 +509,7 @@ public class EventServiceImpl implements EventService {
           I18n.get(CrmExceptionMessage.RECURRENCE_PERIODICITY));
     }
 
-    int periodicity = new Integer(conf.getPeriodicity().toString());
+    int periodicity = Integer.parseInt(conf.getPeriodicity().toString());
 
     if (periodicity < 1) {
       throw new AxelorException(
@@ -547,9 +547,9 @@ public class EventServiceImpl implements EventService {
       }
     }
 
-    int monthRepeatType = new Integer(conf.getMonthRepeatType().toString());
+    int monthRepeatType = Integer.parseInt(conf.getMonthRepeatType().toString());
 
-    int endType = new Integer(conf.getEndType().toString());
+    int endType = Integer.parseInt(conf.getEndType().toString());
 
     int repetitionsNumber = 0;
 
@@ -560,7 +560,7 @@ public class EventServiceImpl implements EventService {
             I18n.get(CrmExceptionMessage.RECURRENCE_REPETITION_NUMBER));
       }
 
-      repetitionsNumber = new Integer(conf.getRepetitionsNumber().toString());
+      repetitionsNumber = Integer.parseInt(conf.getRepetitionsNumber().toString());
 
       if (repetitionsNumber < 1) {
         throw new AxelorException(

@@ -22,7 +22,7 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -52,7 +52,7 @@ public class BillOfMaterialDummyServiceImpl implements BillOfMaterialDummyServic
             .map(Object::toString)
             .collect(Collectors.joining(","));
     String filter =
-        "self.billOfMaterialLine IS NOT NULL AND self.billOfMaterialLine IN (" + idList + ")";
+        "self.billOfMaterialLine IS NOT NULL AND self.billOfMaterialLine.id IN (" + idList + ")";
     return CollectionUtils.isNotEmpty(saleOrderLineRepository.all().filter(filter).fetch())
         || CollectionUtils.isNotEmpty(saleOrderLineDetailsRepository.all().filter(filter).fetch());
   }

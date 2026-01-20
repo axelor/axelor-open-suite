@@ -25,7 +25,7 @@ import com.axelor.apps.stock.db.repo.PickedProductRepository;
 import com.axelor.apps.stock.service.massstockmove.MassStockMovableProductQuantityService;
 import com.axelor.apps.stock.translation.ITranslation;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Map;
 

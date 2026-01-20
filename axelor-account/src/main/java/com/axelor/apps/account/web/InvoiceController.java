@@ -86,7 +86,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.google.common.base.Function;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -150,9 +150,7 @@ public class InvoiceController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.message.exception.MessageExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
     } catch (Exception e) {
@@ -185,9 +183,7 @@ public class InvoiceController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.message.exception.MessageExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
     } catch (Exception e) {
@@ -219,9 +215,7 @@ public class InvoiceController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.message.exception.MessageExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
     } catch (Exception e) {

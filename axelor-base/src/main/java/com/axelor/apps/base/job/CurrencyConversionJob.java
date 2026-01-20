@@ -20,7 +20,7 @@ package com.axelor.apps.base.job;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.currency.CurrencyConversionFactory;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid id="purchase-order-line-purchase-order-supplychain-grid"
     name="purchase-order-line-purchase-order-grid" title="PO lines"
@@ -188,10 +188,10 @@
 
   <action-attrs name="action-purchase-order-line-attrs-set-stock-location-domain">
     <attribute name="domain" for="stockLocation"
-      expr="eval: &quot;self.company = ${__parent__?.company?.id} AND ((self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true) OR self.id IN (${(__parent__?.tradingName?.stockLocationList.collect{it.id}+[0]).join(',')}))&quot;"
+      expr="eval: &quot;self.company.id = ${__parent__?.company?.id} AND ((self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true) OR self.id IN (${(__parent__?.tradingName?.stockLocationList.collect{it.id}+[0]).join(',')}))&quot;"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement"/>
     <attribute name="domain" for="stockLocation"
-      expr="eval: &quot;self.company = ${__parent__?.company?.id} AND self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true&quot;"
+      expr="eval: &quot;self.company.id = ${__parent__?.company?.id} AND self.typeSelect in (1,2) AND self.usableOnPurchaseOrder = true&quot;"
       if="!__config__.app.getApp('base')?.enableTradingNamesManagement"/>
   </action-attrs>
 

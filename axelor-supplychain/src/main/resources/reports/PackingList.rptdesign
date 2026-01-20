@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -334,10 +334,9 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <text-property name="heading">external_delivery_comment</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">company_logo_file_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">company_logo_file_path</text-property>
-                    <text-property name="heading">company_logo_file_path</text-property>
+                    <property name="columnName">company_logo_file_id</property>
+                    <text-property name="displayName">company_logo_file_id</text-property>
+                    <text-property name="heading">company_logo_file_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
@@ -479,8 +478,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     </structure>
                     <structure>
                         <property name="position">10</property>
-                        <property name="name">company_logo_file_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">company_logo_file_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">11</property>
@@ -616,10 +615,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 </structure>
                 <structure>
                     <property name="position">10</property>
-                    <property name="name">company_logo_file_path</property>
-                    <property name="nativeName">company_logo_file_path</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="name">company_logo_file_id</property>
+                    <property name="nativeName">company_logo_file_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
@@ -723,7 +722,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
 	LogisticalForm.tracking,
 	LogisticalForm.internal_delivery_comment,
 	LogisticalForm.external_delivery_comment,
-	CompanyLogo.file_path as company_logo_file_path,
+	CompanyLogo.id as company_logo_file_id,
 	Company.height as logo_height,
 	Company.width as logo_width,
 	StockLocationAddress.addressl2 as company_addressl2,
@@ -780,7 +779,7 @@ group by
     LogisticalForm.tracking,
     LogisticalForm.internal_delivery_comment,
     LogisticalForm.external_delivery_comment,
-    CompanyLogo.file_path,
+    CompanyLogo.id,
     Company.height,
     Company.width,
     StockLocationAddress.addressl2,
@@ -2191,12 +2190,6 @@ ORDER BY PackagingLine.id;]]></xml-property>
                             <property name="dataType">string</property>
                         </structure>
                         <structure>
-                            <property name="name">company_logo_file_path</property>
-                            <text-property name="displayName">company_logo_file_path</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["company_logo_file_path"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
                             <property name="name">customer_seq</property>
                             <text-property name="displayName">customer_seq</text-property>
                             <expression name="expression" type="javascript">dataSetRow["customer_seq"]</expression>
@@ -2288,6 +2281,12 @@ ORDER BY PackagingLine.id;]]></xml-property>
                             <expression name="expression" type="javascript">dataSetRow["unit_label"]</expression>
                             <property name="dataType">string</property>
                         </structure>
+                        <structure>
+                            <property name="name">company_logo_file_id</property>
+                            <text-property name="displayName">company_logo_file_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["company_logo_file_id"]</expression>
+                            <property name="dataType">decimal</property>
+                        </structure>
                     </list-property>
                     <column id="13"/>
                     <column id="14">
@@ -2301,13 +2300,18 @@ ORDER BY PackagingLine.id;]]></xml-property>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["company_logo_file_path"] == null</expression>
+                                        <expression name="valueExpr" type="javascript">row["company_logo_file_id"] == null</expression>
                                     </structure>
                                 </list-property>
                                 <method name="onCreate"><![CDATA[this.width=row["logo_width"];
-this.height=row["logo_height"];]]></method>
-                                <property name="source">file</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["company_logo_file_path"]</expression>
+this.height=row["logo_height"];
+
+var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["company_logo_file_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+ }]]></method>
+                                <property name="source">expr</property>
                             </image>
                         </cell>
                         <cell id="18">
@@ -2712,12 +2716,6 @@ this.height=row["logo_height"];]]></method>
                     <property name="name">external_delivery_comment</property>
                     <text-property name="displayName">external_delivery_comment</text-property>
                     <expression name="expression" type="javascript">dataSetRow["external_delivery_comment"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">company_logo_file_path</property>
-                    <text-property name="displayName">company_logo_file_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["company_logo_file_path"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>
@@ -3409,12 +3407,6 @@ String.myFormat(row["translation"], row._outer["total_num_of_packages"] || "0", 
                     <property name="name">internal_delivery_comment</property>
                     <text-property name="displayName">internal_delivery_comment</text-property>
                     <expression name="expression" type="javascript">dataSetRow["internal_delivery_comment"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
-                    <property name="name">company_logo_file_path</property>
-                    <text-property name="displayName">company_logo_file_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["company_logo_file_path"]</expression>
                     <property name="dataType">string</property>
                 </structure>
                 <structure>

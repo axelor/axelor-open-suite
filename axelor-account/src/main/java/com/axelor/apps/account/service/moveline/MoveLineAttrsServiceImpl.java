@@ -37,7 +37,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -237,11 +237,10 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       return;
     }
 
-    String domain =
-        String.format(
-            "self.isContact IS FALSE AND %d MEMBER OF self.companySet", move.getCompany().getId());
+    String domain = String.format("self.isContact IS FALSE AND :company MEMBER OF self.companySet");
 
     this.addAttr("partner", "domain", domain, attrsMap);
+    this.addAttr("$company", "value", move.getCompany(), attrsMap);
   }
 
   @Override

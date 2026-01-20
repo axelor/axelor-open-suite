@@ -26,6 +26,7 @@ import com.axelor.auth.db.Role;
 import com.axelor.auth.db.repo.GroupRepository;
 import com.axelor.auth.db.repo.RoleRepository;
 import com.axelor.common.csv.CSVFile;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
@@ -35,8 +36,8 @@ import com.axelor.meta.db.repo.MetaGroupMenuAssistantRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
@@ -123,7 +124,7 @@ public class MetaGroupMenuAssistantService {
   public void createGroupMenuFile(MetaGroupMenuAssistant groupMenuAssistant) throws IOException {
 
     setBundle(new Locale(groupMenuAssistant.getLanguage()));
-    File groupMenuFile = MetaFiles.createTempFile("MenuGroup", ".csv").toFile();
+    File groupMenuFile = TempFiles.createTempFile("MenuGroup", ".csv").toFile();
 
     try {
 

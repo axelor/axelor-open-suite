@@ -29,9 +29,9 @@ import com.axelor.apps.quality.service.RequiredDocumentExportService;
 import com.axelor.apps.quality.service.RequiredDocumentFileOnChangeService;
 import com.axelor.apps.quality.service.RequiredDocumentVersionService;
 import com.axelor.common.ObjectUtils;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionExport;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -106,7 +106,7 @@ public class RequiredDocumentController {
             I18n.get(QualityExceptionMessage.NO_RECORD_SELECTED_TO_EXPORT));
       }
       Path exportFile = Beans.get(RequiredDocumentExportService.class).exportFile(idList);
-      Path exportDirPath = Paths.get(ActionExport.getExportPath().getAbsolutePath());
+      Path exportDirPath = Paths.get(TempFiles.getTempPath().toFile().getAbsolutePath());
       Path relativePath = exportDirPath.relativize(exportFile);
       response.setExportFile(relativePath.toString());
     } catch (Exception e) {
