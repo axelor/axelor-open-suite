@@ -26,7 +26,7 @@ import com.axelor.apps.sale.service.event.SaleOrderLineProductOnChange;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.event.Event;
 import com.axelor.event.ObserverException;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 

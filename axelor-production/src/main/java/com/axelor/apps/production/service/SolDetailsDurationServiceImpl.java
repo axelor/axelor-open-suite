@@ -21,7 +21,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 

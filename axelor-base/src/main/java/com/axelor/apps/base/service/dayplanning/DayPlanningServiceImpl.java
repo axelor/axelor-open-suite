@@ -21,7 +21,7 @@ package com.axelor.apps.base.service.dayplanning;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.utils.helpers.date.DurationHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

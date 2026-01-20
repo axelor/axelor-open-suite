@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <form name="app-base-config-form" title="App base" model="com.axelor.studio.db.AppBase"
     width="large" canDelete="false" canNew="false" canCopy="false"
@@ -14,8 +14,8 @@
       <button name="remindTimesheetsBtn" title="Timesheets Reminder"
         onClick="action-method-general-remind-timesheet"/>
     </toolbar>
-    <panel name="testingPanel" title="Testing"
-      if="com.axelor.app.AppSettings.get().get('application.mode') != 'prod'">
+    <panel name="testingPanel" title="Testing" itemSpan="4">
+      <field name="todayDateT" if="__config__.get('application.mode') != 'prod'"/>
       <field name="todayDateT"/>
     </panel>
     <panel name="shortcutPanel">

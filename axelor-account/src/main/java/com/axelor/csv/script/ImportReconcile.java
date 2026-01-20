@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.ReconcileRepository;
 import com.axelor.apps.account.service.reconcile.ReconcileInvoiceTermComputationService;
 import com.axelor.apps.base.AxelorException;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ImportReconcile {

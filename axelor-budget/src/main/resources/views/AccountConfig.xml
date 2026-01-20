@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <form id="budget-account-config-form" name="account-config-form"
     title="Account configuration" model="com.axelor.apps.account.db.AccountConfig" extension="true">
@@ -12,7 +12,7 @@
     <extend target="//field[@name='analyticJournal']">
       <insert position="after">
         <field name="enableBudgetKey" colSpan="6" if="__config__.app.isApp('budget')"/>
-        <field name="budgetDistributionRoleSet" colSpan="6" widget="TagSelect"
+        <field name="budgetDistributionRoleSet" colSpan="6" widget="Tags"
           showIf="enableBudgetKey" if="__config__.app.isApp('budget')" placeholder="All"/>
       </insert>
     </extend>

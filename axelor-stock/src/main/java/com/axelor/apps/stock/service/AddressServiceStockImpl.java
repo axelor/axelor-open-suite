@@ -24,7 +24,7 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.db.JPA;
 import com.axelor.utils.helpers.address.AddressHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AddressServiceStockImpl extends AddressServiceImpl {
   static {

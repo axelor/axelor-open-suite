@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <form name="mrp-manuf-order-form" model="com.axelor.apps.supplychain.db.Mrp" title="MPS"
     width="large" onLoad="action-attrs-mrp-generate-all-proposals"
@@ -10,7 +10,7 @@
       <button name="printBtn" hideIf="true" onClick=""/>
     </toolbar>
     <menubar>
-      <menu title="Tools" showTitle="true" icon="fa-wrench">
+      <menu title="Tools" showTitle="true" icon="wrench">
         <item name="runCalculationItem" title="Run calculation" showIf="statusSelect != 1"
           action="save,action-method-mrp-run-calculation"
           prompt="Are you sure you want to run the calculation ? Calculation can take a long time."/>
@@ -48,7 +48,7 @@
       <field name="endDate" colSpan="6" hidden="true"/>
       <field name="stockLocation" form-view="stock-location-form"
         grid-view="stock-location-grid" colSpan="6"
-        domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp = null)"
+        domain="self.typeSelect != 3 AND (self.isNotInMrp = false OR self.isNotInMrp IS null)"
         canEdit="false"/>
       <field name="stockLocation.company"/>
       <field name="displayProductWithoutProposal" widget="boolean-switch"/>
@@ -115,8 +115,9 @@
       (self.mrp.displayProductWithoutProposal = true AND self.mrp.id = :_mrpId)
       OR
       (self.mrp.displayProductWithoutProposal = false AND self.mrp.id = :_mrpId AND self.product.id
-      IN (select m.product from MrpLine as m
-      where m.mrp.id = :_mrpId AND m.mrpLineType.elementSelect
+      IN (select m.product.id from MrpLine as m
+      where m.mrp.id = :_mrpId AND
+      m.mrpLineType.elementSelect
       in (:_proposalElementSelect)))
     </domain>
     <context name="_mrpId" expr="eval: __this__.id"/>

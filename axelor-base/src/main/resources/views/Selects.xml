@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
@@ -866,6 +866,14 @@
   <selection name="base.indicator.alert.status.select">
     <option value="1">New</option>
     <option value="2">Checked</option>
+  </selection>
+
+  <selection name="data.backup.field.separator.select">
+    <option value=",">Comma (,)</option>
+    <option value=";">Semicolon (;)</option>
+    <option value="/">Slash (/)</option>
+    <option value="\t">Tab (\t)</option>
+    <option value="|">Pipe (|)</option>
   </selection>
 
 </object-views>

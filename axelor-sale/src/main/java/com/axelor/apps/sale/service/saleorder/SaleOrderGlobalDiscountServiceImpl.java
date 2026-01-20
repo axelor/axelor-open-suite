@@ -23,7 +23,7 @@ import com.axelor.apps.base.interfaces.GlobalDiscounter;
 import com.axelor.apps.base.interfaces.GlobalDiscounterLine;
 import com.axelor.apps.base.service.discount.GlobalDiscountAbstractService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 

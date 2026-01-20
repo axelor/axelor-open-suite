@@ -24,7 +24,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.interfaces.massstockmove.MassStockMovableProduct;
 import com.axelor.i18n.I18n;
-import javax.persistence.PreRemove;
+import jakarta.persistence.PreRemove;
 
 public class MassStockMovableProductListener {
 

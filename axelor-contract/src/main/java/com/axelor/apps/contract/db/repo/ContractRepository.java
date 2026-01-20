@@ -29,9 +29,9 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.util.Optional;
-import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ContractRepository extends AbstractContractRepository {

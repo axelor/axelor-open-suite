@@ -20,7 +20,7 @@ package com.axelor.apps.csv.script;
 
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.service.ProjectTaskCategoryService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ImportProjectTaskCategory {

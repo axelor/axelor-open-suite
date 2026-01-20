@@ -21,8 +21,8 @@ package com.axelor.apps.project.service.taskLink;
 import com.axelor.apps.project.db.ProjectTaskLinkType;
 import com.axelor.apps.project.db.repo.ProjectTaskLinkTypeRepository;
 import com.axelor.common.StringUtils;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class ProjectTaskLinkTypeServiceImpl implements ProjectTaskLinkTypeService {
 

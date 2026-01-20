@@ -20,7 +20,7 @@ package com.axelor.apps.account.service.invoiceterm;
 
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class InvoiceTermRecordServiceImpl implements InvoiceTermRecordService {
 

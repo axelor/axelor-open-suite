@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
 
   <menuitem name="sc-root-sale" title="Sales" order="-1900"
@@ -142,7 +142,7 @@
   </action-view>
 
   <menuitem name="sc-root-sale-report" parent="sc-root-sale" title="Reportings"
-    order="1300" icon="fa-bar-chart"/>
+    order="1300" icon="bar-chart"/>
 
   <menuitem name="sc-root-sale-maps" parent="sc-root-sale-report" title="Maps" order="500"/>
 
@@ -154,7 +154,7 @@
     action="action-show-prospects-on-map-page" order="200"/>
 
   <menuitem name="sc-root-sale-conf" parent="sc-root-sale" title="Configuration"
-    order="1400" icon="fa-cog"/>
+    order="1400" icon="gear"/>
 
   <menuitem name="sale-conf-cancelreason" parent="sc-root-sale-conf" title="Cancel Reasons"
     action="sale.conf.cancelreason" order="200"/>
@@ -342,7 +342,7 @@
     model="com.axelor.apps.base.db.PricingRule">
     <view type="grid" name="pricing-rule-grid"/>
     <view type="form" name="pricing-rule-form"/>
-    <domain>self.concernedModel.name IS NOT 'InvoiceLine'</domain>
+    <domain>self.concernedModel.name != 'InvoiceLine'</domain>
   </action-view>
 
 </object-views>

@@ -23,7 +23,7 @@ import com.axelor.apps.project.service.dashboard.ProjectManagementDashboardServi
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class ProjectManagementDashboardController {

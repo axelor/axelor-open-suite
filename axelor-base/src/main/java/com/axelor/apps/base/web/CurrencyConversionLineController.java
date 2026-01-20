@@ -36,7 +36,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
@@ -46,7 +46,6 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
 
 @Singleton
 public class CurrencyConversionLineController {
@@ -76,7 +75,7 @@ public class CurrencyConversionLineController {
 
   @SuppressWarnings("unchecked")
   public void convert(ActionRequest request, ActionResponse response)
-      throws MalformedURLException, JSONException, AxelorException {
+      throws MalformedURLException, AxelorException {
     Context context = request.getContext();
     Currency fromCurrency = null;
     Currency toCurrency = null;

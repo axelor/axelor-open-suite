@@ -61,7 +61,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -547,7 +547,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         Beans.get(StockMoveRepository.class)
             .all()
             .filter(
-                "? MEMBER OF self.purchaseOrderSet AND self.statusSelect = 2",
+                "? IN (SELECT po.id FROM self.purchaseOrderSet po) AND self.statusSelect = 2",
                 purchaseOrder.getId())
             .fetch();
 
@@ -600,7 +600,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         Beans.get(StockMoveRepository.class)
             .all()
             .filter(
-                "? MEMBER OF self.purchaseOrderSet AND self.statusSelect <> ?",
+                "? IN (SELECT po.id FROM self.purchaseOrderSet po) AND self.statusSelect <> ?",
                 purchaseOrderId,
                 StockMoveRepository.STATUS_CANCELED)
             .count();

@@ -31,7 +31,7 @@ import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.dms.db.repo.DMSFileRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;

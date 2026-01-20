@@ -26,7 +26,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import javax.ws.rs.NotFoundException;
+import jakarta.ws.rs.NotFoundException;
 
 public class LanguageCheckerServiceImpl implements LanguageCheckerService {
 

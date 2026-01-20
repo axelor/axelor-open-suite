@@ -25,7 +25,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectCheckListItemRepository;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ProjectCheckListTemplateServiceImpl implements ProjectCheckListTemplateService {
 

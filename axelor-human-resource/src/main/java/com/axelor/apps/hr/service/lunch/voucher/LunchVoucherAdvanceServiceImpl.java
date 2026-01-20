@@ -25,8 +25,8 @@ import com.axelor.apps.hr.db.repo.HRConfigRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherAdvanceRepository;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class LunchVoucherAdvanceServiceImpl implements LunchVoucherAdvanceService {
 

@@ -34,8 +34,8 @@ import com.axelor.apps.sale.service.event.SaleOrderConfirm;
 import com.axelor.event.Event;
 import com.axelor.event.ObserverException;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 

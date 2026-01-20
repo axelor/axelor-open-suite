@@ -39,12 +39,12 @@ import com.axelor.message.db.repo.EmailAddressRepository;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.service.MailAccountService;
 import com.axelor.message.service.MessageService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

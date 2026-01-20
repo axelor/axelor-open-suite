@@ -23,8 +23,8 @@ import com.axelor.apps.crm.db.Tour;
 import com.axelor.apps.crm.db.TourLine;
 import com.axelor.apps.crm.db.repo.TourRepository;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class TourServiceImpl implements TourService {
 

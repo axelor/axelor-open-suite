@@ -33,8 +33,8 @@ import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppTimesheet;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDateTime;
 
 public class TimesheetTimerCreateServiceImpl implements TimesheetTimerCreateService {

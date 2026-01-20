@@ -24,8 +24,8 @@ import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.db.repo.ConnectorMapperRepository;
 import com.axelor.db.Model;
 import com.axelor.meta.service.MetaModelService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class ConnectorMapperCreateServiceImpl implements ConnectorMapperCreateService {
 

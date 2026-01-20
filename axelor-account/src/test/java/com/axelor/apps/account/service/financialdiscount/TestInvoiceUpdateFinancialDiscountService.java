@@ -27,7 +27,7 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.meta.loader.LoaderHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;

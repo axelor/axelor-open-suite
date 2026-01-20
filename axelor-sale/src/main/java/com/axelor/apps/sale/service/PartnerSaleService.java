@@ -18,9 +18,11 @@
  */
 package com.axelor.apps.sale.service;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,5 +35,5 @@ public interface PartnerSaleService {
       Partner customer, Product product);
 
   public List<Map<String, Object>> averageByCustomer(
-      String averageOn, String fromDate, String toDate);
+      String averageOn, LocalDate fromDate, LocalDate toDate) throws AxelorException;
 }

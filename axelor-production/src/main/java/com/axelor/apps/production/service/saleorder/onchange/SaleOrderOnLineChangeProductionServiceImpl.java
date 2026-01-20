@@ -37,7 +37,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineAnalyticService;
 import com.axelor.studio.db.repo.AppSaleRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class SaleOrderOnLineChangeProductionServiceImpl
     extends SaleOrderOnLineChangeSupplyChainServiceImpl {

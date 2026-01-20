@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="employment-contract-grid" title="Employment contracts"
     model="com.axelor.apps.hr.db.EmploymentContract">
@@ -31,7 +31,7 @@
     model="com.axelor.apps.hr.db.EmploymentContract"
     onNew="action-employment-contract-record-on-new" width="large">
     <menubar>
-      <menu title="Tools" icon="fa-wrench" showTitle="true">
+      <menu title="Tools" icon="wrench" showTitle="true">
         <item title="Create amendment"
           action="save,action-employment-contract-method-addAmendment" hideIf="true"/>
         <item title="Print contract"
@@ -143,8 +143,7 @@
       if="!employmentContractTemplate"/>
   </action-validate>
 
-  <action-export output="/home/employment_contracts" download="true"
-    name="action-employment-contract-export-word">
+  <action-export name="action-employment-contract-export-word">
     <export
       template="eval: com.axelor.meta.MetaFiles.getPath(employmentContractTemplate.metaFile).toString()"
       name="${fullName}.xml" engine="groovy"/>

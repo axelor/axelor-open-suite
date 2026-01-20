@@ -30,10 +30,10 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
-import javax.persistence.PersistenceException;
 
 public class PaymentScheduleAccountRepository extends PaymentScheduleRepository {
 
