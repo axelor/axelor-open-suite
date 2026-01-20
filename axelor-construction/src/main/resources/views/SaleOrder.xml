@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <form id="construction-sale-order-form" name="sale-order-form" title="SO line"
+    model="com.axelor.apps.sale.db.SaleOrder" extension="true">
+
+    <extend target="//button[@name='computeBtn']">
+      <insert position="after">
+        <button name="priceStudyButton"
+          onClick="action-construction-sale-order-view-show-price-study" title="Prices study"/>
+      </insert>
+    </extend>
+    <extend target="//panel-related[@name='detailLinesPanel']">
+      <insert position="after">
+        <panel-related field="priceStudyList" colSpan="12" canNew="false"
+          hidden="true" canEdit="false" canMove="true" form-view="price-study-form"
+          grid-view="price-study-grid"/>
+      </insert>
+    </extend>
+  </form>
+
+  <form name="sale-order-study-prices-form" title="Prices study"
+    model="com.axelor.apps.sale.db.SaleOrder">
+    <panel>
+      <spacer colSpan="9"/>
+      <button name="recalculatePricesButton"
+        onClick="action-construction-sale-order-method-recalculate-prices" colSpan="3"
+        title="Recalculate prices"/>
+      <panel-related field="priceStudyList" colSpan="12" canNew="false" canEdit="true"
+        editable="true" canRemove="false" canMove="false" form-view="price-study-form"
+        grid-view="price-study-grid"/>
+    </panel>
+
+  </form>
+
+  <action-method name="action-construction-sale-order-method-recalculate-prices">
+    <call class="com.axelor.apps.web.SaleOrderController" method="recalculatePrices"/>
+  </action-method>
+
+  <action-view name="action-construction-sale-order-view-show-price-study"
+    title="Prices study" model="com.axelor.apps.sale.db.SaleOrder">
+    <view type="form" name="sale-order-study-prices-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="forceEdit" value="true"/>
+    <view-param name="show-confirm" value="false"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="popup-save" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
+
+</object-views>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.0.xsd">
+
+  <menuitem name="referential-conf-product-type" parent="referential-conf" order="2000"
+    title="Products types" action="referential.conf.product.type"/>
+
+  <action-view name="referential.conf.product.type" title="Products types"
+    model="com.axelor.apps.base.db.ProductType">
+    <view type="grid" name="product-type-grid"/>
+    <view type="form" name="product-type-form"/>
+  </action-view>
+
+</object-views>
