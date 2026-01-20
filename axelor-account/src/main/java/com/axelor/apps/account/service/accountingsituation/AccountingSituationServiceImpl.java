@@ -221,7 +221,7 @@ public class AccountingSituationServiceImpl implements AccountingSituationServic
         }
       }
       if (accountingSituation.getVatSystemSelect() == AccountingSituationRepository.VAT_DELIVERY) {
-        return AccountRepository.VAT_SYSTEM_SERVICE;
+        return AccountRepository.VAT_SYSTEM_GOODS;
       } else if (account.getVatSystemSelect() == null
           || account.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
         throw new AxelorException(
