@@ -196,7 +196,8 @@
       </panel>
 
       <!-- MGM-80: Moving task panel next to overview to get configs done faster -->
-      <panel title="Tasks" name="taskTreePanel">
+      <panel title="Tasks" name="taskTreePanel"
+        onTabSelect="action-method-business-project-open-task-form-for-empty-task-list">
         <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
           showTitle="false" height="200%" colSpan="12"
           action="action-view-show-business-project-task" x-show-bars="true" canSearch="true"/>
@@ -1410,6 +1411,12 @@
   <action-method name="action-method-business-project-task-resolve-project">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="resolveProjectContext"/>
+  </action-method>
+
+  <action-method
+    name="action-method-business-project-open-task-form-for-empty-task-list">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="openTaskFormIfEmpty"/>
   </action-method>
 
   <action-group name="action-business-project-group-finish-project">

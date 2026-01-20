@@ -33,9 +33,9 @@
 
   <action-view name="business.project.task.all" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask">
-    <view type="kanban" name="project-task-kanban"/>
     <view type="grid" name="business-project-task-grid"/>
     <view type="form" name="business-project-task-form"/>
+    <view type="kanban" name="project-task-kanban"/>
     <view-param name="search-filters" value="project-filters"/>
     <view-param name="forceEdit" value="true"/>
     <!-- <domain>self.typeSelect = :_typeSelect AND self.project.isBusinessProject = true</domain> -->

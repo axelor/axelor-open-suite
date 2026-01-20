@@ -254,7 +254,7 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
           e.getMessage());
     }
   }
-  
+
   protected void deleteExistingAttachments(Model model, String fileName) {
     log.info(
         "Searching for existing attachments to delete: model={}, recordId={}",
@@ -272,8 +272,7 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
             .bind("fileName", fileName)
             .fetch();
 
-    log.info(
-        "Found {} existing attachment(s) to delete", existingFiles.size());
+    log.info("Found {} existing attachment(s) to delete", existingFiles.size());
 
     for (DMSFile dmsFile : existingFiles) {
       metaFiles.delete(dmsFile);
