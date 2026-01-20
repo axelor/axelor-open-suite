@@ -1685,7 +1685,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (stockMoveLine.getFilterOnAvailableProducts()
         && stockMoveLine.getFromStockLocation() != null
         && stockMoveLine.getFromStockLocation().getTypeSelect() != 3) {
-      return " AND self.id in (select sll.product.id from StockLocation sl inner join sl.stockLocationLineList sll WHERE sl.id = "
+      return " AND self.id in (select sll.product.id from StockLocationLine sll WHERE sll.stockLocation.id = "
           + stockMoveLine.getFromStockLocation().getId()
           + " AND sll.currentQty > 0)";
     }
