@@ -19,8 +19,8 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.budget.db.BudgetLine;
-import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;

@@ -35,8 +35,8 @@ import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGenerato
 import com.axelor.apps.supplychain.service.cartline.CartLineAvailabilityService;
 import com.axelor.i18n.I18n;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

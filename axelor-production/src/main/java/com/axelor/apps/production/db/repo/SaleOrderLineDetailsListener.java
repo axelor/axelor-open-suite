@@ -21,7 +21,7 @@ package com.axelor.apps.production.db.repo;
 import com.axelor.apps.production.db.SaleOrderLineDetails;
 import com.axelor.apps.production.service.SaleOrderLineDetailsBomSyncService;
 import com.axelor.inject.Beans;
-import javax.persistence.PostRemove;
+import jakarta.persistence.PostRemove;
 
 public class SaleOrderLineDetailsListener {
 

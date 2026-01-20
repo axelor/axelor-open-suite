@@ -38,7 +38,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.PartnerSupplychainService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class InvoicePaymentToolServiceContractImpl
     extends InvoicePaymentToolServiceSupplychainImpl {

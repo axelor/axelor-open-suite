@@ -25,9 +25,9 @@ import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.util.Optional;
-import javax.mail.MessagingException;
 
 public class CallTenderNeedController {
 

@@ -24,7 +24,7 @@ import com.axelor.meta.db.MetaTheme;
 import com.axelor.meta.db.ThemeLogoMode;
 import com.axelor.meta.db.repo.MetaThemeRepository;
 import com.google.common.primitives.Longs;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class MetaThemeFetchServiceImpl implements MetaThemeFetchService {

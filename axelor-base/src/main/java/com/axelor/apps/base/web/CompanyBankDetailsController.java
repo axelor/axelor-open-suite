@@ -26,7 +26,7 @@ import com.axelor.apps.base.service.BankDetailsServiceImpl;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 
 /** Controller called from multiple forms, */
 @Singleton

@@ -42,7 +42,7 @@ import com.axelor.apps.base.service.PeriodService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -99,7 +99,7 @@ public class MoveCheckServiceImpl implements MoveCheckService {
         && move.getId() != null
         && moveRepository
                 .all()
-                .filter("self.cutOffOriginMove = :id")
+                .filter("self.cutOffOriginMove.id = :id")
                 .bind("id", move.getId())
                 .count()
             > 0;

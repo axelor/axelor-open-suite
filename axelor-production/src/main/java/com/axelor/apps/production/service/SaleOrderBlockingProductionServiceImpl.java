@@ -19,7 +19,7 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.sale.db.SaleOrder;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Objects;
 
 public class SaleOrderBlockingProductionServiceImpl implements SaleOrderBlockingProductionService {

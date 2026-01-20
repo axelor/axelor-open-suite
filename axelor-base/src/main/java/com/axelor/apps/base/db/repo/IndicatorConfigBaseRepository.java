@@ -21,7 +21,7 @@ package com.axelor.apps.base.db.repo;
 import com.axelor.apps.base.db.IndicatorConfig;
 import com.axelor.apps.base.service.indicator.IndicatorChartService;
 import com.axelor.apps.base.service.indicator.IndicatorFormService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class IndicatorConfigBaseRepository extends IndicatorConfigRepository {
 

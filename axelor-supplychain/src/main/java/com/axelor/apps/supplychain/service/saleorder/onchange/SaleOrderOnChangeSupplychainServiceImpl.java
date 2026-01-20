@@ -50,7 +50,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationServi
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderTaxNumberService;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

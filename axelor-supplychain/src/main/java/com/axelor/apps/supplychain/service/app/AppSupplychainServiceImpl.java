@@ -31,9 +31,9 @@ import com.axelor.studio.db.AppSupplychain;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppSupplychainRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 @Singleton
@@ -64,7 +64,7 @@ public class AppSupplychainServiceImpl extends AppBaseServiceImpl implements App
 
   @Override
   public AppSupplychain getAppSupplychain() {
-    return appSupplychainRepo.all().autoFlush(false).cacheable().fetchOne();
+    return appSupplychainRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

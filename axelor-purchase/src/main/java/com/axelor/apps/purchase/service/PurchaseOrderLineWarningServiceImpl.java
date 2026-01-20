@@ -26,7 +26,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class PurchaseOrderLineWarningServiceImpl implements PurchaseOrderLineWarningService {
 

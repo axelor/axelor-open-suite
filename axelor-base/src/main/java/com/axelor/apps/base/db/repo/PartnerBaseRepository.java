@@ -27,8 +27,8 @@ import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.collect.Lists;
+import jakarta.persistence.PersistenceException;
 import java.util.List;
-import javax.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class PartnerBaseRepository extends PartnerRepository {

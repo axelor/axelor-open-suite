@@ -18,9 +18,9 @@
  */
 package com.axelor.apps.intervention.service.planning;
 
+import jakarta.annotation.Nonnull;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import javax.annotation.Nonnull;
 
 public class DayPlanningPeriod {
   private final LocalTime start;

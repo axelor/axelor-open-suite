@@ -57,8 +57,8 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.db.Query;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -163,7 +163,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             + "AND EXISTS(SELECT 1 FROM MoveLine ml "
             + " WHERE ml.move = self "
             + " AND ml.account.manageCutOffPeriod IS TRUE "
-            + " AND ml.cutOffStartDate != null AND ml.cutOffEndDate != null "
+            + " AND ml.cutOffStartDate IS NOT null AND ml.cutOffEndDate IS NOT null "
             + " AND ml.cutOffEndDate > :date)";
 
     if (company != null) {
@@ -208,7 +208,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         " AND self.move.date <= :date "
             + "AND self.move.statusSelect IN (2, 3, 5) "
             + "AND self.account.manageCutOffPeriod IS TRUE "
-            + "AND self.cutOffStartDate != null AND self.cutOffEndDate != null "
+            + "AND self.cutOffStartDate IS NOT null AND self.cutOffEndDate IS NOT null "
             + "AND self.cutOffEndDate > :date";
 
     if (company != null) {

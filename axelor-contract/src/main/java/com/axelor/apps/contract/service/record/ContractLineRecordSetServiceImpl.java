@@ -23,7 +23,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.model.AnalyticLineContractModel;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class ContractLineRecordSetServiceImpl implements ContractLineRecordSetService {

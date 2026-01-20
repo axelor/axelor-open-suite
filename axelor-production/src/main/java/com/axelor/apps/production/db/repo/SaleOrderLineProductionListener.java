@@ -23,8 +23,8 @@ import com.axelor.apps.production.service.SaleOrderLineBomSyncService;
 import com.axelor.apps.production.service.SaleOrderLineCheckProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.inject.Beans;
-import javax.persistence.PostUpdate;
-import javax.persistence.PreRemove;
+import jakarta.persistence.PostUpdate;
+import jakarta.persistence.PreRemove;
 
 public class SaleOrderLineProductionListener {
 

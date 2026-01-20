@@ -27,7 +27,7 @@ import com.axelor.auth.db.User;
 import com.axelor.studio.db.AppSale;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import com.axelor.team.db.Team;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class SaleOrderUserServiceImpl implements SaleOrderUserService {
 

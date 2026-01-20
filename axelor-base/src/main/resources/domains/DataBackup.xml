@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -28,6 +28,9 @@
     <string name="description" title="Description" large="true"/>
     <integer name="maxLinesPerFile" title="Max number of lines per file" nullable="true"/>
     <datetime name="relativeDateTime" title="Relative date to take into account"/>
+    <string name="fieldSeparatorSelect" selection="data.backup.field.separator.select"
+      title="Field separator" default=","/>
+
 
     <extra-code>
       <![CDATA[
@@ -38,6 +41,13 @@
 				public static final int DATA_BACKUP_STATUS_RESTORE = 3;
 				public static final int DATA_BACKUP_STATUS_RESTORE_ERROR = 4;
 				public static final int DATA_BACKUP_STATUS_ERROR = 5;
+
+				// DATABACKUP SEPARATOR
+				public static final String DATA_BACKUP_SEPARATOR_COMMA = ",";
+				public static final String DATA_BACKUP_SEPARATOR_SEMI_COLON = ";";
+				public static final String DATA_BACKUP_SEPARATOR_SLASH = "/";
+				public static final String DATA_BACKUP_SEPARATOR_TAB = "\t";
+				public static final String DATA_BACKUP_SEPARATOR_PIPE= "|";
 	   		]]>
     </extra-code>
 

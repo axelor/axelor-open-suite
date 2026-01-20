@@ -43,7 +43,7 @@ import com.axelor.apps.budget.service.compute.BudgetDistributionComputeService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplierCatalogService;
 import com.axelor.apps.supplychain.service.InvoiceLineSupplychainService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class BudgetInvoiceLineComputeServiceImpl extends InvoiceLineSupplychainService {

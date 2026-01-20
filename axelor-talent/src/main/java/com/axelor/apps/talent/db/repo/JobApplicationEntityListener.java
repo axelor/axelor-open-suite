@@ -21,7 +21,7 @@ package com.axelor.apps.talent.db.repo;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.inject.Beans;
-import javax.persistence.PreRemove;
+import jakarta.persistence.PreRemove;
 
 public class JobApplicationEntityListener {
 

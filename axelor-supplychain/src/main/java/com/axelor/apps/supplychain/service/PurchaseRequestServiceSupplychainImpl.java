@@ -32,7 +32,7 @@ import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServiceImpl {

@@ -33,13 +33,13 @@ import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Service {

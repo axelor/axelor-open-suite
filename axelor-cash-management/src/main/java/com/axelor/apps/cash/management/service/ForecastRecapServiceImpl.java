@@ -59,8 +59,9 @@ import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.TypedQuery;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -77,7 +78,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.TypedQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -425,7 +425,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND (0 in (:journalIds) OR self.journal.id in (:journalIds)) "
             + "AND self.statusSelect IN (:statusSelectList) "
             + "AND self.operationTypeSelect = :operationTypeSelect "
-            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.invoice = self.id "
+            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.invoice.id = self.id "
             + "AND Inv.estimatedPaymentDate BETWEEN :fromDate AND :toDate "
             + "AND Inv.amountRemaining != 0) > 0";
       case ForecastRecapLineTypeRepository.ELEMENT_SALE_ORDER:
@@ -488,7 +488,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
                 : JournalTypeRepository.TECHNICAL_TYPE_SELECT_EXPENSE)
             + " AND (0 in (:bankDetailsId) OR self.companyBankDetails.id in (:bankDetailsId)) "
             + " AND self.statusSelect IN (:statusSelectList) "
-            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.moveLine.move = self.id "
+            + "AND (select count(1) FROM InvoiceTerm Inv WHERE Inv.moveLine.move.id = self.id "
             + "AND Inv.dueDate BETWEEN :fromDate AND :toDate "
             + "AND Inv.amountRemaining != 0) > 0 ";
       default:
@@ -537,7 +537,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         Opportunity opportunity = (Opportunity) forecastModel;
         return getCompanyAmountForOpportunity(forecastRecap, forecastRecapLineType, opportunity);
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
-        // this element is not supported by this method.
+      // this element is not supported by this method.
       case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
         Move move = (Move) forecastModel;
         return journalService.computeBalance(move.getJournal()).get("debit");
@@ -641,7 +641,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
         Opportunity opportunity = (Opportunity) forecastModel;
         return opportunity.getExpectedCloseDate();
       case ForecastRecapLineTypeRepository.ELEMENT_SALARY:
-        // this element is not supported by this method.
+      // this element is not supported by this method.
       case ForecastRecapLineTypeRepository.ELEMENT_MOVE:
         Move move = (Move) forecastModel;
         return move.getDate();

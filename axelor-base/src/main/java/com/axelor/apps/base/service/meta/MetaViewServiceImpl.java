@@ -25,7 +25,7 @@ import com.axelor.common.Inflector;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.db.repo.MetaViewRepository;
 import com.axelor.meta.schema.actions.ActionView;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class MetaViewServiceImpl implements MetaViewService {

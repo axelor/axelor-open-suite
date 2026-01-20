@@ -22,8 +22,8 @@ import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.inject.Beans;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 
 public class AccountListener {
 

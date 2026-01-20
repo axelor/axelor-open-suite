@@ -30,7 +30,7 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.date.LocalDateTimeHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

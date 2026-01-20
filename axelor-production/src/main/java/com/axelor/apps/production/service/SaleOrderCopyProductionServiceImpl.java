@@ -21,7 +21,7 @@ package com.axelor.apps.production.service;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class SaleOrderCopyProductionServiceImpl implements SaleOrderCopyProductionService {

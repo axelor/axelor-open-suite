@@ -23,9 +23,9 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
+import jakarta.validation.constraints.Min;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import javax.validation.constraints.Min;
 
 public class TimesheetLinePutRequest extends RequestStructure {
 

@@ -52,8 +52,8 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
@@ -379,7 +379,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   public String computeProductDomain(Contract contract) {
     String domain =
         "self.isModel = false"
-            + " and (self.endDate = null or self.endDate > :__date__)"
+            + " and (self.endDate IS null or self.endDate > :__date__)"
             + " and self.dtype = 'Product'";
 
     if (contract == null) {
@@ -392,7 +392,9 @@ public class ContractLineServiceImpl implements ContractLineService {
         && company != null
         && !CollectionUtils.isEmpty(company.getTradingNameList())) {
       domain +=
-          " AND " + contract.getTradingName().getId() + " member of self.tradingNameSellerSet";
+          " AND "
+              + contract.getTradingName().getId()
+              + " IN (SELECT tn.id FROM self.tradingNameSellerSet tn)";
     }
 
     int targetTypeSelect = contract.getTargetTypeSelect();

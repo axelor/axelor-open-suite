@@ -23,8 +23,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
+import jakarta.ws.rs.core.Response;
 import java.math.BigDecimal;
-import javax.ws.rs.core.Response;
 
 public interface OperationOrderRestService {
 

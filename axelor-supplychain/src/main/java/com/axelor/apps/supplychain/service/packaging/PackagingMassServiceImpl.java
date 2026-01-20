@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.supplychain.db.Packaging;
 import com.axelor.apps.supplychain.db.PackagingLine;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;

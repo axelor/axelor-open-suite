@@ -56,8 +56,8 @@ import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.EmailAccountRepository;
 import com.axelor.message.service.TemplateMessageService;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.temporal.ChronoUnit;
@@ -237,6 +237,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
           product, "lastProductionPrice", manufOrder.getBillOfMaterial().getCostPrice(), company);
     }
     manufOrderStockMoveService.updatePrices(manufOrder, costPrice);
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
 
     manufOrder.setRealEndDateT(
         Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
@@ -245,14 +246,13 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         new BigDecimal(
             ChronoUnit.MINUTES.between(
                 manufOrder.getPlannedEndDateT(), manufOrder.getRealEndDateT())));
-    manufOrderRepo.save(manufOrder);
-
     updateProductCostPrice(manufOrder, product, company, costPrice);
 
     manufOrderOutgoingStockMoveService.setManufOrderOnOutgoingMove(manufOrder);
     manufOrderTrackingNumberService.setParentTrackingNumbers(manufOrder);
 
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
+    manufOrderRepo.save(manufOrder);
   }
 
   protected void updateProductCostPrice(

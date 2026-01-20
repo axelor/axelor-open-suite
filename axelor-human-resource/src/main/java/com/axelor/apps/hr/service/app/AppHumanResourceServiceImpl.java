@@ -37,9 +37,9 @@ import com.axelor.studio.db.repo.AppLeaveRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppTimesheetRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,17 +79,17 @@ public class AppHumanResourceServiceImpl extends AppBaseServiceImpl
 
   @Override
   public AppTimesheet getAppTimesheet() {
-    return appTimesheetRepo.all().fetchOne();
+    return appTimesheetRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
   public AppLeave getAppLeave() {
-    return appLeaveRepo.all().fetchOne();
+    return appLeaveRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
   public AppExpense getAppExpense() {
-    return appExpenseRepo.all().fetchOne();
+    return appExpenseRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

@@ -20,7 +20,7 @@ package com.axelor.apps.quality.service;
 
 import com.axelor.apps.quality.db.CharacteristicProperty;
 import com.axelor.apps.quality.db.repo.CharacteristicPropertyRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class CharacteristicPropertyServiceImpl implements CharacteristicPropertyService {
 

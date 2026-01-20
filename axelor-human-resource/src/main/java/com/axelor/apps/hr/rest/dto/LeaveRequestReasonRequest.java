@@ -20,8 +20,8 @@ package com.axelor.apps.hr.rest.dto;
 
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.utils.api.ObjectFinder;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import javax.validation.constraints.NotNull;
 
 public class LeaveRequestReasonRequest {
 

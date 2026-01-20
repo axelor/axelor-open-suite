@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.account.service;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.Invoice;
@@ -47,8 +49,8 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.helpers.file.CsvHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -161,7 +163,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
                 "SELECT Invoice.invoiceId "
                     + " FROM SubrogationRelease SubrogationRelease "
                     + " LEFT JOIN Invoice Invoice on  Invoice member of  SubrogationRelease.invoiceSet "
-                    + " LEFT JOIN SubrogationRelease SubrogationRelease2 on Invoice member of  SubrogationRelease2.invoiceSet "
+                    + " LEFT JOIN Invoice.subrogationRelease SubrogationRelease2 "
                     + " WHERE SubrogationRelease.id = :subroID "
                     + " AND SubrogationRelease2.id != :subroID"
                     + " AND SubrogationRelease2.statusSelect IN (:statusTransmitted ,:statusAccounted,:statusCleared )")
@@ -183,7 +185,7 @@ public class SubrogationReleaseServiceImpl implements SubrogationReleaseService 
   @Override
   public String exportToCSV(SubrogationRelease subrogationRelease)
       throws AxelorException, IOException {
-    String dataExportDir = appBaseService.getDataExportDir();
+    String dataExportDir = AppSettings.get().get(AvailableAppSettings.DATA_UPLOAD_DIR);
     List<String[]> allMoveLineData = new ArrayList<>();
 
     Comparator<Invoice> byInvoiceDate =

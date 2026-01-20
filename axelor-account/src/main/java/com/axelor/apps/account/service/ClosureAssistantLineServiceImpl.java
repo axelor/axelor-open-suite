@@ -37,13 +37,13 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.utils.db.Wizard;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.persistence.TypedQuery;
 
 public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineService {
 

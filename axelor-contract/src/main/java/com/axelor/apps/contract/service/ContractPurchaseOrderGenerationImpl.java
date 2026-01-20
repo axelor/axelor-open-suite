@@ -31,8 +31,8 @@ import com.axelor.apps.purchase.service.PurchaseOrderService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class ContractPurchaseOrderGenerationImpl implements ContractPurchaseOrderGeneration {
 

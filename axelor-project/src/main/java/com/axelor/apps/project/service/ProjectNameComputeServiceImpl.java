@@ -28,7 +28,7 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ProjectNameComputeServiceImpl implements ProjectNameComputeService {
 

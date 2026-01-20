@@ -28,7 +28,7 @@ import com.axelor.apps.stock.db.TrackingNumberConfigurationProfile;
 import com.axelor.apps.stock.db.repo.TrackingNumberConfigurationRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
