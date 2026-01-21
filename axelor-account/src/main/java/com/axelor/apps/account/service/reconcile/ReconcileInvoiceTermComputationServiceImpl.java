@@ -50,6 +50,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -190,6 +191,28 @@ public class ReconcileInvoiceTermComputationServiceImpl
                   invoice, invoicePaymentAmount, reconcile.getForeignExchangeMove());
           invoicePayment.setReconcile(reconcile);
         } else if (invoicePayment == null) {
+          BigDecimal finalInvoicePaymentAmount = invoicePaymentAmount;
+          if (foreignExchangePayment != null
+              && reconcile.getForeignExchangeMove() != null
+              && !Objects.equals(reconcile.getAmount(), invoice.getCompanyInTaxTotal())
+              && !invoice.getInvoiceTermList().stream()
+                  .map(InvoiceTerm::getAmountRemaining)
+                  .anyMatch(i -> i.compareTo(finalInvoicePaymentAmount) == 0)
+              && invoice.getInTaxTotal().compareTo(invoicePaymentAmount) != 0
+              && currencyService.isCurrencyRateLower(
+                  invoice.getInvoiceDate(),
+                  foreignExchangePayment.getPaymentDate(),
+                  invoice.getCompanyCurrency(),
+                  invoice.getCurrency())) {
+            BigDecimal foreignExchangeAmount =
+                currencyService.getAmountCurrencyConvertedAtDate(
+                    invoice.getCompanyCurrency(),
+                    invoice.getCurrency(),
+                    foreignExchangePayment.getAmount(),
+                    invoice.getInvoiceDate());
+
+            invoicePaymentAmount = invoicePaymentAmount.add(foreignExchangeAmount);
+          }
           invoicePayment =
               invoicePaymentCreateService.createInvoicePayment(
                   invoice, invoicePaymentAmount, otherMove);
