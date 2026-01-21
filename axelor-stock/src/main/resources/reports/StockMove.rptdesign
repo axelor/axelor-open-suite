@@ -1859,7 +1859,7 @@ concat(
   UNCode.code_description, ',',
   MetaSelectItem.title, ',',
   Product.label_number, ',',
-  Product.tunnel_code
+  Product.hazard_number
 ) as adr_info
 from stock_stock_move as StockMove
 inner join stock_stock_move_line as StockMoveLine on (StockMoveLine.stock_move = StockMove.id)
