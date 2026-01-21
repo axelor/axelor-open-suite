@@ -91,7 +91,7 @@
 
   <action-record name="action-advanced-import-record-onnew"
     model="com.axelor.apps.base.db.AdvancedImport">
-    <field name="languageSelect" expr="eval: __user__.language"/>
+    <field name="languageSelect" expr="eval: __user__?.localization?.language?.code"/>
   </action-record>
 
   <action-record name="action-advanced-import-record-onchange-config"
