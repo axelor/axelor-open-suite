@@ -264,14 +264,6 @@
     </extend>
   </form>
 
-  <form id="crm-partner-light-form" name="partner-light-form" title="Partner"
-    model="com.axelor.apps.base.db.Partner" extension="true">
-    <extend target="/">
-      <attribute name="onLoad" value="crm-action-group-partner-onload"/>
-      <attribute name="onNew" value="crm-action-group-partner-onnew"/>
-    </extend>
-  </form>
-
   <form id="crm-partner-contact-form" name="partner-contact-form" title="Contact"
     model="com.axelor.apps.base.db.Partner" extension="true">
     <extend target="/">
