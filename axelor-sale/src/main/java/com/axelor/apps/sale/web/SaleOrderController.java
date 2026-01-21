@@ -877,6 +877,15 @@ public class SaleOrderController {
     response.setValue("saleOrderLineList", saleOrderLineList);
   }
 
+  public void updateSaleOrderLinesDeliveryAddressStr(
+      ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    List<SaleOrderLine> saleOrderLineList =
+        Beans.get(SaleOrderDeliveryAddressService.class)
+            .updateSaleOrderLinesDeliveryAddressStr(saleOrder);
+    response.setValue("saleOrderLineList", saleOrderLineList);
+  }
+
   public void duplicateWithConfigurator(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
