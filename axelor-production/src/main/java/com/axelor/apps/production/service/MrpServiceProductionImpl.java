@@ -245,10 +245,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     LocalDate maturityDate = null;
 
-    if (manufOrder.getPlannedEndDateT() != null) {
-      maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
-    } else if (manufOrder.getPlannedStartDateT() != null) {
+    if (manufOrder.getPlannedStartDateT() != null) {
       maturityDate = manufOrder.getPlannedStartDateT().toLocalDate();
+    } else if (manufOrder.getPlannedEndDateT() != null) {
+      maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
     }
 
     maturityDate = this.computeMaturityDate(maturityDate, manufOrderMrpLineType);
