@@ -1,0 +1,3 @@
+---
+title: "Sale order: updating the delivery address also updates the address in sale order lines."
+module: axelor-sale
