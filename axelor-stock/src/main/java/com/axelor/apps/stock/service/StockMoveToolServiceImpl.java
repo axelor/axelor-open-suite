@@ -27,12 +27,14 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.utils.BatchProcessorHelper;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
@@ -204,8 +206,10 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   @Override
   public Address getFromAddress(StockMove stockMove, StockMoveLine stockMoveLine) {
     Address fromAddress = stockMove.getFromAddress();
-    if (fromAddress == null && stockMoveLine.getFromStockLocation() != null) {
-      fromAddress = stockMoveLine.getFromStockLocation().getAddress();
+    StockLocation fromStockLocation = stockMoveLine.getFromStockLocation();
+    if (fromAddress == null && fromStockLocation != null) {
+      fromStockLocation = JpaModelHelper.ensureManaged(fromStockLocation);
+      fromAddress = fromStockLocation.getAddress();
     }
     return fromAddress;
   }
@@ -213,8 +217,10 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   @Override
   public Address getToAddress(StockMove stockMove, StockMoveLine stockMoveLine) {
     Address toAddress = stockMove.getToAddress();
-    if (toAddress == null && stockMoveLine.getToStockLocation() != null) {
-      toAddress = stockMoveLine.getToStockLocation().getAddress();
+    StockLocation toStockLocation = stockMoveLine.getToStockLocation();
+    if (toAddress == null && toStockLocation != null) {
+      toStockLocation = JpaModelHelper.ensureManaged(toStockLocation);
+      toAddress = toStockLocation.getAddress();
     }
     return toAddress;
   }
