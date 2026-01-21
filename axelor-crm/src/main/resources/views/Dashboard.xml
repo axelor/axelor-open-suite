@@ -64,18 +64,23 @@
     title="Opportunities By Partner" model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-grid-group"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.partner is not null</domain>
+    <domain>self.partner is not null AND self.company = :_activeCompany</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_activeCompany"
+      expr="call: com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.top.deals" title="Best Open Deals"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-top-deal-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.opportunityStatus.id != :_closedLostOpportunityStatusId</domain>
+    <domain>self.opportunityStatus.id != :_closedLostOpportunityStatusId AND self.company =
+      :_activeCompany</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
     <context name="_closedLostOpportunityStatusId"
       expr="eval: __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
+    <context name="_activeCompany"
+      expr="call: com.axelor.apps.base.service.user.UserService:getUserActiveCompany()"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.my.top.deals" title="My Best Open Deals"
