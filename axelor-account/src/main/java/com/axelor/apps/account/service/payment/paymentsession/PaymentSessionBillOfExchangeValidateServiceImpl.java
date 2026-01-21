@@ -172,10 +172,10 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        offset++;
+
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || paymentSessionValidateService.shouldBeProcessed(invoiceTerm)) {
-
+          offset++;
           this.processInvoiceTermBillOfExchange(
               paymentSession,
               invoiceTerm,
