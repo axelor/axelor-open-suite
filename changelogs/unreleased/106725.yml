@@ -1,0 +1,3 @@
+---
+title: "Payment Session: fixed offset increment in bill of exchange validation to only count processed invoice terms"
+module: axelor-account
