@@ -1,0 +1,3 @@
+---
+title: "Payment Session: fixed detached entity error during bill of exchange validation with multiple invoice terms"
+module: axelor-account
