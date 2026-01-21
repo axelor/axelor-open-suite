@@ -86,4 +86,6 @@ public interface MoveLineToolService {
   boolean isMoveLineSpecialAccount(MoveLine moveLine);
 
   boolean isMoveLineCommitmentAccount(MoveLine moveLine);
+
+  List<MoveLine> getMoveLineList(Account account);
 }
