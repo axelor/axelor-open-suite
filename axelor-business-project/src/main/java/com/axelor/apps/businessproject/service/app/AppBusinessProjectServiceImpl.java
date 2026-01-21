@@ -98,10 +98,14 @@ public class AppBusinessProjectServiceImpl extends AppBaseServiceImpl
 
   @Override
   public Unit getHoursUnit() throws AxelorException {
-    Unit hoursUnit = getAppBusinessProject().getHoursUnit();
+    AppBusinessProject appBusinessProject = getAppBusinessProject();
+    if (!isApp("business-project") || appBusinessProject == null) {
+      return null;
+    }
+    Unit hoursUnit = appBusinessProject.getHoursUnit();
     if (Objects.isNull(hoursUnit)) {
       throw new AxelorException(
-          getAppBusinessProject(),
+          appBusinessProject,
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BusinessProjectExceptionMessage.PROJECT_CONFIG_HOURS_UNIT_MISSING));
     }
