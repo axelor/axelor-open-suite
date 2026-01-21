@@ -1303,7 +1303,7 @@
   <action-attrs name="action-partner-attrs-partner-seq-editable">
     <attribute name="readonly" for="partnerSeq"
       expr="__config__.app.getApp('base')?.getGeneratePartnerSequence()"/>
-    <attribute name="readonly" for="companyPanel"
+    <attribute name="readonly" for="mainPartner"
       expr="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
   </action-attrs>
 
