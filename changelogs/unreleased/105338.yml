@@ -1,3 +1,3 @@
 ---
-title: "Stock move: copy to address str in stock move from delivery address str of sale order."
-module: axelor-stock
+title: "Sale order: updating the delivery address also updates the address in sale order lines."
+module: axelor-sale
