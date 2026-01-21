@@ -120,16 +120,16 @@
   <action-record name="action-move-template-line-get-account"
     model="com.axelor.apps.account.db.MoveTemplateLine">
     <field name="account"
-      expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.company,true)"
+      expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.company,null,true,false)"
       if="product != null &amp;&amp; moveTemplate?.company != null &amp;&amp; (debitCreditSelect == 'D' || debit &gt; 0) "/>
     <field name="account"
-      expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__(Company).find(__parent__.company.id),true)"
+      expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__(Company).find(__parent__.company.id),null,true,false)"
       if="product != null &amp;&amp; __parent__?.company != null &amp;&amp; (debitCreditSelect == 'D' || debit &gt; 0) "/>
     <field name="account"
-      expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.company,false)"
+      expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,moveTemplate.company,null,false,false)"
       if="product != null &amp;&amp; moveTemplate?.company != null &amp;&amp; (debitCreditSelect == 'C' || credit &gt; 0) "/>
     <field name="account"
-      expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__(Company).find(__parent__.company.id),false)"
+      expr="call:com.axelor.apps.account.service.AccountManagementServiceAccountImpl:getProductAccount(product,__repo__(Company).find(__parent__.company.id),null,false,false)"
       if="product != null &amp;&amp; __parent__?.company != null &amp;&amp; (debitCreditSelect == 'C' || credit &gt; 0) "/>
   </action-record>
 
