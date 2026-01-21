@@ -29,8 +29,8 @@ import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.utils.service.ArchivingService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {

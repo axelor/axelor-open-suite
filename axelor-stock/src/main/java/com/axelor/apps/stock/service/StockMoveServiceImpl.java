@@ -29,7 +29,8 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.MapGoogleService;
+import com.axelor.apps.base.service.MapOsmService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
@@ -67,8 +68,8 @@ import com.axelor.message.service.TemplateMessageService;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -899,7 +900,7 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     newStockMoveLine.setQty(stockMoveLine.getQty().subtract(stockMoveLine.getRealQty()));
 
-    newStockMoveLine.setRealQty(newStockMoveLine.getQty());
+    newStockMoveLine.setRealQty(BigDecimal.ZERO);
     return newStockMoveLine;
   }
 
@@ -1447,10 +1448,11 @@ public class StockMoveServiceImpl implements StockMoveService {
     if (appBaseService.getAppBase().getMapApiSelect()
         == AppBaseRepository.MAP_API_OPEN_STREET_MAP) {
       result =
-          Beans.get(MapService.class).getDirectionMapOsm(dString, dLat, dLon, aString, aLat, aLon);
+          Beans.get(MapOsmService.class)
+              .getDirectionMapOsm(dString, dLat, dLon, aString, aLat, aLon);
     } else {
       result =
-          Beans.get(MapService.class)
+          Beans.get(MapGoogleService.class)
               .getDirectionMapGoogle(dString, dLat, dLon, aString, aLat, aLon);
     }
     if (result == null) {

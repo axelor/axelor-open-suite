@@ -21,7 +21,7 @@ package com.axelor.apps.stock.utils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
-import javax.persistence.EntityManager;
+import jakarta.persistence.EntityManager;
 
 public final class JpaModelHelper {
 

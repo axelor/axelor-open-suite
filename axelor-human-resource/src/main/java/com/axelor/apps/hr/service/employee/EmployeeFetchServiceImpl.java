@@ -30,7 +30,7 @@ import com.axelor.utils.helpers.QueryBuilder;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +111,7 @@ public class EmployeeFetchServiceImpl implements EmployeeFetchService {
     return QueryBuilder.of(Employee.class)
         .add(
             "self.user.blocked = false AND self.hireDate <= :expenseDate"
-                + " AND (self.leavingDate=null OR self.leavingDate >= :expenseDate)"
+                + " AND (self.leavingDate IS null OR self.leavingDate >= :expenseDate)"
                 + " AND (self.user.expiresOn is null OR self.user.expiresOn> :currentDate)"
                 + " AND self.mainEmploymentContract.payCompany IN :companySet")
         .bind("expenseDate", expenseDate)

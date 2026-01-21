@@ -37,6 +37,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineService;
 import com.axelor.apps.stock.utils.BatchProcessorHelper;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -44,8 +45,8 @@ import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -913,6 +914,9 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   protected BigDecimal convertUnitWithProduct(
       Unit startUnit, Unit endUnit, BigDecimal qtyToConvert, Product product)
       throws AxelorException {
+    startUnit = JpaModelHelper.ensureManaged(startUnit);
+    endUnit = JpaModelHelper.ensureManaged(endUnit);
+
     if (startUnit != null && !startUnit.equals(endUnit)) {
       return unitConversionService.convert(
           startUnit, endUnit, qtyToConvert, qtyToConvert.scale(), product);

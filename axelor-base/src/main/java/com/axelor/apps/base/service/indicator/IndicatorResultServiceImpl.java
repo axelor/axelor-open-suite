@@ -21,8 +21,8 @@ package com.axelor.apps.base.service.indicator;
 import com.axelor.apps.base.db.IndicatorConfig;
 import com.axelor.apps.base.db.IndicatorResult;
 import com.axelor.apps.base.db.repo.IndicatorResultRepository;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import jakarta.inject.Inject;
 import java.time.LocalDateTime;
 
 @Singleton

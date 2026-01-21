@@ -21,7 +21,7 @@ package com.axelor.apps.sale.service.saleorder.pricing;
 import com.axelor.apps.base.service.pricing.PricingObserverImpl;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.db.EntityHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class PricingObserverSaleImpl extends PricingObserverImpl {
 

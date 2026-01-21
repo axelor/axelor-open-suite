@@ -21,7 +21,7 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.hr.db.Expense;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ExpenseFetchMoveServiceImpl implements ExpenseFetchMoveService {
   protected MoveRepository moveRepository;

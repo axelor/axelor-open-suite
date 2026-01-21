@@ -87,7 +87,8 @@ import com.axelor.utils.db.Wizard;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.inject.Singleton;
+import jakarta.annotation.Nullable;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -98,7 +99,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nullable;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -875,6 +875,15 @@ public class SaleOrderController {
     List<SaleOrderLine> saleOrderLineList =
         Beans.get(SaleOrderDeliveryAddressService.class)
             .updateSaleOrderLinesDeliveryAddress(saleOrder);
+    response.setValue("saleOrderLineList", saleOrderLineList);
+  }
+
+  public void updateSaleOrderLinesDeliveryAddressStr(
+      ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    List<SaleOrderLine> saleOrderLineList =
+        Beans.get(SaleOrderDeliveryAddressService.class)
+            .updateSaleOrderLinesDeliveryAddressStr(saleOrder);
     response.setValue("saleOrderLineList", saleOrderLineList);
   }
 

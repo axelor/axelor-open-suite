@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+
+  <module name="quality" package="com.axelor.apps.quality.db"/>
+
+  <entity name="QIIdentification">
+    <many-to-one name="manufOrder" title="Manufacturing Order"
+      ref="com.axelor.apps.production.db.ManufOrder"/>
+    <many-to-one name="operationOrder" title="Operation line"
+      ref="com.axelor.apps.production.db.OperationOrder"/>
+    <many-to-one name="toConsumeProdProduct" title="Manuf Order product to consume"
+      ref="com.axelor.apps.production.db.ProdProduct"/>
+    <many-to-one name="consumedProdProduct" title="Manuf Order consummed product"
+      ref="com.axelor.apps.stock.db.StockMoveLine"/>
+  </entity>
+
+</domain-models>

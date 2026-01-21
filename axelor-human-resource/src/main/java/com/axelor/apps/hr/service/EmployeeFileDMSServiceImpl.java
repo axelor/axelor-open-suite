@@ -27,8 +27,8 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.meta.MetaFiles;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class EmployeeFileDMSServiceImpl implements EmployeeFileDMSService {
   protected FileRepository employeeFileRepository;

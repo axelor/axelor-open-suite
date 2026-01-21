@@ -41,11 +41,12 @@ import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveSe
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -203,6 +204,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   @Override
   public OperationOrder updateDiffProdProductList(OperationOrder operationOrder)
       throws AxelorException {
+    operationOrder = JpaModelHelper.ensureManaged(operationOrder);
     List<ProdProduct> toConsumeList = operationOrder.getToConsumeProdProductList();
     List<StockMoveLine> consumedList = operationOrder.getConsumedStockMoveLineList();
     if (toConsumeList == null || consumedList == null) {

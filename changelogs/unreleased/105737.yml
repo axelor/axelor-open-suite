@@ -1,0 +1,3 @@
+---
+title: "AccountingCutOff: fix inverted debit/credit move lines for deferred incomes cut-off."
+module: axelor-account

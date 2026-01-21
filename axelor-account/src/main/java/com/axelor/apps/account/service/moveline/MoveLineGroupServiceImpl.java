@@ -39,7 +39,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.auth.AuthUtils;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -115,6 +115,9 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     moveLineDefaultService.setFieldsFromParent(moveLine, move);
     moveLineDefaultService.setAccountInformation(moveLine, move);
     moveLineComputeAnalyticService.computeAnalyticDistribution(moveLine, move);
+    if (moveLine.getAccount() != null) {
+      moveLineRecordService.refreshAccountInformation(moveLine, move);
+    }
 
     Map<String, Object> valuesMap =
         new HashMap<>(this.getAnalyticDistributionTemplateOnChangeValuesMap(moveLine, move));
@@ -140,6 +143,7 @@ public class MoveLineGroupServiceImpl implements MoveLineGroupService {
     valuesMap.put("debit", moveLine.getDebit());
     valuesMap.put("analyticDistributionTemplate", moveLine.getAnalyticDistributionTemplate());
     valuesMap.put("taxLineSet", moveLine.getTaxLineSet());
+    valuesMap.put("vatSystemSelect", moveLine.getVatSystemSelect());
     valuesMap.put("analyticMoveLineList", moveLine.getAnalyticMoveLineList());
     valuesMap.put("interbankCodeLine", moveLine.getInterbankCodeLine());
     valuesMap.put("exportedDirectDebitOk", moveLine.getExportedDirectDebitOk());

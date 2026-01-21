@@ -24,9 +24,9 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.report.engine.ReportSettings;
 import com.axelor.common.FileUtils;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
 import com.axelor.utils.helpers.StringHelper;
 import com.axelor.utils.helpers.file.PdfHelper;
 import com.axelor.utils.service.translation.TranslationBaseService;
@@ -122,7 +122,7 @@ public class PrintingTemplateHelper {
     if (CollectionUtils.isEmpty(fileList)) {
       return null;
     }
-    Path zipFile = MetaFiles.createTempFile(zipFileName, ".zip");
+    Path zipFile = TempFiles.createTempFile(zipFileName, ".zip");
 
     try (ZipOutputStream zout = new ZipOutputStream(Files.newOutputStream(zipFile))) {
       for (File file : fileList) {

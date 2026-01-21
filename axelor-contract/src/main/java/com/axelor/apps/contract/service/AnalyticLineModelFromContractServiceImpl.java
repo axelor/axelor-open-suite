@@ -22,7 +22,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 
 public class AnalyticLineModelFromContractServiceImpl

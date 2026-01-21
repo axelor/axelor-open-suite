@@ -72,7 +72,7 @@ public class ExcelExportGenerator extends AdvancedExportGenerator {
 
   @Override
   public void generateHeader() {
-    Row headerRow = sheet.createRow(sheet.getFirstRowNum());
+    Row headerRow = sheet.createRow(0);
     int colHeaderNum = 0;
     for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
       Cell headerCell = headerRow.createCell(colHeaderNum++);

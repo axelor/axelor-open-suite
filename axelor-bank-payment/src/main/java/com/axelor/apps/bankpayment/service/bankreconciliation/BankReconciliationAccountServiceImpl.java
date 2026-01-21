@@ -28,7 +28,7 @@ import com.axelor.apps.account.db.repo.JournalRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.base.db.BankDetails;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

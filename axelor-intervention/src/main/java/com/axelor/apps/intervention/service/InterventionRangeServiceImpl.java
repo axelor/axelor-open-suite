@@ -25,8 +25,8 @@ import com.axelor.apps.intervention.db.repo.InterventionQuestionRepository;
 import com.axelor.apps.intervention.db.repo.InterventionRangeRepository;
 import com.axelor.apps.intervention.db.repo.InterventionRepository;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class InterventionRangeServiceImpl implements InterventionRangeService {

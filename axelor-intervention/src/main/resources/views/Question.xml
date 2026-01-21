@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid model="com.axelor.apps.intervention.db.Question" title="Question" name="question-grid">
     <field name="title"/>
@@ -40,17 +40,18 @@
     <view type="form" name="intervention-type-form"/>
     <domain>
       :questionId in (SELECT rq.question.id FROM RangeQuestion rq WHERE rq.rangeVal.id in
-      self.advancedStartupMonitoringRange.id)
+      (self.advancedStartupMonitoringRange.id))
       OR :questionId in (SELECT rq.question.id FROM
-      RangeQuestion rq WHERE rq.rangeVal.id in self.headerRangeList.rangeVal.id)
+      RangeQuestion rq WHERE rq.rangeVal.id in (self.headerRangeList.rangeVal.id))
       OR :questionId in
       (SELECT
       rq.question.id FROM RangeQuestion rq WHERE rq.rangeVal.id in
-      self.equipmentRangeList.rangeVal.id)
+      (self.equipmentRangeList.rangeVal.id))
       OR
-      :questionId in (SELECT rq.question.id FROM RangeQuestion
+      :questionId in (SELECT rq.question.id FROM
+      RangeQuestion
       rq WHERE rq.rangeVal.id in
-      self.footerRangeList.rangeVal.id)
+      (self.footerRangeList.rangeVal.id))
     </domain>
     <context name="questionId" expr="eval: id ?: 0"/>
   </action-view>

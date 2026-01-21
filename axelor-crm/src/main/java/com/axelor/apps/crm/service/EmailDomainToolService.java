@@ -23,7 +23,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
 import com.axelor.message.db.EmailAddress;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;

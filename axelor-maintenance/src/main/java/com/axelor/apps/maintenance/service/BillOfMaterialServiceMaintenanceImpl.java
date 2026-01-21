@@ -37,7 +37,7 @@ import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceImpl
     implements BillOfMaterialMaintenanceService {

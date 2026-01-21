@@ -33,8 +33,8 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -76,7 +76,7 @@ public class AccountingConfigTemplateService {
     long accountCounter =
         accountRepository
             .all()
-            .filter("self.company.id = ?1 AND self.parentAccount != null", company.getId())
+            .filter("self.company.id = ?1 AND self.parentAccount IS NOT null", company.getId())
             .count();
 
     if (accountCounter > 0) {

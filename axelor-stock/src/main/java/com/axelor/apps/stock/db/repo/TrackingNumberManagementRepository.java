@@ -34,10 +34,10 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.db.JPA;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppStock;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class TrackingNumberManagementRepository extends TrackingNumberRepository {
 

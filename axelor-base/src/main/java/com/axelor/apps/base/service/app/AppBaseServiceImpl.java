@@ -42,8 +42,9 @@ import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
 import com.axelor.utils.helpers.date.LocalDateTimeHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -54,7 +55,6 @@ import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import javax.inject.Singleton;
 
 @Singleton
 public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {

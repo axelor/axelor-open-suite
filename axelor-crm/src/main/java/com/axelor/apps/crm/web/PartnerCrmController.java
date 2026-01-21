@@ -36,8 +36,8 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.inject.Inject;
 import com.google.inject.Provider;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +56,7 @@ public class PartnerCrmController {
       long count =
           Beans.get(PartnerRepository.class)
               .all()
-              .filter("self.parentPartner = :id")
+              .filter("self.parentPartner.id = :id")
               .bind("id", partner.getId())
               .count();
       response.setValue("$subsidiaryCount", count);

@@ -36,6 +36,7 @@ import com.axelor.db.mapper.Property;
 import com.axelor.db.mapper.PropertyType;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.GdprDmsFileRepository;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
@@ -43,8 +44,9 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Entity;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -57,7 +59,6 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import javax.persistence.Entity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -164,12 +165,18 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
 
       if (!"OneToMany".equals(metaField.getRelationship())) {
         records =
-            Query.of(klass).filter(metaField.getName() + " = " + gdprRequest.getModelId()).fetch();
+            Query.of(klass)
+                .filter(metaField.getName() + ".id = " + gdprRequest.getModelId())
+                .fetch();
 
       } else {
         records =
             Query.of(klass)
-                .filter(gdprRequest.getModelId() + " MEMBER OF " + metaField.getName())
+                .filter(
+                    gdprRequest.getModelId()
+                        + " IN (SELECT obj.id FROM self."
+                        + metaField.getName()
+                        + " obj)")
                 .fetch();
       }
 
@@ -245,7 +252,7 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
    * @throws IOException
    */
   public void addFilesToZip(File source, List<File> files) throws IOException {
-    MetaFiles.createTempFile(null, OUTPUT_EXT);
+    TempFiles.createTempFile(null, OUTPUT_EXT);
 
     File tmpZip = File.createTempFile(source.getName(), null);
 

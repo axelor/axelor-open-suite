@@ -27,4 +27,6 @@ public interface DataBackupService {
   public void restoreBackUp(DataBackup dataBackup);
 
   public boolean sequencesOrMrpLineTypesExist();
+
+  char getSeparator(String separator);
 }

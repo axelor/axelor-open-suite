@@ -26,7 +26,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainSer
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderConfirmSupplychainService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
 public class SaleOrderSupplychainObserver {
 

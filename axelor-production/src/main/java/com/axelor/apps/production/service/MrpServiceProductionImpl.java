@@ -69,8 +69,8 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.message.service.MailMessageService;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -248,10 +248,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     LocalDate maturityDate = null;
 
-    if (manufOrder.getPlannedEndDateT() != null) {
-      maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
-    } else if (manufOrder.getPlannedStartDateT() != null) {
+    if (manufOrder.getPlannedStartDateT() != null) {
       maturityDate = manufOrder.getPlannedStartDateT().toLocalDate();
+    } else if (manufOrder.getPlannedEndDateT() != null) {
+      maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
     }
 
     maturityDate = this.computeMaturityDate(maturityDate, manufOrderMrpLineType);

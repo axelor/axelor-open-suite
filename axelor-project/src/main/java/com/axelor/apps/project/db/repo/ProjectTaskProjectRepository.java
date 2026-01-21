@@ -31,6 +31,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.mail.db.repo.MailFollowerRepository;
+import jakarta.persistence.PersistenceException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -41,7 +42,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
-import javax.persistence.PersistenceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,7 +122,7 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
-
+    Beans.get(ProjectTaskService.class).computeProjectTaskLevels(project);
     return super.save(projectTask);
   }
 
@@ -162,7 +162,7 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
           json.put("taskDuration", durationHours.multiply(new BigDecimal(3600)).intValue());
         }
       } else if (json.get("taskDuration") != null) {
-        Integer taskDuration = new Integer(json.get("taskDuration").toString());
+        Integer taskDuration = Integer.parseInt(json.get("taskDuration").toString());
         logger.debug("Updating durationHours: {}", taskDuration / 3600);
         json.put("durationHours", new BigDecimal(taskDuration / 3600));
       }
@@ -174,7 +174,7 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
         json.put("plannedProgress", progress);
       }
       if (json.get("taskDuration") != null) {
-        Integer taskDuration = new Integer(json.get("taskDuration").toString());
+        Integer taskDuration = Integer.parseInt(json.get("taskDuration").toString());
         json.put("durationHours", new BigDecimal(taskDuration / 3600));
       }
     }

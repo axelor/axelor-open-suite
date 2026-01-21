@@ -24,7 +24,7 @@ import com.axelor.apps.base.service.MapService;
 import com.axelor.apps.base.service.address.AddressServiceImpl;
 import com.axelor.db.JPA;
 import com.axelor.utils.helpers.address.AddressHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AddressServiceAccountImpl extends AddressServiceImpl {
   static {

@@ -1,0 +1,3 @@
+---
+title: "Events: fixed errors when creating events without a job application."
+module: axelor-talent

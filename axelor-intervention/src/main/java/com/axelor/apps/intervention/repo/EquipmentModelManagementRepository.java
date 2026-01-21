@@ -22,8 +22,8 @@ import com.axelor.apps.intervention.db.EquipmentModel;
 import com.axelor.apps.intervention.db.repo.EquipmentModelRepository;
 import com.axelor.apps.intervention.exception.InterventionExceptionMessage;
 import com.axelor.i18n.I18n;
+import jakarta.persistence.PersistenceException;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class EquipmentModelManagementRepository extends EquipmentModelRepository {
 

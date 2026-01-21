@@ -29,8 +29,8 @@ import com.axelor.apps.sale.service.saleorder.opportunity.OpportunitySaleOrderSe
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class OpportunitySaleOrderSupplychainServiceImpl extends OpportunitySaleOrderServiceImpl {
   protected AppBaseService appBaseService;

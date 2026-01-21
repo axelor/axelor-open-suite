@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <form name="duplicate-object-wizard-form" title="Merge duplicated"
     model="com.axelor.utils.db.Wizard" onNew="action-default-object-name">
@@ -12,7 +12,7 @@
           colSpan="12"/>
       </panel>
       <panel name="actionsPanel">
-        <button name="addOriginalBtn" icon="fa-arrow-right" colSpan="2"
+        <button name="addOriginalBtn" icon="arrow-right" colSpan="2"
           onClick="action-method-add-original" colOffset="1"/>
         <field name="$originalObject" title="Original" readonly="true" colSpan="8"
           type="many-to-one" canView="false" target="com.axelor.utils.db.Wizard" colOffset="1"/>
@@ -34,7 +34,7 @@
     name="wizard-check-duplicate-form">
     <panel-related name="fieldsSetPanel" field="$fieldsSet"
       title="Fields to select duplicate"
-      domain="self.metaModel.fullName = :_contextModel AND (relationship = null OR relationship = 'ManyToOne')"
+      domain="self.metaModel.fullName = :_contextModel AND (relationship IS null OR relationship = 'ManyToOne')"
       canNew="false" canEdit="false" colSpan="12" type="many-to-many"
       target="com.axelor.meta.db.MetaField" grid-view="meta-field-light-grid"/>
     <panel name="mainPanel">

@@ -29,11 +29,12 @@ import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.concurrent.ContextAware;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.JpaSecurity;
 import com.axelor.db.Model;
 import com.axelor.db.Query;
-import com.axelor.db.tenants.TenantAware;
+import com.axelor.db.tenants.TenantResolver;
 import com.axelor.inject.Beans;
 import com.axelor.mail.MailBuilder;
 import com.axelor.mail.MailException;
@@ -59,13 +60,17 @@ import com.axelor.text.StringTemplates;
 import com.axelor.text.Templates;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.CaseFormat;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Predicates;
 import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -80,9 +85,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import javax.mail.MessagingException;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -358,16 +360,19 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     }
 
     // send email using a separate process to void thread blocking
+    String currentTenantId = TenantResolver.currentTenantIdentifier();
     executor.submit(
-        new TenantAware(
+        ContextAware.of()
+            .withTransaction(false)
+            .withTenantId(currentTenantId)
+            .build(
                 () -> {
                   try {
                     send(sender, email);
                   } catch (Exception e) {
                     throw new RuntimeException(e);
                   }
-                })
-            .withTransaction(false));
+                }));
   }
 
   @Override
@@ -443,7 +448,8 @@ public class MailServiceBaseImpl extends MailServiceMessageImpl {
     if (isDefaultTemplate) {
       templatesContext.put("entity", entity);
     } else {
-      templatesContext.put(klass.getSimpleName(), entity);
+      templatesContext.put(
+          CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, klass.getSimpleName()), entity);
     }
     templates = createTemplates(messageTemplate);
   }

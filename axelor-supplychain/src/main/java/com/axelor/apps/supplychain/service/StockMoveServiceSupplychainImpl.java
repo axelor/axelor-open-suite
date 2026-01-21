@@ -72,8 +72,8 @@ import com.axelor.message.db.Template;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -280,7 +280,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void cancel(StockMove stockMove) throws AxelorException {
 
     cancelStockMove(stockMove);
-    StockConfig stockConfig = stockConfigService.getStockConfig(stockMove.getCompany());
+    Company company = JpaModelHelper.ensureManaged(stockMove.getCompany());
+    StockConfig stockConfig = stockConfigService.getStockConfig(company);
     Boolean supplierArrivalCancellationAutomaticMail =
         stockConfig.getSupplierArrivalCancellationAutomaticMail();
     if (!supplierArrivalCancellationAutomaticMail
@@ -445,8 +446,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       throws AxelorException {
     StockMoveLine newStockMoveLine = super.copySplittedStockMoveLine(stockMoveLine);
 
-    if (appSupplyChainService.isApp("supplychain")
-        && appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
+    AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
+    if (appSupplyChainService.isApp("supplychain") && appSupplychain.getManageStockReservation()) {
       BigDecimal requestedReservedQty =
           stockMoveLine
               .getRequestedReservedQty()
@@ -459,6 +460,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       reservedQtyService.deallocateStockMoveLineAfterSplit(
           stockMoveLine, stockMoveLine.getReservedQty());
       stockMoveLine.setReservedQty(BigDecimal.ZERO);
+    }
+    StockMove stockMove = stockMoveLine.getStockMove();
+    if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+            && appSupplychain.getAutoFillDeliveryRealQty())
+        || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+            && appSupplychain.getAutoFillReceiptRealQty())) {
+      newStockMoveLine.setRealQty(newStockMoveLine.getQty());
     }
     return newStockMoveLine;
   }

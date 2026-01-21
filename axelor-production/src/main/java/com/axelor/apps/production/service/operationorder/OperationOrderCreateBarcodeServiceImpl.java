@@ -23,7 +23,7 @@ import com.axelor.apps.base.service.BarcodeGeneratorService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class OperationOrderCreateBarcodeServiceImpl implements OperationOrderCreateBarcodeService {
 

@@ -21,8 +21,8 @@ package com.axelor.apps.helpdesk.service;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.axelor.apps.helpdesk.db.repo.TicketRepository;
 import com.axelor.auth.AuthUtils;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class TicketAssignmentServiceImpl implements TicketAssignmentService {

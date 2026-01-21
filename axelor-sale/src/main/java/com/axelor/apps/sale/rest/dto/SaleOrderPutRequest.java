@@ -19,8 +19,8 @@
 package com.axelor.apps.sale.rest.dto;
 
 import com.axelor.utils.api.RequestStructure;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public class SaleOrderPutRequest extends RequestStructure {
   public static final String SALE_ORDER_UPDATE_CONFIRM = "confirm";

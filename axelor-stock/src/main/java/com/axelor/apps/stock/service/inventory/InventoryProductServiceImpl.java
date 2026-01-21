@@ -24,8 +24,8 @@ import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import javax.persistence.NoResultException;
-import javax.persistence.Query;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.Query;
 
 public class InventoryProductServiceImpl implements InventoryProductService {
 

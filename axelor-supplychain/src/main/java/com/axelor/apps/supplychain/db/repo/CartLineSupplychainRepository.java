@@ -24,7 +24,7 @@ import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.repo.CartLineManagementRepository;
 import com.axelor.apps.supplychain.service.cartline.CartLineAvailabilityService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class CartLineSupplychainRepository extends CartLineManagementRepository {

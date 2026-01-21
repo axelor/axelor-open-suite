@@ -30,7 +30,7 @@ import com.axelor.apps.supplychain.db.DeclarationOfExchanges;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.ImmutableMap;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.Map;

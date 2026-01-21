@@ -19,8 +19,8 @@
 package com.axelor.apps.intervention.rest.dto;
 
 import com.axelor.utils.api.RequestStructure;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import javax.validation.constraints.NotNull;
 
 public class InterventionStatusPutRequest extends RequestStructure {
 

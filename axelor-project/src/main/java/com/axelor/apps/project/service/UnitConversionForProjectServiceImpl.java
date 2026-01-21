@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.repo.UnitConversionRepository;
 import com.axelor.apps.base.service.UnitConversionServiceImpl;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Comparator;

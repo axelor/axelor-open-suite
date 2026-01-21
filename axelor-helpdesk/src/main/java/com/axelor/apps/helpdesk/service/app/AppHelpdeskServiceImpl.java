@@ -20,7 +20,7 @@ package com.axelor.apps.helpdesk.service.app;
 
 import com.axelor.studio.db.AppHelpdesk;
 import com.axelor.studio.db.repo.AppHelpdeskRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AppHelpdeskServiceImpl implements AppHelpdeskService {
 
@@ -33,6 +33,6 @@ public class AppHelpdeskServiceImpl implements AppHelpdeskService {
 
   @Override
   public AppHelpdesk getHelpdeskApp() {
-    return appHelpdeskRepository.all().fetchOne();
+    return appHelpdeskRepository.all().cacheable().autoFlush(false).fetchOne();
   }
 }
