@@ -222,9 +222,10 @@
       <panel name="datesPanel" title="Dates" readonlyIf="statusSelect == 6">
         <panel name="plannedDatesPanel" title="Planned dates">
           <field name="plannedStartDateT" title="Start date"
-            onChange="action-manuf-order-method-update-planned-dates"/>
+            onChange="action-manuf-order-method-update-planned-dates,action-manuf-order-method-update-stock-moves-estimated-date"/>
           <field name="plannedEndDateT" title="End date"
-            onChange="action-manuf-order-validate-planned-end-date" requiredIf="statusSelect > 1"/>
+            onChange="action-manuf-order-validate-planned-end-date,action-manuf-order-method-update-stock-moves-estimated-date"
+            requiredIf="statusSelect > 1"/>
           <field name="$totalPlannedDuration" title="Total Planned Duration" type="long"
             readonly="true" widget="duration" x-seconds="true" x-big="true"/>
           <field name="$totalLeadTimeDuration" title="Total lead time duration" type="long"
@@ -1102,6 +1103,11 @@
   <action-method name="action-manuf-order-method-compute-missing-components-label">
     <call class="com.axelor.apps.production.web.ManufOrderController"
       method="computeMissingComponentsLabel"/>
+  </action-method>
+
+  <action-method name="action-manuf-order-method-update-stock-moves-estimated-date">
+    <call class="com.axelor.apps.production.web.ManufOrderController"
+      method="updateStockMovesEstimatedDate"/>
   </action-method>
 
   <search-filters name="manuf-order-filters"
