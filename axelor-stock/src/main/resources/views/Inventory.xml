@@ -59,7 +59,7 @@
           <field name="stockLocation" canEdit="false"
             onSelect="action-inventory-attrs-set-location-domain" readonlyIf="statusSelect >= 2"
             grid-view="stock-location-grid" form-view="stock-location-form"/>
-          <field name="typeSelect" validIf="typeSelect > 0"/>
+          <field name="typeSelect" validIf="typeSelect > 0" readonlyIf="statusSelect >= 2"/>
           <field name="completedBy" readonly="true" showIf="completedBy"/>
           <field name="validatedBy" readonly="true" showIf="validatedBy"/>
           <field name="validatedOn" readonly="true" showIf="validatedOn"/>
