@@ -314,4 +314,9 @@
     <action name="action-task-member-report-validate-start-time-after-end-time"/>
   </action-group>
 
+  <action-group name="action-group-task-member-report-on-save">
+    <action name="action-validate-task-member-report-no-time-overlap"/>
+    <action name="action-task-member-report-validate-start-time-after-end-time"/>
+  </action-group>
+
 </object-views>
