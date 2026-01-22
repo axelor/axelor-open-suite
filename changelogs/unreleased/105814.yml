@@ -1,5 +1,0 @@
----
-title: "Bank reconciliation: fixed empty analytic axis values on generated move lines."
-module: axelor-account
-developer : |
- - Added AnalyticLineService in the BankReconciliationMoveGenerationServiceImpl constructor
