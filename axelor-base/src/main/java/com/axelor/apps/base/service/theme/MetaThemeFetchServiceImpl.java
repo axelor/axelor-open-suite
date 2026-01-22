@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.base.service.theme;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.db.MetaTheme;
@@ -43,7 +45,28 @@ public class MetaThemeFetchServiceImpl implements MetaThemeFetchService {
 
   @Override
   public ThemeLogoMode getCurrentThemeLogoMode(User user) {
-    return fetchTheme(user).map(MetaTheme::getLogoMode).orElse(ThemeLogoMode.NONE);
+    ThemeLogoMode metaTheme = fetchTheme(user).map(MetaTheme::getLogoMode).orElse(null);
+    if (metaTheme != null) {
+      return metaTheme;
+    }
+
+    String theme = user.getTheme();
+    if (StringUtils.notEmpty(theme)) {
+      switch (theme) {
+        case "dark":
+          return ThemeLogoMode.DARK;
+        case "light":
+          return ThemeLogoMode.LIGHT;
+        default:
+          return ThemeLogoMode.NONE;
+      }
+    }
+
+    return Optional.ofNullable(AppSettings.get().get(AvailableAppSettings.APPLICATION_THEME))
+        .map(themeRepository::findByName)
+        .flatMap(list -> list.stream().findFirst())
+        .map(MetaTheme::getLogoMode)
+        .orElse(ThemeLogoMode.NONE);
   }
 
   protected Optional<MetaTheme> fetchTheme(User user) {
