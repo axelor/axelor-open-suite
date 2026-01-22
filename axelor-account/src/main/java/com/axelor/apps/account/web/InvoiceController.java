@@ -909,7 +909,7 @@ public class InvoiceController {
         Beans.get(InvoiceTermPfpValidatorSyncService.class);
 
     List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
-    if (ObjectUtils.isEmpty(invoiceTermList)) {
+    if (!ObjectUtils.isEmpty(invoiceTermList)) {
       InvoiceTerm firstTerm = invoiceTermList.get(0);
       firstTerm.setInvoice(invoice);
       if (syncService.syncPfpValidatorFromTermToInvoice(firstTerm)) {
