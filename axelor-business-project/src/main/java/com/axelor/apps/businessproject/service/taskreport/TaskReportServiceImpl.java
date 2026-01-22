@@ -3,10 +3,18 @@ package com.axelor.apps.businessproject.service.taskreport;
 import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.TaskReportRepository;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.Timesheet;
+import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
+import com.google.inject.Inject;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -19,6 +27,10 @@ public class TaskReportServiceImpl implements TaskReportService {
 
   private static final Logger log = LoggerFactory.getLogger(TaskReportServiceImpl.class);
   private static final String CUSTOM_PROJECT_TECHNICIAN_GROUP_CODE = "CUSTOM-PT";
+
+  @Inject TimesheetRepository timesheetRepository;
+
+  @Inject TimesheetLineRepository timesheetLineRepository;
 
   @Override
   public boolean checkIfAllTasksReported(TaskReport report) {
@@ -95,6 +107,109 @@ public class TaskReportServiceImpl implements TaskReportService {
 
     log.debug("Built task domain: {}", domain);
     return domain.toString();
+  }
+
+  /**
+   * Creates or updates a timesheet line for the given task member report when a task report is
+   * saved.
+   */
+  @Override
+  public void createTimesheetLineFromTMR(TaskMemberReport report) {
+    if (report == null) return;
+    if (report.getEmployee() == null || report.getTask() == null) return;
+    if (report.getStartTime() == null || report.getEndTime() == null) return;
+
+    User user = report.getEmployee();
+    Employee employee = user.getEmployee();
+    ProjectTask task = report.getTask();
+
+    LocalDate date = report.getStartTime().toLocalDate();
+
+    // Find available timesheet for the employee
+    Timesheet timesheet =
+        timesheetRepository
+            .all()
+            .filter(
+                "self.employee = ?1 AND ?2 BETWEEN self.fromDate AND self.toDate", employee, date)
+            .fetchOne();
+
+    if (timesheet == null) {
+      log.warn("No timesheet found for employee={} date={}", employee, date);
+      return;
+    }
+
+    // Find existing timesheet line
+    TimesheetLine line =
+        timesheetLineRepository
+            .all()
+            .filter(
+                "self.timesheet = ?1 "
+                    + "AND self.projectTask = ?2 "
+                    + "AND self.date = ?3 "
+                    + "AND self.startTime = ?4 "
+                    + "AND self.endTime = ?5",
+                timesheet,
+                task,
+                date,
+                report.getStartTime(),
+                report.getEndTime())
+            .fetchOne();
+
+    boolean isNew = false;
+
+    // Create a new timesheet line if not found
+    if (line == null) {
+      line = new TimesheetLine();
+      line.setTimesheet(timesheet);
+      line.setEmployee(employee);
+      line.setProject(task.getProject());
+      line.setProjectTask(task);
+      line.setProduct(task.getProduct());
+      line.setDate(date);
+      line.setStartTime(report.getStartTime());
+      line.setEndTime(report.getEndTime());
+      line.setToInvoice(true);
+      line.setIsAutomaticallyGenerated(true);
+      isNew = true;
+    }
+
+    // Always update calculated / mutable fields
+    if (report.getWorkHours() != null) {
+      BigDecimal duration = report.getWorkHours();
+      line.setDuration(duration);
+      line.setHoursDuration(duration);
+      line.setDurationForCustomer(duration);
+    } else {
+      line.setDuration(null);
+      line.setHoursDuration(null);
+      line.setDurationForCustomer(null);
+    }
+
+    if (report.getBreakTimeMinutes() != null) {
+      line.setBreakTimeMinutes(report.getBreakTimeMinutes());
+    } else {
+      line.setBreakTimeMinutes(null);
+    }
+
+    timesheetLineRepository.save(line);
+
+    if (isNew) {
+      log.debug(
+          "Created timesheet line: timesheet={} task={} date={} start={} end={}",
+          timesheet.getId(),
+          task.getId(),
+          date,
+          report.getStartTime(),
+          report.getEndTime());
+    } else {
+      log.debug(
+          "Updated timesheet line: timesheet={} task={} date={} start={} end={}",
+          timesheet.getId(),
+          task.getId(),
+          date,
+          report.getStartTime(),
+          report.getEndTime());
+    }
   }
 
   /** Validates report and fetch entity from repository */

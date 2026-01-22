@@ -1,5 +1,6 @@
 package com.axelor.apps.businessproject.service.taskreport;
 
+import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
@@ -16,4 +17,10 @@ public interface TaskReportService {
 
   /** Build domain filter for tasks in task member report */
   String buildTaskDomainFilter(TaskReport taskReport, Long currentTaskId, User user);
+
+  /**
+   * Creates or updates a timesheet line for the given task member report when a task report is
+   * saved.
+   */
+  public void createTimesheetLineFromTMR(TaskMemberReport report);
 }

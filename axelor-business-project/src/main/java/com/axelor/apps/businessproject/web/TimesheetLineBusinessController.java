@@ -32,6 +32,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -257,7 +258,7 @@ public class TimesheetLineBusinessController {
 
     if (hasOverlap) {
       response.setError(
-          "This time range overlaps with an existing timesheet line for this employee");
+          I18n.get("This time range overlaps with an existing timesheet line for this employee"));
       response.setValue("startTime", null);
       response.setValue("endTime", null);
     }

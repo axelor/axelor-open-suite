@@ -207,7 +207,7 @@
       </panel>
 
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
-        if="__config__.app.isApp('timesheet') &amp;&amp; ['admins','CUSTOM-OM','CUSTOM-PM','CUSTOM-PT' ]
+        if="__config__.app.isApp('timesheet') &amp;&amp; ['admins','CUSTOM-OM','CUSTOM-PM','CUSTOM-PT', 'CUSTOM-ACCOUNTANT']
              .any(g -> __user__.group.code.contains(g))"
         showIf="project.manageTimeSpent">
         <panel-include view="incl-log-times-projec-task-panel-form"/>
