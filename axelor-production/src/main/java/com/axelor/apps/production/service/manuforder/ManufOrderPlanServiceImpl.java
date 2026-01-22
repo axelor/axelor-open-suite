@@ -37,6 +37,7 @@ import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowS
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
@@ -360,5 +361,22 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     }
 
     manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
+  }
+
+  @Override
+  public void updateStockMovesEstimatedDate(ManufOrder manufOrder) {
+    updateEstimatedDate(manufOrder.getInStockMoveList(), manufOrder.getPlannedStartDateT());
+    updateEstimatedDate(manufOrder.getOutStockMoveList(), manufOrder.getPlannedEndDateT());
+  }
+
+  protected void updateEstimatedDate(List<StockMove> stockMoveList, LocalDateTime plannedDateT) {
+    if (CollectionUtils.isEmpty(stockMoveList) || plannedDateT == null) {
+      return;
+    }
+    for (StockMove stockMove : stockMoveList) {
+      if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
+        stockMove.setEstimatedDate(plannedDateT.toLocalDate());
+      }
+    }
   }
 }

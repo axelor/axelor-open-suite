@@ -35,4 +35,6 @@ public interface ManufOrderPlanService {
 
   void updatePlannedDates(ManufOrder manufOrder, LocalDateTime plannedStartDateT)
       throws AxelorException;
+
+  void updateStockMovesEstimatedDate(ManufOrder manufOrder);
 }

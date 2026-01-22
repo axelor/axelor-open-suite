@@ -980,4 +980,11 @@ public class ManufOrderController {
       TraceBackService.trace(response, e);
     }
   }
+
+  public void updateStockMovesEstimatedDate(ActionRequest request, ActionResponse response) {
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    Beans.get(ManufOrderPlanService.class).updateStockMovesEstimatedDate(manufOrder);
+    response.setValue("inStockMoveList", manufOrder.getInStockMoveList());
+    response.setValue("outStockMoveList", manufOrder.getOutStockMoveList());
+  }
 }
