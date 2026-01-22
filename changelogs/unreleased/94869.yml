@@ -1,5 +1,0 @@
----
-title: "Purchase Order Line: Fixed missing Delivery panel for service in PO lines."
-module: axelor-purchase
-developer: |
-  Replaced the attrs action `action-purchase-order-line-attrs-delivery-panel` with the method action `action-purchase-order-line-method-manage-delivery-panel-visibility`.

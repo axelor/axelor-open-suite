@@ -1,5 +1,0 @@
----
-title: "Sale order: fixed the update of sale order line's delivery address on change of delivered partner."
-module: axelor-supplychain
-developer : |
- - Added SaleOrderDeliveryAddressService in the SaleOrderOnChangeServiceImpl constructor
