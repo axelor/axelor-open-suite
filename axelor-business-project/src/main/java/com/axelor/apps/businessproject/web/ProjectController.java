@@ -328,11 +328,12 @@ public class ProjectController {
               .model(DMSFile.class.getName())
               .add("grid", "dms-file-grid")
               .add("form", "dms-file-form")
-              .domain("self.parent.id = :parentId")
+              .domain(
+                  "self.isDirectory = false AND  (self.parent.id = :parentId OR self.parent.parent.id = :parentId)")
               .context("parentId", home.getId())
               .map());
     } else {
-      response.setAlert("There are no files for this project");
+      response.setAlert(I18n.get("There are no files for this project"));
     }
   }
 

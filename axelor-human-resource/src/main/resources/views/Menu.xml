@@ -148,13 +148,12 @@
     action="my.documents.view" groups="admins" order="600" icon="folder2-open"
     icon-background="#84429f"/>
 
-  <action-view name="my.documents.view" title="My Documents"
-    model="com.axelor.dms.db.DMSFile">
-    <view type="grid" name="dms-file-grid"/>
-    <view type="form" name="dms-file-form"/>
-    <domain>self.relatedModel = 'com.axelor.apps.hr.db.Employee'
-      AND self.relatedId = :employeeId AND
-      self.isDirectory = true</domain>
+  <action-view name="my.documents.view" model="com.axelor.dms.db.DMSFile"
+    title="My Documents">
+    <view name="dms-file-grid" type="grid"/>
+    <view name="dms-file-form" type="form"/>
+    <domain>(self.relatedId = :employeeId OR self.parent.parent.relatedId = :employeeId) AND
+      self.isDirectory = false</domain>
     <context name="employeeId" expr="eval: __user__.employee?.id"/>
   </action-view>
 
