@@ -493,14 +493,18 @@
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
     <view-param name="forceEdit" value="true"/>
-    <domain>self.opportunity.id = :_id</domain>
+    <domain>self.opportunity.id = :_id OR (self.relatedToSelect =
+      'com.axelor.apps.crm.db.Opportunity' and
+      self.relatedToSelectId = :_id)</domain>
   </action-view>
 
   <action-view name="action-opportunity-view-all-events" title="Events"
     model="com.axelor.apps.crm.db.Event">
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>self.opportunity.id = :_id</domain>
+    <domain>self.opportunity.id = :_id OR (self.relatedToSelect =
+      'com.axelor.apps.crm.db.Opportunity' and
+      self.relatedToSelectId = :_id)</domain>
   </action-view>
 
   <action-group name="action-opportunity-group-new">
