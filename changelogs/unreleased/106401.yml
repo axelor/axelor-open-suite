@@ -1,4 +1,0 @@
----
-title: "Invoice/InvoiceTerm : added an automatic PFP validator synchronization between invoice and invoice terms."
-module: axelor-account
-
