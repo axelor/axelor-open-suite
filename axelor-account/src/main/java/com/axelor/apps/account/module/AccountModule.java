@@ -234,6 +234,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermPfpUpdateService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpUpdateServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidateService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidateServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -786,6 +788,8 @@ public class AccountModule extends AxelorModule {
         .to(AnalyticMoveLineQueryPercentageServiceImpl.class);
 
     bind(InvoiceTermPfpService.class).to(InvoiceTermPfpServiceImpl.class);
+
+    bind(InvoiceTermPfpValidatorSyncService.class).to(InvoiceTermPfpValidatorSyncServiceImpl.class);
 
     bind(AccountingCutOffService.class).to(AccountingCutOffServiceImpl.class);
 
