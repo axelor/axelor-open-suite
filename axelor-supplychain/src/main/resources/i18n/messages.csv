@@ -109,6 +109,7 @@
 "Change allocated qty",,,
 "Change requested reserved qty",,,
 "Change reserved qty",,,
+"Changing the delivery partner updates the order’s delivery address. Would you like to update all lines with this new address?",,,
 "Check stock compliance with stock rules",,,
 "Check stocks in a sale order",,,
 "Code",,,
