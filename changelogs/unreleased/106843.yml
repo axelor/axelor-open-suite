@@ -1,0 +1,3 @@
+---
+title: "Quality control: fixed birt report parameters to use generic timezone and local instead of project."
+module: axelor-quality
