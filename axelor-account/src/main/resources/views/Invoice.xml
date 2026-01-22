@@ -1666,6 +1666,7 @@
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
+    <action name="action-invoice-method-sync-pfp-validator-from-invoice-terms"/>
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
     <action name="action-invoice-record-due-dates"/>
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
@@ -1829,6 +1830,7 @@
       if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-method-estimated-payment-date"/>
+    <action name="action-invoice-method-sync-pfp-validator-to-invoice-terms"/>
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
@@ -1859,7 +1861,18 @@
     <action name="action-invoice-method-hide-send-email-pfp-btn"/>
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"/>
     <action name="action-invoice-method-set-payment-visibility"/>
+    <action name="action-invoice-method-sync-pfp-validator-to-invoice-terms"/>
   </action-group>
+
+  <action-method name="action-invoice-method-sync-pfp-validator-to-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="syncPfpValidatorToInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-sync-pfp-validator-from-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="syncPfpValidatorFromInvoiceTerms"/>
+  </action-method>
 
   <action-group name="action-invoice-group-financial-discount">
     <action name="action-invoice-method-update-final-discount"/>

@@ -29,6 +29,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidateService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoiceterm.InvoiceTermGroupService;
 import com.axelor.apps.base.AxelorException;
@@ -450,5 +451,20 @@ public class InvoiceTermController {
       throws AxelorException {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     Beans.get(InvoiceTermPfpService.class).refreshInvoicePfpStatus(invoiceTerm.getInvoice());
+  }
+
+  public void syncPfpValidatorToInvoice(ActionRequest request, ActionResponse response) {
+    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+    Invoice invoice = invoiceTerm.getInvoice();
+    if (invoice == null && request.getContext().getParent() != null) {
+      invoice = request.getContext().getParent().asType(Invoice.class);
+      invoiceTerm.setInvoice(invoice);
+    }
+
+    if (invoice != null) {
+      Beans.get(InvoiceTermPfpValidatorSyncService.class)
+          .syncPfpValidatorFromTermToInvoice(invoiceTerm);
+    }
   }
 }
