@@ -103,6 +103,7 @@
 "Change allocated qty","Changer la quantité allouée",,
 "Change requested reserved qty","Changer la quantité demandée",,
 "Change reserved qty","Changer la quantité réservée",,
+"Changing the delivery partner updates the order’s delivery address. Would you like to update all lines with this new address?","Le changement du tiers livré met à jour l’adresse de livraison de la commande. Souhaitez-vous mettre à jour toutes les lignes avec cette nouvelle adresse ?",,
 "Check stock compliance with stock rules","Vérifier la conformité du stock aux règles de stock",,
 "Check stocks in a sale order","Vérification des stocks lors d'une vente",,
 "Code",,,
