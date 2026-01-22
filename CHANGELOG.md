@@ -1,3 +1,120 @@
+## [8.1.40] (2026-01-22)
+
+### Fixes
+#### Base
+
+* Sequence: fixed unit tests after sequence management refactoring.
+* Sequence management: added missing French translations.
+* Sequence: fixed an error occurring when saving a sequence.
+* Sequence management: fixed an error occurring when generating sequence for some models.
+* Update Axelor Message to 3.1.5 and Axelor Utils to 3.1.7.
+* Sequence: added reserved sequence management system to address deadlock issues.
+
+#### Account
+
+* Invoice/InvoiceTerm : added an automatic PFP validator synchronization between invoice and invoice terms.
+
+#### Production
+
+* Manuf order: fixed estimated date for in/out stock moves on change of planned dates.
+
+#### Sale
+
+* Sale order line: fixed the total when changing of the discount amount.
+
+
+### Developer
+
+#### Base
+
+Following the sequence management refactoring (ticket 105427), unit tests in TestSequenceService
+were failing because they relied on mocked SequenceComputationService.
+
+Changes made:
+- Removed TestSequenceService.java: tests were redundant as the same functionality
+  is now tested in SequenceComputationServiceTest
+- Updated SequenceComputationServiceTest.java: added missing test cases migrated from
+  TestSequenceService (uppercase/lowercase letter sequences, null lettersType handling)
+- Removed unused method isSequenceAlreadyExisting() from SequenceService.java
+
+---
+
+Added new entity ReservedSequence to track sequence reservations with three statuses:
+PENDING (0), CONFIRMED (1), RELEASED (2).
+
+New services added:
+- SequenceIncrementExecutor: executes sequence increments in isolated transactions
+- SequenceReservationService: manages sequence reservations with transaction synchronization
+- SequenceComputationService: computes sequence numbers (pure logic, no DB access)
+- ReservedSequenceCleanupService: cleans up orphaned reservations
+
+New batch added: Reserved sequence cleanup
+
+New configuration in AppBase:
+- sequenceIncrementTimeout: timeout in seconds for sequence increment (default: 5)
+
+This feature can require a new base batch and a scheduler. 
+There are init datas on the ticket PR for it : https://github.com/axelor/axelor-open-suite/pull/15416/files
+Please add this to your instance and use the scheduler every day by default.
+
+Database migration required - see SQL script below.
+
+```sql
+-- Create new table BASE_RESERVED_SEQUENCE
+create table if not exists base_reserved_sequence
+(
+id                  bigint    not null primary key,
+archived            boolean,
+import_id           varchar(255) unique,
+import_origin       varchar(255),
+process_instance_id varchar(255),
+version             integer,
+created_on          timestamp,
+updated_on          timestamp,
+attrs               jsonb,
+caller_class        varchar(255),
+caller_field        varchar(255),
+generated_sequence  text      not null,
+reserved_at         timestamp not null,
+reserved_num        bigint    not null,
+status              integer,
+created_by          bigint references auth_user,
+updated_by          bigint references auth_user,
+sequence            bigint    not null references base_sequence,
+sequence_version    bigint    not null references base_sequence_version
+);
+
+create index if not exists base_reserved_sequence_sequence_idx
+on base_reserved_sequence (sequence);
+
+create index if not exists base_reserved_sequence_sequence_version_idx
+on base_reserved_sequence (sequence_version);
+
+create index if not exists idx_reserved_seq_seq_version_status
+on base_reserved_sequence (sequence, sequence_version, status);
+
+create index if not exists idx_reserved_seq_status_reserved_at
+on base_reserved_sequence (status, reserved_at);
+
+-- Add new column to studio_app_base
+alter table studio_app_base
+add if not exists sequence_increment_timeout integer
+constraint studio_app_base_sequence_increment_timeout_check
+check ((sequence_increment_timeout >= 1) AND (sequence_increment_timeout <= 60));
+
+-- Add new columns to base_batch
+alter table base_base_batch
+add if not exists orphan_reservation_timeout_minutes integer
+constraint base_base_batch_orphan_reservation_timeout_minutes_check
+check (orphan_reservation_timeout_minutes >= 1);
+alter table base_base_batch
+add if not exists confirmed_reservation_retention_days integer
+constraint base_base_batch_confirmed_reservation_retention_days_check
+check (confirmed_reservation_retention_days >= 1);
+alter table base_base_batch
+add if not exists delete_old_confirmed_reservations boolean;
+```
+
 ## [8.1.39] (2026-01-08)
 
 ### Fixes
@@ -1842,6 +1959,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.40]: https://github.com/axelor/axelor-open-suite/compare/v8.1.39...v8.1.40
 [8.1.39]: https://github.com/axelor/axelor-open-suite/compare/v8.1.38...v8.1.39
 [8.1.38]: https://github.com/axelor/axelor-open-suite/compare/v8.1.37...v8.1.38
 [8.1.37]: https://github.com/axelor/axelor-open-suite/compare/v8.1.36...v8.1.37
