@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -210,6 +210,8 @@ import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolServiceImpl;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermReplaceServiceImpl;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -727,6 +729,8 @@ public class AccountModule extends AxelorModule {
     bind(AnalyticMoveLineQueryService.class).to(AnalyticMoveLineQueryServiceImpl.class);
 
     bind(InvoiceTermPfpService.class).to(InvoiceTermPfpServiceImpl.class);
+
+    bind(InvoiceTermPfpValidatorSyncService.class).to(InvoiceTermPfpValidatorSyncServiceImpl.class);
 
     bind(AccountingCutOffService.class).to(AccountingCutOffServiceImpl.class);
 

@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
@@ -41,6 +42,7 @@ import com.axelor.apps.account.service.invoice.InvoiceLineTaxGroupService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -885,6 +887,30 @@ public class InvoiceController {
         "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
         "value",
         Beans.get(InvoiceService.class).isSelectedPfpValidatorEqualsPartnerPfpValidator(invoice));
+  }
+
+  public void syncPfpValidatorToInvoiceTerms(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    Beans.get(InvoiceTermPfpValidatorSyncService.class).syncPfpValidatorFromInvoiceToTerms(invoice);
+
+    response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+  }
+
+  public void syncPfpValidatorFromInvoiceTerms(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    InvoiceTermPfpValidatorSyncService syncService =
+        Beans.get(InvoiceTermPfpValidatorSyncService.class);
+
+    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+    if (!ObjectUtils.isEmpty(invoiceTermList)) {
+      InvoiceTerm firstTerm = invoiceTermList.get(0);
+      firstTerm.setInvoice(invoice);
+      if (syncService.syncPfpValidatorFromTermToInvoice(firstTerm)) {
+        response.setValue("pfpValidatorUser", invoice.getPfpValidatorUser());
+      }
+    }
   }
 
   public void getInvoicePartnerDomain(ActionRequest request, ActionResponse response) {

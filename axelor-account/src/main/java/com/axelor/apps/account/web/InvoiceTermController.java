@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.InvoiceTermAccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoiceterm.InvoiceTermGroupService;
 import com.axelor.apps.base.ResponseMessageType;
@@ -419,6 +420,21 @@ public class InvoiceTermController {
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
+    }
+  }
+
+  public void syncPfpValidatorToInvoice(ActionRequest request, ActionResponse response) {
+    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+    Invoice invoice = invoiceTerm.getInvoice();
+    if (invoice == null && request.getContext().getParent() != null) {
+      invoice = request.getContext().getParent().asType(Invoice.class);
+      invoiceTerm.setInvoice(invoice);
+    }
+
+    if (invoice != null) {
+      Beans.get(InvoiceTermPfpValidatorSyncService.class)
+          .syncPfpValidatorFromTermToInvoice(invoiceTerm);
     }
   }
 }
