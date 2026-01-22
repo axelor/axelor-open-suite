@@ -37,6 +37,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeServiceImpl;
@@ -81,6 +82,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
       SaleOrderBankDetailsService saleOrderBankDetailsService,
       AppBaseService appBaseService,
       SaleOrderDateService saleOrderDateService,
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       AccountConfigService accountConfigService,
       AccountingSituationService accountingSituationService,
       PartnerStockSettingsRepository partnerStockSettingsRepository,
@@ -101,7 +103,8 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
         saleConfigService,
         saleOrderBankDetailsService,
         appBaseService,
-        saleOrderDateService);
+        saleOrderDateService,
+        saleOrderDeliveryAddressService);
     this.accountConfigService = accountConfigService;
     this.accountingSituationService = accountingSituationService;
     this.partnerStockSettingsRepository = partnerStockSettingsRepository;
