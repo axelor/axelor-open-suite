@@ -1,3 +1,54 @@
+## [7.2.59] (2026-01-22)
+
+### Fixes
+#### Base
+
+* Partner: fixed the company department field to be editable.
+
+#### Account
+
+* Move template: fixed missing analytic axis when generating moves.
+* Move: fixed VAT system not computed when account is set from partner defaults.
+* MassReconcile/MoveLine : added an info message when errors were encountered during process
+* ACCOUNTINGBATCH / ANALYTICREVIEW : Ensure original sign is preserved when copying negative values.
+* AccountingCutOff: fix inverted debit/credit move lines for deferred incomes cut-off.
+* Move line consolidation: fixed an issue where the process could hang indefinitely when consolidating move lines with analytic distributions of the same size but different values.
+* Fiscal Year: fixed closure of an fiscal year, when we have multiples companies
+* Move line tax: fixed VAT system selection when creating tax move lines
+
+#### Bank Payment
+
+* BankOrderFile/CFONB: fixed the length of the ustrd to 140 to match CFONB norm.
+
+#### CRM
+
+* Event: fixed display of linked events in objects based on 'Related to' field.
+* Partner: removed unused partner form view.
+
+#### Production
+
+* MRP line: fixed the issue where maturity date is not computed at the start of operations.
+* Manuf order: fixed quantity conversion when BOM line unit differs from product unit.
+
+
+### Developer
+
+#### Account
+
+- Added AnalyticLineService in the MoveTemplateServiceImpl constructor
+
+---
+
+- Changed the MoveLineService.reconcileMoveLinesWithCacheManagement to return the number of errors encountered.
+- Changed the PaymentService.useExcessPaymentOnMoveLinesDontThrow to return the number of errors encountered.
+
+---
+
+Refactored MoveLineConsolidateServiceImpl.findConsolidateMoveLine() method:
+- Removed unnecessary while loop that could cause infinite iteration
+- Added proper return statement when analytic move lines have same size but different values
+- Simplified null checks for analytic move line lists
+
 ## [7.2.58] (2026-01-08)
 
 ### Fixes
@@ -2666,6 +2717,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.59]: https://github.com/axelor/axelor-open-suite/compare/v7.2.58...v7.2.59
 [7.2.58]: https://github.com/axelor/axelor-open-suite/compare/v7.2.57...v7.2.58
 [7.2.57]: https://github.com/axelor/axelor-open-suite/compare/v7.2.56...v7.2.57
 [7.2.56]: https://github.com/axelor/axelor-open-suite/compare/v7.2.55...v7.2.56

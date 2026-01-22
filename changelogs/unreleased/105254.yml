@@ -1,6 +1,0 @@
----
-title: "MassReconcile/MoveLine : added an info message when errors were encountered during process"
-module: axelor-account
-developer: |
-  - Changed the MoveLineService.reconcileMoveLinesWithCacheManagement to return the number of errors encountered.
-  - Changed the PaymentService.useExcessPaymentOnMoveLinesDontThrow to return the number of errors encountered.
