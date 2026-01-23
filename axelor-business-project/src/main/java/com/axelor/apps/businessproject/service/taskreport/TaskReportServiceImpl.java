@@ -1,5 +1,6 @@
 package com.axelor.apps.businessproject.service.taskreport;
 
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.TaskReportRepository;
@@ -11,6 +12,7 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -126,33 +128,17 @@ public class TaskReportServiceImpl implements TaskReportService {
     LocalDate date = report.getStartTime().toLocalDate();
 
     // Find available timesheet for the employee
-    Timesheet timesheet =
-        timesheetRepository
-            .all()
-            .filter(
-                "self.employee = ?1 AND ?2 BETWEEN self.fromDate AND self.toDate", employee, date)
-            .fetchOne();
-
-    if (timesheet == null) {
-      log.warn("No timesheet found for employee={} date={}", employee, date);
-      return;
-    }
+    Timesheet timesheet = findOrCreateMonthlyTimesheet(employee, date);
 
     // Find existing timesheet line
     TimesheetLine line =
         timesheetLineRepository
             .all()
             .filter(
-                "self.timesheet = ?1 "
-                    + "AND self.projectTask = ?2 "
-                    + "AND self.date = ?3 "
-                    + "AND self.startTime = ?4 "
-                    + "AND self.endTime = ?5",
+                "self.timesheet = ?1 " + "AND self.projectTask = ?2 " + "AND self.date = ?3",
                 timesheet,
                 task,
-                date,
-                report.getStartTime(),
-                report.getEndTime())
+                date)
             .fetchOne();
 
     boolean isNew = false;
@@ -210,6 +196,44 @@ public class TaskReportServiceImpl implements TaskReportService {
           report.getStartTime(),
           report.getEndTime());
     }
+  }
+
+  @Override
+  public Timesheet findOrCreateMonthlyTimesheet(Employee employee, LocalDate date) {
+    // Try to find existing timesheet covering the date
+    Timesheet timesheet =
+        timesheetRepository
+            .all()
+            .filter(
+                "self.employee = ?1 AND ?2 BETWEEN self.fromDate AND self.toDate", employee, date)
+            .fetchOne();
+
+    if (timesheet != null) {
+      log.info("Found timesheet: {}", timesheet);
+      return timesheet;
+    }
+
+    // Create timesheet for the month of the given date
+    LocalDate fromDate = date.withDayOfMonth(1);
+    LocalDate toDate = date.withDayOfMonth(date.lengthOfMonth());
+
+    timesheet = new Timesheet();
+    Company company = employee.getUser().getActiveCompany();
+    if (company == null) {
+      throw new IllegalStateException(
+          I18n.get("Cannot create timesheet without active company for the employee"));
+    }
+    timesheet.setCompany(company);
+    timesheet.setEmployee(employee);
+    timesheet.setFromDate(fromDate);
+    timesheet.setToDate(toDate);
+    timesheet.setTimeLoggingPreferenceSelect("Hours");
+    timesheet.setStatusSelect(TimesheetRepository.STATUS_DRAFT);
+
+    timesheetRepository.save(timesheet);
+    log.info("Created timesheet for employee={} from={} to={}", employee.getId(), fromDate, toDate);
+
+    return timesheet;
   }
 
   /** Validates report and fetch entity from repository */
