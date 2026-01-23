@@ -16,22 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.sale.service.saleorder;
+package com.axelor.apps.purchase.service.purchaseorderline.view;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Address;
-import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.SaleOrderLine;
-import java.util.List;
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
+import java.util.Map;
 
-public interface SaleOrderDeliveryAddressService {
+public interface PurchaseOrderLineViewService {
 
-  List<SaleOrderLine> updateSaleOrderLinesDeliveryAddress(SaleOrder saleOrder);
-
-  Address getDeliveryAddress(SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList);
-
-  void checkSaleOrderLinesDeliveryAddress(List<SaleOrderLine> saleOrderLineList)
-      throws AxelorException;
-
-  List<SaleOrderLine> updateSaleOrderLinesDeliveryAddressStr(SaleOrder saleOrder);
+  Map<String, Map<String, Object>> hideDeliveryPanel(PurchaseOrderLine purchaseOrderLine);
 }

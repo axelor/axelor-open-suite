@@ -1309,7 +1309,7 @@
   <action-attrs name="action-partner-attrs-partner-seq-editable">
     <attribute name="readonly" for="partnerSeq"
       expr="__config__.app.getApp('base')?.getGeneratePartnerSequence()"/>
-    <attribute name="readonly" for="companyPanel"
+    <attribute name="readonly" for="mainPartner"
       expr="#{__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
   </action-attrs>
 
@@ -1475,9 +1475,9 @@
     <field name="localization"
       expr="eval: __parent__ != null ? __parent__.localization : __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="user" expr="#{__parent__.user}"
-      if="#{created_from_user_id == null &amp;&amp; __parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+      if="#{created_from_user_id == null &amp;&amp; __parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="team" expr="#{__parent__.team}"
-      if="#{created_from_user_id == null &amp;&amp; __parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+      if="#{created_from_user_id == null &amp;&amp; __parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="user" expr="#{__user__}"
       if="#{created_from_user_id == null &amp;&amp; (__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner')}"/>
     <field name="team" expr="#{__user__.activeTeam}"
@@ -1501,9 +1501,9 @@
     <field name="localization"
       expr="eval: __parent__ != null ? __parent__.localization : __config__.app.getApp('base')?.getDefaultPartnerLocalization()"/>
     <field name="user" expr="#{__parent__.user}"
-      if="#{created_from_user_id == null &amp;&amp; __parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+      if="#{created_from_user_id == null &amp;&amp; __parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="team" expr="#{__parent__.team}"
-      if="#{created_from_user_id == null &amp;&amp; __parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
+      if="#{created_from_user_id == null &amp;&amp; __parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.base.db.Partner'}"/>
     <field name="user" expr="#{__user__}"
       if="#{created_from_user_id == null &amp;&amp; (__parent__ == null || __parent__._model != 'com.axelor.apps.base.db.Partner')}"/>
     <field name="team" expr="#{__user__.activeTeam}"

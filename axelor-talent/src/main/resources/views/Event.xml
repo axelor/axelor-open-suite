@@ -8,7 +8,8 @@
     <action name="action-icalendar-event-default-record"/>
     <action name="action-event-new-record"/>
     <action name="action-event-record-current-user"/>
-    <action name="action-event-record-event-from-job-application"/>
+    <action name="action-event-record-event-from-job-application"
+      if="_eventJobApplication != null"/>
   </action-group>
 
   <action-record name="action-event-record-event-from-job-application"

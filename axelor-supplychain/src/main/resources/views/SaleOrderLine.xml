@@ -154,9 +154,8 @@
     </panel>
   </form>
 
-  <grid name="supplychain-sale-order-line-editable-grid"
-    model="com.axelor.apps.sale.db.SaleOrderLine" title="SO lines"
-    id="sale-order-line-editable-grid" extension="true">
+  <grid name="sale-order-line-editable-grid" model="com.axelor.apps.sale.db.SaleOrderLine"
+    title="SO lines" id="supplychain-sale-order-line-editable-grid" extension="true">
     <extend target="//field[@name='taxLineSet']">
       <attribute name="domain"
         value="(self.endDate IS null or self.endDate &gt; :__date__) AND self.tax.isNonDeductibleTax = false"/>

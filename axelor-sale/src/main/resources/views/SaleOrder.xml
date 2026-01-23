@@ -501,6 +501,7 @@
             onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-form"
             grid-view="address-grid"/>
           <field name="deliveryAddressStr"
+            onChange="action-sale-order-method-update-sale-order-lines-delivery-address-str"
             readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
             <viewer><![CDATA[<>{deliveryAddressStr}</>]]></viewer>
           </field>
@@ -2322,6 +2323,12 @@
     name="action-sale-order-method-update-sale-order-lines-delivery-address">
     <call class="com.axelor.apps.sale.web.SaleOrderController"
       method="updateSaleOrderLinesDeliveryAddress"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-method-update-sale-order-lines-delivery-address-str">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="updateSaleOrderLinesDeliveryAddressStr"/>
   </action-method>
 
   <action-method name="action-sale-order-duplicate-sale-order-with-configurator">

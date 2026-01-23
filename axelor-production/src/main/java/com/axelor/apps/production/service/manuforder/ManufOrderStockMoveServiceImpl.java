@@ -297,6 +297,9 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     if (stockMoveToRealize.isPresent()) {
       finishStockMove(stockMoveToRealize.get());
       manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+      company = JpaModelHelper.ensureManaged(company);
+      fromStockLocation = JpaModelHelper.ensureManaged(fromStockLocation);
+      toStockLocation = JpaModelHelper.ensureManaged(toStockLocation);
     }
 
     // generate new stock move
@@ -322,7 +325,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     if (!newStockMove.getStockMoveLineList().isEmpty()) {
       // plan the stockmove
       stockMoveProductionService.plan(newStockMove);
-
+      manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+      newStockMove = JpaModelHelper.ensureManaged(newStockMove);
       if (inOrOut == PART_FINISH_IN) {
         manufOrder.addInStockMoveListItem(newStockMove);
         newStockMove.getStockMoveLineList().forEach(manufOrder::addConsumedStockMoveLineListItem);
