@@ -1,0 +1,3 @@
+---
+title: "Leave request batch: fixed an issue where cancellation email was sent instead of confirmation email"
+module: axelor-human-resource
