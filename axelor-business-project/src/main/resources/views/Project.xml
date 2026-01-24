@@ -196,25 +196,25 @@
       </panel>
 
       <!-- MGM-80: Moving task panel next to overview to get configs done faster -->
-      <panel title="Tasks" name="taskTreePanel">
+      <panel title="Tasks" name="taskTreePanel"
+        onTabSelect="action-method-business-project-open-task-form-for-empty-task-list">
         <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
           showTitle="false" height="200%" colSpan="12"
           action="action-view-show-business-project-task" x-show-bars="true" canSearch="true"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
-          if="__config__.app.isApp('business-project') &amp;&amp; __user__.group.code != 'CUSTOM-PM' &amp;&amp; __user__.group.code != 'CUSTOM-PT'"
+          if="__config__.app.isApp('business-project') &amp;&amp; !['CUSTOM-PM','CUSTOM-PT','CUSTOM-TM'].any(g -> __user__.group.code == g)"
           canSearch="true"/>
       </panel>
       <!-- MGM-66 task reports -->
-      <panel title="Task Report" name="taskReportsPanel"
-        if="__user__.group.code == 'CUSTOM-PT'">
+      <panel title="Task Report" name="taskReportsPanel">
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
           action="action-task-report-dashlet" colSpan="12" canNew="true" x-show-bars="true"
           reload-dotted="true"/>
       </panel>
 
       <panel title="Configurations" name="configurationsPanel"
-        if="__user__.group.code != 'CUSTOM-PT'">
+        if="!['CUSTOM-PM','CUSTOM-PT' ].any(g -> __user__.group.code.contains(g))">
         <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
           canCollapse="true" collapseIf="false">
           <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
@@ -1411,6 +1411,12 @@
   <action-method name="action-method-business-project-task-resolve-project">
     <call class="com.axelor.apps.businessproject.web.ProjectTaskController"
       method="resolveProjectContext"/>
+  </action-method>
+
+  <action-method
+    name="action-method-business-project-open-task-form-for-empty-task-list">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="openTaskFormIfEmpty"/>
   </action-method>
 
   <action-group name="action-business-project-group-finish-project">

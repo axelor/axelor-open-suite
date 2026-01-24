@@ -161,7 +161,8 @@ public class TaskReportController {
                 "employee");
 
     if (hasOverlap) {
-      response.setError("This time range overlaps with an existing task report for this employee");
+      response.setError(
+          I18n.get("This time range overlaps with an existing task report for this employee"));
       response.setValue("startTime", null);
       response.setValue("endTime", null);
     }

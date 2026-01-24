@@ -37,7 +37,9 @@ import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateS
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.translation.ITranslation;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.common.StringUtils;
@@ -326,11 +328,40 @@ public class ProjectController {
               .model(DMSFile.class.getName())
               .add("grid", "dms-file-grid")
               .add("form", "dms-file-form")
-              .domain("self.parent.id = :parentId")
+              .domain(
+                  "self.isDirectory = false AND  (self.parent.id = :parentId OR self.parent.parent.id = :parentId)")
               .context("parentId", home.getId())
               .map());
     } else {
-      response.setAlert("There are no files for this project");
+      response.setAlert(I18n.get("There are no files for this project"));
+    }
+  }
+
+  /**
+   * Automatically opens the project task form if the context in which it's called is that of a
+   * project which has no task
+   */
+  public void openTaskFormIfEmpty(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+
+    if (project.getId() != null) {
+      project = Beans.get(ProjectRepository.class).find(project.getId());
+      long taskCount =
+          project.getProjectTaskList().stream().filter(task -> !task.getIsTemplate()).count();
+
+      if (taskCount == 0) {
+        response.setView(
+            ActionView.define("action-view-business-project-task-new-task-form")
+                .model(ProjectTask.class.getName())
+                .add("form", "custom-mgm-business-project-task-template-form")
+                .param("popup", "reload")
+                .param("show-toolbar", "false")
+                .param("show-confirm", "true")
+                .param("popup-save", "true")
+                .context("_projectId", project.getId())
+                .context("_typeSelect", ProjectTaskRepository.TYPE_TASK)
+                .map());
+      }
     }
   }
 }

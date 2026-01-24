@@ -16,6 +16,7 @@
       selection="base.printing.template.status.select"/>
     <boolean name="toAttach" title="Attach" default="false"/>
     <string name="scriptFieldName" title="Script field name" large="true"/>
+    <boolean name="overrideAttachment" title="Override existing attachment" default="false"/>
 
     <extra-code><![CDATA[
 		public static final Integer PRINTING_TEMPLATE_STATUS_SELECT_DRAFT = 1;

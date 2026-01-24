@@ -10,6 +10,8 @@
       title="Task Report" required="true"/>
     <many-to-one name="employee" ref="com.axelor.auth.db.User" title="Employee"/>
     <many-to-one name="task" ref="com.axelor.apps.project.db.ProjectTask" title="Task"/>
+    <many-to-one name="taskCategory"
+      ref="com.axelor.apps.project.db.ProjectTaskCategory" title="Task Category" readonly="true"/>
     <datetime name="startTime" title="Start Time"/>
     <datetime name="endTime" title="End Time"/>
     <decimal name="breakTimeHours" title="Break Time (hours)" precision="5" scale="2"/>

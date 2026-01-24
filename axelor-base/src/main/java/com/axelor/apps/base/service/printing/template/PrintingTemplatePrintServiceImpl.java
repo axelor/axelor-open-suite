@@ -30,7 +30,10 @@ import com.axelor.apps.base.service.printing.template.model.TemplatePrint;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
+import com.axelor.dms.db.DMSFile;
+import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.ThrowConsumer;
 import com.axelor.utils.helpers.ModelHelper;
@@ -45,9 +48,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintService {
 
+  private static final Logger log = LoggerFactory.getLogger(PrintingTemplatePrintServiceImpl.class);
   protected AppBaseService appBaseService;
   protected MetaFiles metaFiles;
   protected TranslationBaseService translationBaseService;
@@ -188,6 +194,16 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
     File file = PrintingTemplateHelper.mergeToFile(printFiles, outputFileName);
     if (toAttach && context != null && context.getModel() != null) {
       try {
+        if (file == null) {
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(BaseExceptionMessage.FILE_COULD_NOT_BE_GENERATED));
+        }
+
+        // Delete existing attachments if override enabled
+        if (template.getOverrideAttachment()) {
+          deleteExistingAttachments(context.getModel(), file.getName());
+        }
         metaFiles.attach(new FileInputStream(file), file.getName(), context.getModel());
       } catch (IOException e) {
         throw new AxelorException(
@@ -236,6 +252,30 @@ public class PrintingTemplatePrintServiceImpl implements PrintingTemplatePrintSe
           I18n.get(BaseExceptionMessage.PRINTING_TEMPLATE_SCRIPT_ERROR),
           template.getName(),
           e.getMessage());
+    }
+  }
+
+  protected void deleteExistingAttachments(Model model, String fileName) {
+    log.info(
+        "Searching for existing attachments to delete: model={}, recordId={}",
+        model.getClass().getSimpleName(),
+        model.getId());
+
+    List<DMSFile> existingFiles =
+        Beans.get(DMSFileRepository.class)
+            .all()
+            .filter(
+                "self.relatedId = :modelId AND self.relatedModel = :modelName "
+                    + "AND self.metaFile.fileName = :fileName")
+            .bind("modelId", model.getId())
+            .bind("modelName", model.getClass().getName())
+            .bind("fileName", fileName)
+            .fetch();
+
+    log.info("Found {} existing attachment(s) to delete", existingFiles.size());
+
+    for (DMSFile dmsFile : existingFiles) {
+      metaFiles.delete(dmsFile);
     }
   }
 }

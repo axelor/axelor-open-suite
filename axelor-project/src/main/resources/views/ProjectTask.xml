@@ -678,7 +678,7 @@
   <action-view name="action-task-report-task-dashlet"
     model="com.axelor.apps.businessproject.db.TaskReport" title="Task Reports">
     <view name="add-task-report-grid" type="grid"/>
-    <view name="task-report-preview-form" type="form"/>
+    <view name="task-report-form" type="form"/>
     <view-param name="show-toolbar" value="true"/>
     <domain>
       self.project != null

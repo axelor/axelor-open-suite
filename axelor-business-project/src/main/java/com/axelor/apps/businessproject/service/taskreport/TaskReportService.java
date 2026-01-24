@@ -1,8 +1,12 @@
 package com.axelor.apps.businessproject.service.taskreport;
 
+import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
+import java.time.LocalDate;
 
 public interface TaskReportService {
 
@@ -16,4 +20,13 @@ public interface TaskReportService {
 
   /** Build domain filter for tasks in task member report */
   String buildTaskDomainFilter(TaskReport taskReport, Long currentTaskId, User user);
+
+  /**
+   * Creates or updates a timesheet line for the given task member report when a task report is
+   * saved.
+   */
+  void createTimesheetLineFromTMR(TaskMemberReport report);
+
+  /** create a timesheet for the employee if no timesheet is found */
+  Timesheet findOrCreateMonthlyTimesheet(Employee employee, LocalDate date);
 }
