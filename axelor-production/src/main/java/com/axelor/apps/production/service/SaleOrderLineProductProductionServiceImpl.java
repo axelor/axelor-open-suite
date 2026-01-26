@@ -147,10 +147,11 @@ public class SaleOrderLineProductProductionServiceImpl
       Product product = saleOrderLine.getProduct();
 
       if (product != null) {
+        BillOfMaterial oldBillOfMaterial = saleOrderLine.getBillOfMaterial();
         BillOfMaterial billOfMaterial = getBillOfMaterial(saleOrderLine, product);
         saleOrderLine.setBillOfMaterial(billOfMaterial);
 
-        generateLines(saleOrderLine, saleOrder);
+        generateLines(saleOrderLine, saleOrder, oldBillOfMaterial != null);
 
         saleOrderLineMap.put("billOfMaterial", billOfMaterial);
         if (billOfMaterial != null) {
@@ -189,14 +190,17 @@ public class SaleOrderLineProductProductionServiceImpl
     return billOfMaterial;
   }
 
-  protected void generateLines(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  protected void generateLines(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean hadBomBefore)
       throws AxelorException {
     AppProduction appProduction = appProductionService.getAppProduction();
     AppSale appSale = appSaleService.getAppSale();
     BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
 
     if (billOfMaterial != null) {
-      saleOrderLine.clearSubSaleOrderLineList();
+      if (hadBomBefore) {
+        saleOrderLine.clearSubSaleOrderLineList();
+      }
 
       if (saleOrderLine.getIsToProduce()
           && appSale.getListDisplayTypeSelect()
