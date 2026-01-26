@@ -7,7 +7,8 @@
 
   <entity name="MoveLineMassEntry" extends="MoveLine">
 
-    <many-to-one name="moveMassEntry" ref="Move" title="Mass entry" initParam="true"/>
+    <many-to-one name="moveMassEntry" ref="com.axelor.apps.account.db.Move"
+      title="Mass entry" initParam="true"/>
     <integer name="temporaryMoveNumber" title="N°"/>
     <integer name="inputAction" title="Input action"
       selection="iaccount.move.line.mass.entry.input.action.select"/>
