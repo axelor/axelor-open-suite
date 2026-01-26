@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -200,6 +200,17 @@ public class OperationOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);
+    }
+  }
+
+  public void setConsumedStockMoveLineStockLocation(
+      ActionRequest request, ActionResponse response) {
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      Beans.get(OperationOrderService.class).setConsumedStockMoveLineStockLocation(operationOrder);
+      response.setValue("consumedStockMoveLineList", operationOrder.getConsumedStockMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 

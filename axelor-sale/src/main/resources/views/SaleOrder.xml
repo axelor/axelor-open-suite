@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="sale-order-quotation-grid" title="Sale quotations"
     model="com.axelor.apps.sale.db.SaleOrder" orderBy="-creationDate">
@@ -501,6 +501,7 @@
             onSelect="action-sale-order-attrs-domain-delivery-address" form-view="address-form"
             grid-view="address-grid"/>
           <field name="deliveryAddressStr"
+            onChange="action-sale-order-method-update-sale-order-lines-delivery-address-str"
             readonlyIf="statusSelect > 1 &amp;&amp; !orderBeingEdited" height="5">
             <viewer><![CDATA[<>{deliveryAddressStr}</>]]></viewer>
           </field>
@@ -1852,6 +1853,8 @@
     <field name="team"
       expr="call:com.axelor.apps.base.service.user.UserService:getUserActiveTeam()"
       if="__config__.app.getApp('sale')?.getSalespersonSelect() == 1"/>
+    <field name="shipmentMode" expr="eval: clientPartner?.shipmentMode"
+      if="__config__.app.isApp('supplychain') &amp;&amp; clientPartner?.shipmentMode != null"/>
   </action-record>
 
   <action-record name="action-sale-order-record-hide-discount"
@@ -2320,6 +2323,12 @@
     name="action-sale-order-method-update-sale-order-lines-delivery-address">
     <call class="com.axelor.apps.sale.web.SaleOrderController"
       method="updateSaleOrderLinesDeliveryAddress"/>
+  </action-method>
+
+  <action-method
+    name="action-sale-order-method-update-sale-order-lines-delivery-address-str">
+    <call class="com.axelor.apps.sale.web.SaleOrderController"
+      method="updateSaleOrderLinesDeliveryAddressStr"/>
   </action-method>
 
   <action-method name="action-sale-order-duplicate-sale-order-with-configurator">

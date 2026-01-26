@@ -11,8 +11,8 @@ apply {
 }
 
 axelor {
-	title "Axelor Human Resource"
-	description "Axelor Human Resource Module"
+	title = "Axelor Human Resource"
+	description = "Axelor Human Resource Module"
 }
 
 dependencies {
@@ -37,7 +37,7 @@ node {
     distBaseUrl = null
 }
 
-task buildFront(type: YarnTask) {
+tasks.register('buildFront', YarnTask) {
     group = 'axelor'
     description = 'Build Front-end'
     workingDir = file(reactDir)
@@ -47,11 +47,11 @@ task buildFront(type: YarnTask) {
     inputs.dir(fileTree("${reactDir}/.yarn"))
     outputs.dir("${reactDir}/build")
 
-	dependsOn 'installFrontDeps'
+    dependsOn 'installFrontDeps'
     args = ["run", "build"]
 }
 
-task installFrontDeps(type: YarnTask) {
+tasks.register('installFrontDeps', YarnTask) {
     group = 'axelor'
     description = 'Install Front-end dependencies'
     workingDir = file(reactDir)
@@ -59,13 +59,13 @@ task installFrontDeps(type: YarnTask) {
 }
 
 
-task copyReactWebapp(type: Copy) {
-	destinationDir = file("$rootProject.buildDir/webapp")
-	into("hr/timesheet") {
-		from "${reactDir}/build"
-	}
-	
-	dependsOn 'buildFront'
+tasks.register('copyReactWebapp', Copy) {
+    destinationDir = file("$rootProject.buildDir/webapp")
+    into("hr/timesheet") {
+        from "${reactDir}/build"
+    }
+
+    dependsOn 'buildFront'
 }
 
 
@@ -82,7 +82,7 @@ jar {
   dependsOn 'buildFront'
   into('webapp/hr/timesheet') {
     from "${reactDir}/build"
-    duplicatesStrategy 'exclude'
+    duplicatesStrategy = 'exclude'
   }
 }
 

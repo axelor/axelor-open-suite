@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -289,6 +289,7 @@ public class PurchaseOrderBudgetServiceImpl implements PurchaseOrderBudgetServic
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void autoComputeBudgetDistribution(PurchaseOrder purchaseOrder) throws AxelorException {
     if (!budgetToolsService.canAutoComputeBudgetDistribution(
         purchaseOrder.getCompany(), purchaseOrder.getPurchaseOrderLineList())) {
@@ -308,5 +309,22 @@ public class PurchaseOrderBudgetServiceImpl implements PurchaseOrderBudgetServic
               purchaseOrderLine.getCompanyExTaxTotal()));
       purchaseOrderLineBudgetService.fillBudgetStrOnLine(purchaseOrderLine, true);
     }
+    purchaseOrderRepo.save(purchaseOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void fillBudgetStrOnLine(PurchaseOrder purchaseOrder) {
+    List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
+    if (CollectionUtils.isEmpty(purchaseOrderLineList)) {
+      return;
+    }
+    boolean multiBudget =
+        appBudgetService.getAppBudget() != null
+            && appBudgetService.getAppBudget().getManageMultiBudget();
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+      purchaseOrderLineBudgetService.fillBudgetStrOnLine(purchaseOrderLine, multiBudget);
+    }
+    purchaseOrderRepo.save(purchaseOrder);
   }
 }

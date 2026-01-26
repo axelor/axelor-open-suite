@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,6 +28,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.TaxRepository;
 import com.axelor.apps.account.service.FinancialDiscountService;
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -167,11 +168,10 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   }
 
   @Override
-  public boolean isFinancialDiscountLine(MoveLine moveLine, Company company)
+  public boolean isFinancialDiscountLine(MoveLine moveLine, Company company, boolean isPurchase)
       throws AxelorException {
     Account financialDiscountAccount =
-        financialDiscountService.getFinancialDiscountAccount(
-            company, moveLine.getCredit().signum() > 0);
+        financialDiscountService.getFinancialDiscountAccount(company, isPurchase);
 
     return moveLine.getAccount().equals(financialDiscountAccount);
   }
@@ -229,6 +229,10 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
       boolean financialDiscountVat)
       throws AxelorException {
     for (String taxcode : taxMap.keySet()) {
+      int vatSystem =
+          vatSystemTaxMap != null && vatSystemTaxMap.get(taxcode) != null
+              ? vatSystemTaxMap.get(taxcode)
+              : MoveLineRepository.VAT_SYSTEM_DEFAULT;
       counter =
           this.createFinancialDiscountMoveLine(
               move,
@@ -243,7 +247,7 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
               taxMap.get(taxcode),
               paymentDate,
               counter,
-              vatSystemTaxMap.get(taxcode),
+              vatSystem,
               isDebit,
               financialDiscountVat);
     }
@@ -524,13 +528,20 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
               .count();
 
       BigDecimal amountProrata =
-          invoiceLineTax
-              .getExTaxBase()
-              .multiply(BigDecimal.valueOf(noOfLines))
-              .divide(
-                  invoice.getExTaxTotal().multiply(BigDecimal.valueOf(count)),
-                  AppBaseService.COMPUTATION_SCALING,
-                  RoundingMode.HALF_UP);
+          noOfLines == count
+              ? invoiceLineTax
+                  .getExTaxBase()
+                  .divide(
+                      invoice.getExTaxTotal(),
+                      AppBaseService.COMPUTATION_SCALING,
+                      RoundingMode.HALF_UP)
+              : invoiceLineTax
+                  .getExTaxBase()
+                  .multiply(BigDecimal.valueOf(noOfLines))
+                  .divide(
+                      invoice.getExTaxTotal().multiply(BigDecimal.valueOf(count)),
+                      AppBaseService.COMPUTATION_SCALING,
+                      RoundingMode.HALF_UP);
 
       BigDecimal taxProrata = BigDecimal.ONE;
       if (taxTotal.compareTo(BigDecimal.ZERO) != 0) {

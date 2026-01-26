@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,6 +27,7 @@ import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class SaleOrderSplitDummyServiceImpl implements SaleOrderSplitDummyService {
 
@@ -49,7 +50,11 @@ public class SaleOrderSplitDummyServiceImpl implements SaleOrderSplitDummyServic
     List<Map<String, Object>> saleOrderLineMapList = new ArrayList<>();
     int nbOfDecimalForQty = appBaseService.getNbDecimalDigitForQty();
     int nbOfDecimalForPrice = appBaseService.getNbDecimalDigitForUnitPrice();
-    for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
+    List<SaleOrderLine> filteredSaleOrderLineList =
+        saleOrder.getSaleOrderLineList().stream()
+            .filter(line -> line.getOrderedQty().compareTo(line.getQty()) != 0)
+            .collect(Collectors.toList());
+    for (SaleOrderLine saleOrderLine : filteredSaleOrderLineList) {
       Map<String, Object> saleOrderLineMap =
           Mapper.toMap(saleOrderLineRepository.copy(saleOrderLine, true));
       saleOrderLineMap.put("$solId", saleOrderLine.getId());

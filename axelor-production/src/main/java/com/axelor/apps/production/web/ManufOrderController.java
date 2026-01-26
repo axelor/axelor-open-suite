@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -944,8 +944,10 @@ public class ManufOrderController {
   public void computeMissingComponentsLabel(ActionRequest request, ActionResponse response) {
     try {
       ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
-      BigDecimal producibleQty =
-          new BigDecimal(request.getContext().get("producibleQty").toString());
+      BigDecimal producibleQty = BigDecimal.ZERO;
+      if (request.getContext().get("producibleQty") != null) {
+        producibleQty = new BigDecimal(request.getContext().get("producibleQty").toString());
+      }
 
       Map<Product, BigDecimal> missingComponents = null;
       if (manufOrder.getQty().compareTo(producibleQty) > 0) {
@@ -978,5 +980,12 @@ public class ManufOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void updateStockMovesEstimatedDate(ActionRequest request, ActionResponse response) {
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    Beans.get(ManufOrderPlanService.class).updateStockMovesEstimatedDate(manufOrder);
+    response.setValue("inStockMoveList", manufOrder.getInStockMoveList());
+    response.setValue("outStockMoveList", manufOrder.getOutStockMoveList());
   }
 }

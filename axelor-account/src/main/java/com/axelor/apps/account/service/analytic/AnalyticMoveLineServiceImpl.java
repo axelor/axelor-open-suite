@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -256,7 +256,16 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
                 Collectors.groupingBy(
                     AnalyticMoveLine::getAnalyticAxis,
                     Collectors.reducing(
-                        BigDecimal.ZERO, AnalyticMoveLine::getPercentage, BigDecimal::add)))
+                        BigDecimal.ZERO,
+                        analyticMoveLine -> {
+                          BigDecimal percentage = analyticMoveLine.getPercentage();
+                          if (analyticMoveLine.getSubTypeSelect()
+                              == AnalyticMoveLineRepository.SUB_TYPE_REVERSE) {
+                            percentage = percentage.negate();
+                          }
+                          return percentage;
+                        },
+                        BigDecimal::add)))
             .values()
             .stream()
             .allMatch(percentage -> percentage.compareTo(BigDecimal.valueOf(100)) == 0);

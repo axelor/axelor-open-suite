@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
 
   <grid name="ticket-grid" title="All tickets" model="com.axelor.apps.helpdesk.db.Ticket">
@@ -151,13 +151,15 @@
         onChange="action-ticket-method-compute-from-duration"/>
     </panel>
     <panel name="attrsPanel">
-      <field name="attrs" hidden="true"/>
-      <field name="slaPolicy.reachStageTicketStatus" hidden="true"/>
-      <field name="slaPolicy.reachStageTicketStatus.priority" hidden="true"/>
-      <field name="ticketStatus.priority" hidden="true"/>
-      <field name="$isResolved" hidden="true" type="boolean"/>
-      <field name="$isClosed" hidden="true" type="boolean"/>
-      <field name="$isInProgress" hidden="true" type="boolean"/>
+      <field name="attrs"/>
+    </panel>
+    <panel name="hiddenPanel" hidden="true">
+      <field name="slaPolicy.reachStageTicketStatus"/>
+      <field name="slaPolicy.reachStageTicketStatus.priority"/>
+      <field name="ticketStatus.priority"/>
+      <field name="$isResolved" type="boolean"/>
+      <field name="$isClosed" type="boolean"/>
+      <field name="$isInProgress" type="boolean"/>
     </panel>
     <panel-mail name="mailPanel">
       <mail-messages limit="6"/>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -62,10 +62,10 @@ public class PurchaseRequestServiceSupplychainImpl extends PurchaseRequestServic
   }
 
   @Override
-  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest)
+  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest, Company company)
       throws AxelorException {
 
-    PurchaseOrder purchaseOrder = super.createPurchaseOrder(purchaseRequest);
+    PurchaseOrder purchaseOrder = super.createPurchaseOrder(purchaseRequest, company);
 
     if (Beans.get(AppSupplychainService.class).isApp("supplychain")) {
       purchaseOrder.setStockLocation(purchaseRequest.getStockLocation());

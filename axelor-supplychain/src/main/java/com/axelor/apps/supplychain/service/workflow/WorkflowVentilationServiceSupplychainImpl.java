@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -298,7 +298,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
       if (stockMoveLine == null) {
         continue;
       }
-      if (isStockMoveInvoicingPartiallyActivated(invoice, stockMoveLine)) {
+      if (isStockMoveInvoicingPartiallyActivated(invoice)) {
         BigDecimal qty = stockMoveLine.getQtyInvoiced();
         StockMove stockMove = stockMoveLine.getStockMove();
         Unit movUnit = stockMoveLine.getUnit();
@@ -392,13 +392,9 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     }
   }
 
-  protected boolean isStockMoveInvoicingPartiallyActivated(
-      Invoice invoice, StockMoveLine stockMoveLine) throws AxelorException {
+  protected boolean isStockMoveInvoicingPartiallyActivated(Invoice invoice) throws AxelorException {
     SupplyChainConfig supplyChainConfig =
         supplyChainConfigService.getSupplyChainConfig(invoice.getCompany());
-    return stockMoveLine.getSaleOrderLine() != null
-            && supplyChainConfig.getActivateOutStockMovePartialInvoicing()
-        || stockMoveLine.getPurchaseOrderLine() != null
-            && supplyChainConfig.getActivateIncStockMovePartialInvoicing();
+    return supplyChainConfig.getActivateOutStockMovePartialInvoicing();
   }
 }

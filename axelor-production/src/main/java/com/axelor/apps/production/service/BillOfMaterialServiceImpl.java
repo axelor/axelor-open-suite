@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -275,8 +275,10 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     if (bom != null) {
       bomTree.setProdProcess(bom.getProdProcess());
       bomTree.setProduct(bom.getProduct());
-      bomTree.setQty(bom.getQty());
-      bomTree.setUnit(bom.getUnit());
+      bomTree.setQty(
+          Optional.ofNullable(bomLine).map(BillOfMaterialLine::getQty).orElse(bom.getQty()));
+      bomTree.setUnit(
+          Optional.ofNullable(bomLine).map(BillOfMaterialLine::getUnit).orElse(bom.getUnit()));
     } else if (bomLine != null) {
       bomTree.setProduct(bomLine.getProduct());
       bomTree.setQty(bomLine.getQty());

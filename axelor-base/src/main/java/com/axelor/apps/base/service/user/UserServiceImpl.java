@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -178,11 +178,11 @@ public class UserServiceImpl implements UserService {
     if (company == null) {
       return null;
     }
-
     MetaFile logo =
         switch (metaThemeFetchService.getCurrentThemeLogoMode(user)) {
-          case DARK, NONE -> company.getDarkLogo();
+          case DARK -> company.getDarkLogo();
           case LIGHT -> company.getLightLogo();
+          case NONE -> company.getLogo();
         };
     return Optional.ofNullable(logo).orElse(company.getLogo());
   }
@@ -409,12 +409,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public Partner setUserPartner(Partner partner, User user) {
-    partner.setUser(user);
-    partner.setTeam(user.getActiveTeam());
+  public void setUserPartner(Partner partner, User user) {
     user.setPartner(partner);
     userRepo.save(user);
-    return partner;
   }
 
   @Override

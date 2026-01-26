@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -412,6 +412,9 @@ public final class ProductionExceptionMessage {
   public static final String BOM_LINE_LINKED_TO_SALE_ORDER_DELETE_ERROR_MORE = /*$$(*/
       "The line with the product %s can not be deleted as it is referenced in sale order(s): <br> %s and %s more" /*)*/;
 
+  public static final String MRP_BOM_REQUIRED = /*$$(*/
+      "The manufacturing order for %s could not be generated because it has no bill of material." /*)*/;
+
   public static final String MRP_PROD_PROCESS_REQUIRED = /*$$(*/
       "The manufacturing order for %s could not be generated because the bill of material has no production process." /*)*/;
 
@@ -447,4 +450,7 @@ public final class ProductionExceptionMessage {
 
   public static final String OPERATION_ORDER_CANNOT_ADD_PRODUCT = /*$$(*/
       "Phase consumption is not enabled for this operation. Please add the consumed products directly to the manufacturing order." /*)*/;
+
+  public static final String API_TYPE_SYSTEM_PRODUCT_MANUF_ORDER_FILLED = /*$$(*/
+      "Product/ManufOrder fields should not be filled if type is 'System'." /*)*/;
 }

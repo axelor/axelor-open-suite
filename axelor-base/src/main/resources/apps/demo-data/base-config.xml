@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <csv-inputs xmlns="http://axelor.com/xml/ns/data-import"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/data-import http://axelor.com/xml/ns/data-import/data-import_8.0.xsd">
 
   <!-- IMPORT DU PACKAGE 'AUTH' -->
 
@@ -67,7 +67,7 @@
   </input>
 
   <input file="meta_file.csv" separator=";" type="com.axelor.meta.db.MetaFile"
-    search="self.fileName = :fileName">
+    search="self.fileName = :fileName" call="com.axelor.csv.script.ImportMetaFile:importMetaFile">
     <bind column="fileName" to="fileName"
       check="com.axelor.utils.helpers.ImportHelper.isValuePresent(fileName)"
       check-message="File name must not be null"/>
@@ -480,7 +480,7 @@
     </bind>
     <bind to="partnerAddressList"
       search="self.address.importId = :address AND self.partner.importId = :importId"
-      if="address != null &amp;&amp; isContact == false">
+      if="address != null &amp;&amp; isContact == 'false'">
       <bind to="address" search="self.importId = :address" update="true"/>
       <bind to="isInvoicingAddr" eval="true"/>
       <bind to="isDeliveryAddr" eval="true"/>

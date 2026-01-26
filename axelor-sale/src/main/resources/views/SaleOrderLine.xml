@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="sale-order-line-grid" title="SO lines"
     model="com.axelor.apps.sale.db.SaleOrderLine" orderBy="sequence">
@@ -111,7 +111,8 @@
     <field name="product.code" width="120" readonlyIf="$isParentTitleLine"/>
     <field name="productName" readonlyIf="$isParentTitleLine"/>
     <field name="qty" colSpan="3" onChange="action-group-sale-saleorderline-qty-onchange"
-      validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty" readonlyIf="$isParentTitleLine"/>
+      validIf="$qtyValid != false" x-scale="$nbDecimalDigitForQty"
+      readonlyIf="$isParentTitleLine || typeSelect != 0"/>
     <field name="orderedQty" colSpan="3" x-scale="$nbDecimalDigitForQty"
       if="__config__.app.getApp('sale')?.isQuotationAndOrderSplitEnabled" readonly="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid"

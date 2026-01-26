@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,9 +19,11 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.base.db.Frequency;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
+import com.axelor.apps.project.service.ProjectTaskProgressUpdateService;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.auth.db.User;
@@ -109,6 +111,18 @@ public class ProjectTaskProjectRepository extends ProjectTaskRepository {
 
     updateMailFollowers(projectTask);
 
+    try {
+      ProjectTaskProgressUpdateService projectTaskProgressUpdateService =
+          Beans.get(ProjectTaskProgressUpdateService.class);
+      projectTask =
+          projectTaskProgressUpdateService.updateChildrenProgress(
+              projectTask, projectTask.getProgress());
+      projectTask = projectTaskProgressUpdateService.updateParentsProgress(projectTask);
+    } catch (Exception e) {
+      TraceBackService.traceExceptionFromSaveMethod(e);
+      throw new PersistenceException(e.getMessage(), e);
+    }
+    Beans.get(ProjectTaskService.class).computeProjectTaskLevels(project);
     return super.save(projectTask);
   }
 

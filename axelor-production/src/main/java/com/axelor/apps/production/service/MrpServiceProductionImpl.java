@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -248,10 +248,10 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
 
     LocalDate maturityDate = null;
 
-    if (manufOrder.getPlannedEndDateT() != null) {
-      maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
-    } else if (manufOrder.getPlannedStartDateT() != null) {
+    if (manufOrder.getPlannedStartDateT() != null) {
       maturityDate = manufOrder.getPlannedStartDateT().toLocalDate();
+    } else if (manufOrder.getPlannedEndDateT() != null) {
+      maturityDate = manufOrder.getPlannedEndDateT().toLocalDate();
     }
 
     maturityDate = this.computeMaturityDate(maturityDate, manufOrderMrpLineType);
@@ -489,12 +489,20 @@ public class MrpServiceProductionImpl extends MrpServiceImpl {
             .orElse(billOfMaterialService.getDefaultBOM(product, company));
 
     if (appProductionService.isApp("production")
+        && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL) {
+      BigDecimal economicManufOrderQty =
+          (BigDecimal) productCompanyService.get(product, "economicManufOrderQty", company);
+      reorderQty = reorderQty.max(economicManufOrderQty);
+    }
+
+    if (appProductionService.isApp("production")
         && mrpLineType.getElementSelect() == MrpLineTypeRepository.ELEMENT_MANUFACTURING_PROPOSAL
         && billOfMaterial != null) {
       maturityDate =
           updateMaturityDate(maturityDate, billOfMaterial, reorderQty)
               .minusDays(mrpLineType.getSecurityDelay());
     }
+
     MrpLine mrpLine =
         super.createProposalMrpLine(
             mrp,

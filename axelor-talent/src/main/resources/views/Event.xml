@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <action-group name="action-group-crm-event-onnew"
     id="talent-action-group-crm-event-onnew">
     <action name="action-icalendar-event-default-record"/>
     <action name="action-event-new-record"/>
     <action name="action-event-record-current-user"/>
-    <action name="action-event-record-event-from-job-application"/>
+    <action name="action-event-record-event-from-job-application"
+      if="_eventJobApplication != null"/>
   </action-group>
 
   <action-record name="action-event-record-event-from-job-application"

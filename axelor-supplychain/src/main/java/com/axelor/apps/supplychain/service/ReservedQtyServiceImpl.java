@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,21 +36,23 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /** This is the main implementation for {@link ReservedQtyService}. */
 public class ReservedQtyServiceImpl implements ReservedQtyService {
@@ -80,40 +82,42 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
   @Override
   public void updateReservedQuantity(StockMove stockMove, int status) throws AxelorException {
-    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-    if (stockMoveLineList != null) {
-      stockMoveLineList =
-          stockMoveLineList.stream()
-              .filter(
-                  smLine -> smLine.getProduct() != null && smLine.getProduct().getStockManaged())
-              .collect(Collectors.toList());
-      // check quantities in stock move lines
-      for (StockMoveLine stockMoveLine : stockMoveLineList) {
-        if (status == StockMoveRepository.STATUS_PLANNED) {
-          changeRequestedQtyLowerThanQty(stockMoveLine);
-        }
-        checkRequestedAndReservedQty(stockMoveLine);
-      }
-      if (status == StockMoveRepository.STATUS_REALIZED) {
-        consolidateReservedQtyInStockMoveLineByProduct(stockMove);
-      }
-      stockMoveLineList.sort(Comparator.comparing(StockMoveLine::getId));
-      for (StockMoveLine stockMoveLine : stockMoveLineList) {
-        BigDecimal qty = stockMoveLine.getRealQty();
-        // requested quantity is quantity requested is the line subtracted by the quantity already
-        // allocated
-        BigDecimal requestedReservedQty =
-            stockMoveLine.getRequestedReservedQty().subtract(stockMoveLine.getReservedQty());
-        updateRequestedQuantityInLocations(
-            stockMoveLine,
-            stockMoveLine.getFromStockLocation(),
-            stockMoveLine.getToStockLocation(),
-            stockMoveLine.getProduct(),
-            qty,
-            requestedReservedQty,
-            status);
-      }
+    if (stockMove == null || stockMove.getId() == null) {
+      return;
     }
+
+    Query<StockMoveLine> query = getManagedStockMoveLineQuery(stockMove.getId());
+
+    BatchProcessorHelper helper = BatchProcessorHelper.builder().build();
+
+    helper.<StockMoveLine, AxelorException>forEachByQuery(
+        query,
+        line -> {
+          if (status == StockMoveRepository.STATUS_PLANNED) {
+            changeRequestedQtyLowerThanQty(line);
+          }
+          checkRequestedAndReservedQty(line);
+        });
+
+    if (status == StockMoveRepository.STATUS_REALIZED) {
+      consolidateReservedQtyInStockMoveLineByProduct(stockMove);
+    }
+
+    helper.<StockMoveLine, AxelorException>forEachByQuery(
+        getManagedStockMoveLineQuery(stockMove.getId()),
+        line -> {
+          BigDecimal qty = line.getRealQty();
+          BigDecimal requestedReservedQty =
+              line.getRequestedReservedQty().subtract(line.getReservedQty());
+          updateRequestedQuantityInLocations(
+              line,
+              line.getFromStockLocation(),
+              line.getToStockLocation(),
+              line.getProduct(),
+              qty,
+              requestedReservedQty,
+              status);
+        });
   }
 
   /**
@@ -178,38 +182,68 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
     }
   }
 
+  protected Query<StockMoveLine> getManagedStockMoveLineQuery(Long stockMoveId) {
+    return stockMoveLineRepository
+        .all()
+        .filter(
+            "self.stockMove.id = :stockMoveId "
+                + "AND self.product IS NOT NULL "
+                + "AND self.product.stockManaged = true "
+                + "AND self.id > :lastSeenId")
+        .bind("stockMoveId", stockMoveId)
+        .order("id");
+  }
+
   @Override
   public void consolidateReservedQtyInStockMoveLineByProduct(StockMove stockMove) {
-    if (stockMove.getStockMoveLineList() == null) {
+    if (stockMove == null || stockMove.getId() == null) {
       return;
     }
-    List<Product> productList =
-        stockMove.getStockMoveLineList().stream()
-            .map(StockMoveLine::getProduct)
-            .filter(Objects::nonNull)
-            .filter(Product::getStockManaged)
-            .distinct()
-            .collect(Collectors.toList());
-    for (Product product : productList) {
-      if (product != null) {
-        List<StockMoveLine> stockMoveLineListToConsolidate =
-            stockMove.getStockMoveLineList().stream()
-                .filter(stockMoveLine1 -> product.equals(stockMoveLine1.getProduct()))
-                .collect(Collectors.toList());
-        if (stockMoveLineListToConsolidate.size() > 1) {
-          stockMoveLineListToConsolidate.sort(Comparator.comparing(StockMoveLine::getId));
-          BigDecimal reservedQtySum =
-              stockMoveLineListToConsolidate.stream()
-                  .map(StockMoveLine::getReservedQty)
-                  .reduce(BigDecimal::add)
-                  .orElse(BigDecimal.ZERO);
-          stockMoveLineListToConsolidate.forEach(
-              toConsolidateStockMoveLine ->
-                  toConsolidateStockMoveLine.setReservedQty(BigDecimal.ZERO));
-          stockMoveLineListToConsolidate.get(0).setReservedQty(reservedQtySum);
-        }
-      }
-    }
+
+    Map<Long, BigDecimal> reservedQtyByProduct = new HashMap<>();
+    Map<Long, Long> firstLineIdByProduct = new HashMap<>();
+
+    BatchProcessorHelper.builder()
+        .clearEveryNBatch(0)
+        .build()
+        .<StockMoveLine>forEachByQuery(
+            getManagedStockMoveLineQuery(stockMove.getId()),
+            line -> {
+              Product product = line.getProduct();
+              if (product == null || !product.getStockManaged()) {
+                return;
+              }
+              Long productId = product.getId();
+              BigDecimal reservedQty =
+                  line.getReservedQty() == null ? BigDecimal.ZERO : line.getReservedQty();
+              reservedQtyByProduct.merge(productId, reservedQty, BigDecimal::add);
+              firstLineIdByProduct.merge(
+                  productId,
+                  line.getId(),
+                  (currentMin, candidate) ->
+                      currentMin == null || candidate < currentMin ? candidate : currentMin);
+            });
+
+    BatchProcessorHelper.builder()
+        .build()
+        .<StockMoveLine>forEachByQuery(
+            getManagedStockMoveLineQuery(stockMove.getId()),
+            line -> {
+              Product product = line.getProduct();
+              if (product == null || !product.getStockManaged()) {
+                return;
+              }
+              Long productId = product.getId();
+              Long firstLineId = firstLineIdByProduct.get(productId);
+              if (firstLineId == null) {
+                return;
+              }
+              if (line.getId().equals(firstLineId)) {
+                line.setReservedQty(reservedQtyByProduct.getOrDefault(productId, BigDecimal.ZERO));
+              } else {
+                line.setReservedQty(BigDecimal.ZERO);
+              }
+            });
   }
 
   @Override
@@ -880,6 +914,9 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
   protected BigDecimal convertUnitWithProduct(
       Unit startUnit, Unit endUnit, BigDecimal qtyToConvert, Product product)
       throws AxelorException {
+    startUnit = JpaModelHelper.ensureManaged(startUnit);
+    endUnit = JpaModelHelper.ensureManaged(endUnit);
+
     if (startUnit != null && !startUnit.equals(endUnit)) {
       return unitConversionService.convert(
           startUnit, endUnit, qtyToConvert, qtyToConvert.scale(), product);

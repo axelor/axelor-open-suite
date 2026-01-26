@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,6 @@ import com.axelor.studio.db.repo.AppBaseRepository;
 import jakarta.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URISyntaxException;
 import org.apache.commons.lang3.StringUtils;
 
 public class KilometricServiceImpl implements KilometricService {
@@ -84,7 +83,7 @@ public class KilometricServiceImpl implements KilometricService {
           break;
       }
       return distance;
-    } catch (URISyntaxException | IOException e) {
+    } catch (IOException e) {
       throw new AxelorException(e, TraceBackRepository.CATEGORY_CONFIGURATION_ERROR);
     }
   }

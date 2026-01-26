@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -126,10 +126,15 @@ public class MoveLineController {
 
       MoveLineService moveLineService = Beans.get(MoveLineService.class);
 
-      moveLineService.reconcileMoveLinesWithCacheManagement(
-          moveLineService.getReconcilableMoveLines(idList));
+      int errorNumber =
+          moveLineService.reconcileMoveLinesWithCacheManagement(
+              moveLineService.getReconcilableMoveLines(idList));
 
       response.setReload(true);
+      if (errorNumber > 0) {
+        response.setInfo(I18n.get(AccountExceptionMessage.RECONCILE_MASS_ERRORS));
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -536,20 +541,6 @@ public class MoveLineController {
       response.setValues(
           Beans.get(MoveLineGroupService.class)
               .getCurrencyAmountRateOnChangeValuesMap(moveLine, move, dueDate));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void accountOnSelect(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = this.getMove(request, moveLine);
-      if (move != null) {
-        response.setAttrs(
-            Beans.get(MoveLineGroupService.class)
-                .getAccountOnSelectAttrsMap(move.getJournal(), move.getCompany()));
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

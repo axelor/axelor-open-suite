@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="stock-move-line-grid" title="Stock move lines"
     model="com.axelor.apps.stock.db.StockMoveLine" editable="true">
@@ -571,7 +571,7 @@
         <field name="serialNbr" title="Serial Nbr" readonly="true"/>
         <field name="$availableQty" title="Available qty" type="decimal" width="120"
           readonly="true" x-scale="$nbDecimalDigitForQty"/>
-        <field name="counter" title="Selected quantity"
+        <field name="counter" title="Selected quantity" type="decimal"
           readonlyIf="( $availableQty == null || $availableQty &lt; 1 ) &amp;&amp; $moveTypeSelect == 2"
           x-scale="$nbDecimalDigitForQty"/>
         <field name="hasWarranty"/>

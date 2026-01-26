@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -97,6 +97,10 @@
 
     <boolean name="checkExistingSequenceOnGeneration"
       title="Check existing sequence on generation" default="true"/>
+
+    <integer name="sequenceIncrementTimeout" title="Sequence increment timeout (seconds)"
+      default="5" min="1" max="60"
+      help="Maximum time to wait for sequence increment in isolated transaction. Default is 5 seconds."/>
 
     <boolean name="manageMultiBanks" title="Manage multi banks"/>
 
@@ -258,6 +262,7 @@
       <field name="passwordChangedTemplate" on="UPDATE"/>
       <field name="generatePartnerSequence" on="UPDATE"/>
       <field name="checkExistingSequenceOnGeneration" on="UPDATE"/>
+      <field name="sequenceIncrementTimeout" on="UPDATE"/>
       <field name="storeStreets" on="UPDATE"/>
       <field name="fixerApiKey" on="UPDATE"/>
       <field name="isFixerAPIPaid" on="UPDATE"/>

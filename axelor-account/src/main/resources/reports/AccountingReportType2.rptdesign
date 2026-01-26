@@ -1651,7 +1651,7 @@ if (imgData != null) {
             </row>
             <row id="506">
                 <cell id="507">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                     <text id="4199">
                         <property name="fontSize">10pt</property>
@@ -1694,7 +1694,7 @@ if (imgData != null) {
                         <text-property name="content"><![CDATA[<VALUE-OF>row["translation"]</VALUE-OF> :]]></text-property>
                     </text>
                 </cell>
-                <cell id="508">
+                <cell id="6310">
                     <text id="4208">
                         <property name="dataSet">TranslateDS</property>
                         <list-property name="paramBindings">
@@ -1723,6 +1723,7 @@ if (imgData != null) {
                         <text-property name="content"><![CDATA[<VALUE-OF>if(row["translation"] != null){row["translation"]}else{row._outer["payment_mode"]}</VALUE-OF>]]></text-property>
                     </text>
                 </cell>
+                <cell id="508"/>
                 <cell id="4120"/>
                 <cell id="4131"/>
                 <cell id="509"/>
@@ -1731,9 +1732,10 @@ if (imgData != null) {
             <row id="536">
                 <property name="height">0.28125in</property>
                 <cell id="537">
-                    <property name="colSpan">2</property>
+                    <property name="colSpan">1</property>
                     <property name="rowSpan">1</property>
                 </cell>
+                <cell id="6309"/>
                 <cell id="538"/>
                 <cell id="4124"/>
                 <cell id="4135"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="base-batch-grid" title="Base batches" model="com.axelor.apps.base.db.BaseBatch">
     <field name="actionSelect"/>
@@ -43,6 +43,12 @@
       <field name="countrySet" canNew="false" canEdit="false" form-view="country-form"
         grid-view="country-grid" colSpan="12" hideIf="allCountries"/>
     </panel>
+    <panel name="reservedSequenceCleanupPanel" title="Reserved sequence cleanup"
+      showIf="actionSelect == 5">
+      <field name="orphanReservationTimeoutMinutes" colSpan="6"/>
+      <field name="confirmedReservationRetentionDays" colSpan="6"/>
+      <field name="deleteOldConfirmedReservations" widget="boolean-switch" colSpan="6"/>
+    </panel>
 
     <panel name="informationPanel" title="Information">
       <field name="createdOn" title="Created on"/>
@@ -53,7 +59,7 @@
     </panel>
     <panel name="actionPanel" sidebar="true">
       <button name="runBatchBtn" title="Run batch" showIf="actionSelect >= 2"
-        readonlyIf="(actionSelect == 3 &amp;&amp; !passwordChangeActionSelect) || (actionSelect == 4 &amp;&amp; (countrySet == null || countrySet.length == 0) &amp;&amp; !allCountries) "
+        readonlyIf="(actionSelect == 3 &amp;&amp; !passwordChangeActionSelect) || (actionSelect == 4 &amp;&amp; (countrySet == null || countrySet.length == 0) &amp;&amp; !allCountries)"
         onClick="save,action-base-batch-method-run-batch"/>
     </panel>
   </form>

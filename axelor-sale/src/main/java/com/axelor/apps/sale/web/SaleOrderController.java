@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -875,6 +875,15 @@ public class SaleOrderController {
     List<SaleOrderLine> saleOrderLineList =
         Beans.get(SaleOrderDeliveryAddressService.class)
             .updateSaleOrderLinesDeliveryAddress(saleOrder);
+    response.setValue("saleOrderLineList", saleOrderLineList);
+  }
+
+  public void updateSaleOrderLinesDeliveryAddressStr(
+      ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    List<SaleOrderLine> saleOrderLineList =
+        Beans.get(SaleOrderDeliveryAddressService.class)
+            .updateSaleOrderLinesDeliveryAddressStr(saleOrder);
     response.setValue("saleOrderLineList", saleOrderLineList);
   }
 

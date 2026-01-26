@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="allocation-line-grid" title="Allocation lines"
     model="com.axelor.apps.hr.db.AllocationLine" groupBy="period" orderBy="period.fromDate"
@@ -55,7 +55,7 @@
         x-order="fromDate"/>
       <field name="allocated" hideIf="$initWithPlanningTime"/>
       <field name="$initWithPlanningTime" title="Init with planning time" type="boolean"
-        showIf="$project.allowAllocatedInit"/>
+        showIf="project.allowAllocatedInit"/>
       <spacer/>
       <field name="$plannedTime" colSpan="3" readonly="true" title="Planned time" x-scale="2"
         if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification"/>
@@ -65,7 +65,7 @@
       <field name="$availableAllocation" readonly="true" colSpan="3" title="Available"
         x-scale="2"/>
       <field name="description" colSpan="12"/>
-      <field name="$project.allowAllocatedInit" hidden="true"/>
+      <field name="project.allowAllocatedInit" hidden="true"/>
     </panel>
   </form>
 
@@ -94,7 +94,7 @@
   </form>
 
   <action-attrs name="action-allocation-line-attrs-set-default-values">
-    <attribute for="project" name="value" expr="eval: _project" if="_project"/>
+    <attribute for="project" name="value" expr="eval: _project ? _project : _parent"/>
     <attribute for="employee" name="value" expr="eval: __user__?.employee"/>
   </action-attrs>
 

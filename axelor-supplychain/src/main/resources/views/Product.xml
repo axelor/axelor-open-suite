@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <form name="supplychain-stock-details-by-product-form" title="Stock details by product"
     model="com.axelor.utils.db.Wizard" canSave="false" width="large" canNew="false" canCopy="false"
@@ -15,7 +15,7 @@
       <field name="$product" title="Product" canEdit="false"
         target="com.axelor.apps.base.db.Product" type="many-to-one" form-view="product-form"
         grid-view="product-grid" onChange="action-group-supplychain-update-indicators"
-        domain="self.stockManaged = true AND self.dtype = 'Product' AND self.productTypeSelect = 'storable'"/>
+        domain="self.stockManaged = true AND self.dtype = 'Product' AND self.productTypeSelect = 'storable' AND self.isModel = false"/>
       <field name="$company" title="Company" showIf="$product" canEdit="false"
         target="com.axelor.apps.base.db.Company" type="many-to-one" form-view="company-form"
         grid-view="company-grid"

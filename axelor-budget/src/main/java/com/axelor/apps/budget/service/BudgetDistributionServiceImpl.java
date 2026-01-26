@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -67,6 +68,8 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
   protected CurrencyScaleService currencyScaleService;
   protected AppBudgetService appBudgetService;
   protected BudgetLineComputeService budgetLineComputeService;
+  protected BudgetAccountConfigService budgetAccountConfigService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public BudgetDistributionServiceImpl(
@@ -78,7 +81,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       BudgetToolsService budgetToolsService,
       CurrencyScaleService currencyScaleService,
       AppBudgetService appBudgetService,
-      BudgetLineComputeService budgetLineComputeService) {
+      BudgetLineComputeService budgetLineComputeService,
+      BudgetAccountConfigService budgetAccountConfigService,
+      AccountConfigService accountConfigService) {
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.budgetLineService = budgetLineService;
     this.budgetLevelService = budgetLevelService;
@@ -88,6 +93,8 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     this.currencyScaleService = currencyScaleService;
     this.appBudgetService = appBudgetService;
     this.budgetLineComputeService = budgetLineComputeService;
+    this.budgetAccountConfigService = budgetAccountConfigService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -159,9 +166,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       ratio = ratio.negate();
     }
 
-    if (move != null
-        && move.getInvoice() == null
-        && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+    if (move != null && !CollectionUtils.isEmpty(move.getMoveLineList())) {
       for (MoveLine moveLine : move.getMoveLineList()) {
         updateAmountPaidOnBudgets(
             moveLine.getBudgetDistributionList(),
@@ -215,6 +220,11 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       if (CollectionUtils.isEmpty(authorizedAxis)) {
         return "";
       }
+
+      BigDecimal remainingAmount = amount;
+      BigDecimal numberOfAxisWithBudgetKey =
+          budgetAccountConfigService.getNumberOfAxisWithBudgetKey(
+              accountConfigService.getAccountConfig(company));
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         if (authorizedAxis.contains(analyticMoveLine.getAnalyticAxis())) {
           String key = budgetService.computeKey(account, company, analyticMoveLine);
@@ -223,14 +233,31 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
             Budget budget = budgetService.findBudgetWithKey(key, date);
 
             if (budget != null) {
+              BigDecimal imputedAmount = amount;
+              if (numberOfAxisWithBudgetKey.signum() > 0) {
+                imputedAmount =
+                    currencyScaleService.getCompanyScaledValue(
+                        budget, amount.divide(numberOfAxisWithBudgetKey));
+              }
+
+              imputedAmount =
+                  currencyScaleService.getCompanyScaledValue(
+                      budget,
+                      imputedAmount
+                          .multiply(analyticMoveLine.getPercentage())
+                          .divide(new BigDecimal(100)));
+
+              if (imputedAmount.subtract(remainingAmount).abs().compareTo(new BigDecimal(0.01))
+                  == 0) {
+                imputedAmount = remainingAmount;
+              }
+
+              remainingAmount = remainingAmount.subtract(imputedAmount);
+
               BudgetDistribution budgetDistribution =
                   createDistributionFromBudget(
                       budget,
-                      currencyScaleService.getCompanyScaledValue(
-                          budget,
-                          amount
-                              .multiply(analyticMoveLine.getPercentage())
-                              .divide(new BigDecimal(100))),
+                      currencyScaleService.getCompanyScaledValue(budget, imputedAmount),
                       date);
 
               linkBudgetDistributionWithParent(budgetDistribution, object);
@@ -302,7 +329,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     if (date != null) {
       query =
           query.concat(
-              String.format(" AND self.fromDate <= '%s' AND self.toDate >= '%s'", date, date));
+              String.format(
+                  " AND self.fromDate <= CAST('%s' AS date) AND self.toDate >= CAST('%s' AS date)",
+                  date, date));
     }
     if (AccountTypeRepository.TYPE_INCOME.equals(technicalTypeSelect)) {
       query =

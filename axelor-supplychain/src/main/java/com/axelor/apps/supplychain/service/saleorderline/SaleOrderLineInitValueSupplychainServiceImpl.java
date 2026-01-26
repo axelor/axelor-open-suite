@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.supplychain.service.saleorderline;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyService;
 import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineInitValueServiceImpl;
 import com.axelor.apps.supplychain.db.SupplyChainConfig;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
@@ -38,9 +39,11 @@ public class SaleOrderLineInitValueSupplychainServiceImpl
 
   @Inject
   public SaleOrderLineInitValueSupplychainServiceImpl(
+      SaleOrderLineComputeQtyService saleOrderLineComputeQtyService,
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
       AppSupplychainService appSupplychainService,
       SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
+    super(saleOrderLineComputeQtyService);
     this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
     this.appSupplychainService = appSupplychainService;
     this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;

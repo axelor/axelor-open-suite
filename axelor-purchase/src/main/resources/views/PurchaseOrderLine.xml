@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="purchase-order-line-purchase-order-grid" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -349,7 +349,7 @@
     <action name="action-purchase-order-line-attrs-scale-and-precision"/>
     <action name="action-purchase-order-attrs-hide-ati"/>
     <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
-    <action name="action-purchase-order-line-attrs-delivery-panel"/>
+    <action name="action-purchase-order-line-method-manage-delivery-panel-visibility"/>
     <action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
     <action name="action-purchase-order-line-attrs-set-currency"/>
     <action name="action-purchase-order-line-attrs-display-different-language-message"/>
@@ -358,7 +358,7 @@
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-product-onchange">
-    <action name="action-purchase-order-line-attrs-delivery-panel"/>
+    <action name="action-purchase-order-line-method-manage-delivery-panel-visibility"/>
     <action name="action-purchase-order-line-method-get-product-information"/>
     <action name="action-purchase-order-line-method-compute" if="price != 0"/>
     <action name="action-purchase-order-line-method-check-qty" if="price != 0"/>
@@ -404,11 +404,6 @@
   </action-group>
 
   <!-- ACTION ATTRS -->
-
-  <action-attrs name="action-purchase-order-line-attrs-delivery-panel">
-    <attribute name="hidden" for="deliveryPanel"
-      expr="eval: product?.productTypeSelect != 'storable'"/>
-  </action-attrs>
 
   <action-attrs name="action-purchase-order-attrs-hide-ati">
     <attribute name="hidden" for="exTaxTotal" expr="eval:__parent__?.inAti"
@@ -558,6 +553,12 @@
 
 
   <!-- ACTION METHOD -->
+
+  <action-method
+    name="action-purchase-order-line-method-manage-delivery-panel-visibility">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"
+      method="updateDeliveryPanelVisibility"/>
+  </action-method>
 
   <action-method name="action-purchase-order-line-method-convert-tax">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"

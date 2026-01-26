@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="move-line-grid" orderBy="-date,-name" title="Move lines"
     model="com.axelor.apps.account.db.MoveLine" canArchive="false" canDelete="false" canNew="false">
@@ -143,11 +143,11 @@
     <field name="date" width="100" onChange="account-move-line-method-date-onchange"
       hidden="true"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
-      onSelect="action-move-line-method-partner-onselect"
+      onSelect="action-move-line-attrs-partner-onselect"
       onChange="action-move-line-method-partner-onchange" width="120" canEdit="false"
       readonly="false"/>
     <field name="account" form-view="account-form" grid-view="account-grid"
-      onSelect="action-move-line-method-account-onselect" width="150" canEdit="false"
+      onSelect="action-move-line-attrs-account-onselect" width="150" canEdit="false"
       readonlyIf="amountPaid &gt; 0" onChange="action-move-line-group-account-onchange"/>
     <field name="currencyAmount"
       onChange="action-move-line-method-currency-amount-rate-onchange" readonlyIf="!isOtherCurrency"
@@ -447,10 +447,10 @@
         </viewer>
       </field>
       <field name="account" form-view="account-form" grid-view="account-grid"
-        onSelect="action-move-line-method-account-onselect" canEdit="false" colSpan="8"
+        onSelect="action-move-line-attrs-account-onselect" canEdit="false" colSpan="8"
         readonlyIf="amountPaid &gt; 0" onChange="action-move-line-group-account-onchange"/>
       <field name="partner" form-view="partner-form" grid-view="partner-grid"
-        onSelect="action-move-line-method-partner-onselect" canEdit="false" colSpan="4"
+        onSelect="action-move-line-attrs-partner-onselect" canEdit="false" colSpan="4"
         onChange="action-move-line-method-partner-onchange"
         requiredIf="account.useForPartnerBalance"/>
       <panel name="datesPanel" colSpan="12" itemSpan="3">
@@ -802,14 +802,6 @@
     <call class="com.axelor.apps.account.web.MoveLineController" method="showCalculatedBalance"/>
   </action-method>
 
-  <action-method name="action-move-line-method-account-onselect">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="accountOnSelect"/>
-  </action-method>
-
-  <action-method name="action-move-line-method-partner-onselect">
-    <call class="com.axelor.apps.account.web.MoveLineController" method="partnerOnSelect"/>
-  </action-method>
-
   <action-method
     name="action-move-line-method-analytic-distribution-template-onselect">
     <call class="com.axelor.apps.account.web.MoveLineController"
@@ -956,6 +948,25 @@
     <domain>self.move.id = :_moveId</domain>
     <context name="_moveId" expr="eval: id"/>
   </action-view>
+
+  <action-attrs name="action-move-line-attrs-account-onselect">
+    <attribute for="account" name="domain"
+      if="__parent__ == null || __parent__?._model != 'com.axelor.apps.account.db.Move'"
+      expr="eval: &quot; self.statusSelect = 1 AND self.company.id = ${move?.company?.id} AND (self.accountType.id IN (${(move?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(move?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;"/>
+    <attribute for="account" name="domain"
+      if="__parent__ != null &amp;&amp; __parent__._model == 'com.axelor.apps.account.db.Move'"
+      expr="eval: &quot; self.statusSelect = 1 AND self.company.id = ${__parent__?.company?.id} AND (self.accountType.id IN (${(__parent__?.journal?.validAccountTypeSet?.collect{it.id}+[0]).join(',')}) OR self.id IN (${(__parent__?.journal?.validAccountSet?.collect{it.id}+[0]).join(',')})) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-move-line-attrs-partner-onselect">
+    <attribute name="domain" expr="eval: 'self.isContact IS FALSE'" for="partner"/>
+    <attribute name="domain" for="partner"
+      if="__parent__ &amp;&amp; __parent__?._model == 'com.axelor.apps.account.db.Move' &amp;&amp; __parent__?.company"
+      expr="eval: &quot;self.isContact IS FALSE AND EXISTS (SELECT 1 FROM self.companySet c WHERE c.id = ${__parent__?.company?.id})&quot;"/>
+    <attribute name="domain" for="partner"
+      if="(!__parent__ || __parent__?._model != 'com.axelor.apps.account.db.Move') &amp;&amp; move?.company"
+      expr="eval: &quot;self.isContact IS FALSE AND EXISTS (SELECT 1 FROM self.companySet c WHERE c.id = ${move?.company?.id})&quot;"/>
+  </action-attrs>
 
   <search-filters name="move-line-filters"
     model="com.axelor.apps.account.db.MoveLine" title="Move line filters">

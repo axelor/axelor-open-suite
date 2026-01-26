@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="opportunity-grid" title="Opportunities"
     model="com.axelor.apps.crm.db.Opportunity"
@@ -272,7 +272,7 @@
 
   <kanban columnBy="opportunityStatus" sequenceBy="orderByState" limit="10"
     name="opportunity-kanban" title="Opportunities" model="com.axelor.apps.crm.db.Opportunity"
-    onMove="action-opportunity-method-cancel-saleorders, action-opportunity-method-kanban-onmove">
+    onMove="action-opportunity-method-cancel-saleorders, action-opportunity-method-kanban-onmove,action-opportunity-group-status-onchange">
     <field name="opportunitySeq"/>
     <field name="name"/>
     <field name="description"/>
@@ -497,14 +497,18 @@
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
     <view-param name="forceEdit" value="true"/>
-    <domain>self.opportunity.id = :_id</domain>
+    <domain>self.opportunity.id = :_id OR (self.relatedToSelect =
+      'com.axelor.apps.crm.db.Opportunity' and
+      self.relatedToSelectId = :_id)</domain>
   </action-view>
 
   <action-view name="action-opportunity-view-all-events" title="Events"
     model="com.axelor.apps.crm.db.Event">
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>self.opportunity.id = :_id</domain>
+    <domain>self.opportunity.id = :_id OR (self.relatedToSelect =
+      'com.axelor.apps.crm.db.Opportunity' and
+      self.relatedToSelectId = :_id)</domain>
   </action-view>
 
   <action-group name="action-opportunity-group-new">

@@ -238,6 +238,16 @@ function getNumberFormatPattern() {
                     <property name="isInput">true</property>
                     <property name="isOutput">false</property>
                 </structure>
+                <structure>
+                    <property name="name">param_2</property>
+                    <property name="paramName">AccountingReportId</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                    <property name="position">2</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
             </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
@@ -420,93 +430,191 @@ vars["numberOfDecimals"] = dataSetRow["number_of_decimals"];]]></method>
                     <property name="nativeDataType">-7</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[Select MoveLine.partner_full_name as partner_name,
-MoveLine.partner_seq,
-COALESCE(Invoice.invoice_id,MoveLine.name) as invoice_name,
-Currency.number_of_decimals,
-SUM(Case when AccountingReport.date_val - Invoice.due_date  <= 0
-then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
-else 0
-END) as "nonDue",
-SUM(Case when AccountingReport.date_val - Invoice.due_date  <= 30
-	AND AccountingReport.date_val - Invoice.due_date  > 0
-then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
-else 0
-END) as "<30days",
-SUM(Case when AccountingReport.date_val - Invoice.due_date > 30
-	AND AccountingReport.date_val - Invoice.due_date <= 60
-then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
-else 0
-END) as "30<days<60",
-SUM(Case when AccountingReport.date_val - Invoice.due_date > 60
-	AND AccountingReport.date_val - Invoice.due_date <= 90
-then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
-else 0
-END) as "60<days<90",
-SUM(Case when AccountingReport.date_val - Invoice.due_date > 90
-	AND AccountingReport.date_val - Invoice.due_date <= 120
-then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
-else 0
-END) as "90<days<120",
-SUM(Case when AccountingReport.date_val - Invoice.due_date > 120
-	AND AccountingReport.date_val - Invoice.due_date <= 150
-then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
-else 0
-END) as "120<days<150",
-SUM(Case when AccountingReport.date_val - Invoice.due_date > 150
-	AND AccountingReport.date_val - Invoice.due_date <= 180
-then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
-else 0
-END) as "150<days<180",
-SUM(Case when AccountingReport.date_val - Invoice.due_date > 180
-then (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
-else 0
-END) as "180<days",
-SUM(Invoice.in_tax_total - COALESCE(Paid.paid_amount,0))
-as "SoldeClient",
-CASE WHEN (COUNT(CASE WHEN Move.status_select = 2 OR Move.status_select = 5 THEN 1 ELSE NULL END)) > 0 THEN TRUE ELSE FALSE END as "showProvisionTitle"
-from account_accounting_report as AccountingReport 
-left outer join account_move_line as MoveLine on (AccountingReport.id = ?)
-left outer join base_company as Company on (AccountingReport.company = Company.id)
-left outer join base_currency as Currency on (Currency.id = Company.currency)
-left outer join account_invoice as Invoice on (Invoice.invoice_id = MoveLine.origin)
-left outer join (
-	SELECT
-        InvoicePayment.invoice,
-        Report.id AS report_id,
-        SUM(CASE WHEN InvoicePayment.payment_date <= Report.date_val THEN InvoicePayment.amount ELSE 0 END) AS paid_amount
+            <xml-property name="queryText"><![CDATA[SELECT
+  MoveLine.partner_full_name AS partner_name,
+  MoveLine.partner_seq,
+  COALESCE(Invoice.invoice_id, MoveLine.name) AS invoice_name,
+  Currency.number_of_decimals,
+  SUM(CASE WHEN AccountingReport.date_val - Invoice.due_date <= 0
+      THEN (Invoice.in_tax_total - COALESCE(Paid.paid_amount, 0))
+      ELSE 0 END) AS "nonDue",
+  SUM(CASE WHEN AccountingReport.date_val - Invoice.due_date BETWEEN 1 AND 30
+      THEN (Invoice.in_tax_total - COALESCE(Paid.paid_amount, 0))
+      ELSE 0 END) AS "<30days",
+  SUM(CASE WHEN AccountingReport.date_val - Invoice.due_date BETWEEN 31 AND 60
+      THEN (Invoice.in_tax_total - COALESCE(Paid.paid_amount, 0))
+      ELSE 0 END) AS "30<days<60",
+  SUM(CASE WHEN AccountingReport.date_val - Invoice.due_date BETWEEN 61 AND 90
+      THEN (Invoice.in_tax_total - COALESCE(Paid.paid_amount, 0))
+      ELSE 0 END) AS "60<days<90",
+  SUM(CASE WHEN AccountingReport.date_val - Invoice.due_date BETWEEN 91 AND 120
+      THEN (Invoice.in_tax_total - COALESCE(Paid.paid_amount, 0))
+      ELSE 0 END) AS "90<days<120",
+  SUM(CASE WHEN AccountingReport.date_val - Invoice.due_date BETWEEN 121 AND 150
+      THEN (Invoice.in_tax_total - COALESCE(Paid.paid_amount, 0))
+      ELSE 0 END) AS "120<days<150",
+  SUM(CASE WHEN AccountingReport.date_val - Invoice.due_date BETWEEN 151 AND 180
+      THEN (Invoice.in_tax_total - COALESCE(Paid.paid_amount, 0))
+      ELSE 0 END) AS "150<days<180",
+  SUM(CASE WHEN AccountingReport.date_val - Invoice.due_date > 180
+      THEN (Invoice.in_tax_total - COALESCE(Paid.paid_amount, 0))
+      ELSE 0 END) AS "180<days",
+  SUM(Invoice.in_tax_total - COALESCE(Paid.paid_amount, 0)) AS "SoldeClient",
+  CASE WHEN COUNT(CASE WHEN Move.status_select IN (2,5) THEN 1 END) > 0 THEN TRUE ELSE FALSE END AS "showProvisionTitle"
+FROM account_accounting_report AS AccountingReport
+LEFT JOIN account_move_line AS MoveLine ON (AccountingReport.id = ?)
+LEFT JOIN base_company AS Company ON (AccountingReport.company = Company.id)
+LEFT JOIN base_currency AS Currency ON (Currency.id = Company.currency)
+LEFT JOIN account_invoice AS Invoice ON (Invoice.invoice_id = MoveLine.origin)
+LEFT JOIN (
+    SELECT
+      InvoicePayment.invoice,
+      Report.id AS report_id,
+      SUM(CASE WHEN InvoicePayment.payment_date <= Report.date_val THEN InvoicePayment.amount ELSE 0 END) AS paid_amount
     FROM account_invoice_payment InvoicePayment
     CROSS JOIN account_accounting_report Report
     GROUP BY InvoicePayment.invoice, Report.id
-	) AS Paid
-    ON Paid.invoice = Invoice.id
-    AND Paid.report_id = AccountingReport.id
-left outer join account_move as Move on (MoveLine.move = Move.id)
-left outer join account_account as Account on (MoveLine.account  = Account.id )
-left outer join account_accounting_report_account_set as AccountSet on (AccountSet.account_accounting_report = AccountingReport.id)
-left outer join account_accounting_report_partner_set as PartnerSet on (PartnerSet.account_accounting_report = AccountingReport.id)
-left outer join account_accounting_report_account_tag_set as ReportAccountTagSet on (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
-left outer join account_account_tag_set as AccountTagSet on (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
-left outer join account_accounting_report_partner_tag_set as ReportPartnerTagSet on (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
-left outer join base_partner_tag_set as PartnerTagSet on (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
-where
-(AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency) AND
-(Invoice.invoice_date <= AccountingReport.date_val) AND 
-Move.company = AccountingReport.company AND
-(AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id) AND
-(PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner) AND
-(ReportAccountTagSet.account_tag_set IS NULL OR AccountTagSet.account_account = Account.id) AND
-(ReportPartnerTagSet.partner_tag_set IS NULL OR PartnerTagSet.base_partner = MoveLine.partner) AND
-Account.reconcile_ok = true AND (Invoice.in_tax_total - COALESCE(Paid.paid_amount,0)) != 0
-AND Move.ignore_in_accounting_ok is not true AND (Move.status_select = 3 OR (AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%'))
-AND (CASE
-    WHEN AccountingReport.display_closing_accounting_moves IS TRUE AND AccountingReport.display_opening_accounting_moves IS TRUE THEN Move.functional_origin_select IN (1,2,3,4)
-    WHEN AccountingReport.display_closing_accounting_moves IS TRUE THEN Move.functional_origin_select IN (2,3,4)
-    WHEN AccountingReport.display_opening_accounting_moves IS TRUE THEN Move.functional_origin_select IN (1,3,4)
-    ELSE Move.functional_origin_select IN (3,4)
-END OR Move.functional_origin_select IS NULL) AND
-(AccountingReport.journal IS NULL OR AccountingReport.journal  = Move.journal)
-group by MoveLine.partner_full_name,MoveLine.partner_seq,Invoice.invoice_id,MoveLine.name, Currency.number_of_decimals]]></xml-property>
+) AS Paid ON Paid.invoice = Invoice.id AND Paid.report_id = AccountingReport.id
+LEFT JOIN account_move AS Move ON (MoveLine.move = Move.id)
+LEFT JOIN account_account AS Account ON (MoveLine.account = Account.id)
+LEFT JOIN account_accounting_report_account_set AS AccountSet ON (AccountSet.account_accounting_report = AccountingReport.id)
+LEFT JOIN account_accounting_report_partner_set AS PartnerSet ON (PartnerSet.account_accounting_report = AccountingReport.id)
+LEFT JOIN account_accounting_report_account_tag_set AS ReportAccountTagSet ON (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
+LEFT JOIN account_account_tag_set AS AccountTagSet ON (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
+LEFT JOIN account_accounting_report_partner_tag_set AS ReportPartnerTagSet ON (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+LEFT JOIN base_partner_tag_set AS PartnerTagSet ON (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
+WHERE
+  (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
+  AND (Invoice.invoice_date <= AccountingReport.date_val)
+  AND Move.company = AccountingReport.company
+  AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
+  AND (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner)
+  AND (ReportAccountTagSet.account_tag_set IS NULL OR AccountTagSet.account_account = Account.id)
+  AND (ReportPartnerTagSet.partner_tag_set IS NULL OR PartnerTagSet.base_partner = MoveLine.partner)
+  AND Account.reconcile_ok = TRUE
+  AND (Invoice.in_tax_total - COALESCE(Paid.paid_amount, 0)) != 0
+  AND Move.ignore_in_accounting_ok IS NOT TRUE
+  AND (Move.status_select = 3 OR AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%')
+  AND (
+    (AccountingReport.display_closing_accounting_moves IS TRUE AND AccountingReport.display_opening_accounting_moves IS TRUE AND Move.functional_origin_select IN (1,2,3,4))
+    OR (AccountingReport.display_closing_accounting_moves IS TRUE AND Move.functional_origin_select IN (2,3,4))
+    OR (AccountingReport.display_opening_accounting_moves IS TRUE AND Move.functional_origin_select IN (1,3,4))
+    OR (Move.functional_origin_select IN (3,4))
+    OR Move.functional_origin_select IS NULL
+  )
+  AND (AccountingReport.journal IS NULL OR AccountingReport.journal = Move.journal)
+GROUP BY MoveLine.partner_full_name, MoveLine.partner_seq, Invoice.invoice_id, MoveLine.name, Currency.number_of_decimals
+
+UNION ALL
+
+SELECT
+  MoveLine.partner_full_name AS partner_name,
+  MoveLine.partner_seq,
+  COALESCE(Invoice.invoice_id, MoveLine.name) AS invoice_name,
+  Currency.number_of_decimals,
+  SUM(CASE WHEN AccountingReport.date_val - InvoiceTerm.due_date <= 0
+      THEN CASE WHEN MoveLine.debit - MoveLine.credit < 0
+           THEN InvoiceTerm.company_amount_remaining * -1
+           ELSE InvoiceTerm.company_amount_remaining END
+      ELSE 0 END) AS "nonDue",
+  SUM(CASE WHEN AccountingReport.date_val - InvoiceTerm.due_date BETWEEN 1 AND 30
+      THEN CASE WHEN MoveLine.debit - MoveLine.credit < 0
+           THEN InvoiceTerm.company_amount_remaining * -1
+           ELSE InvoiceTerm.company_amount_remaining END
+      ELSE 0 END) AS "<30days",
+  SUM(CASE WHEN AccountingReport.date_val - InvoiceTerm.due_date BETWEEN 31 AND 60
+      THEN CASE WHEN MoveLine.debit - MoveLine.credit < 0
+           THEN InvoiceTerm.company_amount_remaining * -1
+           ELSE InvoiceTerm.company_amount_remaining END
+      ELSE 0 END) AS "30<days<60",
+  SUM(CASE WHEN AccountingReport.date_val - InvoiceTerm.due_date BETWEEN 61 AND 90
+      THEN CASE WHEN MoveLine.debit - MoveLine.credit < 0
+           THEN InvoiceTerm.company_amount_remaining * -1
+           ELSE InvoiceTerm.company_amount_remaining END
+      ELSE 0 END) AS "60<days<90",
+  SUM(CASE WHEN AccountingReport.date_val - InvoiceTerm.due_date BETWEEN 91 AND 120
+      THEN CASE WHEN MoveLine.debit - MoveLine.credit < 0
+           THEN InvoiceTerm.company_amount_remaining * -1
+           ELSE InvoiceTerm.company_amount_remaining END
+      ELSE 0 END) AS "90<days<120",
+  SUM(CASE WHEN AccountingReport.date_val - InvoiceTerm.due_date BETWEEN 121 AND 150
+      THEN CASE WHEN MoveLine.debit - MoveLine.credit < 0
+           THEN InvoiceTerm.company_amount_remaining * -1
+           ELSE InvoiceTerm.company_amount_remaining END
+      ELSE 0 END) AS "120<days<150",
+  SUM(CASE WHEN AccountingReport.date_val - InvoiceTerm.due_date BETWEEN 151 AND 180
+      THEN CASE WHEN MoveLine.debit - MoveLine.credit < 0
+           THEN InvoiceTerm.company_amount_remaining * -1
+           ELSE InvoiceTerm.company_amount_remaining END
+      ELSE 0 END) AS "150<days<180",
+  SUM(CASE WHEN AccountingReport.date_val - InvoiceTerm.due_date > 180
+      THEN CASE WHEN MoveLine.debit - MoveLine.credit < 0
+           THEN InvoiceTerm.company_amount_remaining * -1
+           ELSE InvoiceTerm.company_amount_remaining END
+      ELSE 0 END) AS "180<days",
+  SUM(CASE WHEN MoveLine.debit - MoveLine.credit < 0
+      THEN InvoiceTerm.company_amount_remaining * -1
+      ELSE InvoiceTerm.company_amount_remaining END) AS "SoldeClient",
+  CASE WHEN COUNT(CASE WHEN Move.status_select IN (2,5) THEN 1 END) > 0 THEN TRUE ELSE FALSE END AS "showProvisionTitle"
+FROM account_accounting_report AS AccountingReport
+LEFT JOIN account_move_line AS MoveLine ON (AccountingReport.id = ?)
+LEFT JOIN base_company AS Company ON (AccountingReport.company = Company.id)
+LEFT JOIN base_currency AS Currency ON (Currency.id = Company.currency)
+LEFT JOIN account_invoice_term AS InvoiceTerm ON (InvoiceTerm.move_line = MoveLine.id)
+LEFT JOIN account_invoice AS Invoice ON (InvoiceTerm.invoice = Invoice.id)
+LEFT JOIN account_move AS Move ON (MoveLine.move = Move.id)
+LEFT JOIN account_account AS Account ON (MoveLine.account = Account.id)
+LEFT JOIN account_accounting_report_account_set AS AccountSet ON (AccountSet.account_accounting_report = AccountingReport.id)
+LEFT JOIN account_accounting_report_partner_set AS PartnerSet ON (PartnerSet.account_accounting_report = AccountingReport.id)
+LEFT JOIN account_accounting_report_account_tag_set AS ReportAccountTagSet ON (ReportAccountTagSet.account_accounting_report = AccountingReport.id)
+LEFT JOIN account_account_tag_set AS AccountTagSet ON (ReportAccountTagSet.account_tag_set = AccountTagSet.tag_set)
+LEFT JOIN account_accounting_report_partner_tag_set AS ReportPartnerTagSet ON (ReportPartnerTagSet.account_accounting_report = AccountingReport.id)
+LEFT JOIN base_partner_tag_set AS PartnerTagSet ON (ReportPartnerTagSet.partner_tag_set = PartnerTagSet.tag_set)
+WHERE
+  (AccountingReport.currency IS NULL OR AccountingReport.currency = Move.currency)
+  AND (AccountingReport.date_from IS NULL OR InvoiceTerm.due_date >= AccountingReport.date_from)
+  AND (AccountingReport.date_to IS NULL OR InvoiceTerm.due_date <= AccountingReport.date_to)
+  AND Move.company = AccountingReport.company
+  AND (AccountSet.account_set IS NULL OR AccountSet.account_set = Account.id)
+  AND (PartnerSet.partner_set IS NULL OR PartnerSet.partner_set = MoveLine.partner)
+  AND (ReportAccountTagSet.account_tag_set IS NULL OR AccountTagSet.account_account = Account.id)
+  AND (ReportPartnerTagSet.partner_tag_set IS NULL OR PartnerTagSet.base_partner = MoveLine.partner)
+  AND Account.reconcile_ok = TRUE
+  AND InvoiceTerm.amount_remaining != 0
+  AND Move.ignore_in_accounting_ok IS NOT TRUE
+  AND (Move.status_select = 3 OR AccountingReport.move_status_select LIKE '%' || Move.status_select::varchar(255) || '%')
+  AND (
+    (AccountingReport.display_closing_accounting_moves IS TRUE AND AccountingReport.display_opening_accounting_moves IS TRUE AND Move.functional_origin_select IN (1,2,3,4))
+    OR (AccountingReport.display_closing_accounting_moves IS TRUE AND Move.functional_origin_select IN (2,3,4))
+    OR (AccountingReport.display_opening_accounting_moves IS TRUE AND Move.functional_origin_select IN (1,3,4))
+    OR (Move.functional_origin_select IN (3,4))
+    OR Move.functional_origin_select IS NULL
+  )
+  AND (AccountingReport.journal IS NULL OR AccountingReport.journal = Move.journal)
+  AND Move.invoice IS NULL
+GROUP BY MoveLine.partner_full_name, MoveLine.partner_seq, Invoice.invoice_id, MoveLine.name, Currency.number_of_decimals;
+]]></xml-property>
+            <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
+  <Version>2.0</Version>
+  <DataSetParameters>
+    <parameter>
+      <design:ParameterDefinition>
+        <design:inOutMode>In</design:inOutMode>
+        <design:attributes>
+          <design:identifier>
+            <design:name></design:name>
+            <design:position>2</design:position>
+          </design:identifier>
+          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
+          <design:precision>0</design:precision>
+          <design:scale>0</design:scale>
+          <design:nullability>Unknown</design:nullability>
+        </design:attributes>
+      </design:ParameterDefinition>
+    </parameter>
+  </DataSetParameters>
+</model:DesignValues>]]></xml-property>
         </oda-data-set>
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="AccountingReportDS" id="489">
             <property name="nullsOrdering">nulls lowest</property>

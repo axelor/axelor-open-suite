@@ -1,5 +1,0 @@
----
-title: "Purchase order: fixed purchase order tax configuration when order were automatically generated."
-module: axelor-purchase
-developer: |
-  Added PurchaseOrderTaxService to PurchaseOrderCreateServiceImpl constructor.

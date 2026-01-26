@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <!-- VUE GENERALE -->
 
@@ -448,7 +448,8 @@
 	                    ]]>
           </viewer>
         </field>
-        <field name="$pfpViewerTags" showTitle="false" readonly="true" showIf="$readonly()"
+        <field name="$pfpViewerTags" showTitle="false" readonly="true"
+          showIf="$readonly() &amp;&amp; (company.accountConfig.isManagePassedForPayment &amp;&amp; (operationTypeSelect == 1 || company.accountConfig.isManagePFPInRefund &amp;&amp; operationTypeSelect == 2))"
           colSpan="3" if="__config__.app.getApp('account')?.getActivatePassedForPayment()">
           <viewer>
 	                    <![CDATA[
@@ -1625,6 +1626,7 @@
     <action name="action-record-invoice-set-discount-values"
       if="__config__.app.getApp('account').getManageFinancialDiscount()"/>
     <action name="action-invoice-attrs-display-line-coefficient"/>
+    <action name="action-invoice-method-set-default-company-tax-number"/>
   </action-group>
 
   <action-group name="action-account-invoice-onload-group">
@@ -1656,6 +1658,7 @@
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
+    <action name="action-invoice-method-sync-pfp-validator-from-invoice-terms"/>
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
     <action name="action-invoice-record-due-dates"/>
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
@@ -1824,6 +1827,7 @@
       if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-method-estimated-payment-date"/>
+    <action name="action-invoice-method-sync-pfp-validator-to-invoice-terms"/>
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
@@ -1854,7 +1858,18 @@
     <action name="action-invoice-method-hide-send-email-pfp-btn"/>
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"/>
     <action name="action-invoice-method-set-payment-visibility"/>
+    <action name="action-invoice-method-sync-pfp-validator-to-invoice-terms"/>
   </action-group>
+
+  <action-method name="action-invoice-method-sync-pfp-validator-to-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="syncPfpValidatorToInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-sync-pfp-validator-from-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="syncPfpValidatorFromInvoiceTerms"/>
+  </action-method>
 
   <action-group name="action-invoice-group-financial-discount">
     <action name="action-invoice-method-update-final-discount"/>

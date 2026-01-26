@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="inventory-line-grid" title="Inventory lines"
     model="com.axelor.apps.stock.db.InventoryLine" editable="true" orderBy="product.code"
@@ -9,8 +9,8 @@
     <hilite if="!isPresentInStockLocation" color="lightgreen"/>
     <field name="product" canEdit="false"
       onChange="action-inventory-line-group-on-change-product-stock-location"
-      domain="self.stockManaged = true AND self.dtype = 'Product'" grid-view="product-grid"
-      form-view="product-form"/>
+      domain="self.stockManaged = true AND self.dtype = 'Product' AND self.isModel = false"
+      grid-view="product-grid" form-view="product-form"/>
     <field name="stockLocation"
       onSelect="action-inventory-line-method-set-stock-location-domain"
       onChange="action-inventory-line-group-on-change-product-stock-location"/>
@@ -41,7 +41,7 @@
     <panel name="mainPanel">
       <field name="product" canEdit="false"
         onChange="action-inventory-line-group-on-change-product-stock-location"
-        domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and self.dtype = 'Product'"
+        domain="self.expense = false and self.productTypeSelect = 'storable' and self.stockManaged = true and self.dtype = 'Product' AND self.isModel = false"
         form-view="product-form" grid-view="product-grid"/>
       <field name="stockLocation"
         onSelect="action-inventory-line-method-set-stock-location-domain"

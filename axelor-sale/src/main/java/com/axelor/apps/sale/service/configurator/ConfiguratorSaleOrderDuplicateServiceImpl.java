@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -83,7 +83,7 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
     var saleOrder = saleOrderLine.getSaleOrder();
     if (saleOrderLine.getConfigurator() == null) {
       // Copy
-      var copy = saleOrderLineRepository.save(saleOrderLineRepository.copy(saleOrderLine, false));
+      var copy = saleOrderLineRepository.save(saleOrderLineRepository.copy(saleOrderLine, true));
       saleOrder.addSaleOrderLineListItem(copy);
     } else {
       duplicateLineWithoutCompute(saleOrderLine);
@@ -126,7 +126,7 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
   @Transactional(rollbackOn = Exception.class)
   public void simpleDuplicate(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    var copiedSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, false);
+    var copiedSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, true);
     saleOrder.addSaleOrderLineListItem(copiedSaleOrderLine);
     computeSaleOrder(saleOrder);
   }

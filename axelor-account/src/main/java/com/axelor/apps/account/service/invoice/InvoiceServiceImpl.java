@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -310,7 +310,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
           invoice,
           InvoiceRepository.REPORT_TYPE_ORIGINAL_INVOICE,
           accountConfigService.getInvoicePrintTemplate(invoice.getCompany()),
-          null);
+          null,
+          true);
     }
   }
 
@@ -1135,11 +1136,11 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         .createQuery(
             "Select moveLine.id "
                 + "FROM  MoveLine moveLine "
-                + "LEFT JOIN Move move on moveLine.move = move.id "
-                + "LEFT JOIN Invoice invoice on move.id = invoice.move "
-                + "LEFT JOIN Account account on moveLine.account = account.id "
-                + "LEFT JOIN AccountType accountType on account.accountType = accountType.id "
-                + "LEFT JOIN Partner partner on moveLine.partner = partner.id "
+                + "LEFT JOIN Move move on moveLine.move.id = move.id "
+                + "LEFT JOIN Invoice invoice on move.id = invoice.move.id "
+                + "LEFT JOIN Account account on moveLine.account.id = account.id "
+                + "LEFT JOIN AccountType accountType on account.accountType.id = accountType.id "
+                + "LEFT JOIN Partner partner on moveLine.partner.id = partner.id "
                 + "WHERE invoice.move = null "
                 + "AND moveLine.debit > 0 "
                 + "AND moveLine.amountRemaining > 0 "

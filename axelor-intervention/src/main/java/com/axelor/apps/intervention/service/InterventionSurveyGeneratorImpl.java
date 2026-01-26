@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -63,6 +63,7 @@ import com.google.inject.servlet.ServletScopes;
 import jakarta.inject.Inject;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import java.lang.invoke.MethodHandles;
@@ -300,19 +301,19 @@ public class InterventionSurveyGeneratorImpl implements InterventionSurveyGenera
     Root<InterventionRange> root = cr.from(InterventionRange.class);
     cr.select(root);
 
-    Predicate belongToIntervention = cb.equal(root.get("intervention").get("id"), interventionId);
+    Join<InterventionRange, Intervention> interventionJoin = root.join("intervention");
+    Predicate belongToIntervention = cb.equal(interventionJoin.get("id"), interventionId);
 
+    Join<InterventionRange, Range> rangeValJoin = root.join("rangeVal");
+    Join<Range, RangeType> rangeTypeJoin = rangeValJoin.join("rangeType");
     Predicate isRangeTypeEquipment =
-        cb.equal(
-            root.get("rangeVal").get("rangeType").get("rangeTypeSelect"),
-            RangeTypeRepository.TYPE_BY_EQUIPMENT);
+        cb.equal(rangeTypeJoin.get("rangeTypeSelect"), RangeTypeRepository.TYPE_BY_EQUIPMENT);
     Predicate hasNotEquipment;
 
     if (CollectionUtils.isNotEmpty(equipmentIds)) {
+      Join<InterventionRange, Equipment> equipmentJoin = root.join("equipment");
       hasNotEquipment =
-          cb.and(
-              root.get("equipment").isNotNull(),
-              root.get("equipment").get("id").in(equipmentIds).not());
+          cb.and(root.get("equipment").isNotNull(), equipmentJoin.get("id").in(equipmentIds).not());
     } else {
       hasNotEquipment = root.get("equipment").isNotNull();
     }
@@ -328,23 +329,20 @@ public class InterventionSurveyGeneratorImpl implements InterventionSurveyGenera
     Root<InterventionRange> root = cr.from(InterventionRange.class);
     cr.select(root);
 
-    Predicate belongToIntervention = cb.equal(root.get("intervention").get("id"), interventionId);
+    Join<InterventionRange, Intervention> interventionJoin = root.join("intervention");
+    Predicate belongToIntervention = cb.equal(interventionJoin.get("id"), interventionId);
+
+    Join<InterventionRange, Range> rangeValJoin = root.join("rangeVal");
+    Join<Range, RangeType> rangeTypeJoin = rangeValJoin.join("rangeType");
     Predicate isRangeTypeFamily =
-        cb.equal(
-            root.get("rangeVal").get("rangeType").get("rangeTypeSelect"),
-            RangeTypeRepository.TYPE_BY_FAMILY);
+        cb.equal(rangeTypeJoin.get("rangeTypeSelect"), RangeTypeRepository.TYPE_BY_FAMILY);
 
     Predicate rangeFamily = cb.and(belongToIntervention, isRangeTypeFamily);
 
     if (CollectionUtils.isNotEmpty(equipmentFamilyIds)) {
 
       Predicate hasNotEquipmentFamily =
-          root.join("rangeVal")
-              .join("rangeType")
-              .join("equipmentFamilySet")
-              .get("id")
-              .in(equipmentFamilyIds)
-              .not();
+          rangeTypeJoin.join("equipmentFamilySet").get("id").in(equipmentFamilyIds).not();
       rangeFamily = cb.and(rangeFamily, hasNotEquipmentFamily);
     }
     cr.where(rangeFamily);
