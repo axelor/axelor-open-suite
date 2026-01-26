@@ -283,7 +283,7 @@ public class MoveController {
         List<Move> moveList =
             Beans.get(MoveRepository.class)
                 .all()
-                .filter("self.id in :moveIds AND (self.archived = false or self.archived = null)")
+                .filter("self.id in :moveIds AND (self.archived = false or self.archived IS null)")
                 .bind("moveIds", moveIds)
                 .fetch();
         if (ObjectUtils.notEmpty(moveList)
