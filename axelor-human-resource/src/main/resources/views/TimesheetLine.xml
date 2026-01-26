@@ -734,7 +734,7 @@
     <view type="grid" name="timesheet-line-project-task-grid"/>
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.timesheet.statusSelect = 3 and self.projectTask = :id</domain>
+    <domain>self.isValidated = true AND self.projectTask = :id</domain>
     <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
   <action-view name="action-project-task-dashlet-waiting-timesheet-lines"
@@ -742,7 +742,7 @@
     <view type="grid" name="timesheet-line-project-task-grid"/>
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.timesheet.statusSelect &lt; 3 and self.projectTask = :id</domain>
+    <domain>(self.isValidated = false OR self.isValidated IS NULL) AND self.projectTask = :id</domain>
     <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
   <action-view name="action-project-task-dashlet-all-timesheet-lines"
