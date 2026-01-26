@@ -14,8 +14,9 @@
     <date name="date" column="date_val" title="Date"/> <!-- Only used for Manual Misc. Operations -->
     <string name="reference" title="Reference" namecolumn="true" readonly="true"/>
     <one-to-many name="moveLineList" ref="MoveLine" title="Move lines" mappedBy="move"/>
-    <one-to-many name="moveLineMassEntryList" ref="MoveLineMassEntry"
-      title="Move lines mass entry" mappedBy="moveMassEntry"/>
+    <one-to-many name="moveLineMassEntryList"
+      ref="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines mass entry"
+      mappedBy="moveMassEntry"/>
     <many-to-one name="partner" ref="com.axelor.apps.base.db.Partner" title="Partner"/>
     <many-to-one name="thirdPartyPayerPartner" ref="com.axelor.apps.base.db.Partner"
       title="Third-party payer"/>
