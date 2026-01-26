@@ -139,7 +139,7 @@ public final class AccountExceptionMessage {
 
   /** Account management repostiroy */
   public static final String ACCOUNT_MANAGEMENT_ALREADY_EXISTS = /*$$(*/
-      "A payment mode already exists with the same information." /*)*/;
+      "An account management already exists with the same information:\nBank details: %s\nPayment mode: %s\nCompany: %s" /*)*/;
 
   /** Account management service */
   public static final String ACCOUNT_MANAGEMENT_1_ACCOUNT = /*$$(*/
