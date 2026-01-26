@@ -443,10 +443,10 @@ public class StockMoveLineController {
     }
   }
 
-    public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
-        StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-        StockMove stockMove = getStockMove(request, stockMoveLine);
-        Beans.get(StockMoveLineService.class).qtyOnChange(stockMoveLine, stockMove);
-        response.setValue("companyPurchasePrice", stockMoveLine.getCompanyPurchasePrice());
-    }
+  public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    Beans.get(StockMoveLineService.class).qtyOnChange(stockMoveLine, stockMove);
+    response.setValue("companyPurchasePrice", stockMoveLine.getCompanyPurchasePrice());
+  }
 }
