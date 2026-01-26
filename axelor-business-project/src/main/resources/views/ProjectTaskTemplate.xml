@@ -32,7 +32,7 @@
     <!-- <button name="showFinancialReport" title="Show financial reports" icon="bar-chart-fill" onClick="action-project-task-view-show-financial-datas-panel"/> -->
   </grid>
 
-  <form name="custom-mgm-business-project-task-template-form" title="Task Form"
+  <form name="custom-mgm-business-project-task-template-form" title="Task"
     model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-business-project-project-task-group-on-new"
     onLoad="action-business-project-project-task-group-on-load" width="large"

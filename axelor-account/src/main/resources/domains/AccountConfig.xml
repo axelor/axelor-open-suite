@@ -343,6 +343,8 @@
 
     <many-to-one name="invoicePrintTemplate" title="Invoice template"
       ref="com.axelor.apps.base.db.PrintingTemplate"/>
+    <many-to-one name="invoiceBreakdownPrintTemplate" title="Invoice Breakdown template"
+      ref="com.axelor.apps.base.db.PrintingTemplate"/>
     <many-to-one name="purchaseInvoicesDetailsPrintTemplate"
       title="Purchase invoices details template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
     <many-to-one name="chequeDepositSlipPrintTemplate"
@@ -554,6 +556,7 @@
       <field name="purchaseInvoicesDetailsPrintTemplate" on="UPDATE"/>
       <field name="chequeDepositSlipPrintTemplate" on="UPDATE"/>
       <field name="saleInvoicesDetailsPrintTemplate" on="UPDATE"/>
+      <field name="invoiceBreakdownPrintTemplate" on="UPDATE"/>
 
       <field name="foreignExchangeGainsAccount" on="UPDATE"/>
       <field name="foreignExchangeLossesAccount" on="UPDATE"/>
