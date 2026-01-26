@@ -45,7 +45,6 @@ import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaPermission;
 import com.axelor.meta.db.MetaPermissionRule;
-import com.axelor.meta.db.ThemeLogoMode;
 import com.axelor.studio.db.AppBase;
 import com.axelor.team.db.Team;
 import com.google.common.base.MoreObjects;
@@ -182,16 +181,16 @@ public class UserServiceImpl implements UserService {
     if (company == null) {
       return null;
     }
-    MetaFile logo = null;
-    ThemeLogoMode logoMode = metaThemeFetchService.getCurrentThemeLogoMode(user);
-    switch (logoMode) {
+
+    MetaFile logo;
+    switch (metaThemeFetchService.getCurrentThemeLogoMode(user)) {
       case DARK:
-      case NONE:
         logo = company.getDarkLogo();
         break;
       case LIGHT:
         logo = company.getLightLogo();
         break;
+      case NONE:
       default:
         logo = company.getLogo();
         break;
