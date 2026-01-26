@@ -442,4 +442,11 @@ public class StockMoveLineController {
       TraceBackService.trace(response, e);
     }
   }
+
+    public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
+        StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+        StockMove stockMove = getStockMove(request, stockMoveLine);
+        Beans.get(StockMoveLineService.class).qtyOnChange(stockMoveLine, stockMove);
+        response.setValue("companyPurchasePrice", stockMoveLine.getCompanyPurchasePrice());
+    }
 }
