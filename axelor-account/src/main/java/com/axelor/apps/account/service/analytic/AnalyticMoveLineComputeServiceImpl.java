@@ -20,7 +20,8 @@ package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
