@@ -781,7 +781,7 @@
 "Amount to reimburse",,,
 "Amount to report (DAS2)",,,
 "Amounts",,,
-"An account management already exists with the same information:\nBank details: %s\nPayment mode: %s\nCompany: %s",,,
+"An account management already exists with the same information:</br>Bank details: %s</br>Payment mode: %s</br>Company: %s",,,
 "An accounting moveline must have either a credit value or a debit value.",,,
 "An analytic distribution is set in move line %s but the account used do not allow analytic distribution",,,
 "An analytic distribution is set in product but the account used do not allow analytic distribution",,,

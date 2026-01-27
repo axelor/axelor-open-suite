@@ -50,7 +50,8 @@
 
   <grid name="account-management-editable-grid" title="Account management list"
     model="com.axelor.apps.account.db.AccountManagement" editable="true"
-    groupBy="company,bankDetails" onNew="action-record-account-management-new-account-management">
+    groupBy="company,bankDetails" onNew="action-record-account-management-new-account-management"
+    onSave="action-account-management-method-check-payment-mode-uniqueness">
     <field name="company"/>
     <field name="bankDetails"/>
     <field name="journal"
