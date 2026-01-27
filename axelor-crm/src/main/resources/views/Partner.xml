@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="partner-related-contact-grid" model="com.axelor.apps.base.db.Partner"
     title="Contacts">
@@ -245,14 +245,6 @@
   </form>
 
   <form id="crm-partner-supplier-form" name="partner-supplier-form" title="Supplier"
-    model="com.axelor.apps.base.db.Partner" extension="true">
-    <extend target="/">
-      <attribute name="onLoad" value="crm-action-group-partner-onload"/>
-      <attribute name="onNew" value="crm-action-group-partner-onnew"/>
-    </extend>
-  </form>
-
-  <form id="crm-partner-light-form" name="partner-light-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" extension="true">
     <extend target="/">
       <attribute name="onLoad" value="crm-action-group-partner-onload"/>
@@ -615,7 +607,8 @@
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
     <view-param name="forceEdit" value="true"/>
-    <domain>self.partner.id = :id</domain>
+    <domain>self.partner.id = :id OR (self.relatedToSelect = 'com.axelor.apps.base.db.Partner' and
+      self.relatedToSelectId = :id)</domain>
   </action-view>
 
   <action-view name="action-contact-view-all-events" title="Events"
@@ -623,7 +616,9 @@
     <view type="cards" name="event-cards"/>
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>self.contactPartner.id = :id</domain>
+    <domain>self.contactPartner.id = :id OR (self.relatedToSelect =
+      'com.axelor.apps.base.db.Partner' and
+      self.relatedToSelectId = :id)</domain>
   </action-view>
 
   <action-view name="action-partner-view-opportunities" title="Opportunities"
@@ -646,14 +641,17 @@
     model="com.axelor.apps.crm.db.Event">
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>self.partner.id = :_id</domain>
+    <domain>self.partner.id = :_id OR (self.relatedToSelect = 'com.axelor.apps.base.db.Partner' and
+      self.relatedToSelectId = :_id)</domain>
   </action-view>
 
   <action-view name="action-contact-view-events" title="Events"
     model="com.axelor.apps.crm.db.Event">
     <view type="grid" name="list-event-grid"/>
     <view type="form" name="event-form"/>
-    <domain>self.contactPartner.id = :_id</domain>
+    <domain>self.contactPartner.id = :_id OR (self.relatedToSelect =
+      'com.axelor.apps.base.db.Partner' and
+      self.relatedToSelectId = :_id)</domain>
   </action-view>
 
   <action-attrs name="action-partner-attrs-unset-integrator">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="product-grid" title="Products" model="com.axelor.apps.base.db.Product"
     orderBy="code,name" x-row-height="80">
@@ -557,7 +557,8 @@
       <panel-related field="alternativeBarcodeList" name="alternativeBarcodeListPanel"
         grid-view="alternative-barcode-grid" form-view="alternative-barcode-form"
         if="__config__.app.getApp('base')?.getActivateBarCodeGeneration() &amp;&amp; __config__.app.getApp('base')?.getEnableMultiBarcodeOnProducts()"/>
-      <panel name="safetyPanel" title="Safety">
+      <panel name="safetyPanel" title="Safety"
+        if="__config__.app.getApp('base')?.getEnableProductsSafety()">
         <field name="safetyLabel" widget="image" title="Safety label" showTitle="false"/>
         <field name="isClp"/>
         <field name="retentionTypeSelect" showIf="isClp"/>
@@ -794,7 +795,7 @@
 
   <action-attrs name="action-product-attrs-enable-product-company-list">
     <attribute name="hidden" for="productCompanyList"
-      expr="eval: __config__.app.getApp('base')?.getCompanySpecificProductFieldsSet().isEmpty()"/>
+      expr="eval: !__config__.app.getApp('base')?.showProductCompanies || __config__.app.getApp('base')?.getCompanySpecificProductFieldsSet().isEmpty()"/>
   </action-attrs>
 
   <action-group name="action-product-group-default-new">

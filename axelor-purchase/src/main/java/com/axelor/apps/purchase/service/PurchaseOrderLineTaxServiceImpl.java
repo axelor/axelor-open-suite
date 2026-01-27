@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -160,6 +160,8 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
         purchaseOrderLineVat.setReverseCharged(reverseCharged);
         purchaseOrderLineVat.setExTaxBase(
             purchaseOrderLineVat.getExTaxBase().add(purchaseOrderLine.getExTaxTotal()));
+        purchaseOrderLineVat.setInTaxTotal(
+            purchaseOrderLineVat.getInTaxTotal().add(purchaseOrderLine.getInTaxTotal()));
 
       } else {
         PurchaseOrderLineTax purchaseOrderLineTax =
@@ -178,6 +180,7 @@ public class PurchaseOrderLineTaxServiceImpl implements PurchaseOrderLineTaxServ
     purchaseOrderLineTax.setPurchaseOrder(purchaseOrder);
     purchaseOrderLineTax.setReverseCharged(reverseCharged);
     purchaseOrderLineTax.setExTaxBase(purchaseOrderLine.getExTaxTotal());
+    purchaseOrderLineTax.setInTaxTotal(purchaseOrderLine.getInTaxTotal());
     purchaseOrderLineTax.setTaxLine(taxLine);
     purchaseOrderLineTax.setTaxType(
         Optional.ofNullable(taxLine.getTax()).map(Tax::getTaxType).orElse(null));

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -473,7 +473,8 @@ public class StockMoveController {
   public void compute(ActionRequest request, ActionResponse response) {
     try {
       StockMove stockMove = request.getContext().asType(StockMove.class);
-      response.setValue("exTaxTotal", Beans.get(StockMoveToolService.class).compute(stockMove));
+      response.setValue(
+          "exTaxTotal", Beans.get(StockMoveToolService.class).computeFromContext(stockMove));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

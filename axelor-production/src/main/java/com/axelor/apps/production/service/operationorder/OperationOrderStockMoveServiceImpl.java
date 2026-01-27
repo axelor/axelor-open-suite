@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,6 +38,7 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -352,6 +353,7 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
 
     stockMoveService.cancel(stockMove);
 
+    operationOrder = JpaModelHelper.ensureManaged(operationOrder);
     // clear all lists from planned lines
     operationOrder
         .getConsumedStockMoveLineList()
@@ -359,6 +361,8 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
             stockMoveLine ->
                 stockMoveLine.getStockMove().getStatusSelect()
                     == StockMoveRepository.STATUS_CANCELED);
+
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
     stockMove.clearStockMoveLineList();
 
     // create a new list
@@ -369,11 +373,12 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
       manufOrderCreateStockMoveLineService._createStockMoveLine(
           prodProduct, stockMove, StockMoveLineService.TYPE_IN_PRODUCTIONS, qty, null, null);
       // Update consumed StockMoveLineList with created stock move lines
-      stockMove.getStockMoveLineList().stream()
-          .filter(
-              stockMoveLine1 ->
-                  !operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine1))
-          .forEach(operationOrder::addConsumedStockMoveLineListItem);
+      List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
+        if (!operationOrder.getConsumedStockMoveLineList().contains(stockMoveLine)) {
+          operationOrder.addConsumedStockMoveLineListItem(stockMoveLine);
+        }
+      }
     }
     stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);

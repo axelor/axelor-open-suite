@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <action-record model="com.axelor.apps.sale.db.SaleOrder"
     name="action.sale.chart.set.dates.this.last.year">
@@ -27,8 +27,8 @@
       AND self.saleOrder.company = :activeCompany
       AND
       self.product.productFamily.id = :id
-      AND self.saleOrder.confirmationDateTime BETWEEN
-      DATE(:fromDate) AND DATE(:toDate)
+      AND self.saleOrder.confirmationDateTime BETWEEN :fromDate
+      AND :toDate
       GROUP BY
       to_char(self.saleOrder.confirmationDateTime,'yyyy-MM')
       ORDER BY
@@ -648,8 +648,9 @@
       AND self.saleOrder.company = :activeCompany
       AND
       self.product = :product
-      AND self.saleOrder.confirmationDateTime BETWEEN DATE(:toDate) - 365 AND
-      DATE(:toDate)
+      AND self.saleOrder.confirmationDateTime BETWEEN CAST(:toDate AS DATE) -
+      365 DAY AND
+      CAST(:toDate AS DATE)
       GROUP BY
       TO_CHAR(self.saleOrder.confirmationDateTime,'yyyy-MM')
       ORDER BY _month

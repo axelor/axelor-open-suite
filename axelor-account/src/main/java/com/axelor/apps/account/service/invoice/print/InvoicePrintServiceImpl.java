@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -158,7 +158,12 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
         return reportType != null
                 && reportType == InvoiceRepository.REPORT_TYPE_INVOICE_WITH_PAYMENTS_DETAILS
             ? print(invoice, reportType, invoicePrintTemplate, locale)
-            : printAndSave(invoice, reportType, invoicePrintTemplate, locale);
+            : printAndSave(
+                invoice,
+                reportType,
+                invoicePrintTemplate,
+                locale,
+                invoicePrintTemplate.getToAttach());
       }
     } else {
       // invoice is not ventilated (or validated for advance payment invoices) --> generate and
@@ -186,7 +191,11 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
   }
 
   public File printAndSave(
-      Invoice invoice, Integer reportType, PrintingTemplate invoicePrintTemplate, String locale)
+      Invoice invoice,
+      Integer reportType,
+      PrintingTemplate invoicePrintTemplate,
+      String locale,
+      boolean toAttach)
       throws AxelorException {
     PrintingGenFactoryContext factoryContext =
         buildPrintingContext(invoice, reportType, invoicePrintTemplate, locale);
@@ -201,7 +210,7 @@ public class InvoicePrintServiceImpl implements InvoicePrintService {
           ReportSettings.FORMAT_PDF.equals(FilenameUtils.getExtension(file.getName()))
               ? getSignedPdf(metaFile)
               : metaFile;
-      if (invoicePrintTemplate.getToAttach()) {
+      if (toAttach) {
         metaFiles.attach(signedMetaFile, signedMetaFile.getFileName(), invoice);
       }
       invoice.setPrintedPDF(signedMetaFile);

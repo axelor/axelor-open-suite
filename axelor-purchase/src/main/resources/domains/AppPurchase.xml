@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -24,6 +24,9 @@
     <boolean name="manageCallForTender" title="Manage call for tender"/>
     <boolean name="allowValidatedOrderModification"
       title="Allow validated order modification"/>
+    <boolean name="isEnableCalculationEntireQuotation"
+      title="Enable calculation of the entire quotation's prices"
+      help="This configuration enables you to recalculate line prices using a quotation. The recalculation will take into account pricing, if any, then the partner's price lists."/>
 
     <track>
       <field name="managePurchaseOrderVersion" on="UPDATE"/>
@@ -36,6 +39,7 @@
       <field name="purchaseUnit" on="UPDATE"/>
       <field name="manageCallForTender" on="UPDATE"/>
       <field name="allowValidatedOrderModification" on="UPDATE"/>
+      <field name="isEnableCalculationEntireQuotation" on="UPDATE"/>
     </track>
 
   </entity>

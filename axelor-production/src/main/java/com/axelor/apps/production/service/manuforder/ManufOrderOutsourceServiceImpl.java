@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.List;
@@ -46,6 +47,7 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
   protected StockMoveService stockMoveService;
   protected AppBaseService appBaseService;
   protected ManufOrderRepository manufOrderRepository;
+  protected StockMoveRepository stockMoveRepository;
 
   @Inject
   public ManufOrderOutsourceServiceImpl(
@@ -54,12 +56,14 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
       StockMoveService stockMoveService,
       AppBaseService appBaseService,
       ManufOrderRepository manufOrderRepository,
+      StockMoveRepository stockMoveRepository,
       ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService) {
     this.prodProcessOutsourceService = prodProcessOutsourceService;
     this.manufOrderStockMoveService = manufOrderStockMoveService;
     this.stockMoveService = stockMoveService;
     this.appBaseService = appBaseService;
     this.manufOrderRepository = manufOrderRepository;
+    this.stockMoveRepository = stockMoveRepository;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
   }
 
@@ -105,6 +109,8 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
               virtualStockLocation,
               prodProductList);
       stockMoveService.plan(stockMove);
+      manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+      stockMove = JpaModelHelper.ensureManaged(stockMove);
       manufOrder.addOutsourcingStockMoveListItem(stockMove);
       manufOrderRepository.save(manufOrder);
     }
@@ -154,6 +160,6 @@ public class ManufOrderOutsourceServiceImpl implements ManufOrderOutsourceServic
           toStockLocation);
     }
 
-    return stockMove;
+    return stockMoveRepository.save(stockMove);
   }
 }

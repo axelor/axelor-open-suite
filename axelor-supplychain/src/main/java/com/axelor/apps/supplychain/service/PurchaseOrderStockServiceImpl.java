@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -274,8 +274,12 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
           purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
 
       if (qty.signum() > 0 && !existActiveStockMoveForPurchaseOrderLine(purchaseOrderLine)) {
-        this.createStockMoveLine(
-            stockMove, qualityStockMove, purchaseOrderLine, qty, startLocation, endLocation);
+        StockMoveLine stockMoveLine =
+            this.createStockMoveLine(
+                stockMove, qualityStockMove, purchaseOrderLine, qty, startLocation, endLocation);
+        if (stockMoveLine != null) {
+          stockMoveLine.getStockMove().addStockMoveLineListItem(stockMoveLine);
+        }
       }
     }
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {

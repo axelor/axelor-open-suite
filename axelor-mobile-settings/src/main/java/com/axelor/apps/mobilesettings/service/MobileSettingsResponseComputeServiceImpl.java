@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -101,6 +101,7 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsEditionOfDateAllowed(),
         appMobileSettings.getIsTimesheetProjectInvoicingEnabled(),
         appMobileSettings.getIsStockLocationManagementEnabled(),
+        appMobileSettings.getIsSimplifiedStockMoveLineDisplayEnabled(),
         appMobileSettings.getIsOneLineShortcut(),
         appMobileSettings.getMinimalRequiredMobileAppVersion(),
         getFieldsToShowOnTimesheet(appMobileSettings.getFieldsToShowOnTimesheet()),
@@ -118,6 +119,7 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsFolderCreationAllowed(),
         appMobileSettings.getIsFileCreationAllowed(),
         appMobileSettings.getIsFileDeletionAllowed(),
+        getFreightCarrierModeTrackingIds(appMobileSettings.getFreightCarrierModeTrackingIds()),
         appMobileSettings.getDefaultQiDetectionId());
   }
 
@@ -322,6 +324,17 @@ public class MobileSettingsResponseComputeServiceImpl
           ProductRepository.PRODUCT_TYPE_STORABLE, ProductRepository.PRODUCT_TYPE_SERVICE);
     }
     return Arrays.stream(productTypesToDisplay.split(",")).collect(Collectors.toList());
+  }
+
+  protected List<Long> getFreightCarrierModeTrackingIds(String freightCarrierModeTrackingIds) {
+    if (StringUtils.isEmpty(freightCarrierModeTrackingIds)) {
+      return List.of();
+    }
+    return Arrays.stream(freightCarrierModeTrackingIds.split(","))
+        .map(String::trim)
+        .filter(token -> !token.isEmpty())
+        .map(Long::valueOf)
+        .collect(Collectors.toList());
   }
 
   protected List<String> getReportingTypesToDisplay(AppMobileSettings appMobileSettings) {

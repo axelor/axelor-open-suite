@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -449,5 +449,12 @@ public class PurchaseOrderController {
         JPA.find(PurchaseOrder.class, request.getContext().asType(PurchaseOrder.class).getId());
     Beans.get(PurchaseOrderService.class).validateChanges(purchaseOrder);
     response.setReload(true);
+  }
+
+  public void updatePurchaseOrderLineList(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    Beans.get(PurchaseOrderLineService.class).updatePurchaseOrderLineList(purchaseOrder);
+    response.setValue("purchaseOrderLineList", purchaseOrder.getPurchaseOrderLineList());
   }
 }

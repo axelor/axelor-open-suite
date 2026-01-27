@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,11 +47,9 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.db.Wizard;
 import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -126,10 +124,15 @@ public class MoveLineController {
 
       MoveLineService moveLineService = Beans.get(MoveLineService.class);
 
-      moveLineService.reconcileMoveLinesWithCacheManagement(
-          moveLineService.getReconcilableMoveLines(idList));
+      int errorNumber =
+          moveLineService.reconcileMoveLinesWithCacheManagement(
+              moveLineService.getReconcilableMoveLines(idList));
 
       response.setReload(true);
+      if (errorNumber > 0) {
+        response.setInfo(I18n.get(AccountExceptionMessage.RECONCILE_MASS_ERRORS));
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -185,20 +188,10 @@ public class MoveLineController {
           totalDebit = totalDebit.setScale(scale, RoundingMode.HALF_UP);
           finalBalance = finalBalance.setScale(scale, RoundingMode.HALF_UP);
         }
+        response.setAttr("debitBtn", "title", I18n.get("Debit :") + totalDebit);
+        response.setAttr("creditBtn", "title", I18n.get("Credit :") + totalCredit);
+        response.setAttr("balanceBtn", "title", I18n.get("Balance :") + finalBalance);
 
-        response.setView(
-            ActionView.define(I18n.get("Calculation"))
-                .model(Wizard.class.getName())
-                .add("form", "account-move-line-calculation-wizard-form")
-                .param("popup", "true")
-                .param("show-toolbar", "false")
-                .param("show-confirm", "false")
-                .param("width", "500")
-                .param("popup-save", "false")
-                .context("_credit", totalCredit)
-                .context("_debit", totalDebit)
-                .context("_balance", finalBalance)
-                .map());
       } else {
         response.setAlert(I18n.get(AccountExceptionMessage.NO_MOVE_LINE_SELECTED));
       }
@@ -536,20 +529,6 @@ public class MoveLineController {
       response.setValues(
           Beans.get(MoveLineGroupService.class)
               .getCurrencyAmountRateOnChangeValuesMap(moveLine, move, dueDate));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void accountOnSelect(ActionRequest request, ActionResponse response) {
-    try {
-      MoveLine moveLine = request.getContext().asType(MoveLine.class);
-      Move move = this.getMove(request, moveLine);
-      if (move != null) {
-        response.setAttrs(
-            Beans.get(MoveLineGroupService.class)
-                .getAccountOnSelectAttrsMap(move.getJournal(), move.getCompany()));
-      }
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }

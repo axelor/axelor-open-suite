@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,6 @@
 package com.axelor.apps.production.service.operationorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.Machine;
 import com.axelor.apps.production.db.MachineTool;
@@ -39,10 +38,10 @@ import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveServ
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderUpdateStockMoveService;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
@@ -57,6 +56,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -204,6 +204,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   @Override
   public OperationOrder updateDiffProdProductList(OperationOrder operationOrder)
       throws AxelorException {
+    operationOrder = JpaModelHelper.ensureManaged(operationOrder);
     List<ProdProduct> toConsumeList = operationOrder.getToConsumeProdProductList();
     List<StockMoveLine> consumedList = operationOrder.getConsumedStockMoveLineList();
     if (toConsumeList == null || consumedList == null) {
@@ -240,38 +241,57 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   }
 
   @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
+  public StockMove getConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
       throws AxelorException {
-    this.updateDiffProdProductList(operationOrder);
     ManufOrder manufOrder = operationOrder.getManufOrder();
-    Company company = manufOrder.getCompany();
-    List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
-    StockLocation fromStockLocation =
-        manufOrderStockMoveService.getFromStockLocationForConsumedStockMove(manufOrder, company);
-    StockLocation virtualStockLocation =
-        manufOrderStockMoveService.getVirtualStockLocationForConsumedStockMove(manufOrder, company);
-    if (consumedStockMoveLineList == null) {
-      return;
-    }
     Optional<StockMove> stockMoveOpt =
         operationOrder.getInStockMoveList().stream()
             .filter(stockMove -> stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED)
             .findFirst();
-    StockMove stockMove;
+
     if (stockMoveOpt.isPresent()) {
-      stockMove = stockMoveOpt.get();
+      return stockMoveOpt.get();
     } else {
-      stockMove =
-          manufOrderPlanStockMoveService
-              .createAndPlanToConsumeStockMove(manufOrder)
-              .map(
-                  sm -> {
-                    operationOrder.addInStockMoveListItem(sm);
-                    return sm;
-                  })
-              .orElse(null);
+      return manufOrderPlanStockMoveService
+          .createAndPlanToConsumeStockMove(manufOrder)
+          .map(
+              sm -> {
+                operationOrder.addInStockMoveListItem(sm);
+                return sm;
+              })
+          .orElse(null);
     }
+  }
+
+  @Override
+  public void setConsumedStockMoveLineStockLocation(OperationOrder operationOrder)
+      throws AxelorException {
+    List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
+    if (CollectionUtils.isEmpty(consumedStockMoveLineList)) {
+      return;
+    }
+    StockMove stockMove = getConsumedStockMoveFromOperationOrder(operationOrder);
+
+    for (StockMoveLine stockMoveLine : consumedStockMoveLineList) {
+      if (stockMoveLine.getFromStockLocation() == null) {
+        stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
+      }
+      if (stockMoveLine.getToStockLocation() == null) {
+        stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
+      }
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateConsumedStockMoveFromOperationOrder(OperationOrder operationOrder)
+      throws AxelorException {
+    this.updateDiffProdProductList(operationOrder);
+    List<StockMoveLine> consumedStockMoveLineList = operationOrder.getConsumedStockMoveLineList();
+    if (CollectionUtils.isEmpty(consumedStockMoveLineList)) {
+      return;
+    }
+    StockMove stockMove = getConsumedStockMoveFromOperationOrder(operationOrder);
 
     Beans.get(ManufOrderUpdateStockMoveService.class)
         .updateStockMoveFromManufOrder(consumedStockMoveLineList, stockMove);

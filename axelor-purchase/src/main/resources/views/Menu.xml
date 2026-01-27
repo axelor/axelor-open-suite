@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
 
   <menuitem name="sc-root-purchase" title="Purchases" order="-1800"
@@ -183,5 +183,28 @@
     <view type="form" name="call-tender-form"/>
   </action-view>
 
+  <menuitem title="Pricing" name="root-purchase-pricing" parent="sc-root-purchase-conf"
+    order="1200" action="root.purchase.pricing"
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
+
+  <action-view name="root.purchase.pricing" title="Pricing"
+    model="com.axelor.apps.base.db.Pricing">
+    <view type="grid" name="pricing-grid"/>
+    <view type="form" name="pricing-form"/>
+    <domain>self.typeSelect = :_typeSelect</domain>
+    <context name="_typeSelect"
+      expr="eval: PricingRepository.PRICING_TYPE_SELECT_PURCHASE_PRICING"/>
+  </action-view>
+
+  <menuitem title="Pricing rules" name="root-purchase-conf-pricing-rule"
+    parent="sc-root-purchase-conf" order="1300" action="root.purchase.conf.pricing.rule"
+    if="__config__.app.getApp('base')?.enablePricingScale"/>
+
+  <action-view name="root.purchase.conf.pricing.rule" title="Pricing rules"
+    model="com.axelor.apps.base.db.PricingRule">
+    <view type="grid" name="pricing-rule-grid"/>
+    <view type="form" name="pricing-rule-form"/>
+    <domain>self.concernedModel.name != 'InvoiceLine'</domain>
+  </action-view>
 
 </object-views>

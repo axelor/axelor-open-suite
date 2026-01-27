@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,12 +27,17 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.utils.BatchProcessorHelper;
+import com.axelor.apps.stock.utils.JpaModelHelper;
+import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
@@ -40,6 +45,7 @@ import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,9 +79,42 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
 
   @Override
   public BigDecimal compute(StockMove stockMove) {
+    if (stockMove == null || stockMove.getId() == null) {
+      return BigDecimal.ZERO;
+    }
+
+    final BigDecimal[] runningTotal = {BigDecimal.ZERO};
+
+    Query<StockMoveLine> query =
+        stockMoveLineRepo
+            .all()
+            .filter("self.stockMove.id = :stockMoveId AND self.id > :lastSeenId")
+            .bind("stockMoveId", stockMove.getId())
+            .order("id");
+
+    BatchProcessorHelper batchHelper =
+        BatchProcessorHelper.builder().loggingEnabled(false).flushAfterBatch(false).build();
+
+    batchHelper.<StockMoveLine>forEachByQuery(
+        query,
+        stockMoveLine -> runningTotal[0] = runningTotal[0].add(computeLineAmount(stockMoveLine)));
+
+    return runningTotal[0];
+  }
+
+  protected BigDecimal computeLineAmount(StockMoveLine stockMoveLine) {
+    return stockMoveLine
+        .getRealQty()
+        .multiply(stockMoveLine.getUnitPriceUntaxed())
+        .setScale(2, RoundingMode.HALF_UP);
+  }
+
+  @Override
+  public BigDecimal computeFromContext(StockMove stockMove) {
     BigDecimal exTaxTotal = BigDecimal.ZERO;
-    if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
-      for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
+    if (ObjectUtils.notEmpty(stockMoveLineList)) {
+      for (StockMoveLine stockMoveLine : stockMoveLineList) {
         exTaxTotal =
             exTaxTotal.add(
                 stockMoveLine
@@ -167,8 +206,10 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   @Override
   public Address getFromAddress(StockMove stockMove, StockMoveLine stockMoveLine) {
     Address fromAddress = stockMove.getFromAddress();
-    if (fromAddress == null && stockMoveLine.getFromStockLocation() != null) {
-      fromAddress = stockMoveLine.getFromStockLocation().getAddress();
+    StockLocation fromStockLocation = stockMoveLine.getFromStockLocation();
+    if (fromAddress == null && fromStockLocation != null) {
+      fromStockLocation = JpaModelHelper.ensureManaged(fromStockLocation);
+      fromAddress = fromStockLocation.getAddress();
     }
     return fromAddress;
   }
@@ -176,8 +217,10 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
   @Override
   public Address getToAddress(StockMove stockMove, StockMoveLine stockMoveLine) {
     Address toAddress = stockMove.getToAddress();
-    if (toAddress == null && stockMoveLine.getToStockLocation() != null) {
-      toAddress = stockMoveLine.getToStockLocation().getAddress();
+    StockLocation toStockLocation = stockMoveLine.getToStockLocation();
+    if (toAddress == null && toStockLocation != null) {
+      toStockLocation = JpaModelHelper.ensureManaged(toStockLocation);
+      toAddress = toStockLocation.getAddress();
     }
     return toAddress;
   }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -98,6 +98,10 @@
     <boolean name="checkExistingSequenceOnGeneration"
       title="Check existing sequence on generation" default="true"/>
 
+    <integer name="sequenceIncrementTimeout" title="Sequence increment timeout (seconds)"
+      default="5" min="1" max="60"
+      help="Maximum time to wait for sequence increment in isolated transaction. Default is 5 seconds."/>
+
     <boolean name="manageMultiBanks" title="Manage multi banks"/>
 
     <boolean name="manageProductVariants" title="Manage product variants"/>
@@ -133,6 +137,9 @@
 
     <many-to-one name="productSequence" ref="com.axelor.apps.base.db.Sequence"
       title="Product sequence"/>
+
+    <boolean name="showProductCompanies" title="Show product companies" default="false"
+      help="This option allows products to be displayed by company in the product form, provided that one or more fields are selected in “Company-specific product fields.”"/>
 
     <many-to-many name="companySpecificProductFieldsSet"
       ref="com.axelor.meta.db.MetaField" title="Company-specific product fields"/>
@@ -199,6 +206,9 @@
 
     <string name="importErrorPath" title="Import error directory path"/>
 
+    <boolean name="enableProductsSafety" title="Enable products safety" default="false"
+      help="By enabling this option, a safety panel becomes accessible from the product form view, allowing you to configure the product's safety information."/>
+
     <extra-code>
 	   		<![CDATA[
 	   			public static final int DISCOUNT_SEPARATE = 1;
@@ -258,6 +268,7 @@
       <field name="passwordChangedTemplate" on="UPDATE"/>
       <field name="generatePartnerSequence" on="UPDATE"/>
       <field name="checkExistingSequenceOnGeneration" on="UPDATE"/>
+      <field name="sequenceIncrementTimeout" on="UPDATE"/>
       <field name="storeStreets" on="UPDATE"/>
       <field name="fixerApiKey" on="UPDATE"/>
       <field name="isFixerAPIPaid" on="UPDATE"/>
@@ -299,6 +310,7 @@
       <field name="contactPhoneBookPrintTemplate" on="UPDATE"/>
       <field name="productCatalogPGQLPrintTemplate" on="UPDATE"/>
       <field name="importErrorPath" on="UPDATE"/>
+      <field name="enableProductsSafety" on="UPDATE"/>
       <!-- 32 fields -->
     </track>
 

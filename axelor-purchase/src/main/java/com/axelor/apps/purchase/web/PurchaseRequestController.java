@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,8 @@
 package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -27,6 +29,7 @@ import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.apps.purchase.exception.PurchaseExceptionMessage;
 import com.axelor.apps.purchase.service.PurchaseRequestService;
 import com.axelor.apps.purchase.service.PurchaseRequestWorkflowService;
+import com.axelor.apps.purchase.service.purchase.request.PurchaseRequestToPoGenerationResult;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -35,6 +38,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.StringHelper;
 import jakarta.inject.Singleton;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,14 +46,21 @@ import java.util.stream.Collectors;
 @Singleton
 public class PurchaseRequestController {
 
+  @SuppressWarnings("unchecked")
   public void generatePo(ActionRequest request, ActionResponse response) {
-    @SuppressWarnings("unchecked")
     List<Long> requestIds = (List<Long>) request.getContext().get("_ids");
     if (requestIds != null && !requestIds.isEmpty()) {
       Boolean groupBySupplier = (Boolean) request.getContext().get("groupBySupplier");
       groupBySupplier = groupBySupplier == null ? false : groupBySupplier;
       Boolean groupByProduct = (Boolean) request.getContext().get("groupByProduct");
       groupByProduct = groupByProduct == null ? false : groupByProduct;
+      Company company = null;
+      LinkedHashMap<String, Object> companyMap =
+          (LinkedHashMap<String, Object>) request.getContext().get("company");
+      if (companyMap != null) {
+        company =
+            Beans.get(CompanyRepository.class).find(((Integer) companyMap.get("id")).longValue());
+      }
       try {
         List<PurchaseRequest> purchaseRequests =
             Beans.get(PurchaseRequestRepository.class)
@@ -68,9 +79,20 @@ public class PurchaseRequestController {
               purchaseRequestSeqs.toString());
         }
         response.setCanClose(true);
-        List<PurchaseOrder> purchaseOrderList =
-            Beans.get(PurchaseRequestService.class)
-                .generatePo(purchaseRequests, groupBySupplier, groupByProduct);
+
+        PurchaseRequestService purchaseRequestService = Beans.get(PurchaseRequestService.class);
+
+        PurchaseRequestToPoGenerationResult generationResult =
+            purchaseRequestService.generatePo(
+                purchaseRequests, groupBySupplier, groupByProduct, company);
+        if (!generationResult.hasPurchaseOrders()) {
+          if (generationResult.hasWarnings()) {
+            response.setInfo(generationResult.getWarningMessage());
+          }
+          return;
+        }
+
+        List<PurchaseOrder> purchaseOrderList = generationResult.getPurchaseOrders();
         ActionViewBuilder actionViewBuilder =
             ActionView.define(
                     String.format(
@@ -84,6 +106,9 @@ public class PurchaseRequestController {
                     String.format(
                         "self.id in (%s)", StringHelper.getIdListString(purchaseOrderList)));
         response.setView(actionViewBuilder.map());
+        if (generationResult.hasWarnings()) {
+          response.setInfo(generationResult.getWarningMessage());
+        }
       } catch (AxelorException e) {
         response.setInfo(e.getMessage());
       }

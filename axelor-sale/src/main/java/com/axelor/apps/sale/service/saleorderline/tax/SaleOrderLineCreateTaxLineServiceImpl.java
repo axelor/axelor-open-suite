@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,16 +19,22 @@
 package com.axelor.apps.sale.service.saleorderline.tax;
 
 import com.axelor.apps.account.db.Tax;
+import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.OrderLineTaxService;
+import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLineTax;
 import com.axelor.common.ObjectUtils;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,12 +53,19 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected OrderLineTaxService orderLineTaxService;
   protected CurrencyScaleService currencyScaleService;
+  protected TaxService taxService;
+  protected AppBaseService appBaseService;
 
   @Inject
   public SaleOrderLineCreateTaxLineServiceImpl(
-      OrderLineTaxService orderLineTaxService, CurrencyScaleService currencyScaleService) {
+      OrderLineTaxService orderLineTaxService,
+      CurrencyScaleService currencyScaleService,
+      TaxService taxService,
+      AppBaseService appBaseService) {
     this.orderLineTaxService = orderLineTaxService;
     this.currencyScaleService = currencyScaleService;
+    this.taxService = taxService;
+    this.appBaseService = appBaseService;
   }
 
   /**
@@ -63,10 +76,11 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
    * @param saleOrder Le devis de vente.
    * @param saleOrderLineList Les lignes du devis de vente.
    * @return La liste des lignes de taxe du devis de vente.
+   * @throws AxelorException
    */
   @Override
   public List<SaleOrderLineTax> createsSaleOrderLineTax(
-      SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) {
+      SaleOrder saleOrder, List<SaleOrderLine> saleOrderLineList) throws AxelorException {
 
     List<SaleOrderLineTax> saleOrderLineTaxList = new ArrayList<>();
     List<SaleOrderLineTax> currentSaleOrderLineTaxList = new ArrayList<>();
@@ -100,11 +114,30 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
       SaleOrderLine saleOrderLine,
       Map<TaxLine, SaleOrderLineTax> map,
       boolean customerSpecificNote,
-      Set<String> specificNotes) {
+      Set<String> specificNotes)
+      throws AxelorException {
     Set<TaxLine> taxLineSet = saleOrderLine.getTaxLineSet();
     if (CollectionUtils.isNotEmpty(taxLineSet)) {
       for (TaxLine taxLine : taxLineSet) {
-        getOrCreateLine(saleOrder, saleOrderLine, map, taxLine);
+        getOrCreateLine(saleOrder, saleOrderLine, map, taxLine, false);
+      }
+    }
+    TaxEquiv taxEquiv = saleOrderLine.getTaxEquiv();
+    // Reverse charged process
+    Set<TaxLine> taxLineRCSet =
+        (taxEquiv != null
+                && taxEquiv.getReverseCharge()
+                && ObjectUtils.notEmpty(taxEquiv.getReverseChargeTaxSet()))
+            ? taxService.getTaxLineSet(
+                taxEquiv.getReverseChargeTaxSet(),
+                appBaseService.getTodayDate(
+                    Optional.ofNullable(saleOrderLine.getSaleOrder())
+                        .map(SaleOrder::getCompany)
+                        .orElse(null)))
+            : null;
+    if (CollectionUtils.isNotEmpty(taxLineRCSet)) {
+      for (TaxLine taxLineRC : taxLineRCSet) {
+        getOrCreateLine(saleOrder, saleOrderLine, map, taxLineRC, true);
       }
     }
     orderLineTaxService.addTaxEquivSpecificNote(saleOrderLine, customerSpecificNote, specificNotes);
@@ -114,27 +147,34 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine,
       Map<TaxLine, SaleOrderLineTax> map,
-      TaxLine taxLine) {
+      TaxLine taxLine,
+      boolean reverseCharged) {
     if (taxLine != null) {
       LOG.debug("Tax {}", taxLine);
       if (map.containsKey(taxLine)) {
         SaleOrderLineTax saleOrderLineTax = map.get(taxLine);
+        saleOrderLineTax.setReverseCharged(reverseCharged);
         saleOrderLineTax.setExTaxBase(
             currencyScaleService.getScaledValue(
                 saleOrder, saleOrderLineTax.getExTaxBase().add(saleOrderLine.getExTaxTotal())));
+        saleOrderLineTax.setInTaxTotal(
+            currencyScaleService.getScaledValue(
+                saleOrder, saleOrderLineTax.getInTaxTotal().add(saleOrderLine.getInTaxTotal())));
       } else {
         SaleOrderLineTax saleOrderLineTax =
-            createSaleOrderLineTax(saleOrder, saleOrderLine, taxLine);
+            createSaleOrderLineTax(saleOrder, saleOrderLine, taxLine, reverseCharged);
         map.put(taxLine, saleOrderLineTax);
       }
     }
   }
 
   protected SaleOrderLineTax createSaleOrderLineTax(
-      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine) {
+      SaleOrder saleOrder, SaleOrderLine saleOrderLine, TaxLine taxLine, boolean reverseCharged) {
     SaleOrderLineTax saleOrderLineTax = new SaleOrderLineTax();
     saleOrderLineTax.setSaleOrder(saleOrder);
+    saleOrderLineTax.setReverseCharged(reverseCharged);
     saleOrderLineTax.setExTaxBase(saleOrderLine.getExTaxTotal());
+    saleOrderLineTax.setInTaxTotal(saleOrderLine.getInTaxTotal());
     saleOrderLineTax.setTaxLine(taxLine);
     saleOrderLineTax.setTaxType(
         Optional.ofNullable(taxLine.getTax()).map(Tax::getTaxType).orElse(null));
@@ -148,7 +188,7 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
       List<SaleOrderLineTax> currentSaleOrderLineTaxList) {
     for (SaleOrderLineTax saleOrderLineTax : map.values()) {
       // Dans la devise de la facture
-      orderLineTaxService.computeTax(saleOrderLineTax, currency);
+      computeTax(saleOrderLineTax, currency);
       SaleOrderLineTax oldSaleOrderLineTax =
           getExistingSaleOrderLineTax(saleOrderLineTax, currentSaleOrderLineTaxList);
       if (oldSaleOrderLineTax == null) {
@@ -161,6 +201,41 @@ public class SaleOrderLineCreateTaxLineServiceImpl implements SaleOrderLineCreat
         saleOrderLineTaxList.add(oldSaleOrderLineTax);
       }
     }
+  }
+
+  protected void computeTax(SaleOrderLineTax saleOrderLineTax, Currency currency) {
+    BigDecimal exTaxBase =
+        saleOrderLineTax.getReverseCharged()
+            ? saleOrderLineTax.getExTaxBase().negate()
+            : saleOrderLineTax.getExTaxBase();
+    BigDecimal taxTotal = BigDecimal.ZERO;
+    int currencyScale = currencyScaleService.getCurrencyScale(currency);
+
+    if (saleOrderLineTax.getTaxLine() != null) {
+      taxTotal =
+          exTaxBase.multiply(
+              saleOrderLineTax
+                  .getTaxLine()
+                  .getValue()
+                  .divide(
+                      new BigDecimal(100),
+                      AppBaseService.COMPUTATION_SCALING,
+                      RoundingMode.HALF_UP));
+
+      if (saleOrderLineTax.getSaleOrder() != null) {
+        BigDecimal diff =
+            taxTotal.subtract(saleOrderLineTax.getInTaxTotal().subtract(exTaxBase)).abs();
+        if (diff.compareTo(BigDecimal.ZERO) >= 0 && diff.compareTo(new BigDecimal("0.01")) <= 0) {
+          taxTotal = saleOrderLineTax.getInTaxTotal().subtract(exTaxBase);
+        }
+      }
+
+      saleOrderLineTax.setTaxTotal(currencyScaleService.getScaledValue(taxTotal, currencyScale));
+      saleOrderLineTax.setPercentageTaxTotal(saleOrderLineTax.getTaxTotal());
+    }
+    saleOrderLineTax.setInTaxTotal(
+        currencyScaleService.getScaledValue(
+            saleOrderLineTax.getExTaxBase().add(taxTotal), currencyScale));
   }
 
   @Override

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -118,11 +118,17 @@ public class SaleOrderConfirmController {
     SaleOrder saleOrder = context.asType(SaleOrder.class);
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     SaleOrderSplitService saleOrderSplitService = Beans.get(SaleOrderSplitService.class);
+    BigDecimal currentlyTotalOrdered = BigDecimal.ZERO;
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
       Map<String, Object> map = Mapper.toMap(saleOrderLine);
-      map.put("$qtyToOrder", saleOrderSplitService.getQtyToOrderLeft(saleOrderLine));
+      BigDecimal qtyToOrder = saleOrderSplitService.getQtyToOrderLeft(saleOrderLine);
+      map.put("$qtyToOrder", qtyToOrder);
+      BigDecimal price =
+          saleOrder.getInAti() ? saleOrderLine.getInTaxPrice() : saleOrderLine.getPrice();
+      currentlyTotalOrdered = currentlyTotalOrdered.add(qtyToOrder.multiply(price));
       saleOrderLineListContext.add(map);
     }
+    response.setValue("$currentlyTotalOrdered", currentlyTotalOrdered);
     response.setValue("$saleOrderLineList", saleOrderLineListContext);
   }
 

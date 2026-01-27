@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
@@ -27,7 +27,7 @@
 
   <grid name="project-task-project-grid" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask" edit-icon="true"
-    orderBy="-priority.technicalTypeSelect">
+    orderBy="levelIndicator,-priority.technicalTypeSelect">
     <toolbar>
       <button name="newLineBtn" title="New line" icon="plus-lg"
         onClick="action-project-add-task"/>
@@ -74,7 +74,8 @@
     <field name="projectTaskCategory" width="150"/>
     <field name="priority" onSelect="action-project-task-atts-priority-on-select"
       canView="false" width="150"/>
-    <field name="status" onSelect="action-project-task-method-status-on-select"
+    <field name="status" widget="Tag" x-color-field="color"
+      onSelect="action-project-task-method-status-on-select"
       hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
       onChange="action-project-task-method-auto-change-progress" width="125"/>
     <field name="createdOn" width="125"/>
@@ -105,7 +106,8 @@
     <field name="projectTaskCategory"/>
     <field name="priority" onSelect="action-project-task-atts-priority-on-select"
       canView="false"/>
-    <field name="status" onSelect="action-project-task-method-status-on-select"
+    <field name="status" widget="Tag" x-color-field="color"
+      onSelect="action-project-task-method-status-on-select"
       hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
       onChange="action-project-task-method-auto-change-progress"/>
     <field name="createdOn"/>

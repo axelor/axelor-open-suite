@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -98,8 +98,6 @@ public class QualityImprovementUpdateServiceImpl implements QualityImprovementUp
     baseQiIdentification.setSupplierPurchaseOrderLine(
         newQiIdentification.getSupplierPurchaseOrderLine());
 
-    baseQiIdentification.setManufOrder(newQiIdentification.getManufOrder());
-    baseQiIdentification.setOperationOrder(newQiIdentification.getOperationOrder());
     baseQiIdentification.setProduct(newQiIdentification.getProduct());
     baseQiIdentification.setNonConformingQuantity(newQiIdentification.getNonConformingQuantity());
   }

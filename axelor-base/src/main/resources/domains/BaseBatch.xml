@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -37,11 +37,23 @@
     <integer name="nbOfDaySinceLastUpdate" title="Number of days since last update" min="0"
       help="Only the users for which the password has not been updated since this number of days will be taken into account."/>
 
+    <!-- RESERVED SEQUENCE CLEANUP BATCH -->
+    <integer name="orphanReservationTimeoutMinutes" title="Orphan timeout (minutes)" min="1"
+      default="30"
+      help="PENDING reservations older than this timeout will be released. Default is 30 minutes."/>
+    <integer name="confirmedReservationRetentionDays" title="Retention period (days)"
+      min="1" default="30"
+      help="CONFIRMED reservations older than this period can be deleted. Default is 30 days."/>
+    <boolean name="deleteOldConfirmedReservations" title="Delete old confirmed reservations"
+      default="true"
+      help="If enabled, old CONFIRMED reservations will be deleted after the retention period."/>
+
     <extra-code>
 		<![CDATA[
 		public static final int ACTION_SYNCHRONIZE_CALENDARS = 2;
 		public static final int ACTION_PASSWORD_CHANGE = 3;
 		public static final int ACTION_COUNTRY_RECOMPUTE_ADDRESS = 4;
+		public static final int ACTION_RESERVED_SEQUENCE_CLEANUP = 5;
 
 		public static final int PASSWORD_CHANGE_ACTION_GENERATE = 1;
 		public static final int PASSWORD_CHANGE_ACTION_FORCE_UPDATE = 2;

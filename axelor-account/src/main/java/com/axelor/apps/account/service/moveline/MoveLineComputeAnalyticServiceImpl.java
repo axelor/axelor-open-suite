@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -289,12 +289,13 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
           analyticMoveLineRepository.copy(originalAnalyticMoveLine, false);
 
       if (newAmount.signum() != 0 && analyticMoveLine.getPercentage().signum() != 0) {
+        int signum = analyticMoveLine.getAmount().signum();
         BigDecimal amount =
             newAmount.multiply(
                 analyticMoveLine
                     .getPercentage()
+                    .multiply(BigDecimal.valueOf(signum))
                     .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP));
-
         analyticMoveLine.setAmount(
             currencyScaleService.getCompanyScaledValue(analyticMoveLine, amount));
       }

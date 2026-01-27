@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="stock-correction-grid" title="Stock Corrections"
     model="com.axelor.apps.stock.db.StockCorrection">
@@ -76,7 +76,7 @@
       expr="eval: &quot; self.id IN (0) AND self.dtype = 'Product'&quot;"
       if="stockLocation == null || stockLocation?.stockLocationLineList?.isEmpty()"/>
     <attribute name="domain" for="product"
-      expr="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"
+      expr="self.productTypeSelect = 'storable' AND self.dtype = 'Product' AND self.isModel = false"
       if="stockLocation != null"/>
   </action-attrs>
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -168,11 +168,10 @@ public class MoveLineFinancialDiscountServiceImpl implements MoveLineFinancialDi
   }
 
   @Override
-  public boolean isFinancialDiscountLine(MoveLine moveLine, Company company)
+  public boolean isFinancialDiscountLine(MoveLine moveLine, Company company, boolean isPurchase)
       throws AxelorException {
     Account financialDiscountAccount =
-        financialDiscountService.getFinancialDiscountAccount(
-            company, moveLine.getCredit().signum() > 0);
+        financialDiscountService.getFinancialDiscountAccount(company, isPurchase);
 
     return moveLine.getAccount().equals(financialDiscountAccount);
   }

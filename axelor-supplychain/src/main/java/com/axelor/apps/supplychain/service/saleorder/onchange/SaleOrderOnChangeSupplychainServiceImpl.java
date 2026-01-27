@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,6 +37,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeServiceImpl;
@@ -81,6 +82,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
       SaleOrderBankDetailsService saleOrderBankDetailsService,
       AppBaseService appBaseService,
       SaleOrderDateService saleOrderDateService,
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       AccountConfigService accountConfigService,
       AccountingSituationService accountingSituationService,
       PartnerStockSettingsRepository partnerStockSettingsRepository,
@@ -101,7 +103,8 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
         saleConfigService,
         saleOrderBankDetailsService,
         appBaseService,
-        saleOrderDateService);
+        saleOrderDateService,
+        saleOrderDeliveryAddressService);
     this.accountConfigService = accountConfigService;
     this.accountingSituationService = accountingSituationService;
     this.partnerStockSettingsRepository = partnerStockSettingsRepository;
@@ -121,7 +124,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     values.putAll(getCompanyBankDetails(saleOrder));
     values.putAll(getAdvancePayment(saleOrder));
     values.putAll(saleOrderIntercoService.getInterco(saleOrder));
-    values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder, false));
+    values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
     values.putAll(saleOrderStockLocationService.getToStockLocation(saleOrder));
     values.putAll(setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder));
     values.putAll(getIsIspmRequired(saleOrder));
@@ -134,7 +137,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
   @Override
   public Map<String, Object> companyOnChange(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> values = super.companyOnChange(saleOrder);
-    values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder, true));
+    values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
     values.putAll(saleOrderStockLocationService.getToStockLocation(saleOrder));
     values.putAll(getIncoterm(saleOrder));
     values.putAll(saleOrderTaxNumberService.getTaxNumber(saleOrder));

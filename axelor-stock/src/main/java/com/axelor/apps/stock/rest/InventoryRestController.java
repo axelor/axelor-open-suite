@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.rest.dto.InventoryPutRequest;
 import com.axelor.apps.stock.rest.dto.InventoryResponse;
-import com.axelor.apps.stock.service.InventoryUpdateService;
+import com.axelor.apps.stock.service.inventory.InventoryUpdateService;
 import com.axelor.apps.stock.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;

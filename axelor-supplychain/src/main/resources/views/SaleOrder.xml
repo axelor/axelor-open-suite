@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     id="supplychain-sale-order-form" extension="true">
@@ -154,6 +154,10 @@
     <action name="action-sale-order-supplychain-record-delivery-address"/>
     <action name="action-sale-order-method-address-str"/>
     <action name="action-supplychain-sale-order-delivery-partner-onchange"/>
+    <action
+      name="action-supplychain-sale-order-validate-sale-order-lines-delivery-address-on-delivered-partner-change"
+      if="saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()"/>
+    <action name="action-sale-order-method-update-sale-order-lines-delivery-address"/>
   </action-group>
 
   <action-group name="action-group-supplychain-saleorder-onload">
@@ -223,6 +227,12 @@
     name="action-supplychain-sale-order-validate-check-amount-timetable">
     <alert message="The amount to be spread over the timetable is negative."
       if="amountToBeSpreadOverTheTimetable &lt; 0"/>
+  </action-validate>
+
+  <action-validate
+    name="action-supplychain-sale-order-validate-sale-order-lines-delivery-address-on-delivered-partner-change">
+    <alert
+      message="Changing the delivery partner updates the order’s delivery address. Would you like to update all lines with this new address?"/>
   </action-validate>
 
   <!-- ACTION RECORD -->

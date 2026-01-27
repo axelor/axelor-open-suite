@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -433,10 +433,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           if (isReverse
               != (accountingCutOffTypeSelect
                   == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES)) {
-            cutOffMoveLine.setDebit(cutOffMoveLine.getDebit().add(convertedAmount));
+            cutOffMoveLine.setDebit(cutOffMoveLine.getDebit().add(convertedAmount.abs()));
             cutOffMoveLine.setCurrencyAmount(currencyAmount.abs());
           } else {
-            cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(convertedAmount));
+            cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(convertedAmount.abs()));
             currencyAmount = moveLineToolService.computeCurrencyAmountSign(currencyAmount, false);
             cutOffMoveLine.setCurrencyAmount(currencyAmount);
           }
@@ -447,7 +447,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
                   cutOffMove,
                   partner,
                   moveLineAccount,
-                  amountInCurrency,
+                  amountInCurrency.abs(),
                   isReverse
                       != (accountingCutOffTypeSelect
                           == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES),
