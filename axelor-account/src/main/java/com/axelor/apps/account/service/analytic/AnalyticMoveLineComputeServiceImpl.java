@@ -21,7 +21,6 @@ package com.axelor.apps.account.service.analytic;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import jakarta.inject.Inject;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
