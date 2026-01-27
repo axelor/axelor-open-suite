@@ -432,6 +432,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
     checkAssociatedInvoiceLine(modifiedStockMoveLines);
     StockMove newStockMove = super.splitInto2(originalStockMove, modifiedStockMoveLines);
+    if (newStockMove == null) {
+      return null;
+    }
     newStockMove.setOrigin(originalStockMove.getOrigin());
     setOrigin(originalStockMove, newStockMove);
     return newStockMove;
