@@ -1,0 +1,38 @@
+---
+title: "Production/Manuf order: fixed missing link between manuf order and production order."
+module: axelor-production
+developer: |
+  This fix requires a migration script to be executed.
+  -- migration script
+  ALTER TABLE IF EXISTS production_manuf_order_production_order_set
+  RENAME COLUMN production_manuf_order TO manuf_order_set;
+
+  ALTER TABLE IF EXISTS production_manuf_order_production_order_set
+  RENAME CONSTRAINT fk_jng56b1pw195fdms0siud0d0b TO fk_grvd0vdnd82j79shpt02d6v9a;
+
+  INSERT INTO production_manuf_order_production_order_set (production_order_set, manuf_order_set)
+  SELECT orderSet.production_production_order, orderSet.manuf_order_set
+  FROM production_production_order_manuf_order_set orderSet
+  WHERE orderSet.production_production_order IS NOT NULL
+    AND orderSet.manuf_order_set IS NOT NULL
+    AND NOT EXISTS (
+      SELECT 1
+      FROM production_manuf_order_production_order_set existingOrderSet
+      WHERE existingOrderSet.production_order_set = orderSet.production_production_order
+        AND existingOrderSet.manuf_order_set = orderSet.manuf_order_set
+    );
+
+  INSERT INTO production_manuf_order_production_order_set (production_order_set, manuf_order_set)
+  SELECT DISTINCT orderSet.production_order_set, manufOrder.manuf_order_merge_result
+  FROM production_manuf_order manufOrder
+  JOIN production_manuf_order_production_order_set orderSet
+    ON orderSet.manuf_order_set = manufOrder.id
+  WHERE manufOrder.manuf_order_merge_result IS NOT NULL
+    AND NOT EXISTS (
+      SELECT 1
+      FROM production_manuf_order_production_order_set existingOrderSet
+      WHERE existingOrderSet.production_order_set = orderSet.production_order_set
+        AND existingOrderSet.manuf_order_set = manufOrder.manuf_order_merge_result
+    );
+
+  DROP TABLE IF EXISTS production_production_order_manuf_order_set;
