@@ -91,44 +91,7 @@ import com.axelor.apps.account.service.accountingsituation.AccountingSituationRe
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationRecordServiceImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationServiceImpl;
-import com.axelor.apps.account.service.analytic.AccountConfigAnalyticService;
-import com.axelor.apps.account.service.analytic.AccountConfigAnalyticServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticAccountService;
-import com.axelor.apps.account.service.analytic.AnalyticAccountServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
-import com.axelor.apps.account.service.analytic.AnalyticAttrsServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticAxisByCompanyService;
-import com.axelor.apps.account.service.analytic.AnalyticAxisByCompanyServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticAxisFetchService;
-import com.axelor.apps.account.service.analytic.AnalyticAxisFetchServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticAxisService;
-import com.axelor.apps.account.service.analytic.AnalyticAxisServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticDistributionLineService;
-import com.axelor.apps.account.service.analytic.AnalyticDistributionLineServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateService;
-import com.axelor.apps.account.service.analytic.AnalyticDistributionTemplateServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticGroupService;
-import com.axelor.apps.account.service.analytic.AnalyticGroupServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticGroupingService;
-import com.axelor.apps.account.service.analytic.AnalyticGroupingServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticLineService;
-import com.axelor.apps.account.service.analytic.AnalyticLineServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineParentServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryPercentageService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryPercentageServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineQueryServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
-import com.axelor.apps.account.service.analytic.AnalyticMoveLineServiceImpl;
-import com.axelor.apps.account.service.analytic.AnalyticToolService;
-import com.axelor.apps.account.service.analytic.AnalyticToolServiceImpl;
-import com.axelor.apps.account.service.analytic.ImportAnalyticInMoveService;
-import com.axelor.apps.account.service.analytic.ImportAnalyticInMoveServiceImpl;
-import com.axelor.apps.account.service.analytic.TradingNameAnalyticService;
-import com.axelor.apps.account.service.analytic.TradingNameAnalyticServiceImpl;
+import com.axelor.apps.account.service.analytic.*;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.app.AppAccountServiceImpl;
 import com.axelor.apps.account.service.batch.AccountingBatchViewService;
@@ -531,6 +494,8 @@ public class AccountModule extends AxelorModule {
     bind(PartnerBaseRepository.class).to(PartnerAccountRepository.class);
 
     bind(AnalyticMoveLineService.class).to(AnalyticMoveLineServiceImpl.class);
+
+    bind(AnalyticMoveLineComputeService.class).to(AnalyticMoveLineComputeServiceImpl.class);
 
     bind(InvoicePaymentRepository.class).to(InvoicePaymentManagementRepository.class);
 
