@@ -29,7 +29,7 @@
     <view type="kanban" name="project-task-kanban"/>
     <view type="grid" name="business-project-task-grid"/>
     <view type="form" name="business-project-task-form"/>
-    <view-param name="search-filters" value="project-filters"/>
+    <view-param name="search-filters" value="project-task-filters"/>
     <domain>self.typeSelect = :_typeSelect AND self.project.isBusinessProject = true</domain>
     <context name="_typeSelect" expr="eval: __repo__(ProjectTask).TYPE_TASK"/>
   </action-view>
