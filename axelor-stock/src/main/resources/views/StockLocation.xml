@@ -168,7 +168,7 @@
         form-view="printing-template-form"/>
       <field name="$financialDataDateTime" title="Date and time" type="datetime" hidden="true"
         showIf="$printingType == 1" colSpan="3"/>
-      <spacer colSpan="3"/>
+      <field name="allLines" title="All lines" colSpan="3" type="boolean"/>
       <field name="$withoutDetailsByStockLocation" type="boolean"
         title="Without details by stock location" hidden="true" showIf="$printingType == 1"
         colSpan="3"/>

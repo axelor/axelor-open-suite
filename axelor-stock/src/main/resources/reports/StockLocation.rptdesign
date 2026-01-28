@@ -153,6 +153,19 @@
             <property name="controlType">check-box</property>
             <structure name="format"/>
         </scalar-parameter>
+        <scalar-parameter name="AllLines" id="5804">
+            <property name="valueType">static</property>
+            <property name="isRequired">false</property>
+            <property name="dataType">boolean</property>
+            <property name="distinct">true</property>
+            <simple-property-list name="defaultValue">
+                <value type="constant">False</value>
+            </simple-property-list>
+            <list-property name="selectionList"/>
+            <property name="paramType">simple</property>
+            <property name="controlType">check-box</property>
+            <structure name="format"/>
+        </scalar-parameter>
     </parameters>
     <data-sources>
         <oda-data-source extensionID="org.eclipse.birt.report.data.oda.jdbc" name="Data Source" id="209">
@@ -665,7 +678,19 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 </structure>
             </list-property>
             <list-property name="filter"/>
-            <list-property name="parameters"/>
+            <list-property name="parameters">
+                <structure>
+                    <property name="name">param_1</property>
+                    <property name="paramName">AllLines</property>
+                    <property name="nativeName"></property>
+                    <property name="dataType">boolean</property>
+                    <property name="nativeDataType">0</property>
+                    <property name="position">1</property>
+                    <property name="isOptional">false</property>
+                    <property name="isInput">true</property>
+                    <property name="isOutput">false</property>
+                </structure>
+            </list-property>
             <structure name="cachedMetaData">
                 <list-property name="resultSet">
                     <structure>
@@ -895,7 +920,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
         Location.name as location_name,
         Product.name AS product_name,
         Product.code AS product_code,
-        StockLocationLineHistory.qty,
+        COALESCE(StockLocationLineHistory.qty, 0) AS qty,
         Unit.label_to_printing as unit_code,
         StockLocationLineHistory.sale_price,
         StockLocationLineHistory.purchase_price,
@@ -913,7 +938,11 @@ FROM
         LEFT OUTER JOIN
     stock_stock_location_line as StockLocationLine ON (StockLocationLine.stock_location = Location.id)
         LEFT JOIN
-    stock_stock_location_line_history StockLocationLineHistory ON StockLocationLine.id = StockLocationLineHistory.stock_location_line
+     (SELECT DISTINCT ON (stock_location_line) stock_location_line,
+           qty, sale_price, purchase_price, cost_price, wap
+    	   FROM stock_stock_location_line_history
+    	   WHERE datet <= to_timestamp(@FinancialDataDateTime,'mm/dd/yyyy HH24:MI:SS')
+    	   ORDER BY stock_location_line, datet DESC) StockLocationLineHistory ON StockLocationLine.id = StockLocationLineHistory.stock_location_line
         LEFT JOIN
     base_product AS Product ON (Product.id = StockLocationLine.product)
         LEFT JOIN
@@ -926,11 +955,10 @@ FROM
     stock_stock_config AS StockConfig ON (StockConfig.company = Company.id)
         LEFT JOIN
     base_currency AS Currency ON (Currency.id = Company.currency)
-where StockLocationLineHistory.qty != 0 and Location.id in (@INJECTID)
-    AND StockLocationLineHistory.id = (SELECT ssllh.id FROM stock_stock_location_line_history ssllh
-                                                       WHERE ssllh.stock_location_line = StockLocationLine.id
-                                                       AND ssllh.datet <= to_timestamp(@FinancialDataDateTime,'mm/dd/yyyy HH24:MI:SS')
-                                                       order by ssllh.datet desc LIMIT 1 )
+where (
+        ? = true
+        OR StockLocationLineHistory.qty != 0
+    ) and Location.id in (@INJECTID)
 order by Product.code;]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -1413,8 +1441,8 @@ GROUP BY product.id, Unit.id, Currency.id, ProductFamily.id, StockConfig.id;]]><
     <page-setup>
         <simple-master-page name="Simple MasterPage" id="2">
             <property name="type">a4</property>
-            <property name="topMargin">0.47625cm</property>
-            <property name="leftMargin">0.3958333333333333in</property>
+            <property name="topMargin">0.4cm</property>
+            <property name="leftMargin">0.4in</property>
             <property name="rightMargin">0.396875cm</property>
             <property name="showFooterOnLast">true</property>
             <property name="headerHeight">0in</property>
@@ -2651,7 +2679,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="backgroundColor">#606062</property>
                             <property name="verticalAlign">middle</property>
                             <text id="4528">
-                                <property name="fontSize">11pt</property>
+                                <property name="fontSize">10pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="textAlign">center</property>
                                 <property name="dataSet">TranslateDS</property>
@@ -2696,7 +2724,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="backgroundColor">#606062</property>
                             <property name="verticalAlign">middle</property>
                             <text id="4536">
-                                <property name="fontSize">11pt</property>
+                                <property name="fontSize">10pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#606062</property>
@@ -2758,7 +2786,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
                             <text id="4538">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -2817,7 +2845,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
                             <text id="4539">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -2878,7 +2906,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
                             <text id="4540">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -2937,7 +2965,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
                             <text id="4541">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -2996,7 +3024,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
                             <text id="4558">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -3055,7 +3083,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
                             <text id="4640">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -3114,7 +3142,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="borderTopStyle">solid</property>
                             <property name="borderTopWidth">thin</property>
                             <text id="5390">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -3178,7 +3206,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="textAlign">right</property>
                             <property name="verticalAlign">middle</property>
                             <text id="4570">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -3226,7 +3254,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="backgroundColor">#7F7F7F</property>
                             <property name="verticalAlign">middle</property>
                             <text id="4594">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -3251,7 +3279,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="backgroundColor">#7F7F7F</property>
                             <property name="verticalAlign">middle</property>
                             <text id="4595">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -3277,7 +3305,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="textAlign">right</property>
                             <property name="verticalAlign">middle</property>
                             <text id="4643">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -3303,7 +3331,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="textAlign">right</property>
                             <property name="verticalAlign">middle</property>
                             <text id="5394">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -3355,7 +3383,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="backgroundColor">white</property>
                             <property name="verticalAlign">middle</property>
                             <data id="5218">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#000000</property>
                                 <property name="resultSetColumn">product_family</property>
@@ -3382,7 +3410,7 @@ if(params["PrintType"].value.equals('2'))
                         <cell id="5215">
                             <property name="backgroundColor">#7F7F7F</property>
                             <text id="5219">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -3406,7 +3434,7 @@ if(params["PrintType"].value.equals('2'))
                         <cell id="5216">
                             <property name="backgroundColor">#7F7F7F</property>
                             <text id="5221">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -3430,7 +3458,7 @@ if(params["PrintType"].value.equals('2'))
                         <cell id="5217">
                             <property name="backgroundColor">#7F7F7F</property>
                             <text id="5222">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -3454,7 +3482,7 @@ if(params["PrintType"].value.equals('2'))
                         <cell id="5385">
                             <property name="backgroundColor">#7F7F7F</property>
                             <text id="5393">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -3496,7 +3524,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="4560">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">#000000</property>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF>row["product_code"]</VALUE-OF>]]></text-property>
@@ -3517,7 +3545,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="4496">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">black</property>
                             <property name="display">block</property>
                             <property name="canShrink">true</property>
@@ -3563,7 +3591,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="4562">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">#000000</property>
                             <property name="marginTop">1pt</property>
                             <property name="marginLeft">0pt</property>
@@ -3611,7 +3639,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="4564">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">#000000</property>
                             <property name="marginTop">1pt</property>
                             <property name="marginRight">2pt</property>
@@ -3620,7 +3648,7 @@ if(params["PrintType"].value.equals('2'))
                             <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["qty"] * row["sale_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="4563">
-                            <property name="fontSize">7pt</property>
+                            <property name="fontSize">6pt</property>
                             <property name="fontStyle">italic</property>
                             <property name="color">#000000</property>
                             <property name="marginRight">2pt</property>
@@ -3667,7 +3695,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="4566">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">#000000</property>
                             <property name="marginTop">1pt</property>
                             <property name="marginRight">2pt</property>
@@ -3676,7 +3704,7 @@ if(params["PrintType"].value.equals('2'))
                             <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["qty"] * row["cost_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="4565">
-                            <property name="fontSize">7pt</property>
+                            <property name="fontSize">6pt</property>
                             <property name="fontStyle">italic</property>
                             <property name="color">#000000</property>
                             <property name="marginRight">2pt</property>
@@ -3723,7 +3751,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="4641">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">#000000</property>
                             <property name="marginTop">1pt</property>
                             <property name="marginRight">2pt</property>
@@ -3732,7 +3760,7 @@ if(params["PrintType"].value.equals('2'))
                             <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["qty"] * row["wap"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="4642">
-                            <property name="fontSize">7pt</property>
+                            <property name="fontSize">6pt</property>
                             <property name="fontStyle">italic</property>
                             <property name="color">#000000</property>
                             <property name="marginRight">2pt</property>
@@ -3779,7 +3807,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5391">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">#000000</property>
                             <property name="marginTop">1pt</property>
                             <property name="marginRight">2pt</property>
@@ -3788,7 +3816,7 @@ if(params["PrintType"].value.equals('2'))
                             <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["qty"] * row["purchase_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="5392">
-                            <property name="fontSize">7pt</property>
+                            <property name="fontSize">6pt</property>
                             <property name="fontStyle">italic</property>
                             <property name="color">#000000</property>
                             <property name="marginRight">2pt</property>
@@ -4126,7 +4154,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="backgroundColor">#606062</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5795">
-                            <property name="fontSize">11pt</property>
+                            <property name="fontSize">10pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
                             <property name="borderBottomColor">#606062</property>
@@ -4188,7 +4216,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="5765">
-                            <property name="fontSize">10pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
                             <property name="borderBottomColor">#7F7F7F</property>
@@ -4247,7 +4275,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="5766">
-                            <property name="fontSize">10pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
                             <property name="borderBottomColor">#7F7F7F</property>
@@ -4306,7 +4334,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="5767">
-                            <property name="fontSize">10pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
                             <property name="borderBottomColor">#7F7F7F</property>
@@ -4365,7 +4393,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="5768">
-                            <property name="fontSize">10pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
                             <property name="borderBottomColor">#7F7F7F</property>
@@ -4424,7 +4452,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="5769">
-                            <property name="fontSize">10pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
                             <property name="borderBottomColor">#7F7F7F</property>
@@ -4483,7 +4511,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="5770">
-                            <property name="fontSize">10pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
                             <property name="borderBottomColor">#7F7F7F</property>
@@ -4542,7 +4570,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
                         <text id="5771">
-                            <property name="fontSize">10pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
                             <property name="borderBottomColor">#7F7F7F</property>
@@ -4603,7 +4631,7 @@ if(params["PrintType"].value.equals('2'))
                             <property name="backgroundColor">white</property>
                             <property name="verticalAlign">middle</property>
                             <data id="5585">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#000000</property>
                                 <property name="resultSetColumn">product_family</property>
@@ -4630,7 +4658,7 @@ if(params["PrintType"].value.equals('2'))
                         <cell id="5595">
                             <property name="backgroundColor">#7F7F7F</property>
                             <text id="5596">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -4654,7 +4682,7 @@ if(params["PrintType"].value.equals('2'))
                         <cell id="5597">
                             <property name="backgroundColor">#7F7F7F</property>
                             <text id="5598">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -4678,7 +4706,7 @@ if(params["PrintType"].value.equals('2'))
                         <cell id="5599">
                             <property name="backgroundColor">#7F7F7F</property>
                             <text id="5600">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -4702,7 +4730,7 @@ if(params["PrintType"].value.equals('2'))
                         <cell id="5601">
                             <property name="backgroundColor">#7F7F7F</property>
                             <text id="5602">
-                                <property name="fontSize">10pt</property>
+                                <property name="fontSize">8pt</property>
                                 <property name="fontWeight">bold</property>
                                 <property name="color">#FFFFFF</property>
                                 <property name="borderBottomColor">#7F7F7F</property>
@@ -4744,7 +4772,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5605">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">#000000</property>
                             <property name="contentType">html</property>
                             <text-property name="content"><![CDATA[<VALUE-OF>row["product_code"]</VALUE-OF>]]></text-property>
@@ -4765,7 +4793,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5607">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">black</property>
                             <property name="display">block</property>
                             <property name="canShrink">true</property>
@@ -4811,7 +4839,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5609">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">#000000</property>
                             <property name="marginTop">1pt</property>
                             <property name="marginLeft">0pt</property>
@@ -4859,7 +4887,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5611">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">#000000</property>
                             <property name="marginTop">1pt</property>
                             <property name="marginRight">2pt</property>
@@ -4868,7 +4896,7 @@ if(params["PrintType"].value.equals('2'))
                             <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["current_qty"] * row["sale_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="5612">
-                            <property name="fontSize">7pt</property>
+                            <property name="fontSize">6pt</property>
                             <property name="fontStyle">italic</property>
                             <property name="color">#000000</property>
                             <property name="marginRight">2pt</property>
@@ -4915,7 +4943,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5614">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">#000000</property>
                             <property name="marginTop">1pt</property>
                             <property name="marginRight">2pt</property>
@@ -4924,7 +4952,7 @@ if(params["PrintType"].value.equals('2'))
                             <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["current_qty"] * row["cost_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="5615">
-                            <property name="fontSize">7pt</property>
+                            <property name="fontSize">6pt</property>
                             <property name="fontStyle">italic</property>
                             <property name="color">#000000</property>
                             <property name="marginRight">2pt</property>
@@ -4971,7 +4999,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5617">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">#000000</property>
                             <property name="marginTop">1pt</property>
                             <property name="marginRight">2pt</property>
@@ -4980,7 +5008,7 @@ if(params["PrintType"].value.equals('2'))
                             <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["current_qty"] * row["wap"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="5618">
-                            <property name="fontSize">7pt</property>
+                            <property name="fontSize">6pt</property>
                             <property name="fontStyle">italic</property>
                             <property name="color">#000000</property>
                             <property name="marginRight">2pt</property>
@@ -5027,7 +5055,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="borderTopWidth">thin</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5620">
-                            <property name="fontSize">9pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="color">#000000</property>
                             <property name="marginTop">1pt</property>
                             <property name="marginRight">2pt</property>
@@ -5036,7 +5064,7 @@ if(params["PrintType"].value.equals('2'))
                             <text-property name="content"><![CDATA[<VALUE-OF format="###,##0.00">row["current_qty"] * row["purchase_price"]</VALUE-OF> <VALUE-OF format="^">"  "</VALUE-OF> <VALUE-OF>row["currency_code"]</VALUE-OF>]]></text-property>
                         </text>
                         <text id="5621">
-                            <property name="fontSize">7pt</property>
+                            <property name="fontSize">6pt</property>
                             <property name="fontStyle">italic</property>
                             <property name="color">#000000</property>
                             <property name="marginRight">2pt</property>
@@ -5087,7 +5115,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="textAlign">right</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5780">
-                            <property name="fontSize">10pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
                             <property name="borderBottomColor">#7F7F7F</property>
@@ -5136,7 +5164,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="textAlign">right</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5781">
-                            <property name="fontSize">10pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
                             <property name="borderBottomColor">#7F7F7F</property>
@@ -5162,7 +5190,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="textAlign">right</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5782">
-                            <property name="fontSize">10pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
                             <property name="borderBottomColor">#7F7F7F</property>
@@ -5188,7 +5216,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="textAlign">right</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5783">
-                            <property name="fontSize">10pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
                             <property name="borderBottomColor">#7F7F7F</property>
@@ -5214,7 +5242,7 @@ if(params["PrintType"].value.equals('2'))
                         <property name="textAlign">right</property>
                         <property name="verticalAlign">middle</property>
                         <text id="5784">
-                            <property name="fontSize">10pt</property>
+                            <property name="fontSize">8pt</property>
                             <property name="fontWeight">bold</property>
                             <property name="color">#FFFFFF</property>
                             <property name="borderBottomColor">#7F7F7F</property>
