@@ -33,6 +33,10 @@
       ref="com.axelor.apps.base.db.SequenceVersion" mappedBy="sequence" title="Versions"/>
 
     <string name="fullName" title="Full name" namecolumn="true"/>
+    <boolean name="incrementSequenceOnConflict" title="Increment sequence on Conflict"
+      default="false"/>
+    <integer name="maxSequenceIncrementAttempts" title="Maximum sequence increment attempts"
+      min="1" max="1000"/>
 
     <unique-constraint columns="company,codeSelect,prefixe,suffixe"/>
     <index columns="codeSelect,company" name="idx_sequence_code_company"/>

@@ -241,11 +241,11 @@
         <panel name="headPanel" colSpan="12" hidden="true">
           <field name="isValidated" canView="false"/>
         </panel>
-        <field name="project" canView="false" canEdit="false"
+        <field name="project" canView="true" canEdit="false"
           onChange="action-timesheet-line-group-project-onchange"
           onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
           grid-view="project-grid"/>
-        <field name="projectTask" canView="false" canEdit="false"
+        <field name="projectTask" canView="true" canEdit="false"
           onChange="action-timesheet-line-group-project-task-on-change"
           onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form"
           grid-view="project-task-grid"/>

@@ -21,8 +21,11 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.Site;
+import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.ProjectTask;
@@ -55,10 +58,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProjectServiceImpl implements ProjectService {
 
   public static final int MAX_LEVEL_OF_PROJECT = 10;
+  public static final Logger log = LoggerFactory.getLogger(ProjectServiceImpl.class);
 
   protected ProjectRepository projectRepository;
   protected ProjectStatusRepository projectStatusRepository;
@@ -355,5 +361,66 @@ public class ProjectServiceImpl implements ProjectService {
     if (!ObjectUtils.isEmpty(taskStatusSet)) {
       project.setProjectTaskStatusSet(new HashSet<>(taskStatusSet));
     }
+  }
+
+  // MGM-97: Added to support MGM's requirement for project code editability
+
+  @Override
+  public String getNextAvailableProjectCode(Project project) {
+    String candidateCode = project != null ? project.getCode() : null;
+
+    if (project != null && !Strings.isNullOrEmpty(project.getCode())) {
+      int toBeAdded = 1;
+      int attempts = 0;
+      int maxProjectCodeIncrementAttempts = 10;
+      Company company = project.getCompany();
+
+      // If company is present, use it to get the configured increment value of a sequence.
+      if (company != null) {
+        Sequence sequence =
+            Beans.get(SequenceService.class)
+                .getSequence(SequenceRepository.PROJECT_SEQUENCE, project.getCompany());
+        if (sequence != null) {
+          toBeAdded = sequence.getToBeAdded();
+          maxProjectCodeIncrementAttempts = sequence.getMaxSequenceIncrementAttempts();
+        }
+      }
+
+      while (attempts < maxProjectCodeIncrementAttempts
+          && projectCodeExists(candidateCode, project.getId())) {
+        candidateCode = Beans.get(SequenceService.class).incrementCode(candidateCode, toBeAdded);
+        attempts++;
+        log.debug(
+            "User project code gotten from project code already exits, incrementing: {} attempts.",
+            attempts);
+      }
+
+      if (attempts >= maxProjectCodeIncrementAttempts) {
+        log.warn(
+            "Could not find an available project code for project {} after {} attempts. "
+                + "User must enter code manually.",
+            project.getCode(),
+            attempts);
+        candidateCode = null;
+      }
+    }
+
+    return candidateCode;
+  }
+
+  /** Checks if a user project code already exists */
+  public boolean projectCodeExists(String code, Long projectId) {
+    if (Strings.isNullOrEmpty(code)) {
+      return false;
+    }
+
+    long count =
+        projectRepository
+            .all()
+            .filter("self.code = :code AND (self.id != :id OR :id IS NULL)")
+            .bind("code", code)
+            .bind("id", projectId)
+            .count();
+    return count > 0;
   }
 }

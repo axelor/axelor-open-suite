@@ -96,6 +96,11 @@
       <field name="yearlyResetOk" readonlyIf="monthlyResetOk"
         onChange="action-sequence-group-yearly-reset-on-change"/>
       <field name="monthlyResetOk" onChange="action-sequence-group-monthly-reset-on-change"/>
+
+      <panel name="sequenceIncrementPanel" colSpan="12">
+        <field name="incrementSequenceOnConflict"/>
+        <field name="maxSequenceIncrementAttempts" showIf="incrementSequenceOnConflict"/>
+      </panel>
     </panel>
     <panel-related name="sequenceVersionListPanel" field="sequenceVersionList"
       grid-view="sequence-version-grid" form-view="sequence-version-form"/>

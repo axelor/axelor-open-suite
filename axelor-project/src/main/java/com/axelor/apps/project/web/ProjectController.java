@@ -42,7 +42,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import com.axelor.studio.db.AppProject;
+import com.google.common.base.Strings;
 import com.google.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -228,5 +230,48 @@ public class ProjectController {
     if (Beans.get(SprintService.class).checkSprintOverlap(project)) {
       response.setError(ProjectExceptionMessage.PROJECT_SPRINTS_OVERLAPPED);
     }
+  }
+
+  public void getNextAvailableProjectCode(ActionRequest request, ActionResponse response) {
+
+    Context context = request.getContext();
+    Project project;
+    String projectCode = (String) context.get("code");
+
+    if (Strings.isNullOrEmpty(projectCode)) {
+      return;
+    }
+
+    if (context.get("id") != null) {
+      Long projectId = Long.valueOf(context.get("id").toString());
+      project = Beans.get(ProjectRepository.class).find(projectId);
+    } else {
+      project = context.asType(Project.class);
+    }
+
+    boolean codeExists =
+        Beans.get(ProjectService.class).projectCodeExists(projectCode, project.getId());
+
+    if (!codeExists) {
+      return;
+    }
+
+    String code = Beans.get(ProjectService.class).getNextAvailableProjectCode(project);
+
+    if (code == null) {
+      response.setAlert(
+          String.format(
+              "Project code '%s' already exists and no alternative could be generated. "
+                  + "Please enter a different code manually.",
+              projectCode));
+      response.setValue("code", null);
+      return;
+    }
+
+    response.setAlert(
+        String.format(
+            "Project code '%s' already exists. Updated to available code: '%s'",
+            projectCode, code));
+    response.setValue("code", code);
   }
 }

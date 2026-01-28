@@ -59,4 +59,9 @@ public interface ProjectService {
   public ProjectStatus getDefaultProjectStatus();
 
   boolean checkIfResourceBooked(Project project);
+
+  String getNextAvailableProjectCode(Project project);
+
+  /** Checks if a user project code already exists */
+  boolean projectCodeExists(String code, Long projectId);
 }

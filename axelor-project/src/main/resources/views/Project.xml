@@ -171,10 +171,13 @@
           <panel name="seq" colSpan="3">
             <field name="code" showTitle="true" colSpan="12" placeholder="Auftragsnummer"
               if="__config__.app.getApp('project')?.generateProjectSequence"
-              css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
-            <field name="code" showTitle="true" placeholder="Auftragsnummer" colSpan="12"
-              required="true" if="!__config__.app.getApp('project')?.generateProjectSequence"
-              css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"/>
+              css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"
+              onChange="action-method-validate-code-and-get-next"/>
+            <field name="code" showTitle="true" readonlyIf="id == null" onSelect=""
+              placeholder="Auftragsnummer" colSpan="12" required="true"
+              if="!__config__.app.getApp('project')?.generateProjectSequence"
+              css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"
+              onChange="action-method-validate-code-and-get-next"/>
           </panel>
           <field name="name" showTitle="false" colSpan="6" placeholder="Bezeichnung"
             css="label-bold bold
@@ -547,6 +550,7 @@
   </action-group>
 
   <action-group name="action-project-group-on-save">
+    <action name="action-method-validate-code-and-get-next"/>
     <action name="action-set-default-project-priority"/>
     <action name="action-project-method-check-resource-availibility"/>
     <action name="action-project-method-check-sprint-overlap"/>

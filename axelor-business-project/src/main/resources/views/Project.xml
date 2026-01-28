@@ -680,6 +680,7 @@
     <action name="action-business-project-validate-task-report-exists"/>
     <action name="action-set-default-project-priority"/>
     <action name="action-project-validate-toDate"/>
+    <action name="action-method-validate-code-and-get-next"/>
   </action-group>
   <action-record name="action-set-default-project-priority"
     model="com.axelor.apps.project.db.Project">
@@ -1417,6 +1418,11 @@
     name="action-method-business-project-open-task-form-for-empty-task-list">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="openTaskFormIfEmpty"/>
+  </action-method>
+
+  <action-method name="action-method-validate-code-and-get-next">
+    <call class="com.axelor.apps.project.web.ProjectController"
+      method="getNextAvailableProjectCode"/>
   </action-method>
 
   <action-group name="action-business-project-group-finish-project">
