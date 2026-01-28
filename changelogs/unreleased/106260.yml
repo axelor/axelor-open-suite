@@ -1,0 +1,3 @@
+---
+title: "Invoice : fixed incorrect reconciliation behavior when processing credit notes for invoices with holdback."
+module: axelor-account
