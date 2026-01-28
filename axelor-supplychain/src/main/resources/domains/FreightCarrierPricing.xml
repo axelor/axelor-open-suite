@@ -5,7 +5,7 @@
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
-  <entity name="FreightCarrierPricing" persistable="false">
+  <entity name="FreightCarrierPricing">
     <string name="name" title="Name" required="true"/>
     <many-to-one name="freightCarrierMode"
       ref="com.axelor.apps.stock.db.FreightCarrierMode" required="true" title="Freight carrier mode"/>
