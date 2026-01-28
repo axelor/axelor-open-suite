@@ -103,10 +103,9 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     BigDecimal consumeManufOrderQty =
         this.getConsumeManufOrderQty(product, company, stockLocation)
             .setScale(scale, RoundingMode.HALF_UP);
-    BigDecimal availableQty =
+    BigDecimal realQty =
         (BigDecimal)
-            map.getOrDefault(
-                "$availableQty", BigDecimal.ZERO.setScale(scale, RoundingMode.HALF_UP));
+            map.getOrDefault("$realQty", BigDecimal.ZERO.setScale(scale, RoundingMode.HALF_UP));
     map.put(
         "$buildingQty",
         this.getBuildingQty(product, company, stockLocation).setScale(scale, RoundingMode.HALF_UP));
@@ -114,7 +113,7 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
     map.put(
         "$missingManufOrderQty",
         BigDecimal.ZERO
-            .max(consumeManufOrderQty.subtract(availableQty))
+            .max(consumeManufOrderQty.subtract(realQty))
             .setScale(scale, RoundingMode.HALF_UP));
     return map;
   }
@@ -178,12 +177,13 @@ public class ProductionProductStockLocationServiceImpl extends ProductStockLocat
       Unit unitConversion = product.getUnit();
       for (StockMoveLine stockMoveLine : stockMoveLineList) {
         BigDecimal productConsumeManufOrderQty = stockMoveLine.getRealQty();
-        unitConversionService.convert(
-            stockMoveLine.getUnit(),
-            unitConversion,
-            productConsumeManufOrderQty,
-            productConsumeManufOrderQty.scale(),
-            product);
+        productConsumeManufOrderQty =
+            unitConversionService.convert(
+                stockMoveLine.getUnit(),
+                unitConversion,
+                productConsumeManufOrderQty,
+                productConsumeManufOrderQty.scale(),
+                product);
         sumConsumeManufOrderQty = sumConsumeManufOrderQty.add(productConsumeManufOrderQty);
       }
     }
