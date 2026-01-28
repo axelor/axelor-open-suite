@@ -1,0 +1,3 @@
+---
+title: "Move: fix bank reconciled amount update when reversing with hidden move lines."
+module: axelor-bank-payment
