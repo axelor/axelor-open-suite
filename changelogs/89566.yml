@@ -1,0 +1,5 @@
+---
+title: "MoveValidateServiceImpl: No user retrieved when methods are called from external services"
+module: axelor-account
+developer: |
+  `UserService` has been added to the constructor of `MoveValidateServiceImpl`.
