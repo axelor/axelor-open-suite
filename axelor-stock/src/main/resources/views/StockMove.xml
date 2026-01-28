@@ -1203,9 +1203,12 @@
 
   <action-record name="action-stock-move-record-set-address-from-partner"
     model="com.axelor.apps.stock.db.StockMove">
+    <field name="fromAddress"
+      expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(partner)"
+      if="partner != null &amp;&amp; typeSelect == 3"/>
     <field name="toAddress"
       expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(partner)"
-      if="partner != null"/>
+      if="partner != null &amp;&amp; typeSelect == 2"/>
   </action-record>
 
   <action-record name="action-stock-move-record-set-pfp-status"
