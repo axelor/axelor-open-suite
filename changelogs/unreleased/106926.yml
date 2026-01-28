@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed an error occurring when updating actual quantities or partially finishing"
+module: axelor-production
