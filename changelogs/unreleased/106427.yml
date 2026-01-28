@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed the issue where updating the generated move date removes the invoice term from the invoice."
+module: axelor-account
