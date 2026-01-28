@@ -51,6 +51,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -266,9 +267,15 @@ public class MoveCreateFromInvoiceServiceImpl implements MoveCreateFromInvoiceSe
     // Recuperation of due
     List<MoveLine> debitMoveLines =
         moveDueService.getInvoiceDue(invoice, accountConfig.getAutoReconcileOnInvoice());
+    MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
 
-    if (!debitMoveLines.isEmpty()) {
-      MoveLine invoiceCustomerMoveLine = moveToolService.getCustomerMoveLineByLoop(invoice);
+    List<InvoiceTerm> invoiceTermList = invoiceCustomerMoveLine.getInvoiceTermList();
+    boolean isHoldBackMoveLine = false;
+    if (!CollectionUtils.isEmpty(invoiceTermList)) {
+      isHoldBackMoveLine = invoiceTermList.stream().anyMatch(it -> it.getIsHoldBack());
+    }
+
+    if (!debitMoveLines.isEmpty() && !isHoldBackMoveLine) {
 
       // We directly use excess if invoice and excessPayment share the same account
       if (moveToolService.isSameAccount(debitMoveLines, invoiceCustomerMoveLine.getAccount())) {
