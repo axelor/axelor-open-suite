@@ -94,7 +94,8 @@ public class StockHistoryServiceImpl implements StockHistoryService {
               .all()
               .filter(
                   "self.typeSelect != :typeSelect AND self.company.id = :company "
-                      + "AND self.stockLocationLineList.product.id = :product")
+                      + "AND self.id IN (SELECT sll.stockLocation.id FROM StockLocationLine sll "
+                      + "WHERE sll.product.id = :product)")
               .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL)
               .bind("company", companyId)
               .bind("product", productId)

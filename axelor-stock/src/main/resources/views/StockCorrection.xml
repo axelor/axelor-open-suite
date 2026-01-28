@@ -74,7 +74,7 @@
   <action-attrs name="action-stock-correction-on-select-product">
     <attribute name="domain" for="product"
       expr="eval: &quot; self.id IN (0) AND self.dtype = 'Product'&quot;"
-      if="stockLocation == null || stockLocation?.stockLocationLineList?.isEmpty()"/>
+      if="stockLocation == null || __repo__(StockLocationLine).all().filter('self.stockLocation = ?1', stockLocation).count() == 0"/>
     <attribute name="domain" for="product"
       expr="self.productTypeSelect = 'storable' AND self.dtype = 'Product' AND self.isModel = false"
       if="stockLocation != null"/>
@@ -84,7 +84,7 @@
     <attribute name="domain" for="trackingNumber"
       expr="eval: &quot; self.id IN (0) &quot;" if="stockLocation == null || product == null"/>
     <attribute name="domain" for="trackingNumber"
-      expr="eval: &quot; self IN(SELECT tn FROM StockLocation s JOIN s.detailsStockLocationLineList dsl JOIN dsl.trackingNumber tn WHERE s = :stockLocation AND dsl.product = :product) &quot;"
+      expr="eval: &quot; self IN (SELECT sll.trackingNumber FROM StockLocationLine sll WHERE sll.detailsStockLocation = :stockLocation AND sll.product = :product) &quot;"
       if="stockLocation != null &amp;&amp; product != null"/>
   </action-attrs>
 
