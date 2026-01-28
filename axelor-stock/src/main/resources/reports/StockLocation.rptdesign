@@ -902,7 +902,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
         Currency.code AS currency_code,
         ProductFamily.name as product_family,
         StockLocationLineHistory.cost_price as "cost_price",
-        StockLocationLineHistory.wap as "wap",
+        (CASE WHEN StockConfig.stock_valuation_type_select = 1 THEN Product.avg_price ELSE StockLocationLineHistory.wap END ) as "wap",
         Product.cost_type_select,
         StockConfig.is_display_sale_value_in_printing,
         StockConfig.is_display_accounting_value_in_printing,
@@ -1283,7 +1283,7 @@ order by Product.code;]]></xml-property>
     Currency.code AS currency_code,
     ProductFamily.name as product_family,
     AVG(StockLocationLineHistory.cost_price) as "cost_price",
-    AVG(StockLocationLineHistory.wap) as "wap",
+    AVG(CASE WHEN StockConfig.stock_valuation_type_select = 1 THEN Product.avg_price ELSE StockLocationLineHistory.wap END ) as "wap",
     Product.cost_type_select,
     StockConfig.is_display_sale_value_in_printing,StockConfig.is_display_accounting_value_in_printing,
     StockConfig.is_display_ag_price_in_printing,StockConfig.is_display_purchase_value_in_printing

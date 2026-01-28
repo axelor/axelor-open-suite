@@ -136,18 +136,25 @@ public class StockLocationUtilsServiceImpl implements StockLocationUtilsService 
     Query query =
         JPA.em()
             .createQuery(
-                "SELECT SUM( self.currentQty * "
+                "SELECT SUM( history.qty * "
                     + "CASE WHEN (location.company.stockConfig.stockValuationTypeSelect = 1) THEN (self.product.avgPrice) "
-                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 2) THEN "
-                    + "CASE WHEN (self.product.costTypeSelect = 3) THEN (self.avgPrice) ELSE (self.product.costPrice) END "
-                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 3) THEN (self.product.salePrice) "
-                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 4) THEN (self.product.purchasePrice) "
-                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 5) THEN (self.avgPrice) "
+                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 2) THEN (history.costPrice) "
+                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 3) THEN (history.salePrice) "
+                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 4) THEN (history.purchasePrice) "
+                    + "WHEN (location.company.stockConfig.stockValuationTypeSelect = 5) THEN (history.wap) "
                     + "ELSE (self.avgPrice) END ) AS value "
                     + "FROM StockLocationLine AS self "
+                    + "LEFT JOIN StockLocationLineHistory AS history "
+                    + "ON history.stockLocationLine = self "
                     + "LEFT JOIN StockLocation AS location "
                     + "ON location= self.stockLocation "
-                    + "WHERE self.stockLocation.id =:id");
+                    + "WHERE self.stockLocation.id =:id "
+                    + "AND history.dateT = ("
+                    + "  SELECT MAX(h2.dateT)"
+                    + "  FROM StockLocationLineHistory h2"
+                    + "  WHERE h2.stockLocationLine = self"
+                    + ")"
+                    + "AND history.qty <> 0");
     query.setParameter("id", stockLocation.getId());
 
     List<?> result = query.getResultList();
