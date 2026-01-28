@@ -583,7 +583,7 @@
   <action-validate name="action-accounting-batch-validate-batchlist-not-empty">
     <alert
       message="The batch to close the annual accounts has already ran. Are you sure you want to continue?"
-      if="eval: batchList &amp;&amp; !batchList?.empty"/>
+      if="eval: id &amp;&amp; __repo__(Batch).all().filter('self.accountingBatch.id = ?', id).count() &gt; 0"/>
   </action-validate>
 
   <action-validate name="action-accounting-batch-validate-realized-fixed-date">
@@ -635,7 +635,7 @@
 
   <action-attrs name="action-accounting-batch-attrs-show-label">
     <attribute name="hidden"
-      expr="eval: !(moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.moveDate.equals(moveDate) &amp;&amp; it.accountingCutOffTypeSelect == accountingCutOffTypeSelect} != null)"
+      expr="eval: !(id &amp;&amp; moveDate &amp;&amp; accountingCutOffTypeSelect != null &amp;&amp; __repo__(Batch).all().filter('self.accountingBatch.id = ?1 AND self.moveDate = ?2 AND self.accountingCutOffTypeSelect = ?3', id, moveDate, accountingCutOffTypeSelect).count() &gt; 0)"
       for="adviseUser"/>
   </action-attrs>
 
@@ -694,7 +694,7 @@
   <action-validate name="action-accounting-batch-validate-twice-in-a-month">
     <alert
       message="The batch has already been running for this move date. Are you sure to continue ?"
-      if="eval: moveDate &amp;&amp; batchList &amp;&amp; batchList?.find{it.moveDate.equals(moveDate) &amp;&amp; it.accountingCutOffTypeSelect == accountingCutOffTypeSelect} != null"/>
+      if="eval: id &amp;&amp; moveDate &amp;&amp; accountingCutOffTypeSelect != null &amp;&amp; __repo__(Batch).all().filter('self.accountingBatch.id = ?1 AND self.moveDate = ?2 AND self.accountingCutOffTypeSelect = ?3', id, moveDate, accountingCutOffTypeSelect).count() &gt; 0"/>
   </action-validate>
 
   <action-attrs name="action-accounting-batch-attrs-set-company-currency">
