@@ -1,0 +1,3 @@
+---
+title: "Expense: fixed false duplicate detection on tax movelines during expense ventilation with multiple dates."
+module: axelor-account
