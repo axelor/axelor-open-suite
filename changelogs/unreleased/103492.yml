@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed unit price calculation for 'Replace' price lists when quantity falls below the minimum quantity threshold."
+module: axelor-sale
