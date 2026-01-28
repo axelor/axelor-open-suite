@@ -143,7 +143,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         }
         return duration.multiply(dailyWorkHrs);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
-        return duration.divide(new BigDecimal(60), 2, RoundingMode.HALF_UP);
+        return duration.divide(
+            new BigDecimal(60), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
       default:
         return duration;
     }
@@ -158,11 +159,12 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
         }
-        return duration.divide(dailyWorkHrs, 2, RoundingMode.HALF_UP);
+        return duration.divide(
+            dailyWorkHrs, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
-        return duration.multiply(new BigDecimal(60));
+        return duration.multiply(new BigDecimal(60)).setScale(2, RoundingMode.HALF_UP);
       default:
-        return duration;
+        return duration.setScale(2, RoundingMode.HALF_UP);
     }
   }
 
