@@ -284,11 +284,13 @@ public class InvoicingProjectService {
   public void generateAnnex(InvoicingProject invoicingProject) throws AxelorException, IOException {
     PrintingTemplate invoicingProjectAnnexPrintTemplate =
         appBusinessProjectService.getAppBusinessProject().getInvoicingProjectAnnexPrintTemplate();
+
     if (invoicingProjectAnnexPrintTemplate == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
     }
+    if (!invoicingProjectAnnexPrintTemplate.getToAttach()) return;
 
     File file =
         Beans.get(PrintingTemplatePrintService.class)

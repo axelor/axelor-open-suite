@@ -22,6 +22,15 @@
         </field>
       </insert>
     </extend>
+    <!-- Remove Details panel -->
+    <extend target="//panel[@name='detailsPanel']">
+      <replace/>
+    </extend>
+
+    <!-- Remove Tags panel -->
+    <extend target="//panel[@name='tagsPanel']">
+      <replace/>
+    </extend>
   </form>
 
   <action-method name="action-dms-file-view-related">

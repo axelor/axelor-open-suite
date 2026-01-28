@@ -176,7 +176,7 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
 
     // Total without tax
     if (invoice.getExTaxTotal() != null) {
-      displayLines.add(createTotalLine(I18n.get("Total W.T"), invoice.getExTaxTotal()));
+      displayLines.add(createTotalLine(I18n.get("Total W.T."), invoice.getExTaxTotal()));
     }
 
     // VAT

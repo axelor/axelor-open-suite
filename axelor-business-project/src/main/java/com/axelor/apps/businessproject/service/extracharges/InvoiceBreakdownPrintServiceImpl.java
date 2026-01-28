@@ -3,10 +3,11 @@ package com.axelor.apps.businessproject.service.extracharges;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
+import com.axelor.apps.businessproject.db.TaskMemberReport;
+import com.axelor.apps.businessproject.db.repo.TaskMemberReportRepository;
 import com.axelor.common.StringUtils;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
@@ -24,6 +25,7 @@ import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -151,43 +153,51 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
     LocalDate invoiceDate =
         invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : LocalDate.now();
 
-    Company company = invoice.getCompany();
-
-    String companyName = company != null ? company.getName() : "";
-    String logoImg = "";
-
-    if (company != null && company.getLogo() != null) {
-      logoImg = metaFileToBase64Img(company.getLogo());
-    }
+    String performancePeriod = getPerformancePeriod(invoice);
 
     StringBuilder html = new StringBuilder();
 
-    // HEADER (logo + company only)
-    html.append("<table class='header'>");
-    html.append("<tr>");
+    html.append("<html>");
+    html.append("<head>");
+    html.append("<meta charset='UTF-8'/>");
 
-    // Logo
-    html.append("<td style='width:30%;'>");
-    if (!logoImg.isEmpty()) {
-      html.append("<img src='").append(logoImg).append("' style='max-height:60px;'/>");
-    }
-    html.append("</td>");
+    html.append("<style>");
 
-    // Company name
-    html.append("<td style='width:70%; text-align:right;'>");
-    html.append("<div class='company-name'>").append(companyName).append("</div>");
-    html.append("</td>");
+    html.append("body { font-family: Arial, sans-serif; font-size: 14px; }");
 
-    html.append("</tr>");
-    html.append("</table>");
+    html.append(".page-header { position: running(header); }");
+    html.append(
+        ".page-footer { position: running(footer); font-size: 14px; margin-bottom: 8px; text-align: end; padding-top: 6px; }");
 
-    // CENTERED TITLE
-    html.append("<div style='font-weight: bold; margin: 20px 0;'>")
+    html.append("@page {");
+    html.append("  margin: 200px 40px 50px 40px;");
+    html.append("  @top-left { content: element(header); }");
+    html.append("  @bottom-center { content: element(footer); }");
+    html.append("}");
+
+    html.append(".pageNumber::before { content: counter(page); }");
+    html.append(".totalPages::before { content: counter(pages); }");
+
+    html.append("table { width: 100%; border-collapse: collapse; margin-top: 10px; }");
+    html.append("th, td { border: 5px solid #ddd; padding: 6px; }");
+    html.append("th { background-color: #f5f5f5; }");
+
+    html.append(
+        ".page-header div:first-child { font-size: 16px; font-weight: bold; margin-bottom: 10px; }");
+    html.append(".page-header div:nth-child(2) { font-size: 18px; line-height: 1.6; }");
+
+    html.append("</style>");
+    html.append("</head>");
+    html.append("<body>");
+
+    // header
+    html.append("<div class='page-header'>");
+
+    html.append("<div style='font-size:25px; font-weight:bold; margin-bottom:6px;'>")
         .append(I18n.get("Invoice Breakdown"))
         .append("</div>");
 
-    // META INFO
-    html.append("<p>");
+    html.append("<div style='line-height:1.4;'>");
     html.append("<strong>")
         .append(I18n.get("Order Number"))
         .append(":</strong> ")
@@ -206,13 +216,79 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
     html.append("<strong>")
         .append(I18n.get("Customer cost center"))
         .append(":</strong> ")
-        .append(invoice.getPartner().getCustomerCostCenter());
-    html.append("</p>");
+        .append(invoice.getPartner().getCustomerCostCenter())
+        .append("<br/>");
+    html.append("<strong>")
+        .append(I18n.get("Performance Period"))
+        .append(":</strong> ")
+        .append(performancePeriod);
+    html.append("</div>");
 
+    html.append("</div>");
+
+    // footer
+    html.append("<div class='page-footer'>");
+    html.append(I18n.get("Page"))
+        .append(" <span class='pageNumber'></span> / <span class='totalPages'></span>");
+    html.append("</div>");
+
+    // content
     html.append(bodyHtml);
-    html.append("</body></html>");
+
+    html.append("</body>");
+    html.append("</html>");
 
     return html.toString();
+  }
+
+  /** get project performance period */
+  private String getPerformancePeriod(Invoice invoice) {
+
+    if (invoice == null || invoice.getProject() == null) {
+      return "";
+    }
+
+    List<TaskMemberReport> reports =
+        Beans.get(TaskMemberReportRepository.class)
+            .all()
+            .filter("self.taskReport.project = ?1", invoice.getProject())
+            .fetch();
+
+    if (reports.isEmpty()) {
+      return "";
+    }
+
+    LocalDate minDate = null;
+    LocalDate maxDate = null;
+
+    for (TaskMemberReport report : reports) {
+
+      if (report.getStartTime() != null) {
+        LocalDate startDate = report.getStartTime().toLocalDate();
+        if (minDate == null || startDate.isBefore(minDate)) {
+          minDate = startDate;
+        }
+      }
+
+      if (report.getEndTime() != null) {
+        LocalDate endDate = report.getEndTime().toLocalDate();
+        if (maxDate == null || endDate.isAfter(maxDate)) {
+          maxDate = endDate;
+        }
+      }
+    }
+
+    if (minDate == null || maxDate == null) {
+      return "";
+    }
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+    if (minDate.equals(maxDate)) {
+      return formatter.format(minDate);
+    }
+
+    return formatter.format(minDate) + " – " + formatter.format(maxDate);
   }
 
   private String metaFileToBase64Img(MetaFile metaFile) {
