@@ -28,7 +28,7 @@
       <field name="metaModel" form-view="meta-model-form" grid-view="meta-model-grid"/>
       <panel name="queryPanel" colSpan="12">
         <help>
-        	<![CDATA[Please set a JPQL domain (For example: self.id = 1)]]>
+        	<![CDATA[<>Please set a JPQL domain (For example: self.id = 1)</>]]>
         </help>
         <field name="queryCondition" colSpan="12"/>
         <button name="testQueryBtn" title="Test query"

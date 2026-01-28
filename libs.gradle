@@ -82,4 +82,4 @@ libs.swagger_jaxrs = dependencies.create("io.swagger.core.v3:swagger-jaxrs2-jaka
   exclude group: "com.fasterxml.jackson.dataformat", module: "jackson-dataformat-yaml"
 }
 
-libs.flyingsaucer_openpdf = 'org.xhtmlrenderer:flying-saucer-pdf-openpdf:9.2.2'
+libs.flyingsaucer_openpdf = 'org.xhtmlrenderer:flying-saucer-pdf:10.0.6'
