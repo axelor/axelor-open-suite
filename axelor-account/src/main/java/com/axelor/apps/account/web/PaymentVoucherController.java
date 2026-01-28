@@ -38,6 +38,8 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
+import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -46,6 +48,7 @@ import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
 import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
@@ -229,5 +232,21 @@ public class PaymentVoucherController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void computeSelectedTotals(ActionRequest request, ActionResponse response) {
+    PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+    BigDecimal totalSelected = BigDecimal.ZERO;
+
+    if (ObjectUtils.notEmpty(paymentVoucher.getPayVoucherDueElementList())) {
+      totalSelected =
+          paymentVoucher.getPayVoucherDueElementList().stream()
+              .filter(Model::isSelected)
+              .map(PayVoucherDueElement::getAmountRemaining)
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+    }
+
+    response.setValue("$selectedTotal", totalSelected);
   }
 }
