@@ -34,6 +34,7 @@ import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -116,7 +117,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       PartnerSupplychainService partnerSupplychainService,
       FixedAssetRepository fixedAssetRepository,
       StockMoveLineServiceSupplychain stockMoveLineServiceSupplychain,
-      PfpService pfpService) {
+      PfpService pfpService,
+      ProductCompanyService productCompanyService) {
     super(
         stockMoveLineService,
         stockMoveToolService,
@@ -127,7 +129,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         productRepository,
         partnerStockSettingsService,
         stockConfigService,
-        appStockService);
+        appStockService,
+        productCompanyService);
     this.appSupplyChainService = appSupplyChainService;
     this.appAccountService = appAccountService;
     this.purchaseOrderRepo = purchaseOrderRepo;

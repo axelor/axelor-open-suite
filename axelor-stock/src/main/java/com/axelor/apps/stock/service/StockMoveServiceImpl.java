@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.MapService;
+import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -42,6 +43,7 @@ import com.axelor.apps.stock.db.StockConfig;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
@@ -89,6 +91,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected PartnerStockSettingsService partnerStockSettingsService;
   protected StockConfigService stockConfigService;
   protected AppStockService appStockService;
+  protected ProductCompanyService productCompanyService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -101,7 +104,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       ProductRepository productRepository,
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
-      AppStockService appStockService) {
+      AppStockService appStockService,
+      ProductCompanyService productCompanyService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -112,6 +116,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.partnerStockSettingsService = partnerStockSettingsService;
     this.stockConfigService = stockConfigService;
     this.appStockService = appStockService;
+    this.productCompanyService = productCompanyService;
   }
 
   /**
@@ -733,6 +738,24 @@ public class StockMoveServiceImpl implements StockMoveService {
       if (stockMoveLine.getQty().compareTo(stockMoveLine.getRealQty()) > 0) {
         StockMoveLine newStockMoveLine = copySplittedStockMoveLine(stockMoveLine);
         newStockMove.addStockMoveLineListItem(newStockMoveLine);
+
+        Product product = newStockMoveLine.getProduct();
+        if (product != null) {
+          TrackingNumberConfiguration trackingNumberConfiguration =
+              (TrackingNumberConfiguration)
+                  productCompanyService.get(
+                      product, "trackingNumberConfiguration", newStockMove.getCompany());
+
+          newStockMoveLine.setTrackingNumber(null);
+          stockMoveLineService.assignOrGenerateTrackingNumber(
+              newStockMoveLine,
+              newStockMove,
+              product,
+              trackingNumberConfiguration,
+              newStockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+                  ? StockMoveLineService.TYPE_SALES
+                  : StockMoveLineService.TYPE_PURCHASES);
+        }
       }
     }
 
