@@ -43,8 +43,8 @@ import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -115,7 +115,7 @@ public class TimesheetProjectPlanningTimeServiceImpl
                       + "AND self.startDateTime >= ?2 "
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
-                      + "WHERE timesheetLine.projectPlanningTime != null "
+                      + "WHERE timesheetLine.projectPlanningTime IS NOT null "
                       + "AND timesheetLine.timesheet = ?3) ",
                   timesheet.getEmployee().getId(),
                   timesheet.getFromDate(),
@@ -131,7 +131,7 @@ public class TimesheetProjectPlanningTimeServiceImpl
                       + "AND self.startDateTime >= ?2 AND self.endDateTime < ?3 "
                       + "AND self.id NOT IN "
                       + "(SELECT timesheetLine.projectPlanningTime.id FROM TimesheetLine as timesheetLine "
-                      + "WHERE timesheetLine.projectPlanningTime != null "
+                      + "WHERE timesheetLine.projectPlanningTime IS NOT null "
                       + "AND timesheetLine.timesheet = ?4) ",
                   timesheet.getEmployee().getId(),
                   timesheet.getFromDate(),

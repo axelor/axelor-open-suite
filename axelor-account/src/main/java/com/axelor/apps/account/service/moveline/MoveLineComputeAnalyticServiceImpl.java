@@ -32,7 +32,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.CurrencyScaleService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -289,12 +289,13 @@ public class MoveLineComputeAnalyticServiceImpl implements MoveLineComputeAnalyt
           analyticMoveLineRepository.copy(originalAnalyticMoveLine, false);
 
       if (newAmount.signum() != 0 && analyticMoveLine.getPercentage().signum() != 0) {
+        int signum = analyticMoveLine.getAmount().signum();
         BigDecimal amount =
             newAmount.multiply(
                 analyticMoveLine
                     .getPercentage()
+                    .multiply(BigDecimal.valueOf(signum))
                     .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP));
-
         analyticMoveLine.setAmount(
             currencyScaleService.getCompanyScaledValue(analyticMoveLine, amount));
       }

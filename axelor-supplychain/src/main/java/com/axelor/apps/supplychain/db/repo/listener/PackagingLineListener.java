@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.supplychain.db.PackagingLine;
 import com.axelor.apps.supplychain.service.packaging.PackagingLineService;
 import com.axelor.inject.Beans;
-import javax.persistence.PrePersist;
-import javax.persistence.PreRemove;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreRemove;
 
 public class PackagingLineListener {
 

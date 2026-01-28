@@ -35,8 +35,13 @@ import com.axelor.db.mapper.PropertyType;
 import com.axelor.db.tenants.TenantAware;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import com.google.inject.persist.Transactional;
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.persistence.FlushModeType;
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.TypedQuery;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,11 +54,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
-import javax.annotation.PreDestroy;
 import javax.annotation.concurrent.ThreadSafe;
-import javax.persistence.FlushModeType;
-import javax.persistence.LockModeType;
-import javax.persistence.TypedQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
@@ -105,6 +106,7 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public String reserveSequenceNumber(
       Sequence sequence, LocalDate refDate, Class<?> objectClass, String fieldName, Model model)
       throws AxelorException {
@@ -426,9 +428,7 @@ public class SequenceReservationServiceImpl implements SequenceReservationServic
     TypedQuery<?> query =
         JPA.em()
             .createQuery(baseQuery + companyQuery, objectClass)
-            .setParameter("nextSeq", sequenceNumber)
-            .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-            .setFlushMode(FlushModeType.COMMIT);
+            .setParameter("nextSeq", sequenceNumber);
 
     if (!StringUtils.isEmpty(companyQuery)) {
       query.setParameter("company", sequence.getCompany());

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="invoice-term-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
@@ -39,10 +39,10 @@
   <grid name="invoice-term-pfp-grid" title="Invoice terms"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
     <toolbar>
-      <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
+      <button name="passedForPaymentValidationBtn" icon="check-circle-fill"
         title="toolbar.validatePFP" onClick="action-invoice-term-method-mass-validate-pfp"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-      <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
+      <button name="refusalToPayBtn" icon="dash-circle-fill" title="toolbar.refusePFP"
         onClick="action-invoiceterm-view-refusal-to-pay"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     </toolbar>
@@ -69,10 +69,10 @@
   <grid name="invoice-term-move-line-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false" canDelete="false">
     <toolbar>
-      <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
+      <button name="passedForPaymentValidationBtn" icon="check-circle-fill"
         title="toolbar.validatePFP" onClick="action-invoice-term-method-mass-validate-pfp"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-      <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
+      <button name="refusalToPayBtn" icon="dash-circle-fill" title="toolbar.refusePFP"
         onClick="action-invoiceterm-view-refusal-to-pay"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     </toolbar>
@@ -109,10 +109,10 @@
   <grid name="invoice-term-invoice-payment-grid" title="Invoice terms" orderBy="sequence"
     model="com.axelor.apps.account.db.InvoiceTerm" canNew="false">
     <toolbar>
-      <button name="passedForPaymentValidationBtn" icon="fa-check-circle"
+      <button name="passedForPaymentValidationBtn" icon="check-circle-fill"
         title="toolbar.validatePFP" onClick="action-invoice-term-method-mass-validate-pfp"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
-      <button name="refusalToPayBtn" icon="fa-minus-circle" title="toolbar.refusePFP"
+      <button name="refusalToPayBtn" icon="dash-circle-fill" title="toolbar.refusePFP"
         onClick="action-invoiceterm-view-refusal-to-pay"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"/>
     </toolbar>
@@ -183,16 +183,16 @@
     <hilite color="primary" if="isSelectedOnPaymentSession"/>
     <hilite color="warning" if="financialDiscount &amp;&amp; !isSelectedOnPaymentSession"/>
     <button name="selectBtn" title="Select"
-      onClick="action-invoice-term-method-select-terms-btn,save" icon="fa-plus-circle"
+      onClick="action-invoice-term-method-select-terms-btn,save" icon="plus-circle-fill"
       readonlyIf="isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="unselectBtn" title="Unselect"
-      onClick="action-invoice-term-method-unselect-terms-btn,save" icon="fa-minus-circle"
+      onClick="action-invoice-term-method-unselect-terms-btn,save" icon="dash-circle-fill"
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="selectPartnerBtn" title="Select all terms of this Partner"
-      icon="fa-user-plus" onClick="action-invoice-term-method-select-partner-terms-btn"
+      icon="person-plus-fill" onClick="action-invoice-term-method-select-partner-terms-btn"
       readonlyIf="isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <button name="unselectPartnerBtn" title="Unselect all terms of this Partner"
-      icon="fa-user-times" onClick="action-invoice-term-method-unselect-partner-terms-btn"
+      icon="person-x-fill" onClick="action-invoice-term-method-unselect-partner-terms-btn"
       readonlyIf="!isSelectedOnPaymentSession || $statusSelectPaymentSession &gt; 1"/>
     <field name="paymentSession.name" hidden="true"/>
     <field name="$statusSelectPaymentSession" hidden="true"/>
@@ -297,7 +297,7 @@
         readonlyIf="isPaid || paymentSession || pfpValidateStatusSelect > 1">
         <field name="pfpValidatorUser" colSpan="12" canEdit="false"
           onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
-          onChange="action-invoice-term-method-check-pfp-validator-user"/>
+          onChange="action-invoice-term-group-pfp-validator-user-onchange"/>
       </panel>
       <panel name="actionPanel" itemSpan="12" colSpan="12"
         readonlyIf="isPaid || paymentSession"
@@ -471,7 +471,7 @@
         readonlyIf="isPaid || paymentSession || pfpValidateStatusSelect > 1" hidden="true">
         <field name="pfpValidatorUser" colSpan="12" canEdit="false"
           onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
-          onChange="action-invoice-term-method-check-pfp-validator-user"/>
+          onChange="action-invoice-term-group-pfp-validator-user-onchange"/>
       </panel>
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
@@ -654,7 +654,7 @@
         showIf="pfpValidateStatusSelect > 0 &amp;&amp; [1,2,3,5].includes(moveLine.move.statusSelect) &amp;&amp; (invoice == null || !(invoice.originDate == null &amp;&amp; $contains([1,2], invoice.operationTypeSelect) &amp;&amp; (invoice.statusSelect &lt;= 2 || invoice.operationSubTypeSelect == 2)))">
         <field name="pfpValidatorUser" colSpan="12" canEdit="false"
           onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
-          onChange="action-invoice-term-method-check-pfp-validator-user"/>
+          onChange="action-invoice-term-group-pfp-validator-user-onchange"/>
       </panel>
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
@@ -820,7 +820,7 @@
         readonlyIf="isPaid || paymentSession || pfpValidateStatusSelect > 1">
         <field name="pfpValidatorUser" colSpan="12" canEdit="false"
           onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
-          onChange="action-invoice-term-method-check-pfp-validator-user"/>
+          onChange="action-invoice-term-group-pfp-validator-user-onchange"/>
       </panel>
       <panel name="actionPanel" itemSpan="12" colSpan="12"
         readonlyIf="isPaid || paymentSession"
@@ -951,6 +951,15 @@
     <action name="action-invoice-term-method-set-due-date"/>
   </action-group>
 
+  <action-group name="action-invoice-term-group-pfp-validator-user-onchange">
+    <action name="action-invoice-term-method-check-pfp-validator-user"/>
+    <action name="action-invoice-term-method-sync-pfp-validator-to-invoice"/>
+  </action-group>
+
+  <action-method name="action-invoice-term-method-sync-pfp-validator-to-invoice">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="syncPfpValidatorToInvoice"/>
+  </action-method>
 
   <action-record name="action-invoice-term-record-update-customized-true"
     model="com.axelor.apps.account.db.InvoiceTerm">

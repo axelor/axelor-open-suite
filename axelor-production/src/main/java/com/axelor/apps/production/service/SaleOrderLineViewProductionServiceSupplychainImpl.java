@@ -27,7 +27,7 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineViewServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorderline.view.SaleOrderLineViewSupplychainService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class SaleOrderLineViewProductionServiceSupplychainImpl

@@ -33,9 +33,9 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.TypedQuery;
 import java.util.List;
-import javax.persistence.TypedQuery;
 
 public class BatchOutgoingStockMoveInvoicing extends BatchStrategy {
 

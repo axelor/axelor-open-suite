@@ -53,6 +53,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
 import com.axelor.apps.stock.service.StockMoveToolService;
@@ -71,8 +72,8 @@ import com.axelor.message.db.Template;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -118,6 +119,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       StockConfigService stockConfigService,
       AppStockService appStockService,
       ProductCompanyService productCompanyService,
+      StockLocationService stockLocationService,
       AppSupplychainService appSupplyChainService,
       AppAccountService appAccountService,
       PurchaseOrderRepository purchaseOrderRepo,
@@ -141,7 +143,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         partnerStockSettingsService,
         stockConfigService,
         appStockService,
-        productCompanyService);
+        productCompanyService,
+        stockLocationService);
     this.appSupplyChainService = appSupplyChainService;
     this.appAccountService = appAccountService;
     this.purchaseOrderRepo = purchaseOrderRepo;
@@ -277,7 +280,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void cancel(StockMove stockMove) throws AxelorException {
 
     cancelStockMove(stockMove);
-    StockConfig stockConfig = stockConfigService.getStockConfig(stockMove.getCompany());
+    Company company = JpaModelHelper.ensureManaged(stockMove.getCompany());
+    StockConfig stockConfig = stockConfigService.getStockConfig(company);
     Boolean supplierArrivalCancellationAutomaticMail =
         stockConfig.getSupplierArrivalCancellationAutomaticMail();
     if (!supplierArrivalCancellationAutomaticMail
@@ -442,8 +446,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
       throws AxelorException {
     StockMoveLine newStockMoveLine = super.copySplittedStockMoveLine(stockMoveLine);
 
-    if (appSupplyChainService.isApp("supplychain")
-        && appSupplyChainService.getAppSupplychain().getManageStockReservation()) {
+    AppSupplychain appSupplychain = appSupplyChainService.getAppSupplychain();
+    if (appSupplyChainService.isApp("supplychain") && appSupplychain.getManageStockReservation()) {
       BigDecimal requestedReservedQty =
           stockMoveLine
               .getRequestedReservedQty()
@@ -457,6 +461,13 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
           stockMoveLine, stockMoveLine.getReservedQty());
       stockMoveLine.setReservedQty(BigDecimal.ZERO);
     }
+    StockMove stockMove = stockMoveLine.getStockMove();
+    if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+            && appSupplychain.getAutoFillDeliveryRealQty())
+        || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+            && appSupplychain.getAutoFillReceiptRealQty())) {
+      newStockMoveLine.setRealQty(newStockMoveLine.getQty());
+    }
     return newStockMoveLine;
   }
 
@@ -468,6 +479,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
     checkAssociatedInvoiceLine(modifiedStockMoveLines);
     StockMove newStockMove = super.splitInto2(originalStockMove, modifiedStockMoveLines);
+    if (newStockMove == null) {
+      return null;
+    }
     newStockMove.setOrigin(originalStockMove.getOrigin());
     setOrigin(originalStockMove, newStockMove);
     return newStockMove;
@@ -737,6 +751,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void fillRealQuantities(StockMove stockMove) {
     Objects.requireNonNull(stockMove);
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
@@ -746,6 +761,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         sml.setTotalNetMass(sml.getQty().multiply(sml.getNetMass()));
       }
     }
+    stockMove = stockMoveRepo.save(stockMove);
+    BigDecimal exTaxTotal = stockMoveToolService.compute(stockMove);
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
+    stockMove.setExTaxTotal(exTaxTotal);
+    stockMoveRepo.save(stockMove);
   }
 
   @Override

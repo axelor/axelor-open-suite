@@ -64,6 +64,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -74,8 +75,8 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -580,6 +581,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.createToConsumeProdProductList(manufOrder);
     this.createToProduceProdProductList(manufOrder);
     updateRealQty(manufOrder, manufOrder.getQty());
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     LocalDateTime plannedStartDateT = manufOrder.getPlannedStartDateT();
     manufOrderPlanService.updatePlannedDates(
         manufOrder,
@@ -613,6 +615,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
   @Override
   public ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException {
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     List<ProdProduct> toConsumeList = manufOrder.getToConsumeProdProductList();
     List<StockMoveLine> consumedList = manufOrder.getConsumedStockMoveLineList();
     if (toConsumeList == null || consumedList == null) {
@@ -1269,6 +1272,17 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       Product product = billOfMaterialLine.getProduct();
       BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
       BigDecimal qtyNeeded = billOfMaterialLine.getQty();
+      Unit bomLineUnit = billOfMaterialLine.getUnit();
+      Unit productUnit = product.getUnit();
+      if (productUnit != null && bomLineUnit != null && !bomLineUnit.equals(productUnit)) {
+        availableQty =
+            unitConversionService.convert(
+                productUnit,
+                bomLineUnit,
+                availableQty,
+                appBaseService.getNbDecimalDigitForQty(),
+                product);
+      }
       if (availableQty.compareTo(BigDecimal.ZERO) >= 0
           && qtyNeeded.compareTo(BigDecimal.ZERO) > 0) {
         BigDecimal qtyToUse = availableQty.divideToIntegralValue(qtyNeeded);

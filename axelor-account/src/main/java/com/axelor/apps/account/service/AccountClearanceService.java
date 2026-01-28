@@ -54,8 +54,8 @@ import com.axelor.apps.base.service.user.UserService;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -132,7 +132,7 @@ public class AccountClearanceService {
         moveLineRepo
             .all()
             .filter(
-                "self.move.company = ?1 AND self.account.useForPartnerBalance = 'true' "
+                "self.move.company = ?1 AND self.account.useForPartnerBalance = true "
                     + "AND (self.move.statusSelect = ?2 OR self.move.statusSelect = ?3) "
                     + "AND self.amountRemaining != 0 AND abs(self.amountRemaining) <= ?4 AND self.credit > 0 AND self.account in ?5 AND self.date <= ?6",
                 company,

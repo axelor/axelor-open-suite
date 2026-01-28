@@ -27,7 +27,7 @@ import com.axelor.apps.quality.db.QIActionDistribution;
 import com.axelor.apps.quality.db.QIAnalysis;
 import com.axelor.apps.quality.db.QITask;
 import com.axelor.apps.quality.service.config.QualityConfigService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashSet;
 import java.util.List;
 

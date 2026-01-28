@@ -46,7 +46,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
@@ -187,7 +187,7 @@ public class BankOrderFile00100102Service extends BankOrderFileService {
       }
 
       if (!Strings.isNullOrEmpty(ustrd)) {
-        rmtInf.getUstrd().add(ustrd);
+        rmtInf.getUstrd().add(ustrd.substring(0, Math.min(140, ustrd.length() - 1)));
       }
 
       //			StructuredRemittanceInformation6 strd = factory.createStructuredRemittanceInformation6();

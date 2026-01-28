@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.helpdesk.db.Ticket;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class TicketSequenceServiceImpl implements TicketSequenceService {
 

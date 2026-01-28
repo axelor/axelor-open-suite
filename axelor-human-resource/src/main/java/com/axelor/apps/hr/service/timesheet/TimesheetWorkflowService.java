@@ -22,50 +22,48 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.message.db.Message;
 import java.io.IOException;
-import wslite.json.JSONException;
 
 public interface TimesheetWorkflowService {
 
   void confirm(Timesheet timesheet) throws AxelorException;
 
   Message sendConfirmationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   Message confirmAndSendConfirmationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   void validate(Timesheet timesheet) throws AxelorException;
 
   Message sendValidationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   Message validateAndSendValidationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   void refuse(Timesheet timesheet) throws AxelorException;
 
   void refuseAndSendRefusalEmail(Timesheet timesheet, String groundForRefusal)
-      throws AxelorException, JSONException, IOException, ClassNotFoundException;
+      throws AxelorException, IOException, ClassNotFoundException;
 
   Message sendRefusalEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   Message refuseAndSendRefusalEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   void cancel(Timesheet timesheet) throws AxelorException;
 
   void draft(Timesheet timesheet);
 
   Message sendCancellationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
   Message cancelAndSendCancellationEmail(Timesheet timesheet)
-      throws AxelorException, ClassNotFoundException, IOException, JSONException;
+      throws AxelorException, ClassNotFoundException, IOException;
 
-  Message complete(Timesheet timesheet)
-      throws AxelorException, JSONException, IOException, ClassNotFoundException;
+  Message complete(Timesheet timesheet) throws AxelorException, IOException, ClassNotFoundException;
 
   void completeOrConfirm(Timesheet timesheet)
-      throws AxelorException, JSONException, IOException, ClassNotFoundException;
+      throws AxelorException, IOException, ClassNotFoundException;
 }

@@ -30,15 +30,15 @@ import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
+import jakarta.persistence.Tuple;
+import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.Query;
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
 
 public class StockLocationUtilsServiceImpl implements StockLocationUtilsService {
 
@@ -146,7 +146,7 @@ public class StockLocationUtilsServiceImpl implements StockLocationUtilsService 
                     + "ELSE (self.avgPrice) END ) AS value "
                     + "FROM StockLocationLine AS self "
                     + "LEFT JOIN StockLocation AS location "
-                    + "ON location.id= self.stockLocation "
+                    + "ON location= self.stockLocation "
                     + "WHERE self.stockLocation.id =:id");
     query.setParameter("id", stockLocation.getId());
 

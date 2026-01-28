@@ -1,0 +1,9 @@
+---
+title: "App base: added demo data for 'Sequence increment timeout'."
+module: axelor-base
+developer: |
+   ``` sql  
+   
+   UPDATE studio_app_base SET sequence_increment_timeout = 5 WHERE COALESCE(sequence_increment_timeout, 0) < 1;
+
+   ```

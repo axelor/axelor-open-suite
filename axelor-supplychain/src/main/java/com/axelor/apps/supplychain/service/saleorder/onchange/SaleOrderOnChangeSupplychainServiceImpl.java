@@ -37,6 +37,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeServiceImpl;
@@ -50,7 +51,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationServi
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderTaxNumberService;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -81,6 +82,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
       SaleOrderBankDetailsService saleOrderBankDetailsService,
       AppBaseService appBaseService,
       SaleOrderDateService saleOrderDateService,
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       AccountConfigService accountConfigService,
       AccountingSituationService accountingSituationService,
       PartnerStockSettingsRepository partnerStockSettingsRepository,
@@ -101,7 +103,8 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
         saleConfigService,
         saleOrderBankDetailsService,
         appBaseService,
-        saleOrderDateService);
+        saleOrderDateService,
+        saleOrderDeliveryAddressService);
     this.accountConfigService = accountConfigService;
     this.accountingSituationService = accountingSituationService;
     this.partnerStockSettingsRepository = partnerStockSettingsRepository;

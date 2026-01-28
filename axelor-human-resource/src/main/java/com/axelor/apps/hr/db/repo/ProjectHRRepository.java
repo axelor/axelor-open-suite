@@ -26,7 +26,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectManagementRepository;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class ProjectHRRepository extends ProjectManagementRepository {

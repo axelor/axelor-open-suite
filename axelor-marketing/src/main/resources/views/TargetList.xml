@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="target-list-grid" title="Target lists"
     model="com.axelor.apps.marketing.db.TargetList">
@@ -46,7 +46,7 @@
                 onSelect="action-target-list-attrs-partner-filters-target-meta-field-domain"
                 onChange="action-filter-method-update-target-meta-field"/>
               <button name="clearSelection" colSpan="4" title="Clear Selection"
-                icon="fa-arrow-left" showIf="metaField.relationship != null"
+                icon="arrow-left" showIf="metaField.relationship != null"
                 onClick="action-filter-method-clear-selection"/>
               <field name="targetField" hidden="true"
                 requiredIf="metaField.relationship != null"
@@ -76,7 +76,8 @@
           onClick="save,action-target-list-method-open-filtered-partners"/>
         <spacer name="btnSpacer"/>
         <panel-related name="partnerSetPanel" field="partnerSet" colSpan="12"
-          onSelect="action-target-list-lead-partner-set-domain"/>
+          onSelect="action-target-list-lead-partner-set-domain" grid-view="partner-grid"
+          form-view="partner-form"/>
       </panel>
       <panel name="leadsPanel" title="Leads">
         <field name="leadQueryTypeSelect"/>
@@ -97,7 +98,7 @@
                 onSelect="action-target-list-attrs-partner-filters-target-meta-field-domain"
                 onChange="action-filter-method-update-target-meta-field"/>
               <button name="clearSelection" colSpan="4" title="Clear Selection"
-                icon="fa-arrow-left" showIf="metaField.relationship != null"
+                icon="arrow-left" showIf="metaField.relationship != null"
                 onClick="action-filter-method-clear-selection"/>
               <field name="targetField" hidden="true"
                 requiredIf="metaField.relationship != null"

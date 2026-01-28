@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.meta.db.MetaModule;
 import com.axelor.meta.db.repo.MetaModuleRepository;
 import com.axelor.studio.db.AppMobileSettings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ImportAppMobileSetting {

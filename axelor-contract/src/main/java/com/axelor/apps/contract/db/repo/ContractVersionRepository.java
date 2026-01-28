@@ -22,7 +22,7 @@ import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.utils.helpers.ModelHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class ContractVersionRepository extends AbstractContractVersionRepository {

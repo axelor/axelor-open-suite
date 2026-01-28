@@ -24,7 +24,7 @@ import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.service.cartline.CartLinePriceService;
 import com.axelor.apps.sale.service.cartline.CartLineProductServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class CartLineProductSupplychainServiceImpl extends CartLineProductServiceImpl {

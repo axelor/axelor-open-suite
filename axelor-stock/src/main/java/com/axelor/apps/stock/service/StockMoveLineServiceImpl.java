@@ -58,9 +58,9 @@ import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppStock;
 import com.axelor.utils.ThrowConsumer;
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -1339,7 +1339,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             (BigDecimal)
                 productCompanyService.get(
                     stockMoveLine.getProduct(), "purchasePrice", stockMove.getCompany());
-        ;
         unitPriceUntaxed = companyPurchasePrice.multiply(shippingCoef);
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
           && stockMoveLine.getFromStockLocation() != null
@@ -1358,6 +1357,33 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
     stockMoveLine.setUnitPriceTaxed(unitPriceUntaxed);
     stockMoveLine.setCompanyUnitPriceUntaxed(unitPriceUntaxed);
+    return stockMoveLine;
+  }
+
+  @Override
+  public StockMoveLine qtyOnChange(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException {
+    BigDecimal companyPurchasePrice = BigDecimal.ZERO;
+    if (stockMoveLine.getProduct() != null && stockMove != null) {
+      if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && stockMove.getIsReversion())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && !stockMove.getIsReversion())) {
+        BigDecimal wapPrice =
+            computeFromStockLocation(stockMoveLine, stockMoveLine.getToStockLocation());
+        stockMoveLine.setWapPrice(wapPrice);
+      } else if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && stockMove.getIsReversion())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && !stockMove.getIsReversion())) {
+        // supplier return or supplier delivery
+        companyPurchasePrice =
+            (BigDecimal)
+                productCompanyService.get(
+                    stockMoveLine.getProduct(), "purchasePrice", stockMove.getCompany());
+      }
+    }
+    stockMoveLine.setCompanyPurchasePrice(companyPurchasePrice);
     return stockMoveLine;
   }
 
@@ -1685,7 +1711,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (stockMoveLine.getFilterOnAvailableProducts()
         && stockMoveLine.getFromStockLocation() != null
         && stockMoveLine.getFromStockLocation().getTypeSelect() != 3) {
-      return " AND self.id in (select sll.product.id from StockLocation sl inner join sl.stockLocationLineList sll WHERE sl.id = "
+      return " AND self.id in (select sll.product.id from StockLocationLine sll WHERE sll.stockLocation.id = "
           + stockMoveLine.getFromStockLocation().getId()
           + " AND sll.currentQty > 0)";
     }

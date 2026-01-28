@@ -29,7 +29,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermFilterServiceImpl;
 import com.axelor.apps.bankpayment.db.BankOrderLineOrigin;
 import com.axelor.apps.bankpayment.db.repo.BankOrderLineOriginRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Collection;
 import org.apache.commons.collections.CollectionUtils;
 

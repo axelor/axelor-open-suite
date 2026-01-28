@@ -34,7 +34,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 

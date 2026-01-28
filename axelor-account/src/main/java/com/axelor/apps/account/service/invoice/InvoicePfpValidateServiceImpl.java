@@ -24,8 +24,8 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class InvoicePfpValidateServiceImpl implements InvoicePfpValidateService {
 

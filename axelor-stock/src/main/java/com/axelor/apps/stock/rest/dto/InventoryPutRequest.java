@@ -22,9 +22,9 @@ import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.auth.db.User;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 public class InventoryPutRequest extends RequestStructure {
 

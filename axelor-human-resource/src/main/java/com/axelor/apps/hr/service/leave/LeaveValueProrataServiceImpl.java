@@ -24,7 +24,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.utils.helpers.date.LocalDateHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;

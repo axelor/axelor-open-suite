@@ -26,7 +26,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
-import javax.annotation.Priority;
+import jakarta.annotation.Priority;
 
 public class SaleOrderObserver {
 

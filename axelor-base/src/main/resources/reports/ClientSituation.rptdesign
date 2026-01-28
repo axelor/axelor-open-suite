@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -88,22 +88,6 @@
             <property name="valueType">static</property>
             <property name="dataType">string</property>
             <property name="distinct">true</property>
-            <list-property name="selectionList"/>
-            <property name="paramType">simple</property>
-            <property name="controlType">text-box</property>
-            <structure name="format">
-                <property name="category">Unformatted</property>
-            </structure>
-        </scalar-parameter>
-        <scalar-parameter name="PartnerPic" id="4484">
-            <property name="hidden">true</property>
-            <property name="valueType">static</property>
-            <property name="isRequired">false</property>
-            <property name="dataType">string</property>
-            <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant"></value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="controlType">text-box</property>
@@ -279,10 +263,10 @@
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
+                    <property name="columnName">logo_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <text-property name="heading">logo_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
@@ -414,8 +398,8 @@
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -519,9 +503,10 @@
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
@@ -632,7 +617,7 @@
                     <property name="dataType">string</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select Partner.id, MetaFile.file_path as logo_path, Company.height as logo_height, Company.width as logo_width, Partner.title_select , Partner.partner_type_select, Partner.first_name as partner_first_name,
+            <xml-property name="queryText"><![CDATA[select Partner.id, MetaFile.id as logo_id, Company.height as logo_height, Company.width as logo_width, Partner.title_select , Partner.partner_type_select, Partner.first_name as partner_first_name,
 Partner.name as partner_name, Partner.partner_seq, InvoicingAddress.full_name as invoicing_full_name,
 Partner.fixed_phone, Partner.mobile_phone, EmailAddress.address as email_address, Partner.web_site, 
 AuthUser.name as internal_user_name, Team.name as team_name,
@@ -907,6 +892,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <text-property name="displayName">partner_partner_type_select</text-property>
                     <text-property name="heading">partner_partner_type_select</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">partner_pic_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">partner_pic_id</text-property>
+                    <text-property name="heading">partner_pic_id</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -976,6 +967,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                         <property name="position">11</property>
                         <property name="name">partner_partner_type_select</property>
                         <property name="dataType">integer</property>
+                    </structure>
+                    <structure>
+                        <property name="position">12</property>
+                        <property name="name">partner_pic_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1058,12 +1054,19 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <property name="dataType">integer</property>
                     <property name="nativeDataType">4</property>
                 </structure>
+                <structure>
+                    <property name="position">12</property>
+                    <property name="name">partner_pic_id</property>
+                    <property name="nativeName">partner_pic_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
+                </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[SELECT 
 	ContactPartner.id, ContactPartner.title_select, ContactPartner.name, ContactPartner.first_name, 
 	ContactPartner.fixed_phone, ContactPartner.partner_type_select AS partner_type_select, ContactPartner.mobile_phone, 
 	JobTitleFunction.name as "Job Title",  EmailAddress.address, DeliveryAddress.full_name AS delivery_address,
-	Partner.partner_type_select AS partner_partner_type_select
+	Partner.partner_type_select AS partner_partner_type_select, MetaFile.id as "partner_pic_id"
 FROM 
 	base_partner AS Partner
 LEFT JOIN 	
@@ -1078,6 +1081,7 @@ LEFT JOIN
 	base_address AS DeliveryAddress ON (PartnerAddress.address = DeliveryAddress.id)
 LEFT JOIN
 	base_function AS JobTitleFunction ON (ContactPartner.job_title_function = JobTitleFunction.id)
+LEFT JOIN meta_file as MetaFile on (MetaFile.id = Partner.picture)
 WHERE Partner.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
@@ -2594,12 +2598,6 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">title_select</property>
                     <text-property name="displayName">title_select</text-property>
                     <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
@@ -2703,6 +2701,12 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <column id="3343">
                 <property name="width">4.0216666666666665cm</property>
@@ -2772,13 +2776,18 @@ $func$ LANGUAGE plpgsql;]]></xml-property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row["logo_id"] == null</expression>
                             </structure>
                         </list-property>
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
                         <method name="onRender"><![CDATA[this.width=row["logo_width"];
 this.height=row["logo_height"];]]></method>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                        <property name="source">expr</property>
                     </image>
                 </cell>
                 <cell id="4096">
@@ -2984,14 +2993,28 @@ row["partner_first_name"]
                         <property name="borderTopWidth">thin</property>
                         <property name="height">120px</property>
                         <property name="width">120px</property>
+                        <property name="dataSet">ClientPartnerDS</property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">!params["PartnerPic"].value</expression>
+                                <expression name="valueExpr" type="javascript">row["partner_pic_id"] == null</expression>
                             </structure>
                         </list-property>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["PartnerPic"].value</expression>
+                        <list-property name="boundDataColumns">
+                            <structure>
+                                <property name="name">partner_pic_id</property>
+                                <text-property name="displayName">partner_pic_id</text-property>
+                                <expression name="expression" type="javascript">dataSetRow["partner_pic_id"]</expression>
+                                <property name="dataType">decimal</property>
+                            </structure>
+                        </list-property>
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["partner_pic_id"], true);
+
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                        <property name="source">expr</property>
                     </image>
                 </cell>
                 <cell id="4092">
@@ -7745,12 +7768,6 @@ default:
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">title_select</property>
                     <text-property name="displayName">title_select</text-property>
                     <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
@@ -7984,12 +8001,6 @@ default:
                                 <property name="dataType">decimal</property>
                             </structure>
                             <structure>
-                                <property name="name">logo_path</property>
-                                <text-property name="displayName">logo_path</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                <property name="dataType">string</property>
-                            </structure>
-                            <structure>
                                 <property name="name">title_select</property>
                                 <text-property name="displayName">title_select</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["title_select"]</expression>
@@ -8140,12 +8151,6 @@ default:
                                 <text-property name="displayName">id</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["id"]</expression>
                                 <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">logo_path</property>
-                                <text-property name="displayName">logo_path</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                <property name="dataType">string</property>
                             </structure>
                             <structure>
                                 <property name="name">title_select</property>
@@ -8301,12 +8306,6 @@ default:
                                 <text-property name="displayName">id</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["id"]</expression>
                                 <property name="dataType">decimal</property>
-                            </structure>
-                            <structure>
-                                <property name="name">logo_path</property>
-                                <text-property name="displayName">logo_path</text-property>
-                                <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                                <property name="dataType">string</property>
                             </structure>
                             <structure>
                                 <property name="name">title_select</property>

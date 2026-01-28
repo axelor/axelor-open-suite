@@ -19,8 +19,8 @@
 package com.axelor.apps.quality.service;
 
 import com.axelor.apps.quality.db.RequiredDocument;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class RequiredDocumentFileOnChangeServiceImpl
     implements RequiredDocumentFileOnChangeService {

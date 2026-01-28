@@ -20,8 +20,8 @@ package com.axelor.apps.quality.service;
 
 import com.axelor.apps.quality.db.ControlEntry;
 import com.axelor.apps.quality.db.repo.ControlEntryRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Objects;
 import java.util.stream.IntStream;
 

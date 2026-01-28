@@ -23,8 +23,8 @@ import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.repo.BankRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ImportBank {

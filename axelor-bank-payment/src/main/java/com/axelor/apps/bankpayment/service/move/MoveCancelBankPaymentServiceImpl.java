@@ -27,8 +27,8 @@ import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class MoveCancelBankPaymentServiceImpl implements MoveCancelBankPaymentService {
   protected AppBaseService appBaseService;

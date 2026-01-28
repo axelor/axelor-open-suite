@@ -22,7 +22,7 @@ import com.axelor.apps.quality.db.QIAnalysisMethod;
 import com.axelor.apps.quality.db.QIDetection;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 public class QualityImprovementPostRequest extends RequestPostStructure
     implements QualityImprovementRequest {

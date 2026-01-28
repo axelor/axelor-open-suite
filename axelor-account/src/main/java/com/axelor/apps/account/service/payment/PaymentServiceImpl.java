@@ -41,11 +41,13 @@ import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -55,7 +57,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.persistence.Query;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,14 +120,17 @@ public class PaymentServiceImpl implements PaymentService {
    * @param creditMoveLines
    */
   @Override
-  public void useExcessPaymentOnMoveLinesDontThrow(
+  public int useExcessPaymentOnMoveLinesDontThrow(
       List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines) {
+    int errorNumber = 0;
     try {
-      useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
+      errorNumber = useExcessPaymentOnMoveLines(debitMoveLines, creditMoveLines, true);
     } catch (Exception e) {
       TraceBackService.trace(e);
       log.debug(e.getMessage());
     }
+
+    return errorNumber;
   }
 
   /**
@@ -138,56 +142,61 @@ public class PaymentServiceImpl implements PaymentService {
    * @param dontThrow
    * @throws AxelorException
    */
-  protected void useExcessPaymentOnMoveLines(
+  protected int useExcessPaymentOnMoveLines(
       List<MoveLine> debitMoveLines, List<MoveLine> creditMoveLines, boolean dontThrow)
       throws AxelorException {
+    int errorNumber = 0;
 
-    if (debitMoveLines != null && creditMoveLines != null) {
+    if (ObjectUtils.isEmpty(debitMoveLines) || ObjectUtils.isEmpty(creditMoveLines)) {
+      return errorNumber;
+    }
+
+    log.debug(
+        "Overpayment usage (debit move lines : {}, credit move lines : {})",
+        new Object[] {debitMoveLines.size(), creditMoveLines.size()});
+
+    BigDecimal debitTotalRemaining = BigDecimal.ZERO;
+    BigDecimal creditTotalRemaining = BigDecimal.ZERO;
+    for (MoveLine creditMoveLine : creditMoveLines) {
+
+      log.debug("Overpayment usage : credit move line : {})", creditMoveLine);
 
       log.debug(
-          "Overpayment usage (debit move lines : {}, credit move lines : {})",
-          new Object[] {debitMoveLines.size(), creditMoveLines.size()});
+          "Overpayment usage : credit move line (remaining to pay): {})",
+          creditMoveLine.getAmountRemaining().abs());
+      creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining().abs());
+    }
+    for (MoveLine debitMoveLine : debitMoveLines) {
 
-      BigDecimal debitTotalRemaining = BigDecimal.ZERO;
-      BigDecimal creditTotalRemaining = BigDecimal.ZERO;
-      for (MoveLine creditMoveLine : creditMoveLines) {
+      log.debug("Overpayment usage : debit move line : {})", debitMoveLine);
 
-        log.debug("Overpayment usage : credit move line : {})", creditMoveLine);
+      log.debug(
+          "Overpayment usage : debit move line (remaining to pay): {})",
+          debitMoveLine.getAmountRemaining());
+      debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
+    }
 
-        log.debug(
-            "Overpayment usage : credit move line (remaining to pay): {})",
-            creditMoveLine.getAmountRemaining().abs());
-        creditTotalRemaining = creditTotalRemaining.add(creditMoveLine.getAmountRemaining().abs());
-      }
+    for (MoveLine creditMoveLine : creditMoveLines) {
       for (MoveLine debitMoveLine : debitMoveLines) {
-
-        log.debug("Overpayment usage : debit move line : {})", debitMoveLine);
-
-        log.debug(
-            "Overpayment usage : debit move line (remaining to pay): {})",
-            debitMoveLine.getAmountRemaining());
-        debitTotalRemaining = debitTotalRemaining.add(debitMoveLine.getAmountRemaining());
-      }
-
-      for (MoveLine creditMoveLine : creditMoveLines) {
-        for (MoveLine debitMoveLine : debitMoveLines) {
-          if (creditMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
-              && debitMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
-            try {
-              createReconcile(
-                  debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
-            } catch (Exception e) {
-              if (dontThrow) {
-                TraceBackService.trace(e);
-                log.debug(e.getMessage());
-              } else {
-                throw e;
-              }
+        if (creditMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0
+            && debitMoveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
+          try {
+            createReconcile(
+                debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
+          } catch (Exception e) {
+            if (dontThrow) {
+              TraceBackService.trace(e);
+              log.debug(e.getMessage());
+              errorNumber++;
+            } else {
+              throw e;
             }
           }
         }
       }
     }
+
+    return errorNumber;
   }
 
   /**

@@ -24,7 +24,7 @@ import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryRecor
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryService;
 import com.axelor.apps.base.db.Company;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class MassEntryServiceImpl implements MassEntryService {

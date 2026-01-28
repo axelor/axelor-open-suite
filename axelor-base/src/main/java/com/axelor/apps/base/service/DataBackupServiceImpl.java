@@ -22,18 +22,20 @@ import com.axelor.apps.base.db.DataBackup;
 import com.axelor.apps.base.db.repo.DataBackupRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuditableRunner;
+import com.axelor.concurrent.ContextAware;
 import com.axelor.db.JPA;
-import com.axelor.db.tenants.TenantAware;
+import com.axelor.db.tenants.TenantResolver;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaJsonField;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaModelRepository;
-import com.google.inject.Inject;
+import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoper;
 import com.google.inject.servlet.ServletScopes;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -48,6 +50,8 @@ import org.slf4j.LoggerFactory;
 public class DataBackupServiceImpl implements DataBackupService {
 
   public static final String CONFIG_FILE_NAME = "config.xml";
+
+  protected static final char SEPARATOR = ',';
 
   @Inject private DataBackupCreateService createService;
 
@@ -67,8 +71,12 @@ public class DataBackupServiceImpl implements DataBackupService {
     if (dataBackup.getUpdateImportId()) {
       updateImportId(dataBackup.getIsExportApp());
     }
+    String currentTenantId = TenantResolver.currentTenantIdentifier();
     executor.submit(
-        new TenantAware(
+        ContextAware.of()
+            .withTransaction(false)
+            .withTenantId(currentTenantId)
+            .build(
                 () -> {
                   RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
                   try (RequestScoper.CloseableScope ignored = scope.open()) {
@@ -76,8 +84,7 @@ public class DataBackupServiceImpl implements DataBackupService {
                   } catch (Exception e) {
                     TraceBackService.trace(e);
                   }
-                })
-            .withTransaction(false));
+                }));
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -114,16 +121,20 @@ public class DataBackupServiceImpl implements DataBackupService {
   public void restoreBackUp(DataBackup dataBackup) {
     setStatus(dataBackup);
 
+    String currentTenantId = TenantResolver.currentTenantIdentifier();
     executor.submit(
-        new TenantAware(
+        ContextAware.of()
+            .withTransaction(false)
+            .withTenantId(currentTenantId)
+            .build(
                 () -> {
-                  try {
+                  RequestScoper scope = ServletScopes.scopeRequest(Collections.emptyMap());
+                  try (RequestScoper.CloseableScope ignored = scope.open()) {
                     startRestore(dataBackup);
                   } catch (Exception e) {
                     TraceBackService.trace(e);
                   }
-                })
-            .withTransaction(false));
+                }));
   }
 
   protected void startRestore(DataBackup dataBackup) throws Exception {
@@ -134,8 +145,10 @@ public class DataBackupServiceImpl implements DataBackupService {
           public Boolean call() throws Exception {
             Logger LOG = LoggerFactory.getLogger(getClass());
             DataBackup obj = dataBackupRepository.find(dataBackup.getId());
+            char separator = getSeparator(obj.getFieldSeparatorSelect());
             File logFile =
-                restoreService.restore(obj.getBackupMetaFile(), obj.getIsTemplateWithDescription());
+                restoreService.restore(
+                    obj.getBackupMetaFile(), obj.getIsTemplateWithDescription(), separator);
             save(logFile, obj);
             LOG.info("Data Restore Saved");
             return true;
@@ -197,11 +210,22 @@ public class DataBackupServiceImpl implements DataBackupService {
                 + metaModel.getName()
                 + " self SET self.importId = CONCAT(CAST(self.id as text),"
                 + currentDateTimeStr
-                + ") WHERE self.importId=null";
+                + ") WHERE self.importId IS null";
         JPA.execute(query);
       } catch (ClassNotFoundException e) {
         TraceBackService.trace(e);
       }
     }
+  }
+
+  @Override
+  public char getSeparator(String separator) {
+    if (Strings.isNullOrEmpty(separator)) {
+      return SEPARATOR;
+    }
+    if ("\\t".equals(separator)) {
+      return '\t';
+    }
+    return separator.charAt(0);
   }
 }

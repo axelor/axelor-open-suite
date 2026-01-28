@@ -22,8 +22,8 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
+import jakarta.validation.constraints.Min;
 import java.util.Objects;
-import javax.validation.constraints.Min;
 
 public class StockProductGetRequest extends RequestStructure {
 

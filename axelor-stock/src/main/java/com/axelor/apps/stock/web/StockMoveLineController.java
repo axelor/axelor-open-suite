@@ -46,7 +46,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -453,5 +453,12 @@ public class StockMoveLineController {
 
     response.setValue("fromStockLocation", stockMoveLine.getFromStockLocation());
     response.setValue("toStockLocation", stockMoveLine.getToStockLocation());
+  }
+
+  public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    Beans.get(StockMoveLineService.class).qtyOnChange(stockMoveLine, stockMove);
+    response.setValue("companyPurchasePrice", stockMoveLine.getCompanyPurchasePrice());
   }
 }

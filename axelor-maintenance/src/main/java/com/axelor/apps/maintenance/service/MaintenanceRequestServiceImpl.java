@@ -21,8 +21,8 @@ package com.axelor.apps.maintenance.service;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.maintenance.db.MaintenanceRequest;
 import com.axelor.apps.maintenance.db.repo.MaintenanceRequestRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class MaintenanceRequestServiceImpl implements MaintenanceRequestService {
 

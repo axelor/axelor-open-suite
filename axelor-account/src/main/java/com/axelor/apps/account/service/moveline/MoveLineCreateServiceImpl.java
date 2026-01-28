@@ -64,8 +64,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -494,7 +494,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
     for (MoveLine moveLine : moveLines) {
-      moveLineRecordService.refreshAccountInformation(moveLine, move);
+      moveLineRecordService.refreshVatSystemSelect(moveLine, move.getCompany());
     }
 
     // Creation of tax move lines for each invoice line tax
@@ -749,10 +749,24 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
 
+    int vatSystem = AccountRepository.VAT_SYSTEM_DEFAULT;
+    try {
+      vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
+    } catch (AxelorException e) {
+      if (moveLine.getVatSystemSelect() == null
+          || moveLine.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
+        TraceBackService.trace(e);
+      }
+    }
+
+    if (vatSystem == AccountRepository.VAT_SYSTEM_DEFAULT) {
+      vatSystem = moveLine.getVatSystemSelect();
+    }
+
     if (newAccount == null) {
       newAccount =
           this.getTaxAccount(
-              taxLine, company, accountType, move.getJournal(), partner, moveLine, move);
+              taxLine, company, accountType, move.getJournal(), partner, moveLine, move, vatSystem);
     }
 
     if (newAccount == null) {
@@ -772,20 +786,6 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
             taxLine.getName(),
             company.getName());
       }
-    }
-
-    int vatSystem = AccountRepository.VAT_SYSTEM_DEFAULT;
-    try {
-      vatSystem = moveLineTaxService.getVatSystem(move, moveLine);
-    } catch (AxelorException e) {
-      if (moveLine.getVatSystemSelect() == null
-          && moveLine.getVatSystemSelect() == AccountRepository.VAT_SYSTEM_DEFAULT) {
-        TraceBackService.trace(e);
-      }
-    }
-
-    if (vatSystem == AccountRepository.VAT_SYSTEM_DEFAULT) {
-      vatSystem = moveLine.getVatSystemSelect();
     }
 
     String newSourceTaxLineKey = newAccount.getCode() + taxLine.getId() + " " + vatSystem;
@@ -947,7 +947,8 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
               move.getJournal(),
               move.getPartner(),
               moveLine,
-              move);
+              move,
+              vatSystem);
       if (newAccountRC != null) {
         newSourceTaxLineRCKey = newAccountRC.getCode() + taxLineRC.getId() + " " + vatSystem;
       }
@@ -1029,65 +1030,77 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       Journal journal,
       Partner partner,
       MoveLine moveLine,
-      Move move)
+      Move move,
+      Integer vatSystemSelect)
       throws AxelorException {
     Account newAccount = null;
 
+    int vatSystemSelectValue =
+        this.getVatSystemSelectValue(vatSystemSelect, company, accountType, partner, moveLine);
+
     if (accountType.equals(AccountTypeRepository.TYPE_DEBT)
         || accountType.equals(AccountTypeRepository.TYPE_CHARGE)) {
-      AccountingSituation accountingSituation =
-          accountingSituationRepository.findByCompanyAndPartner(company, partner);
-
-      int vatSystemSelect = this.getVatSystemSelect(accountingSituation, moveLine);
-
       newAccount =
           taxAccountService.getAccount(
               taxLine.getTax(),
               company,
               journal,
               moveLine.getAccount(),
-              vatSystemSelect,
+              vatSystemSelectValue,
               false,
               move.getFunctionalOriginSelect());
 
     } else if (accountType.equals(AccountTypeRepository.TYPE_INCOME)) {
-      AccountingSituation accountingSituation =
-          accountingSituationRepository.findByCompanyAndPartner(company, company.getPartner());
-
-      int vatSystemSelect = this.getVatSystemSelect(accountingSituation, moveLine);
       newAccount =
           taxAccountService.getAccount(
               taxLine.getTax(),
               company,
               journal,
               moveLine.getAccount(),
-              vatSystemSelect,
+              vatSystemSelectValue,
               false,
               move.getFunctionalOriginSelect());
     } else if (accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION)) {
-
-      AccountingSituation accountingSituation =
-          accountingSituationRepository.findByCompanyAndPartner(company, partner);
-      if (accountingSituation == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_MISSING_ACCOUNTING_SITUATION),
-            partner.getFullName(),
-            company.getCode());
-      }
-      int vatSystemSelect = this.getVatSystemSelect(accountingSituation, moveLine);
-
       newAccount =
           taxAccountService.getAccount(
               taxLine.getTax(),
               company,
               journal,
               moveLine.getAccount(),
-              vatSystemSelect,
+              vatSystemSelectValue,
               true,
               move.getFunctionalOriginSelect());
     }
     return newAccount;
+  }
+
+  protected int getVatSystemSelectValue(
+      Integer vatSystemSelect,
+      Company company,
+      String accountType,
+      Partner partner,
+      MoveLine moveLine)
+      throws AxelorException {
+    if (vatSystemSelect != null && vatSystemSelect != AccountRepository.VAT_SYSTEM_DEFAULT) {
+      return vatSystemSelect;
+    }
+
+    Partner partnerForSituation =
+        accountType.equals(AccountTypeRepository.TYPE_INCOME) ? company.getPartner() : partner;
+
+    AccountingSituation accountingSituation =
+        accountingSituationRepository.findByCompanyAndPartner(company, partnerForSituation);
+
+    if (accountType.equals(AccountTypeRepository.TYPE_IMMOBILISATION)
+        && accountingSituation == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.MISSING_VAT_SYSTEM_ON_MISSING_ACCOUNTING_SITUATION),
+          partner.getFullName(),
+          company.getCode());
+    }
+
+    return this.getVatSystemSelect(accountingSituation, moveLine);
   }
 
   protected int getVatSystemSelect(AccountingSituation accountingSituation, MoveLine moveLine)

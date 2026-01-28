@@ -29,7 +29,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AnalyticMoveLineGenerateRealServiceHrImpl
     extends AnalyticMoveLineGenerateRealServiceImpl {

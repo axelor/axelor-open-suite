@@ -20,7 +20,7 @@ package com.axelor.apps.quality.db.repo;
 
 import com.axelor.apps.quality.db.ControlPlanFrequency;
 import com.axelor.apps.quality.service.ControlPlanFrequencyComputeNameService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ControlPlanFrequencyManagementRepository extends ControlPlanFrequencyRepository {
 

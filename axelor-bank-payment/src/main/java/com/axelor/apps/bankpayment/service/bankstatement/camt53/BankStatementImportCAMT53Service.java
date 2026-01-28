@@ -27,8 +27,8 @@ import com.axelor.apps.bankpayment.service.bankstatement.BankStatementImportChec
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFetchService;
 import com.axelor.apps.bankpayment.service.bankstatementline.camt53.BankStatementLineCreateCAMT53Service;
 import com.axelor.apps.base.AxelorException;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 
 public class BankStatementImportCAMT53Service extends BankStatementImportAbstractService {

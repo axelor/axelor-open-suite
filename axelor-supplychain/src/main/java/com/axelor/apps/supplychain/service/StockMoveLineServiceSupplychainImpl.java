@@ -64,9 +64,9 @@ import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -208,6 +208,11 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       return super.compute(stockMoveLine, null);
     }
 
+    return computePriceFromOrder(stockMoveLine, stockMove);
+  }
+
+  protected StockMoveLine computePriceFromOrder(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException {
     if ((ObjectUtils.notEmpty(stockMove.getSaleOrderSet())
             && stockMoveLine.getSaleOrderLine() != null)
         || (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())
@@ -218,6 +223,16 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
       stockMoveLine = super.compute(stockMoveLine, stockMove);
     }
     return stockMoveLine;
+  }
+
+  @Override
+  public StockMoveLine qtyOnChange(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException {
+
+    if (stockMove == null || !appBaseService.isApp("supplychain")) {
+      return super.qtyOnChange(stockMoveLine, stockMove);
+    }
+    return computePriceFromOrder(stockMoveLine, stockMove);
   }
 
   protected StockMoveLine computeFromOrder(StockMoveLine stockMoveLine, StockMove stockMove)

@@ -31,13 +31,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.math.BigDecimal;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
-import wslite.json.JSONException;
 
 public class MapRestServiceImpl implements MapRestService {
 
   @Override
-  public String makeAddressString(Address address, ObjectNode objectNode)
-      throws AxelorException, JSONException {
+  public String makeAddressString(Address address, ObjectNode objectNode) throws AxelorException {
 
     Optional<Pair<BigDecimal, BigDecimal>> latLong =
         Beans.get(AddressService.class).getOrUpdateLatLong(address);
@@ -53,8 +51,7 @@ public class MapRestServiceImpl implements MapRestService {
   }
 
   @Override
-  public void setData(ObjectNode mainNode, ArrayNode arrayNode)
-      throws AxelorException, JSONException {
+  public void setData(ObjectNode mainNode, ArrayNode arrayNode) throws AxelorException {
 
     mainNode.put("status", 0);
     mainNode.set("data", arrayNode);

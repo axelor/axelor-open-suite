@@ -41,7 +41,7 @@ import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.studio.db.AppProject;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;

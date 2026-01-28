@@ -25,7 +25,7 @@ import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.service.cartline.CartLineCreateService;
 import com.axelor.apps.sale.service.cartline.CartLineRetrievalService;
 import com.axelor.apps.sale.service.cartline.CartLineUpdateService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class CartProductServiceImpl implements CartProductService {

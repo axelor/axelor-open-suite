@@ -35,8 +35,8 @@ import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.meta.MetaFiles;
 import com.google.common.base.Throwables;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,11 +67,10 @@ public class BillOfMaterialImporter extends Importer {
   }
 
   @Override
-  protected ImportHistory process(
-      String bind, String data, String errorDir, Map<String, Object> importContext)
+  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
       throws IOException, AxelorException {
 
-    CSVImporter importer = new CSVImporter(bind, data, errorDir);
+    CSVImporter importer = new CSVImporter(bind, data);
 
     ImporterListener listener =
         new ImporterListener(getConfiguration().getName()) {
@@ -114,7 +113,7 @@ public class BillOfMaterialImporter extends Importer {
     importContext.put("BillOfMaterialImport", billOfMaterialImport);
     importer.setContext(importContext);
     importer.run();
-    return addHistory(listener, errorDir);
+    return addHistory(listener);
   }
 
   protected void addBillOfMaterialImportLine(Model bean) {
@@ -126,23 +125,6 @@ public class BillOfMaterialImporter extends Importer {
 
   public void addBillOfMaterialImport(BillOfMaterialImport billOfMaterialImport) {
     this.billOfMaterialImport = billOfMaterialImport;
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
-    return process(bind, data, getErrorDirectory());
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
-      throws IOException, AxelorException {
-    return process(bind, data, getErrorDirectory(), importContext);
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data, String errorDir)
-      throws IOException, AxelorException {
-    return process(bind, data, errorDir, null);
   }
 
   protected void linkLineToBillOfMaterialImport(

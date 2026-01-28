@@ -27,8 +27,8 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
-import javax.persistence.PersistenceException;
 
 public class ReconcileManagementRepository extends ReconcileRepository {
 

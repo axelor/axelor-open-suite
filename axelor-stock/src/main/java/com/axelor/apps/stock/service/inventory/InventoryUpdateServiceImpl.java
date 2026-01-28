@@ -22,8 +22,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class InventoryUpdateServiceImpl implements InventoryUpdateService {
 

@@ -37,11 +37,12 @@ import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowS
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -110,7 +111,7 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     StringBuilder messageBuilder = new StringBuilder();
 
     for (ManufOrder manufOrder : manufOrderList) {
-      this.plan(manufOrder);
+      manufOrder = this.plan(manufOrder);
       if (!Strings.isNullOrEmpty(manufOrder.getMoCommentFromSaleOrder())) {
         messageBuilder.append(manufOrder.getMoCommentFromSaleOrder());
       }
@@ -371,5 +372,22 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     }
 
     manufOrder.setPlannedEndDateT(computePlannedEndDateT(manufOrder));
+  }
+
+  @Override
+  public void updateStockMovesEstimatedDate(ManufOrder manufOrder) {
+    updateEstimatedDate(manufOrder.getInStockMoveList(), manufOrder.getPlannedStartDateT());
+    updateEstimatedDate(manufOrder.getOutStockMoveList(), manufOrder.getPlannedEndDateT());
+  }
+
+  protected void updateEstimatedDate(List<StockMove> stockMoveList, LocalDateTime plannedDateT) {
+    if (CollectionUtils.isEmpty(stockMoveList) || plannedDateT == null) {
+      return;
+    }
+    for (StockMove stockMove : stockMoveList) {
+      if (stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
+        stockMove.setEstimatedDate(plannedDateT.toLocalDate());
+      }
+    }
   }
 }

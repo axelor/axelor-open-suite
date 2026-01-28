@@ -28,12 +28,11 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import wslite.json.JSONException;
 
 @Path("/aos/map-group")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -47,7 +46,7 @@ public class MapGroupRestController {
   @GET
   @HttpExceptionHandler
   public Response computeData(@PathParam("id") Long id)
-      throws AxelorException, JSONException, ClassNotFoundException {
+      throws AxelorException, ClassNotFoundException {
     new SecurityCheck().readAccess(MapGroup.class, id).check();
     MapGroup mapGroup = ObjectFinder.find(MapGroup.class, id, ObjectFinder.NO_VERSION);
 

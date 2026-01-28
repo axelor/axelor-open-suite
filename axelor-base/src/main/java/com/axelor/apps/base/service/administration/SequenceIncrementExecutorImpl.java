@@ -27,8 +27,12 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.db.tenants.TenantAware;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import com.axelor.studio.db.AppBase;
+import jakarta.annotation.PreDestroy;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.persistence.FlushModeType;
+import jakarta.persistence.LockModeType;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.concurrent.Callable;
@@ -39,10 +43,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicReference;
-import javax.annotation.PreDestroy;
 import javax.annotation.concurrent.ThreadSafe;
-import javax.persistence.FlushModeType;
-import javax.persistence.LockModeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -243,14 +244,16 @@ public class SequenceIncrementExecutorImpl implements SequenceIncrementExecutor 
    * @return timeout in seconds
    */
   protected int getTimeoutSeconds() {
+    AppBase appBase = appBaseService.getAppBase();
     try {
-      Integer timeout = appBaseService.getAppBase().getSequenceIncrementTimeout();
+      Integer timeout = appBase.getSequenceIncrementTimeout();
       if (timeout != null && timeout > 0) {
         return timeout;
       }
     } catch (Exception e) {
       log.debug("Could not get sequence increment timeout from AppBase, using default", e);
     }
+    appBase.setSequenceIncrementTimeout(DEFAULT_TIMEOUT_SECONDS);
     return DEFAULT_TIMEOUT_SECONDS;
   }
 

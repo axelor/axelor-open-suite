@@ -26,8 +26,8 @@ import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class LeaveRequestRefuseServiceImpl implements LeaveRequestRefuseService {
 

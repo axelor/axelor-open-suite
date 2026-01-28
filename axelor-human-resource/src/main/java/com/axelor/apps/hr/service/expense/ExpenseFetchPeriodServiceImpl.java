@@ -23,7 +23,7 @@ import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class ExpenseFetchPeriodServiceImpl implements ExpenseFetchPeriodService {
 

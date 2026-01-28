@@ -33,9 +33,9 @@ import com.axelor.studio.db.repo.AppAccountRepository;
 import com.axelor.studio.db.repo.AppInvoiceRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 @Singleton
@@ -70,12 +70,12 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
 
   @Override
   public AppAccount getAppAccount() {
-    return appAccountRepo.all().fetchOne();
+    return appAccountRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override
   public AppInvoice getAppInvoice() {
-    return appInvoiceRepo.all().fetchOne();
+    return appInvoiceRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Transactional

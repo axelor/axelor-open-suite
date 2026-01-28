@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <!-- VUE GENERALE -->
 
@@ -9,10 +9,10 @@
     orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="printer"/>
     </toolbar>
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -52,9 +52,9 @@
     <field name="debtRecoveryBlockingOk"/>
     <field name="paymentProgress" widget="Progress"/>
     <field name="paymentDelay"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="printer"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 
@@ -62,10 +62,10 @@
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="printer"/>
     </toolbar>
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -99,9 +99,9 @@
     <field name="statusSelect" width="100" widget="single-select"/>
     <field name="billOfExchangeBlockingOk"/>
     <field name="paymentDelay"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="printer"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 
@@ -109,10 +109,10 @@
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="printer"/>
     </toolbar>
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -152,9 +152,9 @@
     <field name="paymentDelayReason"/>
     <field name="nextActionDate"/>
     <field name="paymentDelayReasonComments" widget="html"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="printer"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 
@@ -162,10 +162,10 @@
     orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="printer"/>
     </toolbar>
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -207,9 +207,9 @@
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" width="100" widget="single-select"/>
     <field name="paymentDelay"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="printer"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 
@@ -217,10 +217,10 @@
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="printer"/>
     </toolbar>
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -269,9 +269,9 @@
     <field name="company.accountConfig.isManagePassedForPayment" hidden="true"
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <field name="paymentDelay"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="printer"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -279,10 +279,10 @@
     model="com.axelor.apps.account.db.Invoice" orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="printer"/>
     </toolbar>
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -326,9 +326,9 @@
     <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
       name="pfpValidatorUser" title="PFP val."/>
     <field name="paymentDelay"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="printer"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -336,10 +336,10 @@
     orderBy="-invoiceDate">
     <toolbar>
       <button name="printBtn" title="Print invoices"
-        onClick="action-invoice-method-show-invoice" icon="fa-print"/>
+        onClick="action-invoice-method-show-invoice" icon="printer"/>
     </toolbar>
     <menubar>
-      <menu title="Tools" icon="fa-wrench" showTitle="true">
+      <menu title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedInvoicesItem" title="Validate selected invoices"
           action="action-invoice-method-mass-validation"
           prompt="Are you sure you want to validate all selected invoices ?"/>
@@ -369,9 +369,9 @@
     <field name="currency"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" widget="single-select"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="printer"
       onClick="action-invoice-method-show-invoice"/>
-    <button name="sendByEmailBtn" title="Send email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send email" icon="envelope-fill"
       onClick="action-validate-send-email-remove-access-for-client,action-send-by-email-with-template"/>
   </grid>
 
@@ -391,7 +391,7 @@
     <field name="statusSelect" widget="single-select"/>
     <field name="currency" hidden="true"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <button name="showInvoiceBtn" title="Print" icon="fa-print"
+    <button name="showInvoiceBtn" title="Print" icon="printer"
       onClick="action-invoice-method-show-invoice"/>
   </grid>
 
@@ -400,12 +400,12 @@
     onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
 
     <toolbar>
-      <button name="printBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
+      <button name="printBtn" title="Reports" icon="printer" showIf="statusSelect != 4"
         readonlyIf="!id" onClick="action-invoice-group-report-button"/>
     </toolbar>
 
     <menubar>
-      <menu name="invoiceToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="invoiceToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="sendEmailItem" title="Send email"
           action="save,action-send-by-email-with-template" readonlyIf="partner == null"/>
       </menu>
@@ -763,8 +763,8 @@
         showIf="((operationSubTypeSelect != 2 &amp;&amp; $contains([1, 3], operationTypeSelect)) || (operationSubTypeSelect != 1 &amp;&amp; $contains([2, 4], operationTypeSelect)))
         &amp;&amp; (statusSelect != 3 || (statusSelect == 3 &amp;&amp; InvoiceSet.length > 0))"
         if="__config__.app.getApp('account')?.getManageAdvancePaymentInvoice()">
-        <field name="advancePaymentInvoiceSet" widget="TagSelect" canNew="false"
-          canEdit="false" onSelect="action-invoice-method-create-advance-payment-domain"
+        <field name="advancePaymentInvoiceSet" widget="Tags" canNew="false" canEdit="false"
+          onSelect="action-invoice-method-create-advance-payment-domain"
           readonlyIf="statusSelect == 3 || (statusSelect == 2 &amp;&amp; operationSubTypeSelect == 2)"
           form-view="invoice-form" grid-view="invoice-grid"/>
       </panel>
@@ -1194,7 +1194,7 @@
     onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
 
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
+      <button name="printBtn" title="Print" icon="printer"
         onClick="save,action-invoice-method-show-invoice"/>
     </toolbar>
 
@@ -1490,7 +1490,7 @@
       <field name="paymentConditionToCheck" hidden="true" colOffset="3"/>
       <field name="$contactPartner" title="Contact partner" type="many-to-one"
         target="com.axelor.apps.base.db.Partner" x-image-field="picture"
-        domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
+        domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT cp.id FROM part.contactPartnerSet cp))"
         colOffset="3" widget="SuggestBox" showIf="contactPartnerToCheck"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <field name="$priceList" title="Price List" type="many-to-one"
@@ -1544,7 +1544,7 @@
       <field name="originDateToCheck" hidden="true" colOffset="3"/>
       <field name="$contactPartner" title="Contact partner" type="many-to-one"
         target="com.axelor.apps.base.db.Partner"
-        domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT id FROM part.contactPartnerSet))"
+        domain="self.isContact IS TRUE AND :company member of self.companySet AND EXISTS (SELECT 1 FROM Partner part WHERE part.id = :partnerId AND self.id IN (SELECT cp.id FROM part.contactPartnerSet cp))"
         widget="SuggestBox" showIf="contactPartnerToCheck" colOffset="3"
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <field name="$priceList" title="Price List" type="many-to-one"
@@ -1658,6 +1658,7 @@
   </action-group>
 
   <action-group name="action-group-account-invoice-invoice-term-list-onchange">
+    <action name="action-invoice-method-sync-pfp-validator-from-invoice-terms"/>
     <action name="action-invoice-attrs-is-all-invoice-term-status-awaiting"/>
     <action name="action-invoice-record-due-dates"/>
     <action name="action-invoice-method-validate-invoice-terms-before-save"/>
@@ -1826,6 +1827,7 @@
       if="operationTypeSelect == 1 || operationTypeSelect == 2"/>
     <action name="action-invoice-method-update-invoice-terms"/>
     <action name="action-invoice-method-estimated-payment-date"/>
+    <action name="action-invoice-method-sync-pfp-validator-to-invoice-terms"/>
   </action-group>
 
   <action-group name="action-invoice-onsave-group">
@@ -1856,7 +1858,18 @@
     <action name="action-invoice-method-hide-send-email-pfp-btn"/>
     <action name="action-invoice-attrs-is-valid-pfp-validator-user"/>
     <action name="action-invoice-method-set-payment-visibility"/>
+    <action name="action-invoice-method-sync-pfp-validator-to-invoice-terms"/>
   </action-group>
+
+  <action-method name="action-invoice-method-sync-pfp-validator-to-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="syncPfpValidatorToInvoiceTerms"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-sync-pfp-validator-from-invoice-terms">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="syncPfpValidatorFromInvoiceTerms"/>
+  </action-method>
 
   <action-group name="action-invoice-group-financial-discount">
     <action name="action-invoice-method-update-final-discount"/>
@@ -2256,7 +2269,7 @@
 
   <action-validate name="action-invoice-validate-check-pfp-validator-user">
     <alert message="At least one pfp validator is missing, do you wish to continue ?"
-      if="com.axelor.inject.Beans.get(com.axelor.apps.account.service.invoice.InvoiceTermService.class).getPfpValidatorUserCondition(__this__, null)
+      if="__bean__(com.axelor.apps.account.service.invoice.InvoiceTermService.class).getPfpValidatorUserCondition(__this__, null)
           &amp;&amp; invoiceTermList.any{it -> !it.pfpValidatorUser}"/>
   </action-validate>
 

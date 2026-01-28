@@ -29,7 +29,7 @@ import com.axelor.apps.budget.service.BudgetDistributionService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.move.MoveLineBudgetService;
 import com.axelor.inject.Beans;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveBudgetManagementRepository extends MoveBankPaymentRepository {

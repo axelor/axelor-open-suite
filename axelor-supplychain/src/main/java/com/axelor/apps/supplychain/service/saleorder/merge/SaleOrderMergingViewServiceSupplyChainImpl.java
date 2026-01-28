@@ -24,7 +24,7 @@ import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingService;
 import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingService.SaleOrderMergingResult;
 import com.axelor.apps.sale.service.saleorder.merge.SaleOrderMergingViewServiceImpl;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class SaleOrderMergingViewServiceSupplyChainImpl extends SaleOrderMergingViewServiceImpl {

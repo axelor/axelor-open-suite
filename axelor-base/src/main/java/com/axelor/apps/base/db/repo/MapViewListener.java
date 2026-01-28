@@ -25,8 +25,8 @@ import com.axelor.meta.db.MetaAction;
 import com.axelor.meta.db.MetaMenu;
 import com.axelor.meta.db.repo.MetaActionRepository;
 import com.axelor.meta.db.repo.MetaMenuRepository;
+import jakarta.persistence.PreRemove;
 import java.lang.invoke.MethodHandles;
-import javax.persistence.PreRemove;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

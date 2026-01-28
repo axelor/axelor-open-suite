@@ -22,9 +22,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.purchase.db.CallTender;
 import com.axelor.apps.purchase.db.CallTenderOffer;
 import com.axelor.message.db.Template;
+import jakarta.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
-import javax.mail.MessagingException;
 
 public interface CallTenderMailService {
 

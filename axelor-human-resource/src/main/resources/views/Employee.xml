@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="employee-grid" title="Employee" model="com.axelor.apps.hr.db.Employee"
     orderBy="contactPartner.simpleFullName">
     <toolbar>
-      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print"
+      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="printer"
         onClick="action-print-employee-phonebook"/>
     </toolbar>
     <field name="contactPartner.partnerSeq" width="120"/>
@@ -43,12 +43,12 @@
 
     <!-- New employee wizard -->
     <panel name="stepByStepControlsPanel" showIf="stepByStepSelect &lt; 5" colSpan="12">
-      <button name="previousSBSBtn" colSpan="1" icon="fa-caret-left"
+      <button name="previousSBSBtn" colSpan="1" icon="caret-left-fill"
         readonlyIf="stepByStepSelect &lt; 2"
         onClick="validate,action-employee-record-previous-step,save"/>
       <field name="stepByStepSelect" colSpan="8" css="text-center" readonly="true"
         showTitle="false" widget="NavSelect" selection-in="[1, 2, 3, 4]"/>
-      <button name="nextSBSBtn" colSpan="1" icon="fa-caret-right"
+      <button name="nextSBSBtn" colSpan="1" icon="caret-right-fill"
         readonlyIf="(user &amp;&amp; stepByStepSelect &gt;= 3) || (user == null &amp;&amp; stepByStepSelect &gt; 3) "
         onClick="validate,action-employee-record-next-step,save"/>
       <button name="finishBtn" colSpan="2" title="Finish"
@@ -62,7 +62,7 @@
         <field name="external" colSpan="6" widget="InlineCheckbox"/>
       </panel>
       <field name="contactPartner" colSpan="12"
-        domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
+        domain="self.employee IS null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
         form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false"
         onChange="action-employee-attrs-fill-user">
         <editor x-viewer="true">
@@ -343,7 +343,7 @@
         <field name="exportCode" colSpan="6"/>
       </panel>
       <field name="contactPartner" colSpan="12"
-        domain="self.employee = null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
+        domain="self.employee IS null AND (self.partnerTypeSelect = 2 OR self.isContact = true)"
         form-view="partner-contact-form" grid-view="partner-contact-grid" showTitle="false"
         onChange="action-employee-attrs-fill-user">
         <editor x-viewer="true">
@@ -489,7 +489,7 @@
             colSpan="12" form-view="lunch-voucher-advance-form"
             grid-view="lunch-voucher-advance-grid"/>
           <button name="addLunchVoucherAdvanceBtn" title="Add an advance" colSpan="3"
-            icon="fa-ticket" onClick="save,action-lunch-voucher-advance-new"/>
+            icon="ticket-fill" onClick="save,action-lunch-voucher-advance-new"/>
         </panel>
 
         <panel name="expensesPanel" title="Expenses" canCollapse="true" collapseIf="true">
@@ -632,7 +632,7 @@
   </action-attrs>
 
   <action-attrs name="action-employee-attrs-bank-details-on-select">
-    <attribute name="domain" expr="eval: &quot;self = null&quot;" for="bankDetails"/>
+    <attribute name="domain" expr="eval: &quot;self IS null&quot;" for="bankDetails"/>
     <attribute if="!mainEmploymentContract?.payCompany?.bankDetailsList?.isEmpty()"
       name="domain"
       expr="eval: &quot;self.id IN (${mainEmploymentContract?.payCompany?.bankDetailsList?.collect{it.id}?.join(',')}) AND self.active = true&quot;"
@@ -652,7 +652,7 @@
   <cards name="employee-card" title="Employee" model="com.axelor.apps.hr.db.Employee"
     css="rect-image" orderBy="contactPartner.simpleFullName">
     <toolbar>
-      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="fa-print"
+      <button name="printEmployeePhoneBookBtn" title="Employee PhoneBook" icon="printer"
         onClick="action-print-employee-phonebook"/>
     </toolbar>
     <field name="contactPartner.picture"/>
@@ -816,10 +816,10 @@
 
   <action-attrs name="action-employee-attrs-change-domain">
     <attribute for="user" name="domain"
-      expr="eval: &quot;self.employee = null AND self.partner = null&quot;"
+      expr="eval: &quot;self.employee IS null AND self.partner IS null&quot;"
       if="__this__.contactPartner.linkedUser == null"/>
     <attribute for="user" name="domain"
-      expr="eval: &quot;self.employee = null AND self.partner = :contactPartner&quot;"
+      expr="eval: &quot;self.employee IS null AND self.partner = :contactPartner&quot;"
       if="__this__.contactPartner.linkedUser != null"/>
   </action-attrs>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <custom name="report-top-3-suppliers" title="Top 3 supplier" css="report-box">
     <dataset type="jpql"><![CDATA[
@@ -1425,7 +1425,7 @@ from InvoiceTerm as self
 	   LEFT JOIN self.moveLine.partner AS _partner
 	   LEFT JOIN self.bankDetails AS _bankDetails
 	   LEFT JOIN self.thirdPartyPayerPartner AS _thirdPartyPayerPartner
-	   LEFT JOIN BankDetails AS _subrogationBankDetails ON _subrogationBankDetails.partner = _thirdPartyPayerPartner.id
+	   LEFT JOIN BankDetails AS _subrogationBankDetails ON _subrogationBankDetails.partner.id = _thirdPartyPayerPartner.id
 	   WHERE self.isSelectedOnPaymentSession IS TRUE AND self.paymentSession.id = :_id
 	   GROUP BY _partner.id, _thirdPartyPayerPartner.id, _bankDetails.id, _subrogationBankDetails.id, self.currency.numberOfDecimals
 	   ORDER BY _partner.name

@@ -20,8 +20,8 @@ package com.axelor.apps.sale.service.cartline;
 
 import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.repo.CartLineRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class CartLineUpdateServiceImpl implements CartLineUpdateService {

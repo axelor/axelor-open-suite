@@ -35,7 +35,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppSale;
 import com.axelor.studio.db.repo.AppSaleRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
