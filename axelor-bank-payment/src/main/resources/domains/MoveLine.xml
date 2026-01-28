@@ -10,6 +10,10 @@
     <decimal name="bankReconciledAmount" title="Bank reconciled amount" precision="20"
       scale="3"/>
 
+    <track>
+      <field name="bankReconciledAmount"/>
+    </track>
+
   </entity>
 
 </domain-models>
