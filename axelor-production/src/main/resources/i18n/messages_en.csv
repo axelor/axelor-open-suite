@@ -112,6 +112,7 @@
 "Cancelled MOs",,,
 "Cancelled Operations",,,
 "Cannot add a manufacturing order without a production process. Please check that your chosen bill of materials has a valid production process.",,,
+"Cannot generate production operation lines: no Production Process is defined on the Bill of Material for product %s.",,,
 "Cannot make BOM applicable that is not validated",,,
 "Cannot make BOM obsolete that is not applicable",,,
 "Cannot make prod process applicable that is not validated",,,

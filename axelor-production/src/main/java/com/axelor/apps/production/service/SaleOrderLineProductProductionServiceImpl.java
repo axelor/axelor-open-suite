@@ -188,6 +188,7 @@ public class SaleOrderLineProductProductionServiceImpl
     if (saleOrderLine.getIsToProduce()
         && appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
         && !appProduction.getIsBomLineGenerationInSODisabled()) {
+      saleOrderLineBomService.checkProdProcessRequired(billOfMaterial, saleOrderLine.getProduct());
       if (!solBomUpdateService.isUpdated(saleOrderLine)) {
         saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder).stream()
             .filter(Objects::nonNull)
