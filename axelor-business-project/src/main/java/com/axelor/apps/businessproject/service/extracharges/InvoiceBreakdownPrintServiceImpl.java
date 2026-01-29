@@ -184,7 +184,7 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
 
     html.append(
         ".page-header div:first-child { font-size: 16px; font-weight: bold; margin-bottom: 10px; }");
-    html.append(".page-header div:nth-child(2) { font-size: 18px; line-height: 1.6; }");
+    html.append(".page-header div:nth-child(2) { font-size: 16px; line-height: 1.6; }");
 
     html.append("</style>");
     html.append("</head>");
@@ -193,7 +193,7 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
     // header
     html.append("<div class='page-header'>");
 
-    html.append("<div style='font-size:25px; font-weight:bold; margin-bottom:6px;'>")
+    html.append("<div style='font-size:20px; font-weight:bold; margin-bottom:6px;'>")
         .append(I18n.get("Invoice Breakdown"))
         .append("</div>");
 
@@ -202,6 +202,11 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
         .append(I18n.get("Order Number"))
         .append(":</strong> ")
         .append(invoice.getProject().getCode())
+        .append("<br/>");
+    html.append("<strong>")
+        .append(I18n.get("Order Title"))
+        .append(":</strong> ")
+        .append(invoice.getProject().getName())
         .append("<br/>");
     html.append("<strong>")
         .append(I18n.get("Creation Date"))

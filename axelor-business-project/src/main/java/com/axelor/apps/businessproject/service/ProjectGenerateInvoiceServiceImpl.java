@@ -67,6 +67,7 @@ import com.google.inject.persist.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoiceService {
 
@@ -90,6 +91,8 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
   protected AnalyticLineService analyticLineService;
   protected PartnerAccountService partnerAccountService;
   protected TaxNumberRepository taxNumberRepository;
+  private static final Set<String> EXCLUDE_DATE_PRODUCT_CODES =
+      Set.of("11KM", "25KM", "TOOLUSAGE", "DIRTALLOWANCE");
 
   protected int sequence = 0;
 
@@ -305,6 +308,10 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
 
       this.computeAnalytic(invoiceLine, folder.getProject(), invoice.getCompany());
       invoiceLineService.compute(invoice, invoiceLine);
+      // remove date on selected products: Extra charges
+      if (shouldRemoveDate(invoiceLine.getProduct())) {
+        invoiceLine.setProductName(stripDateSuffix(invoiceLine.getProductName()));
+      }
     }
 
     return invoiceLineList;
@@ -393,5 +400,18 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
         .filter("self.project.id = :projectId AND self.toInvoice = true")
         .bind("projectId", project.getId())
         .fetch();
+  }
+
+  private boolean shouldRemoveDate(Product product) {
+    return product != null
+        && product.getCode() != null
+        && EXCLUDE_DATE_PRODUCT_CODES.contains(product.getCode());
+  }
+
+  private String stripDateSuffix(String name) {
+    if (name == null) {
+      return null;
+    }
+    return name.replaceAll("\\s*\\(\\d{2}/\\d{2}(\\s*-\\s*\\d{2}/\\d{2})?\\)", "").trim();
   }
 }
