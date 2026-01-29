@@ -28,8 +28,11 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountService;
 import com.axelor.apps.account.service.ClosureAssistantLineService;
 import com.axelor.apps.account.service.ClosureAssistantService;
+import com.axelor.apps.account.translation.ITranslation;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Year;
+import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.common.ObjectUtils;
@@ -37,6 +40,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.rpc.Context;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -117,12 +121,15 @@ public class ClosureAssistantLineController {
 
   public void fillOutrunResult(ActionRequest request, ActionResponse response) {
     try {
+      Context context = request.getContext();
       Year year =
-          Beans.get(YearRepository.class)
-              .find(Long.parseLong(request.getContext().get("_year").toString()));
+          Beans.get(YearRepository.class).find(Long.parseLong(context.get("_year").toString()));
       if (year == null) {
         return;
       }
+      Company company =
+          Beans.get(CompanyRepository.class)
+              .find(Long.parseLong(context.get("_company").toString()));
 
       AccountTypeRepository accountTypeRepo = Beans.get(AccountTypeRepository.class);
       List<AccountType> incomeTypeList =
@@ -149,11 +156,38 @@ public class ClosureAssistantLineController {
               chargeTypeList, year, AccountService.BALANCE_TYPE_DEBIT_BALANCE);
       BigDecimal profit = income.subtract(charge);
 
+      ClosureAssistantService closureAssistantService = Beans.get(ClosureAssistantService.class);
+      Long incomeMovesCount =
+          closureAssistantService.getDaybookMovesCount(
+              year, AccountTypeRepository.TYPE_INCOME, company);
+      Long chargeMovesCount =
+          closureAssistantService.getDaybookMovesCount(
+              year, AccountTypeRepository.TYPE_CHARGE, company);
+
       response.setAttr("year", "value", year);
       response.setAttr("income", "value", income);
       response.setAttr("charge", "value", charge);
       response.setAttr("profit", "value", profit);
-      if (profit.signum() < 0) {
+
+      response.setAttr("incomeLabel", "hidden", incomeMovesCount == 0);
+      response.setAttr(
+          "incomeLabel",
+          "title",
+          String.format(
+              I18n.get(ITranslation.CLOSURE_ASSISTANT_INCOME_MOVE_LABEL), incomeMovesCount));
+      response.setAttr("chargeLabel", "hidden", chargeMovesCount == 0);
+      response.setAttr(
+          "chargeLabel",
+          "title",
+          String.format(
+              I18n.get(ITranslation.CLOSURE_ASSISTANT_CHARGE_MOVE_LABEL), chargeMovesCount));
+
+      if (incomeMovesCount != 0 || chargeMovesCount != 0) {
+        response.setAttr(
+            "profit",
+            "title",
+            profit.signum() < 0 ? I18n.get("Provisional loss") : I18n.get("Provisional profit"));
+      } else if (profit.signum() < 0) {
         response.setAttr("profit", "title", I18n.get("Loss"));
       }
     } catch (Exception e) {
