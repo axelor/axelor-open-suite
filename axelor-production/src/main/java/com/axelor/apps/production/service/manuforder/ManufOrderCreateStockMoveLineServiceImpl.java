@@ -238,6 +238,8 @@ public class ManufOrderCreateStockMoveLineServiceImpl
 
     stockMoveProductionService.cancelFromManufOrder(stockMove);
 
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+
     // clear all lists
     manufOrder
         .getProducedStockMoveLineList()
