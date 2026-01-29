@@ -576,12 +576,12 @@
           <field name="isVoc"/>
           <field name="vocValue" requiredIf="isVoc" x-scale="2"/>
           <field name="carbonFootprint" x-scale="3"/>
-          <panel-related field="productCharacteristicSet"
-            form-view="product-characteristic-form" grid-view="product-characteristic-grid"
-            colSpan="12" canNew="true" domain="self.product.id = :id"/>
         </panel>
       </panel>
       <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')">
+        <panel-related field="productCharacteristicSet"
+          form-view="product-characteristic-form" grid-view="product-characteristic-grid"
+          colSpan="12" canNew="true" domain="self.product.id = :id"/>
 
         <panel-dashlet action="action-product-view-quality-improvements" colSpan="12"/>
         <panel-dashlet action="action-product-view-quality-controls" colSpan="12"/>
