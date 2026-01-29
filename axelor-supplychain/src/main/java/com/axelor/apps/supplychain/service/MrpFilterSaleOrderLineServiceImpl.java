@@ -96,7 +96,8 @@ public class MrpFilterSaleOrderLineServiceImpl implements MrpFilterSaleOrderLine
             + " AND (:mrpTypeSelect = :mrpTypeMrp OR self.product.productSubTypeSelect = :productSubTypeFinished)"
             + " AND self.saleOrder.statusSelect IN (:saleOrderStatusList)"
             + " AND self.deliveredQty < self.qty"
-            + " AND (self.saleOrder.archived = false OR self.saleOrder.archived is null)";
+            + " AND (self.saleOrder.archived = false OR self.saleOrder.archived is null)"
+            + " AND (self.product.productFamily.excludeFromMrp = false OR self.product.productFamily IS NULL)";
 
     // Checking the one off sales parameter
     if (saleOrderMrpLineType.getIncludeOneOffSalesSelect()
