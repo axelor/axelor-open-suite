@@ -415,12 +415,12 @@
                   <field name="address" canNew="true" canEdit="true" form-view="address-form"
                     grid-view="address-grid" canSelect="false" required="true"
                     if="!__config__.app.getApp('base')?.getIsSharedAddress()"/>
-                  <field name="isInvoicingAddr" widget="toggle" hideIf="$readonly()"
-                    x-icon="card-list"/>
-                  <field name="isDeliveryAddr" widget="toggle" hideIf="$readonly()"
-                    x-icon="cart-fill"/>
-                  <field name="isDefaultAddr" widget="toggle" hideIf="$readonly()"
-                    x-icon="star"/>
+                  <field name="isInvoicingAddr" widget="toggle"
+                    hideIf="$readonly() &amp;&amp; !isInvoicingAddr" x-icon="card-list"/>
+                  <field name="isDeliveryAddr" widget="toggle"
+                    hideIf="$readonly() &amp;&amp; !isDeliveryAddr" x-icon="cart-fill"/>
+                  <field name="isDefaultAddr" widget="toggle"
+                    hideIf="$readonly() &amp;&amp; !isDefaultAddr" x-icon="star"/>
                   <field name="address.addressL4" hidden="true"/>
                 </panel>
               </panel>
