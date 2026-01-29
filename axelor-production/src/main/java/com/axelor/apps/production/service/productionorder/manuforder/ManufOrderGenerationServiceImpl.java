@@ -25,6 +25,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.db.JPA;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -64,22 +65,29 @@ public class ManufOrderGenerationServiceImpl implements ManufOrderGenerationServ
 
     if (manufOrder != null) {
       if (saleOrder != null) {
-        manufOrder.addSaleOrderSetItem(saleOrder);
-        manufOrder.setClientPartner(saleOrder.getClientPartner());
+        SaleOrder managedSaleOrder = JPA.find(SaleOrder.class, saleOrder.getId());
+        manufOrder.addSaleOrderSetItem(managedSaleOrder);
+        if (managedSaleOrder.getClientPartner() != null) {
+          manufOrder.setClientPartner(managedSaleOrder.getClientPartner());
+        }
         manufOrder.setMoCommentFromSaleOrder("");
         manufOrder.setMoCommentFromSaleOrderLine("");
 
-        if (!Strings.isNullOrEmpty(saleOrder.getProductionNote())) {
-          manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
+        if (!Strings.isNullOrEmpty(managedSaleOrder.getProductionNote())) {
+          manufOrder.setMoCommentFromSaleOrder(managedSaleOrder.getProductionNote());
         }
         if (saleOrderLine != null
             && !Strings.isNullOrEmpty(saleOrderLine.getLineProductionComment())) {
           manufOrder.setMoCommentFromSaleOrderLine(saleOrderLine.getLineProductionComment());
         }
-        manufOrder.setSaleOrderLine(saleOrderLine);
+        if (saleOrderLine != null) {
+          manufOrder.setSaleOrderLine(JPA.find(SaleOrderLine.class, saleOrderLine.getId()));
+        }
       }
 
-      manufOrder.setParentMO(manufOrderParent);
+      if (manufOrderParent != null) {
+        manufOrder.setParentMO(JPA.find(ManufOrder.class, manufOrderParent.getId()));
+      }
     }
     return manufOrder;
   }

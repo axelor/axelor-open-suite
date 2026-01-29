@@ -30,6 +30,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -120,6 +121,8 @@ public class SaleOrderLineMOGenerationMultiLineServiceImpl
 
     productionOrderUpdateService.addManufOrder(productionOrder, manufOrder);
 
+    // Reload saleOrderLine after addManufOrder to ensure lazy collections can be accessed
+    saleOrderLine = JPA.find(SaleOrderLine.class, saleOrderLine.getId());
     if (saleOrderLine.getSubSaleOrderLineList() != null) {
       for (SaleOrderLine subSaleOrderLine : saleOrderLine.getSubSaleOrderLineList()) {
         generateManufOrders(
