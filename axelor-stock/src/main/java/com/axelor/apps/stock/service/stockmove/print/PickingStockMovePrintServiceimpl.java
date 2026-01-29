@@ -33,6 +33,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.ThrowConsumer;
@@ -104,7 +105,8 @@ public class PickingStockMovePrintServiceimpl implements PickingStockMovePrintSe
     }
 
     return printingTemplatePrintService.getPrintFile(
-        pickingStockMovePrintTemplate, new PrintingGenFactoryContext(stockMove));
+        pickingStockMovePrintTemplate,
+        new PrintingGenFactoryContext(EntityHelper.getEntity(stockMove)));
   }
 
   @Override
