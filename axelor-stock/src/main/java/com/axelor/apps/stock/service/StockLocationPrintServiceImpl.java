@@ -68,6 +68,7 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
       PrintingTemplate stockLocationPrintTemplate,
       String financialDataDateTimeString,
       Boolean withoutDetailsByStockLocation,
+      Boolean allLines,
       Long... stockLocationIds)
       throws AxelorException {
 
@@ -87,6 +88,7 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
         stockLocationPrintTemplate,
         financialDataDateTime,
         withoutDetailsByStockLocation,
+        allLines,
         stockLocationIds);
   }
 
@@ -96,6 +98,7 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
       PrintingTemplate stockLocationPrintTemplate,
       LocalDateTime financialDataDateTime,
       Boolean withoutDetailsByStockLocation,
+      Boolean allLines,
       Long... stockLocationIds)
       throws AxelorException {
 
@@ -153,7 +156,9 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
             "FinancialDataDateTime",
             financialDataDateTime,
             "WithoutDetailsByStockLocation",
-            withoutDetailsByStockLocation));
+            withoutDetailsByStockLocation,
+            "AllLines",
+            allLines));
 
     return printingTemplatePrintService.getPrintLink(stockLocationPrintTemplate, factoryContext);
   }
