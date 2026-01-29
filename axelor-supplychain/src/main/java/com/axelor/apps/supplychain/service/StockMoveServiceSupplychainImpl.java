@@ -482,6 +482,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     if (newStockMove == null) {
       return null;
     }
+    originalStockMove = JpaModelHelper.ensureManaged(originalStockMove);
+    newStockMove = JpaModelHelper.ensureManaged(newStockMove);
     newStockMove.setOrigin(originalStockMove.getOrigin());
     setOrigin(originalStockMove, newStockMove);
     return newStockMove;

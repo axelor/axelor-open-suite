@@ -1220,8 +1220,14 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     if (!newStockMove.getStockMoveLineList().isEmpty()) {
       newStockMove.setExTaxTotal(stockMoveToolService.compute(newStockMove));
-      originalStockMove.setExTaxTotal(stockMoveToolService.compute(originalStockMove));
       newStockMove = stockMoveRepo.save(newStockMove);
+
+      originalStockMove = stockMoveRepo.save(originalStockMove);
+      BigDecimal exTaxTotal = stockMoveToolService.compute(originalStockMove);
+      originalStockMove = JpaModelHelper.ensureManaged(originalStockMove);
+      originalStockMove.setExTaxTotal(exTaxTotal);
+      originalStockMove = stockMoveRepo.save(originalStockMove);
+
       if (originalStatusSelect == StockMoveRepository.STATUS_PLANNED) {
         plan(originalStockMove);
         plan(newStockMove);
