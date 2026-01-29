@@ -494,7 +494,7 @@ public class MoveLineCreateServiceImpl implements MoveLineCreateService {
       }
     }
     for (MoveLine moveLine : moveLines) {
-      moveLineRecordService.refreshAccountInformation(moveLine, move);
+      moveLineRecordService.refreshVatSystemSelect(moveLine, move.getCompany());
     }
 
     // Creation of tax move lines for each invoice line tax
