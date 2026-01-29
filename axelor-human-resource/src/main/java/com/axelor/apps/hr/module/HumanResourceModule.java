@@ -45,8 +45,6 @@ import com.axelor.apps.hr.db.repo.ExpenseHRRepository;
 import com.axelor.apps.hr.db.repo.ExpenseLineHRRepository;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
-import com.axelor.apps.hr.db.repo.HrBatchHRRepository;
-import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.MedicalVisitHRRepository;
 import com.axelor.apps.hr.db.repo.MedicalVisitRepository;
 import com.axelor.apps.hr.db.repo.PartnerHRRepository;
@@ -375,7 +373,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(BatchCreditTransferExpensePayment.class).to(BatchCreditTransferExpensePaymentHR.class);
     bind(BankOrderCancelServiceImpl.class).to(BankOrderCancelServiceHRImpl.class);
     bind(BankOrderLineOriginServiceImpl.class).to(BankOrderLineOriginServiceHRImpl.class);
-    bind(HrBatchRepository.class).to(HrBatchHRRepository.class);
     bind(ProjectPlanningTimeRepository.class).to(ProjectPlanningTimeHRRepository.class);
     bind(ProjectPlanningTimeService.class).to(ProjectPlanningTimeServiceImpl.class);
     bind(ProjectManagementRepository.class).to(ProjectHRRepository.class);
