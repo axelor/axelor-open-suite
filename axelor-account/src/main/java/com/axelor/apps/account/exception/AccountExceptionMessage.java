@@ -1133,6 +1133,12 @@ public final class AccountExceptionMessage {
   public static final String MOVE_TEMPLATE_3 = /*$$(*/ "Generated moves" /*)*/;
   public static final String MOVE_TEMPLATE_4 = /*$$(*/ "Please fill input lines" /*)*/;
 
+  public static final String MOVE_TEMPLATE_PARTNER_INCONSISTENT = /*$$(*/
+      "Move template lines have inconsistent partners: all lines must have the same partner. Found: %s" /*)*/;
+
+  public static final String MOVE_TEMPLATE_TAX_AMOUNT_MISMATCH = /*$$(*/
+      "Tax amount mismatch for tax %s: expected %s (base: %s x rate: %s%%), found %s" /*)*/;
+
   /** Mass entry move controller */
   public static final String MASS_ENTRY_MOVE_CONTROL_ERROR = /*$$(*/
       "Error(s) during moves control" /*)*/;
