@@ -334,6 +334,9 @@ public class StockMoveController {
       List<StockMoveLine> selectedMoveLines =
           stockMove.getStockMoveLineList().stream()
               .filter(Model::isSelected)
+              .filter(
+                  stockMoveLine ->
+                      stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_NORMAL)
               .collect(Collectors.toList());
       stockMove = Beans.get(StockMoveRepository.class).find(stockMove.getId());
 
@@ -359,7 +362,9 @@ public class StockMoveController {
       for (HashMap<String, Object> map : selectedStockMoveLineMapList) {
         StockMoveLine stockMoveLine = Mapper.toBean(StockMoveLine.class, map);
         stockMoveLine = stockMoveLineRepo.find(stockMoveLine.getId());
-        stockMoveLineList.add(stockMoveLine);
+        if (stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_NORMAL) {
+          stockMoveLineList.add(stockMoveLine);
+        }
       }
 
       BigDecimal splitQty = null;
