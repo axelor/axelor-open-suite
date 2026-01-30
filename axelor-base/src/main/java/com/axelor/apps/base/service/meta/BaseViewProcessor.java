@@ -43,6 +43,9 @@ public class BaseViewProcessor implements ViewProcessor {
 
   @Override
   public void process(AbstractView view) {
+    if (view == null) {
+      return;
+    }
     pricingMetaService.managePricing(view);
     printingTemplateMetaService.addPrintButton(view);
     indicatorMetaService.process(view);

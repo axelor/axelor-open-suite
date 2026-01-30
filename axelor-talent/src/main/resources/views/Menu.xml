@@ -27,7 +27,6 @@
     <view name="job-application-kanban" type="kanban"/>
     <view name="job-application-grid" type="grid"/>
     <view name="job-application-form" type="form"/>
-    <view-param name="search-filters" value="job-application-filters"/>
   </action-view>
 
   <menuitem name="recruitment-config" parent="recruitment-root" title="Configuration"
