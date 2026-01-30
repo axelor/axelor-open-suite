@@ -1,0 +1,3 @@
+---
+title: "Purchse order line: fixed an error on diff unit message when product's unit is diff from supplier catalog one."
+module: axelor-purchase
