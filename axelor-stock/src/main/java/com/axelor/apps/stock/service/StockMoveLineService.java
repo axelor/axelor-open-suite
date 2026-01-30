@@ -400,4 +400,6 @@ public interface StockMoveLineService {
 
   StockMoveLine qtyOnChange(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
+
+  StockMoveLine createStockMoveLine(String productName, int lineTypeSelect, StockMove stockMove);
 }
