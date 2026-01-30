@@ -1,0 +1,3 @@
+---
+title: "Prod product: fixed hibernate query error on select of tracking number."
+module: axelor-production
