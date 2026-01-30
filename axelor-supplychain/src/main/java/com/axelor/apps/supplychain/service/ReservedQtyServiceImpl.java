@@ -1023,8 +1023,8 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       Product product = stockMoveLine.getProduct();
       BigDecimal availableQtyToBeReservedStockMoveLine =
           convertUnitWithProduct(
-                  stockMoveLine.getUnit(),
                   stockLocationLine.getUnit(),
+                  stockMoveLine.getUnit(),
                   availableQtyToBeReserved,
                   product)
               .add(stockMoveLine.getReservedQty());
