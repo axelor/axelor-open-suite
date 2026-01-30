@@ -681,10 +681,11 @@
             <field name="massStockMove" hidden="true" showIf="massStockMove != null"/>
           </panel>
           <field name="saleOrderSet" hidden="true"
-            showIf="saleOrderSet &amp;&amp; saleOrderSet.length > 0" colSpan="12" readonly="true"/>
+            showIf="saleOrderSet &amp;&amp; saleOrderSet.length > 0" colSpan="12" readonly="true"
+            grid-view="sale-order-grid" form-view="sale-order-form"/>
           <field name="purchaseOrderSet" hidden="true"
             showIf="purchaseOrderSet &amp;&amp; purchaseOrderSet.length > 0" colSpan="12"
-            readonly="true"/>
+            readonly="true" grid-view="purchase-order-grid" form-view="purchase-order-form"/>
           <field name="reversionOriginStockMove" readonly="true" grid-view="stock-move-form"
             form-view="stock-move-form" showIf="reversionOriginStockMove"/>
           <field name="invoiceSet" readonly="true" grid-view="invoice-grid"
