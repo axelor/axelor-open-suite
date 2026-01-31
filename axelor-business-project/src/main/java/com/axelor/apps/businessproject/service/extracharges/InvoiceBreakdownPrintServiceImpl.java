@@ -199,7 +199,7 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
 
     html.append("<div style='line-height:1.4;'>");
     html.append("<strong>")
-        .append(I18n.get("Order Number"))
+        .append(I18n.get("Order Code"))
         .append(":</strong> ")
         .append(invoice.getProject().getCode())
         .append("<br/>");

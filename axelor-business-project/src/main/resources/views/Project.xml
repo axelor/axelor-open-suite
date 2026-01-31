@@ -373,7 +373,7 @@
 
   <form title="Business project" model="com.axelor.apps.project.db.Project" width="large"
     name="business-project-financial-datas-form"
-    onLoad="action-business-project-method-set-analytic-distribution-template-required">
+    onLoad="action-business-project-method-set-analytic-distribution-template-required,mgm-action-record-default-invoice-flags-true,save">
     <panel name="fullNamePanel" readonly="true">
       <field name="fullName"/>
     </panel>
@@ -744,6 +744,11 @@
   <action-attrs name="action-project-attrs-set-invoicing-sequence">
     <attribute name="value" for="invoicingSequenceSelect" expr="eval: null"/>
   </action-attrs>
+
+  <action-method name="mgm-action-record-default-invoice-flags-true">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="setDefaultInvoiceFlags"/>
+  </action-method>
 
 
   <action-attrs name="action-attrs-domain-on-contact-partner">

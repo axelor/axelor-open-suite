@@ -364,4 +364,17 @@ public class ProjectController {
       }
     }
   }
+
+  public void setDefaultInvoiceFlags(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    if (project.getId() == null) {
+      return;
+    }
+
+    project.setIsInvoicingExpenses(true);
+    project.setIsInvoicingTimesheet(true);
+    project.setIsInvoicingPurchases(true);
+
+    response.setValues(project);
+  }
 }

@@ -532,24 +532,6 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       ProjectTask projectTask = line.getProjectTask();
       BigDecimal forcedUnitPrice = null;
       BigDecimal forcedPriceDiscounted = null;
-
-      // This is commented out as it forces an activity (product) on a timesheet line based on the
-      // projectTask (selectiing and activity on the project task so it preffils when creating a new
-      // timesheet line.
-      // which was introduced by one of our modifications)
-      // and this causes the product which gets invoiced to be different from that selected in the
-      // timesheet line if the prefilled timesheet line activity (product) is changed or even if
-      // it's not changed,
-      // this introduces a forced unit price on the selected product causing the unit price of the
-      // invoiced product not being that
-      // defined in the product's record.
-
-      //      if (projectTask != null && projectTask.getProduct() != null) {
-      //        product = projectTask.getProduct();
-      //        forcedUnitPrice = projectTask.getUnitPrice();
-      //        forcedPriceDiscounted = projectTask.getPriceDiscounted();
-      //      }
-
       String key = generateKey(product, employee, project, line, consolidate);
 
       if (timesheetDataMap.containsKey(key)) {

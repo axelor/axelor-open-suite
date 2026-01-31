@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.service.timesheet;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.DateService;
@@ -354,7 +355,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
   @Override
   public void splitTimesheetLine(TimesheetLine line) {
 
-    if (Boolean.TRUE.equals(line.getIsAutomaticallyGenerated())) return;
+    // if enabled, extra-charges are not added to invoice
+    //    if (Boolean.TRUE.equals(line.getIsAutomaticallyGenerated())) return;
 
     if (!hasValidTime(line)) return;
 
@@ -650,7 +652,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
       LocalDate currentDate = pointer.toLocalDate();
 
       // Check if current day is a public holiday
-      boolean isHoliday = holidayService.checkPublicHolidayDay(currentDate, line.getEmployee());
+      boolean isHoliday = isCalendarHoliday(currentDate, line.getEmployee());
 
       if (isHoliday) {
         // Calculate overlap for this holiday
@@ -672,5 +674,15 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     }
 
     return BigDecimal.valueOf(totalOverlap.toMinutes() / 60.0).setScale(2, RoundingMode.HALF_UP);
+  }
+
+  private boolean isCalendarHoliday(LocalDate date, Employee employee) {
+    EventsPlanning planning = employee.getPublicHolidayEventsPlanning();
+    if (planning == null || planning.getEventsPlanningLineList() == null) {
+      return false;
+    }
+
+    return planning.getEventsPlanningLineList().stream()
+        .anyMatch(line -> line.getDate().equals(date));
   }
 }
