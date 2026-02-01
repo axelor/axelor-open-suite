@@ -236,6 +236,36 @@ public class SequenceService {
     }
   }
 
+  /**
+   * Method returning a sequence number from a given generic sequence and a date
+   *
+   * @param objectClass
+   * @param fieldName
+   * @param nextSeq
+   * @param seq
+   * @throws AxelorException
+   */
+  @SuppressWarnings({"unchecked", "rawtypes"})
+  protected boolean sequenceAlreadyExistingIncrement(
+      Class objectClass, String fieldName, String nextSeq, Sequence seq) {
+    String table = objectClass.getSimpleName();
+    String baseQuery = "SELECT self FROM " + table + " self WHERE " + fieldName + " = :nextSeq";
+    String companyQuery = computeCompanyQuery(objectClass);
+
+    TypedQuery<?> query =
+        JPA.em()
+            .createQuery(baseQuery + companyQuery, objectClass)
+            .setParameter("nextSeq", nextSeq)
+            .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+            .setFlushMode(FlushModeType.COMMIT);
+
+    if (!StringUtils.isEmpty(companyQuery)) {
+      query.setParameter("company", seq.getCompany());
+    }
+
+    return CollectionUtils.isNotEmpty(query.getResultList());
+  }
+
   @SuppressWarnings("rawtypes")
   protected String computeCompanyQuery(Class objectClass) {
     Property property =
@@ -688,14 +718,42 @@ public class SequenceService {
             .getSingleResult();
     SequenceVersion sequenceVersion = getVersion(seq, refDate);
     String nextSeq = computeSequenceNumber(sequenceVersion, seq, refDate, model);
+    int codeIncrementAttempts = 0;
 
     if (appBaseService.getAppBase().getCheckExistingSequenceOnGeneration()
         && objectClass != null
         && !Strings.isNullOrEmpty(fieldName)) {
-      this.isSequenceAlreadyExisting(objectClass, fieldName, nextSeq, seq);
+
+      if (seq.getIncrementSequenceOnConflict()) {
+        log.debug("The sequence for {} has increment on conflict", objectClass.getName());
+        String code = nextSeq;
+        while (codeIncrementAttempts <= seq.getMaxSequenceIncrementAttempts()
+            && sequenceAlreadyExistingIncrement(objectClass, fieldName, code, seq)) {
+          code = incrementCode(code, seq.getToBeAdded());
+          codeIncrementAttempts += seq.getToBeAdded();
+          log.debug("code {} already exists. incrementing attempt {}", code, codeIncrementAttempts);
+        }
+
+        if (codeIncrementAttempts > seq.getMaxSequenceIncrementAttempts()) {
+          log.debug(
+              "Reached max increment attempts trial {}", seq.getMaxSequenceIncrementAttempts());
+          throw new AxelorException(
+              TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+              I18n.get(
+                  "Project code '%s' already exists and no alternative could be generated. "
+                      + "Please enter a different code manually."),
+              code);
+        } else {
+          nextSeq = code;
+          log.info("Sequence generated");
+        }
+      } else {
+        this.isSequenceAlreadyExisting(objectClass, fieldName, nextSeq, seq);
+      }
     }
 
-    sequenceVersion.setNextNum(sequenceVersion.getNextNum() + seq.getToBeAdded());
+    sequenceVersion.setNextNum(
+        sequenceVersion.getNextNum() + seq.getToBeAdded() + codeIncrementAttempts);
     if (sequenceVersion.getId() == null) {
       sequenceVersionRepository.save(sequenceVersion);
     }
@@ -747,5 +805,47 @@ public class SequenceService {
     }
 
     return prefixOrSuffix;
+  }
+
+  /** Increments a code by finding and incrementing its trailing numeric part */
+  public String incrementCode(String code, int toBeAdded) {
+    log.debug("can't be from here...");
+    if (Strings.isNullOrEmpty(code)) {
+      return String.valueOf(toBeAdded);
+    }
+
+    StringBuilder numericPart = new StringBuilder();
+    int digitStartIndex = -1;
+
+    // Find trailing digits from the end
+    for (int i = code.length() - 1; i >= 0; i--) {
+      if (Character.isDigit(code.charAt(i))) {
+        numericPart.insert(0, code.charAt(i));
+        digitStartIndex = i;
+      } else {
+        break; // Stop at first non-digit
+      }
+    }
+
+    if (com.axelor.common.StringUtils.isEmpty(numericPart.toString())) {
+      // No digits found, append "1"
+      return code + toBeAdded;
+    }
+
+    // Parse and increment by the sequence's toBeAdded
+    long number = Long.parseLong(numericPart.toString());
+    number += toBeAdded;
+
+    // Preserve original padding
+    String newNumber = String.format("%0" + numericPart.length() + "d", number);
+
+    // Handle overflow such as "999" -> "1000" which breaks padding
+    if (newNumber.length() > numericPart.length()) {
+      newNumber = String.valueOf(number);
+    }
+
+    // Reconstruct: prefix + incremented number
+    String prefix = code.substring(0, digitStartIndex);
+    return prefix + newNumber;
   }
 }

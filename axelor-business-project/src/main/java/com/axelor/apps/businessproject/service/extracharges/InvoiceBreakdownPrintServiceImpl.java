@@ -1,6 +1,14 @@
 package com.axelor.apps.businessproject.service.extracharges;
 
 import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.service.config.AccountConfigService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.PrintingTemplate;
+import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
+import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
+import com.axelor.apps.businessproject.db.TaskMemberReport;
+import com.axelor.apps.businessproject.db.repo.TaskMemberReportRepository;
+import com.axelor.common.StringUtils;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.i18n.I18n;
@@ -14,7 +22,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -27,6 +39,10 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
   @Override
   public String printInvoiceBreakdown(Invoice invoice) throws Exception {
     log.debug("Generating PDF breakdown for invoice {}", invoice.getId());
+
+    PrintingTemplate template =
+        Beans.get(AccountConfigService.class)
+            .getInvoiceBreakdownPrintTemplate(invoice.getCompany());
     List<Map<String, Object>> displayData =
         Beans.get(InvoiceBreakdownDisplayService.class).generateBreakdownFromInvoice(invoice);
 
@@ -35,16 +51,10 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
 
     byte[] pdfBytes = convertHtmlToPdf(fullHtml);
 
-    String fileName = getFileName(invoice);
+    String fileName = getFileName(invoice, template);
     log.debug("Filename {}", fileName);
 
     MetaFiles metaFiles = Beans.get(MetaFiles.class);
-
-    // Delete all existing invoice breakdown attachments
-    List<DMSFile> existingBreakdowns = findExistingAttachments(invoice, fileName);
-    for (DMSFile existing : existingBreakdowns) {
-      metaFiles.delete(existing);
-    }
 
     // create temp file to write breakdown content
     Path tempFile = MetaFiles.createTempFile(null, ".pdf");
@@ -52,8 +62,17 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
       fos.write(pdfBytes);
     }
 
-    MetaFile metaFile = metaFiles.upload(new FileInputStream(tempFile.toFile()), fileName);
-    metaFiles.attach(metaFile, fileName, invoice);
+    if (template.getToAttach()) {
+      if (template.getOverrideAttachment()) {
+        // Delete all existing invoice breakdown attachments
+        List<DMSFile> existingBreakdowns = findExistingAttachments(invoice, fileName);
+        for (DMSFile existing : existingBreakdowns) {
+          metaFiles.delete(existing);
+        }
+      }
+      MetaFile metaFile = metaFiles.upload(new FileInputStream(tempFile.toFile()), fileName);
+      metaFiles.attach(metaFile, fileName, invoice);
+    }
 
     return PdfHelper.getFileLinkFromPdfFile(tempFile.toFile(), fileName);
   }
@@ -131,36 +150,178 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
 
   private String wrapHtml(String bodyHtml, Invoice invoice) {
 
+    LocalDate invoiceDate =
+        invoice.getInvoiceDate() != null ? invoice.getInvoiceDate() : LocalDate.now();
+
+    String performancePeriod = getPerformancePeriod(invoice);
+
     StringBuilder html = new StringBuilder();
 
-    html.append("<!DOCTYPE html><html><head>");
+    html.append("<html>");
+    html.append("<head>");
     html.append("<meta charset='UTF-8'/>");
-    html.append("<style>");
-    html.append("body{font-family:Arial;font-size:10pt;}");
-    html.append("table{width:100%;border-collapse:collapse;}");
-    html.append("th,td{border:1px solid #ddd;padding:8px;}");
-    html.append("th{background:#f5f5f5;}");
-    html.append("</style></head><body>");
 
-    html.append("<h2>").append(I18n.get("Invoice Breakdown")).append("</h2>");
-    html.append("<p><strong>")
-        .append(I18n.get("Invoice"))
+    html.append("<style>");
+
+    html.append("body { font-family: Arial, sans-serif; font-size: 14px; }");
+
+    html.append(".page-header { position: running(header); }");
+    html.append(
+        ".page-footer { position: running(footer); font-size: 14px; margin-bottom: 8px; text-align: end; padding-top: 6px; }");
+
+    html.append("@page {");
+    html.append("  margin: 200px 40px 50px 40px;");
+    html.append("  @top-left { content: element(header); }");
+    html.append("  @bottom-center { content: element(footer); }");
+    html.append("}");
+
+    html.append(".pageNumber::before { content: counter(page); }");
+    html.append(".totalPages::before { content: counter(pages); }");
+
+    html.append("table { width: 100%; border-collapse: collapse; margin-top: 10px; }");
+    html.append("th, td { border: 5px solid #ddd; padding: 6px; }");
+    html.append("th { background-color: #f5f5f5; }");
+
+    html.append(
+        ".page-header div:first-child { font-size: 16px; font-weight: bold; margin-bottom: 10px; }");
+    html.append(".page-header div:nth-child(2) { font-size: 16px; line-height: 1.6; }");
+
+    html.append("</style>");
+    html.append("</head>");
+    html.append("<body>");
+
+    // header
+    html.append("<div class='page-header'>");
+
+    html.append("<div style='font-size:20px; font-weight:bold; margin-bottom:6px;'>")
+        .append(I18n.get("Invoice Breakdown"))
+        .append("</div>");
+
+    html.append("<div style='line-height:1.4;'>");
+    html.append("<strong>")
+        .append(I18n.get("Order Code"))
         .append(":</strong> ")
-        .append(invoice.getInvoiceId())
-        .append("<br/><strong>")
-        .append(I18n.get("Date"))
+        .append(invoice.getProject().getCode())
+        .append("<br/>");
+    html.append("<strong>")
+        .append(I18n.get("Order Title"))
         .append(":</strong> ")
-        .append(invoice.getInvoiceDate())
-        .append("<br/><strong>")
+        .append(invoice.getProject().getName())
+        .append("<br/>");
+    html.append("<strong>")
+        .append(I18n.get("Creation Date"))
+        .append(":</strong> ")
+        .append(invoiceDate)
+        .append("<br/>");
+    html.append("<strong>")
         .append(I18n.get("Customer"))
         .append(":</strong> ")
         .append(invoice.getPartner().getName())
-        .append("</p>");
+        .append("<br/>");
+    html.append("<strong>")
+        .append(I18n.get("Customer cost center"))
+        .append(":</strong> ")
+        .append(invoice.getPartner().getCustomerCostCenter())
+        .append("<br/>");
+    html.append("<strong>")
+        .append(I18n.get("Performance Period"))
+        .append(":</strong> ")
+        .append(performancePeriod);
+    html.append("</div>");
 
+    html.append("</div>");
+
+    // footer
+    html.append("<div class='page-footer'>");
+    html.append(I18n.get("Page"))
+        .append(" <span class='pageNumber'></span> / <span class='totalPages'></span>");
+    html.append("</div>");
+
+    // content
     html.append(bodyHtml);
-    html.append("</body></html>");
+
+    html.append("</body>");
+    html.append("</html>");
 
     return html.toString();
+  }
+
+  /** get project performance period */
+  private String getPerformancePeriod(Invoice invoice) {
+
+    if (invoice == null || invoice.getProject() == null) {
+      return "";
+    }
+
+    List<TaskMemberReport> reports =
+        Beans.get(TaskMemberReportRepository.class)
+            .all()
+            .filter("self.taskReport.project = ?1", invoice.getProject())
+            .fetch();
+
+    if (reports.isEmpty()) {
+      return "";
+    }
+
+    LocalDate minDate = null;
+    LocalDate maxDate = null;
+
+    for (TaskMemberReport report : reports) {
+
+      if (report.getStartTime() != null) {
+        LocalDate startDate = report.getStartTime().toLocalDate();
+        if (minDate == null || startDate.isBefore(minDate)) {
+          minDate = startDate;
+        }
+      }
+
+      if (report.getEndTime() != null) {
+        LocalDate endDate = report.getEndTime().toLocalDate();
+        if (maxDate == null || endDate.isAfter(maxDate)) {
+          maxDate = endDate;
+        }
+      }
+    }
+
+    if (minDate == null || maxDate == null) {
+      return "";
+    }
+
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+
+    if (minDate.equals(maxDate)) {
+      return formatter.format(minDate);
+    }
+
+    return formatter.format(minDate) + " – " + formatter.format(maxDate);
+  }
+
+  private String metaFileToBase64Img(MetaFile metaFile) {
+    if (metaFile == null || metaFile.getFilePath() == null) {
+      return "";
+    }
+
+    try {
+      Path path = MetaFiles.getPath(metaFile);
+
+      if (!Files.exists(path)) {
+        log.warn("Logo file not found on disk: {}", path);
+        return "";
+      }
+
+      try (FileInputStream fis = new FileInputStream(path.toFile())) {
+        byte[] bytes = fis.readAllBytes();
+        String base64 = Base64.getEncoder().encodeToString(bytes);
+
+        String mime = metaFile.getFileType() != null ? metaFile.getFileType() : "image/png";
+
+        return "data:" + mime + ";base64," + base64;
+      }
+
+    } catch (Exception e) {
+      log.warn("Unable to load company logo", e);
+      return "";
+    }
   }
 
   /** Formats numeric values to 2 decimal places, returns empty string for null */
@@ -195,9 +356,23 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
         .fetch();
   }
 
-  private String getFileName(Invoice invoice) {
-    return String.format(
-        "invoice-breakdown-%s.pdf",
-        invoice.getInvoiceId() != null ? invoice.getInvoiceId() : invoice.getId());
+  private String getFileName(Invoice invoice, PrintingTemplate template) throws AxelorException {
+    log.debug(
+        "Invoice Breakdown printing template: {}",
+        Beans.get(AccountConfigService.class)
+            .getInvoiceBreakdownPrintTemplate(invoice.getCompany()));
+
+    String fileName =
+        Beans.get(PrintingTemplatePrintService.class)
+            .getPrintFileName(template, new PrintingGenFactoryContext(invoice));
+    log.debug("Invoice Breakdown Template file name: {}", fileName);
+    return fileName;
+  }
+
+  protected String getTemplateName(PrintingTemplate template) {
+    if (StringUtils.notEmpty(template.getScriptFieldName())) {
+      return template.getScriptFieldName();
+    }
+    return template.getName();
   }
 }

@@ -241,11 +241,11 @@
         <panel name="headPanel" colSpan="12" hidden="true">
           <field name="isValidated" canView="false"/>
         </panel>
-        <field name="project" canView="false" canEdit="false"
+        <field name="project" canView="true" canEdit="false"
           onChange="action-timesheet-line-group-project-onchange"
           onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
           grid-view="project-grid"/>
-        <field name="projectTask" canView="false" canEdit="false"
+        <field name="projectTask" canView="true" canEdit="false"
           onChange="action-timesheet-line-group-project-task-on-change"
           onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form"
           grid-view="project-task-grid"/>
@@ -734,7 +734,7 @@
     <view type="grid" name="timesheet-line-project-task-grid"/>
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.timesheet.statusSelect = 3 and self.projectTask = :id</domain>
+    <domain>self.isValidated = true AND self.projectTask = :id</domain>
     <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
   <action-view name="action-project-task-dashlet-waiting-timesheet-lines"
@@ -742,7 +742,7 @@
     <view type="grid" name="timesheet-line-project-task-grid"/>
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.timesheet.statusSelect &lt; 3 and self.projectTask = :id</domain>
+    <domain>(self.isValidated = false OR self.isValidated IS NULL) AND self.projectTask = :id</domain>
     <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
   <action-view name="action-project-task-dashlet-all-timesheet-lines"

@@ -37,7 +37,7 @@
   </grid>
 
   <!-- Form View -->
-  <form name="task-report-form" title="Task Reports" canEdit="true"
+  <form name="task-report-form" title="Task Reports" canEdit="true" canAttach="false"
     model="com.axelor.apps.businessproject.db.TaskReport"
     onNew="action-task-report-default, action-task-report-attrs-filter-projects"
     onLoad="action-task-report-group-on-load" onSave="action-task-report-group-on-save"

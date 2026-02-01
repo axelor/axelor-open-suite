@@ -22,16 +22,15 @@
         </field>
       </insert>
     </extend>
+    <!-- Remove Details panel -->
+    <extend target="//panel[@name='detailsPanel']">
+      <replace/>
+    </extend>
 
-<!--    <extend target="panel[@name='tagsPanel']">-->
-<!--      <insert position="before">-->
-<!--        <panel name="relatedRecordPanel" sidebar="true"-->
-<!--          showIf="relatedModel != null &amp;&amp; relatedId != 0 &amp;&amp; !isDirectory">-->
-<!--          <button name="viewRelatedBtn" title="View Related Record" icon="file-text"-->
-<!--            onClick="action-dms-file-view-related" colSpan="12" if="__user__.group?.code = 'admins'"/>-->
-<!--        </panel>-->
-<!--      </insert>-->
-<!--    </extend>-->
+    <!-- Remove Tags panel -->
+    <extend target="//panel[@name='tagsPanel']">
+      <replace/>
+    </extend>
   </form>
 
   <action-method name="action-dms-file-view-related">

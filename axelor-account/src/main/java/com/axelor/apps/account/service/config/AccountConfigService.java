@@ -749,6 +749,17 @@ public class AccountConfigService {
     return invoicePrintTemplate;
   }
 
+  public PrintingTemplate getInvoiceBreakdownPrintTemplate(Company company) throws AxelorException {
+    PrintingTemplate invoicePrintTemplate =
+        getAccountConfig(company).getInvoiceBreakdownPrintTemplate();
+    if (ObjectUtils.isEmpty(invoicePrintTemplate)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.TEMPLATE_CONFIG_NOT_FOUND));
+    }
+    return invoicePrintTemplate;
+  }
+
   public Account getBillOfExchReceivAccount(AccountConfig accountConfig) throws AxelorException {
     if (accountConfig.getBillOfExchReceivAccount() == null) {
       throw new AxelorException(

@@ -529,6 +529,7 @@
         <field name="chequeDepositSlipPrintTemplate"/>
         <field name="saleInvoicesDetailsPrintTemplate"/>
         <field name="purchaseInvoicesDetailsPrintTemplate"/>
+        <field name="invoiceBreakdownPrintTemplate"/>
       </panel>
     </panel-tabs>
 
