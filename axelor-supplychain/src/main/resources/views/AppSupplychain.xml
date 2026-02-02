@@ -20,7 +20,8 @@
         <field name="cancelReasonOnChangingSaleOrder"
           domain="self.applicationType = 'com.axelor.apps.stock.db.StockMove'"
           if="__config__.app.getApp('sale')?.allowPendingOrderModification" colSpan="4"/>
-        <field name="generateInvoiceFromSaleOrder" widget="boolean-switch" colSpan="4"/>
+        <field name="generateInvoiceFromSaleOrder" widget="boolean-switch" colSpan="4"
+          onChange="action-app-supplychain-validate-invoice-generation"/>
         <field name="purchaseOrderGenerationAuto" widget="boolean-switch" colSpan="4"/>
         <field name="allowSusbcriptionSaleOrder" widget="boolean-switch" colSpan="4"/>
         <field name="allowTimetableInvoicing" widget="boolean-switch" colSpan="4"/>
@@ -61,7 +62,8 @@
 
     </panel>
     <panel name="stackPanel" title="Stock">
-      <field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
+      <field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"
+        onChange="action-app-supplychain-validate-invoice-generation"/>
       <field name="manageStockReservation" widget="boolean-switch" colSpan="4"
         onChange="action-app-supplychain-validate-config-error"/>
       <field name="isVerifyProductStock" widget="boolean-switch" colSpan="4"/>
@@ -131,5 +133,11 @@
     model="com.axelor.studio.db.AppSupplychain">
     <field name="manageStockReservation" expr="eval: false"/>
   </action-record>
+
+  <action-validate name="action-app-supplychain-validate-invoice-generation">
+    <alert
+      message="Both 'Generate invoice from sale order' and 'Generate invoice from stock move' are selected. It is recommended to select only one option at a time to avoid double invoicing."
+      if="generateInvoiceFromSaleOrder &amp;&amp; generateInvoiceFromStockMove"/>
+  </action-validate>
 
 </object-views>
