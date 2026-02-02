@@ -20,7 +20,8 @@
         domain="self.applicationType = 'com.axelor.apps.stock.db.StockMove'"
         if="__config__.app.getApp('sale')?.allowPendingOrderModification" colSpan="4"/>
       <field name="generateInvoiceFromSaleOrder" widget="boolean-switch" colSpan="4"
-      onChange="action-app-supplychain-validate-invoice-generation"/><field name="purchaseOrderGenerationAuto" widget="boolean-switch" colSpan="4"/>
+        onChange="action-app-supplychain-validate-invoice-generation"/>
+      <field name="purchaseOrderGenerationAuto" widget="boolean-switch" colSpan="4"/>
       <field name="allowSusbcriptionSaleOrder" widget="boolean-switch" colSpan="4"/>
       <field name="allowTimetableInvoicing" widget="boolean-switch" colSpan="4"/>
       <field name="checkSaleStocks" widget="boolean-switch" colSpan="4"/>
