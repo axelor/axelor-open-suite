@@ -77,6 +77,7 @@
 "Blocked by",,,
 "Blocked until",,,
 "Blocking reason",,,
+"Both 'Generate invoice from sale order' and 'Generate invoice from stock move' are selected. It is recommended to select only one option at a time to avoid double invoicing.",,,
 "Building quantity",,,
 "Buyers",,,
 "Calculation End Date",,,

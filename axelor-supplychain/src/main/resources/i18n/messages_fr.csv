@@ -77,6 +77,7 @@
 "Blocked by","Bloqué par",,
 "Blocked until","Bloqué jusqu'au",,
 "Blocking reason","Raison du blocage",,
+"Both 'Generate invoice from sale order' and 'Generate invoice from stock move' are selected. It is recommended to select only one option at a time to avoid double invoicing.","Les options 'Générer la facture depuis la commande client' et 'Générer la facture depuis le mouvement de stock' sont toutes deux sélectionnées. Il est recommandé de ne sélectionner qu’une seule option à la fois afin d’éviter toute double facturation.",,
 "Building quantity","Quantité en fabrication",,
 "Buyers","Acheteur",,
 "Calculation End Date","Date de fin du calcul",,
