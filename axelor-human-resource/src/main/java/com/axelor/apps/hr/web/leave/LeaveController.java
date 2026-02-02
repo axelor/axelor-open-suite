@@ -196,6 +196,28 @@ public class LeaveController {
     }
   }
 
+  public void allLeave(ActionRequest request, ActionResponse response) {
+    try {
+      User user = AuthUtils.getUser();
+      Employee employee = user.getEmployee();
+
+      ActionViewBuilder actionView =
+          ActionView.define(I18n.get("All leave requests"))
+              .model(LeaveRequest.class.getName())
+              .add("grid", "leave-request-grid")
+              .add("form", "leave-request-form")
+              .param("search-filters", "leave-request-filters");
+
+      if (employee == null || !employee.getHrManager()) {
+        actionView.domain("self.employee.managerUser = :_user").context("_user", user);
+      }
+
+      response.setView(actionView.map());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void leaveCalendar(ActionRequest request, ActionResponse response) {
     try {
       User user = AuthUtils.getUser();
