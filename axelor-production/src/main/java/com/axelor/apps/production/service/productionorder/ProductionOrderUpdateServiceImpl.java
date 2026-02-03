@@ -22,7 +22,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
-import com.axelor.db.JPA;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import jakarta.inject.Inject;
 
 public class ProductionOrderUpdateServiceImpl implements ProductionOrderUpdateService {
@@ -36,14 +36,9 @@ public class ProductionOrderUpdateServiceImpl implements ProductionOrderUpdateSe
 
   @Override
   public ProductionOrder addManufOrder(ProductionOrder productionOrder, ManufOrder manufOrder) {
-    // Ensure entities are properly managed to avoid proxy issues
-    if (productionOrder.getId() != null) {
-      productionOrder = JPA.find(ProductionOrder.class, productionOrder.getId());
-    }
+    productionOrder = JpaModelHelper.ensureManaged(productionOrder);
     if (manufOrder != null) {
-      if (manufOrder.getId() != null) {
-        manufOrder = JPA.find(ManufOrder.class, manufOrder.getId());
-      }
+      manufOrder = JpaModelHelper.ensureManaged(manufOrder);
       productionOrder.addManufOrderSetItem(manufOrder);
       manufOrder.addProductionOrderSetItem(productionOrder);
     }

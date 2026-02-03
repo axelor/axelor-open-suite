@@ -25,7 +25,7 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.db.JPA;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.google.common.base.Strings;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -65,29 +65,24 @@ public class ManufOrderGenerationServiceImpl implements ManufOrderGenerationServ
 
     if (manufOrder != null) {
       if (saleOrder != null) {
-        SaleOrder managedSaleOrder = JPA.find(SaleOrder.class, saleOrder.getId());
-        manufOrder.addSaleOrderSetItem(managedSaleOrder);
-        if (managedSaleOrder.getClientPartner() != null) {
-          manufOrder.setClientPartner(managedSaleOrder.getClientPartner());
-        }
+        saleOrder = JpaModelHelper.ensureManaged(saleOrder);
+        manufOrder.addSaleOrderSetItem(saleOrder);
+        manufOrder.setClientPartner(saleOrder.getClientPartner());
         manufOrder.setMoCommentFromSaleOrder("");
         manufOrder.setMoCommentFromSaleOrderLine("");
 
-        if (!Strings.isNullOrEmpty(managedSaleOrder.getProductionNote())) {
-          manufOrder.setMoCommentFromSaleOrder(managedSaleOrder.getProductionNote());
+        if (!Strings.isNullOrEmpty(saleOrder.getProductionNote())) {
+          manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
         }
+        saleOrderLine = JpaModelHelper.ensureManaged(saleOrderLine);
         if (saleOrderLine != null
             && !Strings.isNullOrEmpty(saleOrderLine.getLineProductionComment())) {
           manufOrder.setMoCommentFromSaleOrderLine(saleOrderLine.getLineProductionComment());
         }
-        if (saleOrderLine != null) {
-          manufOrder.setSaleOrderLine(JPA.find(SaleOrderLine.class, saleOrderLine.getId()));
-        }
+        manufOrder.setSaleOrderLine(saleOrderLine);
       }
-
-      if (manufOrderParent != null) {
-        manufOrder.setParentMO(JPA.find(ManufOrder.class, manufOrderParent.getId()));
-      }
+      manufOrderParent = JpaModelHelper.ensureManaged(manufOrderParent);
+      manufOrder.setParentMO(manufOrderParent);
     }
     return manufOrder;
   }

@@ -179,7 +179,6 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       return productionOrder;
     }
 
-    // Save ProductionOrder immediately so it has an ID and can be reloaded later
     return productionOrderRepo.save(productionOrderService.createProductionOrder(saleOrder, null));
   }
 
