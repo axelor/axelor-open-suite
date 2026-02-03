@@ -2492,6 +2492,7 @@ if(params["PrintType"].value.equals('2'))
                     <property name="dataType">decimal</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <list-property name="sort">
                 <structure>
                     <expression name="key" type="javascript">row["product_code"]</expression>
@@ -4056,6 +4057,7 @@ if(params["PrintType"].value.equals('2'))
                     <property name="allowExport">true</property>
                 </structure>
             </list-property>
+            <property name="pageBreakInterval">0</property>
             <list-property name="sort">
                 <structure>
                     <expression name="key" type="javascript">row["product_code"]</expression>
