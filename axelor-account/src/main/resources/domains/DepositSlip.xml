@@ -26,6 +26,8 @@
       copy="false"/>
 
     <decimal name="totalAmount" scale="3" precision="20" readonly="true" copy="false"/>
+    <integer name="statusSelect" title="Status"
+      selection="account.deposit.slip.status.select" readonly="true" default="1"/>
 
     <!-- Cheque -->
     <integer name="chequeCount" title="Number of cheques" readonly="true" copy="false"/>
@@ -37,6 +39,15 @@
 
     <!-- Cash -->
     <!-- TODO -->
+
+    <extra-code><![CDATA[
+
+      	// STATUS SELECT
+		public static final int STATUS_DRAFT = 1;
+		public static final int STATUS_EDITED = 2;
+		public static final int STATUS_VALIDATED = 3;
+
+    ]]></extra-code>
 
   </entity>
 
