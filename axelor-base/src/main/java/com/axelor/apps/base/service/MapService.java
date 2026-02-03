@@ -19,6 +19,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Address;
 import java.math.BigDecimal;
 import java.util.Map;
 import org.apache.commons.lang3.tuple.Pair;
@@ -32,4 +33,6 @@ public interface MapService {
   String getMapURI(String name);
 
   boolean isConfigured();
+
+  String getAddressString(Address address);
 }

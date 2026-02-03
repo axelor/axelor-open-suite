@@ -1,0 +1,3 @@
+---
+title: "Supplychain batch: fixed an error occurring in 'Update stock history' batch."
+module: axelor-supplychain

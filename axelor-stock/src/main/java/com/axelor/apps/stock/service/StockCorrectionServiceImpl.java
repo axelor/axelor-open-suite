@@ -109,6 +109,9 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   }
 
   protected StockLocationLine getProductStockLocationLine(StockCorrection stockCorrection) {
+    if (stockCorrection.getProduct() == null) {
+      return null;
+    }
     StockLocationLine stockLocationLine;
     if (stockCorrection.getTrackingNumber() == null) {
       stockLocationLine =
