@@ -30,7 +30,6 @@ import com.axelor.apps.production.db.repo.ProductionOrderRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
@@ -66,16 +65,12 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     Company company =
         Optional.ofNullable(billOfMaterial).map(BillOfMaterial::getCompany).orElse(null);
     if (saleOrder != null) {
-      SaleOrder managedSaleOrder = JPA.find(SaleOrder.class, saleOrder.getId());
-      if (managedSaleOrder.getClientPartner() != null) {
-        productionOrder.setClientPartner(managedSaleOrder.getClientPartner());
-      }
-      productionOrder.setSaleOrder(managedSaleOrder);
+      productionOrder.setClientPartner(saleOrder.getClientPartner());
+      productionOrder.setSaleOrder(saleOrder);
       productionOrder.setProductionOrderSeq(
           String.format(
               "%s - %s",
-              managedSaleOrder.getFullName(),
-              this.getProductionOrderSeq(productionOrder, company)));
+              saleOrder.getFullName(), this.getProductionOrderSeq(productionOrder, company)));
     } else {
       productionOrder.setProductionOrderSeq(this.getProductionOrderSeq(productionOrder, company));
     }
