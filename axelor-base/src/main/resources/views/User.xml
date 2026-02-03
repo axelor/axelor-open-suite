@@ -410,7 +410,7 @@
     <attribute name="hidden" for="passwordPanel" expr="false"/>
     <attribute name="required" for="partner.emailAddress"
       expr="sendEmailUponPasswordChange"/>
-    <attribute name="value" for="$generateRandomPassword" expr="false"/>
+    <attribute name="value" for="$generateRandomPassword" expr="eval: false"/>
     <attribute name="title" for="passwordPatternDescriptionLabel"
       expr="call: com.axelor.apps.base.service.user.UserService:getPasswordPatternDescription()"/>
     <attribute name="readonly" for="code"
