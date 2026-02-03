@@ -24,9 +24,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.MoveTemplate;
 import com.axelor.apps.account.db.MoveTemplateLine;
 import com.axelor.apps.account.db.MoveTemplateType;
-import com.axelor.apps.account.db.Tax;
 import com.axelor.apps.account.db.TaxLine;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateLineRepository;
 import com.axelor.apps.account.db.repo.MoveTemplateRepository;
@@ -45,7 +43,6 @@ import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.BankDetailsService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -76,13 +73,13 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
   protected AnalyticLineService analyticLineService;
   protected PartnerRepository partnerRepo;
-  protected TaxService taxService;
   protected BankDetailsService bankDetailsService;
   protected MoveTemplateRepository moveTemplateRepo;
   protected MoveLineTaxService moveLineTaxService;
   protected MoveLineInvoiceTermService moveLineInvoiceTermService;
   protected MoveLineToolService moveLineToolService;
   protected MoveRecordUpdateService moveRecordUpdateService;
+  protected MoveTemplateTaxService moveTemplateTaxService;
 
   protected List<String> exceptionsList;
 
@@ -93,7 +90,6 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
       MoveRepository moveRepo,
       MoveLineCreateService moveLineCreateService,
       PartnerRepository partnerRepo,
-      TaxService taxService,
       MoveLineComputeAnalyticService moveLineComputeAnalyticService,
       AnalyticLineService analyticLineService,
       BankDetailsService bankDetailsService,
@@ -101,14 +97,14 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
       MoveLineTaxService moveLineTaxService,
       MoveLineInvoiceTermService moveLineInvoiceTermService,
       MoveRecordUpdateService moveRecordUpdateService,
-      MoveLineToolService moveLineToolService) {
+      MoveLineToolService moveLineToolService,
+      MoveTemplateTaxService moveTemplateTaxService) {
 
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveRepo = moveRepo;
     this.moveLineCreateService = moveLineCreateService;
     this.partnerRepo = partnerRepo;
-    this.taxService = taxService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
     this.analyticLineService = analyticLineService;
     this.bankDetailsService = bankDetailsService;
@@ -117,6 +113,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
     this.moveLineInvoiceTermService = moveLineInvoiceTermService;
     this.moveRecordUpdateService = moveRecordUpdateService;
     this.moveLineToolService = moveLineToolService;
+    this.moveTemplateTaxService = moveTemplateTaxService;
 
     this.exceptionsList = Lists.newArrayList();
   }
@@ -124,17 +121,6 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
   @Override
   public List<String> getExceptionsList() {
     return exceptionsList;
-  }
-
-  @Transactional
-  protected void validateMoveTemplateLine(MoveTemplate moveTemplate) {
-    moveTemplate.setIsValid(true);
-
-    for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-      line.setIsValid(true);
-    }
-
-    moveTemplateRepo.save(moveTemplate);
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -211,10 +197,18 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
                 companyBankDetails);
 
         int counter = 1;
+        Map<MoveLine, TaxLine> linesToSetTaxLineAfterAutoGen = new HashMap<>();
+
+        // Check if template has explicit tax lines - if so, don't apply computeTaxAtCreation
+        boolean hasExplicitTaxLines =
+            moveTemplate.getMoveTemplateLineList().stream()
+                .anyMatch(moveTemplateTaxService::isTaxAccountLine);
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
-          if (!AccountTypeRepository.TYPE_TAX.equals(
-              moveTemplateLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
+          boolean isTaxLine = moveTemplateTaxService.isTaxAccountLine(moveTemplateLine);
+
+          if (!isTaxLine) {
+            // Base line (non-tax account)
             partner = null;
             if (moveTemplateLine.getDebitCreditSelect().equals(MoveTemplateLineRepository.DEBIT)) {
               isDebit = true;
@@ -235,6 +229,10 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
                     .multiply(moveTemplateLine.getPercentage())
                     .divide(hundred, RoundingMode.HALF_UP);
 
+            amount =
+                moveTemplateTaxService.computeBaseAmountExcludingTax(
+                    moveTemplateLine, moveDate, amount, hasExplicitTaxLines);
+
             MoveLine moveLine =
                 moveLineCreateService.createMoveLine(
                     move,
@@ -249,17 +247,9 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
                     moveTemplateLine.getName());
             move.getMoveLineList().add(moveLine);
 
-            Tax tax = moveTemplateLine.getTax();
+            moveTemplateTaxService.setTaxInfoOnMoveLine(
+                move, moveLine, moveTemplateLine, moveDate, linesToSetTaxLineAfterAutoGen);
 
-            if (tax != null) {
-              TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
-              if (taxLine != null) {
-                moveLine.setTaxLineSet(Sets.newHashSet(taxLine));
-                moveLine.setTaxRate(taxLine.getValue());
-                moveLine.setTaxCode(tax.getCode());
-                moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
-              }
-            }
             List<AnalyticMoveLine> analyticMoveLineList =
                 CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
                     ? new ArrayList<>()
@@ -280,10 +270,47 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
             moveRecordUpdateService.updateDueDate(move, false, false);
 
             counter++;
+          } else {
+            // Tax line - create or update
+            BigDecimal percentage =
+                moveTemplateLine.getPercentage() != null
+                    ? moveTemplateLine.getPercentage()
+                    : BigDecimal.ZERO;
+            if (percentage.compareTo(BigDecimal.ZERO) == 0) {
+              continue;
+            }
+
+            BigDecimal amount =
+                moveBalance.multiply(percentage).divide(hundred, 2, RoundingMode.HALF_UP);
+            isDebit =
+                MoveTemplateLineRepository.DEBIT.equals(moveTemplateLine.getDebitCreditSelect());
+
+            counter =
+                moveTemplateTaxService.createOrUpdateTaxMoveLine(
+                    move,
+                    moveTemplate,
+                    moveTemplateLine,
+                    moveDate,
+                    amount,
+                    isDebit,
+                    counter,
+                    origin);
           }
         }
 
-        moveLineTaxService.autoTaxLineGenerate(move, null, true);
+        if (!hasExplicitTaxLines) {
+          // No explicit tax lines in template, use autoTaxLineGenerate
+          boolean hasComputeTaxAtCreation =
+              moveTemplate.getMoveTemplateLineList().stream()
+                  .anyMatch(line -> Boolean.TRUE.equals(line.getComputeTaxAtCreation()));
+          moveLineTaxService.autoTaxLineGenerate(move, null, !hasComputeTaxAtCreation);
+        }
+
+        // Set taxLineSet on lines with computeTaxAtCreation=false
+        for (Map.Entry<MoveLine, TaxLine> entry : linesToSetTaxLineAfterAutoGen.entrySet()) {
+          entry.getKey().setTaxLineSet(Sets.newHashSet(entry.getValue()));
+        }
+
         manageAccounting(moveTemplate, move);
 
         moveList.add(move.getId());
@@ -338,59 +365,26 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
                 companyBankDetails);
 
         int counter = 1;
+        Map<MoveLine, TaxLine> linesToSetTaxLineAfterAutoGen = new HashMap<>();
+
+        // Check if template has explicit tax lines - if so, don't apply computeTaxAtCreation
+        boolean hasExplicitTaxLines =
+            moveTemplate.getMoveTemplateLineList().stream()
+                .anyMatch(moveTemplateTaxService::isTaxAccountLine);
 
         for (MoveTemplateLine moveTemplateLine : moveTemplate.getMoveTemplateLineList()) {
-          if (!AccountTypeRepository.TYPE_TAX.equals(
-              moveTemplateLine.getAccount().getAccountType().getTechnicalTypeSelect())) {
-            BigDecimal amount = moveTemplateLine.getDebit().add(moveTemplateLine.getCredit());
-
-            MoveLine moveLine =
-                moveLineCreateService.createMoveLine(
-                    move,
-                    moveTemplateLine.getPartner(),
-                    moveTemplateLine.getAccount(),
-                    amount,
-                    moveTemplateLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
-                    moveDate,
-                    moveDate,
-                    counter,
-                    moveTemplate.getFullName(),
-                    moveTemplateLine.getName());
-            move.getMoveLineList().add(moveLine);
-
-            Tax tax = moveTemplateLine.getTax();
-
-            if (tax != null) {
-              TaxLine taxLine = taxService.getTaxLine(tax, moveDate);
-              if (taxLine != null) {
-                moveLine.setTaxLineSet(Sets.newHashSet(taxLine));
-                moveLine.setTaxRate(taxLine.getValue());
-                moveLine.setTaxCode(tax.getCode());
-                moveLine.setVatSystemSelect(moveLineTaxService.getVatSystem(move, moveLine));
-              }
-            }
-
-            List<AnalyticMoveLine> analyticMoveLineList =
-                CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
-                    ? new ArrayList<>()
-                    : new ArrayList<>(moveLine.getAnalyticMoveLineList());
-            moveLine.clearAnalyticMoveLineList();
-            moveLine.setAnalyticDistributionTemplate(
-                moveTemplateLine.getAnalyticDistributionTemplate());
-
-            moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
-            moveRecordUpdateService.updateDueDate(move, false, false);
-            moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
-            moveLineToolService.setDecimals(moveLine, move);
-
-            if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
-              moveLine.setAnalyticMoveLineList(analyticMoveLineList);
-            }
-            analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
-            counter++;
-          } else {
+          if (moveTemplateTaxService.isTaxAccountLine(moveTemplateLine)) {
             taxLineDescription = moveTemplateLine.getName();
           }
+          counter =
+              generateMoveLine(
+                  moveTemplate,
+                  moveTemplateLine,
+                  move,
+                  moveDate,
+                  hasExplicitTaxLines,
+                  linesToSetTaxLineAfterAutoGen,
+                  counter);
         }
 
         if (ObjectUtils.notEmpty(move)
@@ -403,7 +397,17 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
         }
 
         move.setDescription(taxLineDescription);
-        moveLineTaxService.autoTaxLineGenerate(move, null, false);
+
+        if (!hasExplicitTaxLines) {
+          // No explicit tax lines in template, use autoTaxLineGenerate
+          moveLineTaxService.autoTaxLineGenerate(move, null, false);
+        }
+
+        // Set taxLineSet on lines with computeTaxAtCreation=false
+        for (Map.Entry<MoveLine, TaxLine> entry : linesToSetTaxLineAfterAutoGen.entrySet()) {
+          entry.getKey().setTaxLineSet(Sets.newHashSet(entry.getValue()));
+        }
+
         manageAccounting(moveTemplate, move);
 
         move.setDescription(moveTemplate.getDescription());
@@ -418,6 +422,86 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
     return moveList;
   }
 
+  protected int generateMoveLine(
+      MoveTemplate moveTemplate,
+      MoveTemplateLine moveTemplateLine,
+      Move move,
+      LocalDate moveDate,
+      boolean hasExplicitTaxLines,
+      Map<MoveLine, TaxLine> linesToSetTaxLineAfterAutoGen,
+      int counter)
+      throws AxelorException {
+    boolean isTaxLine = moveTemplateTaxService.isTaxAccountLine(moveTemplateLine);
+
+    if (!isTaxLine) {
+      // Base line (non-tax account)
+      BigDecimal amount = moveTemplateLine.getDebit().add(moveTemplateLine.getCredit());
+
+      amount =
+          moveTemplateTaxService.computeBaseAmountExcludingTax(
+              moveTemplateLine, moveDate, amount, hasExplicitTaxLines);
+
+      MoveLine moveLine =
+          moveLineCreateService.createMoveLine(
+              move,
+              moveTemplateLine.getPartner(),
+              moveTemplateLine.getAccount(),
+              amount,
+              moveTemplateLine.getDebit().compareTo(BigDecimal.ZERO) > 0,
+              moveDate,
+              moveDate,
+              counter,
+              moveTemplate.getFullName(),
+              moveTemplateLine.getName());
+      move.getMoveLineList().add(moveLine);
+
+      moveTemplateTaxService.setTaxInfoOnMoveLine(
+          move, moveLine, moveTemplateLine, moveDate, linesToSetTaxLineAfterAutoGen);
+
+      List<AnalyticMoveLine> analyticMoveLineList =
+          CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())
+              ? new ArrayList<>()
+              : new ArrayList<>(moveLine.getAnalyticMoveLineList());
+      moveLine.clearAnalyticMoveLineList();
+      moveLine.setAnalyticDistributionTemplate(moveTemplateLine.getAnalyticDistributionTemplate());
+
+      moveLineInvoiceTermService.generateDefaultInvoiceTerm(move, moveLine, false);
+      moveRecordUpdateService.updateDueDate(move, false, false);
+      moveLineComputeAnalyticService.generateAnalyticMoveLines(moveLine);
+      moveLineToolService.setDecimals(moveLine, move);
+
+      if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
+        moveLine.setAnalyticMoveLineList(analyticMoveLineList);
+      }
+      analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
+      counter++;
+    } else {
+      // Tax line - create or update
+      BigDecimal debit =
+          moveTemplateLine.getDebit() != null ? moveTemplateLine.getDebit() : BigDecimal.ZERO;
+      BigDecimal credit =
+          moveTemplateLine.getCredit() != null ? moveTemplateLine.getCredit() : BigDecimal.ZERO;
+      BigDecimal amount = debit.add(credit);
+      if (amount.compareTo(BigDecimal.ZERO) == 0) {
+        return counter;
+      }
+      boolean isDebit = debit.compareTo(BigDecimal.ZERO) > 0;
+
+      counter =
+          moveTemplateTaxService.createOrUpdateTaxMoveLine(
+              move,
+              moveTemplate,
+              moveTemplateLine,
+              moveDate,
+              amount,
+              isDebit,
+              counter,
+              moveTemplate.getFullName());
+    }
+
+    return counter;
+  }
+
   protected void manageAccounting(MoveTemplate moveTemplate, Move move) {
     if (!moveTemplate.getAutomaticallyValidate()) {
       return;
@@ -429,66 +513,6 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
       if (!exceptionsList.contains(message)) {
         exceptionsList.add(message);
       }
-    }
-  }
-
-  @Override
-  public boolean checkValidity(MoveTemplate moveTemplate) {
-
-    MoveTemplateType moveTemplateType = moveTemplate.getMoveTemplateType();
-
-    if (moveTemplateType == null) {
-      return false;
-    }
-
-    if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_PERCENTAGE) {
-      return this.checkValidityInPercentage(moveTemplate);
-    } else if (moveTemplateType.getTypeSelect() == MoveTemplateTypeRepository.TYPE_AMOUNT) {
-      return this.checkValidityInAmount(moveTemplate);
-    } else {
-      return false;
-    }
-  }
-
-  protected boolean checkValidityInPercentage(MoveTemplate moveTemplate) {
-    BigDecimal debitPercent = BigDecimal.ZERO;
-    BigDecimal creditPercent = BigDecimal.ZERO;
-    for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-      LOG.debug("Adding percent: {}", line.getPercentage());
-      if (MoveTemplateLineRepository.DEBIT.equals(line.getDebitCreditSelect())) {
-        debitPercent = debitPercent.add(line.getPercentage());
-      } else {
-        creditPercent = creditPercent.add(line.getPercentage());
-      }
-    }
-
-    LOG.debug("Debit percent: {}, Credit percent: {}", debitPercent, creditPercent);
-    if (debitPercent.compareTo(BigDecimal.ZERO) != 0
-        && creditPercent.compareTo(BigDecimal.ZERO) != 0
-        && debitPercent.compareTo(creditPercent) == 0) {
-      this.validateMoveTemplateLine(moveTemplate);
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  protected boolean checkValidityInAmount(MoveTemplate moveTemplate) {
-    BigDecimal debit = BigDecimal.ZERO;
-    BigDecimal credit = BigDecimal.ZERO;
-    for (MoveTemplateLine line : moveTemplate.getMoveTemplateLineList()) {
-      debit = debit.add(line.getDebit());
-      credit = credit.add(line.getCredit());
-    }
-
-    LOG.debug("Debit : {}, Credit : {}", debit, credit);
-    if (debit.compareTo(BigDecimal.ZERO) != 0
-        && credit.compareTo(BigDecimal.ZERO) != 0
-        && debit.compareTo(credit) == 0) {
-      this.validateMoveTemplateLine(moveTemplate);
-      return true;
-    } else {
-      return false;
     }
   }
 

@@ -29,6 +29,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
+import com.axelor.apps.account.service.move.template.MoveTemplateCheckService;
 import com.axelor.apps.account.service.move.template.MoveTemplateGroupService;
 import com.axelor.apps.account.service.move.template.MoveTemplateService;
 import com.axelor.apps.base.AxelorException;
@@ -61,15 +62,19 @@ public class MoveTemplateController {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void checkValidity(ActionRequest request, ActionResponse response) {
-    MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
-    moveTemplate = Beans.get(MoveTemplateRepository.class).find(moveTemplate.getId());
+    try {
+      MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
+      moveTemplate = Beans.get(MoveTemplateRepository.class).find(moveTemplate.getId());
 
-    boolean valid = Beans.get(MoveTemplateService.class).checkValidity(moveTemplate);
+      boolean valid = Beans.get(MoveTemplateCheckService.class).checkValidity(moveTemplate);
 
-    if (valid) {
-      response.setReload(true);
-    } else {
-      response.setInfo(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_1));
+      if (valid) {
+        response.setReload(true);
+      } else {
+        response.setInfo(I18n.get(AccountExceptionMessage.MOVE_TEMPLATE_1));
+      }
+    } catch (AxelorException e) {
+      response.setInfo(e.getMessage());
     }
   }
 
@@ -176,6 +181,7 @@ public class MoveTemplateController {
             Beans.get(MoveViewHelperService.class)
                 .filterPartner(moveTemplate.getCompany(), moveTemplate.getJournal());
         response.setAttr("partner", "domain", domain);
+        response.setValue("company", moveTemplate.getCompany());
       }
     } catch (Exception e) {
       TraceBackService.trace(response, e);

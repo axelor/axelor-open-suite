@@ -350,10 +350,14 @@ import com.axelor.apps.account.service.move.record.MoveRecordSetService;
 import com.axelor.apps.account.service.move.record.MoveRecordSetServiceImpl;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateService;
 import com.axelor.apps.account.service.move.record.MoveRecordUpdateServiceImpl;
+import com.axelor.apps.account.service.move.template.MoveTemplateCheckService;
+import com.axelor.apps.account.service.move.template.MoveTemplateCheckServiceImpl;
 import com.axelor.apps.account.service.move.template.MoveTemplateGroupService;
 import com.axelor.apps.account.service.move.template.MoveTemplateGroupServiceImpl;
 import com.axelor.apps.account.service.move.template.MoveTemplateService;
 import com.axelor.apps.account.service.move.template.MoveTemplateServiceImpl;
+import com.axelor.apps.account.service.move.template.MoveTemplateTaxService;
+import com.axelor.apps.account.service.move.template.MoveTemplateTaxServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineAttrsService;
 import com.axelor.apps.account.service.moveline.MoveLineAttrsServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineCheckService;
@@ -911,6 +915,10 @@ public class AccountModule extends AxelorModule {
     bind(YearAccountService.class).to(YearAccountServiceImpl.class);
 
     bind(MoveTemplateService.class).to(MoveTemplateServiceImpl.class);
+
+    bind(MoveTemplateCheckService.class).to(MoveTemplateCheckServiceImpl.class);
+
+    bind(MoveTemplateTaxService.class).to(MoveTemplateTaxServiceImpl.class);
 
     bind(MoveTemplateGroupService.class).to(MoveTemplateGroupServiceImpl.class);
 
