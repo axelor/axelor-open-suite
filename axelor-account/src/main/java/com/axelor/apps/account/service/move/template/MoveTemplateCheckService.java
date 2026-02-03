@@ -19,24 +19,16 @@
 package com.axelor.apps.account.service.move.template;
 
 import com.axelor.apps.account.db.MoveTemplate;
-import com.axelor.apps.account.db.MoveTemplateType;
 import com.axelor.apps.base.AxelorException;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-public interface MoveTemplateService {
+public interface MoveTemplateCheckService {
 
-  List<String> getExceptionsList();
-
-  List<Long> generateMove(
-      MoveTemplateType moveTemplateType,
-      MoveTemplate moveTemplate,
-      List<HashMap<String, Object>> dataList,
-      LocalDate date,
-      List<HashMap<String, Object>> moveTemplateList)
-      throws AxelorException;
-
-  Map<String, Object> computeTotals(MoveTemplate moveTemplate);
+  /**
+   * Checks the validity of a move template.
+   *
+   * @param moveTemplate the move template to validate
+   * @return true if the template is valid, false otherwise
+   * @throws AxelorException if validation fails with an error
+   */
+  boolean checkValidity(MoveTemplate moveTemplate) throws AxelorException;
 }

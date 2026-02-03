@@ -29,6 +29,7 @@ import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveViewHelperService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
+import com.axelor.apps.account.service.move.template.MoveTemplateCheckService;
 import com.axelor.apps.account.service.move.template.MoveTemplateGroupService;
 import com.axelor.apps.account.service.move.template.MoveTemplateService;
 import com.axelor.apps.base.AxelorException;
@@ -65,7 +66,7 @@ public class MoveTemplateController {
       MoveTemplate moveTemplate = request.getContext().asType(MoveTemplate.class);
       moveTemplate = Beans.get(MoveTemplateRepository.class).find(moveTemplate.getId());
 
-      boolean valid = Beans.get(MoveTemplateService.class).checkValidity(moveTemplate);
+      boolean valid = Beans.get(MoveTemplateCheckService.class).checkValidity(moveTemplate);
 
       if (valid) {
         response.setReload(true);
