@@ -15,6 +15,7 @@
     <field name="totalAmount" x-scale="currency.numberOfDecimals"/>
     <field name="chequeCount"/>
     <field name="publicationDate"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="cheque-deposit-slip-form" model="com.axelor.apps.account.db.DepositSlip"
@@ -27,6 +28,7 @@
     </panel>
 
     <panel name="definitionPanel" readonlyIf="paymentVoucherList.length > 0">
+      <field name="statusSelect" widget="NavSelect" colSpan="6" showTitle="false"/>
       <field name="depositType"/>
       <panel name="companyDetailsPanel" colSpan="12">
         <field name="company" onChange="action-deposit-slip-company-onchange" canEdit="false"
@@ -61,7 +63,8 @@
     <panel readonlyIf="isBankDepositMoveGenerated">
       <button onClick="save,action-deposit-slip-load-payment-voucher-due-list"
         name="loadAvailablePaymentVoucherBtn"
-        title="Load available payment vouchers for bank deposit" colOffset="8" colSpan="4"/>
+        title="Load available payment vouchers for bank deposit" colOffset="8" colSpan="4"
+        hideIf="statusSelect == 3"/>
       <panel-related field="__paymentVoucherDueList"
         title="Available payment vouchers for deposit slip" type="ONE-TO-MANY"
         target="com.axelor.apps.account.db.PaymentVoucher" canEdit="false" canNew="false"
@@ -70,11 +73,12 @@
       <button
         onClick="action-deposit-slip-method-load-payment-voucher,action-deposit-slip-record-total-amount-cheque-count,save,action-deposit-slip-load-payment-voucher-due-list"
         name="loadSelectedLinesBtn" title="Load selected lines" colOffset="6" colSpan="3"
-        readonlyIf="__paymentVoucherDueList.length == 0" css="btn-success"/>
+        readonlyIf="__paymentVoucherDueList.length == 0" css="btn-success"
+        hideIf="statusSelect == 3"/>
       <button
         onClick="save,action-cheque-deposit-slip-attrs-reset-payment-vouchers,save,action-deposit-slip-load-payment-voucher-due-list"
         name="resetSelectedLinesBtn" title="Reset selected lines" colSpan="3" css="btn-danger"
-        readonlyIf="paymentVoucherList.length == 0"/>
+        readonlyIf="paymentVoucherList.length == 0" hideIf="statusSelect == 3"/>
     </panel>
 
     <panel>
@@ -91,7 +95,8 @@
           name="updateDepositDatesBtn" title="Update deposit dates" readonlyIf="!__depositDate"/>
       </panel>
       <panel colSpan="3" colOffset="4" itemSpan="12"
-        readonlyIf="isBankDepositMoveGenerated || !paymentVoucherList || paymentVoucherList.length == 0">
+        readonlyIf="isBankDepositMoveGenerated || !paymentVoucherList || paymentVoucherList.length == 0"
+        hideIf="statusSelect == 3">
         <button onClick="save,action-deposit-slip-publish" name="updatePublishDepositSlipBtn"
           title="Publish deposit slip" css="btn-success"/>
         <button onClick="save,action-deposit-slip-method-validate"
@@ -99,7 +104,10 @@
           hideIf="!publicationDate"/>
       </panel>
     </panel>
-
+    <panel name="movesPanel" showIf="statusSelect == 3">
+      <button onClick="action-deposit-slip-view-generated-moves" name="showMovesBtn"
+        title="Show moves" colSpan="3"/>
+    </panel>
     <panel name="depositDetailsPanel" showIf="depositNumber" itemSpan="4">
       <field name="depositNumber"/>
       <field name="publicationDate"/>
@@ -265,5 +273,14 @@
     <field name="company" hidden="true"
       if="!__config__.app.getApp('base')?.getEnableMultiCompany()"/>
   </search-filters>
+
+  <action-view name="action-deposit-slip-view-generated-moves" title="Generated moves"
+    model="com.axelor.apps.account.db.Move">
+    <view type="grid" name="move-grid"/>
+    <view type="form" name="move-form"/>
+    <domain>self.id IN (SELECT generatedMove.id FROM PaymentVoucher pv WHERE pv.depositSlip.id =
+      :_depositSlipId)</domain>
+    <context name="_depositSlipId" expr="eval: id"/>
+  </action-view>
 
 </object-views>
