@@ -127,7 +127,7 @@ public class SaleOrderLineDummySupplychainServiceImpl extends SaleOrderLineDummy
       SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
     Map<String, Object> dummyFields = new HashMap<>();
     if (!appSupplychainService.isApp("supplychain")) {
-      return dummyFields;
+      return super.initReadonlyDummy(saleOrder, saleOrderLine);
     }
     int statusSelect = saleOrder.getStatusSelect();
     BigDecimal exTaxTotal = saleOrderLine.getExTaxTotal();
