@@ -1139,6 +1139,9 @@ public final class AccountExceptionMessage {
   public static final String MOVE_TEMPLATE_TAX_AMOUNT_MISMATCH = /*$$(*/
       "Tax amount mismatch for tax %s: expected %s (base: %s x rate: %s%%), found %s" /*)*/;
 
+  public static final String MOVE_TEMPLATE_MIXED_COMPUTE_TAX_AT_CREATION = /*$$(*/
+      "Lines with account %s and tax %s have inconsistent 'Compute tax at creation' values. All lines with the same account and tax must have the same setting." /*)*/;
+
   /** Mass entry move controller */
   public static final String MASS_ENTRY_MOVE_CONTROL_ERROR = /*$$(*/
       "Error(s) during moves control" /*)*/;

@@ -53,6 +53,7 @@
         onSelect="action-move-template-line-method-account-onselect" grid-view="account-grid"
         form-view="account-form" onChange="action-move-template-line-group-account-onchange"/>
       <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
+      <field name="computeTaxAtCreation" showIf="tax != null"/>
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form"/>
@@ -81,6 +82,7 @@
       <field name="hasPartnerToDebit" showIf="debitCreditSelect == 'D'"/>
       <field name="hasPartnerToCredit" showIf="debitCreditSelect == 'C'"/>
       <field name="tax" canEdit="false" grid-view="tax-grid" form-view="tax-form"/>
+      <field name="computeTaxAtCreation" showIf="tax != null"/>
       <field name="analyticDistributionTemplate"
         grid-view="analytic-distribution-template-grid"
         form-view="analytic-distribution-template-form"/>
@@ -140,6 +142,7 @@
 
   <action-record name="action-move-template-line-record-account-onchange"
     model="com.axelor.apps.account.db.MoveTemplateLine">
+    <field name="tax" expr="eval: null"/>
     <field name="tax" expr="eval: account?.defaultTax"/>
     <field name="analyticDistributionTemplate"
       expr="eval: account?.analyticDistributionTemplate "/>
