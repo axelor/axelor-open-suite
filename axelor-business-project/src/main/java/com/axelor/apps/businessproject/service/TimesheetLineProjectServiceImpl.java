@@ -18,9 +18,11 @@
  */
 package com.axelor.apps.businessproject.service;
 
+import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.businessproject.service.statuschange.TaskStatusChangeService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -36,6 +38,7 @@ import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
+import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -155,5 +158,20 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
   public Product getDefaultProduct(TimesheetLine timesheetLine) {
     return userHrService.getTimesheetProduct(
         timesheetLine.getEmployee(), timesheetLine.getProjectTask());
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void validateLine(TimesheetLine line) throws AxelorAlertException {
+    super.validateLine(line);
+    Beans.get(TaskStatusChangeService.class).changeTaskStatusToDone(line.getProjectTask());
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void cancelTimesheetLineValidation(TimesheetLine line) throws AxelorAlertException {
+    super.cancelTimesheetLineValidation(line);
+    Beans.get(TaskStatusChangeService.class)
+        .revertTaskStatusOnTimesheetLineCancel(line.getProjectTask());
   }
 }

@@ -338,7 +338,8 @@
       <panel-include view="incl-project-roadmap-panel-form"
         if="__user__.group.code == 'admins'"/>
       <!--- MGM-66: display panel to only selected group e.g admins -->
-      <panel title="Invoicing" name="invoicingPanel"
+      <panel onTabSelect="mgm-action-record-default-invoice-flags-true" title="Invoicing"
+        name="invoicingPanel"
         if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))">
         <!-- MGM-80: No need to show this help message -->
         <!-- <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses,
@@ -373,7 +374,7 @@
 
   <form title="Business project" model="com.axelor.apps.project.db.Project" width="large"
     name="business-project-financial-datas-form"
-    onLoad="action-business-project-method-set-analytic-distribution-template-required,mgm-action-record-default-invoice-flags-true,save">
+    onLoad="action-business-project-method-set-analytic-distribution-template-required">
     <panel name="fullNamePanel" readonly="true">
       <field name="fullName"/>
     </panel>
@@ -1428,6 +1429,11 @@
   <action-method name="action-method-validate-code-and-get-next">
     <call class="com.axelor.apps.project.web.ProjectController"
       method="getNextAvailableProjectCode"/>
+  </action-method>
+
+  <action-method name="action-method-set-project-status-to-paid">
+    <call class="com.axelor.apps.businessproject.web.InvoicePaymentController"
+      method="setProjectStatusPaid"/>
   </action-method>
 
   <action-group name="action-business-project-group-finish-project">

@@ -169,13 +169,13 @@
       <field name="fullName" showTitle="false" colSpan="12" css="label-bold bold large">
         <editor x-show-titles="false">
           <panel name="seq" colSpan="3">
-            <field name="code" showTitle="true" colSpan="12" placeholder="Auftragsnummer"
+            <field name="code" showTitle="true" readonlyIf="id == null" colSpan="12"
+              placeholder="Auftragsnummer"
               if="__config__.app.getApp('project')?.generateProjectSequence"
               css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"
               onChange="action-method-validate-code-and-get-next"/>
-            <field name="code" showTitle="true" readonlyIf="id == null" onSelect=""
-              placeholder="Auftragsnummer" colSpan="12" required="true"
-              if="!__config__.app.getApp('project')?.generateProjectSequence"
+            <field name="code" showTitle="true" placeholder="Auftragsnummer" required="true"
+              colSpan="12" if="!__config__.app.getApp('project')?.generateProjectSequence"
               css="label-bold bold large" x-bind="{{code|unaccent|uppercase}}"
               onChange="action-method-validate-code-and-get-next"/>
           </panel>

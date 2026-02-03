@@ -12,6 +12,7 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -55,9 +56,10 @@ public class TaskReportServiceImpl implements TaskReportService {
     }
 
     // Return true only if all project tasks have been reported
-    boolean reportedallTasks = reportedTaskIds.containsAll(allProjectTaskIds);
-    log.info("all task reported ? {}", reportedallTasks);
-    return reportedallTasks;
+    boolean reportedAllTasks = reportedTaskIds.containsAll(allProjectTaskIds);
+
+    log.info("all task reported ? {}", reportedAllTasks);
+    return reportedAllTasks;
   }
 
   @Override
@@ -234,6 +236,17 @@ public class TaskReportServiceImpl implements TaskReportService {
     log.info("Created timesheet for employee={} from={} to={}", employee.getId(), fromDate, toDate);
 
     return timesheet;
+  }
+
+  @Override
+  public TaskReport getTaskReport(Project project) {
+    if (project == null) {
+      return null;
+    }
+    return Query.of(TaskReport.class)
+        .filter("self.project.id = :projectId")
+        .bind("projectId", project.getId())
+        .fetchOne();
   }
 
   /** Validates report and fetch entity from repository */

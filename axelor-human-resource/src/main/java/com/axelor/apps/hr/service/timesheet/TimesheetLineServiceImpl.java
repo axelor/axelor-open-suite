@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.Product;
@@ -402,7 +403,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void validateLine(TimesheetLine line) {
+  public void validateLine(TimesheetLine line) throws AxelorAlertException {
     line.setIsValidated(true);
     line.setValidationDateTime(LocalDateTime.now());
     line.setValidatedBy(AuthUtils.getUser());
@@ -411,7 +412,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void cancelTimesheetLineValidation(TimesheetLine line) {
+  public void cancelTimesheetLineValidation(TimesheetLine line) throws AxelorAlertException {
     line.setIsValidated(false);
     line.setValidatedBy(null);
     line.setValidationDateTime(null);

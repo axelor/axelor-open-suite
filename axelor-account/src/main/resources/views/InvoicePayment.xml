@@ -106,7 +106,7 @@
     </panel>
     <panel name="newInvoicePaymentPanel" hideIf="id">
       <button name="saveBtn" title="OK" colOffset="11" colspan="1" width="50"
-        onClick="action-invoice-payment-method-check-and-save,save,close"/>
+        onClick="action-invoice-payment-method-check-and-save,save, action-method-set-project-status-to-paid, close"/>
     </panel>
   </form>
 

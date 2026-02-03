@@ -18,12 +18,16 @@
  */
 package com.axelor.apps.businessproject.db.repo;
 
+import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateService;
+import com.axelor.apps.businessproject.service.statuschange.ProjectStatusChangeService;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
+import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
+import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.HashSet;
@@ -91,7 +95,31 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
       throw new PersistenceException(e.getMessage(), e);
     }
 
+    // Update the project status to in progress when one of its task is set to in progress
+    // At this point task templates are already filtered out.
+    try {
+      Beans.get(ProjectStatusChangeService.class).updateProjectStatus(savedTask.getProject());
+    } catch (AxelorAlertException e) {
+      throw new PersistenceException(e.getMessage(), e);
+    }
+
     return savedTask;
+  }
+
+  @Override
+  public void remove(ProjectTask task) {
+    Project project = task.getProject();
+    super.remove(task);
+
+    // When a task is deleted the project status needs to be updated to reflect this change
+    // That is if it is not a template task
+    if (task.getIsTemplate()) {
+      try {
+        Beans.get(ProjectStatusChangeService.class).updateProjectStatus(project);
+      } catch (AxelorAlertException e) {
+        throw new PersistenceException(e.getMessage(), e);
+      }
+    }
   }
 
   /** check if task has multiple users */

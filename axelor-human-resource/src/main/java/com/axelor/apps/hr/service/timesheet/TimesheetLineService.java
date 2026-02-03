@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.hr.db.Employee;
@@ -100,7 +101,7 @@ public interface TimesheetLineService {
 
   void splitTimesheetLine(TimesheetLine line);
 
-  void validateLine(TimesheetLine line);
+  void validateLine(TimesheetLine line) throws AxelorAlertException;
 
-  void cancelTimesheetLineValidation(TimesheetLine line);
+  void cancelTimesheetLineValidation(TimesheetLine line) throws AxelorAlertException;
 }

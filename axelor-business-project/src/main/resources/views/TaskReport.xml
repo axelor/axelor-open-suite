@@ -63,7 +63,7 @@
             canEdit="true" form-view="task-member-report-form"
             onChange="action-task-member-report-group-onChange"/>
           <panel>
-            <field name="totalWorkHours" colSpan="3"/>
+            <field name="totalWorkHours" colSpan="3" x-dirty="false"/>
           </panel>
         </panel>
 
@@ -304,9 +304,10 @@
   </action-group>
 
   <action-group name="action-task-member-report-group-onChange">
+    <action name="save"/>
     <action name="action-update-total-work-hours"/>
     <action name="action-task-report-method-updated-reported-task-count"/>
-    <action name="save"/>
+    <action name="action-task-report-set-flag"/>
   </action-group>
 
   <action-group name="action-group-task-member-report-on-save">

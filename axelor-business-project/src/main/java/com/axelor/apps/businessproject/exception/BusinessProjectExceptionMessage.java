@@ -143,4 +143,10 @@ public final class BusinessProjectExceptionMessage {
 
   public static final String PROJECT_BUSINESS_PROJECT_MISSING_CLIENT_PARTNER_COMPANY = /*$$(*/
       "Please fill the company and the client partner before conversion." /*)*/;
+
+  public static final String PROJECT_TASK_BUSINESS_PROJECT_TASK_STATUS_NOT_FOUND = /*$$(*/
+      "Task status '%s' is missing from the system. Please contact your administrator to configure this status." /*)*/;
+
+  public static final String PROJECT_BUSINESS_PROJECT_PROJECT_STATUS_NOT_FOUND = /*$$(*/
+      "Project status '%s' is missing from the system. Please contact your administrator to configure this status." /*)*/;
 }

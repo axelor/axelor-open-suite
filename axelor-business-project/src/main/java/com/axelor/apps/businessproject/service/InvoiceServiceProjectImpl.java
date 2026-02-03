@@ -40,6 +40,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.service.statuschange.ProjectStatusChangeService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.IntercoService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
@@ -119,5 +120,12 @@ public class InvoiceServiceProjectImpl extends InvoiceServiceSupplychainImpl
       }
     }
     return invoice;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void validate(Invoice invoice) throws AxelorException {
+    super.validate(invoice);
+    Beans.get(ProjectStatusChangeService.class).setInvoicedStatus(invoice.getProject());
   }
 }

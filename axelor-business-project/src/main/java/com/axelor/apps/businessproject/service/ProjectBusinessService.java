@@ -45,4 +45,12 @@ public interface ProjectBusinessService extends ProjectService {
   void transitionBetweenPaidStatus(Project project) throws AxelorException;
 
   List<String> checkPercentagesOver1000OnTasks(Project project);
+
+  boolean readyToInvoice(Project project);
+
+  boolean allTimesheetLinesValidated(Project project);
+
+  boolean allExpensesValidated(Project project);
+
+  boolean allTasksHaveTimesheetLines(Project project);
 }

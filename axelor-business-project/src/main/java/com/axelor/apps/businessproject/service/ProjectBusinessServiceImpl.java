@@ -32,6 +32,10 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
+import com.axelor.apps.hr.db.Expense;
+import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectHistoryLine;
 import com.axelor.apps.project.db.ProjectStatus;
@@ -64,13 +68,7 @@ import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ProjectBusinessServiceImpl extends ProjectServiceImpl
@@ -299,6 +297,70 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     computeFinancialFollowUp(project, projectTaskList);
     computeInvoicingFollowUp(project);
     projectRepository.save(project);
+  }
+
+  @Override
+  public boolean readyToInvoice(Project project) {
+    return allExpensesValidated(project)
+        && allTasksHaveTimesheetLines(project)
+        && allTimesheetLinesValidated(project);
+  }
+
+  @Override
+  public boolean allTimesheetLinesValidated(Project project) {
+    if (project == null) return false;
+
+    List<TimesheetLine> timesheetLines = getAllTimesheetLines(project);
+
+    if (timesheetLines.isEmpty()) return false;
+
+    return timesheetLines.stream().allMatch(tsl -> Boolean.TRUE.equals(tsl.getIsValidated()));
+  }
+
+  @Override
+  public boolean allExpensesValidated(Project project) {
+    if (project == null) return false;
+
+    List<Expense> expenses =
+        Beans.get(ExpenseRepository.class)
+            .all()
+            .filter("self.project.id = :projectId")
+            .bind("projectId", project.getId())
+            .fetch();
+
+    return expenses.stream()
+        .allMatch(expense -> ExpenseRepository.STATUS_VALIDATED == expense.getStatusSelect());
+  }
+
+  @Override
+  public boolean allTasksHaveTimesheetLines(Project project) {
+    if (project == null
+        || project.getProjectTaskList() == null
+        || project.getProjectTaskList().isEmpty()) return false;
+
+    List<TimesheetLine> timesheetLines = getAllTimesheetLines(project);
+
+    if (timesheetLines.isEmpty()) return false;
+
+    // Get set of task IDs that have timesheet lines
+    Set<Long> tasksWithTimesheets =
+        timesheetLines.stream()
+            .map(TimesheetLine::getProjectTask)
+            .filter(Objects::nonNull)
+            .map(ProjectTask::getId)
+            .collect(Collectors.toSet());
+
+    // Every task must have at least one timesheet line
+    return project.getProjectTaskList().stream()
+        .allMatch(task -> tasksWithTimesheets.contains(task.getId()));
+  }
+
+  protected List<TimesheetLine> getAllTimesheetLines(Project project) {
+    return Beans.get(TimesheetLineRepository.class)
+        .all()
+        .filter("self.project.id = :projectId OR self.projectTask.project.id = :projectId")
+        .bind("projectId", project.getId())
+        .fetch();
   }
 
   protected void computeTimeFollowUp(Project project, List<ProjectTask> projectTaskList)
