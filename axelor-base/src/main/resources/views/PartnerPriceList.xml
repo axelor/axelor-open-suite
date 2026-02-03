@@ -28,12 +28,12 @@
     </panel>
     <panel-related name="customersPanel" field="salePartnerList"
       grid-view="partner-customer-grid" form-view="partner-customer-form" colSpan="12" hidden="true"
-      showIf="typeSelect == 1" canSelect="true"
+      showIf="typeSelect == 1" canSelect="true" canNew="false"
       domain="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true) AND self.salePartnerPriceList IS NULL AND self.currency = :currency"
       onChange="action-partner-price-list-validate-exclusive"/>
     <panel-related name="suppliersPanel" field="purchasePartnerList"
       grid-view="partner-supplier-grid" form-view="partner-supplier-form" colSpan="12" hidden="true"
-      showIf="typeSelect == 2" canSelect="true"
+      showIf="typeSelect == 2" canSelect="true" canNew="false"
       domain="self.isContact = false AND self.isSupplier = true AND self.purchasePartnerPriceList IS NULL AND self.currency = :currency"
       onChange="action-partner-price-list-validate-exclusive"/>
   </form>
