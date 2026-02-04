@@ -192,15 +192,6 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       boolean isGlobal)
       throws AxelorException {
 
-    if (paymentSession.getBankOrder() != null
-        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
-      paymentSessionBankOrderService.createOrUpdateBankOrderLineFromInvoiceTerm(
-          paymentSession,
-          invoiceTerm,
-          paymentSession.getBankOrder(),
-          invoiceTermLinkWithRefundList);
-    }
-
     paymentSession =
         super.processInvoiceTerm(
             paymentSession,
@@ -210,6 +201,15 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             invoiceTermLinkWithRefundList,
             out,
             isGlobal);
+
+    if (paymentSession.getBankOrder() != null
+        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
+      paymentSessionBankOrderService.createOrUpdateBankOrderLineFromInvoiceTerm(
+          paymentSession,
+          invoiceTerm,
+          paymentSession.getBankOrder(),
+          invoiceTermLinkWithRefundList);
+    }
 
     return paymentSession;
   }
