@@ -142,7 +142,8 @@ public class BankOrderCreateService {
     Partner partner = invoice.getPartner();
     BigDecimal amount = invoicePayment.getAmount();
     Currency currency = invoicePayment.getCurrency();
-    LocalDate paymentDate = invoicePayment.getPaymentDate();
+    LocalDate dueDate = invoice.getDueDate();
+
     BankDetails companyBankDetails =
         invoicePayment.getCompanyBankDetails() != null
             ? invoicePayment.getCompanyBankDetails()
@@ -157,7 +158,7 @@ public class BankOrderCreateService {
         this.createBankOrder(
             paymentMode,
             this.getBankOrderPartnerType(invoice),
-            paymentDate,
+            dueDate,
             company,
             companyBankDetails,
             currency,
@@ -176,7 +177,7 @@ public class BankOrderCreateService {
             receiverBankDetails,
             amount,
             currency,
-            paymentDate,
+            dueDate,
             reference,
             null,
             invoice);
