@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <menuitem name="crm-root" title="CRM" order="-2100" if="__config__.app.isApp('crm')"
     icon="person-bounding-box" icon-background="#2fa042"/>
@@ -281,10 +281,10 @@
   </action-method>
 
   <menuitem name="crm-root-report" parent="crm-root" title="Reportings" order="1100"
-    icon="fa-bar-chart"/>
+    icon="bar-chart"/>
 
   <menuitem name="crm-conf" parent="crm-root" title="Configuration" order="1200"
-    icon="fa-cog"/>
+    icon="gear"/>
 
   <menuitem name="crm-conf-lead-source" parent="crm-conf" title="Leads Source"
     action="crm.conf.lead.source" order="100"/>
@@ -526,7 +526,7 @@
     <view type="form" name="agency-form"/>
   </action-view>
 
-  <menuitem name="crm-search" parent="crm-root" title="Search" order="700" icon="fa-search"
+  <menuitem name="crm-search" parent="crm-root" title="Search" order="700" icon="search"
     if="__config__.app.getApp('crm')?.isSearchFunctionalityEnabled"/>
 
   <menuitem name="crm-search-request" parent="crm-search" title="ResearchRequest.title"
@@ -584,7 +584,7 @@
     model="com.axelor.apps.base.db.Tag">
     <view type="grid" name="tag-simplified-grid"/>
     <view type="form" name="tag-form"/>
-    <domain>:_packageName IN self.concernedModelSet.packageName OR self.concernedModelSet IS EMPTY</domain>
+    <domain>:_packageName IN (self.concernedModelSet.packageName) OR self.concernedModelSet IS EMPTY</domain>
     <context name="_packageName" expr="eval: 'com.axelor.apps.crm.db'"/>
   </action-view>
 

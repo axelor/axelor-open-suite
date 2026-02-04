@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,8 +27,8 @@ import com.axelor.studio.db.AppBudget;
 import com.axelor.studio.db.repo.AppBudgetRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.Optional;
 
 @Singleton
@@ -51,7 +51,7 @@ public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudge
 
   @Override
   public AppBudget getAppBudget() {
-    return appBudgetRepo.all().fetchOne();
+    return appBudgetRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

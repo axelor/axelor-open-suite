@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,7 +41,7 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -194,7 +194,7 @@ public class BatchReimbursementExport extends BatchStrategy {
             moveLineRepo
                 .all()
                 .filter(
-                    "self.account.useForPartnerBalance = 'true' "
+                    "self.account.useForPartnerBalance = true "
                         + "AND (self.move.statusSelect = ?1 OR self.move.statusSelect = ?2) AND self.amountRemaining != 0 AND self.credit > 0 AND self.partner = ?3 AND self.company = ?4 AND "
                         + "self.reimbursementStatusSelect = ?5 ",
                     MoveRepository.STATUS_ACCOUNTED,

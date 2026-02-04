@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,7 @@ package com.axelor.apps.hr.service.expense.expenseline;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.rest.dto.ExpenseLinePostRequest;
 import com.axelor.apps.hr.rest.dto.ExpenseLineResponse;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 public interface ExpenseLineResponseComputeService {
   Response computeCreateResponse(

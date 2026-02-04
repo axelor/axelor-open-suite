@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="task-status-grid" title="Task status"
     model="com.axelor.apps.project.db.TaskStatus" orderBy="sequence" canMove="true">
     <field name="name"/>
+    <field name="color" widget="ColorPicker"/>
     <field name="isCompleted"/>
     <field name="defaultProgress"
       if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask"/>
@@ -16,6 +17,7 @@
     model="com.axelor.apps.project.db.TaskStatus">
     <panel name="mainPanel" itemSpan="4">
       <field name="name"/>
+      <field name="color" widget="ColorPicker"/>
       <field name="isCompleted" onChange="action-task-status-record-set-default-progress"/>
       <field name="defaultProgress"
         onChange="action-task-status-group-default-progress-onchange"

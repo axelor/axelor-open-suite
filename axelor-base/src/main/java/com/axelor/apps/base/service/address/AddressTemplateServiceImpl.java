@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,8 +34,9 @@ import com.axelor.text.GroovyTemplates;
 import com.axelor.text.StringTemplates;
 import com.axelor.text.Templates;
 import com.google.api.client.util.Maps;
-import com.google.inject.Inject;
+import com.google.common.base.CaseFormat;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -93,7 +94,9 @@ public class AddressTemplateServiceImpl implements AddressTemplateService {
       Map<String, Object> templatesContext = Maps.newHashMap();
       Class<?> klass = EntityHelper.getEntityClass(address);
       Context context = new Context(Mapper.toMap(address), klass);
-      templatesContext.put(klass.getSimpleName(), context.asType(klass));
+      templatesContext.put(
+          CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, klass.getSimpleName()),
+          context.asType(klass));
       String computedString = templates.fromText(content).make(templatesContext).render();
       if (computedString == null) {
         throw new AxelorException(

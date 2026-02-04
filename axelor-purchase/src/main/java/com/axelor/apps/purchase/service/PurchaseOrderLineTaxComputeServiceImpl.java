@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrderLineTax;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -144,6 +144,14 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
                       new BigDecimal(100),
                       AppBaseService.COMPUTATION_SCALING,
                       RoundingMode.HALF_UP));
+
+      if (purchaseOrderLineTax.getPurchaseOrder() != null) {
+        BigDecimal diff =
+            taxTotal.subtract(purchaseOrderLineTax.getInTaxTotal().subtract(exTaxBase)).abs();
+        if (diff.compareTo(BigDecimal.ZERO) >= 0 && diff.compareTo(new BigDecimal("0.01")) <= 0) {
+          taxTotal = purchaseOrderLineTax.getInTaxTotal().subtract(exTaxBase);
+        }
+      }
     }
 
     return taxTotal;

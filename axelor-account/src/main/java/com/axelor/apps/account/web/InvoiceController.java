@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxNumber;
@@ -49,6 +50,7 @@ import com.axelor.apps.account.service.invoice.InvoiceService;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpToolService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
 import com.axelor.apps.account.service.invoice.InvoiceToolService;
@@ -86,7 +88,7 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
 import com.google.common.base.Function;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -150,9 +152,7 @@ public class InvoiceController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.message.exception.MessageExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
     } catch (Exception e) {
@@ -185,9 +185,7 @@ public class InvoiceController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.message.exception.MessageExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
     } catch (Exception e) {
@@ -219,9 +217,7 @@ public class InvoiceController {
                 traceback ->
                     response.setNotify(
                         String.format(
-                            I18n.get(
-                                com.axelor.message.exception.MessageExceptionMessage
-                                    .SEND_EMAIL_EXCEPTION),
+                            I18n.get(BaseExceptionMessage.SEND_EMAIL_EXCEPTION),
                             traceback.getMessage())));
       }
     } catch (Exception e) {
@@ -896,6 +892,30 @@ public class InvoiceController {
         "$isSelectedPfpValidatorEqualsPartnerPfpValidator",
         "value",
         Beans.get(InvoiceService.class).isSelectedPfpValidatorEqualsPartnerPfpValidator(invoice));
+  }
+
+  public void syncPfpValidatorToInvoiceTerms(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    Beans.get(InvoiceTermPfpValidatorSyncService.class).syncPfpValidatorFromInvoiceToTerms(invoice);
+
+    response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+  }
+
+  public void syncPfpValidatorFromInvoiceTerms(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+
+    InvoiceTermPfpValidatorSyncService syncService =
+        Beans.get(InvoiceTermPfpValidatorSyncService.class);
+
+    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+    if (!ObjectUtils.isEmpty(invoiceTermList)) {
+      InvoiceTerm firstTerm = invoiceTermList.get(0);
+      firstTerm.setInvoice(invoice);
+      if (syncService.syncPfpValidatorFromTermToInvoice(firstTerm)) {
+        response.setValue("pfpValidatorUser", invoice.getPfpValidatorUser());
+      }
+    }
   }
 
   public void getInvoicePartnerDomain(ActionRequest request, ActionResponse response) {

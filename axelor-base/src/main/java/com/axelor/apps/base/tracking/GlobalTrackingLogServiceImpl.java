@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,12 +25,13 @@ import com.axelor.common.Inflector;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.schema.actions.ActionView;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
@@ -89,7 +90,7 @@ public class GlobalTrackingLogServiceImpl implements GlobalTrackingLogService {
       globalTrackingLogRepo.remove(globalTrackingLog);
 
       if (globalTrackingLog.getMetaFile() != null) {
-        File metaFileFile = new File(globalTrackingLog.getMetaFile().getFilePath());
+        File metaFileFile = MetaFiles.getPath(globalTrackingLog.getMetaFile()).toFile();
         metaFileFile.delete();
         metaFileRepo.remove(metaFile);
       }

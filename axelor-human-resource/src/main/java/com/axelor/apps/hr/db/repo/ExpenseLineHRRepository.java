@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,8 +26,8 @@ import com.axelor.apps.hr.service.KilometricExpenseService;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineComputeService;
 import com.axelor.inject.Beans;
+import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
-import javax.persistence.PersistenceException;
 
 public class ExpenseLineHRRepository extends ExpenseLineRepository {
 

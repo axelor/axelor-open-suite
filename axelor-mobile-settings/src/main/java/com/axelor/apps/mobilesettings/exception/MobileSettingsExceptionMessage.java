@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,4 +26,7 @@ public final class MobileSettingsExceptionMessage {
 
   public static final String MOBILE_MENU_WRONG_MENU_TYPE = /*$$(*/
       "Authorized values for menuType : menu, separator or submenu" /*)*/;
+
+  public static final String MOBILE_CHART_QUERY_ERROR = /*$$(*/
+      "The query contains forbidden keyword such as UPDATE, DELETE or FUNCTION." /*)*/;
 }

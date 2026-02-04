@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,6 +42,7 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.PartnerProductQualityRatingService;
 import com.axelor.apps.stock.service.PartnerStockSettingsService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.app.AppStockService;
@@ -53,8 +54,8 @@ import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
 import com.axelor.apps.supplychain.service.StockMoveServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -75,6 +76,7 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
       StockConfigService stockConfigService,
       AppStockService appStockService,
       ProductCompanyService productCompanyService,
+      StockLocationService stockLocationService,
       AppSupplychainService appSupplyChainService,
       AppAccountService appAccountService,
       PurchaseOrderRepository purchaseOrderRepo,
@@ -100,6 +102,7 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
         stockConfigService,
         appStockService,
         productCompanyService,
+        stockLocationService,
         appSupplyChainService,
         appAccountService,
         purchaseOrderRepo,
@@ -168,16 +171,24 @@ public class StockMoveServiceProductionImpl extends StockMoveServiceSupplychainI
   }
 
   protected void updateSaleOrderLineOnCancelOnRealized(StockMove stockMove) {
-    List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-    for (StockMoveLine sml : stockMoveLineList) {
-      ManufOrder manufOrder = sml.getProducedManufOrder();
-      if (manufOrder != null
-          && manufOrder.getSaleOrderLine() != null
-          && manufOrder.getSaleOrderLine().getProduct() != null) {
-        SaleOrderLine saleOrderLine = manufOrder.getSaleOrderLine();
-        saleOrderLine.setQtyProduced(computeMOQtyProduced(manufOrder, saleOrderLine.getProduct()));
-        saleOrderLineRepository.save(saleOrderLine);
-      }
+
+    List<StockMoveLine> stockMoveLines =
+        stockMoveLineRepo
+            .all()
+            .filter(
+                "self.stockMove = :stockMove "
+                    + "AND self.producedManufOrder IS NOT NULL "
+                    + "AND self.producedManufOrder.saleOrderLine IS NOT NULL "
+                    + "AND self.producedManufOrder.saleOrderLine.product IS NOT NULL ")
+            .bind("stockMove", stockMove)
+            .fetch();
+    for (StockMoveLine stockMoveLine : stockMoveLines) {
+      ManufOrder manufOrder = stockMoveLine.getProducedManufOrder();
+      SaleOrderLine saleOrderLine = manufOrder.getSaleOrderLine();
+      Product product = saleOrderLine.getProduct();
+      BigDecimal qtyProduced = computeMOQtyProduced(manufOrder, product);
+      saleOrderLine.setQtyProduced(qtyProduced);
+      saleOrderLineRepository.save(saleOrderLine);
     }
   }
 

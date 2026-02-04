@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,8 +42,8 @@ import com.axelor.apps.base.service.user.UserRoleToolService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -700,15 +700,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(Move move) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addPartnerDomain(move, attrsMap);
-
-    return attrsMap;
-  }
-
-  @Override
   public Map<String, Map<String, Object>> getPaymentModeOnSelectAttrsMap(Move move) {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
@@ -722,15 +713,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     moveAttrsService.addPartnerBankDetailsDomain(move, attrsMap);
-
-    return attrsMap;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getTradingNameOnSelectAttrsMap(Move move) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addTradingNameDomain(move, attrsMap);
 
     return attrsMap;
   }
@@ -771,15 +753,6 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     moveAttrsService.addMassEntryHidden(move, attrsMap);
     moveAttrsService.addMassEntryPaymentConditionRequired(move, attrsMap);
     moveAttrsService.addMassEntryBtnHidden(move, attrsMap);
-
-    return attrsMap;
-  }
-
-  @Override
-  public Map<String, Map<String, Object>> getCompanyOnSelectAttrsMap(Move move) {
-    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
-
-    moveAttrsService.addCompanyDomain(move, attrsMap);
 
     return attrsMap;
   }

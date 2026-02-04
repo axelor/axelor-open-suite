@@ -1,0 +1,3 @@
+---
+title: "App supplychain: added a warning message when both 'Generate invoice from sale order' and 'Generate invoice from stock move' are enabled to prevent double invoicing."
+module: axelor-supplychain

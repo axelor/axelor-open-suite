@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,7 +44,7 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.db.Wizard;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -113,7 +113,7 @@ public class ExtraHoursController {
   public void editExtraHoursSelected(ActionRequest request, ActionResponse response) {
     Map extraHoursMap = (Map) request.getContext().get("extraHoursSelect");
     ExtraHours extraHours =
-        Beans.get(ExtraHoursRepository.class).find(new Long((Integer) extraHoursMap.get("id")));
+        Beans.get(ExtraHoursRepository.class).find(Long.valueOf((Integer) extraHoursMap.get("id")));
     response.setView(
         ActionView.define(I18n.get("Extra hours"))
             .model(ExtraHours.class.getName())

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.TeamTask;
 import com.axelor.team.db.repo.TeamTaskRepository;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 
 public class TeamTaskBaseRepository extends TeamTaskRepository {
 

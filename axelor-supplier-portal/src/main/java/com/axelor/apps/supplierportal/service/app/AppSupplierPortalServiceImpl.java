@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,7 @@ package com.axelor.apps.supplierportal.service.app;
 
 import com.axelor.studio.db.AppSupplierPortal;
 import com.axelor.studio.db.repo.AppSupplierPortalRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 
 public class AppSupplierPortalServiceImpl implements AppSupplierPortalService {
 
@@ -33,6 +33,6 @@ public class AppSupplierPortalServiceImpl implements AppSupplierPortalService {
 
   @Override
   public AppSupplierPortal getAppSupplierPortal() {
-    return appSupplierPortalRepo.all().fetchOne();
+    return appSupplierPortalRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 }

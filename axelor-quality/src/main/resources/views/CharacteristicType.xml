@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="characteristic-type-grid" title="Characteristics types"
     model="com.axelor.apps.quality.db.CharacteristicType">
     <field name="name"/>
     <field name="characteristicTypeSelect"/>
     <field name="unit"/>
-    <field name="characteristicSet" widget="TagSelect"/>
+    <field name="characteristicSet" widget="Tags"/>
   </grid>
 
   <form name="characteristic-type-form" title="Characteristic type"
@@ -17,8 +17,7 @@
       <field name="name"/>
       <field name="characteristicTypeSelect"/>
       <field name="unit"/>
-      <field name="characteristicSet" widget="TagSelect"
-        showIf="characteristicTypeSelect == 2"/>
+      <field name="characteristicSet" widget="Tags" showIf="characteristicTypeSelect == 2"/>
     </panel>
   </form>
 </object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,8 +29,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.service.PartnerSaleServiceImpl;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
     implements PartnerSupplychainService {
@@ -62,7 +62,7 @@ public class PartnerSupplychainServiceImpl extends PartnerSaleServiceImpl
             .filter(
                 "self.operationTypeSelect = :operationTypeSelect "
                     + "AND self.amountRemaining > 0 "
-                    + "AND self.partner = :partner "
+                    + "AND self.partner.id = :partner "
                     + "AND self.statusSelect = :invoiceStatusVentilated "
                     + "AND self.dueDate < "
                     + "(SELECT DATE(:todayDate) + config.numberOfDaysBeforeAccountBlocking "

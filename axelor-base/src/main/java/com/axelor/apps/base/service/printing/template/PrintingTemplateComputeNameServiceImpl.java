@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,7 +27,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.Templates;
 import com.axelor.utils.service.translation.TranslationBaseService;
-import com.google.inject.Inject;
+import com.google.common.base.CaseFormat;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -60,7 +61,9 @@ public class PrintingTemplateComputeNameServiceImpl implements PrintingTemplateC
 
       if (model != null) {
         model = EntityHelper.getEntity(model);
-        templatesContext.put(model.getClass().getSimpleName(), model);
+        templatesContext.put(
+            CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, model.getClass().getSimpleName()),
+            model);
       }
     }
     FormatHelper formatHelper = new FormatHelper();
@@ -97,7 +100,7 @@ public class PrintingTemplateComputeNameServiceImpl implements PrintingTemplateC
     }
   }
 
-  class TranslationHelper {
+  public class TranslationHelper {
 
     public String get(String key) {
       return I18n.get(key);

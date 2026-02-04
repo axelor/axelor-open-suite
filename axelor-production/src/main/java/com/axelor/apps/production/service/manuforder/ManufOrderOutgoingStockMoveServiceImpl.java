@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,8 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
@@ -60,12 +60,12 @@ public class ManufOrderOutgoingStockMoveServiceImpl implements ManufOrderOutgoin
           manufOrder.getProducedStockMoveLineList();
 
       String filter =
-          "self.saleOrderLine != NULL"
+          "self.saleOrderLine IS NOT NULL"
               + " AND self.saleOrderLine.billOfMaterial = :manufOrderBOM"
               + " AND self.saleOrderLine = :saleOrderLine"
-              + " AND self.stockMove != null"
+              + " AND self.stockMove IS NOT null"
               + " AND self.stockMove.statusSelect < :stockMoveStatusRealized"
-              + " AND self.copiedManufOrder = null";
+              + " AND self.copiedManufOrder IS null";
 
       List<StockMoveLine> deliveryStockMoveLinesToComplete =
           stockMoveLineRepository

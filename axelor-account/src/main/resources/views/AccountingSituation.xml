@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="accounting-situation-partner-grid" title="Accounting situations"
     model="com.axelor.apps.account.db.AccountingSituation">
@@ -206,9 +206,10 @@
     <view type="grid" name="move-line-accounting-situation-grid"/>
     <view type="form" name="move-line-form"/>
     <domain>self.partner = :partner AND self.move.company = :company AND
-      self.move.ignoreInAccountingOk IN ('false', null)
+      self.move.ignoreInAccountingOk IN (false, null)
       AND self.account.useForPartnerBalance =
-      'true' AND (self.move.statusSelect = 2 OR
+      true AND
+      (self.move.statusSelect = 2 OR
       self.move.statusSelect = 3)</domain>
   </action-view>
 

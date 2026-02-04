@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid title="Config lines" name="accounting-report-config-line-grid"
     model="com.axelor.apps.account.db.AccountingReportConfigLine" canMove="true" orderBy="sequence">
@@ -20,7 +20,7 @@
     <field name="typeSelect"/>
     <field name="ruleTypeSelect"/>
     <field name="hidden"/>
-    <button name="editConfigLineBtn" title="Edit config line" icon="fa-external-link"
+    <button name="editConfigLineBtn" title="Edit config line" icon="box-arrow-up-right"
       onClick="action-move-line-view-open-report-config-line"/>
   </grid>
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,10 +25,11 @@ import com.axelor.apps.base.db.repo.ICalendarRepository;
 import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.auth.db.User;
+import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.team.db.Team;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,7 +62,8 @@ public class CalendarService extends ICalendarService {
   @Override
   public List<ICalendarEvent> getICalendarEvents(ICalendar calendar) {
 
-    if (calendar.getSynchronizationSelect().contentEquals(ICalendarRepository.CRM_SYNCHRO)) {
+    if (StringUtils.notEmpty(calendar.getSynchronizationSelect())
+        && calendar.getSynchronizationSelect().contentEquals(ICalendarRepository.CRM_SYNCHRO)) {
       LocalDateTime lastSynchro = calendar.getLastSynchronizationDateT();
       if (lastSynchro != null) {
         return new ArrayList<ICalendarEvent>(

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,8 @@ import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptBindings;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
-import wslite.json.JSONException;
 
 public class MapGroupServiceImpl implements MapGroupService {
 
@@ -52,7 +52,7 @@ public class MapGroupServiceImpl implements MapGroupService {
 
   @Override
   public List<Map<String, Object>> computeData(MapGroup mapGroup)
-      throws AxelorException, JSONException, ClassNotFoundException {
+      throws AxelorException, ClassNotFoundException {
     if (mapGroup.getMetaModel() == null) {
       return Collections.emptyList();
     }
@@ -61,7 +61,7 @@ public class MapGroupServiceImpl implements MapGroupService {
     if (!Strings.isNullOrEmpty(mapGroup.getFilter())) {
       queryStr += " WHERE " + mapGroup.getFilter();
     }
-    javax.persistence.Query query = JPA.em().createQuery(queryStr);
+    Query query = JPA.em().createQuery(queryStr);
 
     QueryBinder.of(query)
         .bind(new ScriptBindings(new Context(Class.forName(metaModel))))
@@ -86,7 +86,7 @@ public class MapGroupServiceImpl implements MapGroupService {
   }
 
   protected Pair<BigDecimal, BigDecimal> getLatLong(Map<String, Object> map, MetaField addressField)
-      throws AxelorException, JSONException {
+      throws AxelorException {
     if (addressField != null) {
       Address address = (Address) map.get(addressField.getName());
       if (address != null) {

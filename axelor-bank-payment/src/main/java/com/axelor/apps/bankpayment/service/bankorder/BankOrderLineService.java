@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,7 +43,7 @@ import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -106,6 +106,12 @@ public class BankOrderLineService {
       throws AxelorException {
 
     BankDetails receiverBankDetails = bankDetailsRepository.findDefaultByPartner(partner);
+
+    if (receiverBankDetails == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MISSING_RECEIVER_BANK_DETAILS));
+    }
 
     return this.createBankOrderLine(
         bankOrderFileFormat,

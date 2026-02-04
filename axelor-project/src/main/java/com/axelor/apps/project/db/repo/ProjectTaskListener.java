@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,7 @@
 package com.axelor.apps.project.db.repo;
 
 import com.axelor.apps.project.db.ProjectTask;
-import javax.persistence.PostLoad;
+import jakarta.persistence.PostLoad;
 
 public class ProjectTaskListener {
 

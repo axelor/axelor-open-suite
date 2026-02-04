@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed the display of the head office address in the BIRT report when the address position is set to 'right' in the printing settings."
+module: axelor-account

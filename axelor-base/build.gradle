@@ -10,14 +10,9 @@ apply {
 	version = openSuiteVersion
 }
 
-
-license {
-  exclude "**/swagger/**"
-}
-
 axelor {
-	title "Axelor Base"
-	description "Axelor Base Module"
+	title = "Axelor Base"
+	description = "Axelor Base Module"
 }
 
 dependencies {
@@ -67,7 +62,6 @@ dependencies {
 
 	implementation libs.faker
 	api libs.commons_csv
-	api libs.wslite
 
 	implementation libs.logback
 
@@ -85,24 +79,23 @@ ext.reactDir = 'map-viewer'
 ext.reactOutputDir = 'webapp/base/map-viewer'
 
 node {
-  	version = '22.17.1'
+  	version = '24.5.0'
 	yarnVersion = '1.22.19'
 	download = true
 	distBaseUrl = null
-	nodeModulesDir = file(reactDir)
 }
 
-task installFrontDeps(type: YarnTask) {
+tasks.register('installFrontDeps', YarnTask) {
 	group = 'axelor'
 	description = 'Install Front-end dependencies'
-
+	workingDir = file(reactDir)
 	args = ['install']
 }
 
-task buildFront(type: YarnTask) {
+tasks.register('buildFront', YarnTask) {
 	group = 'axelor'
 	description = 'Build Front-end'
-
+	workingDir = file(reactDir)
 	inputs.files("${reactDir}/package.json", "${reactDir}/yarn.lock")
 	inputs.dir("${reactDir}/src")
 	outputs.dir("${reactDir}/dist")
@@ -112,8 +105,8 @@ task buildFront(type: YarnTask) {
 }
 
 
-task copyReactWebapp(type: Copy) {
-  	destinationDir = file(rootProject.layout.buildDirectory)
+tasks.register('copyReactWebapp', Copy) {
+	destinationDir = file(rootProject.layout.buildDirectory)
 	into(reactOutputDir) {
 		from "${reactDir}/dist"
 	}
@@ -133,7 +126,7 @@ jar {
 	dependsOn 'buildFront'
 	into(reactOutputDir) {
 		from "${reactDir}/dist"
-		duplicatesStrategy 'exclude'
+		duplicatesStrategy = 'exclude'
 	}
 }
 

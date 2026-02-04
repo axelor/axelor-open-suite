@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,9 +36,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.utils.template.TemplateMaker;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.inject.Inject;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;

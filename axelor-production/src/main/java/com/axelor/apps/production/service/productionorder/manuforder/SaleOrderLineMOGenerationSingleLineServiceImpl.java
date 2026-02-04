@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,8 +34,9 @@ import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderUpdateService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -48,17 +49,20 @@ public class SaleOrderLineMOGenerationSingleLineServiceImpl
   protected final ProductionOrderUpdateService productionOrderUpdateService;
   protected final BillOfMaterialService billOfMaterialService;
   protected final ManufOrderGenerationService manufOrderGenerationService;
+  protected final StockLocationLineFetchService stockLocationLineFetchService;
 
   @Inject
   public SaleOrderLineMOGenerationSingleLineServiceImpl(
       ProductionConfigService productionConfigService,
       ProductionOrderUpdateService productionOrderUpdateService,
       BillOfMaterialService billOfMaterialService,
-      ManufOrderGenerationService manufOrderGenerationService) {
+      ManufOrderGenerationService manufOrderGenerationService,
+      StockLocationLineFetchService stockLocationLineFetchService) {
     this.productionConfigService = productionConfigService;
     this.productionOrderUpdateService = productionOrderUpdateService;
     this.billOfMaterialService = billOfMaterialService;
     this.manufOrderGenerationService = manufOrderGenerationService;
+    this.stockLocationLineFetchService = stockLocationLineFetchService;
   }
 
   /**
@@ -84,8 +88,7 @@ public class SaleOrderLineMOGenerationSingleLineServiceImpl
       throws AxelorException {
 
     Map<BillOfMaterial, BigDecimal> subBomMapWithLineQty = new HashMap<>();
-    // One for the parent BOM (It will be multiplied by qtyRequested anyway)
-    subBomMapWithLineQty.put(billOfMaterial, BigDecimal.ONE);
+    subBomMapWithLineQty.put(billOfMaterial, billOfMaterial.getQty());
 
     Map<BillOfMaterial, ManufOrder> subBomManufOrderParentMap = new HashMap<>();
     // prevent infinite loop
@@ -123,11 +126,18 @@ public class SaleOrderLineMOGenerationSingleLineServiceImpl
         if (childBom.getProdProcess() == null) {
           continue;
         }
+        BigDecimal qtyToProduce = qtyRequested.multiply(subBomMapWithLineQty.get(childBom));
+        if (!childBom.equals(billOfMaterial)) {
+          BigDecimal availableQty =
+              stockLocationLineFetchService.getAvailableQty(
+                  saleOrderLine.getSaleOrder().getStockLocation(), childBom.getProduct());
+          qtyToProduce = qtyToProduce.subtract(availableQty);
+        }
         ManufOrder manufOrder =
             manufOrderGenerationService.generateManufOrder(
                 childBom.getProduct(),
                 childBom,
-                qtyRequested.multiply(subBomMapWithLineQty.get(childBom)),
+                qtyToProduce,
                 startDate,
                 endDate,
                 saleOrder,

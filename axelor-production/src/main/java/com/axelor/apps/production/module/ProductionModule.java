@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,6 +44,8 @@ import com.axelor.apps.production.db.repo.SaleOrderLineDetailsManagementReposito
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
 import com.axelor.apps.production.db.repo.StockMoveLineProductionRepository;
 import com.axelor.apps.production.db.repo.StockMoveProductionRepository;
+import com.axelor.apps.production.db.repo.TempBomTreeManagementRepository;
+import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationManagementRepository;
 import com.axelor.apps.production.db.repo.UnitCostCalculationRepository;
 import com.axelor.apps.production.rest.ManufOrderProductRestService;
@@ -52,6 +54,7 @@ import com.axelor.apps.production.rest.ManufOrderRestService;
 import com.axelor.apps.production.rest.ManufOrderRestServiceImpl;
 import com.axelor.apps.production.rest.OperationOrderRestService;
 import com.axelor.apps.production.rest.OperationOrderRestServiceImpl;
+import com.axelor.apps.production.rest.QualityImprovementParseProductionServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialCheckService;
 import com.axelor.apps.production.service.BillOfMaterialCheckServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
@@ -99,6 +102,9 @@ import com.axelor.apps.production.service.ProdProductServiceImpl;
 import com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl;
 import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl;
 import com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl;
+import com.axelor.apps.production.service.QIIdentificationProductionServiceImpl;
+import com.axelor.apps.production.service.QualityImprovementCheckValuesProductionServiceImpl;
+import com.axelor.apps.production.service.QualityImprovementUpdateProductionServiceImpl;
 import com.axelor.apps.production.service.RawMaterialRequirementService;
 import com.axelor.apps.production.service.RawMaterialRequirementServiceImpl;
 import com.axelor.apps.production.service.SaleOrderBlockingProductionService;
@@ -280,6 +286,10 @@ import com.axelor.apps.production.service.productionorder.manuforder.SaleOrderLi
 import com.axelor.apps.production.service.productionorder.manuforder.SaleOrderLineMOGenerationSingleLineServiceImpl;
 import com.axelor.apps.production.service.saleorder.onchange.SaleOrderOnLineChangeProductionServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectServiceImpl;
+import com.axelor.apps.quality.rest.service.QualityImprovementParseServiceImpl;
+import com.axelor.apps.quality.service.QIIdentificationServiceImpl;
+import com.axelor.apps.quality.service.QualityImprovementCheckValuesServiceImpl;
+import com.axelor.apps.quality.service.QualityImprovementUpdateServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorCreatorImportServiceImpl;
 import com.axelor.apps.sale.service.configurator.ConfiguratorServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyServiceImpl;
@@ -501,5 +511,13 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderBlockingProductionService.class).to(SaleOrderBlockingProductionServiceImpl.class);
     bind(SaleOrderLineComputeQtyServiceImpl.class)
         .to(SaleOrderLineComputeQtyProductionServiceImpl.class);
+    bind(TempBomTreeRepository.class).to(TempBomTreeManagementRepository.class);
+    bind(QualityImprovementCheckValuesServiceImpl.class)
+        .to(QualityImprovementCheckValuesProductionServiceImpl.class);
+    bind(QIIdentificationServiceImpl.class).to(QIIdentificationProductionServiceImpl.class);
+    bind(QualityImprovementUpdateServiceImpl.class)
+        .to(QualityImprovementUpdateProductionServiceImpl.class);
+    bind(QualityImprovementParseServiceImpl.class)
+        .to(QualityImprovementParseProductionServiceImpl.class);
   }
 }

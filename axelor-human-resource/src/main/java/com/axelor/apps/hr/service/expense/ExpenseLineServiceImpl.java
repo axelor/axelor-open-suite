@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,8 +31,8 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -165,7 +165,8 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
     List<Project> projectList =
         projectRepository
             .all()
-            .filter("self.projectStatus.isCompleted = false AND :userId IN self.membersUserSet.id")
+            .filter(
+                "self.projectStatus.isCompleted = false AND :userId IN (SELECT memberUser.id FROM self.membersUserSet memberUser)")
             .bind("userId", expenseLine.getEmployee().getUser().getId())
             .fetch();
 

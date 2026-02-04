@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,7 @@ import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.UnitCostCalcLine;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.repo.UnitCostCalcLineRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import org.slf4j.Logger;

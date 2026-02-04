@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,9 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.service.manuforder.ManufOrderService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -64,6 +65,7 @@ public class ManufOrderGenerationServiceImpl implements ManufOrderGenerationServ
 
     if (manufOrder != null) {
       if (saleOrder != null) {
+        saleOrder = JpaModelHelper.ensureManaged(saleOrder);
         manufOrder.addSaleOrderSetItem(saleOrder);
         manufOrder.setClientPartner(saleOrder.getClientPartner());
         manufOrder.setMoCommentFromSaleOrder("");
@@ -72,13 +74,14 @@ public class ManufOrderGenerationServiceImpl implements ManufOrderGenerationServ
         if (!Strings.isNullOrEmpty(saleOrder.getProductionNote())) {
           manufOrder.setMoCommentFromSaleOrder(saleOrder.getProductionNote());
         }
+        saleOrderLine = JpaModelHelper.ensureManaged(saleOrderLine);
         if (saleOrderLine != null
             && !Strings.isNullOrEmpty(saleOrderLine.getLineProductionComment())) {
           manufOrder.setMoCommentFromSaleOrderLine(saleOrderLine.getLineProductionComment());
         }
         manufOrder.setSaleOrderLine(saleOrderLine);
       }
-
+      manufOrderParent = JpaModelHelper.ensureManaged(manufOrderParent);
       manufOrder.setParentMO(manufOrderParent);
     }
     return manufOrder;

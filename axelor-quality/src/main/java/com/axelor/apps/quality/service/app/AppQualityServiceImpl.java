@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,8 +31,8 @@ import com.axelor.studio.db.AppQuality;
 import com.axelor.studio.db.repo.AppQualityRepository;
 import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQualityService {
@@ -60,7 +60,7 @@ public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQual
 
   @Override
   public AppQuality getAppQuality() {
-    return appQualityRepo.all().fetchOne();
+    return appQualityRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

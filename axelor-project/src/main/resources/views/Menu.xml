@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <menuitem name="menu-project-root" order="-1400" title="Project management"
     icon="list-task" if="__config__.app.isApp('project')" icon-background="#3f6bb9"/>
 
   <menuitem name="menu-project-project-root" parent="menu-project-root" order="0"
-    title="Projects" icon="fa-tasks" icon-background="#3f6bb9"/>
+    title="Projects" icon="list-task" icon-background="#3f6bb9"/>
 
   <menuitem name="project-all" parent="menu-project-project-root" order="100"
     title="Projects" action="project.all"/>
@@ -22,7 +22,7 @@
   </action-method>
 
   <menuitem name="project-fav-project-tree" parent="menu-project-root" order="200"
-    title="Favourite projects" icon="fa-star" icon-background="#3f6bb9"
+    title="Favourite projects" icon="star-fill" icon-background="#3f6bb9"
     action="project.fav.project.tree"
     if="__config__.app.isApp('project') &amp;&amp; __user__?.favouriteProjectSet"/>
   <action-method name="project.fav.project.tree">
@@ -59,7 +59,7 @@
   </action-view>
 
   <menuitem name="project-reporting" parent="menu-project-root" order="800"
-    title="Reportings" icon="fa-bar-chart"/>
+    title="Reportings" icon="bar-chart"/>
 
   <menuitem name="project-reporting-my-projects" parent="project-reporting" order="100"
     title="My projects" action="project.my.projects"/>
@@ -87,7 +87,7 @@
 
   <!-- PROJECT CONFIGURATION -->
   <menuitem name="project-configurations" parent="menu-project-root" title="Configuration"
-    order="1200" icon="fa-cog"/>
+    order="1200" icon="gear"/>
 
   <menuitem name="project-task-category" parent="project-configurations" title="Category"
     action="project.task.category" order="100"/>
@@ -155,7 +155,7 @@
   <action-view name="project.tags" title="Tags" model="com.axelor.apps.base.db.Tag">
     <view type="grid" name="tag-simplified-grid"/>
     <view type="form" name="tag-form"/>
-    <domain>:_packageName IN self.concernedModelSet.packageName OR self.concernedModelSet IS EMPTY</domain>
+    <domain>:_packageName IN (self.concernedModelSet.packageName) OR self.concernedModelSet IS EMPTY</domain>
     <context name="_packageName" expr="eval: 'com.axelor.apps.project.db'"/>
     <context name="_fieldModel" expr="eval: 'com.axelor.apps.project.db.ProjectTask'"/>
   </action-view>

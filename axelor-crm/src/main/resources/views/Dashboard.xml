@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <action-view name="dashlet.closed.opportunities" title="Closed Opportunities"
     model="com.axelor.apps.crm.db.Opportunity">
@@ -136,19 +136,23 @@
     title="Recently created opportunities" model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.createdOn &gt;= date(now())-15</domain>
+    <domain>self.createdOn &gt;= :_dateTime</domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
+    <context name="_dateTime" expr="eval: __datetime__.minusDays(15)"/>
   </action-view>
 
   <action-view name="dashlet.opportunities.lost.deals" title="Recent lost deals"
     model="com.axelor.apps.crm.db.Opportunity">
     <view type="grid" name="opportunity-grid"/>
     <view type="form" name="opportunity-form"/>
-    <domain>self.updatedOn &gt; date(now())-30 and self.opportunityStatus.id =
-      :_closedLostOpportunityStatusId</domain>
+    <domain> self.updatedOn &gt; :_dateTime AND
+      self.opportunityStatus.id =
+      :_closedLostOpportunityStatusId
+    </domain>
     <context name="_internalUserId" expr="eval:__user__.id"/>
     <context name="_closedLostOpportunityStatusId"
       expr="eval: __config__.app.getApp('crm')?.closedLostOpportunityStatus?.id"/>
+    <context name="_dateTime" expr="eval: __datetime__.minusDays(30)"/>
   </action-view>
 
   <action-view title="My Closed Opportunities"
@@ -289,7 +293,6 @@
     <dashlet action="dashlet.team.leads" height="350"/>
     <dashlet action="dashlet.created.leads.per.month" height="350"/>
     <dashlet action="dashlet.created.leads.by.industry.sector" height="350"/>
-    <dashlet action="dashlet.created.leads.by.industry.sector" height="350"/>
   </dashboard>
 
   <dashboard title="Dashboard" name="crm.lead.salesman">
@@ -299,7 +302,6 @@
     <dashlet action="dashlet.my.leads" height="350"/>
     <dashlet action="dashlet.unassigned.leads" height="350"/>
     <dashlet action="dashlet.created.leads.per.month" height="350"/>
-    <dashlet action="dashlet.created.leads.by.industry.sector" height="350"/>
     <dashlet action="dashlet.created.leads.by.industry.sector" height="350"/>
   </dashboard>
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <form name="app-supplychain-config-form" title="App Supplychain"
     model="com.axelor.studio.db.AppSupplychain" canDelete="false" canNew="false" width="large">
@@ -20,7 +20,8 @@
         <field name="cancelReasonOnChangingSaleOrder"
           domain="self.applicationType = 'com.axelor.apps.stock.db.StockMove'"
           if="__config__.app.getApp('sale')?.allowPendingOrderModification" colSpan="4"/>
-        <field name="generateInvoiceFromSaleOrder" widget="boolean-switch" colSpan="4"/>
+        <field name="generateInvoiceFromSaleOrder" widget="boolean-switch" colSpan="4"
+          onChange="action-app-supplychain-validate-invoice-generation"/>
         <field name="purchaseOrderGenerationAuto" widget="boolean-switch" colSpan="4"/>
         <field name="allowSusbcriptionSaleOrder" widget="boolean-switch" colSpan="4"/>
         <field name="allowTimetableInvoicing" widget="boolean-switch" colSpan="4"/>
@@ -64,7 +65,8 @@
 
     </panel>
     <panel name="stackPanel" title="Stock">
-      <field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"/>
+      <field name="generateInvoiceFromStockMove" widget="boolean-switch" colSpan="4"
+        onChange="action-app-supplychain-validate-invoice-generation"/>
       <field name="manageStockReservation" widget="boolean-switch" colSpan="4"
         onChange="action-app-supplychain-validate-config-error"/>
       <field name="isVerifyProductStock" widget="boolean-switch" colSpan="4"/>
@@ -135,5 +137,11 @@
     model="com.axelor.studio.db.AppSupplychain">
     <field name="manageStockReservation" expr="eval: false"/>
   </action-record>
+
+  <action-validate name="action-app-supplychain-validate-invoice-generation">
+    <alert
+      message="Both 'Generate invoice from sale order' and 'Generate invoice from stock move' are selected. It is recommended to select only one option at a time to avoid double invoicing."
+      if="generateInvoiceFromSaleOrder &amp;&amp; generateInvoiceFromStockMove"/>
+  </action-validate>
 
 </object-views>

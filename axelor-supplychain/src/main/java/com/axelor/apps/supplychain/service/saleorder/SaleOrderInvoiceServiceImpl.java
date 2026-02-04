@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -68,8 +68,8 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -781,12 +781,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       if (excludeCurrentInvoice) {
         query += " AND self.invoice.id <> :invoiceId";
       } else {
-        query +=
-            " OR (self.invoice.id = :invoiceId AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect) ";
+        query += " AND self.invoice.id = :invoiceId";
       }
     }
 
-    javax.persistence.Query q = JPA.em().createQuery(query, BigDecimal.class);
+    jakarta.persistence.Query q = JPA.em().createQuery(query, BigDecimal.class);
 
     q.setParameter("saleOrderId", saleOrder.getId());
     q.setParameter("statusVentilated", InvoiceRepository.STATUS_VENTILATED);

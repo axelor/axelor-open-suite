@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,8 +38,9 @@ import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -51,7 +52,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -258,7 +258,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     TempBomTree bomTree;
     if (parentBom == null) {
       bomTree =
-          tempBomTreeRepo.all().filter("self.bom = ?1 and self.parentBom = null", bom).fetchOne();
+          tempBomTreeRepo.all().filter("self.bom = ?1 and self.parentBom IS null", bom).fetchOne();
     } else {
       bomTree =
           tempBomTreeRepo
@@ -275,8 +275,10 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     if (bom != null) {
       bomTree.setProdProcess(bom.getProdProcess());
       bomTree.setProduct(bom.getProduct());
-      bomTree.setQty(bom.getQty());
-      bomTree.setUnit(bom.getUnit());
+      bomTree.setQty(
+          Optional.ofNullable(bomLine).map(BillOfMaterialLine::getQty).orElse(bom.getQty()));
+      bomTree.setUnit(
+          Optional.ofNullable(bomLine).map(BillOfMaterialLine::getUnit).orElse(bom.getUnit()));
     } else if (bomLine != null) {
       bomTree.setProduct(bomLine.getProduct());
       bomTree.setQty(bomLine.getQty());

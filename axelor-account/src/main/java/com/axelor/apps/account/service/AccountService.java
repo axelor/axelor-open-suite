@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,8 +37,9 @@ import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -47,7 +48,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,7 +102,7 @@ public class AccountService {
             .createQuery(
                 String.format(
                     "select sum(self.debit - self.credit) from MoveLine self where self.account%s IN (:account) "
-                        + "and self.move.ignoreInAccountingOk IN ('false', null) and self.move.statusSelect IN ("
+                        + "and self.move.ignoreInAccountingOk IN (false, null) and self.move.statusSelect IN ("
                         + Joiner.on(',')
                             .join(
                                 Lists.newArrayList(
