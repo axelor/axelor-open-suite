@@ -33,13 +33,9 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.meta.loader.AppVersionService;
-import com.axelor.studio.app.service.AppServiceImpl;
+import com.axelor.studio.app.service.AppService;
+import com.axelor.studio.app.service.ScriptAppServiceImpl;
 import com.axelor.studio.db.AppBase;
-import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
 import com.axelor.utils.helpers.date.LocalDateTimeHelper;
 import com.google.common.base.Strings;
 import com.google.inject.persist.Transactional;
@@ -57,19 +53,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Singleton
-public class AppBaseServiceImpl extends AppServiceImpl implements AppBaseService {
+public class AppBaseServiceImpl extends ScriptAppServiceImpl implements AppBaseService {
 
   protected static String DEFAULT_LOCALE = "en_GB";
 
   @Inject
-  public AppBaseServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      AppSettingsStudioService appSettingsService,
-      MetaModuleRepository metaModuleRepo,
-      MetaFileRepository metaFileRepo) {
-    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
+  public AppBaseServiceImpl(AppService appService) {
+    super(appService);
   }
 
   @Override
