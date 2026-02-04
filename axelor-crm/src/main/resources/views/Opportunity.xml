@@ -243,7 +243,7 @@
       <panel name="referencePanel" title="Reference" canCollapse="true">
         <field name="partner" canEdit="false" requiredIf="contact == null"
           readonlyIf="$get('opportunityStatus.id') == $closedWonId || $get('opportunityStatus.id') == $closedLostId"
-          domain="self.isContact = false AND :company member of self.companySet"
+          domain="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true) AND :company member of self.companySet"
           form-view="partner-form" grid-view="partner-grid"
           onChange="action-opportunity-record-set-contact"/>
         <field name="contact" canEdit="false" requiredIf="partner == null"
