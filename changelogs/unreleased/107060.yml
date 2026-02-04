@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed an error occurring when creating line if supplychain was not installed."
+module: axelor-supplychain
