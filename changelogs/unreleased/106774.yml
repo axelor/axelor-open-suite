@@ -1,0 +1,6 @@
+---
+title: "Move: fix bank reconciliation impact when reversing and deleting moves."
+module: axelor-bank-payment
+developer: |
+  MoveRemoveServiceBankPaymentImpl now injects BankReconciliationLineRepository to check
+  reconciliation links before blocking deletion.
