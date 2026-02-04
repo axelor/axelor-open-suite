@@ -64,6 +64,22 @@ public class MoveDueService {
     return null;
   }
 
+  public List<MoveLine> getOrignalInvoiceMoveLinesFromRefund(Invoice invoice) {
+    List<MoveLine> moveLines = Lists.newArrayList();
+    Invoice originalInvoice = invoice.getOriginalInvoice();
+
+    if (originalInvoice != null && originalInvoice.getMove() != null) {
+      for (MoveLine moveLine : originalInvoice.getMove().getMoveLineList()) {
+        if (moveLine.getAccount().getUseForPartnerBalance()
+            && moveLine.getDebit().compareTo(BigDecimal.ZERO) > 0
+            && moveLine.getAmountRemaining().abs().compareTo(BigDecimal.ZERO) > 0) {
+          moveLines.add(moveLine);
+        }
+      }
+    }
+    return moveLines;
+  }
+
   public List<MoveLine> getInvoiceDue(Invoice invoice, boolean useOthersInvoiceDue)
       throws AxelorException {
     Company company = invoice.getCompany();
@@ -73,14 +89,11 @@ public class MoveDueService {
 
     debitMoveLines.addAll(invoiceService.getMoveLinesFromAdvancePayments(invoice));
 
-    // Ajout de la facture d'origine
-    MoveLine originalInvoice = this.getOrignalInvoiceFromRefund(invoice);
+    // Add lines from the original invoice (may include multiple lines with holdbacks)
+    List<MoveLine> originalInvoiceMoveLines = this.getOrignalInvoiceMoveLinesFromRefund(invoice);
+    debitMoveLines.addAll(originalInvoiceMoveLines);
 
-    if (originalInvoice != null) {
-      debitMoveLines.add(originalInvoice);
-    }
-
-    // Récupérer les dûs du tiers pour le même compte que celui de l'avoir
+    // Retrieve partner due amounts for the same account as the credit note
     List<? extends MoveLine> othersDebitMoveLines = null;
     if (useOthersInvoiceDue) {
       othersDebitMoveLines =
