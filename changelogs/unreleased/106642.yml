@@ -1,0 +1,3 @@
+---
+title: "Inventory: fixed an issue with inventory validation during demo data import."
+module: axelor-stock
