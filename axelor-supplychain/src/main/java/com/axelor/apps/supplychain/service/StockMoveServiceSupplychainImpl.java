@@ -74,7 +74,9 @@ import com.google.inject.persist.Transactional;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -175,9 +177,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
     Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
     if (ObjectUtils.notEmpty(saleOrderSet)) {
+      updateSaleOrderLinesDeliveryState(stockMove, !stockMove.getIsReversion());
       SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
       for (SaleOrder saleOrder : saleOrderSet) {
-        updateSaleOrderLinesDeliveryState(stockMove, !stockMove.getIsReversion());
         // Update linked saleOrder delivery state depending on BackOrder's existence
         if (newStockSeq != null) {
           saleOrder.setDeliveryState(SaleOrderRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
@@ -315,9 +317,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void updateSaleOrderOnCancel(StockMove stockMove) throws AxelorException {
     Set<SaleOrder> saleOrderSet = stockMove.getSaleOrderSet();
     SaleOrderStockService saleOrderStockService = Beans.get(SaleOrderStockService.class);
+    updateSaleOrderLinesDeliveryState(stockMove, stockMove.getIsReversion());
     for (SaleOrder so : saleOrderSet) {
 
-      updateSaleOrderLinesDeliveryState(stockMove, stockMove.getIsReversion());
       saleOrderStockService.updateDeliveryState(so);
 
       if (appSupplyChainService.getAppSupplychain().getTerminateSaleOrderOnDelivery()) {
@@ -345,6 +347,10 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
   protected void updateSaleOrderLinesDeliveryState(StockMove stockMove, boolean qtyWasDelivered)
       throws AxelorException {
+    if (ObjectUtils.isEmpty(stockMove.getStockMoveLineList())) {
+      return;
+    }
+    Map<SaleOrderLine, BigDecimal> saleOrderLineQtyMap = new HashMap<>();
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
       if (stockMoveLine.getSaleOrderLine() != null) {
         SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
@@ -356,22 +362,27 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
                 stockMoveLine.getRealQty(),
                 stockMoveLine.getRealQty().scale(),
                 saleOrderLine.getProduct());
+        saleOrderLineQtyMap.merge(saleOrderLine, realQty, BigDecimal::add);
+      }
+    }
 
-        if (stockMove.getTypeSelect() != StockMoveRepository.TYPE_INTERNAL) {
-          if (qtyWasDelivered) {
-            saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(realQty));
-          } else {
-            saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
-          }
-        }
-        if (saleOrderLine.getDeliveredQty().signum() == 0) {
-          saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
-        } else if (saleOrderLine.getDeliveredQty().compareTo(saleOrderLine.getQty()) < 0) {
-          saleOrderLine.setDeliveryState(
-              SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
+    for (Map.Entry<SaleOrderLine, BigDecimal> entry : saleOrderLineQtyMap.entrySet()) {
+      SaleOrderLine saleOrderLine = entry.getKey();
+      BigDecimal realQty = entry.getValue();
+
+      if (stockMove.getTypeSelect() != StockMoveRepository.TYPE_INTERNAL) {
+        if (qtyWasDelivered) {
+          saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().add(realQty));
         } else {
-          saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
+          saleOrderLine.setDeliveredQty(saleOrderLine.getDeliveredQty().subtract(realQty));
         }
+      }
+      if (saleOrderLine.getDeliveredQty().signum() == 0) {
+        saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
+      } else if (saleOrderLine.getDeliveredQty().compareTo(saleOrderLine.getQty()) < 0) {
+        saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_PARTIALLY_DELIVERED);
+      } else {
+        saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_DELIVERED);
       }
     }
   }
