@@ -63,20 +63,22 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
     Integer version = projectTask.getVersion();
     boolean isNew = (version == null || version == 0);
 
-    if (isNew && !Boolean.TRUE.equals(projectTask.getIsTemplate())) {
+    if (isNew) {
       if (hasMultipleUsers(projectTask)) {
         return createTemplateAndIndividualTask(projectTask);
       } else {
-        // Using ifPresent for a cleaner, null-safe flow
-        projectTask.getAssignedEmployees().stream()
-            .filter(Objects::nonNull)
-            .findFirst()
-            .ifPresent(
-                user -> {
-                  projectTask.setAssignedTo(user);
-                  projectTask.getAssignedEmployees().clear();
-                  projectTask.setIsTemplate(false);
-                });
+        if (projectTask.getAssignedTo() == null) {
+          // Using ifPresent for a cleaner, null-safe flow
+          projectTask.getAssignedEmployees().stream()
+              .filter(Objects::nonNull)
+              .findFirst()
+              .ifPresent(
+                  user -> {
+                    projectTask.setAssignedTo(user);
+                    projectTask.getAssignedEmployees().clear();
+                    projectTask.setIsTemplate(false);
+                  });
+        }
       }
     }
 
