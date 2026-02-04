@@ -584,12 +584,12 @@
           icon="fa-undo" onClick="save,action-stock-move-method-generate-new-stock-move"
           showIf="statusSelect == 3 &amp;&amp; isReversion"/>
         <button if="__config__.app.getApp('supplychain')?.getValidStepForInvOutSM()"
-          name="delayedInvoice" title="Facturation ultérieure"
+          name="delayedInvoice" title="Deferred invoicing"
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 3"
           css="btn-warning"
           onClick="save,action-stock-move-method-set-invoicing-status-invoiced-delayed"/>
         <button if="__config__.app.getApp('supplychain')?.getValidStepForInvOutSM()"
-          name="validatedInvoice" title="Validé pour facturation"
+          name="validatedInvoice" title="Approved for invoicing"
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 4"
           css="btn-success"
           onClick="save,action-stock-move-method-set-invoicing-status-invoiced-validated"/>
