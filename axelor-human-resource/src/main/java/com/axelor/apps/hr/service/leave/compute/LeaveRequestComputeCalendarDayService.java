@@ -19,30 +19,11 @@
 package com.axelor.apps.hr.service.leave.compute;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
-import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.LeaveRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public interface LeaveRequestComputeDayDurationService {
+public interface LeaveRequestComputeCalendarDayService {
 
-  BigDecimal computeDurationInDays(
-      LeaveRequest leave,
-      Employee employee,
-      LocalDate fromDate,
-      LocalDate toDate,
-      int startOn,
-      int endOn,
-      int offDays)
-      throws AxelorException;
-
-  BigDecimal computeDurationInDays(
-      Company company,
-      Employee employee,
-      LocalDate fromDate,
-      LocalDate toDate,
-      int startOn,
-      int endOn)
-      throws AxelorException;
+  BigDecimal computeDurationInCalendarDays(
+      LocalDate fromDate, LocalDate toDate, int startOn, int endOn) throws AxelorException;
 }
