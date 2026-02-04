@@ -161,7 +161,8 @@ public class StockLocationServiceImpl implements StockLocationService {
   public Set<Long> getContentStockLocationIds(StockLocation stockLocation) {
     locationIdSet = new HashSet<>();
     if (stockLocation != null) {
-      List<StockLocation> stockLocations = getAllLocationAndSubLocation(stockLocation, false);
+      List<StockLocation> stockLocations =
+          getAllLocationAndSubLocation(stockLocation, stockLocation.getIncludeVirtualSubLocation());
       for (StockLocation item : stockLocations) {
         locationIdSet.add(item.getId());
       }
