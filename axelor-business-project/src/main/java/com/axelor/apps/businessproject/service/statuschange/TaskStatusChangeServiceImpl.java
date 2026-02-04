@@ -99,13 +99,9 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
   }
 
   private void revertUnreportedTaskStatus(ProjectTask task, TaskStatus inProgressStatus) {
-    if (task.getStatus() != null && !TASK_STATUS_DONE.equals(task.getStatus().getName())) {
-      task.setStatus(inProgressStatus);
-      projectTaskRepo.save(task);
-      log.info("Task {} status reverted to In Progress", task.getId());
-    } else {
-      log.info("Task is already done can't revert its status when it gets unreported");
-    }
+    task.setStatus(inProgressStatus);
+    projectTaskRepo.save(task);
+    log.info("Task {} status reverted to In Progress", task.getId());
   }
 
   @Override
@@ -126,10 +122,12 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
       TaskStatus inProgressStatus = getTaskStatus(TASK_STATUS_IN_PROGRESS);
       task.setStatus(inProgressStatus);
       projectTaskRepo.save(task);
+      log.debug("Task {} staus changed to In Progress", task.getId());
     } else {
       TaskStatus feedbackStatus = getTaskStatus(TASK_STATUS_FEEDBACK);
       task.setStatus(feedbackStatus);
       projectTaskRepo.save(task);
+      log.debug("Task {} status changed to Feedback", task.getId());
     }
   }
 
