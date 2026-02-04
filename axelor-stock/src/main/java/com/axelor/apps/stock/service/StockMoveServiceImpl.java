@@ -70,10 +70,11 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -94,6 +95,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected StockConfigService stockConfigService;
   protected AppStockService appStockService;
   protected ProductCompanyService productCompanyService;
+  protected StockLocationService stockLocationService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -107,7 +109,8 @@ public class StockMoveServiceImpl implements StockMoveService {
       PartnerStockSettingsService partnerStockSettingsService,
       StockConfigService stockConfigService,
       AppStockService appStockService,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      StockLocationService stockLocationService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -119,6 +122,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.stockConfigService = stockConfigService;
     this.appStockService = appStockService;
     this.productCompanyService = productCompanyService;
+    this.stockLocationService = stockLocationService;
   }
 
   /**
@@ -625,36 +629,26 @@ public class StockMoveServiceImpl implements StockMoveService {
    * @throws AxelorException
    */
   protected void checkOngoingInventory(StockMove stockMove) throws AxelorException {
-    List<StockLocation> stockLocationList = new ArrayList<>();
 
-    stockLocationList.addAll(
-        stockMove.getStockMoveLineList().stream()
-            .map(StockMoveLine::getFromStockLocation)
-            .filter(
-                stockLocation ->
-                    stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)
-            .distinct()
-            .collect(Collectors.toList()));
-    stockLocationList.addAll(
-        stockMove.getStockMoveLineList().stream()
-            .map(StockMoveLine::getToStockLocation)
-            .filter(
-                stockLocation ->
-                    stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL)
-            .distinct()
-            .collect(Collectors.toList()));
-
-    if (stockLocationList.isEmpty()) {
+    List<StockMoveLine> lines = stockMove.getStockMoveLineList();
+    if (CollectionUtils.isEmpty(lines)) {
       return;
     }
 
-    List<Product> productList =
-        stockMove.getStockMoveLineList().stream()
-            .map(StockMoveLine::getProduct)
-            .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+    Set<Long> stockLocationIds = new HashSet<>();
+    Set<Long> productIds = new HashSet<>();
 
-    if (productList.isEmpty()) {
+    for (StockMoveLine line : lines) {
+      addStockLocationIdAndParents(stockLocationIds, line.getFromStockLocation());
+      addStockLocationIdAndParents(stockLocationIds, line.getToStockLocation());
+
+      Product product = line.getProduct();
+      if (product != null) {
+        productIds.add(product.getId());
+      }
+    }
+
+    if (stockLocationIds.isEmpty() || productIds.isEmpty()) {
       return;
     }
 
@@ -664,13 +658,13 @@ public class StockMoveServiceImpl implements StockMoveService {
         inventoryLineRepo
             .all()
             .filter(
-                "self.inventory.statusSelect BETWEEN :startStatus AND :endStatus\n"
-                    + "AND self.inventory.stockLocation IN (:stockLocationList)\n"
-                    + "AND self.product IN (:productList)")
+                "self.inventory.statusSelect BETWEEN :startStatus AND :endStatus "
+                    + "AND self.inventory.stockLocation.id IN (:stockLocationIds) "
+                    + "AND self.product.id IN (:productIds)")
             .bind("startStatus", InventoryRepository.STATUS_IN_PROGRESS)
             .bind("endStatus", InventoryRepository.STATUS_COMPLETED)
-            .bind("stockLocationList", stockLocationList)
-            .bind("productList", productList)
+            .bind("stockLocationIds", stockLocationIds)
+            .bind("productIds", productIds)
             .fetchOne();
 
     if (inventoryLine != null) {
@@ -680,6 +674,15 @@ public class StockMoveServiceImpl implements StockMoveService {
           I18n.get(StockExceptionMessage.STOCK_MOVE_19),
           inventoryLine.getInventory().getInventorySeq());
     }
+  }
+
+  protected void addStockLocationIdAndParents(Set<Long> locationIds, StockLocation location) {
+    if (location == null || location.getTypeSelect() == StockLocationRepository.TYPE_VIRTUAL) {
+      return;
+    }
+    locationIds.addAll(
+        stockLocationService.getLocationAndAllParentLocationsIdsOrderedFromTheClosestToTheFurthest(
+            location));
   }
 
   protected void resetMasses(StockMove stockMove) {
