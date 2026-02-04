@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.DepositSlip;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.PaymentVoucher;
+import com.axelor.apps.account.db.repo.DepositSlipRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentVoucherRepository;
@@ -131,6 +132,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
 
     LocalDate date = Beans.get(AppBaseService.class).getTodayDate(depositSlip.getCompany());
     depositSlip.setPublicationDate(date);
+    depositSlip.setStatusSelect(DepositSlipRepository.STATUS_EDITED);
 
     return date;
   }
@@ -289,6 +291,7 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     }
 
     depositSlip.setIsBankDepositMoveGenerated(true);
+    depositSlip.setStatusSelect(DepositSlipRepository.STATUS_VALIDATED);
   }
 
   @Override
