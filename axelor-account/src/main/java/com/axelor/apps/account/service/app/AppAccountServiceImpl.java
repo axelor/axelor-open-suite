@@ -23,16 +23,11 @@ import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.meta.loader.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppAccount;
 import com.axelor.studio.db.AppInvoice;
 import com.axelor.studio.db.repo.AppAccountRepository;
 import com.axelor.studio.db.repo.AppInvoiceRepository;
-import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -51,17 +46,12 @@ public class AppAccountServiceImpl extends AppBaseServiceImpl implements AppAcco
 
   @Inject
   public AppAccountServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      AppSettingsStudioService appSettingsService,
-      MetaModuleRepository metaModuleRepo,
-      MetaFileRepository metaFileRepo,
+      AppService appService,
       AppAccountRepository appAccountRepo,
       AppInvoiceRepository appInvoiceRepo,
       AccountConfigRepository accountConfigRepo,
       CompanyRepository companyRepo) {
-    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
+    super(appService);
     this.appAccountRepo = appAccountRepo;
     this.appInvoiceRepo = appInvoiceRepo;
     this.accountConfigRepo = accountConfigRepo;
