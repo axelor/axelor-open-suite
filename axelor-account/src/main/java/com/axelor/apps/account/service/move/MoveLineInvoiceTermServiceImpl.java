@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentConditionLine;
+import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountingSituationService;
@@ -41,6 +42,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -56,6 +58,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   protected MoveLineCreateService moveLineCreateService;
   protected MoveLineToolService moveLineToolService;
   protected AccountingSituationService accountingSituationService;
+  protected InvoiceTermRepository invoiceTermRepository;
 
   @Inject
   public MoveLineInvoiceTermServiceImpl(
@@ -64,13 +67,15 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
       MoveLineService moveLineService,
       MoveLineCreateService moveLineCreateService,
       MoveLineToolService moveLineToolService,
-      AccountingSituationService accountingSituationService) {
+      AccountingSituationService accountingSituationService,
+      InvoiceTermRepository invoiceTermRepository) {
     this.appAccountService = appAccountService;
     this.invoiceTermService = invoiceTermService;
     this.moveLineService = moveLineService;
     this.moveLineCreateService = moveLineCreateService;
     this.moveLineToolService = moveLineToolService;
     this.accountingSituationService = accountingSituationService;
+    this.invoiceTermRepository = invoiceTermRepository;
   }
 
   @Override
@@ -342,7 +347,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     }
 
     return invoiceTermService.createInvoiceTerm(
-        null,
+        move.getInvoice(),
         move,
         moveLine,
         move.getPartnerBankDetails(),
@@ -403,15 +408,21 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void recreateInvoiceTerms(Move move, MoveLine moveLine) throws AxelorException {
-    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
-      if (!moveLine.getInvoiceTermList().stream().allMatch(invoiceTermService::isNotReadonly)) {
+    List<InvoiceTerm> invoiceTermList = moveLine.getInvoiceTermList();
+    if (CollectionUtils.isNotEmpty(invoiceTermList)) {
+      if (!invoiceTermList.stream().allMatch(invoiceTermService::isNotReadonly)) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(AccountExceptionMessage.MOVE_LINE_INVOICE_TERM_ACCOUNT_CHANGE));
       }
 
-      moveLine.clearInvoiceTermList();
+      for (InvoiceTerm invoiceTerm : invoiceTermList) {
+        invoiceTerm.setMoveLine(null);
+        invoiceTerm.setInvoice(null);
+        invoiceTermRepository.remove(invoiceTerm);
+      }
     }
 
     if (move.getPaymentCondition() != null) {
