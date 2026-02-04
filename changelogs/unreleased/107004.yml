@@ -1,0 +1,3 @@
+---
+title: "Bank order: fixed area D5 to accept alphanumeric values in the norm for cfonb160."
+module: axelor-bank-payment
