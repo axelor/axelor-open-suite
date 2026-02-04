@@ -85,9 +85,9 @@
           colSpan="12"/>
         <field name="partnerList" form-view="partner-form" grid-view="partner-grid"
           colSpan="12" canNew="false" canSelect="true" domain="self.isInternal is true"/>
-        <field name="workshopList" colSpan="12" if-module="axelor-production"
-          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"
-          canNew="false" canSelect="true" domain="self.isWorkshop is true"/>
+        <panel-dashlet name="workshopsPanel" title="Workshops"
+          action="action-company-view-show-workshops" colSpan="12" if-module="axelor-production"
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('production')?.getManageWorkshop()"/>
       </panel>
       <panel name="configurationsPanel" title="Configurations">
         <field name="currency" canEdit="false" form-view="currency-form"
@@ -189,6 +189,14 @@
   <action-method name="action-company-check-multi-banks">
     <call class="com.axelor.apps.base.web.CompanyController" method="checkMultiBanks"/>
   </action-method>
+
+  <action-view name="action-company-view-show-workshops" title="Workshops"
+    model="com.axelor.apps.stock.db.StockLocation">
+    <view type="grid" name="stock-location-grid"/>
+    <view type="form" name="stock-location-form"/>
+    <domain>self.company.id = :_id AND self.isWorkshop = true</domain>
+    <context name="_id" expr="eval: id"/>
+  </action-view>
 
   <search-filters name="company-filters" model="com.axelor.apps.base.db.Company"
     title="Company filters">
