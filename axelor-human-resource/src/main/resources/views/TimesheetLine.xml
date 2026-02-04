@@ -135,13 +135,14 @@
     <field name="timesheet" grid-view="timesheet-grid" form-view="timesheet-form"
       hidden="true"/>
     <field name="timesheet.employee" hidden="true"/>
-    <field name="project"/>
+    <field name="projectTask"/>
     <field name="date"/>
     <field name="product"/>
     <field name="duration"/>
     <field name="toInvoice" readonly="true"/>
     <field name="isValidated"/>
     <field name="comments"/>
+    <field name="project" hidden="true"/>
   </grid>
 
   <grid name="timesheet-line-timesheet-project-grid" title="Timesheet Lines"
