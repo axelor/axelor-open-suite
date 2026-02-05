@@ -83,6 +83,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    * @return the tax defined for the product, according to the fiscal position
    * @throws AxelorException
    */
+  @Override
   public Account getProductAccount(
       Product product,
       Company company,
@@ -167,6 +168,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    * @return
    * @throws AxelorException
    */
+  @Override
   public AnalyticDistributionTemplate getAnalyticDistributionTemplate(
       Product product, Company company, boolean isPurchase) throws AxelorException {
 
@@ -229,6 +231,7 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
    * @return
    * @throws AxelorException
    */
+  @Override
   public FixedAssetCategory getProductFixedAssetCategory(Product product, Company company) {
 
     return getProductFixedAssetCategory(product, company, CONFIG_OBJECT_PRODUCT);
@@ -395,11 +398,13 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
     return null;
   }
 
+  @Override
   public boolean areAllAccountsOfType(List<Account> accountList, String type) {
     return accountList.stream()
         .allMatch(account -> account.getAccountType().getTechnicalTypeSelect().equals(type));
   }
 
+  @Override
   public List<Account> getAccountsBetween(Account accountFrom, Account accountTo) {
     Map<String, Object> params = new HashMap<>();
 

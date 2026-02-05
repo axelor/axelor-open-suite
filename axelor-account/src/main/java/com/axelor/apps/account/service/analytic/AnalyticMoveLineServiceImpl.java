@@ -98,6 +98,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     this.currencyScaleService = currencyScaleService;
   }
 
+  @Override
   public AnalyticMoveLineRepository getAnalyticMoveLineRepository() {
     return this.analyticMoveLineRepository;
   }
@@ -328,6 +329,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
     }
   }
 
+  @Override
   public AnalyticMoveLine computeAnalytic(Company company, AnalyticAccount analyticAccount)
       throws AxelorException {
     AnalyticMoveLine analyticMoveLine = new AnalyticMoveLine();

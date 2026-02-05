@@ -448,6 +448,8 @@ public class MassEntryVerificationServiceImpl implements MassEntryVerificationSe
     }
   }
 
+  @Override
+  @Override
   public void checkAccountAnalytic(Move move, int temporaryMoveNumber) {
     String message = "";
     int lineCount = 0;

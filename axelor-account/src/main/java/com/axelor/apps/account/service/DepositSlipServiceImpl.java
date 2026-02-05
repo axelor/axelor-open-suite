@@ -267,6 +267,8 @@ public class DepositSlipServiceImpl implements DepositSlipService {
     return paymentVouchers;
   }
 
+  @Override
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void validate(DepositSlip depositSlip) throws AxelorException {
 

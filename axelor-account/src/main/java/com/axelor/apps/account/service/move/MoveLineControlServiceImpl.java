@@ -272,6 +272,8 @@ public class MoveLineControlServiceImpl implements MoveLineControlService {
     }
   }
 
+  @Override
+  @Override
   public boolean canReconcile(MoveLine moveLine) {
 
     LOG.debug("Checking if can reconcile {}", moveLine);

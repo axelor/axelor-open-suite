@@ -108,10 +108,14 @@ public class InvoiceTermFilterServiceImpl implements InvoiceTermFilterService {
     return this.filterNotAwaitingPayment(invoiceTermQuery.order("dueDate").fetch());
   }
 
+  @Override
+  @Override
   public List<InvoiceTerm> filterNotAwaitingPayment(List<InvoiceTerm> invoiceTermList) {
     return invoiceTermList.stream().filter(this::isNotAwaitingPayment).collect(Collectors.toList());
   }
 
+  @Override
+  @Override
   public boolean isNotAwaitingPayment(InvoiceTerm invoiceTerm) {
     if (invoiceTerm == null) {
       return false;

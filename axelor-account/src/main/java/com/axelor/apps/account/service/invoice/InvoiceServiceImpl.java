@@ -539,6 +539,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     }
   }
 
+  @Override
+  @Override
   public Invoice mergeInvoiceProcess(
       List<Invoice> invoiceList,
       Company company,
@@ -633,6 +635,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
     return invoiceMerged;
   }
 
+  @Override
+  @Override
   public Invoice mergeInvoiceProcess(
       List<Invoice> invoiceList,
       Company company,
@@ -1232,6 +1236,8 @@ public class InvoiceServiceImpl extends InvoiceRepository implements InvoiceServ
         : deadlineDate;
   }
 
+  @Override
+  @Override
   public void updateInvoiceTermsParentFields(Invoice invoice) {
     List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
     if (CollectionUtils.isEmpty(invoiceTermList)) {

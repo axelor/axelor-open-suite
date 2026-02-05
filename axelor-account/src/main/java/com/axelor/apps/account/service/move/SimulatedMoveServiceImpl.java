@@ -40,6 +40,8 @@ public class SimulatedMoveServiceImpl implements SimulatedMoveService {
     this.journalRepo = journalRepo;
   }
 
+  @Override
+  @Override
   public void deactivateSimulatedMoves(Company company) {
     // Removing simulated moves for the company
     Query<Move> queryMove =

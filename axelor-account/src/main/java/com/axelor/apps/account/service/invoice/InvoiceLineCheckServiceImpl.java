@@ -42,6 +42,8 @@ public class InvoiceLineCheckServiceImpl implements InvoiceLineCheckService {
     this.taxAccountService = taxAccountService;
   }
 
+  @Override
+  @Override
   public void checkTaxLinesNotOnlyNonDeductibleTaxes(List<InvoiceLine> invoiceLineList)
       throws AxelorException {
     if (CollectionUtils.isEmpty(invoiceLineList)) {
@@ -60,6 +62,8 @@ public class InvoiceLineCheckServiceImpl implements InvoiceLineCheckService {
             .collect(Collectors.toSet()));
   }
 
+  @Override
+  @Override
   public void checkSumOfNonDeductibleTaxes(List<InvoiceLine> invoiceLineList)
       throws AxelorException {
     if (CollectionUtils.isEmpty(invoiceLineList)) {
@@ -77,6 +81,8 @@ public class InvoiceLineCheckServiceImpl implements InvoiceLineCheckService {
             .collect(Collectors.toSet()));
   }
 
+  @Override
+  @Override
   public void checkInvoiceLineTaxes(Set<TaxLine> taxLineSet) throws AxelorException {
     if (ObjectUtils.notEmpty(taxLineSet) && taxAccountService.isNonDeductibleTaxesSet(taxLineSet)) {
       throw new AxelorException(

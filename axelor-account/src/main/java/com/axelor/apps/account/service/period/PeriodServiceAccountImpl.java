@@ -78,6 +78,8 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     super.close(period);
   }
 
+  @Override
+  @Override
   public Query<Move> getMoveListByPeriodAndStatusQuery(Period period, int status) {
     return moveRepository
         .all()
@@ -89,6 +91,8 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
         .order("id");
   }
 
+  @Override
+  @Override
   public boolean isManageClosedPeriod(Period period, User user) throws AxelorException {
     if (period != null && period.getYear().getCompany() != null && user != null) {
       AccountConfig accountConfig =
@@ -100,6 +104,8 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
     return false;
   }
 
+  @Override
+  @Override
   public boolean isTemporarilyClosurePeriodManage(Period period, User user) throws AxelorException {
     if (period != null && period.getYear().getCompany() != null && user != null) {
       AccountConfig accountConfig =
