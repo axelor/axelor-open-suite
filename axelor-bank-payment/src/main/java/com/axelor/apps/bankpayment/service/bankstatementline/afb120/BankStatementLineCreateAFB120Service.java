@@ -77,6 +77,7 @@ public class BankStatementLineCreateAFB120Service extends BankStatementLineCreat
     this.bankStatementDateService = bankStatementDateService;
   }
 
+  @Override
   @Transactional
   protected BankStatementLine createBankStatementLine(
       StructuredContentLine structuredContentLine, int sequence) {
@@ -138,6 +139,7 @@ public class BankStatementLineCreateAFB120Service extends BankStatementLineCreat
     return bankStatementLineAFB120Repository.save(bankStatementLineAFB120);
   }
 
+  @Override
   protected List<StructuredContentLine> readFile() throws IOException, AxelorException {
 
     List<StructuredContentLine> structuredContent = Lists.newArrayList();

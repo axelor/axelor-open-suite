@@ -54,6 +54,7 @@ public class BankReconciliationLoadBankStatementAFB120Service
     this.bankReconciliationLineService = bankReconciliationLineService;
   }
 
+  @Override
   @Transactional
   public void loadBankStatement(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
@@ -83,6 +84,7 @@ public class BankReconciliationLoadBankStatementAFB120Service
     }
   }
 
+  @Override
   @Transactional
   protected void loadBankStatementLines(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {

@@ -80,6 +80,7 @@ public class BankOrderMergeServiceImpl implements BankOrderMergeService {
     this.paymentScheduleLineRepository = paymentScheduleLineRepository;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public BankOrder mergeBankOrders(Collection<BankOrder> bankOrders) throws AxelorException {
 

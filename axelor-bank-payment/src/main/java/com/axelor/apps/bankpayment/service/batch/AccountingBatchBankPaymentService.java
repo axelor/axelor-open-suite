@@ -70,6 +70,7 @@ public class AccountingBatchBankPaymentService extends AccountingBatchService {
     return Beans.get(batchClass).run(accountingBatch);
   }
 
+  @Override
   public Batch billOfExchange(AccountingBatch accountingBatch) {
 
     switch (accountingBatch.getBillOfExchangeStepBatchSelect()) {
