@@ -119,15 +119,14 @@
       <panel name="locationContentPanel" title="Location Content">
         <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
         <panel-dashlet name="stockLocationLinesPanel" title="Location Lines"
-          field="stockLocationLineList" canNew="false" colSpan="12"
-          action="action-location-view-location-content" canSearch="true" height="600"/>
+          canNew="false" colSpan="12" action="action-location-view-location-content"
+          canSearch="true" height="600"/>
       </panel>
       <panel name="detailsLocationContentPanel" title="Stock location details">
         <field name="includeOutOfStock" widget="boolean-switch" onChange="save"/>
         <panel-dashlet name="detailsStockLocationLinesPanel"
-          title="Stock location details" field="detailsStockLocationLineList"
-          action="action-location-details-view-location-content" canSearch="true" height="600"
-          colSpan="12"/>
+          title="Stock location details" action="action-location-details-view-location-content"
+          canSearch="true" height="600" colSpan="12"/>
       </panel>
       <panel name="configPanel" title="Configuration" if-module="axelor-supplychain"
         if="__config__.app.isApp('supplychain')">

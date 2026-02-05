@@ -22,6 +22,7 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import jakarta.persistence.EntityManager;
+import org.hibernate.proxy.HibernateProxy;
 
 public final class JpaModelHelper {
 
@@ -37,12 +38,9 @@ public final class JpaModelHelper {
     }
     EntityManager em = JPA.em();
     if (em.contains(model)) {
-      return model;
+      return model instanceof HibernateProxy ? EntityHelper.getEntity(model) : model;
     }
     Class<T> type = EntityHelper.getEntityClass(model);
-    if (EntityHelper.isUninitialized(model)) {
-      return em.getReference(type, model.getId());
-    }
     return em.find(type, model.getId());
   }
 }
