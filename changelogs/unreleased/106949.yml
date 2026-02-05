@@ -1,2 +1,0 @@
-title: "Budget/BudgetKey : fixed the budget key unique check after hibernate migration"
-module: axelor-budget
