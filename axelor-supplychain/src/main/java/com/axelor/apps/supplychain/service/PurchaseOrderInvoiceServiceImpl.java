@@ -669,15 +669,26 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     }
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
-      InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
-          invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
-              invoice,
-              invoicingProduct,
-              percentToInvoice,
-              null,
-              purchaseOrderLine,
-              purchaseOrderLine.getExTaxTotal(),
-              purchaseOrderLine.getTaxLineSet());
+      InvoiceLineGeneratorSupplyChain invoiceLineGenerator = null;
+      if (!purchaseOrderLine.getIsTitleLine()) {
+        invoiceLineGenerator =
+            invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
+                invoice,
+                invoicingProduct,
+                percentToInvoice,
+                null,
+                purchaseOrderLine,
+                purchaseOrderLine.getExTaxTotal(),
+                purchaseOrderLine.getTaxLineSet());
+      } else {
+        invoiceLineGenerator =
+            invoiceLineOrderService.getInvoiceLineGeneratorForTitleLines(
+                invoice,
+                purchaseOrderLine.getProductName(),
+                null,
+                purchaseOrderLine,
+                purchaseOrderLine.getQty());
+      }
       createdInvoiceLineList.addAll(invoiceLineGenerator.creates());
     }
     return createdInvoiceLineList;
