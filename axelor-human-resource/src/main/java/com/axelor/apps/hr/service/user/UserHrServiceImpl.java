@@ -55,6 +55,7 @@ public class UserHrServiceImpl implements UserHrService {
   }
 
   @Transactional
+  @Override
   public void createEmployee(User user) {
     if (user.getPartner() == null) {
       Beans.get(UserService.class).createPartner(user);
@@ -84,6 +85,7 @@ public class UserHrServiceImpl implements UserHrService {
   }
 
   @Transactional
+  @Override
   public Company getPayCompany(User user) {
     Company payCompany = null;
     if (user.getEmployee() != null
