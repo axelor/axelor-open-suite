@@ -825,6 +825,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
    * @throws AxelorException
    * @return
    */
+  @Override
   public List<ManufOrder> generateAllSubManufOrder(List<Product> productList, ManufOrder manufOrder)
       throws AxelorException {
     Integer depth = 0;
@@ -835,6 +836,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     return moList;
   }
 
+  @Override
   public List<Pair<BillOfMaterial, BigDecimal>> getToConsumeSubBomList(
       BillOfMaterial billOfMaterial, ManufOrder mo, List<Product> productList)
       throws AxelorException {
@@ -907,6 +909,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void merge(List<Long> ids) throws AxelorException {
     if (!canMerge(ids)) {
       throw new AxelorException(
@@ -1038,6 +1041,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     manufOrderRepo.save(mergedManufOrder);
   }
 
+  @Override
   public boolean canMerge(List<Long> ids) {
     List<ManufOrder> manufOrderList =
         manufOrderRepo.all().filter("self.id in (" + Joiner.on(",").join(ids) + ")").fetch();

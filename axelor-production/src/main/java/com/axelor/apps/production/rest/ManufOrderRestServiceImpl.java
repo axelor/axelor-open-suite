@@ -39,6 +39,7 @@ public class ManufOrderRestServiceImpl implements ManufOrderRestService {
     this.manufOrderPlanService = manufOrderPlanService;
   }
 
+  @Override
   public void updateStatusOfManufOrder(ManufOrder manufOrder, int targetStatus)
       throws AxelorException {
     if (manufOrder.getStatusSelect() == ManufOrderRepository.STATUS_DRAFT

@@ -531,6 +531,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
     }
   }
 
+  @Override
   public void updateUnitCosts(UnitCostCalculation unitCostCalculation) throws AxelorException {
 
     for (UnitCostCalcLine unitCostCalcLine : unitCostCalculation.getUnitCostCalcLineList()) {

@@ -181,6 +181,7 @@ public class BatchFillSopRealValues extends AbstractBatch {
     super.stop();
   }
 
+  @Override
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_PRODUCTION_BATCH);
   }
