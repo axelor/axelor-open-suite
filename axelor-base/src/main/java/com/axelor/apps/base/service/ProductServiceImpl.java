@@ -99,6 +99,7 @@ public class ProductServiceImpl implements ProductService {
     productRepo.save(product);
   }
 
+  @Override
   public String getSequence(Product product) throws AxelorException {
     String seq = null;
     if (appBaseService
@@ -283,6 +284,7 @@ public class ProductServiceImpl implements ProductService {
     }
   }
 
+  @Override
   public boolean hasActivePriceList(Product product) {
     return product.getPriceListLineList() != null
         && product.getPriceListLineList().stream()

@@ -83,6 +83,7 @@ public class PartnerServiceImpl implements PartnerService {
   private Pattern phoneNumberPattern =
       Pattern.compile("^\\+?(?:[0-9]{2,3}(?:\\s|\\.)?){3,6}[0-9]{2,3}$");
 
+  @Override
   public Partner createPartner(
       String name,
       String firstName,
@@ -128,6 +129,7 @@ public class PartnerServiceImpl implements PartnerService {
     return partner;
   }
 
+  @Override
   public Partner createContact(
       Partner partner,
       String name,
@@ -521,6 +523,7 @@ public class PartnerServiceImpl implements PartnerService {
     return new String(Str);
   }
 
+  @Override
   public boolean isThereDuplicatePartner(Partner partner) {
     return isThereDuplicatePartnerQuery(partner, false) != null;
   }
@@ -624,6 +627,7 @@ public class PartnerServiceImpl implements PartnerService {
     return actionName.substring(actionName.lastIndexOf('-') + 1);
   }
 
+  @Override
   public Partner isThereDuplicatePartnerInArchive(Partner partner) {
     return isThereDuplicatePartnerQuery(partner, true);
   }
