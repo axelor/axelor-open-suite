@@ -35,54 +35,67 @@ public class QualityImprovementPostRequest extends RequestPostStructure
   protected QIIdentificationRequest qiIdentification;
   protected QIResolutionRequest qiResolution;
 
+  @Override
   public Integer getType() {
     return type;
   }
 
+  @Override
   public void setType(Integer type) {
     this.type = type;
   }
 
+  @Override
   public Integer getGravityType() {
     return gravityType;
   }
 
+  @Override
   public void setGravityType(Integer gravityType) {
     this.gravityType = gravityType;
   }
 
+  @Override
   public Long getQiDetectionId() {
     return qiDetectionId;
   }
 
+  @Override
   public void setQiDetectionId(Long qiDetectionId) {
     this.qiDetectionId = qiDetectionId;
   }
 
+  @Override
   public Long getAnalysisMethodId() {
     return analysisMethodId;
   }
 
+  @Override
   public void setAnalysisMethodId(Long analysisMethodId) {
     this.analysisMethodId = analysisMethodId;
   }
 
+  @Override
   public QIIdentificationRequest getQiIdentification() {
     return qiIdentification;
   }
 
+  @Override
   public void setQiIdentification(QIIdentificationRequest qiIdentification) {
     this.qiIdentification = qiIdentification;
   }
 
+  @Override
   public QIResolutionRequest getQiResolution() {
     return qiResolution;
   }
 
+  @Override
   public void setQiResolution(QIResolutionRequest qiResolution) {
     this.qiResolution = qiResolution;
   }
 
+  @Override
   public QIDetection fetchQIDetection() {
     if (qiDetectionId == null || qiDetectionId == 0L) {
       return null;
@@ -90,6 +103,7 @@ public class QualityImprovementPostRequest extends RequestPostStructure
     return ObjectFinder.find(QIDetection.class, qiDetectionId, ObjectFinder.NO_VERSION);
   }
 
+  @Override
   public QIAnalysisMethod fetchAnalysisMethod() {
     if (analysisMethodId == null || analysisMethodId == 0L) {
       return null;
