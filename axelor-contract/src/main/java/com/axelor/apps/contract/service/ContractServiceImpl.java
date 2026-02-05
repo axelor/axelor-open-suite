@@ -358,6 +358,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public Contract copyFromTemplate(Contract contract, ContractTemplate template)
       throws AxelorException {
 
@@ -428,6 +429,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public Contract getNextContract(Contract contract) throws AxelorException {
     ContractVersion newVersion = versionService.newDraft(contract);
     Contract nextContract = newVersion.getNextContract();
@@ -485,6 +487,7 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     return contract;
   }
 
+  @Override
   public Boolean contractsFromOpportunityAreGenerated(Long opportunityId) {
     return contractRepository
             .all()

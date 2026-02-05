@@ -122,6 +122,7 @@ public class ContractInvoicingServiceImpl implements ContractInvoicingService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public Invoice invoicingContract(Contract contract) throws AxelorException {
     Invoice invoice = generateInvoice(contract);
     invoiceRepository.save(invoice);
