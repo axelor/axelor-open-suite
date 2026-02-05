@@ -1159,7 +1159,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           if (trackingRequired
               && sml.getTrackingNumber() == null
               && sml.getRealQty().compareTo(BigDecimal.ZERO) != 0) {
-            productsWithErrors.add(product.getName());
+            productsWithErrors.add(product.getFullName());
           }
         });
 
