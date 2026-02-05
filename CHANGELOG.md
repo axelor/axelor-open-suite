@@ -1,3 +1,61 @@
+## [8.2.36] (2026-02-05)
+
+### Fixes
+#### Base
+
+* Updated studio and message dependencies.
+* App base: added demo data for 'Sequence increment timeout'.
+
+#### Account
+
+* Invoice: fixed credit note reconciliation with holdback invoices.
+* Invoice: fixed the issue where updating the generated move date removes the invoice term from the invoice.
+
+#### Bank Payment
+
+* Payment session: fixed the order of bank order line creation and invoice term validation
+* Bank order: fixed area D5 to accept alphanumeric values in the norm for cfonb160.
+* Move: fix bank reconciliation impact when reversing and deleting moves.
+
+#### Helpdesk
+
+* Ticket: fixed the display of some fields.
+
+#### Stock
+
+* Inventory: block stock moves when an inventory is in progress on a parent location.
+* Stock move: fixed unable to print picking order for stock move with large number of lines from form view.
+
+
+### Developer
+
+#### Base
+
+``` sql  
+
+UPDATE studio_app_base SET sequence_increment_timeout = 5 WHERE COALESCE(sequence_increment_timeout, 0) < 1;
+
+```
+
+#### Account
+
+- MoveDueService: new public method `getOrignalInvoiceMoveLinesFromRefund(Invoice invoice)` returning `List<MoveLine>` instead of single MoveLine.
+- MoveExcessPaymentService: protected method `getOrignalInvoiceMoveLine(Invoice invoice)` renamed to `getOrignalInvoiceMoveLines(Invoice invoice)` and now returns `List<MoveLine>` instead of `MoveLine`.
+- MoveCreateFromInvoiceServiceImpl: new protected method `isHoldbackMoveLine(MoveLine moveLine)` added.
+
+---
+
+- Added InvoiceTermRepository in the MoveLineInvoiceTermServiceImpl constructor
+
+#### Bank Payment
+
+MoveRemoveServiceBankPaymentImpl now injects BankReconciliationLineRepository to check
+reconciliation links before blocking deletion.
+
+#### Stock
+
+- Added StockLocationService in the StockMoveServiceImpl constructor
+
 ## [8.2.35] (2026-01-22)
 
 ### Fixes
@@ -2362,6 +2420,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.36]: https://github.com/axelor/axelor-open-suite/compare/v8.2.35...v8.2.36
 [8.2.35]: https://github.com/axelor/axelor-open-suite/compare/v8.2.34...v8.2.35
 [8.2.34]: https://github.com/axelor/axelor-open-suite/compare/v8.2.33...v8.2.34
 [8.2.33]: https://github.com/axelor/axelor-open-suite/compare/v8.2.32...v8.2.33
