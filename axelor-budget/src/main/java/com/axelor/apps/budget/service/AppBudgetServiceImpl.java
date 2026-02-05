@@ -19,14 +19,9 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.meta.loader.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppBudget;
 import com.axelor.studio.db.repo.AppBudgetRepository;
-import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.Optional;
@@ -37,15 +32,8 @@ public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudge
   protected AppBudgetRepository appBudgetRepo;
 
   @Inject
-  public AppBudgetServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      AppSettingsStudioService appSettingsService,
-      MetaModuleRepository metaModuleRepo,
-      MetaFileRepository metaFileRepo,
-      AppBudgetRepository appBudgetRepo) {
-    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
+  public AppBudgetServiceImpl(AppService appService, AppBudgetRepository appBudgetRepo) {
+    super(appService);
     this.appBudgetRepo = appBudgetRepo;
   }
 

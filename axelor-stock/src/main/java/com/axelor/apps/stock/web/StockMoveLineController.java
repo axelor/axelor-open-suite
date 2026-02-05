@@ -454,4 +454,11 @@ public class StockMoveLineController {
     response.setValue("fromStockLocation", stockMoveLine.getFromStockLocation());
     response.setValue("toStockLocation", stockMoveLine.getToStockLocation());
   }
+
+  public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    Beans.get(StockMoveLineService.class).qtyOnChange(stockMoveLine, stockMove);
+    response.setValue("companyPurchasePrice", stockMoveLine.getCompanyPurchasePrice());
+  }
 }

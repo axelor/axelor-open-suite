@@ -1,0 +1,3 @@
+---
+title: "Move: fixed JPQL filter syntax for archived field in mass action."
+module: axelor-account

@@ -620,6 +620,10 @@
     <call class="com.axelor.apps.stock.web.StockMoveLineController" method="compute"/>
   </action-method>
 
+  <action-method name="action-stock-move-line-method-qty-onchange">
+    <call class="com.axelor.apps.stock.web.StockMoveLineController" method="qtyOnChange"/>
+  </action-method>
+
   <action-method name="action-stock-move-line-method-empty-line">
     <call class="com.axelor.apps.stock.web.StockMoveLineController" method="emptyLine"/>
   </action-method>
@@ -749,7 +753,7 @@
   </action-record>
 
   <action-group name="action-stock-move-line-group-real-qty-onchange">
-    <action name="action-stock-move-line-compute-price"/>
+    <action name="action-stock-move-line-method-qty-onchange"/>
     <action name="action-stock-move-line-record-total-net-mass"/>
     <action name="action-stock-move-line-method-set-available-status"/>
     <action name="action-stock-move-line-record-set-qty-remaining-to-package"

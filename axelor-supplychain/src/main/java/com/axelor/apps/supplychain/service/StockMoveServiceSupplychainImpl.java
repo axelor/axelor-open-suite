@@ -280,6 +280,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   public void cancel(StockMove stockMove) throws AxelorException {
 
     cancelStockMove(stockMove);
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
     Company company = JpaModelHelper.ensureManaged(stockMove.getCompany());
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
     Boolean supplierArrivalCancellationAutomaticMail =
@@ -479,6 +480,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
 
     checkAssociatedInvoiceLine(modifiedStockMoveLines);
     StockMove newStockMove = super.splitInto2(originalStockMove, modifiedStockMoveLines);
+    if (newStockMove == null) {
+      return null;
+    }
+    originalStockMove = JpaModelHelper.ensureManaged(originalStockMove);
+    newStockMove = JpaModelHelper.ensureManaged(newStockMove);
     newStockMove.setOrigin(originalStockMove.getOrigin());
     setOrigin(originalStockMove, newStockMove);
     return newStockMove;
@@ -748,6 +754,7 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void fillRealQuantities(StockMove stockMove) {
     Objects.requireNonNull(stockMove);
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
@@ -757,6 +764,11 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         sml.setTotalNetMass(sml.getQty().multiply(sml.getNetMass()));
       }
     }
+    stockMove = stockMoveRepo.save(stockMove);
+    BigDecimal exTaxTotal = stockMoveToolService.compute(stockMove);
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
+    stockMove.setExTaxTotal(exTaxTotal);
+    stockMoveRepo.save(stockMove);
   }
 
   @Override
