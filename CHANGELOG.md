@@ -1,3 +1,34 @@
+## [8.1.41] (2026-02-05)
+
+### Fixes
+#### Base
+
+* App base: added demo data for 'Sequence increment timeout'.
+* Updated studio and message dependencies
+
+#### Account
+
+* MoveValidateServiceImpl: No user retrieved when methods are called from external services
+
+#### Bank Payment
+
+* Bank order: fixed the incorrect due date on direct debit bank orders.
+
+
+### Developer
+
+#### Base
+
+``` sql  
+
+UPDATE studio_app_base SET sequence_increment_timeout = 5 WHERE COALESCE(sequence_increment_timeout, 0) < 1;
+
+```
+
+#### Account
+
+`UserService` has been added to the constructor of `MoveValidateServiceImpl`.
+
 ## [8.1.40] (2026-01-22)
 
 ### Fixes
@@ -1959,6 +1990,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.41]: https://github.com/axelor/axelor-open-suite/compare/v8.1.40...v8.1.41
 [8.1.40]: https://github.com/axelor/axelor-open-suite/compare/v8.1.39...v8.1.40
 [8.1.39]: https://github.com/axelor/axelor-open-suite/compare/v8.1.38...v8.1.39
 [8.1.38]: https://github.com/axelor/axelor-open-suite/compare/v8.1.37...v8.1.38
