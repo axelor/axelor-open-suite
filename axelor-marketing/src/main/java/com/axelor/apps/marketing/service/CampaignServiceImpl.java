@@ -71,6 +71,7 @@ public class CampaignServiceImpl implements CampaignService {
     this.campaignRepository = campaignRepository;
   }
 
+  @Override
   public MetaFile sendEmail(Campaign campaign) {
 
     String errorPartners = "";
@@ -191,6 +192,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Transactional
+  @Override
   public void generateEvents(Campaign campaign) {
 
     LocalDateTime eventStartDateTime = campaign.getEventStartDateTime();
@@ -255,6 +257,7 @@ public class CampaignServiceImpl implements CampaignService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void generateTargets(Campaign campaign) throws AxelorException {
     Set<Partner> partnerSet = targetListService.getAllPartners(campaign.getTargetModelSet());
     Set<Lead> leadSet = targetListService.getAllLeads(campaign.getTargetModelSet());
