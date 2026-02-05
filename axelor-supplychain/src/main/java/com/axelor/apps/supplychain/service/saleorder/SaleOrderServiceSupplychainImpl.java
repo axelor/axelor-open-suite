@@ -70,6 +70,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
+import wslite.json.JSONException;
 
 public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     implements SaleOrderSupplychainService {
@@ -437,7 +438,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
   @Override
   @Transactional(rollbackOn = Exception.class)
   public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty)
-      throws AxelorException, MalformedURLException {
+      throws AxelorException, MalformedURLException, JSONException {
     saleOrder = super.addPack(saleOrder, pack, packQty);
     this.setAdvancePayment(saleOrder);
     return saleOrder;
