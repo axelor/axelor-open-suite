@@ -30,6 +30,7 @@ import jakarta.ws.rs.NotFoundException;
 
 public class LanguageCheckerServiceImpl implements LanguageCheckerService {
 
+  @Override
   public void check(String languageCode) throws NotFoundException {
     Query<Language> query = Beans.get(LanguageRepository.class).all().filter("self.code = :code ");
     query.bind("code", languageCode);

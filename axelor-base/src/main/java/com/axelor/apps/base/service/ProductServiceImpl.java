@@ -612,6 +612,7 @@ public class ProductServiceImpl implements ProductService {
         false);
   }
 
+  @Override
   public void copyProduct(Product product, Product copy) {
     copy.setBarCode(null);
     try {
