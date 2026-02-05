@@ -133,6 +133,7 @@ public class MoveInvoiceTermServiceImpl implements MoveInvoiceTermService {
     }
   }
 
+  @Override
   public void updateMoveLineDueDates(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
       moveLine.setDueDate(

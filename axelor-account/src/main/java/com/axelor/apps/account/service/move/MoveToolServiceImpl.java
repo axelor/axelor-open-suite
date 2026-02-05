@@ -553,6 +553,7 @@ public class MoveToolServiceImpl implements MoveToolService {
     }
   }
 
+  @Override
   public boolean isTemporarilyClosurePeriodManage(Period period, Journal journal, User user)
       throws AxelorException {
     if (period != null) {
@@ -624,6 +625,7 @@ public class MoveToolServiceImpl implements MoveToolService {
         && move.getStatusSelect() == MoveRepository.STATUS_SIMULATED;
   }
 
+  @Override
   public List<MoveLine> getToReconcileDebitMoveLines(Move move) {
     List<MoveLine> moveLineList = new ArrayList<>();
     if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK
@@ -758,6 +760,7 @@ public class MoveToolServiceImpl implements MoveToolService {
     return statusSelectionList;
   }
 
+  @Override
   public Integer computeFunctionalOriginSelect(Journal journal, Integer massEntryStatus) {
     if (journal == null) {
       return null;

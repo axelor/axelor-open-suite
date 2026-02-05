@@ -202,6 +202,7 @@ public class BatchCloseAnnualAccounts extends BatchStrategy {
     }
   }
 
+  @Override
   protected void process() {
     if (!end) {
 

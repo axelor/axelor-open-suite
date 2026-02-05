@@ -274,6 +274,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     return reverseMoveLine;
   }
 
+  @Override
   public List<Move> massReverse(List<Move> moveList, Map<String, Object> assistantMap)
       throws AxelorException {
     boolean isAutomaticReconcile = (boolean) assistantMap.get("isAutomaticReconcile");

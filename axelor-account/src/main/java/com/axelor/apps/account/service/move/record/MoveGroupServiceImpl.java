@@ -143,6 +143,7 @@ public class MoveGroupServiceImpl implements MoveGroupService {
     }
   }
 
+  @Override
   public void checkBeforeSave(Move move) throws AxelorException {
     moveCheckService.checkDates(move);
     moveCheckService.checkPeriodPermission(move);

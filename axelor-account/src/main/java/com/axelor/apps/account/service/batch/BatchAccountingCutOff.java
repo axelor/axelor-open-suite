@@ -106,6 +106,7 @@ public class BatchAccountingCutOff extends PreviewBatch {
     }
   }
 
+  @Override
   protected void _processByIds(AccountingBatch accountingBatch) {
     List<Move> moveList =
         recordIdList.stream()

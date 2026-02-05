@@ -51,6 +51,7 @@ public class BatchControlMovesConsistency extends BatchStrategy {
     this.tracebackRepository = tracebackRepository;
   }
 
+  @Override
   protected void process() {
     AccountingBatch accountingBatch = batch.getAccountingBatch();
     if (!CollectionUtils.isEmpty(accountingBatch.getYearSet())) {

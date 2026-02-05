@@ -169,6 +169,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         && accountingReport.getReportType().getTypeSelect() == type;
   }
 
+  @Override
   public String getMoveLineList(AccountingReport accountingReport) throws AxelorException {
 
     this.buildQuery(accountingReport);
@@ -208,6 +209,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     return domainQuery;
   }
 
+  @Override
   public String buildQuery(AccountingReport accountingReport) throws AxelorException {
 
     this.initQuery();
@@ -435,6 +437,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     this.paramNumber = 1;
   }
 
+  @Override
   public String addParams(String paramQuery, Object param) {
 
     log.debug("Query and parameters : {} : {}", paramQuery, paramNumber);
@@ -445,6 +448,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     return this.query;
   }
 
+  @Override
   public String addParams(String paramQuery) {
 
     if (!this.query.equals("")) {
@@ -455,10 +459,12 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     return this.query;
   }
 
+  @Override
   public void setSequence(AccountingReport accountingReport, String sequence) {
     accountingReport.setRef(sequence);
   }
 
+  @Override
   public String getSequence(AccountingReport accountingReport) throws AxelorException {
 
     SequenceService sequenceService = Beans.get(SequenceService.class);
@@ -524,6 +530,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
         accountingReport.getReportType().getTypeSelect());
   }
 
+  @Override
   public Account getAccount(AccountingReport accountingReport) {
     if (this.compareReportType(
             accountingReport, AccountingReportRepository.REPORT_PAYMENT_DIFFERENCES)
@@ -536,6 +543,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     return null;
   }
 
+  @Override
   @Transactional
   public void setStatus(AccountingReport accountingReport) {
     accountingReport.setStatusSelect(AccountingReportRepository.STATUS_VALIDATED);
@@ -545,6 +553,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   /**
    * @return
    */
+  @Override
   public BigDecimal getDebitBalance() {
 
     String domainQuery = this.buildDomainFromQuery();
@@ -568,6 +577,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
   /**
    * @return
    */
+  @Override
   public BigDecimal getCreditBalance() {
 
     String domainQuery = this.buildDomainFromQuery();
@@ -587,6 +597,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
   }
 
+  @Override
   public BigDecimal getDebitBalanceType4() {
 
     String domainQuery = this.buildDomainFromQuery();
@@ -606,6 +617,7 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
   }
 
+  @Override
   public BigDecimal getCreditBalance(AccountingReport accountingReport, String queryFilter) {
 
     if (this.compareReportType(accountingReport, AccountingReportRepository.REPORT_AGED_BALANCE)) {
@@ -615,11 +627,13 @@ public class AccountingReportServiceImpl implements AccountingReportService {
     }
   }
 
+  @Override
   public BigDecimal getCreditBalanceType4() {
 
     return this.getDebitBalance().subtract(this.getDebitBalanceType4());
   }
 
+  @Override
   public void testReportedDateField(LocalDate reportedDate) throws AxelorException {
     if (reportedDate == null) {
       throw new AxelorException(
