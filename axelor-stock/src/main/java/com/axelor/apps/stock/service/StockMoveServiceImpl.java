@@ -634,6 +634,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMove.setStatusSelect(StockMoveRepository.STATUS_REALIZED);
   }
 
+  @Override
   public void sendSupplierCancellationMail(StockMove stockMove, Template template)
       throws AxelorException {
     sendMailForStockMove(stockMove, template);

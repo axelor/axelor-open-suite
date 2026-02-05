@@ -115,6 +115,7 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public Path importFile(Inventory inventory) throws AxelorException {
     final Long inventoryId = inventory.getId();
     Path filePath = MetaFiles.getPath(inventory.getImportFile());
