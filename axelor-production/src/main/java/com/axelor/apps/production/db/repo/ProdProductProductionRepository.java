@@ -57,7 +57,15 @@ public class ProdProductProductionRepository extends ProdProductRepository {
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
 
     if (!appProductionService.isApp("production")) {
+      return super.populate(json, context);
+    }
 
+    // Perf: Skip expensive qty calculations unless explicitly requested via context flag
+    // This avoids N+1 queries when loading grid views with many product lines
+    boolean computeQtyFields =
+        context != null && Boolean.TRUE.equals(context.get("_computeQtyFields"));
+
+    if (!computeQtyFields) {
       return super.populate(json, context);
     }
 
