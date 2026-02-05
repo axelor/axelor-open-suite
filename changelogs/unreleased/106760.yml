@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed an error occurring when splitting into 2 a stock move line without quantity."
-module: axelor-stock

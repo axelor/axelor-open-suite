@@ -1,3 +1,71 @@
+## [7.2.60] (2026-02-05)
+
+### Fixes
+#### Base
+
+* Partner : display address type on readonly mode.
+* User: fixed the issue with the default value for 'Generate random password'.
+
+#### Account
+
+* Invoice: fixed credit note reconciliation with holdback invoices.
+* Invoice: fixed the display of the head office address in the BIRT report when the address position is set to 'right' in the printing settings.
+* Invoice: fixed the issue where updating the generated move date removes the invoice term from the invoice.
+
+#### Bank Payment
+
+* Bank order: fixed the incorrect due date on direct debit bank orders.
+* Payment session: fixed the order of bank order line creation and invoice term validation
+* Bank order: fixed area D5 to accept alphanumeric values in the norm for cfonb160.
+
+#### Business Project
+
+* Business Project: fixed customerInvoicePanel to include credit notes generated from the invoice
+
+#### CRM
+
+* Opportunity: fixed partner domain to display only customers/prospects.
+
+#### Human Resource
+
+* Timesheet: fixed minutes calculation in timesheet line.
+* App timesheet: fixed the form loading issue when there are thousands of timesheets.
+
+#### Production
+
+* BOM printing: fixed priority sorting, sub-BOM indicator, and replaced ProdProcess column with BillOfMaterial
+
+#### Stock
+
+* Stock location: include virtual sub stock location in list when enabled.
+* Stock move: fixed wrong reserved qty in stock move and stock details by product.
+* Stock move: fixed an error occurring when splitting into 2 a stock move line without quantity.
+* Stock move: fixed tracking number on back order.
+* Stock move: added english titles for 'delayedInvoice' and 'validatedInvoice' button.
+* Inventory: block stock moves when an inventory is in progress on a parent location.
+
+#### Supply Chain
+
+* Declaration of exchanges: fixed filter on stock move displayed.
+* App supplychain: added a warning message when both 'Generate invoice from sale order' and 'Generate invoice from stock move' are enabled to prevent double invoicing.
+
+
+### Developer
+
+#### Account
+
+- MoveDueService: new public method `getOrignalInvoiceMoveLinesFromRefund(Invoice invoice)` returning `List<MoveLine>` instead of single MoveLine.
+- MoveExcessPaymentService: protected method `getOrignalInvoiceMoveLine(Invoice invoice)` renamed to `getOrignalInvoiceMoveLines(Invoice invoice)` and now returns `List<MoveLine>` instead of `MoveLine`.
+- MoveCreateFromInvoiceServiceImpl: new protected method `isHoldbackMoveLine(MoveLine moveLine)` added.
+
+---
+
+- Added InvoiceTermRepository in the MoveLineInvoiceTermServiceImpl constructor
+
+#### Stock
+
+- Added StockLocationService in the StockMoveServiceImpl constructor
+
 ## [7.2.59] (2026-01-22)
 
 ### Fixes
@@ -2717,6 +2785,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.60]: https://github.com/axelor/axelor-open-suite/compare/v7.2.59...v7.2.60
 [7.2.59]: https://github.com/axelor/axelor-open-suite/compare/v7.2.58...v7.2.59
 [7.2.58]: https://github.com/axelor/axelor-open-suite/compare/v7.2.57...v7.2.58
 [7.2.57]: https://github.com/axelor/axelor-open-suite/compare/v7.2.56...v7.2.57

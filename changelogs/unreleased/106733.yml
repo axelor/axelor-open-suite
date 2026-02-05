@@ -1,3 +1,0 @@
----
-title: "Payment session: fixed the order of bank order line creation and invoice term validation"
-module: axelor-bank-payment
