@@ -283,6 +283,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     mrpLine.setProposalGenerated(true);
   }
 
+  @Override
   public MrpLine createMrpLine(
       Mrp mrp,
       Product product,
@@ -359,6 +360,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     }
   }
 
+  @Override
   public MrpLineOrigin createMrpLineOrigin(Model model) {
 
     Class<?> klass = EntityHelper.getEntityClass(model);
@@ -370,6 +372,7 @@ public class MrpLineServiceImpl implements MrpLineService {
     return mrpLineOrigin;
   }
 
+  @Override
   public MrpLineOrigin copyMrpLineOrigin(MrpLineOrigin mrpLineOrigin) {
 
     MrpLineOrigin copyMrpLineOrigin = new MrpLineOrigin();

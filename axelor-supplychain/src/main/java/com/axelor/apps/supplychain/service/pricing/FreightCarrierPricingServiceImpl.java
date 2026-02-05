@@ -89,6 +89,7 @@ public class FreightCarrierPricingServiceImpl implements FreightCarrierPricingSe
     return null;
   }
 
+  @Override
   public Set<FreightCarrierPricing> getFreightCarrierPricingSet(
       Long shipmentModeId, Long saleOrderId) {
     Set<FreightCarrierPricing> freightCarrierPricings = new HashSet<>();

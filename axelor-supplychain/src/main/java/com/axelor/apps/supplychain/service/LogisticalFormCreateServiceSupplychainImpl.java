@@ -43,6 +43,7 @@ public class LogisticalFormCreateServiceSupplychainImpl extends LogisticalFormCr
     super(appBaseService, logisticalFormService, logisticalFormRepository, stockConfigService);
   }
 
+  @Override
   protected void checkFields(
       Partner carrierPartner,
       Partner deliverToCustomerPartner,

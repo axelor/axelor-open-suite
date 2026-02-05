@@ -956,6 +956,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public List<Invoice> generateInvoicesFromSaleOrderLines(
       Map<SaleOrder, Map<Long, BigDecimal>> priceMaps,
       Map<SaleOrder, Map<Long, BigDecimal>> qtyToInvoiceMaps,

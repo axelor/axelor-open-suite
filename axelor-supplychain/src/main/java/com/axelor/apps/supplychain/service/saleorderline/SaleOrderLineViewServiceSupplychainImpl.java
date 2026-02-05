@@ -70,6 +70,7 @@ public class SaleOrderLineViewServiceSupplychainImpl extends SaleOrderLineViewSe
     return attrs;
   }
 
+  @Override
   public Map<String, Map<String, Object>> hideDeliveryPanel(SaleOrderLine saleOrderLine) {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     String productTypeSelect =
