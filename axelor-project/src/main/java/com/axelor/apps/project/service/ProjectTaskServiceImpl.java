@@ -241,6 +241,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
   }
 
   @Transactional
+  @Override
   public void deleteProjectTask(ProjectTask projectTask) {
     projectTaskRepo.remove(projectTask);
   }
