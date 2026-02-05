@@ -45,6 +45,7 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
     this.currencyScaleService = currencyScaleService;
   }
 
+  @Override
   public void computeAndAddTaxToList(
       Map<TaxLine, PurchaseOrderLineTax> map,
       List<PurchaseOrderLineTax> purchaseOrderLineTaxList,
@@ -75,6 +76,7 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
         purchaseOrderLineTaxList);
   }
 
+  @Override
   public void computePurchaseOrderLineTax(
       PurchaseOrderLineTax purchaseOrderLineTax,
       Currency currency,
@@ -125,6 +127,7 @@ public class PurchaseOrderLineTaxComputeServiceImpl implements PurchaseOrderLine
     return null;
   }
 
+  @Override
   public BigDecimal computeTaxLineTaxTotal(
       TaxLine taxLine, PurchaseOrderLineTax purchaseOrderLineTax) {
     BigDecimal taxTotal = BigDecimal.ZERO;
