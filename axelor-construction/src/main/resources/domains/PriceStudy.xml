@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.0.xsd">
+
+  <module name="sale" package="com.axelor.apps.sale.db"/>
+
+  <entity name="PriceStudy">
+    <many-to-one name="saleOrder" title="Sale order"
+      ref="com.axelor.apps.sale.db.SaleOrder"/>
+    <decimal name="purchasePrice" title="Purchase price"/>
+    <decimal name="averageFG" title="FG"/>
+    <decimal name="costPrice" title="Cost price"/>
+    <decimal name="averageGrossMarge" title="Marge"/>
+    <decimal name="price" title="Selling price"/>
+    <many-to-one name="productType" title="Product type"
+      ref="com.axelor.apps.base.db.ProductType"/>
+  </entity>
+
+</domain-models>
