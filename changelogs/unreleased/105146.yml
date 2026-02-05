@@ -1,3 +1,0 @@
----
-title: "Bank order: fixed the incorrect due date on direct debit bank orders."
-module: axelor-bank-payment
