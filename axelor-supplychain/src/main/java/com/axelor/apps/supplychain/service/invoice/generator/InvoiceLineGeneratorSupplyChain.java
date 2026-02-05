@@ -106,6 +106,12 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     this.stockMoveLine = stockMoveLine;
     this.appBaseService = Beans.get(AppBaseService.class);
     this.unitConversionService = Beans.get(UnitConversionService.class);
+
+    if (saleOrderLine != null) {
+      this.typeSelect = saleOrderLine.getTypeSelect();
+    } else if (purchaseOrderLine != null && purchaseOrderLine.getIsTitleLine()) {
+      this.typeSelect = InvoiceLineRepository.TYPE_TITLE;
+    }
   }
 
   protected InvoiceLineGeneratorSupplyChain(
