@@ -1,3 +1,106 @@
+## [8.4.19] (2026-02-05)
+
+### Fixes
+#### Base
+
+* Partner : display address type on readonly mode.
+* User: fixed the issue with the default value for 'Generate random password'.
+* App base: added demo data for 'Sequence increment timeout'.
+* Update studio and message dependencies.
+
+#### Account
+
+* Invoice: fixed credit note reconciliation with holdback invoices.
+* Invoice/TaxLine : fixed the refresh tax account information into refresh vat system information.
+* Invoice: fixed the display of the head office address in the BIRT report when the address position is set to 'right' in the printing settings.
+* Invoice: fixed the issue where updating the generated move date removes the invoice term from the invoice.
+
+#### Bank Payment
+
+* Bank order: fixed the incorrect due date on direct debit bank orders.
+* Payment session: fixed the order of bank order line creation and invoice term validation
+* Bank order: fixed area D5 to accept alphanumeric values in the norm for cfonb160.
+* Move: fix bank reconciliation impact when reversing and deleting moves.
+
+#### Budget
+
+* Budget: fixed demo data for budget key computation
+
+#### Business Project
+
+* Business Project: fixed customerInvoicePanel to include credit notes generated from the invoice
+* Business project: fixed search-filters of project task.
+
+#### CRM
+
+* Opportunity: fixed partner domain to display only customers/prospects.
+
+#### Human Resource
+
+* Timesheet: fixed minutes calculation in timesheet line.
+* App timesheet: fixed the form loading issue when there are thousands of timesheets.
+
+#### Production
+
+* BOM printing: fixed priority sorting, sub-BOM indicator, and replaced ProdProcess column with BillOfMaterial
+* Manufacturing: fixed wrong cost sheet calculation on partial and complete finish.
+* BOM tree: fixed an incorrect quantity in multi-level BOM tree view.
+
+#### Sale
+
+* Sale order: fixed unit price calculation for 'Replace' price lists when quantity falls below the minimum quantity threshold.
+
+#### Stock
+
+* Stock move: fixed grid/form views for saleOrderSet and purchaseOrderSet.
+* Stock Location : Remove page break on Birt report.
+* Stock location: include virtual sub stock location in list when enabled.
+* Stock move line: fixed unit price change at qty change.
+* Stock location: fixed valuation discrepancy between form view and financial data report.
+* Stock move: fixed wrong reserved qty in stock move and stock details by product.
+* Stock move: fixed an error occurring when splitting into 2 a stock move line without quantity.
+* Stock move: added english titles for 'delayedInvoice' and 'validatedInvoice' button.
+* Inventory: block stock moves when an inventory is in progress on a parent location.
+* Stock move: fixed unable to print picking order for stock move with large number of lines from form view.
+
+#### Supply Chain
+
+* Sale order/Purchase order: fixed an error occurring during advance payment generation with title lines.
+* Sale order: fixed delivered quantities after merging deliveries.
+* Declaration of exchanges: fixed filter on stock move displayed.
+* Sale order: fixed an error occurring when creating line if supplychain was not installed.
+* App supplychain: added a warning message when both 'Generate invoice from sale order' and 'Generate invoice from stock move' are enabled to prevent double invoicing.
+
+
+### Developer
+
+#### Base
+
+``` sql  
+
+UPDATE studio_app_base SET sequence_increment_timeout = 5 WHERE COALESCE(sequence_increment_timeout, 0) < 1;
+
+```
+
+#### Account
+
+- MoveDueService: new public method `getOrignalInvoiceMoveLinesFromRefund(Invoice invoice)` returning `List<MoveLine>` instead of single MoveLine.
+- MoveExcessPaymentService: protected method `getOrignalInvoiceMoveLine(Invoice invoice)` renamed to `getOrignalInvoiceMoveLines(Invoice invoice)` and now returns `List<MoveLine>` instead of `MoveLine`.
+- MoveCreateFromInvoiceServiceImpl: new protected method `isHoldbackMoveLine(MoveLine moveLine)` added.
+
+---
+
+- Added InvoiceTermRepository in the MoveLineInvoiceTermServiceImpl constructor
+
+#### Bank Payment
+
+MoveRemoveServiceBankPaymentImpl now injects BankReconciliationLineRepository to check
+reconciliation links before blocking deletion.
+
+#### Stock
+
+- Added StockLocationService in the StockMoveServiceImpl constructor
+
 ## [8.4.18] (2026-01-22)
 
 ### Fixes
@@ -1828,6 +1931,7 @@ ALTER TABLE studio_app_purchase ADD COLUMN manage_call_for_tender boolean;
 * Budget: allowed to split the amount on multiple periods.
 
  
+[8.4.19]: https://github.com/axelor/axelor-open-suite/compare/v8.4.18...v8.4.19
 [8.4.18]: https://github.com/axelor/axelor-open-suite/compare/v8.4.17...v8.4.18
 [8.4.17]: https://github.com/axelor/axelor-open-suite/compare/v8.4.16...v8.4.17
 [8.4.16]: https://github.com/axelor/axelor-open-suite/compare/v8.4.15...v8.4.16
