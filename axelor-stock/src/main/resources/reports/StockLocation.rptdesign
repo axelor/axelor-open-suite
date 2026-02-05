@@ -898,11 +898,13 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
         StockLocationLineHistory.qty,
         Unit.label_to_printing as unit_code,
         StockLocationLineHistory.sale_price,
-        StockLocationLineHistory.purchase_price,
-        Currency.code AS currency_code,
+		(CASE WHEN EXISTS(SELECT 1 FROM studio_app_base_company_specific_product_fields_set ProductCompany LEFT JOIN meta_field field ON field.id = ProductCompany.company_specific_product_fields_set where field.name = 'lastPurchasePrice' LIMIT 1) THEN (ProductCompany.last_purchase_price) ELSE (Product.last_purchase_price) END ) AS purchase_price,        
+		Currency.code AS currency_code,
         ProductFamily.name as product_family,
         StockLocationLineHistory.cost_price as "cost_price",
-        StockLocationLineHistory.wap as "wap",
+        (CASE WHEN StockConfig.stock_valuation_type_select = 1 
+        THEN (CASE WHEN EXISTS(SELECT 1 FROM studio_app_base_company_specific_product_fields_set ProductCompany LEFT JOIN meta_field field ON field.id = ProductCompany.company_specific_product_fields_set where field.name = 'avgPrice' LIMIT 1) THEN (ProductCompany.avg_price) ELSE (Product.avg_price) END )       
+        ELSE StockLocationLineHistory.wap END ) as "wap",
         Product.cost_type_select,
         StockConfig.is_display_sale_value_in_printing,
         StockConfig.is_display_accounting_value_in_printing,
@@ -916,6 +918,8 @@ FROM
     stock_stock_location_line_history StockLocationLineHistory ON StockLocationLine.id = StockLocationLineHistory.stock_location_line
         LEFT JOIN
     base_product AS Product ON (Product.id = StockLocationLine.product)
+        LEFT JOIN 
+    base_product ProductCompany ON (ProductCompany.company = Location.company AND ProductCompany.product = Product.id)
         LEFT JOIN
     base_product_family AS ProductFamily ON (Product.product_family = ProductFamily.id)
         LEFT JOIN
@@ -1283,7 +1287,7 @@ order by Product.code;]]></xml-property>
     Currency.code AS currency_code,
     ProductFamily.name as product_family,
     AVG(StockLocationLineHistory.cost_price) as "cost_price",
-    AVG(StockLocationLineHistory.wap) as "wap",
+    AVG(CASE WHEN StockConfig.stock_valuation_type_select = 1 THEN Product.avg_price ELSE StockLocationLineHistory.wap END ) as "wap",
     Product.cost_type_select,
     StockConfig.is_display_sale_value_in_printing,StockConfig.is_display_accounting_value_in_printing,
     StockConfig.is_display_ag_price_in_printing,StockConfig.is_display_purchase_value_in_printing
