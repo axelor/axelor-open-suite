@@ -133,7 +133,7 @@
       <panel title="Tasks" name="taskPanel">
         <panel-dashlet name="projectTaskDashletPanel" title="Tasks" x-show-bars="true"
           colSpan="12" action="action-project-view-show-project-task" height="200%" canSearch="true"
-          x-order="createdOn"/>
+          canNew="true" x-order="createdOn"/>
       </panel>
 
       <panel-include view="incl-wiki-panel-form"/>
@@ -929,10 +929,11 @@
 
   <action-view name="action-project-view-show-project-task" title="Project Tasks"
     model="com.axelor.apps.project.db.ProjectTask">
-    <view type="grid" name="project-task-project-grid"/>
+    <view type="grid" name="project-task-tree-project-grid"/>
     <view type="form" name="project-task-form"/>
-    <domain>self.project.id = :_id</domain>
+    <domain>self.project.id = :_id AND self.parentTask IS null</domain>
     <context name="_id" expr="eval: id"/>
+    <context name="_showTaskBtn" expr="eval: true"/>
   </action-view>
 
   <!-- ACTION VALIDATE -->
