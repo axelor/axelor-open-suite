@@ -1,3 +1,144 @@
+## [8.3.28] (2026-02-05)
+
+### Fixes
+#### Base
+
+* Updated studio and message dependencies.
+* Partner : display address type on readonly mode.
+* User: fixed the issue with the default value for 'Generate random password'.
+* App base: added demo data for 'Sequence increment timeout'.
+
+#### Account
+
+* Invoice: fixed credit note reconciliation with holdback invoices.
+* Invoice/TaxLine : fixed the refresh tax account information into refresh vat system information.
+* Invoice: fixed the display of the head office address in the BIRT report when the address position is set to 'right' in the printing settings.
+* Invoice: fixed the issue where updating the generated move date removes the invoice term from the invoice.
+
+#### Bank Payment
+
+* Bank order: fixed the incorrect due date on direct debit bank orders.
+* Payment session: fixed the order of bank order line creation and invoice term validation
+* Bank order: fixed area D5 to accept alphanumeric values in the norm for cfonb160.
+* Move: fix bank reconciliation impact when reversing and deleting moves.
+
+#### Budget
+
+* Budget: fixed demo data for budget key computation
+
+#### Business Project
+
+* Business Project: fixed customerInvoicePanel to include credit notes generated from the invoice
+* Business project: fixed search-filters of project task.
+
+#### CRM
+
+* Opportunity: fixed partner domain to display only customers/prospects.
+
+#### Human Resource
+
+* Timesheet: fixed minutes calculation in timesheet line.
+* App timesheet: fixed the form loading issue when there are thousands of timesheets.
+
+#### Production
+
+* BOM printing: fixed priority sorting, sub-BOM indicator, and replaced ProdProcess column with BillOfMaterial
+* Production/Manuf order: fixed missing link between manuf order and production order.
+* Manufacturing: fixed wrong cost sheet calculation on partial and complete finish.
+* BOM tree: fixed an incorrect quantity in multi-level BOM tree view.
+
+#### Sale
+
+* Sale order: fixed unit price calculation for 'Replace' price lists when quantity falls below the minimum quantity threshold.
+
+#### Stock
+
+* Stock move: fixed grid/form views for saleOrderSet and purchaseOrderSet.
+* Stock Location : Remove page break on Birt report.
+* Stock location: include virtual sub stock location in list when enabled.
+* Stock move line: fixed unit price change at qty change.
+* Stock location: fixed valuation discrepancy between form view and financial data report.
+* Stock move: fixed wrong reserved qty in stock move and stock details by product.
+* Stock move: fixed an error occurring when splitting into 2 a stock move line without quantity.
+* Stock move: added english titles for 'delayedInvoice' and 'validatedInvoice' button.
+* Inventory: block stock moves when an inventory is in progress on a parent location.
+* Stock move: fixed unable to print picking order for stock move with large number of lines from form view.
+
+#### Supply Chain
+
+* Sale order/Purchase order: fixed an error occurring during advance payment generation with title lines.
+* Sale order: fixed delivered quantities after merging deliveries.
+* Declaration of exchanges: fixed filter on stock move displayed.
+* Sale order: fixed an error occurring when creating line if supplychain was not installed.
+* App supplychain: added a warning message when both 'Generate invoice from sale order' and 'Generate invoice from stock move' are enabled to prevent double invoicing.
+
+
+### Developer
+
+#### Base
+
+``` sql  
+
+UPDATE studio_app_base SET sequence_increment_timeout = 5 WHERE COALESCE(sequence_increment_timeout, 0) < 1;
+
+```
+
+#### Account
+
+- MoveDueService: new public method `getOrignalInvoiceMoveLinesFromRefund(Invoice invoice)` returning `List<MoveLine>` instead of single MoveLine.
+- MoveExcessPaymentService: protected method `getOrignalInvoiceMoveLine(Invoice invoice)` renamed to `getOrignalInvoiceMoveLines(Invoice invoice)` and now returns `List<MoveLine>` instead of `MoveLine`.
+- MoveCreateFromInvoiceServiceImpl: new protected method `isHoldbackMoveLine(MoveLine moveLine)` added.
+
+---
+
+- Added InvoiceTermRepository in the MoveLineInvoiceTermServiceImpl constructor
+
+#### Bank Payment
+
+MoveRemoveServiceBankPaymentImpl now injects BankReconciliationLineRepository to check
+reconciliation links before blocking deletion.
+
+#### Production
+
+This fix requires a migration script to be executed.
+-- migration script
+ALTER TABLE IF EXISTS production_manuf_order_production_order_set
+RENAME COLUMN production_manuf_order TO manuf_order_set;
+
+ALTER TABLE IF EXISTS production_manuf_order_production_order_set
+RENAME CONSTRAINT fk_jng56b1pw195fdms0siud0d0b TO fk_grvd0vdnd82j79shpt02d6v9a;
+
+INSERT INTO production_manuf_order_production_order_set (production_order_set, manuf_order_set)
+SELECT orderSet.production_production_order, orderSet.manuf_order_set
+FROM production_production_order_manuf_order_set orderSet
+WHERE orderSet.production_production_order IS NOT NULL
+  AND orderSet.manuf_order_set IS NOT NULL
+  AND NOT EXISTS (
+    SELECT 1
+    FROM production_manuf_order_production_order_set existingOrderSet
+    WHERE existingOrderSet.production_order_set = orderSet.production_production_order
+      AND existingOrderSet.manuf_order_set = orderSet.manuf_order_set
+  );
+
+INSERT INTO production_manuf_order_production_order_set (production_order_set, manuf_order_set)
+SELECT DISTINCT orderSet.production_order_set, manufOrder.manuf_order_merge_result
+FROM production_manuf_order manufOrder
+JOIN production_manuf_order_production_order_set orderSet
+  ON orderSet.manuf_order_set = manufOrder.id
+WHERE manufOrder.manuf_order_merge_result IS NOT NULL
+  AND NOT EXISTS (
+    SELECT 1
+    FROM production_manuf_order_production_order_set existingOrderSet
+    WHERE existingOrderSet.production_order_set = orderSet.production_order_set
+      AND existingOrderSet.manuf_order_set = manufOrder.manuf_order_merge_result
+  );
+
+DROP TABLE IF EXISTS production_production_order_manuf_order_set;
+
+#### Stock
+
+- Added StockLocationService in the StockMoveServiceImpl constructor
+
 ## [8.3.27] (2026-01-22)
 
 ### Fixes
@@ -2457,6 +2598,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.28]: https://github.com/axelor/axelor-open-suite/compare/v8.3.27...v8.3.28
 [8.3.27]: https://github.com/axelor/axelor-open-suite/compare/v8.3.26...v8.3.27
 [8.3.26]: https://github.com/axelor/axelor-open-suite/compare/v8.3.25...v8.3.26
 [8.3.25]: https://github.com/axelor/axelor-open-suite/compare/v8.3.24...v8.3.25

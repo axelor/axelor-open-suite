@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed unable to print picking order for stock move with large number of lines from form view."
-module: axelor-stock
