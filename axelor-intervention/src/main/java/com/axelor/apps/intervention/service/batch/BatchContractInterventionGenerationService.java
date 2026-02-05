@@ -167,6 +167,7 @@ public class BatchContractInterventionGenerationService extends AbstractBatch {
     }
   }
 
+  @Override
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_INTERVENTION_BATCH);
   }
