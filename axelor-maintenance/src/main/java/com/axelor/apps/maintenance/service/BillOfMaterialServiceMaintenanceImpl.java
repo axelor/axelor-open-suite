@@ -33,6 +33,7 @@ import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.apps.production.service.BillOfMaterialService;
 import com.axelor.apps.production.service.BillOfMaterialServiceImpl;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.config.ProductionConfigService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.common.ObjectUtils;
@@ -55,7 +56,8 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
       BillOfMaterialService billOfMaterialService,
       CostSheetService costSheetService,
       ProductionConfigService productionConfigService,
-      PrintingTemplatePrintService printingTemplatePrintService) {
+      PrintingTemplatePrintService printingTemplatePrintService,
+      AppProductionService appProductionService) {
     super(
         billOfMaterialRepo,
         tempBomTreeRepo,
@@ -63,7 +65,8 @@ public class BillOfMaterialServiceMaintenanceImpl extends BillOfMaterialServiceI
         productCompanyService,
         billOfMaterialLineService,
         billOfMaterialService,
-        costSheetService);
+        costSheetService,
+        appProductionService);
     this.productionConfigService = productionConfigService;
     this.printingTemplatePrintService = printingTemplatePrintService;
   }
