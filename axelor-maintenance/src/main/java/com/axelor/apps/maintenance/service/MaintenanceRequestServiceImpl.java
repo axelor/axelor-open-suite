@@ -31,6 +31,7 @@ public class MaintenanceRequestServiceImpl implements MaintenanceRequestService 
   @Inject private AppBaseService appBaseService;
 
   @Transactional
+  @Override
   public MaintenanceRequest start(MaintenanceRequest maintenanceRequest) {
 
     maintenanceRequest.setStatusSelect(MaintenanceRequestRepository.STATUS_IN_PROGRESS);
@@ -39,6 +40,7 @@ public class MaintenanceRequestServiceImpl implements MaintenanceRequestService 
   }
 
   @Transactional
+  @Override
   public MaintenanceRequest complete(MaintenanceRequest maintenanceRequest) {
 
     maintenanceRequest.setStatusSelect(MaintenanceRequestRepository.STATUS_COMPLETED);
@@ -48,6 +50,7 @@ public class MaintenanceRequestServiceImpl implements MaintenanceRequestService 
   }
 
   @Transactional
+  @Override
   public MaintenanceRequest cancel(MaintenanceRequest maintenanceRequest) {
 
     maintenanceRequest.setStatusSelect(MaintenanceRequestRepository.STATUS_CANCELED);
@@ -56,6 +59,7 @@ public class MaintenanceRequestServiceImpl implements MaintenanceRequestService 
   }
 
   @Transactional
+  @Override
   public MaintenanceRequest replan(MaintenanceRequest maintenanceRequest) {
 
     maintenanceRequest.setStatusSelect(MaintenanceRequestRepository.STATUS_PLANNED);
