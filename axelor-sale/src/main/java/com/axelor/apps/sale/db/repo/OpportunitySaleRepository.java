@@ -32,6 +32,7 @@ public class OpportunitySaleRepository extends OpportunityManagementRepository {
     super(appCrmService, opportunitySequenceService);
   }
 
+  @Override
   public Opportunity copy(Opportunity entity, boolean deep) {
     Opportunity copy = super.copy(entity, deep);
     copy.clearSaleOrderList();

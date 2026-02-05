@@ -546,6 +546,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
     return scriptHelper.eval(groovyFormula);
   }
 
+  @Override
   public boolean areCompatible(String targetClassName, String fromClassName) {
     return targetClassName.equals(fromClassName)
         || (targetClassName.equals("BigDecimal") && fromClassName.equals("Integer"))

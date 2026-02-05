@@ -238,6 +238,7 @@ public class SaleOrderServiceImpl implements SaleOrderService {
   }
 
   @Transactional(rollbackOn = Exception.class)
+  @Override
   public SaleOrder separateInNewQuotation(
       SaleOrder saleOrder, ArrayList<LinkedHashMap<String, Object>> saleOrderLines)
       throws AxelorException {

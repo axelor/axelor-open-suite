@@ -78,6 +78,7 @@ public class SaleOrderConfirmServiceImpl implements SaleOrderConfirmService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void confirmProcess(SaleOrder saleOrder) throws AxelorException {
     List<Integer> authorizedStatus = new ArrayList<>();
     authorizedStatus.add(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
