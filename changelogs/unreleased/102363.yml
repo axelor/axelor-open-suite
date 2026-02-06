@@ -1,3 +1,3 @@
 ---
-title: "Stock location line: made unit readonly and fixed incorrect unit conversion."
+title: "Stock location line: made unit readonly."
 module: axelor-stock
