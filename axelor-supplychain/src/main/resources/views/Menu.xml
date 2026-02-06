@@ -182,16 +182,6 @@
     <view-param name="show-toolbar" value="false"/>
   </action-view>
 
-  <menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale" order="800"
-    if="__config__.app.isApp('supplychain')" title="Mass Cust. Stock Move Invoicing"
-    action="stock.root.multi.sale.invoicing"/>
-
-  <action-view name="stock.root.multi.sale.invoicing"
-    title="Mass Cust. Stock Move Invoicing" model="com.axelor.apps.stock.db.StockMove">
-    <view type="form" name="stock-move-multi-sale-invoicing-form"/>
-    <view-param name="show-toolbar" value="false"/>
-  </action-view>
-
   <menuitem name="stock-root-availabilityreq" parent="sc-root-sale" order="900"
     title="Availability requests" action="stock.root.availabilityreq"
     if="__config__.app.isApp('stock') &amp;&amp; __config__.app.getApp('stock')?.isSeparateShipmentOperations"/>
@@ -246,8 +236,11 @@
     <view type="form" name="stock-move-invoice-blocking-reason-form"/>
   </action-view>
 
+  <menuitem title="Mass invoicing" name="sc-root-sale-mass-invoicing" parent="sc-root-sale"
+    order="1200"/>
+
   <menuitem name="sc-root-sale-order-lines-to-invoice"
-    title="Mass sale order line invoicing" parent="sc-root-sale" order="601"
+    title="Mass sale order line invoicing" parent="sc-root-sale-mass-invoicing" order="100"
     action="sc.root.sale.order.lines.to.invoice"/>
 
   <action-view name="sc.root.sale.order.lines.to.invoice"
@@ -258,6 +251,16 @@
       (self.invoicingState = 1 OR self.invoicingState = 2) AND
       self.saleOrder.statusSelect = 3
     </domain>
+  </action-view>
+
+  <menuitem name="stock-multi-sale-invoicing" parent="sc-root-sale-mass-invoicing"
+    order="200" if="__config__.app.isApp('supplychain')" title="Mass Cust. Stock Move Invoicing"
+    action="stock.root.multi.sale.invoicing"/>
+
+  <action-view name="stock.root.multi.sale.invoicing"
+    title="Mass Cust. Stock Move Invoicing" model="com.axelor.apps.stock.db.StockMove">
+    <view type="form" name="stock-move-multi-sale-invoicing-form"/>
+    <view-param name="show-toolbar" value="false"/>
   </action-view>
 
   <!-- Pricing menus -->
