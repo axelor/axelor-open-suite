@@ -18,6 +18,7 @@
     <track>
       <field name="lastEmailId" on="UPDATE"/>
       <field name="hiringStatus" on="UPDATE"/>
+      <field name="defaultHiringStatus" on="UPDATE"/>
     </track>
   </entity>
 
