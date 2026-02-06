@@ -32,6 +32,7 @@ import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
+import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
@@ -54,6 +55,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   protected StockMoveLineService stockMoveLineService;
   protected StockCorrectionRepository stockCorrectionRepository;
   protected StockLocationLineFetchService stockLocationLineFetchService;
+  protected InventoryRepository inventoryRepository;
 
   @Inject
   public StockCorrectionServiceImpl(
@@ -62,17 +64,19 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       StockLocationLineService stockLocationLineService,
       AppBaseService baseService,
       StockMoveService stockMoveService,
-      StockCorrectionRepository stockCorrectionRepository,
       StockMoveLineService stockMoveLineService,
-      StockLocationLineFetchService stockLocationLineFetchService) {
+      StockCorrectionRepository stockCorrectionRepository,
+      StockLocationLineFetchService stockLocationLineFetchService,
+      InventoryRepository inventoryRepository) {
     this.stockConfigService = stockConfigService;
     this.productCompanyService = productCompanyService;
     this.stockLocationLineService = stockLocationLineService;
     this.baseService = baseService;
     this.stockMoveService = stockMoveService;
-    this.stockCorrectionRepository = stockCorrectionRepository;
     this.stockMoveLineService = stockMoveLineService;
+    this.stockCorrectionRepository = stockCorrectionRepository;
     this.stockLocationLineFetchService = stockLocationLineFetchService;
+    this.inventoryRepository = inventoryRepository;
   }
 
   @Override
@@ -136,6 +140,8 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(StockExceptionMessage.STOCK_CORRECTION_VALIDATE_WRONG_STATUS));
     }
+
+    checkOngoingInventory(stockCorrection);
 
     StockMove stockMove = generateStockMove(stockCorrection);
     if (stockMove != null) {
@@ -396,5 +402,20 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
     return stockLocationLineFetchService.getDetailLocationLine(
             stockLocation, product, trackingNumber)
         != null;
+  }
+
+  protected void checkOngoingInventory(StockCorrection stockCorrection) throws AxelorException {
+    StockLocation stockLocation = stockCorrection.getStockLocation();
+    if (inventoryRepository
+            .all()
+            .filter("self.stockLocation = :stockLocation AND self.statusSelect = :statusSelect")
+            .bind("stockLocation", stockLocation)
+            .bind("statusSelect", InventoryRepository.STATUS_IN_PROGRESS)
+            .count()
+        > 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(StockExceptionMessage.STOCK_CORRECTION_VALIDATE_ERROR));
+    }
   }
 }

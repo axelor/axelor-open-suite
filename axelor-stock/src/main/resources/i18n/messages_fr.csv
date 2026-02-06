@@ -1067,6 +1067,7 @@
 "Workshop","Atelier",,
 "Workshop default stock location","Atelier par défaut",,
 "Yes","Oui",,
+"You can not validate this stock correction, there is an ongoing inventory for the same stock location.","Vous ne pouvez pas valider cette correction de stock, un inventaire est en cours pour le même emplacement de stock.",,
 "You can only split line in draft or planned stock move.","Vous pouvez seulement scinder une ligne d'un mouvement de stock en brouillon ou planifié.",,
 "You can only split line in incoming or outgoing stock move.",,,
 "You cannot choose external stock locations for both fields","Vous ne pouvez pas choisir des emplacements externes pour les deux champs à la fois.",,
