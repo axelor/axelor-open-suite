@@ -769,7 +769,8 @@
     <field name="shipmentMode" expr="eval: supplierPartner?.shipmentMode"/>
     <field name="freightCarrierMode" expr="eval: supplierPartner?.freightCarrierMode"/>
     <field name="notes" expr="eval: supplierPartner?.purchaseOrderComments"/>
-    <field name="outsourcingOrder" expr="eval: supplierPartner?.isSubcontractor"
+    <field name="outsourcingOrder"
+      expr="eval: _isOutsourcingOrder &amp;&amp; supplierPartner?.isSubcontractor"
       if="__config__.app.isApp('production')"/>
   </action-record>
 

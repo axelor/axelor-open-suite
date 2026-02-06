@@ -1,0 +1,3 @@
+---
+title: "Purchase order: fixed the default type issue when supplier is also subcontractor."
+module: axelor-purchase
