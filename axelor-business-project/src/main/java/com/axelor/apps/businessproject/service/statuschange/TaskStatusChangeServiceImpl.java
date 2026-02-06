@@ -26,10 +26,10 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
   protected final Logger log = LoggerFactory.getLogger(TaskStatusChangeServiceImpl.class);
 
   // Task Statuses
-  public static final String TASK_STATUS_NEW = "New";
-  public static final String TASK_STATUS_IN_PROGRESS = "In Progress";
-  public static final String TASK_STATUS_FEEDBACK = "Feedback";
-  public static final String TASK_STATUS_DONE = "Done";
+  protected static final String TASK_STATUS_NEW = "New";
+  protected static final String TASK_STATUS_IN_PROGRESS = "In Progress";
+  protected static final String TASK_STATUS_FEEDBACK = "Feedback";
+  protected static final String TASK_STATUS_DONE = "Done";
 
   protected TaskStatusBusinessProjectRepository taskStatusRepo;
   protected ProjectTaskRepository projectTaskRepo;
@@ -139,7 +139,7 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
     return taskReport.getTaskMemberReports();
   }
 
-  private TaskStatus getTaskStatus(String statusName) throws AxelorAlertException {
+  protected TaskStatus getTaskStatus(String statusName) throws AxelorAlertException {
     TaskStatus taskStatus = taskStatusRepo.findByNameIgnoreCase(statusName);
     if (taskStatus == null) {
       throw new AxelorAlertException(
