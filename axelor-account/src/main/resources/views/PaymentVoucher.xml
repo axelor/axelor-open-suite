@@ -137,12 +137,21 @@
         field="payVoucherDueElementList" form-view="pay-voucher-due-element-form"
         grid-view="pay-voucher-due-element-grid" showIf="statusSelect == 1"
         orderBy="invoiceTerm.dueDate" canMove="true" readonly="true"/>
+      <panel name="totalPanel" colSpan="12"
+        hideIf="!payVoucherDueElementList || payVoucherDueElementList.length == 0">
+        <button name="totalPanelBtn"
+          onClick="action-payment-voucher-method-compute-selected-amounts"
+          title="Compute selected total"/>
+        <field name="$selectedTotal" title="Selected total" type="decimal" readonly="true"
+          x-currency="currency.symbol"/>
+        <field name="currency.symbol" hidden="true"/>
+      </panel>
       <panel name="loadLinesPanel" colSpan="12" showIf="statusSelect == 1">
         <button name="loadSelectedLinesBtn" title="Load selected lines"
-          onClick="action-method-payment-voucher-load-selected-lines,save"
+          onClick="action-payment-voucher-group-load-selected-lines"
           readonlyIf="paidAmount == 0 || payVoucherDueElementList.length == 0" colSpan="6"/>
         <button name="resetImputationBtn" title="Reset imputation"
-          onClick="action-payment-voucher-method-reset-imputation,save"
+          onClick="action-payment-voucher-group-reset-imputation"
           readonlyIf="payVoucherElementToPayList.length == 0" colSpan="6"/>
       </panel>
       <panel-related name="payVoucherElementToPayListPanel" colSpan="12"
@@ -175,6 +184,7 @@
     <action name="action-payment-voucher-record-value-for-collection-account"/>
     <action name="action-payment-voucher-record-cheque-owner"/>
     <action name="action-payment-voucher-record-cheque-due-date"/>
+    <action name="action-payment-voucher-method-compute-selected-amounts"/>
   </action-group>
 
   <action-group name="action-account-payment-voucher-onload-group">
@@ -183,6 +193,7 @@
     <action name="action-payment-voucher-hidden-fields-if-purchase"/>
     <action name="action-attrs-payment-voucher-manage-bank-details"/>
     <action name="action-attrs-payment-voucher-hide-trading-name"/>
+    <action name="action-payment-voucher-method-compute-selected-amounts"/>
   </action-group>
 
   <action-group name="action-group-account-payment-voucher-confirm-click">
@@ -421,7 +432,25 @@
   <action-group name="action-payment-voucher-group-search-elements-to-pay">
     <action name="action-payment-voucher-method-load-lines"/>
     <action name="action-payment-voucher-method-reset-imputation"/>
+    <action name="save"/>
+    <action name="action-payment-voucher-method-compute-selected-amounts"/>
   </action-group>
+
+  <action-group name="action-payment-voucher-group-load-selected-lines">
+    <action name="action-method-payment-voucher-load-selected-lines"/>
+    <action name="save"/>
+    <action name="action-payment-voucher-method-compute-selected-amounts"/>
+  </action-group>
+  <action-group name="action-payment-voucher-group-reset-imputation">
+    <action name="action-payment-voucher-method-reset-imputation"/>
+    <action name="save"/>
+    <action name="action-payment-voucher-method-compute-selected-amounts"/>
+  </action-group>
+
+  <action-method name="action-payment-voucher-method-compute-selected-amounts">
+    <call class="com.axelor.apps.account.web.PaymentVoucherController"
+      method="computeSelectedTotals"/>
+  </action-method>
 
   <action-attrs name="action-attrs-payment-voucher-hide-trading-name"
     model="com.axelor.apps.account.db.PaymentVoucher">
