@@ -1067,6 +1067,7 @@
 "Workshop",,,
 "Workshop default stock location",,,
 "Yes",,,
+"You can not validate this stock correction, there is an ongoing inventory for the same stock location.",,,
 "You can only split line in draft or planned stock move.",,,
 "You can only split line in incoming or outgoing stock move.",,,
 "You cannot choose external stock locations for both fields",,,
