@@ -56,7 +56,8 @@
           <field name="company" canEdit="false" required="true" form-view="company-form"
             grid-view="company-grid"/>
           <field name="employee" canNew="false" canView="false" required="true"
-            form-view="employee-form" grid-view="employee-grid"/>
+            form-view="employee-form" grid-view="employee-grid"
+            domain="self.user IN (SELECT m FROM Project p JOIN p.membersUserSet m WHERE p = :project) OR self.user IN (SELECT p.assignedTo FROM Project p WHERE p = :project)"/>
           <field name="currency" readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
             colSpan="6" canEdit="false" onChange="action-expense-attrs-kilometric-panel-visibility"
             required="true"/>
@@ -161,7 +162,6 @@
     <action name="mgm-action-project-expense-record-default"/>
     <action name="mgm-action-expense-attrs-hide-button-readonly-field"/>
     <action name="action-expense-attrs-set-total-to-refund"/>
-    <action name="mgm-action-project-expense-attrs-setup"/>
   </action-group>
 
   <action-group name="mgm-action-project-expense-line-group-onnew">
@@ -204,11 +204,6 @@
       if="__user__.employee?.hrManager"/>
   </action-attrs>
 
-  <action-attrs name="mgm-action-project-expense-attrs-setup">
-    <attribute name="domain" for="employee"
-      expr="eval: &quot;self.user.id IN (SELECT m.id FROM Project p JOIN p.membersUserSet m WHERE p.id = ${_projectRef?.id}) OR self.user.id = ${_projectRef?.assignedTo?.id}&quot;"/>
-  </action-attrs>
-
   <action-view name="mgm-action-project-expense-dashlet"
     model="com.axelor.apps.hr.db.Expense" title="Project Expenses">
     <view name="mgm-expense-grid" type="grid"/>
@@ -230,10 +225,10 @@
     <view-param name="popup-save" value="true"/>
     <view-param name="show-confirm" value="true"/>
     <view-param name="show-toolbar" value="false"/>
-    <context name="_projectId" expr="eval: _id"/>
-    <context name="_projectRef" expr="eval: __self__"/>
-    <context name="_projectCompany" expr="eval: company"/>
-    <context name="_projectCurrency" expr="eval: currency"/>
+    <context name="_projectRef" expr="eval: _projectRef"/>
+    <context name="_projectCompany" expr="eval: _projectCompany"/>
+    <context name="_projectCurrency" expr="eval: _projectCurrency"/>
+    <context name="_projectId" expr="eval: _projectRef?.id"/>
   </action-view>
 
 </object-views>
