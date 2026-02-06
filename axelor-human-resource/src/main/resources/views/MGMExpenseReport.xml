@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
-  <grid name="mgm-expense-grid" title="Project Expenses" canNew="true"
+  <grid name="mgm-expense-grid" title="Project Expenses" canNew="false"
     model="com.axelor.apps.hr.db.Expense">
     <toolbar>
       <button name="addExpenseBtn" title="New Expense" colSpan="2" css="btn-custom text-left"
