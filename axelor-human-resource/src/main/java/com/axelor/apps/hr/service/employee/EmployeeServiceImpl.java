@@ -28,8 +28,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
-import com.axelor.apps.base.service.theme.MetaThemeFetchService;
-import com.axelor.apps.base.service.user.UserServiceImpl;
+import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.DPAE;
 import com.axelor.apps.hr.db.Employee;
@@ -40,11 +39,9 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -55,29 +52,29 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeService {
+public class EmployeeServiceImpl implements EmployeeService {
 
   protected WeeklyPlanningService weeklyPlanningService;
   protected HRConfigService hrConfigService;
   protected AppBaseService appBaseService;
   protected EmployeeRepository employeeRepository;
+  protected UserService userService;
 
   @Inject
   public EmployeeServiceImpl(
-      UserRepository userRepo,
-      MetaFiles metaFiles,
-      MetaThemeFetchService metaThemeFetchService,
       WeeklyPlanningService weeklyPlanningService,
       HRConfigService hrConfigService,
       AppBaseService appBaseService,
-      EmployeeRepository employeeRepository) {
-    super(userRepo, metaFiles, metaThemeFetchService);
+      EmployeeRepository employeeRepository,
+      UserService userService) {
     this.weeklyPlanningService = weeklyPlanningService;
     this.hrConfigService = hrConfigService;
     this.appBaseService = appBaseService;
     this.employeeRepository = employeeRepository;
+    this.userService = userService;
   }
 
+  @Override
   public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException {
     if (employee.getSeniorityDate() == null) {
       throw new AxelorException(
@@ -89,6 +86,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     return getYears(employee.getUser(), employee.getSeniorityDate(), refDate);
   }
 
+  @Override
   public int getAge(Employee employee, LocalDate refDate) throws AxelorException {
     if (employee.getBirthDate() == null) {
       throw new AxelorException(
@@ -162,6 +160,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     return duration;
   }
 
+  @Override
   public Map<String, String> getSocialNetworkUrl(String name, String firstName) {
 
     Map<String, String> urlMap = new HashMap<>();
@@ -307,7 +306,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
 
   @Override
   public PrintingTemplate getEmpPhoneBookPrintingTemplate() throws AxelorException {
-    Company company = getUser().getActiveCompany();
+    Company company = userService.getUser().getActiveCompany();
     PrintingTemplate employeePhoneBookPrintTemplate = null;
     if (ObjectUtils.notEmpty(company)) {
       HRConfig hrConfig = hrConfigService.getHRConfig(company);
