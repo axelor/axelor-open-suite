@@ -14,8 +14,7 @@
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
     <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select"
       default="1" readonly="true"/>
-    <many-to-one name="employee" ref="Employee" title="Employee" readonly="true"
-      required="true"/>
+    <many-to-one name="employee" ref="Employee" title="Employee" required="true"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
     <one-to-many name="generalExpenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine"

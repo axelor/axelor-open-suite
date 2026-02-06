@@ -203,9 +203,17 @@
           action="action-view-show-business-project-task" x-show-bars="true" canSearch="true"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
-          if="__config__.app.isApp('business-project') &amp;&amp; !['CUSTOM-PM','CUSTOM-PT','CUSTOM-TM'].any(g -> __user__.group.code == g)"
+          if="__config__.app.isApp('business-project') &amp;&amp; ['admins'].any(g -> __user__.group.code == g)"
           canSearch="true"/>
       </panel>
+
+      <!-- MGM-100 expense reporting -->
+      <panel title="Expense Report" name="expenseReportsPanel">
+        <panel-dashlet name="projectExpenseDashlet" title="Project Expenses"
+          canEdit="true" readonly="false" action="mgm-action-project-expense-dashlet" colSpan="12"
+          canNew="true" x-show-bars="true"/>
+      </panel>
+
       <!-- MGM-66 task reports -->
       <panel title="Task Report" name="taskReportsPanel">
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
@@ -214,7 +222,7 @@
       </panel>
 
       <panel title="Configurations" name="configurationsPanel"
-        if="!['CUSTOM-PM','CUSTOM-PT' ].any(g -> __user__.group.code.contains(g))">
+        if="['admins' ].any(g -> __user__.group.code.contains(g))">
         <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
           canCollapse="true" collapseIf="false">
           <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
