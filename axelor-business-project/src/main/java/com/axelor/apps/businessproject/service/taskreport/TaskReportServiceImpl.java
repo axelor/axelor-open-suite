@@ -161,7 +161,28 @@ public class TaskReportServiceImpl implements TaskReportService {
       isNew = true;
     }
 
+    // TSLine change detection
+    boolean hasChanged =
+        !Objects.equals(line.getStartTime(), report.getStartTime())
+            || !Objects.equals(line.getEndTime(), report.getEndTime())
+            || !Objects.equals(line.getDuration(), report.getWorkHours())
+            || !Objects.equals(line.getBreakTimeMinutes(), report.getBreakTimeMinutes())
+            || !Objects.equals(line.getProduct(), task.getProduct());
+
+    // save TSLine invalidation
+    if (!isNew && Boolean.TRUE.equals(line.getIsValidated()) && hasChanged) {
+      line.setIsValidated(false);
+    }
+
     // Always update calculated / mutable fields
+    line.setEmployee(employee);
+    line.setProject(task.getProject());
+    line.setProjectTask(task);
+    line.setProduct(task.getProduct());
+    line.setDate(date);
+    line.setStartTime(report.getStartTime());
+    line.setEndTime(report.getEndTime());
+
     if (report.getWorkHours() != null) {
       BigDecimal duration = report.getWorkHours();
       line.setDuration(duration);
