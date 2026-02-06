@@ -101,11 +101,6 @@ public class UserServiceImpl implements UserService {
     this.metaThemeFetchService = metaThemeFetchService;
   }
 
-  /**
-   * Method that return the current connected user
-   *
-   * @return user the current connected user
-   */
   @Override
   public User getUser() {
     User user = null;
@@ -119,11 +114,6 @@ public class UserServiceImpl implements UserService {
     return user;
   }
 
-  /**
-   * Method that return the id of the current connected user
-   *
-   * @return user the id of current connected user
-   */
   @Override
   public Long getUserId() {
 
@@ -136,11 +126,6 @@ public class UserServiceImpl implements UserService {
     return user.getId();
   }
 
-  /**
-   * Method that return the active company of the current connected user
-   *
-   * @return Company the active company
-   */
   @Override
   public Company getUserActiveCompany() {
 
@@ -153,11 +138,6 @@ public class UserServiceImpl implements UserService {
     return user.getActiveCompany();
   }
 
-  /**
-   * Method that return the active company id of the current connected user
-   *
-   * @return Company the active company id
-   */
   @Override
   public Long getUserActiveCompanyId() {
 
@@ -209,11 +189,6 @@ public class UserServiceImpl implements UserService {
     return Optional.empty();
   }
 
-  /**
-   * Method that return the active team of the current connected user
-   *
-   * @return Team the active team
-   */
   @Override
   public Team getUserActiveTeam() {
 
@@ -226,11 +201,6 @@ public class UserServiceImpl implements UserService {
     return user.getActiveTeam();
   }
 
-  /**
-   * Method that return the active team of the current connected user
-   *
-   * @return Team the active team id
-   */
   @Override
   public Long getUserActiveTeamId() {
 
@@ -243,11 +213,6 @@ public class UserServiceImpl implements UserService {
     return team.getId();
   }
 
-  /**
-   * Method that return the partner of the current connected user
-   *
-   * @return Partner the user partner
-   */
   @Override
   public Partner getUserPartner() {
 
