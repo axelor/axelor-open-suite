@@ -28,6 +28,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.project.db.Project;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
@@ -71,12 +72,15 @@ public class ExpenseCreateWizardServiceImpl implements ExpenseCreateWizardServic
         expenseLineList.stream().map(ExpenseLine::getCurrency).findFirst();
     Optional<Employee> employee =
         expenseLineList.stream().map(ExpenseLine::getEmployee).findFirst();
+    Optional<Project> project = expenseLineList.stream().map(ExpenseLine::getProject).findFirst();
+
     return expenseCreateService.createExpense(
         company,
         employee.orElse(null),
         currency.orElse(null),
         null,
         null,
+        project.orElse(null),
         ExpenseRepository.COMPANY_CB_PAYMENT_NO,
         expenseLineList);
   }
