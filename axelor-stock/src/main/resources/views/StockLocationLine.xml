@@ -40,7 +40,7 @@
     <panel name="mainPanel">
       <field name="product" canEdit="false" form-view="product-form" grid-view="product-grid"
         domain="self.dtype = 'Product'"/>
-      <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+      <field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
       <field name="avgPrice" colSpan="3"
         onChange="action-stock-location-line-group-avg-price-onchange"
         readonlyIf="!$isAvgPriceEditable" x-scale="$nbDecimalDigitForUnitPrice"/>
@@ -154,7 +154,7 @@
         domain="self.dtype = 'Product'"/>
       <field name="stockLocation" form-view="stock-location-form"
         grid-view="stock-location-grid"/>
-      <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
+      <field name="unit" form-view="unit-form" grid-view="unit-grid" readonly="true"/>
       <field name="avgPrice" onChange="action-stock-location-line-group-avg-price-onchange"
         colSpan="3" readonlyIf="!$isAvgPriceEditable"/>
       <field name="$isAvgPriceEditable" hidden="true" type="boolean"/>
