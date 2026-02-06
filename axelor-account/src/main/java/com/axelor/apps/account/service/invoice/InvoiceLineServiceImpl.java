@@ -575,7 +575,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
           inTaxTotal.divide(
               taxRate.divide(new BigDecimal(100)).add(BigDecimal.ONE),
               currencyScale,
-              BigDecimal.ROUND_HALF_UP);
+              RoundingMode.HALF_UP);
     }
     invoiceLine.setExTaxTotal(exTaxTotal);
     invoiceLine.setCompanyExTaxTotal(this.getCompanyExTaxTotal(exTaxTotal, invoice));

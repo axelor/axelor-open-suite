@@ -401,7 +401,7 @@ import com.axelor.studio.app.service.ScriptAppServiceImpl;
 import com.axelor.team.db.repo.TeamTaskRepository;
 import com.axelor.utils.service.translation.TranslationBaseService;
 import com.axelor.utils.service.translation.TranslationBaseServiceImpl;
-import com.google.inject.matcher.AbstractMatcher;
+import com.google.inject.matcher.Matcher;
 import com.google.inject.multibindings.Multibinder;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -415,27 +415,22 @@ public class BaseModule extends AxelorModule {
   protected void configure() {
 
     bindInterceptor(
-        new AbstractMatcher<>() {
-          @Override
-          public boolean matches(Class<?> aClass) {
-            return aClass.getSimpleName().endsWith("Controller")
-                && aClass.getPackageName().startsWith("com.axelor.apps")
-                && aClass.getPackageName().contains(".web");
-          }
-        },
-        new AbstractMatcher<>() {
-          @Override
-          public boolean matches(Method method) {
-            List<Parameter> parameters = Arrays.asList(method.getParameters());
-            return parameters.size() == 2
-                && parameters.stream()
-                    .anyMatch(parameter -> ActionRequest.class.equals(parameter.getType()))
-                && parameters.stream()
-                    .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()))
-                && Modifier.isPublic(method.getModifiers())
-                && method.getReturnType().equals(Void.TYPE);
-          }
-        },
+        (Matcher<? super Class<?>>)
+            aClass ->
+                aClass.getSimpleName().endsWith("Controller")
+                    && aClass.getPackageName().startsWith("com.axelor.apps")
+                    && aClass.getPackageName().contains(".web"),
+        (Matcher<? super Method>)
+            method -> {
+              List<Parameter> parameters = Arrays.asList(method.getParameters());
+              return parameters.size() == 2
+                  && parameters.stream()
+                      .anyMatch(parameter -> ActionRequest.class.equals(parameter.getType()))
+                  && parameters.stream()
+                      .anyMatch(parameter -> ActionResponse.class.equals(parameter.getType()))
+                  && Modifier.isPublic(method.getModifiers())
+                  && method.getReturnType().equals(Void.TYPE);
+            },
         new ControllerMethodInterceptor());
 
     addQuickMenu(InstanceInfoQuickMenuCreator.class);

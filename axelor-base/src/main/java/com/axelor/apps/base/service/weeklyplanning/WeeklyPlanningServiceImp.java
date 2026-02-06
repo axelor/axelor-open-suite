@@ -30,6 +30,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -221,7 +222,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
     }
 
     return BigDecimal.valueOf(value)
-        .divide(BigDecimal.valueOf(60), DEFAULT_SCALE, BigDecimal.ROUND_HALF_UP);
+        .divide(BigDecimal.valueOf(60), DEFAULT_SCALE, RoundingMode.HALF_UP);
   }
 
   public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date) {

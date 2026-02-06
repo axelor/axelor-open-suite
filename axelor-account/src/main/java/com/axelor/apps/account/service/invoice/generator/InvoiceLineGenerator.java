@@ -341,8 +341,7 @@ public abstract class InvoiceLineGenerator extends InvoiceLineManagement {
       inTaxTotal =
           computeAmount(this.qty, this.priceDiscounted, this.currencyScale, this.coefficient);
       exTaxTotal =
-          inTaxTotal.divide(
-              taxRate.add(BigDecimal.ONE), this.currencyScale, BigDecimal.ROUND_HALF_UP);
+          inTaxTotal.divide(taxRate.add(BigDecimal.ONE), this.currencyScale, RoundingMode.HALF_UP);
     }
   }
 

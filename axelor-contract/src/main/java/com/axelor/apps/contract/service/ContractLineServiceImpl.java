@@ -179,9 +179,7 @@ public class ContractLineServiceImpl implements ContractLineService {
         && (Boolean) productCompanyService.get(product, "inAti", contract.getCompany())) {
       price =
           price.divide(
-              taxService.getTotalTaxRate(taxLineSet).add(BigDecimal.ONE),
-              2,
-              BigDecimal.ROUND_HALF_UP);
+              taxService.getTotalTaxRate(taxLineSet).add(BigDecimal.ONE), 2, RoundingMode.HALF_UP);
     }
     contractLine.setPrice(price);
   }
