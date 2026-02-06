@@ -50,6 +50,7 @@ public class BankReconciliationLoadBankStatementClassicService
     this.bankStatementLineFilterService = bankStatementLineFilterService;
   }
 
+  @Override
   @Transactional
   public void loadBankStatement(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {
@@ -57,6 +58,7 @@ public class BankReconciliationLoadBankStatementClassicService
     this.loadBankStatementLines(bankReconciliation, includeBankStatement);
   }
 
+  @Override
   @Transactional
   protected void loadBankStatementLines(
       BankReconciliation bankReconciliation, boolean includeBankStatement) {

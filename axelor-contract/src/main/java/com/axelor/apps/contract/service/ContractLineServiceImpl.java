@@ -120,6 +120,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     return contractLineMap;
   }
 
+  @Override
   public ContractLine fill(ContractLine contractLine, Contract contract, Product product)
       throws AxelorException {
     Company company = contract != null ? contract.getCompany() : null;
@@ -325,6 +326,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     return contractLine;
   }
 
+  @Override
   public void computeAnalytic(Contract contract, ContractLine contractLine) throws AxelorException {
     if (appAccountService.isApp("supplychain")) {
       AnalyticLineModel analyticLineModel =

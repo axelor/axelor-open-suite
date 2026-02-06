@@ -89,12 +89,14 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   }
 
   @Transactional
+  @Override
   public void pause(TSTimer timer) {
     timer.setStatusSelect(TSTimerRepository.STATUS_PAUSE);
     calculateDuration(timer);
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void stopAndGenerateTimesheetLine(TSTimer timer) throws AxelorException {
     stop(timer);
     calculateDuration(timer);
@@ -110,11 +112,13 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void stop(TSTimer timer) throws AxelorException {
     timer.setStatusSelect(TSTimerRepository.STATUS_STOP);
   }
 
   @Transactional
+  @Override
   public void resetTimer(TSTimer timer) {
     timer.setStatusSelect(TSTimerRepository.STATUS_DRAFT);
     timer.setTimesheetLine(null);
@@ -126,6 +130,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   }
 
   @Transactional
+  @Override
   public void calculateDuration(TSTimer timer) {
     long currentDuration = timer.getDuration();
     Duration duration =
@@ -136,6 +141,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public TimesheetLine generateTimesheetLine(TSTimer timer) throws AxelorException {
     return generateTimesheetLine(timer, timesheetFetchService.getCurrentOrCreateTimesheet());
   }
@@ -188,6 +194,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     return name.toString();
   }
 
+  @Override
   public BigDecimal convertSecondDurationInHours(long durationInSeconds) {
     logger.debug("Duration in seconds : {}", durationInSeconds);
 
@@ -205,6 +212,7 @@ public class TimesheetTimerServiceImpl implements TimesheetTimerService {
     tsTimerRepository.save(timer);
   }
 
+  @Override
   public TSTimer getCurrentTSTimer() {
     return tsTimerRepository
         .all()

@@ -48,6 +48,7 @@ public class PurchaseOrderSplitServiceImpl implements PurchaseOrderSplitService 
   }
 
   @Transactional(rollbackOn = Exception.class)
+  @Override
   public PurchaseOrder separateInNewQuotation(
       PurchaseOrder purchaseOrder, ArrayList<LinkedHashMap<String, Object>> purchaseOrderLines)
       throws AxelorException {

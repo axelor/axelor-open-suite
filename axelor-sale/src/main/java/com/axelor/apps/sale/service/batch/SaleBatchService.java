@@ -62,6 +62,7 @@ public class SaleBatchService extends AbstractBatchService {
    * @param batchCode Le code du batch souhaité.
    * @throws AxelorException
    */
+  @Override
   public Batch run(String batchCode) throws AxelorException {
 
     SaleBatch saleBatch = saleBatchRepo.findByCode(batchCode);

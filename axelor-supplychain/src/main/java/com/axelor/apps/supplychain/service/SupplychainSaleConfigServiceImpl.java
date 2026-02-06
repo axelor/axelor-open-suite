@@ -37,6 +37,7 @@ public class SupplychainSaleConfigServiceImpl extends SaleConfigServiceImpl
   }
 
   @Transactional
+  @Override
   public void updateCustomerCredit(SaleConfig saleConfig) {
     Query update =
         JPA.em()

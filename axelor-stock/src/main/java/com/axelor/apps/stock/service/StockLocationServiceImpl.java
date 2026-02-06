@@ -125,6 +125,7 @@ public class StockLocationServiceImpl implements StockLocationService {
     return map;
   }
 
+  @Override
   public List<Long> getBadStockLocationLineId() {
 
     List<StockLocationLine> stockLocationLineList =
@@ -194,6 +195,7 @@ public class StockLocationServiceImpl implements StockLocationService {
     return allStockLocations;
   }
 
+  @Override
   public List<StockLocation> getAllLocationAndSubLocation(
       StockLocation stockLocation, boolean isVirtualInclude) {
 
@@ -229,6 +231,7 @@ public class StockLocationServiceImpl implements StockLocationService {
     return resultList;
   }
 
+  @Override
   public List<Long> getAllLocationAndSubLocation(Long stockLocationId, boolean isVirtualInclude) {
 
     List<Long> resultList = new ArrayList<>();

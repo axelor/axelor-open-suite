@@ -77,6 +77,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     this.bankOrderEncryptionService = bankOrderEncryptionService;
   }
 
+  @Override
   public void processBankOrderStatus(BankOrder bankOrder, PaymentMode paymentMode)
       throws AxelorException {
     validate(bankOrder);
@@ -105,6 +106,7 @@ public class BankOrderServiceImpl implements BankOrderService {
     bankOrder.setHasBeenSentToBank(true);
   }
 
+  @Override
   public void setNbOfLines(BankOrder bankOrder) {
 
     if (bankOrder.getBankOrderLineList() == null) {

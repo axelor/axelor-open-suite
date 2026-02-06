@@ -205,6 +205,7 @@ public class AnonymizeServiceImpl implements AnonymizeService {
     return md.digest(data.getBytes(StandardCharsets.UTF_8));
   }
 
+  @Override
   public byte[] getSalt() {
     SecureRandom random = new SecureRandom();
     byte[] salt = new byte[16];

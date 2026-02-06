@@ -295,10 +295,12 @@ public class SaleOrderMergingServiceImpl implements SaleOrderMergingService {
       this.checks = new ChecksImpl();
     }
 
+    @Override
     public SaleOrder getSaleOrder() {
       return saleOrder;
     }
 
+    @Override
     public void setSaleOrder(SaleOrder saleOrder) {
       this.saleOrder = saleOrder;
     }

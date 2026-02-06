@@ -213,6 +213,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
     return Duration.ofSeconds(totalSecDuration);
   }
 
+  @Override
   public void checkDailyLimit(
       Timesheet timesheet, TimesheetLine currentTimesheetLine, BigDecimal hoursDuration)
       throws AxelorException {

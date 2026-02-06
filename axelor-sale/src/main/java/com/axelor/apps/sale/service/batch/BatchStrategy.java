@@ -33,6 +33,7 @@ public abstract class BatchStrategy extends AbstractBatch {
     this.appSaleService = appSaleService;
   }
 
+  @Override
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_SALE_BATCH);
   }

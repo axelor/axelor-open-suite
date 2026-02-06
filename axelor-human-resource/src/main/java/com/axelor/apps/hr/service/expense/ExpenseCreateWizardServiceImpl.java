@@ -53,6 +53,7 @@ public class ExpenseCreateWizardServiceImpl implements ExpenseCreateWizardServic
     this.expenseCreateService = expenseCreateService;
   }
 
+  @Override
   public boolean checkExpenseLinesToMerge(List<Integer> idList) throws AxelorException {
 
     if (CollectionUtils.isEmpty(idList)) {

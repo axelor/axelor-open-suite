@@ -719,6 +719,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     return errors;
   }
 
+  @Override
   public void accountingMultiple(Query<Move> moveListQuery) throws AxelorException {
     Move move;
 
@@ -869,6 +870,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     return false;
   }
 
+  @Override
   public void checkMoveLinesPartner(Move move) throws AxelorException {
     if (CollectionUtils.isEmpty(move.getMoveLineList())) {
       return;

@@ -70,6 +70,7 @@ public class BatchContractRevaluate extends BatchStrategy {
     this.contractRevaluationService = contractRevaluationService;
   }
 
+  @Override
   protected void process() {
     revaluateContracts();
   }

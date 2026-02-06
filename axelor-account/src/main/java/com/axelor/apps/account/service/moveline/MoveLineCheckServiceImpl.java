@@ -103,6 +103,7 @@ public class MoveLineCheckServiceImpl implements MoveLineCheckService {
     }
   }
 
+  @Override
   public void nonDeductibleTaxAuthorized(Move move, MoveLine moveLine) throws AxelorException {
     int technicalType = Optional.of(move.getFunctionalOriginSelect()).orElse(0);
     if (technicalType != MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE) {
@@ -110,6 +111,7 @@ public class MoveLineCheckServiceImpl implements MoveLineCheckService {
     }
   }
 
+  @Override
   public void checkMoveLineTaxes(Set<TaxLine> taxLineSet) throws AxelorException {
     if (ObjectUtils.notEmpty(taxLineSet) && taxAccountService.isNonDeductibleTaxesSet(taxLineSet)) {
       throw new AxelorException(

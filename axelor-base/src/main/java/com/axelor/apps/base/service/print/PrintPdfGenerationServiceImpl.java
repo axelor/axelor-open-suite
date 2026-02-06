@@ -54,6 +54,7 @@ public class PrintPdfGenerationServiceImpl implements PrintPdfGenerationService 
   public static final float DEFAULT_FONT_SIZE = 10;
   public static final float FOOTER_Y_POS = 40;
 
+  @Override
   public File generateFile(Print print, String html, ByteArrayOutputStream pdfOutputStream)
       throws IOException {
     createPdfFromHtml(html, pdfOutputStream);

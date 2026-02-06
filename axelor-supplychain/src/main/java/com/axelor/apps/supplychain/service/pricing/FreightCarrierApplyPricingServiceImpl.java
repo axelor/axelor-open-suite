@@ -65,6 +65,7 @@ public class FreightCarrierApplyPricingServiceImpl implements FreightCarrierAppl
     return errors;
   }
 
+  @Override
   public String computeFreightCarrierPricing(
       Pricing pricing, FreightCarrierPricing freightCarrierPricing) {
     String errors = "";

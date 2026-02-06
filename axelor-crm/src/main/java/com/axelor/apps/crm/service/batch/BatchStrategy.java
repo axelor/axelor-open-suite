@@ -55,6 +55,7 @@ public abstract class BatchStrategy extends AbstractBatch {
   //		incrementDone();
   //	}
 
+  @Override
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_CRM_BATCH);
   }

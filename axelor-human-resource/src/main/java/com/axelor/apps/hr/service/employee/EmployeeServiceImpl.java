@@ -78,6 +78,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     this.employeeRepository = employeeRepository;
   }
 
+  @Override
   public int getLengthOfService(Employee employee, LocalDate refDate) throws AxelorException {
     if (employee.getSeniorityDate() == null) {
       throw new AxelorException(
@@ -89,6 +90,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     return getYears(employee.getUser(), employee.getSeniorityDate(), refDate);
   }
 
+  @Override
   public int getAge(Employee employee, LocalDate refDate) throws AxelorException {
     if (employee.getBirthDate() == null) {
       throw new AxelorException(
@@ -162,6 +164,7 @@ public class EmployeeServiceImpl extends UserServiceImpl implements EmployeeServ
     return duration;
   }
 
+  @Override
   public Map<String, String> getSocialNetworkUrl(String name, String firstName) {
 
     Map<String, String> urlMap = new HashMap<>();

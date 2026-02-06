@@ -182,6 +182,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     super.postProcessPaymentSession(paymentSession, moveDateMap, paymentAmountMap, out, isGlobal);
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   protected PaymentSession processInvoiceTerm(
       PaymentSession paymentSession,
@@ -238,6 +239,7 @@ public class PaymentSessionValidateBankPaymentServiceImpl
     return invoicePaymentRepo.save(invoicePayment);
   }
 
+  @Override
   public StringBuilder generateFlashMessage(PaymentSession paymentSession, int moveCount) {
     StringBuilder flashMessage = super.generateFlashMessage(paymentSession, moveCount);
 

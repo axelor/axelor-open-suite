@@ -132,6 +132,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
   }
 
   @Transactional(rollbackOn = Exception.class)
+  @Override
   public void updateIndicators(ConfiguratorCreator creator) throws AxelorException {
     List<MetaJsonField> indicators =
         Optional.ofNullable(creator.getIndicators()).orElse(Collections.emptyList());
@@ -505,6 +506,7 @@ public class ConfiguratorCreatorServiceImpl implements ConfiguratorCreatorServic
     }
   }
 
+  @Override
   public String getConfiguratorCreatorDomain() {
     User user = AuthUtils.getUser();
     Group group = user.getGroup();

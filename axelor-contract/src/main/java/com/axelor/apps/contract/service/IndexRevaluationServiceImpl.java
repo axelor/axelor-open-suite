@@ -72,6 +72,7 @@ public class IndexRevaluationServiceImpl implements IndexRevaluationService {
   }
 
   @Transactional
+  @Override
   public void setIndexValueEndDate(IndexRevaluation indexRevaluation) {
     List<IndexValue> indexValueList = indexRevaluation.getIndexValueList();
     if (indexValueList != null) {

@@ -151,6 +151,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public List<Message> sendReminders(TimesheetReport timesheetReport) throws AxelorException {
 
     Template reminderTemplate =
@@ -277,6 +278,7 @@ public class TimesheetReportServiceImpl implements TimesheetReportService {
     return line;
   }
 
+  @Override
   public List<Map<String, Object>> getTimesheetReportList(String timesheetReportId) {
 
     List<Map<String, Object>> list = new ArrayList<>();

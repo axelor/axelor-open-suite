@@ -202,6 +202,7 @@ public class ContractVersionServiceImpl implements ContractVersionService {
     return contractVersionRepository.copy(contract);
   }
 
+  @Override
   public void computeTotals(ContractVersion contractVersion) {
     List<ContractLine> contractLineList = contractVersion.getContractLineList();
     BigDecimal initialExTaxTotalPerYear = BigDecimal.ZERO;

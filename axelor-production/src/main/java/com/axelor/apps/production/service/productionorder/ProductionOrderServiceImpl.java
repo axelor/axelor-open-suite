@@ -58,6 +58,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     this.productionOrderUpdateService = productionOrderUpdateService;
   }
 
+  @Override
   public ProductionOrder createProductionOrder(SaleOrder saleOrder, BillOfMaterial billOfMaterial)
       throws AxelorException {
 
@@ -78,6 +79,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
     return productionOrder;
   }
 
+  @Override
   public String getProductionOrderSeq(ProductionOrder productionOrder, Company company)
       throws AxelorException {
 
@@ -109,6 +111,7 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public ProductionOrder generateProductionOrder(
       Product product,
       BillOfMaterial billOfMaterial,

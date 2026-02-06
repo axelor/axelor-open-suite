@@ -61,6 +61,7 @@ public class CommonInvoiceServiceImpl implements CommonInvoiceService {
     return amount;
   }
 
+  @Override
   public BigDecimal computeSumInvoices(List<Invoice> invoices) {
     BigDecimal sumInvoices = BigDecimal.ZERO;
     for (Invoice invoice : invoices) {

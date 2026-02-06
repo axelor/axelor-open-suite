@@ -103,6 +103,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     this.supplierCatalogService = supplierCatalogService;
   }
 
+  @Override
   public CostSheetLine createCostSheetLine(
       String name,
       String code,
@@ -160,6 +161,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     return costSheetLine;
   }
 
+  @Override
   public CostSheetLine createProducedProductCostSheetLine(
       Product product, Unit unit, BigDecimal consumptionQty) throws AxelorException {
 
@@ -178,6 +180,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         null);
   }
 
+  @Override
   public CostSheetLine createResidualProductCostSheetLine(
       Product product, Unit unit, BigDecimal consumptionQty, Company company)
       throws AxelorException {
@@ -211,6 +214,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         null);
   }
 
+  @Override
   public CostSheetLine createConsumedProductCostSheetLine(
       Company company,
       Product product,
@@ -407,6 +411,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
     return price;
   }
 
+  @Override
   public CostSheetLine createConsumedProductWasteCostSheetLine(
       Company company,
       Product product,
@@ -485,6 +490,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         parentCostSheetLine);
   }
 
+  @Override
   public CostSheetLine createWorkCenterHRCostSheetLine(
       WorkCenter workCenter,
       int priority,
@@ -507,6 +513,7 @@ public class CostSheetLineServiceImpl implements CostSheetLineService {
         CostSheetLineRepository.TYPE_HUMAN);
   }
 
+  @Override
   public CostSheetLine createWorkCenterMachineCostSheetLine(
       WorkCenter workCenter,
       int priority,

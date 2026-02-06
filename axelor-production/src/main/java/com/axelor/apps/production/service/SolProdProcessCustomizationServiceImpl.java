@@ -56,6 +56,7 @@ public class SolProdProcessCustomizationServiceImpl implements SolProdProcessCus
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public ProdProcess createCustomizedProdProcess(
       SaleOrder saleOrder,
       SaleOrderLine saleOrderLine,

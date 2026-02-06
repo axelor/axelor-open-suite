@@ -37,6 +37,7 @@ public class SequenceDateCheckServiceImpl implements SequenceDateCheckService {
    *
    * @param sequence
    */
+  @Override
   public void isYearValid(Sequence sequence) throws AxelorException {
 
     boolean yearlyResetOk = sequence.getYearlyResetOk();
@@ -61,6 +62,7 @@ public class SequenceDateCheckServiceImpl implements SequenceDateCheckService {
    *
    * @param sequence
    */
+  @Override
   public void isMonthValid(Sequence sequence) throws AxelorException {
 
     boolean monthlyResetOk = sequence.getMonthlyResetOk();

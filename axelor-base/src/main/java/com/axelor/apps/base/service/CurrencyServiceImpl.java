@@ -56,6 +56,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     this.currencyConversionLineRepo = currencyConversionLineRepo;
   }
 
+  @Override
   @CallMethod
   public BigDecimal getCurrencyConversionRate(Currency startCurrency, Currency endCurrency)
       throws AxelorException {
@@ -66,6 +67,7 @@ public class CurrencyServiceImpl implements CurrencyService {
             Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
   }
 
+  @Override
   public BigDecimal getCurrencyConversionRate(
       Currency startCurrency, Currency endCurrency, LocalDate date) throws AxelorException {
     return this.getCurrencyConversionRateAtDate(startCurrency, endCurrency, date)
@@ -167,6 +169,7 @@ public class CurrencyServiceImpl implements CurrencyService {
    * @return
    * @throws AxelorException
    */
+  @Override
   public BigDecimal getAmountCurrencyConvertedAtDate(
       Currency startCurrency, Currency endCurrency, BigDecimal amount, LocalDate date)
       throws AxelorException {
@@ -191,6 +194,7 @@ public class CurrencyServiceImpl implements CurrencyService {
    * @return
    * @throws AxelorException
    */
+  @Override
   public BigDecimal getAmountCurrencyConvertedUsingExchangeRate(
       BigDecimal amount, BigDecimal exchangeRate, Currency endCurrency) {
 
@@ -206,6 +210,7 @@ public class CurrencyServiceImpl implements CurrencyService {
     return amount;
   }
 
+  @Override
   public LocalDate getDateToConvert(LocalDate date) {
 
     return Optional.ofNullable(date)
@@ -214,6 +219,7 @@ public class CurrencyServiceImpl implements CurrencyService {
                 Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null)));
   }
 
+  @Override
   public void checkOverLappingPeriod(
       CurrencyConversionLine currentCcl, List<CurrencyConversionLine> currencyConversionLines)
       throws AxelorException {
@@ -263,6 +269,7 @@ public class CurrencyServiceImpl implements CurrencyService {
         : amount1.divide(amount2, AppBaseService.DEFAULT_EXCHANGE_RATE_SCALE, RoundingMode.HALF_UP);
   }
 
+  @Override
   public boolean isSameCurrencyRate(
       LocalDate invoiceDate, LocalDate paymentDate, Currency startCurrency, Currency endCurrency)
       throws AxelorException {

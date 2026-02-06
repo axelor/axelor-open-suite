@@ -72,6 +72,7 @@ public class AppBaseServiceImpl extends ScriptAppServiceImpl implements AppBaseS
     return getTodayDateTime(null);
   }
 
+  @Override
   public ZonedDateTime getTodayDateTime(Company company) {
 
     ZonedDateTime todayDateTime = ZonedDateTime.now();

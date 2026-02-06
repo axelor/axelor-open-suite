@@ -140,6 +140,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
    * @param currency
    * @return A string field that can used as domain (Jpql WHERE clause)
    */
+  @Override
   public String getActiveCompanyBankDetails(Company company, Currency currency) {
     String domain = getActiveCompanyBankDetails(company);
 
@@ -157,6 +158,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
    * @param company
    * @return A string field that can used as domain (Jpql WHERE clause)
    */
+  @Override
   public String getActiveCompanyBankDetails(Company company) {
     String domain = "";
 
@@ -176,6 +178,7 @@ public class BankDetailsServiceImpl implements BankDetailsService {
     return domain;
   }
 
+  @Override
   public void validateIban(String iban)
       throws IbanFormatException, InvalidCheckDigitException, UnsupportedCountryException {
     CountryCode countryCode = CountryCode.getByCode(IbanUtil.getCountryCode(iban));

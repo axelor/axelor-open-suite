@@ -82,6 +82,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
         .getResultList();
   }
 
+  @Override
   public List<Product> getProductBoughtByCustomer(Partner customer) {
     String domain =
         "self.id in (SELECT line.product.id"
@@ -101,6 +102,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
     return productList;
   }
 
+  @Override
   public HashMap<String, BigDecimal> getTotalSaleQuantityAndPrice(
       Partner customer, Product product) {
 
@@ -130,6 +132,7 @@ public class PartnerSaleServiceImpl extends PartnerServiceImpl implements Partne
     return qtyAndPrice;
   }
 
+  @Override
   public List<Map<String, Object>> averageByCustomer(
       String averageOn, LocalDate fromDate, LocalDate toDate) throws AxelorException {
 

@@ -50,6 +50,7 @@ public class ContractRevaluationServiceImpl implements ContractRevaluationServic
     this.contractLineService = contractLineService;
   }
 
+  @Override
   public Contract applyFormula(Contract contract) throws AxelorException, ScriptException {
     contract = contractRepository.find(contract.getId());
     List<ContractLine> contractLineList = contract.getNextVersion().getContractLineList();

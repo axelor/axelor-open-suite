@@ -282,6 +282,7 @@ public class ProjectServiceImpl implements ProjectService {
     return projectStatusRepository.all().order("sequence").fetchOne();
   }
 
+  @Override
   public boolean checkIfResourceBooked(Project project) {
 
     List<ResourceBooking> resourceBookingList = project.getResourceBookingList();

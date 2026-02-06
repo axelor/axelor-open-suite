@@ -64,6 +64,7 @@ public class SaleOrderLineDummyServiceImpl implements SaleOrderLineDummyService 
     this.appSaleService = appSaleService;
   }
 
+  @Override
   public Map<String, Object> getOnNewDummies(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     Map<String, Object> dummyFields = new HashMap<>();
     dummyFields.putAll(initPartnerLanguage(saleOrder));

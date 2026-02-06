@@ -135,6 +135,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
    * @param purchaseOrder une commande
    * @throws AxelorException Aucune séquence de StockMove n'a été configurée
    */
+  @Override
   public List<Long> createStockMoveFromPurchaseOrder(PurchaseOrder purchaseOrder)
       throws AxelorException {
 
@@ -371,6 +372,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     return false;
   }
 
+  @Override
   public StockMoveLine createStockMoveLine(
       StockMove stockMove,
       StockMove qualityStockMove,
@@ -541,6 +543,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         null);
   }
 
+  @Override
   public void cancelReceipt(PurchaseOrder purchaseOrder) throws AxelorException {
 
     List<StockMove> stockMoveList =
@@ -557,10 +560,12 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     }
   }
 
+  @Override
   public boolean isStockMoveProduct(PurchaseOrderLine purchaseOrderLine) throws AxelorException {
     return isStockMoveProduct(purchaseOrderLine, purchaseOrderLine.getPurchaseOrder());
   }
 
+  @Override
   public boolean isStockMoveProduct(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
 
@@ -595,6 +600,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   }
 
   // Check if existing at least one stockMove not canceled for the purchaseOrder
+  @Override
   public boolean existActiveStockMoveForPurchaseOrder(Long purchaseOrderId) {
     long nbStockMove =
         Beans.get(StockMoveRepository.class)

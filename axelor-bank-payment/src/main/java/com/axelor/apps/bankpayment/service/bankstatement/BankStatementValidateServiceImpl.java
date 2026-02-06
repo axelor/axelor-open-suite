@@ -39,6 +39,7 @@ public class BankStatementValidateServiceImpl implements BankStatementValidateSe
     this.bankStatementLineRepository = bankStatementLineRepository;
   }
 
+  @Override
   @Transactional
   public BankStatement setIsFullyReconciled(BankStatement bankStatement) {
     List<BankStatementLine> bankStatementLines =

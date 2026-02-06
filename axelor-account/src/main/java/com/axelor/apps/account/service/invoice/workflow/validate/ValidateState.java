@@ -69,6 +69,7 @@ public class ValidateState extends WorkflowInvoice {
     this.invoiceJournalService = invoiceJournalService;
   }
 
+  @Override
   public void init(Invoice invoice) {
     this.invoice = invoice;
   }

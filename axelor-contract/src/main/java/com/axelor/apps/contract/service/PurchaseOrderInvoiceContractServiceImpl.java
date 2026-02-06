@@ -88,6 +88,7 @@ public class PurchaseOrderInvoiceContractServiceImpl extends PurchaseOrderInvoic
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public Invoice mergeInvoice(
       List<Invoice> invoiceList,
       Company company,

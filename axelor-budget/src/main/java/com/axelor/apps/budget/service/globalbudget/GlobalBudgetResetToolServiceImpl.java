@@ -51,6 +51,7 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
     this.globalBudgetToolsService = globalBudgetToolsService;
   }
 
+  @Override
   public void resetGlobalBudget(GlobalBudget globalBudget) {
     globalBudget.setCode(globalBudget.getCode() + " (" + I18n.get("copy") + ")");
     globalBudget.setStatusSelect(GlobalBudgetRepository.GLOBAL_BUDGET_STATUS_SELECT_DRAFT);

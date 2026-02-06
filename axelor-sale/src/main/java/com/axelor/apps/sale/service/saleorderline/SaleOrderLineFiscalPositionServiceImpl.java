@@ -57,6 +57,7 @@ public class SaleOrderLineFiscalPositionServiceImpl implements SaleOrderLineFisc
     this.appBaseService = appBaseService;
   }
 
+  @Override
   public List<SaleOrderLine> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
       throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();

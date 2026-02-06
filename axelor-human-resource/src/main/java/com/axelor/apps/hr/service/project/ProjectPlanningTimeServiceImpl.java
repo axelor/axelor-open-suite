@@ -395,6 +395,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     return String.format("self.id IN (%s)", idListStr);
   }
 
+  @Override
   public BigDecimal getDefaultPlanningTime(ProjectPlanningTime projectPlanningTime)
       throws AxelorException {
     ProjectConfig projectConfig = getProjectConfig(projectPlanningTime);
@@ -404,6 +405,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     return BigDecimal.ZERO;
   }
 
+  @Override
   public PlannedTimeValue getDefaultPlanningRestrictedTime(ProjectPlanningTime projectPlanningTime)
       throws AxelorException {
     ProjectConfig projectConfig = getProjectConfig(projectPlanningTime);

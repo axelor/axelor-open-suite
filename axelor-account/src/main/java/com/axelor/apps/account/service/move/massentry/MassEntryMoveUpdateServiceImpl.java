@@ -40,6 +40,7 @@ public class MassEntryMoveUpdateServiceImpl implements MassEntryMoveUpdateServic
     this.moveLineMassEntryRepository = moveLineMassEntryRepository;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateMassEntryMoveLines(Long moveId, Move generatedMove, int temporaryMoveNumber) {
     List<Long> moveLineIds = this.getMoveLineMassEntryIds(temporaryMoveNumber, moveId);
@@ -52,6 +53,7 @@ public class MassEntryMoveUpdateServiceImpl implements MassEntryMoveUpdateServic
     Query.of(MoveLineMassEntry.class).filter("self.id in :ids", moveLineIds).update(updateMap);
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void resetMassEntryMoveLinesStatus(Long moveId, int errorId) {
     List<Long> moveLineIds = this.getMoveLineMassEntryIds(errorId, moveId);
@@ -61,6 +63,7 @@ public class MassEntryMoveUpdateServiceImpl implements MassEntryMoveUpdateServic
         .update("moveStatusSelect", MoveRepository.STATUS_NEW);
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateMassEntryMoveStatus(Long moveId) {
     List<Long> moveLineIds =

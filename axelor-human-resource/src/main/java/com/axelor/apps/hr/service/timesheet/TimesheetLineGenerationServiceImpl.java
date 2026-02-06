@@ -141,6 +141,7 @@ public class TimesheetLineGenerationServiceImpl implements TimesheetLineGenerati
     return timesheet;
   }
 
+  @Override
   public void checkEmptyPeriod(Timesheet timesheet) throws AxelorException {
 
     Employee employee = timesheet.getEmployee();

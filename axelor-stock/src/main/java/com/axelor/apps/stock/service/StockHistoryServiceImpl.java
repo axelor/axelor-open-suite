@@ -83,6 +83,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
             productId, companyId, stockLocationId, beginDate, endDate));
   }
 
+  @Override
   public List<StockHistoryLine> computeStockHistoryLineList(
       Long productId, Long companyId, Long stockLocationId, LocalDate beginDate, LocalDate endDate)
       throws AxelorException {
@@ -155,6 +156,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     return stockHistoryLineList;
   }
 
+  @Override
   public String getStockHistoryLineExportName(String productName) {
     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm");
     return I18n.get("Stock History")
@@ -177,6 +179,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
     return headers;
   }
 
+  @Override
   public MetaFile exportStockHistoryLineList(
       List<StockHistoryLine> stockHistoryLineList, String fileName) throws IOException {
     List<String[]> list = new ArrayList<>();

@@ -85,6 +85,7 @@ public class LeadServiceImpl implements LeadService {
    * @return
    * @throws AxelorException
    */
+  @Override
   public String getSequence(Partner partner) throws AxelorException {
 
     String seq =
@@ -104,6 +105,7 @@ public class LeadServiceImpl implements LeadService {
    * @param partner
    * @return
    */
+  @Override
   public Partner setPartnerCompany(Partner partner) {
 
     if (userService.getUserActiveCompany() != null) {
@@ -114,6 +116,7 @@ public class LeadServiceImpl implements LeadService {
     return partner;
   }
 
+  @Override
   public Map<String, String> getSocialNetworkUrl(
       String name, String firstName, String companyName) {
 
@@ -155,6 +158,7 @@ public class LeadServiceImpl implements LeadService {
   }
 
   @SuppressWarnings("rawtypes")
+  @Override
   public Object importLead(Object bean, Map values) {
 
     assert bean instanceof Lead;
@@ -171,6 +175,7 @@ public class LeadServiceImpl implements LeadService {
    * @param lead a context lead object
    * @return if there is a duplicate lead
    */
+  @Override
   public boolean isThereDuplicateLead(Lead lead) {
     String newName = lead.getFullName();
     if (Strings.isNullOrEmpty(newName)) {
@@ -222,6 +227,7 @@ public class LeadServiceImpl implements LeadService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void loseLead(Lead lead, LostReason lostReason, String lostReasonStr)
       throws AxelorException {
     LeadStatus leadStatus = lead.getLeadStatus();

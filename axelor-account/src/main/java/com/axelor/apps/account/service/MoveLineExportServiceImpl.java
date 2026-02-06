@@ -619,6 +619,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
         .split(";");
   }
 
+  @Override
   public MetaFile exportMoveLine(AccountingReport accountingReport)
       throws AxelorException, IOException {
 
@@ -642,6 +643,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     return null;
   }
 
+  @Override
   public void replayExportMoveLine(AccountingReport accountingReport)
       throws AxelorException, IOException {
     if (accountingReport.getReportType().getTypeSelect()
@@ -650,6 +652,7 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
     }
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public AccountingReport createAccountingReport(
       Company company, int exportTypeSelect, LocalDate startDate, LocalDate endDate)

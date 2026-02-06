@@ -63,6 +63,7 @@ public class PeriodServiceImpl implements PeriodService {
    * @return
    * @throws AxelorException
    */
+  @Override
   public Period getActivePeriod(LocalDate date, Company company, int typeSelect)
       throws AxelorException {
 
@@ -78,6 +79,7 @@ public class PeriodServiceImpl implements PeriodService {
     return period;
   }
 
+  @Override
   public Period getPeriod(LocalDate date, Company company, int typeSelect) {
 
     return periodRepo
@@ -90,6 +92,7 @@ public class PeriodServiceImpl implements PeriodService {
         .fetchOne();
   }
 
+  @Override
   public Period getNextPeriod(Period period) throws AxelorException {
 
     Period nextPeriod =
@@ -113,6 +116,7 @@ public class PeriodServiceImpl implements PeriodService {
     return nextPeriod;
   }
 
+  @Override
   public void testOpenPeriod(Period period) throws AxelorException {
     if (this.isClosedPeriod(period)) {
       throw new AxelorException(
@@ -122,6 +126,7 @@ public class PeriodServiceImpl implements PeriodService {
     }
   }
 
+  @Override
   public void close(Period period) throws AxelorException {
     if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
       adjustHistoryService.setEndDate(period);
@@ -129,6 +134,7 @@ public class PeriodServiceImpl implements PeriodService {
     this.updateClosePeriod(period);
   }
 
+  @Override
   public void closeTemporarily(Period period) throws AxelorException {
     if (period.getStatusSelect() == PeriodRepository.STATUS_ADJUSTING) {
       adjustHistoryService.setEndDate(period);
@@ -152,6 +158,7 @@ public class PeriodServiceImpl implements PeriodService {
     periodRepo.save(period);
   }
 
+  @Override
   @Transactional
   public void adjust(Period period) {
     period = periodRepo.find(period.getId());
@@ -169,6 +176,7 @@ public class PeriodServiceImpl implements PeriodService {
    * @param date
    * @throws AxelorException
    */
+  @Override
   public void checkPeriod(Company company, LocalDate date) throws AxelorException {
     this.checkPeriod(company, date, date);
   }
@@ -180,6 +188,7 @@ public class PeriodServiceImpl implements PeriodService {
    * @param fromDate
    * @param toDate
    */
+  @Override
   public void checkPeriod(Company company, LocalDate fromDate, LocalDate toDate)
       throws AxelorException {
     List<Period> periodList =
@@ -209,6 +218,7 @@ public class PeriodServiceImpl implements PeriodService {
    * @param period
    * @throws AxelorException if the period is closed
    */
+  @Override
   public void checkPeriod(Period period) throws AxelorException {
     if (this.isClosedPeriod(period)) {
       throw new AxelorException(

@@ -263,6 +263,7 @@ public class BatchBankOrderGenerationBillOfExchange extends AbstractBatch {
     super.stop();
   }
 
+  @Override
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BANK_PAYMENT_BATCH);
   }

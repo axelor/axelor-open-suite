@@ -223,6 +223,7 @@ public class BankOrderCheckServiceImpl implements BankOrderCheckService {
     }
   }
 
+  @Override
   public void checkBankDetails(
       BankDetails bankDetails, BankOrder bankOrder, BankOrderLine bankOrderLine)
       throws AxelorException {

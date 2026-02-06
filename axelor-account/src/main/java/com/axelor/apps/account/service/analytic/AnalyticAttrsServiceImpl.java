@@ -138,6 +138,7 @@ public class AnalyticAttrsServiceImpl implements AnalyticAttrsService {
         : "moveLineList";
   }
 
+  @Override
   public void addAnalyticAxisDomains(
       AnalyticLine analyticLine, Company company, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {

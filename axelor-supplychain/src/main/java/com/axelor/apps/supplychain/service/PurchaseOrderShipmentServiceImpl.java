@@ -121,6 +121,7 @@ public class PurchaseOrderShipmentServiceImpl extends ShippingAbstractService
     }
   }
 
+  @Override
   protected List<? extends ShippableOrderLine> getShippableOrderLineList(
       ShippableOrder shippableOrder) {
     PurchaseOrder purchaseOrder = getPurchaseOrder(shippableOrder);

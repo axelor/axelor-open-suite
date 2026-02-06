@@ -225,6 +225,7 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
     return copy;
   }
 
+  @Override
   public void updateSaleOrderLineList(SaleOrder saleOrder) throws AxelorException {
     List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
     if (saleOrderLineList != null) {

@@ -549,6 +549,7 @@ public class AccountingCutOffSupplyChainServiceImpl extends AccountingCutOffServ
     return moveLine;
   }
 
+  @Override
   public List<Long> getStockMoveLines(Batch batch) {
     int offset = 0;
 

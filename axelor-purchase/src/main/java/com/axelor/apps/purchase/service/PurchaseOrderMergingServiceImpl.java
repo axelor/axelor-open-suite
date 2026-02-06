@@ -280,10 +280,12 @@ public class PurchaseOrderMergingServiceImpl implements PurchaseOrderMergingServ
       this.checks = new ChecksImpl();
     }
 
+    @Override
     public PurchaseOrder getPurchaseOrder() {
       return purchaseOrder;
     }
 
+    @Override
     public void setPurchaseOrder(PurchaseOrder purchaseOrder) {
       this.purchaseOrder = purchaseOrder;
     }

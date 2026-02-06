@@ -101,6 +101,7 @@ public class SaleOrderWorkflowServiceImpl implements SaleOrderWorkflowService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void completeSaleOrder(SaleOrder saleOrder) throws AxelorException {
 
     if (saleOrder.getStatusSelect() == null

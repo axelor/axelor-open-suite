@@ -51,6 +51,7 @@ public class KilometricLogServiceImpl implements KilometricLogService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void updateKilometricLog(ExpenseLine expenseLine, Employee employee)
       throws AxelorException {
     KilometricLog log = getOrCreateKilometricLog(employee, expenseLine.getExpenseDate());

@@ -361,6 +361,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
             .intValue());
   }
 
+  @Override
   public BigDecimal getMassPaymentAmount(List<Long> invoiceIdList, LocalDate date) {
     List<Invoice> invoiceList =
         invoiceRepo
@@ -382,6 +383,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     }
   }
 
+  @Override
   public boolean applyFinancialDiscount(InvoicePayment invoicePayment) {
     LocalDate deadLineDate = invoicePayment.getFinancialDiscountDeadlineDate();
     return (invoicePayment != null
@@ -474,6 +476,7 @@ public class InvoicePaymentToolServiceImpl implements InvoicePaymentToolService 
     return Pair.of(invoiceTermIdList, !invoicePayment.getManualChange() || !amountError);
   }
 
+  @Override
   public List<Long> loadInvoiceTerms(InvoicePayment invoicePayment, Long invoiceId)
       throws AxelorException {
     List<Long> invoiceTermIdList = null;

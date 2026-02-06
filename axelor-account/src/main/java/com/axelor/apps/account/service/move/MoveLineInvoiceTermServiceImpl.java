@@ -211,6 +211,7 @@ public class MoveLineInvoiceTermServiceImpl implements MoveLineInvoiceTermServic
     }
   }
 
+  @Override
   public void updateInvoiceTermsParentFields(MoveLine moveLine) {
     if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
       moveLine

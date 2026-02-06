@@ -62,6 +62,7 @@ public class LeaveRequestServiceImpl implements LeaveRequestService {
     this.leaveReasonService = leaveReasonService;
   }
 
+  @Override
   public List<LeaveRequest> getLeaves(Employee employee, LocalDate date) {
     List<LeaveRequest> leavesList = new ArrayList<>();
     List<LeaveRequest> leaves =

@@ -139,6 +139,7 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
             .subtract(expense.getPersonalExpenseAmount()));
   }
 
+  @Override
   public Move createMoveForExpensePayment(Expense expense) throws AxelorException {
     Company company = expense.getCompany();
     PaymentMode paymentMode = expense.getPaymentMode();

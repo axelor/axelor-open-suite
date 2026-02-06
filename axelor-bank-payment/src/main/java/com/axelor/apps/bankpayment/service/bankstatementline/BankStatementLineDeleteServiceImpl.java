@@ -35,6 +35,7 @@ public class BankStatementLineDeleteServiceImpl implements BankStatementLineDele
     this.bankStatementLineRepository = bankStatementLineRepository;
   }
 
+  @Override
   @Transactional
   public void deleteBankStatementLines(BankStatement bankStatement) {
     List<BankStatementLine> bankStatementLines;

@@ -154,6 +154,7 @@ public class JobApplicationServiceImpl implements JobApplicationService {
     jobApplicationRepo.save(jobApplication);
   }
 
+  @Override
   public String getInlineUrl(JobApplication jobApplication) {
     return dmsService.getInlineUrl(jobApplication.getDmsFile());
   }

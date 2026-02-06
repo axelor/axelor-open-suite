@@ -85,6 +85,7 @@ public class MoveLineMassEntryGroupServiceImpl implements MoveLineMassEntryGroup
     this.moveLineFinancialDiscountService = moveLineFinancialDiscountService;
   }
 
+  @Override
   public MoveLineMassEntry initializeValues(MoveLineMassEntry moveLine, Move move)
       throws AxelorException {
     moveLine.setInputAction(MoveLineMassEntryRepository.MASS_ENTRY_INPUT_ACTION_LINE);

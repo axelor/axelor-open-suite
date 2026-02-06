@@ -137,6 +137,7 @@ public class MoveTemplateServiceImpl implements MoveTemplateService {
     moveTemplateRepo.save(moveTemplate);
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public List<Long> generateMove(
       MoveTemplateType moveTemplateType,
