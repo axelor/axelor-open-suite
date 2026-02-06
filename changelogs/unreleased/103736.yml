@@ -1,0 +1,3 @@
+---
+title: "Sale order: prevent error when creating lines for a BoM without production process."
+module: axelor-production
