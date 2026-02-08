@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views https://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="custom-mgm-project-files-grid" title="Project Files"
+    model="com.axelor.dms.db.DMSFile" canSave="false" canNew="false" canEdit="false"
+    canArchive="false">
+    <toolbar>
+      <button name="newBtn" title="New file upload"
+        onClick="action-project-view-upload-project-file"/>
+    </toolbar>
+    <field name="typeIcon" widget="Icon"/>
+    <field name="fileName"/>
+    <field name="updatedOn" title="Last modified" width="130"/>
+    <field name="metaFile.sizeText" title="Size" width="80"/>
+  </grid>
+
+  <form name="dms-file-project-upload-form" title="File upload"
+    model="com.axelor.dms.db.DMSFile" canAttach="false">
+    <panel name="mainPanel">
+      <field name="fileName" hidden="true" colSpan="4"/>
+      <field name="metaFile" widget="binary-link" required="true" title="File upload"
+        onChange="action-project-method-attach-metafile-to-project" colSpan="2"/>
+    </panel>
+  </form>
+
+  <action-view name="action-project-view-upload-project-file" title="File upload"
+    model="com.axelor.dms.db.DMSFile">
+    <view type="form" name="dms-file-project-upload-form"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="show-toolbar" value="false"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="popup-save" value="true"/>
+    <context name="_modelIdForAttachment" expr="eval: _modelIdForAttachment"/>
+    <context name="_modelForAttachment" expr="eval: _modelForAttachment"/>
+    <context name="isDirectory" expr="eval: false"/>
+  </action-view>
+
+  <action-method name="action-project-method-attach-metafile-to-project">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="attachMetaFileToModel"/>
+  </action-method>
+
+</object-views>

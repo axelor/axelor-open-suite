@@ -53,9 +53,12 @@
   <form name="business-project-form" title="Business project"
     model="com.axelor.apps.project.db.Project" width="large"
     onLoad="action-business-project-project-group-on-load"
-    onNew="action-business-project-project-group-on-new" onSave="action-project-group-on-save">
+    onNew="action-business-project-project-group-on-new" onSave="action-project-group-on-save"
+    canAttach="false">
     <!-- MGM-80 @gkouete- showing planning and financial data not required -->
     <toolbar>
+      <button name="projectFilesBtn" title="Project Files" icon="fa-paperclip" showIf="id"
+        onClick="action-method-project-find-project-files"/>
       <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
         onClick="save,action-project-view-show-planning-panel"
         if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification  &amp;&amp; __user__.group.code == admins"
@@ -181,7 +184,7 @@
           <field name="currency" colSpan="6" if="__config__.app.isApp('business-project')"
             if-module="axelor-business-project" canEdit="false" canView="false"/>
           <button name="projectFilesBtn" title="Project Files" showIf="id"
-            onClick="save,action-project-method-find-dms-home" colSpan="4" link=""/>
+            onClick="action-method-project-find-project-files" colSpan="4" link=""/>
         </panel>
         <!-- MGM-80: Adding team member selection to the overview -->
         <field name="membersUserSet" colSpan="6" widget="TagSelect" canNew="false"
@@ -721,9 +724,9 @@
     <call class="com.axelor.apps.businessproject.web.ProjectController" method="convertProject"/>
   </action-method>
 
-  <action-method name="action-project-method-find-dms-home">
+  <action-method name="action-method-project-find-project-files">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
-      method="findProjectDmsHomeGrid"/>
+      method="findProjectFiles"/>
   </action-method>
 
   <action-validate name="action-validate-unset-project">

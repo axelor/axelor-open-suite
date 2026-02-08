@@ -59,8 +59,16 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.EntityHelper;
+import com.axelor.db.JpaRepository;
+import com.axelor.db.Model;
+import com.axelor.db.mapper.Mapper;
+import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
@@ -891,5 +899,88 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
                         == 0)
         .map(ProjectTask::getName)
         .collect(Collectors.toList());
+  }
+
+  /**
+   * Finds the project from a related record by looking for a 'project' field on the related entity
+   */
+  @Override
+  @SuppressWarnings("unchecked")
+  public Project findProjectFromModel(String modelClassName, Long modelId) {
+    try {
+      log.debug("Currently working with model {}", modelClassName);
+      Class<? extends Model> clazz = (Class<? extends Model>) Class.forName(modelClassName);
+
+      // If the model itself is a project, return it directly
+      if (Project.class.isAssignableFrom(clazz)) {
+        log.debug("Model is project, fetching directly");
+        return (Project) JpaRepository.of(clazz).find(modelId);
+      }
+
+      // Otherwise look for a 'project' field on the model
+      Model related = JpaRepository.of(clazz).find(modelId);
+      if (related == null) {
+        log.warn("model not found: {} [ID: {}]", modelClassName, modelId);
+        return null;
+      }
+
+      Mapper mapper = Mapper.of(clazz);
+      Property projectProperty = mapper.getProperty("project");
+
+      if (projectProperty == null || !projectProperty.isReference()) {
+        log.info("No project reference found on model: {}", modelClassName);
+        return null;
+      }
+
+      Object projectObj = projectProperty.get(related);
+      if (projectObj == null) {
+        log.warn("Project field is null for model: {} [ID: {}]", modelClassName, modelId);
+        return null;
+      }
+
+      return (Project) EntityHelper.getEntity((Model) projectObj);
+    } catch (ClassNotFoundException e) {
+      log.error("Model class not found: {}", modelClassName, e);
+      return null;
+    }
+  }
+
+  @Override
+  @Transactional
+  public void attachMetaFileToModel(Long modelId, String modelClassName, MetaFile metaFile) {
+    log.debug("Got request from model {}", modelClassName);
+    Model model = findModel(modelClassName, modelId);
+    if (model == null) {
+      throw new IllegalArgumentException(
+          String.format("Model not found - Class: %s, ID: %s", modelClassName, modelId));
+    }
+
+    metaFile = Beans.get(MetaFileRepository.class).find(metaFile.getId());
+
+    if (metaFile == null) {
+      throw new IllegalStateException("Metafile not persisted yet");
+    }
+
+    Beans.get(MetaFiles.class).attach(metaFile, metaFile.getFileName(), model);
+    log.debug("Attached file '{}' to {} [ID: {}]", metaFile.getFileName(), modelClassName, modelId);
+  }
+
+  /**
+   * Finds and returns a model instance by its class name and ID.
+   *
+   * @param modelClassName Fully qualified class name of the model
+   * @param modelId The ID of the model instance to find
+   * @return The model instance, or null if not found or class doesn't exist
+   */
+  @SuppressWarnings("all")
+  protected Model findModel(String modelClassName, Long modelId) {
+    log.debug("Currently working with model {}", modelClassName);
+    try {
+      Class<? extends Model> clazz = (Class<? extends Model>) Class.forName(modelClassName);
+      return JpaRepository.of(clazz).find(modelId);
+    } catch (ClassNotFoundException e) {
+      log.error("Model Class not found: {}", modelClassName, e);
+      return null;
+    }
   }
 }

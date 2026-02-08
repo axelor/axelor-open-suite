@@ -23,6 +23,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.meta.db.MetaFile;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +47,8 @@ public interface ProjectBusinessService extends ProjectService {
 
   List<String> checkPercentagesOver1000OnTasks(Project project);
 
+  Project findProjectFromModel(String modelClassName, Long modelId);
+
   boolean readyToInvoice(Project project);
 
   boolean allTimesheetLinesValidated(Project project);
@@ -53,4 +56,15 @@ public interface ProjectBusinessService extends ProjectService {
   boolean allExpensesValidated(Project project);
 
   boolean allTasksHaveTimesheetLines(Project project);
+
+  /**
+   * Attaches a MetaFile to any model instance by creating a DMSFile link.
+   *
+   * @param modelId The ID of the model to attach the file to
+   * @param modelClassName Fully qualified class name of the model
+   * @param metaFile The MetaFile to attach
+   * @throws IllegalArgumentException if the model is not found
+   * @throws IllegalStateException if the MetaFile is not persisted
+   */
+  void attachMetaFileToModel(Long modelId, String modelClassName, MetaFile metaFile);
 }

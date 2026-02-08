@@ -42,6 +42,10 @@
     onNew="action-task-report-default, action-task-report-attrs-filter-projects"
     onLoad="action-task-report-group-on-load" onSave="action-task-report-group-on-save"
     width="large">
+    <toolbar>
+      <button name="projectFilesBtn" title="Project Files" icon="fa-paperclip"
+        showIf="project != null" onClick="action-method-project-find-project-files"/>
+    </toolbar>
     <panel colSpan="12" name="taskReportMainPanel">
       <panel colSpan="12" name="parentPanel" showFrame="true">
         <panel title="General Information" showFrame="false">

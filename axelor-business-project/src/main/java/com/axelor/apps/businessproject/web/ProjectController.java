@@ -309,14 +309,19 @@ public class ProjectController {
     response.setView(builder.map());
   }
 
-  public void findProjectDmsHomeGrid(ActionRequest request, ActionResponse response) {
-    Long projectId = (Long) request.getContext().get("id");
-    if (projectId == null) {
+  public void findProjectFiles(ActionRequest request, ActionResponse response) {
+    Long id = (Long) request.getContext().get("id");
+    String model = (String) request.getContext().get("_model");
+    if (id == null || model == null) {
+      logger.debug("No model found");
+      response.setAlert("Please save before viewing project files");
       return;
     }
 
-    Project project = Beans.get(ProjectRepository.class).find(projectId);
+    Project project = Beans.get(ProjectBusinessService.class).findProjectFromModel(model, id);
     if (project == null) {
+      logger.debug("No project found");
+      response.setAlert("No project found");
       return;
     }
 
@@ -326,10 +331,13 @@ public class ProjectController {
       response.setView(
           ActionView.define(I18n.get("Project Files") + " - " + project.getFullName())
               .model(DMSFile.class.getName())
-              .add("grid", "dms-file-grid")
+              .add("grid", "custom-mgm-project-files-grid")
               .add("form", "dms-file-form")
               .domain(
                   "self.isDirectory = false AND  (self.parent.id = :parentId OR self.parent.parent.id = :parentId)")
+              .param("popup", "true")
+              .context("_modelIdForAttachment", id)
+              .context("_modelForAttachment", model)
               .context("parentId", home.getId())
               .map());
     } else {
@@ -376,5 +384,28 @@ public class ProjectController {
     project.setIsInvoicingPurchases(true);
 
     response.setValues(project);
+  }
+
+  public void attachMetaFileToModel(ActionRequest request, ActionResponse response) {
+    try {
+      DMSFile dmsFile = request.getContext().asType(DMSFile.class);
+
+      if (dmsFile.getMetaFile() == null) {
+        response.setError("Please upload a file");
+        return;
+      }
+
+      Long modelId = ((Number) request.getContext().get("_modelIdForAttachment")).longValue();
+      String model = (String) request.getContext().get("_modelForAttachment");
+
+      Beans.get(ProjectBusinessService.class)
+          .attachMetaFileToModel(modelId, model, dmsFile.getMetaFile());
+
+      response.setCanClose(true);
+      response.setNotify("File uploaded successfully");
+
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

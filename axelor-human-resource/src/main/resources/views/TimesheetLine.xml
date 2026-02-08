@@ -324,6 +324,10 @@
     model="com.axelor.apps.hr.db.TimesheetLine" canNew="false"
     onLoad="action-timesheet-line-attrs-set-duration-label,action-timesheet-line-attrs-title-project"
     onSave="action-timesheet-line-method-update-operation-order">
+    <toolbar>
+      <button name="projectFilesBtn" title="Project Files" showIf="project &amp;&amp; id"
+        icon="fa-paperclip" onClick="action-method-project-find-project-files"/>
+    </toolbar>
     <panel-include view="timesheet-line-timesheet-form"/>
   </form>
 
