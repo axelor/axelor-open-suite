@@ -31,6 +31,7 @@ import com.axelor.apps.hr.db.EmploymentContract;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
+import com.axelor.apps.project.db.Project;
 import com.axelor.auth.db.User;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
@@ -67,11 +68,13 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
       Currency currency,
       BankDetails bankDetails,
       Period period,
+      Project project,
       Integer companyCbSelect,
       List<ExpenseLine> expenseLineList)
       throws AxelorException {
     Expense expense = new Expense();
-    setExpenseInfo(company, employee, currency, bankDetails, period, companyCbSelect, expense);
+    setExpenseInfo(
+        company, employee, currency, bankDetails, period, project, companyCbSelect, expense);
     expenseToolService.addExpenseLinesToExpense(expense, expenseLineList);
     expenseComputationService.compute(expense);
 
@@ -93,7 +96,7 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
         Optional.ofNullable(employee).map(Employee::getCompanyCbSelect).orElse(null);
 
     return createExpense(
-        company, employee, currency, bankDetails, null, companyCbSelect, List.of());
+        company, employee, currency, bankDetails, null, null, companyCbSelect, List.of());
   }
 
   protected void setExpenseInfo(
@@ -102,12 +105,14 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
       Currency currency,
       BankDetails bankDetails,
       Period period,
+      Project project,
       Integer companyCbSelect,
       Expense expense) {
     expense.setCompany(company);
     expense.setEmployee(employee);
     expense.setCompanyCbSelect(companyCbSelect);
     expense.setTypeSelect(ExpenseRepository.TYPE_EXPENSE);
+    expense.setProject(project);
     setCurrency(company, currency, expense);
     setBankDetails(employee, bankDetails, expense);
     setPeriod(company, period, expense);

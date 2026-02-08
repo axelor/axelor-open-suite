@@ -62,7 +62,7 @@ import com.axelor.apps.businessproduction.service.TimesheetLineUpdateBusinessSer
 import com.axelor.apps.businessproduction.service.saleorder.status.SaleOrderWorkflowServiceBusinessProductionImpl;
 import com.axelor.apps.businessproject.service.InvoicingProjectService;
 import com.axelor.apps.businessproject.service.SaleOrderLineInitValueProjectServiceImpl;
-import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveServiceImpl;
+import com.axelor.apps.businessproject.service.TimesheetLineRemoveBusinessProjectServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineUpdateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowServiceImpl;
 import com.axelor.apps.production.db.repo.ManufOrderManagementRepository;
@@ -115,7 +115,7 @@ public class BusinessProductionModule extends AxelorModule {
     bind(TimesheetLineCreateBusinessService.class).to(TimesheetLineCreateBusinessServiceImpl.class);
     bind(TimesheetLineUpdateBusinessService.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
     bind(TimesheetLineUpdateServiceImpl.class).to(TimesheetLineUpdateBusinessServiceImpl.class);
-    bind(TimesheetLineRemoveServiceImpl.class)
+    bind(TimesheetLineRemoveBusinessProjectServiceImpl.class)
         .to(TimesheetLineRemoveBusinessProductionServiceImpl.class);
     bind(BusinessProjectProdOrderService.class).to(BusinessProjectProdOrderServiceImpl.class);
     bind(SaleOrderBusinessProdObserver.class);

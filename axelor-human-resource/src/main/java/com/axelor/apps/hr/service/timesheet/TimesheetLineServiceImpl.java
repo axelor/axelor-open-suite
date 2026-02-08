@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.Product;
@@ -402,7 +403,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void validateLine(TimesheetLine line) {
+  public void validateLine(TimesheetLine line) throws AxelorAlertException {
     line.setIsValidated(true);
     line.setValidationDateTime(LocalDateTime.now());
     line.setValidatedBy(AuthUtils.getUser());
@@ -411,7 +412,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void cancelTimesheetLineValidation(TimesheetLine line) {
+  public void cancelTimesheetLineValidation(TimesheetLine line) throws AxelorAlertException {
     line.setIsValidated(false);
     line.setValidatedBy(null);
     line.setValidationDateTime(null);
@@ -469,16 +470,34 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   private LocalDateTime[] getNightShiftIntervalForDate(
       LocalDate date, LocalDateTime taskStart, LocalDateTime taskEnd) {
-    LocalDateTime nightStart = date.atTime(18, 0);
-    LocalDateTime nightEnd = date.plusDays(1).atTime(6, 0);
 
-    LocalDateTime overlapStart = taskStart.isAfter(nightStart) ? taskStart : nightStart;
-    LocalDateTime overlapEnd = taskEnd.isBefore(nightEnd) ? taskEnd : nightEnd;
+    // Night interval 1: midnight to 6 AM
+    LocalDateTime earlyNightStart = date.atTime(0, 0);
+    LocalDateTime earlyNightEnd = date.atTime(6, 0);
 
-    if (overlapStart.isAfter(overlapEnd)) {
-      return null;
+    // Night interval 2: 6 pm to midnight
+    LocalDateTime lateNightStart = date.atTime(18, 0);
+    LocalDateTime lateNightEnd = date.plusDays(1).atTime(0, 0);
+
+    Duration total = Duration.ZERO;
+
+    // Check overlap with early morning (midnight to 6 am)
+    LocalDateTime overlap1Start = taskStart.isAfter(earlyNightStart) ? taskStart : earlyNightStart;
+    LocalDateTime overlap1End = taskEnd.isBefore(earlyNightEnd) ? taskEnd : earlyNightEnd;
+    if (!overlap1Start.isAfter(overlap1End)) {
+      total = total.plus(Duration.between(overlap1Start, overlap1End));
     }
-    return new LocalDateTime[] {overlapStart, overlapEnd};
+
+    // Check overlap with evening (6 pm to midnight)
+    LocalDateTime overlap2Start = taskStart.isAfter(lateNightStart) ? taskStart : lateNightStart;
+    LocalDateTime overlap2End = taskEnd.isBefore(lateNightEnd) ? taskEnd : lateNightEnd;
+    if (!overlap2Start.isAfter(overlap2End)) {
+      total = total.plus(Duration.between(overlap2Start, overlap2End));
+    }
+
+    return total.isZero()
+        ? null
+        : new LocalDateTime[] {earlyNightStart, earlyNightStart.plus(total)};
   }
 
   private <T extends Model> T fetchEntity(T entity, JpaRepository<T> repo) {

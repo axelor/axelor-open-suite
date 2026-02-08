@@ -77,6 +77,7 @@ public class ExpenseRestController {
                 requestBody.fetchCurrency(),
                 requestBody.fetchBankDetails(),
                 requestBody.fetchPeriod(),
+                requestBody.fetchProject(),
                 requestBody.getCompanyCbSelect(),
                 requestBody.fetchExpenseLines());
 

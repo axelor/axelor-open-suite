@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.hr.web.timesheet;
 
+import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
@@ -80,14 +81,22 @@ public class TimesheetLineController {
   public void validateLine(ActionRequest request, ActionResponse response) {
     TimesheetLine line = request.getContext().asType(TimesheetLine.class);
     line = Beans.get(TimesheetLineRepository.class).find(line.getId());
-    Beans.get(TimesheetLineService.class).validateLine(line);
+    try {
+      Beans.get(TimesheetLineService.class).validateLine(line);
+    } catch (AxelorAlertException e) {
+      TraceBackService.trace(response, e);
+    }
     response.setReload(true);
   }
 
   public void cancelTimesheetLineValidation(ActionRequest request, ActionResponse response) {
     TimesheetLine line = request.getContext().asType(TimesheetLine.class);
     line = Beans.get(TimesheetLineRepository.class).find(line.getId());
-    Beans.get(TimesheetLineService.class).cancelTimesheetLineValidation(line);
+    try {
+      Beans.get(TimesheetLineService.class).cancelTimesheetLineValidation(line);
+    } catch (AxelorAlertException e) {
+      throw new RuntimeException(e);
+    }
     response.setReload(true);
   }
 

@@ -22,10 +22,14 @@
 
   <form name="invoicing-project-form" title="Invoicing business project"
     model="com.axelor.apps.businessproject.db.InvoicingProject"
-    onNew="action-invoicing-project-group-on-new, action-check-extra-expenses"
+    onNew="action-invoicing-project-group-on-new, action-check-extra-expenses, save"
     onLoad="action-invoicing-project-attrs-title-project, action-check-extra-expenses" width="large"
-    canDelete="!invoice">
+    canDelete="!invoice" canAttach="false">
 
+    <toolbar>
+      <button name="projectFilesBtn" title="Project Files" icon="fa-paperclip"
+        showIf="project != null" onClick="action-method-project-find-project-files"/>
+    </toolbar>
     <panel name="mainPanel">
       <field name="statusSelect" widget="NavSelect" showTitle="false" colSpan="12"
         readonly="true"/>

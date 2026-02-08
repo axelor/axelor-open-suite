@@ -143,7 +143,8 @@
     model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-business-project-project-task-group-on-new"
     onLoad="action-business-project-project-task-group-on-load" width="large"
-    onSave="action-project-task-validate-toDate, action-project-task-validate-task-reported">
+    onSave="action-project-task-validate-toDate, action-project-task-validate-task-reported"
+    canAttach="false">
     <!-- MGM-80, @gkouete: the following toolbar item are not relevant for MGM -->
     <!-- <toolbar> <button name="grabEventBtn" icon="fa-suitcase" help="Take charge" onClick="action-project-task-record-assigned-yourself,save"/>
       <button name="doneBtn" icon="fa-check" onClick="action-project-task-validate-finish-status,action-project-task-record-change-status,save"
@@ -152,6 +153,10 @@
       &amp;&amp; __config__.app.getApp('project')?.enablePlanification" showIf="project.isShowPlanning"/> <button
       name="showFinancialDatas" icon="clipboard-data" title="Show financial datas" onClick="save,action-project-task-view-show-financial-datas-panel"/>
       </toolbar> -->
+    <toolbar>
+      <button name="projectFilesBtn" title="Project Files" icon="fa-paperclip" showIf="id"
+        onClick="action-method-project-find-project-files"/>
+    </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
         if="__config__.app.getApp('project')?.resourceManagement">

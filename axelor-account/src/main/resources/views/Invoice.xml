@@ -397,9 +397,11 @@
 
   <form name="invoice-form" title="Invoice" model="com.axelor.apps.account.db.Invoice"
     onNew="action-account-invoice-onnew-group" onLoad="action-account-invoice-onload-group"
-    onSave="action-invoice-onsave-group" canDelete="statusSelect == 4">
+    onSave="action-invoice-onsave-group" canDelete="statusSelect == 4" canAttach="project == null">
 
     <toolbar>
+      <button name="projectFilesBtn" title="Project Files" icon="fa-paperclip"
+        showIf="project != null" onClick="action-method-project-find-project-files"/>
       <button name="printBtn" title="Reports" icon="fa-print" showIf="statusSelect != 4"
         readonlyIf="!id" onClick="action-invoice-group-report-button"/>
     </toolbar>

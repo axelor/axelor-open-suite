@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="mgm-expense-grid" title="Project Expenses" canNew="false"
+    model="com.axelor.apps.hr.db.Expense">
+    <toolbar>
+      <button name="addExpenseBtn" title="New Expense" colSpan="2" css="btn-custom text-left"
+        icon="fa-plus" onClick="mgm-action-project-expense-add"/>
+    </toolbar>
+    <hilite color="danger" if="statusSelect == 5"/>
+    <hilite color="success" if="statusSelect == 3 || statusSelect == 4"/>
+    <hilite color="warning" if="statusSelect == 2"/>
+    <field name="employee"/>
+    <field name="sentDateTime"/>
+    <field name="period"/>
+    <field name="inTaxTotal" aggregate="sum"/>
+    <field name="currency" colSpan="2" required="true"/>
+    <field name="statusSelect"/>
+    <field name="ventilated"/>
+  </grid>
+
+  <form name="mgm-expense-form" title="Project Expenses" model="com.axelor.apps.hr.db.Expense"
+    width="large" onSave="action-expense-method-validate-and-compute" canNew="false"
+    onNew="mgm-action-project-expense-group-form-onNew" canDelete="ventilated == false">
+    <menubar>
+      <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
+        <item name="printAll" title="Print report and files"
+          action="save,action-expense-method-print-report-and-proof-file"/>
+      </menu>
+    </menubar>
+    <panel name="mainPanel">
+      <panel name="statusPanel" colSpan="9">
+        <field name="statusSelect" showTitle="false" colSpan="12" widget="NavSelect"/>
+        <field name="expenseSeq" showTitle="false" colSpan="8">
+          <viewer depends="expenseSeq"><![CDATA[
+
+				<>
+					<h3>
+						<span>{_t('Expense')} {expenseSeq}</span>
+					</h3>
+				</>
+
+        ]]></viewer>
+        </field>
+        <field name="ventilated" showTitle="false" readonly="true" showIf="ventilated"
+          colSpan="4">
+          <viewer><![CDATA[
+	<><Badge bg="danger">{_t('Ventilated')}</Badge></>
+        ]]></viewer>
+        </field>
+        <panel name="generalInfoPanel" colSpan="12">
+          <field name="typeSelect" readonly="true"/>
+          <spacer/>
+          <field name="company" canEdit="false" required="true" form-view="company-form"
+            grid-view="company-grid"/>
+          <field name="employee" canNew="false" canView="false" required="true"
+            form-view="employee-form" grid-view="employee-grid"
+            domain="self.user IN (SELECT m FROM Project p JOIN p.membersUserSet m WHERE p = :project) OR self.user IN (SELECT p.assignedTo FROM Project p WHERE p = :project)"/>
+          <field name="currency" readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
+            colSpan="6" canEdit="false" onChange="action-expense-attrs-kilometric-panel-visibility"
+            required="true"/>
+          <field name="period" canView="false" canEdit="false"
+            onSelect="action-expense-attrs-domain-period" form-view="period-form"
+            grid-view="period-grid"/>
+          <field name="personalExpenseAmount" hidden="true"/>
+          <field name="advanceAmount" hidden="true"/>
+        </panel>
+        <panel name="projectPanel" colSpan="12" itemSpan="12">
+          <field name="project" readonly="true" canView="false"/>
+        </panel>
+      </panel>
+      <panel name="sidePanel" colSpan="3" itemSpan="12">
+        <panel name="actionsPanel" itemSpan="12">
+          <button name="sendExpensesBtn" title="Send Expenses" hidden="true"
+            hideIf="statusSelect > 1" onClick="action-expense-group-send"/>
+          <button
+            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
+            name="ventilateBtn" title="Ventilate" hidden="true"
+            onClick="save,action-expense-method-ventilate"/>
+          <button
+            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
+            name="validateBtn" title="Validate" onClick="action-expense-group-validate"/>
+          <button
+            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
+            name="refuseBtn" title="Refuse" onClick="action-expense-group-refuse"/>
+          <button
+            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
+            name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times-circle"
+            onClick="action-expense-group-cancel"/>
+          <button name="draftBtn" title="Return to draft status" showIf="statusSelect > 4 "
+            onClick="action-expense-method-draft"/>
+          <button name="addPaymentBtn" title="Register payment"
+            showIf="ventilated &amp;&amp; statusSelect == 3  &amp;&amp; (paymentStatusSelect == 0 || paymentStatusSelect == 2) &amp;&amp; companyCbSelect != 2"
+            onClick="save,action-expense-add-payment-form"/>
+          <button name="cancelPaymentBtn" title="Cancel payment"
+            showIf="(paymentStatusSelect == 1 || paymentStatusSelect == 3)"
+            onClick="save,action-expense-method-cancel-payment"/>
+        </panel>
+        <panel name="inTaxTotalPanel" readonly="true">
+          <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
+            <viewer
+              depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund"><![CDATA[
+
+	                  <>
+	                      <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+	                          <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+	                     	  <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+	                     	  <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+	                     	  <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+	                     	  <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
+	                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
+	                     	  {personalExpenseAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Personal expense')}</Box>}
+	                     	  {personalExpenseAmount != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('personalExpenseAmount')}</Box>}
+	                     	  {withdrawnCash != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Withdrawn cash')}</Box>}
+	                     	  {withdrawnCash != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('withdrawnCash')}</Box>}
+	                     	  {advanceAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance')}</Box>}
+	                     	  {advanceAmount != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('paymentAmount')}</Box>}
+	                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal" color="primary">{_t('Payment')}</Box>}
+	                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dd" m={0} px={3} py={1} color="primary">-{$fmt('paymentAmount')}</Box>}
+	                          <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('TotalToRefund')}</Box>
+	                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('$totalToRefund')}</Box>
+	                      </Box>
+	                  </>
+
+          ]]></viewer>
+          </field>
+          <field name="$totalToRefund" title="Total to refund" hidden="true" type="decimal"
+            x-currency="currency.symbol"/>
+          <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
+          <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
+        </panel>
+      </panel>
+    </panel>
+    <panel-tabs name="mainPanelTab">
+      <panel name="generalExpenseLineListMainPanel" title="General expenses">
+        <static name="overAmountLimitText" hidden="true" colSpan="12"><![CDATA[
+        <><Badge bg="warning">At least one line of this expense exceeds the authorised amount for its type of expense.</Badge></>
+      ]]></static>
+        <panel-related name="generalExpenseLineListPanel" title="General expenses"
+          onNew="mgm-action-project-expense-line-group-onnew" colSpan="12"
+          field="generalExpenseLineList" form-view="expense-line-form" grid-view="expense-line-grid"
+          onChange="action-expense-group-expense-line-on-change,action-expense-method-check-total-amount"/>
+      </panel>
+    </panel-tabs>
+    <panel name="followupPanel" title="Follow-up" showIf="sentDateTime" colSpan="12"
+      canCollapse="true">
+      <field name="sentDateTime" colSpan="4"/>
+      <field name="validatedBy" hidden="true" showIf="validatedBy" colSpan="4" canEdit="false"
+        form-view="user-form" grid-view="user-grid"/>
+      <field name="validationDateTime" hidden="true" showIf="validationDateTime" colSpan="4"/>
+      <field name="refusedBy" hidden="true" showIf="refusedBy" colSpan="4" canEdit="false"
+        form-view="user-form" grid-view="user-grid"/>
+      <field name="refusalDateTime" hidden="true" showIf="refusalDateTime" colSpan="4"/>
+      <field name="groundForRefusal" hidden="true" readonly="true"
+        showIf="statusSelect == 5 || groundForRefusal != null" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-group name="mgm-action-project-expense-group-form-onNew">
+    <action name="mgm-action-project-expense-record-default"/>
+    <action name="mgm-action-expense-attrs-hide-button-readonly-field"/>
+    <action name="action-expense-attrs-set-total-to-refund"/>
+  </action-group>
+
+  <action-group name="mgm-action-project-expense-line-group-onnew">
+    <action name="action-expense-line-group-onnew"/>
+    <action name="mgm-action-project-expense-line-record-fill-project"/>
+  </action-group>
+
+  <action-record name="mgm-action-project-expense-record-default"
+    model="com.axelor.apps.hr.db.Expense">
+    <field name="project" expr="eval: _projectRef"/>
+    <field name="company" expr="eval: _projectCompany"/>
+    <field name="currency" expr="eval: _projectCurrency"/>
+
+    <field name="employee" expr="eval: __user__.employee"
+      if="eval: _projectRef != null &amp;&amp; (_projectRef.assignedTo?.id == __user__.id || __repo__(Project).all().filter('self.id = ?1 AND ?2 MEMBER OF self.membersUserSet', _projectRef.id, __user__).fetchOne() != null)"/>
+
+    <field name="typeSelect" expr="eval: 1"/>
+    <field name="statusSelect" expr="eval: 1"/>
+  </action-record>
+
+  <action-record name="mgm-action-project-expense-line-record-fill-project"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="project" expr="eval: _project" if="eval: _project != null"/>
+    <field name="project" expr="eval: _projectRef"
+      if="eval: project == null &amp;&amp; _projectRef != null"/>
+    <field name="toInvoice" expr="eval: project?.isInvoicingExpenses"
+      if="eval: project != null"/>
+  </action-record>
+
+  <action-attrs name="mgm-action-expense-attrs-hide-button-readonly-field">
+    <attribute name="hidden" for="ventilateBtn"
+      expr="eval: !__user__.employee?.hrManager || statusSelect != 3 || ventilated || _isExpenseDeclaration"/>
+    <attribute name="hidden" for="validateBtn" expr="eval: !(statusSelect == 2)"/>
+    <attribute name="hidden" for="refuseBtn"
+      expr="eval: !(statusSelect == 2 &amp;&amp; (__user__ == employee?.managerUser || (__user__ == employee?.user &amp;&amp; user?.employee?.managerUser == null) || __user__ == employee?.managerUser?.employee?.managerUser || __user__.employee?.hrManager))"/>
+    <attribute name="hidden" for="cancelBtn" expr="eval: statusSelect == 6 || ventilated"/>
+    <attribute name="readonly" for="period" expr="eval: true"
+      if="!__user__.employee?.hrManager"/>
+    <attribute name="readonly" for="period" expr="eval: ventilated"
+      if="__user__.employee?.hrManager"/>
+  </action-attrs>
+
+  <action-view name="mgm-action-project-expense-dashlet"
+    model="com.axelor.apps.hr.db.Expense" title="Project Expenses">
+    <view name="mgm-expense-grid" type="grid"/>
+    <view name="mgm-expense-form" type="form"/>
+    <view-param name="can-new" value="true"/>
+    <view-param name="can-edit" value="true"/>
+    <domain>self.project.id = :id</domain>
+    <context name="_projectRef" expr="eval: __self__"/>
+    <context name="_projectCompany" expr="eval: company"/>
+    <context name="_projectCurrency" expr="eval: currency"/>
+  </action-view>
+
+  <action-view name="mgm-action-project-expense-add"
+    model="com.axelor.apps.hr.db.Expense" title="Project Expense">
+    <view type="form" name="mgm-expense-form"/>
+    <view name="mgm-expense-grid" type="grid"/>
+    <view-param name="details-view" value="true"/>
+    <view-param name="popup" value="reload"/>
+    <view-param name="popup-save" value="true"/>
+    <view-param name="show-confirm" value="true"/>
+    <view-param name="show-toolbar" value="false"/>
+    <context name="_projectRef" expr="eval: _projectRef"/>
+    <context name="_projectCompany" expr="eval: _projectCompany"/>
+    <context name="_projectCurrency" expr="eval: _projectCurrency"/>
+    <context name="_projectId" expr="eval: _projectRef?.id"/>
+  </action-view>
+
+</object-views>

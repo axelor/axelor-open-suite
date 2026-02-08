@@ -29,4 +29,6 @@ public interface TaskReportService {
 
   /** create a timesheet for the employee if no timesheet is found */
   Timesheet findOrCreateMonthlyTimesheet(Employee employee, LocalDate date);
+
+  TaskReport getTaskReport(Project project);
 }

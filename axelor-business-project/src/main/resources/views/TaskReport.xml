@@ -42,6 +42,10 @@
     onNew="action-task-report-default, action-task-report-attrs-filter-projects"
     onLoad="action-task-report-group-on-load" onSave="action-task-report-group-on-save"
     width="large">
+    <toolbar>
+      <button name="projectFilesBtn" title="Project Files" icon="fa-paperclip"
+        showIf="project != null" onClick="action-method-project-find-project-files"/>
+    </toolbar>
     <panel colSpan="12" name="taskReportMainPanel">
       <panel colSpan="12" name="parentPanel" showFrame="true">
         <panel title="General Information" showFrame="false">
@@ -63,7 +67,7 @@
             canEdit="true" form-view="task-member-report-form"
             onChange="action-task-member-report-group-onChange"/>
           <panel>
-            <field name="totalWorkHours" colSpan="3"/>
+            <field name="totalWorkHours" colSpan="3" x-dirty="false"/>
           </panel>
         </panel>
 
@@ -225,16 +229,17 @@
     <field name="endTime" expr="eval: null"/>
   </action-record>
 
-  <action-view name="action-task-report-dashlet" title="Task Reports"
-    model="com.axelor.apps.businessproject.db.TaskReport">
-    <view type="grid" name="add-task-report-grid"/>
-    <view type="form" name="task-report-form"/>
+  <action-view name="action-task-report-dashlet"
+    model="com.axelor.apps.businessproject.db.TaskReport" title="Task Reports">
+    <view name="add-task-report-grid" type="grid"/>
+    <view name="task-report-form" type="form"/>
     <view-param name="show-toolbar" value="true"/>
     <domain>
       self.project != null
-      AND self.project.id = :projectId
+      AND self.project.id = :_projectId
     </domain>
-    <context name="project" expr="eval:__parent__"/>
+    <context name="_projectId" expr="eval: id"/>
+    <context name="project" expr="eval: __this__"/>
   </action-view>
 
   <action-view name="member-task-report" title="Member Task Reports"
@@ -304,9 +309,10 @@
   </action-group>
 
   <action-group name="action-task-member-report-group-onChange">
+    <action name="save"/>
     <action name="action-update-total-work-hours"/>
     <action name="action-task-report-method-updated-reported-task-count"/>
-    <action name="save"/>
+    <action name="action-task-report-set-flag"/>
   </action-group>
 
   <action-group name="action-group-task-member-report-on-save">

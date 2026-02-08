@@ -12,6 +12,7 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
+import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -55,9 +56,10 @@ public class TaskReportServiceImpl implements TaskReportService {
     }
 
     // Return true only if all project tasks have been reported
-    boolean reportedallTasks = reportedTaskIds.containsAll(allProjectTaskIds);
-    log.info("all task reported ? {}", reportedallTasks);
-    return reportedallTasks;
+    boolean reportedAllTasks = reportedTaskIds.containsAll(allProjectTaskIds);
+
+    log.info("all task reported ? {}", reportedAllTasks);
+    return reportedAllTasks;
   }
 
   @Override
@@ -159,7 +161,28 @@ public class TaskReportServiceImpl implements TaskReportService {
       isNew = true;
     }
 
+    // TSLine change detection
+    boolean hasChanged =
+        !Objects.equals(line.getStartTime(), report.getStartTime())
+            || !Objects.equals(line.getEndTime(), report.getEndTime())
+            || !Objects.equals(line.getDuration(), report.getWorkHours())
+            || !Objects.equals(line.getBreakTimeMinutes(), report.getBreakTimeMinutes())
+            || !Objects.equals(line.getProduct(), task.getProduct());
+
+    // save TSLine invalidation
+    if (!isNew && Boolean.TRUE.equals(line.getIsValidated()) && hasChanged) {
+      line.setIsValidated(false);
+    }
+
     // Always update calculated / mutable fields
+    line.setEmployee(employee);
+    line.setProject(task.getProject());
+    line.setProjectTask(task);
+    line.setProduct(task.getProduct());
+    line.setDate(date);
+    line.setStartTime(report.getStartTime());
+    line.setEndTime(report.getEndTime());
+
     if (report.getWorkHours() != null) {
       BigDecimal duration = report.getWorkHours();
       line.setDuration(duration);
@@ -234,6 +257,17 @@ public class TaskReportServiceImpl implements TaskReportService {
     log.info("Created timesheet for employee={} from={} to={}", employee.getId(), fromDate, toDate);
 
     return timesheet;
+  }
+
+  @Override
+  public TaskReport getTaskReport(Project project) {
+    if (project == null) {
+      return null;
+    }
+    return Query.of(TaskReport.class)
+        .filter("self.project.id = :projectId")
+        .bind("projectId", project.getId())
+        .fetchOne();
   }
 
   /** Validates report and fetch entity from repository */

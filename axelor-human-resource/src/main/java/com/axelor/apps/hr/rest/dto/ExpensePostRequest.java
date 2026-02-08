@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.project.db.Project;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
 import java.util.ArrayList;
@@ -51,6 +52,9 @@ public class ExpensePostRequest extends RequestPostStructure {
 
   @Min(0)
   private Long periodId;
+
+  @Min(0)
+  private Long projectId;
 
   @Min(0)
   private Integer companyCbSelect;
@@ -95,6 +99,14 @@ public class ExpensePostRequest extends RequestPostStructure {
 
   public void setPeriodId(Long periodId) {
     this.periodId = periodId;
+  }
+
+  public Long getProjectId() {
+    return projectId;
+  }
+
+  public void setProjectId(Long projectId) {
+    this.projectId = projectId;
   }
 
   public Integer getCompanyCbSelect() {
@@ -146,6 +158,14 @@ public class ExpensePostRequest extends RequestPostStructure {
       return null;
     }
     return ObjectFinder.find(Period.class, periodId, ObjectFinder.NO_VERSION);
+  }
+
+  public Project fetchProject() {
+    if (projectId == null || projectId == 0L) {
+      return null;
+    }
+
+    return ObjectFinder.find(Project.class, projectId, ObjectFinder.NO_VERSION);
   }
 
   public List<ExpenseLine> fetchExpenseLines() {

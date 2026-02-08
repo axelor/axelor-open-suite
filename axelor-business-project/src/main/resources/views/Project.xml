@@ -53,9 +53,12 @@
   <form name="business-project-form" title="Business project"
     model="com.axelor.apps.project.db.Project" width="large"
     onLoad="action-business-project-project-group-on-load"
-    onNew="action-business-project-project-group-on-new" onSave="action-project-group-on-save">
+    onNew="action-business-project-project-group-on-new" onSave="action-project-group-on-save"
+    canAttach="false">
     <!-- MGM-80 @gkouete- showing planning and financial data not required -->
     <toolbar>
+      <button name="projectFilesBtn" title="Project Files" icon="fa-paperclip" showIf="id"
+        onClick="action-method-project-find-project-files"/>
       <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
         onClick="save,action-project-view-show-planning-panel"
         if="__config__.app.isApp('employee') &amp;&amp; __config__.app.getApp('project')?.enablePlanification  &amp;&amp; __user__.group.code == admins"
@@ -181,7 +184,7 @@
           <field name="currency" colSpan="6" if="__config__.app.isApp('business-project')"
             if-module="axelor-business-project" canEdit="false" canView="false"/>
           <button name="projectFilesBtn" title="Project Files" showIf="id"
-            onClick="save,action-project-method-find-dms-home" colSpan="4" link=""/>
+            onClick="action-method-project-find-project-files" colSpan="4" link=""/>
         </panel>
         <!-- MGM-80: Adding team member selection to the overview -->
         <field name="membersUserSet" colSpan="6" widget="TagSelect" canNew="false"
@@ -203,9 +206,17 @@
           action="action-view-show-business-project-task" x-show-bars="true" canSearch="true"/>
         <panel-dashlet name="taskInvoicingDashletPanel" title="Task Invoicing"
           height="200%" colSpan="12" action="action-dashlet-project-show-all-invoicing-task"
-          if="__config__.app.isApp('business-project') &amp;&amp; !['CUSTOM-PM','CUSTOM-PT','CUSTOM-TM'].any(g -> __user__.group.code == g)"
+          if="__config__.app.isApp('business-project') &amp;&amp; ['admins'].any(g -> __user__.group.code == g)"
           canSearch="true"/>
       </panel>
+
+      <!-- MGM-100 expense reporting -->
+      <panel title="Expense Report" name="expenseReportsPanel">
+        <panel-dashlet name="projectExpenseDashlet" title="Project Expenses"
+          canEdit="true" readonly="false" action="mgm-action-project-expense-dashlet" colSpan="12"
+          canNew="true" x-show-bars="true"/>
+      </panel>
+
       <!-- MGM-66 task reports -->
       <panel title="Task Report" name="taskReportsPanel">
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
@@ -214,7 +225,7 @@
       </panel>
 
       <panel title="Configurations" name="configurationsPanel"
-        if="!['CUSTOM-PM','CUSTOM-PT' ].any(g -> __user__.group.code.contains(g))">
+        if="['admins' ].any(g -> __user__.group.code.contains(g))">
         <panel title="Business configuration" name="businessConfigurationsPanel" colSpan="12"
           canCollapse="true" collapseIf="false">
           <field name="projectFolderSet" colSpan="12" widget="TagSelect"/>
@@ -338,7 +349,8 @@
       <panel-include view="incl-project-roadmap-panel-form"
         if="__user__.group.code == 'admins'"/>
       <!--- MGM-66: display panel to only selected group e.g admins -->
-      <panel title="Invoicing" name="invoicingPanel"
+      <panel onTabSelect="mgm-action-record-default-invoice-flags-true" title="Invoicing"
+        name="invoicingPanel"
         if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))">
         <!-- MGM-80: No need to show this help message -->
         <!-- <help colSpan="12"><![CDATA[To be invoiceable, each element (task, timesheet, expenses,
@@ -712,9 +724,9 @@
     <call class="com.axelor.apps.businessproject.web.ProjectController" method="convertProject"/>
   </action-method>
 
-  <action-method name="action-project-method-find-dms-home">
+  <action-method name="action-method-project-find-project-files">
     <call class="com.axelor.apps.businessproject.web.ProjectController"
-      method="findProjectDmsHomeGrid"/>
+      method="findProjectFiles"/>
   </action-method>
 
   <action-validate name="action-validate-unset-project">
@@ -1428,6 +1440,11 @@
   <action-method name="action-method-validate-code-and-get-next">
     <call class="com.axelor.apps.project.web.ProjectController"
       method="getNextAvailableProjectCode"/>
+  </action-method>
+
+  <action-method name="action-method-set-project-status-to-paid">
+    <call class="com.axelor.apps.businessproject.web.InvoicePaymentController"
+      method="setProjectStatusPaid"/>
   </action-method>
 
   <action-group name="action-business-project-group-finish-project">
