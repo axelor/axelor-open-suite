@@ -339,7 +339,9 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     if (CollectionUtils.isEmpty(projectTaskList)) {
       return;
     }
-    projectTaskList.sort(Comparator.comparing(ProjectTask::getCreatedOn));
+    projectTaskList.sort(
+        Comparator.comparing(
+            ProjectTask::getCreatedOn, Comparator.nullsLast(Comparator.naturalOrder())));
     int count = 1;
     for (ProjectTask projectTask : projectTaskList) {
       String levelIndicator =
