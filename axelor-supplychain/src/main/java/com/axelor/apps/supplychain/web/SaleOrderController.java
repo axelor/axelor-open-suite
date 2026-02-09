@@ -481,7 +481,9 @@ public class SaleOrderController {
    * @param response
    */
   public void supplierPartnerSelectDomain(ActionRequest request, ActionResponse response) {
-    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    Long saleOrderId = Long.valueOf(request.getContext().get("saleOrderId").toString());
+
+    SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderId);
     String domain = "self.isContact = false AND self.isSupplier = true";
 
     if (saleOrder.getCompany() != null) {
