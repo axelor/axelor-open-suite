@@ -1,0 +1,3 @@
+---
+title : "Cart: fixed an error when creating a sale order from a cart with 10 or more products."
+module: axelor-sale
