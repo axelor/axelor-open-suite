@@ -27,6 +27,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.CurrencyScaleService;
+import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.ShippingCoefService;
@@ -97,6 +99,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected TaxService taxService;
   protected AppStockService appStockService;
   protected StockMoveLineStockLocationService stockMoveLineStockLocationService;
+  protected CurrencyService currencyService;
+  protected CurrencyScaleService currencyScaleService;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -112,7 +116,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       ProductCompanyService productCompanyService,
       TaxService taxService,
       AppStockService appStockService,
-      StockMoveLineStockLocationService stockMoveLineStockLocationService) {
+      StockMoveLineStockLocationService stockMoveLineStockLocationService,
+      CurrencyService currencyService,
+      CurrencyScaleService currencyScaleService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -127,6 +133,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.taxService = taxService;
     this.appStockService = appStockService;
     this.stockMoveLineStockLocationService = stockMoveLineStockLocationService;
+    this.currencyService = currencyService;
+    this.currencyScaleService = currencyScaleService;
   }
 
   /**
@@ -442,10 +450,18 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       StockLocation toStockLocation)
       throws AxelorException {
 
+    Company company = stockMove.getCompany();
     PurchaseOrder purchaseOrder = purchaseOrderLine.getPurchaseOrder();
     Product product = purchaseOrderLine.getProduct();
     Unit unit = product.getUnit();
-    BigDecimal priceDiscounted = purchaseOrderLine.getPriceDiscounted();
+    BigDecimal priceDiscounted =
+        currencyScaleService.getCompanyScaledValue(
+            company,
+            currencyService.getAmountCurrencyConvertedAtDate(
+                purchaseOrder.getCurrency(),
+                company.getCurrency(),
+                purchaseOrderLine.getPriceDiscounted(),
+                appBaseService.getTodayDate(company)));
     BigDecimal companyUnitPriceUntaxed = purchaseOrderLine.getCompanyExTaxTotal();
 
     if (purchaseOrderLine.getQty().compareTo(BigDecimal.ZERO) != 0) {
