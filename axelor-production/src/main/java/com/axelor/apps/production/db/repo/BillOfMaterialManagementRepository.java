@@ -21,11 +21,16 @@ package com.axelor.apps.production.db.repo;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
+import com.axelor.db.JPA;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BillOfMaterialManagementRepository extends BillOfMaterialRepository {
+
+  private final Map<String, BigDecimal> bomQtyCache = new HashMap<>();
 
   protected BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected BillOfMaterialComputeNameService billOfMaterialComputeNameService;
@@ -66,5 +71,36 @@ public class BillOfMaterialManagementRepository extends BillOfMaterialRepository
     }
 
     return copy;
+  }
+
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+
+    if (context.get("_xShowUsedBOMPanel") != null && context.get("id") != null) {
+
+      Long productId = (Long) context.get("id");
+      Long bomId = (Long) json.get("id");
+
+      String cacheKey = productId + "-" + bomId;
+      BigDecimal totalQty = bomQtyCache.get(cacheKey);
+
+      if (totalQty == null) {
+        totalQty =
+            (BigDecimal)
+                JPA.em()
+                    .createQuery(
+                        "SELECT COALESCE(SUM(self.qty), 0) "
+                            + "FROM BillOfMaterialLine self "
+                            + "WHERE self.product.id = :productId "
+                            + "AND self.billOfMaterialParent.id = :billOfMaterial")
+                    .setParameter("productId", productId)
+                    .setParameter("billOfMaterial", bomId)
+                    .getSingleResult();
+
+        bomQtyCache.put(cacheKey, totalQty);
+      }
+      json.put("billOfMaterialLineList.qty", totalQty);
+    }
+    return super.populate(json, context);
   }
 }
