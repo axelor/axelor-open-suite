@@ -1597,7 +1597,8 @@
     <view type="grid" name="move-line-grid"/>
     <view type="form" name="move-line-form"/>
     <view-param name="search-filters" value="move-line-filters"/>
-    <domain>self.partner.id = :partnerId AND self.account.useForPartnerBalance = true</domain>
+    <domain>self.partner.id = :partnerId AND self.account.useForPartnerBalance = true AND self.move
+      IS NOT NULL</domain>
     <context name="partnerId" expr="eval: id"/>
   </action-view>
 
