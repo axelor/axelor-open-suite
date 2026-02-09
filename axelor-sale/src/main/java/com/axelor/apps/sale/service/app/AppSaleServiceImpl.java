@@ -23,14 +23,9 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.meta.loader.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppSale;
-import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppSaleRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -47,16 +42,11 @@ public class AppSaleServiceImpl extends AppBaseServiceImpl implements AppSaleSer
 
   @Inject
   public AppSaleServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      AppSettingsStudioService appSettingsService,
-      MetaModuleRepository metaModuleRepo,
-      MetaFileRepository metaFileRepo,
+      AppService appService,
       AppSaleRepository appSaleRepo,
       CompanyRepository companyRepo,
       SaleConfigRepository saleConfigRepo) {
-    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
+    super(appService);
     this.appSaleRepo = appSaleRepo;
     this.companyRepo = companyRepo;
     this.saleConfigRepo = saleConfigRepo;

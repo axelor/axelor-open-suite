@@ -29,9 +29,9 @@
       </panel>
 
       <panel name="helpPanel" colSpan="12" itemSpan="12">
-        <help showIf="leaveReasonTypeSelect == 1"><![CDATA[A leave line will be created automatically every month for concerned employee if automatic incrementation is enabled.]]></help>
-        <help showIf="leaveReasonTypeSelect == 2"><![CDATA[An employee can directly make a request of this leave reason.]]></help>
-        <help showIf="leaveReasonTypeSelect == 3"><![CDATA[A leave line will be created automatically every year for concerned employee if automatic incrementation is enabled.]]></help>
+        <help showIf="leaveReasonTypeSelect == 1"><![CDATA[<>A leave line will be created automatically every month for concerned employee if automatic incrementation is enabled.</>]]></help>
+        <help showIf="leaveReasonTypeSelect == 2"><![CDATA[<>An employee can directly make a request of this leave reason.</>]]></help>
+        <help showIf="leaveReasonTypeSelect == 3"><![CDATA[<>A leave line will be created automatically every year for concerned employee if automatic incrementation is enabled.</>]]></help>
       </panel>
 
       <panel name="configPanel" itemSpan="4" colSpan="12">

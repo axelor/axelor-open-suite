@@ -1,8 +1,8 @@
 def libs = ext.libs = [:]
 
 libs.axelor_studio = 'com.axelor.addons:axelor-studio:4.0.0'
-libs.axelor_message = 'com.axelor.addons:axelor-message:4.0.0'
-libs.axelor_utils = 'com.axelor.addons:axelor-utils:4.0.0'
+libs.axelor_message = 'com.axelor.addons:axelor-message:4.0.1'
+libs.axelor_utils = 'com.axelor.addons:axelor-utils:4.0.1'
 
 libs.bcpkix_jdk18on = 'org.bouncycastle:bcpkix-jdk18on:1.82'
 libs.bcprov_jdk18on = 'org.bouncycastle:bcprov-jdk18on:1.82'
@@ -82,4 +82,4 @@ libs.swagger_jaxrs = dependencies.create("io.swagger.core.v3:swagger-jaxrs2-jaka
   exclude group: "com.fasterxml.jackson.dataformat", module: "jackson-dataformat-yaml"
 }
 
-libs.flyingsaucer_openpdf = 'org.xhtmlrenderer:flying-saucer-pdf-openpdf:9.2.2'
+libs.flyingsaucer_openpdf = 'org.xhtmlrenderer:flying-saucer-pdf:10.0.6'

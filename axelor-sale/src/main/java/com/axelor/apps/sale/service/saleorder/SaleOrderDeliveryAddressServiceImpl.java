@@ -76,4 +76,19 @@ public class SaleOrderDeliveryAddressServiceImpl implements SaleOrderDeliveryAdd
           I18n.get(SaleExceptionMessage.DELIVERY_ADDRESS_MUST_BE_SAME_FOR_ALL_LINES));
     }
   }
+
+  @Override
+  public List<SaleOrderLine> updateSaleOrderLinesDeliveryAddressStr(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return saleOrderLineList;
+    }
+    saleOrderLineList.stream()
+        .filter(
+            sol ->
+                sol.getDeliveryAddress() != null
+                    && sol.getDeliveryAddress().equals(saleOrder.getDeliveryAddress()))
+        .forEach(sol -> sol.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr()));
+    return saleOrderLineList;
+  }
 }

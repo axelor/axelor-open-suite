@@ -1,0 +1,3 @@
+---
+title: "Inventory: fixed validation creating empty internal stock moves."
+module: axelor-stock

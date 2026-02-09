@@ -179,7 +179,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       return productionOrder;
     }
 
-    return productionOrderService.createProductionOrder(saleOrder, null);
+    return productionOrderRepo.save(productionOrderService.createProductionOrder(saleOrder, null));
   }
 
   @Override

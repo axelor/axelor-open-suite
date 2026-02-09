@@ -64,6 +64,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -585,6 +586,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.createToConsumeProdProductList(manufOrder);
     this.createToProduceProdProductList(manufOrder);
     updateRealQty(manufOrder, manufOrder.getQty());
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     LocalDateTime plannedStartDateT = manufOrder.getPlannedStartDateT();
     manufOrderPlanService.updatePlannedDates(
         manufOrder,
@@ -618,6 +620,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
   @Override
   public ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException {
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     List<ProdProduct> toConsumeList = manufOrder.getToConsumeProdProductList();
     List<StockMoveLine> consumedList = manufOrder.getConsumedStockMoveLineList();
     if (toConsumeList == null || consumedList == null) {
