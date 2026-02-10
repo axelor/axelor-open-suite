@@ -90,8 +90,11 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
     }
 
     query +=
-        String.format(" AND self.date >= '%s'", analyticMoveLineQuery.getFromDate().toString());
-    query += String.format(" AND self.date <= '%s'", analyticMoveLineQuery.getToDate().toString());
+        String.format(
+            " AND self.date >= CAST('%s' AS date)", analyticMoveLineQuery.getFromDate().toString());
+    query +=
+        String.format(
+            " AND self.date <= CAST('%s' AS date)", analyticMoveLineQuery.getToDate().toString());
 
     query = this.getStatusQuery(analyticMoveLineQuery, query);
 
