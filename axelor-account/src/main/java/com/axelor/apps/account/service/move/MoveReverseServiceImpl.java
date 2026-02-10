@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoicePayment;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentVoucher;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
@@ -34,6 +35,7 @@ import com.axelor.apps.account.service.extract.ExtractContextMoveService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.base.AxelorException;
@@ -70,6 +72,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
   protected UnreconcileService unReconcileService;
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected AnalyticLineService analyticLineService;
+  protected PaymentVoucherCancelService paymentVoucherCancelService;
 
   @Inject
   public MoveReverseServiceImpl(
@@ -84,7 +87,8 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       MoveLineToolService moveLineToolService,
       UnreconcileService unReconcileService,
       MoveInvoiceTermService moveInvoiceTermService,
-      AnalyticLineService analyticLineService) {
+      AnalyticLineService analyticLineService,
+      PaymentVoucherCancelService paymentVoucherCancelService) {
 
     this.moveCreateService = moveCreateService;
     this.reconcileService = reconcileService;
@@ -98,6 +102,7 @@ public class MoveReverseServiceImpl implements MoveReverseService {
     this.unReconcileService = unReconcileService;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.analyticLineService = analyticLineService;
+    this.paymentVoucherCancelService = paymentVoucherCancelService;
   }
 
   @Transactional(rollbackOn = {Exception.class})
@@ -214,7 +219,16 @@ public class MoveReverseServiceImpl implements MoveReverseService {
       moveValidateService.accounting(newMove);
     }
 
+    cancelPaymentVoucher(move);
+
     return moveRepository.save(newMove);
+  }
+
+  protected void cancelPaymentVoucher(Move move) {
+    PaymentVoucher paymentVoucher = move.getPaymentVoucher();
+    if (paymentVoucher != null) {
+      paymentVoucherCancelService.cancelPaymentVoucher(paymentVoucher);
+    }
   }
 
   protected void cancelInvoicePayment(Move move) throws AxelorException {
