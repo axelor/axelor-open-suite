@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.AccountingSituationService;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -87,6 +88,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
   protected AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService;
   protected ExpenseRepository expenseRepository;
   protected MoveLineRecordService moveLineRecordService;
+  protected AnalyticLineService analyticLineService;
 
   @Inject
   public ExpenseVentilateServiceImpl(
@@ -107,7 +109,8 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
       AccountManagementAccountService accountManagementAccountService,
       AnalyticMoveLineGenerateRealService analyticMoveLineGenerateRealService,
       ExpenseRepository expenseRepository,
-      MoveLineRecordService moveLineRecordService) {
+      MoveLineRecordService moveLineRecordService,
+      AnalyticLineService analyticLineService) {
     this.appAccountService = appAccountService;
     this.sequenceService = sequenceService;
     this.hrConfigService = hrConfigService;
@@ -126,6 +129,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     this.analyticMoveLineGenerateRealService = analyticMoveLineGenerateRealService;
     this.expenseRepository = expenseRepository;
     this.moveLineRecordService = moveLineRecordService;
+    this.analyticLineService = analyticLineService;
   }
 
   @Override
@@ -392,6 +396,8 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     if (CollectionUtils.isEmpty(moveLine.getAnalyticMoveLineList())) {
       moveLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
+    analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
+
     return moveLine;
   }
 }
