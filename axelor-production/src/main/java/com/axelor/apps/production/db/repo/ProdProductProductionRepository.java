@@ -57,7 +57,6 @@ public class ProdProductProductionRepository extends ProdProductRepository {
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
 
     if (!appProductionService.isApp("production")) {
-
       return super.populate(json, context);
     }
 
