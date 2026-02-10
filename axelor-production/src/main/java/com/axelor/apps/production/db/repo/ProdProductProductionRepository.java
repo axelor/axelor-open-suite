@@ -60,15 +60,6 @@ public class ProdProductProductionRepository extends ProdProductRepository {
       return super.populate(json, context);
     }
 
-    // Perf: Skip expensive qty calculations unless explicitly requested via context flag
-    // This avoids N+1 queries when loading grid views with many product lines
-    boolean computeQtyFields =
-        context != null && Boolean.TRUE.equals(context.get("_computeQtyFields"));
-
-    if (!computeQtyFields) {
-      return super.populate(json, context);
-    }
-
     Object productFromView = json.get("product");
     Object qtyFromView = json.get("qty");
     Unit unit = Mapper.toBean(Unit.class, (HashMap<String, Object>) json.get("unit"));

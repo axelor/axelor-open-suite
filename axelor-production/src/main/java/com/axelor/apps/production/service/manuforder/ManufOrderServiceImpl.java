@@ -896,8 +896,10 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     if (defaultBomCache.containsKey(productId)) {
       return defaultBomCache.get(productId);
     }
-    BillOfMaterial defaultBOM = Beans.get(BillOfMaterialService.class).getDefaultBOM(product, null);
-    defaultBomCache.put(productId, defaultBOM);
+    BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(product, null);
+    if (defaultBOM != null) {
+      defaultBomCache.put(productId, defaultBOM);
+    }
     return defaultBOM;
   }
 
