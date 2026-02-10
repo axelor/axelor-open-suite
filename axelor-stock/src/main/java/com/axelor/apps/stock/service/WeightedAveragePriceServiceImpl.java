@@ -73,10 +73,6 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
       for (ProductCompany productCompany : product.getProductCompanyList()) {
         Company company = productCompany.getCompany();
         BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, company);
-        if (productAvgPrice.compareTo(BigDecimal.ZERO) == 0) {
-          continue;
-        }
-
         productCompanyService.set(product, "avgPrice", productAvgPrice, company);
         if ((Integer) productCompanyService.get(product, "costTypeSelect", company)
             == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
@@ -88,11 +84,6 @@ public class WeightedAveragePriceServiceImpl implements WeightedAveragePriceServ
       }
     } else {
       BigDecimal productAvgPrice = this.computeAvgPriceForCompany(product, null);
-
-      if (productAvgPrice.compareTo(BigDecimal.ZERO) == 0) {
-        return;
-      }
-
       product.setAvgPrice(productAvgPrice);
       if (product.getCostTypeSelect() == ProductRepository.COST_TYPE_AVERAGE_PRICE) {
         product.setCostPrice(productAvgPrice);
