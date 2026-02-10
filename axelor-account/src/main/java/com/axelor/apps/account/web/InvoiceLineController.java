@@ -448,21 +448,29 @@ public class InvoiceLineController {
   }
 
   public void setRequiredAnalyticAccount(ActionRequest request, ActionResponse response) {
-    try {
-      InvoiceLine invoiceLine = request.getContext().asType(InvoiceLine.class);
-      if (request.getContext().getParent() != null
-          && Invoice.class.equals(request.getContext().getParent().getContextClass())) {
-        Invoice invoice = request.getContext().getParent().asType(Invoice.class);
-        AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
-        for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-          response.setAttr(
-              "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-              "required",
-              analyticLineService.isAxisRequired(invoiceLine, invoice.getCompany(), i));
+        try {
+            Context ctx=  request.getContext();
+            if(ctx==null|| ctx.get("_model")==null || 
+               !InvoiceLine.class.getName().equals(ctx.get("_model")) ||
+               ctx.get("id")==null
+              ){
+                return;
+            }
+            InvoiceLine invoiceLine = Beans.get(InvoiceLineRepository.class).find((Long) ctx.get("id"));
+            if (ctx.getParent() != null &&
+                invoiceLine!=null && invoiceLine.getInvoice()!=null) {
+                Invoice invoice = invoiceLine.getInvoice();
+                AnalyticLineService analyticLineService = Beans.get(AnalyticLineService.class);
+                for (int i = startAxisPosition; i <= endAxisPosition; i++) {
+                    response.setAttr(
+                            "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
+                            "required",
+                            analyticLineService.isAxisRequired(invoiceLine, invoice.getCompany(), i));
+                }
+            }
+        } catch (Exception e) {
+            TraceBackService.trace(response, e);
         }
-      }
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 
