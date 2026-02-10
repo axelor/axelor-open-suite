@@ -343,8 +343,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
     BigDecimal nbDaysBetweenAcqAndFirstDepDate;
     if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
-        fixedAsset.getComputationMethodSelect())) {
-      nextDate = null;
+            getComputationMethodSelect(fixedAsset))
+        && nextDate == null) {
       int endDayOfMonth =
           depreciationDate.getMonth() == Month.FEBRUARY
               ? depreciationDate.getDayOfMonth()
