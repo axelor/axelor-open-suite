@@ -31,6 +31,7 @@ import com.axelor.apps.production.db.TempBomTree;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.TempBomTreeRepository;
 import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
+import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.production.service.costsheet.CostSheetService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.AuthUtils;
@@ -43,6 +44,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.Query;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -74,6 +76,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
 
   protected CostSheetService costSheetService;
 
+  protected AppProductionService appProductionService;
+
   @Inject
   public BillOfMaterialServiceImpl(
       BillOfMaterialRepository billOfMaterialRepo,
@@ -82,7 +86,8 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
       ProductCompanyService productCompanyService,
       BillOfMaterialLineService billOfMaterialLineService,
       BillOfMaterialService billOfMaterialService,
-      CostSheetService costSheetService) {
+      CostSheetService costSheetService,
+      AppProductionService appProductionService) {
     this.billOfMaterialRepo = billOfMaterialRepo;
     this.tempBomTreeRepo = tempBomTreeRepo;
     this.productRepo = productRepo;
@@ -90,6 +95,7 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
     this.billOfMaterialLineService = billOfMaterialLineService;
     this.billOfMaterialService = billOfMaterialService;
     this.costSheetService = costSheetService;
+    this.appProductionService = appProductionService;
   }
 
   private List<Long> processedBom;
@@ -281,7 +287,13 @@ public class BillOfMaterialServiceImpl implements BillOfMaterialService {
           Optional.ofNullable(bomLine).map(BillOfMaterialLine::getUnit).orElse(bom.getUnit()));
     } else if (bomLine != null) {
       bomTree.setProduct(bomLine.getProduct());
-      bomTree.setQty(bomLine.getQty());
+      bomTree.setQty(
+          Optional.ofNullable(parent)
+              .map(boml -> bomLine.getQty().multiply(parent.getQty()))
+              .orElse(bomLine.getQty())
+              .setScale(
+                  appProductionService.getAppProduction().getNbDecimalDigitForBomQty(),
+                  RoundingMode.HALF_UP));
       bomTree.setUnit(bomLine.getUnit());
     }
     bomTree.setParentBom(parentBom);

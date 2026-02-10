@@ -1,6 +1,0 @@
----
-title : "Fixed possible errors when opening certain views."
-module: axelor-base
-developer: |
-  "Changed AppBaseServiceImpl parent class from AppServiceImpl to ScriptAppServiceImpl.
-  Changed all classes constructor which have AppBaseServiceImpl as parent."

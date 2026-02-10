@@ -73,6 +73,7 @@ public class MoveBudgetManagementRepository extends MoveBankPaymentRepository {
         ml.setIsBudgetImputed(false);
         if (!CollectionUtils.isEmpty(ml.getBudgetDistributionList())) {
           for (BudgetDistribution bd : ml.getBudgetDistributionList()) {
+            bd.setInvoiceLine(null);
             budgetDistributionService.computeBudgetDistributionSumAmount(bd, copy.getDate());
           }
         }

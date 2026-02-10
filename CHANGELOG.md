@@ -1,3 +1,122 @@
+## [9.0.2] (2026-02-05)
+
+### Fixes
+#### Base
+
+* Update Axelor Open Platform to 8.0.6.
+* Map: fixed an issue where filling in the 'PO Box' field in a customer address prevented the map from being displayed.
+* Partner : display address type on readonly mode.
+* Updated utils and message dependencies.
+* Base: fixed some helper in severals form views.
+* App base: added demo data for 'Sequence increment timeout'.
+* Fixed possible errors when opening certain views.
+
+#### Account
+
+* Move: fixed JPQL filter syntax for archived field in mass action.
+* Invoice: fixed credit note reconciliation with holdback invoices.
+* Invoice/TaxLine : fixed the refresh tax account information into refresh vat system information.
+* Invoice: fixed the display of the head office address in the BIRT report when the address position is set to 'right' in the printing settings.
+* Invoice: fixed the issue where updating the generated move date removes the invoice term from the invoice.
+
+#### Bank Payment
+
+* Bank order: fixed the incorrect due date on direct debit bank orders.
+* Payment session: fixed the order of bank order line creation and invoice term validation
+* Bank order: fixed area D5 to accept alphanumeric values in the norm for cfonb160.
+* Move: fix bank reconciliation impact when reversing and deleting moves.
+
+#### Budget
+
+* Budget/BudgetKey : fixed the budget key unique check after hibernate migration
+* Budget: fixed demo data for budget key computation
+
+#### CRM
+
+* Opportunity: fixed partner domain to display only customers/prospects.
+
+#### Human Resource
+
+* Timesheet: fixed minutes calculation in timesheet line.
+* Leave request batch: fixed an issue where cancellation email was sent instead of confirmation email
+* App timesheet: fixed the form loading issue when there are thousands of timesheets.
+
+#### Production
+
+* Production order: fixed an error occurring when generating production order from sale order with auto plan option enabled.
+* Unit cost calculation: fixed filter of Products.
+* BOM printing: fixed priority sorting, sub-BOM indicator, and replaced ProdProcess column with BillOfMaterial
+* Prod product: fixed an error occurring on select of tracking number.
+* Manufacturing: fixed wrong cost sheet calculation on partial and complete finish.
+* Manufacturing order: fixed an error occurring when updating actual quantities or partially finishing
+* BOM tree: fixed an incorrect quantity in multi-level BOM tree view.
+
+#### Sale
+
+* Sale order: fixed unit price calculation for 'Replace' price lists when quantity falls below the minimum quantity threshold.
+
+#### Stock
+
+* Stock move: fixed grid/form views for saleOrderSet and purchaseOrderSet.
+* Stock Location : Remove page break on Birt report.
+* Stock location: include virtual sub stock location in list when enabled.
+* Inventory: fixed an issue with inventory validation during demo data import.
+* Stock move line: fixed unit price change at qty change.
+* Stock location: fixed valuation discrepancy between form view and financial data report.
+* Stock move: fixed wrong reserved qty in stock move and stock details by product.
+* Stock move: fixed an error occurring when splitting into 2 a stock move line without quantity.
+* Stock move: fixed error when filling the real quantities.
+* Stock move: fixed error when splitting a stock move into 2.
+* Inventory: fixed validation creating empty internal stock moves.
+* Stock move: added english titles for 'delayedInvoice' and 'validatedInvoice' button.
+* Stock correction: fixed product selection error
+* Stock move: fixed unable to print picking order for stock move with large number of lines from form view.
+
+#### Supply Chain
+
+* Sale order/Purchase order: fixed an error occurring during advance payment generation with title lines.
+* Stock move: fixed an error occurring when merging stock moves.
+* Sale order: fixed delivered quantities after merging deliveries.
+* Declaration of exchanges: fixed filter on stock move displayed.
+* Supplychain batch: fixed an error occurring in 'Update stock history' batch.
+* Sale order: fixed an error occurring when creating line if supplychain was not installed.
+* App supplychain: added a warning message when both 'Generate invoice from sale order' and 'Generate invoice from stock move' are enabled to prevent double invoicing.
+
+
+### Developer
+
+#### Base
+
+Dependency 'flying-saucer-pdf-openpdf:9.2.2' has been replaced by 'flying-saucer-pdf:10.0.6'
+
+---
+
+``` sql  
+
+UPDATE studio_app_base SET sequence_increment_timeout = 5 WHERE COALESCE(sequence_increment_timeout, 0) < 1;
+
+```
+
+---
+
+Changed AppBaseServiceImpl parent class from AppServiceImpl to ScriptAppServiceImpl.
+Changed all classes constructor which have AppBaseServiceImpl as parent.
+
+#### Account
+
+- MoveDueService: new public method `getOrignalInvoiceMoveLinesFromRefund(Invoice invoice)` returning `List<MoveLine>` instead of single MoveLine.
+- MoveExcessPaymentService: protected method `getOrignalInvoiceMoveLine(Invoice invoice)` renamed to `getOrignalInvoiceMoveLines(Invoice invoice)` and now returns `List<MoveLine>` instead of `MoveLine`.
+- MoveCreateFromInvoiceServiceImpl: new protected method `isHoldbackMoveLine(MoveLine moveLine)` added.
+
+---
+
+- Added InvoiceTermRepository in the MoveLineInvoiceTermServiceImpl constructor
+
+#### Bank Payment
+
+MoveRemoveServiceBankPaymentImpl now injects BankReconciliationLineRepository to check
+reconciliation links before blocking deletion.
+
 ## [9.0.1] (2026-01-22)
 
 ### Fixes
@@ -149,5 +268,6 @@ Replaced the attrs action `action-purchase-order-line-attrs-delivery-panel` with
 
 * Project: improve task tree management.
 
+[9.0.2]: https://github.com/axelor/axelor-open-suite/compare/v9.0.1...v9.0.2
 [9.0.1]: https://github.com/axelor/axelor-open-suite/compare/v9.0.0...v9.0.1
 [9.0.0]: https://github.com/axelor/axelor-open-suite/compare/v8.5.9...v9.0.0

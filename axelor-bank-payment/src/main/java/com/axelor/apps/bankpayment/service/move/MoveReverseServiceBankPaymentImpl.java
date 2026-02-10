@@ -19,6 +19,7 @@
 package com.axelor.apps.bankpayment.service.move;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountType;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
@@ -130,8 +131,6 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
     }
     Move newMove = super.generateReverse(move, assistantMap);
     if (isHiddenMoveLinesInBankReconciliation) {
-      fillBankReconciledAmount(newMove);
-
       bankReconciliationLineUnreconciliationService.unreconcileLines(
           bankReconciliationLineList.stream()
               .filter(
@@ -184,6 +183,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
                 .fetch();
         bankReconciliationLineUnreconciliationService.unreconcileLines(
             bankReconciliationUnderCorrectionLineList);
+        fillBankReconciledAmount(move);
       }
     }
     if (CollectionUtils.isNotEmpty(movesReconciled)) {
@@ -224,17 +224,7 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
       throws AxelorException {
     MoveLine reverseMoveLine =
         super.generateReverseMoveLine(reverseMove, orgineMoveLine, dateOfReversion, isDebit);
-    if (reverseMoveLine
-            .getAccount()
-            .getAccountType()
-            .getTechnicalTypeSelect()
-            .equals(AccountTypeRepository.TYPE_CASH)
-        && (bankReconciliationLineRepository
-                .all()
-                .filter("self.moveLine.id = ?", reverseMoveLine.getId())
-                .count()
-            > 0)) {
-
+    if (hasCashAccountType(reverseMoveLine)) {
       BigDecimal amount =
           currencyScaleService.getScaledValue(
               reverseMoveLine,
@@ -255,23 +245,20 @@ public class MoveReverseServiceBankPaymentImpl extends MoveReverseServiceImpl {
 
   protected void fillBankReconciledAmount(Move move) {
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (Optional.of(moveLine)
-              .map(MoveLine::getAccount)
-              .map(Account::getAccountType)
-              .map(
-                  accountType ->
-                      AccountTypeRepository.TYPE_CASH.equals(accountType.getTechnicalTypeSelect()))
-              .orElse(false)
-          && (bankReconciliationLineRepository
-                  .all()
-                  .filter("self.moveLine.id = ?", moveLine.getId())
-                  .count()
-              > 0)) {
-
+      if (hasCashAccountType(moveLine)) {
         BigDecimal amount =
             currencyScaleService.getScaledValue(moveLine, moveLine.getCurrencyAmount().abs());
         moveLine.setBankReconciledAmount(amount);
       }
     }
+  }
+
+  protected Boolean hasCashAccountType(MoveLine moveLine) {
+    return Optional.of(moveLine)
+        .map(MoveLine::getAccount)
+        .map(Account::getAccountType)
+        .map(AccountType::getTechnicalTypeSelect)
+        .map(AccountTypeRepository.TYPE_CASH::equals)
+        .orElse(false);
   }
 }
