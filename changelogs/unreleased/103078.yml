@@ -1,0 +1,3 @@
+---
+title : "Purchase order: fixed received quantities after merging supplier arrivals."
+module: axelor-supplychain

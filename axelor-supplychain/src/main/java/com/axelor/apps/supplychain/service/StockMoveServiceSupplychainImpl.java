@@ -196,8 +196,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     } else if (ObjectUtils.notEmpty(stockMove.getPurchaseOrderSet())) {
       PurchaseOrderStockService purchaseOrderStockService =
           Beans.get(PurchaseOrderStockService.class);
+      updatePurchaseOrderLines(stockMove, !stockMove.getIsReversion());
       for (PurchaseOrder purchaseOrder : stockMove.getPurchaseOrderSet()) {
-        updatePurchaseOrderLines(stockMove, !stockMove.getIsReversion());
         // Update linked purchaseOrder receipt state depending on BackOrder's existence
         if (newStockSeq != null) {
           purchaseOrder.setReceiptState(PurchaseOrderRepository.STATE_PARTIALLY_RECEIVED);
@@ -392,9 +392,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     Set<PurchaseOrder> poSet = stockMove.getPurchaseOrderSet();
     PurchaseOrderStockService purchaseOrderStockService =
         Beans.get(PurchaseOrderStockService.class);
+    updatePurchaseOrderLines(stockMove, stockMove.getIsReversion());
     for (PurchaseOrder po : poSet) {
 
-      updatePurchaseOrderLines(stockMove, stockMove.getIsReversion());
       purchaseOrderStockService.updateReceiptState(po);
       if (appSupplyChainService.getAppSupplychain().getTerminatePurchaseOrderOnReceipt()) {
         finishOrValidatePurchaseOrderStatus(po);
