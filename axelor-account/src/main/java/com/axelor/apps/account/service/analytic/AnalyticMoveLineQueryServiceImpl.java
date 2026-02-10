@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
 import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticAxisRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -52,6 +53,7 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
   protected AnalyticAxisRepository analyticAxisRepo;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected AnalyticMoveLineQueryPercentageService analyticMoveLineQueryPercentageService;
+  protected AnalyticAccountRepository analyticAccountRepository;
 
   @Inject
   public AnalyticMoveLineQueryServiceImpl(
@@ -60,13 +62,15 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
       AnalyticMoveLineQueryRepository analyticMoveLineQueryRepository,
       AnalyticAxisRepository analyticAxisRepo,
       AnalyticMoveLineRepository analyticMoveLineRepository,
-      AnalyticMoveLineQueryPercentageService analyticMoveLineQueryPercentageService) {
+      AnalyticMoveLineQueryPercentageService analyticMoveLineQueryPercentageService,
+      AnalyticAccountRepository analyticAccountRepository) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.appBaseService = appBaseService;
     this.analyticMoveLineQueryRepository = analyticMoveLineQueryRepository;
     this.analyticAxisRepo = analyticAxisRepo;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.analyticMoveLineQueryPercentageService = analyticMoveLineQueryPercentageService;
+    this.analyticAccountRepository = analyticAccountRepository;
   }
 
   @Override
@@ -255,18 +259,29 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
     return newAnalyticaMoveLines;
   }
 
-  @Transactional
   protected Set<AnalyticMoveLine> createAnalyticMoveLine(
       AnalyticAccount analyticAccount,
       List<AnalyticMoveLine> analyticMoveLines,
       BigDecimal percentage) {
 
-    return analyticMoveLines.stream()
-        .map(
-            analyticMoveLine ->
-                analyticMoveLineService.generateAnalyticMoveLine(
-                    analyticMoveLine, analyticAccount, percentage))
-        .collect(Collectors.toSet());
+    Set<AnalyticMoveLine> analyticMoveLineSet = new HashSet<>();
+    if (ObjectUtils.isEmpty(analyticMoveLines)) {
+      return analyticMoveLineSet;
+    }
+
+    if (analyticAccount != null && analyticAccount.getId() != null) {
+      analyticAccount = analyticAccountRepository.find(analyticAccount.getId());
+    }
+
+    for (AnalyticMoveLine analyticMoveLine : analyticMoveLines) {
+      analyticMoveLine = analyticMoveLineRepository.find(analyticMoveLine.getId());
+      AnalyticMoveLine newAnalyticMoveLine =
+          analyticMoveLineService.generateAnalyticMoveLine(
+              analyticMoveLine, analyticAccount, percentage);
+      analyticMoveLineSet.add(newAnalyticMoveLine);
+    }
+
+    return analyticMoveLineSet;
   }
 
   @Override
