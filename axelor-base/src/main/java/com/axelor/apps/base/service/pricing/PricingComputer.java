@@ -226,8 +226,6 @@ public class PricingComputer extends AbstractObservablePricing {
       if (resultPricingRule != null) {
         MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
         Object result = scriptHelper.eval(resultPricingRule.getFormula());
-        notifyResultPricingRule(resultPricingRule, result);
-        notifyFieldToPopulate(fieldToPopulate);
         String typeName = getTypeNameFieldToPopulate(resultPricingRule);
         if (fieldToPopulate != null) {
           if (typeName.equals("BigDecimal")) {
@@ -242,6 +240,8 @@ public class PricingComputer extends AbstractObservablePricing {
             putInContext(fieldToPopulate.getName(), result);
           }
         }
+        notifyResultPricingRule(resultPricingRule, result);
+        notifyFieldToPopulate(fieldToPopulate);
         if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
           LOG.debug(
               "Adding result temp variable {} in context", resultPricingRule.getTempVarName());
