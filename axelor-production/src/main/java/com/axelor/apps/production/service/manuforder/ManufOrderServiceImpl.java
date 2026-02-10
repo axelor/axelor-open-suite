@@ -903,7 +903,9 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       return defaultBomCache.get(productId);
     }
     BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(product, null);
-    defaultBomCache.put(productId, defaultBOM);
+    if (defaultBOM != null) {
+      defaultBomCache.put(productId, defaultBOM);
+    }
     return defaultBOM;
   }
 
