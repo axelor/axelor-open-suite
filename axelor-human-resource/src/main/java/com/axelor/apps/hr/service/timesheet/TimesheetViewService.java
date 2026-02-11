@@ -18,26 +18,21 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
-import com.axelor.apps.hr.db.Timesheet;
-import com.axelor.apps.project.db.Project;
-import com.axelor.rpc.Context;
-import java.math.BigDecimal;
-import java.time.LocalDate;
+import com.axelor.apps.hr.db.Employee;
+import com.axelor.auth.db.User;
+import java.util.Map;
 
-public interface TimesheetLineGenerationService {
+public interface TimesheetViewService {
 
-  Timesheet generateLines(Context context, Timesheet timesheet) throws AxelorException;
+  Map<String, Object> buildEditTimesheetView(User user);
 
-  Timesheet generateLines(
-      Timesheet timesheet,
-      LocalDate fromGenerationDate,
-      LocalDate toGenerationDate,
-      BigDecimal logTime,
-      Project project,
-      Product product)
-      throws AxelorException;
+  Map<String, Object> buildAllTimesheetView(User user, Employee employee);
 
-  void checkEmptyPeriod(Timesheet timesheet) throws AxelorException;
+  Map<String, Object> buildEditSelectedTimesheetView(Long timesheetId);
+
+  Map<String, Object> buildHistoricTimesheetView(User user, Employee employee);
+
+  Map<String, Object> buildHistoricTimesheetLineView(User user, Employee employee);
+
+  Map<String, Object> buildSubordinateTimesheetsView(User user);
 }

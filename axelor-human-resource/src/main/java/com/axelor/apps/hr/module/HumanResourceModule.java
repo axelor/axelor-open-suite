@@ -288,6 +288,8 @@ import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetAttrsService;
 import com.axelor.apps.hr.service.timesheet.TimesheetAttrsServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetBusinessService;
+import com.axelor.apps.hr.service.timesheet.TimesheetBusinessServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseService;
 import com.axelor.apps.hr.service.timesheet.TimesheetCheckResponseServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetComputeNameService;
@@ -332,6 +334,8 @@ import com.axelor.apps.hr.service.timesheet.TimesheetReportService;
 import com.axelor.apps.hr.service.timesheet.TimesheetReportServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.timesheet.TimesheetServiceImpl;
+import com.axelor.apps.hr.service.timesheet.TimesheetViewService;
+import com.axelor.apps.hr.service.timesheet.TimesheetViewServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowCheckServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
@@ -537,5 +541,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(KilometricOsmService.class).to(KilometricOsmServiceImpl.class);
     bind(KilometricResponseToolService.class).to(KilometricResponseToolServiceImpl.class);
     bind(ExpenseViewService.class).to(ExpenseViewServiceImpl.class);
+    bind(TimesheetViewService.class).to(TimesheetViewServiceImpl.class);
+    bind(TimesheetBusinessService.class).to(TimesheetBusinessServiceImpl.class);
   }
 }

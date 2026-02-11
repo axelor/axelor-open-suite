@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.DayPlanning;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
@@ -29,11 +30,16 @@ import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.leave.LeaveRequestService;
 import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
+import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.repo.ProjectRepository;
+import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
+import com.axelor.rpc.Context;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -46,17 +52,67 @@ public class TimesheetLineGenerationServiceImpl implements TimesheetLineGenerati
   protected PublicHolidayHrService publicHolidayHrService;
   protected TimesheetLineService timesheetLineService;
   protected TimesheetLineCreateService timesheetLineCreateService;
+  protected ProjectRepository projectRepository;
+  protected ProductRepository productRepository;
+  protected UserHrService userHrService;
 
   @Inject
   public TimesheetLineGenerationServiceImpl(
       LeaveRequestService leaveRequestService,
       PublicHolidayHrService publicHolidayHrService,
       TimesheetLineService timesheetLineService,
-      TimesheetLineCreateService timesheetLineCreateService) {
+      TimesheetLineCreateService timesheetLineCreateService,
+      ProjectRepository projectRepository,
+      ProductRepository productRepository,
+      UserHrService userHrService) {
     this.leaveRequestService = leaveRequestService;
     this.publicHolidayHrService = publicHolidayHrService;
     this.timesheetLineService = timesheetLineService;
     this.timesheetLineCreateService = timesheetLineCreateService;
+    this.projectRepository = projectRepository;
+    this.productRepository = productRepository;
+    this.userHrService = userHrService;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public Timesheet generateLines(Context context, Timesheet timesheet) throws AxelorException {
+    if (timesheet.getEmployee() == null) {
+      throw new AxelorException(
+          timesheet,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
+          AuthUtils.getUser().getName());
+    }
+    LocalDate fromGenerationDate = null;
+    if (context.get("fromGenerationDate") != null) {
+      fromGenerationDate =
+          LocalDate.parse(context.get("fromGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
+    }
+    LocalDate toGenerationDate = null;
+    if (context.get("toGenerationDate") != null) {
+      toGenerationDate =
+          LocalDate.parse(context.get("toGenerationDate").toString(), DateTimeFormatter.ISO_DATE);
+    }
+    BigDecimal logTime = BigDecimal.ZERO;
+    if (context.get("logTime") != null) {
+      logTime = new BigDecimal(context.get("logTime").toString());
+    }
+    Map<String, Object> projectContext = (Map<String, Object>) context.get("project");
+    Project project = null;
+    if (projectContext != null) {
+      project = projectRepository.find(((Integer) projectContext.get("id")).longValue());
+    }
+    Map<String, Object> productContext = (Map<String, Object>) context.get("product");
+    Product product = null;
+    if (productContext != null) {
+      product = productRepository.find(((Integer) productContext.get("id")).longValue());
+    }
+    if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
+      product = userHrService.getTimesheetProduct(timesheet.getEmployee(), null);
+    }
+    return generateLines(
+        timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
   }
 
   @Override
