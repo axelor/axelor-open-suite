@@ -1,3 +1,3 @@
 ---
-title: "Operation order: replaced the mention of DurationTool with DurationHelper when computing planned duration."
+title: "Operation order: fixed planned duration computation when changing planned end date."
 module: axelor-production
