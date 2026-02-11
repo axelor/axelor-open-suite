@@ -528,7 +528,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
 
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
-    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
     StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
 
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
@@ -593,8 +592,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateRealQty(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException {
-    ManufOrderStockMoveService manufOrderStockMoveService =
-        Beans.get(ManufOrderStockMoveService.class);
     if (!manufOrder.getIsConsProOnOperation()) {
       manufOrderCreateStockMoveLineService.createNewConsumedStockMoveLineList(
           manufOrder, qtyToUpdate);
@@ -711,13 +708,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
         consumedQty =
             consumedQty.add(
-                Beans.get(UnitConversionService.class)
-                    .convert(
-                        stockMoveLine.getUnit(),
-                        prodProduct.getUnit(),
-                        stockMoveLine.getQty(),
-                        stockMoveLine.getQty().scale(),
-                        product));
+                unitConversionService.convert(
+                    stockMoveLine.getUnit(),
+                    prodProduct.getUnit(),
+                    stockMoveLine.getQty(),
+                    stockMoveLine.getQty().scale(),
+                    product));
       } else {
         consumedQty = consumedQty.add(stockMoveLine.getQty());
       }
@@ -853,8 +849,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           bomList.add(Pair.of(bom, qtyReq));
         }
       } else {
-        BillOfMaterial defaultBOM =
-            Beans.get(BillOfMaterialService.class).getDefaultBOM(product, null);
+        BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(product, null);
 
         if ((product.getProductSubTypeSelect()
                     == ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT
@@ -957,13 +952,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         qty = qty.add(manufOrder.getQty());
       } else {
         BigDecimal qtyConverted =
-            Beans.get(UnitConversionService.class)
-                .convert(
-                    manufOrder.getUnit(),
-                    unit,
-                    manufOrder.getQty(),
-                    appBaseService.getNbDecimalDigitForQty(),
-                    null);
+            unitConversionService.convert(
+                manufOrder.getUnit(),
+                unit,
+                manufOrder.getQty(),
+                appBaseService.getNbDecimalDigitForQty(),
+                null);
         qty = qty.add(qtyConverted);
       }
       if (manufOrder.getNote() != null && !manufOrder.getNote().equals("")) {
