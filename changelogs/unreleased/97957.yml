@@ -1,0 +1,3 @@
+---
+title: "Mass entry: fixed the issue where mass entry move status is not updated after validation."
+module: axelor-account
