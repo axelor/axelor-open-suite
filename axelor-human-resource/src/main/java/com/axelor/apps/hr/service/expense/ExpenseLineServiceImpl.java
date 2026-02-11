@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
@@ -36,6 +37,8 @@ import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -161,12 +164,17 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
       return "self.project.projectStatus.isCompleted = false AND self.project.id = "
           + project.getId();
     }
-
+    Long userId =
+        Optional.ofNullable(expenseLine.getEmployee())
+            .map(Employee::getUser)
+            .filter(Objects::nonNull)
+            .map(User::getId)
+            .orElse(0l);
     List<Project> projectList =
         projectRepository
             .all()
             .filter("self.projectStatus.isCompleted = false AND :userId IN self.membersUserSet.id")
-            .bind("userId", expenseLine.getEmployee().getUser().getId())
+            .bind("userId", userId)
             .fetch();
 
     return "self.project.projectStatus.isCompleted = false AND self.project.id IN ("
