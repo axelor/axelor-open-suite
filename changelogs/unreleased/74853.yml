@@ -1,0 +1,3 @@
+---
+title : "ManufOrderService: removed useless beans.get"
+module: axelor-production
