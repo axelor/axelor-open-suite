@@ -348,7 +348,7 @@
       expr="eval: plannedEndDateT?.minusSeconds(plannedDuration)"
       if="plannedStartDateT != null &amp;&amp; plannedEndDateT != null &amp;&amp; plannedEndDateT.isBefore(plannedStartDateT)"/>
     <field name="plannedDuration"
-      expr="eval: com.axelor.apps.tool.date.DurationTool.getSecondsDuration(com.axelor.apps.tool.date.DurationTool.computeDuration(plannedStartDateT, plannedEndDateT))"
+      expr="eval: com.axelor.utils.helpers.date.DurationHelper.getSecondsDuration(com.axelor.utils.helpers.date.DurationHelper.computeDuration(plannedStartDateT, plannedEndDateT))"
       if="plannedStartDateT != null &amp;&amp; plannedEndDateT != null &amp;&amp; plannedEndDateT.isAfter(plannedStartDateT)"/>
   </action-record>
 
