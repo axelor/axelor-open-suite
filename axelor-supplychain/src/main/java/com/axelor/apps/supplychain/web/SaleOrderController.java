@@ -182,9 +182,14 @@ public class SaleOrderController {
 
   public void generatePurchaseOrdersFromSelectedSOLines(
       ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder;
+    if (request.getContext().getContextClass().equals(SaleOrder.class)) {
+      saleOrder = request.getContext().asType(SaleOrder.class);
+    } else {
+      Long saleOrderId = Long.valueOf(request.getContext().get("saleOrderId").toString());
+      saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderId);
+    }
 
-    Long saleOrderId = Long.valueOf(request.getContext().get("saleOrderId").toString());
-    SaleOrder saleOrder = Beans.get(SaleOrderRepository.class).find(saleOrderId);
     List<SaleOrderLine> saleOrderLines =
         saleOrder.getSaleOrderLineList().stream()
             .filter(Model::isSelected)
