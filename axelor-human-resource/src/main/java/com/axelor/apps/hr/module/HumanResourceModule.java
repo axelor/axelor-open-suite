@@ -174,6 +174,8 @@ import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateServiceImpl;
+import com.axelor.apps.hr.service.expense.ExpenseViewService;
+import com.axelor.apps.hr.service.expense.ExpenseViewServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.service.expense.ExpenseWorkflowServiceImpl;
 import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineCheckResponseService;
@@ -531,5 +533,6 @@ public class HumanResourceModule extends AxelorModule {
     bind(KilometricGoogleService.class).to(KilometricGoogleServiceImpl.class);
     bind(KilometricOsmService.class).to(KilometricOsmServiceImpl.class);
     bind(KilometricResponseToolService.class).to(KilometricResponseToolServiceImpl.class);
+    bind(ExpenseViewService.class).to(ExpenseViewServiceImpl.class);
   }
 }

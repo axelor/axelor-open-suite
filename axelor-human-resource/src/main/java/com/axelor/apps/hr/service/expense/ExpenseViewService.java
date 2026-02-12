@@ -19,25 +19,28 @@
 package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.hr.db.Employee;
-import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
-import java.time.LocalDate;
+import com.axelor.auth.db.User;
+import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
+import com.axelor.rpc.ActionRequest;
 import java.util.List;
+import java.util.Map;
 
-public interface ExpenseKilometricService {
-  public Product getKilometricExpenseProduct(Expense expense) throws AxelorException;
+public interface ExpenseViewService {
 
-  public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(
-      ExpenseLine expenseLine) throws AxelorException;
+  ActionViewBuilder buildEditExpenseView(User user);
 
-  public List<KilometricAllowParam> getListOfKilometricAllowParamVehicleFilter(
-      ExpenseLine expenseLine, Expense expense) throws AxelorException;
+  ActionViewBuilder buildEditSelectedExpenseView(Long expenseId);
 
-  List<KilometricAllowParam> getKilometricAllowParams(Employee employee, LocalDate expenseDate);
+  ActionViewBuilder buildHistoricExpenseView(User user, Employee employee);
 
-  public KilometricAllowParam updateKAPOfKilometricAllowance(
-      ExpenseLine expenseLine, List<KilometricAllowParam> kilometricAllowParamList);
+  ActionViewBuilder buildSubordinateExpensesView(User user, Company activeCompany);
+
+  void setExpense(ActionRequest request, ExpenseLine expenseLine);
+
+  List<KilometricAllowParam> domainOnSelectOnKAP(
+      ExpenseLine expenseLine, Map<String, Map<String, Object>> attrsMap) throws AxelorException;
 }

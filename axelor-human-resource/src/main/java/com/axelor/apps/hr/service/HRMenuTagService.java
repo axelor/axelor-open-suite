@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.service;
 
 import com.axelor.apps.hr.db.Employee;
+import com.axelor.apps.hr.db.Expense;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.JPA;
@@ -56,5 +57,11 @@ public class HRMenuTagService {
               .bind("_statusSelect", status)
               .count());
     }
+  }
+
+  public String computeExpenseVentilateMenuTag() {
+    Long total =
+        JPA.all(Expense.class).filter("self.statusSelect = 3 AND self.ventilated = false").count();
+    return String.format("%s", total);
   }
 }
