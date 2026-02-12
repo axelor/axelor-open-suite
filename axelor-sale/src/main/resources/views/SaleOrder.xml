@@ -217,7 +217,7 @@
         if="__config__.app.getApp('base')?.enableTradingNamesManagement" title="Trading name"
         type="many-to-one" form-view="trading-name-form" grid-view="trading-name-grid"
         target="com.axelor.apps.base.db.TradingName" colOffset="3" colSpan="6" width="200px"
-        showIf="tradingNameToCheck" domain=":company MEMBER OF self.companySet"
+        showIf="tradingNameToCheck" domain="self.company = :company"
         requiredIf="company.tradingNameSet != null &amp;&amp; company.tradingNameSet.length != 0"/>
       <button name="confirmBtn" title="Confirmer"
         onClick="action-sale-order-method-merge-from-pop-up" colSpan="12" width="200px"

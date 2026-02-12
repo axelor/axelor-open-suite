@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed error when selecting trading name on merge sale order view."
+module: axelor-sale
