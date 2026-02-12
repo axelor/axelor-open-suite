@@ -29,6 +29,7 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectTaskProgressUpdateServiceImpl implements ProjectTaskProgressUpdateService {
 
@@ -79,11 +80,32 @@ public class ProjectTaskProgressUpdateServiceImpl implements ProjectTaskProgress
           childProjectTasks.stream()
               .map(ProjectTask::getBudgetedTime)
               .reduce(BigDecimal.ZERO, BigDecimal::add);
-      BigDecimal averageProgress =
-          sumPlannedTime.compareTo(BigDecimal.ZERO) != 0
-              ? sumProgressTimesPlanifiedTime.divide(
-                  sumPlannedTime, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP)
-              : BigDecimal.ZERO;
+
+      BigDecimal averageProgress = BigDecimal.ZERO;
+
+      if (sumPlannedTime.compareTo(BigDecimal.ZERO) != 0) {
+        averageProgress =
+            sumProgressTimesPlanifiedTime.divide(
+                sumPlannedTime, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      } else {
+        childProjectTasks =
+            childProjectTasks.stream()
+                .filter(task -> task.getProgress().compareTo(BigDecimal.ZERO) != 0)
+                .collect(Collectors.toList());
+
+        if (CollectionUtils.isNotEmpty(childProjectTasks)) {
+          BigDecimal sumProgress =
+              childProjectTasks.stream()
+                  .map(ProjectTask::getProgress)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add);
+          averageProgress =
+              sumProgress.divide(
+                  BigDecimal.valueOf(childProjectTasks.size()),
+                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                  RoundingMode.HALF_UP);
+        }
+      }
+
       parentTask.setProgress(averageProgress);
       updateParentsProgress(parentTask, counter + 1);
     }
