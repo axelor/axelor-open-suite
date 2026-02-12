@@ -237,14 +237,14 @@
   </action-view>
 
   <menuitem title="Mass invoicing" name="sc-root-sale-mass-invoicing" parent="sc-root-sale"
-    order="1200"/>
+    order="605"/>
 
   <menuitem name="sc-root-sale-order-lines-to-invoice"
-    title="Mass sale order line invoicing" parent="sc-root-sale-mass-invoicing" order="100"
+    title="Mass Sale Order Line Invoicing" parent="sc-root-sale-mass-invoicing" order="100"
     action="sc.root.sale.order.lines.to.invoice"/>
 
   <action-view name="sc.root.sale.order.lines.to.invoice"
-    title="Mass sale order line invoicing" model="com.axelor.apps.sale.db.SaleOrderLine">
+    title="Mass Sale Order Line Invoicing" model="com.axelor.apps.sale.db.SaleOrderLine">
     <view type="grid" name="sale-order-line-to-invoice-grid"/>
     <view type="form" name="sale-order-line-to-invoice-form"/>
     <domain>
