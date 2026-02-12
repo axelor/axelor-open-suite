@@ -274,7 +274,7 @@
 				               AND move.status_select in (2,3)
 				               AND line.product = :id
 				               AND loc.id = location.id
-				               AND loc.type_select = 1
+				               AND loc.type_select IN (1,2)
 				           ) AS qty
 				    FROM stock_stock_location_line loc_line
 				    JOIN stock_stock_location location ON loc_line.stock_location = location.id
@@ -319,7 +319,7 @@
 				    WHERE line.product = :id
 				      AND move.estimated_date > DATE(:todayDate)
 				      AND move.real_date IS NULL
-				      AND location.type_select = 1
+				      AND location.type_select IN (1,2)
 				      AND move.status_select IN (2, 3)
 				    GROUP BY move.estimated_date, location.name
 				  )
@@ -402,7 +402,7 @@
 			  WHERE ln.product = :id
 			    AND mv.real_date <= DATE(:fromDate)
 			    AND mv.status_select IN (2, 3)
-			    AND loc.type_select = 1
+			    AND loc.type_select IN (1,2)
 			  GROUP BY loc.name
 
 			  UNION ALL
@@ -443,7 +443,7 @@
 			  WHERE ln.product = :id
 			    AND mv.real_date > DATE(:fromDate)
 			    AND mv.real_date <= DATE(:toDate)
-			    AND loc.type_select = 1
+			    AND loc.type_select IN (1,2)
 			     AND mv.status_select IN (2, 3)
 			) AS movs
 			ON movs.real_date = dates.d
