@@ -188,6 +188,8 @@ import com.axelor.apps.hr.service.extra.hours.ExtraHoursDomainService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursDomainServiceImpl;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursServiceImpl;
+import com.axelor.apps.hr.service.extra.hours.ExtraHoursViewService;
+import com.axelor.apps.hr.service.extra.hours.ExtraHoursViewServiceImpl;
 import com.axelor.apps.hr.service.leave.IncrementLeaveService;
 import com.axelor.apps.hr.service.leave.IncrementLeaveServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveExportService;
@@ -364,6 +366,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(MailBatchService.class).to(MailBatchServiceHR.class);
     bind(AccountConfigService.class).to(AccountConfigHRService.class);
     bind(ExtraHoursService.class).to(ExtraHoursServiceImpl.class);
+    bind(ExtraHoursViewService.class).to(ExtraHoursViewServiceImpl.class);
     bind(LunchVoucherMgtService.class).to(LunchVoucherMgtServiceImpl.class);
     bind(LunchVoucherMgtLineService.class).to(LunchVoucherMgtLineServiceImpl.class);
     bind(AppHumanResourceService.class).to(AppHumanResourceServiceImpl.class);
