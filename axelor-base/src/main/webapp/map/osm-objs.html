@@ -1,0 +1,111 @@
+<!--
+
+    Axelor Business Solutions
+
+    Copyright (C) 2012-2014 Axelor (<http://axelor.com>).
+
+    This program is free software: you can redistribute it and/or  modify
+    it under the terms of the GNU Affero General Public License, version 3,
+    as published by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<!DOCTYPE html>
+<html>
+<head>
+<title>Simple Leaflet Map</title>
+<meta charset="utf-8" />
+<link rel="stylesheet" href="../leaflet/leaflet.css" />
+<link href="../lib/font-awesome/css/font-awesome.css" rel="stylesheet" />
+<script type="text/javascript" src="js/apphome.js"></script>
+<script src="../leaflet/leaflet.js"></script>
+<script src="../lib/jquery.ui/js/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+
+	<div id="map" style="width: 100%; height: 100%; position: fixed;"></div>
+
+	<script>
+		function getQueryVariable(variable) {
+			var query = window.location.search.substring(1);
+			var vars = query.split("&");
+			for (var i = 0; i < vars.length; i++) {
+				var pair = vars[i].split("=");
+				if (pair[0] == variable) {
+					return pair[1];
+				}
+			}
+			return (false);
+		}
+	</script>
+
+	<script>
+		var map = L.map('map');
+		mapLink = '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+		L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+			attribution : '&copy; ' + mapLink + ' Contributors',
+			maxZoom : 18,
+		}).addTo(map);
+
+		var bounds = new L.LatLngBounds();
+		var object = getQueryVariable("object");
+
+		var url = getAppHome() + "/ws/map/" + object;
+		var id = getQueryVariable("id");
+		if (id) {
+			url += "/" + id;
+		}
+		var requestP = $.ajax({
+			type : "GET",
+			contentType : 'application/json',
+			url : url
+		});
+
+		requestP
+				.done(function(result) {
+					if (result.status == 0) {
+						for (var i = 0; i < result.data.length; i++) {
+							var d = result.data[i];
+							var title = d['fullName'] ? d['fullName'].trim()
+									: '';
+							var address = d['address'] ? d['address'] + '<br/>'
+									: '';
+							var fixedPhone = d['fixedPhone'] ? "<i class='fa fa-phone'></i>&nbsp;"
+									+ d['fixedPhone'] + '<br/>'
+									: '';
+							var emailAddress = d['emailAddress'] ? "<i class='fa fa-envelope'></i>&nbsp;"
+									+ d['emailAddress']
+									: '';
+							var content = "<b>" + title + "</b><br/>" + address
+									+ fixedPhone + emailAddress;
+							var lat = d['latit'];
+							var lon = d['longit'];
+							if (lat != null && lon != null) {
+								marker = new L.marker([ lat, lon ]).bindPopup(
+										content).addTo(map);
+								bounds.extend(marker.getLatLng());
+							}
+						}
+					}
+				});
+
+		requestP.fail(function(jqXHR, textStatus) {
+			alert("Request failed: " + textStatus);
+		});
+		requestP.complete(function() {
+			if (bounds.isValid()) {
+				map.fitBounds(bounds);
+			} else {
+				map.setView([ 44.907852, 7.673789 ], 16);
+			}
+		});
+	</script>
+</body>
+</html>
