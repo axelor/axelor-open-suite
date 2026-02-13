@@ -30,6 +30,7 @@ import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
+import com.axelor.utils.db.Wizard;
 import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import java.util.Arrays;
@@ -114,15 +115,15 @@ public class PurchaseOrderFromSaleOrderLinesServiceImpl
   public Map<String, Object> selectSupplierPartner(
       SaleOrder saleOrder, List<SaleOrderLine> saleOrderLines, Partner supplierPartner) {
     return ActionView.define(I18n.get("SaleOrder"))
-        .model(SaleOrder.class.getName())
+        .model(Wizard.class.getName())
         .add("form", "sale-order-generate-po-select-supplierpartner-form")
         .param("popup", "true")
         .param("show-toolbar", "false")
         .param("show-confirm", "false")
         .param("popup-save", "false")
         .param("forceEdit", "true")
-        .context("_showRecord", ((saleOrder != null) ? String.valueOf(saleOrder.getId()) : 0L))
         .context("supplierPartnerId", ((supplierPartner != null) ? supplierPartner.getId() : 0L))
+        .context("saleOrderId", saleOrder.getId())
         .context(
             "saleOrderLineIdSelected",
             ((saleOrderLines != null)
