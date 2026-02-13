@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixes potential permissions issues when generating Purchase order from Sale order."
+module: axelor-supplychain
