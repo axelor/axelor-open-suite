@@ -86,6 +86,25 @@ public class InvoiceTermController {
     }
   }
 
+  public void computeAmountPaid(ActionRequest request, ActionResponse response) {
+    try {
+      InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+      if (invoiceTerm == null) {
+        return;
+      }
+
+      BigDecimal amountPaid = invoiceTerm.getPaymentAmount();
+      if (invoiceTerm.getApplyFinancialDiscount()
+          && invoiceTerm.getIsSelectedOnPaymentSession()
+          && invoiceTerm.getApplyFinancialDiscountOnPaymentSession()) {
+        amountPaid = amountPaid.subtract(invoiceTerm.getFinancialDiscountAmount());
+      }
+      response.setValue("amountPaid", amountPaid);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void computeCustomizedPercentage(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
