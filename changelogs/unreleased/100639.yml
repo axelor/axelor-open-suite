@@ -1,0 +1,3 @@
+---
+title: "Invoice term: fixed the calculation of paid amount when financial discount is not applied in payment session."
+module: axelor-account
