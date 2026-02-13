@@ -1,0 +1,3 @@
+---
+title: "Bill of material: added a new rule not to select the same product in the component list as the parent product in the BOM."
+module: axelor-production
