@@ -28,7 +28,7 @@ import java.util.List;
 public interface AccountingReportDas2Service {
 
   String printPreparatoryProcessDeclaration(AccountingReport accountingReport)
-      throws AxelorException;
+      throws AxelorException, IOException;
 
   MetaFile exportN4DSFile(AccountingReport accountingReport) throws AxelorException, IOException;
 
