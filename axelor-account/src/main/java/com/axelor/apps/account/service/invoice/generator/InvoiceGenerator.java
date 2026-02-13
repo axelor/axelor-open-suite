@@ -213,6 +213,10 @@ public abstract class InvoiceGenerator {
     if (accountingSituation != null) {
       invoice.setInvoiceAutomaticMail(accountingSituation.getInvoiceAutomaticMail());
       invoice.setInvoiceMessageTemplate(accountingSituation.getInvoiceMessageTemplate());
+      invoice.setInvoiceAutomaticMailOnValidate(
+          accountingSituation.getInvoiceAutomaticMailOnValidate());
+      invoice.setInvoiceMessageTemplateOnValidate(
+          accountingSituation.getInvoiceMessageTemplateOnValidate());
       invoice.setPfpValidatorUser(accountingSituation.getPfpValidatorUser());
     }
 
