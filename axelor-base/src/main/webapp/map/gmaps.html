@@ -1,0 +1,177 @@
+<!--
+
+    Axelor Business Solutions
+
+    Copyright (C) 2012-2018 Axelor (<http://axelor.com>).
+
+    This program is free software: you can redistribute it and/or  modify
+    it under the terms of the GNU Affero General Public License, version 3,
+    as published by the Free Software Foundation.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <link href="../lib/font-awesome/css/font-awesome.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="gmap-style.css" type="text/css" media="all" />
+
+
+    <!-- <script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?sensor=false&region=FR"> 
+    </script> -->
+    <script src="../lib/jquery.ui/js/jquery.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/your_location.js"></script>
+    <script type="text/javascript">
+	    var query = window.location.search.substring(1);
+		query = decodeURIComponent(query.replace(/\+/g, '%20'));
+
+	    function loadGoogleMapAPIJS(key, callback) {
+			if (!key) {
+				throw 'Google Maps API key is missing.';
+			}
+
+	        var url = 'https://maps.googleapis.com/maps/api/js?v=3&libraries=places&key=' + key;
+	        var script = document.createElement('script');
+	        script.src = url;
+	        script.onload = callback;
+	        document.body.appendChild(script);
+	    }
+	
+	    function getQueryVariable(variable) {
+	        var vars = query.split("&");
+	        for (var i = 0; i < vars.length; i++) {
+	            var pair = vars[i].split("=");
+	            if (pair[0] == variable) {
+	                return pair[1];
+	            }
+	        }
+	        return (false);
+	    }
+	    
+	    function initialize() {
+        var mapElement = document.getElementById('map');
+        var sbElement = document.getElementById('pac-input');
+        var loadingImage = document.getElementById('loadingImage');
+        mapElement.style.visibility = "hidden";
+        loadingImage.style.display = "inline";
+
+			var x = getQueryVariable("x");
+			var y = getQueryVariable("y");
+			var z = getQueryVariable("z");
+			var id = getQueryVariable("id");
+			var title = getQueryVariable("title");
+		
+			var myLatlng = new google.maps.LatLng(x, y);
+		
+		
+		        var mapOptions = {
+		          center: myLatlng,
+		          zoom: parseInt(z),
+		          mapTypeId: google.maps.MapTypeId.ROADMAP
+		        };
+		        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+		
+			var marker = new google.maps.Marker({
+		      position: myLatlng,
+		      map: map,
+		      title: title || "Here!"
+			  });
+
+        // Create the search box and link it to the UI element.
+        var input = document.getElementById('pac-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_RIGHT].push(input);
+
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed', function() {
+          searchBox.setBounds(map.getBounds());
+        });
+
+        google.maps.event.addListenerOnce(map, 'tilesloaded', function() {
+          mapElement.style.visibility = "visible";
+          sbElement.style.display = "inline";
+          sbElement.style.marginTop = "15px";
+          sbElement.style.marginRight = "15px";
+          loadingImage.style.display = "none";
+        });
+
+        var markers = [];
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function() {
+          var places = searchBox.getPlaces();
+
+          if (places.length == 0) {
+            return;
+          }
+
+          // Clear out the old markers.
+          markers.forEach(function(marker) {
+            marker.setMap(null);
+          });
+          markers = [];
+
+          // For each place, get the icon, name and location.
+          var bounds = new google.maps.LatLngBounds();
+          places.forEach(function(place) {
+            if (!place.geometry) {
+              console.log("Returned place contains no geometry");
+              return;
+            }
+            var icon = {
+              url: place.icon,
+              size: new google.maps.Size(71, 71),
+              origin: new google.maps.Point(0, 0),
+              anchor: new google.maps.Point(17, 34),
+              scaledSize: new google.maps.Size(25, 25)
+            };
+
+            // Create a marker for each place.
+            markers.push(new google.maps.Marker({
+              map: map,
+              icon: icon,
+              title: place.name,
+              position: place.geometry.location
+            }));
+
+            if (place.geometry.viewport) {
+              // Only geocodes have viewport.
+              bounds.union(place.geometry.viewport);
+            } else {
+              bounds.extend(place.geometry.location);
+            }
+          });
+          map.fitBounds(bounds);
+        });
+
+      addYourLocationButton(map);
+    }
+
+	    window.onload = function() {
+			try {
+				loadGoogleMapAPIJS(getQueryVariable('key'), function() {
+					initialize();
+				});
+			} catch (err) {
+				alert(err);
+			}
+	    }
+    </script>
+  </head>
+  <body>
+    <div id="loadingImage" align="center">
+      <h1><i class="fa fa-spinner fa-spin" id="image"></i></h1>
+    </div>
+    <input id="pac-input" class="controls" type="text" placeholder="Recherche"/>
+    <div id="map"></div>
+  </body>
+</html>
