@@ -23,6 +23,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.dms.DMSFileService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
@@ -45,7 +46,6 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.dms.db.DMSFile;
-import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
@@ -325,7 +325,10 @@ public class ProjectController {
       return;
     }
 
-    DMSFile home = Beans.get(DMSFileRepository.class).findHomeByRelated(project);
+    // If the home does not exist we create it as this ensures that after uploading
+    // a file, it should reuse the domain filter so it shows the uploaded file directly and
+    // does not require closing and opening back
+    DMSFile home = Beans.get(DMSFileService.class).findOrCreateHome(project);
 
     if (home != null) {
       response.setView(
@@ -341,7 +344,7 @@ public class ProjectController {
               .context("parentId", home.getId())
               .map());
     } else {
-      response.setAlert(I18n.get("There are no files for this project"));
+      response.setAlert("Could not create a home folder for this project");
     }
   }
 

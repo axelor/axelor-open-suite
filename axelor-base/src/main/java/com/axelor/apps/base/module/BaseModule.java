@@ -237,6 +237,8 @@ import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceServ
 import com.axelor.apps.base.service.connectormapper.ConnectorMapperReferenceServiceImpl;
 import com.axelor.apps.base.service.dayplanning.DayPlanningService;
 import com.axelor.apps.base.service.dayplanning.DayPlanningServiceImpl;
+import com.axelor.apps.base.service.dms.DMSFileService;
+import com.axelor.apps.base.service.dms.DMSFileServiceImpl;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorService;
 import com.axelor.apps.base.service.filesourceconnector.FileSourceConnectorServiceImpl;
 import com.axelor.apps.base.service.imports.ConvertDemoDataFileService;
@@ -573,6 +575,7 @@ public class BaseModule extends AxelorModule {
     bind(PushTokenRepository.class).to(PushTokenBaseRepository.class);
     bind(PushNotificationService.class).to(PushNotificationServiceImpl.class);
     bind(TimeOverlapValidator.class).to(TimeOverlapValidatorImpl.class);
+    bind(DMSFileService.class).to(DMSFileServiceImpl.class);
 
     bind(FirebaseInitializer.class).asEagerSingleton();
   }

@@ -1,9 +1,11 @@
 package com.axelor.apps.businessproject.service.taskreport;
 
+import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.TaskReportRepository;
+import com.axelor.apps.businessproject.service.statuschange.TaskStatusChangeService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
@@ -170,8 +172,15 @@ public class TaskReportServiceImpl implements TaskReportService {
             || !Objects.equals(line.getProduct(), task.getProduct());
 
     // save TSLine invalidation
-    if (!isNew && Boolean.TRUE.equals(line.getIsValidated()) && hasChanged) {
-      line.setIsValidated(false);
+    try {
+      if (!isNew && Boolean.TRUE.equals(line.getIsValidated()) && hasChanged) {
+        line.setIsValidated(false);
+        Beans.get(TaskStatusChangeService.class)
+            .revertTaskStatusOnTimesheetLineCancel(line.getProjectTask());
+        log.info("Updated Task Status to Feedback for updated TSLine.");
+      }
+    } catch (AxelorAlertException e) {
+      log.warn("Can not revert task Status from Done, to feedback from TMR", e.getMessage());
     }
 
     // Always update calculated / mutable fields

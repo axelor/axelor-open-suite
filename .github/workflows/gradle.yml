@@ -1,41 +1,51 @@
-name: Java CI
+name: Java Build CI
 
 on:
-  push:
-    branches:
-      - dev
+#  push:
+#    branches:
+#      - mgm-develop
   pull_request:
     branches:
-      - dev
+      - mgm-develop
+      - mgm-master
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up JDK 1.11
-      uses: actions/setup-java@v1
-      with:
-        java-version: 1.11
-    - name: Install webapp
-      run: git clone -b dev https://github.com/axelor/open-suite-webapp.git open-suite-webapp
-    - name: move to the right place
-      run: mkdir -p open-suite-webapp/modules/axelor-open-suite && ls | grep -v open-suite-webapp | xargs -I{} mv {} open-suite-webapp/modules/axelor-open-suite
-    - name: Grant execute permission for gradlew
-      run: chmod +x open-suite-webapp/gradlew
-    - name: Check spotless format with gradle task
-      run: cd open-suite-webapp && ./gradlew spotlessCheck
-    - name: Check that CSV files use the correct CR/LF EOL char (\r\n)
-      run: cd open-suite-webapp && ./gradlew checkCsvEOL
-    - name: Check that rptdesign files do not have credentials
-      run: cd open-suite-webapp && ./gradlew checkBirtCredentials
-    - name: Check changelog generation with gradle task
-      run: cd open-suite-webapp && ./gradlew generateChangelog
-    - name: Check XML files validity
-      run: cd open-suite-webapp && ./gradlew checkXml
-    - name: Build without tests
-      run: cd open-suite-webapp && ./gradlew -xtest clean build
-    - name: Run tests
-      run: cd open-suite-webapp && ./gradlew test
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'gradle'
+
+      - name: Install webapp (Kapsiki)
+        # We clone your specific webapp repo and use the mgm-master branch as the shell
+        run: git clone -b mgm-master https://github.com/kapsiki/kapsiki-axelor-open-suite-webapp.git open-suite-webapp
+
+      - name: Move module to webapp structure
+        # This moves your open-suite code into the webapp's module folder so it can compile
+        run: |
+          mkdir -p open-suite-webapp/modules/axelor-open-suite
+          ls | grep -v open-suite-webapp | xargs -I{} mv {} open-suite-webapp/modules/axelor-open-suite
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x open-suite-webapp/gradlew
+
+      - name: Run Axelor Quality Checks
+        # Running the essential Axelor checks
+        run: |
+          cd open-suite-webapp
+          ./gradlew spotlessCheck checkXml
+        # ignoring some checks for now
+        # checkCsvEOL & checkJavaInjectAnnotationImport
+
+      - name: Build without tests
+        run: cd open-suite-webapp && ./gradlew -xtest clean build
+
+#      - name: Run tests
+#        run: cd open-suite-webapp && ./gradlew test

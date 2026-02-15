@@ -67,7 +67,8 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
       if (hasMultipleUsers(projectTask)) {
         return createTemplateAndIndividualTask(projectTask);
       } else {
-        if (projectTask.getAssignedTo() == null) {
+        // We give priority to the Assigned Employees field if it's set
+        if (projectTask.getAssignedEmployees() != null) {
           // Using ifPresent for a cleaner, null-safe flow
           projectTask.getAssignedEmployees().stream()
               .filter(Objects::nonNull)

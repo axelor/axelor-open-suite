@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Custom DMS File Repository extending the standard AOP implementation. Adds hierarchical folder
@@ -26,6 +28,7 @@ import javax.inject.Inject;
  */
 public class CustomDMSFileRepository extends DMSFileRepository {
 
+  private static final Logger log = LoggerFactory.getLogger(CustomDMSFileRepository.class);
   // Self-injection for transactional proxy support
   @Inject private DMSFileRepository self;
 
@@ -43,6 +46,17 @@ public class CustomDMSFileRepository extends DMSFileRepository {
     }
 
     return saved;
+  }
+
+  /**
+   * Creates the DMSHome Directory for a model
+   *
+   * @param model Model
+   * @return Created Home Directory
+   */
+  @Transactional(rollbackOn = {Exception.class})
+  public DMSFile createHome(Model model) {
+    return findOrCreateHome(model);
   }
 
   /**
@@ -245,6 +259,7 @@ public class CustomDMSFileRepository extends DMSFileRepository {
   private DMSFile findOrCreateEntityHome(
       Model entity, DMSFolderConfiguration.FolderStructureConfig config) {
     DMSFile rootFolder = findOrCreateRootPath(config);
+    log.debug("Root folder {} ", rootFolder);
 
     DMSFile entityHome =
         all()
@@ -279,8 +294,14 @@ public class CustomDMSFileRepository extends DMSFileRepository {
       entityHome.setRelatedModel(config.entityClass);
       entityHome.setParent(rootFolder);
       entityHome.setIsDirectory(true);
-      // Use persist() to bypass save() to avoid using the logic of the parent save.
-      JpaRepository.of(DMSFile.class).persist(entityHome);
+
+      // Use persist() to bypass current save logic and parent save logic.
+      try {
+        JpaRepository.of(DMSFile.class).persist(entityHome);
+      } catch (Exception e) {
+        log.error("Failed to persist home directory", e);
+        throw e;
+      }
     }
 
     return entityHome;
