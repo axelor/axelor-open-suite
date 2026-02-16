@@ -215,7 +215,7 @@ public class StockLocationServiceImpl implements StockLocationService {
 
     String sql =
         "WITH RECURSIVE sublocs AS ("
-            + " SELECT id FROM stock_stock_location WHERE id = :rootId"
+            + " SELECT id FROM stock_stock_location WHERE id = :stockLocationId"
             + " UNION ALL"
             + " SELECT s.id FROM stock_stock_location s"
             + " JOIN sublocs ON s.parent_stock_location = sublocs.id"
@@ -225,18 +225,12 @@ public class StockLocationServiceImpl implements StockLocationService {
             + ") SELECT id FROM sublocs";
 
     List<Number> result =
-        JPA.em().createNativeQuery(sql).setParameter("rootId", stockLocationId).getResultList();
+        JPA.em()
+            .createNativeQuery(sql)
+            .setParameter("stockLocationId", stockLocationId)
+            .getResultList();
 
     return result.stream().map(Number::longValue).collect(Collectors.toList());
-  }
-
-  @Override
-  public List<Long> getAllLocationAndSubLocationId(
-      StockLocation stockLocation, boolean isVirtualInclude) {
-    if (stockLocation == null) {
-      return new ArrayList<>();
-    }
-    return getAllLocationAndSubLocation(stockLocation.getId(), isVirtualInclude);
   }
 
   @Override
