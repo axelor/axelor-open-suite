@@ -1532,6 +1532,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       throws AxelorException {
     BigDecimal availableQty = BigDecimal.ZERO;
     BigDecimal availableQtyForProduct = BigDecimal.ZERO;
+    Unit targetUnit = getStockUnit(stockMoveLine);
 
     TrackingNumberConfiguration trackingNumberConfiguration =
         (TrackingNumberConfiguration)
@@ -1551,7 +1552,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                   stockLocation, stockMoveLine.getProduct(), stockMoveLine.getTrackingNumber());
 
           if (stockLocationLine != null) {
-            availableQty = stockLocationLine.getCurrentQty();
+            availableQty =
+                computeAvailableQtyInMoveLineUnit(stockMoveLine, stockLocationLine, targetUnit);
           }
         }
 
@@ -1561,7 +1563,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                   stockLocation, stockMoveLine.getProduct());
 
           if (stockLocationLineForProduct != null) {
-            availableQtyForProduct = stockLocationLineForProduct.getCurrentQty();
+            availableQtyForProduct =
+                computeAvailableQtyInMoveLineUnit(
+                    stockMoveLine, stockLocationLineForProduct, targetUnit);
           }
         }
       } else {
@@ -1570,12 +1574,31 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                 stockLocation, stockMoveLine.getProduct());
 
         if (stockLocationLine != null) {
-          availableQty = stockLocationLine.getCurrentQty();
+          availableQty =
+              computeAvailableQtyInMoveLineUnit(stockMoveLine, stockLocationLine, targetUnit);
         }
       }
     }
     stockMoveLine.setAvailableQty(availableQty);
     stockMoveLine.setAvailableQtyForProduct(availableQtyForProduct);
+  }
+
+  protected BigDecimal computeAvailableQtyInMoveLineUnit(
+      StockMoveLine stockMoveLine, StockLocationLine stockLocationLine, Unit targetUnit)
+      throws AxelorException {
+    return convertQtyToMoveLineUnit(
+        stockMoveLine, stockLocationLine.getCurrentQty(), stockLocationLine.getUnit(), targetUnit);
+  }
+
+  protected BigDecimal convertQtyToMoveLineUnit(
+      StockMoveLine stockMoveLine, BigDecimal qty, Unit sourceUnit, Unit targetUnit)
+      throws AxelorException {
+    return unitConversionService.convertWithAutoFlushFalse(
+        sourceUnit,
+        targetUnit,
+        qty,
+        appBaseService.getNbDecimalDigitForQty(),
+        stockMoveLine.getProduct());
   }
 
   @Override
@@ -1613,9 +1636,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public Map<String, Object> setAvailableStatus(StockMoveLine stockMoveLine)
+  public Map<String, Object> setAvailableStatus(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
-    if (stockMoveLine.getStockMove() != null) {
+    if (stockMove != null) {
       this.updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
     }
     Map<String, Object> availabilityMap = new HashMap<>();
