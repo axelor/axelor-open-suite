@@ -353,7 +353,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     stockMoveLine.setUnitPriceUntaxed(product.getLastPurchasePrice());
     stockMove.addStockMoveLineListItem(stockMoveLine);
     stockMoveLineRepo.save(stockMoveLine);
-    stockMoveLineService.setAvailableStatus(stockMoveLine);
+    stockMoveLineService.setAvailableStatus(stockMoveLine, stockMove);
     stockMoveLineService.compute(stockMoveLine, stockMove);
     return stockMoveLineRepo.save(stockMoveLine);
   }
@@ -1492,7 +1492,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   public void setAvailableStatus(StockMove stockMove) throws AxelorException {
     List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
     for (StockMoveLine stockMoveLine : stockMoveLineList) {
-      stockMoveLineService.setAvailableStatus(stockMoveLine);
+      stockMoveLineService.setAvailableStatus(stockMoveLine, stockMove);
     }
   }
 

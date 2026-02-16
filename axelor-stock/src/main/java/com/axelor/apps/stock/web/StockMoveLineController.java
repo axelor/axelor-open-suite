@@ -269,7 +269,8 @@ public class StockMoveLineController {
   public void setAvailableStatus(ActionRequest request, ActionResponse response) {
     try {
       StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-      Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
+      StockMove stockMove = getStockMove(request, stockMoveLine);
+      Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine, stockMove);
       response.setValue("availableStatus", stockMoveLine.getAvailableStatus());
       response.setValue("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
     } catch (Exception e) {
