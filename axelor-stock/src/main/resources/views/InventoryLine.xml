@@ -15,7 +15,7 @@
     <field name="stockLocation"
       onSelect="action-inventory-line-method-set-stock-location-domain"
       onChange="action-inventory-line-group-on-change-product-stock-location"
-      readonlyIf="inventory.statusSelect >= 5"/>
+      readonlyIf="inventory.statusSelect >= 5" required="true"/>
     <field name="currentQty" readonly="true" aggregate="sum" width="120" x-scale="2"/>
     <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum"
       width="120" x-scale="2" min="0"
@@ -56,7 +56,7 @@
         form-view="product-form" grid-view="product-grid"/>
       <field name="stockLocation"
         onSelect="action-inventory-line-method-set-stock-location-domain"
-        onChange="action-inventory-line-group-on-change-product-stock-location"/>
+        onChange="action-inventory-line-group-on-change-product-stock-location" required="true"/>
       <field name="currentQty" readonly="true"
         help="Does not include quantities from sub stock locations"/>
       <field name="realQty" onChange="action-inventory-line-method-compute" min="0"/>

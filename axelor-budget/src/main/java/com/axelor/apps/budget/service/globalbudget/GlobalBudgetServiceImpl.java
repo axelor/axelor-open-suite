@@ -337,8 +337,12 @@ public class GlobalBudgetServiceImpl implements GlobalBudgetService {
             .orElse(null);
     if (versionExpectedAmountsLine != null) {
       budget.setActiveVersionExpectedAmountsLine(versionExpectedAmountsLine);
-      budget.setAmountForGeneration(versionExpectedAmountsLine.getExpectedAmount());
-      budget.setTotalAmountExpected(versionExpectedAmountsLine.getExpectedAmount());
+      BigDecimal expectedAmount = versionExpectedAmountsLine.getExpectedAmount();
+      budget.setAmountForGeneration(expectedAmount);
+      budget.setTotalAmountExpected(expectedAmount);
+      BigDecimal firmGap =
+          expectedAmount.subtract(budget.getRealizedWithPo().add(budget.getRealizedWithNoPo()));
+      budget.setTotalFirmGap(firmGap.signum() >= 0 ? BigDecimal.ZERO : firmGap.abs());
       if (needRecomputeBudgetLine) {
         budget.setPeriodDurationSelect(BudgetRepository.BUDGET_PERIOD_SELECT_ONE_TIME);
         budget.clearBudgetLineList();

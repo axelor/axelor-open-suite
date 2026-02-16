@@ -84,19 +84,19 @@
       if="__config__.app.isApp('supplychain')"/>
     <button name="trackNumberWizardBtn" title="Split by tracking numbers" icon="upc"
       onClick="save,action-stock-move-line-method-open-wizard"
-      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2 || (!$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isSaleTrackingManaged')) || !($get('$trackingNumberConfiguration.isSaleTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr') &amp;&amp; $get('stockMove.typeSelect') == 2)"/>
+      readonlyIf="lineTypeSelect == 1 || $get('stockMove.statusSelect') > 2 || (!$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isSaleTrackingManaged'))"/>
     <button name="splitMoveLineIntoFulfilledMoveAndAnUnfulfilledOneButton"
       title="Split into fulfilled line and unfulfilled one"
       help="Split into fulfilled line and unfulfilled one" icon="copy"
       onClick="save,action-stock-move-line-method-split-into-fulfilled-line-and-unfulfilled-one"
       hideIf=" $get('stockMove.typeSelect') == 1 || $get('stockMove.statusSelect') &gt; 2 "/>
+    <field name="availableQty" x-scale="$nbDecimalDigitForQty" readonly="true"/>
+    <field name="availableQtyForProduct" x-scale="$nbDecimalDigitForQty" readonly="true"/>
     <field name="isRealQtyModifiedByUser" hidden="true"/>
     <field name="$trackingNumberConfiguration.hasSaleAutoSelectTrackingNbr" hidden="true"/>
     <field name="$nbDecimalDigitForQty" hidden="true"/>
     <field name="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="oldQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
-    <field name="availableQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
-    <field name="availableQtyForProduct" x-scale="$nbDecimalDigitForQty" hidden="true"/>
     <field name="shippedQty" x-scale="$nbDecimalDigitForQty" hidden="true"/>
     <field name="companyPurchasePrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
   </grid>

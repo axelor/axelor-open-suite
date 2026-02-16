@@ -45,7 +45,6 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected final BillOfMaterialLineService billOfMaterialLineService;
-  protected final BillOfMaterialService billOfMaterialService;
   protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
   protected final SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService;
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -57,7 +56,6 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       BillOfMaterialRepository billOfMaterialRepository,
       BillOfMaterialLineRepository billOfMaterialLineRepository,
       BillOfMaterialLineService billOfMaterialLineService,
-      BillOfMaterialService billOfMaterialService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
       SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
@@ -65,7 +63,6 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
     this.billOfMaterialLineService = billOfMaterialLineService;
-    this.billOfMaterialService = billOfMaterialService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
     this.saleOrderLineDetailsProdProcessService = saleOrderLineDetailsProdProcessService;
   }

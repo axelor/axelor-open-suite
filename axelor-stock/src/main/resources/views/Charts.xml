@@ -3,11 +3,13 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
-  <chart onInit="action.base.default.month.value"
+  <chart onInit="action.stock.chart.set.month.and.from.date"
     name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
     <search-fields>
       <field type="string" name="monthSelect" title="Historical Period"
-        selection="base.month.select" x-required="true"/>
+        selection="base.month.select" x-required="true"
+        onChange="action.stock.chart.compute.from.date"/>
+      <field type="date" name="fromDate" hidden="true"/>
     </search-fields>
     <dataset type="jpql">
       SELECT
@@ -34,9 +36,7 @@
       address.country =
       country
       AND
-      self.realDate BETWEEN
-      DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND
-      DATE(:todayDate)
+      self.realDate BETWEEN :fromDate AND :todayDate
       GROUP BY
       country.name
     </dataset>
@@ -614,5 +614,17 @@
     <category key="real_date" type="date" title="Date"/>
     <series key="qty" groupBy="locat" type="line" aggregate="sum" title="Quantity"/>
   </chart>
+
+  <action-record model="com.axelor.apps.stock.db.StockMove"
+    name="action.stock.chart.set.month.and.from.date">
+    <field name="monthSelect" expr="eval:12"/>
+    <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(12)"/>
+  </action-record>
+
+  <action-record model="com.axelor.apps.stock.db.StockMove"
+    name="action.stock.chart.compute.from.date">
+    <field name="fromDate"
+      expr="eval:LocalDate.parse(todayDate).minusMonths(monthSelect ? Integer.parseInt(monthSelect) : 12)"/>
+  </action-record>
 
 </object-views>
