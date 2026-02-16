@@ -1593,7 +1593,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   protected BigDecimal convertQtyToMoveLineUnit(
       StockMoveLine stockMoveLine, BigDecimal qty, Unit sourceUnit, Unit targetUnit)
       throws AxelorException {
-    return unitConversionService.convertWithAutoFlushFalse(
+    return unitConversionService.convert(
         sourceUnit,
         targetUnit,
         qty,
