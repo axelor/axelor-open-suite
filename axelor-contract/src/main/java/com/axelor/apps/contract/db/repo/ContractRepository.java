@@ -96,6 +96,7 @@ public class ContractRepository extends AbstractContractRepository {
     contract.setCurrentContractVersion(version);
     contract.setContractId(null);
     contract.setVersionHistory(null);
+    contract.setConsumptionLineList(null);
     return contract;
   }
 }
