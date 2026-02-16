@@ -122,6 +122,7 @@ public class StockMoveLineRestController {
     return ResponseConstructor.build(
         Response.Status.OK,
         I18n.get(ITranslation.STOCK_MOVE_LINE_QUANTITY_AVAILABILITY),
-        Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine));
+        Beans.get(StockMoveLineService.class)
+            .setAvailableStatus(stockMoveLine, stockMoveLine.getStockMove()));
   }
 }
