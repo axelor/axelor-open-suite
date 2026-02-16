@@ -20,9 +20,10 @@ package com.axelor.apps.account.service;
 
 import com.axelor.apps.account.db.AccountingReport;
 import com.axelor.apps.base.AxelorException;
+import java.io.IOException;
 
 public interface AccountingReportPrintService {
-  String print(AccountingReport accountingReport) throws AxelorException;
+  String print(AccountingReport accountingReport) throws AxelorException, IOException;
 
   String computeName(AccountingReport accountingReport);
 
