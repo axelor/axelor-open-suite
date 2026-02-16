@@ -254,7 +254,8 @@ public interface StockMoveLineService {
   public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
 
-  public Map<String, Object> setAvailableStatus(StockMoveLine stockMoveLine) throws AxelorException;
+  public Map<String, Object> setAvailableStatus(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException;
 
   public List<TrackingNumber> getAvailableTrackingNumbers(StockMoveLine stockMoveLine);
 
