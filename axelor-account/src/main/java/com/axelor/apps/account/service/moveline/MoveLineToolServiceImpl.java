@@ -347,6 +347,7 @@ public class MoveLineToolServiceImpl implements MoveLineToolService {
         && ml.getAccount().equals(account);
   }
 
+  @Override
   public void checkDateInPeriod(Move move, MoveLine moveLine) throws AxelorException {
     if (move != null
         && move.getPeriod() != null

@@ -441,6 +441,7 @@ public class MoveLineServiceImpl implements MoveLineService {
     return batch.getBatch();
   }
 
+  @Override
   public void updatePartner(List<MoveLine> moveLineList, Partner partner, Partner previousPartner) {
     moveLineList.stream()
         .filter(it -> Objects.equals(it.getPartner(), previousPartner))

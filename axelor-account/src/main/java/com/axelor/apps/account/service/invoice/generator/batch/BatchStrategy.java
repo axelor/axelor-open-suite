@@ -48,6 +48,7 @@ public abstract class BatchStrategy extends AbstractBatch {
     }
   }
 
+  @Override
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_INVOICE_BATCH);
   }

@@ -240,6 +240,7 @@ public class BatchRealizeFixedAssetLine extends BatchStrategy {
         });
   }
 
+  @Override
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_ACCOUNTING_BATCH);
   }

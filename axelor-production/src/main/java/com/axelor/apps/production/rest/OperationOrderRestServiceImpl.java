@@ -70,6 +70,7 @@ public class OperationOrderRestServiceImpl implements OperationOrderRestService 
     this.operationOrderService = operationOrderService;
   }
 
+  @Override
   public Response updateStatusOfOperationOrder(OperationOrder operationOrder, Integer targetStatus)
       throws AxelorException {
     ManufOrder manufOrder = operationOrder.getManufOrder();

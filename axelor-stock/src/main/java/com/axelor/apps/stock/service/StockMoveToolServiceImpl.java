@@ -193,6 +193,7 @@ public class StockMoveToolServiceImpl implements StockMoveToolService {
    * @param toAddress
    * @return default value for {@link StockMove#isIspmRequired}
    */
+  @Override
   public boolean getDefaultISPM(Partner clientPartner, Address toAddress) {
     if (clientPartner != null && clientPartner.getIsIspmRequired()) {
       return true;

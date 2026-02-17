@@ -1812,6 +1812,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         .fetch();
   }
 
+  @Override
   public void fillRealizeWapPrice(StockMoveLine stockMoveLine) {
     StockLocation stockLocation = stockMoveLine.getFromStockLocation();
     if (stockLocation.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {

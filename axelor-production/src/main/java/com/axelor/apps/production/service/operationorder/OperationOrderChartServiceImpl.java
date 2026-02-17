@@ -67,6 +67,7 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
     this.weeklyPlanningService = weeklyPlanningService;
   }
 
+  @Override
   public List<Map<String, Object>> chargeByMachineHours(
       LocalDateTime fromDateTime, LocalDateTime toDateTime) throws AxelorException {
     List<Map<String, Object>> dataList = new ArrayList<>();
@@ -108,6 +109,7 @@ public class OperationOrderChartServiceImpl implements OperationOrderChartServic
     return dataList;
   }
 
+  @Override
   public List<Map<String, Object>> calculateHourlyMachineCharge(
       LocalDateTime fromDateTime, LocalDateTime toDateTime, Machine machineInUse)
       throws AxelorException {

@@ -47,6 +47,7 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
     this.appBaseService = appBaseService;
   }
 
+  @Override
   public InvoiceLineGeneratorSupplyChain getInvoiceLineGeneratorWithComputedTaxPrice(
       Invoice invoice,
       Product invoicingProduct,

@@ -38,6 +38,7 @@ public class ContractLineRecordSetServiceImpl implements ContractLineRecordSetSe
     this.currencyService = currencyService;
   }
 
+  @Override
   public void setCompanyExTaxTotal(
       AnalyticLineContractModel analyticLineContractModel, ContractLine contractLine)
       throws AxelorException {

@@ -105,6 +105,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
    * @param typeSelect 1 : Advance Payment 2 : Payment 3 : Refund invoice 4 : Other
    * @return
    */
+  @Override
   public InvoicePayment createInvoicePayment(
       Invoice invoice,
       BigDecimal amount,
@@ -128,6 +129,7 @@ public class InvoicePaymentCreateServiceImpl implements InvoicePaymentCreateServ
    * @param paymentMove
    * @return
    */
+  @Override
   public InvoicePayment createInvoicePayment(Invoice invoice, BigDecimal amount, Move paymentMove)
       throws AxelorException {
 

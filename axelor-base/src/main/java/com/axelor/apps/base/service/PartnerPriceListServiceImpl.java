@@ -136,6 +136,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
     }
   }
 
+  @Override
   public String getPriceListDomain(Partner partner, int priceListTypeSelect) {
     if (partner == null) {
       return "self.id IN (0)";
@@ -183,6 +184,7 @@ public class PartnerPriceListServiceImpl implements PartnerPriceListService {
     return "self.id IN (" + StringHelper.getIdListString(priceLists) + ")";
   }
 
+  @Override
   public PartnerPriceList getPartnerPriceList(Partner partner, int priceListTypeSelect) {
     if (priceListTypeSelect == PriceListRepository.TYPE_SALE) {
       return partner.getSalePartnerPriceList();

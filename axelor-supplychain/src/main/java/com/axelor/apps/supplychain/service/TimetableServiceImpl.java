@@ -115,6 +115,7 @@ public class TimetableServiceImpl implements TimetableService {
     return null;
   }
 
+  @Override
   public List<Timetable> applyTemplate(
       TimetableTemplate template, BigDecimal exTaxTotal, LocalDate computationDate) {
     List<Timetable> timetables = new ArrayList<>();

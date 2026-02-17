@@ -218,6 +218,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
         true);
   }
 
+  @Override
   public PurchaseOrderLine fill(PurchaseOrderLine line, PurchaseOrder purchaseOrder)
       throws AxelorException {
     Preconditions.checkNotNull(line, I18n.get("The line cannot be null."));
@@ -618,6 +619,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     }
   }
 
+  @Override
   public List<PurchaseOrderLine> updateLinesAfterFiscalPositionChange(PurchaseOrder purchaseOrder)
       throws AxelorException {
     List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();

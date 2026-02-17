@@ -38,6 +38,7 @@ public class InventoryUpdateServiceImpl implements InventoryUpdateService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void updateInventoryStatus(Inventory inventory, Integer wantedStatus, User user)
       throws AxelorException {
     inventoryProductService.checkDuplicate(inventory);

@@ -28,6 +28,7 @@ public class AdvancePaymentServiceImpl implements AdvancePaymentService {
   @Inject protected AdvancePaymentRepository advancePaymentRepository;
 
   @Transactional
+  @Override
   public void cancelAdvancePayment(AdvancePayment advancePayment) {
 
     advancePayment.setStatusSelect(AdvancePaymentRepository.STATUS_CANCELED);

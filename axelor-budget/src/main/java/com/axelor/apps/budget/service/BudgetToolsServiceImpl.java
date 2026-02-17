@@ -182,6 +182,7 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
         && checkBudgetKeyInConfig(company);
   }
 
+  @Override
   public List<AnalyticAxis> getAuthorizedAnalyticAxis(Company company) throws AxelorException {
     if (company == null) {
       return new ArrayList<>();
@@ -205,6 +206,7 @@ public class BudgetToolsServiceImpl implements BudgetToolsService {
         && accountConfigService.getAccountConfig(company).getEnableBudgetKey());
   }
 
+  @Override
   public BigDecimal getAvailableAmountOnBudget(Budget budget, LocalDate date) {
     if (budget == null) {
       return BigDecimal.ZERO;

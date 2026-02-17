@@ -40,6 +40,7 @@ public class MassEntryMoveUpdateServiceImpl implements MassEntryMoveUpdateServic
     this.moveLineMassEntryRepository = moveLineMassEntryRepository;
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateMassEntryMoveLines(Long moveId, Move generatedMove, int temporaryMoveNumber) {
     List<Long> moveLineIds = this.getMoveLineMassEntryIds(temporaryMoveNumber, moveId);
@@ -55,6 +56,7 @@ public class MassEntryMoveUpdateServiceImpl implements MassEntryMoveUpdateServic
         .update(updateMap);
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void resetMassEntryMoveLinesStatus(Long moveId, int errorId) {
     List<Long> moveLineIds = this.getMoveLineMassEntryIds(errorId, moveId);
@@ -65,6 +67,7 @@ public class MassEntryMoveUpdateServiceImpl implements MassEntryMoveUpdateServic
         .update("moveStatusSelect", MoveRepository.STATUS_NEW);
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateMassEntryMoveStatus(Long moveId) {
     List<Long> moveLineIds =

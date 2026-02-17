@@ -126,6 +126,7 @@ public class InvoicePaymentCancelServiceImpl implements InvoicePaymentCancelServ
     unreconcileService.unreconcile(invoicePayment.getReconcile());
   }
 
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateCancelStatus(InvoicePayment invoicePayment) throws AxelorException {
     invoicePayment.setStatusSelect(InvoicePaymentRepository.STATUS_CANCELED);

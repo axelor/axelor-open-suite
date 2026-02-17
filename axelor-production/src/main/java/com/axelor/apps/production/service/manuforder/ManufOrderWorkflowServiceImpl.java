@@ -194,6 +194,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
   /** CAUTION : Must be called in a different transaction from sending mail method. */
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void finishManufOrder(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getOperationOrderList() != null) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -307,6 +308,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
     return sendPartialFinishMail(manufOrder);
   }
 
+  @Override
   public boolean sendPartialFinishMail(ManufOrder manufOrder) {
     ProductionConfig productionConfig =
         manufOrder.getCompany() != null

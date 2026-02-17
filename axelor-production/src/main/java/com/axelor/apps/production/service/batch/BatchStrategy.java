@@ -23,6 +23,7 @@ import com.axelor.apps.base.service.administration.AbstractBatch;
 
 public abstract class BatchStrategy extends AbstractBatch {
 
+  @Override
   protected void setBatchTypeSelect() {
     this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_PRODUCTION_BATCH);
   }

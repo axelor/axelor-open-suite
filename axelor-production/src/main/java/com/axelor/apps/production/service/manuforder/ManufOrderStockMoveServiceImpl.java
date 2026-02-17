@@ -196,6 +196,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
    * @throws AxelorException
    */
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void consumeInStockMoves(ManufOrder manufOrder) throws AxelorException {
     for (StockMove stockMove : manufOrder.getInStockMoveList()) {
 
@@ -203,6 +204,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     }
   }
 
+  @Override
   public ManufOrder finish(ManufOrder manufOrder) throws AxelorException {
     // clear empty stock move
     manufOrder
@@ -223,6 +225,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     return JpaModelHelper.ensureManaged(manufOrder);
   }
 
+  @Override
   public void finishStockMove(StockMove stockMove) throws AxelorException {
 
     if (stockMove != null && stockMove.getStatusSelect() == StockMoveRepository.STATUS_PLANNED) {
@@ -239,6 +242,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
    * @param manufOrder
    */
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public ManufOrder partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getIsConsProOnOperation()) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
@@ -339,6 +343,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     return manufOrder;
   }
 
+  @Override
   public void cancel(ManufOrder manufOrder) throws AxelorException {
 
     for (StockMove stockMove : manufOrder.getInStockMoveList()) {
@@ -349,6 +354,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     }
   }
 
+  @Override
   public void cancel(StockMove stockMove) throws AxelorException {
 
     if (stockMove != null) {
@@ -370,6 +376,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
    * @param qtyToUpdate
    * @return
    */
+  @Override
   public BigDecimal getFractionQty(
       ManufOrder manufOrder, ProdProduct prodProduct, BigDecimal qtyToUpdate) {
     BigDecimal manufOrderQty = manufOrder.getQty();
@@ -383,6 +390,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
         .divide(manufOrderQty, scale, RoundingMode.HALF_UP);
   }
 
+  @Override
   public StockLocation getFromStockLocationForConsumedStockMove(
       ManufOrder manufOrder, Company company) throws AxelorException {
     StockLocation fromStockLocation = getDefaultInStockLocation(manufOrder, company);
@@ -396,6 +404,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     return fromStockLocation;
   }
 
+  @Override
   public StockLocation getVirtualStockLocationForConsumedStockMove(
       ManufOrder manufOrder, Company company) throws AxelorException {
 
@@ -422,6 +431,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     return stockConfigProductionService.getVirtualOutsourcingStockLocation(stockConfig);
   }
 
+  @Override
   public StockLocation getProducedProductStockLocation(ManufOrder manufOrder, Company company)
       throws AxelorException {
 

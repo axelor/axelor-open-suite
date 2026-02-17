@@ -271,6 +271,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
     accountingReportRepo.save(accountingReport);
   }
 
+  @Override
   public AccountingReport getAssociatedDas2Export(AccountingReport accountingReport) {
 
     if (CollectionUtils.isEmpty(accountingReport.getAccountingReportMoveLineList())) {
@@ -279,10 +280,12 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
     return accountingReport.getAccountingReportMoveLineList().get(0).getAccountingExport();
   }
 
+  @Override
   public BigDecimal getDebitBalance(String query) {
     return getBalance(query, false);
   }
 
+  @Override
   public BigDecimal getCreditBalance(String query) {
     return getBalance(query, true);
   }

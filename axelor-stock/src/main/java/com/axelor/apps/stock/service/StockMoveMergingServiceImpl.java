@@ -63,6 +63,7 @@ public class StockMoveMergingServiceImpl implements StockMoveMergingService {
     this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
+  @Override
   public List<String> canMerge(List<StockMove> stockMoveList) {
     List<String> errors = new ArrayList<>();
     checkErrors(stockMoveList, errors);

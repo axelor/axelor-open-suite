@@ -586,6 +586,7 @@ public class StockMoveLineServiceSupplychainImpl extends StockMoveLineServiceImp
     return batchAccountingCutOff.getBatch();
   }
 
+  @Override
   protected String getProductTypeFilter(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
     List<String> domainFilerList = new ArrayList<>();

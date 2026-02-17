@@ -630,6 +630,7 @@ public class InvoiceLineServiceImpl implements InvoiceLineService {
     }
   }
 
+  @Override
   public List<InvoiceLine> updateLinesAfterFiscalPositionChange(Invoice invoice)
       throws AxelorException {
     List<InvoiceLine> invoiceLineList = invoice.getInvoiceLineList();

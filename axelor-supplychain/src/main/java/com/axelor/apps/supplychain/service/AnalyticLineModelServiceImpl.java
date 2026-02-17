@@ -136,6 +136,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     return analyticMoveLine;
   }
 
+  @Override
   public AnalyticLineModel getAndComputeAnalyticDistribution(AnalyticLineModel analyticLineModel)
       throws AxelorException {
     if (!productAccountManageAnalytic(analyticLineModel)) {

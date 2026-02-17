@@ -521,6 +521,7 @@ public class ImportCityServiceImpl implements ImportCityService {
    * @param typeSelect
    * @return
    */
+  @Override
   public Map<String, Object> importFromGeonamesAutoConfig(
       String downloadFileName, String typeSelect) {
     List<ImportHistory> importHistoryList = new ArrayList<>();
@@ -554,6 +555,7 @@ public class ImportCityServiceImpl implements ImportCityService {
    * @param typeSelect
    * @return
    */
+  @Override
   public Map<String, Object> importFromGeonamesManualConfig(
       Map<String, Object> map, String typeSelect) {
     List<ImportHistory> importHistoryList = new ArrayList<>();

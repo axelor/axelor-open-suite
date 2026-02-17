@@ -44,6 +44,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
 
   public static final int DEFAULT_SCALE = 2;
 
+  @Override
   public DayOfWeek getFirstDayOfWeek() {
     WeeklyPlanning planning =
         Beans.get(UserService.class).getUserActiveCompany().getWeeklyPlanning();
@@ -224,6 +225,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
         .divide(BigDecimal.valueOf(60), DEFAULT_SCALE, BigDecimal.ROUND_HALF_UP);
   }
 
+  @Override
   public DayPlanning findDayPlanning(WeeklyPlanning planning, LocalDate date) {
     int dayOfWeek = date.getDayOfWeek().getValue();
     switch (dayOfWeek) {
@@ -253,6 +255,7 @@ public class WeeklyPlanningServiceImp implements WeeklyPlanningService {
     }
   }
 
+  @Override
   public DayPlanning findDayWithName(WeeklyPlanning planning, String name) {
     List<DayPlanning> dayPlanningList = planning.getWeekDays();
     for (DayPlanning dayPlanning : dayPlanningList) {

@@ -304,6 +304,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     accountingSituationSupplychainService.updateUsedCredit(saleOrder.getClientPartner());
   }
 
+  @Override
   public void setDefaultInvoicedAndDeliveredPartnersAndAddresses(SaleOrder saleOrder) {
     if (saleOrder != null
         && saleOrder.getClientPartner() != null

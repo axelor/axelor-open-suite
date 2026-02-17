@@ -296,6 +296,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     }
   }
 
+  @Override
   public void computeBudgetDistributionSumAmount(
       BudgetDistribution budgetDistribution, LocalDate computeDate) {
 

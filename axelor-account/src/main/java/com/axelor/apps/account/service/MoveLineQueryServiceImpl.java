@@ -91,6 +91,7 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
     return query;
   }
 
+  @Override
   public void ureconcileMoveLinesWithCacheManagement(List<Reconcile> reconcileList)
       throws AxelorException {
     for (Reconcile reconcile : reconcileList) {

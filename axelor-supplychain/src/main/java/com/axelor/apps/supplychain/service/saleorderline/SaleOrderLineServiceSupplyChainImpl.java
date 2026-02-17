@@ -205,6 +205,7 @@ public class SaleOrderLineServiceSupplyChainImpl implements SaleOrderLineService
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void updateStockMoveReservationDateTime(SaleOrderLine saleOrderLine)
       throws AxelorException {
     SaleOrder saleOrder = saleOrderLine.getSaleOrder();

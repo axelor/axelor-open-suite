@@ -57,12 +57,14 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void cancel(ExtraHours extraHours) throws AxelorException {
 
     extraHours.setStatusSelect(ExtraHoursRepository.STATUS_CANCELED);
     extraHoursRepo.save(extraHours);
   }
 
+  @Override
   public Message sendCancellationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, IOException {
 
@@ -78,6 +80,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void confirm(ExtraHours extraHours) throws AxelorException {
 
     extraHours.setStatusSelect(ExtraHoursRepository.STATUS_CONFIRMED);
@@ -86,6 +89,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
     extraHoursRepo.save(extraHours);
   }
 
+  @Override
   public Message sendConfirmationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, IOException {
 
@@ -101,6 +105,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void validate(ExtraHours extraHours) throws AxelorException {
 
     extraHours.setStatusSelect(ExtraHoursRepository.STATUS_VALIDATED);
@@ -110,6 +115,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
     extraHoursRepo.save(extraHours);
   }
 
+  @Override
   public Message sendValidationEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, IOException {
 
@@ -125,6 +131,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
   }
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public void refuse(ExtraHours extraHours) throws AxelorException {
 
     extraHours.setStatusSelect(ExtraHoursRepository.STATUS_REFUSED);
@@ -134,6 +141,7 @@ public class ExtraHoursServiceImpl implements ExtraHoursService {
     extraHoursRepo.save(extraHours);
   }
 
+  @Override
   public Message sendRefusalEmail(ExtraHours extraHours)
       throws AxelorException, ClassNotFoundException, IOException {
 

@@ -132,6 +132,7 @@ public class WorkflowVentilationServiceSupplychainImpl extends WorkflowVentilati
     this.stockMoveLineRepository = stockMoveLineRepository;
   }
 
+  @Override
   public void afterVentilation(Invoice invoice) throws AxelorException {
     super.afterVentilation(invoice);
     if (InvoiceToolService.isPurchase(invoice)) {

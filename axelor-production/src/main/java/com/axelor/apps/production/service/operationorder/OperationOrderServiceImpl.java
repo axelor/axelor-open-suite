@@ -97,6 +97,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Transactional(rollbackOn = {Exception.class})
+  @Override
   public OperationOrder createOperationOrder(ManufOrder manufOrder, ProdProcessLine prodProcessLine)
       throws AxelorException {
 
@@ -122,6 +123,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
   }
 
   @Transactional
+  @Override
   public OperationOrder createOperationOrder(
       ManufOrder manufOrder,
       int priority,
@@ -157,6 +159,7 @@ public class OperationOrderServiceImpl implements OperationOrderService {
     return Beans.get(OperationOrderRepository.class).save(operationOrder);
   }
 
+  @Override
   public String computeName(ManufOrder manufOrder, int priority, String operationName) {
 
     String name = "";
