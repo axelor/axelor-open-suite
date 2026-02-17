@@ -899,6 +899,7 @@ public class InventoryService {
     for (InventoryLine inventoryLine : inventory.getInventoryLineList()) {
       String[] item = new String[11];
       String realQty = "";
+      int digitForQty = appBaseService.getNbDecimalDigitForQty();
 
       item[0] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getName();
       item[1] = (inventoryLine.getProduct() == null) ? "" : inventoryLine.getProduct().getCode();
@@ -913,11 +914,12 @@ public class InventoryService {
           (inventoryLine.getTrackingNumber() == null)
               ? ""
               : inventoryLine.getTrackingNumber().getTrackingNumberSeq();
-      item[5] = inventoryLine.getCurrentQty().toString();
+      item[5] =
+          inventoryLine.getCurrentQty().setScale(digitForQty, RoundingMode.HALF_UP).toString();
       if (inventoryLine.getRealQty() != null
           && inventory.getStatusSelect() != InventoryRepository.STATUS_DRAFT
           && inventory.getStatusSelect() != InventoryRepository.STATUS_PLANNED) {
-        realQty = inventoryLine.getRealQty().toString();
+        realQty = inventoryLine.getRealQty().setScale(digitForQty, RoundingMode.HALF_UP).toString();
       }
       item[6] = realQty;
       item[7] = (inventoryLine.getDescription() == null) ? "" : inventoryLine.getDescription();
