@@ -578,6 +578,18 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   @Override
   public String createProductSetDomain(UnitCostCalculation unitCostCalculation, Company company)
       throws AxelorException {
+
+    // For depreciation rate calculation (typeSelect = 1), use simplified domain without BOM
+    if (unitCostCalculation.getTypeSelect() != null
+        && unitCostCalculation.getTypeSelect() == UnitCostCalculationRepository.TYPE_RATE) {
+      return createDepreciationProductSetDomain(unitCostCalculation);
+    }
+
+    return createCostCalculationProductSetDomain(unitCostCalculation, company);
+  }
+
+  protected String createCostCalculationProductSetDomain(
+      UnitCostCalculation unitCostCalculation, Company company) throws AxelorException {
     String domain;
     String bomsProductsList = createBomProductList(unitCostCalculation, company);
     if (bomsProductsList.isEmpty()) {
@@ -596,21 +608,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
         domain = "self.defaultBillOfMaterial IS NOT NULL";
       }
 
-      if (unitCostCalculation.getProductCategorySet() != null
-          && !unitCostCalculation.getProductCategorySet().isEmpty()) {
-        domain +=
-            " AND self.productCategory IN ("
-                + StringHelper.getIdListString(unitCostCalculation.getProductCategorySet())
-                + ")";
-      }
-
-      if (unitCostCalculation.getProductFamilySet() != null
-          && !unitCostCalculation.getProductFamilySet().isEmpty()) {
-        domain +=
-            " AND self.productFamily IN ("
-                + StringHelper.getIdListString(unitCostCalculation.getProductFamilySet())
-                + ")";
-      }
+      domain = filterProduct(unitCostCalculation, domain);
 
       domain +=
           " AND self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
@@ -628,6 +626,36 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
               + ") AND self.procurementMethodSelect IN ('produce', 'buyAndProduce') AND self.dtype = 'Product'";
     }
     log.debug("Product Domain: {}", domain);
+    return domain;
+  }
+
+  protected String createDepreciationProductSetDomain(UnitCostCalculation unitCostCalculation) {
+    StringBuilder domain =
+        new StringBuilder(
+            "self.productTypeSelect = 'storable' AND self.dtype = 'Product' AND self.stockManaged IS TRUE AND self.stockCategorySelect != 0");
+
+    filterProduct(unitCostCalculation, domain.toString());
+
+    log.debug("Depreciation Product Domain: {}", domain);
+    return domain.toString();
+  }
+
+  protected String filterProduct(UnitCostCalculation unitCostCalculation, String domain) {
+    if (unitCostCalculation.getProductCategorySet() != null
+        && !unitCostCalculation.getProductCategorySet().isEmpty()) {
+      domain +=
+          " AND self.productCategory IN ("
+              + StringHelper.getIdListString(unitCostCalculation.getProductCategorySet())
+              + ")";
+    }
+
+    if (unitCostCalculation.getProductFamilySet() != null
+        && !unitCostCalculation.getProductFamilySet().isEmpty()) {
+      domain +=
+          " AND self.productFamily IN ("
+              + StringHelper.getIdListString(unitCostCalculation.getProductFamilySet())
+              + ")";
+    }
     return domain;
   }
 

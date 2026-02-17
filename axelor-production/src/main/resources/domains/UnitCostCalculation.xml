@@ -27,12 +27,23 @@
     <one-to-many name="unitCostCalcLineList"
       ref="com.axelor.apps.production.db.UnitCostCalcLine" title="Results"
       mappedBy="unitCostCalculation"/>
+    <!-- Type of calculation: cost price (0) or depreciation rate (1) -->
+    <integer name="typeSelect" title="Calculation type"
+      selection="production.unit.cost.calculation.type.select" default="0"/>
+
+    <!-- Filter for customer-dedicated stock locations -->
+    <boolean name="customerOk" title="Customer dedicated" default="false"
+      help="Include only stock locations dedicated to customers"/>
 
     <extra-code><![CDATA[
 		// STATUS SELECT
 		public static final int STATUS_DRAFT = 1;
 		public static final int STATUS_COSTS_COMPUTED = 2;
 		public static final int STATUS_COSTS_UPDATED = 3;
+
+        // TYPE SELECT
+        public static final int TYPE_COST = 0;
+        public static final int TYPE_RATE = 1;
 	]]></extra-code>
 
     <track>

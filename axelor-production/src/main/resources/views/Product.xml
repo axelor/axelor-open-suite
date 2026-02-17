@@ -42,6 +42,13 @@
       <attribute name="onNew" value="action-product-group-production-onnew"/>
       <attribute name="onLoad" value="action-product-group-production-onload"/>
     </extend>
+
+    <extend target="//field[@name='avgPrice']">
+      <insert position="after">
+        <field name="stockCategorySelect" colSpan="3"/>
+        <field name="depreciationRate" colSpan="3" x-scale="2"/>
+      </insert>
+    </extend>
   </form>
 
   <action-view name="action-product-view-production-process"

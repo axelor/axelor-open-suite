@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+
+  <grid name="depreciation-rate-config-grid" title="Depreciation rate configurations"
+    model="com.axelor.apps.production.db.DepreciationRateConfig" editable="true">
+    <field name="product" readonlyIf="productCategory || stockCategorySelect &gt; 0"/>
+    <field name="productCategory" readonlyIf="stockCategorySelect &gt; 0 || product"/>
+    <field name="stockCategorySelect" readonlyIf="productCategory || product"/>
+    <field name="greaterBracket" readonlyIf="stockCategorySelect == 0"/>
+    <field name="minRate" x-scale="2"/>
+    <field name="maxRate" x-scale="2"/>
+    <field name="defaultRate" x-scale="2"/>
+  </grid>
+
+  <form name="depreciation-rate-config-form" title="Depreciation rate configuration"
+    model="com.axelor.apps.production.db.DepreciationRateConfig" width="large">
+    <panel name="mainPanel" title="Configuration">
+      <panel name="levelPanel" colSpan="12" title="Configuration Level"
+        help="Choose one level: specific product, product category, or stock rotation category">
+        <field name="product" grid-view="product-grid" form-view="product-form"
+          hideIf="productCategory || stockCategorySelect &gt; 0" colSpan="12"/>
+        <field name="productCategory" grid-view="product-category-grid"
+          form-view="product-category-form" hideIf="stockCategorySelect &gt; 0 || product"
+          colSpan="12"/>
+        <field name="stockCategorySelect" hideIf="productCategory || product" colSpan="12"/>
+      </panel>
+      <panel name="bracketPanel" colSpan="12" title="Bracket Configuration"
+        showIf="stockCategorySelect &gt; 0">
+        <field name="greaterBracket"
+          help="Stock coverage bracket in days. This config applies when coverage is less than or equal to this value."
+          readonlyIf="stockCategorySelect == 0"/>
+      </panel>
+      <panel name="ratesPanel" colSpan="12" title="Depreciation Rates">
+        <field name="minRate" colSpan="4"
+          help="Minimum acceptable depreciation rate. Values below this will be flagged."/>
+        <field name="maxRate" colSpan="4"
+          help="Maximum acceptable depreciation rate. Values above this will be flagged."/>
+        <field name="defaultRate" colSpan="4"
+          help="Default depreciation rate to apply when calculation runs"/>
+      </panel>
+    </panel>
+  </form>
+
+</object-views>
