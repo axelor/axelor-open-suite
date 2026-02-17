@@ -19,14 +19,18 @@
 package com.axelor.apps.production.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Product;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.i18n.I18n;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -34,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +73,24 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   }
 
   @Override
+  public void checkProdProcessRequired(BillOfMaterial billOfMaterial, Product product)
+      throws AxelorException {
+    if (billOfMaterial == null || billOfMaterial.getProdProcess() != null) {
+      return;
+    }
+
+    String productName =
+        Optional.ofNullable(product)
+            .map(Product::getFullName)
+            .orElseGet(() -> Optional.ofNullable(product).map(Product::getName).orElse(""));
+
+    throw new AxelorException(
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        I18n.get(ProductionExceptionMessage.SALE_ORDER_LINE_PROD_PROCESS_REQUIRED),
+        productName);
+  }
+
+  @Override
   public List<SaleOrderLine> createSaleOrderLinesFromBom(
       BillOfMaterial billOfMaterial, SaleOrder saleOrder) throws AxelorException {
     Objects.requireNonNull(billOfMaterial);
@@ -85,6 +108,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       if (saleOrderLine != null) {
         BillOfMaterial lineBom = saleOrderLine.getBillOfMaterial();
         if (saleOrderLine.getIsToProduce()) {
+          checkProdProcessRequired(lineBom, saleOrderLine.getProduct());
           saleOrderLineDetailsBomService
               .createSaleOrderLineDetailsFromBom(lineBom, saleOrder, saleOrderLine)
               .stream()
