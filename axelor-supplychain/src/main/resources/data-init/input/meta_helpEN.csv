@@ -28,3 +28,4 @@
 413;"axelor-supplychain";"SupplyChainConfig";"supply-chain-config-form";"hasOutSmForNonStorableProduct";"If you don't need to generate a customer delivery for a non-storable product (for example a service), you can leave the ""Generate out.moves for non-storable products?"" box unchecked."
 414;"axelor-supplychain";"SupplyChainConfig";"supply-chain-config-form";"hasInSmForStorableProduct";"By checking this box, you will be able to generate supplier arrivals for storable products."
 415;"axelor-supplychain";"SupplyChainConfig";"supply-chain-config-form";"hasInSmForNonStorableProduct";"If you don't need to generate a customer delivery for a non-storable product (for example a service), you can leave the ""Generate out.moves for non-storable products?"" box unchecked."
+446;"axelor-supplychain";"ProductCategory";"product-category-form";"excludeFromMrp";"Box to be checked in order to exclude inventory management of this product from the calculation of needs."
