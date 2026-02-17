@@ -164,7 +164,7 @@ public class StockLocationUtilsServiceImpl implements StockLocationUtilsService 
     List<?> result = query.getResultList();
     return (result.get(0) == null || ((BigDecimal) result.get(0)).signum() == 0)
         ? BigDecimal.ZERO
-        : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_UP);
+        : ((BigDecimal) result.get(0)).setScale(2, RoundingMode.HALF_UP);
   }
 
   private String getCompanySpecificQuery(StockLocation stockLocation, String price) {

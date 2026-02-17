@@ -50,6 +50,7 @@ import jakarta.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -182,7 +183,7 @@ public class ProductServiceImpl implements ProductService {
           "salePrice",
           (((BigDecimal) productCompanyService.get(product, "costPrice", company))
                   .multiply(managePriceCoef))
-              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), BigDecimal.ROUND_HALF_UP),
+              .setScale(appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP),
           company);
     }
 

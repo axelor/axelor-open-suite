@@ -190,7 +190,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
                   .divide(
                       taxTotal.divide(BigDecimal.valueOf(100)),
                       AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                      BigDecimal.ROUND_HALF_UP);
+                      RoundingMode.HALF_UP);
         } else {
           baseAmount = invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit());
         }
