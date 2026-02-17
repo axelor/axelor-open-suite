@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,7 +39,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.utils.helpers.ContextHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -49,6 +49,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SupplierCatalogServiceImpl implements SupplierCatalogService {
@@ -132,18 +133,20 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   public SupplierCatalog getSupplierCatalog(
       Product product, Partner supplierPartner, Company company) throws AxelorException {
 
-    if (product == null) {
+    if (product == null || supplierPartner == null) {
       return null;
     }
 
-    List<SupplierCatalog> supplierCatalogList = supplierPartner.getSupplierCatalogList();
+    List<SupplierCatalog> supplierCatalogList =
+        supplierPartner.getSupplierCatalogList().stream()
+            .filter(catalog -> catalog.getProduct().equals(product))
+            .collect(Collectors.toList());
 
     if (appPurchaseService.getAppPurchase().getManageSupplierCatalog()
         && CollectionUtils.isNotEmpty(supplierCatalogList)) {
       if (supplierCatalogList.stream().anyMatch(catalog -> catalog.getUpdateDate() != null)) {
         return supplierCatalogList.stream()
-            .filter(
-                catalog -> catalog.getUpdateDate() != null && catalog.getProduct().equals(product))
+            .filter(catalog -> catalog.getUpdateDate() != null)
             .max(Comparator.comparing(SupplierCatalog::getUpdateDate))
             .orElse(null);
       } else {
@@ -319,8 +322,9 @@ public class SupplierCatalogServiceImpl implements SupplierCatalogService {
   public Unit getUnit(Product product, Partner supplierPartner, Company company)
       throws AxelorException {
     SupplierCatalog supplierCatalog = getSupplierCatalog(product, supplierPartner, company);
-    Unit baseUnit =
-        product.getPurchasesUnit() == null ? product.getUnit() : product.getPurchasesUnit();
+    Unit purchaseUnit = (Unit) productCompanyService.get(product, "purchasesUnit", company);
+    Unit productUnit = (Unit) productCompanyService.get(product, "unit", company);
+    Unit baseUnit = purchaseUnit == null ? productUnit : purchaseUnit;
     if (supplierCatalog == null) {
       return baseUnit;
     }

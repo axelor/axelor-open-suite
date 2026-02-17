@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,9 @@ package com.axelor.apps.production.service.bomimport;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.imports.importer.ExcelToCSV;
 import com.axelor.apps.base.service.imports.importer.Importer;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.apps.production.db.BillOfMaterialImport;
@@ -31,9 +33,10 @@ import com.axelor.apps.production.db.repo.BillOfMaterialImportRepository;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.meta.MetaFiles;
 import com.google.common.base.Throwables;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,9 +54,13 @@ public class BillOfMaterialImporter extends Importer {
 
   @Inject
   public BillOfMaterialImporter(
+      ExcelToCSV excelToCSV,
+      MetaFiles metaFiles,
+      AppBaseService appBaseService,
       BillOfMaterialImportLineService billOfMaterialImportLineService,
       BillOfMaterialImportRepository billOfMaterialImportRepository,
       BillOfMaterialImportLineRepository billOfMaterialImportLineRepository) {
+    super(excelToCSV, metaFiles, appBaseService);
     this.billOfMaterialImportLineService = billOfMaterialImportLineService;
     this.billOfMaterialImportRepository = billOfMaterialImportRepository;
     this.billOfMaterialImportLineRepository = billOfMaterialImportLineRepository;
@@ -61,7 +68,7 @@ public class BillOfMaterialImporter extends Importer {
 
   @Override
   protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
-      throws IOException {
+      throws IOException, AxelorException {
 
     CSVImporter importer = new CSVImporter(bind, data);
 
@@ -118,11 +125,6 @@ public class BillOfMaterialImporter extends Importer {
 
   public void addBillOfMaterialImport(BillOfMaterialImport billOfMaterialImport) {
     this.billOfMaterialImport = billOfMaterialImport;
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data) throws IOException {
-    return process(bind, data, null);
   }
 
   protected void linkLineToBillOfMaterialImport(

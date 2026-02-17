@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,8 +37,8 @@ import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -78,6 +78,7 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
       LocalDate date,
       Timesheet timesheet,
       BigDecimal duration,
+      BigDecimal hoursDuration,
       String comments,
       boolean toInvoice)
       throws AxelorException {
@@ -91,11 +92,22 @@ public class TimesheetLineCreateServiceImpl implements TimesheetLineCreateServic
     if (product == null) {
       product = userHrService.getTimesheetProduct(employee, projectTask);
     }
+    if (hoursDuration == null && duration == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(HumanResourceExceptionMessage.NO_TIMESHEET_LINE_GENERATED));
+    }
+    if (duration != null) {
+      hoursDuration = timesheetLineService.computeHoursDuration(timesheet, duration, true);
+    }
     timesheetLineCheckService.checkActivity(project, product);
     TimesheetLine timesheetLine =
-        createTimesheetLine(project, product, employee, date, timesheet, duration, comments);
+        createTimesheetLine(project, product, employee, date, timesheet, hoursDuration, comments);
     timesheetLine.setProjectTask(projectTask);
     timesheetLine.setToInvoice(toInvoice);
+    if (duration != null) {
+      timesheetLine.setDuration(duration);
+    }
     return timesheetLineRepository.save(timesheetLine);
   }
 

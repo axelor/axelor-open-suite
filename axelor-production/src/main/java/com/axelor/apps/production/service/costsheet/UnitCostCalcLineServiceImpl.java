@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,11 +23,12 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ProductCompanyService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.production.db.CostSheet;
 import com.axelor.apps.production.db.UnitCostCalcLine;
 import com.axelor.apps.production.db.UnitCostCalculation;
 import com.axelor.apps.production.db.repo.UnitCostCalcLineRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import org.slf4j.Logger;
@@ -40,15 +41,19 @@ public class UnitCostCalcLineServiceImpl implements UnitCostCalcLineService {
   protected ProductRepository productRepository;
   protected UnitCostCalcLineRepository unitCostCalcLineRepository;
   protected ProductCompanyService productCompanyService;
+  protected AppBaseService appService;
 
   @Inject
   public UnitCostCalcLineServiceImpl(
       UnitCostCalcLineRepository unitCostCalcLineRepository,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      AppBaseService appService) {
     this.unitCostCalcLineRepository = unitCostCalcLineRepository;
     this.productCompanyService = productCompanyService;
+    this.appService = appService;
   }
 
+  @Override
   public UnitCostCalcLine createUnitCostCalcLine(
       Product product, Company company, int maxLevel, CostSheet costSheet) throws AxelorException {
 
@@ -58,8 +63,10 @@ public class UnitCostCalcLineServiceImpl implements UnitCostCalcLineService {
     unitCostCalcLine.setPreviousCost(
         (BigDecimal) productCompanyService.get(product, "costPrice", company));
     unitCostCalcLine.setCostSheet(costSheet);
-    unitCostCalcLine.setComputedCost(costSheet.getCostPrice());
-    unitCostCalcLine.setCostToApply(costSheet.getCostPrice());
+
+    BigDecimal costPrice = costSheet.getCostPrice();
+    unitCostCalcLine.setComputedCost(costPrice);
+    unitCostCalcLine.setCostToApply(costPrice);
     unitCostCalcLine.setMaxLevel(maxLevel);
 
     return unitCostCalcLine;

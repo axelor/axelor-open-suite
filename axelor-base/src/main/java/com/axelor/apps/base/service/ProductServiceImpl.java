@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,30 +24,36 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.PriceListLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.base.db.ProductCompany;
 import com.axelor.apps.base.db.ProductVariant;
 import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantConfig;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.Sequence;
 import com.axelor.apps.base.db.repo.CompanyRepository;
+import com.axelor.apps.base.db.repo.ProductCompanyRepository;
 import com.axelor.apps.base.db.repo.ProductRepository;
+import com.axelor.apps.base.db.repo.ProductVariantConfigRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
 import com.axelor.apps.base.db.repo.ProductVariantValueRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class ProductServiceImpl implements ProductService {
@@ -59,6 +65,8 @@ public class ProductServiceImpl implements ProductService {
   protected ProductRepository productRepo;
   protected ProductCompanyService productCompanyService;
   protected CompanyRepository companyRepo;
+  protected ProductCompanyRepository productCompanyRepository;
+  protected ProductVariantConfigRepository productVariantConfigRepository;
 
   @Inject
   public ProductServiceImpl(
@@ -67,13 +75,17 @@ public class ProductServiceImpl implements ProductService {
       SequenceService sequenceService,
       AppBaseService appBaseService,
       ProductRepository productRepo,
-      ProductCompanyService productCompanyService) {
+      ProductCompanyService productCompanyService,
+      ProductCompanyRepository productCompanyRepository,
+      ProductVariantConfigRepository productVariantConfigRepository) {
     this.productVariantService = productVariantService;
     this.productVariantRepo = productVariantRepo;
     this.sequenceService = sequenceService;
     this.appBaseService = appBaseService;
     this.productRepo = productRepo;
     this.productCompanyService = productCompanyService;
+    this.productCompanyRepository = productCompanyRepository;
+    this.productVariantConfigRepository = productVariantConfigRepository;
   }
 
   @Inject private MetaFiles metaFiles;
@@ -210,6 +222,64 @@ public class ProductServiceImpl implements ProductService {
       productVariant.setManagPriceCoef(product.getManagPriceCoef());
 
       this.updateSalePrice(productVariant, null);
+      this.updatePriceOfVariantProductCompany(productVariant, product.getProductCompanyList());
+    }
+  }
+
+  protected void updatePriceOfVariantProductCompany(
+      Product productVariant, List<ProductCompany> productCompanyList) throws AxelorException {
+    List<ProductCompany> productVariantCompanyList = productVariant.getProductCompanyList();
+    if (CollectionUtils.isEmpty(productCompanyList)
+        || CollectionUtils.isEmpty(productVariantCompanyList)) {
+      return;
+    }
+    for (ProductCompany productVariantCompany : productVariantCompanyList) {
+      Company company = productVariantCompany.getCompany();
+      if (company == null) {
+        continue;
+      }
+      Optional<ProductCompany> optionalProductCompany =
+          productCompanyList.stream().filter(pc -> company.equals(pc.getCompany())).findFirst();
+      if (optionalProductCompany.isPresent()) {
+        setPriceOfVariantProductCompany(productVariant, optionalProductCompany.get(), company);
+      }
+    }
+  }
+
+  protected void setPriceOfVariantProductCompany(
+      Product productVariant, ProductCompany productCompany, Company company)
+      throws AxelorException {
+    productCompanyService.set(productVariant, "costPrice", productCompany.getCostPrice(), company);
+    productCompanyService.set(
+        productVariant, "purchasePrice", productCompany.getPurchasePrice(), company);
+    productCompanyService.set(productVariant, "salePrice", productCompany.getSalePrice(), company);
+    productCompanyService.set(
+        productVariant, "managPriceCoef", productCompany.getManagPriceCoef(), company);
+  }
+
+  protected void setPriceOfVariantProductCompanyWithExtra(Product productVariant, Company company)
+      throws AxelorException {
+    updateProductCompanyPrice(
+        "costPrice", productVariant, company, ProductVariantValueRepository.APPLICATION_COST_PRICE);
+
+    updateProductCompanyPrice(
+        "purchasePrice",
+        productVariant,
+        company,
+        ProductVariantValueRepository.APPLICATION_PURCHASE_PRICE);
+
+    updateProductCompanyPrice(
+        "salePrice", productVariant, company, ProductVariantValueRepository.APPLICATION_SALE_PRICE);
+  }
+
+  protected void updateProductCompanyPrice(
+      String fieldName, Product productVariant, Company company, int applicationCostPrice)
+      throws AxelorException {
+    if (productCompanyService.isCompanySpecificProductFields(fieldName)) {
+      BigDecimal price = (BigDecimal) productCompanyService.get(productVariant, fieldName, company);
+      BigDecimal extraPrice =
+          this.getProductExtraPrice(productVariant.getProductVariant(), applicationCostPrice);
+      productCompanyService.set(productVariant, fieldName, price.add(extraPrice), company);
     }
   }
 
@@ -269,6 +339,8 @@ public class ProductServiceImpl implements ProductService {
     description += "<br>" + productVariant.getName();
     internalDescription += "<br>" + productVariant.getName();
 
+    productModel.setIsModel(false);
+
     Product generatedProduct = productRepo.copy(productModel, true);
 
     generatedProduct.setName(productModel.getName() + " (" + productVariant.getName() + ")");
@@ -283,6 +355,14 @@ public class ProductServiceImpl implements ProductService {
     generatedProduct.setProductVariant(productVariant);
 
     this.updateSalePrice(generatedProduct, null);
+
+    if (ObjectUtils.isEmpty(generatedProduct.getProductCompanyList())) {
+      return generatedProduct;
+    }
+
+    for (ProductCompany productCompany : generatedProduct.getProductCompanyList()) {
+      setPriceOfVariantProductCompanyWithExtra(generatedProduct, productCompany.getCompany());
+    }
 
     return generatedProduct;
   }
@@ -542,11 +622,27 @@ public class ProductServiceImpl implements ProductService {
     }
     copy.setStartDate(null);
     copy.setEndDate(null);
-    copy.setCostPrice(BigDecimal.ZERO);
-    copy.setPurchasePrice(BigDecimal.ZERO);
-    copy.setProductCompanyList(null);
+    if (product.getCostTypeSelect() != ProductRepository.COST_TYPE_STANDARD) {
+      copy.setCostPrice(BigDecimal.ZERO);
+    }
     copy.setLastPurchaseDate(null);
     copy.setCode(null);
     copy.setSerialNumber(null);
+    if (copy.getIsModel()) {
+      ProductVariantConfig productVariantConfig =
+          productVariantConfigRepository.copy(product.getProductVariantConfig(), false);
+      copy.setProductVariantConfig(productVariantConfig);
+    } else {
+      copy.setProductVariantConfig(null);
+    }
+  }
+
+  @Override
+  public void copyProductCompanies(List<ProductCompany> productCompanyList, Product copy) {
+    copy.setProductCompanyList(null);
+    for (ProductCompany productCompany : productCompanyList) {
+      ProductCompany copyProductCompany = productCompanyRepository.copy(productCompany, false);
+      copy.addProductCompanyListItem(copyProductCompany);
+    }
   }
 }

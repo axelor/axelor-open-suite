@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,19 +22,14 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
-import java.util.List;
 import java.util.Set;
 
 public interface MoveLineCheckService {
   void checkAnalyticByTemplate(MoveLine moveLine) throws AxelorException;
 
-  void checkAnalyticAxes(MoveLine moveLine) throws AxelorException;
-
   void checkDebitCredit(MoveLine moveLine) throws AxelorException;
 
   void checkDates(Move move) throws AxelorException;
-
-  void checkAnalyticAccount(List<MoveLine> moveLineList) throws AxelorException;
 
   void checkAnalyticMoveLinesPercentage(MoveLine moveLine) throws AxelorException;
 

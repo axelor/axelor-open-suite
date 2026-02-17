@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,16 +32,19 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.imports.importer.ExcelToCSV;
 import com.axelor.apps.base.service.imports.importer.Importer;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
+import com.axelor.meta.MetaFiles;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -63,12 +66,16 @@ public class FECImporter extends Importer {
 
   @Inject
   public FECImporter(
+      ExcelToCSV excelToCSV,
+      MetaFiles metaFiles,
+      AppBaseService appBaseService,
       MoveValidateService moveValidateService,
       AppAccountService appAccountService,
       MoveRepository moveRepository,
       FECImportRepository fecImportRepository,
       CompanyRepository companyRepository,
       MoveLineTaxService moveLineTaxService) {
+    super(excelToCSV, metaFiles, appBaseService);
     this.moveValidateService = moveValidateService;
     this.appAccountService = appAccountService;
     this.moveRepository = moveRepository;
@@ -79,7 +86,7 @@ public class FECImporter extends Importer {
 
   @Override
   protected ImportHistory process(String bind, String data, Map<String, Object> importContext)
-      throws IOException {
+      throws IOException, AxelorException {
 
     CSVImporter importer = new CSVImporter(bind, data);
 
@@ -151,11 +158,6 @@ public class FECImporter extends Importer {
   public FECImporter addFecImport(FECImport fecImport) {
     this.fecImport = fecImport;
     return this;
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data) throws IOException {
-    return process(bind, data, null);
   }
 
   public List<Move> getMoves() {
@@ -287,7 +289,7 @@ public class FECImporter extends Importer {
 
   protected String extractCSVMoveReference(String reference) {
     if (reference != null) {
-      int indexOfSeparator = reference.indexOf("-");
+      int indexOfSeparator = reference.indexOf("@");
       if (indexOfSeparator < 0) {
         return reference.replaceFirst("#", "");
       } else {

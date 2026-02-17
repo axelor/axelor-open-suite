@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,7 +19,8 @@
 package com.axelor.apps.hr.web.project;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.hr.service.project.ProjectTaskSprintService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeCreateUpdateService;
+import com.axelor.apps.hr.service.project.ProjectPlanningTimeWarningService;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.common.StringUtils;
 import com.axelor.db.EntityHelper;
@@ -33,7 +34,8 @@ public class ProjectTaskController {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
     String warning =
-        Beans.get(ProjectTaskSprintService.class).getSprintOnChangeWarning(projectTask);
+        Beans.get(ProjectPlanningTimeWarningService.class).getSprintWarning(projectTask);
+
     if (StringUtils.notEmpty(warning)) {
       response.setAlert(warning);
     }
@@ -43,7 +45,7 @@ public class ProjectTaskController {
       throws AxelorException {
     ProjectTask projectTask =
         EntityHelper.getEntity(request.getContext().asType(ProjectTask.class));
-    Beans.get(ProjectTaskSprintService.class).createOrMovePlanification(projectTask);
+    Beans.get(ProjectPlanningTimeCreateUpdateService.class).createOrMovePlannification(projectTask);
     response.setValue("oldActiveSprint", projectTask.getActiveSprint());
     response.setValue("oldBudgetedTime", projectTask.getBudgetedTime());
     response.setValue("projectPlanningTimeList", projectTask.getProjectPlanningTimeList());

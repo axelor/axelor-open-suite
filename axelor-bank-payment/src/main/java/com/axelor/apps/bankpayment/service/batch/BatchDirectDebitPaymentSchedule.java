@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.bankpayment.service.batch;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.PaymentMode;
@@ -50,7 +52,7 @@ import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
@@ -119,7 +121,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
       String bankOrderExportPath = accountingBatch.getPaymentMode().getBankOrderExportFolderPath();
       String dataExpotDir;
       try {
-        dataExpotDir = appBaseService.getDataExportDir();
+        dataExpotDir = AppSettings.get().get(AvailableAppSettings.DATA_UPLOAD_DIR);
 
         BankPaymentConfigService bankPaymentConfigService =
             Beans.get(BankPaymentConfigService.class);
@@ -231,7 +233,7 @@ public class BatchDirectDebitPaymentSchedule extends BatchDirectDebit {
                       .map(Batch::getAccountingBatch)
                       .map(AccountingBatch::getCompany)
                       .orElse(null);
-              Umr activeUmr = umrService.getActiveUmr(company, partner);
+              Umr activeUmr = umrService.getActiveUmr(company, bankDetails);
               Preconditions.checkNotNull(activeUmr, I18n.get("Partner active UMR is missing."));
             }
           }

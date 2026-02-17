@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
-import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.StockMove;
@@ -34,6 +33,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface StockMoveLineService {
 
@@ -214,37 +214,10 @@ public interface StockMoveLineService {
   /**
    * Store customs code information on each stock move line from its product.
    *
-   * @param stockMoveLineList List of StockMoveLines on which to operate
+   * @param stockMoveLine StockMoveLine on which to operate
    * @throws AxelorException
    */
-  public void storeCustomsCodes(List<StockMoveLine> stockMoveLineList) throws AxelorException;
-
-  /**
-   * Check whether a stock move line is fully spread over logistical form lines.
-   *
-   * @param stockMoveLine
-   * @return
-   */
-  boolean computeFullySpreadOverLogisticalFormLinesFlag(StockMoveLine stockMoveLine);
-
-  /**
-   * Get the quantity spreadable over logistical form lines.
-   *
-   * @param stockMoveLine
-   * @return
-   */
-  BigDecimal computeSpreadableQtyOverLogisticalFormLines(StockMoveLine stockMoveLine);
-
-  /**
-   * Get the quantity spreadable over logistical form lines. Take into account the lines from the
-   * specified logistical form.
-   *
-   * @param stockMoveLine
-   * @param logisticalForm
-   * @return
-   */
-  BigDecimal computeSpreadableQtyOverLogisticalFormLines(
-      StockMoveLine stockMoveLine, LogisticalForm logisticalForm);
+  public void storeCustomsCodes(StockMoveLine stockMoveLine) throws AxelorException;
 
   /**
    * Set product information.
@@ -281,7 +254,8 @@ public interface StockMoveLineService {
   public String createDomainForProduct(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
 
-  public Map<String, Object> setAvailableStatus(StockMoveLine stockMoveLine) throws AxelorException;
+  public Map<String, Object> setAvailableStatus(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException;
 
   public List<TrackingNumber> getAvailableTrackingNumbers(StockMoveLine stockMoveLine);
 
@@ -303,7 +277,8 @@ public interface StockMoveLineService {
       Unit unit,
       Integer conformitySelect,
       StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      StockLocation toStockLocation,
+      String description)
       throws AxelorException;
 
   /** To update realQty and conformity of a stock move line (API AOS) */
@@ -313,7 +288,27 @@ public interface StockMoveLineService {
       Integer conformity,
       Unit unit,
       StockLocation fromStockLocation,
-      StockLocation toStockLocation)
+      StockLocation toStockLocation,
+      String description)
+      throws AxelorException;
+
+  void updateLocations(
+      int fromStatus,
+      int toStatus,
+      Set<Long> stockMoveLineIds,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      boolean generateOrder)
+      throws AxelorException;
+
+  void updateLocations(
+      int fromStatus,
+      int toStatus,
+      Set<Long> stockMoveLineIds,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      boolean generateOrder,
+      boolean clearBatch)
       throws AxelorException;
 
   /**
@@ -340,6 +335,29 @@ public interface StockMoveLineService {
       LocalDate date,
       String origin,
       boolean generateOrder)
+      throws AxelorException;
+
+  void updateLocations(
+      int fromStatus,
+      int toStatus,
+      Set<Long> stockMoveLineIds,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      LocalDate date,
+      String origin,
+      boolean generateOrder)
+      throws AxelorException;
+
+  void updateLocations(
+      int fromStatus,
+      int toStatus,
+      Set<Long> stockMoveLineIds,
+      LocalDate lastFutureStockMoveDate,
+      boolean realQty,
+      LocalDate date,
+      String origin,
+      boolean generateOrder,
+      boolean clearBatch)
       throws AxelorException;
 
   BigDecimal computeNewAveragePriceLocationLine(
@@ -378,5 +396,8 @@ public interface StockMoveLineService {
    * @throws AxelorException
    */
   void splitIntoFulfilledMoveLineAndUnfulfilledOne(StockMoveLine stockMoveLine)
+      throws AxelorException;
+
+  StockMoveLine qtyOnChange(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException;
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -52,6 +52,7 @@ import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PeriodRepository;
@@ -69,10 +70,11 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection.Option;
+import com.axelor.studio.db.AppAccount;
 import com.google.common.base.Splitter;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -494,9 +496,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   }
 
   protected void setMoveLineAccountingDate(Move move, boolean daybook) {
+    LocalDate todayDate = appBaseService.getTodayDate(move.getCompany());
     for (MoveLine moveLine : move.getMoveLineList()) {
       if (move.getStatusSelect() == MoveRepository.STATUS_DAYBOOK || !daybook) {
-        moveLine.setAccountingDate(appBaseService.getTodayDate(move.getCompany()));
+        moveLine.setAccountingDate(todayDate);
       }
     }
   }
@@ -566,8 +569,10 @@ public class MoveValidateServiceImpl implements MoveValidateService {
             TraceBackRepository.CATEGORY_INCONSISTENCY,
             I18n.get(AccountExceptionMessage.MOVE_7),
             move.getReference(),
-            totalDebit,
-            totalCredit);
+            totalDebit.setScale(
+                appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP),
+            totalCredit.setScale(
+                appBaseService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP));
       }
     }
   }
@@ -634,6 +639,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
    */
   @Override
   public void freezeFieldsOnMoveLines(Move move) throws AxelorException {
+    Currency companyCurrency = companyConfigService.getCompanyCurrency(move.getCompany());
     for (MoveLine moveLine : move.getMoveLineList()) {
 
       Account account = moveLine.getAccount();
@@ -655,11 +661,12 @@ public class MoveValidateServiceImpl implements MoveValidateService {
         moveLine.setTaxCode(taxAccountService.computeTaxCode(taxLineSet));
       }
 
-      setMoveLineFixedInformation(move, moveLine);
+      setMoveLineFixedInformation(move, moveLine, companyCurrency);
     }
   }
 
-  protected void setMoveLineFixedInformation(Move move, MoveLine moveLine) throws AxelorException {
+  protected void setMoveLineFixedInformation(Move move, MoveLine moveLine, Currency companyCurrency)
+      throws AxelorException {
     Company company = move.getCompany();
     Journal journal = move.getJournal();
     moveLine.setCompanyCode(company.getCode());
@@ -669,9 +676,8 @@ public class MoveValidateServiceImpl implements MoveValidateService {
     moveLine.setFiscalYearCode(move.getPeriod().getYear().getCode());
     moveLine.setCurrencyCode(move.getCurrencyCode());
     moveLine.setCurrencyDecimals(move.getCurrency().getNumberOfDecimals());
-    moveLine.setCompanyCurrencyCode(companyConfigService.getCompanyCurrency(company).getCode());
-    moveLine.setCompanyCurrencyDecimals(
-        companyConfigService.getCompanyCurrency(company).getNumberOfDecimals());
+    moveLine.setCompanyCurrencyCode(companyCurrency.getCode());
+    moveLine.setCompanyCurrencyDecimals(companyCurrency.getNumberOfDecimals());
     moveLine.setAdjustingMove(move.getAdjustingMove());
   }
 
@@ -698,7 +704,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
           accounting(move);
         }
       } catch (Exception e) {
-        TraceBackService.trace(e);
+        TraceBackService.trace(e, move.getReference());
         if (errors.length() > 0) {
           errors = errors.concat(", ");
         }
@@ -965,7 +971,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               .multiply(taxAccountService.getTotalTaxRateInPercentage(Set.of(taxLine)))
               .divide(
                   BigDecimal.valueOf(100),
-                  AppBaseService.COMPUTATION_SCALING,
+                  currencyScaleService.getCompanyScale(moveLine),
                   RoundingMode.HALF_UP);
       if (amountByTaxLineMap.get(taxLine) != null) {
         amountByTaxLineMap.replace(taxLine, amountByTaxLineMap.get(taxLine).add(taxAmount));
@@ -998,8 +1004,19 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   }
 
   protected boolean isFinancialDiscount(Move move) throws AxelorException {
+
+    AppAccount account = appAccountService.getAppAccount();
+    if (account == null
+        || !account.getManageFinancialDiscount()
+        || (move.getInvoice() != null && move.getInvoice().getFinancialDiscount() == null)) {
+      return false;
+    }
+
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+      if (moveLineFinancialDiscountService.isFinancialDiscountLine(
+          moveLine,
+          move.getCompany(),
+          move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)) {
         return true;
       }
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,8 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,22 +40,30 @@ public class SaleInvoicingStateServiceImpl implements SaleInvoicingStateService 
     this.invoiceLineRepository = invoiceLineRepository;
   }
 
+  @Transactional
+  @Override
+  public void updateInvoicingState(SaleOrder saleOrder) {
+    updateSaleOrderLinesInvoicingState(saleOrder.getSaleOrderLineList());
+    saleOrder.setInvoicingState(computeSaleOrderInvoicingState(saleOrder));
+  }
+
   @Override
   public int getSaleOrderLineInvoicingState(SaleOrderLine saleOrderLine) {
     int invoicingState = 0;
 
-    if (saleOrderLine.getAmountInvoiced().compareTo(BigDecimal.ZERO) > 0) {
-      if (saleOrderLine.getAmountInvoiced().compareTo(saleOrderLine.getExTaxTotal()) < 0) {
-        invoicingState = SALE_ORDER_INVOICE_PARTIALLY_INVOICED;
-      }
-      if (saleOrderLine.getAmountInvoiced().compareTo(saleOrderLine.getExTaxTotal()) >= 0) {
-        invoicingState = SALE_ORDER_INVOICE_INVOICED;
-      }
+    BigDecimal amountInvoiced = saleOrderLine.getAmountInvoiced();
+    BigDecimal exTaxTotal = saleOrderLine.getExTaxTotal();
+    BigDecimal difference = exTaxTotal.subtract(amountInvoiced);
+
+    if (difference.compareTo(BigDecimal.ZERO) <= 0) {
+      invoicingState = SALE_ORDER_INVOICE_INVOICED;
+    } else {
+      invoicingState = SALE_ORDER_INVOICE_PARTIALLY_INVOICED;
     }
 
-    if (saleOrderLine.getAmountInvoiced().compareTo(BigDecimal.ZERO) == 0) {
+    if (amountInvoiced.compareTo(BigDecimal.ZERO) == 0) {
       if (atLeastOneInvoiceVentilated(saleOrderLine)
-          && saleOrderLine.getExTaxTotal().compareTo(BigDecimal.ZERO) == 0) {
+          && exTaxTotal.compareTo(BigDecimal.ZERO) == 0) {
         invoicingState = SALE_ORDER_INVOICE_INVOICED;
       } else {
         invoicingState = SALE_ORDER_INVOICE_NOT_INVOICED;
@@ -69,7 +77,7 @@ public class SaleInvoicingStateServiceImpl implements SaleInvoicingStateService 
     return invoiceLineRepository
             .all()
             .filter(
-                "self.saleOrderLine = :saleOrderLine AND self.invoice.statusSelect = :statusSelect")
+                "self.saleOrderLine.id = :saleOrderLine AND self.invoice.statusSelect = :statusSelect")
             .bind("saleOrderLine", saleOrderLine.getId())
             .bind("statusSelect", InvoiceRepository.STATUS_VENTILATED)
             .count()

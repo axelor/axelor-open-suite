@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,11 +44,10 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -195,7 +194,7 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
 
   @Override
   public List<Move> createMoveListFromMassEntryList(Move parentMove) {
-    List<Move> moveList = new ArrayList();
+    List<Move> moveList = new ArrayList<>();
     Move moveToAdd;
 
     List<Integer> uniqueIdList =
@@ -213,7 +212,15 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
 
   @Override
   public Move createMoveFromMassEntryList(Move parentMove, int temporaryMoveNumber) {
+    if (parentMove == null) {
+      return null;
+    }
+
     Move moveResult = new Move();
+
+    if (parentMove.getId() != null) {
+      parentMove = moveRepository.find(parentMove.getId());
+    }
 
     moveResult.setJournal(parentMove.getJournal());
     moveResult.setFunctionalOriginSelect(parentMove.getFunctionalOriginSelect());
@@ -273,13 +280,5 @@ public class MassEntryMoveCreateServiceImpl implements MassEntryMoveCreateServic
         move.addMoveLineMassEntryListItem(copy);
       }
     }
-  }
-
-  @Override
-  public Integer getMaxTemporaryMoveNumber(List<MoveLineMassEntry> moveLineList) {
-    return moveLineList.stream()
-        .map(MoveLineMassEntry::getTemporaryMoveNumber)
-        .max(Comparator.naturalOrder())
-        .get();
   }
 }

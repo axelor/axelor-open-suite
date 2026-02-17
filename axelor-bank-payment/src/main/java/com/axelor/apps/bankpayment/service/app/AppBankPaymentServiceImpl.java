@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,18 +23,12 @@ import com.axelor.apps.bankpayment.db.repo.BankPaymentConfigRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppBankPayment;
 import com.axelor.studio.db.repo.AppBankPaymentRepository;
-import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 @Singleton
@@ -46,24 +40,11 @@ public class AppBankPaymentServiceImpl extends AppBaseServiceImpl implements App
 
   @Inject
   public AppBankPaymentServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsService,
-      MetaModuleRepository metaModuleRepo,
-      MetaFileRepository metaFileRepo,
+      AppService appService,
       AppBankPaymentRepository appBankPaymentRepo,
       BankPaymentConfigRepository bankPaymentConfigRepo,
       CompanyRepository companyRepo) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+    super(appService);
     this.appBankPaymentRepo = appBankPaymentRepo;
     this.bankPaymentConfigRepo = bankPaymentConfigRepo;
     this.companyRepo = companyRepo;
@@ -71,7 +52,7 @@ public class AppBankPaymentServiceImpl extends AppBaseServiceImpl implements App
 
   @Override
   public AppBankPayment getAppBankPayment() {
-    return appBankPaymentRepo.all().fetchOne();
+    return appBankPaymentRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

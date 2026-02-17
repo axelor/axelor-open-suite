@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,10 +28,12 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductSe
 import com.axelor.apps.sale.service.saleorderline.view.SaleOrderLineViewService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
+import jakarta.annotation.Priority;
 import java.util.Map;
 
 public class SaleOrderLineObserver {
-  void onSaleOrderLineOnNew(@Observes SaleOrderLineViewOnNew event) throws AxelorException {
+  void onSaleOrderLineOnNew(@Observes @Priority(value = 10) SaleOrderLineViewOnNew event)
+      throws AxelorException {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
@@ -39,7 +41,8 @@ public class SaleOrderLineObserver {
         Beans.get(SaleOrderLineViewService.class).getOnNewAttrs(saleOrderLine, saleOrder));
   }
 
-  void onSaleOrderLineOnLoad(@Observes SaleOrderLineViewOnLoad event) throws AxelorException {
+  void onSaleOrderLineOnLoad(@Observes @Priority(value = 10) SaleOrderLineViewOnLoad event)
+      throws AxelorException {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Map<String, Object>> saleOrderLineMap = event.getSaleOrderLineMap();
@@ -47,8 +50,8 @@ public class SaleOrderLineObserver {
         Beans.get(SaleOrderLineViewService.class).getOnLoadAttrs(saleOrderLine, saleOrder));
   }
 
-  void onSaleOrderLineProductOnChange(@Observes SaleOrderLineProductOnChange event)
-      throws AxelorException {
+  void onSaleOrderLineProductOnChange(
+      @Observes @Priority(value = 10) SaleOrderLineProductOnChange event) throws AxelorException {
     SaleOrderLine saleOrderLine = event.getSaleOrderLine();
     SaleOrder saleOrder = event.getSaleOrder();
     Map<String, Object> saleOrderLineMap = event.getSaleOrderLineMap();

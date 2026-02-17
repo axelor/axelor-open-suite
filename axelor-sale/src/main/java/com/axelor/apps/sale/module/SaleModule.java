@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -115,8 +115,12 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductServi
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderCopyServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDateServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
@@ -129,10 +133,18 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderRestService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderRestServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSequenceService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSequenceServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSplitDummyService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSplitDummyServiceImpl;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSplitServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserServiceImpl;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
@@ -173,6 +185,8 @@ import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
@@ -324,5 +338,12 @@ public class SaleModule extends AxelorModule {
         .to(SaleOrderLineCostPriceComputeServiceImpl.class);
     bind(MarginComputeService.class).to(MarginComputeServiceImpl.class);
     bind(SaleOrderGlobalDiscountService.class).to(SaleOrderGlobalDiscountServiceImpl.class);
+    bind(SaleOrderCopyService.class).to(SaleOrderCopyServiceImpl.class);
+    bind(SaleOrderDateService.class).to(SaleOrderDateServiceImpl.class);
+    bind(SaleOrderSplitService.class).to(SaleOrderSplitServiceImpl.class);
+    bind(SaleOrderOrderingStatusService.class).to(SaleOrderOrderingStatusServiceImpl.class);
+    bind(SaleOrderSequenceService.class).to(SaleOrderSequenceServiceImpl.class);
+    bind(SaleOrderSplitDummyService.class).to(SaleOrderSplitDummyServiceImpl.class);
+    bind(SaleOrderLineComputeQtyService.class).to(SaleOrderLineComputeQtyServiceImpl.class);
   }
 }

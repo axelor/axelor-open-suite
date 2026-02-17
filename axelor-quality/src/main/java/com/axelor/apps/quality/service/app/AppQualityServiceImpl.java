@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,17 +23,11 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.quality.db.QualityConfig;
 import com.axelor.apps.quality.db.repo.QualityConfigRepository;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppQuality;
 import com.axelor.studio.db.repo.AppQualityRepository;
-import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQualityService {
@@ -44,24 +38,11 @@ public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQual
 
   @Inject
   public AppQualityServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsService,
-      MetaModuleRepository metaModuleRepo,
-      MetaFileRepository metaFileRepo,
+      AppService appService,
       AppQualityRepository appQualityRepo,
       CompanyRepository companyRepository,
       QualityConfigRepository qualityConfigRepository) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+    super(appService);
     this.appQualityRepo = appQualityRepo;
     this.companyRepository = companyRepository;
     this.qualityConfigRepository = qualityConfigRepository;
@@ -69,7 +50,7 @@ public class AppQualityServiceImpl extends AppBaseServiceImpl implements AppQual
 
   @Override
   public AppQuality getAppQuality() {
-    return appQualityRepo.all().fetchOne();
+    return appQualityRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

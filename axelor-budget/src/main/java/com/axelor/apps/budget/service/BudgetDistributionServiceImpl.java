@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.service.CurrencyScaleService;
@@ -37,24 +38,22 @@ import com.axelor.apps.budget.db.repo.BudgetDistributionRepository;
 import com.axelor.apps.budget.db.repo.BudgetRepository;
 import com.axelor.apps.budget.db.repo.GlobalBudgetRepository;
 import com.axelor.apps.budget.exception.BudgetExceptionMessage;
+import com.axelor.apps.budget.service.compute.BudgetLineComputeService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.AuditableModel;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.i18n.I18n;
-import com.axelor.studio.db.AppBudget;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BudgetDistributionServiceImpl implements BudgetDistributionService {
@@ -68,6 +67,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
   protected BudgetToolsService budgetToolsService;
   protected CurrencyScaleService currencyScaleService;
   protected AppBudgetService appBudgetService;
+  protected BudgetLineComputeService budgetLineComputeService;
+  protected BudgetAccountConfigService budgetAccountConfigService;
+  protected AccountConfigService accountConfigService;
 
   @Inject
   public BudgetDistributionServiceImpl(
@@ -78,7 +80,10 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       BudgetService budgetService,
       BudgetToolsService budgetToolsService,
       CurrencyScaleService currencyScaleService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetLineComputeService budgetLineComputeService,
+      BudgetAccountConfigService budgetAccountConfigService,
+      AccountConfigService accountConfigService) {
     this.budgetDistributionRepository = budgetDistributionRepository;
     this.budgetLineService = budgetLineService;
     this.budgetLevelService = budgetLevelService;
@@ -87,6 +92,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     this.budgetToolsService = budgetToolsService;
     this.currencyScaleService = currencyScaleService;
     this.appBudgetService = appBudgetService;
+    this.budgetLineComputeService = budgetLineComputeService;
+    this.budgetAccountConfigService = budgetAccountConfigService;
+    this.accountConfigService = accountConfigService;
   }
 
   @Override
@@ -157,27 +165,26 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     if (isCancel) {
       ratio = ratio.negate();
     }
-    if (invoice != null && !CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
-      for (InvoiceLine invoiceLine : invoice.getInvoiceLineList()) {
-        updateAmountPaidOnBudgets(
-            invoiceLine.getBudgetDistributionList(),
-            ratio,
-            invoice.getInvoiceDate() != null
-                ? invoice.getInvoiceDate()
-                : invoice.getCreatedOn().toLocalDate());
-      }
-    } else if (move != null
-        && move.getInvoice() == null
-        && !CollectionUtils.isEmpty(move.getMoveLineList())) {
+
+    if (move != null && !CollectionUtils.isEmpty(move.getMoveLineList())) {
       for (MoveLine moveLine : move.getMoveLineList()) {
-        updateAmountPaidOnBudgets(moveLine.getBudgetDistributionList(), ratio, move.getDate());
+        updateAmountPaidOnBudgets(
+            moveLine.getBudgetDistributionList(),
+            ratio,
+            moveLine.getBudgetFromDate(),
+            moveLine.getBudgetToDate(),
+            move.getDate());
       }
     }
   }
 
   @Transactional
   protected void updateAmountPaidOnBudgets(
-      List<BudgetDistribution> budgetDistributionList, BigDecimal ratio, LocalDate date) {
+      List<BudgetDistribution> budgetDistributionList,
+      BigDecimal ratio,
+      LocalDate budgetFromDate,
+      LocalDate budgetToDate,
+      LocalDate date) {
     if (ObjectUtils.isEmpty(budgetDistributionList)) {
       return;
     }
@@ -190,13 +197,8 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       budget.setTotalAmountPaid(
           currencyScaleService.getCompanyScaledValue(
               budget, budget.getTotalAmountPaid().add(totalAmountPaid)));
-      BudgetLine budgetLine =
-          budgetLineService.findBudgetLineAtDate(budget.getBudgetLineList(), date).orElse(null);
-      if (budgetLine != null) {
-        budgetLine.setAmountPaid(
-            currencyScaleService.getCompanyScaledValue(
-                budget, budgetLine.getAmountPaid().add(totalAmountPaid)));
-      }
+      budgetLineComputeService.updateBudgetLineAmountsPaid(
+          budget, totalAmountPaid, budgetFromDate, budgetToDate, date);
       budgetRepo.save(budget);
     }
   }
@@ -218,6 +220,11 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
       if (CollectionUtils.isEmpty(authorizedAxis)) {
         return "";
       }
+
+      BigDecimal remainingAmount = amount;
+      BigDecimal numberOfAxisWithBudgetKey =
+          budgetAccountConfigService.getNumberOfAxisWithBudgetKey(
+              accountConfigService.getAccountConfig(company));
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         if (authorizedAxis.contains(analyticMoveLine.getAnalyticAxis())) {
           String key = budgetService.computeKey(account, company, analyticMoveLine);
@@ -226,14 +233,31 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
             Budget budget = budgetService.findBudgetWithKey(key, date);
 
             if (budget != null) {
+              BigDecimal imputedAmount = amount;
+              if (numberOfAxisWithBudgetKey.signum() > 0) {
+                imputedAmount =
+                    currencyScaleService.getCompanyScaledValue(
+                        budget, amount.divide(numberOfAxisWithBudgetKey));
+              }
+
+              imputedAmount =
+                  currencyScaleService.getCompanyScaledValue(
+                      budget,
+                      imputedAmount
+                          .multiply(analyticMoveLine.getPercentage())
+                          .divide(new BigDecimal(100)));
+
+              if (imputedAmount.subtract(remainingAmount).abs().compareTo(new BigDecimal(0.01))
+                  == 0) {
+                imputedAmount = remainingAmount;
+              }
+
+              remainingAmount = remainingAmount.subtract(imputedAmount);
+
               BudgetDistribution budgetDistribution =
                   createDistributionFromBudget(
                       budget,
-                      currencyScaleService.getCompanyScaledValue(
-                          budget,
-                          amount
-                              .multiply(analyticMoveLine.getPercentage())
-                              .divide(new BigDecimal(100))),
+                      currencyScaleService.getCompanyScaledValue(budget, imputedAmount),
                       date);
 
               linkBudgetDistributionWithParent(budgetDistribution, object);
@@ -305,7 +329,9 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     if (date != null) {
       query =
           query.concat(
-              String.format(" AND self.fromDate <= '%s' AND self.toDate >= '%s'", date, date));
+              String.format(
+                  " AND self.fromDate <= CAST('%s' AS date) AND self.toDate >= CAST('%s' AS date)",
+                  date, date));
     }
     if (AccountTypeRepository.TYPE_INCOME.equals(technicalTypeSelect)) {
       query =
@@ -334,22 +360,7 @@ public class BudgetDistributionServiceImpl implements BudgetDistributionService 
     }
 
     if (account != null && budgetToolsService.checkBudgetKeyInConfig(company)) {
-      query = query.concat(String.format(" AND %d MEMBER OF self.accountSet ", account.getId()));
-    }
-
-    if (!ObjectUtils.isEmpty(globalBudgetSet)) {
-      AppBudget appBudget = appBudgetService.getAppBudget();
-      if (appBudget != null && appBudget.getEnableProject()) {
-        query =
-            query.concat(
-                String.format(
-                    " AND %s.id IN (%s)",
-                    budget,
-                    globalBudgetSet.stream()
-                        .map(GlobalBudget::getId)
-                        .map(Objects::toString)
-                        .collect(Collectors.joining(","))));
-      }
+      query = query.concat(String.format(" AND %d IN (self.accountSet.id) ", account.getId()));
     }
 
     return query;

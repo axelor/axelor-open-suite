@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,7 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.common.StringUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -228,7 +228,7 @@ public class SaleOrderLineComputeServiceImpl implements SaleOrderLineComputeServ
     if (saleOrderLine.getTypeSelect() != SaleOrderLineRepository.TYPE_NORMAL) {
       return saleOrderLineMap;
     }
-    saleOrderLinePackService.fillPriceFromPackLine(saleOrderLine, saleOrder);
+    saleOrderLinePackService.fillPriceFromPackLine(saleOrderLine, saleOrder, null);
     saleOrderLineMap.putAll(computeValues(saleOrder, saleOrderLine));
     return saleOrderLineMap;
   }

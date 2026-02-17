@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Timer;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.TimerRepository;
+import com.axelor.apps.base.service.TagService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -46,6 +47,7 @@ import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import com.axelor.utils.helpers.StringHelper;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -289,7 +291,15 @@ public class ProjectTaskController {
     ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
 
     response.setAttr(
-        "tagSet", "domain", Beans.get(ProjectTaskAttrsService.class).getTagDomain(projectTask));
+        "tagSet",
+        "domain",
+        Beans.get(TagService.class)
+            .getTagDomain(
+                "ProjectTask",
+                Optional.of(projectTask)
+                    .map(ProjectTask::getProject)
+                    .map(Project::getCompany)
+                    .orElse(null)));
   }
 
   @ErrorException
@@ -337,5 +347,16 @@ public class ProjectTaskController {
 
     response.setValues(
         Beans.get(ProjectTaskGroupService.class).updateBudgetedTime(projectTask, oldTimeUnit));
+  }
+
+  @ErrorException
+  public void statusOnSelect(ActionRequest request, ActionResponse response) {
+    ProjectTask projectTask = request.getContext().asType(ProjectTask.class);
+    Project project = projectTask.getProject();
+
+    Set<TaskStatus> taskStatusSet =
+        Beans.get(TaskStatusToolService.class).getTaskStatusSet(project, projectTask);
+    String filter = String.format("self.id IN (%s)", StringHelper.getIdListString(taskStatusSet));
+    response.setAttr("status", "domain", filter);
   }
 }

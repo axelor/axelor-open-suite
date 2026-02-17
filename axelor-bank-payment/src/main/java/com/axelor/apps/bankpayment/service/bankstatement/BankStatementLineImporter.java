@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,16 +26,19 @@ import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.imports.importer.ExcelToCSV;
 import com.axelor.apps.base.service.imports.importer.Importer;
 import com.axelor.apps.base.service.imports.listener.ImporterListener;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
+import com.axelor.meta.MetaFiles;
 import com.google.common.base.Throwables;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,10 +57,14 @@ public class BankStatementLineImporter extends Importer {
 
   @Inject
   public BankStatementLineImporter(
+      ExcelToCSV excelToCSV,
+      MetaFiles metaFiles,
+      AppBaseService appBaseService,
       BankStatementLineRepository bankStatementLineRepository,
       BankStatementRepository bankStatementRepository,
       BankStatementDateService bankStatementDateService,
       BankStatement bankStatement) {
+    super(excelToCSV, metaFiles, appBaseService);
     this.bankStatementLineRepository = bankStatementLineRepository;
     this.bankStatementRepository = bankStatementRepository;
     this.bankStatementDateService = bankStatementDateService;
@@ -145,11 +152,6 @@ public class BankStatementLineImporter extends Importer {
     bankStatementDateService.updateBankStatementDate(
         bankStatement, bankStatementLine.getOperationDate(), bankStatementLine.getLineTypeSelect());
     bankStatementLineRepository.save(bankStatementLine);
-  }
-
-  @Override
-  protected ImportHistory process(String bind, String data) throws IOException, AxelorException {
-    return process(bind, data, null);
   }
 
   public void setBankStatement(BankStatement bankStatement) {

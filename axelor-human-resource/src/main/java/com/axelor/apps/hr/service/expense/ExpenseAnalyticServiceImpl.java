@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,28 +20,37 @@ package com.axelor.apps.hr.service.expense;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
+import com.axelor.apps.account.service.analytic.AnalyticAxisService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.app.AppAccountService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import com.axelor.common.ObjectUtils;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Singleton
 public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
 
   protected AppAccountService appAccountService;
   protected AnalyticMoveLineService analyticMoveLineService;
+  protected AnalyticAxisService analyticAxisService;
 
   @Inject
   public ExpenseAnalyticServiceImpl(
-      AppAccountService appAccountService, AnalyticMoveLineService analyticMoveLineService) {
+      AppAccountService appAccountService,
+      AnalyticMoveLineService analyticMoveLineService,
+      AnalyticAxisService analyticAxisService) {
     this.appAccountService = appAccountService;
     this.analyticMoveLineService = analyticMoveLineService;
+    this.analyticAxisService = analyticAxisService;
   }
 
   @Override
@@ -62,7 +71,7 @@ public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
                       .orElse(null));
       for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
         analyticMoveLineService.updateAnalyticMoveLine(
-            analyticMoveLine, expenseLine.getUntaxedAmount(), date);
+            analyticMoveLine, expenseLine.getCompanyUntaxedAmount(), date);
       }
     }
     return expenseLine;
@@ -83,11 +92,28 @@ public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
     List<AnalyticMoveLine> analyticMoveLineList =
         analyticMoveLineService.generateLines(
             expenseLine.getAnalyticDistributionTemplate(),
-            expenseLine.getUntaxedAmount(),
+            expenseLine.getCompanyUntaxedAmount(),
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
             date);
 
-    expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
+    analyticMoveLineList.forEach(expenseLine::addAnalyticMoveLineListItem);
     return expenseLine;
+  }
+
+  @Override
+  public void checkAnalyticAxisByCompany(Expense expense) throws AxelorException {
+    if (expense == null || ObjectUtils.isEmpty(expense.getGeneralExpenseLineList())) {
+      return;
+    }
+
+    for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
+      if (!ObjectUtils.isEmpty(expenseLine.getAnalyticMoveLineList())) {
+        analyticAxisService.checkRequiredAxisByCompany(
+            expense.getCompany(),
+            expenseLine.getAnalyticMoveLineList().stream()
+                .map(AnalyticMoveLine::getAnalyticAxis)
+                .collect(Collectors.toList()));
+      }
+    }
   }
 }

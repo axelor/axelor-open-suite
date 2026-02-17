@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,7 +41,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Joiner;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 @Singleton
@@ -178,7 +178,7 @@ public class PurchaseOrderController {
           Beans.get(PurchaseOrderShipmentService.class)
               .createShipmentCostLine(purchaseOrder, shipmentMode);
       if (message != null) {
-        response.setInfo(message);
+        response.setNotify(message);
       }
       response.setValues(purchaseOrder);
     } catch (Exception e) {
@@ -206,5 +206,14 @@ public class PurchaseOrderController {
         Beans.get(PurchaseOrderStockService.class)
             .updatePurchaseOrderLinesStockLocation(purchaseOrder);
     response.setValue("purchaseOrderLineList", purchaseOrderLineList);
+  }
+
+  public void checkAnalyticAxis(ActionRequest request, ActionResponse response) {
+    PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    try {
+      Beans.get(PurchaseOrderSupplychainService.class).checkAnalyticAxisByCompany(purchaseOrder);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 }

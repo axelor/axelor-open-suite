@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,17 +27,21 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.Optional;
 
 public class ProjectTimeUnitServiceImpl implements ProjectTimeUnitService {
 
   protected AppBaseService appBaseService;
+  protected UnitConversionForProjectService unitConversionForProjectService;
 
   @Inject
-  public ProjectTimeUnitServiceImpl(AppBaseService appBaseService) {
+  public ProjectTimeUnitServiceImpl(
+      AppBaseService appBaseService,
+      UnitConversionForProjectService unitConversionForProjectService) {
     this.appBaseService = appBaseService;
+    this.unitConversionForProjectService = unitConversionForProjectService;
   }
 
   @Override
@@ -109,5 +113,22 @@ public class ProjectTimeUnitServiceImpl implements ProjectTimeUnitService {
 
   protected Unit getProjectDefaultTimeUnit(Project project, Unit defaultUnit) {
     return Optional.ofNullable(project).map(Project::getProjectTimeUnit).orElse(defaultUnit);
+  }
+
+  @Override
+  public BigDecimal convertInProjectTaskUnit(
+      ProjectTask projectTask, Unit startUnit, BigDecimal duration) throws AxelorException {
+    if (projectTask == null || startUnit == null || duration.signum() == 0) {
+      return BigDecimal.ZERO;
+    }
+
+    Unit projectTaskUnit = getTaskDefaultTimeUnit(projectTask, startUnit);
+
+    return unitConversionForProjectService.convert(
+        startUnit,
+        projectTaskUnit,
+        duration,
+        AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+        projectTask.getProject());
   }
 }

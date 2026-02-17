@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,13 +19,12 @@
         </structure>
     </list-property>
     <property name="units">in</property>
-    <method name="initialize"><![CDATA[function formatNumber(number) {
+    <method name="initialize"><![CDATA[function getNumberFormatPattern() {
 	var exportTypeSelect = params["ExportTypeSelect"];
 	var numberOfDecimals = vars["numberOfDecimals"];
 	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
 	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
-	var formatPattern = basePart + decimalPart;
-	return Formatter.format(number, formatPattern);
+	return basePart + decimalPart;
 }]]></method>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
@@ -376,114 +375,133 @@
                     <property name="name">analytic_journal_id</property>
                     <property name="nativeName">analytic_journal_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
                     <property name="name">analytic_journal_name</property>
                     <property name="nativeName">analytic_journal_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">3</property>
                     <property name="name">analytic_axis_id</property>
                     <property name="nativeName">analytic_axis_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">4</property>
                     <property name="name">analytic_axis_code</property>
                     <property name="nativeName">analytic_axis_code</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">5</property>
                     <property name="name">analytic_axis_name</property>
                     <property name="nativeName">analytic_axis_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">6</property>
                     <property name="name">analytic_account_id</property>
                     <property name="nativeName">analytic_account_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">7</property>
                     <property name="name">analytic_account_code</property>
                     <property name="nativeName">analytic_account_code</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">8</property>
                     <property name="name">analytic_account_name</property>
                     <property name="nativeName">analytic_account_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
                     <property name="name">account_type_name</property>
                     <property name="nativeName">account_type_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">10</property>
                     <property name="name">analyticmovelinedate</property>
                     <property name="nativeName">analyticmovelinedate</property>
                     <property name="dataType">date</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">11</property>
                     <property name="name">account</property>
                     <property name="nativeName">account</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">12</property>
                     <property name="name">analytic_account</property>
                     <property name="nativeName">analytic_account</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">13</property>
                     <property name="name">axis</property>
                     <property name="nativeName">axis</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">14</property>
                     <property name="name">amount</property>
                     <property name="nativeName">amount</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">15</property>
                     <property name="name">move_line_name</property>
                     <property name="nativeName">move_line_name</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
                     <property name="name">analytic_move_line_id</property>
                     <property name="nativeName">analytic_move_line_id</property>
                     <property name="dataType">decimal</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">17</property>
                     <property name="name">number_of_decimals</property>
                     <property name="nativeName">number_of_decimals</property>
                     <property name="dataType">integer</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">18</property>
                     <property name="name">move_line_origin</property>
                     <property name="nativeName">move_line_origin</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
                 <structure>
                     <property name="position">19</property>
                     <property name="name">move_line_description</property>
                     <property name="nativeName">move_line_description</property>
                     <property name="dataType">string</property>
+                    <property name="nativeDataType">0</property>
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select AnalyticJournal.id as analytic_journal_id, AnalyticJournal.name as analytic_journal_name,
@@ -494,7 +512,7 @@ AnalyticMoveLine.date_val as AnalyticMoveLineDate,
 CONCAT(MoveLine.account_code, ' ', MoveLine.account_name) as account,
 CONCAT(AnalyticAccount.code, ' ', AnalyticAccount.name) as analytic_account,
 CONCAT(AnalyticAxis.code, ' ', AnalyticAxis.name) as axis,
-AnalyticMoveLine.amount as amount,
+AnalyticMoveLine.amount * sign(MoveLine.debit - MoveLine.credit) as amount,
 MoveLine.name as move_line_name,
 AnalyticMoveLine.id as analytic_move_line_id,
 Currency.number_of_decimals,
@@ -587,11 +605,9 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
                     <text-property name="heading">report_date_edition</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <property name="onColumnLayout">false</property>
-                    <text-property name="heading">logo_path</text-property>
+                    <property name="columnName">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <text-property name="heading">logo_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">journal_name</property>
@@ -665,8 +681,8 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
                     </structure>
                     <structure>
                         <property name="position">8</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">9</property>
@@ -738,10 +754,10 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
                 </structure>
                 <structure>
                     <property name="position">8</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">9</property>
@@ -769,7 +785,7 @@ order by AnalyticJournal.name, AnalyticAxis.code, AnalyticAccount.code, AccountT
 Company.height as logo_height,
 Company.width as logo_width,
 AccountingReport.date_from, AccountingReport.date_to, AccountingReport.date_val as report_date, 
-AccountingReport.publication_date_time as report_date_edition, MetaFile.file_path as logo_path, AnalyticJournal.name as journal_name,
+AccountingReport.publication_date_time as report_date_edition, MetaFile.id as logo_id, AnalyticJournal.name as journal_name,
 Currency.code as currency,
 AccountingReport.ref
 from account_accounting_report as AccountingReport 
@@ -963,12 +979,6 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                             <property name="dataType">date-time</property>
                         </structure>
                         <structure>
-                            <property name="name">logo_path</property>
-                            <text-property name="displayName">logo_path</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
                             <property name="name">journal_name</property>
                             <text-property name="displayName">journal_name</text-property>
                             <expression name="expression" type="javascript">dataSetRow["journal_name"]</expression>
@@ -994,6 +1004,12 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                             <expression name="expression" type="javascript">dataSetRow["currency"]</expression>
                             <property name="dataType">string</property>
                         </structure>
+                        <structure>
+                            <property name="name">logo_id</property>
+                            <text-property name="displayName">logo_id</text-property>
+                            <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                            <property name="dataType">decimal</property>
+                        </structure>
                     </list-property>
                     <column id="4158">
                         <property name="width">2in</property>
@@ -1011,13 +1027,18 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                        <expression name="valueExpr" type="javascript">row["logo_id"] == null</expression>
                                     </structure>
                                 </list-property>
                                 <method name="onCreate"><![CDATA[this.width=row["logo_width"];
-this.height=row["logo_height"];]]></method>
-                                <property name="source">file</property>
-                                <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+this.height=row["logo_height"];
+
+var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                <property name="source">expr</property>
                             </image>
                         </cell>
                         <cell id="3121">
@@ -1164,12 +1185,6 @@ this.height=row["logo_height"];]]></method>
                     <text-property name="displayName">report_date_edition</text-property>
                     <expression name="expression" type="javascript">dataSetRow["report_date_edition"]</expression>
                     <property name="dataType">date-time</property>
-                </structure>
-                <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
                 </structure>
                 <structure>
                     <property name="name">journal_name</property>
@@ -1723,6 +1738,34 @@ this.height=row["logo_height"];]]></method>
                                 <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
                                 <property name="dataType">integer</property>
                             </structure>
+                            <structure>
+                                <property name="name">Column Binding</property>
+                                <text-property name="displayName">amount</text-property>
+                                <expression name="expression" type="javascript">row["amount"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_1</property>
+                                <text-property name="displayName">TotalPerAnalyticAccount</text-property>
+                                <expression name="expression" type="javascript">row["TotalPerAnalyticAccount"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_2</property>
+                                <text-property name="displayName">TotalPerAnalyticAxis</text-property>
+                                <expression name="expression" type="javascript">row["TotalPerAnalyticAxis"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
+                            <structure>
+                                <property name="name">Column Binding_3</property>
+                                <text-property name="displayName">TotalPerAnalyticJournal</text-property>
+                                <expression name="expression" type="javascript">row["TotalPerAnalyticJournal"]</expression>
+                                <property name="dataType">decimal</property>
+                                <property name="allowExport">true</property>
+                            </structure>
                         </list-property>
                         <property name="pageBreakInterval">0</property>
                         <column id="4332">
@@ -2188,9 +2231,24 @@ this.height=row["logo_height"];]]></method>
                                             <property name="borderRightStyle">none</property>
                                             <property name="borderTopStyle">none</property>
                                             <property name="textAlign">right</property>
+                                            <property name="display">inline</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">params["ExportTypeSelect"].value == 'xlsx'</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["TotalPerAnalyticJournal"])</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["TotalPerAnalyticJournal"] > 0 ? '+' : ""</VALUE-OF>]]></text-property>
                                         </text>
+                                        <data id="4531">
+                                            <property name="fontSize">9pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="display">inline</property>
+                                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                            <property name="resultSetColumn">Column Binding_3</property>
+                                        </data>
                                     </cell>
                                 </row>
                             </footer>
@@ -2287,6 +2345,7 @@ this.height=row["logo_height"];]]></method>
                                         </text>
                                     </cell>
                                     <cell id="4238">
+                                        <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
                                         <property name="borderTopStyle">solid</property>
@@ -2300,9 +2359,24 @@ this.height=row["logo_height"];]]></method>
                                             <property name="borderRightStyle">none</property>
                                             <property name="borderTopStyle">none</property>
                                             <property name="textAlign">right</property>
+                                            <property name="display">inline</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">params["ExportTypeSelect"].value == 'xlsx'</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["TotalPerAnalyticAxis"])</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["TotalPerAnalyticAxis"] > 0 ? '+' : ""</VALUE-OF>]]></text-property>
                                         </text>
+                                        <data id="4530">
+                                            <property name="fontSize">9pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="display">inline</property>
+                                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                            <property name="resultSetColumn">Column Binding_2</property>
+                                        </data>
                                     </cell>
                                 </row>
                             </footer>
@@ -2402,10 +2476,12 @@ this.height=row["logo_height"];]]></method>
                                         </text>
                                     </cell>
                                     <cell id="4300">
+                                        <property name="fontWeight">bold</property>
                                         <property name="borderBottomStyle">solid</property>
                                         <property name="borderBottomWidth">thin</property>
                                         <property name="borderTopStyle">solid</property>
                                         <property name="borderTopWidth">thin</property>
+                                        <property name="textAlign">right</property>
                                         <text id="4519">
                                             <property name="fontSize">9pt</property>
                                             <property name="fontWeight">bold</property>
@@ -2414,9 +2490,24 @@ this.height=row["logo_height"];]]></method>
                                             <property name="borderRightStyle">none</property>
                                             <property name="borderTopStyle">none</property>
                                             <property name="textAlign">right</property>
+                                            <property name="display">inline</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">params["ExportTypeSelect"].value == 'xlsx'</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
-                                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["TotalPerAnalyticAccount"])</VALUE-OF>]]></text-property>
+                                            <text-property name="content"><![CDATA[<VALUE-OF>row["TotalPerAnalyticAccount"] > 0 ? '+' : ""</VALUE-OF>]]></text-property>
                                         </text>
+                                        <data id="4529">
+                                            <property name="fontSize">9pt</property>
+                                            <property name="fontWeight">bold</property>
+                                            <property name="textAlign">right</property>
+                                            <property name="display">inline</property>
+                                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                            <property name="resultSetColumn">Column Binding_1</property>
+                                        </data>
                                     </cell>
                                 </row>
                             </footer>
@@ -2481,6 +2572,7 @@ this.height=row["logo_height"];]]></method>
                                     </data>
                                 </cell>
                                 <cell id="4080">
+                                    <property name="textAlign">right</property>
                                     <text id="4518">
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">normal</property>
@@ -2489,15 +2581,29 @@ this.height=row["logo_height"];]]></method>
                                         <property name="borderRightStyle">none</property>
                                         <property name="borderTopStyle">none</property>
                                         <property name="textAlign">right</property>
+                                        <property name="display">inline</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">!row["amount"] || params["ExportTypeSelect"].value == 'xlsx'</expression>
+                                            </structure>
+                                        </list-property>
+                                        <property name="contentType">html</property>
+                                        <text-property name="content"><![CDATA[<VALUE-OF>row["amount"] > 0 ? '+' : ""</VALUE-OF>]]></text-property>
+                                    </text>
+                                    <data id="4528">
+                                        <property name="fontSize">9pt</property>
+                                        <property name="textAlign">right</property>
+                                        <property name="display">inline</property>
                                         <list-property name="visibility">
                                             <structure>
                                                 <property name="format">all</property>
                                                 <expression name="valueExpr" type="javascript">!row["amount"]</expression>
                                             </structure>
                                         </list-property>
-                                        <property name="contentType">html</property>
-                                        <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["amount"])</VALUE-OF>]]></text-property>
-                                    </text>
+                                        <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                        <property name="resultSetColumn">Column Binding</property>
+                                    </data>
                                 </cell>
                             </row>
                         </detail>

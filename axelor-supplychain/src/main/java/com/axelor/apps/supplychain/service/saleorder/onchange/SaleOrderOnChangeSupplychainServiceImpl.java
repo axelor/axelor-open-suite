@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,11 +32,12 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeServiceImpl;
@@ -50,12 +51,13 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationServi
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderTaxNumberService;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeServiceImpl {
+public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeServiceImpl
+    implements SaleOrderOnChangeSupplychainService {
 
   protected AccountConfigService accountConfigService;
   protected AccountingSituationService accountingSituationService;
@@ -79,6 +81,8 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
       SaleConfigService saleConfigService,
       SaleOrderBankDetailsService saleOrderBankDetailsService,
       AppBaseService appBaseService,
+      SaleOrderDateService saleOrderDateService,
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
       AccountConfigService accountConfigService,
       AccountingSituationService accountingSituationService,
       PartnerStockSettingsRepository partnerStockSettingsRepository,
@@ -86,7 +90,6 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
       SaleOrderIntercoService saleOrderIntercoService,
       SaleOrderStockLocationService saleOrderStockLocationService,
       AppBaseService appBaseService1,
-      AppSaleService appSaleService,
       SaleOrderTaxNumberService saleOrderTaxNumberService) {
     super(
         partnerService,
@@ -99,7 +102,9 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
         saleOrderComputeService,
         saleConfigService,
         saleOrderBankDetailsService,
-        appBaseService);
+        appBaseService,
+        saleOrderDateService,
+        saleOrderDeliveryAddressService);
     this.accountConfigService = accountConfigService;
     this.accountingSituationService = accountingSituationService;
     this.partnerStockSettingsRepository = partnerStockSettingsRepository;
@@ -114,7 +119,6 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
   public Map<String, Object> partnerOnChange(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> values = super.partnerOnChange(saleOrder);
     values.putAll(getPaymentCondition(saleOrder));
-    values.putAll(getFiscalPosition(saleOrder));
     values.putAll(getPaymentMode(saleOrder));
     values.putAll(getIncoterm(saleOrder));
     values.putAll(getCompanyBankDetails(saleOrder));
@@ -122,8 +126,11 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     values.putAll(saleOrderIntercoService.getInterco(saleOrder));
     values.putAll(saleOrderStockLocationService.getStockLocation(saleOrder));
     values.putAll(saleOrderStockLocationService.getToStockLocation(saleOrder));
-    values.putAll(getIsIspmRequired(saleOrder));
     values.putAll(setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder));
+    values.putAll(getIsIspmRequired(saleOrder));
+    values.putAll(getFiscalPosition(saleOrder));
+    values.putAll(updateLinesAfterFiscalPositionChange(saleOrder));
+    values.putAll(getComputeSaleOrderMap(saleOrder));
     return values;
   }
 
@@ -134,6 +141,26 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     values.putAll(saleOrderStockLocationService.getToStockLocation(saleOrder));
     values.putAll(getIncoterm(saleOrder));
     values.putAll(saleOrderTaxNumberService.getTaxNumber(saleOrder));
+    return values;
+  }
+
+  @Override
+  public Map<String, Object> getDeliveredPartnerOnChangeValues(SaleOrder saleOrder)
+      throws AxelorException {
+    return getPartnerChangeValues(saleOrder);
+  }
+
+  @Override
+  public Map<String, Object> getInvoicedPartnerOnChangeValues(SaleOrder saleOrder)
+      throws AxelorException {
+    return getPartnerChangeValues(saleOrder);
+  }
+
+  protected Map<String, Object> getPartnerChangeValues(SaleOrder saleOrder) throws AxelorException {
+    Map<String, Object> values = new HashMap<>();
+    values.putAll(getFiscalPosition(saleOrder));
+    values.putAll(updateLinesAfterFiscalPositionChange(saleOrder));
+    values.putAll(getComputeSaleOrderMap(saleOrder));
     return values;
   }
 
@@ -194,13 +221,19 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     return values;
   }
 
+  @Override
   protected Map<String, Object> getFiscalPosition(SaleOrder saleOrder) {
     Map<String, Object> values = new HashMap<>();
-    Partner clientPartner = saleOrder.getClientPartner();
-    FiscalPosition fiscalPosition = null;
-    if (clientPartner != null && clientPartner.getFiscalPosition() != null) {
-      fiscalPosition = clientPartner.getFiscalPosition();
+    AppBase appBase = appBaseService.getAppBase();
+    if (!appBase.getActivatePartnerRelations()) {
+      return super.getFiscalPosition(saleOrder);
     }
+    Optional<Partner> partnerForFiscalPosition =
+        Optional.ofNullable(saleOrder.getDeliveredPartner())
+            .or(() -> Optional.ofNullable(saleOrder.getInvoicedPartner()))
+            .or(() -> Optional.ofNullable(saleOrder.getClientPartner()));
+    FiscalPosition fiscalPosition =
+        partnerForFiscalPosition.map(Partner::getFiscalPosition).orElse(null);
     saleOrder.setFiscalPosition(fiscalPosition);
     values.put("fiscalPosition", saleOrder.getFiscalPosition());
     return values;
@@ -211,7 +244,7 @@ public class SaleOrderOnChangeSupplychainServiceImpl extends SaleOrderOnChangeSe
     PaymentMode paymentMode;
     Partner clientPartner = saleOrder.getClientPartner();
     Company company = saleOrder.getCompany();
-    if (clientPartner != null && clientPartner.getPaymentCondition() != null) {
+    if (clientPartner != null && clientPartner.getInPaymentMode() != null) {
       paymentMode = clientPartner.getInPaymentMode();
     } else {
       paymentMode = accountConfigService.getAccountConfig(company).getInPaymentMode();

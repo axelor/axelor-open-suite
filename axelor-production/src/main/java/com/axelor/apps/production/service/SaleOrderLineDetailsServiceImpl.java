@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,7 @@ import com.axelor.apps.sale.service.MarginComputeService;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineUtils;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -75,7 +75,13 @@ public class SaleOrderLineDetailsServiceImpl implements SaleOrderLineDetailsServ
             .multiply(saleOrderLineDetails.getQty())
             .setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP);
 
-    setLineInfo(saleOrderLineDetails, costPrice, price, totalPrice, totalCostPrice, product);
+    setLineInfo(
+        saleOrderLineDetails,
+        costPrice.setScale(appSaleService.getNbDecimalDigitForUnitPrice(), RoundingMode.HALF_UP),
+        price,
+        totalPrice,
+        totalCostPrice,
+        product);
     lineMap.putAll(saleOrderLineDetailsPriceService.computeMarginCoef(saleOrderLineDetails));
     setMapInfo(saleOrderLineDetails, saleOrder, lineMap);
     return lineMap;

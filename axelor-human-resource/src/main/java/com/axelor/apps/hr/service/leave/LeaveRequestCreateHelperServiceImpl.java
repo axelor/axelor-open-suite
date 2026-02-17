@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,10 +19,13 @@
 package com.axelor.apps.hr.service.leave;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveReasonRepository;
-import com.google.inject.Inject;
+import com.axelor.auth.AuthUtils;
+import com.axelor.auth.db.User;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class LeaveRequestCreateHelperServiceImpl implements LeaveRequestCreateHelperService {
 
@@ -69,6 +73,10 @@ public class LeaveRequestCreateHelperServiceImpl implements LeaveRequestCreateHe
           leaveRequestCreateHelperDateService.computeNextToDate(
               initialDate, duration, initalStartOnSelect);
       LocalDateTime toDateTime = toDate.atTime(0, 0, 0);
+
+      User user = AuthUtils.getUser();
+      Employee employee = Optional.ofNullable(user).map(User::getEmployee).orElse(null);
+
       LeaveRequest leaveRequest =
           leaveRequestCreateService.createLeaveRequest(
               initialDate.atTime(0, 0, 0),
@@ -76,7 +84,9 @@ public class LeaveRequestCreateHelperServiceImpl implements LeaveRequestCreateHe
               initalStartOnSelect,
               currentEndOfSelect,
               comment,
-              leaveReason);
+              leaveReason,
+              user,
+              employee);
       idList.add(leaveRequest.getId());
 
       initalStartOnSelect =

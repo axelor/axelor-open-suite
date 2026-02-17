@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,8 +33,10 @@ import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.TaxAccountService;
+import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.move.MoveCreateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
+import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
@@ -71,8 +73,8 @@ import com.axelor.text.GroovyTemplates;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Strings;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -104,6 +106,8 @@ public class BankReconciliationMoveGenerationServiceImpl
   protected CurrencyScaleService currencyScaleService;
   protected MoveLineToolService moveLineToolService;
   protected AccountManagementRepository accountManagementRepository;
+  protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected AnalyticLineService analyticLineService;
 
   @Inject
   public BankReconciliationMoveGenerationServiceImpl(
@@ -123,7 +127,9 @@ public class BankReconciliationMoveGenerationServiceImpl
       MoveLineService moveLineService,
       CurrencyScaleService currencyScaleService,
       MoveLineToolService moveLineToolService,
-      AccountManagementRepository accountManagementRepository) {
+      AccountManagementRepository accountManagementRepository,
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      AnalyticLineService analyticLineService) {
     this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankStatementRuleRepository = bankStatementRuleRepository;
     this.bankReconciliationLineService = bankReconciliationLineService;
@@ -141,6 +147,8 @@ public class BankReconciliationMoveGenerationServiceImpl
     this.currencyScaleService = currencyScaleService;
     this.moveLineToolService = moveLineToolService;
     this.accountManagementRepository = accountManagementRepository;
+    this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.analyticLineService = analyticLineService;
   }
 
   @Override
@@ -517,17 +525,23 @@ public class BankReconciliationMoveGenerationServiceImpl
       moveLineService.applyCutOffDates(moveLine, move, date, date);
       moveLine.setIsCutOffGenerated(true);
     }
-    if (account.getAnalyticDistributionRequiredOnMoveLines()) {
-      if (account.getAnalyticDistributionTemplate() == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(
-                BankPaymentExceptionMessage
-                    .BANK_RECONCILIATION_NO_DISTRIBUTION_GENERATED_MOVE_LINE),
-            account.getCode());
+
+    if (moveLine.getAccount().getAnalyticDistributionAuthorized()) {
+      if (bankReconciliationLine.getAnalyticDistributionTemplate() != null) {
+        moveLine.setAnalyticDistributionTemplate(
+            bankReconciliationLine.getAnalyticDistributionTemplate());
+      } else if (bankStatementRule != null
+          && bankStatementRule.getAnalyticDistributionTemplate() != null) {
+        moveLine.setAnalyticDistributionTemplate(
+            bankStatementRule.getAnalyticDistributionTemplate());
       }
-      moveLine.setAnalyticDistributionTemplate(account.getAnalyticDistributionTemplate());
     }
+
+    if (moveLine.getAnalyticDistributionTemplate() != null) {
+      moveLineComputeAnalyticService.createAnalyticDistributionWithTemplate(moveLine);
+      analyticLineService.setAnalyticAccount(moveLine, move.getCompany());
+    }
+
     move.addMoveLineListItem(moveLine);
     return moveLine;
   }
@@ -626,6 +640,12 @@ public class BankReconciliationMoveGenerationServiceImpl
     }
     if (partner != null) {
       fiscalPosition = partner.getFiscalPosition();
+    }
+
+    if (journal == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BankPaymentExceptionMessage.BANK_RECONCILIATION_CREATING_MOVE_MISSING_JOURNAL));
     }
 
     Move move =

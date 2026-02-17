@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,10 @@
  */
 package com.axelor.apps.supplychain.service;
 
-import com.axelor.apps.stock.service.LogisticalFormService;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.stock.db.LogisticalForm;
 
-public interface LogisticalFormSupplychainService extends LogisticalFormService {}
+public interface LogisticalFormSupplychainService {
+
+  void processCollected(LogisticalForm logisticalForm) throws AxelorException;
+}

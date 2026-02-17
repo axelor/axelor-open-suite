@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -54,11 +54,12 @@ import com.axelor.apps.bankpayment.xsd.sepa.pain_008_001_02.ServiceLevel8Choice;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Bank;
 import com.axelor.apps.base.db.BankDetails;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
@@ -463,14 +464,19 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
     for (BankOrderLine bankOrderLine : bankOrderLineList) {
 
       BankDetails receiverBankDetails = bankOrderLine.getReceiverBankDetails();
-      Umr receiverUmr =
-          Beans.get(UmrService.class)
-              .getActiveUmr(bankOrderLine.getReceiverCompany(), bankOrderLine.getPartner());
+      Company company = bankOrderLine.getReceiverCompany();
+      if (company == null && bankOrderLine.getBankOrder() != null) {
+        company = bankOrderLine.getBankOrder().getSenderCompany();
+      }
+
+      Umr receiverUmr = Beans.get(UmrService.class).getActiveUmr(company, receiverBankDetails);
 
       if (receiverUmr == null) {
         throw new AxelorException(
             TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(BankPaymentExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR));
+            I18n.get(BankPaymentExceptionMessage.DIRECT_DEBIT_MISSING_PARTNER_ACTIVE_UMR),
+            bankOrderLine.getPartner().getFullName(),
+            receiverBankDetails.getFullName());
       }
 
       /*

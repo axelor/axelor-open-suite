@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,7 @@ import com.axelor.apps.account.service.move.MoveSimulateService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
+import com.axelor.apps.account.service.move.record.MoveGroupOnChangeService;
 import com.axelor.apps.account.service.move.record.MoveGroupService;
 import com.axelor.apps.account.service.period.PeriodCheckService;
 import com.axelor.apps.base.AxelorException;
@@ -59,13 +60,15 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Singleton;
+import com.axelor.utils.helpers.ContextHelper;
+import jakarta.inject.Singleton;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -277,17 +280,31 @@ public class MoveController {
       String flashMessage = I18n.get(AccountExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE);
 
       if (!CollectionUtils.isEmpty(moveIds)) {
-        List<? extends Move> moveList =
+        List<Move> moveList =
             Beans.get(MoveRepository.class)
                 .all()
-                .filter(
-                    "self.id in ?1 AND self.statusSelect in (?2,?3,?4,?5) AND (self.archived = false or self.archived = null)",
-                    moveIds,
-                    MoveRepository.STATUS_NEW,
-                    MoveRepository.STATUS_DAYBOOK,
-                    MoveRepository.STATUS_CANCELED,
-                    MoveRepository.STATUS_SIMULATED)
+                .filter("self.id in :moveIds AND (self.archived = false or self.archived IS null)")
+                .bind("moveIds", moveIds)
                 .fetch();
+        if (ObjectUtils.notEmpty(moveList)
+            && moveList.stream()
+                .map(Move::getCompany)
+                .map(Company::getAccountConfig)
+                .anyMatch(ac -> ac.getIsActivateSimulatedMove())) {
+          flashMessage =
+              I18n.get(AccountExceptionMessage.NO_MOVE_TO_REMOVE_OR_ARCHIVE_AND_SIMULATED);
+        }
+
+        Set<Integer> validStatuses =
+            Set.of(
+                MoveRepository.STATUS_NEW,
+                MoveRepository.STATUS_DAYBOOK,
+                MoveRepository.STATUS_CANCELED,
+                MoveRepository.STATUS_SIMULATED);
+        moveList =
+            moveList.stream()
+                .filter(m -> validStatuses.contains(m.getStatusSelect()))
+                .collect(Collectors.toList());
         int moveNb = moveList.size();
 
         if (!moveList.isEmpty()) {
@@ -321,6 +338,12 @@ public class MoveController {
         Long accountingReportId =
             Long.valueOf(request.getContext().get("_accountingReportId").toString());
         actionViewBuilder.domain("self.move.accountingReport.id = " + accountingReportId);
+      }
+      if (request.getContext().get("fecImportId") != null) {
+        Long fecImport =
+            ContextHelper.getFieldFromContextParent(
+                request.getContext(), "fecImportId", Long.class);
+        actionViewBuilder.domain("self.move.fecImport.id = " + fecImport);
       }
       response.setView(actionViewBuilder.map());
     } catch (Exception e) {
@@ -597,20 +620,10 @@ public class MoveController {
   public void onChangePaymentMode(ActionRequest request, ActionResponse response) {
     try {
       Move move = request.getContext().asType(Move.class);
-      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
+      MoveGroupOnChangeService movePaymentModeService = Beans.get(MoveGroupOnChangeService.class);
 
-      response.setValues(moveGroupService.getPaymentModeOnChangeValuesMap(move));
-      response.setAttrs(moveGroupService.getHeaderChangeAttrsMap());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
-  public void onSelectPartner(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      response.setAttrs(Beans.get(MoveGroupService.class).getPartnerOnSelectAttrsMap(move));
+      response.setValues(movePaymentModeService.getPaymentModeOnChangeValuesMap(move));
+      response.setAttrs(movePaymentModeService.getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -647,8 +660,9 @@ public class MoveController {
     try {
       Move move = request.getContext().asType(Move.class);
 
-      response.setValues(
-          Beans.get(MoveGroupService.class).getFiscalPositionOnChangeValuesMap(move));
+      MoveGroupService moveGroupService = Beans.get(MoveGroupService.class);
+      response.setValues(moveGroupService.getFiscalPositionOnChangeValuesMap(move));
+      response.setAttrs(moveGroupService.getFiscalPositionOnChangeAttrsMap(move));
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -688,19 +702,8 @@ public class MoveController {
     }
   }
 
-  public void onSelectTradingName(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      response.setAttrs(Beans.get(MoveGroupService.class).getTradingNameOnSelectAttrsMap(move));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
-  }
-
   @ErrorException
-  public void onSelectJournal(ActionRequest request, ActionResponse response)
-      throws AxelorException {
+  public void onSelectJournal(ActionRequest request, ActionResponse response) {
     Move move = request.getContext().asType(Move.class);
 
     response.setAttrs(Beans.get(MoveGroupService.class).getJournalOnSelectAttrsMap(move));
@@ -719,7 +722,7 @@ public class MoveController {
 
   public void onChangePartnerBankDetails(ActionRequest request, ActionResponse response) {
     try {
-      response.setAttrs(Beans.get(MoveGroupService.class).getHeaderChangeAttrsMap());
+      response.setAttrs(Beans.get(MoveGroupOnChangeService.class).getHeaderChangeAttrsMap());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -904,16 +907,6 @@ public class MoveController {
       Beans.get(MoveCheckService.class).checkPeriodPermission(move);
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
-    }
-  }
-
-  public void onSelectCompany(ActionRequest request, ActionResponse response) {
-    try {
-      Move move = request.getContext().asType(Move.class);
-
-      response.setAttrs(Beans.get(MoveGroupService.class).getCompanyOnSelectAttrsMap(move));
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
     }
   }
 

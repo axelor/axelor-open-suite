@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,6 +24,13 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import java.util.Map;
 
 public interface SaleOrderLineViewService {
+
+  String HIDDEN_ATTR = "hidden";
+  String TITLE_ATTR = "title";
+  String SCALE_ATTR = "scale";
+  String SELECTION_IN_ATTR = "selection-in";
+  String READONLY_ATTR = "readonly";
+
   Map<String, Map<String, Object>> getOnNewAttrs(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException;
 

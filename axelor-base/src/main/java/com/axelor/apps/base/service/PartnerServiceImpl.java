@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -45,12 +45,12 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.EmailAddress;
-import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.utils.helpers.ComputeNameHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -62,7 +62,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.inject.Singleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -218,7 +217,7 @@ public class PartnerServiceImpl implements PartnerService {
     } else if (address == null) {
       partner.removePartnerAddressListItem(
           JPA.all(PartnerAddress.class)
-              .filter("self.partner = :partnerId AND self.isDefaultAddr = 't'")
+              .filter("self.partner.id = :partnerId AND self.isDefaultAddr = true")
               .bind("partnerId", partner.getId())
               .fetchOne());
 
@@ -306,21 +305,27 @@ public class PartnerServiceImpl implements PartnerService {
     name = name == null ? "" : name;
     urlMap.put(
         "google",
-        "<a class='fa fa-google' href='https://www.google.com/search?q="
+        "<a href='https://www.google.com/search?q="
             + name
             + "&gws_rd=cr"
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/google.svg'/>"
+            + "</a>");
     urlMap.put(
         "linkedin",
-        "<a class='fa fa-linkedin' href='https://www.linkedin.com/company/"
+        "<a href='https://www.linkedin.com/company/"
             + name
-            + "' target='_blank' />");
+            + "' target='_blank' >"
+            + "<img src='img/social/linkedin.svg'/>"
+            + "</a>");
     if (typeSelect == 2) {
       urlMap.put(
           "linkedin",
-          "<a class='fa fa-linkedin' href='http://www.linkedin.com/pub/dir/"
+          "<a href='http://www.linkedin.com/pub/dir/"
               + name.replace("+", "/")
-              + "' target='_blank' />");
+              + "' target='_blank' >"
+              + "<img src='img/social/linkedin.svg'/>"
+              + "</a>");
     }
 
     return urlMap;
@@ -346,34 +351,9 @@ public class PartnerServiceImpl implements PartnerService {
     return idList;
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public List<Long> findMailsFromPartner(Partner partner, int emailType) {
-
-    String query =
-        String.format(
-            "SELECT DISTINCT(email.id) FROM Message as email WHERE email.mediaTypeSelect = 2 "
-                + "AND email IN (SELECT message FROM MultiRelated as related WHERE related.relatedToSelect = 'com.axelor.apps.base.db.Partner' AND related.relatedToSelectId = %s)",
-            partner.getId());
-
-    String emailAddress =
-        (partner.getEmailAddress() != null) ? partner.getEmailAddress().getAddress() : null;
-    if (emailAddress != null) {
-      query +=
-          " OR (:emailAddress IN ("
-              + ((emailType == MessageRepository.TYPE_RECEIVED)
-                  ? "email.fromEmailAddress.address"
-                  : "SELECT em.address FROM EmailAddress em WHERE em member of email.toEmailAddressSet")
-              + "))";
-    } else {
-      query += " AND email.typeSelect = " + emailType;
-    }
-    javax.persistence.Query q = JPA.em().createQuery(query);
-    if (emailAddress != null) {
-      q.setParameter("emailAddress", emailAddress);
-    }
-
-    return q.getResultList();
+    return Beans.get(PartnerMailQueryService.class).findMailsFromPartner(partner, emailType);
   }
 
   protected PartnerAddress createPartnerAddress(Address address, Boolean isDefault) {
@@ -541,18 +521,6 @@ public class PartnerServiceImpl implements PartnerService {
     return new String(Str);
   }
 
-  @Transactional
-  @Override
-  public void convertToIndividualPartner(Partner partner) {
-    partner.setIsContact(false);
-    partner.setPartnerTypeSelect(PARTNER_TYPE_INDIVIDUAL);
-    Address mainAddress = partner.getMainAddress();
-    if (mainAddress != null) {
-      addPartnerAddress(partner, mainAddress, true, false, false);
-    }
-    partner.setMainAddress(null);
-  }
-
   public boolean isThereDuplicatePartner(Partner partner) {
     return isThereDuplicatePartnerQuery(partner, false) != null;
   }
@@ -697,7 +665,8 @@ public class PartnerServiceImpl implements PartnerService {
     return parentPartnerList;
   }
 
-  protected List<Partner> getFilteredPartners(Partner partner) {
+  @Override
+  public List<Partner> getFilteredPartners(Partner partner) {
     List<Long> companySet =
         ObjectUtils.notEmpty(partner.getCompanySet())
             ? partner.getCompanySet().stream().map(Company::getId).collect(Collectors.toList())
@@ -709,6 +678,21 @@ public class PartnerServiceImpl implements PartnerService {
                 + "AND self.partnerTypeSelect = :partnerType "
                 + "AND self in (SELECT p FROM Partner p join p.companySet c where c.id in :companySet) ")
         .bind("partnerType", PartnerRepository.PARTNER_TYPE_COMPANY)
+        .bind("companySet", companySet)
+        .fetch();
+  }
+
+  @Override
+  public List<Partner> getContactFilteredPartners(Partner partner) {
+    List<Long> companySet =
+        ObjectUtils.notEmpty(partner.getCompanySet())
+            ? partner.getCompanySet().stream().map(Company::getId).collect(Collectors.toList())
+            : List.of(0l);
+    return partnerRepo
+        .all()
+        .filter(
+            "self.isContact = true "
+                + "AND self in (SELECT p FROM Partner p join p.companySet c where c.id in :companySet) ")
         .bind("companySet", companySet)
         .fetch();
   }
@@ -740,18 +724,25 @@ public class PartnerServiceImpl implements PartnerService {
   public String checkIfRegistrationCodeExists(Partner partner) {
     String message = "";
     String registrationCode = partner.getRegistrationCode();
-    if (StringUtils.isEmpty(registrationCode)) {
+    if (StringUtils.isBlank(registrationCode)) {
       return message;
     }
+    registrationCode = registrationCode.replaceAll("\\s+", "");
     Query<Partner> query = partnerRepo.all();
-    StringBuilder filter = new StringBuilder("self.registrationCode = :registrationCode");
-
+    StringBuilder filter =
+        new StringBuilder("REPLACE(self.registrationCode, ' ', '') = :registrationCode");
     if (partner.getId() != null) {
       filter.append(" AND self.id != :id");
+    }
+
+    query = query.filter(filter.toString());
+
+    query = query.bind("registrationCode", registrationCode);
+    if (partner.getId() != null) {
       query = query.bind("id", partner.getId());
     }
-    Partner existingPartner =
-        query.filter(filter.toString()).bind("registrationCode", registrationCode).fetchOne();
+
+    Partner existingPartner = query.fetchOne();
 
     if (existingPartner != null) {
       message =
@@ -759,6 +750,7 @@ public class PartnerServiceImpl implements PartnerService {
               I18n.get(BaseExceptionMessage.PARTNER_REGISTRATION_CODE_ALREADY_EXISTS),
               existingPartner.getFullName());
     }
+
     return message;
   }
 }

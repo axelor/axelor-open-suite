@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.stock.db.FreightCarrierMode;
 import com.axelor.apps.stock.db.Incoterm;
+import com.axelor.apps.stock.db.LogisticalForm;
 import com.axelor.apps.stock.db.MassStockMove;
 import com.axelor.apps.stock.db.ShipmentMode;
 import com.axelor.apps.stock.db.StockLocation;
@@ -135,12 +136,9 @@ public interface StockMoveService {
 
   public String realize(StockMove stockMove, boolean check) throws AxelorException;
 
-  public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList);
+  public boolean mustBeSplit(StockMove stockMove);
 
   public Optional<StockMove> copyAndSplitStockMove(StockMove stockMove) throws AxelorException;
-
-  public Optional<StockMove> copyAndSplitStockMove(
-      StockMove stockMove, List<StockMoveLine> stockMoveLines) throws AxelorException;
 
   public Optional<StockMove> copyAndSplitStockMoveReverse(StockMove stockMove, boolean split)
       throws AxelorException;
@@ -193,13 +191,6 @@ public interface StockMoveService {
    * @return the direction for the google map API
    */
   Map<String, Object> viewDirection(StockMove stockMove) throws AxelorException;
-
-  /**
-   * Update fully spread over logistical forms flag on stock move.
-   *
-   * @param stockMove
-   */
-  void updateFullySpreadOverLogisticalFormsFlag(StockMove stockMove);
 
   void setAvailableStatus(StockMove stockMove) throws AxelorException;
 
@@ -258,4 +249,7 @@ public interface StockMoveService {
   StockLocation getToStockLocationOutsource(StockMove stockMove) throws AxelorException;
 
   void planWithNoSplit(StockMove stockMove) throws AxelorException;
+
+  public void addStockMovesToLogisticalForm(
+      LogisticalForm logisticalForm, List<StockMove> stockMoveList) throws AxelorException;
 }

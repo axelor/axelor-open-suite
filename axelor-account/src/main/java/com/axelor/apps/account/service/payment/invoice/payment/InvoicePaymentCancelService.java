@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,10 @@ public interface InvoicePaymentCancelService {
    * @throws AxelorException
    */
   public void cancel(InvoicePayment invoicePayment) throws AxelorException;
+
+  void reversePaymentMove(InvoicePayment invoicePayment) throws AxelorException;
+
+  void validateBeforeUnlink(InvoicePayment invoicePayment) throws AxelorException;
 
   public void updateCancelStatus(InvoicePayment invoicePayment) throws AxelorException;
 }

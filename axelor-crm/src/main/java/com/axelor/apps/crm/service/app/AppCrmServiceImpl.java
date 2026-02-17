@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,16 +31,10 @@ import com.axelor.apps.crm.db.repo.CrmConfigRepository;
 import com.axelor.apps.crm.exception.CrmExceptionMessage;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppCrm;
-import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmService {
@@ -51,23 +45,8 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
 
   @Inject
   public AppCrmServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsService,
-      MetaModuleRepository metaModuleRepo,
-      MetaFileRepository metaFileRepo,
-      CompanyRepository companyRepo,
-      CrmConfigRepository crmConfigRepo) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+      AppService appService, CompanyRepository companyRepo, CrmConfigRepository crmConfigRepo) {
+    super(appService);
     this.companyRepo = companyRepo;
     this.crmConfigRepo = crmConfigRepo;
   }
@@ -87,7 +66,7 @@ public class AppCrmServiceImpl extends AppBaseServiceImpl implements AppCrmServi
 
   @Override
   public AppCrm getAppCrm() {
-    return Query.of(AppCrm.class).fetchOne();
+    return Query.of(AppCrm.class).cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

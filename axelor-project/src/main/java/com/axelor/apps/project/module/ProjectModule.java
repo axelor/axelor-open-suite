@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,8 @@ import com.axelor.apps.project.db.repo.TeamProjectRepository;
 import com.axelor.apps.project.db.repo.WikiProjectRepository;
 import com.axelor.apps.project.db.repo.WikiRepository;
 import com.axelor.apps.project.quickmenu.ActiveProjectQuickMenuCreator;
+import com.axelor.apps.project.rest.service.ProjectCheckListItemUpdateAPIService;
+import com.axelor.apps.project.rest.service.ProjectCheckListItemUpdateAPIServiceImpl;
 import com.axelor.apps.project.service.MetaJsonFieldProjectService;
 import com.axelor.apps.project.service.MetaJsonFieldProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectActivityDashboardService;
@@ -45,6 +47,8 @@ import com.axelor.apps.project.service.ProjectDashboardService;
 import com.axelor.apps.project.service.ProjectDashboardServiceImpl;
 import com.axelor.apps.project.service.ProjectMenuService;
 import com.axelor.apps.project.service.ProjectMenuServiceImpl;
+import com.axelor.apps.project.service.ProjectNameComputeService;
+import com.axelor.apps.project.service.ProjectNameComputeServiceImpl;
 import com.axelor.apps.project.service.ProjectService;
 import com.axelor.apps.project.service.ProjectServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskAttrsService;
@@ -55,6 +59,8 @@ import com.axelor.apps.project.service.ProjectTaskComputeService;
 import com.axelor.apps.project.service.ProjectTaskComputeServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskGroupService;
 import com.axelor.apps.project.service.ProjectTaskGroupServiceImpl;
+import com.axelor.apps.project.service.ProjectTaskProgressUpdateService;
+import com.axelor.apps.project.service.ProjectTaskProgressUpdateServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.project.service.ProjectTaskServiceImpl;
 import com.axelor.apps.project.service.ProjectTaskToolService;
@@ -150,5 +156,9 @@ public class ProjectModule extends AxelorModule {
     bind(ProjectTaskGroupService.class).to(ProjectTaskGroupServiceImpl.class);
     bind(ProjectTaskComputeService.class).to(ProjectTaskComputeServiceImpl.class);
     bind(UnitConversionForProjectService.class).to(UnitConversionForProjectServiceImpl.class);
+    bind(ProjectNameComputeService.class).to(ProjectNameComputeServiceImpl.class);
+    bind(ProjectCheckListItemUpdateAPIService.class)
+        .to(ProjectCheckListItemUpdateAPIServiceImpl.class);
+    bind(ProjectTaskProgressUpdateService.class).to(ProjectTaskProgressUpdateServiceImpl.class);
   }
 }

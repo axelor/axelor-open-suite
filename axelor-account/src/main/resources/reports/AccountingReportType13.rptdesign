@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202202011729</property>
+    <property name="createdBy">Eclipse BIRT Designer Version 4.9.0.v202201280001</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -19,13 +19,12 @@
         </structure>
     </list-property>
     <property name="units">in</property>
-    <method name="initialize"><![CDATA[function formatNumber(number) {
+    <method name="initialize"><![CDATA[function getNumberFormatPattern() {
 	var exportTypeSelect = params["ExportTypeSelect"];
 	var numberOfDecimals = vars["numberOfDecimals"];
 	var decimalPart = numberOfDecimals == 0 ? "" : "." + Array((numberOfDecimals || 2) + 1).join("0");
 	var basePart = exportTypeSelect != "xlsx" ? "#,##0" : "0";
-	var formatPattern = basePart + decimalPart;
-	return Formatter.format(number, formatPattern);
+	return basePart + decimalPart;
 }]]></method>
     <method name="beforeFactory"><![CDATA[reportContext.getAppContext().put("MAX_PAGE_BREAK_INTERVAL", 1000000);]]></method>
     <property name="iconFile">/templates/blank_report.gif</property>
@@ -1128,6 +1127,48 @@ row["credit"]
                     <expression name="expression" type="javascript">dataSetRow["number_of_decimals"]</expression>
                     <property name="dataType">integer</property>
                 </structure>
+                <structure>
+                    <property name="name">Column Binding</property>
+                    <text-property name="displayName">Debit</text-property>
+                    <expression name="expression" type="javascript">row["Debit"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_1</property>
+                    <text-property name="displayName">Credit</text-property>
+                    <expression name="expression" type="javascript">row["Credit"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_2</property>
+                    <text-property name="displayName">TotalDebit</text-property>
+                    <expression name="expression" type="javascript">row["TotalDebit"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_3</property>
+                    <text-property name="displayName">TotalCredit</text-property>
+                    <expression name="expression" type="javascript">row["TotalCredit"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_4</property>
+                    <text-property name="displayName">DiffDebit</text-property>
+                    <expression name="expression" type="javascript">row["DiffDebit"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">Column Binding_5</property>
+                    <text-property name="displayName">DiffCredit</text-property>
+                    <expression name="expression" type="javascript">row["DiffCredit"]</expression>
+                    <property name="dataType">decimal</property>
+                    <property name="allowExport">true</property>
+                </structure>
             </list-property>
             <property name="pageBreakInterval">0</property>
             <column id="2917">
@@ -1436,19 +1477,58 @@ row["credit"]
                                                                 <property name="borderRightColor">#000000</property>
                                                                 <property name="borderRightStyle">solid</property>
                                                                 <property name="borderRightWidth">thin</property>
-                                                                <text id="5331">
+                                                                <data id="5350">
+                                                                    <property name="backgroundAttachment">scroll</property>
+                                                                    <property name="backgroundPositionX">0%</property>
+                                                                    <property name="backgroundPositionY">0%</property>
+                                                                    <property name="backgroundRepeat">repeat</property>
+                                                                    <property name="fontFamily">sans-serif</property>
                                                                     <property name="fontSize">9.5pt</property>
+                                                                    <property name="fontWeight">normal</property>
+                                                                    <property name="fontStyle">normal</property>
+                                                                    <property name="fontVariant">normal</property>
+                                                                    <property name="color">black</property>
+                                                                    <property name="textLineThrough">none</property>
+                                                                    <property name="textOverline">none</property>
+                                                                    <property name="textUnderline">none</property>
+                                                                    <property name="borderBottomColor">black</property>
+                                                                    <property name="borderBottomStyle">none</property>
+                                                                    <property name="borderBottomWidth">medium</property>
+                                                                    <property name="borderLeftColor">black</property>
+                                                                    <property name="borderLeftStyle">none</property>
+                                                                    <property name="borderLeftWidth">medium</property>
+                                                                    <property name="borderRightColor">black</property>
+                                                                    <property name="borderRightStyle">none</property>
+                                                                    <property name="borderRightWidth">medium</property>
+                                                                    <property name="borderTopColor">black</property>
+                                                                    <property name="borderTopStyle">none</property>
+                                                                    <property name="borderTopWidth">medium</property>
+                                                                    <property name="marginTop">0pt</property>
+                                                                    <property name="marginLeft">0pt</property>
+                                                                    <property name="marginBottom">0pt</property>
+                                                                    <property name="marginRight">0pt</property>
+                                                                    <property name="paddingTop">1pt</property>
+                                                                    <property name="paddingLeft">1pt</property>
+                                                                    <property name="paddingBottom">1pt</property>
+                                                                    <property name="paddingRight">1pt</property>
                                                                     <property name="textAlign">right</property>
-                                                                    <list-property name="visibility">
-                                                                        <structure>
-                                                                            <property name="format">all</property>
-                                                                            <expression name="valueExpr" type="javascript">!row["Debit"]</expression>
-                                                                        </structure>
-                                                                    </list-property>
-                                                                    <structure name="toc"/>
-                                                                    <property name="contentType">html</property>
-                                                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["Debit"])</VALUE-OF>]]></text-property>
-                                                                </text>
+                                                                    <property name="letterSpacing">normal</property>
+                                                                    <property name="lineHeight">normal</property>
+                                                                    <property name="orphans">2</property>
+                                                                    <property name="textTransform">none</property>
+                                                                    <property name="whiteSpace">normal</property>
+                                                                    <property name="widows">2</property>
+                                                                    <property name="wordSpacing">normal</property>
+                                                                    <property name="display">block</property>
+                                                                    <property name="pageBreakAfter">auto</property>
+                                                                    <property name="pageBreakBefore">auto</property>
+                                                                    <property name="pageBreakInside">auto</property>
+                                                                    <property name="showIfBlank">false</property>
+                                                                    <property name="canShrink">false</property>
+                                                                    <property name="overflow">hidden</property>
+                                                                    <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                                                    <property name="resultSetColumn">Column Binding</property>
+                                                                </data>
                                                             </cell>
                                                             <cell id="2978">
                                                                 <property name="borderBottomColor">#000000</property>
@@ -1460,19 +1540,58 @@ row["credit"]
                                                                 <property name="borderRightColor">#000000</property>
                                                                 <property name="borderRightStyle">solid</property>
                                                                 <property name="borderRightWidth">thin</property>
-                                                                <text id="5332">
+                                                                <data id="5352">
+                                                                    <property name="backgroundAttachment">scroll</property>
+                                                                    <property name="backgroundPositionX">0%</property>
+                                                                    <property name="backgroundPositionY">0%</property>
+                                                                    <property name="backgroundRepeat">repeat</property>
+                                                                    <property name="fontFamily">sans-serif</property>
                                                                     <property name="fontSize">9.5pt</property>
+                                                                    <property name="fontWeight">normal</property>
+                                                                    <property name="fontStyle">normal</property>
+                                                                    <property name="fontVariant">normal</property>
+                                                                    <property name="color">black</property>
+                                                                    <property name="textLineThrough">none</property>
+                                                                    <property name="textOverline">none</property>
+                                                                    <property name="textUnderline">none</property>
+                                                                    <property name="borderBottomColor">black</property>
+                                                                    <property name="borderBottomStyle">none</property>
+                                                                    <property name="borderBottomWidth">medium</property>
+                                                                    <property name="borderLeftColor">black</property>
+                                                                    <property name="borderLeftStyle">none</property>
+                                                                    <property name="borderLeftWidth">medium</property>
+                                                                    <property name="borderRightColor">black</property>
+                                                                    <property name="borderRightStyle">none</property>
+                                                                    <property name="borderRightWidth">medium</property>
+                                                                    <property name="borderTopColor">black</property>
+                                                                    <property name="borderTopStyle">none</property>
+                                                                    <property name="borderTopWidth">medium</property>
+                                                                    <property name="marginTop">0pt</property>
+                                                                    <property name="marginLeft">0pt</property>
+                                                                    <property name="marginBottom">0pt</property>
+                                                                    <property name="marginRight">0pt</property>
+                                                                    <property name="paddingTop">1pt</property>
+                                                                    <property name="paddingLeft">1pt</property>
+                                                                    <property name="paddingBottom">1pt</property>
+                                                                    <property name="paddingRight">1pt</property>
                                                                     <property name="textAlign">right</property>
-                                                                    <list-property name="visibility">
-                                                                        <structure>
-                                                                            <property name="format">all</property>
-                                                                            <expression name="valueExpr" type="javascript">!row["Credit"]</expression>
-                                                                        </structure>
-                                                                    </list-property>
-                                                                    <structure name="toc"/>
-                                                                    <property name="contentType">html</property>
-                                                                    <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["Credit"])</VALUE-OF>]]></text-property>
-                                                                </text>
+                                                                    <property name="letterSpacing">normal</property>
+                                                                    <property name="lineHeight">normal</property>
+                                                                    <property name="orphans">2</property>
+                                                                    <property name="textTransform">none</property>
+                                                                    <property name="whiteSpace">normal</property>
+                                                                    <property name="widows">2</property>
+                                                                    <property name="wordSpacing">normal</property>
+                                                                    <property name="display">block</property>
+                                                                    <property name="pageBreakAfter">auto</property>
+                                                                    <property name="pageBreakBefore">auto</property>
+                                                                    <property name="pageBreakInside">auto</property>
+                                                                    <property name="showIfBlank">false</property>
+                                                                    <property name="canShrink">false</property>
+                                                                    <property name="overflow">hidden</property>
+                                                                    <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                                                                    <property name="resultSetColumn">Column Binding_1</property>
+                                                                </data>
                                                             </cell>
                                                         </row>
                                                     </detail>
@@ -1547,20 +1666,58 @@ Total.sum(row["credit"]) - Total.sum(row["debit"])
                         <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="5347">
+                        <data id="5353">
+                            <property name="backgroundAttachment">scroll</property>
+                            <property name="backgroundPositionX">0%</property>
+                            <property name="backgroundPositionY">0%</property>
+                            <property name="backgroundRepeat">repeat</property>
+                            <property name="fontFamily">sans-serif</property>
                             <property name="fontSize">9.5pt</property>
                             <property name="fontWeight">bold</property>
+                            <property name="fontStyle">normal</property>
+                            <property name="fontVariant">normal</property>
+                            <property name="color">black</property>
+                            <property name="textLineThrough">none</property>
+                            <property name="textOverline">none</property>
+                            <property name="textUnderline">none</property>
+                            <property name="borderBottomColor">black</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">black</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderLeftWidth">medium</property>
+                            <property name="borderRightColor">black</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderRightWidth">medium</property>
+                            <property name="borderTopColor">black</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderTopWidth">medium</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">0pt</property>
+                            <property name="marginRight">0pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">1pt</property>
+                            <property name="paddingRight">1pt</property>
                             <property name="textAlign">right</property>
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">!row["TotalDebit"]</expression>
-                                </structure>
-                            </list-property>
-                            <structure name="toc"/>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["TotalDebit"])</VALUE-OF>]]></text-property>
-                        </text>
+                            <property name="letterSpacing">normal</property>
+                            <property name="lineHeight">normal</property>
+                            <property name="orphans">2</property>
+                            <property name="textTransform">none</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="widows">2</property>
+                            <property name="wordSpacing">normal</property>
+                            <property name="display">block</property>
+                            <property name="pageBreakAfter">auto</property>
+                            <property name="pageBreakBefore">auto</property>
+                            <property name="pageBreakInside">auto</property>
+                            <property name="showIfBlank">false</property>
+                            <property name="canShrink">false</property>
+                            <property name="overflow">hidden</property>
+                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                            <property name="resultSetColumn">Column Binding_2</property>
+                        </data>
                     </cell>
                     <cell id="2915">
                         <property name="borderBottomColor">#000000</property>
@@ -1575,20 +1732,58 @@ Total.sum(row["credit"]) - Total.sum(row["debit"])
                         <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="5336">
+                        <data id="5354">
+                            <property name="backgroundAttachment">scroll</property>
+                            <property name="backgroundPositionX">0%</property>
+                            <property name="backgroundPositionY">0%</property>
+                            <property name="backgroundRepeat">repeat</property>
+                            <property name="fontFamily">sans-serif</property>
                             <property name="fontSize">9.5pt</property>
                             <property name="fontWeight">bold</property>
+                            <property name="fontStyle">normal</property>
+                            <property name="fontVariant">normal</property>
+                            <property name="color">black</property>
+                            <property name="textLineThrough">none</property>
+                            <property name="textOverline">none</property>
+                            <property name="textUnderline">none</property>
+                            <property name="borderBottomColor">black</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">black</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderLeftWidth">medium</property>
+                            <property name="borderRightColor">black</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderRightWidth">medium</property>
+                            <property name="borderTopColor">black</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderTopWidth">medium</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">0pt</property>
+                            <property name="marginRight">0pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">1pt</property>
+                            <property name="paddingRight">1pt</property>
                             <property name="textAlign">right</property>
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">!row["TotalCredit"]</expression>
-                                </structure>
-                            </list-property>
-                            <structure name="toc"/>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["TotalCredit"])</VALUE-OF>]]></text-property>
-                        </text>
+                            <property name="letterSpacing">normal</property>
+                            <property name="lineHeight">normal</property>
+                            <property name="orphans">2</property>
+                            <property name="textTransform">none</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="widows">2</property>
+                            <property name="wordSpacing">normal</property>
+                            <property name="display">block</property>
+                            <property name="pageBreakAfter">auto</property>
+                            <property name="pageBreakBefore">auto</property>
+                            <property name="pageBreakInside">auto</property>
+                            <property name="showIfBlank">false</property>
+                            <property name="canShrink">false</property>
+                            <property name="overflow">hidden</property>
+                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                            <property name="resultSetColumn">Column Binding_3</property>
+                        </data>
                     </cell>
                     <cell id="3028">
                         <property name="backgroundColor">#FFFFFF</property>
@@ -1629,20 +1824,58 @@ Total.sum(row["credit"]) - Total.sum(row["debit"])
                         <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="5337">
+                        <data id="5355">
+                            <property name="backgroundAttachment">scroll</property>
+                            <property name="backgroundPositionX">0%</property>
+                            <property name="backgroundPositionY">0%</property>
+                            <property name="backgroundRepeat">repeat</property>
+                            <property name="fontFamily">sans-serif</property>
                             <property name="fontSize">9.5pt</property>
                             <property name="fontWeight">bold</property>
+                            <property name="fontStyle">normal</property>
+                            <property name="fontVariant">normal</property>
+                            <property name="color">black</property>
+                            <property name="textLineThrough">none</property>
+                            <property name="textOverline">none</property>
+                            <property name="textUnderline">none</property>
+                            <property name="borderBottomColor">black</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">black</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderLeftWidth">medium</property>
+                            <property name="borderRightColor">black</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderRightWidth">medium</property>
+                            <property name="borderTopColor">black</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderTopWidth">medium</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">0pt</property>
+                            <property name="marginRight">0pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">1pt</property>
+                            <property name="paddingRight">1pt</property>
                             <property name="textAlign">right</property>
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">!row["DiffDebit"]</expression>
-                                </structure>
-                            </list-property>
-                            <structure name="toc"/>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["DiffDebit"])</VALUE-OF>]]></text-property>
-                        </text>
+                            <property name="letterSpacing">normal</property>
+                            <property name="lineHeight">normal</property>
+                            <property name="orphans">2</property>
+                            <property name="textTransform">none</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="widows">2</property>
+                            <property name="wordSpacing">normal</property>
+                            <property name="display">block</property>
+                            <property name="pageBreakAfter">auto</property>
+                            <property name="pageBreakBefore">auto</property>
+                            <property name="pageBreakInside">auto</property>
+                            <property name="showIfBlank">false</property>
+                            <property name="canShrink">false</property>
+                            <property name="overflow">hidden</property>
+                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                            <property name="resultSetColumn">Column Binding_4</property>
+                        </data>
                     </cell>
                     <cell id="3049">
                         <property name="borderBottomColor">#000000</property>
@@ -1657,20 +1890,58 @@ Total.sum(row["credit"]) - Total.sum(row["debit"])
                         <property name="borderTopColor">#000000</property>
                         <property name="borderTopStyle">solid</property>
                         <property name="borderTopWidth">thin</property>
-                        <text id="5340">
+                        <data id="5356">
+                            <property name="backgroundAttachment">scroll</property>
+                            <property name="backgroundPositionX">0%</property>
+                            <property name="backgroundPositionY">0%</property>
+                            <property name="backgroundRepeat">repeat</property>
+                            <property name="fontFamily">sans-serif</property>
                             <property name="fontSize">9.5pt</property>
                             <property name="fontWeight">bold</property>
+                            <property name="fontStyle">normal</property>
+                            <property name="fontVariant">normal</property>
+                            <property name="color">black</property>
+                            <property name="textLineThrough">none</property>
+                            <property name="textOverline">none</property>
+                            <property name="textUnderline">none</property>
+                            <property name="borderBottomColor">black</property>
+                            <property name="borderBottomStyle">none</property>
+                            <property name="borderBottomWidth">medium</property>
+                            <property name="borderLeftColor">black</property>
+                            <property name="borderLeftStyle">none</property>
+                            <property name="borderLeftWidth">medium</property>
+                            <property name="borderRightColor">black</property>
+                            <property name="borderRightStyle">none</property>
+                            <property name="borderRightWidth">medium</property>
+                            <property name="borderTopColor">black</property>
+                            <property name="borderTopStyle">none</property>
+                            <property name="borderTopWidth">medium</property>
+                            <property name="marginTop">0pt</property>
+                            <property name="marginLeft">0pt</property>
+                            <property name="marginBottom">0pt</property>
+                            <property name="marginRight">0pt</property>
+                            <property name="paddingTop">1pt</property>
+                            <property name="paddingLeft">1pt</property>
+                            <property name="paddingBottom">1pt</property>
+                            <property name="paddingRight">1pt</property>
                             <property name="textAlign">right</property>
-                            <list-property name="visibility">
-                                <structure>
-                                    <property name="format">all</property>
-                                    <expression name="valueExpr" type="javascript">!row["DiffCredit"]</expression>
-                                </structure>
-                            </list-property>
-                            <structure name="toc"/>
-                            <property name="contentType">html</property>
-                            <text-property name="content"><![CDATA[<VALUE-OF>formatNumber(row["DiffCredit"])</VALUE-OF>]]></text-property>
-                        </text>
+                            <property name="letterSpacing">normal</property>
+                            <property name="lineHeight">normal</property>
+                            <property name="orphans">2</property>
+                            <property name="textTransform">none</property>
+                            <property name="whiteSpace">normal</property>
+                            <property name="widows">2</property>
+                            <property name="wordSpacing">normal</property>
+                            <property name="display">block</property>
+                            <property name="pageBreakAfter">auto</property>
+                            <property name="pageBreakBefore">auto</property>
+                            <property name="pageBreakInside">auto</property>
+                            <property name="showIfBlank">false</property>
+                            <property name="canShrink">false</property>
+                            <property name="overflow">hidden</property>
+                            <method name="onRender"><![CDATA[this.getStyle().numberFormat = getNumberFormatPattern();]]></method>
+                            <property name="resultSetColumn">Column Binding_5</property>
+                        </data>
                     </cell>
                     <cell id="3050">
                         <property name="backgroundColor">#FFFFFF</property>

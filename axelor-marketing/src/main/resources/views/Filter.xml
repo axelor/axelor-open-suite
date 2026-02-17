@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+
+  <grid name="marketing-studio-filter-grid" title="Filters" model="com.axelor.studio.db.Filter">
+    <field name="metaField" target-name="label"/>
+    <field name="targetTitle"/>
+    <field name="operator"/>
+    <field name="value"/>
+  </grid>
+
+  <form name="marketing-studio-filter-form" title="Filter" model="com.axelor.studio.db.Filter">
+    <panel name="mainPanel">
+      <field name="metaField" target-name="label" grid-view="meta-field-grid"
+        form-view="meta-field-form"/>
+      <field name="targetTitle"/>
+      <field name="operator"/>
+      <field name="value"
+        hideIf="operator == 'isNull' || operator == 'notNull' || targetType == 'Boolean'"/>
+      <field name="targetType" hidden="true"/>
+    </panel>
+  </form>
+
+</object-views>

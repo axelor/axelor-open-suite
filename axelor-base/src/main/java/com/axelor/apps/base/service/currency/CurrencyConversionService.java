@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,18 +24,17 @@ import com.axelor.apps.base.db.CurrencyConversionLine;
 import com.axelor.apps.base.db.repo.CurrencyConversionLineRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
+import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.http.HTTPResponse;
-import wslite.json.JSONException;
 
 public abstract class CurrencyConversionService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -66,11 +65,10 @@ public abstract class CurrencyConversionService {
    * @param currencyTo
    * @return
    * @throws MalformedURLException
-   * @throws JSONException
    * @throws AxelorException
    */
   public abstract BigDecimal convert(Currency currencyFrom, Currency currencyTo)
-      throws MalformedURLException, JSONException, AxelorException;
+      throws MalformedURLException, AxelorException;
 
   /**
    * Validate the response and get the rate.
@@ -96,7 +94,8 @@ public abstract class CurrencyConversionService {
    * @throws AxelorException
    */
   public abstract Float getRateFromJson(
-      Currency currencyFrom, Currency currencyTo, HTTPResponse response) throws AxelorException;
+      Currency currencyFrom, Currency currencyTo, HttpResponse<String> response)
+      throws AxelorException;
 
   /**
    * Returns the URL to which request is to be sent.
@@ -179,8 +178,7 @@ public abstract class CurrencyConversionService {
    * @return Pair of rate with the respective date.
    */
   public abstract Pair<LocalDate, BigDecimal> getRateWithDate(
-      Currency currencyFrom, Currency currencyTo)
-      throws MalformedURLException, JSONException, AxelorException;
+      Currency currencyFrom, Currency currencyTo) throws MalformedURLException, AxelorException;
 
   /**
    * Validate the response and get the rate.

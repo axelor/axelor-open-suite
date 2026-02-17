@@ -1,4 +1,0 @@
-"importId";"name";"modelName";"statusSelect";"toAttach";"scriptFieldName"
-"85";"InvoiceAnnex";"com.axelor.apps.account.db.Invoice";"1";"false";"${__i18n__.get('Invoice') + '-' + Invoice.invoiceId}"
-"86";"InvoicingProjectAnnex";"com.axelor.apps.businessproject.db.InvoicingProject";"1";"false";"${__i18n__.get('InvoicingProjectAnnex') + '-' + __datetime__.zonedDateT.format('YYYYMMddHHmm')}"
-"155";"InvoiceExpense";"com.axelor.apps.account.db.Invoice";"1";"false";

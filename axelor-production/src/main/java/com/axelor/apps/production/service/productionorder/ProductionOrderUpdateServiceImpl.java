@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,8 @@ import com.axelor.apps.production.db.ManufOrder;
 import com.axelor.apps.production.db.ProductionOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.ProductionOrderRepository;
-import com.google.inject.Inject;
+import com.axelor.apps.stock.utils.JpaModelHelper;
+import jakarta.inject.Inject;
 
 public class ProductionOrderUpdateServiceImpl implements ProductionOrderUpdateService {
 
@@ -35,7 +36,9 @@ public class ProductionOrderUpdateServiceImpl implements ProductionOrderUpdateSe
 
   @Override
   public ProductionOrder addManufOrder(ProductionOrder productionOrder, ManufOrder manufOrder) {
+    productionOrder = JpaModelHelper.ensureManaged(productionOrder);
     if (manufOrder != null) {
+      manufOrder = JpaModelHelper.ensureManaged(manufOrder);
       productionOrder.addManufOrderSetItem(manufOrder);
       manufOrder.addProductionOrderSetItem(productionOrder);
     }

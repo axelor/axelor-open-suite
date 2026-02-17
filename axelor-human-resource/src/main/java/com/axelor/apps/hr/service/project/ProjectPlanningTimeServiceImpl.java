@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import com.axelor.apps.project.db.ProjectConfig;
 import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.repo.ProjectPlanningTimeRepository;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectTimeUnitService;
 import com.axelor.apps.project.service.UnitConversionForProjectService;
 import com.axelor.apps.project.service.app.AppProjectService;
@@ -45,8 +46,8 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -71,6 +72,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
   protected ICalendarService iCalendarService;
   protected ICalendarEventRepository iCalendarEventRepository;
   protected ProjectTimeUnitService projectTimeUnitService;
+  protected ProjectTaskRepository projectTaskRepo;
 
   @Inject
   public ProjectPlanningTimeServiceImpl(
@@ -82,7 +84,8 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       ICalendarEventRepository iCalendarEventRepository,
       UnitConversionForProjectService unitConversionForProjectService,
       UnitConversionRepository unitConversionRepository,
-      ProjectTimeUnitService projectTimeUnitService) {
+      ProjectTimeUnitService projectTimeUnitService,
+      ProjectTaskRepository projectTaskRepo) {
     this.planningTimeRepo = planningTimeRepo;
     this.appProjectService = appProjectService;
     this.projectConfigService = projectConfigService;
@@ -92,6 +95,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     this.unitConversionForProjectService = unitConversionForProjectService;
     this.unitConversionRepository = unitConversionRepository;
     this.projectTimeUnitService = projectTimeUnitService;
+    this.projectTaskRepo = projectTaskRepo;
   }
 
   @Override
@@ -464,5 +468,29 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
     public String toString() {
       return "ProjectPlanningTime{project='" + project + "', projectTask=" + projectTask + '}';
     }
+  }
+
+  @Override
+  public BigDecimal getOldBudgetedTime(ProjectTask projectTask) {
+    BigDecimal oldBudgetedTime = projectTask.getOldBudgetedTime();
+    if ((oldBudgetedTime == null || oldBudgetedTime.signum() == 0) && projectTask.getId() != null) {
+      oldBudgetedTime = projectTaskRepo.find(projectTask.getId()).getBudgetedTime();
+    }
+
+    return oldBudgetedTime;
+  }
+
+  @Override
+  public Unit getTimeUnit(ProjectTask projectTask) {
+    Unit unit = projectTask.getTimeUnit();
+    if (unit == null) {
+      unit =
+          Optional.of(projectTask)
+              .map(ProjectTask::getProject)
+              .map(Project::getProjectTimeUnit)
+              .orElse(null);
+    }
+
+    return unit;
   }
 }

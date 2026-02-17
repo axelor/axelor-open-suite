@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -72,11 +72,15 @@ public class ExcelExportGenerator extends AdvancedExportGenerator {
 
   @Override
   public void generateHeader() {
-    Row headerRow = sheet.createRow(sheet.getFirstRowNum());
+    Row headerRow = sheet.createRow(0);
     int colHeaderNum = 0;
     for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
       Cell headerCell = headerRow.createCell(colHeaderNum++);
-      headerCell.setCellValue(I18n.get(advancedExportLine.getTitle()));
+      String header =
+          advancedExport.getUseTechnicalFieldName()
+              ? advancedExportLine.getTargetField()
+              : I18n.get(advancedExportLine.getTitle());
+      headerCell.setCellValue(header);
     }
   }
 

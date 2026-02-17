@@ -20,4 +20,5 @@ dependencies {
 	api project(":modules:axelor-stock")
 	api project(":modules:axelor-account")
     testImplementation libs.mockito
+	implementation libs.swagger_jaxrs
 }

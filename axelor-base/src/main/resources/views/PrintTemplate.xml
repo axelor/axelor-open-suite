@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="print-template-grid" title="Print templates"
     model="com.axelor.apps.base.db.PrintTemplate">
@@ -54,7 +54,7 @@
       <panel-related name="printTemplateLineListPanel" field="printTemplateLineList"
         grid-view="print-template-line-grid" form-view="print-template-line-form" colSpan="12"
         orderBy="sequence" canMove="true"/>
-      <field name="printingTemplateSet" widget="TagSelect" grid-view="printing-template-grid"
+      <field name="printingTemplateSet" widget="Tags" grid-view="printing-template-grid"
         form-view="printing-template-form" colSpan="12"/>
       <panel-related name="printTemplateSetPanel" field="printTemplateSet"
         grid-view="print-template-grid" form-view="print-template-form" colSpan="12"/>
@@ -118,8 +118,7 @@
     <call class="com.axelor.apps.base.web.PrintTemplateController" method="openPrint"/>
   </action-method>
 
-  <action-export name="action-export-print-template" output="${date}${time}"
-    download="true">
+  <action-export name="action-export-print-template">
     <export
       name="PrintTemplate-${__datetime__.format(java.time.format.DateTimeFormatter.ofPattern('ddMMyyyyHHmmSS'))}.xml"
       template="data-export/export-print-template.txt" engine="groovy"/>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://axelor.com/xml/ns/object-views"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="account-config-grid" title="Account configurations"
     model="com.axelor.apps.account.db.AccountConfig">
@@ -62,7 +62,7 @@
         <button name="installTemplateBtn" title="Import the chart" hidden="true"
           showIf="(accountingConfigTemplate &amp;&amp; !$existingChartAccount &amp;&amp; !hasChartImported) &amp;&amp; ($existingFiscalYear || !$generateFiscalYear) &amp;&amp; isImportAccountChartOnly"
           readonlyIf="company == null || accountingConfigTemplate == null || (hasAccountCodeFixedNbrChar &amp;&amp; (accountCodeNbrCharSelect == 0 || accountCodeNbrCharSelect == null)) || hasChartImported"
-          colSpan="3" icon="fa-import" onClick="action-group-account-config-installchart-click"/>
+          colSpan="3" icon="upload" onClick="action-group-account-config-installchart-click"/>
         <spacer colSpan="12"/>
 
         <panel name="installTemplatePanel" hidden="true" showIf="accountingConfigTemplate"
@@ -187,19 +187,22 @@
               form-view="account-form"/>
           </panel>
           <panel name="financialResultPanel" title="Financial result" colSpan="12">
-            <field name="resultProfitAccount"/>
-            <field name="resultLossAccount"/>
+            <field name="resultProfitAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"/>
+            <field name="resultLossAccount"
+              domain="self.statusSelect = 1 AND self.company = :company" grid-view="account-grid"
+              form-view="account-form"/>
           </panel>
 
 
         </panel>
         <panel name="managePeriodPanel" title="Period closure" colSpan="12">
-          <field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"
+          <field name="temporaryClosureAuthorizedRoleList" colSpan="6" widget="Tags"
             placeholder="None"/>
-          <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="TagSelect"
+          <field name="moveOnTempClosureAuthorizedRoleList" colSpan="6" widget="Tags"
             placeholder="None"/>
-          <field name="closureAuthorizedRoleList" colSpan="6" widget="TagSelect"
-            placeholder="None"/>
+          <field name="closureAuthorizedRoleList" colSpan="6" widget="Tags" placeholder="None"/>
         </panel>
         <panel name="reconcileDifferencesPanel" title="Reconcile differences" colSpan="12">
           <field name="thresholdDistanceFromRegulation"/>
@@ -324,12 +327,6 @@
           <field name="displayProductCodeOnPrinting" widget="boolean-switch"/>
           <field name="displayTaxDetailOnPrinting" widget="boolean-switch"/>
           <field name="displayPartnerSeqOnPrinting" widget="boolean-switch"/>
-          <field name="displayTimesheetOnPrinting" widget="boolean-switch"
-            if-module="axelor-business-project"
-            if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('timesheet')"/>
-          <field name="displayExpenseOnPrinting" widget="boolean-switch"
-            if-module="axelor-business-project"
-            if="__config__.app.isApp('business-project') &amp;&amp;  __config__.app.isApp('expense')"/>
           <field name="isPrintInvoicesInCompanyLanguage" widget="boolean-switch"/>
           <field name="displayHeadOfficeAddrOnInvoicePrinting" widget="boolean-switch"/>
           <field name="displayStockMoveOnInvoicePrinting" widget="boolean-switch"
@@ -498,7 +495,7 @@
           grid-view="account-grid" form-view="account-form"/>
         <field name="standardRateTax" grid-view="tax-grid" form-view="tax-form"/>
         <panel-related field="clearanceAccountSet"
-          domain="self.useForPartnerBalance = 'true' AND self.company = :company" colSpan="12"
+          domain="self.useForPartnerBalance = true AND self.company = :company" colSpan="12"
           grid-view="account-grid" form-view="account-form"/>
       </panel>
       <panel name="analyticPanel"

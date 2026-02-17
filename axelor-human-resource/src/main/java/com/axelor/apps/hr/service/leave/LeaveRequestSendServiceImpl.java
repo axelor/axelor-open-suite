@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,8 +28,8 @@ import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.leavereason.LeaveReasonService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class LeaveRequestSendServiceImpl implements LeaveRequestSendService {
 
@@ -70,6 +70,7 @@ public class LeaveRequestSendServiceImpl implements LeaveRequestSendService {
     }
 
     LeaveLine leaveLine = leaveLineService.getLeaveLine(leaveRequest);
+    String message = "";
     if (leaveLine != null
         && leaveLine.getQuantity().subtract(leaveRequest.getDuration()).signum() < 0) {
       if (!leaveRequest.getLeaveReason().getAllowNegativeValue()
@@ -86,15 +87,16 @@ public class LeaveRequestSendServiceImpl implements LeaveRequestSendService {
                 + " "
                 + instruction);
       } else {
-        return String.format(
-            I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT),
-            leaveRequest.getLeaveReason().getName());
+        message =
+            String.format(
+                I18n.get(HumanResourceExceptionMessage.LEAVE_ALLOW_NEGATIVE_ALERT),
+                leaveRequest.getLeaveReason().getName());
       }
     }
 
     confirm(leaveRequest);
 
-    return "";
+    return message;
   }
 
   @Transactional(rollbackOn = {Exception.class})

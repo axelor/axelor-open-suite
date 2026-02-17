@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,7 +35,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppSale;
 import com.axelor.studio.db.repo.AppSaleRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -100,9 +100,11 @@ public class SaleOrderViewServiceImpl implements SaleOrderViewService {
   }
 
   @Override
-  public Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder) {
+  public Map<String, Map<String, Object>> getCompanyAttrs(SaleOrder saleOrder)
+      throws AxelorException {
     Map<String, Map<String, Object>> attrs = new HashMap<>();
     MapTools.addMap(attrs, hideContactPartner(saleOrder));
+    MapTools.addMap(attrs, inAti(saleOrder));
     return attrs;
   }
 

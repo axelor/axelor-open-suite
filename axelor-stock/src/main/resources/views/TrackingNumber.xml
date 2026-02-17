@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="tracking-number-grid" title="Tracking number"
     model="com.axelor.apps.stock.db.TrackingNumber">
@@ -122,6 +122,12 @@
         <field name="serialNumber" readonlyIf="barCode != null" colSpan="4"/>
         <field name="barcodeTypeConfig" readonlyIf="barCode != null" hidden="true" colSpan="4"/>
       </panel>
+      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
+        colSpan="12">
+        <button name="addControlEntryBtn" title="Add a control entry"
+          onClick="save,action-tracking-number-view-add-control-entry" colOffset="6"/>
+        <panel-dashlet action="action-tracking-number-view-control-entry" colSpan="12"/>
+      </panel>
     </panel-tabs>
 
   </form>
@@ -219,19 +225,20 @@
 
   <search name="tracking-number-search" title="Tracking number search" limit="50">
     <search-fields>
-      <field name="product" type="reference" target="com.axelor.apps.base.db.Product"/>
-      <field name="trackingNumber" type="reference"
+      <field name="product" type="reference" target="com.axelor.apps.base.db.Product"
+        domain="self.dtype = 'Product'"/>
+      <field name="trackingNumberRef" type="reference"
         target="com.axelor.apps.stock.db.TrackingNumber" widget="SuggestBox"
         domain="self.product = :product"/>
     </search-fields>
 
     <result-fields>
       <field name="object" width="75"/>
-      <field name="trackingNumber" type="reference"
+      <field name="trackingNumberRef" type="reference"
         target="com.axelor.apps.stock.db.TrackingNumber"/>
       <field name="product" type="string"/>
-      <field name="futureQty" title="Expected/Future Quantity" type="decimal"/>
-      <field name="currentQty" title="Real/Current Quantity" type="decimal"/>
+      <field name="futureQtyVal" title="Expected/Future Quantity" type="decimal"/>
+      <field name="currentQtyVal" title="Real/Current Quantity" type="decimal"/>
       <field name="stockLocation" title="Stock location" type="string"/>
       <field name="moveLine" title="Stock move line" type="string"/>
       <field name="date" type="date"/>
@@ -239,25 +246,25 @@
 
     <select model="com.axelor.apps.stock.db.StockMove" title="Stock move"
       form-view="stock-move-form">
-      <field name="stockMoveLineList.trackingNumber" as="trackingNumber"/>
+      <field name="stockMoveLineList.trackingNumber" as="trackingNumberRef"/>
       <field name="stockMoveLineList.product.fullName" as="product"/>
       <field name="stockMoveLineList.productName" as="moveLine"/>
-      <field name="stockMoveLineList.realQty" as="currentQty"/>
-      <field name="stockMoveLineList.qty" as="futureQty"/>
+      <field name="stockMoveLineList.realQty" as="currentQtyVal"/>
+      <field name="stockMoveLineList.qty" as="futureQtyVal"/>
       <field name="stockMoveLineList.stockMove.realDate" as="date"/>
       <where>
-        <input name="trackingNumber" field="stockMoveLineList.trackingNumber"/>
+        <input name="trackingNumberRef" field="stockMoveLineList.trackingNumber"/>
       </where>
     </select>
-    <select model="com.axelor.apps.stock.db.StockLocation" title="Stock location"
-      form-view="stock-location-form">
-      <field name="detailsStockLocationLineList.trackingNumber" as="trackingNumber"/>
-      <field name="detailsStockLocationLineList.product.name" as="product"/>
-      <field name="detailsStockLocationLineList.detailsStockLocation.name" as="stockLocation"/>
-      <field name="detailsStockLocationLineList.currentQty" as="currentQty"/>
-      <field name="detailsStockLocationLineList.futureQty" as="futureQty"/>
+    <select model="com.axelor.apps.stock.db.StockLocationLine" title="Stock location"
+      form-view="stock-location-line-details-form">
+      <field name="trackingNumber" as="trackingNumberRef"/>
+      <field name="product.name" as="product"/>
+      <field name="detailsStockLocation.name" as="stockLocation"/>
+      <field name="currentQty" as="currentQtyVal"/>
+      <field name="futureQty" as="futureQtyVal"/>
       <where>
-        <input name="trackingNumber" field="detailsStockLocationLineList.trackingNumber"/>
+        <input name="trackingNumberRef" field="trackingNumber"/>
       </where>
     </select>
   </search>
@@ -353,7 +360,7 @@
 
   <action-attrs name="action-tracking-number-attrs-set-product-readonly">
     <attribute name="readonly" for="product"
-      expr="eval: __repo__(StockLocationLine).all().filter('self.trackingNumber = ?',id).count() > 0"
+      expr="eval: __repo__(StockLocationLine).all().filter('self.trackingNumber.id = ?',id).count() > 0"
       if="id != null"/>
   </action-attrs>
 
@@ -381,6 +388,24 @@
     <view type="form" name="tracking-number-form"/>
     <domain>self IN (:originParentsSet) </domain>
     <context name="originParentsSet" expr="eval: originParentTrackingNumberSet"/>
+  </action-view>
+
+  <action-view name="action-tracking-number-view-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="grid" name="control-entry-grid"/>
+    <view type="form" name="control-entry-form"/>
+    <domain>self.relatedToSelectId = :trackingNumberId AND self.relatedToSelect =
+      'com.axelor.apps.stock.db.TrackingNumber'</domain>
+    <context name="trackingNumberId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-tracking-number-view-add-control-entry"
+    model="com.axelor.apps.quality.db.ControlEntry" title="Control entry">
+    <view type="form" name="control-entry-form"/>
+    <view type="grid" name="control-entry-grid"/>
+    <view-param name="popup" value="reload"/>
+    <context name="relatedTo" expr="eval: 'com.axelor.apps.stock.db.TrackingNumber'"/>
+    <context name="relatedToId" expr="eval:__self__?.id"/>
   </action-view>
 
   <action-method

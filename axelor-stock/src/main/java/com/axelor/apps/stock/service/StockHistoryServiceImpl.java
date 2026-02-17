@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,13 +33,14 @@ import com.axelor.apps.stock.db.repo.StockHistoryLineManagementRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.helpers.file.CsvHelper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -93,7 +94,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
               .all()
               .filter(
                   "self.typeSelect != :typeSelect AND self.company.id = :company "
-                      + "AND self.stockLocationLineList.product = :product")
+                      + "AND EXISTS(SELECT id FROM StockLocationLine line WHERE line.stockLocation = self AND line.product.id = :product)")
               .bind("typeSelect", StockLocationRepository.TYPE_VIRTUAL)
               .bind("company", companyId)
               .bind("product", productId)
@@ -192,7 +193,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
       list.add(item);
     }
 
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    File file = TempFiles.createTempFile(fileName, ".csv").toFile();
     fileName = fileName + ".csv";
 
     CsvHelper.csvWriter(
@@ -247,7 +248,7 @@ public class StockHistoryServiceImpl implements StockHistoryService {
         avgOutQtyOn12PastMonth.divide(
             new BigDecimal(12),
             Beans.get(AppBaseService.class).getNbDecimalDigitForQty(),
-            RoundingMode.HALF_EVEN);
+            RoundingMode.HALF_UP);
     stockHistoryLine.setAvgOutQtyOn12PastMonth(avgOutQtyOn12PastMonth);
   }
 

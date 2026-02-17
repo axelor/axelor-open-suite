@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,15 @@
  */
 package com.axelor.apps.bankpayment.service.bankorder;
 
+import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.bankpayment.db.BankOrder;
 import com.axelor.apps.bankpayment.db.BankOrderFileFormat;
 import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.bankdetails.BankDetailsBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Bank;
@@ -40,7 +43,7 @@ import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -60,6 +63,8 @@ public class BankOrderLineService {
   protected AppBaseService appBaseService;
   protected PartnerService partnerService;
 
+  protected BankDetailsBankPaymentService bankDetailsBankPaymentService;
+
   @Inject
   public BankOrderLineService(
       BankDetailsRepository bankDetailsRepository,
@@ -67,7 +72,8 @@ public class BankOrderLineService {
       BankOrderLineOriginService bankOrderLineOriginService,
       BankOrderCheckService bankOrderCheckService,
       AppBaseService appBaseService,
-      PartnerService partnerService) {
+      PartnerService partnerService,
+      BankDetailsBankPaymentService bankDetailsBankPaymentService) {
 
     this.bankDetailsRepository = bankDetailsRepository;
     this.currencyService = currencyService;
@@ -75,6 +81,7 @@ public class BankOrderLineService {
     this.bankOrderCheckService = bankOrderCheckService;
     this.appBaseService = appBaseService;
     this.partnerService = partnerService;
+    this.bankDetailsBankPaymentService = bankDetailsBankPaymentService;
   }
 
   /**
@@ -99,6 +106,12 @@ public class BankOrderLineService {
       throws AxelorException {
 
     BankDetails receiverBankDetails = bankDetailsRepository.findDefaultByPartner(partner);
+
+    if (receiverBankDetails == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get(BankPaymentExceptionMessage.BANK_ORDER_MISSING_RECEIVER_BANK_DETAILS));
+    }
 
     return this.createBankOrderLine(
         bankOrderFileFormat,
@@ -258,6 +271,14 @@ public class BankOrderLineService {
           StringHelper.getIdListString(bankOrderLine.getPartner().getBankDetailsList());
     }
 
+    List<BankDetails> bankDetailsList =
+        bankDetailsBankPaymentService.getBankDetailsLinkedToActiveUmr(
+            bankOrder.getPaymentMode(), bankOrderLine.getPartner(), bankOrder.getSenderCompany());
+    if (bankOrder.getPaymentMode() != null
+        && bankOrder.getPaymentMode().getTypeSelect() == PaymentModeRepository.TYPE_DD) {
+      bankDetailsIds = StringHelper.getIdListString(bankDetailsList);
+    }
+
     if (bankDetailsIds.equals("")) {
       return domain = "";
     }
@@ -298,7 +319,20 @@ public class BankOrderLineService {
    */
   public BankDetails getDefaultBankDetails(BankOrderLine bankOrderLine, BankOrder bankOrder) {
     BankDetails candidateBankDetails = null;
-    if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY
+
+    PaymentMode paymentMode = bankOrder.getPaymentMode();
+
+    if (paymentMode != null && paymentMode.getTypeSelect() == PaymentModeRepository.TYPE_DD) {
+      candidateBankDetails =
+          bankDetailsBankPaymentService
+              .getBankDetailsLinkedToActiveUmr(
+                  bankOrder.getPaymentMode(),
+                  bankOrderLine.getPartner(),
+                  bankOrder.getSenderCompany())
+              .stream()
+              .findFirst()
+              .orElse(null);
+    } else if (bankOrder.getPartnerTypeSelect() == BankOrderRepository.PARTNER_TYPE_COMPANY
         && bankOrderLine.getReceiverCompany() != null) {
       candidateBankDetails = bankOrderLine.getReceiverCompany().getDefaultBankDetails();
       if (candidateBankDetails == null) {

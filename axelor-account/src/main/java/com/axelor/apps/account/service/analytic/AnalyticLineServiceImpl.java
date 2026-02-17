@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.analytic;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountConfig;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticAxisByCompany;
@@ -37,10 +38,11 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.ListHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -155,17 +157,34 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
   @Override
   public boolean isAxisRequired(AnalyticLine line, Company company, int position)
       throws AxelorException {
-    if (analyticToolService.isManageAnalytic(company)
-        && line != null
-        && line.getAccount() != null
-        && line.getAccount().getCompany() != null) {
-      Account account = line.getAccount();
-      return account.getAnalyticDistributionAuthorized()
-          && account.getAnalyticDistributionRequiredOnMoveLines()
-          && line.getAnalyticDistributionTemplate() == null
-          && analyticToolService.isPositionUnderAnalyticAxisSelect(company, position);
+    Account account = line.getAccount();
+    if (!analyticToolService.isManageAnalytic(company)
+        || !analyticToolService.isPositionUnderAnalyticAxisSelect(company, position)
+        || account == null
+        || !account.getAnalyticDistributionAuthorized()) {
+      return false;
     }
-    return false;
+
+    if (analyticToolService.isFreeAnalyticDistribution(company)) {
+      AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+      List<AnalyticAxisByCompany> analyticAxisByCompanyList =
+          accountConfig.getAnalyticAxisByCompanyList();
+      if (ObjectUtils.isEmpty(analyticAxisByCompanyList)
+          || analyticAxisByCompanyList.size() < position) {
+        return false;
+      }
+      return Optional.ofNullable(
+              analyticAxisByCompanyList.stream()
+                  .sorted(Comparator.comparing(AnalyticAxisByCompany::getSequence))
+                  .collect(Collectors.toList())
+                  .get(position - 1))
+          .map(AnalyticAxisByCompany::getIsRequired)
+          .orElse(false);
+
+    } else {
+      return account.getAnalyticDistributionRequiredOnMoveLines()
+          && line.getAnalyticDistributionTemplate() == null;
+    }
   }
 
   @Override
@@ -249,8 +268,12 @@ public class AnalyticLineServiceImpl implements AnalyticLineService {
 
   protected Stream<AnalyticMoveLine> getAnalyticMoveLineOnAxis(
       AnalyticLine analyticLine, AnalyticAxis analyticAxis) {
-    return analyticLine.getAnalyticMoveLineList().stream()
-        .filter(it -> it.getAnalyticAxis().equals(analyticAxis));
+    if (analyticAxis != null) {
+      return analyticLine.getAnalyticMoveLineList().stream()
+          .filter(it -> analyticAxis.equals(it.getAnalyticAxis()));
+    }
+
+    return Stream.empty();
   }
 
   protected void setAxisAccount(

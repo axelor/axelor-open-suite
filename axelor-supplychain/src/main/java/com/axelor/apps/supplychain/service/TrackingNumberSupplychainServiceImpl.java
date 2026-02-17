@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,11 +18,12 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Objects;
 
 public class TrackingNumberSupplychainServiceImpl implements TrackingNumberSupplychainService {
@@ -45,10 +46,28 @@ public class TrackingNumberSupplychainServiceImpl implements TrackingNumberSuppl
   }
 
   @Override
+  public void freeOriginPurchaseOrderLine(PurchaseOrderLine purchaseOrderLine) {
+    trackingNumberRepository
+        .all()
+        .filter("self.originPurchaseOrderLine = :purchaseOrderLine")
+        .bind("purchaseOrderLine", purchaseOrderLine)
+        .fetch()
+        .forEach(this::freeOriginPurchaseOrderLine);
+  }
+
+  @Override
   @Transactional(rollbackOn = {Exception.class})
   public void freeOriginSaleOrderLine(TrackingNumber trackingNumber) {
     Objects.requireNonNull(trackingNumber);
 
     trackingNumber.setOriginSaleOrderLine(null);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void freeOriginPurchaseOrderLine(TrackingNumber trackingNumber) {
+    Objects.requireNonNull(trackingNumber);
+
+    trackingNumber.setOriginPurchaseOrderLine(null);
   }
 }

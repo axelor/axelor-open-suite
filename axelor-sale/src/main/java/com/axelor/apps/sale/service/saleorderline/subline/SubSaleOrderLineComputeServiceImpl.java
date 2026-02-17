@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,9 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
-import com.google.inject.Inject;
+import com.axelor.studio.db.AppSale;
+import com.axelor.studio.db.repo.AppSaleRepository;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -49,7 +51,10 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
   public void computeSumSubLineList(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
     List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
-    if (appSaleService.getAppSale().getIsSOLPriceTotalOfSubLines()) {
+    AppSale appSale = appSaleService.getAppSale();
+    if (appSale.getIsSOLPriceTotalOfSubLines()
+        && appSale.getListDisplayTypeSelect()
+            == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
       if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
         for (SaleOrderLine subSaleOrderLine : subSaleOrderLineList) {
           computeSumSubLineList(subSaleOrderLine, saleOrder);
@@ -62,6 +67,9 @@ public class SubSaleOrderLineComputeServiceImpl implements SubSaleOrderLineCompu
 
   protected void computePrices(SaleOrderLine saleOrderLine, SaleOrder saleOrder) {
     List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    if (CollectionUtils.isEmpty(subSaleOrderLineList)) {
+      return;
+    }
     saleOrderLine.setPrice(
         subSaleOrderLineList.stream()
             .map(SaleOrderLine::getExTaxTotal)

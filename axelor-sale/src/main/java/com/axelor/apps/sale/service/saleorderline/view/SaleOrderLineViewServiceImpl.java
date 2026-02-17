@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,7 +37,7 @@ import com.axelor.auth.db.Group;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppSale;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,11 +47,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public class SaleOrderLineViewServiceImpl implements SaleOrderLineViewService {
-  public static final String HIDDEN_ATTR = "hidden";
-  public static final String TITLE_ATTR = "title";
-  public static final String SCALE_ATTR = "scale";
-  public static final String SELECTION_IN_ATTR = "selection-in";
-  public static final String READONLY_ATTR = "readonly";
 
   protected AppBaseService appBaseService;
   protected AppSaleService appSaleService;

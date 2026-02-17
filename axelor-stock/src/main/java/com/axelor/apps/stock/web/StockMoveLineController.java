@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,8 +36,8 @@ import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
-import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.service.StockMoveLineStockLocationService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -46,7 +46,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -269,7 +269,8 @@ public class StockMoveLineController {
   public void setAvailableStatus(ActionRequest request, ActionResponse response) {
     try {
       StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-      Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
+      StockMove stockMove = getStockMove(request, stockMoveLine);
+      Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine, stockMove);
       response.setValue("availableStatus", stockMoveLine.getAvailableStatus());
       response.setValue("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
     } catch (Exception e) {
@@ -323,11 +324,17 @@ public class StockMoveLineController {
       map.put("trackingNumberSeq", trackingNumber.getTrackingNumberSeq());
       map.put("counter", BigDecimal.ZERO);
       map.put("warrantyExpirationDate", trackingNumber.getWarrantyExpirationDate());
+
       map.put("$availableQty", availableQty);
       map.put("$moveTypeSelect", stockMove.getTypeSelect());
       map.put("origin", trackingNumber.getOrigin());
       map.put("note", trackingNumber.getNote());
-
+      map.put("perishableExpirationDate", trackingNumber.getPerishableExpirationDate());
+      map.put("isPerishable", trackingNumber.getIsPerishable());
+      map.put("hasWarranty", trackingNumber.getHasWarranty());
+      map.put(
+          "checkExpirationDateAtStockMoveRealization",
+          trackingNumber.getCheckExpirationDateAtStockMoveRealization());
       trackingNumbers.add(map);
     }
     response.setValue("$trackingNumbers", trackingNumbers);
@@ -371,8 +378,9 @@ public class StockMoveLineController {
     response.setAttr(
         "fromStockLocation",
         "domain",
-        Beans.get(StockLocationService.class)
-            .computeStockLocationChildren(stockMove.getFromStockLocation()));
+        Beans.get(StockMoveLineStockLocationService.class)
+            .getStockLocationDomainWithDefaultLocation(
+                stockMoveLine, stockMove, stockMove.getFromStockLocation()));
   }
 
   public void getToStockLocationDomain(ActionRequest request, ActionResponse response) {
@@ -381,8 +389,9 @@ public class StockMoveLineController {
     response.setAttr(
         "toStockLocation",
         "domain",
-        Beans.get(StockLocationService.class)
-            .computeStockLocationChildren(stockMove.getToStockLocation()));
+        Beans.get(StockMoveLineStockLocationService.class)
+            .getStockLocationDomainWithDefaultLocation(
+                stockMoveLine, stockMove, stockMove.getToStockLocation()));
   }
 
   protected StockMove getStockMove(ActionRequest request, StockMoveLine stockMoveLine) {
@@ -435,5 +444,22 @@ public class StockMoveLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void fillStockLocation(ActionRequest request, ActionResponse response) {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    Beans.get(StockMoveLineStockLocationService.class)
+        .fillStockLocationWithDefaultStockLocation(stockMoveLine, stockMove);
+
+    response.setValue("fromStockLocation", stockMoveLine.getFromStockLocation());
+    response.setValue("toStockLocation", stockMoveLine.getToStockLocation());
+  }
+
+  public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    Beans.get(StockMoveLineService.class).qtyOnChange(stockMoveLine, stockMove);
+    response.setValue("companyPurchasePrice", stockMoveLine.getCompanyPurchasePrice());
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -189,4 +189,6 @@ public interface ITranslation {
 
   public static final String BILL_OF_EXCHANGE_CANCELLATION = /*$$(*/
       "Cancellation of Bill of Exchange for invoice %s"; /*)*/
+
+  public static final String CAMT053_CHQ_TRANSACTION_LABEL = /*$$(*/ "Nbt:%s"; /*)*/
 }

@@ -1,0 +1,8 @@
+---
+title: "Payment voucher: cancel the payment voucher when reverse a payment move."
+module: axelor-account
+developer : |
+ - Added PaymentVoucherCancelService in the MoveReverseServiceImpl constructor
+ - Added PaymentVoucherCancelService in the MoveReverseServiceBankPaymentImpl constructor
+ - Added PaymentVoucherCancelService in the MoveReverseServiceBudgetImpl constructor
+ - Added PaymentVoucherCancelService in the ExpenseMoveReverseServiceImpl constructor

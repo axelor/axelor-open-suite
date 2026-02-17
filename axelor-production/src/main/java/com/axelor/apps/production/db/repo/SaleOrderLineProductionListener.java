@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,15 +18,23 @@
  */
 package com.axelor.apps.production.db.repo;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.production.service.SaleOrderLineBomSyncService;
+import com.axelor.apps.production.service.SaleOrderLineCheckProductionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.inject.Beans;
-import javax.persistence.PostUpdate;
+import jakarta.persistence.PostUpdate;
+import jakarta.persistence.PreRemove;
 
 public class SaleOrderLineProductionListener {
 
   @PostUpdate
   void postUpdate(SaleOrderLine saleOrderLine) {
     Beans.get(SaleOrderLineBomSyncService.class).removeBomLines(saleOrderLine);
+  }
+
+  @PreRemove
+  void preRemove(SaleOrderLine saleOrderLine) throws AxelorException {
+    Beans.get(SaleOrderLineCheckProductionService.class).checkLinkedMo(saleOrderLine);
   }
 }

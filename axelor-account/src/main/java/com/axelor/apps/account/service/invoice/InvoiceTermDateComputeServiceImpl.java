@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,9 +24,14 @@ import com.axelor.apps.account.service.PaymentConditionToolService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.google.inject.Inject;
+import com.axelor.common.ObjectUtils;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class InvoiceTermDateComputeServiceImpl implements InvoiceTermDateComputeService {
 
@@ -62,6 +67,7 @@ public class InvoiceTermDateComputeServiceImpl implements InvoiceTermDateCompute
 
   @Override
   public void computeDueDateValues(InvoiceTerm invoiceTerm, LocalDate invoiceDate) {
+
     LocalDate dueDate =
         PaymentConditionToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
     invoiceTerm.setDueDate(dueDate);
@@ -85,5 +91,39 @@ public class InvoiceTermDateComputeServiceImpl implements InvoiceTermDateCompute
     if (invoiceDate != null) {
       computeDueDateValues(invoiceTerm, invoiceDate);
     }
+  }
+
+  @Override
+  public void fillWithInvoiceDueDate(Invoice invoice) {
+    if (invoice == null
+        || invoice.getDueDate() == null
+        || ObjectUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return;
+    }
+    LocalDate dueDate = invoice.getDueDate();
+    List<InvoiceTerm> invoiceTermList =
+        invoice.getInvoiceTermList().stream()
+            .sorted(Comparator.comparing(InvoiceTerm::getDueDate))
+            .collect(Collectors.toList());
+
+    updateWithInvoiceDueDate(invoiceTermList.get(invoiceTermList.size() - 1), dueDate);
+
+    Set<InvoiceTerm> invoiceTermSet =
+        invoice.getInvoiceTermList().stream()
+            .filter(it -> it.getDueDate().isAfter(dueDate))
+            .collect(Collectors.toSet());
+
+    for (InvoiceTerm invoiceTerm : invoiceTermSet) {
+      updateWithInvoiceDueDate(invoiceTerm, dueDate);
+    }
+  }
+
+  protected void updateWithInvoiceDueDate(InvoiceTerm invoiceTerm, LocalDate dueDate) {
+    if (invoiceTerm == null || dueDate == null) {
+      return;
+    }
+
+    invoiceTerm.setDueDate(dueDate);
+    invoiceTerm.setIsCustomized(true);
   }
 }

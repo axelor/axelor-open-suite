@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,12 +21,12 @@ package com.axelor.apps.hr.service.leave.compute;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.service.leave.LeaveRequestPlanningService;
-import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,13 +35,13 @@ public class LeaveRequestComputeHourDurationServiceImpl
     implements LeaveRequestComputeHourDurationService {
 
   protected final LeaveRequestPlanningService leaveRequestPlanningService;
-  protected final PublicHolidayHrService publicHolidayHrService;
+  protected final PublicHolidayService publicHolidayHrService;
   protected final WeeklyPlanningService weeklyPlanningService;
 
   @Inject
   public LeaveRequestComputeHourDurationServiceImpl(
       LeaveRequestPlanningService leaveRequestPlanningService,
-      PublicHolidayHrService publicHolidayHrService,
+      PublicHolidayService publicHolidayHrService,
       WeeklyPlanningService weeklyPlanningService) {
     this.leaveRequestPlanningService = leaveRequestPlanningService;
     this.publicHolidayHrService = publicHolidayHrService;

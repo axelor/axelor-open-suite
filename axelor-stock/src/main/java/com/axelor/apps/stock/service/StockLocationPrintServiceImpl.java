@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,9 +32,10 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -77,7 +78,8 @@ public class StockLocationPrintServiceImpl implements StockLocationPrintService 
     LocalDateTime financialDataDateTime =
         StockLocationRepository.PRINT_TYPE_LOCATION_FINANCIAL_DATA == printType
                 && financialDataDateTimeString != null
-            ? LocalDateTime.parse(financialDataDateTimeString, DateTimeFormatter.ISO_DATE_TIME)
+            ? LocalDateTime.ofInstant(
+                Instant.parse(financialDataDateTimeString), ZoneId.systemDefault())
             : appBaseService.getTodayDateTime(company).toLocalDateTime();
 
     return print(

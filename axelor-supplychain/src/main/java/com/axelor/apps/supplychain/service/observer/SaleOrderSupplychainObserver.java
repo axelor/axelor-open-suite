@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,15 +21,24 @@ package com.axelor.apps.supplychain.service.observer;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.service.event.SaleOrderConfirm;
+import com.axelor.apps.sale.service.event.SaleOrderCopy;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderCopySupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.status.SaleOrderConfirmSupplychainService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
+import jakarta.annotation.Priority;
 
 public class SaleOrderSupplychainObserver {
 
-  public void supplychainConfirmSaleOrder(@Observes SaleOrderConfirm event) throws AxelorException {
+  public void supplychainConfirmSaleOrder(@Observes @Priority(value = 20) SaleOrderConfirm event)
+      throws AxelorException {
     SaleOrder saleOrder = event.getSaleOrder();
     event.setNotifyMessage(
         Beans.get(SaleOrderConfirmSupplychainService.class).confirmProcess(saleOrder));
+  }
+
+  public void copySaleOrder(@Observes @Priority(value = 20) SaleOrderCopy event) {
+    SaleOrder saleOrder = event.getSaleOrder();
+    Beans.get(SaleOrderCopySupplychainService.class).copySaleOrderSupplychainProcess(saleOrder);
   }
 }

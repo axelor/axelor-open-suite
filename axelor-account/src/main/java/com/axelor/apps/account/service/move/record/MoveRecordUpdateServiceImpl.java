@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MovePfpToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCurrencyService;
 import com.axelor.apps.account.service.moveline.MoveLineService;
@@ -30,7 +31,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Objects;
@@ -44,6 +45,7 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
   protected MoveInvoiceTermService moveInvoiceTermService;
   protected MoveValidateService moveValidateService;
   protected MoveLineCurrencyService moveLineCurrencyService;
+  protected MovePfpToolService movePfpToolService;
 
   @Inject
   public MoveRecordUpdateServiceImpl(
@@ -52,13 +54,15 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
       MoveRepository moveRepository,
       MoveInvoiceTermService moveInvoiceTermService,
       MoveValidateService moveValidateService,
-      MoveLineCurrencyService moveLineCurrencyService) {
+      MoveLineCurrencyService moveLineCurrencyService,
+      MovePfpToolService movePfpToolService) {
     this.appBaseService = appBaseService;
     this.moveLineService = moveLineService;
     this.moveRepository = moveRepository;
     this.moveInvoiceTermService = moveInvoiceTermService;
     this.moveValidateService = moveValidateService;
     this.moveLineCurrencyService = moveLineCurrencyService;
+    this.movePfpToolService = movePfpToolService;
   }
 
   @Override
@@ -93,10 +97,7 @@ public class MoveRecordUpdateServiceImpl implements MoveRecordUpdateService {
       }
     }
 
-    Integer pfpStatus = moveInvoiceTermService.checkOtherInvoiceTerms(move);
-    if (pfpStatus != null) {
-      move.setPfpValidateStatusSelect(pfpStatus);
-    }
+    movePfpToolService.fillMovePfpValidateStatus(move);
 
     return flashMessage;
   }

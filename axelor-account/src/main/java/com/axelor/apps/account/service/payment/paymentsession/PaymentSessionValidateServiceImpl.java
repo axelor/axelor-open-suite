@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.FinancialDiscountService;
+import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFinancialDiscountService;
@@ -63,9 +64,11 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.axelor.studio.db.AppAccount;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.TypedQuery;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -79,13 +82,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.TypedQuery;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class PaymentSessionValidateServiceImpl implements PaymentSessionValidateService {
-  protected AppBaseService appBaseService;
+  protected AppAccountService appService;
   protected MoveCreateService moveCreateService;
   protected MoveValidateService moveValidateService;
   protected MoveCutOffService moveCutOffService;
@@ -113,7 +115,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
   @Inject
   public PaymentSessionValidateServiceImpl(
-      AppBaseService appBaseService,
+      AppAccountService appService,
       MoveCreateService moveCreateService,
       MoveValidateService moveValidateService,
       MoveCutOffService moveCutOffService,
@@ -137,7 +139,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       FinancialDiscountService financialDiscountService,
       InvoiceTermFilterService invoiceTermFilterService,
       CurrencyScaleService currencyScaleService) {
-    this.appBaseService = appBaseService;
+    this.appService = appService;
     this.moveCreateService = moveCreateService;
     this.moveValidateService = moveValidateService;
     this.moveCutOffService = moveCutOffService;
@@ -280,7 +282,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo
             .all()
-            .filter("self.paymentSession = :paymentSession AND self.paymentAmount > 0")
+            .filter("self.paymentSession = :paymentSession AND self.paymentAmount != 0")
             .bind("paymentSession", paymentSession)
             .order("id");
 
@@ -790,9 +792,15 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   protected Map<MoveLine, Set<TaxLine>> extractTaxLinesFromFinancialDiscountLines(Move move)
       throws AxelorException {
     Map<MoveLine, Set<TaxLine>> taxLineMap = new HashMap<>();
-
+    AppAccount account = appService.getAppAccount();
+    if (account == null || !account.getManageFinancialDiscount()) {
+      return taxLineMap;
+    }
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+      if (moveLineFinancialDiscountService.isFinancialDiscountLine(
+          moveLine,
+          move.getCompany(),
+          move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)) {
         taxLineMap.put(moveLine, moveLine.getTaxLineSet());
         moveLine.setTaxLineSet(Sets.newHashSet());
       }
@@ -861,7 +869,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_CLOSED);
       paymentSession.setValidatedByUser(AuthUtils.getUser());
       paymentSession.setValidatedDate(
-          appBaseService.getTodayDateTime(paymentSession.getCompany()).toLocalDateTime());
+          appService.getTodayDateTime(paymentSession.getCompany()).toLocalDateTime());
     } else {
       paymentSession.setStatusSelect(PaymentSessionRepository.STATUS_AWAITING_PAYMENT);
     }
@@ -912,7 +920,7 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             ? paymentSession.getPaymentDate()
             : invoiceTerm.getDueDate();
       case PaymentSessionRepository.MOVE_ACCOUNTING_DATE_ACCOUNTING_TRIGGER:
-        return appBaseService.getTodayDate(paymentSession.getCompany());
+        return appService.getTodayDate(paymentSession.getCompany());
     }
 
     return null;

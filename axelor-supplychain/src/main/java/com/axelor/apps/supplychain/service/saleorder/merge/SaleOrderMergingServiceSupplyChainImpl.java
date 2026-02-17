@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,7 +40,7 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.MapHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
@@ -92,6 +92,7 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
     private boolean existIncotermDiff = false;
     private boolean existInvoicedPartnerDiff = false;
     private boolean existDeliveredPartnerDiff = false;
+    private boolean existIntercoDiff = false;
 
     public boolean isExistStockLocationDiff() {
       return existStockLocationDiff;
@@ -123,6 +124,14 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
 
     public void setExistDeliveredPartnerDiff(boolean existDeliveredPartnerDiff) {
       this.existDeliveredPartnerDiff = existDeliveredPartnerDiff;
+    }
+
+    public boolean isExistIntercoDiff() {
+      return existIntercoDiff;
+    }
+
+    public void setExistIntercoDiff(boolean existIntercoDiff) {
+      this.existIntercoDiff = existIntercoDiff;
     }
   }
 
@@ -257,6 +266,9 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
         fieldErrors.add(
             I18n.get(SupplychainExceptionMessage.SALE_ORDER_MERGE_ERROR_DELIVERED_PARTNER));
       }
+      if (getChecks(result).isExistIntercoDiff()) {
+        fieldErrors.add(I18n.get(SupplychainExceptionMessage.SALE_ORDER_MERGE_ERROR_INTERCO));
+      }
     }
   }
 
@@ -293,9 +305,13 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
             getCommonFields(result).getCommonInvoicedPartner(),
             getCommonFields(result).getCommonDeliveredPartner());
 
+    saleOrderMerged.setInAti(saleOrdersToMerge.stream().anyMatch(SaleOrder::getInAti));
+    saleOrderMerged.setInterco(saleOrdersToMerge.stream().anyMatch(SaleOrder::getInterco));
+
     this.attachToNewSaleOrder(saleOrdersToMerge, saleOrderMerged);
 
     saleOrderComputeService.computeSaleOrder(saleOrderMerged);
+    updateChildrenOrder(saleOrdersToMerge, saleOrderMerged);
     return saleOrderMerged;
   }
 
@@ -322,5 +338,17 @@ public class SaleOrderMergingServiceSupplyChainImpl extends SaleOrderMergingServ
           stockMove.getStockMoveSeq());
     }
     return result.getSaleOrder();
+  }
+
+  @Override
+  protected void checkDiffs(
+      List<SaleOrder> saleOrdersToMerge, SaleOrderMergingResult result, SaleOrder firstSaleOrder) {
+    super.checkDiffs(saleOrdersToMerge, result, firstSaleOrder);
+
+    if (saleOrdersToMerge.stream()
+        .anyMatch(order -> order.getInterco() != firstSaleOrder.getInterco())) {
+      ChecksSupplyChainImpl checks = getChecks(result);
+      checks.setExistIntercoDiff(true);
+    }
   }
 }

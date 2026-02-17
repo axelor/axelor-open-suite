@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,13 +33,13 @@ import com.axelor.db.JPA;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.helpers.StringHtmlListBuilder;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Query;
 import org.apache.commons.collections.CollectionUtils;
 
 public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Service {
@@ -66,7 +66,7 @@ public class AccountingReportDas2ServiceImpl implements AccountingReportDas2Serv
 
   @Override
   public String printPreparatoryProcessDeclaration(AccountingReport accountingReport)
-      throws AxelorException {
+      throws AxelorException, IOException {
 
     processAccountingReportMoveLines(accountingReport);
 

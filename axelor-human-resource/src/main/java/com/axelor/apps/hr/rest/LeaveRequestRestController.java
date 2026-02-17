@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -50,18 +50,18 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @Path("/aos/leave-request")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -259,7 +259,8 @@ public class LeaveRequestRestController {
   @Path("/compute-leave-available")
   @POST
   @HttpExceptionHandler
-  public Response getLeaveDaysToDate(LeaveDaysToDatePostRequest requestBody) {
+  public Response getLeaveDaysToDate(LeaveDaysToDatePostRequest requestBody)
+      throws AxelorException {
     new SecurityCheck().readAccess(LeaveReason.class, requestBody.getLeaveReasonId()).check();
 
     Employee employee =
@@ -282,7 +283,8 @@ public class LeaveRequestRestController {
   @Path("/check/{leaveRequestId}")
   @GET
   @HttpExceptionHandler
-  public Response checkLeaveRequest(@PathParam("leaveRequestId") Long leaveRequestId) {
+  public Response checkLeaveRequest(@PathParam("leaveRequestId") Long leaveRequestId)
+      throws AxelorException {
     new SecurityCheck().readAccess(LeaveRequest.class, leaveRequestId).check();
     LeaveRequest leaveRequest =
         ObjectFinder.find(LeaveRequest.class, leaveRequestId, ObjectFinder.NO_VERSION);

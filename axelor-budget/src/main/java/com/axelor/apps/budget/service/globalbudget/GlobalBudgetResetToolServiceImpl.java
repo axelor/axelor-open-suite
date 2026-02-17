@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,8 +27,9 @@ import com.axelor.apps.budget.service.BudgetLevelResetToolService;
 import com.axelor.apps.budget.service.BudgetResetToolService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolService {
@@ -36,15 +37,18 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
   protected BudgetLevelResetToolService budgetLevelResetToolService;
   protected BudgetResetToolService budgetResetToolService;
   protected CurrencyScaleService currencyScaleService;
+  protected GlobalBudgetToolsService globalBudgetToolsService;
 
   @Inject
   public GlobalBudgetResetToolServiceImpl(
       BudgetLevelResetToolService budgetLevelResetToolService,
       CurrencyScaleService currencyScaleService,
-      BudgetResetToolService budgetResetToolService) {
+      BudgetResetToolService budgetResetToolService,
+      GlobalBudgetToolsService globalBudgetToolsService) {
     this.budgetLevelResetToolService = budgetLevelResetToolService;
     this.currencyScaleService = currencyScaleService;
     this.budgetResetToolService = budgetResetToolService;
+    this.globalBudgetToolsService = globalBudgetToolsService;
   }
 
   public void resetGlobalBudget(GlobalBudget globalBudget) {
@@ -74,6 +78,31 @@ public class GlobalBudgetResetToolServiceImpl implements GlobalBudgetResetToolSe
       budgetLevelList.forEach(budgetLevelResetToolService::resetBudgetLevel);
     } else if (ObjectUtils.isEmpty(budgetList)) {
       budgetList.forEach(budgetResetToolService::resetBudget);
+    }
+  }
+
+  @Override
+  public void clearBudgetList(GlobalBudget globalBudget) {
+    if (globalBudget == null) {
+      return;
+    }
+
+    List<BudgetLevel> budgetLevelList = globalBudgetToolsService.getAllBudgetLevels(globalBudget);
+    if (ObjectUtils.isEmpty(budgetLevelList)) {
+      globalBudget.clearBudgetList();
+    } else if (ObjectUtils.notEmpty(globalBudget.getBudgetList())) {
+      List<Budget> budgetToRemoveList = new ArrayList<>();
+      for (Budget budget : globalBudget.getBudgetList()) {
+        if (!budgetLevelList.contains(budget.getBudgetLevel())) {
+          budgetToRemoveList.add(budget);
+        }
+      }
+
+      if (ObjectUtils.notEmpty(budgetToRemoveList)) {
+        for (Budget budget : budgetToRemoveList) {
+          globalBudget.removeBudgetListItem(budget);
+        }
+      }
     }
   }
 }

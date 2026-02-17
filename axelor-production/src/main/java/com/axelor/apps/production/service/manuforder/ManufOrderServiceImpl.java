@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -64,6 +64,7 @@ import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
@@ -74,8 +75,8 @@ import com.axelor.utils.helpers.StringHelper;
 import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -167,10 +168,11 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Override
   public boolean areLinesOutsourced(ManufOrder manufOrder) {
 
-    if (manufOrder.getOutsourcing()) {
+    List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
+    if (manufOrder.getOutsourcing() || CollectionUtils.isEmpty(operationOrderList)) {
       return false;
     }
-    return manufOrder.getOperationOrderList().stream().anyMatch(OperationOrder::getOutsourcing);
+    return operationOrderList.stream().anyMatch(OperationOrder::getOutsourcing);
   }
 
   @Override
@@ -527,7 +529,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     }
 
     StockConfigProductionService stockConfigService = Beans.get(StockConfigProductionService.class);
-    StockMoveService stockMoveService = Beans.get(StockMoveService.class);
     StockMoveLineService stockMoveLineService = Beans.get(StockMoveLineService.class);
 
     StockConfig stockConfig = stockConfigService.getStockConfig(company);
@@ -579,6 +580,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     this.createToConsumeProdProductList(manufOrder);
     this.createToProduceProdProductList(manufOrder);
     updateRealQty(manufOrder, manufOrder.getQty());
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     LocalDateTime plannedStartDateT = manufOrder.getPlannedStartDateT();
     manufOrderPlanService.updatePlannedDates(
         manufOrder,
@@ -592,8 +594,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void updateRealQty(ManufOrder manufOrder, BigDecimal qtyToUpdate) throws AxelorException {
-    ManufOrderStockMoveService manufOrderStockMoveService =
-        Beans.get(ManufOrderStockMoveService.class);
     if (!manufOrder.getIsConsProOnOperation()) {
       manufOrderCreateStockMoveLineService.createNewConsumedStockMoveLineList(
           manufOrder, qtyToUpdate);
@@ -612,6 +612,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
   @Override
   public ManufOrder updateDiffProdProductList(ManufOrder manufOrder) throws AxelorException {
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     List<ProdProduct> toConsumeList = manufOrder.getToConsumeProdProductList();
     List<StockMoveLine> consumedList = manufOrder.getConsumedStockMoveLineList();
     if (toConsumeList == null || consumedList == null) {
@@ -710,13 +711,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       if (stockMoveLine.getUnit() != null && prodProduct.getUnit() != null) {
         consumedQty =
             consumedQty.add(
-                Beans.get(UnitConversionService.class)
-                    .convert(
-                        stockMoveLine.getUnit(),
-                        prodProduct.getUnit(),
-                        stockMoveLine.getQty(),
-                        stockMoveLine.getQty().scale(),
-                        product));
+                unitConversionService.convert(
+                    stockMoveLine.getUnit(),
+                    prodProduct.getUnit(),
+                    stockMoveLine.getQty(),
+                    stockMoveLine.getQty().scale(),
+                    product));
       } else {
         consumedQty = consumedQty.add(stockMoveLine.getQty());
       }
@@ -852,8 +852,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
           bomList.add(Pair.of(bom, qtyReq));
         }
       } else {
-        BillOfMaterial defaultBOM =
-            Beans.get(BillOfMaterialService.class).getDefaultBOM(product, null);
+        BillOfMaterial defaultBOM = billOfMaterialService.getDefaultBOM(product, null);
 
         if ((product.getProductSubTypeSelect()
                     == ProductRepository.PRODUCT_SUB_TYPE_FINISHED_PRODUCT
@@ -956,13 +955,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
         qty = qty.add(manufOrder.getQty());
       } else {
         BigDecimal qtyConverted =
-            Beans.get(UnitConversionService.class)
-                .convert(
-                    manufOrder.getUnit(),
-                    unit,
-                    manufOrder.getQty(),
-                    appBaseService.getNbDecimalDigitForQty(),
-                    null);
+            unitConversionService.convert(
+                manufOrder.getUnit(),
+                unit,
+                manufOrder.getQty(),
+                appBaseService.getNbDecimalDigitForQty(),
+                null);
         qty = qty.add(qtyConverted);
       }
       if (manufOrder.getNote() != null && !manufOrder.getNote().equals("")) {
@@ -1124,6 +1122,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
+  @Transactional
   public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
       throws AxelorException {
     List<Long> ids = new ArrayList<>();
@@ -1261,9 +1260,23 @@ public class ManufOrderServiceImpl implements ManufOrderService {
     BigDecimal bomQty = billOfMaterial.getQty();
 
     for (BillOfMaterialLine billOfMaterialLine : billOfMaterial.getBillOfMaterialLineList()) {
+      if (billOfMaterialLine.getHasNoManageStock()) {
+        continue;
+      }
       Product product = billOfMaterialLine.getProduct();
       BigDecimal availableQty = productStockLocationService.getAvailableQty(product, company, null);
       BigDecimal qtyNeeded = billOfMaterialLine.getQty();
+      Unit bomLineUnit = billOfMaterialLine.getUnit();
+      Unit productUnit = product.getUnit();
+      if (productUnit != null && bomLineUnit != null && !bomLineUnit.equals(productUnit)) {
+        availableQty =
+            unitConversionService.convert(
+                productUnit,
+                bomLineUnit,
+                availableQty,
+                appBaseService.getNbDecimalDigitForQty(),
+                product);
+      }
       if (availableQty.compareTo(BigDecimal.ZERO) >= 0
           && qtyNeeded.compareTo(BigDecimal.ZERO) > 0) {
         BigDecimal qtyToUse = availableQty.divideToIntegralValue(qtyNeeded);
@@ -1327,6 +1340,7 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
     Map<Product, Pair<BigDecimal, Unit>> bomLineMap =
         billOfMaterial.getBillOfMaterialLineList().stream()
+            .filter(bomLine -> !bomLine.getHasNoManageStock())
             .collect(
                 Collectors.toMap(
                     BillOfMaterialLine::getProduct,

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,20 +28,23 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSequenceService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeServiceImpl;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
 import com.axelor.apps.supplychain.service.IntercoService;
+import com.axelor.apps.supplychain.service.analytic.AnalyticToolSupplychainService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeServiceImpl {
 
   protected AppSupplychainService appSupplychainService;
   protected AccountingSituationSupplychainService accountingSituationSupplychainService;
+  protected AnalyticToolSupplychainService analyticToolSupplychainService;
 
   @Inject
   public SaleOrderFinalizeSupplychainServiceImpl(
@@ -52,8 +55,10 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
       SaleConfigService saleConfigService,
       AppSaleService appSaleService,
       AppCrmService appCrmService,
+      SaleOrderSequenceService saleOrderSequenceService,
       AppSupplychainService appSupplychainService,
-      AccountingSituationSupplychainService accountingSituationSupplychainService) {
+      AccountingSituationSupplychainService accountingSituationSupplychainService,
+      AnalyticToolSupplychainService analyticToolSupplychainService) {
     super(
         saleOrderRepository,
         sequenceService,
@@ -61,9 +66,11 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
         saleOrderPrintService,
         saleConfigService,
         appSaleService,
-        appCrmService);
+        appCrmService,
+        saleOrderSequenceService);
     this.appSupplychainService = appSupplychainService;
     this.accountingSituationSupplychainService = accountingSituationSupplychainService;
+    this.analyticToolSupplychainService = analyticToolSupplychainService;
   }
 
   @Override
@@ -77,7 +84,7 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
       return;
     }
 
-    accountingSituationSupplychainService.updateCustomerCreditFromSaleOrder(saleOrder);
+    accountingSituationSupplychainService.checkExceededUsedCredit(saleOrder);
     super.finalizeQuotation(saleOrder);
     int intercoSaleCreatingStatus =
         appSupplychainService.getAppSupplychain().getIntercoSaleCreatingStatusSelect();
@@ -88,6 +95,8 @@ public class SaleOrderFinalizeSupplychainServiceImpl extends SaleOrderFinalizeSe
     if (saleOrder.getCreatedByInterco()) {
       fillIntercompanyPurchaseOrderCounterpart(saleOrder);
     }
+
+    analyticToolSupplychainService.checkSaleOrderLinesAnalyticDistribution(saleOrder);
   }
 
   /**

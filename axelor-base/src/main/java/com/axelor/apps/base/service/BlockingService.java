@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -66,7 +66,7 @@ public class BlockingService {
             + "LEFT JOIN partner.blockingList blocking "
             + "LEFT JOIN blocking.companySet company "
             + "WHERE blocking.blockingSelect = %d "
-            + "AND blocking.blockingToDate >= '%s' "
+            + "AND blocking.blockingToDate >= CAST('%s' AS date) "
             + "AND company.id = %d",
         blockingType,
         Beans.get(AppBaseService.class)

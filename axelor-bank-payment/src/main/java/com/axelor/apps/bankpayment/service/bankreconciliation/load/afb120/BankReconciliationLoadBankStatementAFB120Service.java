@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,8 +31,8 @@ import com.axelor.apps.bankpayment.service.bankreconciliation.load.BankReconcili
 import com.axelor.apps.bankpayment.service.bankstatementline.BankStatementLineFilterService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -107,6 +107,7 @@ public class BankReconciliationLoadBankStatementAFB120Service
     String queryFilter =
         bankStatementLineFilterService.getBankStatementLinesAFB120FilterWithAmountToReconcile(
             bankReconciliation.getIncludeOtherBankStatements(), includeBankStatement);
+
     Query<BankStatementLineAFB120> bankStatementLinesQuery =
         JPA.all(BankStatementLineAFB120.class)
             .bind("bankDetails", bankReconciliation.getBankDetails())
@@ -117,6 +118,12 @@ public class BankReconciliationLoadBankStatementAFB120Service
             .bind("lineTypeSelect", BankStatementLineAFB120Repository.LINE_TYPE_MOVEMENT)
             .order("valueDate")
             .order("sequence");
+
+    if (bankReconciliation.getIncludeOtherBankStatements()) {
+      queryFilter += " AND self.operationDate <= (:bankReconciliationToDate)";
+      bankStatementLinesQuery.bind("bankReconciliationToDate", bankReconciliation.getToDate());
+    }
+
     List<Long> existingBankStatementLineIds = getExistingBankStatementLines(bankReconciliation);
     if (!CollectionUtils.isEmpty(existingBankStatementLineIds)) {
       queryFilter += " AND self.id NOT IN (:existingBankStatementLines)";

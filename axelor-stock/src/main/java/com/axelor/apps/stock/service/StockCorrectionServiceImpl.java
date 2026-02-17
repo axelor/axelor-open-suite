@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,9 +36,10 @@ import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -108,6 +109,9 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
   }
 
   protected StockLocationLine getProductStockLocationLine(StockCorrection stockCorrection) {
+    if (stockCorrection.getProduct() == null) {
+      return null;
+    }
     StockLocationLine stockLocationLine;
     if (stockCorrection.getTrackingNumber() == null) {
       stockLocationLine =
@@ -135,8 +139,10 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
 
     StockMove stockMove = generateStockMove(stockCorrection);
     if (stockMove != null) {
+      stockCorrection = stockCorrectionRepository.find(stockCorrection.getId());
       stockCorrection.setStatusSelect(StockCorrectionRepository.STATUS_VALIDATED);
       stockCorrection.setValidationDateT(baseService.getTodayDateTime().toLocalDateTime());
+      stockCorrectionRepository.save(stockCorrection);
       return true;
     }
     return false;
@@ -149,15 +155,18 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
         stockConfigService.getInventoryVirtualStockLocation(
             stockConfigService.getStockConfig(company));
 
-    BigDecimal realQty = stockCorrection.getRealQty();
     Product product = stockCorrection.getProduct();
     TrackingNumber trackingNumber = stockCorrection.getTrackingNumber();
+    final boolean presentInStockLocation = isPresentInStockLocation(stockCorrection, product);
     StockLocationLine stockLocationLine =
         getStockLocationLine(stockCorrection, toStockLocation, product);
+
+    BigDecimal realQty = stockCorrection.getRealQty();
     BigDecimal diff = realQty.subtract(stockLocationLine.getCurrentQty());
 
     BigDecimal productCostPrice =
         (BigDecimal) productCompanyService.get(product, "costPrice", company);
+    BigDecimal avgPrice = getAvgPrice(company, product, presentInStockLocation, stockLocationLine);
 
     StockLocation computedFromStockLocation;
     StockLocation computedToStockLocation;
@@ -185,13 +194,14 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
         stockLocationLine,
         diff,
         productCostPrice,
+        avgPrice,
         computedFromStockLocation,
         computedToStockLocation,
         stockMove);
 
     stockMoveService.plan(stockMove);
-    stockMoveService.copyQtyToRealQty(stockMove);
-    stockMoveService.realize(stockMove, false);
+    stockMoveService.copyQtyToRealQty(JpaModelHelper.ensureManaged(stockMove));
+    stockMoveService.realize(JpaModelHelper.ensureManaged(stockMove), false);
 
     return stockMove;
   }
@@ -203,6 +213,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       StockLocationLine stockLocationLine,
       BigDecimal diff,
       BigDecimal productCostPrice,
+      BigDecimal avgPrice,
       StockLocation computedFromStockLocation,
       StockLocation computedToStockLocation,
       StockMove stockMove)
@@ -214,7 +225,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
             product.getDescription(),
             diff.abs(),
             productCostPrice,
-            stockLocationLine.getAvgPrice(),
+            avgPrice,
             product.getUnit(),
             stockMove,
             StockMoveLineService.TYPE_NULL,
@@ -229,6 +240,7 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
           TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
           I18n.get(StockExceptionMessage.STOCK_CORRECTION_1));
     }
+    stockMove.addStockMoveLineListItem(stockMoveLine);
     if (trackingNumber != null && stockMoveLine.getTrackingNumber() == null) {
       stockMoveLine.setTrackingNumber(trackingNumber);
     }
@@ -360,5 +372,29 @@ public class StockCorrectionServiceImpl implements StockCorrectionService {
       stockCorrection.setComments(comments);
       stockCorrectionRepository.save(stockCorrection);
     }
+  }
+
+  protected BigDecimal getAvgPrice(
+      Company company,
+      Product product,
+      boolean presentInStockLocation,
+      StockLocationLine stockLocationLine)
+      throws AxelorException {
+    BigDecimal avgPrice = stockLocationLine.getAvgPrice();
+    if (!presentInStockLocation && avgPrice.compareTo(BigDecimal.ZERO) == 0) {
+      avgPrice = (BigDecimal) productCompanyService.get(product, "avgPrice", company);
+    }
+    return avgPrice;
+  }
+
+  protected boolean isPresentInStockLocation(StockCorrection stockCorrection, Product product) {
+    StockLocation stockLocation = stockCorrection.getStockLocation();
+    TrackingNumber trackingNumber = stockCorrection.getTrackingNumber();
+    if (trackingNumber == null) {
+      return stockLocationLineFetchService.getStockLocationLine(stockLocation, product) != null;
+    }
+    return stockLocationLineFetchService.getDetailLocationLine(
+            stockLocation, product, trackingNumber)
+        != null;
   }
 }

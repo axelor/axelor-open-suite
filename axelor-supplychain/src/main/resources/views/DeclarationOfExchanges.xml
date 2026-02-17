@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid model="com.axelor.apps.supplychain.db.DeclarationOfExchanges"
     title="Declarations of exchanges" name="declaration-of-exchanges-grid" orderBy="createdOn"
@@ -31,29 +31,33 @@
     onNew="action-declaration-of-exchanges-onnew"
     onLoad="action-declaration-of-exchanges-attrs-show-price" width="large">
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
+      <button name="printBtn" title="Print" icon="printer"
         onClick="action-declaration-of-exchanges-export"/>
     </toolbar>
 
     <panel name="mainPanel">
-      <field name="company" canEdit="false"/>
+      <field name="company" canEdit="false"
+        onChange="action-declaration-of-exchanges-record-on-change-company,action-declaration-of-exchanges-attrs-refresh-declaration-of-exchanges-panel"/>
       <field name="country"
         domain="self IN (SELECT sl.address.country FROM StockLocation sl WHERE sl.company = :company)"
-        canEdit="false"/>
+        canEdit="false"
+        onChange="action-declaration-of-exchanges-attrs-refresh-declaration-of-exchanges-panel"/>
       <panel name="periodPanel" colSpan="12" showIf="company">
         <field name="fiscalYear"
           domain="self.company = :company AND self.typeSelect = :YEAR_TYPE_FISCAL"
-          onChange="action-declaration-of-exchanges-fiscal-year-onchange" canEdit="false"/>
+          onChange="action-declaration-of-exchanges-fiscal-year-onchange,action-declaration-of-exchanges-attrs-refresh-declaration-of-exchanges-panel"
+          canEdit="false"/>
         <field name="period"
           domain="self.year = :fiscalYear OR :fiscalYear IS NULL AND self.year.company = :company AND self.year.typeSelect = :YEAR_TYPE_FISCAL"
-          onChange="action-declaration-of-exchanges-period-onchange" canEdit="false"/>
+          onChange="action-declaration-of-exchanges-period-onchange,action-declaration-of-exchanges-attrs-refresh-declaration-of-exchanges-panel"
+          canEdit="false"/>
       </panel>
       <field name="productTypeSelect"
-        onChange="action-declaration-of-exchanges-product-type-select-onchange"
+        onChange="action-declaration-of-exchanges-product-type-select-onchange,action-declaration-of-exchanges-attrs-refresh-declaration-of-exchanges-panel"
         selection-in="['service','storable']"/>
       <field name="stockMoveTypeSelect"
         selection-in="[STOCK_MOVE_TYPE_OUTGOING, STOCK_MOVE_TYPE_INCOMING * (productTypeSelect != 'service')]"
-        onChange="action-declaration-of-exchanges-attrs-show-price"
+        onChange="action-declaration-of-exchanges-attrs-show-price,action-declaration-of-exchanges-attrs-refresh-declaration-of-exchanges-panel"
         readonlyIf="productTypeSelect == 'service'"/>
       <field name="formatSelect" selection-in="['pdf', 'csv']"/>
       <field name="createdOn" showIf="createdOn"/>
@@ -101,33 +105,36 @@
     <view type="grid" name="stock-move-line-declaration-exchanges-grid"/>
     <view type="form" name="stock-move-line-all-form"/>
     <domain>
-      self.stockMove.realDate BETWEEN :fromDate AND :toDate
-      AND self.product.productTypeSelect
-      = :productTypeSelect
-      AND self.stockMove.typeSelect = :stockMoveTypeSelect
+      self.stockMove.realDate BETWEEN :_fromDate AND :_toDate
+      AND
+      self.product.productTypeSelect
+      = :_productTypeSelect
+      AND self.stockMove.typeSelect =
+      :_stockMoveTypeSelect
       AND
       self.stockMove.statusSelect = 3
-      AND self.stockMove.company = :company
+      AND self.stockMove.company = :_company
       AND
-      (COALESCE(self.stockMove.fromAddress.country,
-      self.fromStockLocation.address.country) =
-      :country
-      OR
-      COALESCE(self.stockMove.toAddress.country,
-      self.toStockLocation.address.country) =
-      :country)
-      AND
-      COALESCE(self.stockMove.fromAddress.country,
-      self.fromStockLocation.address.country)
-      !=
-      COALESCE(self.stockMove.toAddress.country,
-      self.toStockLocation.address.country)
-      AND
-      COALESCE(self.stockMove.fromAddress.country.economicArea,
-      self.fromStockLocation.address.country.economicArea)
+      (COALESCE(self.stockMove.fromAddress.country.id,
+      self.fromStockLocation.address.country.id)
       =
-      COALESCE(self.stockMove.toAddress.country.economicArea,
-      self.toStockLocation.address.country.economicArea)
+      :_country
+      OR
+      COALESCE(self.stockMove.toAddress.country.id,
+      self.toStockLocation.address.country.id) =
+      :_country)
+      AND
+      COALESCE(self.stockMove.fromAddress.country.id,
+      self.fromStockLocation.address.country.id)
+      !=
+      COALESCE(self.stockMove.toAddress.country.id,
+      self.toStockLocation.address.country.id)
+      AND
+      COALESCE(self.stockMove.fromAddress.country.economicArea.id,
+      self.fromStockLocation.address.country.economicArea.id)
+      =
+      COALESCE(self.stockMove.toAddress.country.economicArea.id,
+      self.toStockLocation.address.country.economicArea.id)
       AND
       self.product.usedInDEB = true
       AND
@@ -143,12 +150,12 @@
       self.purchaseOrderLine.purchaseOrder.taxNumber.includeInDEB = true)))
 
     </domain>
-    <context name="fromDate" expr="eval: period?.fromDate"/>
-    <context name="toDate" expr="eval: period?.toDate"/>
-    <context name="productTypeSelect" expr="eval: productTypeSelect"/>
-    <context name="stockMoveTypeSelect" expr="eval: stockMoveTypeSelect"/>
-    <context name="country" expr="eval: country"/>
-    <context name="company" expr="eval: company"/>
+    <context name="_fromDate" expr="eval: period?.fromDate"/>
+    <context name="_toDate" expr="eval: period?.toDate"/>
+    <context name="_productTypeSelect" expr="eval: productTypeSelect"/>
+    <context name="_stockMoveTypeSelect" expr="eval: stockMoveTypeSelect"/>
+    <context name="_country" expr="eval: country.id"/>
+    <context name="_company" expr="eval: company"/>
   </action-view>
 
   <action-attrs name="action-declaration-of-exchanges-attrs-show-price">
@@ -156,6 +163,19 @@
       expr="eval: stockMoveTypeSelect != 3"/>
     <attribute for="declarationOfExchangesPanel.unitPriceUntaxed" name="hidden"
       expr="eval: stockMoveTypeSelect == 3"/>
+  </action-attrs>
+
+  <action-record name="action-declaration-of-exchanges-record-on-change-company"
+    model="com.axelor.apps.supplychain.db.DeclarationOfExchanges">
+    <field name="fiscalYear" expr="eval: null"/>
+    <field name="period" expr="eval: null"/>
+    <field name="country"
+      expr="eval: __repo__(Country).all().filter('self = :country AND self IN (SELECT sl.address.country FROM StockLocation sl WHERE sl.company = :company)').bind('country', __this__?.country).bind('company', __this__?.company).fetchOne()"/>
+  </action-record>
+
+  <action-attrs
+    name="action-declaration-of-exchanges-attrs-refresh-declaration-of-exchanges-panel">
+    <attribute name="refresh" for="declarationOfExchangesPanel" expr="eval: true"/>
   </action-attrs>
 
   <search-filters name="declaration-of-exchanges-filters"

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,14 +26,13 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.SaleOrder;
-import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.config.SaleConfigService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.db.mapper.Mapper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,6 +47,7 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
   protected CompanyService companyService;
   protected SaleOrderUserService saleOrderUserService;
   protected SaleOrderProductPrintingService saleOrderProductPrintingService;
+  protected SaleOrderService saleOrderService;
 
   @Inject
   public SaleOrderInitValueServiceImpl(
@@ -57,7 +57,8 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
       SaleConfigService saleConfigService,
       CompanyService companyService,
       SaleOrderUserService saleOrderUserService,
-      SaleOrderProductPrintingService saleOrderProductPrintingService) {
+      SaleOrderProductPrintingService saleOrderProductPrintingService,
+      SaleOrderService saleOrderService) {
     this.appBaseService = appBaseService;
     this.userService = userService;
     this.saleOrderBankDetailsService = saleOrderBankDetailsService;
@@ -65,6 +66,7 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
     this.companyService = companyService;
     this.saleOrderUserService = saleOrderUserService;
     this.saleOrderProductPrintingService = saleOrderProductPrintingService;
+    this.saleOrderService = saleOrderService;
   }
 
   @Override
@@ -134,14 +136,7 @@ public class SaleOrderInitValueServiceImpl implements SaleOrderInitValueService 
   protected Map<String, Object> getInAti(SaleOrder saleOrder) throws AxelorException {
     Map<String, Object> saleOrderMap = new HashMap<>();
     Company company = companyService.getDefaultCompany(null);
-    if (company != null) {
-      SaleConfig saleConfig = saleConfigService.getSaleConfig(company);
-      int saleOrderInAtiSelect = saleConfig.getSaleOrderInAtiSelect();
-      boolean inAti =
-          saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
-              || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_DEFAULT;
-      saleOrder.setInAti(inAti);
-    }
+    saleOrder.setInAti(saleOrderService.getInAti(saleOrder, company));
     saleOrderMap.put("inAti", saleOrder.getInAti());
     return saleOrderMap;
   }

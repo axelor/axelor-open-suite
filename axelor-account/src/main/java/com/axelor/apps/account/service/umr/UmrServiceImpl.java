@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,12 +22,13 @@ import com.axelor.apps.account.db.InvoicingPaymentSituation;
 import com.axelor.apps.account.db.Umr;
 import com.axelor.apps.account.db.repo.InvoicingPaymentSituationRepository;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -73,13 +74,13 @@ public class UmrServiceImpl implements UmrService {
   }
 
   @Override
-  public Umr getActiveUmr(Company company, Partner partner) {
-    if (company == null || partner == null) {
+  public Umr getActiveUmr(Company company, BankDetails bankDetails) {
+    if (company == null || bankDetails == null) {
       return null;
     }
 
     InvoicingPaymentSituation invoicingPaymentSituation =
-        invoicingPaymentSituationRepository.findByCompanyAndPartner(company, partner);
+        invoicingPaymentSituationRepository.findByCompanyAndBankDetails(company, bankDetails);
     if (invoicingPaymentSituation != null) {
       if (invoicingPaymentSituation.getActiveUmr() != null) {
         return invoicingPaymentSituation.getActiveUmr();

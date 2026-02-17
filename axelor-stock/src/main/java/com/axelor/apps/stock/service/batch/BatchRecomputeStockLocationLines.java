@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,7 +35,7 @@ import com.axelor.apps.stock.service.batch.model.StockMoveLineOrigin;
 import com.axelor.apps.stock.service.batch.model.TrackProduct;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -112,7 +112,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   protected void resetStockLocations() {
 
-    javax.persistence.Query clearWapHistoryLinesQuery =
+    jakarta.persistence.Query clearWapHistoryLinesQuery =
         JPA.em()
             .createNativeQuery(
                 "UPDATE stock_stock_location_line SET "
@@ -204,7 +204,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   protected void clearWapHistoryLines() {
 
-    javax.persistence.Query clearStockLocationsHistoryLinesQuery =
+    jakarta.persistence.Query clearStockLocationsHistoryLinesQuery =
         JPA.em().createNativeQuery("Delete FROM stock_stock_location_line_history");
 
     JPA.runInTransaction(clearStockLocationsHistoryLinesQuery::executeUpdate);
@@ -214,8 +214,8 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
     StringBuilder query =
         new StringBuilder(
-            "self.fromStockLocation.id = :fromStockLocation"
-                + " AND self.toStockLocation.id = :toStockLocation"
+            "self.fromStockLocation = :fromStockLocation"
+                + " AND self.toStockLocation = :toStockLocation"
                 + " AND self.statusSelect = :status");
 
     if (stockMoveGroup.getRealDate() == null) {
@@ -238,8 +238,8 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
     StringBuilder query =
         new StringBuilder(
-            "self.fromStockLocation.id = :fromStockLocation"
-                + " AND self.toStockLocation.id = :toStockLocation"
+            "self.fromStockLocation = :fromStockLocation"
+                + " AND self.toStockLocation = :toStockLocation"
                 + " AND self.stockMove.statusSelect = :status");
 
     if (stockMoveGroup.getRealDate() == null) {
@@ -259,7 +259,7 @@ public class BatchRecomputeStockLocationLines extends AbstractBatch {
 
   protected List<StockMoveGroup> fetchStockMoveGroup() {
     List<StockMoveGroup> stockMoveGroups = new ArrayList<>();
-    javax.persistence.Query query =
+    jakarta.persistence.Query query =
         JPA.em()
             .createQuery(
                 "SELECT "

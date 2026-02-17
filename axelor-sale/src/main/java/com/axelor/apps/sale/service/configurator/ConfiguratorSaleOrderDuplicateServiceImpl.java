@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,14 +29,15 @@ import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.JsonContext;
 import com.axelor.utils.helpers.json.JsonHelper;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -52,6 +53,7 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
   protected final ConfiguratorService configuratorService;
   protected final ConfiguratorSaleOrderLineService configuratorSaleOrderLineService;
   protected final ConfiguratorCheckService configuratorCheckService;
+  protected final SaleOrderLineComputeService saleOrderLineComputeService;
 
   @Inject
   public ConfiguratorSaleOrderDuplicateServiceImpl(
@@ -61,7 +63,8 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
       SaleOrderRepository saleOrderRepository,
       ConfiguratorService configuratorService,
       ConfiguratorSaleOrderLineService configuratorSaleOrderLineService,
-      ConfiguratorCheckService configuratorCheckService) {
+      ConfiguratorCheckService configuratorCheckService,
+      SaleOrderLineComputeService saleOrderLineComputeService) {
     this.configuratorRepository = configuratorRepository;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.saleOrderComputeService = saleOrderComputeService;
@@ -69,6 +72,7 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
     this.configuratorService = configuratorService;
     this.configuratorSaleOrderLineService = configuratorSaleOrderLineService;
     this.configuratorCheckService = configuratorCheckService;
+    this.saleOrderLineComputeService = saleOrderLineComputeService;
   }
 
   @Override
@@ -79,7 +83,7 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
     var saleOrder = saleOrderLine.getSaleOrder();
     if (saleOrderLine.getConfigurator() == null) {
       // Copy
-      var copy = saleOrderLineRepository.save(saleOrderLineRepository.copy(saleOrderLine, false));
+      var copy = saleOrderLineRepository.save(saleOrderLineRepository.copy(saleOrderLine, true));
       saleOrder.addSaleOrderLineListItem(copy);
     } else {
       duplicateLineWithoutCompute(saleOrderLine);
@@ -122,7 +126,7 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
   @Transactional(rollbackOn = Exception.class)
   public void simpleDuplicate(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
       throws AxelorException {
-    var copiedSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, false);
+    var copiedSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, true);
     saleOrder.addSaleOrderLineListItem(copiedSaleOrderLine);
     computeSaleOrder(saleOrder);
   }
@@ -222,6 +226,7 @@ public class ConfiguratorSaleOrderDuplicateServiceImpl
       toRemoveLines.remove(saleOrderLine);
     }
     manageLines(saleOrder, toRemoveLines);
+    saleOrderLineComputeService.computeLevels(saleOrder.getSaleOrderLineList(), null);
   }
 
   @Transactional(rollbackOn = Exception.class)

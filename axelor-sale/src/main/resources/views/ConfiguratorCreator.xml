@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="configurator-creator-grid" title="ConfiguratorCreators"
     model="com.axelor.apps.sale.db.ConfiguratorCreator">
@@ -61,9 +61,9 @@
       form-view="configurator-soline-formula-form" grid-view="configurator-soline-formula-grid"/>
 
     <panel name="authorizationsPanel" title="Authorizations" hideIf="id == null">
-      <field name="authorizedUserSet" widget="TagSelect" canEdit="false" canNew="false"
+      <field name="authorizedUserSet" widget="Tags" canEdit="false" canNew="false"
         form-view="user-form" grid-view="user-grid" colSpan="12"/>
-      <field name="authorizedGroupSet" widget="TagSelect" canEdit="false" canNew="false"
+      <field name="authorizedGroupSet" widget="Tags" canEdit="false" canNew="false"
         form-view="group-form" grid-view="group-grid" colSpan="12"/>
     </panel>
 
@@ -195,8 +195,7 @@
 
   <!-- 19 is the index of the ZoneTime part of the ZonedDateTime __datetime__ and there's no need to
     display it to the user -->
-  <action-export name="action-configurator-creator-export" output="${date}${time}"
-    download="true">
+  <action-export name="action-configurator-creator-export">
     <export name="ConfiguratorCreatorExport-${__datetime__.toString().substring(0, 19)}.xml"
       template="data-export/export-configurator-creator.tmpl" engine="groovy"/>
   </action-export>

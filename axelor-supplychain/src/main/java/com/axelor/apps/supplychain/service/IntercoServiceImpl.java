@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,9 @@ import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.db.repo.TaxNumberRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceLineAnalyticService;
 import com.axelor.apps.account.service.invoice.InvoiceService;
@@ -39,6 +41,7 @@ import com.axelor.apps.base.db.repo.PriceListRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.TradingNameService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
@@ -55,23 +58,26 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProductChangeService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderStockLocationService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.axelor.studio.app.service.AppService;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class IntercoServiceImpl implements IntercoService {
@@ -81,6 +87,9 @@ public class IntercoServiceImpl implements IntercoService {
   protected TaxService taxService;
   protected SaleOrderStockLocationService saleOrderStockLocationService;
   protected final PurchaseOrderTypeSelectService purchaseOrderTypeSelectService;
+  protected final SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService;
+  protected final AppBaseService appBaseService;
+  protected SaleOrderSupplychainService saleOrderSupplychainService;
 
   protected static int DEFAULT_INVOICE_COPY = 1;
 
@@ -90,12 +99,18 @@ public class IntercoServiceImpl implements IntercoService {
       AnalyticLineModelService analyticLineModelService,
       TaxService taxService,
       SaleOrderStockLocationService saleOrderStockLocationService,
-      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService) {
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
+      SaleOrderLineOnProductChangeService saleOrderLineOnProductChangeService,
+      AppBaseService appBaseService,
+      SaleOrderSupplychainService saleOrderSupplychainService) {
     this.purchaseConfigService = purchaseConfigService;
     this.analyticLineModelService = analyticLineModelService;
     this.taxService = taxService;
     this.saleOrderStockLocationService = saleOrderStockLocationService;
     this.purchaseOrderTypeSelectService = purchaseOrderTypeSelectService;
+    this.saleOrderLineOnProductChangeService = saleOrderLineOnProductChangeService;
+    this.appBaseService = appBaseService;
+    this.saleOrderSupplychainService = saleOrderSupplychainService;
   }
 
   @Override
@@ -124,6 +139,10 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             clientPartner.getFiscalPosition());
 
+    if (appBaseService.getAppBase().getActivatePartnerRelations()) {
+      saleOrder.setInvoicedPartner(clientPartner);
+      saleOrder.setDeliveredPartner(clientPartner);
+    }
     // in ati
     saleOrder.setInAti(purchaseOrder.getInAti());
 
@@ -148,6 +167,11 @@ public class IntercoServiceImpl implements IntercoService {
     saleOrder.setExpectedRealisationDate(purchaseOrder.getExpectedRealisationDate());
     saleOrder.setAmountToBeSpreadOverTheTimetable(
         purchaseOrder.getAmountToBeSpreadOverTheTimetable());
+
+    // Set default invoiced and delivered partners and address in case of partner delegations
+    if (appBaseService.getAppBase().getActivatePartnerRelations()) {
+      saleOrderSupplychainService.setDefaultInvoicedAndDeliveredPartnersAndAddresses(saleOrder);
+    }
 
     // create lines
     List<PurchaseOrderLine> purchaseOrderLineList = purchaseOrder.getPurchaseOrderLineList();
@@ -308,6 +332,7 @@ public class IntercoServiceImpl implements IntercoService {
 
     saleOrderLine.setSaleOrder(saleOrder);
     saleOrderLine.setProduct(purchaseOrderLine.getProduct());
+    saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
     saleOrderLine.setProductName(purchaseOrderLine.getProductName());
 
     saleOrderLine.setDescription(purchaseOrderLine.getDescription());
@@ -365,6 +390,14 @@ public class IntercoServiceImpl implements IntercoService {
     PriceList intercoPriceList =
         Beans.get(PartnerPriceListService.class)
             .getDefaultPriceList(intercoPartner, priceListRepositoryType);
+    String invoicePartnerTaxNbr = invoice.getPartnerTaxNbr();
+    LocalDate cutOffStartDate = invoice.getCutOffStartDate();
+    LocalDate cutOffEndDate = invoice.getCutOffEndDate();
+
+    TaxNumber intercoCompanyTaxNumber =
+        Beans.get(TaxNumberRepository.class)
+            .findByCompanyPartnerAndTaxNbr(invoice.getPartner(), invoicePartnerTaxNbr)
+            .fetchOne();
 
     InvoiceGenerator invoiceGenerator =
         new InvoiceGenerator(
@@ -382,7 +415,8 @@ public class IntercoServiceImpl implements IntercoService {
             null,
             null,
             invoice.getTradingName(),
-            invoice.getGroupProductsOnPrintings()) {
+            invoice.getGroupProductsOnPrintings(),
+            intercoCompanyTaxNumber) {
 
           @Override
           public Invoice generate() throws AxelorException {
@@ -400,6 +434,16 @@ public class IntercoServiceImpl implements IntercoService {
           }
         };
     Invoice intercoInvoice = invoiceGenerator.generate();
+    intercoInvoice.setPartnerTaxNbr(
+        Optional.of(invoice)
+            .map(Invoice::getCompanyTaxNumber)
+            .map(TaxNumber::getTaxNbr)
+            .orElse(""));
+    intercoInvoice.setFiscalPosition(intercoPartner.getFiscalPosition());
+    if (cutOffStartDate != null && cutOffEndDate != null) {
+      intercoInvoice.setCutOffStartDate(cutOffStartDate);
+      intercoInvoice.setCutOffEndDate(cutOffEndDate);
+    }
 
     List<InvoiceLine> invoiceLineList = new ArrayList<>();
     if (invoice.getInvoiceLineList() != null) {
@@ -451,7 +495,7 @@ public class IntercoServiceImpl implements IntercoService {
       throws AxelorException {
     MetaFiles metaFiles = Beans.get(MetaFiles.class);
     try {
-      String printedPdfPath = AppService.getFileUploadDir() + printedPdf.getFilePath();
+      String printedPdfPath = MetaFiles.getPath(printedPdf).toString();
       MetaFile printedPdfCopy = metaFiles.upload(new File(printedPdfPath));
       metaFiles.attach(printedPdfCopy, printedPdf.getFileName(), intercoInvoice);
     } catch (IOException e) {
@@ -466,6 +510,10 @@ public class IntercoServiceImpl implements IntercoService {
         Beans.get(AccountManagementAccountService.class);
     InvoiceLineAnalyticService invoiceLineAnalyticService =
         Beans.get(InvoiceLineAnalyticService.class);
+
+    LocalDate cutOffStartDate = invoiceLine.getCutOffStartDate();
+    LocalDate cutOffEndDate = invoiceLine.getCutOffEndDate();
+
     InvoiceLineGenerator invoiceLineGenerator =
         new InvoiceLineGenerator(
             intercoInvoice,
@@ -498,6 +546,10 @@ public class IntercoServiceImpl implements IntercoService {
               List<AnalyticMoveLine> analyticMoveLineList =
                   invoiceLineAnalyticService.createAnalyticDistributionWithTemplate(invoiceLine);
               analyticMoveLineList.forEach(invoiceLine::addAnalyticMoveLineListItem);
+            }
+            if (cutOffStartDate != null && cutOffEndDate != null) {
+              invoiceLine.setCutOffStartDate(cutOffStartDate);
+              invoiceLine.setCutOffEndDate(cutOffEndDate);
             }
             return List.of(invoiceLine);
           }

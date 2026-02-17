@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,8 +46,8 @@ import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineOnProduct
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.rpc.JsonContext;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
@@ -92,34 +92,6 @@ public class ConfiguratorServiceProductionImpl extends ConfiguratorServiceImpl {
         configuratorRepository);
     this.configuratorBomService = configuratorBomService;
     this.billOfMaterialRemoveService = billOfMaterialRemoveService;
-  }
-
-  /**
-   * In this implementation, we also create a bill of materials.
-   *
-   * @param configurator
-   * @param jsonAttributes
-   * @param jsonIndicators
-   * @param saleOrderId
-   * @throws AxelorException
-   */
-  @Override
-  @Transactional(rollbackOn = {Exception.class})
-  public void generateProduct(
-      Configurator configurator,
-      JsonContext jsonAttributes,
-      JsonContext jsonIndicators,
-      Long saleOrderId)
-      throws AxelorException {
-    super.generateProduct(configurator, jsonAttributes, jsonIndicators, saleOrderId);
-    ConfiguratorBOM configuratorBOM = configurator.getConfiguratorCreator().getConfiguratorBom();
-    if (configuratorBOM != null) {
-      Product generatedProduct = configurator.getProduct();
-      configuratorBomService
-          .generateBillOfMaterial(
-              configuratorBOM, jsonAttributes, 0, generatedProduct, configurator)
-          .ifPresent(generatedProduct::setDefaultBillOfMaterial);
-    }
   }
 
   @Override

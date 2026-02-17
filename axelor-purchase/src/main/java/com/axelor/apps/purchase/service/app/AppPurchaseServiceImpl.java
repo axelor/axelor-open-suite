@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,18 +23,12 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.purchase.db.PurchaseConfig;
 import com.axelor.apps.purchase.db.repo.PurchaseConfigRepository;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModelRepository;
-import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.studio.app.service.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppPurchase;
 import com.axelor.studio.db.repo.AppPurchaseRepository;
-import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 @Singleton
@@ -48,24 +42,11 @@ public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPur
 
   @Inject
   public AppPurchaseServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      MetaModelRepository metaModelRepo,
-      AppSettingsStudioService appSettingsService,
-      MetaModuleRepository metaModuleRepo,
-      MetaFileRepository metaFileRepo,
+      AppService appService,
       AppPurchaseRepository appPurchaseRepo,
       CompanyRepository companyRepo,
       PurchaseConfigRepository purchaseConfigRepo) {
-    super(
-        appRepo,
-        metaFiles,
-        appVersionService,
-        metaModelRepo,
-        appSettingsService,
-        metaModuleRepo,
-        metaFileRepo);
+    super(appService);
     this.appPurchaseRepo = appPurchaseRepo;
     this.companyRepo = companyRepo;
     this.purchaseConfigRepo = purchaseConfigRepo;
@@ -73,7 +54,7 @@ public class AppPurchaseServiceImpl extends AppBaseServiceImpl implements AppPur
 
   @Override
   public AppPurchase getAppPurchase() {
-    return appPurchaseRepo.all().fetchOne();
+    return appPurchaseRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

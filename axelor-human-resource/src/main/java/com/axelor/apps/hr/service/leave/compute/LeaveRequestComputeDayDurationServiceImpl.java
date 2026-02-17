@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,13 +22,13 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.EventsPlanning;
 import com.axelor.apps.base.db.WeeklyPlanning;
+import com.axelor.apps.base.service.publicHoliday.PublicHolidayService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.service.leave.LeaveRequestPlanningService;
-import com.axelor.apps.hr.service.publicHoliday.PublicHolidayHrService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -38,14 +38,14 @@ public class LeaveRequestComputeDayDurationServiceImpl
   protected final LeaveRequestPlanningService leaveRequestPlanningService;
   protected final LeaveRequestComputeHalfDayService leaveRequestComputeHalfDayService;
   protected final WeeklyPlanningService weeklyPlanningService;
-  protected final PublicHolidayHrService publicHolidayHrService;
+  protected final PublicHolidayService publicHolidayHrService;
 
   @Inject
   public LeaveRequestComputeDayDurationServiceImpl(
       LeaveRequestPlanningService leaveRequestPlanningService,
       LeaveRequestComputeHalfDayService leaveRequestComputeHalfDayService,
       WeeklyPlanningService weeklyPlanningService,
-      PublicHolidayHrService publicHolidayHrService) {
+      PublicHolidayService publicHolidayHrService) {
     this.leaveRequestPlanningService = leaveRequestPlanningService;
     this.leaveRequestComputeHalfDayService = leaveRequestComputeHalfDayService;
     this.weeklyPlanningService = weeklyPlanningService;

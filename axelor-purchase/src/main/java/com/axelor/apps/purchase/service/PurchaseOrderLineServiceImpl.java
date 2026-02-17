@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,7 +53,7 @@ import com.axelor.studio.db.AppPurchase;
 import com.axelor.utils.helpers.ContextHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -93,10 +93,10 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
   @Deprecated private int sequence = 0;
 
   @Override
-  public Map<String, BigDecimal> compute(
+  public Map<String, Object> compute(
       PurchaseOrderLine purchaseOrderLine, PurchaseOrder purchaseOrder) throws AxelorException {
 
-    HashMap<String, BigDecimal> map = new HashMap<>();
+    HashMap<String, Object> map = new HashMap<>();
     if (purchaseOrder == null
         || purchaseOrderLine.getPrice() == null
         || purchaseOrderLine.getInTaxPrice() == null
@@ -577,13 +577,11 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
       productMultipleQties = supplierCatalog.getProductMultipleQtyList();
     }
 
-    if (CollectionUtils.isNotEmpty(productMultipleQties)) {
-      productMultipleQtyService.checkMultipleQty(
-          purchaseOrderLine.getQty(),
-          productMultipleQties,
-          product.getAllowToForcePurchaseQty(),
-          response);
-    }
+    productMultipleQtyService.checkMultipleQty(
+        purchaseOrderLine.getQty(),
+        productMultipleQties,
+        product.getAllowToForcePurchaseQty(),
+        response);
   }
 
   @Override
@@ -696,4 +694,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
     valuesMap.put("taxEquiv", taxEquiv);
     return valuesMap;
   }
+
+  @Override
+  public void validateDeletion(PurchaseOrderLine purchaseOrderLine) throws AxelorException {}
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,13 +29,14 @@ import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 
 @Singleton
@@ -48,9 +49,14 @@ public class PurchaseOrderInvoiceController {
     purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
 
     try {
+
+      BigDecimal amountToInvoice =
+          purchaseOrder
+              .getExTaxTotal()
+              .subtract(Beans.get(OrderInvoiceService.class).amountToBeInvoiced(purchaseOrder));
+
       Beans.get(PurchaseOrderInvoiceService.class)
-          .displayErrorMessageIfPurchaseOrderIsInvoiceable(
-              purchaseOrder, purchaseOrder.getExTaxTotal(), false);
+          .displayErrorMessageIfPurchaseOrderIsInvoiceable(purchaseOrder, amountToInvoice, false);
       Invoice invoice = Beans.get(PurchaseOrderInvoiceService.class).generateInvoice(purchaseOrder);
       if (invoice != null) {
         response.setReload(true);

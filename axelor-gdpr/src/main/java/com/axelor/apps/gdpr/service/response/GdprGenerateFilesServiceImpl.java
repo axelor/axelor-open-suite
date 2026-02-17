@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,6 +36,7 @@ import com.axelor.db.mapper.Property;
 import com.axelor.db.mapper.PropertyType;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.GdprDmsFileRepository;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaField;
 import com.axelor.meta.db.MetaFile;
@@ -43,8 +44,9 @@ import com.axelor.meta.db.MetaModel;
 import com.axelor.meta.db.repo.MetaFieldRepository;
 import com.axelor.meta.db.repo.MetaModelRepository;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Entity;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -157,14 +159,24 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
           (Class<? extends AuditableModel>) Class.forName(metaField.getMetaModel().getFullName());
       List<? extends AuditableModel> records;
 
+      if (!klass.isAnnotationPresent(Entity.class)) {
+        continue;
+      }
+
       if (!"OneToMany".equals(metaField.getRelationship())) {
         records =
-            Query.of(klass).filter(metaField.getName() + " = " + gdprRequest.getModelId()).fetch();
+            Query.of(klass)
+                .filter(metaField.getName() + ".id = " + gdprRequest.getModelId())
+                .fetch();
 
       } else {
         records =
             Query.of(klass)
-                .filter(gdprRequest.getModelId() + " MEMBER OF " + metaField.getName())
+                .filter(
+                    gdprRequest.getModelId()
+                        + " IN (SELECT obj.id FROM self."
+                        + metaField.getName()
+                        + " obj)")
                 .fetch();
       }
 
@@ -240,7 +252,7 @@ public class GdprGenerateFilesServiceImpl implements GdprGenerateFilesService {
    * @throws IOException
    */
   public void addFilesToZip(File source, List<File> files) throws IOException {
-    MetaFiles.createTempFile(null, OUTPUT_EXT);
+    TempFiles.createTempFile(null, OUTPUT_EXT);
 
     File tmpZip = File.createTempFile(source.getName(), null);
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,14 @@
  */
 package com.axelor.apps.hr.service.leave;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.rest.dto.CheckResponse;
 import com.axelor.apps.base.rest.dto.CheckResponseLine;
 import com.axelor.apps.hr.db.LeaveReason;
 import com.axelor.apps.hr.db.LeaveRequest;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -42,7 +43,7 @@ public class LeaveRequestCheckResponseServiceImpl implements LeaveRequestCheckRe
   }
 
   @Override
-  public CheckResponse createResponse(LeaveRequest leaveRequest) {
+  public CheckResponse createResponse(LeaveRequest leaveRequest) throws AxelorException {
     List<CheckResponseLine> checkResponseLineList = new ArrayList<>();
     checkDate(leaveRequest).ifPresent(checkResponseLineList::add);
     checkDuration(leaveRequest).ifPresent(checkResponseLineList::add);
@@ -73,7 +74,8 @@ public class LeaveRequestCheckResponseServiceImpl implements LeaveRequestCheckRe
     return Optional.empty();
   }
 
-  protected Optional<CheckResponseLine> checkAvailableDays(LeaveRequest leaveRequest) {
+  protected Optional<CheckResponseLine> checkAvailableDays(LeaveRequest leaveRequest)
+      throws AxelorException {
     LeaveReason leaveReason = leaveRequest.getLeaveReason();
     if (!leaveRequestService.willHaveEnoughDays(leaveRequest) && leaveReason != null) {
 

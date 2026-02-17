@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
+import com.axelor.apps.account.db.TaxNumber;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.db.CancelReason;
@@ -302,7 +303,7 @@ public interface InvoiceService {
 
   boolean checkManageCutOffDates(Invoice invoice);
 
-  void applyCutOffDates(Invoice invoice, LocalDate cutOffStartDate, LocalDate cutOffEndDate);
+  void applyCutOffDates(Invoice invoice);
 
   boolean isSelectedPfpValidatorEqualsPartnerPfpValidator(Invoice invoice);
 
@@ -321,4 +322,8 @@ public interface InvoiceService {
   Invoice computeEstimatedPaymentDate(Invoice invoice);
 
   void updateThirdPartyPayerPartner(Invoice invoice);
+
+  FiscalPosition manageFiscalPositionFromCompanyTaxNumber(Invoice invoice);
+
+  TaxNumber getDefaultCompanyTaxNumber(Invoice invoice);
 }

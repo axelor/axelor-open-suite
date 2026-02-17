@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,7 +22,6 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
-import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
@@ -49,7 +48,7 @@ import com.axelor.rpc.Context;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.AppCrm;
 import com.axelor.utils.service.BinaryConversionService;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -173,6 +172,7 @@ public class ConvertLeadWizardController {
                 .context("_partnerMap", partnerMap)
                 .context("_contactPartnerList", contactPartnerList)
                 .context("_contactPartnerMap", contactPartnerMap)
+                .context("_isProspect", true)
                 .map());
       } else if (leadToPartnerSelect == LeadRepository.CONVERT_LEAD_SELECT_PARTNER) {
         response.setView(
@@ -212,19 +212,7 @@ public class ConvertLeadWizardController {
     partnerMap.put("sizeSelect", lead.getSizeSelect());
     partnerMap.put("isNurturing", lead.getIsNurturing());
     partnerMap.put("agency", lead.getAgency());
-    if (lead.getUser() != null && lead.getUser().getActiveCompany() != null) {
-      if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
-          == CompanyRepository.CATEGORY_CUSTOMER) {
-        partnerMap.put("isCustomer", true);
-      } else if (lead.getUser().getActiveCompany().getDefaultPartnerCategorySelect()
-          == CompanyRepository.CATEGORY_SUPPLIER) {
-        partnerMap.put("isSupplier", true);
-      } else {
-        response.setAttr("isProspect", "value", true);
-      }
-    } else {
-      partnerMap.put("isProspect", true);
-    }
+    partnerMap.put("isProspect", true);
 
     if (!isCompany || StringUtils.isEmpty(lead.getEnterpriseName())) {
       partnerMap.put("firstName", lead.getFirstName());

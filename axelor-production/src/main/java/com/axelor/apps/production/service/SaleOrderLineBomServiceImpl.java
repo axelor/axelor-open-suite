@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,11 +23,12 @@ import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
+import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.studio.db.repo.AppSaleRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -44,8 +45,8 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   protected final BillOfMaterialRepository billOfMaterialRepository;
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected final BillOfMaterialLineService billOfMaterialLineService;
-  protected final BillOfMaterialService billOfMaterialService;
   protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
+  protected final SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService;
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -55,15 +56,15 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       BillOfMaterialRepository billOfMaterialRepository,
       BillOfMaterialLineRepository billOfMaterialLineRepository,
       BillOfMaterialLineService billOfMaterialLineService,
-      BillOfMaterialService billOfMaterialService,
-      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService) {
+      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
+      SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.appSaleService = appSaleService;
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
     this.billOfMaterialLineService = billOfMaterialLineService;
-    this.billOfMaterialService = billOfMaterialService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
+    this.saleOrderLineDetailsProdProcessService = saleOrderLineDetailsProdProcessService;
   }
 
   @Override
@@ -82,12 +83,19 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       var saleOrderLine =
           saleOrderLineBomLineMappingService.mapToSaleOrderLine(billOfMaterialLine, saleOrder);
       if (saleOrderLine != null) {
-
+        BillOfMaterial lineBom = saleOrderLine.getBillOfMaterial();
         if (saleOrderLine.getIsToProduce()) {
           saleOrderLineDetailsBomService
-              .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
+              .createSaleOrderLineDetailsFromBom(lineBom, saleOrder, saleOrderLine)
               .stream()
               .filter(Objects::nonNull)
+              .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+          saleOrderLineDetailsProdProcessService
+              .createSaleOrderLineDetailsFromProdProcess(
+                  lineBom.getProdProcess(), saleOrder, saleOrderLine)
+              .stream()
+              .filter(Objects::nonNull)
+              .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
               .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
         }
         saleOrderLinesList.add(saleOrderLine);

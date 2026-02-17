@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,8 +27,9 @@ import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineCreateTaxLineService;
 import com.axelor.apps.supplychain.service.invoice.AdvancePaymentRefundService;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderComputeServiceSupplychainImpl;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -40,15 +41,17 @@ public class SaleOrderComputeServiceProductionImpl extends SaleOrderComputeServi
       SaleOrderLineComputeService saleOrderLineComputeService,
       SaleOrderLinePackService saleOrderLinePackService,
       SubSaleOrderLineComputeService subSaleOrderLineComputeService,
+      AppSaleService appSaleService,
       AdvancePaymentRefundService refundService,
-      AppSaleService appSaleService) {
+      SaleOrderAdvancePaymentFetchService saleOrderAdvancePaymentFetchService) {
     super(
         saleOrderLineCreateTaxLineService,
         saleOrderLineComputeService,
         saleOrderLinePackService,
         subSaleOrderLineComputeService,
+        appSaleService,
         refundService,
-        appSaleService);
+        saleOrderAdvancePaymentFetchService);
   }
 
   @Override

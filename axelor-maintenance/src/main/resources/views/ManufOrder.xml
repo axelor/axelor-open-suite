@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="maintenance-manuf-order-grid" title="Maintenance orders"
     model="com.axelor.apps.production.db.ManufOrder" orderBy="-manufOrderSeq">
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print"
+      <button name="printBtn" title="Print" icon="printer"
         onClick="action-manuf-order-method-print"/>
       <button name="planBtn" title="Plan" onClick="action-manuf-order-method-plan"/>
     </toolbar>
@@ -28,19 +28,19 @@
     <field name="plannedEndDateT"/>
     <field name="realStartDateT"/>
     <field name="realEndDateT"/>
-    <field name="statusSelect"/>
-    <button name="planBtn" icon="fa-calendar" onClick="action-manuf-order-method-quick-plan"
+    <field name="statusSelect" widget="single-select"/>
+    <button name="planBtn" icon="calendar" onClick="action-manuf-order-method-quick-plan"
       readonlyIf="statusSelect >= 3"/>
-    <button name="startBtn" icon="fa-play"
+    <button name="startBtn" icon="play-fill"
       onClick="action-manuf-order-method-start-or-resume"
       readonlyIf="statusSelect != 3 &amp;&amp; statusSelect != 5"/>
-    <button name="pauseBtn" icon="fa-pause" onClick="action-manuf-order-method-pause"
+    <button name="pauseBtn" icon="pause-fill" onClick="action-manuf-order-method-pause"
       readonlyIf="statusSelect != 4"/>
-    <button name="finishBtn" icon="fa-power-off" onClick="action-manuf-order-group-finish"
+    <button name="finishBtn" icon="power" onClick="action-manuf-order-group-finish"
       readonlyIf="statusSelect != 4"/>
-    <button name="cancelBtn" icon="fa-times-circle" onClick="action-manuf-order-view-cancel"
+    <button name="cancelBtn" icon="x-circle-fill" onClick="action-manuf-order-view-cancel"
       readonlyIf="statusSelect == 2"/>
-    <button name="printBtn" title="Print" icon="fa-print"
+    <button name="printBtn" title="Print" icon="printer"
       onClick="action-maintenance-manuf-order-group-print-report"/>
   </grid>
 
@@ -52,7 +52,7 @@
       <button name="printBtn" hideIf="true" onClick=""/>
     </toolbar>
     <menubar>
-      <menu name="manufOrderReportsMenu" title="Reports" showTitle="true" icon="fa-files-o">
+      <menu name="manufOrderReportsMenu" title="Reports" showTitle="true" icon="files">
         <item name="printItem" title="Print" showIf="statusSelect > 1"
           action="save,action-manuf-order-method-print"/>
         <item name="printProductionProcessItem" title="Print Production Process"
@@ -111,7 +111,7 @@
           onChange="action-manuf-order-atts-sale-order-onchange-client-partner"
           domain="self.isCustomer=true AND :company member of self.companySet"
           form-view="partner-form" grid-view="partner-grid" hidden="true" colSpan="6"/>
-        <field name="saleOrderSet" widget="TagSelect" canEdit="false"
+        <field name="saleOrderSet" widget="Tags" canEdit="false"
           onSelect="action-manuf-order-attrs-sale-order-onselect" form-view="sale-order-form"
           grid-view="sale-order-grid" hidden="true" colSpan="6"/>
         <field name="manufOrderMergeResult" showIf="manufOrderMergeResult" canNew="false"
@@ -120,11 +120,6 @@
         <field name="purchaseOrder" showIf="false" canSelect="false" canEdit="false"
           form-view="purchase-order-form" grid-view="purchase-order-grid"/>
         <field name="isConsProOnOperation" hidden="true"/>
-        <field if="__config__.app.getApp('production')?.getManageBusinessProduction()"
-          if-module="axelor-business-production" name="isToInvoice"
-          onChange="save,action-manuf-order-method-is-to-invoice"/>
-        <field if="__config__.app.getApp('production')?.getManageBusinessProduction()"
-          if-module="axelor-business-production" name="invoiced" showIf="isToInvoice"/>
         <button name="preFillOperationsBtn" title="Pre-fill operations"
           hideIf="statusSelect > 1  || operationOrderList.length > 0" colSpan="4"
           onClick="save,action-manuf-order-method-pre-fill-operations"/>
@@ -133,19 +128,19 @@
       </panel>
       <panel name="actionsPanel" title="Actions" colSpan="4">
         <button name="planBtn" title="Plan" showIf="statusSelect == 1 || statusSelect == 2"
-          colSpan="12" icon="fa-calendar" onClick="save,action-manuf-order-method-plan"/>
+          colSpan="12" icon="calendar" onClick="save,action-manuf-order-method-plan"/>
         <button name="startBtn" title="Start" showIf="statusSelect == 3" colSpan="12"
-          icon="fa-play" onClick="save,action-manuf-order-method-start"/>
+          icon="play-fill" onClick="save,action-manuf-order-method-start"/>
         <button name="pauseBtn" title="Pause" showIf="statusSelect == 4" colSpan="12"
-          icon="fa-pause" onClick="save,action-manuf-order-method-pause"/>
+          icon="pause-fill" onClick="save,action-manuf-order-method-pause"/>
         <button name="resumeBtn" title="Resume" showIf="statusSelect == 5" colSpan="12"
-          icon="fa-step-forward" onClick="save,action-manuf-order-method-resume"/>
+          icon="forward-fill" onClick="save,action-manuf-order-method-resume"/>
         <button name="finishBtn" title="Finish" showIf="statusSelect == 4" colSpan="12"
-          icon="fa-power-off" onClick="save,action-manuf-order-group-finish"/>
+          icon="power" onClick="save,action-manuf-order-group-finish"/>
         <button name="finishPartBtn" title="Partial Finish" showIf="statusSelect == 4"
-          colSpan="12" icon="fa-power-off" onClick="save, action-manuf-order-method-part-finish"/>
+          colSpan="12" icon="power" onClick="save, action-manuf-order-method-part-finish"/>
         <button name="cancelBtn" title="Cancel" showIf="statusSelect != 2" colSpan="12"
-          icon="fa-times-circle" onClick="save,action-manuf-order-view-cancel"/>
+          icon="x-circle-fill" onClick="save,action-manuf-order-view-cancel"/>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab" colSpan="4">

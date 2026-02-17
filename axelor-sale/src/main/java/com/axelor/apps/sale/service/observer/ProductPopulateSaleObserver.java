@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,11 +22,12 @@ import com.axelor.apps.base.service.event.ProductPopulate;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.event.Observes;
 import com.axelor.inject.Beans;
+import jakarta.annotation.Priority;
 import java.util.Map;
 
 public class ProductPopulateSaleObserver {
 
-  void populate(@Observes ProductPopulate event) {
+  void populate(@Observes @Priority(value = 10) ProductPopulate event) {
     Map<String, Object> json = event.getJson();
     json.put(
         "$isCartManagementEnabled",

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="payment-voucher-grid" title="Payment vouchers"
     model="com.axelor.apps.account.db.PaymentVoucher" orderBy="-paymentDate">
@@ -18,7 +18,7 @@
     <field name="generatedMove" width="120" form-view="move-form" grid-view="move-grid"/>
     <field name="currency" form-view="currency-form" grid-view="currency-grid"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="payment-voucher-form" title="Payment voucher"
@@ -52,11 +52,11 @@
         showIf="statusSelect == 1 || !id"
         readonlyIf="paidAmount == 0 || (moveLine != null &amp;&amp; payVoucherElementToPayList.length == 0)"/>
       <button name="printPaymentVoucherBtn" title="Print receipt" hidden="true"
-        icon="fa-print" onClick="action-payment-voucher-group-print-template"/>
+        icon="printer" onClick="action-payment-voucher-group-print-template"/>
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info" readonly="true">
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <panel hidden="true" showIf="statusSelect == 2 || statusSelect == 3" itemSpan="12">
         <field name="valueForCollectionMove" form-view="move-form" grid-view="move-grid"
           hidden="true"
@@ -246,7 +246,7 @@
 
   <action-attrs name="action-pv-moveLine-domain">
     <attribute name="domain" for="moveLine"
-      expr="eval: &quot;self.account.useForPartnerBalance = 't' and self.partner.id = ${partner?.id?: 0} and (self.move.statusSelect = 2 or self.move.statusSelect = 3) and self.amountRemaining != 0 and self.credit &gt; 0.0&quot;"/>
+      expr="eval: &quot;self.account.useForPartnerBalance = true and self.partner.id = ${partner?.id?: 0} and (self.move.statusSelect = 2 or self.move.statusSelect = 3) and self.amountRemaining != 0 and self.credit &gt; 0.0&quot;"/>
   </action-attrs>
 
   <action-attrs name="action-attrs-payment-voucher-manage-bank-details">

@@ -16,5 +16,4 @@ axelor {
 dependencies {
 	api project(":modules:axelor-human-resource")
 	api project(":modules:axelor-supplychain")
-	api project(":modules:axelor-business-project")
 }

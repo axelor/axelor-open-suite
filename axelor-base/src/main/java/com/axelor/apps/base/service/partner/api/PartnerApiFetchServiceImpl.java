@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,24 +19,27 @@
 package com.axelor.apps.base.service.partner.api;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.MediaType;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
-import javax.ws.rs.core.MediaType;
 import org.apache.http.HttpHeaders;
 import org.eclipse.birt.report.model.api.util.StringUtil;
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
 
 public class PartnerApiFetchServiceImpl extends GenericApiFetchService
     implements PartnerApiFetchService {
 
   protected final AppBaseService appBaseService;
+
+  protected static final String SIRENE_API_KEY_HEADER = "X-INSEE-Api-Key-Integration";
 
   @Inject
   public PartnerApiFetchServiceImpl(AppBaseService appBaseService) {
@@ -70,8 +73,13 @@ public class PartnerApiFetchServiceImpl extends GenericApiFetchService
   protected Map<String, String> getHeaders() throws AxelorException {
     Map<String, String> headers = new HashMap<>();
     headers.put(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON);
-    headers.put(
-        HttpHeaders.AUTHORIZATION, "Bearer " + appBaseService.getAppBase().getSireneAccessToken());
+    String apiKey = appBaseService.getAppBase().getSireneKey();
+    if (StringUtils.isEmpty(apiKey)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(BaseExceptionMessage.API_WRONG_CREDENTIALS));
+    }
+    headers.put(SIRENE_API_KEY_HEADER, apiKey);
     return headers;
   }
 
@@ -82,12 +90,12 @@ public class PartnerApiFetchServiceImpl extends GenericApiFetchService
 
   @Override
   protected String treatResponse(HttpResponse<String> response, String siretNumber)
-      throws JSONException {
+      throws JsonProcessingException {
     int statusCode = response.statusCode();
 
     switch (statusCode) {
       case 200:
-        return new JSONObject(response.body()).get("etablissement").toString();
+        return new ObjectMapper().readTree(response.body()).get("etablissement").toString();
       case 400:
       case 404:
         return I18n.get(BaseExceptionMessage.API_BAD_REQUEST);

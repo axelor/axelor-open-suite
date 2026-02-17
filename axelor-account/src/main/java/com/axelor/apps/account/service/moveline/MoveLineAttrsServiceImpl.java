@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,8 +24,10 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.JournalService;
+import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.analytic.AnalyticLineService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveLineControlService;
@@ -34,10 +36,12 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.StringUtils;
-import com.google.inject.Inject;
+import com.google.common.collect.Lists;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
@@ -51,6 +55,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
   protected JournalService journalService;
   protected MoveLineTaxService moveLineTaxService;
   protected MoveLineService moveLineService;
+  protected AnalyticAttrsService analyticAttrsService;
 
   @Inject
   public MoveLineAttrsServiceImpl(
@@ -60,7 +65,8 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       PeriodCheckService periodCheckService,
       JournalService journalService,
       MoveLineTaxService moveLineTaxService,
-      MoveLineService moveLineService) {
+      MoveLineService moveLineService,
+      AnalyticAttrsService analyticAttrsService) {
     this.accountConfigService = accountConfigService;
     this.moveLineControlService = moveLineControlService;
     this.analyticLineService = analyticLineService;
@@ -68,6 +74,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
     this.journalService = journalService;
     this.moveLineTaxService = moveLineTaxService;
     this.moveLineService = moveLineService;
+    this.analyticAttrsService = analyticAttrsService;
   }
 
   protected void addAttr(
@@ -230,23 +237,37 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       return;
     }
 
-    String domain =
-        String.format(
-            "self.isContact IS FALSE AND %d MEMBER OF self.companySet", move.getCompany().getId());
+    String domain = String.format("self.isContact IS FALSE AND :company MEMBER OF self.companySet");
 
     this.addAttr("partner", "domain", domain, attrsMap);
+    this.addAttr("$company", "value", move.getCompany(), attrsMap);
   }
 
   @Override
   public void addAnalyticDistributionTemplateDomain(
-      Move move, Map<String, Map<String, Object>> attrsMap) {
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap)
+      throws AxelorException {
     if (move == null) {
       return;
     }
 
+    String technicalTypeSelect =
+        Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getAccountType)
+            .map(AccountType::getTechnicalTypeSelect)
+            .orElse(null);
+
+    boolean isPurchase = !AccountTypeRepository.TYPE_INCOME.equals(technicalTypeSelect);
+
     String domain =
-        String.format(
-            "self.isSpecific IS FALSE AND self.company.id = %d", move.getCompany().getId());
+        analyticAttrsService.getAnalyticDistributionTemplateDomain(
+            moveLine.getPartner(),
+            null,
+            move.getCompany(),
+            move.getTradingName(),
+            moveLine.getAccount(),
+            isPurchase);
 
     this.addAttr("analyticDistributionTemplate", "domain", domain, attrsMap);
   }
@@ -319,5 +340,24 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
 
     this.addAttr("cutOffStartDate", "required", cutOffDatesRequired, attrsMap);
     this.addAttr("cutOffEndDate", "required", cutOffDatesRequired, attrsMap);
+  }
+
+  @Override
+  public void addVatSystemSelectReadonly(
+      Move move, MoveLine moveLine, Map<String, Map<String, Object>> attrsMap) {
+    if (move == null
+        || moveLine == null
+        || moveLine.getAccount() == null
+        || move.getJournal() == null) {
+      return;
+    }
+
+    boolean vatSystemSelectReadonly =
+        moveLine.getAccount().getUseForPartnerBalance()
+            || !moveLine.getAccount().getIsTaxAuthorizedOnMoveLine()
+            || !Lists.newArrayList(MoveRepository.STATUS_NEW, MoveRepository.STATUS_SIMULATED)
+                .contains(move.getStatusSelect());
+
+    this.addAttr("vatSystemSelect", "readonly", vatSystemSelectReadonly, attrsMap);
   }
 }

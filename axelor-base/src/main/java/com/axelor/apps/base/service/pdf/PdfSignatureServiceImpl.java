@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,15 +19,17 @@
 package com.axelor.apps.base.service.pdf;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.PfxCertificate;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
+import com.axelor.apps.base.service.PfxCertificateCheckService;
 import com.axelor.apps.base.service.signature.SignatureService;
 import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
 import com.google.common.io.Files;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -52,18 +54,25 @@ public class PdfSignatureServiceImpl implements PdfSignatureService {
 
   protected MetaFiles metaFiles;
   protected SignatureService signatureService;
+  protected PfxCertificateCheckService pfxCertificateCheckService;
 
   @Inject
-  public PdfSignatureServiceImpl(MetaFiles metaFiles, SignatureService signatureService) {
+  public PdfSignatureServiceImpl(
+      MetaFiles metaFiles,
+      SignatureService signatureService,
+      PfxCertificateCheckService pfxCertificateCheckService) {
     this.metaFiles = metaFiles;
     this.signatureService = signatureService;
+    this.pfxCertificateCheckService = pfxCertificateCheckService;
   }
 
   @Override
-  public MetaFile digitallySignPdf(
-      MetaFile metaFile, MetaFile certificate, String certificatePassword, String reason)
+  public MetaFile digitallySignPdf(MetaFile metaFile, PfxCertificate pfxCertificate, String reason)
       throws AxelorException {
 
+    pfxCertificateCheckService.checkValidity(pfxCertificate);
+    MetaFile certificate = pfxCertificate.getCertificate();
+    String certificatePassword = pfxCertificate.getPassword();
     try {
       File tempPdfFile =
           File.createTempFile(Files.getNameWithoutExtension(metaFile.getFileName()), ".pdf");

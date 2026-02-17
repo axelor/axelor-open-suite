@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.AccountTypeRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermToolService;
@@ -37,13 +38,10 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Objects;
-import java.util.Optional;
-import org.apache.commons.collections.CollectionUtils;
 
 public class ReconcileCheckServiceImpl implements ReconcileCheckService {
 
@@ -131,9 +129,16 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
           creditMoveLine.getCredit().subtract(creditMoveLine.getAmountPaid()));
     }
 
-    // Check tax lines
-    this.taxLinePrecondition(creditMoveLine.getMove());
-    this.taxLinePrecondition(debitMoveLine.getMove());
+    if (!Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE, MoveRepository.FUNCTIONAL_ORIGIN_OPENING)
+            .contains(creditMoveLine.getMove().getFunctionalOriginSelect())
+        && !Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE, MoveRepository.FUNCTIONAL_ORIGIN_OPENING)
+            .contains(debitMoveLine.getMove().getFunctionalOriginSelect())) {
+      // Check tax lines
+      this.taxLinePrecondition(creditMoveLine.getMove());
+      this.taxLinePrecondition(debitMoveLine.getMove());
+    }
 
     if (updateInvoiceTerms && updateInvoicePayments) {
       invoiceTermPfpService.validatePfpValidatedAmount(
@@ -173,28 +178,11 @@ public class ReconcileCheckServiceImpl implements ReconcileCheckService {
     return currency.equals(reconcile.getCompany().getCurrency());
   }
 
-  @Override
-  public void checkReconcile(Reconcile reconcile) throws AxelorException {
-    this.checkMoveLine(reconcile, reconcile.getCreditMoveLine());
-    this.checkMoveLine(reconcile, reconcile.getDebitMoveLine());
-  }
-
-  protected void checkMoveLine(Reconcile reconcile, MoveLine moveLine) throws AxelorException {
-    LocalDate reconciliationDateTime =
-        Optional.ofNullable(reconcile.getReconciliationDateTime())
-            .map(LocalDateTime::toLocalDate)
-            .orElse(null);
-    if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())
-        && !invoiceTermToolService.isEnoughAmountToPay(
-            moveLine.getInvoiceTermList(), reconcile.getAmount(), reconciliationDateTime)) {
-      throw new AxelorException(
-          TraceBackRepository.CATEGORY_INCONSISTENCY,
-          I18n.get(AccountExceptionMessage.RECONCILE_NOT_ENOUGH_AMOUNT));
-    }
-  }
-
   protected void taxLinePrecondition(Move move) throws AxelorException {
-    if (!move.getMoveLineList().stream().allMatch(this::hasPayableReceivableAccount)
+    if (!Arrays.asList(
+                MoveRepository.FUNCTIONAL_ORIGIN_CLOSURE, MoveRepository.FUNCTIONAL_ORIGIN_OPENING)
+            .contains(move.getFunctionalOriginSelect())
+        && !move.getMoveLineList().stream().allMatch(this::hasPayableReceivableAccount)
         && move.getMoveLineList().stream().anyMatch(this::isMissingTax)) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_MISSING_FIELD,

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -54,6 +54,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
@@ -83,9 +84,11 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.inject.Singleton;
+import jakarta.annotation.Nullable;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -96,7 +99,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nullable;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -315,9 +318,12 @@ public class SaleOrderController {
   public void checkBeforeConfirm(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    String alert = Beans.get(SaleOrderCheckService.class).confirmCheckAlert(saleOrder);
-    if (StringUtils.notEmpty(alert)) {
-      response.setAlert(alert);
+    List<String> alertList = Beans.get(SaleOrderCheckService.class).confirmCheckAlert(saleOrder);
+    if (!CollectionUtils.isEmpty(alertList)) {
+      String msg =
+          alertList.size() == 1 ? alertList.get(0) : StringHtmlListBuilder.formatMessage(alertList);
+      response.setAlert(
+          msg + " " + I18n.get(SaleExceptionMessage.SALE_ORDER_DO_YOU_WANT_TO_PROCEED));
     }
   }
 
@@ -432,7 +438,7 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
     try {
-      saleOrder = Beans.get(SaleOrderService.class).computeEndOfValidityDate(saleOrder);
+      saleOrder = Beans.get(SaleOrderDateService.class).computeEndOfValidityDate(saleOrder);
       response.setValue("endOfValidityDate", saleOrder.getEndOfValidityDate());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -685,6 +691,7 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     SaleOrder copiedSO =
         Beans.get(SaleOrderService.class).separateInNewQuotation(saleOrder, saleOrderLines);
+    response.setReload(true);
     response.setView(
         ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
@@ -868,6 +875,15 @@ public class SaleOrderController {
     List<SaleOrderLine> saleOrderLineList =
         Beans.get(SaleOrderDeliveryAddressService.class)
             .updateSaleOrderLinesDeliveryAddress(saleOrder);
+    response.setValue("saleOrderLineList", saleOrderLineList);
+  }
+
+  public void updateSaleOrderLinesDeliveryAddressStr(
+      ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    List<SaleOrderLine> saleOrderLineList =
+        Beans.get(SaleOrderDeliveryAddressService.class)
+            .updateSaleOrderLinesDeliveryAddressStr(saleOrder);
     response.setValue("saleOrderLineList", saleOrderLineList);
   }
 

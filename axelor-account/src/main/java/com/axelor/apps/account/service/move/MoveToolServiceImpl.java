@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,8 +53,8 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.ListHelper;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -693,14 +693,6 @@ public class MoveToolServiceImpl implements MoveToolService {
   }
 
   @Override
-  public List<Integer> getMoveStatusSelectWithoutAccounted(
-      String moveStatusSelect, Set<Company> companySet) {
-    List<Integer> statusList = this.getMoveStatusSelect(moveStatusSelect, companySet);
-    statusList.remove(Integer.valueOf(MoveRepository.STATUS_ACCOUNTED));
-    return statusList;
-  }
-
-  @Override
   public List<Integer> getMoveStatusSelect(String moveStatusSelect, Set<Company> companySet) {
     List<Integer> statusList = null;
 
@@ -714,14 +706,6 @@ public class MoveToolServiceImpl implements MoveToolService {
       }
     }
 
-    return statusList;
-  }
-
-  @Override
-  public List<Integer> getMoveStatusSelectWithoutAccounted(
-      String moveStatusSelect, Company company) {
-    List<Integer> statusList = this.getMoveStatusSelect(moveStatusSelect, company);
-    statusList.remove(Integer.valueOf(MoveRepository.STATUS_ACCOUNTED));
     return statusList;
   }
 

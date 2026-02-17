@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,9 +29,9 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.service.TranslationService;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.util.Map;
-import javax.persistence.PersistenceException;
 
 public class ProductBaseRepository extends ProductRepository {
 
@@ -71,6 +71,9 @@ public class ProductBaseRepository extends ProductRepository {
     product = super.save(product);
 
     // Barcode generation
+    if (Strings.isNullOrEmpty(product.getSerialNumber())) {
+      product.setSerialNumber(product.getCode());
+    }
     if (product.getBarCode() == null
         && appBaseService.getAppBase().getActivateBarCodeGeneration()) {
       boolean addPadding = false;
@@ -96,6 +99,7 @@ public class ProductBaseRepository extends ProductRepository {
   public Product copy(Product product, boolean deep) {
     Product copy = super.copy(product, deep);
     Beans.get(ProductService.class).copyProduct(product, copy);
+    Beans.get(ProductService.class).copyProductCompanies(product.getProductCompanyList(), copy);
     return copy;
   }
 

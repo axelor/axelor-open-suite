@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,9 +57,9 @@ import com.axelor.rpc.JsonContext;
 import com.axelor.script.GroovyScriptHelper;
 import com.axelor.script.ScriptHelper;
 import com.axelor.utils.helpers.MetaHelper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.MissingPropertyException;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -371,6 +371,7 @@ public class ConfiguratorServiceImpl implements ConfiguratorService {
           generateSaleOrderLine(configurator, jsonAttributes, jsonIndicators, saleOrder);
     }
     saleOrderLine.setConfigurator(configurator);
+    saleOrderLineComputeService.computeLevels(List.of(saleOrderLine), null);
     saleOrderLineRepository.save(saleOrderLine);
     saleOrderComputeService.computeSaleOrder(saleOrder);
     saleOrderRepository.save(saleOrder);

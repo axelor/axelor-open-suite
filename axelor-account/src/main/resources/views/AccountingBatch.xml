@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="accounting-batch-grid" title="Accounting batches"
     model="com.axelor.apps.account.db.AccountingBatch">
@@ -36,10 +36,10 @@
         onChange="action-attrs-accounting-batch-hide-trading-name-set" hidden="true"
         if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
         showIf="actionSelect == 14"/>
-      <field name="tradingNameSet" colSpan="12" grid-view="trading-name-grid"
-        widget="TagSelect" form-view="trading-name-form" domain="self.company = :company"
-        canNew="false" if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()"
-        hidden="true" canEdit="false"/>
+      <field name="tradingNameSet" colSpan="12" grid-view="trading-name-grid" widget="Tags"
+        form-view="trading-name-form" domain="self.company = :company" canNew="false"
+        if="__config__.app.getApp('base')?.getEnableTradingNamesManagement()" hidden="true"
+        canEdit="false"/>
       <field name="archived" title="Archived"/>
       <field name="paymentMode.typeSelect" hidden="true"/>
       <field name="paymentMode.inOutSelect" hidden="true"/>
@@ -65,7 +65,7 @@
       <panel name="billOfExchangePagePanel" title="Bill of exchange configuration"
         hideIf="actionSelect != 24">
         <field name="billOfExchangeStepBatchSelect" widget="NavSelect" colSpan="12"/>
-        <field name="billOfExchangeDataTypeSelect"
+        <field name="billOfExchangeDataTypeSelect" selection-in="[1]"
           readonlyIf="billOfExchangeStepBatchSelect != 1"
           requiredIf="actionSelect == 24 &amp;&amp; billOfExchangeStepBatchSelect == 1"/>
         <field name="billOfExhangeMailTemplate" showIf="billOfExchangeStepBatchSelect == 2"
@@ -143,7 +143,7 @@
           showIf="closeYear || openYear"/>
         <field name="allocatePerPartner" colSpan="3" showIf="closeYear || openYear"/>
         <field name="generatedMoveStatusSelect" colSpan="3" selection-in="[2,3,5]"
-          requiredIf="actionSelect == 21" showIf="closeYear || openYear"/>
+          requiredIf="actionSelect == 21" showIf="closeYear || openYear" widget="single-select"/>
         <label name="daybookRemainingLabel" hidden="true" css="label-danger" colSpan="12"/>
         <field name="moveDescription" colSpan="12" showIf="closeYear || openYear"/>
         <field name="$closeAllAccounts" title="Close all accounts (Balance c/f preparation) ?"
@@ -169,11 +169,11 @@
           showIf="company.accountConfig.isActivateSimulatedMove"/>
         <field name="company.accountConfig.isActivateSimulatedMove" hidden="true"/>
         <!-- <field name="journalSet" colSpan="12" form-view="journal-form" grid-view="journal-grid"
-          widget="TagSelect" canNew="false" domain="self.company = :company"/> -->
+          widget="Tags" canNew="false" domain="self.company = :company"/> -->
       </panel>
       <panel name="moveConsistencyControl" title="Move Consistency Control"
         hideIf="actionSelect != 25">
-        <panel-related field="yearSet" widget="TagSelect" canSelect="true"
+        <panel-related field="yearSet" widget="Tags" canSelect="true"
           domain="self.typeSelect = 1 AND self.company = :company AND (self.statusSelect = 1 OR :closeYear is false)"
           canNew="false" canEdit="false" grid-view="year-account-grid" form-view="year-account-form"
           colSpan="12"/>
@@ -212,8 +212,9 @@
           <field name="journalSet" colSpan="6" form-view="journal-form"
             grid-view="journal-grid" hideIf="accountingCutOffTypeSelect &lt;= 2"
             onSelect="action-attrs-accounting-batch-set-journal-domain" canNew="false"
-            canEdit="false" widget="TagSelect"/>
-          <field name="generatedMoveStatusSelect" colSpan="6" selection-in="[2,3,5]"/>
+            canEdit="false" widget="Tags"/>
+          <field name="generatedMoveStatusSelect" colSpan="6" selection-in="[2,3,5]"
+            widget="single-select"/>
           <spacer colSpan="6"/>
           <field name="recoveredTax" showIf="accountingCutOffTypeSelect &lt;= 2"/>
           <field name="ati"
@@ -232,9 +233,8 @@
         <field name="toAccount" requiredIf="actionSelect == 27 &amp;&amp; fromAccount == null"
           domain="self.statusSelect = 1 AND self.reconcileOk IS true AND self.company = :company"/>
         <field name="partnerSet" form-view="partner-form" grid-view="partner-grid"
-          widget="TagSelect"
-          onSelect="action-accounting-batch-method-auto-lettering-set-partner-domain" canNew="false"
-          canEdit="false" colSpan="12"/>
+          widget="Tags" onSelect="action-accounting-batch-method-auto-lettering-set-partner-domain"
+          canNew="false" canEdit="false" colSpan="12"/>
         <field name="orderBySelect" widget="MultiSelect"/>
         <field name="reconcileMethodSelect" widget="RadioSelect"
           onChange="action-accounting-batch-record-auto-lettering-set-partial-false"/>
@@ -248,8 +248,8 @@
         <field name="createdOn" title="Created on"/>
         <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
         <field name="description" showTitle="false"/>
-        <panel-related name="batchListPanel" field="batchList" colSpan="12"
-          form-view="batch-form" grid-view="batch-grid" readonly="true"/>
+        <panel-dashlet name="batchListPanel" colSpan="12"
+          action="action-batch-method-show-batches" canSearch="true"/>
       </panel>
 
     </panel-tabs>

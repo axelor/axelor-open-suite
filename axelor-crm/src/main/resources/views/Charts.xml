@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
 
 
@@ -280,32 +280,24 @@
     </search-fields>
     <dataset type="sql">
 		    <![CDATA[
-		    SELECT
-			    COUNT(self.id) AS _leads,
-			    team.name AS _team,
-			    coalesce(nullif(message_value, ''), message_key) as _status
+			SELECT
+			  COUNT(self.id) AS _leads,
+			  team.name AS _team,
+			  status.name as _status
 			FROM
-			   crm_lead as self
-			LEFT JOIN
-			   team_team as team ON self.team = team.id
-			LEFT JOIN
-	        	meta_select as selection ON selection.name = 'crm.lead.status.select'
-	    	LEFT JOIN
-	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
-            LEFT JOIN
-                meta_translation ON selection_item.select_id = selection.id
-            JOIN
-                auth_user AS _user
-                ON _user.id = :__user__
+			  crm_lead as self
+			  LEFT JOIN team_team as team ON self.team = team.id
+			  LEFT JOIN crm_lead_status as status ON self.lead_status = status.id
+			  JOIN auth_user AS _user ON _user.id = :__user__
 			WHERE
-				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
-                AND message_key = selection_item.title AND meta_translation.language = _user.language
-	    	GROUP BY
-			  	_status,
-                _team, message_value, message_key
+			  self.created_on BETWEEN DATE(:fromDateT)
+			  AND DATE(:toDateT)
+			GROUP BY
+			  _status,
+			  _team
 			ORDER BY
-			   	_status,
-                _team
+			  _status,
+			  _team
     ]]>
     </dataset>
     <category key="_team" type="text" title="Team"/>
@@ -320,33 +312,25 @@
     </search-fields>
     <dataset type="sql">
 		    <![CDATA[
-		    SELECT
-			    COUNT(self.id)    AS _leads,
-			    sale_man.full_name as _sale_man,
-			    coalesce(nullif(message_value, ''), message_key) as _status
+			SELECT
+			  COUNT(self.id) AS _leads,
+			  sale_man.full_name as _sale_man,
+			  status.name as _status
 			FROM
-			    crm_lead as self
-			LEFT JOIN
-	        	auth_user as sale_man ON self.user_id = sale_man.id
-			LEFT JOIN
-	        	meta_select as selection ON selection.name = 'crm.lead.status.select'
-	    	LEFT JOIN
-	    		meta_select_item as selection_item ON selection_item.select_id = selection.id
-            LEFT JOIN
-                meta_translation ON selection_item.select_id = selection.id
-            JOIN
-                auth_user AS _user
-                ON _user.id = :__user__
+			  crm_lead as self
+			  LEFT JOIN auth_user as sale_man ON self.user_id = sale_man.id
+			  LEFT JOIN crm_lead_status as status ON self.lead_status = status.id
+			  JOIN auth_user AS _user ON _user.id = :__user__
 			WHERE
-				sale_man.full_name != '' AND
-				self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
-                AND message_key = selection_item.title AND meta_translation.language = _user.language
-	    	GROUP BY
-			  	_status,
-                _sale_man, message_value, message_key
+			  sale_man.full_name != ''
+			  AND self.created_on BETWEEN DATE(:fromDateT)
+			  AND DATE(:toDateT)
+			GROUP BY
+			  _status,
+			  _sale_man
 			ORDER BY
-			   	_status,
-                _sale_man
+			  _status,
+			  _sale_man
 			  ]]>
     </dataset>
     <category key="_sale_man" type="text" title="Salesperson"/>
@@ -699,8 +683,8 @@
 			    country.name 		AS 	_country
 			FROM
 			  	crm_lead as self
-			LEFT JOIN
-	        	base_country as country ON self.primary_country = country.id
+			LEFT JOIN base_address as address ON self.address = address.id
+			LEFT JOIN base_country as country ON address.country = country.id
 	        WHERE
 	        	self.created_on BETWEEN DATE(:fromDateT) AND DATE(:toDateT)
 	    	GROUP BY

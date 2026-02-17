@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,6 +47,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.data.csv.CSVImporter;
 import com.axelor.db.JPA;
 import com.axelor.dms.db.DMSFile;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
@@ -58,8 +59,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.validation.ValidationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -79,7 +81,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.validation.ValidationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -154,7 +155,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       list.add(item);
     }
 
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    File file = TempFiles.createTempFile(fileName, ".csv").toFile();
 
     log.debug("File located at: {}", file.getPath());
 
@@ -193,7 +194,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
   protected File getConfigXmlFile() {
     File configFile = null;
     try {
-      configFile = MetaFiles.createTempFile("input-config", ".xml").toFile();
+      configFile = TempFiles.createTempFile("input-config", ".xml").toFile();
       InputStream bindFileInputStream =
           this.getClass().getResourceAsStream("/import-configs/" + "csv-config.xml");
       if (bindFileInputStream == null) {
@@ -288,7 +289,6 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
 
     CostSheet costSheet =
         costSheetService.computeCostPrice(billOfMaterial, origin, unitCostCalculation);
-
     UnitCostCalcLine unitCostCalcLine =
         unitCostCalcLineService.createUnitCostCalcLine(
             product, billOfMaterial.getCompany(), level, costSheet);
@@ -620,7 +620,7 @@ public class UnitCostCalculationServiceImpl implements UnitCostCalculationServic
       domain =
           " self.productTypeSelect = 'storable' AND self.productSubTypeSelect IN ("
               + unitCostCalculation.getProductSubTypeSelect()
-              + ") AND (self.defaultBillOfMaterial.company IN ("
+              + ") AND (self.defaultBillOfMaterial.company.id IN ("
               + StringHelper.getIdListString(unitCostCalculation.getCompanySet())
               + ") OR self.id in ("
               + bomsProductsList

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,10 +18,13 @@
  */
 package com.axelor.apps.base.rest;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
+import com.axelor.apps.base.rest.dto.PartnerPostRequest;
 import com.axelor.apps.base.rest.dto.PartnerResponse;
+import com.axelor.apps.base.service.partner.PartnerCreationService;
 import com.axelor.apps.base.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -32,13 +35,14 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @Path("/aos/partner")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -71,5 +75,32 @@ public class PartnerRestController {
         Response.Status.OK,
         I18n.get(ITranslation.PARTNER_ADDRESS_UPDATED),
         new PartnerResponse(partner));
+  }
+
+  @Operation(
+      summary = "Create a partner",
+      tags = {"Partner"})
+  @Path("/")
+  @POST
+  @HttpExceptionHandler
+  public Response createPartner(PartnerPostRequest requestBody) throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().createAccess(Partner.class).readAccess(Partner.class).check();
+
+    Partner partner =
+        Beans.get(PartnerCreationService.class)
+            .createPartner(
+                requestBody.getPartnerTypeSelect(),
+                requestBody.getTitleSelect(),
+                requestBody.getFirstName(),
+                requestBody.getName(),
+                requestBody.fetchMainPartner(),
+                requestBody.getDescription(),
+                requestBody.getIsContact(),
+                requestBody.getIsCustomer(),
+                requestBody.getIsSupplier(),
+                requestBody.getIsProspect());
+
+    return ResponseConstructor.buildCreateResponse(partner, new PartnerResponse(partner));
   }
 }

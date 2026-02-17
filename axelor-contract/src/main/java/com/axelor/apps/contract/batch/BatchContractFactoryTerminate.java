@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.service.ContractInvoicingService;
 import com.axelor.apps.contract.service.ContractService;
 import com.axelor.db.Query;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.format.DateTimeFormatter;
 
 public class BatchContractFactoryTerminate extends BatchContractFactory {
@@ -41,7 +41,7 @@ public class BatchContractFactoryTerminate extends BatchContractFactory {
   }
 
   @Override
-  Query<Contract> prepare(Batch batch) {
+  protected Query<Contract> prepare(Batch batch) {
     return repository
         .all()
         .filter(
@@ -59,7 +59,7 @@ public class BatchContractFactoryTerminate extends BatchContractFactory {
   }
 
   @Override
-  void process(Contract contract) throws AxelorException {
+  protected void process(Contract contract) throws AxelorException {
     service.terminateContract(contract, false, baseService.getTodayDate(contract.getCompany()));
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,7 +31,9 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermPaymentRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.service.PfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermFilterService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCreateService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentToolService;
@@ -40,8 +42,8 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Comparator;
@@ -64,6 +66,8 @@ public class ReconcileInvoiceTermComputationServiceImpl
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoiceTermPaymentRepository invoiceTermPaymentRepository;
   protected InvoiceRepository invoiceRepository;
+  protected InvoiceTermPfpService invoiceTermPfpService;
+  protected PfpService pfpService;
 
   @Inject
   public ReconcileInvoiceTermComputationServiceImpl(
@@ -76,7 +80,9 @@ public class ReconcileInvoiceTermComputationServiceImpl
       CurrencyService currencyService,
       InvoicePaymentRepository invoicePaymentRepository,
       InvoiceTermPaymentRepository invoiceTermPaymentRepository,
-      InvoiceRepository invoiceRepository) {
+      InvoiceRepository invoiceRepository,
+      InvoiceTermPfpService invoiceTermPfpService,
+      PfpService pfpService) {
     this.reconcileCheckService = reconcileCheckService;
     this.currencyScaleService = currencyScaleService;
     this.invoiceTermFilterService = invoiceTermFilterService;
@@ -87,6 +93,8 @@ public class ReconcileInvoiceTermComputationServiceImpl
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoiceTermPaymentRepository = invoiceTermPaymentRepository;
     this.invoiceRepository = invoiceRepository;
+    this.invoiceTermPfpService = invoiceTermPfpService;
+    this.pfpService = pfpService;
   }
 
   @Override
@@ -227,6 +235,7 @@ public class ReconcileInvoiceTermComputationServiceImpl
           .keySet()
           .forEach(
               it -> it.setPfpValidateStatusSelect(invoiceTermPfpValidateStatusSelectMap.get(it)));
+      invoiceTermPfpService.refreshInvoicePfpStatus(invoice);
     }
 
     if (invoicePayment != null) {
@@ -245,19 +254,29 @@ public class ReconcileInvoiceTermComputationServiceImpl
         .orElse(null);
   }
 
-  protected Map<InvoiceTerm, Integer> getInvoiceTermPfpStatus(Invoice invoice) {
+  protected Map<InvoiceTerm, Integer> getInvoiceTermPfpStatus(Invoice invoice)
+      throws AxelorException {
     Map<InvoiceTerm, Integer> map = new HashMap<>();
 
-    if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
-      List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+    if (invoice == null || CollectionUtils.isEmpty(invoice.getInvoiceTermList())) {
+      return map;
+    }
 
-      for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        if (invoiceTerm.getPfpValidateStatusSelect()
-            != InvoiceTermRepository.PFP_STATUS_LITIGATION) {
-          invoiceTerm.setPfpValidateStatusSelect(InvoiceTermRepository.PFP_STATUS_VALIDATED);
-        }
-        map.put(invoiceTerm, invoiceTerm.getPfpValidateStatusSelect());
+    boolean shouldAutoValidate =
+        pfpService.getPfpCondition(invoice)
+            && invoice.getOperationTypeSelect()
+                == InvoiceRepository.OPERATION_TYPE_SUPPLIER_PURCHASE;
+
+    List<InvoiceTerm> invoiceTermList = invoice.getInvoiceTermList();
+
+    for (InvoiceTerm invoiceTerm : invoiceTermList) {
+      int status = invoiceTerm.getPfpValidateStatusSelect();
+      if (shouldAutoValidate
+          && status == InvoiceTermRepository.PFP_STATUS_AWAITING
+          && invoiceTerm.getAmountRemaining().signum() == 0) {
+        status = InvoiceTermRepository.PFP_STATUS_VALIDATED;
       }
+      map.put(invoiceTerm, status);
     }
 
     return map;
@@ -352,13 +371,13 @@ public class ReconcileInvoiceTermComputationServiceImpl
           .collect(Collectors.toList());
     } else {
       List<InvoiceTerm> invoiceTermsToPay;
-      if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
-        invoiceTermsToPay =
-            invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
-
-      } else if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
+      if (CollectionUtils.isNotEmpty(moveLine.getInvoiceTermList())) {
         invoiceTermsToPay =
             invoiceTermService.getInvoiceTermsFromMoveLine(moveLine.getInvoiceTermList());
+
+      } else if (invoice != null && CollectionUtils.isNotEmpty(invoice.getInvoiceTermList())) {
+        invoiceTermsToPay =
+            invoiceTermFilterService.getUnpaidInvoiceTermsFilteredWithoutPfpCheck(invoice);
 
       } else {
         return null;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,10 +19,24 @@
 package com.axelor.apps.hr.service.project;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.project.db.ProjectPlanningTime;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.Sprint;
+import java.util.Set;
 
 public interface ProjectTaskSprintService {
-  String getSprintOnChangeWarning(ProjectTask projectTask);
 
   void createOrMovePlanification(ProjectTask projectTask) throws AxelorException;
+
+  Sprint validateConfigAndSprint(ProjectTask projectTask);
+
+  Set<ProjectPlanningTime> getProjectPlanningTimeOnOldSprint(
+      ProjectTask projectTask, Sprint savedSprint);
+
+  void moveProjectPlanningTime(ProjectPlanningTime projectPlanningTime, ProjectTask projectTask)
+      throws AxelorException;
+
+  void createProjectPlanningTime(ProjectTask projectTask) throws AxelorException;
+
+  Sprint getOldActiveSprint(ProjectTask projectTask);
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.meta.db.MetaSelect;
 import com.axelor.meta.db.MetaSelectItem;
 import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.google.inject.persist.Transactional;
+import jakarta.annotation.Priority;
 import java.lang.invoke.MethodHandles;
 import java.time.ZoneId;
 import java.util.Set;
@@ -39,7 +40,7 @@ public class BaseServerStartListener {
 
   private static final String TIMEZONE_SELECT = "company.timezone.select";
 
-  public void startUpEventListener(@Observes StartupEvent startupEvent) {
+  public void startUpEventListener(@Observes @Priority(value = 10) StartupEvent startupEvent) {
     // Add all timezones
     addTimezoneSelections();
   }

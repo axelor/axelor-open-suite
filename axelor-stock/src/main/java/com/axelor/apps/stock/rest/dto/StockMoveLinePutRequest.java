@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,10 +23,10 @@ import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestStructure;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 public class StockMoveLinePutRequest extends RequestStructure {
   @Min(0)
@@ -45,6 +45,8 @@ public class StockMoveLinePutRequest extends RequestStructure {
 
   @Min(0)
   private Long toStockLocationId;
+
+  private String description;
 
   public StockMoveLinePutRequest() {}
 
@@ -108,5 +110,13 @@ public class StockMoveLinePutRequest extends RequestStructure {
       return ObjectFinder.find(StockLocation.class, toStockLocationId, ObjectFinder.NO_VERSION);
     }
     return null;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 }

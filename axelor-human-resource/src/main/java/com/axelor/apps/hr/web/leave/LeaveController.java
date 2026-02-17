@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -62,8 +62,8 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.rpc.Criteria;
 import com.axelor.utils.db.Wizard;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -180,7 +180,9 @@ public class LeaveController {
           .context(
               "statusSelectList",
               List.of(
-                  LeaveRequestRepository.STATUS_VALIDATED, LeaveRequestRepository.STATUS_REFUSED));
+                  LeaveRequestRepository.STATUS_VALIDATED,
+                  LeaveRequestRepository.STATUS_REFUSED,
+                  LeaveRequestRepository.STATUS_CANCELED));
 
       if (employee == null || !employee.getHrManager()) {
         actionView
@@ -466,7 +468,8 @@ public class LeaveController {
         Beans.get(LeaveReasonDomainService.class).getLeaveReasonDomain(leave.getEmployee()));
   }
 
-  public void computeLeaveToDate(ActionRequest request, ActionResponse response) {
+  public void computeLeaveToDate(ActionRequest request, ActionResponse response)
+      throws AxelorException {
     LeaveRequest leave = request.getContext().asType(LeaveRequest.class);
     response.setValue(
         "leaveDaysToDate", Beans.get(LeaveRequestService.class).getLeaveDaysToDate(leave));

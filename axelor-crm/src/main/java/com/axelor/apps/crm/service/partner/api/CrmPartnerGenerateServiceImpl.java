@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.crm.service.partner.api;
 
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
@@ -25,9 +26,12 @@ import com.axelor.apps.base.db.repo.MainActivityRepository;
 import com.axelor.apps.base.db.repo.PartnerCategoryRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.rest.dto.sirene.PartnerDataResponse;
+import com.axelor.apps.base.service.PartnerService;
+import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.partner.api.PartnerApiFetchService;
 import com.axelor.apps.base.service.partner.api.PartnerGenerateServiceImpl;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.NavigableMap;
@@ -46,31 +50,46 @@ public class CrmPartnerGenerateServiceImpl extends PartnerGenerateServiceImpl {
       CountryRepository countryRepository,
       CityRepository cityRepository,
       PartnerApiFetchService partnerApiFetchService,
-      MainActivityRepository mainActivityRepository) {
+      MainActivityRepository mainActivityRepository,
+      PartnerService partnerService,
+      AppBaseService appBaseService) {
     super(
         partnerRepository,
         partnerCategoryRepository,
         countryRepository,
         cityRepository,
         partnerApiFetchService,
-        mainActivityRepository);
+        mainActivityRepository,
+        partnerService,
+        appBaseService);
   }
 
   @Override
-  protected void setPartnerBasicDetails(Partner partner, PartnerDataResponse partnerData) {
+  protected void setPartnerBasicDetails(Partner partner, PartnerDataResponse partnerData)
+      throws AxelorException {
     super.setPartnerBasicDetails(partner, partnerData);
     Integer sizeSelect = null;
 
     String trancheEffectif = partnerData.getTrancheEffectifsEtablissement();
 
     if (trancheEffectif != null) {
-      sizeSelect = getEmployeeCountCode(Integer.parseInt(trancheEffectif));
+      try {
+        sizeSelect = getEmployeeCountCode(Integer.parseInt(trancheEffectif));
+      } catch (NumberFormatException e) {
+        TraceBackService.trace(e);
+        sizeSelect = null;
+      }
     }
 
     if (sizeSelect == null
         && partnerData.getUniteLegale() != null
         && partnerData.getUniteLegale().getTrancheEffectifsUniteLegale() != null) {
-      sizeSelect = Integer.valueOf(partnerData.getUniteLegale().getTrancheEffectifsUniteLegale());
+      try {
+        sizeSelect = Integer.valueOf(partnerData.getUniteLegale().getTrancheEffectifsUniteLegale());
+      } catch (NumberFormatException e) {
+        TraceBackService.trace(e);
+        sizeSelect = null;
+      }
     }
 
     if (sizeSelect != null) {

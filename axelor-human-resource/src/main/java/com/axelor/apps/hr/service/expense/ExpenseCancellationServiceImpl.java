@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,13 +29,14 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.HRConfig;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.hr.service.KilometricExpenseService;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.i18n.I18n;
 import com.axelor.message.db.Message;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.io.IOException;
 
 @Singleton
@@ -46,6 +47,7 @@ public class ExpenseCancellationServiceImpl implements ExpenseCancellationServic
   protected ExpenseRepository expenseRepository;
   protected MoveRepository moveRepository;
   protected ExpenseFetchMoveService expenseFetchMoveService;
+  protected final KilometricExpenseService kilometricExpenseService;
 
   @Inject
   public ExpenseCancellationServiceImpl(
@@ -54,13 +56,15 @@ public class ExpenseCancellationServiceImpl implements ExpenseCancellationServic
       TemplateMessageService templateMessageService,
       ExpenseRepository expenseRepository,
       MoveRepository moveRepository,
-      ExpenseFetchMoveService expenseFetchMoveService) {
+      ExpenseFetchMoveService expenseFetchMoveService,
+      KilometricExpenseService kilometricExpenseService) {
     this.periodService = periodService;
     this.hrConfigService = hrConfigService;
     this.templateMessageService = templateMessageService;
     this.expenseRepository = expenseRepository;
     this.moveRepository = moveRepository;
     this.expenseFetchMoveService = expenseFetchMoveService;
+    this.kilometricExpenseService = kilometricExpenseService;
   }
 
   @Override
@@ -70,6 +74,7 @@ public class ExpenseCancellationServiceImpl implements ExpenseCancellationServic
     Move move = expenseFetchMoveService.getExpenseMove(expense);
     if (move == null) {
       expense.setStatusSelect(ExpenseRepository.STATUS_CANCELED);
+      kilometricExpenseService.updateExpenseLineKilometricLog(expense);
       expenseRepository.save(expense);
       return;
     }
@@ -78,6 +83,7 @@ public class ExpenseCancellationServiceImpl implements ExpenseCancellationServic
       moveRepository.remove(move);
       expense.setVentilated(false);
       expense.setStatusSelect(ExpenseRepository.STATUS_CANCELED);
+      kilometricExpenseService.updateExpenseLineKilometricLog(expense);
     } catch (Exception e) {
       throw new AxelorException(
           e,

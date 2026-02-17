@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid model="com.axelor.apps.account.db.MoveLineQueryLine" title="Move lines"
     name="move-line-query-line-grid" editable="true">
     <hilite if="isSelected" color="primary"/>
     <button name="selectBtn" onClick="action-move-line-query-line-group-set-isselected"
-      title="Select / Unselect" icon="fa-check-circle" showIf="!isSelected"/>
+      title="Select / Unselect" icon="check-circle-fill" showIf="!isSelected"/>
     <button name="unselectBtn" onClick="action-move-line-query-line-group-set-isselected"
-      title="Select / Unselect" icon="fa-minus-circle" showIf="isSelected"/>
+      title="Select / Unselect" icon="dash-circle-fill" showIf="isSelected"/>
     <field name="moveLine.reconcileGroup" width="120"/>
     <field name="moveLine" readonly="true"/>
     <field name="moveLine.name" width="135"/>
@@ -56,7 +56,7 @@
       <field name="moveLine.amountRemaining" aggregate="sum"
         x-scale="moveLine.companyCurrencyDecimals"/>
       <field name="moveLine.taxLineSet" domain="self.endDate > :date OR self.endDate IS NULL"
-        widget="TagSelect"/>
+        widget="Tags"/>
       <field name="moveLine.analyticDistributionTemplate"
         if="__config__.app.getApp('account')?.getManageAnalyticAccounting()"
         grid-view="analytic-distribution-template-grid"

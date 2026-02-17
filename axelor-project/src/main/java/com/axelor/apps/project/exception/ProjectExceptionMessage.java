@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -110,4 +110,17 @@ public final class ProjectExceptionMessage {
 
   public static final String PROJECT_SPRINTS_OVERLAPPED =
       /*$$(*/ "The project contains overlapping sprints. Please correct the date ranges." /*)*/;
+
+  public static final String PROJECT_CHECK_LIST_ITEM_API_UPDATE_OK =
+      /*$$(*/ "Project check list item has been successfully updated." /*)*/;
+
+  public static final String
+      PROJECT_CHECK_LIST_ITEM_INVALID_PROJECT_PARENT_OR_PROJECT_TASK = /*$$(*/
+          "Project, project task and parent can not be null together." /*)*/;
+
+  public static final String PROJECT_CHECK_LIST_ITEM_INVALID_PARENT = /*$$(*/
+      "Only root level project check list items can have children." /*)*/;
+
+  public static final String PROJECT_CHECK_LIST_ITEM_CHOOSE_PROJECT_OR_TASK = /*$$(*/
+      "Project and project task must not be chosen together." /*)*/;
 }

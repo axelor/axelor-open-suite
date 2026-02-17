@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="crm-reporting-grid" title="Crm reporting"
     model="com.axelor.apps.crm.db.CrmReporting">
@@ -15,12 +15,12 @@
     <field name="fromDate"/>
     <field name="toDate"/>
     <button name="openResultButton" help="Open the list of results"
-      onClick="action-crm-reporting-method-show-results" icon="fa-list"/>
+      onClick="action-crm-reporting-method-show-results" icon="list-task"/>
     <button name="showOpportunitiesButton" help="Show the opportunities"
       onClick="action-crm-reporting-method-show-opportunities"
-      hideIf="typeSelect == 'com.axelor.apps.crm.db.Lead'" icon="fa-list"/>
+      hideIf="typeSelect == 'com.axelor.apps.crm.db.Lead'" icon="list-task"/>
     <button name="showEventsButton" help="Show the events"
-      onClick="action-crm-reporting-method-show-events" icon="fa-list"/>
+      onClick="action-crm-reporting-method-show-events" icon="list-task"/>
   </grid>
 
   <form name="crm-reporting-form" title="Crm reporting"
@@ -28,15 +28,15 @@
     onNew="action-crm-reporting-method-prefill-companySet">
     <panel colSpan="12">
       <field name="typeSelect"/>
-      <field name="companySet" widget="TagSelect"
+      <field name="companySet" widget="Tags"
         if="__config__.app.getApp('base').getEnableMultiCompany()"/>
-      <field name="agencySet" widget="TagSelect"
+      <field name="agencySet" widget="Tags"
         if="__config__.app.getApp('crm').getAgenciesManagement()"/>
-      <field name="teamSet" widget="TagSelect"
+      <field name="teamSet" widget="Tags"
         if="__config__.app.getApp('base').getTeamManagement()"/>
-      <field name="countrySet" widget="TagSelect"/>
-      <field name="industrySectorSet" widget="TagSelect"/>
-      <field name="categorySet" widget="TagSelect"/>
+      <field name="countrySet" widget="Tags"/>
+      <field name="industrySectorSet" widget="Tags"/>
+      <field name="categorySet" widget="Tags"/>
       <field name="fromDate" colSpan="3" requiredIf="toDate == null"/>
       <field name="toDate" colSpan="3" requiredIf="fromDate == null"/>
     </panel>

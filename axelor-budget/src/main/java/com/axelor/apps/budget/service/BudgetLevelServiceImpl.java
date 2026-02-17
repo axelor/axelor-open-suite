@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,9 +37,9 @@ import com.axelor.apps.budget.exception.BudgetExceptionMessage;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -104,21 +104,12 @@ public class BudgetLevelServiceImpl implements BudgetLevelService {
     budgetLevel.setRealizedWithPo(amountByField.get("realizedWithPo"));
     budgetLevel.setTotalAmountAvailable(
         currencyScaleService.getCompanyScaledValue(
-            budgetLevel,
-            amountByField
-                .get("totalAmountExpected")
-                .subtract(amountByField.get("realizedWithPo"))
-                .subtract(amountByField.get("realizedWithNoPo"))
-                .max(BigDecimal.ZERO)));
+            budgetLevel, amountByField.get("totalAmountAvailable")));
     budgetLevel.setTotalFirmGap(amountByField.get("totalFirmGap"));
     budgetLevel.setSimulatedAmount(amountByField.get("simulatedAmount"));
     budgetLevel.setAvailableAmountWithSimulated(
         currencyScaleService.getCompanyScaledValue(
-            budgetLevel,
-            budgetLevel
-                .getTotalAmountAvailable()
-                .subtract(amountByField.get("simulatedAmount"))
-                .max(BigDecimal.ZERO)));
+            budgetLevel, amountByField.get("availableAmountWithSimulated")));
   }
 
   @Override

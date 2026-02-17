@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,7 +31,9 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Map;
 
 public class BudgetLevelController {
 
@@ -89,5 +91,13 @@ public class BudgetLevelController {
     BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
     boolean isHidden = Beans.get(BudgetComputeHiddenDateService.class).isHidden(budgetLevel);
     response.setAttr("updateDatesBtn", "hidden", isHidden);
+  }
+
+  public void computeLevelAmounts(ActionRequest request, ActionResponse response) {
+    BudgetLevel budgetLevel = request.getContext().asType(BudgetLevel.class);
+    Map<String, BigDecimal> amountByField =
+        Beans.get(BudgetToolsService.class)
+            .buildMapWithAmounts(budgetLevel.getBudgetList(), budgetLevel.getBudgetLevelList());
+    response.setValues(amountByField);
   }
 }

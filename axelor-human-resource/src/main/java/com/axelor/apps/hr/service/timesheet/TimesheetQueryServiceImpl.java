@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,9 +24,10 @@ import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
+import com.axelor.apps.hr.service.employee.EmployeeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.db.Query;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -34,17 +35,21 @@ public class TimesheetQueryServiceImpl implements TimesheetQueryService {
 
   protected TimesheetRepository timesheetRepository;
   protected EmployeeRepository employeeRepository;
+  protected EmployeeService employeeService;
 
   @Inject
   public TimesheetQueryServiceImpl(
-      TimesheetRepository timesheetRepository, EmployeeRepository employeeRepository) {
+      TimesheetRepository timesheetRepository,
+      EmployeeRepository employeeRepository,
+      EmployeeService employeeService) {
     this.timesheetRepository = timesheetRepository;
     this.employeeRepository = employeeRepository;
+    this.employeeService = employeeService;
   }
 
   @Override
   public Query<Timesheet> getTimesheetQuery(TimesheetLine timesheetLine) {
-    Company defaultCompany = getDefaultCompany(timesheetLine.getEmployee());
+    Company defaultCompany = employeeService.getDefaultCompany(timesheetLine.getEmployee());
     return getTimesheetQuery(
         timesheetLine.getEmployee(),
         Optional.of(timesheetLine)
@@ -59,22 +64,9 @@ public class TimesheetQueryServiceImpl implements TimesheetQueryService {
     return timesheetRepository
         .all()
         .filter(
-            "self.employee = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate = null))",
+            "self.employee = ?1 AND self.company = ?2 AND (self.statusSelect = 1 OR self.statusSelect = 2) AND ((?3 BETWEEN self.fromDate AND self.toDate) OR (self.toDate IS null))",
             employee,
             company,
             date);
-  }
-
-  @Override
-  public Company getDefaultCompany(Employee employee) {
-    if (employee != null) {
-      employee = employeeRepository.find(employee.getId());
-      if (employee.getMainEmploymentContract() != null) {
-        return employee.getMainEmploymentContract().getPayCompany();
-      } else if (employee.getUser() != null) {
-        return employee.getUser().getActiveCompany();
-      }
-    }
-    return null;
   }
 }

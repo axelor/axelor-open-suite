@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="project-batch-grid" title="Project batches"
     model="com.axelor.apps.project.db.ProjectBatch">
@@ -23,21 +23,21 @@
       <label
         title="The selected statuses will be removed from the allowed status types for these projects and/or categories and, as a result, will no longer be available for associated tasks. In the case of categories, the statuses will only be removed from the tasks if the 'Manage via categories' option is enabled in the project configuration."
         colSpan="12"/>
-      <field name="projectSet" form-view="project-form" grid-view="project-grid"
-        widget="TagSelect" canNew="false" canEdit="false"
+      <field name="projectSet" form-view="project-form" grid-view="project-grid" widget="Tags"
+        canNew="false" canEdit="false"
         domain="self.taskStatusManagementSelect = 2 AND self.projectTaskStatusSet IS NOT EMPTY"/>
-      <field name="taskCategorySet" form-view="project-task-category-form" widget="TagSelect"
+      <field name="taskCategorySet" form-view="project-task-category-form" widget="Tags"
         grid-view="project-task-category-grid" canNew="false" canEdit="false"
         if="__config__.app.getApp('project')?.enableStatusManagementByTaskCategory"
         domain="self.projectTaskStatusSet IS NOT EMPTY"/>
-      <field name="taskStatusSet" widget="TagSelect" canNew="false" canEdit="false"/>
+      <field name="taskStatusSet" widget="Tags" canNew="false" canEdit="false"/>
     </panel>
     <panel name="informationPanel" title="Information">
       <field name="createdOn" title="Created on"/>
       <field name="createdBy" title="Created by" form-view="user-form" grid-view="user-grid"/>
       <field name="description" showTitle="false" colSpan="12"/>
-      <panel-related name="batchListPanel" field="batchList" colSpan="12"
-        form-view="batch-form" grid-view="batch-grid"/>
+      <panel-dashlet name="batchListPanel" colSpan="12"
+        action="action-batch-method-show-batches" canSearch="true"/>
     </panel>
 
     <panel name="actionPanel" sidebar="true">
@@ -61,4 +61,5 @@
   <action-method name="action-project-batch-method-run-batch">
     <call class="com.axelor.apps.project.web.ProjectBatchController" method="runBatch"/>
   </action-method>
+
 </object-views>

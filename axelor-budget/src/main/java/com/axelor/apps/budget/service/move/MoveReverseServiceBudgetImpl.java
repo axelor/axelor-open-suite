@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentCancelService;
+import com.axelor.apps.account.service.payment.paymentvoucher.PaymentVoucherCancelService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
@@ -44,7 +45,7 @@ import com.axelor.apps.hr.service.expense.ExpenseMoveReverseServiceImpl;
 import com.axelor.apps.hr.service.expense.ExpensePaymentService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 
 public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl {
@@ -73,7 +74,8 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
       ExpensePaymentService expensePaymentService,
       AppService appService,
       BudgetDistributionService budgetDistributionService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      PaymentVoucherCancelService paymentVoucherCancelService) {
     super(
         moveCreateService,
         reconcileService,
@@ -92,7 +94,8 @@ public class MoveReverseServiceBudgetImpl extends ExpenseMoveReverseServiceImpl 
         moveInvoiceTermService,
         analyticLineService,
         expensePaymentService,
-        appService);
+        appService,
+        paymentVoucherCancelService);
     this.budgetDistributionService = budgetDistributionService;
     this.appBudgetService = appBudgetService;
   }

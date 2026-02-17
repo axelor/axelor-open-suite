@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,22 +22,24 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.service.KilometricService;
+import com.axelor.apps.hr.service.KilometricExpenseService;
 import com.axelor.apps.hr.service.expense.ExpenseProofFileService;
+import com.axelor.apps.hr.service.expense.expenseline.ExpenseLineComputeService;
 import com.axelor.inject.Beans;
+import jakarta.persistence.PersistenceException;
 import java.math.BigDecimal;
-import javax.persistence.PersistenceException;
 
 public class ExpenseLineHRRepository extends ExpenseLineRepository {
 
   @Override
   public ExpenseLine save(ExpenseLine expenseLine) {
     try {
+      Expense expense = expenseLine.getExpense();
+
       if (expenseLine.getKilometricAllowParam() != null
           && expenseLine.getDistance().compareTo(BigDecimal.ZERO) != 0
           && expenseLine.getExpenseDate() != null) {
         Employee employee = null;
-        Expense expense = expenseLine.getExpense();
 
         if (expense != null && expense.getEmployee() != null) {
           employee = expense.getEmployee();
@@ -47,12 +49,14 @@ public class ExpenseLineHRRepository extends ExpenseLineRepository {
         if (employee != null) {
           employee = Beans.get(EmployeeRepository.class).find(employee.getId());
           expenseLine.setTotalAmount(
-              Beans.get(KilometricService.class).computeKilometricExpense(expenseLine, employee));
+              Beans.get(KilometricExpenseService.class)
+                  .computeKilometricExpense(expenseLine, employee));
         } else {
           expenseLine.setTotalAmount(BigDecimal.ZERO);
         }
       }
 
+      Beans.get(ExpenseLineComputeService.class).setCompanyAmounts(expenseLine, expense);
       Beans.get(ExpenseProofFileService.class).signJustificationFile(expenseLine);
       return super.save(expenseLine);
     } catch (Exception e) {

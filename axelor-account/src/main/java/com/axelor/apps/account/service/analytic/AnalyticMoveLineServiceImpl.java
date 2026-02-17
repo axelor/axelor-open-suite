@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,7 @@ import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountConfigRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AnalyticJournalRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
@@ -48,8 +49,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -166,8 +167,10 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
               ? accountingSituation.getAnalyticDistributionTemplate()
               : null;
 
-    } else if (accountConfig.getAnalyticDistributionTypeSelect()
-        == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+    } else if (List.of(
+            AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT,
+            AccountConfigRepository.DISTRIBUTION_TYPE_FREE)
+        .contains(accountConfig.getAnalyticDistributionTypeSelect())) {
       if (product != null) {
         analyticDistributionTemplate =
             accountManagementServiceAccountImpl.getAnalyticDistributionTemplate(
@@ -253,7 +256,16 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
                 Collectors.groupingBy(
                     AnalyticMoveLine::getAnalyticAxis,
                     Collectors.reducing(
-                        BigDecimal.ZERO, AnalyticMoveLine::getPercentage, BigDecimal::add)))
+                        BigDecimal.ZERO,
+                        analyticMoveLine -> {
+                          BigDecimal percentage = analyticMoveLine.getPercentage();
+                          if (analyticMoveLine.getSubTypeSelect()
+                              == AnalyticMoveLineRepository.SUB_TYPE_REVERSE) {
+                            percentage = percentage.negate();
+                          }
+                          return percentage;
+                        },
+                        BigDecimal::add)))
             .values()
             .stream()
             .allMatch(percentage -> percentage.compareTo(BigDecimal.valueOf(100)) == 0);
@@ -338,8 +350,7 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
-  public AnalyticMoveLine reverse(
-      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
+  public AnalyticMoveLine reverse(AnalyticMoveLine analyticMoveLine) {
 
     MoveLine moveLine = analyticMoveLine.getMoveLine();
     AnalyticMoveLine reverse = analyticMoveLineRepository.copy(analyticMoveLine, false);
@@ -355,17 +366,34 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
 
   @Override
   @Transactional
-  public AnalyticMoveLine reverseAndPersist(
-      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
-    return analyticMoveLineRepository.save(reverse(analyticMoveLine, analyticAccount));
+  public AnalyticMoveLine reverseAndPersist(AnalyticMoveLine analyticMoveLine) {
+    return analyticMoveLineRepository.save(reverse(analyticMoveLine));
   }
 
   @Override
   @Transactional
   public AnalyticMoveLine generateAnalyticMoveLine(
-      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount) {
+      AnalyticMoveLine analyticMoveLine, AnalyticAccount analyticAccount, BigDecimal percentage) {
 
     AnalyticMoveLine newAnalyticmoveLine = analyticMoveLineRepository.copy(analyticMoveLine, false);
+    if (percentage.compareTo(new BigDecimal(100)) != 0) {
+      newAnalyticmoveLine.setPercentage(
+          newAnalyticmoveLine
+              .getPercentage()
+              .multiply(percentage)
+              .divide(
+                  new BigDecimal(100),
+                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                  RoundingMode.HALF_UP));
+      newAnalyticmoveLine.setAmount(
+          newAnalyticmoveLine
+              .getAmount()
+              .multiply(percentage)
+              .divide(
+                  new BigDecimal(100),
+                  AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
+                  RoundingMode.HALF_UP));
+    }
 
     MoveLine moveLine = analyticMoveLine.getMoveLine();
     newAnalyticmoveLine.setOriginAnalyticMoveLine(analyticMoveLine);
@@ -399,9 +427,20 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
   }
 
   @Override
+  public String getAnalyticJournalDomain(Company company) {
+    if (company == null) {
+      return "self.id IN (0)";
+    }
+    return String.format(
+        "self.statusSelect = %s AND (self.company is null OR self.company.id = %s)",
+        AnalyticJournalRepository.STATUS_ACTIVE, company.getId());
+  }
+
+  @Override
   public void setAnalyticCurrency(Company company, AnalyticMoveLine analyticMoveLine) {
     if (analyticMoveLine != null) {
-      analyticMoveLine.setCurrency(Optional.of(company).map(Company::getCurrency).orElse(null));
+      analyticMoveLine.setCurrency(
+          Optional.ofNullable(company).map(Company::getCurrency).orElse(null));
     }
   }
 }

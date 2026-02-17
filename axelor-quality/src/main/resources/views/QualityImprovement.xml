@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="quality-improvement-grid" title="Quality improvements"
     model="com.axelor.apps.quality.db.QualityImprovement" orderBy="sequence">
@@ -11,6 +11,18 @@
     <field name="qiStatus"/>
     <field name="gravityTypeSelect"/>
     <field name="analysisMethod"/>
+  </grid>
+
+  <grid name="quality-improvement-partner-grid" title="Quality improvements"
+    model="com.axelor.apps.quality.db.QualityImprovement" orderBy="sequence">
+    <field name="sequence"/>
+    <field name="company"/>
+    <field name="type"/>
+    <field name="qiStatus"/>
+    <field name="gravityTypeSelect"/>
+    <field name="analysisMethod"/>
+    <button name="openInNewTabBtn" onClick="action-quality-improvement-view-open-in-new-tab"
+      title="Open in new tab" icon="tab"/>
   </grid>
 
   <form name="quality-improvement-form" title="Quality improvement"
@@ -72,6 +84,14 @@
                 onChange="action-quality-improvement-group-supplier-purchase-order-line-on-change"
                 domain="self.purchaseOrder = :supplierPurchaseOrder"/>
             </panel>
+            <panel name="controlPanel" title="Control" colSpan="12">
+              <field name="qualityControl" hideIf="$get('qi.type') == 2"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+              <field name="sourceQIList" widget="tag-select" canNew="false" colSpan="6"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by "/>
+              <field name="controlEntry" colSpan="6"
+                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
+            </panel>
             <panel title="Interne" name="intPanel" colSpan="12">
               <field name="detectedByInternal"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"
@@ -82,17 +102,6 @@
               <field name="writtenBy"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
               <field name="writtenOn"/>
-              <field name="manufOrder" hideIf="$get('qi.type') == 2"
-                onChange="action-quality-improvement-group-manuf-order-on-change"/>
-              <field name="operationOrder" showIf="manufOrder != null"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by"
-                onSelect="action-quality-improvement-attrs-set-operation-order-domain"/>
-              <field name="toConsumeProdProduct" showIf="manufOrder != null"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by"
-                onSelect="action-quality-improvement-attrs-set-to-consume-prod-product-domain"/>
-              <field name="consumedProdProduct" showIf="manufOrder != null"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by"
-                onSelect="action-quality-improvement-attrs-set-consume-prod-product-domain"/>
               <field name="product" hideIf="$get('qi.type') == 2"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
               <field name="project"
@@ -101,10 +110,6 @@
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
               <field name="nonConformingQuantity" hideIf="$get('qi.type') == 2"
                 onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-              <field name="qualityControl" hideIf="$get('qi.type') == 2"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by"/>
-              <field name="sourceQIList" widget="tag-select" canNew="false" colSpan="6"
-                onChange="action-quality-improvement-method-set-written-on-and-written-by "/>
             </panel>
             <panel name="hiddenPanel" hidden="true">
               <field name="qi"/>
@@ -128,7 +133,8 @@
               <field name="$dummyStockMoveLine" type="many-to-one"
                 x-target="com.axelor.apps.stock.db.StockMoveLine"/>
               <field name="$dummyManufOrder" type="many-to-one"
-                x-target="com.axelor.apps.production.db.ManufOrder"/>
+                x-target="com.axelor.apps.production.db.ManufOrder" if-module="axelor-production"
+                if="__config__.app.isApp('production')"/>
             </panel>
           </editor>
         </field>
@@ -249,6 +255,21 @@
       <button name="sendDistributionBtn" title="Send the distributions"
         onClick="action-quality-improvement-method-send-qi-decision-distributions"
         showIf="$qiDecisionDistributionMessageTemplate"/>
+    </panel>
+  </form>
+
+  <form name="qi-create-wizard-form" title="Create quality improvement"
+    model="com.axelor.utils.db.Wizard" canNew="false" canSave="false" canDelete="false"
+    canArchive="false">
+    <panel name="mainPanel" colSpan="12">
+      <field name="type" type="integer" title="Type" selection="quality.qi.type.select"
+        required="true" x-dirty="false"/>
+      <field name="qiDetection" title="Detection"
+        target="com.axelor.apps.quality.db.QIDetection" type="many-to-one"
+        form-view="qi-detection-form" grid-view="qi-detection-grid" showIf="type" required="true"/>
+      <spacer colSpan="6" x-dirty="false"/>
+      <button name="createQiBtn" title="Create quality improvement"
+        onClick="action-method-quality-improvement-create-qi" showIf="type &amp;&amp; qiDetection"/>
     </panel>
   </form>
 
@@ -388,7 +409,7 @@
 
   <action-attrs name="action-qi-identification-attrs-set-detected-by-internal-domain">
     <attribute name="domain" for="detectedByInternal"
-      expr="eval: &quot; self.isContact = true AND ${qi?.company?.id} MEMBER OF self.companySet &quot;"
+      expr="eval: &quot; self.isContact = true AND ${qi?.company?.id} IN (SELECT c.id FROM self.companySet c) &quot;"
       if="qi"/>
   </action-attrs>
 
@@ -408,31 +429,6 @@
     <attribute name="domain" for="stockMoveLine"
       expr="eval: &quot; self.purchaseOrderLine = :supplierPurchaseOrderLine &quot;"
       if="qi?.qiDetection?.origin == 1"/>
-  </action-attrs>
-
-  <action-attrs name="action-quality-improvement-attrs-set-operation-order-domain">
-    <attribute name="domain" for="operationOrder"
-      expr="eval: &quot; self.id IN (${manufOrder?.operationOrderList?.collect{it.id}.join(',')}) &quot;"
-      if="!manufOrder.operationOrderList.isEmpty()"/>
-    <attribute name="domain" for="operationOrder"
-      expr="eval: &quot; self.id IN (0) &quot;" if="manufOrder.operationOrderList.isEmpty()"/>
-  </action-attrs>
-
-  <action-attrs
-    name="action-quality-improvement-attrs-set-to-consume-prod-product-domain">
-    <attribute name="domain" for="toConsumeProdProduct"
-      expr="eval: &quot; self.id IN (${manufOrder?.toConsumeProdProductList?.collect{it.id}.join(',')}) &quot;"
-      if="!manufOrder.toConsumeProdProductList.isEmpty()"/>
-    <attribute name="domain" for="toConsumeProdProduct"
-      expr="eval: &quot; self.id IN (0) &quot;" if="manufOrder.toConsumeProdProductList.isEmpty()"/>
-  </action-attrs>
-
-  <action-attrs name="action-quality-improvement-attrs-set-consume-prod-product-domain">
-    <attribute name="domain" for="consumeProdProduct"
-      expr="eval: &quot; self.id IN (${manufOrder?.consumedStockMoveLineList?.collect{it.id}.join(',')}) &quot;"
-      if="!manufOrder.consumedStockMoveLineList.isEmpty()"/>
-    <attribute name="domain" for="consumeProdProduct"
-      expr="eval: &quot; self.id IN (0) &quot;" if="manufOrder.consumedStockMoveLineList.isEmpty()"/>
   </action-attrs>
 
   <action-group name="action-quality-improvement-group-on-load">
@@ -502,13 +498,6 @@
     <action name="action-quality-improvement-attrs-set-dummy-field-values"/>
   </action-group>
 
-  <action-group name="action-quality-improvement-group-manuf-order-on-change">
-    <action name="action-quality-improvement-validate-manuf-order-on-change"/>
-    <action name="action-quality-improvement-record-manuf-order-on-change-set-values"/>
-    <action name="action-quality-improvement-method-set-written-on-and-written-by"/>
-    <action name="action-quality-improvement-attrs-set-dummy-field-values"/>
-  </action-group>
-
   <action-attrs name="action-quality-improvement-attrs-set-dummy-field-values">
     <attribute name="value" for="$dummyCustomerPartner" expr="eval: customerPartner"
       if="customerPartner != null"/>
@@ -526,8 +515,6 @@
       if="stockMove != null"/>
     <attribute name="value" for="$dummyStockMoveLine" expr="eval: stockMoveLine"
       if="stockMoveLine != null"/>
-    <attribute name="value" for="$dummyManufOrder" expr="eval: manufOrder"
-      if="manufOrder != null"/>
   </action-attrs>
 
   <action-attrs name="action-quality-improvement-attrs-set-dummy-field-values-onload">
@@ -551,8 +538,6 @@
       expr="eval: qiIdentification.stockMove" if="qiIdentification.stockMove != null"/>
     <attribute name="value" for="qiIdentification.$dummyStockMoveLine"
       expr="eval: qiIdentification.stockMoveLine" if="qiIdentification.stockMoveLine != null"/>
-    <attribute name="value" for="qiIdentification.$dummyManufOrder"
-      expr="eval: qiIdentification.manufOrder" if="qiIdentification.manufOrder != null"/>
   </action-attrs>
 
   <action-attrs name="action-quality-improvement-attrs-on-validate-set-field-values">
@@ -567,7 +552,6 @@
       expr="eval: dummySupplierPurchaseOrderLine"/>
     <attribute name="value" for="stockMove" expr="eval: dummyStockMove"/>
     <attribute name="value" for="stockMoveLine" expr="eval: dummyStockMoveLine"/>
-    <attribute name="value" for="manufOrder" expr="eval: dummyManufOrder"/>
   </action-attrs>
 
   <action-validate
@@ -625,13 +609,6 @@
   <action-validate name="action-quality-improvement-validate-stock-move-on-change">
     <alert message="The following fields will be reset: stock move line , continue ?"
       if="stockMoveLine != null"
-      action="action-quality-improvement-attrs-on-validate-set-field-values"/>
-  </action-validate>
-
-  <action-validate name="action-quality-improvement-validate-manuf-order-on-change">
-    <alert
-      message="The following fields will be reset: manufacturing operation line, manuf Order product to consume, consummed manuf order product , continue ?"
-      if="operationOrder != null || toConsumeProdProduct != null || consummedProdProduct != null"
       action="action-quality-improvement-attrs-on-validate-set-field-values"/>
   </action-validate>
 
@@ -693,14 +670,6 @@
     name="action-quality-improvement-record-stock-move-on-change-set-values"
     model="com.axelor.apps.quality.db.QIIdentification">
     <field name="stockMoveLine" expr="eval: null"/>
-  </action-record>
-
-  <action-record
-    name="action-quality-improvement-record-manuf-order-on-change-set-values"
-    model="com.axelor.apps.quality.db.QIIdentification">
-    <field name="operationOrder" expr="eval: null"/>
-    <field name="toConsumeProdProduct" expr="eval: null"/>
-    <field name="consummedProdProduct" expr="eval: null"/>
   </action-record>
 
   <action-record
@@ -861,6 +830,11 @@
       method="generateQIDecisionDistributions"/>
   </action-method>
 
+  <action-method name="action-method-quality-improvement-create-qi">
+    <call class="com.axelor.apps.quality.web.QualityImprovementController"
+      method="createQualityImprovement"/>
+  </action-method>
+
   <action-validate
     name="action-quality-improvement-validate-lines-selected-for-send">
     <error message="Please select at least a line to send a distribution."
@@ -890,5 +864,12 @@
     <attribute name="value" for="$qiDecisionDistributionList"
       expr="eval: _qiDecisionDistributionList"/>
   </action-attrs>
+
+  <action-view name="action-quality-improvement-view-open-in-new-tab"
+    title="Quality Improvement" model="com.axelor.apps.quality.db.QualityImprovement">
+    <view type="form" name="quality-improvement-form"/>
+    <view-param name="popup" value="false"/>
+    <context name="_showRecord" expr="eval: id"/>
+  </action-view>
 
 </object-views>

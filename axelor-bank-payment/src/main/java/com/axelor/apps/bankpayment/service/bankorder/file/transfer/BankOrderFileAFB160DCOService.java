@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,7 +33,7 @@ import com.axelor.apps.base.service.PartnerService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
@@ -176,7 +176,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
       senderRecordBuilder.append(
           cfonbToolService.createZone(
               I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D3),
-              "30004",
+              senderBankDetails.getBankCode(),
               cfonbToolService.STATUS_MANDATORY,
               cfonbToolService.FORMAT_NUMERIC,
               5));
@@ -194,7 +194,7 @@ public class BankOrderFileAFB160DCOService extends BankOrderFileService {
               I18n.get(BankOrderFileZoneName.BOF_AFB_160_DCO_SENDER_RECORD_ZONE_D5),
               senderBankDetails.getAccountNbr(),
               cfonbToolService.STATUS_MANDATORY,
-              cfonbToolService.FORMAT_NUMERIC,
+              cfonbToolService.FORMAT_ALPHA_NUMERIC,
               11));
       // Area E: reserved
       senderRecordBuilder.append(

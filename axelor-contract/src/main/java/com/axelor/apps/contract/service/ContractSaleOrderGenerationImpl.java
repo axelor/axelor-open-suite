@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,8 +31,8 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class ContractSaleOrderGenerationImpl implements ContractSaleOrderGeneration {
 
@@ -66,7 +66,7 @@ public class ContractSaleOrderGenerationImpl implements ContractSaleOrderGenerat
 
     SaleOrder saleOrder =
         saleOrderGeneratorService.createSaleOrder(
-            clientPartner, contract.getCompany(), null, contract.getCurrency(), null);
+            clientPartner, null, contract.getCompany(), null, contract.getCurrency(), null);
 
     saleOrder.setInvoicedPartner(contract.getInvoicedPartner());
     saleOrder.setPaymentMode(contract.getCurrentContractVersion().getPaymentMode());

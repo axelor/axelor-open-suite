@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,15 +23,21 @@ import com.axelor.apps.base.db.ImportConfiguration;
 import com.axelor.apps.base.db.ImportHistory;
 import com.axelor.apps.base.db.repo.ImportConfigurationRepository;
 import com.axelor.apps.base.service.imports.importer.FactoryImporter;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.Map;
 
 public class ImportService {
 
-  @Inject private FactoryImporter factoryImporter;
+  protected FactoryImporter factoryImporter;
+  protected ImportConfigurationRepository importConfigRepo;
 
-  @Inject private ImportConfigurationRepository importConfigRepo;
+  @Inject
+  public ImportService(
+      FactoryImporter factoryImporter, ImportConfigurationRepository importConfigRepo) {
+    this.factoryImporter = factoryImporter;
+    this.importConfigRepo = importConfigRepo;
+  }
 
   public ImportHistory run(ImportConfiguration configuration) throws AxelorException, IOException {
 

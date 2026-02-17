@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -38,15 +38,15 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.Query;
+import jakarta.persistence.TemporalType;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.util.Date;
 import java.util.List;
-import javax.persistence.Query;
-import javax.persistence.TemporalType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -94,11 +94,11 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "FROM account_move_line AS ml  "
                     + "LEFT OUTER JOIN account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN account_move AS move ON (ml.move = move.id) "
-                    + "WHERE ml.partner = :partner AND move.company = :company "
-                    + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance IS TRUE "
+                    + "WHERE ml.partner = :partnerId AND move.company = :companyId "
+                    + "AND move.ignore_in_accounting_ok IN (false, null) AND account.use_for_partner_balance IS TRUE "
                     + "AND move.status_select IN (:statusValidated, :statusDaybook) AND ABS(ml.amount_remaining) > 0 ")
-            .setParameter("partner", partner)
-            .setParameter("company", company)
+            .setParameter("partnerId", partner.getId())
+            .setParameter("companyId", company.getId())
             .setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED)
             .setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
 
@@ -138,9 +138,9 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "LEFT OUTER JOIN account_account AS account ON ml.account = account.id "
                     + "LEFT OUTER JOIN account_move AS move ON ml.move = move.id "
                     + "WHERE term.due_date IS NOT NULL AND term.due_date <= :todayDate "
-                    + "AND ml.partner = :partner AND move.company = :company "
-                    + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
-                    + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance IS TRUE "
+                    + "AND ml.partner = :partnerId AND move.company = :companyId "
+                    + (tradingName != null ? "AND move.trading_name = :tradingNameId " : "")
+                    + "AND move.ignore_in_accounting_ok IN (false, null) AND account.use_for_partner_balance IS TRUE "
                     + "AND move.status_select IN (:statusValidated, :statusDaybook) AND ABS(ml.amount_remaining) > 0 ")
             .setParameter(
                 "todayDate",
@@ -151,13 +151,13 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                         .atZone(ZoneOffset.UTC)
                         .toInstant()),
                 TemporalType.DATE)
-            .setParameter("partner", partner)
-            .setParameter("company", company)
+            .setParameter("partnerId", partner.getId())
+            .setParameter("companyId", company.getId())
             .setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED)
             .setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
 
     if (tradingName != null) {
-      query = query.setParameter("tradingName", tradingName);
+      query = query.setParameter("tradingNameId", tradingName.getId());
     }
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
@@ -236,11 +236,11 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                     + "LEFT OUTER JOIN account_account AS account ON (ml.account = account.id) "
                     + "LEFT OUTER JOIN account_move AS move ON (ml.move = move.id) "
                     + "LEFT JOIN account_invoice AS invoice ON (move.invoice = invoice.id) "
-                    + "WHERE ml.partner = :partner AND move.company = :company "
-                    + (tradingName != null ? "AND move.trading_name = :tradingName " : "")
-                    + "AND move.ignore_in_accounting_ok IN ('false', null) AND account.use_for_partner_balance = 'true'"
+                    + "WHERE ml.partner = :partnerId AND move.company = :companyId "
+                    + (tradingName != null ? "AND move.trading_name = :tradingNameId " : "")
+                    + "AND move.ignore_in_accounting_ok IN (false, null) AND account.use_for_partner_balance = true "
                     + "AND (move.status_select = :statusValidated OR move.status_select = :statusDaybook) AND ABS(ml.amount_remaining) > 0 "
-                    + "AND (invoice IS NULL OR invoice.debt_recovery_blocking_ok IN ('false', null)) ")
+                    + "AND (invoice IS NULL OR invoice.debt_recovery_blocking_ok IN (false, null)) ")
             .setParameter("mailTransitTime", mailTransitTime)
             .setParameter(
                 "todayDate",
@@ -251,13 +251,13 @@ public class AccountCustomerServiceImpl implements AccountCustomerService {
                         .atZone(ZoneOffset.UTC)
                         .toInstant()),
                 TemporalType.DATE)
-            .setParameter("partner", partner)
-            .setParameter("company", company)
+            .setParameter("partnerId", partner.getId())
+            .setParameter("companyId", company.getId())
             .setParameter("statusValidated", MoveRepository.STATUS_ACCOUNTED)
             .setParameter("statusDaybook", MoveRepository.STATUS_DAYBOOK);
 
     if (tradingName != null) {
-      query = query.setParameter("tradingName", tradingName);
+      query = query.setParameter("tradingNameId", tradingName.getId());
     }
     BigDecimal balance = (BigDecimal) query.getSingleResult();
 
