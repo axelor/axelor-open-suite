@@ -30,7 +30,8 @@
         <field name="partnerTypeSelect"/>
         <field name="partnerQuery" colSpan="12" showIf="partnerQueryTypeSelect == 1"/>
         <field name="partnerFilterList" colSpan="12" layout="table"
-          showIf="partnerQueryTypeSelect == 0">
+          showIf="partnerQueryTypeSelect == 0" grid-view="marketing-studio-filter-grid"
+          form-view="marketing-studio-filter-form">
           <editor x-show-titles="false">
             <panel name="metaFieldPanel">
               <field name="metaField"
@@ -82,7 +83,8 @@
         <field name="leadQueryTypeSelect"/>
         <field name="leadQuery" colSpan="12" showIf="leadQueryTypeSelect == 1"/>
         <field name="leadFilterList" colSpan="12" layout="table"
-          showIf="leadQueryTypeSelect == 0">
+          showIf="leadQueryTypeSelect == 0" grid-view="marketing-studio-filter-grid"
+          form-view="marketing-studio-filter-form">
           <editor x-show-titles="false">
             <panel name="metaFieldPanel">
               <field name="metaField" onSelect="action-target-list-lead-filters-field-domain"
