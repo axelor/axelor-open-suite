@@ -23,7 +23,7 @@
         onChange="action-advanced-export-validate-export-limit" required="true"/>
       <field name="queryFetchSize" colSpan="4"
         onChange="action-advanced-export-validate-query-fetch-size" required="true"/>
-      <spacer colSpan="4"/>
+      <field name="language" colSpan="4"/>
       <field name="includeArchivedRecords" colSpan="4"/>
       <field name="useTechnicalFieldName" colSpan="4 "/>
       <label name="technicalHelperLabel"
