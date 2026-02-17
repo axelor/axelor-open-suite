@@ -58,6 +58,7 @@ import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.config.SupplyChainConfigService;
 import com.axelor.common.StringUtils;
+import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
@@ -292,6 +293,9 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     }
     if (qualityStockMove.getStockMoveLineList() != null
         && !qualityStockMove.getStockMoveLineList().isEmpty()) {
+
+      // Use merge() to re-attach all detached associations before planning.
+      qualityStockMove = JPA.em().merge(qualityStockMove);
       stockMoveService.plan(qualityStockMove);
       stockMoveIdList.add(qualityStockMove.getId());
     }
