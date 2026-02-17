@@ -729,7 +729,7 @@ public class DataBackupCreateService {
 
     switch (propertyTypeStr) {
       case "LONG":
-        if (updateImportId) {
+        if (updateImportId && property.getName().equals("id")) {
           return ((Model) dataObject).getImportId();
         }
         return value.toString();
