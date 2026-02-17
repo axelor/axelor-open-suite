@@ -556,8 +556,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {
-
-      stockMoveService.cancel(stockMove);
+      stockMoveService.cancel(JpaModelHelper.ensureManaged(stockMove));
     }
   }
 
