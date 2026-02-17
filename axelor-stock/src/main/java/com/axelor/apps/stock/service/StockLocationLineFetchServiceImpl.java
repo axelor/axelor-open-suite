@@ -29,6 +29,7 @@ import com.axelor.utils.helpers.StringHelper;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 public class StockLocationLineFetchServiceImpl implements StockLocationLineFetchService {
 
@@ -169,5 +170,23 @@ public class StockLocationLineFetchServiceImpl implements StockLocationLineFetch
     String query = this.getStockLocationLineListForAProduct(productId, companyId, stockLocationId);
     query += " AND self.requestedReservedQty > 0";
     return query;
+  }
+
+  @Override
+  public BigDecimal getTrackingNumberAvailableQtyIncludingSubLocations(
+      StockLocation stockLocation, TrackingNumber trackingNumber) {
+    BigDecimal availableQty = getTrackingNumberAvailableQty(stockLocation, trackingNumber);
+    List<StockLocation> subStockLocations =
+        JPA.all(StockLocation.class)
+            .filter("self.parentStockLocation = :stockLocation")
+            .bind("stockLocation", stockLocation)
+            .fetch();
+    if (CollectionUtils.isEmpty(subStockLocations)) {
+      return availableQty;
+    }
+    for (StockLocation location : subStockLocations) {
+      availableQty = availableQty.add(getTrackingNumberAvailableQty(location, trackingNumber));
+    }
+    return availableQty;
   }
 }
