@@ -212,6 +212,8 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
       Integer inventoryStatus,
       StockLocation stockLocation,
       L10n dateFormat) {
+
+    int digitForQty = appBaseService.getNbDecimalDigitForQty();
     String[] item = new String[11];
     item[0] = Optional.ofNullable(inventoryLine.getProduct()).map(Product::getName).orElse("");
     item[1] = Optional.ofNullable(inventoryLine.getProduct()).map(Product::getCode).orElse("");
@@ -226,10 +228,10 @@ public class InventoryImportExportServiceImpl implements InventoryImportExportSe
         Optional.ofNullable(inventoryLine.getTrackingNumber())
             .map(TrackingNumber::getTrackingNumberSeq)
             .orElse("");
-    item[5] = inventoryLine.getCurrentQty().toString();
+    item[5] = inventoryLine.getCurrentQty().setScale(digitForQty, RoundingMode.HALF_UP).toString();
 
     item[6] =
-        Optional.ofNullable(inventoryLine.getRealQty())
+        Optional.of(inventoryLine.getRealQty().setScale(digitForQty, RoundingMode.HALF_UP))
             .filter(
                 qty ->
                     inventoryStatus != InventoryRepository.STATUS_DRAFT
