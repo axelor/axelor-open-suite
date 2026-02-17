@@ -24,8 +24,6 @@ import com.axelor.apps.account.db.repo.AccountAccountRepository;
 import com.axelor.apps.account.db.repo.AccountManagementAccountRepository;
 import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.AccountingBatchAccountRepository;
-import com.axelor.apps.account.db.repo.AccountingBatchRepository;
 import com.axelor.apps.account.db.repo.AccountingReportManagementRepository;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineMngtRepository;
@@ -44,8 +42,6 @@ import com.axelor.apps.account.db.repo.FixedAssetLineManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetManagementRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
-import com.axelor.apps.account.db.repo.InvoiceBatchAccountRepository;
-import com.axelor.apps.account.db.repo.InvoiceBatchRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineManagementRepository;
 import com.axelor.apps.account.db.repo.InvoiceLineRepository;
 import com.axelor.apps.account.db.repo.InvoiceManagementRepository;
@@ -565,10 +561,6 @@ public class AccountModule extends AxelorModule {
     bind(BankDetailsServiceImpl.class).to(BankDetailsServiceAccountImpl.class);
 
     bind(MoveLineExportService.class).to(MoveLineExportServiceImpl.class);
-
-    bind(AccountingBatchRepository.class).to(AccountingBatchAccountRepository.class);
-
-    bind(InvoiceBatchRepository.class).to(InvoiceBatchAccountRepository.class);
 
     bind(AccountRepository.class).to(AccountAccountRepository.class);
 
