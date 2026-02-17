@@ -414,7 +414,7 @@
 "Technical type","Type technique",,
 "Templates","Modèles",,
 "Testing server date","Date de mise en recette",,
-"The company %s doesn't have any configured sequence for Project","La société % n'a pas de société configurée pour les projets.",,
+"The company %s doesn't have any configured sequence for Project","La société %s n'a pas de société configurée pour les projets.",,
 "The parent task creates a loop in the task tree.","La tâche parente crée une boucle dans l'arborescence des tâches.",,
 "The project contains overlapping sprints. Please correct the date ranges.","Le projet contient des sprints sur des dates similaires. Veuillez corriger les intervalles de dates.",,
 "The selectable projects are those for which the 'Manage via project' option is enabled.","Les projets sélectionnables sont ceux pour lesquels l'option 'Gérer via le projet' est activée.",,
