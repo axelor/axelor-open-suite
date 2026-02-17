@@ -229,6 +229,31 @@ public class ExpenseController {
     response.setView(actionView.map());
   }
 
+  public void allExpense(ActionRequest request, ActionResponse response) {
+
+    User user = AuthUtils.getUser();
+    Employee employee = user.getEmployee();
+
+    ActionViewBuilder actionView =
+        ActionView.define(I18n.get("All Expenses"))
+            .model(Expense.class.getName())
+            .add("grid", "expense-grid")
+            .add("form", "expense-form")
+            .param("search-filters", "expense-filters");
+
+    actionView
+        .domain("self.company = :_activeCompany")
+        .context("_activeCompany", user.getActiveCompany());
+
+    if (employee == null || !employee.getHrManager()) {
+      actionView
+          .domain(actionView.get().getDomain() + " AND self.employee.managerUser = :_user")
+          .context("_user", user);
+    }
+
+    response.setView(actionView.map());
+  }
+
   public void showSubordinateExpenses(ActionRequest request, ActionResponse response) {
 
     User user = AuthUtils.getUser();

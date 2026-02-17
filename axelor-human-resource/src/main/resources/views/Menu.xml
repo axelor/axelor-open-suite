@@ -530,6 +530,13 @@
     <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="historicExpense"/>
   </action-method>
 
+  <menuitem name="expense-all" parent="expense-root" title="All Expenses"
+    action="all.expense" order="450"/>
+
+  <action-method name="all.expense">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="allExpense"/>
+  </action-method>
+
   <menuitem name="expense-root-conf" parent="expense-root" title="Configuration"
     icon="gear" order="500"/>
 
