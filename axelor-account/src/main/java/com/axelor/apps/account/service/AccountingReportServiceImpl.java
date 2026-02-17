@@ -416,7 +416,13 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
       if (typeSelect >= AccountingReportRepository.REPORT_PARNER_GENERAL_LEDGER
           && accountingReport.getDisplayOnlyNotCompletelyLetteredMoveLines()) {
-        this.addParams("self.amountRemaining != 0");
+        this.addParams(
+            "(self.amountRemaining != 0 "
+                + "OR (self.reconcileGroup IS NOT NULL "
+                + "AND EXISTS ("
+                + "SELECT 1 FROM MoveLine ml2 "
+                + "WHERE ml2.reconcileGroup = self.reconcileGroup "
+                + "AND ml2.amountRemaining != 0)))");
       }
     }
 
