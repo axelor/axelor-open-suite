@@ -410,5 +410,19 @@
     <bind to="shippingCostsProduct" column="shippingCostsProduct_importId"
       search="self.importId = :shippingCostsProduct_importId"/>
   </input>
+
+  <input file="base_productFamily.csv" separator=";"
+    type="com.axelor.apps.base.db.ProductFamily" search="self.importId = :importId">
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.checkUniqueConstraint('com.axelor.apps.base.db.ProductFamily', 'importId', importId, 'code', code)"
+      check-message="Code must be unique"/>
+    <bind column="code" to="code"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(code)"
+      check-message="Family code must not be null"/>
+    <bind column="name" to="name"
+      check="com.axelor.utils.helpers.ImportHelper.isValuePresent(name)"
+      check-message="Family name must not be null"/>
+  </input>
+
 </csv-inputs>
 
