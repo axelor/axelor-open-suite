@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+
+  <module name="production" package="com.axelor.apps.production.db"/>
+
+  <entity name="DepreciationRateConfig">
+
+    <!-- Configuration can be at 3 levels: product, product category, or stock category -->
+    <many-to-one name="product" ref="com.axelor.apps.base.db.Product" title="Product"
+      help="Specific product for this depreciation rate configuration"/>
+
+    <many-to-one name="productCategory" ref="com.axelor.apps.base.db.ProductCategory"
+      title="Product category" help="Product category for this depreciation rate configuration"/>
+
+    <integer name="stockCategorySelect" title="Rotation stock category"
+      selection="production.product.stock.category.select"
+      help="Stock rotation category (fast movers, slow movers, etc.)"/>
+
+    <!-- Bracket for slow/fast movers (in days) -->
+    <integer name="greaterBracket" title="Greater bracket (included)"
+      help="Stock coverage bracket in days (for stock category configs). Applies when coverage &lt;= this value."/>
+
+    <!-- Rate bounds -->
+    <decimal name="minRate" title="Min. rate" precision="20" scale="10"
+      help="Minimum acceptable depreciation rate"/>
+
+    <decimal name="maxRate" title="Max. rate" precision="20" scale="10"
+      help="Maximum acceptable depreciation rate"/>
+
+    <decimal name="defaultRate" title="Default rate" precision="20" scale="10"
+      help="Default depreciation rate to apply"/>
+
+    <track>
+      <field name="product"/>
+      <field name="productCategory"/>
+      <field name="stockCategorySelect"/>
+      <field name="greaterBracket"/>
+      <field name="minRate"/>
+      <field name="maxRate"/>
+      <field name="defaultRate"/>
+    </track>
+
+  </entity>
+
+</domain-models>

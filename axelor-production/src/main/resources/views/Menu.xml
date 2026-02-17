@@ -250,6 +250,22 @@
     model="com.axelor.apps.production.db.UnitCostCalculation">
     <view type="grid" name="cost-calculations-grid"/>
     <view type="form" name="cost-calculations-form"/>
+    <domain>self.typeSelect = 0</domain>
+    <context name="_typeSelect" expr="eval: 0"/>
+  </action-view>
+
+  <menuitem name="manufacturing-root-depreciation-rate-calculations"
+    parent="manufacturing-root" title="Depreciation rates calculations"
+    action="manufacturing.root.depreciation.rate.calculations" order="1425"/>
+
+  <action-view name="manufacturing.root.depreciation.rate.calculations"
+    title="Depreciation rates calculations"
+    model="com.axelor.apps.production.db.UnitCostCalculation">
+    <view type="grid" name="depreciation-rate-calculations-grid"/>
+    <view type="form" name="cost-calculations-form"/>
+    <view-param name="forceTitle" value="true"/>
+    <domain>self.typeSelect = 1</domain>
+    <context name="_typeSelect" expr="eval: 1"/>
   </action-view>
 
   <menuitem name="manufacturing-mps" parent="manufacturing-root" title="S&amp;OP/MPS"
@@ -583,5 +599,17 @@
     model="com.axelor.apps.production.db.WorkCenterGroup">
     <view type="grid" name="work-center-group-grid"/>
     <view type="form" name="work-center-group-form"/>
+  </action-view>
+
+  <!-- Depreciation rate configurations menu under Stock Configuration -->
+  <menuitem name="production-root-conf-depreciation-rate-config"
+    parent="manufacturing-conf" title="Depreciation rate configurations"
+    action="action-production-depreciation-rate-config" order="1400"/>
+
+  <action-view name="action-production-depreciation-rate-config"
+    title="Depreciation rate configurations"
+    model="com.axelor.apps.production.db.DepreciationRateConfig">
+    <view type="grid" name="depreciation-rate-config-grid"/>
+    <view type="form" name="depreciation-rate-config-form"/>
   </action-view>
 </object-views>

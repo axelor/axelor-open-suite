@@ -199,4 +199,22 @@
     <option value="2" color="yellow">Subcontracting</option>
   </selection>
 
+  <selection name="production.product.stock.category.select">
+    <option value="1">New item</option>
+    <option value="2">Non-movers</option>
+    <option value="3">Slow movers</option>
+    <option value="4">Fast movers</option>
+  </selection>
+
+  <selection name="production.unit.cost.calculation.type.select">
+    <option value="0">Cost price calculation</option>
+    <option value="1">Depreciation rate calculation</option>
+  </selection>
+
+  <selection name="production.rate.calculations.status.select">
+    <option value="1">Draft</option>
+    <option value="2">Rates computed</option>
+    <option value="3">Rates updated</option>
+  </selection>
+
 </object-views>

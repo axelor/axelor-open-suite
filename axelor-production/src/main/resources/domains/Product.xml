@@ -27,6 +27,14 @@
 
     <long name="createdFromBOMImportId"/>
 
+    <!-- Stock rotation category for depreciation rate calculation -->
+    <integer name="stockCategorySelect" title="Rotation stock category"
+      selection="production.product.stock.category.select" massUpdate="true"/>
+
+    <!-- Depreciation rate -->
+    <decimal name="depreciationRate" title="Depreciation rate" precision="20" scale="10"
+      massUpdate="true"/>
+
     <extra-code>
 	   		<![CDATA[
 				// PRICE METHOD SELECT
@@ -36,8 +44,19 @@
 				// COMPONENTS VALUATION METHOD SELECt
 				public static final int COMPONENTS_VALUATION_METHOD_AVERAGE = 1;
 				public static final int COMPONENTS_VALUATION_METHOD_COST = 2;
+
+				// STOCK CATEGORY SELECT
+                public static final int STOCK_CATEGORY_NEW_ITEM = 1;
+                public static final int STOCK_CATEGORY_NON_MOVERS = 2;
+                public static final int STOCK_CATEGORY_SLOW_MOVERS = 3;
+                public static final int STOCK_CATEGORY_FAST_MOVERS = 4;
 	   		]]>
     </extra-code>
+
+    <track on="UPDATE">
+      <field name="stockCategorySelect"/>
+      <field name="depreciationRate"/>
+    </track>
 
   </entity>
 

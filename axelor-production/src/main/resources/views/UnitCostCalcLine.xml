@@ -16,6 +16,21 @@
     <field name="costToApply" x-scale="2"/>
   </grid>
 
+  <grid name="depreciation-unit-cost-calc-line-grid" title="Results"
+    model="com.axelor.apps.production.db.UnitCostCalcLine" editable="true" orderBy="product.code">
+    <hilite
+      if="($number(costToApply) &lt; $number(minRate)) || ($number(costToApply) &gt; $number(maxRate))"
+      background="red"/>
+    <field name="product.code"/>
+    <field name="product.name"/>
+    <field name="previousCost" readonly="true" x-scale="2"/>
+    <field name="computedCost" readonly="true" x-scale="2"/>
+    <field name="minRate" readonly="true" x-scale="2"/>
+    <field name="maxRate" readonly="true" x-scale="2"/>
+    <field name="costToApply" x-scale="2"
+      onChange="action-unit-cost-calc-line-condition-check-cost-to-apply"/>
+  </grid>
+
   <form name="unit-cost-calc-line-form" title="Results"
     model="com.axelor.apps.production.db.UnitCostCalcLine" width="large"
     onLoad="action-unit-cost-calc-line-attrs-price-digits">
@@ -32,9 +47,29 @@
     </panel>
   </form>
 
+  <form name="depreciation-unit-cost-calc-line-form" title="Results"
+    model="com.axelor.apps.production.db.UnitCostCalcLine" width="large"
+    onLoad="action-unit-cost-calc-line-attrs-price-digits">
+    <panel name="mainPanel">
+      <field name="unitCostCalculation" hidden="true"/>
+      <field name="product" readonly="true"/>
+      <field name="previousCost" readonly="true"/>
+      <field name="computedCost" readonly="true"/>
+      <field name="minRate" readonly="true" x-scale="2"/>
+      <field name="maxRate" readonly="true" x-scale="2"/>
+      <field name="costToApply"
+        onChange="action-unit-cost-calc-line-condition-check-cost-to-apply"/>
+    </panel>
+  </form>
+
   <action-attrs name="action-unit-cost-calc-line-attrs-price-digits">
-    <attribute name="scale" for="previousCost,computedCost,costToApply"
+    <attribute name="scale" for="previousCost,computedCost,costToApply,minRate,maxRate"
       expr="eval: __config__.app.getNbDecimalDigitForUnitPrice()"/>
   </action-attrs>
+
+  <action-condition name="action-unit-cost-calc-line-condition-check-cost-to-apply">
+    <check field="costToApply" error="Check min or max rate"
+      if="eval: (costToApply &lt; minRate) || (costToApply &gt; maxRate)"/>
+  </action-condition>
 
 </object-views>

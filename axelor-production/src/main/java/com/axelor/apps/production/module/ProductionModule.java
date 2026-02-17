@@ -73,6 +73,12 @@ import com.axelor.apps.production.service.BomLineCreationService;
 import com.axelor.apps.production.service.BomLineCreationServiceImpl;
 import com.axelor.apps.production.service.BomTreeRemoveService;
 import com.axelor.apps.production.service.BomTreeRemoveServiceImpl;
+import com.axelor.apps.production.service.DepRateCalculationCsvService;
+import com.axelor.apps.production.service.DepRateCalculationCsvServiceImpl;
+import com.axelor.apps.production.service.DepRateCalculationProductService;
+import com.axelor.apps.production.service.DepRateCalculationProductServiceImpl;
+import com.axelor.apps.production.service.DepRateCalculationService;
+import com.axelor.apps.production.service.DepRateCalculationServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
 import com.axelor.apps.production.service.MpsChargeServiceImpl;
 import com.axelor.apps.production.service.MpsWeeklyScheduleService;
@@ -99,6 +105,8 @@ import com.axelor.apps.production.service.ProdProductAttrsService;
 import com.axelor.apps.production.service.ProdProductAttrsServiceImpl;
 import com.axelor.apps.production.service.ProdProductService;
 import com.axelor.apps.production.service.ProdProductServiceImpl;
+import com.axelor.apps.production.service.ProductStockAnalysisService;
+import com.axelor.apps.production.service.ProductStockAnalysisServiceImpl;
 import com.axelor.apps.production.service.ProductionProductStockLocationServiceImpl;
 import com.axelor.apps.production.service.PurchaseOrderMergingServiceProductionImpl;
 import com.axelor.apps.production.service.PurchaseOrderTypeSelectProductionServiceImpl;
@@ -519,5 +527,9 @@ public class ProductionModule extends AxelorModule {
         .to(QualityImprovementUpdateProductionServiceImpl.class);
     bind(QualityImprovementParseServiceImpl.class)
         .to(QualityImprovementParseProductionServiceImpl.class);
+    bind(ProductStockAnalysisService.class).to(ProductStockAnalysisServiceImpl.class);
+    bind(DepRateCalculationService.class).to(DepRateCalculationServiceImpl.class);
+    bind(DepRateCalculationProductService.class).to(DepRateCalculationProductServiceImpl.class);
+    bind(DepRateCalculationCsvService.class).to(DepRateCalculationCsvServiceImpl.class);
   }
 }

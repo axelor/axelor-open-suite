@@ -453,4 +453,7 @@ public final class ProductionExceptionMessage {
 
   public static final String API_TYPE_SYSTEM_PRODUCT_MANUF_ORDER_FILLED = /*$$(*/
       "Product/ManufOrder fields should not be filled if type is 'System'." /*)*/;
+
+  public static final String DEPRECIATION_CALCULATION_INVALID_RATES = /*$$(*/
+      "One or several rates are invalid." /*)*/;
 }
