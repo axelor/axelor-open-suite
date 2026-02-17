@@ -36,6 +36,7 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.studio.db.AppProject;
+import com.axelor.utils.api.SecurityCheck;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
@@ -242,6 +243,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
   @Transactional
   public void deleteProjectTask(ProjectTask projectTask) {
+    new SecurityCheck().removeAccess(ProjectTask.class, projectTask.getId()).check();
     projectTaskRepo.remove(projectTask);
   }
 
