@@ -1078,6 +1078,7 @@
 "ChequeDepositSlip.payer",,,
 "ChequeDepositSlip.paymentDate",,,
 "ChequeDepositSlip.printedOn",,,
+"ChequeDepositSlip.reference",,,
 "ChequeDepositSlip.reminderNote",,,
 "ChequeDepositSlip.signature",,,
 "ChequeDepositSlip.title",,,

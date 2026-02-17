@@ -692,6 +692,8 @@ public interface ITranslation {
       "ChequeDepositSlip.signature"; /*)*/
   public static final String CHEQUE_DEPOSIT_SLIP_REMINDER_NOTE = /*$$(*/
       "ChequeDepositSlip.reminderNote"; /*)*/
+  public static final String CHEQUE_DEPOSIT_SLIP_REFERENCE = /*$$(*/
+      "ChequeDepositSlip.reference"; /*)*/
 
   public static final String ACCOUNTING_REPORT_16_TITLE =
       /*$$(*/ "AccountingReportType16.title"; /*)*/
