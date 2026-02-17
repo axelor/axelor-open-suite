@@ -103,7 +103,7 @@ public class StockMoveServiceImpl implements StockMoveService {
   protected StockConfigService stockConfigService;
   protected AppStockService appStockService;
   protected ProductCompanyService productCompanyService;
-  protected StockLocationService stockLocationService;
+  protected StockLocationFetchService stockLocationFetchService;
 
   @Inject
   public StockMoveServiceImpl(
@@ -118,7 +118,7 @@ public class StockMoveServiceImpl implements StockMoveService {
       StockConfigService stockConfigService,
       AppStockService appStockService,
       ProductCompanyService productCompanyService,
-      StockLocationService stockLocationService) {
+      StockLocationFetchService stockLocationFetchService) {
     this.stockMoveLineService = stockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
     this.stockMoveLineRepo = stockMoveLineRepository;
@@ -130,7 +130,7 @@ public class StockMoveServiceImpl implements StockMoveService {
     this.stockConfigService = stockConfigService;
     this.appStockService = appStockService;
     this.productCompanyService = productCompanyService;
-    this.stockLocationService = stockLocationService;
+    this.stockLocationFetchService = stockLocationFetchService;
   }
 
   /**
@@ -683,18 +683,16 @@ public class StockMoveServiceImpl implements StockMoveService {
           StockLocation to = sml.getToStockLocation();
           if (from != null && from.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
             stockLocationIds.add(from.getId());
-            Set<Long> locationIds =
-                stockLocationService
-                    .getLocationAndAllParentLocationsIdsOrderedFromTheClosestToTheFurthest(from);
+            List<Long> locationIds =
+                stockLocationFetchService.getAllContentLocationAndSubLocation(from.getId());
             if (locationIds != null) {
               stockLocationIds.addAll(locationIds);
             }
           }
           if (to != null && to.getTypeSelect() != StockLocationRepository.TYPE_VIRTUAL) {
             stockLocationIds.add(to.getId());
-            Set<Long> locationIds =
-                stockLocationService
-                    .getLocationAndAllParentLocationsIdsOrderedFromTheClosestToTheFurthest(to);
+            List<Long> locationIds =
+                stockLocationFetchService.getAllContentLocationAndSubLocation(to.getId());
             if (locationIds != null) {
               stockLocationIds.addAll(locationIds);
             }

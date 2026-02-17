@@ -22,7 +22,7 @@ import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
-import com.axelor.apps.stock.service.StockLocationService;
+import com.axelor.apps.stock.service.StockLocationFetchService;
 import com.axelor.apps.supplychain.service.ProductStockLocationService;
 import com.axelor.apps.supplychain.service.ProjectedStockService;
 import com.axelor.inject.Beans;
@@ -92,8 +92,8 @@ public class ProductController {
       StockLocation stockLocation = Beans.get(StockLocationRepository.class).find(stockLocationId);
       if (stockLocation != null && Objects.equals(stockLocation.getCompany().getId(), companyId)) {
         List<Long> stockLocationIdList =
-            Beans.get(StockLocationService.class)
-                .getAllLocationAndSubLocationId(stockLocation, false);
+            Beans.get(StockLocationFetchService.class)
+                .getAllContentLocationAndSubLocation(stockLocationId);
         response.setValue("$stockLocationIdList", stockLocationIdList);
         return;
       }

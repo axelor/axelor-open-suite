@@ -31,7 +31,6 @@ import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.ABCAnalysisServiceImpl;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.administration.SequenceService;
-import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
 import com.axelor.apps.stock.db.repo.StockLocationLineRepository;
 import com.axelor.db.JPA;
@@ -43,7 +42,7 @@ import java.util.Optional;
 
 public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
 
-  protected StockLocationService stockLocationService;
+  protected StockLocationFetchService stockLocationFetchService;
   protected StockLocationLineRepository stockLocationLineRepository;
 
   private static final String STOCK_MANAGED_TRUE = " AND self.stockManaged = TRUE";
@@ -54,7 +53,7 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
       UnitConversionService unitConversionService,
       ABCAnalysisRepository abcAnalysisRepository,
       ProductRepository productRepository,
-      StockLocationService stockLocationService,
+      StockLocationFetchService stockLocationFetchService,
       StockLocationLineRepository stockLocationLineRepository,
       ABCAnalysisClassRepository abcAnalysisClassRepository,
       SequenceService sequenceService) {
@@ -65,7 +64,7 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
         productRepository,
         abcAnalysisClassRepository,
         sequenceService);
-    this.stockLocationService = stockLocationService;
+    this.stockLocationFetchService = stockLocationFetchService;
     this.stockLocationLineRepository = stockLocationLineRepository;
   }
 
@@ -73,8 +72,9 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
   protected Optional<ABCAnalysisLine> createABCAnalysisLine(
       ABCAnalysis abcAnalysis, Product product) throws AxelorException {
     ABCAnalysisLine abcAnalysisLine = null;
-    List<StockLocation> stockLocationList =
-        stockLocationService.getAllLocationAndSubLocation(abcAnalysis.getStockLocation(), false);
+    List<Long> stockLocationList =
+        stockLocationFetchService.getAllContentLocationAndSubLocation(
+            abcAnalysis.getStockLocation().getId());
     BigDecimal productQty = BigDecimal.ZERO;
     BigDecimal productWorth = BigDecimal.ZERO;
     List<StockLocationLine> stockLocationLineList;
@@ -84,7 +84,7 @@ public class ABCAnalysisServiceStockImpl extends ABCAnalysisServiceImpl {
         stockLocationLineRepository
             .all()
             .filter(
-                "self.stockLocation IN :stockLocationList AND self.product.id = :productId AND self.currentQty != 0 ")
+                "self.stockLocation.id IN :stockLocationList AND self.product.id = :productId AND self.currentQty != 0 ")
             .bind("stockLocationList", stockLocationList)
             .bind("productId", product.getId());
 

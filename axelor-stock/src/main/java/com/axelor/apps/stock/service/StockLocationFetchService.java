@@ -18,27 +18,19 @@
  */
 package com.axelor.apps.stock.service;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Product;
 import com.axelor.apps.stock.db.StockLocation;
-import com.axelor.meta.CallMethod;
+import jakarta.persistence.criteria.Predicate;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-public interface StockLocationService {
+public interface StockLocationFetchService {
 
-  public Map<String, Object> getStockIndicators(Long productId, Long companyId, Long locationId)
-      throws AxelorException;
+  List<Long> getAllContentLocationAndSubLocation(Long stockLocationId);
 
-  @CallMethod
-  public List<Long> getBadStockLocationLineId();
+  List<Long> getAllLocationAndSubLocation(Long stockLocationId, boolean isVirtualInclude);
 
-  @CallMethod
-  public Set<Long> getContentStockLocationIds(StockLocation stockLocation);
+  List<Long> getAllLocationAndSubLocation(
+      Long stockLocationId, boolean isVirtualInclude, List<Predicate> extraFilters);
 
-  public boolean isConfigMissing(StockLocation stockLocation, int printType);
-
-  void changeProductLocker(StockLocation stockLocation, Product product, String newLocker)
-      throws AxelorException;
+  Set<Long> getLocationAndAllParentLocationIds(StockLocation stockLocation);
 }
