@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed an issue where the sub sale order lines were always cleared on sale supply change."
+module: axelor-production

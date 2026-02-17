@@ -30,6 +30,7 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.service.app.AppProductionService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -144,34 +145,19 @@ public class SaleOrderLineProductProductionServiceImpl
     Map<String, Object> saleOrderLineMap = new HashMap<>();
     if (appProductionService.isApp("production")) {
       Product product = saleOrderLine.getProduct();
-      saleOrderLine.clearSubSaleOrderLineList();
-      if (product != null) {
-        // First we will be checking if current sale order line has bom line
-        // If it's the case, then we'll check if the bom line has a bom
-        // And if it's also the case we'll check if this bom is for the same current product of sale
-        // order line
-        var isCurrentBomLineProductSame =
-            Optional.ofNullable(saleOrderLine.getBillOfMaterialLine())
-                .map(BillOfMaterialLine::getBillOfMaterial)
-                .map(BillOfMaterial::getProduct)
-                .map(bomLineProduct -> bomLineProduct.equals(product))
-                .orElse(false);
-        if (isCurrentBomLineProductSame) {
-          // If it is the case, we will use the bomLine.bom
-          saleOrderLine.setBillOfMaterial(
-              saleOrderLine.getBillOfMaterialLine().getBillOfMaterial());
-        } else if (product.getDefaultBillOfMaterial() != null) {
-          saleOrderLine.setBillOfMaterial(product.getDefaultBillOfMaterial());
-        } else if (product.getParentProduct() != null) {
-          saleOrderLine.setBillOfMaterial(product.getParentProduct().getDefaultBillOfMaterial());
-        }
-        BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
-        generateLines(saleOrderLine, saleOrder);
 
-        saleOrderLineMap.put("billOfMaterial", saleOrderLine.getBillOfMaterial());
+      if (product != null) {
+        BillOfMaterial oldBillOfMaterial = saleOrderLine.getBillOfMaterial();
+        BillOfMaterial billOfMaterial = getBillOfMaterial(saleOrderLine, product);
+        saleOrderLine.setBillOfMaterial(billOfMaterial);
+
+        generateLines(saleOrderLine, saleOrder, oldBillOfMaterial != null);
+
+        saleOrderLineMap.put("billOfMaterial", billOfMaterial);
         if (billOfMaterial != null) {
-          saleOrderLine.setProdProcess(billOfMaterial.getProdProcess());
-          saleOrderLineMap.put("prodProcess", billOfMaterial.getProdProcess());
+          ProdProcess prodProcess = billOfMaterial.getProdProcess();
+          saleOrderLine.setProdProcess(prodProcess);
+          saleOrderLineMap.put("prodProcess", prodProcess);
         }
       }
       saleOrderLineMap.put("subSaleOrderLineList", saleOrderLine.getSubSaleOrderLineList());
@@ -180,29 +166,62 @@ public class SaleOrderLineProductProductionServiceImpl
     return saleOrderLineMap;
   }
 
-  protected void generateLines(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  protected BillOfMaterial getBillOfMaterial(SaleOrderLine saleOrderLine, Product product) {
+    // First we will be checking if current sale order line has bom line
+    // If it's the case, then we'll check if the bom line has a bom
+    // And if it's also the case we'll check if this bom is for the same current product of sale
+    // order line
+    var isCurrentBomLineProductSame =
+        Optional.ofNullable(saleOrderLine.getBillOfMaterialLine())
+            .map(BillOfMaterialLine::getBillOfMaterial)
+            .map(BillOfMaterial::getProduct)
+            .map(bomLineProduct -> bomLineProduct.equals(product))
+            .orElse(false);
+
+    BillOfMaterial billOfMaterial = null;
+    if (isCurrentBomLineProductSame) {
+      // If it is the case, we will use the bomLine.bom
+      billOfMaterial = saleOrderLine.getBillOfMaterialLine().getBillOfMaterial();
+    } else if (product.getDefaultBillOfMaterial() != null) {
+      billOfMaterial = product.getDefaultBillOfMaterial();
+    } else if (product.getParentProduct() != null) {
+      billOfMaterial = product.getParentProduct().getDefaultBillOfMaterial();
+    }
+    return billOfMaterial;
+  }
+
+  protected void generateLines(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, boolean hadBomBefore)
       throws AxelorException {
     AppProduction appProduction = appProductionService.getAppProduction();
     AppSale appSale = appSaleService.getAppSale();
     BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
-    if (saleOrderLine.getIsToProduce()
-        && appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
-        && !appProduction.getIsBomLineGenerationInSODisabled()) {
-      if (!solBomUpdateService.isUpdated(saleOrderLine)) {
-        saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder).stream()
-            .filter(Objects::nonNull)
-            .forEach(saleOrderLine::addSubSaleOrderLineListItem);
+
+    if (billOfMaterial != null) {
+      if (hadBomBefore) {
+        saleOrderLine.clearSubSaleOrderLineList();
       }
-      if (!solDetailsBomUpdateService.isSolDetailsUpdated(
-          saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList())) {
-        saleOrderLineDetailsBomService
-            .createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder, saleOrderLine)
-            .stream()
-            .filter(Objects::nonNull)
-            .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+
+      if (saleOrderLine.getIsToProduce()
+          && appSale.getListDisplayTypeSelect()
+              == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
+          && !appProduction.getIsBomLineGenerationInSODisabled()) {
+        if (!solBomUpdateService.isUpdated(saleOrderLine)) {
+          saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder).stream()
+              .filter(Objects::nonNull)
+              .forEach(saleOrderLine::addSubSaleOrderLineListItem);
+        }
+        if (!solDetailsBomUpdateService.isSolDetailsUpdated(
+            saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList())) {
+          saleOrderLineDetailsBomService
+              .createSaleOrderLineDetailsFromBom(billOfMaterial, saleOrder, saleOrderLine)
+              .stream()
+              .filter(Objects::nonNull)
+              .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+        }
+        saleOrderLineDetailsProdProcessService.addSaleOrderLineDetailsFromProdProcess(
+            billOfMaterial.getProdProcess(), saleOrder, saleOrderLine);
       }
-      saleOrderLineDetailsProdProcessService.addSaleOrderLineDetailsFromProdProcess(
-          billOfMaterial.getProdProcess(), saleOrder, saleOrderLine);
     }
   }
 
