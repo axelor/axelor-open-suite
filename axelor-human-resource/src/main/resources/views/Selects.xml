@@ -200,6 +200,8 @@
   <selection name="hr.leave.reason.unit.select">
     <option value="1">Days</option>
     <option value="2">Hours</option>
+    <option value="3">Calendar days</option>
+    <option value="4">Business days</option>
   </selection>
 
   <selection name="hr.employee.timesheet.report.type.select">
