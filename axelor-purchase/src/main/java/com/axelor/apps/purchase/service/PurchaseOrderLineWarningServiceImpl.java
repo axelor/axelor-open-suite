@@ -60,7 +60,7 @@ public class PurchaseOrderLineWarningServiceImpl implements PurchaseOrderLineWar
     }
 
     Unit supplierCatalogUnit = supplierCatalog.getUnit();
-    if (supplierCatalogUnit == null) {
+    if (supplierCatalogUnit == null || unit == null) {
       return false;
     }
 
