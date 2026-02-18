@@ -65,7 +65,8 @@
       <field name="product" requiredIf="!isEnabledForAllProducts" canEdit="false"
         grid-view="product-grid" form-view="product-form"
         domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'" hidden="true"
-        showIf="!isEnabledForAllProducts"/>
+        showIf="!isEnabledForAllProducts"
+        onChange="action-prod-process-method-compute-hazard-phrases"/>
       <field name="company" canEdit="false" widget="SuggestBox" form-view="company-form"
         grid-view="company-grid" onChange="action-prod-process-default-stock-locations-record"/>
       <field name="workshopStockLocation" canEdit="false"
@@ -135,6 +136,13 @@
 
       <panel-dashlet name="viewBillOfMaterialsPanel"
         action="action-prod-process-view-bill-of-materials" title="Bills of material"/>
+
+      <panel name="hazardPhrasePanel" title="Hazard phrases"
+        if="__config__.app.getApp('base')?.getEnableProductsSafety()">
+        <panel-related field="hazardPhraseSet" colSpan="12" readonly="true"
+          canNew="false" canSelect="false" canRemove="false" form-view="base-hazard-phrase-form"
+          grid-view="base-hazard-phrase-grid"/>
+      </panel>
 
     </panel-tabs>
 
@@ -335,6 +343,11 @@
   <action-method name="action-prod-process-method-recompute-lead-time">
     <call class="com.axelor.apps.production.web.ProdProcessController"
       method="recomputeLeadTime"/>
+  </action-method>
+
+  <action-method name="action-prod-process-method-compute-hazard-phrases">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="computeHazardPhrases"/>
   </action-method>
 
   <action-record name="action-prod-process-record-reset-product"
