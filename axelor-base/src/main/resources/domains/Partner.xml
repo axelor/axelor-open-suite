@@ -35,7 +35,7 @@
     <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner"
       title="Mother company" massUpdate="true" index="false"/>
     <one-to-many name="partnerAddressList" ref="com.axelor.apps.base.db.PartnerAddress"
-      title="Addresses" mappedBy="partner"/>
+      title="Addresses" mappedBy="partner" copy="false"/>
 
     <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner"
       title="Contacts"/>
@@ -57,7 +57,7 @@
       title="Companies associated to"/>
 
     <one-to-many name="bankDetailsList" ref="com.axelor.apps.base.db.BankDetails"
-      mappedBy="partner" title="Bank Details list"/>
+      mappedBy="partner" title="Bank Details list" copy="false"/>
 
     <!-- Page règle de facturation/paiement -->
     <!-- <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank
@@ -75,7 +75,7 @@
 
     <!-- PAGE Blocage -->
     <one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking"
-      title="Blocking follow-up List" mappedBy="partner" orderBy="-blockingToDate"/>
+      title="Blocking follow-up List" mappedBy="partner" orderBy="-blockingToDate" copy="false"/>
 
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
 
@@ -126,9 +126,9 @@
       title="Roles"/>
 
     <one-to-many name="managedByPartnerLinkList"
-      ref="com.axelor.apps.base.db.PartnerLink" title="Managed by" mappedBy="partner1"/>
+      ref="com.axelor.apps.base.db.PartnerLink" title="Managed by" mappedBy="partner1" copy="false"/>
     <one-to-many name="managedForPartnerLinkList"
-      ref="com.axelor.apps.base.db.PartnerLink" title="Managed for" mappedBy="partner2"/>
+      ref="com.axelor.apps.base.db.PartnerLink" title="Managed for" mappedBy="partner2" copy="false"/>
 
     <many-to-many ref="com.axelor.apps.base.db.Tag" name="tagSet" title="Tags"/>
 
