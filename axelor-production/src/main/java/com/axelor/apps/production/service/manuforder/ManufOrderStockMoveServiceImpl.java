@@ -242,6 +242,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   public ManufOrder partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getIsConsProOnOperation()) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        operationOrder = JpaModelHelper.ensureManaged(operationOrder);
         if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
           Beans.get(OperationOrderStockMoveService.class).partialFinish(operationOrder);
         }
