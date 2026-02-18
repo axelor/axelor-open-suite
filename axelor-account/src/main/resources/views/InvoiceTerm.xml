@@ -250,7 +250,9 @@
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
         readonlyIf="isPaid || $number(amountRemaining) != $number(amount) || paymentSession">
-        <field name="dueDate" readonly="true"/>
+        <field name="dueDate"
+          readonlyIf="invoice == null || !invoice.paymentCondition.isFree || isPaid || pfpValidateStatusSelect > 1"
+          onChange="action-invoice-term-record-update-customized-true"/>
         <field name="isHoldBack" readonly="true"
           onChange="action-invoice-term-group-holdback-change"/>
         <field name="estimatedPaymentDate"
