@@ -259,6 +259,10 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
             .findFirst();
     if (stockMoveToRealize.isPresent()) {
       manufOrderStockMoveService.finishStockMove(stockMoveToRealize.get());
+      operationOrder = JpaModelHelper.ensureManaged(operationOrder);
+      company = JpaModelHelper.ensureManaged(company);
+      fromStockLocation = JpaModelHelper.ensureManaged(fromStockLocation);
+      toStockLocation = JpaModelHelper.ensureManaged(toStockLocation);
     }
 
     // generate new stock move
@@ -283,6 +287,8 @@ public class OperationOrderStockMoveServiceImpl implements OperationOrderStockMo
     if (!newStockMove.getStockMoveLineList().isEmpty()) {
       // plan the stockmove
       stockMoveService.plan(newStockMove);
+      newStockMove = JpaModelHelper.ensureManaged(newStockMove);
+      operationOrder = JpaModelHelper.ensureManaged(operationOrder);
 
       operationOrder.addInStockMoveListItem(newStockMove);
       newStockMove.getStockMoveLineList().forEach(operationOrder::addConsumedStockMoveLineListItem);
