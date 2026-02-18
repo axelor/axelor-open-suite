@@ -135,12 +135,13 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       throws AxelorException {
     String domain =
         saleOrderLineDomainService.computeProductDomain(saleOrderLine, saleOrder, false);
-    if (!productRepository
-        .all()
-        .filter(domain)
-        .bind("__date__", appSaleService.getTodayDate(saleOrder.getCompany()))
-        .fetch()
-        .contains(product)) {
+    if (productRepository
+            .all()
+            .filter(domain + " AND self.id = :productId")
+            .bind("__date__", appSaleService.getTodayDate(saleOrder.getCompany()))
+            .bind("productId", product.getId())
+            .fetchOne()
+        == null) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.PRODUCT_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS),
