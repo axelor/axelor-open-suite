@@ -189,8 +189,8 @@ public class PaymentSessionBankOrderServiceImpl implements PaymentSessionBankOrd
     LocalDate bankOrderDate = null;
     BigDecimal bankOrderAmount = invoiceTerm.getAmountPaid().subtract(reconciledAmount);
 
-    // FIX: Skip if amount is zero
-    if (bankOrderAmount.signum() == 0) {
+    // Skip if amount is zero or negative (isolated refund not reconciled with any invoice)
+    if (bankOrderAmount.signum() <= 0) {
       return;
     }
     if (this.isFileFormatMultiDate(paymentSession)) {
