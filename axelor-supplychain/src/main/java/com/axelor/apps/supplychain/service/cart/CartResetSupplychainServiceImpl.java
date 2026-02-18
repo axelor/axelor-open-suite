@@ -34,6 +34,7 @@ public class CartResetSupplychainServiceImpl extends CartResetServiceImpl {
   @Override
   @Transactional(rollbackOn = Exception.class)
   public void emptyCart(Cart cart) {
+    cart = cartRepository.find(cart.getId());
     cart.setStockLocation(null);
     super.emptyCart(cart);
   }
