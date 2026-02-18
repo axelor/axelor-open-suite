@@ -281,7 +281,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderLinePackService.class).to(SaleOrderLinePackServiceImpl.class);
     bind(SaleOrderLinePricingService.class).to(SaleOrderLinePricingServiceImpl.class);
     bind(SaleOrderLineProductService.class).to(SaleOrderLineProductServiceImpl.class);
-    bind(SaleOrderLineComputeService.class).to(SaleOrderLineComputeServiceImpl.class);
     bind(SaleOrderLineTaxService.class).to(SaleOrderLineTaxServiceImpl.class);
     bind(SaleOrderLineDiscountService.class).to(SaleOrderLineDiscountServiceImpl.class);
     bind(SaleOrderLineDomainService.class).to(SaleOrderLineDomainServiceImpl.class);
