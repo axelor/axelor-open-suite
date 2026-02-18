@@ -8,11 +8,11 @@
   <entity name="Partner">
     <one-to-many name="customerShippingCarriagePaidList"
       ref="com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid"
-      title="Customer shipping carriage paid configuration" mappedBy="customer"/>
+      title="Customer shipping carriage paid configuration" mappedBy="customer" copy="false"/>
 
     <one-to-many name="supplierShippingCarriagePaidList"
       ref="com.axelor.apps.supplychain.db.CustomerShippingCarriagePaid"
-      title="Supplier shipping carriage paid configuration" mappedBy="supplier"/>
+      title="Supplier shipping carriage paid configuration" mappedBy="supplier" copy="false"/>
 
   </entity>
 
