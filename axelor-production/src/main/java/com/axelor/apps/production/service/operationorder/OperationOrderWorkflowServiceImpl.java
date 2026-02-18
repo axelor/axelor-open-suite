@@ -34,6 +34,7 @@ import com.axelor.apps.production.service.manuforder.ManufOrderStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderWorkflowService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.inject.Beans;
@@ -245,6 +246,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
     operationOrderPlanningService.computeDuration(operationOrder);
 
     operationOrderStockMoveService.finish(operationOrder);
+    operationOrder = JpaModelHelper.ensureManaged(operationOrder);
     operationOrderRepo.save(operationOrder);
     calculateHoursOfUse(operationOrder);
     manufOrderWorkflowService.setOperationOrderMaxPriority(operationOrder.getManufOrder());

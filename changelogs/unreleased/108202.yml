@@ -1,0 +1,5 @@
+---
+title: "Production: fixed LazyInitializationException occurring on some actions in manuf order, purchase/sale order, stock."
+module: axelor-production
+description: |
+  Added StockMoveRepository to PurchaseOrderStockServiceImpl constructor.

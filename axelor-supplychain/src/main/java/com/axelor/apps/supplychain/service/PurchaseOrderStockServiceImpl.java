@@ -98,6 +98,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected TaxService taxService;
   protected AppStockService appStockService;
   protected StockMoveLineStockLocationService stockMoveLineStockLocationService;
+  protected StockMoveRepository stockMoveRepository;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -113,7 +114,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       ProductCompanyService productCompanyService,
       TaxService taxService,
       AppStockService appStockService,
-      StockMoveLineStockLocationService stockMoveLineStockLocationService) {
+      StockMoveLineStockLocationService stockMoveLineStockLocationService,
+      StockMoveRepository stockMoveRepository) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -128,6 +130,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.taxService = taxService;
     this.appStockService = appStockService;
     this.stockMoveLineStockLocationService = stockMoveLineStockLocationService;
+    this.stockMoveRepository = stockMoveRepository;
   }
 
   /**
@@ -286,12 +289,18 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
         }
       }
     }
+    // Save qualityStockMove while associations are still managed
+    if (qualityStockMove.getStockMoveLineList() != null
+        && !qualityStockMove.getStockMoveLineList().isEmpty()) {
+      qualityStockMove = stockMoveRepository.save(qualityStockMove);
+    }
     if (stockMove.getStockMoveLineList() != null && !stockMove.getStockMoveLineList().isEmpty()) {
       stockMoveService.plan(stockMove);
       stockMoveIdList.add(stockMove.getId());
     }
     if (qualityStockMove.getStockMoveLineList() != null
         && !qualityStockMove.getStockMoveLineList().isEmpty()) {
+      qualityStockMove = JpaModelHelper.ensureManaged(qualityStockMove);
       stockMoveService.plan(qualityStockMove);
       stockMoveIdList.add(qualityStockMove.getId());
     }
@@ -556,8 +565,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
             .fetch();
 
     for (StockMove stockMove : stockMoveList) {
-
-      stockMoveService.cancel(stockMove);
+      stockMoveService.cancel(JpaModelHelper.ensureManaged(stockMove));
     }
   }
 
