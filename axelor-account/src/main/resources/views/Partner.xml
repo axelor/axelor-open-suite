@@ -49,7 +49,9 @@
                   </dl>
               </>
         ]]></viewer>
-        <editor onNew="action-set-default-partner" x-show-on-new="false">
+        <editor
+          onNew="action-set-default-partner,action-bank-details-record-set-default-partner-bank-details"
+          x-show-on-new="false">
           <field name="ownerName"/>
           <field name="iban" onChange="action-bank-details-method-set-iban-information"/>
           <field name="bank" canNew="true"
