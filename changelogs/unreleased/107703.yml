@@ -1,0 +1,3 @@
+---
+title: "Purchase order: fixed performance issue while saving requested purchase order with budget."
+module: axelor-budget
