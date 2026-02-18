@@ -334,10 +334,12 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_CANCELED) {
           operationOrderWorkflowService.cancel(operationOrder);
         }
+        manufOrder = JpaModelHelper.ensureManaged(manufOrder);
       }
     }
 
     manufOrderStockMoveService.cancel(manufOrder);
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
 
     if (manufOrder.getConsumedStockMoveLineList() != null) {
       manufOrder

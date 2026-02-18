@@ -342,10 +342,11 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   public void cancel(ManufOrder manufOrder) throws AxelorException {
 
     for (StockMove stockMove : manufOrder.getInStockMoveList()) {
-      this.cancel(stockMove);
+      this.cancel(JpaModelHelper.ensureManaged(stockMove));
     }
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     for (StockMove stockMove : manufOrder.getOutStockMoveList()) {
-      this.cancel(stockMove);
+      this.cancel(JpaModelHelper.ensureManaged(stockMove));
     }
   }
 
@@ -354,6 +355,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     if (stockMove != null) {
 
       stockMoveProductionService.cancelFromManufOrder(stockMove);
+      stockMove = JpaModelHelper.ensureManaged(stockMove);
 
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 
