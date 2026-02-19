@@ -93,7 +93,7 @@ public class ProductController {
       if (stockLocation != null && Objects.equals(stockLocation.getCompany().getId(), companyId)) {
         List<Long> stockLocationIdList =
             Beans.get(StockLocationService.class)
-                .getAllLocationAndSubLocationId(stockLocation, false);
+                .getAllLocationAndSubLocation(stockLocation.getId(), false);
         response.setValue("$stockLocationIdList", stockLocationIdList);
         return;
       }
