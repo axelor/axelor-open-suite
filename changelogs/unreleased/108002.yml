@@ -1,3 +1,0 @@
----
-title: "Purchase order: fixed error when generating stock moves with lines having different stock locations or delivery dates."
-module: axelor-supplychain

@@ -1,3 +1,0 @@
----
-title: "Stock move: fixed weighted average cost update on products when canceling moves at zero stock."
-module: axelor-stock
