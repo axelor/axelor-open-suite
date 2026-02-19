@@ -1,3 +1,32 @@
+## [8.1.42] (2026-02-19)
+
+### Fixes
+#### Account
+
+* Move line: added an error message when trying to reconcile moves from incompatible accounts.
+* Payment voucher: fixed readonly condition of the confirm payment button.
+
+#### Budget
+
+* Purchase order: fixed performance issue while saving requested purchase order with budget.
+
+#### Contract
+
+* Contract: fixed NPE when creating a contract line from contract templates.
+
+#### Sale
+
+* Sale order line: fixed the display of discounted price field.
+
+#### Stock
+
+* Stock move: fixed weighted average cost update on products when canceling moves at zero stock.
+
+#### Supply Chain
+
+* Purchase order: fixed received quantities after merging supplier arrivals.
+* Mass stock move invoicing: fixed domain to get filtered invoices when switching from form to grid view.
+
 ## [8.1.41] (2026-02-05)
 
 ### Fixes
@@ -1990,6 +2019,7 @@ Partner: add a panel in the form view to show tickets related to the partner.
 
 * Bill of materials: fixed namecolumn management in bill of materials so the user can write a name instead of having only a generated one.
 
+[8.1.42]: https://github.com/axelor/axelor-open-suite/compare/v8.1.41...v8.1.42
 [8.1.41]: https://github.com/axelor/axelor-open-suite/compare/v8.1.40...v8.1.41
 [8.1.40]: https://github.com/axelor/axelor-open-suite/compare/v8.1.39...v8.1.40
 [8.1.39]: https://github.com/axelor/axelor-open-suite/compare/v8.1.38...v8.1.39

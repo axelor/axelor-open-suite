@@ -1,3 +1,0 @@
----
-title: "Contract: fixed NPE when creating a contract line from contract templates."
-module: axelor-contract
