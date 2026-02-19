@@ -577,6 +577,9 @@ public class BankReconciliationMoveGenerationServiceImpl
       currency = bankReconciliation.getCurrency();
       companyBankDetails = bankReconciliation.getBankDetails();
     }
+    if (bankStatementLine != null) {
+      description = bankStatementLine.getDescription();
+    }
     if (bankStatementRule != null) {
       if (bankStatementRule.getAccountManagement() != null) {
         AccountManagement accountManagement = bankStatementRule.getAccountManagement();
@@ -647,7 +650,7 @@ public class BankReconciliationMoveGenerationServiceImpl
             MoveRepository.TECHNICAL_ORIGIN_AUTOMATIC,
             MoveRepository.FUNCTIONAL_ORIGIN_PAYMENT,
             origin,
-            description,
+            StringHelper.cutTooLongString(description),
             companyBankDetails);
     move.setPaymentCondition(null);
 
