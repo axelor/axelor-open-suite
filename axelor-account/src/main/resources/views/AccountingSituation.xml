@@ -45,19 +45,19 @@
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="customerAccount"
         domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
-        canNew="true" form-view="customer-account-form" grid-view="account-grid"/>
+        form-view="customer-account-form" grid-view="account-grid"/>
       <field name="supplierAccount"
         domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
-        canNew="true" form-view="supplier-account-form" grid-view="account-grid"/>
-      <field name="defaultIncomeAccount" canNew="true"
+        form-view="supplier-account-form" grid-view="account-grid"/>
+      <field name="defaultIncomeAccount"
         domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
         form-view="employee-account-form" grid-view="account-grid"/>
-      <field name="defaultExpenseAccount" canNew="true"
+      <field name="defaultExpenseAccount"
         domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='charge'"
         form-view="employee-account-form" grid-view="account-grid"/>
       <field name="employeeAccount"
         domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
-        canNew="true" form-view="employee-account-form" grid-view="account-grid"/>
+        form-view="employee-account-form" grid-view="account-grid"/>
       <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
         name="pfpValidatorUser" canEdit="false"
         domain=":company member of self.companySet and self.isPfpValidator = true"/>
@@ -66,11 +66,9 @@
       <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
         name="company.accountConfig.isManagePassedForPayment" hidden="true"/>
       <field name="holdBackCustomerAccount" form-view="customer-account-form"
-        grid-view="account-grid" canNew="true"
-        domain="self.statusSelect = 1 AND self.company = :company"/>
+        grid-view="account-grid" domain="self.statusSelect = 1 AND self.company = :company"/>
       <field name="holdBackSupplierAccount" form-view="supplier-account-form"
-        grid-view="account-grid" canNew="true"
-        domain="self.statusSelect = 1 AND self.company = :company"/>
+        grid-view="account-grid" domain="self.statusSelect = 1 AND self.company = :company"/>
       <field name="partner.isCustomer" hidden="true"/>
       <field name="partner.isSupplier" hidden="true"/>
       <field name="__parent._model" hidden="true"/>
@@ -175,11 +173,9 @@
         onSelect="action-account-accounting-situation-set-outbd-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="holdBackCustomerAccount" form-view="customer-account-form"
-        grid-view="account-grid" canNew="true"
-        domain="self.statusSelect = 1 AND self.company = :company"/>
+        grid-view="account-grid" domain="self.statusSelect = 1 AND self.company = :company"/>
       <field name="holdBackSupplierAccount" form-view="supplier-account-form"
-        grid-view="account-grid" canNew="true"
-        domain="self.statusSelect = 1 AND self.company = :company"/>
+        grid-view="account-grid" domain="self.statusSelect = 1 AND self.company = :company"/>
     </panel>
 
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
