@@ -19,6 +19,7 @@
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -28,6 +29,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppBase;
 import com.axelor.studio.db.repo.AppBaseRepository;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import groovy.util.XmlSlurper;
 import groovy.util.slurpersupport.GPathResult;
@@ -174,6 +176,8 @@ public class MapService {
       mapQuery.put("format", "xml");
       mapQuery.put("polygon", true);
       mapQuery.put("addressdetails", true);
+      Map<String, String> headers = new HashMap<>();
+      headers.put("User-Agent", "Axelor ERP");
       Map<String, Object> mapResponse = new HashMap<>();
       mapResponse.put("path", "/search");
       mapResponse.put("accept", ContentType.JSON);
@@ -183,6 +187,7 @@ public class MapService {
       mapResponse.put("followRedirects", false);
       mapResponse.put("useCaches", false);
       mapResponse.put("sslTrustAllCerts", true);
+      mapResponse.put("headers", headers);
       Response restResponse = restClient.get(mapResponse);
       GPathResult searchresults = new XmlSlurper().parseText(restResponse.getContentAsString());
       Iterator<Node> iterator = searchresults.childNodes();
@@ -544,5 +549,27 @@ public class MapService {
       lat = new BigDecimal(osmResponse.get("latitude").toString());
       lon = new BigDecimal(osmResponse.get("longitude").toString());
     }
+  }
+
+  public String getAddressString(Address address) {
+    if (address == null) {
+      return "";
+    }
+    if (appBaseService.getAppBase().getMapApiSelect()
+        == AppBaseRepository.MAP_API_OPEN_STREET_MAP) {
+
+      String streetName = address.getStreetName();
+      String city = address.getCity() != null ? address.getCity().getName() : "";
+      String zip = address.getZip();
+      String countrySubDivision = address.getCountrySubDivision();
+      String country = address.getCountry() != null ? address.getCountry().getName() : "";
+
+      return (!Strings.isNullOrEmpty(streetName) ? streetName : "")
+          + (!Strings.isNullOrEmpty(city) ? " " + city : "")
+          + (!Strings.isNullOrEmpty(countrySubDivision) ? " " + countrySubDivision : "")
+          + (!Strings.isNullOrEmpty(zip) ? " " + zip : "")
+          + (!Strings.isNullOrEmpty(country) ? " " + country : "");
+    }
+    return address.getFullName();
   }
 }
