@@ -1,0 +1,3 @@
+---
+title: "Payment voucher: fixed readonly condition of the confirm payment button."
+module: axelor-account
