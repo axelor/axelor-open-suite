@@ -375,7 +375,8 @@
         </panel>
         <panel-dashlet name="showUsedBOMPanel" colSpan="12"
           action="action-product-view-show-used-bill-of-material"
-          showIf="id &amp;&amp; (productSubTypeSelect == 3 || productSubTypeSelect == 2)"/>
+          showIf="id &amp;&amp; (productSubTypeSelect == 3 || productSubTypeSelect == 2)"
+          readonly="true"/>
         <panel-dashlet name="productionProcessPanel" colSpan="12"
           action="action-product-view-production-process"
           showIf="id &amp;&amp; (procurementMethodSelect == 'produce' || procurementMethodSelect == 'buyAndProduce')"/>
