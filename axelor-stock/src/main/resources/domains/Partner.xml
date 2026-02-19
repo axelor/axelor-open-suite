@@ -19,19 +19,19 @@
     <boolean name="isCarrier" title="Carrier"/>
     <one-to-many name="partnerProductQualityRatingList"
       ref="com.axelor.apps.stock.db.PartnerProductQualityRating" mappedBy="partner"
-      title="Partner product quality rating"/>
+      title="Partner product quality rating" copy="false"/>
     <one-to-many name="freightCarrierModeList"
       ref="com.axelor.apps.stock.db.FreightCarrierMode" mappedBy="carrierPartner"
-      title="Freight carrier modes"/>
+      title="Freight carrier modes" copy="false"/>
 
     <boolean name="isIspmRequired" title="Is ISPM15 required"/>
     <boolean name="isNeedingConformityCertificate"
       title="Is certificate of conformity required"/>
     <one-to-many name="partnerStockSettingsList" title="Partner stock settings"
-      ref="com.axelor.apps.stock.db.PartnerStockSettings" mappedBy="partner"/>
+      ref="com.axelor.apps.stock.db.PartnerStockSettings" mappedBy="partner" copy="false"/>
     <one-to-many name="freightCarrierCustomerAccountNumberList"
       ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber"
-      title="Customer account numbers to carriers" mappedBy="partner"/>
+      title="Customer account numbers to carriers" mappedBy="partner" copy="false"/>
 
     <track>
       <field name="isCarrier"/>

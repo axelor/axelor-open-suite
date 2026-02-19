@@ -125,15 +125,16 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
     manufOrderService.checkApplicableManufOrder(manufOrder);
 
-    manufOrder.setRealStartDateT(
-        Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
-
     int beforeOrAfterConfig = manufOrder.getProdProcess().getStockMoveRealizeOrderSelect();
     if (beforeOrAfterConfig == ProductionConfigRepository.REALIZE_START) {
       for (StockMove stockMove : manufOrder.getInStockMoveList()) {
         manufOrderStockMoveService.finishStockMove(stockMove);
       }
+      manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     }
+
+    manufOrder.setRealStartDateT(
+        Beans.get(AppProductionService.class).getTodayDateTime().toLocalDateTime());
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_IN_PROGRESS);
     manufOrderRepo.save(manufOrder);
     Beans.get(ProductionOrderService.class).updateStatus(manufOrder.getProductionOrderSet());
@@ -333,10 +334,12 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
         if (operationOrder.getStatusSelect() != OperationOrderRepository.STATUS_CANCELED) {
           operationOrderWorkflowService.cancel(operationOrder);
         }
+        manufOrder = JpaModelHelper.ensureManaged(manufOrder);
       }
     }
 
     manufOrderStockMoveService.cancel(manufOrder);
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
 
     if (manufOrder.getConsumedStockMoveLineList() != null) {
       manufOrder
