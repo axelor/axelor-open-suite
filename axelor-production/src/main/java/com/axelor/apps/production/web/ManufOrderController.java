@@ -388,7 +388,8 @@ public class ManufOrderController {
         ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderView.getId());
 
         if (manufOrderView.getPlannedStartDateT() != null) {
-          if (!manufOrderView.getPlannedStartDateT().isEqual(manufOrder.getPlannedStartDateT())) {
+          if (!Objects.equals(
+              manufOrderView.getPlannedStartDateT(), manufOrder.getPlannedStartDateT())) {
             Beans.get(ManufOrderPlanService.class)
                 .updatePlannedDates(manufOrder, manufOrderView.getPlannedStartDateT());
             response.setReload(true);
