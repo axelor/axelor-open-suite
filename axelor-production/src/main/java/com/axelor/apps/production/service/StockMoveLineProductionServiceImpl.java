@@ -32,6 +32,7 @@ import com.axelor.apps.stock.db.repo.TrackingNumberRepository;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineHistoryService;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.stock.service.TrackingNumberCreateService;
 import com.axelor.apps.stock.service.TrackingNumberService;
@@ -59,6 +60,7 @@ public class StockMoveLineProductionServiceImpl extends StockMoveLineServiceSupp
       TrackingNumberRepository trackingNumberRepo,
       ShippingCoefService shippingCoefService,
       AccountManagementService accountManagementService,
+      StockMoveService stockMoveService,
       PriceListService priceListService,
       ProductCompanyService productCompanyService,
       SupplychainBatchRepository supplychainBatchRepo,
@@ -80,6 +82,7 @@ public class StockMoveLineProductionServiceImpl extends StockMoveLineServiceSupp
         trackingNumberRepo,
         shippingCoefService,
         accountManagementService,
+        stockMoveService,
         priceListService,
         productCompanyService,
         supplychainBatchRepo,
