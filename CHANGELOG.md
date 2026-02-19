@@ -1,3 +1,116 @@
+## [8.3.29] (2026-02-19)
+
+### Fixes
+#### Base
+
+* Scheduler: fixed batch origin not showing as 'Scheduled' for scheduler jobs.
+* Partner: set the first bank account as default when none is selected.
+* Partner: fixed copied partner keeping multiple related collections.
+
+#### Account
+
+* AnalyticMoveLine: Fix detached entity error on analytic move line reverse
+* Payment voucher: cancel the payment voucher when reverse a payment move.
+* Fixed asset: removed the possibility to update the fixed asset lines at draft status.
+* Payment session: fixed infinite loop and refund reconciliation issues with isolated refunds
+* Payment session: fixed error during validate process.
+* Invoice: fixed mail settings when generating an invoice automatically.
+* Invoice term: make due date editable on invoice term form.
+* Partner: fixed partner balance details domain to show correct move lines.
+* Fixed assets: fixed disposal depreciation amount with degressive method and prorata temporis
+* Partner: disabled account creation from accounting situation.
+* Invoice term: fixed the calculation of paid amount when financial discount is not applied in payment session.
+* Move line mass entry: disabled form view access to prevent error.
+* Payment session: fixed email sent not saved in messages when a partner has no email address set.
+* Payment voucher: fixed readonly condition of the confirm payment button.
+* Payment voucher: fixed payVoucherElementToPay update when selecting overdue moveline.
+
+#### Bank Payment
+
+* Bank statement file format: fixed the display of binding file for the concerned file format only.
+* Bank reconciliation: fixed the description on generated moves to use the bank statement line description instead of the reconciliation name.
+
+#### Budget
+
+* Global budget: fixed the button 'Global budget commited lines' engaged with purchase order.
+* Budget: fixed the calculation of firm gap on change the budget version.
+* Invoice: fixed the duplication of budget distribution on invoice line after the move duplication.
+* PurchaseOrder/Invoice: fixed budget repartition on partial invoicing.
+* Purchase order: fixed performance issue while saving requested purchase order with budget.
+
+#### Contract
+
+* Contract: excluded consumption lines when duplicating a contract.
+
+#### Human Resource
+
+* Expense line: fixed error on selecting project task in expense line.
+* Employee: moved typeSelect attribute of weeklyPlanning to production module.
+* Employee: fixed employee status when leaving date is filled.
+* Expense: fixed analytic axes not set when ventilating an expense.
+
+#### Marketing
+
+* Target list: fixed an error when opening partner/lead filters in readonly mode.
+
+#### Production
+
+* Operation order: fixed planned duration computation when changing planned end date.
+* Tracking number search : empty lines in product field for tracking number search
+* ManufOrderService: removed useless beans.get
+* Bill of material: fixed component product filter to prevent infinite loop error.
+* Manuf order: fixed error while updating planned dates.
+* Product: fixed quantity used in bill of material panel in product form view.
+
+#### Project
+
+* Project: fixed the french translation for project sequence validation message.
+* Project task: fixed inconsistency between the progress of parent and child tasks.
+
+#### Purchase
+
+* Purchase order: fixed the default type issue when supplier is also subcontractor.
+
+#### Sale
+
+* Sale order: fixed error when selecting trading name on merge sale order view.
+* Sale order line: fixed pricing computation on sale order line.
+* Cart: fixed performance issue when generating sale order from cart.
+* Sale order line: fixed pricing scale in logs.
+* Sale order: fixed NPE when the product account computed with the account management is null.
+
+#### Stock
+
+* Stock move: fixed available quantity and availability status when the move line unit differs from stock unit.
+* Stock location: fixed empty location content printing for virtual stock locations.
+* Inventory line: made stockLocation required.
+* Stock location line: made unit readonly.
+* Inventory: removed weird character from inventory form view.
+* Inventory: fixed decimal quantity in export file.
+* Stock move: fixed weighted average cost update on products when canceling moves at zero stock.
+* Stock location: improved performance when fetching stock locations.
+* Stock move line: fixed split by tracking number not accessible on stock move lines.
+
+#### Supply Chain
+
+* Purchase order: fixed received quantities after merging supplier arrivals.
+* Sale order: fixes potential permissions issues when generating Purchase order from Sale order.
+* Mass stock move invoicing: fixed domain to get filtered invoices when switching from form to grid view.
+
+#### Intervention
+
+* Equipment: fixed invalid domain for linked interventions panel.
+
+
+### Developer
+
+#### Account
+
+- Added PaymentVoucherCancelService in the MoveReverseServiceImpl constructor
+- Added PaymentVoucherCancelService in the MoveReverseServiceBankPaymentImpl constructor
+- Added PaymentVoucherCancelService in the MoveReverseServiceBudgetImpl constructor
+- Added PaymentVoucherCancelService in the ExpenseMoveReverseServiceImpl constructor
+
 ## [8.3.28] (2026-02-05)
 
 ### Fixes
@@ -2598,6 +2711,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.29]: https://github.com/axelor/axelor-open-suite/compare/v8.3.28...v8.3.29
 [8.3.28]: https://github.com/axelor/axelor-open-suite/compare/v8.3.27...v8.3.28
 [8.3.27]: https://github.com/axelor/axelor-open-suite/compare/v8.3.26...v8.3.27
 [8.3.26]: https://github.com/axelor/axelor-open-suite/compare/v8.3.25...v8.3.26

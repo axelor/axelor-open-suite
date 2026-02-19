@@ -1,3 +1,0 @@
----
-title : "Mass stock move invoicing: fixed domain to get filtered invoices when switching from form to grid view."
-module: axelor-supplychain
