@@ -1,3 +1,117 @@
+## [8.2.37] (2026-02-19)
+
+### Fixes
+#### Account
+
+* Payment voucher: cancel the payment voucher when reverse a payment move.
+* Fixed asset: removed the possibility to update the fixed asset lines at draft status.
+* Payment session: fixed infinite loop and refund reconciliation issues with isolated refunds
+* Payment session: fixed error during validate process.
+* Invoice term: make due date editable on invoice term form.
+* Fixed assets: fixed disposal depreciation amount with degressive method and prorata temporis
+* Move line mass entry: disabled form view access to prevent error.
+* Payment session: fixed email sent not saved in messages when a partner has no email address set.
+* Payment voucher: fixed readonly condition of the confirm payment button.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed the description on generated moves to use the bank statement line description instead of the reconciliation name.
+
+#### Budget
+
+* Purchase order: fixed performance issue while saving requested purchase order with budget.
+
+#### Production
+
+* Tracking number search : empty lines in product field for tracking number search
+
+#### Sale
+
+* Sale order import: fixed an error occurring when importing lines with no tax lines.
+
+#### Stock
+
+* Inventory: removed weird character from inventory form view.
+* Stock move: fixed weighted average cost update on products when canceling moves at zero stock.
+
+#### Supply Chain
+
+* Purchase order: fixed received quantities after merging supplier arrivals.
+* Sale order: fixed the value of 'Invoiced Amount (excl. tax)' in case of multi-order invoices.
+
+
+### Developer
+
+#### Account
+
+- Added PaymentVoucherCancelService in the MoveReverseServiceImpl constructor
+- Added PaymentVoucherCancelService in the MoveReverseServiceBankPaymentImpl constructor
+- Added PaymentVoucherCancelService in the MoveReverseServiceBudgetImpl constructor
+- Added PaymentVoucherCancelService in the ExpenseMoveReverseServiceImpl constructor
+
+#### Supply Chain
+
+-- migration script to update amount_invoiced in Sale Order table
+
+UPDATE sale_sale_order SaleOrder
+SET amount_invoiced =
+(
+    CASE
+      WHEN SaleOrder.currency <> Company.currency
+       AND SaleOrder.company_ex_tax_total <> 0
+      THEN SaleOrder.ex_tax_total *
+          (
+              (
+                  COALESCE((
+                      SELECT SUM(InvoiceLine.company_ex_tax_total)
+                      FROM account_invoice_line InvoiceLine
+                      JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+                      WHERE InvoiceLine.sale_order_line IN (
+                          SELECT id FROM sale_sale_order_line WHERE sale_order = SaleOrder.id
+                      )
+                      AND Invoice.operation_type_select = 3
+                      AND Invoice.status_select = 3
+                  ), 0)
+                  -
+                  COALESCE((
+                      SELECT SUM(InvoiceLine.company_ex_tax_total)
+                      FROM account_invoice_line InvoiceLine
+                      JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+                      WHERE InvoiceLine.sale_order_line IN (
+                          SELECT id FROM sale_sale_order_line WHERE sale_order = SaleOrder.id
+                      )
+                      AND Invoice.operation_type_select = 4
+                      AND Invoice.status_select = 3
+                  ), 0)
+              ) / SaleOrder.company_ex_tax_total
+          )
+      ELSE
+          COALESCE((
+              SELECT SUM(InvoiceLine.company_ex_tax_total)
+              FROM account_invoice_line InvoiceLine
+              JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+              WHERE InvoiceLine.sale_order_line IN (
+                  SELECT id FROM sale_sale_order_line WHERE sale_order = SaleOrder.id
+              )
+              AND Invoice.operation_type_select = 3
+              AND Invoice.status_select = 3
+          ), 0)
+          -
+          COALESCE((
+              SELECT SUM(InvoiceLine.company_ex_tax_total)
+              FROM account_invoice_line InvoiceLine
+              JOIN account_invoice Invoice ON Invoice.id = InvoiceLine.invoice
+              WHERE InvoiceLine.sale_order_line IN (
+                  SELECT id FROM sale_sale_order_line WHERE sale_order = SaleOrder.id
+              )
+              AND Invoice.operation_type_select = 4
+              AND Invoice.status_select = 3
+          ), 0)
+    END
+)
+FROM base_company Company
+WHERE SaleOrder.company = Company.id;
+
 ## [8.2.36] (2026-02-05)
 
 ### Fixes
@@ -2420,6 +2534,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.37]: https://github.com/axelor/axelor-open-suite/compare/v8.2.36...v8.2.37
 [8.2.36]: https://github.com/axelor/axelor-open-suite/compare/v8.2.35...v8.2.36
 [8.2.35]: https://github.com/axelor/axelor-open-suite/compare/v8.2.34...v8.2.35
 [8.2.34]: https://github.com/axelor/axelor-open-suite/compare/v8.2.33...v8.2.34

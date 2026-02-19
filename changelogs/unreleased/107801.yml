@@ -1,3 +1,0 @@
----
-title: "Payment session: fixed email sent not saved in messages when a partner has no email address set."
-module: axelor-account
