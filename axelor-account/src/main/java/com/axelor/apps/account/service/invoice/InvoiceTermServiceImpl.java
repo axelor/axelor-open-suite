@@ -1236,13 +1236,21 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
         reconciledAmount = availableInvoiceAmount.min(availableRefundAmount);
 
-        if (availableInvoiceAmount.subtract(reconciledAmount).signum() == 0) {
+        boolean invoiceExhausted = availableInvoiceAmount.subtract(reconciledAmount).signum() == 0;
+        boolean refundExhausted = availableRefundAmount.subtract(reconciledAmount).signum() == 0;
+
+        // FIX: Use two separate "if" statements instead of "else if" to allow both counters to
+        // increment when both invoice and refund are exhausted simultaneously
+        if (invoiceExhausted) {
           invoiceTermLinkWithRefundList.add(
               Pair.of(invoiceTermFromInvoice, Pair.of(invoiceTermFromRefund, reconciledAmount)));
           invoiceCounter++;
-        } else if (availableRefundAmount.subtract(reconciledAmount).signum() == 0) {
-          invoiceTermLinkWithRefundList.add(
-              Pair.of(invoiceTermFromInvoice, Pair.of(invoiceTermFromRefund, reconciledAmount)));
+        }
+        if (refundExhausted) {
+          if (!invoiceExhausted) {
+            invoiceTermLinkWithRefundList.add(
+                Pair.of(invoiceTermFromInvoice, Pair.of(invoiceTermFromRefund, reconciledAmount)));
+          }
           invoiceTermFromRefund.setIsPaid(true);
           refundCounter++;
         }

@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed infinite loop and refund reconciliation issues with isolated refunds"
+module: axelor-account
