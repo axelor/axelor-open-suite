@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed issue of not validated payment when auto confirm bank order is enabled."
+module: axelor-bank-payment
