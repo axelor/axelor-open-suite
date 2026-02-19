@@ -158,17 +158,13 @@ public class StockLocationServiceImpl implements StockLocationService {
 
   @Override
   public Set<Long> getContentStockLocationIds(StockLocation stockLocation) {
-    locationIdSet = new HashSet<>();
     if (stockLocation != null) {
-      List<StockLocation> stockLocations =
-          getAllLocationAndSubLocation(stockLocation, stockLocation.getIncludeVirtualSubLocation());
-      for (StockLocation item : stockLocations) {
-        locationIdSet.add(item.getId());
-      }
-    } else {
-      locationIdSet.add(0L);
+      return new HashSet<>(
+          getAllLocationAndSubLocation(
+              stockLocation.getId(), stockLocation.getIncludeVirtualSubLocation()));
     }
-
+    locationIdSet = new HashSet<>();
+    locationIdSet.add(0L);
     return locationIdSet;
   }
 
@@ -196,70 +192,44 @@ public class StockLocationServiceImpl implements StockLocationService {
   public List<StockLocation> getAllLocationAndSubLocation(
       StockLocation stockLocation, boolean isVirtualInclude) {
 
-    List<StockLocation> resultList = new ArrayList<>();
     if (stockLocation == null) {
-      return resultList;
+      return new ArrayList<>();
     }
-    if (isVirtualInclude) {
-      for (StockLocation subLocation :
-          stockLocationRepo
-              .all()
-              .filter("self.parentStockLocation.id = :stockLocationId")
-              .bind("stockLocationId", stockLocation.getId())
-              .fetch()) {
 
-        resultList.addAll(this.getAllLocationAndSubLocation(subLocation, isVirtualInclude));
-      }
-    } else {
-      for (StockLocation subLocation :
-          stockLocationRepo
-              .all()
-              .filter(
-                  "self.parentStockLocation.id = :stockLocationId AND self.typeSelect != :virtual")
-              .bind("stockLocationId", stockLocation.getId())
-              .bind("virtual", StockLocationRepository.TYPE_VIRTUAL)
-              .fetch()) {
+    List<Long> ids = getAllLocationAndSubLocation(stockLocation.getId(), isVirtualInclude);
 
-        resultList.addAll(this.getAllLocationAndSubLocation(subLocation, isVirtualInclude));
-      }
+    if (ids.isEmpty()) {
+      return new ArrayList<>();
     }
-    resultList.add(stockLocation);
 
-    return resultList;
+    return stockLocationRepo.all().filter("self.id IN :ids").bind("ids", ids).fetch();
   }
 
+  @SuppressWarnings("unchecked")
   public List<Long> getAllLocationAndSubLocation(Long stockLocationId, boolean isVirtualInclude) {
 
-    List<Long> resultList = new ArrayList<>();
     if (stockLocationId == null) {
-      return resultList;
+      return new ArrayList<>();
     }
-    for (Long subLocationId :
+
+    String sql =
+        "WITH RECURSIVE sublocs AS ("
+            + " SELECT id FROM stock_stock_location WHERE id = :stockLocationId"
+            + " UNION ALL"
+            + " SELECT s.id FROM stock_stock_location s"
+            + " JOIN sublocs ON s.parent_stock_location = sublocs.id"
+            + (isVirtualInclude
+                ? ""
+                : " WHERE s.type_select != " + StockLocationRepository.TYPE_VIRTUAL)
+            + ") SELECT id FROM sublocs";
+
+    List<Number> result =
         JPA.em()
-            .createQuery(
-                "SELECT sl.id FROM StockLocation sl WHERE sl.parentStockLocation.id = :stockLocationId AND (:isVirtual is true OR sl.typeSelect != :isVirtual)",
-                Long.class)
+            .createNativeQuery(sql)
             .setParameter("stockLocationId", stockLocationId)
-            .setParameter("isVirtual", isVirtualInclude)
-            .getResultList()) {
-      resultList.addAll(this.getAllLocationAndSubLocation(subLocationId, isVirtualInclude));
-    }
-    resultList.add(stockLocationId);
+            .getResultList();
 
-    return resultList;
-  }
-
-  @Override
-  public List<Long> getAllLocationAndSubLocationId(
-      StockLocation stockLocation, boolean isVirtualInclude) {
-    List<StockLocation> stockLocationList =
-        getAllLocationAndSubLocation(stockLocation, isVirtualInclude);
-    List<Long> stockLocationListId = null;
-    if (stockLocationList != null) {
-      stockLocationListId =
-          stockLocationList.stream().map(StockLocation::getId).collect(Collectors.toList());
-    }
-    return stockLocationListId;
+    return result.stream().map(Number::longValue).collect(Collectors.toList());
   }
 
   @Override
