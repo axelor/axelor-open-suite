@@ -137,7 +137,7 @@
       <panel-dashlet name="viewBillOfMaterialsPanel"
         action="action-prod-process-view-bill-of-materials" title="Bills of material"/>
 
-      <panel name="hazardPhrasePanel" title="Hazard phrases"
+      <panel name="hazardPhrasePanel" title="Safety"
         if="__config__.app.getApp('base')?.getEnableProductsSafety()">
         <panel-related field="hazardPhraseSet" colSpan="12" readonly="true"
           canNew="false" canSelect="false" canRemove="false" form-view="base-hazard-phrase-form"
