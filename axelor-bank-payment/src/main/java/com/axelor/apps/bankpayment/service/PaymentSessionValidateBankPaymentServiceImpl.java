@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -60,15 +60,15 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.TypedQuery;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
-import javax.persistence.TypedQuery;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -193,15 +193,6 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       boolean isGlobal)
       throws AxelorException {
 
-    if (paymentSession.getBankOrder() != null
-        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
-      paymentSessionBankOrderService.createOrUpdateBankOrderLineFromInvoiceTerm(
-          paymentSession,
-          invoiceTerm,
-          paymentSession.getBankOrder(),
-          invoiceTermLinkWithRefundList);
-    }
-
     paymentSession =
         super.processInvoiceTerm(
             paymentSession,
@@ -211,6 +202,15 @@ public class PaymentSessionValidateBankPaymentServiceImpl
             invoiceTermLinkWithRefundList,
             out,
             isGlobal);
+
+    if (paymentSession.getBankOrder() != null
+        && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
+      paymentSessionBankOrderService.createOrUpdateBankOrderLineFromInvoiceTerm(
+          paymentSession,
+          invoiceTerm,
+          paymentSession.getBankOrder(),
+          invoiceTermLinkWithRefundList);
+    }
 
     return paymentSession;
   }
@@ -258,8 +258,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
         JPA.em()
             .createQuery(
                 "SELECT DISTINCT Partner FROM Partner Partner "
-                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner "
-                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
+                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner.id "
+                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine.id "
                     + " WHERE InvoiceTerm.paymentSession = :paymentSession "
                     + " AND InvoiceTerm.isSelectedOnPaymentSession = true "
                     + " GROUP BY Partner.id , InvoiceTerm.bankDetails "

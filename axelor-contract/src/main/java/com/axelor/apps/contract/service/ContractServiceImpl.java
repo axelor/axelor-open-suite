@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,8 +41,8 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -355,28 +355,6 @@ public class ContractServiceImpl extends ContractRepository implements ContractS
     contract.setRenewalNumber(contract.getRenewalNumber() + 1);
 
     save(contract);
-  }
-
-  public List<Contract> getContractToTerminate(LocalDate date) {
-    return all()
-        .filter(
-            "self.statusSelect = ?1 AND self.currentContractVersion.statusSelect = ?2 AND self.isTacitRenewal IS FALSE "
-                + "AND (self.toClosed IS TRUE OR self.currentContractVersion.supposedEndDate >= ?3)",
-            ACTIVE_CONTRACT,
-            ContractVersionRepository.ONGOING_VERSION,
-            date)
-        .fetch();
-  }
-
-  public List<Contract> getContractToRenew(LocalDate date) {
-    return all()
-        .filter(
-            "self.statusSelect = ?1 AND self.isTacitRenewal IS TRUE AND self.toClosed IS FALSE "
-                + "AND self.currentContractVersion.statusSelect = ?2 AND self.currentContractVersion.supposedEndDate >= ?3",
-            ACTIVE_CONTRACT,
-            ContractVersionRepository.ONGOING_VERSION,
-            date)
-        .fetch();
   }
 
   @Transactional(rollbackOn = {Exception.class})

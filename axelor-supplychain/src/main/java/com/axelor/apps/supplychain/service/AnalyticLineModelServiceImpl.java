@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.supplychain.service;
 
+import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
@@ -40,7 +41,7 @@ import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -173,16 +174,19 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
   public boolean productAccountManageAnalytic(AnalyticLineModel analyticLineModel)
       throws AxelorException {
     Product product = analyticLineModel.getProduct();
+    if (product == null) {
+      return false;
+    }
+    Account account =
+        accountManagementAccountService.getProductAccount(
+            product,
+            analyticLineModel.getCompany(),
+            analyticLineModel.getFiscalPosition(),
+            analyticLineModel.getIsPurchase(),
+            false);
     return analyticToolService.isManageAnalytic(analyticLineModel.getCompany())
-        && product != null
-        && accountManagementAccountService
-            .getProductAccount(
-                product,
-                analyticLineModel.getCompany(),
-                analyticLineModel.getFiscalPosition(),
-                analyticLineModel.getIsPurchase(),
-                false)
-            .getAnalyticDistributionAuthorized();
+        && account != null
+        && account.getAnalyticDistributionAuthorized();
   }
 
   @Override

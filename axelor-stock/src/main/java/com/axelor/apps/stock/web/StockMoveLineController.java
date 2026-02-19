@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,7 +46,7 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -269,7 +269,8 @@ public class StockMoveLineController {
   public void setAvailableStatus(ActionRequest request, ActionResponse response) {
     try {
       StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-      Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
+      StockMove stockMove = getStockMove(request, stockMoveLine);
+      Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine, stockMove);
       response.setValue("availableStatus", stockMoveLine.getAvailableStatus());
       response.setValue("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
     } catch (Exception e) {
@@ -453,5 +454,12 @@ public class StockMoveLineController {
 
     response.setValue("fromStockLocation", stockMoveLine.getFromStockLocation());
     response.setValue("toStockLocation", stockMoveLine.getToStockLocation());
+  }
+
+  public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    Beans.get(StockMoveLineService.class).qtyOnChange(stockMoveLine, stockMove);
+    response.setValue("companyPurchasePrice", stockMoveLine.getCompanyPurchasePrice());
   }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="supplychain-batch-grid" title="Supplychain batches"
     model="com.axelor.apps.supplychain.db.SupplychainBatch">
@@ -43,7 +43,7 @@
           if="__config__.app.getApp('supplychain')?.getGenerateInvoiceFromSaleOrder()"/>
         <panel name="subInvoiceOrderConfig1Panel" showIf="invoiceOrdersTypeSelect == 1"
           colSpan="12">
-          <field name="salespersonOrBuyerSet" widget="TagSelect" title="Salespersons"/>
+          <field name="salespersonOrBuyerSet" widget="Tags" title="Salespersons"/>
           <field name="team"/>
           <field name="orderUpToDate"/>
           <field name="deliveryOrReceiptState" widget="MultiSelect"
@@ -53,7 +53,7 @@
         </panel>
         <panel name="subInvoiceOrderConfig2Panel" showIf="invoiceOrdersTypeSelect == 2"
           colSpan="12">
-          <field name="salespersonOrBuyerSet" widget="TagSelect" title="Buyers"/>
+          <field name="salespersonOrBuyerSet" widget="Tags" title="Buyers"/>
           <field name="team"/>
           <field name="orderUpToDate"/>
           <field name="deliveryOrReceiptState" widget="MultiSelect"

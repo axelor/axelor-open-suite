@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
 
   <grid name="partner-price-list-grid" title="Partner price lists"
@@ -28,12 +28,12 @@
     </panel>
     <panel-related name="customersPanel" field="salePartnerList"
       grid-view="partner-customer-grid" form-view="partner-customer-form" colSpan="12" hidden="true"
-      showIf="typeSelect == 1" canSelect="true"
+      showIf="typeSelect == 1" canSelect="true" canNew="false"
       domain="self.isContact = false AND (self.isCustomer = true OR self.isProspect = true) AND self.salePartnerPriceList IS NULL AND self.currency = :currency"
       onChange="action-partner-price-list-validate-exclusive"/>
     <panel-related name="suppliersPanel" field="purchasePartnerList"
       grid-view="partner-supplier-grid" form-view="partner-supplier-form" colSpan="12" hidden="true"
-      showIf="typeSelect == 2" canSelect="true"
+      showIf="typeSelect == 2" canSelect="true" canNew="false"
       domain="self.isContact = false AND self.isSupplier = true AND self.purchasePartnerPriceList IS NULL AND self.currency = :currency"
       onChange="action-partner-price-list-validate-exclusive"/>
   </form>

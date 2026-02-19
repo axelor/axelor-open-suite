@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -55,9 +55,9 @@ import com.axelor.common.StringUtils;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.dms.db.repo.DMSFileRepository;
 import com.axelor.studio.db.AppAccount;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -1236,13 +1236,21 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
 
         reconciledAmount = availableInvoiceAmount.min(availableRefundAmount);
 
-        if (availableInvoiceAmount.subtract(reconciledAmount).signum() == 0) {
+        boolean invoiceExhausted = availableInvoiceAmount.subtract(reconciledAmount).signum() == 0;
+        boolean refundExhausted = availableRefundAmount.subtract(reconciledAmount).signum() == 0;
+
+        // FIX: Use two separate "if" statements instead of "else if" to allow both counters to
+        // increment when both invoice and refund are exhausted simultaneously
+        if (invoiceExhausted) {
           invoiceTermLinkWithRefundList.add(
               Pair.of(invoiceTermFromInvoice, Pair.of(invoiceTermFromRefund, reconciledAmount)));
           invoiceCounter++;
-        } else if (availableRefundAmount.subtract(reconciledAmount).signum() == 0) {
-          invoiceTermLinkWithRefundList.add(
-              Pair.of(invoiceTermFromInvoice, Pair.of(invoiceTermFromRefund, reconciledAmount)));
+        }
+        if (refundExhausted) {
+          if (!invoiceExhausted) {
+            invoiceTermLinkWithRefundList.add(
+                Pair.of(invoiceTermFromInvoice, Pair.of(invoiceTermFromRefund, reconciledAmount)));
+          }
           invoiceTermFromRefund.setIsPaid(true);
           refundCounter++;
         }

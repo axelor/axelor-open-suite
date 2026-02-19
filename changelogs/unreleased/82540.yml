@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed NPE when the product account computed with the account management is null."
+module: axelor-sale

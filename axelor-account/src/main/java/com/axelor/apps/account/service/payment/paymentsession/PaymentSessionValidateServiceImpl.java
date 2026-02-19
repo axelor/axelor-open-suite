@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -66,8 +66,9 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.AppAccount;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.TypedQuery;
 import jakarta.xml.bind.JAXBException;
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -81,7 +82,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.TypedQuery;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -294,9 +294,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || this.shouldBeProcessed(invoiceTerm)) {
 
-          if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
-            offset++;
+          // FIX: Increment offset BEFORE the paymentAmount check to avoid infinite loop with
+          // refunds
+          offset++;
 
+          if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) != 0) {
             this.processInvoiceTerm(
                 paymentSession,
                 invoiceTerm,
@@ -797,7 +799,10 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
       return taxLineMap;
     }
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+      if (moveLineFinancialDiscountService.isFinancialDiscountLine(
+          moveLine,
+          move.getCompany(),
+          move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)) {
         taxLineMap.put(moveLine, moveLine.getTaxLineSet());
         moveLine.setTaxLineSet(Sets.newHashSet());
       }
@@ -1022,7 +1027,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         JPA.em()
             .createQuery(
                 "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
-                    + " WHERE InvoiceTerm.paymentSession = :paymentSession",
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession"
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true",
                 InvoiceTerm.class);
     invoiceTermQuery.setParameter("paymentSession", paymentSession);
 

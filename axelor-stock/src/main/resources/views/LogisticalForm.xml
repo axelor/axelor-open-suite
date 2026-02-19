@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid model="com.axelor.apps.stock.db.LogisticalForm" title="Logistical forms"
     name="logistical-form-grid" orderBy="-deliveryNumberSeq,-collectionDate">
@@ -32,7 +32,7 @@
     onSave="action-logistical-form-validate-mass-on-save">
     <toolbar>
       <button name="printBtn" title="Print packing list"
-        onClick="action-group-logistical-form-print-packing-list" icon="fa-print"
+        onClick="action-group-logistical-form-print-packing-list" icon="printer"
         if="__config__.app.isApp('supplychain')"/>
     </toolbar>
     <panel colSpan="12" name="mainPanel">
@@ -57,10 +57,10 @@
       <panel name="actionsPanel" colSpan="4">
         <button name="carrierValidatedBtn" title="Carrier validated"
           showIf="statusSelect == 1" onClick="action-group-logistical-form-carrier-validated"
-          icon="fa-check" css="btn btn-success" colSpan="12"
+          icon="check" css="btn btn-success" colSpan="12"
           prompt="Are you sure you want to validate the carrier?"/>
         <button name="backToProvisionBtn" title="Back to provision" showIf="statusSelect > 1"
-          icon="fa-cubes" onClick="action-logistical-form-method-back-to-provision" colSpan="12"
+          icon="boxes" onClick="action-logistical-form-method-back-to-provision" colSpan="12"
           prompt="Are you sure you want to go back to provision ?"/>
       </panel>
     </panel>
@@ -94,7 +94,7 @@
       <panel name="LinesPanel" title="Lines" readonlyIf="statusSelect == 3" hidden="true">
         <panel name="stockMovePanel" colSpan="12">
           <field name="stockMoveList" grid-view="stock-move-out-grid"
-            form-view="stock-move-form" colSpan="6" widget="TagSelect"
+            form-view="stock-move-form" colSpan="6" widget="Tags"
             onSelect="action-logistical-form-method-stock-move-domain" canEdit="false"
             onChange="action-logistical-form-group-stock-move-list-change"/>
           <panel-dashlet name="stockMoveLinesPanel"

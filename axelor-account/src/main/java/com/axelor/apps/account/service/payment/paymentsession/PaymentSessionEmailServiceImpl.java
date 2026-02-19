@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,13 +33,12 @@ import com.axelor.message.db.Template;
 import com.axelor.message.db.repo.MessageRepository;
 import com.axelor.message.service.MessageService;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
-import wslite.json.JSONException;
 
 public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailService {
   protected TemplateMessageService templateMessageService;
@@ -64,8 +63,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public int sendEmails(PaymentSession paymentSession)
-      throws ClassNotFoundException, JSONException, IOException {
+  public int sendEmails(PaymentSession paymentSession) throws ClassNotFoundException, IOException {
     if (this.getEmailTemplate(paymentSession) == null) {
       return 0;
     }
@@ -137,7 +135,7 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
   @Transactional(rollbackOn = {Exception.class})
   protected void sendEmailToPartner(
       PaymentSession paymentSession, Partner partner, List<Long> partnerIdList)
-      throws ClassNotFoundException, JSONException, IOException {
+      throws ClassNotFoundException, IOException {
     if (partner == null || partnerIdList.contains(partner.getId())) {
       return;
     }

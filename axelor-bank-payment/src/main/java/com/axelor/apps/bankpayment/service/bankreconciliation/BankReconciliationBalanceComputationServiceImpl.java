@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,8 +33,8 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.db.JPA;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.List;
@@ -238,7 +238,14 @@ public class BankReconciliationBalanceComputationServiceImpl
     if (!brl.getIsPosted() && !Strings.isNullOrEmpty(brl.getPostedNbr())) {
       String query = "self.postedNbr LIKE '%%s%'";
       query = query.replace("%s", brl.getPostedNbr());
-      List<MoveLine> moveLines = moveLineRepository.all().filter(query).fetch();
+      query += " AND self.move.company = :company";
+
+      List<MoveLine> moveLines =
+          moveLineRepository
+              .all()
+              .filter(query)
+              .bind("company", brl.getBankReconciliation().getCompany())
+              .fetch();
       for (MoveLine moveLine : moveLines) {
         // To avoid the fact that a moveline can be related to multiple brl and so, the update of
         // the amount can be duplicated

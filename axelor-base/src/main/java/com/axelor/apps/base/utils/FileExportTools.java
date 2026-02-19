@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.base.utils;
 
 import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.common.FileUtils;
 import java.io.File;
 import java.io.IOException;
@@ -44,7 +45,7 @@ public class FileExportTools {
   protected static final String DEFAULT_EXPORT_DIR = "{java.io.tmpdir}/axelor/data-export";
 
   protected static final String EXPORT_PATH =
-      AppSettings.get().getPath("data.export.dir", DEFAULT_EXPORT_DIR);
+      AppSettings.get().getPath(AvailableAppSettings.DATA_UPLOAD_DIR, DEFAULT_EXPORT_DIR);
 
   private static final String[] OUTPUT_NAME_SEARCH_LIST =
       new String[] {"*", "\"", "/", "\\", "?", "%", ":", "|", "<", ">", "#"};
@@ -95,7 +96,7 @@ public class FileExportTools {
   }
 
   /**
-   * Copy the file from the file path to data.export.dir.
+   * Copy the file from the file path to data.upload.dir.
    *
    * @param filePath the absolute path of a file. For example:
    *     /home/axelor/data/attachments/example.csv

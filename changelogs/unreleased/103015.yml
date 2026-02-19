@@ -1,5 +1,0 @@
----
-title: "Purchase request: fixed NPE on generating purchase order if company is empty."
-module: axelor-purchase
-developer : |
- - Changed the PurchaseRequestService.generatePo method to use a default company too.

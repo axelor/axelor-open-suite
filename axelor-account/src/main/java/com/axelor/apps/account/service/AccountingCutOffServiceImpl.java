@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,8 +57,8 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.db.Query;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -163,7 +163,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
             + "AND EXISTS(SELECT 1 FROM MoveLine ml "
             + " WHERE ml.move = self "
             + " AND ml.account.manageCutOffPeriod IS TRUE "
-            + " AND ml.cutOffStartDate != null AND ml.cutOffEndDate != null "
+            + " AND ml.cutOffStartDate IS NOT null AND ml.cutOffEndDate IS NOT null "
             + " AND ml.cutOffEndDate > :date)";
 
     if (company != null) {
@@ -208,7 +208,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
         " AND self.move.date <= :date "
             + "AND self.move.statusSelect IN (2, 3, 5) "
             + "AND self.account.manageCutOffPeriod IS TRUE "
-            + "AND self.cutOffStartDate != null AND self.cutOffEndDate != null "
+            + "AND self.cutOffStartDate IS NOT null AND self.cutOffEndDate IS NOT null "
             + "AND self.cutOffEndDate > :date";
 
     if (company != null) {
@@ -433,10 +433,10 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
           if (isReverse
               != (accountingCutOffTypeSelect
                   == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES)) {
-            cutOffMoveLine.setDebit(cutOffMoveLine.getDebit().add(convertedAmount));
+            cutOffMoveLine.setDebit(cutOffMoveLine.getDebit().add(convertedAmount.abs()));
             cutOffMoveLine.setCurrencyAmount(currencyAmount.abs());
           } else {
-            cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(convertedAmount));
+            cutOffMoveLine.setCredit(cutOffMoveLine.getCredit().add(convertedAmount.abs()));
             currencyAmount = moveLineToolService.computeCurrencyAmountSign(currencyAmount, false);
             cutOffMoveLine.setCurrencyAmount(currencyAmount);
           }
@@ -447,7 +447,7 @@ public class AccountingCutOffServiceImpl implements AccountingCutOffService {
                   cutOffMove,
                   partner,
                   moveLineAccount,
-                  amountInCurrency,
+                  amountInCurrency.abs(),
                   isReverse
                       != (accountingCutOffTypeSelect
                           == AccountingBatchRepository.ACCOUNTING_CUT_OFF_TYPE_DEFERRED_INCOMES),

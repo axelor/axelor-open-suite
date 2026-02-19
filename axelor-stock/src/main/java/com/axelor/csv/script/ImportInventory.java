@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,9 +23,10 @@ import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.service.InventoryService;
-import com.google.inject.Inject;
+import com.axelor.apps.stock.service.inventory.InventoryService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class ImportInventory {
@@ -40,6 +41,7 @@ public class ImportInventory {
 
     Inventory inventory = (Inventory) bean;
     inventoryService.validateInventory(inventory);
+    inventory = JpaModelHelper.ensureManaged(inventory);
 
     return inventory;
   }

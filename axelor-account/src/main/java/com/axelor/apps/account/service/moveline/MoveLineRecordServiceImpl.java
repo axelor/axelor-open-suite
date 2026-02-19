@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,14 +19,18 @@
 package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
+import com.axelor.apps.account.db.AccountingSituation;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.TaxEquiv;
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.account.db.repo.AccountRepository;
+import com.axelor.apps.account.db.repo.AccountingSituationRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -34,7 +38,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -51,6 +55,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   protected TaxService taxService;
   protected MoveLineToolService moveLineToolService;
   protected MoveLineComputeAnalyticService moveLineComputeAnalyticService;
+  protected AccountingSituationRepository accountingSituationRepository;
 
   @Inject
   public MoveLineRecordServiceImpl(
@@ -61,7 +66,8 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
       CurrencyScaleService currencyScaleService,
       TaxService taxService,
       MoveLineToolService moveLineToolService,
-      MoveLineComputeAnalyticService moveLineComputeAnalyticService) {
+      MoveLineComputeAnalyticService moveLineComputeAnalyticService,
+      AccountingSituationRepository accountingSituationRepository) {
     this.appAccountService = appAccountService;
     this.moveLoadDefaultConfigService = moveLoadDefaultConfigService;
     this.fiscalPositionService = fiscalPositionService;
@@ -70,6 +76,7 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     this.taxService = taxService;
     this.moveLineToolService = moveLineToolService;
     this.moveLineComputeAnalyticService = moveLineComputeAnalyticService;
+    this.accountingSituationRepository = accountingSituationRepository;
   }
 
   @Override
@@ -127,6 +134,8 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   public void refreshAccountInformation(MoveLine moveLine, Move move) throws AxelorException {
     Account accountingAccount = moveLine.getAccount();
 
+    refreshVatSystemSelect(moveLine, move.getCompany());
+
     if (accountingAccount == null || !accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
       moveLine.setTaxLineSet(Sets.newHashSet());
       moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
@@ -149,9 +158,26 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     }
     moveLine.setTaxLineSet(taxLineSet);
     moveLine.setTaxEquiv(taxEquiv);
+  }
 
-    if (ObjectUtils.notEmpty(accountingAccount.getVatSystemSelect())) {
+  @Override
+  public void refreshVatSystemSelect(MoveLine moveLine, Company company) {
+    Account accountingAccount = moveLine.getAccount();
+
+    if (accountingAccount == null || !accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
+      moveLine.setVatSystemSelect(AccountRepository.VAT_SYSTEM_DEFAULT);
+      return;
+    }
+
+    if (accountingAccount.getVatSystemSelect() != null
+        && accountingAccount.getVatSystemSelect() != AccountRepository.VAT_SYSTEM_DEFAULT) {
       moveLine.setVatSystemSelect(accountingAccount.getVatSystemSelect());
+    } else {
+      AccountingSituation accountingSituation =
+          accountingSituationRepository.findByCompanyAndPartner(company, moveLine.getPartner());
+      if (accountingSituation != null
+          && accountingSituation.getVatSystemSelect() == AccountingSituationRepository.VAT_DELIVERY)
+        moveLine.setVatSystemSelect(AccountRepository.VAT_SYSTEM_GOODS);
     }
   }
 

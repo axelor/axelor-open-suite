@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -54,7 +54,7 @@
     <many-to-many name="workAreaSet" title="Work area"
       ref="com.axelor.apps.base.db.Country"/>
     <one-to-many name="fidelityList" title="Fidelity"
-      ref="com.axelor.apps.crm.db.Fidelity" mappedBy="partner"/>
+      ref="com.axelor.apps.crm.db.Fidelity" mappedBy="partner" copy="false"/>
     <date name="corporatePartnerSince" title="Corporate partner since"/>
     <integer name="takenOpportunities" title="Sent opportunities" readonly="true"
       formula="true">

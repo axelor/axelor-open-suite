@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,17 +21,15 @@ package com.axelor.apps.account.service.fixedasset;
 import com.axelor.apps.account.db.FixedAsset;
 import com.axelor.apps.account.db.FixedAssetLine;
 import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
-import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.base.service.YearService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -139,20 +137,7 @@ public abstract class AbstractFixedAssetLineServiceImpl implements FixedAssetLin
 
   protected BigDecimal computeDepreciationValue(
       FixedAsset fixedAsset, BigDecimal prorataTemporis, FixedAssetLine firstPlannedLine) {
-    BigDecimal deprecationValue;
-    if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
-        fixedAsset.getComputationMethodSelect())) {
-      deprecationValue =
-          fixedAsset
-              .getGrossValue()
-              .multiply(prorataTemporis)
-              .divide(
-                  BigDecimal.valueOf(fixedAsset.getNumberOfDepreciation()),
-                  currencyScaleService.getCompanyScale(fixedAsset),
-                  RoundingMode.HALF_UP);
-    } else {
-      deprecationValue = firstPlannedLine.getDepreciation().multiply(prorataTemporis);
-    }
+    BigDecimal deprecationValue = firstPlannedLine.getDepreciation().multiply(prorataTemporis);
     return currencyScaleService.getCompanyScaledValue(fixedAsset, deprecationValue);
   }
 

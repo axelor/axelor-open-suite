@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,8 +28,8 @@ import com.axelor.meta.db.repo.MetaScheduleRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.studio.db.AppLeave;
 import com.axelor.utils.db.Wizard;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class SchedulerCreationServiceImpl implements SchedulerCreationService {
 

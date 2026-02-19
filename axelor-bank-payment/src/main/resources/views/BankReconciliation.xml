@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="bank-reconciliation-grid" title="Bank reconciliations"
     model="com.axelor.apps.bankpayment.db.BankReconciliation"
@@ -325,7 +325,7 @@
     title="Reconciled move lines" model="com.axelor.apps.account.db.MoveLine">
     <view type="grid" name="move-line-bank-reconciliation-grid"/>
     <view type="form" name="move-line-form"/>
-    <domain>self.move.id in (select ML.move from BankReconciliationLine as BRL left join
+    <domain>self.move.id in (select ML.move.id from BankReconciliationLine as BRL left join
       BRL.moveLine as ML where BRL.bankReconciliation.id = :bankReconciliationId)</domain>
     <context name="bankReconciliationId" expr="eval: id"/>
   </action-view>

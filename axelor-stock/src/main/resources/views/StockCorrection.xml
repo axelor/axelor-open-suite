@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="stock-correction-grid" title="Stock Corrections"
     model="com.axelor.apps.stock.db.StockCorrection">
@@ -23,9 +23,8 @@
         <field name="statusSelect" showTitle="false" widget="NavSelect" colSpan="12"/>
       </panel>
       <panel name="actionsPanel" colSpan="4">
-        <button name="validateBtn" title="Validate" icon="fa-check"
-          showIf="statusSelect == 1" onClick="action-group-stock-correction-validate-click"
-          colSpan="12"/>
+        <button name="validateBtn" title="Validate" icon="check" showIf="statusSelect == 1"
+          onClick="action-group-stock-correction-validate-click" colSpan="12"/>
         <button name="showGeneratedStockMoveBtn" title="Show Generated Stock Move"
           showIf="statusSelect == 2" colSpan="12"
           onClick="action-stock-correction-method-show-generated-stock-move"/>
@@ -75,9 +74,9 @@
   <action-attrs name="action-stock-correction-on-select-product">
     <attribute name="domain" for="product"
       expr="eval: &quot; self.id IN (0) AND self.dtype = 'Product'&quot;"
-      if="stockLocation == null || stockLocation?.stockLocationLineList?.isEmpty()"/>
+      if="stockLocation == null || __repo__(StockLocationLine).all().filter('self.stockLocation = ?1', stockLocation).count() == 0"/>
     <attribute name="domain" for="product"
-      expr="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"
+      expr="self.productTypeSelect = 'storable' AND self.dtype = 'Product' AND self.isModel = false"
       if="stockLocation != null"/>
   </action-attrs>
 
@@ -85,7 +84,7 @@
     <attribute name="domain" for="trackingNumber"
       expr="eval: &quot; self.id IN (0) &quot;" if="stockLocation == null || product == null"/>
     <attribute name="domain" for="trackingNumber"
-      expr="eval: &quot; self IN(SELECT tn FROM StockLocation s JOIN s.detailsStockLocationLineList dsl JOIN dsl.trackingNumber tn WHERE s = :stockLocation AND dsl.product = :product) &quot;"
+      expr="eval: &quot; self IN (SELECT sll.trackingNumber FROM StockLocationLine sll WHERE sll.detailsStockLocation = :stockLocation AND sll.product = :product) &quot;"
       if="stockLocation != null &amp;&amp; product != null"/>
   </action-attrs>
 

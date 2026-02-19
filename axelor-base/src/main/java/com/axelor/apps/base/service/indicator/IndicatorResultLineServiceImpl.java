@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,8 +25,8 @@ import com.axelor.apps.base.db.repo.IndicatorResultLineRepository;
 import com.axelor.apps.base.service.indicator.evaluator.ExpressionEvaluator;
 import com.axelor.db.Model;
 import com.axelor.meta.db.MetaModel;
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import jakarta.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;

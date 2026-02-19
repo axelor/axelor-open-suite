@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="bank-order-bank-to-bank-grid" orderBy="-bankOrderDate" title="Bank Orders"
     model="com.axelor.apps.bankpayment.db.BankOrder">
@@ -130,7 +130,7 @@
           readonlyIf="technicalOriginSelect == 1"/>
         <field name="bankOrderFileFormat" form-view="bank-order-file-format-form"
           grid-view="bank-order-file-format-grid" canView="false"
-          domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = 'true'"
+          domain="self.orderTypeSelect = :orderTypeSelect AND self.fileGenerationSupported = true"
           colSpan="6" onChange="action-bank-order-group-bank-order-file-format-onchange"
           readonlyIf="technicalOriginSelect == 1"/>
         <field name="partnerTypeSelect" css="label-bold bold" colSpan="6"

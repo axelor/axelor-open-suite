@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,14 +27,13 @@ import com.axelor.mail.db.repo.MailMessageRepository;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import wslite.json.JSONException;
 
 public class GdprAnonymizeServiceImpl implements GdprAnonymizeService {
 
@@ -54,7 +53,6 @@ public class GdprAnonymizeServiceImpl implements GdprAnonymizeService {
    * Anonymize tracking datas (track -> oldValue and value)
    *
    * @param reference
-   * @throws JSONException
    * @throws ClassNotFoundException
    * @throws JsonParseException
    * @throws JsonMappingException

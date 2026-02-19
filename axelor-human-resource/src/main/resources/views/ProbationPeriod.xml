@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="probation-period-grid" title="Probation periods"
     model="com.axelor.apps.hr.db.ProbationPeriod">
@@ -25,9 +25,9 @@
       <field name="contractSubType"
         onSelect="action-probation-period-attrs-contract-sub-type-set-domain"
         showIf="contractType != null &amp;&amp; contractType.employmentContractSubTypeList != null &amp;&amp; contractType.employmentContractSubTypeList.length &gt; 0"/>
-      <field name="collectiveAgreementSet" widget="TagSelect"
-        form-view="collective-agreement-form" grid-view="collective-agreement-grid" colSpan="12"/>
-      <field name="qualificationSet" widget="TagSelect" form-view="qualification-form"
+      <field name="collectiveAgreementSet" widget="Tags" form-view="collective-agreement-form"
+        grid-view="collective-agreement-grid" colSpan="12"/>
+      <field name="qualificationSet" widget="Tags" form-view="qualification-form"
         grid-view="qualification-grid"
         onSelect="action-probation-period-attrs-qualification-set-on-select" colSpan="12"/>
       <field name="isPreviouslyHired"/>
@@ -46,7 +46,7 @@
 
   <action-attrs name="action-probation-period-attrs-qualification-set-on-select">
     <attribute name="domain"
-      expr="eval: (collectiveAgreementSet !=  null &amp;&amp; collectiveAgreementSet?.size() &gt; 0) ? &quot;self.collectiveAgreement.id IN (${collectiveAgreementSet?.collect{it.id}?.join(',')})&quot; : &quot;self.collectiveAgreement.id IN (null)&quot;"
+      expr="eval: (collectiveAgreementSet IS NOT null &amp;&amp; collectiveAgreementSet?.size() &gt; 0) ? &quot;self.collectiveAgreement.id IN (${collectiveAgreementSet?.collect{it.id}?.join(',')})&quot; : &quot;self.collectiveAgreement.id IN (null)&quot;"
       for="qualificationSet"/>
   </action-attrs>
 

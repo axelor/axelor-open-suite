@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,10 +23,11 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.quality.db.RequiredDocument;
 import com.axelor.apps.quality.db.repo.RequiredDocumentRepository;
 import com.axelor.apps.quality.exception.QualityExceptionMessage;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.db.MetaFile;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -78,7 +79,7 @@ public class RequiredDocumentExportServiceImpl implements RequiredDocumentExport
     if (CollectionUtils.isEmpty(fileList)) {
       return null;
     }
-    Path zipFile = MetaFiles.createTempFile("Required documents", ".zip");
+    Path zipFile = TempFiles.createTempFile("Required documents", ".zip");
 
     try (ZipOutputStream zout = new ZipOutputStream(Files.newOutputStream(zipFile))) {
       for (File file : fileList) {

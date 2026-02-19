@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,17 +23,12 @@ import com.axelor.apps.base.db.repo.CompanyRepository;
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.meta.loader.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppSale;
-import com.axelor.studio.db.repo.AppRepository;
 import com.axelor.studio.db.repo.AppSaleRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.List;
 
 @Singleton
@@ -47,16 +42,11 @@ public class AppSaleServiceImpl extends AppBaseServiceImpl implements AppSaleSer
 
   @Inject
   public AppSaleServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      AppSettingsStudioService appSettingsService,
-      MetaModuleRepository metaModuleRepo,
-      MetaFileRepository metaFileRepo,
+      AppService appService,
       AppSaleRepository appSaleRepo,
       CompanyRepository companyRepo,
       SaleConfigRepository saleConfigRepo) {
-    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
+    super(appService);
     this.appSaleRepo = appSaleRepo;
     this.companyRepo = companyRepo;
     this.saleConfigRepo = saleConfigRepo;
@@ -64,7 +54,7 @@ public class AppSaleServiceImpl extends AppBaseServiceImpl implements AppSaleSer
 
   @Override
   public AppSale getAppSale() {
-    return appSaleRepo.all().fetchOne();
+    return appSaleRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

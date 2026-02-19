@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,7 @@ package com.axelor.apps.base.callable;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.db.tenants.TenantAware;
+import com.axelor.concurrent.ContextAware;
 import com.axelor.db.tenants.TenantResolver;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -58,22 +58,18 @@ public class ControllerCallableTool<V> {
     // Start thread
     Future<V> future =
         executor.submit(
-            () -> {
-              TenantAware tenantAware =
-                  new TenantAware(
-                          () -> {
-                            try {
-                              callable.call();
-                            } catch (Exception e) {
-                              throw new RuntimeException(e);
-                            }
-                          })
-                      .tenantId(currentTenantId);
-              tenantAware.withTransaction(false);
-              tenantAware.start();
-              tenantAware.join();
-              return null;
-            });
+            ContextAware.of()
+                .withTransaction(false)
+                .withTenantId(currentTenantId)
+                .build(
+                    () -> {
+                      try {
+                        callable.call();
+                      } catch (Exception e) {
+                        throw new RuntimeException(e);
+                      }
+                      return null;
+                    }));
 
     int processTimeout = Beans.get(AppBaseService.class).getProcessTimeout();
     // Wait processTimeout seconds

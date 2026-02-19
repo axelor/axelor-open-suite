@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,6 +30,7 @@ import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
 import com.axelor.apps.base.AxelorException;
@@ -38,11 +39,12 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.config.CompanyConfigService;
+import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.db.BudgetDistribution;
 import com.axelor.apps.budget.service.BudgetToolsService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 
 public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
@@ -68,6 +70,8 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
       AppBaseService appBaseService,
       AnalyticLineService analyticLineService,
       CurrencyScaleService currencyScaleService,
+      MoveLineRecordService moveLineRecordService,
+      AccountManagementService accountManagementService,
       BudgetToolsService budgetToolsService) {
     super(
         companyConfigService,
@@ -86,7 +90,9 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateServiceImpl {
         taxService,
         appBaseService,
         analyticLineService,
-        currencyScaleService);
+        currencyScaleService,
+        moveLineRecordService,
+        accountManagementService);
     this.budgetToolsService = budgetToolsService;
   }
 

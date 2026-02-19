@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class PartnerPriceListController {
@@ -63,6 +63,7 @@ public class PartnerPriceListController {
     response.setAttr(
         "priceListSet",
         "domain",
-        String.format("self.typeSelect = %d AND self.currency = %d", typeSelect, currency.getId()));
+        String.format(
+            "self.typeSelect = %d AND self.currency.id = %d", typeSelect, currency.getId()));
   }
 }

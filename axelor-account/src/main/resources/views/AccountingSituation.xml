@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="accounting-situation-partner-grid" title="Accounting situations"
     model="com.axelor.apps.account.db.AccountingSituation">
@@ -46,19 +46,19 @@
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="customerAccount"
         domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='receivable'"
-        canNew="true" form-view="customer-account-form" grid-view="account-grid"/>
+        form-view="customer-account-form" grid-view="account-grid"/>
       <field name="supplierAccount"
         domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='payable'"
-        canNew="true" form-view="supplier-account-form" grid-view="account-grid"/>
-      <field name="defaultIncomeAccount" canNew="true"
+        form-view="supplier-account-form" grid-view="account-grid"/>
+      <field name="defaultIncomeAccount"
         domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect = 'income'"
         form-view="employee-account-form" grid-view="account-grid"/>
-      <field name="defaultExpenseAccount" canNew="true"
+      <field name="defaultExpenseAccount"
         domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='charge'"
         form-view="employee-account-form" grid-view="account-grid"/>
       <field name="employeeAccount"
         domain="self.statusSelect = 1 AND self.company = :company AND self.accountType.technicalTypeSelect ='debt'"
-        canNew="true" form-view="employee-account-form" grid-view="account-grid"/>
+        form-view="employee-account-form" grid-view="account-grid"/>
       <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
         name="pfpValidatorUser" canEdit="false"
         domain=":company member of self.companySet and self.isPfpValidator = true"/>
@@ -67,11 +67,9 @@
       <field if="__config__.app.getApp('account')?.getActivatePassedForPayment()"
         name="company.accountConfig.isManagePassedForPayment" hidden="true"/>
       <field name="holdBackCustomerAccount" form-view="customer-account-form"
-        grid-view="account-grid" canNew="true"
-        domain="self.statusSelect = 1 AND self.company = :company"/>
+        grid-view="account-grid" domain="self.statusSelect = 1 AND self.company = :company"/>
       <field name="holdBackSupplierAccount" form-view="supplier-account-form"
-        grid-view="account-grid" canNew="true"
-        domain="self.statusSelect = 1 AND self.company = :company"/>
+        grid-view="account-grid" domain="self.statusSelect = 1 AND self.company = :company"/>
       <field name="partner.isCustomer" hidden="true"/>
       <field name="partner.isSupplier" hidden="true"/>
     </panel>
@@ -173,11 +171,9 @@
         onSelect="action-account-accounting-situation-set-outbd-domain"
         form-view="bank-details-form" grid-view="bank-details-grid"/>
       <field name="holdBackCustomerAccount" form-view="customer-account-form"
-        grid-view="account-grid" canNew="true"
-        domain="self.statusSelect = 1 AND self.company = :company"/>
+        grid-view="account-grid" domain="self.statusSelect = 1 AND self.company = :company"/>
       <field name="holdBackSupplierAccount" form-view="supplier-account-form"
-        grid-view="account-grid" canNew="true"
-        domain="self.statusSelect = 1 AND self.company = :company"/>
+        grid-view="account-grid" domain="self.statusSelect = 1 AND self.company = :company"/>
     </panel>
 
     <panel name="customerBalancePanel" title="Customer balance" itemSpan="4">
@@ -206,9 +202,10 @@
     <view type="grid" name="move-line-accounting-situation-grid"/>
     <view type="form" name="move-line-form"/>
     <domain>self.partner = :partner AND self.move.company = :company AND
-      self.move.ignoreInAccountingOk IN ('false', null)
+      self.move.ignoreInAccountingOk IN (false, null)
       AND self.account.useForPartnerBalance =
-      'true' AND (self.move.statusSelect = 2 OR
+      true AND
+      (self.move.statusSelect = 2 OR
       self.move.statusSelect = 3)</domain>
   </action-view>
 

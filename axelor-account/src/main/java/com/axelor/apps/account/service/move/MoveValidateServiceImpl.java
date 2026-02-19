@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -72,9 +72,9 @@ import com.axelor.meta.MetaStore;
 import com.axelor.meta.schema.views.Selection.Option;
 import com.axelor.studio.db.AppAccount;
 import com.google.common.base.Splitter;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -971,7 +971,7 @@ public class MoveValidateServiceImpl implements MoveValidateService {
               .multiply(taxAccountService.getTotalTaxRateInPercentage(Set.of(taxLine)))
               .divide(
                   BigDecimal.valueOf(100),
-                  AppBaseService.COMPUTATION_SCALING,
+                  currencyScaleService.getCompanyScale(moveLine),
                   RoundingMode.HALF_UP);
       if (amountByTaxLineMap.get(taxLine) != null) {
         amountByTaxLineMap.replace(taxLine, amountByTaxLineMap.get(taxLine).add(taxAmount));
@@ -1006,12 +1006,17 @@ public class MoveValidateServiceImpl implements MoveValidateService {
   protected boolean isFinancialDiscount(Move move) throws AxelorException {
 
     AppAccount account = appAccountService.getAppAccount();
-    if (account == null || !account.getManageFinancialDiscount()) {
+    if (account == null
+        || !account.getManageFinancialDiscount()
+        || (move.getInvoice() != null && move.getInvoice().getFinancialDiscount() == null)) {
       return false;
     }
 
     for (MoveLine moveLine : move.getMoveLineList()) {
-      if (moveLineFinancialDiscountService.isFinancialDiscountLine(moveLine, move.getCompany())) {
+      if (moveLineFinancialDiscountService.isFinancialDiscountLine(
+          moveLine,
+          move.getCompany(),
+          move.getFunctionalOriginSelect() == MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE)) {
         return true;
       }
     }

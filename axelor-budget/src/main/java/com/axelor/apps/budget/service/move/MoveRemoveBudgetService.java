@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,13 +24,14 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.AccountCustomerService;
 import com.axelor.apps.account.service.accountingsituation.AccountingSituationService;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.service.move.MoveRemoveServiceBankPaymentImpl;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.utils.service.ArchivingService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
@@ -46,6 +47,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
       UnreconcileService unReconcileService,
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService,
+      BankReconciliationLineRepository bankReconciliationLineRepository,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository,
       BudgetService budgetService,
       AppBudgetService appBudgetService) {
@@ -56,6 +58,7 @@ public class MoveRemoveBudgetService extends MoveRemoveServiceBankPaymentImpl {
         unReconcileService,
         accountingSituationService,
         accountCustomerService,
+        bankReconciliationLineRepository,
         bankStatementLineAFB120Repository);
     this.budgetService = budgetService;
     this.appBudgetService = appBudgetService;

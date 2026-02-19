@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,8 +23,8 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.ReportingTool;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.MetaFiles;
 import com.axelor.utils.helpers.net.UrlHelper;
 import com.google.common.base.Strings;
 import java.io.IOException;
@@ -69,7 +69,7 @@ public class ExternalReportSettings extends ReportSettings {
             birtViewerUrl);
       }
 
-      final Path tmpFile = MetaFiles.createTempFile(null, "");
+      final Path tmpFile = TempFiles.createTempFile(null, "");
 
       this.output = tmpFile.toFile();
 

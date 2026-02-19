@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="prod-process-grid" title="Production process"
     model="com.axelor.apps.production.db.ProdProcess">
@@ -277,7 +277,7 @@
   <action-record name="action-prod-process-record-set-realize-order-select"
     model="com.axelor.apps.production.db.ProdProcess">
     <field name="stockMoveRealizeOrderSelect"
-      expr="__config__.app.getApp('production')?.getStockMoveRealizeOrderSelect()"/>
+      expr="eval: company?.productionConfig?.stockMoveRealizeOrderSelect"/>
   </action-record>
 
   <action-record name="action-prod-process-record-count-number-of-phases"

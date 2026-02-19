@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.date.LocalDateHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -396,8 +396,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
     BigDecimal nbDaysBetweenAcqAndFirstDepDate;
     if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
-        fixedAsset.getComputationMethodSelect())) {
-      nextDate = null;
+            getComputationMethodSelect(fixedAsset))
+        && nextDate == null) {
       int endDayOfMonth =
           depreciationDate.getMonth() == Month.FEBRUARY
               ? depreciationDate.getDayOfMonth()

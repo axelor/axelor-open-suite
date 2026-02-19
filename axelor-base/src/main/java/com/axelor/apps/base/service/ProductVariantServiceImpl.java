@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -24,7 +24,7 @@ import com.axelor.apps.base.db.ProductVariantAttr;
 import com.axelor.apps.base.db.ProductVariantValue;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.db.repo.ProductVariantRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -162,7 +162,7 @@ public class ProductVariantServiceImpl implements ProductVariantService {
         .filter(
             "self.productVariantAttr1 = ?1 AND self.productVariantAttr2 = ?2 AND self.productVariantAttr3 = ?3 AND "
                 + "self.productVariantAttr4 = ?4 AND self.productVariantAttr5 = ?5 AND self.productVariantValue1 = ?6 AND self.productVariantValue2 = ?7 AND self.productVariantValue3 = ?8 AND "
-                + "self.productVariantValue4 = ?9 AND self.productVariantValue5 = ?10 AND self.usedForStock = 'true' ",
+                + "self.productVariantValue4 = ?9 AND self.productVariantValue5 = ?10 AND self.usedForStock = true ",
             productVariantAttr1,
             productVariantAttr2,
             productVariantAttr3,

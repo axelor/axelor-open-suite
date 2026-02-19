@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,10 +31,9 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.common.ObjectUtils;
-import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -321,7 +320,7 @@ public class FixedAssetDisposalServiceImpl implements FixedAssetDisposalService 
       filterListsByDates(fixedAsset, disposalDate);
     }
     fixedAssetLineGenerationService.generateAndComputeFixedAssetDerogatoryLines(fixedAsset);
-    fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true, true);
+    fixedAssetLineMoveService.realize(depreciationFixedAssetLine, false, true, false);
     fixedAsset.setAssetDisposalReason(assetDisposalReason);
     fixedAssetRepo.save(fixedAsset);
     if (createdFixedAsset != null) {
@@ -347,12 +346,6 @@ public class FixedAssetDisposalServiceImpl implements FixedAssetDisposalService 
               fixedAsset, disposalDate, disposalAmount, transferredReason, comments, typeSelect);
     }
 
-    String depreciationPlanSelect = fixedAsset.getDepreciationPlanSelect();
-    if (correspondingFixedAssetLine != null
-        && StringUtils.notEmpty(depreciationPlanSelect)
-        && depreciationPlanSelect.contains(FixedAssetRepository.DEPRECIATION_PLAN_DEROGATION)) {
-      generateDerogatoryCessionMove(fixedAsset, disposalDate);
-    }
     fixedAssetLineMoveService.generateDisposalMove(
         fixedAsset, correspondingFixedAssetLine, transferredReason, disposalDate);
     return correspondingFixedAssetLine;

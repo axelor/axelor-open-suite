@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,13 +18,15 @@
  */
 package com.axelor.apps.base.service.theme;
 
+import com.axelor.app.AppSettings;
+import com.axelor.app.AvailableAppSettings;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.db.MetaTheme;
 import com.axelor.meta.db.ThemeLogoMode;
 import com.axelor.meta.db.repo.MetaThemeRepository;
 import com.google.common.primitives.Longs;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Optional;
 
 public class MetaThemeFetchServiceImpl implements MetaThemeFetchService {
@@ -43,7 +45,25 @@ public class MetaThemeFetchServiceImpl implements MetaThemeFetchService {
 
   @Override
   public ThemeLogoMode getCurrentThemeLogoMode(User user) {
-    return fetchTheme(user).map(MetaTheme::getLogoMode).orElse(ThemeLogoMode.NONE);
+    ThemeLogoMode metaTheme = fetchTheme(user).map(MetaTheme::getLogoMode).orElse(null);
+    if (metaTheme != null) {
+      return metaTheme;
+    }
+
+    String theme = user.getTheme();
+    if (StringUtils.notEmpty(theme)) {
+      return switch (theme) {
+        case "dark" -> ThemeLogoMode.DARK;
+        case "light" -> ThemeLogoMode.LIGHT;
+        default -> ThemeLogoMode.NONE;
+      };
+    }
+
+    return Optional.ofNullable(AppSettings.get().get(AvailableAppSettings.APPLICATION_THEME))
+        .map(themeRepository::findByName)
+        .flatMap(list -> list.stream().findFirst())
+        .map(MetaTheme::getLogoMode)
+        .orElse(ThemeLogoMode.NONE);
   }
 
   protected Optional<MetaTheme> fetchTheme(User user) {

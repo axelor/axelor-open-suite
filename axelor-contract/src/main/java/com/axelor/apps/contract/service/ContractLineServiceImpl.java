@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,7 @@ import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.contract.db.Contract;
 import com.axelor.apps.contract.db.ContractLine;
+import com.axelor.apps.contract.db.ContractTemplate;
 import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.db.repo.ContractRepository;
 import com.axelor.apps.contract.db.repo.ContractVersionRepository;
@@ -51,8 +52,8 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
@@ -140,6 +141,7 @@ public class ContractLineServiceImpl implements ContractLineService {
     contractLine.setPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
     contractLine.setDescription(
         (String) productCompanyService.get(product, "description", company));
+
     return contractLine;
   }
 
@@ -158,7 +160,8 @@ public class ContractLineServiceImpl implements ContractLineService {
     // TODO: maybe put tax computing in another method
     contractLine.setFiscalPosition(contract.getPartner().getFiscalPosition());
 
-    Set<TaxLine> taxLineSet = getTaxLineSet(contractLine, contract, product);
+    Set<TaxLine> taxLineSet =
+        getTaxLineSet(contractLine, product, contract.getCompany(), contract.getTargetTypeSelect());
     contractLine.setTaxLineSet(taxLineSet);
 
     setPrice(contractLine, contract, product, taxLineSet);
@@ -200,9 +203,9 @@ public class ContractLineServiceImpl implements ContractLineService {
   }
 
   protected Set<TaxLine> getTaxLineSet(
-      ContractLine contractLine, Contract contract, Product product) throws AxelorException {
+      ContractLine contractLine, Product product, Company company, int targetTypeSelect)
+      throws AxelorException {
     Set<TaxLine> taxLineSet = Set.of();
-    int targetTypeSelect = contract.getTargetTypeSelect();
     Set<TaxLine> contractTaxLineSet = contractLine.getTaxLineSet();
 
     if (CollectionUtils.isNotEmpty(contractTaxLineSet)) {
@@ -214,11 +217,11 @@ public class ContractLineServiceImpl implements ContractLineService {
             || targetTypeSelect == ContractRepository.SUPPLIER_CONTRACT)) {
       taxLineSet =
           accountManagementService.getTaxLineSet(
-              appBaseService.getTodayDate(contract.getCompany()),
+              appBaseService.getTodayDate(company),
               product,
-              contract.getCompany(),
+              company,
               contractLine.getFiscalPosition(),
-              contract.getTargetTypeSelect() == ContractRepository.SUPPLIER_CONTRACT);
+              targetTypeSelect == ContractRepository.SUPPLIER_CONTRACT);
     }
 
     return taxLineSet;
@@ -376,7 +379,7 @@ public class ContractLineServiceImpl implements ContractLineService {
   public String computeProductDomain(Contract contract) {
     String domain =
         "self.isModel = false"
-            + " and (self.endDate = null or self.endDate > :__date__)"
+            + " and (self.endDate IS null or self.endDate > :__date__)"
             + " and self.dtype = 'Product'";
 
     if (contract == null) {
@@ -389,7 +392,9 @@ public class ContractLineServiceImpl implements ContractLineService {
         && company != null
         && !CollectionUtils.isEmpty(company.getTradingNameList())) {
       domain +=
-          " AND " + contract.getTradingName().getId() + " member of self.tradingNameSellerSet";
+          " AND "
+              + contract.getTradingName().getId()
+              + " IN (SELECT tn.id FROM self.tradingNameSellerSet tn)";
     }
 
     int targetTypeSelect = contract.getTargetTypeSelect();
@@ -430,5 +435,28 @@ public class ContractLineServiceImpl implements ContractLineService {
         analyticLineModelService.checkRequiredAxisByCompany(analyticLineModel);
       }
     }
+  }
+
+  @Override
+  public ContractLine fill(
+      ContractLine contractLine, ContractTemplate contractTemplate, Product product)
+      throws AxelorException {
+    Company company = contractTemplate.getCompany();
+    contractLine.setProductName((String) productCompanyService.get(product, "name", company));
+    Unit unit = (Unit) productCompanyService.get(product, "salesUnit", company);
+    if (unit != null) {
+      contractLine.setUnit(unit);
+    } else {
+      contractLine.setUnit((Unit) productCompanyService.get(product, "unit", company));
+    }
+    contractLine.setPrice((BigDecimal) productCompanyService.get(product, "salePrice", company));
+    contractLine.setDescription(
+        (String) productCompanyService.get(product, "description", company));
+
+    Set<TaxLine> taxLineSet =
+        getTaxLineSet(contractLine, product, company, contractTemplate.getContractTypeSelect());
+    contractLine.setTaxLineSet(taxLineSet);
+
+    return contractLine;
   }
 }

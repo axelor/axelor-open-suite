@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.hr.service.expense;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Product;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
@@ -31,11 +32,13 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -161,12 +164,18 @@ public class ExpenseLineServiceImpl implements ExpenseLineService {
       return "self.project.projectStatus.isCompleted = false AND self.imputable IS TRUE AND self.project.id = "
           + project.getId();
     }
-
+    Long userId =
+        Optional.ofNullable(expenseLine.getEmployee())
+            .map(Employee::getUser)
+            .filter(Objects::nonNull)
+            .map(User::getId)
+            .orElse(0l);
     List<Project> projectList =
         projectRepository
             .all()
-            .filter("self.projectStatus.isCompleted = false AND :userId IN self.membersUserSet.id")
-            .bind("userId", expenseLine.getEmployee().getUser().getId())
+            .filter(
+                "self.projectStatus.isCompleted = false AND :userId IN (SELECT memberUser.id FROM self.membersUserSet memberUser)")
+            .bind("userId", userId)
             .fetch();
 
     return "self.project.projectStatus.isCompleted = false AND self.imputable IS TRUE AND self.project.id IN ("

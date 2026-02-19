@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -183,6 +183,7 @@ public class PurchaseOrderController {
   public void autoComputeBudgetDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
+    purchaseOrder = Beans.get(PurchaseOrderRepository.class).find(purchaseOrder.getId());
     PurchaseOrderBudgetService purchaseOrderBudgetService =
         Beans.get(PurchaseOrderBudgetService.class);
     if (purchaseOrder != null

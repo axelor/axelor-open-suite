@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,12 +34,13 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.Optional;
 
 @Singleton
 public class ProductionOrderController {
@@ -83,6 +84,14 @@ public class ProductionOrderController {
         startDateT = Beans.get(AppBaseService.class).getTodayDateTime();
       }
 
+      ZonedDateTime endDateT = null;
+      if (context.containsKey("_endDate") && context.get("_endDate") != null) {
+        endDateT =
+            ZonedDateTime.parse(
+                (CharSequence) context.get("_endDate"),
+                DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
+      }
+
       ProductionOrder productionOrder =
           Beans.get(ProductionOrderRepository.class)
               .find(Long.parseLong(request.getContext().get("_id").toString()));
@@ -95,7 +104,7 @@ public class ProductionOrderController {
                 billOfMaterial,
                 qty,
                 startDateT.toLocalDateTime(),
-                null,
+                Optional.ofNullable(endDateT).map(ZonedDateTime::toLocalDateTime).orElse(null),
                 productionOrder.getSaleOrder(),
                 null,
                 ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);

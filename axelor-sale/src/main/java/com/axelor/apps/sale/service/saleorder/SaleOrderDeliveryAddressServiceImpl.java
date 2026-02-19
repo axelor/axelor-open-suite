@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -75,5 +75,20 @@ public class SaleOrderDeliveryAddressServiceImpl implements SaleOrderDeliveryAdd
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.DELIVERY_ADDRESS_MUST_BE_SAME_FOR_ALL_LINES));
     }
+  }
+
+  @Override
+  public List<SaleOrderLine> updateSaleOrderLinesDeliveryAddressStr(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return saleOrderLineList;
+    }
+    saleOrderLineList.stream()
+        .filter(
+            sol ->
+                sol.getDeliveryAddress() != null
+                    && sol.getDeliveryAddress().equals(saleOrder.getDeliveryAddress()))
+        .forEach(sol -> sol.setDeliveryAddressStr(saleOrder.getDeliveryAddressStr()));
+    return saleOrderLineList;
   }
 }

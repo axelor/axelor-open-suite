@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,10 +27,11 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.studio.db.AppSupplychain;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 
 public class PurchaseOrderEditStockMoveServiceImpl implements PurchaseOrderEditStockMoveService {
@@ -76,6 +77,7 @@ public class PurchaseOrderEditStockMoveServiceImpl implements PurchaseOrderEditS
       }
       for (StockMove stockMove : allStockMoves) {
         stockMoveService.cancel(stockMove, cancelReason);
+        stockMove = JpaModelHelper.ensureManaged(stockMove);
         stockMove.setArchived(true);
         for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
           TrackingNumber trackingNumber = stockMoveline.getTrackingNumber();
