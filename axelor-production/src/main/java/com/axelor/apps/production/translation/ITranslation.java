@@ -44,4 +44,5 @@ public interface ITranslation {
       "Wasted product quantity successfully updated." /*)*/;
   public static final String MANUFACTURING_OPERATION_STATUS_UPDATED = /*$$(*/
       "Manufacturing operation status successfully updated." /*)*/;
+  public static final String WARNING = /*$$(*/ "Warning :" /*)*/;
 }

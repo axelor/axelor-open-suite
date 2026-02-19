@@ -77,6 +77,8 @@ import com.axelor.apps.production.service.BomLineCreationService;
 import com.axelor.apps.production.service.BomLineCreationServiceImpl;
 import com.axelor.apps.production.service.BomTreeRemoveService;
 import com.axelor.apps.production.service.BomTreeRemoveServiceImpl;
+import com.axelor.apps.production.service.ManufOrderMessageService;
+import com.axelor.apps.production.service.ManufOrderMessageServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
 import com.axelor.apps.production.service.MpsChargeServiceImpl;
 import com.axelor.apps.production.service.MpsWeeklyScheduleService;
@@ -85,6 +87,8 @@ import com.axelor.apps.production.service.MrpForecastProductionService;
 import com.axelor.apps.production.service.MrpForecastProductionServiceImpl;
 import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
 import com.axelor.apps.production.service.MrpServiceProductionImpl;
+import com.axelor.apps.production.service.OperationOrderHazardPhraseService;
+import com.axelor.apps.production.service.OperationOrderHazardPhraseServiceImpl;
 import com.axelor.apps.production.service.ProdProcessComputationService;
 import com.axelor.apps.production.service.ProdProcessComputationServiceImpl;
 import com.axelor.apps.production.service.ProdProcessHazardPhraseService;
@@ -527,5 +531,7 @@ public class ProductionModule extends AxelorModule {
     bind(BillOfMaterialHazardPhraseService.class).to(BillOfMaterialHazardPhraseServiceImpl.class);
     bind(BillOfMaterialHazardPhraseRefreshService.class)
         .to(BillOfMaterialHazardPhraseRefreshServiceImpl.class);
+    bind(OperationOrderHazardPhraseService.class).to(OperationOrderHazardPhraseServiceImpl.class);
+    bind(ManufOrderMessageService.class).to(ManufOrderMessageServiceImpl.class);
   }
 }
