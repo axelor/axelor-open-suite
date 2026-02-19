@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.repo.PaymentSessionRepository;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.message.db.Message;
@@ -138,7 +139,10 @@ public class PaymentSessionEmailServiceImpl implements PaymentSessionEmailServic
   protected void sendEmailToPartner(
       PaymentSession paymentSession, Partner partner, List<Long> partnerIdList)
       throws ClassNotFoundException, JSONException, IOException {
-    if (partner == null || partnerIdList.contains(partner.getId())) {
+    if (partner == null
+        || partnerIdList.contains(partner.getId())
+        || partner.getEmailAddress() == null
+        || StringUtils.isBlank(partner.getEmailAddress().getAddress())) {
       return;
     }
 
