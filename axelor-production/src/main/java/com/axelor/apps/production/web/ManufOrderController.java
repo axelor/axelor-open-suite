@@ -65,6 +65,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -372,7 +373,8 @@ public class ManufOrderController {
         ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderView.getId());
 
         if (manufOrderView.getPlannedStartDateT() != null) {
-          if (!manufOrderView.getPlannedStartDateT().isEqual(manufOrder.getPlannedStartDateT())) {
+          if (!Objects.equals(
+              manufOrderView.getPlannedStartDateT(), manufOrder.getPlannedStartDateT())) {
             Beans.get(ManufOrderWorkflowService.class)
                 .updatePlannedDates(manufOrder, manufOrderView.getPlannedStartDateT());
             response.setReload(true);
