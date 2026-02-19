@@ -1,3 +1,0 @@
----
-title : "Bank reconciliation: fixed the description on generated moves to use the bank statement line description instead of the reconciliation name."
-module: axelor-bank-payment

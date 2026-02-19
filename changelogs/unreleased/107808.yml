@@ -1,3 +1,0 @@
----
-title: "Analytic/MoveLine Query: fixed date filtering broken by Hibernate upgrade."
-module: axelor-account
