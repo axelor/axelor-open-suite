@@ -1,3 +1,67 @@
+## [7.2.61] (2026-02-19)
+
+### Fixes
+#### Base
+
+* Scheduler: fixed batch origin not showing as 'Scheduled' for scheduler jobs.
+
+#### Account
+
+* Fixed asset: removed the possibility to update the fixed asset lines at draft status.
+* Invoice: fixed mail settings when generating an invoice automatically.
+* Partner: fixed partner balance details domain to show correct move lines.
+* Fixed assets: fixed disposal depreciation amount with degressive method and prorata temporis
+* Partner: disabled account creation from accounting situation.
+* Invoice term: fixed the calculation of paid amount when financial discount is not applied in payment session.
+* Move line mass entry: disabled form view access to prevent error.
+* Payment session: fixed email sent not saved in messages when a partner has no email address set.
+* Payment voucher: fixed readonly condition of the confirm payment button.
+* Payment voucher: fixed payVoucherElementToPay update when selecting overdue moveline.
+
+#### Budget
+
+* Invoice: fixed the duplication of budget distribution on invoice line after the move duplication.
+
+#### Contract
+
+* Contract: excluded consumption lines when duplicating a contract.
+
+#### Human Resource
+
+* Employee: moved typeSelect attribute of weeklyPlanning to production module.
+* Employee: fixed employee status when leaving date is filled.
+* Expense: fixed analytic axes not set when ventilating an expense.
+
+#### Marketing
+
+* Target list: fixed an error when opening partner/lead filters in readonly mode.
+
+#### Production
+
+* Operation order: fixed planned duration computation when changing planned end date.
+* Tracking number search : empty lines in product field for tracking number search
+* Bill of material: fixed component product filter to prevent infinite loop error.
+* Manuf order: fixed error while updating planned dates.
+* Product: fixed quantity used in bill of material panel in product form view.
+
+#### Sale
+
+* Sale order line: fixed pricing scale in logs.
+
+#### Stock
+
+* Inventory line: made stockLocation required.
+* Stock location line: made unit readonly.
+* Inventory: removed weird character from inventory form view.
+* Inventory: fixed decimal quantity in export file.
+* Stock move: fixed weighted average cost update on products when canceling moves at zero stock.
+* Stock move line: fixed split by tracking number not accessible on stock move lines.
+
+#### Supply Chain
+
+* Sale order: fixes potential permissions issues when generating Purchase order from Sale order.
+* Mass stock move invoicing: fixed domain to get filtered invoices when switching from form to grid view.
+
 ## [7.2.60] (2026-02-05)
 
 ### Fixes
@@ -2785,6 +2849,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.61]: https://github.com/axelor/axelor-open-suite/compare/v7.2.60...v7.2.61
 [7.2.60]: https://github.com/axelor/axelor-open-suite/compare/v7.2.59...v7.2.60
 [7.2.59]: https://github.com/axelor/axelor-open-suite/compare/v7.2.58...v7.2.59
 [7.2.58]: https://github.com/axelor/axelor-open-suite/compare/v7.2.57...v7.2.58
