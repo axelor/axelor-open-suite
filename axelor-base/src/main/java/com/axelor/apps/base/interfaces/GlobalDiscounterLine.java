@@ -37,4 +37,6 @@ public interface GlobalDiscounterLine {
   void setDiscountAmount(BigDecimal discountAmount);
 
   BigDecimal getPriceDiscounted();
+
+  BigDecimal getInTaxPrice();
 }
