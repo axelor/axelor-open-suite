@@ -445,8 +445,6 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderLineBomSyncService.class).to(SaleOrderLineBomSyncServiceImpl.class);
     bind(SaleOrderLineDetailsService.class).to(SaleOrderLineDetailsServiceImpl.class);
     bind(SaleOrderLineDetailsRepository.class).to(SaleOrderLineDetailsManagementRepository.class);
-    bind(SaleOrderLineDetailsService.class).to(SaleOrderLineDetailsServiceImpl.class);
-    bind(SaleOrderLineDetailsRepository.class).to(SaleOrderLineDetailsManagementRepository.class);
     bind(SaleOrderLineDetailsBomService.class).to(SaleOrderLineDetailsBomServiceImpl.class);
     bind(SaleOrderLineDetailsBomLineMappingService.class)
         .to(SaleOrderLineDetailsBomLineMappingServiceImpl.class);
