@@ -123,7 +123,9 @@ public abstract class GlobalDiscountAbstractService {
         getGlobalDiscounterLines(globalDiscounter)
             .get(getGlobalDiscounterLines(globalDiscounter).size() - 1);
 
-    if (lastLine.getPrice() == null || lastLine.getPrice().compareTo(BigDecimal.ZERO) == 0) {
+    BigDecimal price = globalDiscounter.getInAti() ? lastLine.getInTaxPrice() : lastLine.getPrice();
+
+    if (price == null || price.compareTo(BigDecimal.ZERO) == 0) {
       lastLine.setDiscountAmount(BigDecimal.ZERO);
     } else {
       lastLine.setDiscountAmount(
@@ -132,10 +134,7 @@ public abstract class GlobalDiscountAbstractService {
                   lastLine
                       .getPriceDiscounted()
                       .add(differenceInDiscount)
-                      .divide(
-                          lastLine.getPrice(),
-                          AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
-                          RoundingMode.HALF_UP))
+                      .divide(price, 3, RoundingMode.HALF_UP))
               .multiply(BigDecimal.valueOf(100)));
     }
   }
