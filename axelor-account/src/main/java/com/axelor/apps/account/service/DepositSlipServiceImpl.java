@@ -37,6 +37,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.common.ObjectUtils;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
@@ -162,6 +163,8 @@ public class DepositSlipServiceImpl implements DepositSlipService {
         .bind("filename", filename + ".pdf")
         .fetchStream()
         .forEach(metaFiles::delete);
+
+    JPA.flush();
   }
 
   public String getFilename(
