@@ -1,3 +1,0 @@
----
-title: "Manuf order: fixed error when starting a manufacturing order with stock moves realized on start."
-module: axelor-production

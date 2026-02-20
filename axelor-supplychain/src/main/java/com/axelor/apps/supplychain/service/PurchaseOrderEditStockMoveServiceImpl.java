@@ -27,6 +27,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.studio.db.AppSupplychain;
@@ -76,6 +77,7 @@ public class PurchaseOrderEditStockMoveServiceImpl implements PurchaseOrderEditS
       }
       for (StockMove stockMove : allStockMoves) {
         stockMoveService.cancel(stockMove, cancelReason);
+        stockMove = JpaModelHelper.ensureManaged(stockMove);
         stockMove.setArchived(true);
         for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
           TrackingNumber trackingNumber = stockMoveline.getTrackingNumber();

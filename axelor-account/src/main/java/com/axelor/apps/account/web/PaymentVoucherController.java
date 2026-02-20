@@ -234,6 +234,23 @@ public class PaymentVoucherController {
     }
   }
 
+  @SuppressWarnings("unchecked")
+  public void resetAndReloadElementToPay(ActionRequest request, ActionResponse response) {
+    PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
+    Invoice invoice =
+        Mapper.toBean(Invoice.class, (Map<String, Object>) request.getContext().get("_invoice"));
+    invoice = Beans.get(InvoiceRepository.class).find(invoice.getId());
+    try {
+      Beans.get(PaymentVoucherLoadService.class)
+          .resetAndReloadElementToPay(paymentVoucher, invoice);
+      response.setValue("payVoucherDueElementList", paymentVoucher.getPayVoucherDueElementList());
+      response.setValue(
+          "payVoucherElementToPayList", paymentVoucher.getPayVoucherElementToPayList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
   public void computeSelectedTotals(ActionRequest request, ActionResponse response) {
     PaymentVoucher paymentVoucher = request.getContext().asType(PaymentVoucher.class);
     BigDecimal totalSelected = BigDecimal.ZERO;
