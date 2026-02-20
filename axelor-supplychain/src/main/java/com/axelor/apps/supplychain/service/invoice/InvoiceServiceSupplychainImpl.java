@@ -57,6 +57,7 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
+import com.axelor.utils.helpers.WrappingHelper;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -187,11 +188,16 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     if (CollectionUtils.isNotEmpty(stockMoveSet)) {
       saleOrderIds.addAll(
           stockMoveSet.stream()
-              .flatMap(move -> move.getSaleOrderSet().stream().map(SaleOrder::getId))
+              .flatMap(
+                  move ->
+                      WrappingHelper.wrap(move.getSaleOrderSet()).stream().map(SaleOrder::getId))
               .collect(Collectors.toList()));
       purchaseOrderIds.addAll(
           stockMoveSet.stream()
-              .flatMap(move -> move.getPurchaseOrderSet().stream().map(PurchaseOrder::getId))
+              .flatMap(
+                  move ->
+                      WrappingHelper.wrap(move.getPurchaseOrderSet()).stream()
+                          .map(PurchaseOrder::getId))
               .collect(Collectors.toList()));
     }
 
