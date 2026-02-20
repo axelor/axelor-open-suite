@@ -9023,7 +9023,7 @@ else{ 1.00 }
                                         <method name="onRender"><![CDATA[this.getStyle().fontSize = this.getRowData().getColumnValue("tableFontSize")]]></method>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>if( row._outer._outer["hideDiscount"]) {Formatter.format(row._outer["price"] + row._outer["totaldiscountamount"]/row._outer["qty"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}</VALUE-OF>
-<VALUE-OF>if( !row._outer._outer["hideDiscount"]) {Formatter.format(row._outer["price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}</VALUE-OF>]]></text-property>
+<VALUE-OF>if( !row._outer._outer["hideDiscount"]) {Formatter.format(row._outer["price"], "#,##0." + "0".repeat(row["nb_decimal_digit_for_unit_price"]))}</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer._outer["currencyCode"]</VALUE-OF>]]></text-property>
                                     </text>
                                 </cell>
                                 <cell id="5395">
@@ -10490,7 +10490,7 @@ else{ 1.00 }
                                                             </structure>
                                                         </list-property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["ex_tax_base"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["ex_tax_base"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer._outer["currencyCode"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                                 <cell id="4717">
@@ -10518,7 +10518,7 @@ else{ 1.00 }
                                                             </structure>
                                                         </list-property>
                                                         <property name="contentType">html</property>
-                                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF>]]></text-property>
+                                                        <text-property name="content"><![CDATA[<VALUE-OF>Formatter.format(row["tax_total"], row["number_of_decimals"] == 0? "#,##0" : "#,##0." + Array((row["number_of_decimals"] || 2)+1).join("0"))</VALUE-OF><VALUE-OF format="^">"  "</VALUE-OF><VALUE-OF>row._outer._outer["currencyCode"]</VALUE-OF>]]></text-property>
                                                     </text>
                                                 </cell>
                                             </row>
