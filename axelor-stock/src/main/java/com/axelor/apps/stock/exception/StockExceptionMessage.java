@@ -349,4 +349,7 @@ public final class StockExceptionMessage {
 
   public static final String LOGISTICAL_FORM_STOCK_LOCATION_MUST_BE_VIRTUAL = /*$$(*/
       "The stock location must not be virtual and part of the company." /*)*/;
+
+  public static final String STOCK_CORRECTION_VALIDATE_ERROR = /*$$(*/
+      "You can not validate this stock correction, there is an ongoing inventory for the same stock location." /*)*/;
 }
