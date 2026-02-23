@@ -803,8 +803,6 @@ public class AccountModule extends AxelorModule {
 
     bind(InvoiceDomainService.class).to(InvoiceDomainServiceImpl.class);
 
-    bind(AnalyticLineService.class).to(AnalyticLineServiceImpl.class);
-
     bind(AnalyticMoveLineGenerateRealService.class)
         .to(AnalyticMoveLineGenerateRealServiceImpl.class);
 
@@ -815,8 +813,6 @@ public class AccountModule extends AxelorModule {
     bind(MoveControlService.class).to(MoveControlServiceImpl.class);
 
     bind(PaymentVoucherCancelService.class).to(PaymentVoucherCancelServiceImpl.class);
-
-    bind(AccountingCutOffService.class).to(AccountingCutOffServiceImpl.class);
 
     bind(MoveLineQueryService.class).to(MoveLineQueryServiceImpl.class);
 
