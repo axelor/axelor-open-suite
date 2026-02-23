@@ -140,6 +140,7 @@ public class MrpProposalServiceImpl implements MrpProposalService {
       throws AxelorException {
     mrpLineService.generateProposal(
         mrpLine, purchaseOrders, purchaseOrdersPerSupplier, isProposalPerSupplier);
+    mrpLine = mrpLineRepository.find(mrpLine.getId());
     mrpLine.setProposalToProcess(false);
     mrpLineRepository.save(mrpLine);
   }
