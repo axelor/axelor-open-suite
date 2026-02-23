@@ -1722,6 +1722,8 @@
     <action name="action-method-account-invoice-supplier-invoice-nbr-origin-date-year-hidden"/>
     <action name="action-invoice-method-fiscal-position-on-change"/>
     <action name="action-invoice-method-compute"/>
+    <action name="action-invoice-method-generate-invoice-terms"/>
+    <action name="action-invoice-method-compute-invoice-terms-due-dates"/>
     <action name="action-invoice-method-get-default-bank-details"/>
   </action-group>
 
