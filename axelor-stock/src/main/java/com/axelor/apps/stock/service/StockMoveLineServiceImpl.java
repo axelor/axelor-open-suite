@@ -1755,6 +1755,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     line.setConformitySelect(conformitySelect);
     line.setIsRealQtyModifiedByUser(true);
     stockMoveLineRepository.save(line);
+    stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
     return line;
   }
 
@@ -1787,6 +1788,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         if (toStockLocation != null) {
           stockMoveLine.setToStockLocation(toStockLocation);
         }
+        StockMove stockMove = stockMoveLine.getStockMove();
+        stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
       }
     }
   }
