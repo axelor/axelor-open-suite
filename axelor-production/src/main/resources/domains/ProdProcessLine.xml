@@ -59,6 +59,8 @@
       selection="iproduction.work.center.cost.type.select"/>
     <decimal name="hrCostAmount" title="Cost (W.T.)"/>
     <long name="outsourcingDuration" title="Outsourcing duration" nullable="true"/>
+    <many-to-many name="hazardPhraseSet" ref="com.axelor.apps.base.db.HazardPhrase"
+      title="Hazard phrases"/>
 
     <track>
       <field name="prodProcess"/>
