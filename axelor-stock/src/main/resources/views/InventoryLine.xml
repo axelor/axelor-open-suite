@@ -14,9 +14,10 @@
     <field name="stockLocation"
       onSelect="action-inventory-line-method-set-stock-location-domain"
       onChange="action-inventory-line-group-on-change-product-stock-location"/>
-    <field name="currentQty" readonly="true" aggregate="sum" width="120" x-scale="2"/>
+    <field name="currentQty" readonly="true" aggregate="sum" width="120"
+      x-scale="$nbDecimalDigitForQty"/>
     <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum"
-      width="120" x-scale="2" min="0"/>
+      width="120" x-scale="$nbDecimalDigitForQty" min="0"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"/>
     <field name="description"/>
     <field name="rack" width="150"/>
@@ -32,6 +33,7 @@
       onClick="action-inventory-line-view-for-a-product-from-product-view" readonlyIf="!product"
       if="__config__.app.isApp('supplychain')"/>
     <field name="nbDecimalDigitForUnitPrice" x-dirty="false" hidden="true" type="integer"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <form name="inventory-line-form" title="Inventory line"
