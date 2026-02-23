@@ -1,0 +1,6 @@
+---
+title: "Contract: fixed analytic move lines forecast type incorrectly set to order forecast instead of contract forecast."
+module: axelor-contract
+developer: |
+  -- script
+  UPDATE  account_analytic_move_line SET type_select = 4 WHERE contract_line IS NOT NULL AND type_select = 1;
