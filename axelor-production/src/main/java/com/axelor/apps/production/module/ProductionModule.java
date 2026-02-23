@@ -61,6 +61,10 @@ import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialDummyService;
 import com.axelor.apps.production.service.BillOfMaterialDummyServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseRefreshService;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseRefreshServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseService;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.apps.production.service.BillOfMaterialLineServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialMrpLineService;
@@ -83,6 +87,8 @@ import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
 import com.axelor.apps.production.service.MrpServiceProductionImpl;
 import com.axelor.apps.production.service.ProdProcessComputationService;
 import com.axelor.apps.production.service.ProdProcessComputationServiceImpl;
+import com.axelor.apps.production.service.ProdProcessHazardPhraseService;
+import com.axelor.apps.production.service.ProdProcessHazardPhraseServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.ProdProcessLineComputationServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineHourlyCostComputeService;
@@ -517,5 +523,9 @@ public class ProductionModule extends AxelorModule {
         .to(QualityImprovementUpdateProductionServiceImpl.class);
     bind(QualityImprovementParseServiceImpl.class)
         .to(QualityImprovementParseProductionServiceImpl.class);
+    bind(ProdProcessHazardPhraseService.class).to(ProdProcessHazardPhraseServiceImpl.class);
+    bind(BillOfMaterialHazardPhraseService.class).to(BillOfMaterialHazardPhraseServiceImpl.class);
+    bind(BillOfMaterialHazardPhraseRefreshService.class)
+        .to(BillOfMaterialHazardPhraseRefreshServiceImpl.class);
   }
 }
