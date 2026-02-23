@@ -23,7 +23,6 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.service.allocation.AllocationLineComputeService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.Sprint;
-import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.SprintRepository;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
@@ -34,18 +33,20 @@ public class SprintManagementRepository extends SprintRepository {
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
     try {
-      if (context.get("project") == null) {
+      if (json.get("id") == null) {
         return super.populate(json, context);
       }
-      Long projectId = Long.valueOf(((Map) context.get("project")).get("id").toString());
-      Project project = Beans.get(ProjectRepository.class).find(projectId);
+      Long sprintId = (Long) json.get("id");
+      Sprint sprint = this.find(sprintId);
+      Project project = sprint.getProject();
+      if (project == null) {
+        return super.populate(json, context);
+      }
       Employee employee = null;
       if (context.get("employee") != null) {
         Long employeeId = Long.valueOf(((Map) context.get("employee")).get("id").toString());
         employee = Beans.get(EmployeeRepository.class).find(employeeId);
       }
-      Long sprintId = (Long) json.get("id");
-      Sprint sprint = this.find(sprintId);
 
       AllocationLineComputeService allocationLineComputeService =
           Beans.get(AllocationLineComputeService.class);
