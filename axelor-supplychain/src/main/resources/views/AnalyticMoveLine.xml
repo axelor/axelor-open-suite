@@ -3,6 +3,24 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
+  <grid name="analytic-move-line-distribution-grid" title="Analytic move lines"
+    model="com.axelor.apps.account.db.AnalyticMoveLine" groupBy="analyticAxis" editable="true"
+    id="supplychain-analytic-move-line-distribution-grid" extension="true">
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-supplychain-analytic-move-line-group-analytic-move-line-distribution-on-new"/>
+    </extend>
+  </grid>
+
+  <form name="analytic-move-line-distribution-form" title="Analytic move line"
+    model="com.axelor.apps.account.db.AnalyticMoveLine"
+    id="supplychain-analytic-move-line-distribution-form" extension="true">
+    <extend target="/">
+      <attribute name="onNew"
+        value="action-supplychain-analytic-move-line-group-analytic-move-line-distribution-on-new"/>
+    </extend>
+  </form>
+
   <form name="analytic-move-line-form" title="Analytic Move Line"
     model="com.axelor.apps.account.db.AnalyticMoveLine" extension="true"
     id="supplychain-analytic-move-line-form">
@@ -30,11 +48,17 @@
     name="action-supplychain-analytic-move-line-group-analytic-move-line-distribution-on-new">
     <action name="action-analytic-move-line-group-analytic-move-line-distribution-on-new"/>
     <action name="action-method-analytic-move-line-invoice-line-onnew"/>
+    <action name="action-method-analytic-move-line-init-model-fields"/>
   </action-group>
 
   <action-method name="action-method-analytic-move-line-invoice-line-onnew">
     <call class="com.axelor.apps.supplychain.web.AnalyticDistributionLineController"
       method="linkWithOrderLine"/>
+  </action-method>
+
+  <action-method name="action-method-analytic-move-line-init-model-fields">
+    <call class="com.axelor.apps.supplychain.web.AnalyticDistributionLineController"
+      method="initModelFields"/>
   </action-method>
 
 </object-views>
