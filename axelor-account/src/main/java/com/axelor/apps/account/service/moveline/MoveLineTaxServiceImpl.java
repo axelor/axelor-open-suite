@@ -20,6 +20,8 @@ package com.axelor.apps.account.service.moveline;
 
 import com.axelor.apps.account.db.Account;
 import com.axelor.apps.account.db.AccountType;
+import com.axelor.apps.account.db.Invoice;
+import com.axelor.apps.account.db.InvoiceLineTax;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
@@ -29,9 +31,11 @@ import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.TaxPaymentMoveLineRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
+import com.axelor.apps.account.service.invoice.InvoiceToolService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
@@ -45,6 +49,7 @@ import com.google.inject.servlet.RequestScoped;
 import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -221,6 +226,70 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       taxPaymentMoveLineList.add(taxPaymentMoveLine);
     }
     return taxPaymentMoveLineList;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public MoveLine generateTaxPaymentMoveLineListForAdvancePayment(
+      MoveLine customerPaymentMoveLine, Invoice invoice, LocalDate paymentDate)
+      throws AxelorException {
+
+    if (customerPaymentMoveLine == null
+        || invoice == null
+        || paymentDate == null
+        || CollectionUtils.isEmpty(invoice.getInvoiceLineTaxList())
+        || CollectionUtils.isNotEmpty(customerPaymentMoveLine.getTaxPaymentMoveLineList())) {
+      return customerPaymentMoveLine;
+    }
+
+    BigDecimal paymentAmount =
+        customerPaymentMoveLine.getCredit().add(customerPaymentMoveLine.getDebit()).abs();
+    BigDecimal invoiceTotalAmount =
+        Optional.ofNullable(invoice.getCompanyInTaxTotal()).orElse(BigDecimal.ZERO).abs();
+
+    if (paymentAmount.compareTo(BigDecimal.ZERO) == 0
+        || invoiceTotalAmount.compareTo(BigDecimal.ZERO) == 0) {
+      return customerPaymentMoveLine;
+    }
+
+    BigDecimal paymentRatio =
+        paymentAmount.divide(invoiceTotalAmount, RETURNED_SCALE, RoundingMode.HALF_UP);
+    int functionalOrigin = InvoiceToolService.getFunctionalOrigin(invoice);
+
+    for (InvoiceLineTax invoiceLineTax : invoice.getInvoiceLineTaxList()) {
+      if (invoiceLineTax == null
+          || invoiceLineTax.getTaxLine() == null
+          || invoiceLineTax.getVatSystemSelect()
+              != TaxPaymentMoveLineRepository.VAT_SYSTEM_PAYMENT) {
+        continue;
+      }
+
+      TaxPaymentMoveLine taxPaymentMoveLine =
+          new TaxPaymentMoveLine(
+              customerPaymentMoveLine,
+              invoiceLineTax.getTaxLine(),
+              null,
+              invoiceLineTax.getTaxLine().getValue(),
+              Optional.ofNullable(invoiceLineTax.getCompanyExTaxBase())
+                  .orElse(BigDecimal.ZERO)
+                  .multiply(paymentRatio)
+                  .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP),
+              paymentDate);
+
+      taxPaymentMoveLine.setTaxAmount(
+          Optional.ofNullable(invoiceLineTax.getCompanyTaxTotal())
+              .orElse(BigDecimal.ZERO)
+              .multiply(paymentRatio)
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP));
+      taxPaymentMoveLine.setVatSystemSelect(invoiceLineTax.getVatSystemSelect());
+      taxPaymentMoveLine.setFiscalPosition(invoice.getFiscalPosition());
+      taxPaymentMoveLine.setFunctionalOriginSelect(functionalOrigin);
+
+      customerPaymentMoveLine.addTaxPaymentMoveLineListItem(taxPaymentMoveLine);
+    }
+
+    this.computeTaxAmount(customerPaymentMoveLine);
+    return moveLineRepository.save(customerPaymentMoveLine);
   }
 
   @Override

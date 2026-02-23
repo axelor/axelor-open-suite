@@ -46,6 +46,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
 import com.axelor.apps.account.util.TaxConfiguration;
@@ -89,6 +90,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
   protected CurrencyService currencyService;
   protected InvoicePaymentRepository invoicePaymentRepository;
   protected InvoiceLineTaxToolService invoiceLineTaxToolService;
+  protected MoveLineTaxService moveLineTaxService;
 
   @Inject
   public InvoicePaymentMoveCreateServiceImpl(
@@ -107,7 +109,8 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       AccountingSituationService accountingSituationService,
       CurrencyService currencyService,
       InvoicePaymentRepository invoicePaymentRepository,
-      InvoiceLineTaxToolService invoiceLineTaxToolService) {
+      InvoiceLineTaxToolService invoiceLineTaxToolService,
+      MoveLineTaxService moveLineTaxService) {
     this.dateService = dateService;
     this.paymentModeService = paymentModeService;
     this.moveToolService = moveToolService;
@@ -124,6 +127,7 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
     this.currencyService = currencyService;
     this.invoicePaymentRepository = invoicePaymentRepository;
     this.invoiceLineTaxToolService = invoiceLineTaxToolService;
+    this.moveLineTaxService = moveLineTaxService;
   }
 
   /**
@@ -237,6 +241,12 @@ public class InvoicePaymentMoveCreateServiceImpl implements InvoicePaymentMoveCr
       if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
           && InvoiceToolService.isRefund(invoice)) {
         invoiceMoveLines = moveToolService.getRefundAdvancePaymentMoveLines(invoicePayment);
+      }
+
+      if (invoice.getOperationSubTypeSelect() == InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE
+          && ObjectUtils.isEmpty(invoiceMoveLines)) {
+        moveLineTaxService.generateTaxPaymentMoveLineListForAdvancePayment(
+            customerMoveLine, invoice, paymentDate);
       }
 
       if (!ObjectUtils.isEmpty(invoiceMoveLines)) {

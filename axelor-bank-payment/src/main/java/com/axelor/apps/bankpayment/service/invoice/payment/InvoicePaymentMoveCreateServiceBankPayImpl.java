@@ -35,6 +35,7 @@ import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.MoveValidateService;
 import com.axelor.apps.account.service.moveline.MoveLineCreateService;
 import com.axelor.apps.account.service.moveline.MoveLineFinancialDiscountService;
+import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.payment.PaymentModeService;
 import com.axelor.apps.account.service.payment.invoice.payment.InvoicePaymentMoveCreateServiceImpl;
 import com.axelor.apps.account.service.reconcile.ReconcileService;
@@ -77,7 +78,8 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
       InvoiceLineTaxToolService invoiceLineTaxToolService,
       BankOrderCreateService bankOrderCreateService,
       BankOrderValidationService bankOrderValidationService,
-      InvoicePaymentRepository invoicePaymentRepository) {
+      InvoicePaymentRepository invoicePaymentRepository,
+      MoveLineTaxService moveLineTaxService) {
     super(
         dateService,
         paymentModeService,
@@ -94,7 +96,8 @@ public class InvoicePaymentMoveCreateServiceBankPayImpl
         accountingSituationService,
         currencyService,
         invoicePaymentRepository,
-        invoiceLineTaxToolService);
+        invoiceLineTaxToolService,
+        moveLineTaxService);
     this.bankOrderCreateService = bankOrderCreateService;
     this.bankOrderValidationService = bankOrderValidationService;
   }
