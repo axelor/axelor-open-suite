@@ -14,7 +14,7 @@
 
   <form name="analytic-move-line-distribution-form" title="Analytic move line"
     model="com.axelor.apps.account.db.AnalyticMoveLine"
-    id="suplychain-analytic-move-line-distribution-form" extension="true">
+    id="supplychain-analytic-move-line-distribution-form" extension="true">
     <extend target="/">
       <attribute name="onNew"
         value="action-supplychain-analytic-move-line-group-analytic-move-line-distribution-on-new"/>
