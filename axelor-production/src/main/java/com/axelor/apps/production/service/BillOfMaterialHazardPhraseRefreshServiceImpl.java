@@ -26,13 +26,13 @@ import com.axelor.apps.production.db.repo.ProdProcessRepository;
 import com.axelor.apps.production.record.BomSnapshot;
 import com.axelor.db.JPA;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import org.hibernate.SessionFactory;
-import org.hibernate.StatelessSession;
 
 public class BillOfMaterialHazardPhraseRefreshServiceImpl
     implements BillOfMaterialHazardPhraseRefreshService {
@@ -73,22 +73,23 @@ public class BillOfMaterialHazardPhraseRefreshServiceImpl
   }
 
   /**
-   * Reads the committed DB state for a BOM in a separate JDBC connection (StatelessSession) so that
-   * any pending flush in the current transaction does not interfere.
+   * Reads the committed DB state for a BOM using a separate EntityManager so that any pending flush
+   * in the current transaction does not interfere.
    */
   protected BomSnapshot readBomSnapshot(Long bomId) {
     // Axelor flushes the entity to DB (within the current transaction) before repository.save()
-    // is called, via auto-flush triggered by internal queries. Any query in the same transaction
-    // (even with FlushModeType.COMMIT) will therefore read the already-flushed new state.
-    // StatelessSession opens a separate JDBC connection outside the current transaction:
-    // with PostgreSQL's default READ COMMITTED isolation, it reads the last *committed* state.
-    SessionFactory sf = JPA.em().getEntityManagerFactory().unwrap(SessionFactory.class);
-    try (StatelessSession ss = sf.openStatelessSession()) {
+    // is called, via auto-flush triggered by internal queries. Any query on the same EntityManager
+    // (even with FlushModeType.COMMIT) therefore reads the already-flushed new state.
+    // A separate EntityManager uses its own connection from the pool; with PostgreSQL's default
+    // READ COMMITTED isolation it reads the last *committed* state, i.e. the old values.
+    EntityManagerFactory emf = JPA.em().getEntityManagerFactory();
+    try (EntityManager readEm = emf.createEntityManager()) {
       // getResultList() instead of getSingleResult(): Hibernate assigns the sequence ID before
       // repository.save() is called, so a new BOM may already have a non-null id in memory
       // while not yet existing in the committed DB. In that case the query returns 0 rows.
       List<Long> prodProcessResult =
-          ss.createQuery(
+          readEm
+              .createQuery(
                   "SELECT pp.id FROM BillOfMaterial b LEFT JOIN b.prodProcess pp WHERE b.id = :id",
                   Long.class)
               .setParameter("id", bomId)
@@ -99,7 +100,8 @@ public class BillOfMaterialHazardPhraseRefreshServiceImpl
       Long prodProcessId = prodProcessResult.get(0);
       Set<Long> lineProductIds =
           new HashSet<>(
-              ss.createQuery(
+              readEm
+                  .createQuery(
                       "SELECT l.product.id FROM BillOfMaterialLine l"
                           + " WHERE l.billOfMaterial.id = :id AND l.product IS NOT NULL",
                       Long.class)
