@@ -54,12 +54,44 @@ public class PurchaseOrderCreateServiceSupplychainImpl extends PurchaseOrderCrea
       PurchaseConfigService purchaseConfigService,
       AccountConfigService accountConfigService,
       PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
+      PurchaseOrderTaxService purchaseOrderTaxService,
       AppSupplychainService appSupplychainService,
       IntercoService intercoService) {
-    super(purchaseConfigService, purchaseOrderTypeSelectService);
+    super(purchaseConfigService, purchaseOrderTypeSelectService, purchaseOrderTaxService);
     this.accountConfigService = accountConfigService;
     this.appSupplychainService = appSupplychainService;
     this.intercoService = intercoService;
+  }
+
+  @Override
+  public PurchaseOrder createPurchaseOrder(
+      User buyerUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate deliveryDate,
+      String internalReference,
+      String externalReference,
+      LocalDate orderDate,
+      PriceList priceList,
+      Partner supplierPartner,
+      TradingName tradingName)
+      throws AxelorException {
+    PurchaseOrder purchaseOrder =
+        super.createPurchaseOrder(
+            buyerUser,
+            company,
+            contactPartner,
+            currency,
+            deliveryDate,
+            internalReference,
+            externalReference,
+            orderDate,
+            priceList,
+            supplierPartner,
+            tradingName);
+    setIntercoOnPurchaseOrder(purchaseOrder, supplierPartner);
+    return purchaseOrder;
   }
 
   @Override
@@ -148,12 +180,13 @@ public class PurchaseOrderCreateServiceSupplychainImpl extends PurchaseOrderCrea
 
     purchaseOrder.setTradingName(tradingName);
 
+    return purchaseOrder;
+  }
+
+  protected void setIntercoOnPurchaseOrder(PurchaseOrder purchaseOrder, Partner supplierPartner) {
     if (appSupplychainService.getAppSupplychain().getIntercoFromPurchase()) {
       Company intercoCompany = intercoService.findIntercoCompany(supplierPartner);
-      boolean isInterco = intercoCompany != null;
-      purchaseOrder.setInterco(isInterco);
+      purchaseOrder.setInterco(intercoCompany != null);
     }
-
-    return purchaseOrder;
   }
 }
