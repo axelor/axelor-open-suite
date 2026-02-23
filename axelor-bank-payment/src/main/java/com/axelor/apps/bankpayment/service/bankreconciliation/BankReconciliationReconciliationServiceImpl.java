@@ -237,9 +237,17 @@ public class BankReconciliationReconciliationServiceImpl
             .collect(Collectors.toList());
 
     // Case 1: Reconcile two moveLines together (no bankReconciliationLine selected)
-    if (selectedBankReconciliationLines.isEmpty() && moveLines.size() == 2) {
-      reconcileTwoMoveLines(moveLines.get(0), moveLines.get(1));
-      return bankReconciliation;
+    if (selectedBankReconciliationLines.isEmpty()) {
+      // Validation: Check maximum 2 moveLines selection for moveLine-to-moveLine reconciliation
+      if (moveLines.size() > 2) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get("Il est possible de sélectionner au maximum deux lignes d'écriture."));
+      }
+      if (moveLines.size() == 2) {
+        reconcileTwoMoveLines(moveLines.get(0), moveLines.get(1));
+        return bankReconciliation;
+      }
     }
 
     // Case 2: Reconcile bankReconciliationLine with moveLine (existing behavior)
@@ -262,33 +270,58 @@ public class BankReconciliationReconciliationServiceImpl
 
   protected void reconcileTwoMoveLines(MoveLine moveLine1, MoveLine moveLine2)
       throws AxelorException {
+    // Validation 1: Check if already reconciled
+    if (moveLine1.getBankReconciledAmount() != null
+        && moveLine1.getBankReconciledAmount().compareTo(BigDecimal.ZERO) > 0) {
+      throw new AxelorException(
+          moveLine1,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get("La ligne d'écriture %s est déjà rapprochée."),
+          moveLine1.getName());
+    }
+    if (moveLine2.getBankReconciledAmount() != null
+        && moveLine2.getBankReconciledAmount().compareTo(BigDecimal.ZERO) > 0) {
+      throw new AxelorException(
+          moveLine2,
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get("La ligne d'écriture %s est déjà rapprochée."),
+          moveLine2.getName());
+    }
+
+    // Validation 2: Check debit VS credit - one must be debit and one must be credit
+    boolean moveLine1IsDebit =
+        moveLine1.getDebit() != null && moveLine1.getDebit().compareTo(BigDecimal.ZERO) > 0;
+    boolean moveLine2IsDebit =
+        moveLine2.getDebit() != null && moveLine2.getDebit().compareTo(BigDecimal.ZERO) > 0;
+
+    if (moveLine1IsDebit == moveLine2IsDebit) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(
+              "Le rapprochement doit se faire entre une ligne au débit et une ligne au crédit."));
+    }
+
     // Get the debit and credit amounts for both moveLines
-    BigDecimal amount1 =
-        moveLine1.getDebit() != null && moveLine1.getDebit().compareTo(BigDecimal.ZERO) > 0
-            ? moveLine1.getDebit()
-            : moveLine1.getCredit();
-    BigDecimal amount2 =
-        moveLine2.getDebit() != null && moveLine2.getDebit().compareTo(BigDecimal.ZERO) > 0
-            ? moveLine2.getDebit()
-            : moveLine2.getCredit();
+    BigDecimal amount1 = moveLine1IsDebit ? moveLine1.getDebit() : moveLine1.getCredit();
+    BigDecimal amount2 = moveLine2IsDebit ? moveLine2.getDebit() : moveLine2.getCredit();
 
     // Calculate the smallest amount between the two moveLines
     BigDecimal reconciledAmount = amount1.min(amount2);
 
-    // Determine which moveLine has the smallest amount (for postedNbr generation)
+    // Determine which moveLine has the smallest amount (for moveLineReconciledNbr generation)
     MoveLine moveLineWithSmallestAmount = amount1.compareTo(amount2) <= 0 ? moveLine1 : moveLine2;
 
-    // Generate postedNbr format: "ML {moveLineId}: {reconciledAmount}"
-    String postedNbr =
+    // Generate moveLineReconciledNbr format: "ML {moveLineId}: {reconciledAmount}"
+    String moveLineReconciledNbr =
         String.format("ML %d: %s", moveLineWithSmallestAmount.getId(), reconciledAmount);
 
     // Set the reconciled amount on both moveLines
     moveLine1.setBankReconciledAmount(reconciledAmount);
     moveLine2.setBankReconciledAmount(reconciledAmount);
 
-    // Set the postedNbr on both moveLines
-    moveLine1.setPostedNbr(postedNbr);
-    moveLine2.setPostedNbr(postedNbr);
+    // Set the moveLineReconciledNbr on both moveLines
+    moveLine1.setMoveLineReconciledNbr(moveLineReconciledNbr);
+    moveLine2.setMoveLineReconciledNbr(moveLineReconciledNbr);
 
     // Unselect both moveLines
     moveLine1.setIsSelectedBankReconciliation(false);

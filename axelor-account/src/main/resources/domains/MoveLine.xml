@@ -104,6 +104,7 @@
     <string name="taxCode" readonly="true"/>
 
     <boolean name="isSelectedBankReconciliation" title="Selected" default="false"/>
+    <string name="moveLineReconciledNbr" title="N° de pointage des lignes d'écritures" nameSearch="moveLineReconciledNbr"/>
 
     <decimal name="taxAmount" scale="3" precision="20" title="Tax amount" readonly="true"/>
     <one-to-many name="taxPaymentMoveLineList" mappedBy="moveLine"
