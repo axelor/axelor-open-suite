@@ -8,11 +8,12 @@
     <field name="stockLocation"/>
     <field name="product"/>
     <field name="trackingNumber"/>
-    <field name="baseQty" x-scale="2"/>
-    <field name="realQty" x-scale="2"/>
+    <field name="baseQty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="realQty" x-scale="$nbDecimalDigitForQty"/>
     <field name="validationDateT"/>
     <field name="stockCorrectionReason"/>
     <field name="statusSelect" widget="single-select"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <form name="stock-correction-form" title="Stock Correction"

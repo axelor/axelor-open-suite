@@ -1769,7 +1769,11 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       } else if (availableQty.compareTo(realQty) < 0
           && availableQtyForProduct.compareTo(realQty) < 0) {
         BigDecimal missingQty = computeMissingQty(stockMoveLine);
-        stockMoveLine.setAvailableStatus(I18n.get("Missing") + " (" + missingQty + ")");
+        stockMoveLine.setAvailableStatus(
+            I18n.get("Missing")
+                + " ("
+                + missingQty.setScale(appBaseService.getNbDecimalDigitForQty())
+                + ")");
         stockMoveLine.setAvailableStatusSelect(StockMoveLineRepository.STATUS_MISSING);
         availabilityMap.put("availability", I18n.get("Missing"));
         availabilityMap.put("missingQty", missingQty);
