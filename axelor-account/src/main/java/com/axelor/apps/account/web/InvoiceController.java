@@ -27,6 +27,7 @@ import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.TaxNumber;
+import com.axelor.apps.account.db.repo.AccountRepository;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.BankDetailsDomainServiceAccount;
@@ -1317,6 +1318,35 @@ public class InvoiceController {
         response.setValue("pfpValidateStatusSelect", pfpStatus);
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void checkAdvanceVatSystemOnValidate(ActionRequest request, ActionResponse response) {
+    try {
+      Invoice invoice = request.getContext().asType(Invoice.class);
+      if (!invoice.getOperationSubTypeSelect().equals(InvoiceRepository.OPERATION_SUB_TYPE_ADVANCE)
+          || InvoiceToolService.isPurchase(invoice)
+          || CollectionUtils.isEmpty(invoice.getInvoiceLineList())) {
+        return;
+      }
+
+      boolean hasVatOnDeliveriesAccount =
+          invoice.getInvoiceLineList().stream()
+              .anyMatch(
+                  line ->
+                      line != null
+                          && line.getAccount() != null
+                          && line.getAccount().getVatSystemSelect() != null
+                          && line.getAccount().getVatSystemSelect()
+                              == AccountRepository.VAT_SYSTEM_GOODS);
+
+      if (hasVatOnDeliveriesAccount) {
+        response.setAlert(
+            I18n.get(
+                AccountExceptionMessage.INVOICE_VAT_SYSTEM_DELIVERY_ON_ADVANCE_PAYMENT_PRODUCT));
+      }
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
