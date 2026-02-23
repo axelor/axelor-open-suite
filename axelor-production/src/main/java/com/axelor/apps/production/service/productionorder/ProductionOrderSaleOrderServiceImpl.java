@@ -197,7 +197,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
             .filter("self.saleOrder = :saleOrder")
             .bind("saleOrder", saleOrder)
             .fetchOne();
-    if (productionOrder != null) {
+    if (productionOrder != null && CollectionUtils.isNotEmpty(productionOrder.getManufOrderSet())) {
       return productionOrder.getManufOrderSet().size();
     }
 
