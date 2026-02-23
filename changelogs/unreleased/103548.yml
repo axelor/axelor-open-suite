@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed wrong invoice term calculation on change of partner with different fiscal position."
+module: axelor-account
