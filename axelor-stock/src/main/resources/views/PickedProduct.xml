@@ -17,7 +17,7 @@
       onSelect="action-picked-product-method-set-tracking-number-domain"
       onChange="action-picked-product-method-set-current-qty" readonlyIf="stockMoveLine"/>
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
-      readonly="true"/>
+      readonly="true" x-scale="nbDecimalQty"/>
     <field name="unit" readonly="true"/>
     <field name="pickedQty" title="Picked qty / Qty to pick" x-scale="nbDecimalQty"
       readonlyIf="stockMoveLine"/>
@@ -58,7 +58,7 @@
         onSelect="action-picked-product-method-set-tracking-number-domain"
         onChange="action-picked-product-method-set-current-qty"/>
       <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
-        readonly="true"/>
+        readonly="true" x-scale="nbDecimalQty"/>
       <field name="unit" readonly="true"/>
       <field name="pickedQty" x-scale="nbDecimalQty"/>
       <field name="stockMoveLine" showIf="stockMoveLine != null"/>
