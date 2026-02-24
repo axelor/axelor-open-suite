@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.PartnerLink;
 import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.meta.CallMethod;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 public class PartnerAccountService {
@@ -52,11 +53,11 @@ public class PartnerAccountService {
                         .getTypeSelect()
                         .equals(PartnerLinkTypeRepository.TYPE_SELECT_PAYED_BY))
             .map(PartnerLink::getPartner2)
-            .toList();
+            .collect(Collectors.toList());
 
     if (payedByPartners.size() != 1) {
       return null;
     }
-    return payedByPartners.getFirst();
+    return payedByPartners.get(0);
   }
 }
