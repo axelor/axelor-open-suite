@@ -1,0 +1,5 @@
+---
+title: "Sale order: fixed third-party payer partner not set when generating an invoice from a sale order."
+module: axelor-account
+developer: |
+  Added PartnerAccountService to SaleOrderInvoiceServiceImpl and services extending it.
