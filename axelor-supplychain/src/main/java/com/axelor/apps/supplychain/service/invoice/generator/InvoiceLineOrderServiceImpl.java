@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,7 +29,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -60,9 +60,7 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
     BigDecimal price =
         percentToInvoice
             .multiply(exTaxTotal)
-            .divide(
-                new BigDecimal("100"), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
-
+            .divide(new BigDecimal("100"), scale, RoundingMode.HALF_UP);
     BigDecimal lineAmountToInvoice = price.setScale(scale, RoundingMode.HALF_UP);
 
     BigDecimal lineAmountToInvoiceInclTax =
@@ -93,6 +91,45 @@ public class InvoiceLineOrderServiceImpl implements InvoiceLineOrderService {
 
         InvoiceLine invoiceLine = this.createInvoiceLine();
 
+        List<InvoiceLine> invoiceLines = new ArrayList<>();
+        invoiceLines.add(invoiceLine);
+
+        return invoiceLines;
+      }
+    };
+  }
+
+  @Override
+  public InvoiceLineGeneratorSupplyChain getInvoiceLineGeneratorForTitleLines(
+      Invoice invoice,
+      String productTitle,
+      SaleOrderLine saleOrderLine,
+      PurchaseOrderLine purchaseOrderLine,
+      BigDecimal qty) {
+    return new InvoiceLineGeneratorSupplyChain(
+        invoice,
+        null,
+        productTitle,
+        BigDecimal.ZERO,
+        BigDecimal.ZERO,
+        BigDecimal.ZERO,
+        null,
+        qty,
+        null,
+        null,
+        InvoiceLineGenerator.DEFAULT_SEQUENCE,
+        BigDecimal.ZERO,
+        PriceListLineRepository.AMOUNT_TYPE_NONE,
+        BigDecimal.ZERO,
+        null,
+        false,
+        saleOrderLine,
+        purchaseOrderLine,
+        null) {
+      @Override
+      public List<InvoiceLine> creates() throws AxelorException {
+
+        InvoiceLine invoiceLine = this.createInvoiceLine();
         List<InvoiceLine> invoiceLines = new ArrayList<>();
         invoiceLines.add(invoiceLine);
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,9 +30,8 @@ import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -88,12 +87,10 @@ public class StockMoveMergingServiceSupplychainImpl extends StockMoveMergingServ
       List<StockMove> stockMoveList, StockMove stockMove, StockMove mergedStockMove) {
     super.fillStockMoveFields(stockMoveList, stockMove, mergedStockMove);
     mergedStockMove.setDeliveryCondition(stockMove.getDeliveryCondition());
-    Set<SaleOrder> saleOrderSet =
+    mergedStockMove.setSaleOrderSet(
         stockMoveList.stream()
             .flatMap(s -> s.getSaleOrderSet().stream())
-            .collect(Collectors.toSet());
-    mergedStockMove.setSaleOrderSet(saleOrderSet);
-    saleOrderSet.forEach(saleOrder -> saleOrder.addStockMoveListItem(mergedStockMove));
+            .collect(Collectors.toSet()));
     mergedStockMove.setPurchaseOrderSet(
         stockMoveList.stream()
             .flatMap(p -> p.getPurchaseOrderSet().stream())

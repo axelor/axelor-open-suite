@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,11 +27,12 @@ import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.MetaFiles;
 import com.axelor.report.ReportGenerator;
 import com.google.common.base.Preconditions;
 import com.ibm.icu.util.TimeZone;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -50,7 +51,6 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
 import org.apache.commons.collections.CollectionUtils;
 import org.eclipse.birt.core.exception.BirtException;
 import org.eclipse.birt.report.data.oda.jdbc.IConnectionFactory;
@@ -153,7 +153,7 @@ public class BaseReportGenerator extends ReportGenerator {
       opts.setOutputStream(output);
 
       if (IRenderOption.OUTPUT_FORMAT_PDF.equals(format)) {
-        opts.setOption(IPDFRenderOption.PDF_HYPHENATION, true);
+        opts.setOption(IPDFRenderOption.PDF_WORDBREAK, true);
       }
 
       TimeZone timeZone =
@@ -238,7 +238,7 @@ public class BaseReportGenerator extends ReportGenerator {
   public File generate(String designName, String format, Map<String, Object> params, Locale locale)
       throws IOException, BirtException {
     Preconditions.checkNotNull(designName, "no report design name given");
-    final Path tmpFile = MetaFiles.createTempFile(null, "");
+    final Path tmpFile = TempFiles.createTempFile(null, "");
     try (FileOutputStream stream = new FileOutputStream(tmpFile.toFile())) {
       generate(stream, designName, format, params, locale);
     }

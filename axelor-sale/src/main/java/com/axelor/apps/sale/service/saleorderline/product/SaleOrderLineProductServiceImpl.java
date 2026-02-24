@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -42,7 +42,7 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
 import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.db.mapper.Mapper;
 import com.google.common.collect.Sets;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
@@ -196,9 +196,12 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     BigDecimal exTaxPrice;
     BigDecimal inTaxPrice;
     if (saleOrderLine.getProduct().getInAti()) {
-      inTaxPrice =
-          saleOrderLinePriceService.getInTaxUnitPrice(
-              saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+      inTaxPrice = saleOrderLine.getPrice();
+      if (inTaxPrice == null || inTaxPrice.compareTo(BigDecimal.ZERO) == 0) {
+        inTaxPrice =
+            saleOrderLinePriceService.getInTaxUnitPrice(
+                saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+      }
       saleOrderLineMap.putAll(
           saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, inTaxPrice));
       inTaxPrice =
@@ -213,9 +216,12 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
         saleOrderLine.setInTaxPrice(inTaxPrice);
       }
     } else {
-      exTaxPrice =
-          saleOrderLinePriceService.getExTaxUnitPrice(
-              saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+      exTaxPrice = saleOrderLine.getPrice();
+      if (exTaxPrice == null || exTaxPrice.compareTo(BigDecimal.ZERO) == 0) {
+        exTaxPrice =
+            saleOrderLinePriceService.getExTaxUnitPrice(
+                saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+      }
       saleOrderLineMap.putAll(
           saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, exTaxPrice));
       exTaxPrice =

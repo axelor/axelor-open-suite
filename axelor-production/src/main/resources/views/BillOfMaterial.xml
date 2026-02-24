@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="bill-of-material-grid" title="Bills of material"
     model="com.axelor.apps.production.db.BillOfMaterial">
@@ -19,18 +19,21 @@
   </grid>
 
   <grid name="product-bill-of-material-grid" title="Bills of material"
-    model="com.axelor.apps.production.db.BillOfMaterial">
-    <field name="fullName"/>
-    <field name="company" if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
-    <field name="workshopStockLocation"
+    model="com.axelor.apps.production.db.BillOfMaterialLine" groupBy="billOfMaterialParent">
+    <field name="billOfMaterialParent"/>
+    <field name="billOfMaterialParent.fullName"/>
+    <field name="billOfMaterialParent.company"
+      if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
+    <field name="billOfMaterialParent.workshopStockLocation"
       if="__config__.app.getApp('production')?.getManageWorkshop()"/>
-    <field name="product" domain="self.productTypeSelect = 'storable'"
+    <field name="billOfMaterialParent.product" domain="self.productTypeSelect = 'storable'"
       onChange="action-bill-of-material-group-product" form-view="product-form"
       grid-view="product-grid"/>
-    <field name="billOfMaterialLineList.qty" aggregate="sum" x-scale="2"/>
-    <field name="unit" form-view="unit-form" grid-view="unit-grid"/>
-    <field name="prodProcess" grid-view="prod-process-grid" form-view="prod-process-form"/>
-    <field name="statusSelect" widget="single-select"/>
+    <field name="qty" aggregate="sum" x-scale="2"/>
+    <field name="billOfMaterialParent.unit" form-view="unit-form" grid-view="unit-grid"/>
+    <field name="billOfMaterialParent.prodProcess" grid-view="prod-process-grid"
+      form-view="prod-process-form"/>
+    <field name="billOfMaterialParent.statusSelect" widget="single-select"/>
   </grid>
 
   <grid name="personalized-bill-of-material-grid" title="Bills of material" canNew="false"
@@ -61,7 +64,7 @@
     </menubar>
 
     <panel name="mainPanel">
-      <help showIf="$isUsedInSaleOrder" colSpan="12"><![CDATA[This bill of material is used in a sale order. Generate a new version if you need to edit it.]]></help>
+      <help showIf="$isUsedInSaleOrder" colSpan="12"><![CDATA[<>This bill of material is used in a sale order. Generate a new version if you need to edit it.</>]]></help>
       <field name="statusSelect" showTitle="false" colSpan="8" readonly="true"
         widget="NavSelect"/>
       <field name="$defaultBOMOnProduct" readonly="true" showIf="id" showTitle="false"
@@ -315,6 +318,8 @@
     <attribute name="scale" for="qty"
       expr="eval: __config__.app.getApp('production')?.nbDecimalDigitForBomQty"/>
     <attribute name="scale" for="calculationQty"
+      expr="eval: __config__.app.getApp('production')?.nbDecimalDigitForBomQty"/>
+    <attribute name="scale" for="billOfMaterialLineList.qty"
       expr="eval: __config__.app.getApp('production')?.nbDecimalDigitForBomQty"/>
   </action-attrs>
 

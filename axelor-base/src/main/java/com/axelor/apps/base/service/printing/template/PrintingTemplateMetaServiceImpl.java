@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,7 +23,7 @@ import com.axelor.meta.schema.views.Button;
 import com.axelor.meta.schema.views.FormView;
 import com.axelor.meta.schema.views.GridView;
 import com.axelor.web.ITranslation;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import net.fortuna.ical4j.util.Optional;
@@ -76,7 +76,7 @@ public class PrintingTemplateMetaServiceImpl implements PrintingTemplateMetaServ
     if (isFormView) {
       printBtn.setShowIf("id");
     }
-    printBtn.setIcon("fa-print");
+    printBtn.setIcon("printer");
     return printBtn;
   }
 

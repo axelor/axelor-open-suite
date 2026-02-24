@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,8 +29,8 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -96,7 +96,7 @@ public class ExpenseAnalyticServiceImpl implements ExpenseAnalyticService {
             AnalyticMoveLineRepository.STATUS_FORECAST_INVOICE,
             date);
 
-    expenseLine.setAnalyticMoveLineList(analyticMoveLineList);
+    analyticMoveLineList.forEach(expenseLine::addAnalyticMoveLineListItem);
     return expenseLine;
   }
 

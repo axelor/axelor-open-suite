@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,10 +26,11 @@ import com.axelor.apps.budget.db.Budget;
 import com.axelor.apps.budget.db.BudgetLine;
 import com.axelor.apps.budget.db.repo.BudgetLineRepository;
 import com.axelor.utils.helpers.date.LocalDateHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.Optional;
 
 public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
@@ -111,11 +112,24 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
     if (fromDate != null && toDate != null) {
       computeBudgetLinesUsingDates(budget, amount, fromDate, toDate, computeMethod);
     } else {
-      BudgetLine budgetLine = budgetLineRepository.findCurrentByDate(budget, defaultDate);
+      BudgetLine budgetLine = findByCurrentDate(budget, defaultDate);
       if (budgetLine != null) {
         computeMethod.computeBudgetLineAmounts(budgetLine, amount);
       }
     }
+  }
+
+  protected BudgetLine findByCurrentDate(Budget budget, LocalDate defaultDate) {
+    return budget.getBudgetLineList().stream()
+        .filter(
+            line -> {
+              boolean startsBeforeOrOn = !line.getFromDate().isAfter(defaultDate);
+              boolean endsAfterOrOn =
+                  (line.getToDate() == null || !line.getToDate().isBefore(defaultDate));
+              return startsBeforeOrOn && endsAfterOrOn;
+            })
+        .max(Comparator.comparing(BudgetLine::getFromDate))
+        .orElse(null);
   }
 
   protected void computeBudgetLinesUsingDates(
@@ -130,7 +144,8 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
     BigDecimal missingAmount = amount;
 
     while (!date.isAfter(toDate)) {
-      BudgetLine budgetLine = budgetLineRepository.findCurrentByDate(budget, date);
+
+      BudgetLine budgetLine = findByCurrentDate(budget, date);
       if (budgetLine == null || totalDuration == 0) {
         break;
       }

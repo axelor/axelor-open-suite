@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="bank-statement-grid" title="Bank Statements"
     model="com.axelor.apps.bankpayment.db.BankStatement" orderBy="-toDate,name" canDelete="false">
     <toolbar>
       <button name="showBankStatementLinesBtn" title="See bank statement lines"
         onClick="account-bank-statement-view-bank-statement-lines"/>
-      <button name="deleteStatementBtn" title="Delete" icon="fa-trash"
+      <button name="deleteStatementBtn" title="Delete" icon="trash"
         onClick="action-bank-statement-method-delete-multiple-statement"/>
       <button name="printBtn" hidden="true" onClick=""/>
     </toolbar>
@@ -23,12 +23,12 @@
   <form name="bank-statement-form" title="Bank Statement"
     model="com.axelor.apps.bankpayment.db.BankStatement" width="large" canDelete="false">
     <toolbar>
-      <button name="printBtn" title="Print" icon="fa-print" readonlyIf="statusSelect &lt; 2"
+      <button name="printBtn" title="Print" icon="printer" readonlyIf="statusSelect &lt; 2"
         onClick="action-bank-statement-validate-file-format,action-method-print-template"/>
       <button name="generateBankReconciliationBtn" title="Run bank reconciliation"
         readonlyIf="statusSelect &lt; 2"
         onClick="action-bank-statement-method-run-bank-reconciliation"/>
-      <button name="deleteStatementBtn" title="Delete" icon="fa-trash"
+      <button name="deleteStatementBtn" title="Delete" icon="trash"
         onClick="action-bank-statement-method-delete-statement"/>
     </toolbar>
 
@@ -103,12 +103,13 @@
     <view type="grid" name="move-line-grid"/>
     <view type="form" name="move-line-form"/>
     <domain>self.id IN
-      (SELECT brl.moveLine
+      (SELECT brl.moveLine.id
       FROM BankReconciliationLine AS brl
-      JOIN BankReconciliation
+      JOIN
+      BankReconciliation
       as br
-      ON brl.bankReconciliation = br.id
-      WHERE br.bankStatement = :_id)</domain>
+      ON brl.bankReconciliation.id = br.id
+      WHERE br.bankStatement.id = :_id)</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 

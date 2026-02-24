@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,13 +32,14 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderCopyService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderOrderingStatusService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSale;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
 import java.util.List;
-import javax.persistence.PersistenceException;
 
 public class SaleOrderManagementRepository extends SaleOrderRepository {
 
@@ -84,6 +85,8 @@ public class SaleOrderManagementRepository extends SaleOrderRepository {
       if (appSale.getIsQuotationAndOrderSplitEnabled()) {
         saleOrderOrderingStatusService.updateOrderingStatus(saleOrder);
       }
+      Beans.get(SaleOrderLineComputeService.class)
+          .computeLevels(saleOrder.getSaleOrderLineList(), null);
       return super.save(saleOrder);
     } catch (Exception e) {
       TraceBackService.traceExceptionFromSaveMethod(e);

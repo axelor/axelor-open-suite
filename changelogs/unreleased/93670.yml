@@ -1,0 +1,3 @@
+---
+title: "Prod process: fixed the product display when the isEnabledForAllProducts boolean is set to true."
+module: axelor-production

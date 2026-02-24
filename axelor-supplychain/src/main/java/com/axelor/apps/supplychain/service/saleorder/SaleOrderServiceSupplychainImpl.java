@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,6 +29,7 @@ import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -48,6 +49,7 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.StockMoveService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.axelor.apps.supplychain.db.Timetable;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.AccountingSituationSupplychainService;
@@ -60,10 +62,11 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppSupplychain;
 import com.google.common.base.MoreObjects;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -189,6 +192,7 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
       }
       for (StockMove stockMove : stockMoves) {
         stockMoveService.cancel(stockMove, cancelReason);
+        stockMove = JpaModelHelper.ensureManaged(stockMove);
         stockMove.setArchived(true);
         for (StockMoveLine stockMoveline : stockMove.getStockMoveLineList()) {
           TrackingNumber trackingNumber = stockMoveline.getTrackingNumber();
@@ -435,5 +439,14 @@ public class SaleOrderServiceSupplychainImpl extends SaleOrderServiceImpl
     }
     return stockLocation != null && saleOrderA2C != null && !saleOrderA2C.equals(stockLocationA2C)
         || stockLocation == null && saleOrderA2C != null && !saleOrderA2C.equals(companyA2C);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public SaleOrder addPack(SaleOrder saleOrder, Pack pack, BigDecimal packQty)
+      throws AxelorException, MalformedURLException {
+    saleOrder = super.addPack(saleOrder, pack, packQty);
+    this.setAdvancePayment(saleOrder);
+    return saleOrder;
   }
 }

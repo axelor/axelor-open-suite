@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.account.service.accountingsituation.AccountingSituationSe
 import com.axelor.apps.account.service.move.MoveRemoveServiceImpl;
 import com.axelor.apps.account.service.reconcile.UnreconcileService;
 import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
+import com.axelor.apps.bankpayment.db.repo.BankReconciliationLineRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineAFB120Repository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
@@ -33,13 +34,14 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.service.ArchivingService;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 
 public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
 
+  protected BankReconciliationLineRepository bankReconciliationLineRepository;
   protected BankStatementLineAFB120Repository bankStatementLineAFB120Repository;
 
   @Inject
@@ -50,6 +52,7 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
       UnreconcileService unReconcileService,
       AccountingSituationService accountingSituationService,
       AccountCustomerService accountCustomerService,
+      BankReconciliationLineRepository bankReconciliationLineRepository,
       BankStatementLineAFB120Repository bankStatementLineAFB120Repository) {
     super(
         moveRepo,
@@ -58,6 +61,7 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
         unReconcileService,
         accountingSituationService,
         accountCustomerService);
+    this.bankReconciliationLineRepository = bankReconciliationLineRepository;
     this.bankStatementLineAFB120Repository = bankStatementLineAFB120Repository;
   }
 
@@ -67,7 +71,12 @@ public class MoveRemoveServiceBankPaymentImpl extends MoveRemoveServiceImpl {
     String errorMessage = super.checkMoveLineBeforeRemove(moveLine);
 
     if (Beans.get(AppBankPaymentService.class).isApp("bank-payment")
-        && moveLine.getBankReconciledAmount().compareTo(BigDecimal.ZERO) > 0) {
+        && moveLine.getBankReconciledAmount().compareTo(BigDecimal.ZERO) > 0
+        && bankReconciliationLineRepository
+                .all()
+                .filter("self.moveLine.id = ?", moveLine.getId())
+                .count()
+            > 0) {
       errorMessage +=
           String.format(
               I18n.get(

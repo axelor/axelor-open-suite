@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="project-version-grid" title="Project.version"
     model="com.axelor.apps.project.db.ProjectVersion">
@@ -41,9 +41,9 @@
 
   <action-attrs name="action-version-attrs-project-domain">
     <attribute name="domain" for="projectSet"
-      expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet &quot;" if="!__parent__"/>
+      expr="eval: &quot; :__user__ MEMBER OF self.membersUserSet &quot;" if="!__parent__"/>
     <attribute name="domain" for="projectSet"
-      expr="eval: &quot; ${__user__.id} MEMBER OF self.membersUserSet AND self.id != ${__parent__.id} &quot;"
+      expr="eval: &quot; :__user__ MEMBER OF self.membersUserSet AND self.id != ${__parent__.id} &quot;"
       if="__parent__ &amp;&amp; __parent__._model == 'com.axelor.apps.project.db.Project'"/>
   </action-attrs>
 

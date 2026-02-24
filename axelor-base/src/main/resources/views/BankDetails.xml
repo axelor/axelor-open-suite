@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="bank-details-grid" title="Bank details"
     model="com.axelor.apps.base.db.BankDetails">
@@ -29,8 +29,7 @@
             <![CDATA[<><Badge bg={active ? "success" : "danger"}>{active ? _t('Active') : _t('Inactive')}</Badge></>]]>
           </viewer>
         </field>
-        <field name="partner"
-          onChange="action-set-owner-name,action-bank-details-attrs-specific-notes"
+        <field name="partner" onChange="action-bank-details-group-partner-onchange"
           domain="self.isContact = false" form-view="partner-form" grid-view="partner-grid"
           colSpan="10"/>
         <field name="active" widget="boolean-radio" colSpan="2" showTitle="false"
@@ -53,7 +52,7 @@
     <panel name="ibanPanel" title="IBAN / BBAN">
       <field name="bank.bankDetailsTypeSelect" readonly="true"/>
       <panel name="ibanPanel">
-        <field name="iban" readonlyIf="bank==null"
+        <field name="iban" readonlyIf="bank IS null"
           onChange="action-group-account-bankdetails-iban-onchange" colSpan="12"/>
         <static name="invalidIbanText" hidden="true" colSpan="12">
 	        <![CDATA[<><Badge bg="warning">Invalid IBAN</Badge></>]]>
@@ -168,11 +167,18 @@
     <action name="action-attrs-account-bankdetails-bank-empty-address"/>
   </action-group>
 
+  <action-group name="action-bank-details-group-partner-onchange">
+    <action name="action-set-owner-name"/>
+    <action name="action-bank-details-record-set-default-partner-bank-details"/>
+    <action name="action-bank-details-attrs-specific-notes"/>
+  </action-group>
+
   <action-group name="action-group-account-bank-details-form-onnew">
     <action name="action-method_bank-details-validate-iban"/>
     <action name="action-bank-details-record-set-company"
       if="__parent__?._model == 'com.axelor.apps.base.db.Company'"/>
     <action name="action-set-default-partner"/>
+    <action name="action-bank-details-record-set-default-partner-bank-details"/>
     <action name="action-bank-details-attrs-code"/>
     <action name="action-bank-details-record-set-partner-and-currency"
       if="__parent__?._model == 'com.axelor.apps.base.db.Company'"/>
@@ -203,6 +209,15 @@
     <field name="ownerName"
       if="__parent__ != null &amp;&amp; __parent__.get('_model') == 'com.axelor.apps.base.db.Partner'"
       expr="eval:__parent__ != null ? (__parent__.name != null ? __parent__.name : '') + ' ' + (__parent__.firstName != null ? __parent__.firstName : '') : ''"/>
+  </action-record>
+
+  <action-record name="action-bank-details-record-set-default-partner-bank-details"
+    model="com.axelor.apps.base.db.BankDetails">
+    <field name="isDefault"
+      if="__parent__ != null &amp;&amp; __parent__.get('_model') == 'com.axelor.apps.base.db.Partner'"
+      expr="eval: !__parent__?.bankDetailsList?.find{it.isDefault}"/>
+    <field name="isDefault" if="partner != null &amp;&amp; __parent__ == null"
+      expr="eval: !partner?.bankDetailsList?.find{it.isDefault}"/>
   </action-record>
 
   <action-record name="action-bank-details-record-set-partner-and-currency"
@@ -242,6 +257,10 @@
       expr="eval: !partner?.isFactor &amp;&amp; !__parent__?.getContextClass().equals('Company')"
       if="__config__.app.isApp('account')"/>
   </action-attrs>
+
+  <action-method name="action-bank-details-method-set-iban-information">
+    <call class="com.axelor.apps.base.web.BankDetailsController" method="setIbanInfo"/>
+  </action-method>
 
   <search-filters name="bank-detail-filters"
     model="com.axelor.apps.base.db.BankDetails" title="Bank detail filters">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -50,6 +50,7 @@ import com.axelor.apps.purchase.service.PurchaseOrderMergingViewServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseOrderWorkflowServiceImpl;
 import com.axelor.apps.purchase.service.PurchaseRequestServiceImpl;
+import com.axelor.apps.purchase.service.purchaseorderline.view.PurchaseOrderLineViewServiceImpl;
 import com.axelor.apps.sale.db.repo.AdvancePaymentSaleRepository;
 import com.axelor.apps.sale.db.repo.CartLineManagementRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineSaleRepository;
@@ -301,6 +302,7 @@ import com.axelor.apps.supplychain.service.pricing.FreightCarrierApplyPricingSer
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingService;
 import com.axelor.apps.supplychain.service.pricing.FreightCarrierPricingServiceImpl;
 import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplyChainServiceImpl;
+import com.axelor.apps.supplychain.service.purchaseorderline.view.PurchaseOrderLineViewServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchService;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderAdvancePaymentFetchServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.SaleOrderBlockingSupplychainService;
@@ -340,6 +342,7 @@ import com.axelor.apps.supplychain.service.saleorder.SaleOrderVersionSupplyChain
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChain;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingServiceSupplyChainImpl;
 import com.axelor.apps.supplychain.service.saleorder.merge.SaleOrderMergingViewServiceSupplyChainImpl;
+import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnChangeSupplychainService;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnChangeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.onchange.SaleOrderOnLineChangeSupplyChainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorder.opportunity.OpportunitySaleOrderSupplychainServiceImpl;
@@ -399,6 +402,8 @@ public class SupplychainModule extends AxelorModule {
     bind(StockRulesService.class).to(StockRulesServiceImpl.class);
     bind(StockRulesSupplychainService.class).to(StockRulesSupplychainServiceImpl.class);
     bind(PurchaseOrderServiceImpl.class).to(PurchaseOrderServiceSupplychainImpl.class);
+    bind(PurchaseOrderLineViewServiceImpl.class)
+        .to(PurchaseOrderLineViewServiceSupplychainImpl.class);
     bind(SaleOrderServiceImpl.class).to(SaleOrderServiceSupplychainImpl.class);
     bind(SaleOrderCreateServiceImpl.class).to(SaleOrderCreateServiceSupplychainImpl.class);
     bind(SaleOrderComputeServiceImpl.class).to(SaleOrderComputeServiceSupplychainImpl.class);
@@ -537,6 +542,8 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineOnChangeSupplychainServiceImpl.class);
     bind(SaleOrderInitValueServiceImpl.class).to(SaleOrderInitValueSupplychainServiceImpl.class);
     bind(SaleOrderViewServiceImpl.class).to(SaleOrderViewSupplychainServiceImpl.class);
+    bind(SaleOrderOnChangeSupplychainService.class)
+        .to(SaleOrderOnChangeSupplychainServiceImpl.class);
     bind(SaleOrderOnChangeServiceImpl.class).to(SaleOrderOnChangeSupplychainServiceImpl.class);
     bind(SaleOrderIntercoService.class).to(SaleOrderIntercoServiceImpl.class);
     bind(SaleOrderProductPrintingService.class).to(SaleOrderProductPrintingServiceImpl.class);

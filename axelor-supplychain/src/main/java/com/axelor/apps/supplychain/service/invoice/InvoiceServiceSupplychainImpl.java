@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -57,8 +57,9 @@ import com.axelor.db.EntityHelper;
 import com.axelor.db.Query;
 import com.axelor.inject.Beans;
 import com.axelor.message.service.TemplateMessageService;
-import com.google.inject.Inject;
+import com.axelor.utils.helpers.WrappingHelper;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -187,11 +188,16 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     if (CollectionUtils.isNotEmpty(stockMoveSet)) {
       saleOrderIds.addAll(
           stockMoveSet.stream()
-              .flatMap(move -> move.getSaleOrderSet().stream().map(SaleOrder::getId))
+              .flatMap(
+                  move ->
+                      WrappingHelper.wrap(move.getSaleOrderSet()).stream().map(SaleOrder::getId))
               .collect(Collectors.toList()));
       purchaseOrderIds.addAll(
           stockMoveSet.stream()
-              .flatMap(move -> move.getPurchaseOrderSet().stream().map(PurchaseOrder::getId))
+              .flatMap(
+                  move ->
+                      WrappingHelper.wrap(move.getPurchaseOrderSet()).stream()
+                          .map(PurchaseOrder::getId))
               .collect(Collectors.toList()));
     }
 
@@ -231,7 +237,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
     }
 
     if (CollectionUtils.isNotEmpty(purchaseOrderIds)) {
-      query.bind("_purchaseOrder", purchaseOrderIds);
+      query.bind("_purchaseOrderList", purchaseOrderIds);
     }
     if (!generateMoveForInvoicePayment) {
       if (currency == null) {
@@ -379,7 +385,7 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
       List<StockMove> stockMoveList =
           stockMoveRepository
               .all()
-              .filter(":invoiceId in self.invoiceSet.id")
+              .filter(":invoiceId in (self.invoiceSet.id)")
               .bind("invoiceId", invoice.getId())
               .fetch();
       for (StockMove stockMove : stockMoveList) {
@@ -392,5 +398,12 @@ public class InvoiceServiceSupplychainImpl extends InvoiceServiceImpl
         stockMoveRepository.save(stockMove);
       }
     }
+  }
+
+  @Override
+  public boolean hasFiscalPositionMismatch(Invoice invoice) {
+    SaleOrder saleOrder = invoice.getSaleOrder();
+    return saleOrder != null
+        && !Objects.equals(saleOrder.getFiscalPosition(), invoice.getFiscalPosition());
   }
 }

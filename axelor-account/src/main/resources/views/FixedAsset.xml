@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="fixed-asset-grid" title="Fixed assets"
     model="com.axelor.apps.account.db.FixedAsset" orderBy="company.code,-fixedAssetSeq,-reference">
     <menubar>
-      <menu name="fixedAssetToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="fixedAssetToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="validateSelectedFixedAssetsItem" title="Validate selected fixed assets"
           action="action-fixed-asset-method-mass-validation"
           prompt="Are you sure you want to validate all selected fixed assets ?"/>
@@ -145,9 +145,9 @@
           <field name="importFiscalAlreadyDepreciatedAmount" requiredIf="originSelect == 99"
             min="0" x-scale="company.currency.numberOfDecimals"/>
         </panel>
-        <panel-related name="fiscalFixedAssetLineListPanel"
-          readonlyIf="statusSelect > 1" colSpan="12" field="fiscalFixedAssetLineList"
-          form-view="fixed-asset-line-form" grid-view="fiscal-fixed-asset-line-grid" canNew="false"/>
+        <panel-related name="fiscalFixedAssetLineListPanel" readonly="true"
+          colSpan="12" field="fiscalFixedAssetLineList" form-view="fixed-asset-line-form"
+          grid-view="fiscal-fixed-asset-line-grid" canNew="false"/>
       </panel>
       <panel name="depreciationInfo" title="Depreciation information"
         showIf="depreciationPlanSelect != null &amp;&amp; (depreciationPlanSelect.includes(&quot;1&quot;) || depreciationPlanSelect.includes(&quot;2&quot;) || depreciationPlanSelect.includes(&quot;3&quot;))"
@@ -188,14 +188,14 @@
           <field name="importAlreadyDepreciatedAmount" requiredIf="originSelect == 99" min="0"
             x-scale="company.currency.numberOfDecimals"/>
         </panel>
-        <panel-related name="fixedAssetLineListPanel" readonlyIf="statusSelect > 1"
-          colSpan="12" field="fixedAssetLineList" form-view="fixed-asset-line-form"
+        <panel-related name="fixedAssetLineListPanel" readonly="true" colSpan="12"
+          field="fixedAssetLineList" form-view="fixed-asset-line-form"
           grid-view="fixed-asset-line-grid" canNew="false"/>
       </panel>
       <panel name="derogatoryPanel" title="Derogatory"
         showIf="depreciationPlanSelect != null &amp;&amp; depreciationPlanSelect.includes(&quot;3&quot;)">
-        <panel-related name="fixedAssetDerogatoryLineListPanel"
-          readonlyIf="statusSelect > 1" field="fixedAssetDerogatoryLineList" colSpan="12"
+        <panel-related name="fixedAssetDerogatoryLineListPanel" readonly="true"
+          field="fixedAssetDerogatoryLineList" colSpan="12"
           form-view="fixed-asset-derogatory-line-form" grid-view="fixed-asset-derogatory-line-grid"
           canNew="false"/>
       </panel>
@@ -366,8 +366,8 @@
         domain="self.isCustomer = true" colSpan="4"/>
       <field name="saleTaxLineSet" requiredIf="$generateSaleMove" title="Tax lines"
         canNew="false" type="many-to-many" target="com.axelor.apps.account.db.TaxLine"
-        showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove" hidden="true"
-        widget="TagSelect" colSpan="4"/>
+        showIf="disposalTypeSelect == 2 &amp;&amp; $generateSaleMove" hidden="true" widget="Tags"
+        colSpan="4"/>
       <field name="$customerId" type="Integer" hidden="true"/>
       <field name="comments" colSpan="12" widget="html" x-lite="true"
         showIf="disposalTypeSelect == 2" hidden="true"/>

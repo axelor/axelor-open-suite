@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
-  <chart onInit="action.base.default.month.value"
+  <chart onInit="action.stock.chart.set.month.and.from.date"
     name="chart.stockMove.nbr.delivery.by.country" title="Customer deliveries by country">
     <search-fields>
       <field type="string" name="monthSelect" title="Historical Period"
-        selection="base.month.select" x-required="true"/>
+        selection="base.month.select" x-required="true"
+        onChange="action.stock.chart.compute.from.date"/>
+      <field type="date" name="fromDate" hidden="true"/>
     </search-fields>
     <dataset type="jpql">
       SELECT
@@ -34,9 +36,7 @@
       address.country =
       country
       AND
-      self.realDate BETWEEN
-      DATE(:todayDate) - (CAST(:monthSelect as int)) * 30 AND
-      DATE(:todayDate)
+      self.realDate BETWEEN :fromDate AND :todayDate
       GROUP BY
       country.name
     </dataset>
@@ -67,8 +67,9 @@
       stockMove.statusSelect = 3 AND
       stockMove.company = :activeCompany
       AND
-      stockMove.realDate BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
-      self.stockMove = stockMove
+      DATE(stockMove.realDate) BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
+      self.stockMove =
+      stockMove
       AND
       self.toStockLocation = stockLocation AND
       stockLocation.typeSelect = 3
@@ -108,8 +109,9 @@
       stockMove.statusSelect = 3 AND
       stockMove.company = :activeCompany
       AND
-      stockMove.realDate BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
-      self.stockMove = stockMove
+      DATE(stockMove.realDate) BETWEEN DATE(:fromDate) AND DATE(:toDate) AND
+      self.stockMove =
+      stockMove
       AND
       self.toStockLocation = stockLocation AND
       stockLocation.typeSelect = 3
@@ -117,7 +119,8 @@
       stockMove.toAddress
       = address AND
       address.country = country AND
-      self.product.productFamily = productFamily
+      self.product.productFamily =
+      productFamily
       GROUP BY
       country.name, productFamily.name
     </dataset>
@@ -271,7 +274,7 @@
 				               AND move.status_select in (2,3)
 				               AND line.product = :id
 				               AND loc.id = location.id
-				               AND loc.type_select = 1
+				               AND loc.type_select IN (1,2)
 				           ) AS qty
 				    FROM stock_stock_location_line loc_line
 				    JOIN stock_stock_location location ON loc_line.stock_location = location.id
@@ -316,7 +319,7 @@
 				    WHERE line.product = :id
 				      AND move.estimated_date > DATE(:todayDate)
 				      AND move.real_date IS NULL
-				      AND location.type_select = 1
+				      AND location.type_select IN (1,2)
 				      AND move.status_select IN (2, 3)
 				    GROUP BY move.estimated_date, location.name
 				  )
@@ -399,7 +402,7 @@
 			  WHERE ln.product = :id
 			    AND mv.real_date <= DATE(:fromDate)
 			    AND mv.status_select IN (2, 3)
-			    AND loc.type_select = 1
+			    AND loc.type_select IN (1,2)
 			  GROUP BY loc.name
 
 			  UNION ALL
@@ -440,7 +443,7 @@
 			  WHERE ln.product = :id
 			    AND mv.real_date > DATE(:fromDate)
 			    AND mv.real_date <= DATE(:toDate)
-			    AND loc.type_select = 1
+			    AND loc.type_select IN (1,2)
 			     AND mv.status_select IN (2, 3)
 			) AS movs
 			ON movs.real_date = dates.d
@@ -611,5 +614,17 @@
     <category key="real_date" type="date" title="Date"/>
     <series key="qty" groupBy="locat" type="line" aggregate="sum" title="Quantity"/>
   </chart>
+
+  <action-record model="com.axelor.apps.stock.db.StockMove"
+    name="action.stock.chart.set.month.and.from.date">
+    <field name="monthSelect" expr="eval:12"/>
+    <field name="fromDate" expr="eval:LocalDate.parse(todayDate).minusMonths(12)"/>
+  </action-record>
+
+  <action-record model="com.axelor.apps.stock.db.StockMove"
+    name="action.stock.chart.compute.from.date">
+    <field name="fromDate"
+      expr="eval:LocalDate.parse(todayDate).minusMonths(monthSelect ? Integer.parseInt(monthSelect) : 12)"/>
+  </action-record>
 
 </object-views>

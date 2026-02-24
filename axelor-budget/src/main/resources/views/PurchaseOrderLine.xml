@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid id="budget-purchase-order-line-purchase-order-grid"
     name="purchase-order-line-purchase-order-grid" extension="true" title="PO lines"
@@ -134,17 +134,6 @@
     <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"
       method="setBudgetDomain"/>
   </action-method>
-
-  <action-view name="purchase-order-see-purchase-order-lines"
-    title="See purchase order lines" model="com.axelor.apps.purchase.db.PurchaseOrderLine"
-    id="budget-purchase-order-see-purchase-order-lines">
-    <view type="grid" name="purchase-order-line-grid"/>
-    <view type="form" name="purchase-order-line-all-form"/>
-    <view-param name="search-filters" value="purchase-order-line-filters"/>
-    <domain><![CDATA[self.purchaseOrder.project = :_project OR self.purchaseOrder.statusSelect IN (:status)]]></domain>
-    <context name="_project" expr="eval: _project"/>
-    <context name="status" expr="eval: _status"/>
-  </action-view>
 
   <action-method name="action-method-budget-purchase-orderline-set-product-account">
     <call class="com.axelor.apps.budget.web.PurchaseOrderLineController"

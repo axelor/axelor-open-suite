@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="bank-reconciliation-line-grid" title="Bank reconciliation Lines"
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine" editable="false"
@@ -72,10 +72,11 @@
   <grid name="bank-reconciliation-line-bank-reconciliation-grid"
     title="Bank reconciliation Lines" model="com.axelor.apps.bankpayment.db.BankReconciliationLine"
     canDelete="false" editable="false" canNew="false">
-    <button onClick="save,action-bank-reconciliation-line-method-set-selected" name="select"
-      title="Select / Unselect" icon="fa-check-circle" showIf="!isSelectedBankReconciliation"/>
-    <button onClick="save,action-bank-reconciliation-line-method-set-selected"
-      name="unselect" title="Select / Unselect" icon="fa-minus-circle"
+    <button onClick="save,action-bank-reconciliation-line-record-set-selected,save"
+      name="select" title="Select / Unselect" icon="check-circle-fill"
+      showIf="!isSelectedBankReconciliation"/>
+    <button onClick="save,action-bank-reconciliation-line-record-set-selected,save"
+      name="unselect" title="Select / Unselect" icon="dash-circle-fill"
       showIf="isSelectedBankReconciliation"/>
     <field name="postedNbr"/>
     <field name="confidenceIndex" readonly="true">
@@ -179,7 +180,7 @@
   <action-attrs
     name="action-bank-payment-attrs-bank-reconciliation-line-partner-domain">
     <attribute name="domain" for="partner"
-      expr="eval: &quot;self.isContact = false AND ${__parent__?.company?.id} member of self.companySet&quot;"
+      expr="eval: &quot;self.isContact = false AND ${__parent__?.company?.id} IN (self.companySet.id)&quot;"
       if="__parent__ != null"/>
     <attribute name="domain" for="partner"
       expr="eval: &quot;self.isContact = false &quot;" if="__parent__ == null"/>
@@ -205,11 +206,6 @@
     model="com.axelor.apps.bankpayment.db.BankReconciliationLine">
     <field name="isSelectedBankReconciliation" expr="eval: !isSelectedBankReconciliation"/>
   </action-record>
-
-  <action-method name="action-bank-reconciliation-line-method-set-selected">
-    <call class="com.axelor.apps.bankpayment.web.BankReconciliationLineController"
-      method="setSelected"/>
-  </action-method>
 
   <action-method
     name="action-bank-reconciliation-line-unreconcile-unselected-reconcile-selected">

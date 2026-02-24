@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,6 +34,7 @@ import com.axelor.meta.db.MetaFile;
 import com.axelor.text.GroovyTemplates;
 import com.axelor.text.StringTemplates;
 import com.axelor.text.Templates;
+import com.google.common.base.CaseFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,8 @@ class BirtTemplateReportSettingsBuilder {
 
   public BirtTemplateReportSettingsBuilder addInContext(Model model) {
     this.model = model;
-    String klassName = model.getClass().getSimpleName();
+    String klassName =
+        CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_CAMEL, model.getClass().getSimpleName());
     return addInContext(klassName, model);
   }
 

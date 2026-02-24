@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
 
   <!-- Nomenclature : * name : "interfaceName" + "fieldName" + ".select" -->
+
+  <selection name="reserved.sequence.status.select">
+    <option value="0">Pending</option>
+    <option value="1">Confirmed</option>
+    <option value="2">Released</option>
+  </selection>
 
   <selection name="grade.1.up.to.10.select">
     <option value="1">1</option>
@@ -124,6 +130,7 @@
     <option value='2'>Calendar synchronization</option>
     <option value='3'>Password change</option>
     <option value='4'>Recompute all addresses</option>
+    <option value='5'>Reserved sequence cleanup</option>
   </selection>
 
   <selection name="base.routing.rule.type.select">
@@ -859,6 +866,14 @@
   <selection name="base.indicator.alert.status.select">
     <option value="1">New</option>
     <option value="2">Checked</option>
+  </selection>
+
+  <selection name="data.backup.field.separator.select">
+    <option value=",">Comma (,)</option>
+    <option value=";">Semicolon (;)</option>
+    <option value="/">Slash (/)</option>
+    <option value="\t">Tab (\t)</option>
+    <option value="|">Pipe (|)</option>
   </selection>
 
 </object-views>

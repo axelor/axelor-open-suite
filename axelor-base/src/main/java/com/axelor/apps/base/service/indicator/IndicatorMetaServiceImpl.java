@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,7 @@ import com.axelor.meta.schema.views.Button;
 import com.axelor.meta.schema.views.Dashlet;
 import com.axelor.meta.schema.views.FormView;
 import com.axelor.web.ITranslation;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import net.fortuna.ical4j.util.Optional;
@@ -51,10 +51,13 @@ public class IndicatorMetaServiceImpl implements IndicatorMetaService {
       return;
     }
 
-    FormView formView = (FormView) view;
-
+    final FormView formView = (FormView) view;
+    final String viewName = view.getName();
+    final String modelName = view.getModel();
+    final boolean isIndicatorResultViewer =
+        viewName != null && viewName.startsWith("indicator-result-viewer-");
     final List<IndicatorConfig> indicatorConfigs =
-        configRepo.findByMetaModelNameActiveForDisplay(view.getModel()).fetch();
+        configRepo.findByMetaModelNameActiveForDisplay(modelName).fetch();
 
     if (CollectionUtils.isEmpty(indicatorConfigs)) {
       return;
@@ -65,23 +68,27 @@ public class IndicatorMetaServiceImpl implements IndicatorMetaService {
     final List<String> chartActions = new ArrayList<>();
 
     for (IndicatorConfig config : indicatorConfigs) {
-      final Integer displayType = config.getDisplayInRecordViewTypeSelect();
+      final int displayType = config.getDisplayInRecordViewTypeSelect();
+      final boolean displayBarChart = config.getDisplayBarChart();
+
       if (displayType == IndicatorConfigRepository.DISPLAY_TYPE_VIEW) {
         addBaseDashlet = true;
-      }
-      if (displayType == IndicatorConfigRepository.DISPLAY_TYPE_BUTTON) {
+        if (displayBarChart) {
+          chartActions.add(CHART_ACTION_PREFIX + config.getId());
+        }
+      } else if (displayType == IndicatorConfigRepository.DISPLAY_TYPE_BUTTON) {
         addToolbarButton = true;
-      }
-      if (Boolean.TRUE.equals(config.getDisplayBarChart())) {
-        chartActions.add(CHART_ACTION_PREFIX + config.getId());
+        if (displayBarChart && isIndicatorResultViewer) {
+          chartActions.add(CHART_ACTION_PREFIX + config.getId());
+        }
       }
     }
 
-    if (addToolbarButton && !view.getName().startsWith("indicator-result-viewer-")) {
+    if (addToolbarButton && !isIndicatorResultViewer) {
       addToolBarBtn(formView);
     }
 
-    if (addBaseDashlet || view.getName().startsWith("indicator-result-viewer-")) {
+    if (addBaseDashlet || isIndicatorResultViewer) {
       addDashlet(formView, BASE_ACTION);
     }
     for (String action : chartActions) {

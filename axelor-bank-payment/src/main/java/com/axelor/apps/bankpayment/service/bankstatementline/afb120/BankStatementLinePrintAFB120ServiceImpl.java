@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,7 +28,7 @@ import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.service.printing.template.PrintingTemplatePrintService;
 import com.axelor.apps.base.service.printing.template.model.PrintingGenFactoryContext;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -88,7 +88,7 @@ public class BankStatementLinePrintAFB120ServiceImpl
               bankStatementLinesPrintTemplate,
               new PrintingGenFactoryContext(
                   Map.of(
-                      "FromDate", fromDate, "ToDate", toDate, "BankDetails", bankDetails.getId())),
+                      "FromDate", fromDate, "ToDate", toDate, "bankDetails", bankDetails.getId())),
               "Bank statement lines - " + fromDate + " to " + toDate);
     }
     return fileLink;

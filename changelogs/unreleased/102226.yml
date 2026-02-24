@@ -1,5 +1,0 @@
----
-title: "API SIREN : Change the default sireneUrl."
-module: axelor-base
-developer: |
-  UPDATE studio_app_base SET sirene_url = 'https://api.insee.fr/api-sirene/3.11';

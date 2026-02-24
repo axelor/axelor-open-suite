@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -27,15 +27,18 @@ import com.axelor.apps.account.db.repo.FixedAssetLineRepository;
 import com.axelor.apps.account.db.repo.FixedAssetRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.common.ObjectUtils;
 import com.axelor.utils.helpers.date.LocalDateHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -233,20 +236,16 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   }
 
   @Override
-  public void multiplyLineBy(FixedAssetLine line, BigDecimal prorata) throws AxelorException {
+  public void multiplyLineBy(
+      FixedAssetLine line, BigDecimal prorata, Map<String, BigDecimal> amountByFieldMap)
+      throws AxelorException {
     FixedAsset fixedAsset = line.getFixedAsset();
-    line.setDepreciationBase(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getDepreciationBase(), prorata, fixedAsset, BigDecimal::multiply));
-    line.setDepreciation(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getDepreciation(), prorata, fixedAsset, BigDecimal::multiply));
-    line.setCumulativeDepreciation(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getCumulativeDepreciation(), prorata, fixedAsset, BigDecimal::multiply));
-    line.setAccountingValue(
-        fixedAssetLineToolService.getCompanyScaledValue(
-            line.getAccountingValue(), prorata, fixedAsset, BigDecimal::multiply));
+    computeAmountByFieldMap(amountByFieldMap, line, prorata);
+
+    line.setDepreciationBase(amountByFieldMap.get("depreciationBase"));
+    line.setDepreciation(amountByFieldMap.get("depreciation"));
+    line.setCumulativeDepreciation(amountByFieldMap.get("cumulativeDepreciation"));
+    line.setAccountingValue(amountByFieldMap.get("accountingValue"));
     line.setCorrectedAccountingValue(
         fixedAssetLineToolService.getCompanyScaledValue(
             line.getCorrectedAccountingValue(), prorata, fixedAsset, BigDecimal::multiply));
@@ -259,10 +258,40 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
   public void multiplyLinesBy(List<FixedAssetLine> fixedAssetLineList, BigDecimal prorata)
       throws AxelorException {
     if (fixedAssetLineList != null) {
+      Map<String, BigDecimal> amountByFieldMap = new HashMap<>();
+      amountByFieldMap.put("cumulativeDepreciation", BigDecimal.ZERO);
       for (FixedAssetLine fixedAssetLine : fixedAssetLineList) {
-        multiplyLineBy(fixedAssetLine, prorata);
+        multiplyLineBy(fixedAssetLine, prorata, amountByFieldMap);
       }
     }
+  }
+
+  protected void computeAmountByFieldMap(
+      Map<String, BigDecimal> amountByFieldMap, FixedAssetLine fixedAssetLine, BigDecimal prorata) {
+    FixedAsset fixedAsset = fixedAssetLine.getFixedAsset();
+    if (ObjectUtils.isEmpty(amountByFieldMap)
+        || !amountByFieldMap.containsKey("depreciationBase")) {
+      amountByFieldMap.put(
+          "depreciationBase",
+          fixedAssetLineToolService.getCompanyScaledValue(
+              fixedAssetLine.getDepreciationBase(), prorata, fixedAsset, BigDecimal::multiply));
+      amountByFieldMap.put("accountingValue", amountByFieldMap.get("depreciationBase"));
+    } else {
+      amountByFieldMap.replace("depreciationBase", amountByFieldMap.get("accountingValue"));
+    }
+
+    BigDecimal depreciation =
+        fixedAssetLineToolService.getCompanyScaledValue(
+            fixedAssetLine.getDepreciation(), prorata, fixedAsset, BigDecimal::multiply);
+
+    amountByFieldMap.put(
+        "depreciation", depreciation.min(amountByFieldMap.get("depreciationBase")));
+    amountByFieldMap.put(
+        "cumulativeDepreciation",
+        amountByFieldMap.get("cumulativeDepreciation").add(amountByFieldMap.get("depreciation")));
+    amountByFieldMap.put(
+        "accountingValue",
+        amountByFieldMap.get("accountingValue").subtract(amountByFieldMap.get("depreciation")));
   }
 
   protected BigDecimal computeInitialDepreciation(FixedAsset fixedAsset, BigDecimal baseValue)
@@ -367,8 +396,8 @@ public abstract class AbstractFixedAssetLineComputationServiceImpl
 
     BigDecimal nbDaysBetweenAcqAndFirstDepDate;
     if (FixedAssetRepository.COMPUTATION_METHOD_DEGRESSIVE.equals(
-        fixedAsset.getComputationMethodSelect())) {
-      nextDate = null;
+            getComputationMethodSelect(fixedAsset))
+        && nextDate == null) {
       int endDayOfMonth =
           depreciationDate.getMonth() == Month.FEBRUARY
               ? depreciationDate.getDayOfMonth()

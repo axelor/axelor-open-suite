@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,7 @@ package com.axelor.apps.hr.service;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.auth.AuthUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 
 public class EmployeeComputeStatusServiceImpl implements EmployeeComputeStatusService {
@@ -55,9 +55,9 @@ public class EmployeeComputeStatusServiceImpl implements EmployeeComputeStatusSe
 
     if (employee.getLeavingDate() == null
         && employee.getHireDate() != null
-        && employee.getHireDate().compareTo(today.minusDays(30)) > 0) {
+        && employee.getHireDate().isAfter(today.minusDays(30))) {
       employeeStatus = NEW_EMPLOYEE;
-    } else if (leavingDate != null && leavingDate.compareTo(today) < 0) {
+    } else if (leavingDate != null && (leavingDate.isBefore(today) || leavingDate.isEqual(today))) {
       employeeStatus = FORMER_EMPLOYEE;
     } else {
       employeeStatus = ACTIVE_EMPLOYEE;

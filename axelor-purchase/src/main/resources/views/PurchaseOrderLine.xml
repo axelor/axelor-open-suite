@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="purchase-order-line-purchase-order-grid" title="PO lines"
     model="com.axelor.apps.purchase.db.PurchaseOrderLine">
@@ -11,7 +11,7 @@
     <hilite color="success" if="receiptState == 3"/>
     <field name="$hasWarning" hidden="true"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
-      icon="fa-exclamation-triangle"/>
+      icon="exclamation-triangle"/>
     <field name="sequence"
       if="__config__.app.getApp('purchase')?.isDisplayPurchaseOrderLineNumber" width="51"/>
     <field name="receiptState" hidden="true" if="__config__.app.isApp('supplychain')"/>
@@ -43,7 +43,7 @@
     name="purchase-order-line-grid" canNew="false" canDelete="false" canEdit="false">
     <field name="$hasWarning" hidden="true"/>
     <button name="errorIconButton" showIf="$hasWarning" onClick="refresh" readonlyIf="true"
-      icon="fa-exclamation-triangle"/>
+      icon="exclamation-triangle"/>
     <field name="purchaseOrder.purchaseOrderSeq" width="120"/>
     <field name="purchaseOrder.supplierPartner" form-view="partner-form"
       grid-view="partner-grid"/>
@@ -199,8 +199,8 @@
           </panel>
           <field name="taxLineSet" canEdit="false" canNew="false"
             onChange="action-group-purchase-purchase-orderline-taxline-onchange"
-            domain="self.endDate = null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
-            form-view="tax-line-form" widget="TagSelect"/>
+            domain="self.endDate IS null or self.endDate &gt; :__date__" grid-view="tax-line-grid"
+            form-view="tax-line-form" widget="Tags"/>
           <field name="exTaxTotal" colSpan="3" readonly="true"
             x-scale="$currency.numberOfDecimals"/>
           <field name="inTaxTotal" colSpan="3" readonly="true"
@@ -349,7 +349,7 @@
     <action name="action-purchase-order-line-attrs-scale-and-precision"/>
     <action name="action-purchase-order-attrs-hide-ati"/>
     <action name="action-purchase-order-line-attrs-show-priceDiscounted"/>
-    <action name="action-purchase-order-line-attrs-delivery-panel"/>
+    <action name="action-purchase-order-line-method-manage-delivery-panel-visibility"/>
     <action name="action-purchase-order-line-attrs-set-isFilterOnSupplier"/>
     <action name="action-purchase-order-line-attrs-set-currency"/>
     <action name="action-purchase-order-line-attrs-display-different-language-message"/>
@@ -358,7 +358,7 @@
   </action-group>
 
   <action-group name="action-group-purchase-purchase-orderline-product-onchange">
-    <action name="action-purchase-order-line-attrs-delivery-panel"/>
+    <action name="action-purchase-order-line-method-manage-delivery-panel-visibility"/>
     <action name="action-purchase-order-line-method-get-product-information"/>
     <action name="action-purchase-order-line-method-compute" if="price != 0"/>
     <action name="action-purchase-order-line-method-check-qty" if="price != 0"/>
@@ -405,11 +405,6 @@
 
   <!-- ACTION ATTRS -->
 
-  <action-attrs name="action-purchase-order-line-attrs-delivery-panel">
-    <attribute name="hidden" for="deliveryPanel"
-      expr="eval: product?.productTypeSelect != 'storable'"/>
-  </action-attrs>
-
   <action-attrs name="action-purchase-order-attrs-hide-ati">
     <attribute name="hidden" for="exTaxTotal" expr="eval:__parent__?.inAti"
       if="__parent__?._model == 'com.axelor.apps.purchase.db.PurchaseOrder'"/>
@@ -453,7 +448,7 @@
   <action-attrs name="action-purchase-order-line-attrs-product-domain">
     <attribute name="domain" for="product"
       if="!__config__.app.getApp('purchase')?.enablePurchasesProductByTradName || _parent?.company?.tradingNameList == null || _parent?.company?.tradingNameList.isEmpty()"
-      expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate = null or self.endDate &gt; :__date__) and self.purchasable = true and self.dtype = 'Product'&quot;
+      expr="eval: &quot; self.isModel = false and self.expense = false and (self.endDate IS null or self.endDate &gt; :__date__) and self.purchasable = true and self.dtype = 'Product'&quot;
 			+ (isFilterOnSupplier &amp;&amp; __config__.app.getApp('purchase')?.getManageSupplierCatalog() ? &quot; and self.id IN (SELECT product.id FROM SupplierCatalog WHERE supplierPartner.id = ${__parent__?.supplierPartner?.id})&quot; : &quot;&quot;)
       + (__config__.app.getApp('base')?.getCompanySpecificProductFieldsSet()?.find({it.name == 'purchasable'}) ? &quot; and (SELECT purchasable FROM ProductCompany productCompany WHERE productCompany.product.id = self.id AND productCompany.company.id = ${__parent__ ? __parent__.company.id : purchaseOrder.company.id}) IS TRUE&quot; : &quot;&quot;)
 			+ (__config__.app.getApp('purchase')?.enablePurchasesProductByTradName &amp;&amp; _parent?.company?.tradingNameList != null &amp;&amp; !_parent?.company?.tradingNameList.isEmpty() ? &quot; and ${_parent?.tradingName?.id} member of self.tradingNameBuyerSet &quot; : &quot;&quot;)"/>
@@ -558,6 +553,12 @@
 
 
   <!-- ACTION METHOD -->
+
+  <action-method
+    name="action-purchase-order-line-method-manage-delivery-panel-visibility">
+    <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"
+      method="updateDeliveryPanelVisibility"/>
+  </action-method>
 
   <action-method name="action-purchase-order-line-method-convert-tax">
     <call class="com.axelor.apps.purchase.web.PurchaseOrderLineController"

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -53,8 +53,8 @@ import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -305,6 +305,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException {
     LocalDate date =
         saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
@@ -326,5 +327,22 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceI
               saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));
       saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, true);
     }
+    saleOrderRepo.save(saleOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void fillBudgetStrOnLine(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return;
+    }
+    boolean multiBudget =
+        appBudgetService.getAppBudget() != null
+            && appBudgetService.getAppBudget().getManageMultiBudget();
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, multiBudget);
+    }
+    saleOrderRepo.save(saleOrder);
   }
 }

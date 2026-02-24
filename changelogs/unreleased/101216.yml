@@ -1,3 +1,0 @@
----
-title: "INVOICE / DEBTRECOVERY : Invoice linked to a move having ignoreInDebtRecoveryOk as true are now ignored."
-module: axelor-account

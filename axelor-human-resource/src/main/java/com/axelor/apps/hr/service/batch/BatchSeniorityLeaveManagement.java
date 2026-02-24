@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -15,21 +15,6 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
- */
-/**
- * Axelor Business Solutions
- *
- * <p>Copyright (C) 2016 Axelor (<http://axelor.com>).
- *
- * <p>This program is free software: you can redistribute it and/or modify it under the terms of the
- * GNU Affero General Public License, version 3, as published by the Free Software Foundation.
- *
- * <p>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Affero General Public License for more details.
- *
- * <p>You should have received a copy of the GNU Affero General Public License along with this
- * program. If not, see <http://www.gnu.org/licenses/>.
  */
 package com.axelor.apps.hr.service.batch;
 
@@ -57,10 +42,10 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.template.TemplateMaker;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;

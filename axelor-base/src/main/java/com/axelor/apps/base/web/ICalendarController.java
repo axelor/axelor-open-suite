@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,13 +28,14 @@ import com.axelor.apps.base.ical.ICalendarService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -49,7 +50,7 @@ public class ICalendarController {
   public void exportCalendar(ActionRequest request, ActionResponse response)
       throws IOException, ParseException {
     ICalendar cal = request.getContext().asType(ICalendar.class);
-    Path tempPath = MetaFiles.createTempFile(cal.getName(), ".ics");
+    Path tempPath = TempFiles.createTempFile(cal.getName(), ".ics");
     Beans.get(ICalendarService.class).export(cal, tempPath.toFile());
     Beans.get(MetaFiles.class)
         .attach(new FileInputStream(tempPath.toFile()), cal.getName() + ".ics", cal);
@@ -131,9 +132,9 @@ public class ICalendarController {
             .domain(
                 "self.user.id = :_userId"
                     + " OR self.calendar.user.id = :_userId"
-                    + " OR :_userId IN (SELECT attendee.user FROM self.attendees attendee)"
+                    + " OR :_userId IN (SELECT attendee.user.id FROM self.attendees attendee)"
                     + " OR self.organizer.user.id = :_userId"
-                    + " OR :_userId IN (SELECT setting.sharedWith FROM self.calendar.sharingSettingList setting WHERE setting.visible = TRUE)")
+                    + " OR :_userId IN (SELECT setting.sharedWith.id FROM self.calendar.sharingSettingList setting WHERE setting.visible = TRUE)")
             .context("_userId", user.getId())
             .map());
   }

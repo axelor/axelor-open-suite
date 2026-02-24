@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -47,7 +47,7 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
@@ -106,6 +106,12 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     this.stockMoveLine = stockMoveLine;
     this.appBaseService = Beans.get(AppBaseService.class);
     this.unitConversionService = Beans.get(UnitConversionService.class);
+
+    if (saleOrderLine != null) {
+      this.typeSelect = saleOrderLine.getTypeSelect();
+    } else if (purchaseOrderLine != null && purchaseOrderLine.getIsTitleLine()) {
+      this.typeSelect = InvoiceLineRepository.TYPE_TITLE;
+    }
   }
 
   protected InvoiceLineGeneratorSupplyChain(

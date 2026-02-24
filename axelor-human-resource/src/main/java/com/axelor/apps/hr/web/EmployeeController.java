@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -43,14 +43,12 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.Map;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
-import wslite.json.JSONObject;
 
 @Singleton
 public class EmployeeController {
@@ -58,12 +56,12 @@ public class EmployeeController {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   public void showAnnualReport(ActionRequest request, ActionResponse response)
-      throws JSONException, NumberFormatException, AxelorException {
+      throws NumberFormatException, AxelorException {
 
     String employeeId = request.getContext().get("_id").toString();
-    String year = request.getContext().get("year").toString();
-    int yearId = new JSONObject(year).getInt("id");
-    String yearName = new JSONObject(year).getString("name");
+    Map<String, Object> year = (Map<String, Object>) request.getContext().get("year");
+    int yearId = (int) year.get("id");
+    String yearName = (String) year.get("name");
     User user = AuthUtils.getUser();
 
     String name =

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,7 +39,7 @@ import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -186,7 +186,7 @@ public class PayrollPreparationService {
         Beans.get(ExtraHoursLineRepository.class)
             .all()
             .filter(
-                "self.employee = ?1 AND self.extraHours.statusSelect = 3 AND self.date BETWEEN ?2 AND ?3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?4)",
+                "self.employee = ?1 AND self.extraHours.statusSelect = 3 AND self.date BETWEEN ?2 AND ?3 AND (self.payrollPreparation IS null OR self.payrollPreparation.id = ?4)",
                 payrollPreparation.getEmployee(),
                 fromDate,
                 toDate,
@@ -235,7 +235,7 @@ public class PayrollPreparationService {
         Beans.get(LunchVoucherMgtLineRepository.class)
             .all()
             .filter(
-                "self.employee = ?1 AND self.lunchVoucherMgt.statusSelect = 3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?2) AND self.lunchVoucherMgt.payPeriod = ?3",
+                "self.employee = ?1 AND self.lunchVoucherMgt.statusSelect = 3 AND (self.payrollPreparation IS null OR self.payrollPreparation.id = ?2) AND self.lunchVoucherMgt.payPeriod = ?3",
                 payrollPreparation.getEmployee(),
                 payrollPreparation.getId(),
                 payrollPreparation.getPeriod())

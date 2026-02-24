@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <form name="incl-invoice-payment-partner-form" title="Partner"
     model="com.axelor.apps.base.db.Partner" onLoad="action-partner-attrs-show-specific-tax-note">
@@ -49,18 +49,27 @@
                   </dl>
               </>
         ]]></viewer>
-        <editor onNew="action-set-default-partner" x-show-on-new="false">
+        <editor
+          onNew="action-set-default-partner,action-bank-details-record-set-default-partner-bank-details"
+          x-show-on-new="false">
           <field name="ownerName"/>
-          <field name="iban"/>
-          <field name="bank" canNew="true"/>
+          <field name="iban" onChange="action-bank-details-method-set-iban-information"/>
+          <field name="bank" canNew="true"
+            onChange="action-bank-details-method-set-iban-information"/>
           <field name="bankAddress" showIf="bank" grid-view="bank-address-grid"
             onSelect="action-attrs-account-bankdetails-bank-set-address-domain" canNew="true"
             form-view="bank-address-form"/>
           <field name="label"/>
-          <field name="isDefault" widget="toggle" x-icon="fa-star-o" x-icon-active="fa-star"
+          <field name="isDefault" widget="toggle" x-icon="star" x-icon-active="star-fill"
             x-exclusive="true"/>
           <field name="active" widget="boolean-switch"/>
           <field name="ibanBic" hidden="true" x-bind="{{iban + ' ' + bank.code}}"/>
+          <panel name="bbanPanel" hidden="true">
+            <field name="bankCode"/>
+            <field name="sortCode"/>
+            <field name="accountNbr"/>
+            <field name="bbanKey"/>
+          </panel>
         </editor>
       </field>
     </panel>
@@ -89,7 +98,7 @@
       showIf="isSupplier || isCustomer || isSubcontractor">
       <field name="blockingList" colSpan="12" title="Blockings" showIf="$readonly()">
         <editor colSpan="12" x-viewer="true" x-show-on-new="false">
-          <field name="companySet" colSpan="3" widget="TagSelect"/>
+          <field name="companySet" colSpan="3" widget="Tags"/>
           <field name="blockingSelect" colSpan="2" selection="base.blocking.select"/>
           <field name="blockingToDate" colSpan="2">
             <hilite if="$moment(blockingToDate) &gt; $moment()" color="danger" strong="true"/>
@@ -103,7 +112,7 @@
         <editor x-show-on-new="false"
           onNew="action-blocking-record-default-companies,action-blocking-record-realized-by"
           colSpan="12">
-          <field name="companySet" colSpan="12" widget="TagSelect"
+          <field name="companySet" colSpan="12" widget="Tags"
             onSelect="action-blocking-attrs-domain-companySet" canNew="false"/>
           <field name="blockingSelect" colSpan="12" selection="base.blocking.select"
             widget="RadioSelect" required="true"/>

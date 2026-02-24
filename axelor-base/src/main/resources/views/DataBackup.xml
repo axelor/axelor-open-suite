@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid model="com.axelor.apps.base.db.DataBackup" title="Create Backup"
     name="data-create-backup-grid" orderBy="-backupDate">
@@ -18,7 +18,7 @@
       <field name="statusSelect" readonly="true" widget="NavSelect" selection-in="[0,1,2,5]"
         colSpan="12" showTitle="false"/>
       <help colSpan="12" showIf="statusSelect == 1">
-        <![CDATA[The export process may take some time, please refresh the record to see the result.]]>
+        <![CDATA[<>The export process may take some time, please refresh the record to see the result.</>]]>
       </help>
       <field name="description" colSpan="12"/>
       <field name="fetchLimit" widget="Integer" required="true" min="1" colSpan="4"/>
@@ -34,9 +34,10 @@
 
     <panel-tabs name="mainPanelTab">
       <panel name="templatePanel" title="Templates.title">
-        <field name="isProcessEmptyTable" widget="boolean-switch" colSpan="4"/>
-        <field name="isTemplateWithDescription" widget="boolean-switch" colSpan="4"/>
-        <field name="maxLinesPerFile" colSpan="4"/>
+        <field name="isProcessEmptyTable" widget="boolean-switch"/>
+        <field name="isTemplateWithDescription" widget="boolean-switch"/>
+        <field name="maxLinesPerFile"/>
+        <field name="fieldSeparatorSelect"/>
       </panel>
     </panel-tabs>
 
@@ -71,10 +72,10 @@
       <field name="backupMetaFile" required="true" domain="self.fileName LIKE '%.zip'"
         widget="binary-link"/>
       <field name="isTemplateWithDescription" widget="boolean-switch"/>
+      <field name="fieldSeparatorSelect"/>
       <button name="restoreBtn" title="Restore"
         showIf="backupMetaFile != null &amp;&amp; statusSelect != 2"
         onClick="save,action.data.backup.call.restorebackup,save"/>
-      <spacer name="restoreBtnSpacer"/>
       <field name="restoreDate" readonly="true"/>
       <field name="logMetaFile" readonly="true" widget="binary-link"/>
     </panel>

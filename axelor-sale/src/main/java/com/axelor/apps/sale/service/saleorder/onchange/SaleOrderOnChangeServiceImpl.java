@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.sale.service.saleorder.onchange;
 
+import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -33,12 +34,13 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderBankDetailsService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderUserService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderProductPrintingService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
 import com.axelor.studio.db.AppBase;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -58,6 +60,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
   protected SaleOrderBankDetailsService saleOrderBankDetailsService;
   protected AppBaseService appBaseService;
   protected SaleOrderDateService saleOrderDateService;
+  protected SaleOrderDeliveryAddressService saleOrderDeliveryAddressService;
 
   @Inject
   public SaleOrderOnChangeServiceImpl(
@@ -72,7 +75,8 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
       SaleConfigService saleConfigService,
       SaleOrderBankDetailsService saleOrderBankDetailsService,
       AppBaseService appBaseService,
-      SaleOrderDateService saleOrderDateService) {
+      SaleOrderDateService saleOrderDateService,
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService) {
     this.partnerService = partnerService;
     this.saleOrderUserService = saleOrderUserService;
     this.saleOrderService = saleOrderService;
@@ -85,6 +89,7 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     this.saleOrderBankDetailsService = saleOrderBankDetailsService;
     this.appBaseService = appBaseService;
     this.saleOrderDateService = saleOrderDateService;
+    this.saleOrderDeliveryAddressService = saleOrderDeliveryAddressService;
   }
 
   @Override
@@ -99,9 +104,11 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     values.putAll(getContactPartner(saleOrder));
     values.putAll(updateSaleOrderLineList(saleOrder));
     values.putAll(saleOrderProductPrintingService.getGroupProductsOnPrintings(saleOrder));
+    values.putAll(getFiscalPosition(saleOrder));
     values.putAll(updateLinesAfterFiscalPositionChange(saleOrder));
     values.putAll(getComputeSaleOrderMap(saleOrder));
     values.putAll(getEndOfValidityDate(saleOrder));
+    values.putAll(updateSaleOrderLinesDeliveryAddress(saleOrder));
     return values;
   }
 
@@ -215,6 +222,18 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     return values;
   }
 
+  protected Map<String, Object> getFiscalPosition(SaleOrder saleOrder) {
+    Map<String, Object> values = new HashMap<>();
+    FiscalPosition fiscalPosition = null;
+    Partner clientPartner = saleOrder.getClientPartner();
+    if (clientPartner != null) {
+      fiscalPosition = clientPartner.getFiscalPosition();
+    }
+    saleOrder.setFiscalPosition(fiscalPosition);
+    values.put("fiscalPosition", saleOrder.getFiscalPosition());
+    return values;
+  }
+
   protected Map<String, Object> updateLinesAfterFiscalPositionChange(SaleOrder saleOrder)
       throws AxelorException {
     Map<String, Object> values = new HashMap<>();
@@ -281,6 +300,14 @@ public class SaleOrderOnChangeServiceImpl implements SaleOrderOnChangeService {
     Map<String, Object> values = new HashMap<>();
     saleOrder.setInAti(saleOrderService.getInAti(saleOrder, saleOrder.getCompany()));
     values.put("inAti", saleOrder.getInAti());
+    return values;
+  }
+
+  protected Map<String, Object> updateSaleOrderLinesDeliveryAddress(SaleOrder saleOrder)
+      throws AxelorException {
+    Map<String, Object> values = new HashMap<>();
+    saleOrderDeliveryAddressService.updateSaleOrderLinesDeliveryAddress(saleOrder);
+    values.put("saleOrderLineList", saleOrder.getSaleOrderLineList());
     return values;
   }
 }

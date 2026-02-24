@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -49,8 +49,8 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -256,7 +256,16 @@ public class AnalyticMoveLineServiceImpl implements AnalyticMoveLineService {
                 Collectors.groupingBy(
                     AnalyticMoveLine::getAnalyticAxis,
                     Collectors.reducing(
-                        BigDecimal.ZERO, AnalyticMoveLine::getPercentage, BigDecimal::add)))
+                        BigDecimal.ZERO,
+                        analyticMoveLine -> {
+                          BigDecimal percentage = analyticMoveLine.getPercentage();
+                          if (analyticMoveLine.getSubTypeSelect()
+                              == AnalyticMoveLineRepository.SUB_TYPE_REVERSE) {
+                            percentage = percentage.negate();
+                          }
+                          return percentage;
+                        },
+                        BigDecimal::add)))
             .values()
             .stream()
             .allMatch(percentage -> percentage.compareTo(BigDecimal.valueOf(100)) == 0);

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,7 @@ import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
@@ -56,10 +56,7 @@ public class InvoiceTermDateComputeServiceImpl implements InvoiceTermDateCompute
     }
 
     LocalDate invoiceDate = appBaseService.getTodayDate(invoice.getCompany());
-    if (PaymentConditionToolService.isFreePaymentCondition(invoice)
-        && invoice.getDueDate() != null) {
-      invoiceDate = invoice.getDueDate();
-    } else if (InvoiceToolService.isPurchase(invoice) && invoice.getOriginDate() != null) {
+    if (InvoiceToolService.isPurchase(invoice) && invoice.getOriginDate() != null) {
       invoiceDate = invoice.getOriginDate();
     } else if (!InvoiceToolService.isPurchase(invoice) && invoice.getInvoiceDate() != null) {
       invoiceDate = invoice.getInvoiceDate();
@@ -70,19 +67,9 @@ public class InvoiceTermDateComputeServiceImpl implements InvoiceTermDateCompute
 
   @Override
   public void computeDueDateValues(InvoiceTerm invoiceTerm, LocalDate invoiceDate) {
-    LocalDate dueDate;
 
-    Invoice invoice = invoiceTerm.getInvoice();
-    if (invoice != null
-        && invoice.getPaymentCondition() != null
-        && invoice.getPaymentCondition().getIsFree()) {
-      dueDate = invoiceDate;
-    } else {
-      dueDate =
-          PaymentConditionToolService.getDueDate(
-              invoiceTerm.getPaymentConditionLine(), invoiceDate);
-    }
-
+    LocalDate dueDate =
+        PaymentConditionToolService.getDueDate(invoiceTerm.getPaymentConditionLine(), invoiceDate);
     invoiceTerm.setDueDate(dueDate);
 
     if (appAccountService.getAppAccount().getManageFinancialDiscount()

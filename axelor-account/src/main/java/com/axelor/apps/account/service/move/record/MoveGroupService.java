@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -84,6 +84,9 @@ public interface MoveGroupService {
 
   Map<String, Object> getFiscalPositionOnChangeValuesMap(Move move) throws AxelorException;
 
+  Map<String, Map<String, Object>> getFiscalPositionOnChangeAttrsMap(Move move)
+      throws AxelorException;
+
   Map<String, Map<String, Object>> getCurrencyOnChangeAttrsMap(Move move);
 
   Map<String, Object> getDateOfReversionSelectOnChangeValuesMap(
@@ -97,13 +100,9 @@ public interface MoveGroupService {
   Map<String, Object> getApplyCutOffDatesOnClickValuesMap(
       Move move, LocalDate cutOffStartDate, LocalDate cutOffEndDate) throws AxelorException;
 
-  Map<String, Map<String, Object>> getPartnerOnSelectAttrsMap(Move move);
-
   Map<String, Map<String, Object>> getPaymentModeOnSelectAttrsMap(Move move);
 
   Map<String, Map<String, Object>> getPartnerBankDetailsOnSelectAttrsMap(Move move);
-
-  Map<String, Map<String, Object>> getTradingNameOnSelectAttrsMap(Move move);
 
   Map<String, Map<String, Object>> getJournalOnSelectAttrsMap(Move move);
 
@@ -112,8 +111,6 @@ public interface MoveGroupService {
   Map<String, Map<String, Object>> getWizardDefaultAttrsMap(LocalDate moveDate);
 
   Map<String, Map<String, Object>> getMassEntryAttrsMap(Move move) throws AxelorException;
-
-  Map<String, Map<String, Object>> getCompanyOnSelectAttrsMap(Move move);
 
   Map<String, Map<String, Object>> getCompanyBankDetailsOnSelectAttrsMap(Move move);
 }

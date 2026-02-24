@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,6 +44,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
@@ -68,8 +69,8 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -394,15 +395,26 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
-          invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
-              invoice,
-              invoicingProduct,
-              percentToInvoice,
-              saleOrderLine,
-              null,
-              saleOrderLine.getExTaxTotal(),
-              saleOrderLine.getTaxLineSet());
+      InvoiceLineGeneratorSupplyChain invoiceLineGenerator = null;
+      if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
+        invoiceLineGenerator =
+            invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
+                invoice,
+                invoicingProduct,
+                percentToInvoice,
+                saleOrderLine,
+                null,
+                saleOrderLine.getExTaxTotal(),
+                saleOrderLine.getTaxLineSet());
+      } else {
+        invoiceLineGenerator =
+            invoiceLineOrderService.getInvoiceLineGeneratorForTitleLines(
+                invoice,
+                saleOrderLine.getProductName(),
+                saleOrderLine,
+                null,
+                saleOrderLine.getQty());
+      }
       createdInvoiceLineList.addAll(invoiceLineGenerator.creates());
     }
 
@@ -682,7 +694,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     if (appSupplychainService.getAppSupplychain().getCompleteSaleOrderOnInvoicing()
         && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0
-        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED
+        && saleOrder.getSaleOrderTypeSelect() != SaleOrderRepository.SALE_ORDER_TYPE_SUBSCRIPTION) {
       saleOrderWorkflowService.completeSaleOrder(saleOrder);
     }
   }
@@ -781,12 +794,11 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       if (excludeCurrentInvoice) {
         query += " AND self.invoice.id <> :invoiceId";
       } else {
-        query +=
-            " OR (self.invoice.id = :invoiceId AND self.invoice.operationTypeSelect = :invoiceOperationTypeSelect) ";
+        query += " AND self.invoice.id = :invoiceId";
       }
     }
 
-    javax.persistence.Query q = JPA.em().createQuery(query, BigDecimal.class);
+    jakarta.persistence.Query q = JPA.em().createQuery(query, BigDecimal.class);
 
     q.setParameter("saleOrderId", saleOrder.getId());
     q.setParameter("statusVentilated", InvoiceRepository.STATUS_VENTILATED);

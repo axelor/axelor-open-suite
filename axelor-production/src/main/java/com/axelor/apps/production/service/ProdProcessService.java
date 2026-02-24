@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,8 +39,8 @@ import com.google.common.base.Joiner;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -187,13 +187,23 @@ public class ProdProcessService {
       return null;
     }
 
-    long noOfPersonalizedProdProcess =
-        prodProcessRepo
-                .all()
-                .filter("self.product = :product AND self.isPersonalized = true")
-                .bind("product", prodProcess.getProduct())
-                .count()
-            + 1;
+    long noOfPersonalizedProdProcess;
+    if (prodProcess.getProduct() == null) {
+      noOfPersonalizedProdProcess =
+          prodProcessRepo
+                  .all()
+                  .filter("self.isEnabledForAllProducts = true AND self.isPersonalized = true")
+                  .count()
+              + 1;
+    } else {
+      noOfPersonalizedProdProcess =
+          prodProcessRepo
+                  .all()
+                  .filter("self.product = :product AND self.isPersonalized = true")
+                  .bind("product", prodProcess.getProduct())
+                  .count()
+              + 1;
+    }
     ProdProcess personalizedProdProcess = JPA.copy(prodProcess, deep);
     String name =
         personalizedProdProcess.getName()

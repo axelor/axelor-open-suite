@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,9 +18,9 @@
  */
 package com.axelor.apps.intervention.service.planning;
 
+import jakarta.annotation.Nonnull;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import javax.annotation.Nonnull;
 
 public class DayPlanningPeriod {
   private final LocalTime start;

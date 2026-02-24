@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,8 +37,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -102,10 +102,8 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
   }
 
   @Override
-  @Transactional
   public void fillBudgetStrOnLine(SaleOrderLine saleOrderLine, boolean multiBudget) {
     saleOrderLine.setBudgetStr(this.searchAndFillBudgetStr(saleOrderLine, multiBudget));
-    saleOrderLineRepo.save(saleOrderLine);
   }
 
   @Override
@@ -187,9 +185,10 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
               saleOrder.getFiscalPosition(),
               false,
               false);
-      if (account.getCode().startsWith("2")
-          || account.getCode().startsWith("4")
-          || account.getCode().startsWith("7")) {
+      if (account != null
+          && (account.getCode().startsWith("2")
+              || account.getCode().startsWith("4")
+              || account.getCode().startsWith("7"))) {
         values.put("account", account);
         saleOrderLine.setAccount(account);
       }

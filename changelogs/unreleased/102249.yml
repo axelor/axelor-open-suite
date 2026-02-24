@@ -1,5 +1,0 @@
----
-title: "Sale order : fixed SubTotal cost price doesn't take into account the qty."
-module: axelor-sale
-developer: |
-  - SaleOrderLineCostPriceComputeServiceImpl consturctor is updated to introduce SaleOrderLineProductService

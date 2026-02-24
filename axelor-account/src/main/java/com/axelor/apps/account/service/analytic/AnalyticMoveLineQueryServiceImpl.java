@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.AnalyticAxis;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.AnalyticMoveLineQuery;
 import com.axelor.apps.account.db.AnalyticMoveLineQueryParameter;
+import com.axelor.apps.account.db.repo.AnalyticAccountRepository;
 import com.axelor.apps.account.db.repo.AnalyticAxisRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineQueryRepository;
 import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
@@ -32,8 +33,9 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -42,7 +44,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.TypedQuery;
 
 public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQueryService {
 
@@ -52,6 +53,7 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
   protected AnalyticAxisRepository analyticAxisRepo;
   protected AnalyticMoveLineRepository analyticMoveLineRepository;
   protected AnalyticMoveLineQueryPercentageService analyticMoveLineQueryPercentageService;
+  protected AnalyticAccountRepository analyticAccountRepository;
 
   @Inject
   public AnalyticMoveLineQueryServiceImpl(
@@ -60,13 +62,15 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
       AnalyticMoveLineQueryRepository analyticMoveLineQueryRepository,
       AnalyticAxisRepository analyticAxisRepo,
       AnalyticMoveLineRepository analyticMoveLineRepository,
-      AnalyticMoveLineQueryPercentageService analyticMoveLineQueryPercentageService) {
+      AnalyticMoveLineQueryPercentageService analyticMoveLineQueryPercentageService,
+      AnalyticAccountRepository analyticAccountRepository) {
     this.analyticMoveLineService = analyticMoveLineService;
     this.appBaseService = appBaseService;
     this.analyticMoveLineQueryRepository = analyticMoveLineQueryRepository;
     this.analyticAxisRepo = analyticAxisRepo;
     this.analyticMoveLineRepository = analyticMoveLineRepository;
     this.analyticMoveLineQueryPercentageService = analyticMoveLineQueryPercentageService;
+    this.analyticAccountRepository = analyticAccountRepository;
   }
 
   @Override
@@ -79,7 +83,7 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
             + " AND ";
 
     query +=
-        "NOT EXISTS (SELECT 1 FROM AnalyticMoveLine l WHERE l.originAnalyticMoveLine = self.id) AND ";
+        "NOT EXISTS (SELECT 1 FROM AnalyticMoveLine l WHERE l.originAnalyticMoveLine.id = self.id) AND ";
     query += "self.moveLine.move.company.id = " + analyticMoveLineQuery.getCompany().getId();
 
     if (appBaseService.getAppBase().getEnableTradingNamesManagement()
@@ -90,8 +94,11 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
     }
 
     query +=
-        String.format(" AND self.date >= '%s'", analyticMoveLineQuery.getFromDate().toString());
-    query += String.format(" AND self.date <= '%s'", analyticMoveLineQuery.getToDate().toString());
+        String.format(
+            " AND self.date >= CAST('%s' AS date)", analyticMoveLineQuery.getFromDate().toString());
+    query +=
+        String.format(
+            " AND self.date <= CAST('%s' AS date)", analyticMoveLineQuery.getToDate().toString());
 
     query = this.getStatusQuery(analyticMoveLineQuery, query);
 
@@ -255,18 +262,29 @@ public class AnalyticMoveLineQueryServiceImpl implements AnalyticMoveLineQuerySe
     return newAnalyticaMoveLines;
   }
 
-  @Transactional
   protected Set<AnalyticMoveLine> createAnalyticMoveLine(
       AnalyticAccount analyticAccount,
       List<AnalyticMoveLine> analyticMoveLines,
       BigDecimal percentage) {
 
-    return analyticMoveLines.stream()
-        .map(
-            analyticMoveLine ->
-                analyticMoveLineService.generateAnalyticMoveLine(
-                    analyticMoveLine, analyticAccount, percentage))
-        .collect(Collectors.toSet());
+    Set<AnalyticMoveLine> analyticMoveLineSet = new HashSet<>();
+    if (ObjectUtils.isEmpty(analyticMoveLines)) {
+      return analyticMoveLineSet;
+    }
+
+    if (analyticAccount != null && analyticAccount.getId() != null) {
+      analyticAccount = analyticAccountRepository.find(analyticAccount.getId());
+    }
+
+    for (AnalyticMoveLine analyticMoveLine : analyticMoveLines) {
+      analyticMoveLine = analyticMoveLineRepository.find(analyticMoveLine.getId());
+      AnalyticMoveLine newAnalyticMoveLine =
+          analyticMoveLineService.generateAnalyticMoveLine(
+              analyticMoveLine, analyticAccount, percentage);
+      analyticMoveLineSet.add(newAnalyticMoveLine);
+    }
+
+    return analyticMoveLineSet;
   }
 
   @Override

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="move-line-mass-entry-move-grid"
     model="com.axelor.apps.account.db.MoveLineMassEntry" title="Move lines" canArchive="false"
@@ -26,7 +26,7 @@
       onChange="action-account-move-line-mass-entry-attrs-set-description,action-move-line-mass-entry-record-set-is-edited"
       readonly="false" requiredIf="$isDescriptionRequired"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid"
-      onSelect="action-move-line-method-partner-onselect"
+      onSelect="action-move-line-attrs-partner-onselect"
       onChange="action-move-line-mass-entry-group-on-change-partner" width="200" canEdit="false"
       readonly="false">
       <hilite if="$contains(fieldsErrorList,'partner:'+partner.name)" background="danger"/>
@@ -39,12 +39,12 @@
       <hilite if="$contains(fieldsErrorList,'paymentMode:')" background="danger"/>
     </field>
     <field name="account" form-view="account-form" grid-view="account-grid"
-      onSelect="action-move-line-method-account-onselect" width="200" canEdit="false"
+      onSelect="action-move-line-attrs-account-onselect" width="200" canEdit="false"
       onChange="action-move-line-mass-entry-method-account-onchange"/>
     <field name="taxLineSet" readonlyIf="!account.isTaxAuthorizedOnMoveLine"
       requiredIf="(account.isTaxAuthorizedOnMoveLine &amp;&amp; account.accountType.technicalTypeSelect == 'tax' &amp;&amp; [3,4].includes(move.functionalOriginSelect)) || account.isTaxRequiredOnMoveLine"
       domain="self.endDate > :date OR self.endDate IS NULL"
-      onChange="account-move-line-update-tax-equiv" widget="TagSelect" canNew="false"/>
+      onChange="account-move-line-update-tax-equiv" widget="Tags" canNew="false"/>
     <field name="currencyRate"
       onChange="action-move-line-method-currency-amount-rate-onchange,action-move-line-mass-entry-record-set-is-edited"
       readonlyIf="!isOtherCurrency">
@@ -145,7 +145,7 @@
     </field>
     <field name="vatSystemSelect"
       onChange="action-move-line-mass-entry-record-set-is-edited-vat-system"
-      validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax'"
+      validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax' || !account.isTaxAuthorizedOnMoveLine"
       readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
       requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"/>
     <field name="moveStatusSelect" widget="single-select"/>

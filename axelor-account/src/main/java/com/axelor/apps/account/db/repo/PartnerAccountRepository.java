@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,9 +25,9 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-import javax.persistence.PersistenceException;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
+import jakarta.persistence.PersistenceException;
 import org.apache.commons.collections.CollectionUtils;
 
 @Singleton
@@ -78,17 +78,5 @@ public class PartnerAccountRepository extends PartnerBaseRepository {
       TraceBackService.traceExceptionFromSaveMethod(e);
       throw new PersistenceException(e.getMessage(), e);
     }
-  }
-
-  @Override
-  public Partner copy(Partner partner, boolean deep) {
-
-    Partner copy = super.copy(partner, deep);
-
-    if (appService.isApp("account")) {
-      copy.setAccountingSituationList(null);
-    }
-
-    return copy;
   }
 }

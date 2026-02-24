@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,8 +23,9 @@ import static com.axelor.apps.sale.db.repo.SaleOrderRepository.INVOICING_STATE_N
 
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.studio.app.service.AppService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class SaleOrderCopySupplychainServiceImpl implements SaleOrderCopySupplychainService {
@@ -50,8 +51,8 @@ public class SaleOrderCopySupplychainServiceImpl implements SaleOrderCopySupplyc
 
     if (copy.getSaleOrderLineList() != null) {
       for (SaleOrderLine saleOrderLine : copy.getSaleOrderLineList()) {
-        saleOrderLine.setDeliveryState(null);
-        saleOrderLine.setInvoicingState(null);
+        saleOrderLine.setDeliveryState(SaleOrderLineRepository.DELIVERY_STATE_NOT_DELIVERED);
+        saleOrderLine.setInvoicingState(SaleOrderLineRepository.INVOICING_STATE_NOT_INVOICED);
         saleOrderLine.setDeliveredQty(null);
         saleOrderLine.setAmountInvoiced(null);
         saleOrderLine.setInvoiced(null);

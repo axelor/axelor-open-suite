@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -254,7 +254,7 @@
                     <structure>
                         <property name="position">2</property>
                         <property name="name">picture</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -304,7 +304,7 @@
                     <structure>
                         <property name="position">12</property>
                         <property name="name">barcode_picture</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
             </structure>
@@ -327,7 +327,7 @@ else {
                     <property name="position">2</property>
                     <property name="name">picture</property>
                     <property name="nativeName">picture</property>
-                    <property name="dataType">string</property>
+                    <property name="dataType">decimal</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
@@ -397,13 +397,13 @@ else {
                     <property name="position">12</property>
                     <property name="name">barcode_picture</property>
                     <property name="nativeName">barcode_picture</property>
-                    <property name="dataType">string</property>
+                    <property name="dataType">decimal</property>
                     <property name="nativeDataType">12</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select distinct Product.id, MetaFile.file_path as picture, Product.name as "ProductName", Product.code as "ProductCode",
+            <xml-property name="queryText"><![CDATA[select distinct Product.id, MetaFile.id as picture, Product.name as "ProductName", Product.code as "ProductCode",
 Product.sale_price, Currency.name as currency, Product.description, ProductFamily.name as "ProductFamily",
-ProductCategory.name as "ProductCategory", Unit.label_to_printing as "Unit",Product.bar_code as bar_code,BarCodeFile.file_path as barcode_picture
+ProductCategory.name as "ProductCategory", Unit.label_to_printing as "Unit",Product.bar_code as bar_code,BarCodeFile.id as barcode_picture
 from base_product as Product
 left outer join base_currency as Currency on (Product.sale_currency = Currency.id)
 left outer join base_product_family as ProductFamily on (Product.product_family = ProductFamily.id)
@@ -418,10 +418,10 @@ order by ProductFamily.name, ProductCategory.name
         <oda-data-set extensionID="org.eclipse.birt.report.data.oda.jdbc.JdbcSelectDataSet" name="CompanyDS" id="392">
             <list-property name="columnHints">
                 <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
+                    <property name="columnName">logo_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <text-property name="heading">logo_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">full_name</property>
@@ -477,8 +477,8 @@ order by ProductFamily.name, ProductCategory.name
                 <list-property name="resultSet">
                     <structure>
                         <property name="position">1</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">2</property>
@@ -516,10 +516,10 @@ order by ProductFamily.name, ProductCategory.name
             <list-property name="resultSet">
                 <structure>
                     <property name="position">1</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
-                    <property name="nativeDataType">12</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">2</property>
@@ -564,7 +564,7 @@ order by ProductFamily.name, ProductCategory.name
                     <property name="nativeDataType">4</property>
                 </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select MetaFile.file_path as logo_path, Address.full_name, Partner.web_site, Email.address as email, Partner.fixed_phone,
+            <xml-property name="queryText"><![CDATA[select MetaFile.id as logo_id, Address.full_name, Partner.web_site, Email.address as email, Partner.fixed_phone,
 Company.height as logo_height, Company.width as logo_width
 from auth_user as AuthUser 
 left outer join base_company as Company on (AuthUser.active_company = Company.id)
@@ -886,7 +886,7 @@ from studio_app_base]]></xml-property>
                     <structure>
                         <property name="position">2</property>
                         <property name="name">picture</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -941,7 +941,7 @@ from studio_app_base]]></xml-property>
                     <structure>
                         <property name="position">13</property>
                         <property name="name">barcode_picture</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">14</property>
@@ -969,7 +969,7 @@ else {
                     <property name="position">2</property>
                     <property name="name">picture</property>
                     <property name="nativeName">picture</property>
-                    <property name="dataType">string</property>
+                    <property name="dataType">decimal</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
@@ -1046,7 +1046,7 @@ else {
                     <property name="position">13</property>
                     <property name="name">barcode_picture</property>
                     <property name="nativeName">barcode_picture</property>
-                    <property name="dataType">string</property>
+                    <property name="dataType">decimal</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
@@ -1059,7 +1059,7 @@ else {
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 Product.id, 
-MetaFile.file_path as picture, 
+MetaFile.id as picture, 
 Product.name as "ProductName", 
 Product.code as "ProductCode",
 Product.sale_price, 
@@ -1070,7 +1070,7 @@ ProductCategory.name as "ProductCategory",
 ProductCategory.id as "ProductCategoryNo", 
 Unit.name as "Unit",
 Product.bar_code as bar_code,
-BarCodeFile.file_path as barcode_picture,
+BarCodeFile.id as barcode_picture,
 ParentProductCategory.name as "ParentProductCategory"
 from base_product as Product
 left outer join base_currency as Currency on (Product.sale_currency = Currency.id)
@@ -1086,23 +1086,6 @@ order by ProductCategory.name
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <model:DesignValues xmlns:design="http://www.eclipse.org/datatools/connectivity/oda/design" xmlns:model="http://www.eclipse.org/birt/report/model/adapter/odaModel">
   <Version>2.0</Version>
-  <DataSetParameters>
-    <parameter>
-      <design:ParameterDefinition>
-        <design:inOutMode>In</design:inOutMode>
-        <design:attributes>
-          <design:identifier>
-            <design:name></design:name>
-            <design:position>1</design:position>
-          </design:identifier>
-          <design:nativeDataTypeCode>-5</design:nativeDataTypeCode>
-          <design:precision>0</design:precision>
-          <design:scale>0</design:scale>
-          <design:nullability>Unknown</design:nullability>
-        </design:attributes>
-      </design:ParameterDefinition>
-    </parameter>
-  </DataSetParameters>
   <design:ResultSets derivedMetaData="true">
     <design:resultSetDefinitions>
       <design:resultSetColumns>
@@ -1661,12 +1644,6 @@ group by ProductCategory.id , ProductCategory.name]]></xml-property>
                     <property name="dataSet">CompanyDS</property>
                     <list-property name="boundDataColumns">
                         <structure>
-                            <property name="name">logo_path</property>
-                            <text-property name="displayName">logo_path</text-property>
-                            <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                            <property name="dataType">string</property>
-                        </structure>
-                        <structure>
                             <property name="name">full_name</property>
                             <text-property name="displayName">full_name</text-property>
                             <expression name="expression" type="javascript">dataSetRow["full_name"]</expression>
@@ -1802,12 +1779,6 @@ group by ProductCategory.id , ProductCategory.name]]></xml-property>
             <property name="dataSet">CompanyDS</property>
             <list-property name="boundDataColumns">
                 <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">full_name</property>
                     <text-property name="displayName">full_name</text-property>
                     <expression name="expression" type="javascript">dataSetRow["full_name"]</expression>
@@ -1852,6 +1823,12 @@ group by ProductCategory.id , ProductCategory.name]]></xml-property>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
                 </structure>
+                <structure>
+                    <property name="name">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <column id="3422">
                 <property name="width">1.3333333333333333in</property>
@@ -1873,13 +1850,17 @@ group by ProductCategory.id , ProductCategory.name]]></xml-property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row["logo_id"] == null</expression>
                             </structure>
                         </list-property>
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
                         <method name="onRender"><![CDATA[this.width=row["logo_width"];
 this.height=row["logo_height"];]]></method>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                        <property name="source">expr</property>
                     </image>
                 </cell>
                 <cell id="3441"/>
@@ -2377,7 +2358,8 @@ this.height=row["logo_height"];]]></method>
                                         <property name="name">picture</property>
                                         <text-property name="displayName">picture</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["picture"]</expression>
-                                        <property name="dataType">string</property>
+                                        <property name="dataType">decimal</property>
+                                        <property name="allowExport">true</property>
                                     </structure>
                                     <structure>
                                         <property name="name">ProductName</property>
@@ -2443,7 +2425,8 @@ this.height=row["logo_height"];]]></method>
                                         <property name="name">barcode_picture</property>
                                         <text-property name="displayName">barcode_picture</text-property>
                                         <expression name="expression" type="javascript">dataSetRow["barcode_picture"]</expression>
-                                        <property name="dataType">string</property>
+                                        <property name="dataType">decimal</property>
+                                        <property name="allowExport">true</property>
                                     </structure>
                                     <structure>
                                         <property name="name">ParentProductCategory</property>
@@ -2498,7 +2481,7 @@ this.height=row["logo_height"];]]></method>
                                                         <property name="name">picture</property>
                                                         <text-property name="displayName">picture</text-property>
                                                         <expression name="expression" type="javascript">dataSetRow["picture"]</expression>
-                                                        <property name="dataType">string</property>
+                                                        <property name="dataType">decimal</property>
                                                     </structure>
                                                     <structure>
                                                         <property name="name">ProductName</property>
@@ -2564,7 +2547,7 @@ this.height=row["logo_height"];]]></method>
                                                         <property name="name">barcode_picture</property>
                                                         <text-property name="displayName">barcode_picture</text-property>
                                                         <expression name="expression" type="javascript">dataSetRow["barcode_picture"]</expression>
-                                                        <property name="dataType">string</property>
+                                                        <property name="dataType">decimal</property>
                                                     </structure>
                                                     <structure>
                                                         <property name="name">ParentProductCategory</property>
@@ -2587,8 +2570,13 @@ this.height=row["logo_height"];]]></method>
                                                         <image id="5190">
                                                             <property name="height">106px</property>
                                                             <property name="width">119px</property>
-                                                            <property name="source">file</property>
-                                                            <expression name="uri" type="javascript">params["AttachmentPath"].value + row["picture"]</expression>
+                                                            <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["picture"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}
+]]></method>
+                                                            <property name="source">expr</property>
                                                         </image>
                                                     </cell>
                                                     <cell id="5393">
@@ -2812,8 +2800,13 @@ this.height=row["logo_height"];]]></method>
                                                         <property name="textAlign">left</property>
                                                         <image id="5412">
                                                             <expression name="altText">""</expression>
-                                                            <property name="source">file</property>
-                                                            <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                                            <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["barcode_picture"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}
+]]></method>
+                                                            <property name="source">expr</property>
                                                         </image>
                                                     </cell>
                                                 </row>
@@ -2862,7 +2855,8 @@ this.height=row["logo_height"];]]></method>
                                     <property name="name">picture</property>
                                     <text-property name="displayName">picture</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["picture"]</expression>
-                                    <property name="dataType">string</property>
+                                    <property name="dataType">decimal</property>
+                                    <property name="allowExport">true</property>
                                 </structure>
                                 <structure>
                                     <property name="name">ProductName</property>
@@ -2928,7 +2922,8 @@ this.height=row["logo_height"];]]></method>
                                     <property name="name">barcode_picture</property>
                                     <text-property name="displayName">barcode_picture</text-property>
                                     <expression name="expression" type="javascript">dataSetRow["barcode_picture"]</expression>
-                                    <property name="dataType">string</property>
+                                    <property name="dataType">decimal</property>
+                                    <property name="allowExport">true</property>
                                 </structure>
                                 <structure>
                                     <property name="name">ParentProductCategory</property>
@@ -2971,7 +2966,8 @@ this.height=row["logo_height"];]]></method>
                                                     <property name="name">picture</property>
                                                     <text-property name="displayName">picture</text-property>
                                                     <expression name="expression" type="javascript">dataSetRow["picture"]</expression>
-                                                    <property name="dataType">string</property>
+                                                    <property name="dataType">decimal</property>
+                                                    <property name="allowExport">true</property>
                                                 </structure>
                                                 <structure>
                                                     <property name="name">ProductName</property>
@@ -3037,7 +3033,8 @@ this.height=row["logo_height"];]]></method>
                                                     <property name="name">barcode_picture</property>
                                                     <text-property name="displayName">barcode_picture</text-property>
                                                     <expression name="expression" type="javascript">dataSetRow["barcode_picture"]</expression>
-                                                    <property name="dataType">string</property>
+                                                    <property name="dataType">decimal</property>
+                                                    <property name="allowExport">true</property>
                                                 </structure>
                                                 <structure>
                                                     <property name="name">ParentProductCategory</property>
@@ -3060,8 +3057,13 @@ this.height=row["logo_height"];]]></method>
                                                     <image id="5223">
                                                         <property name="height">106px</property>
                                                         <property name="width">119px</property>
-                                                        <property name="source">file</property>
-                                                        <expression name="uri" type="javascript">params["AttachmentPath"].value + row["picture"]</expression>
+                                                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["picture"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}
+]]></method>
+                                                        <property name="source">expr</property>
                                                     </image>
                                                 </cell>
                                                 <cell id="5224">
@@ -3274,8 +3276,12 @@ this.height=row["logo_height"];]]></method>
                                                     <property name="textAlign">left</property>
                                                     <image id="5244">
                                                         <expression name="altText">""</expression>
-                                                        <property name="source">file</property>
-                                                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["barcode_picture"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                                        <property name="source">expr</property>
                                                     </image>
                                                 </cell>
                                             </row>
@@ -3349,7 +3355,8 @@ this.height=row["logo_height"];]]></method>
                                                     <property name="name">picture</property>
                                                     <text-property name="displayName">picture</text-property>
                                                     <expression name="expression" type="javascript">dataSetRow["picture"]</expression>
-                                                    <property name="dataType">string</property>
+                                                    <property name="dataType">decimal</property>
+                                                    <property name="allowExport">true</property>
                                                 </structure>
                                                 <structure>
                                                     <property name="name">ProductName</property>
@@ -3415,7 +3422,8 @@ this.height=row["logo_height"];]]></method>
                                                     <property name="name">barcode_picture</property>
                                                     <text-property name="displayName">barcode_picture</text-property>
                                                     <expression name="expression" type="javascript">dataSetRow["barcode_picture"]</expression>
-                                                    <property name="dataType">string</property>
+                                                    <property name="dataType">decimal</property>
+                                                    <property name="allowExport">true</property>
                                                 </structure>
                                                 <structure>
                                                     <property name="name">ParentProductCategory</property>
@@ -3547,8 +3555,13 @@ this.height=row["logo_height"];]]></method>
                                                                     <image id="5250">
                                                                         <property name="height">106px</property>
                                                                         <property name="width">119px</property>
-                                                                        <property name="source">file</property>
-                                                                        <expression name="uri" type="javascript">params["AttachmentPath"].value + row["picture"]</expression>
+                                                                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["picture"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}
+]]></method>
+                                                                        <property name="source">expr</property>
                                                                     </image>
                                                                 </cell>
                                                                 <cell id="5251">
@@ -3763,8 +3776,12 @@ this.height=row["logo_height"];]]></method>
                                                                     <property name="textAlign">left</property>
                                                                     <image id="5271">
                                                                         <expression name="altText">""</expression>
-                                                                        <property name="source">file</property>
-                                                                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                                                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["barcode_picture"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                                                        <property name="source">expr</property>
                                                                     </image>
                                                                 </cell>
                                                             </row>
@@ -3788,12 +3805,6 @@ this.height=row["logo_height"];]]></method>
             <property name="width">7.71875in</property>
             <property name="dataSet">CompanyDS</property>
             <list-property name="boundDataColumns">
-                <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
                 <structure>
                     <property name="name">full_name</property>
                     <text-property name="displayName">full_name</text-property>
@@ -3824,6 +3835,12 @@ this.height=row["logo_height"];]]></method>
                     <expression name="expression" type="javascript">dataSetRow["full_name"]</expression>
                     <property name="dataType">string</property>
                     <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                    <property name="dataType">decimal</property>
                 </structure>
             </list-property>
             <column id="394">
@@ -3895,8 +3912,12 @@ Email : <VALUE-OF>row["email"]</VALUE-OF>]]></text-property>
                         <property name="marginLeft">8pt</property>
                         <property name="height">2.169583333333333cm</property>
                         <property name="width">6.138333333333333cm</property>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                        <property name="source">expr</property>
                     </image>
                 </cell>
             </row>

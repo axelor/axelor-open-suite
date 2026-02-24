@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,8 +30,8 @@ import com.axelor.apps.stock.exception.StockExceptionMessage;
 import com.axelor.apps.stock.service.config.StockConfigService;
 import com.axelor.i18n.I18n;
 import com.google.common.base.Preconditions;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -79,8 +79,16 @@ public class LogisticalFormServiceImpl implements LogisticalFormService {
         domainList.add("self.partner = :deliverToCustomerPartner");
       }
     }
-
-    domainList.add(String.format("self.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
+    if (stockConfigService
+        .getStockConfig(company)
+        .getRealizeStockMovesUponParcelPalletCollection()) {
+      domainList.add(String.format("self.statusSelect = %d", StockMoveRepository.STATUS_PLANNED));
+    } else {
+      domainList.add(
+          String.format(
+              "self.statusSelect in (%d, %d)",
+              StockMoveRepository.STATUS_PLANNED, StockMoveRepository.STATUS_REALIZED));
+    }
     domainList.add("COALESCE(self.fullySpreadOverLogisticalFormsFlag, FALSE) = FALSE");
     if (logisticalForm.getStockLocation() != null) {
       domainList.add("self.stockMoveLineList.fromStockLocation = :stockLocation");

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -136,12 +136,9 @@ public interface StockMoveService {
 
   public String realize(StockMove stockMove, boolean check) throws AxelorException;
 
-  public boolean mustBeSplit(List<StockMoveLine> stockMoveLineList);
+  public boolean mustBeSplit(StockMove stockMove);
 
   public Optional<StockMove> copyAndSplitStockMove(StockMove stockMove) throws AxelorException;
-
-  public Optional<StockMove> copyAndSplitStockMove(
-      StockMove stockMove, List<StockMoveLine> stockMoveLines) throws AxelorException;
 
   public Optional<StockMove> copyAndSplitStockMoveReverse(StockMove stockMove, boolean split)
       throws AxelorException;

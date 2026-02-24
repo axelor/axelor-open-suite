@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.base.web;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Sequence;
+import com.axelor.apps.base.service.administration.SequenceDateCheckService;
 import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -30,7 +31,7 @@ import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.time.LocalDate;
 
 @Singleton
@@ -109,5 +110,17 @@ public class SequenceController {
     } catch (Exception e) {
       TraceBackService.trace(response, e, ResponseMessageType.ERROR);
     }
+  }
+
+  public void checkYearValidity(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    Beans.get(SequenceDateCheckService.class).isYearValid(sequence);
+  }
+
+  public void checkMonthValidity(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Sequence sequence = request.getContext().asType(Sequence.class);
+    Beans.get(SequenceDateCheckService.class).isMonthValid(sequence);
   }
 }

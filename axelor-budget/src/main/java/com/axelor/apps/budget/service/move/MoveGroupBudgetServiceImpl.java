@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
 import com.axelor.apps.account.service.move.MoveCounterPartService;
 import com.axelor.apps.account.service.move.MoveCutOffService;
 import com.axelor.apps.account.service.move.MoveInvoiceTermService;
+import com.axelor.apps.account.service.move.MovePfpToolService;
 import com.axelor.apps.account.service.move.MoveToolService;
 import com.axelor.apps.account.service.move.attributes.MoveAttrsService;
 import com.axelor.apps.account.service.move.control.MoveCheckService;
@@ -43,7 +44,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PeriodService;
 import com.axelor.apps.budget.service.date.BudgetDateService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {
@@ -72,6 +73,7 @@ public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {
       AnalyticAttrsService analyticAttrsService,
       MoveLineRecordService moveLineRecordService,
       MoveLineService moveLineService,
+      MovePfpToolService movePfpToolService,
       BudgetDateService budgetDateService) {
     super(
         moveDefaultService,
@@ -93,7 +95,8 @@ public class MoveGroupBudgetServiceImpl extends MoveGroupServiceImpl {
         pfpService,
         analyticAttrsService,
         moveLineRecordService,
-        moveLineService);
+        moveLineService,
+        movePfpToolService);
     this.budgetDateService = budgetDateService;
   }
 

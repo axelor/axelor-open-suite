@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="bank-statement-file-format-grid" orderBy="statementFileFormatSelect"
     title="Bank Statements file formats"
@@ -16,7 +16,8 @@
       <field name="statementFileFormatSelect" required="true"
         onChange="action-bank-statement-file-format-record-compute-name"/>
       <field name="name" required="true"/>
-      <field name="bindingFile" widget="binary-link"/>
+      <field name="bindingFile" widget="binary-link"
+        hideIf="statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0 || statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb560&quot;) == 0 || statementFileFormatSelect.indexOf(&quot;camt.fin.mt940&quot;) == 0 || statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb240&quot;) == 0"/>
     </panel>
   </form>
 

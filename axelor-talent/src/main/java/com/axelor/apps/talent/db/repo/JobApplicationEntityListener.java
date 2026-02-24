@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,7 @@ package com.axelor.apps.talent.db.repo;
 import com.axelor.apps.crm.db.repo.EventRepository;
 import com.axelor.apps.talent.db.JobApplication;
 import com.axelor.inject.Beans;
-import javax.persistence.PreRemove;
+import jakarta.persistence.PreRemove;
 
 public class JobApplicationEntityListener {
 

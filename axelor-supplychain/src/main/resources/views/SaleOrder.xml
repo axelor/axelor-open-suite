@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <form name="sale-order-form" title="Sale order" model="com.axelor.apps.sale.db.SaleOrder"
     id="supplychain-sale-order-form" extension="true">
@@ -42,10 +42,10 @@
     <extend target="//panel[@name='deliveryInformationPanel']">
       <insert position="after">
         <panel name="packagingPanel" title="Packaging" colSpan="12">
-          <button name="estimatePackagingBtn" title="Estimate packaging" icon="fa-envelope"
+          <button name="estimatePackagingBtn" title="Estimate packaging" icon="envelope-fill"
             onClick="save,action-sale-order-method-estimate-packaging"
             readonlyIf="!saleOrderLineList || saleOrderLineList.length == 0"/>
-          <help colSpan="12"><![CDATA[This packaging is different from real packagings defined during shipping process. Design for only shipping cost estimation.]]></help>
+          <help colSpan="12"><![CDATA[<>This packaging is different from real packagings defined during shipping process. Design for only shipping cost estimation.</>]]></help>
           <panel-related name="packagingPanel" field="estimatedPackagingList"
             grid-view="packaging-sale-order-grid" form-view="packaging-sale-order-form" colSpan="12"
             widget="tree-grid" x-tree-field="childrenPackagingList"
@@ -66,8 +66,8 @@
   </form>
 
   <form name="sale-order-generate-po-select-supplierpartner-form"
-    model="com.axelor.apps.sale.db.SaleOrder" title="Confirm Purchase order generation"
-    onLoad="action-record-load-dummy-supplier-partner">
+    model="com.axelor.utils.db.Wizard" title="Confirm Purchase order generation"
+    onLoad="action-attrs-load-dummy-supplier-partner">
     <panel name="mainPanel">
       <field name="supplierPartnerSelect" title="Select supplier partner" type="many-to-one"
         target="com.axelor.apps.base.db.Partner"
@@ -147,11 +147,17 @@
   <action-group name="action-group-sale-order-supplychain-set-main-invoicing-address">
     <action name="action-sale-order-supplychain-record-main-invoicing-address"/>
     <action name="action-sale-order-method-address-str"/>
+    <action name="action-supplychain-sale-order-invoiced-partner-onchange"/>
   </action-group>
 
   <action-group name="action-group-sale-order-supplychain-set-delivery-address">
     <action name="action-sale-order-supplychain-record-delivery-address"/>
     <action name="action-sale-order-method-address-str"/>
+    <action name="action-supplychain-sale-order-delivery-partner-onchange"/>
+    <action
+      name="action-supplychain-sale-order-validate-sale-order-lines-delivery-address-on-delivered-partner-change"
+      if="saleOrderLineList != null &amp;&amp; !saleOrderLineList.isEmpty()"/>
+    <action name="action-sale-order-method-update-sale-order-lines-delivery-address"/>
   </action-group>
 
   <action-group name="action-group-supplychain-saleorder-onload">
@@ -169,6 +175,16 @@
 
   <action-method name="action-supplychain-saleorder-onsave">
     <call class="com.axelor.apps.supplychain.web.SaleOrderController" method="onSave"/>
+  </action-method>
+
+  <action-method name="action-supplychain-sale-order-delivery-partner-onchange">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="deliveredPartnerChange"/>
+  </action-method>
+
+  <action-method name="action-supplychain-sale-order-invoiced-partner-onchange">
+    <call class="com.axelor.apps.supplychain.web.SaleOrderController"
+      method="invoicedPartnerChange"/>
   </action-method>
 
   <action-method name="action-supplychain-sale-order-method-generate-invoice">
@@ -213,12 +229,18 @@
       if="amountToBeSpreadOverTheTimetable &lt; 0"/>
   </action-validate>
 
+  <action-validate
+    name="action-supplychain-sale-order-validate-sale-order-lines-delivery-address-on-delivered-partner-change">
+    <alert
+      message="Changing the delivery partner updates the order’s delivery address. Would you like to update all lines with this new address?"/>
+  </action-validate>
+
   <!-- ACTION RECORD -->
 
-  <action-record name="action-record-load-dummy-supplier-partner"
-    model="com.axelor.apps.sale.db.SaleOrder">
-    <field name="supplierPartnerSelect" expr="eval:__repo__(Partner).find(supplierPartnerId)"/>
-  </action-record>
+  <action-attrs name="action-attrs-load-dummy-supplier-partner">
+    <attribute for="value" name="supplierPartnerSelect"
+      expr="eval: __repo__(Partner).find(supplierPartnerId)"/>
+  </action-attrs>
 
   <action-record name="action-sale-order-record-interco"
     model="com.axelor.apps.sale.db.SaleOrder">

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,7 +30,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.ui.QuickMenu;
 import com.axelor.ui.QuickMenuCreator;
 import com.axelor.ui.QuickMenuItem;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -82,7 +82,7 @@ public class InstanceInfoQuickMenuCreator implements QuickMenuCreator {
   protected QuickMenuItem getInstanceInfoMenuItem() {
     final boolean isDevMode = "dev".equals(AppSettings.get().get("application.mode", "prod"));
     return new QuickMenuItem(
-        isDevMode ? I18n.get("Prod instance") : I18n.get("Test instance"), null);
+        isDevMode ? I18n.get("Test instance") : I18n.get("Prod instance"), null);
   }
 
   protected QuickMenuItem getTodayDateMenuItem() {

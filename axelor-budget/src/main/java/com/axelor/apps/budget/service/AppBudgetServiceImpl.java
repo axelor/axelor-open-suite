@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,16 +19,11 @@
 package com.axelor.apps.budget.service;
 
 import com.axelor.apps.base.service.app.AppBaseServiceImpl;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.meta.loader.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppBudget;
 import com.axelor.studio.db.repo.AppBudgetRepository;
-import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.util.Optional;
 
 @Singleton
@@ -37,21 +32,14 @@ public class AppBudgetServiceImpl extends AppBaseServiceImpl implements AppBudge
   protected AppBudgetRepository appBudgetRepo;
 
   @Inject
-  public AppBudgetServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      AppSettingsStudioService appSettingsService,
-      MetaModuleRepository metaModuleRepo,
-      MetaFileRepository metaFileRepo,
-      AppBudgetRepository appBudgetRepo) {
-    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
+  public AppBudgetServiceImpl(AppService appService, AppBudgetRepository appBudgetRepo) {
+    super(appService);
     this.appBudgetRepo = appBudgetRepo;
   }
 
   @Override
   public AppBudget getAppBudget() {
-    return appBudgetRepo.all().fetchOne();
+    return appBudgetRepo.all().cacheable().autoFlush(false).fetchOne();
   }
 
   @Override

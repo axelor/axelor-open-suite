@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -185,6 +185,8 @@ import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCheckServiceImpl;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeQtyServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
@@ -342,5 +344,6 @@ public class SaleModule extends AxelorModule {
     bind(SaleOrderOrderingStatusService.class).to(SaleOrderOrderingStatusServiceImpl.class);
     bind(SaleOrderSequenceService.class).to(SaleOrderSequenceServiceImpl.class);
     bind(SaleOrderSplitDummyService.class).to(SaleOrderSplitDummyServiceImpl.class);
+    bind(SaleOrderLineComputeQtyService.class).to(SaleOrderLineComputeQtyServiceImpl.class);
   }
 }

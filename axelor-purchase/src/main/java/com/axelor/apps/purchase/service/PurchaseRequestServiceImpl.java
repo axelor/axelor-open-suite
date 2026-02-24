@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.purchase.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
@@ -29,8 +30,8 @@ import com.axelor.apps.purchase.db.repo.PurchaseOrderRepository;
 import com.axelor.apps.purchase.db.repo.PurchaseRequestRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +66,10 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
   @Transactional(rollbackOn = {Exception.class})
   @Override
   public List<PurchaseOrder> generatePo(
-      List<PurchaseRequest> purchaseRequests, Boolean groupBySupplier, Boolean groupByProduct)
+      List<PurchaseRequest> purchaseRequests,
+      Boolean groupBySupplier,
+      Boolean groupByProduct,
+      Company company)
       throws AxelorException {
 
     Map<String, PurchaseOrder> purchaseOrderMap = new HashMap<>();
@@ -77,13 +81,13 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
       if (key != null && purchaseOrderMap.containsKey(key)) {
         purchaseOrder = purchaseOrderMap.get(key);
       } else {
-        purchaseOrder = createPurchaseOrder(purchaseRequest);
+        purchaseOrder = createPurchaseOrder(purchaseRequest, company);
         key = key == null ? purchaseRequest.getId().toString() : key;
         purchaseOrderMap.put(key, purchaseOrder);
       }
 
       if (purchaseOrder == null) {
-        purchaseOrder = createPurchaseOrder(purchaseRequest);
+        purchaseOrder = createPurchaseOrder(purchaseRequest, company);
       }
 
       this.generatePoLineListFromPurchaseRequest(purchaseRequest, purchaseOrder, groupByProduct);
@@ -96,12 +100,12 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
     return purchaseOrders;
   }
 
-  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest)
+  protected PurchaseOrder createPurchaseOrder(PurchaseRequest purchaseRequest, Company company)
       throws AxelorException {
     return purchaseOrderRepo.save(
         purchaseOrderCreateService.createPurchaseOrder(
             AuthUtils.getUser(),
-            purchaseRequest.getCompany(),
+            Optional.ofNullable(purchaseRequest.getCompany()).orElse(company),
             null,
             purchaseRequest.getSupplierPartner().getCurrency(),
             null,
@@ -163,11 +167,17 @@ public class PurchaseRequestServiceImpl implements PurchaseRequestService {
   public Map<String, Object> getDefaultValues(PurchaseRequest purchaseRequest, Company company)
       throws AxelorException {
     Map<String, Object> values = new HashMap<>();
+    User user = AuthUtils.getUser();
     if (company == null) {
-      company = Optional.of(AuthUtils.getUser()).map(User::getActiveCompany).orElse(null);
+      company = Optional.ofNullable(user).map(User::getActiveCompany).orElse(null);
     }
     purchaseRequest.setCompany(company);
     values.put("company", purchaseRequest.getCompany());
+    if (user != null) {
+      TradingName tradingName = user.getTradingName();
+      values.put("tradingName", tradingName);
+      purchaseRequest.setTradingName(tradingName);
+    }
     return values;
   }
 

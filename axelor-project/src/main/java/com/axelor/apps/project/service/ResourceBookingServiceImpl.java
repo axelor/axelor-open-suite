@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,7 @@ package com.axelor.apps.project.service;
 
 import com.axelor.apps.project.db.ResourceBooking;
 import com.axelor.apps.project.db.repo.ResourceBookingRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class ResourceBookingServiceImpl implements ResourceBookingService {
     List<Object> params = new ArrayList<>();
 
     String query =
-        "self.resource.id = ?1 AND self.fromDate != null AND self.toDate != null AND ((?2 BETWEEN self.fromDate AND self.toDate OR ?3 BETWEEN self.fromDate AND self.toDate) OR (self.fromDate BETWEEN ?2 AND ?3 OR self.toDate BETWEEN ?2 AND ?3))";
+        "self.resource.id = ?1 AND self.fromDate IS NOT null AND self.toDate IS NOT null AND ((?2 BETWEEN self.fromDate AND self.toDate OR ?3 BETWEEN self.fromDate AND self.toDate) OR (self.fromDate BETWEEN ?2 AND ?3 OR self.toDate BETWEEN ?2 AND ?3))";
     params.add(resourceBooking.getResource().getId());
     params.add(resourceBooking.getFromDate());
     params.add(resourceBooking.getToDate());

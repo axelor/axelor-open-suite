@@ -1,3 +1,0 @@
----
-title: "INVOICE : Set interco as true when generating invoice from an interco saleOrder / purchaseOrder."
-module: axelor-supplychain

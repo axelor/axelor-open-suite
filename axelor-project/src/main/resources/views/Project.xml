@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="project-grid" title="Projects" model="com.axelor.apps.project.db.Project"
     orderBy="projectStatus, name">
@@ -10,7 +10,7 @@
         onClick="action-timesheet-line-method-log-time" if="__config__.app.isApp('timesheet')"/>
     </toolbar>
     <menubar>
-      <menu name="projectToolsMenu" title="Tools" icon="fa-wrench" showTitle="true">
+      <menu name="projectToolsMenu" title="Tools" icon="wrench" showTitle="true">
         <item name="ganttWithUserItem" title="Gantt with user"
           action="action-project-open-popup-select-users"/>
         <item name="ganttWithProjectItem" title="Gantt with project"
@@ -62,7 +62,7 @@
     onLoad="action-project-on-load-group" onNew="action-project-group-on-new-project"
     onSave="action-project-group-on-save" width="large">
     <menubar>
-      <menu name="taskMenu" title="Tasks" showTitle="true" icon="fa-tasks">
+      <menu name="taskMenu" title="Tasks" showTitle="true" icon="list-task">
         <item name="myOpenTasks" title="My open tasks"
           action="save,action-project-method-my-open-tasks"
           showIf="id &amp;&amp; taskStatusManagementSelect != 1"/>
@@ -76,7 +76,7 @@
         <item name="allTasksTree" title="All tasks (tree)"
           action="save, action-view-show-project-task-tree" showIf="id"/>
       </menu>
-      <menu name="projectToolsMenu" title="Tools" showTitle="true" icon="fa-wrench">
+      <menu name="projectToolsMenu" title="Tools" showTitle="true" icon="wrench">
         <item name="ganttItem" title="Gantt" showIf="id &amp;&amp; isShowGantt"
           action="save,action-project-open-gantt"/>
         <item name="bookResourceItem" title="Book resource"
@@ -132,7 +132,8 @@
 
       <panel title="Tasks" name="taskPanel">
         <panel-dashlet name="projectTaskDashletPanel" title="Tasks" x-show-bars="true"
-          colSpan="12" action="action-project-view-show-project-task" height="200%" canSearch="true"/>
+          colSpan="12" action="action-project-view-show-project-task" height="200%" canSearch="true"
+          x-order="createdOn"/>
       </panel>
 
       <panel-include view="incl-wiki-panel-form"/>
@@ -212,7 +213,7 @@
         <button name="importMemberBtn" title="Import all members" showIf="team != null"
           readonlyIf="extendsMembersFromParent" colSpan="3"
           onClick="action-project-method-import-members"/>
-        <field name="membersUserSet" colSpan="9" widget="TagSelect" canNew="false"
+        <field name="membersUserSet" colSpan="9" widget="Tags" canNew="false"
           form-view="user-form" grid-view="user-grid" canEdit="false"/>
         <field name="assignedTo" title="Assigned to" canNew="false" canView="false"
           canEdit="false" onChange="action-attrs-project-add-member" form-view="user-form"
@@ -267,7 +268,7 @@
     <panel title="General configuration" name="generalConfigurationsPanel" colSpan="12"
       canCollapse="true" collapseIf="false">
       <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
-        name="productSet" widget="TagSelect" canEdit="false"
+        name="productSet" widget="Tags" canEdit="false"
         domain="self.isActivity = true AND self.dtype = 'Product'" form-view="product-activity-form"
         grid-view="product-activity-grid"/>
       <field name="projectTimeUnit" onSelect="action-project-attrs-set-time-unit-domain"/>
@@ -284,7 +285,7 @@
       <field name="taskStatusManagementSelect" widget="RadioSelect"
         readonlyIf="projectTaskList.length &gt; 0" colSpan="12"
         onChange="action-project-record-manage-task-status-set, action-project-record-activate-task-status-by-category"/>
-      <field name="projectTaskStatusSet" widget="TagSelect"
+      <field name="projectTaskStatusSet" widget="Tags"
         readonlyIf="projectTaskList.length &gt; 0" showIf="taskStatusManagementSelect == 2"
         requiredIf="taskStatusManagementSelect == 2" canEdit="false"
         onChange="action-project-method-manage-completed-task-status"/>
@@ -294,13 +295,13 @@
         onSelect="action-project-attrs-set-completed-task-status-domain"/>
       <panel name="taskStatusManagementPanel" colSpan="12"
         showIf="projectTaskList.length &gt; 0 &amp;&amp; taskStatusManagementSelect == 2 &amp;&amp; !$readonly()">
-        <field name="$statusToAddSet" type="many-to-many" widget="TagSelect"
-          title="Status to add" onSelect="action-project-attrs-status-to-add-domain" colSpan="3"
+        <field name="$statusToAddSet" type="many-to-many" widget="Tags" title="Status to add"
+          onSelect="action-project-attrs-status-to-add-domain" colSpan="3"
           target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
         <button name="addStatusBtn"
           onClick="action-project-attrs-add-task-status,action-project-method-manage-completed-task-status"
           title="Add status" showIf="$statusToAddSet.length &gt; 0" colSpan="3"/>
-        <field name="$statusToRemoveSet" type="many-to-many" widget="TagSelect"
+        <field name="$statusToRemoveSet" type="many-to-many" widget="Tags"
           title="Status to remove" onSelect="action-project-attrs-status-to-remove-domain"
           colSpan="3" target="com.axelor.apps.project.db.TaskStatus" canNew="false"/>
         <button name="removeStatusBtn"
@@ -309,19 +310,19 @@
       </panel>
       <field name="isShowPriority" widget="inline-checkbox"
         onChange="action-project-record-priority-reset-values"/>
-      <field name="projectTaskPrioritySet" widget="TagSelect" showIf="isShowPriority"
+      <field name="projectTaskPrioritySet" widget="Tags" showIf="isShowPriority"
         requiredIf="isShowPriority" canEdit="false"/>
       <field name="isShowTaskCategory" widget="inline-checkbox"
         onChange="action-project-record-change-show-task-category, action-project-record-manage-task-status-set"
         canEdit="false"/>
-      <field name="projectTaskCategorySet" widget="TagSelect" showIf="isShowTaskCategory"
+      <field name="projectTaskCategorySet" widget="Tags" showIf="isShowTaskCategory"
         canEdit="false"
         requiredIf="taskStatusManagementSelect == 4 || enableStatusProgressByCategory"/>
       <field name="isShowProgress" widget="inline-checkbox"/>
       <field name="enableStatusProgressByCategory"
         if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask"
         showIf="isShowTaskCategory"/>
-      <field name="projectTaskLinkTypeSet" colSpan="12" widget="TagSelect" canEdit="false"
+      <field name="projectTaskLinkTypeSet" colSpan="12" widget="Tags" canEdit="false"
         placeholder="All"/>
       <field name="projectTaskList" hidden="true"/>
     </panel>
@@ -497,7 +498,7 @@
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
-      <button name="openTaskBtn" icon="fa-external-link"
+      <button name="openTaskBtn" icon="box-arrow-up-right"
         onClick="action-project-task-open-task"/>
     </node>
 
@@ -507,7 +508,7 @@
       <field name="taskDate" as="taskDate"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
-      <button name="openTaskBtn" icon="fa-external-link"
+      <button name="openTaskBtn" icon="box-arrow-up-right"
         onClick="action-project-task-open-task"/>
     </node>
   </tree>
@@ -522,9 +523,9 @@
       onClick="action-project-view-show-project">
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
-      <button name="treeBtn" icon="fa-sitemap" onClick="action-project-view-show-tasks-tree"
-        title="Open projects tree"/>
-      <button name="listBtn" title="Open tasks list" icon="fa-list"
+      <button name="treeBtn" icon="diagram-3-fill"
+        onClick="action-project-view-show-tasks-tree" title="Open projects tree"/>
+      <button name="listBtn" title="Open tasks list" icon="list-task"
         onClick="action-project-view-show-tasks-tree"/>
     </node>
 
@@ -533,9 +534,9 @@
       <field name="name" as="name"/>
       <field name="assignedTo" as="assignedTo"/>
       <field name="progress" as="progress"/>
-      <button name="treeBtn" title="Open projects tree" icon="fa-sitemap"
+      <button name="treeBtn" title="Open projects tree" icon="diagram-3-fill"
         onClick="action-project-view-show-tasks-tree"/>
-      <button name="listBtn" icon="fa-list" title="Open tasks list"
+      <button name="listBtn" icon="list-task" title="Open tasks list"
         onClick="action-project-view-show-tasks-tree"/>
     </node>
   </tree>
@@ -569,6 +570,7 @@
   </action-group>
 
   <action-group name="action-project-group-finish-project">
+    <action name="action-project-validate-completed-status"/>
     <action name="action-project-record-status-finish"/>
     <action name="save"/>
   </action-group>
@@ -921,7 +923,7 @@
     model="com.axelor.apps.project.db.ProjectTask">
     <view type="tree" name="project-project-task-tree"/>
     <view type="form" name="project-task-form"/>
-    <domain>self.project.id = :_id AND self.parentTask = null</domain>
+    <domain>self.project.id = :_id AND self.parentTask IS null</domain>
     <context name="_id" expr="eval: id"/>
   </action-view>
 
@@ -955,6 +957,11 @@
   <action-validate name="action-project-validate-checklist-items">
     <alert message="Your current check list will be erased, do you want to continue ?"
       if="projectCheckListItemList &amp;&amp; !projectCheckListItemList.isEmpty()"/>
+  </action-validate>
+
+  <action-validate name="action-project-validate-completed-status">
+    <error message="Please fill in the default completion status in the Project app settings."
+      if="!__config__.app.getApp('project')?.completedProjectStatus"/>
   </action-validate>
 
 

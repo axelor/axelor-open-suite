@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2025 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -44,8 +44,8 @@ import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.db.Model;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -103,11 +103,11 @@ public class PaymentVoucherLoadService {
         "(self.moveLine.partner = :partner OR self.invoice.partner = :partner) "
             + "and (self.isPaid = FALSE OR self.amountRemaining != 0) "
             + "and (self.moveLine.move.company = :company OR self.invoice.company = :company) "
-            + "and self.moveLine.account.useForPartnerBalance = 't' "
-            + "and self.moveLine.move.ignoreInDebtRecoveryOk = 'f' "
+            + "and self.moveLine.account.useForPartnerBalance = true "
+            + "and self.moveLine.move.ignoreInDebtRecoveryOk = false "
             + "and (self.moveLine.move.statusSelect = :statusDaybook OR self.moveLine.move.statusSelect = :statusAccounted) "
-            + "and (:tradingName = NULL OR self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName) "
-            + "and (self.invoice = null or self.invoice.operationTypeSelect = :operationTypeSelect) "
+            + "and (:tradingName IS NULL OR self.moveLine.move.tradingName = :tradingName OR self.invoice.tradingName = :tradingName) "
+            + "and (self.invoice IS null or self.invoice.operationTypeSelect = :operationTypeSelect) "
             + "and ((self.invoice is not null and self.invoice.currency = :currency) or self.moveLine.move.currency = :currency)";
 
     if (pfpService.isManagePassedForPayment(paymentVoucher.getCompany())
@@ -492,5 +492,26 @@ public class PaymentVoucherLoadService {
             t.getInvoiceTerm().getInvoice() != null
                 ? t.getInvoiceTerm().getInvoice().getInvoiceDate()
                 : t.getInvoiceTerm().getMoveLine().getMove().getDate());
+  }
+
+  public void resetAndReloadElementToPay(PaymentVoucher paymentVoucher, Invoice invoice)
+      throws AxelorException {
+    resetImputation(paymentVoucher);
+    if (CollectionUtils.isEmpty(paymentVoucher.getPayVoucherDueElementList())) {
+      return;
+    }
+    PayVoucherDueElement payVoucherDueElement =
+        paymentVoucher.getPayVoucherDueElementList().stream()
+            .sorted(Comparator.comparing(it -> it.getInvoiceTerm().getSequence()))
+            .filter(
+                it ->
+                    invoice.equals(it.getMoveLine().getMove().getInvoice())
+                        && paymentVoucher.getCurrency().equals(it.getCurrency()))
+            .findFirst()
+            .orElse(null);
+    if (payVoucherDueElement != null) {
+      payVoucherDueElement.setSelected(true);
+      loadSelectedLines(paymentVoucher);
+    }
   }
 }
