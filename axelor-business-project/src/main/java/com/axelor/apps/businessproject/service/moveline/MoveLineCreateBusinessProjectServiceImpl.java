@@ -16,8 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.budget.service.move;
+package com.axelor.apps.businessproject.service.moveline;
 
+import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountingSituationRepository;
@@ -29,6 +30,7 @@ import com.axelor.apps.account.service.analytic.AnalyticMoveLineGenerateRealServ
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.moveline.MoveLineComputeAnalyticService;
 import com.axelor.apps.account.service.moveline.MoveLineConsolidateService;
+import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
 import com.axelor.apps.account.service.moveline.MoveLineRecordService;
 import com.axelor.apps.account.service.moveline.MoveLineTaxService;
 import com.axelor.apps.account.service.moveline.MoveLineToolService;
@@ -41,18 +43,15 @@ import com.axelor.apps.base.service.config.CompanyConfigService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.axelor.apps.budget.db.BudgetDistribution;
-import com.axelor.apps.budget.service.BudgetToolsService;
-import com.axelor.apps.businessproject.service.moveline.MoveLineCreateBusinessProjectServiceImpl;
+import com.axelor.apps.project.db.Project;
 import com.google.inject.Inject;
+import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
-public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateBusinessProjectServiceImpl {
-
-  protected BudgetToolsService budgetToolsService;
+public class MoveLineCreateBusinessProjectServiceImpl extends MoveLineCreateServiceImpl {
 
   @Inject
-  public MoveLineCreateBudgetServiceImpl(
+  public MoveLineCreateBusinessProjectServiceImpl(
       CompanyConfigService companyConfigService,
       CurrencyService currencyService,
       FiscalPositionAccountService fiscalPositionAccountService,
@@ -71,8 +70,7 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateBusinessProje
       AnalyticLineService analyticLineService,
       CurrencyScaleService currencyScaleService,
       MoveLineRecordService moveLineRecordService,
-      AccountManagementService accountManagementService,
-      BudgetToolsService budgetToolsService) {
+      AccountManagementService accountManagementService) {
     super(
         companyConfigService,
         currencyService,
@@ -93,27 +91,22 @@ public class MoveLineCreateBudgetServiceImpl extends MoveLineCreateBusinessProje
         currencyScaleService,
         moveLineRecordService,
         accountManagementService);
-    this.budgetToolsService = budgetToolsService;
   }
 
   @Override
   public MoveLine fillMoveLineWithInvoiceLine(
       MoveLine moveLine, InvoiceLine invoiceLine, Company company) throws AxelorException {
     moveLine = super.fillMoveLineWithInvoiceLine(moveLine, invoiceLine, company);
-
-    moveLine.setBudget(invoiceLine.getBudget());
-    moveLine.setBudgetFromDate(invoiceLine.getBudgetFromDate());
-    moveLine.setBudgetToDate(invoiceLine.getBudgetToDate());
-    if (!CollectionUtils.isEmpty(invoiceLine.getBudgetDistributionList())) {
-      for (BudgetDistribution budgetDistribution : invoiceLine.getBudgetDistributionList()) {
-        moveLine.addBudgetDistributionListItem(budgetDistribution);
+    if (moveLine == null || invoiceLine == null) {
+      return null;
+    }
+    List<AnalyticMoveLine> analyticMoveLineList = moveLine.getAnalyticMoveLineList();
+    Project project = invoiceLine.getProject();
+    if (!CollectionUtils.isEmpty(analyticMoveLineList) && project != null) {
+      for (AnalyticMoveLine analyticMoveLine : analyticMoveLineList) {
+        analyticMoveLine.setProject(project);
       }
     }
-
-    moveLine.setBudgetRemainingAmountToAllocate(
-        budgetToolsService.getBudgetRemainingAmountToAllocate(
-            moveLine.getBudgetDistributionList(), moveLine.getCredit().max(moveLine.getDebit())));
-
     return moveLine;
   }
 }

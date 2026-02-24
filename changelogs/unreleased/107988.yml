@@ -1,0 +1,3 @@
+---
+title: "Move line: fixed missing project on analytic move lines generated during invoicing business project."
+module: axelor-business-project
