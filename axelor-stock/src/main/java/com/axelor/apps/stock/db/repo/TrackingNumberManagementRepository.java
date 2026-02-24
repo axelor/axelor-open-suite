@@ -66,7 +66,7 @@ public class TrackingNumberManagementRepository extends TrackingNumberRepository
         } else {
           json.put(
               "$availableQty",
-              stockLocationLineFetchService.getTrackingNumberAvailableQty(trackingNumber));
+              stockLocationLineService.getTrackingNumberAvailableQty(trackingNumber));
         }
       } else if (trackingNumber.getProduct() != null) {
         json.put(
