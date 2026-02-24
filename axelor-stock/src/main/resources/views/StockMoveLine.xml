@@ -56,7 +56,7 @@
     <field name="unit" form-view="unit-form" grid-view="unit-grid" width="70px"
       readonlyIf="lineTypeSelect == 1 || (($get('stockMove.statusSelect') == 2 &amp;&amp; $get('stockMove.pickingIsEdited')) || $get('stockMove.statusSelect') == 3)"/>
     <field name="netMass" onChange="action-stock-move-line-group-net-mass-onchange"
-      width="100px" readonlyIf="lineTypeSelect == 1"/>
+      width="100px" readonlyIf="lineTypeSelect == 1" x-scale="5"/>
     <field name="wapPrice" x-scale="$nbDecimalDigitForUnitPrice" hidden="true"/>
     <field name="trackingNumber"
       canNew="($get('stockMove.typeSelect') == 3 &amp;&amp; $get('$trackingNumberConfiguration.isPurchaseTrackingManaged')) || ($get('stockMove.typeSelect') == 1 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isProductionTrackingManaged')) || ($get('stockMove.typeSelect') == 2 &amp;&amp; !$get('$trackingNumberConfiguration.isPurchaseTrackingManaged') &amp;&amp; !$get('$trackingNumberConfiguration.isProductionTrackingManaged') &amp;&amp; $get('$trackingNumberConfiguration.isSaleTrackingManaged'))"
