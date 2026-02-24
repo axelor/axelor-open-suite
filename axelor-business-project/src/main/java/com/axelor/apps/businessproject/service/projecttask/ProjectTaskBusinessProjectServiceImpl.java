@@ -184,6 +184,12 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
     task.setTotalPlannedHrs(plannedHrs);
     taskTemplateService.manageTemplateFields(task, template, project);
 
+    if (template.getIsUniqueTaskForMultipleQuantity() && qty.compareTo(BigDecimal.ONE) > 0) {
+      BigDecimal budgetedTime = template.getDuration().multiply(qty);
+      task.setBudgetedTime(budgetedTime);
+      task.setSoldTime(budgetedTime);
+      task.setUpdatedTime(budgetedTime);
+    }
     return task;
   }
 
