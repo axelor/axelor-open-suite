@@ -65,11 +65,13 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PrintingTemplate;
 import com.axelor.apps.base.db.repo.LocalizationRepository;
+import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.PrintingTemplateRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.BankDetailsService;
+import com.axelor.apps.base.service.PartnerLinkService;
 import com.axelor.apps.base.service.PartnerPriceListService;
 import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
@@ -1337,6 +1339,19 @@ public class InvoiceController {
     Beans.get(InvoiceService.class).updateThirdPartyPayerPartner(invoice);
 
     response.setValue("invoiceTermList", invoice.getInvoiceTermList());
+  }
+
+  public void setThirdPartyPayerPartnerDomain(ActionRequest request, ActionResponse response) {
+    Invoice invoice = request.getContext().asType(Invoice.class);
+    Partner partner = invoice.getPartner();
+    if (partner == null) {
+      response.setAttr("thirdPartyPayerPartner", "domain", "self.isThirdPartyPayer IS TRUE");
+      return;
+    }
+    String domain =
+        Beans.get(PartnerLinkService.class)
+            .computePartnerFilter(partner, PartnerLinkTypeRepository.TYPE_SELECT_PAYED_BY);
+    response.setAttr("thirdPartyPayerPartner", "domain", domain);
   }
 
   public void setInvoiceLinesScale(ActionRequest request, ActionResponse response) {
