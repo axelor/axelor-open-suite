@@ -62,11 +62,21 @@ public class BudgetLineComputeServiceImpl implements BudgetLineComputeService {
       LocalDate defaultDate) {
     ComputeMethod computeMethod = this::updateBudgetLineAmountsWithNoPo;
     Invoice invoice = Optional.ofNullable(move).map(Move::getInvoice).orElse(null);
-    if (invoice != null && (invoice.getPurchaseOrder() != null || invoice.getSaleOrder() != null)) {
+    if (invoice != null && isLinkedToOrder(invoice)) {
       computeMethod = this::updateBudgetLineAmountsWithPo;
     }
 
     updateBudgetLineAmounts(budget, amount, fromDate, toDate, defaultDate, computeMethod);
+  }
+
+  protected boolean isLinkedToOrder(Invoice invoice) {
+    if (invoice.getPurchaseOrder() != null || invoice.getSaleOrder() != null) {
+      return true;
+    }
+    return invoice.getInvoiceLineList() != null
+        && invoice.getInvoiceLineList().stream()
+            .anyMatch(
+                line -> line.getPurchaseOrderLine() != null || line.getSaleOrderLine() != null);
   }
 
   @Override
