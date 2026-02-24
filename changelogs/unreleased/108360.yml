@@ -1,0 +1,6 @@
+---
+title: "Sale order: fixed price recomputation when editable tree is enabled."
+module: axelor-sale
+developer: |
+  - Added SaleOrderLinePriceService and SaleOrderLineProductService to SubSaleOrderLineComputeServiceImpl constructor.
+  - Added new method updateSubSaleOrderLineList(SaleOrderLine, SaleOrder) in SubSaleOrderLineComputeService class.
