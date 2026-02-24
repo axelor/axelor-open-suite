@@ -269,7 +269,8 @@ public class StockMoveLineController {
   public void setAvailableStatus(ActionRequest request, ActionResponse response) {
     try {
       StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
-      Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine);
+      StockMove stockMove = getStockMove(request, stockMoveLine);
+      Beans.get(StockMoveLineService.class).setAvailableStatus(stockMoveLine, stockMove);
       response.setValue("availableStatus", stockMoveLine.getAvailableStatus());
       response.setValue("availableStatusSelect", stockMoveLine.getAvailableStatusSelect());
     } catch (Exception e) {
@@ -453,5 +454,12 @@ public class StockMoveLineController {
 
     response.setValue("fromStockLocation", stockMoveLine.getFromStockLocation());
     response.setValue("toStockLocation", stockMoveLine.getToStockLocation());
+  }
+
+  public void qtyOnChange(ActionRequest request, ActionResponse response) throws AxelorException {
+    StockMoveLine stockMoveLine = request.getContext().asType(StockMoveLine.class);
+    StockMove stockMove = getStockMove(request, stockMoveLine);
+    Beans.get(StockMoveLineService.class).qtyOnChange(stockMoveLine, stockMove);
+    response.setValue("companyPurchasePrice", stockMoveLine.getCompanyPurchasePrice());
   }
 }

@@ -24,6 +24,7 @@ import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.stock.db.Inventory;
 import com.axelor.apps.stock.db.InventoryLine;
 import com.axelor.apps.stock.service.inventory.InventoryService;
+import com.axelor.apps.stock.utils.JpaModelHelper;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.util.Map;
@@ -40,6 +41,7 @@ public class ImportInventory {
 
     Inventory inventory = (Inventory) bean;
     inventoryService.validateInventory(inventory);
+    inventory = JpaModelHelper.ensureManaged(inventory);
 
     return inventory;
   }

@@ -387,7 +387,8 @@ public class ManufOrderController {
         ManufOrder manufOrder = Beans.get(ManufOrderRepository.class).find(manufOrderView.getId());
 
         if (manufOrderView.getPlannedStartDateT() != null) {
-          if (!manufOrderView.getPlannedStartDateT().isEqual(manufOrder.getPlannedStartDateT())) {
+          if (!Objects.equals(
+              manufOrderView.getPlannedStartDateT(), manufOrder.getPlannedStartDateT())) {
             Beans.get(ManufOrderPlanService.class)
                 .updatePlannedDates(manufOrder, manufOrderView.getPlannedStartDateT());
             response.setReload(true);
@@ -980,5 +981,12 @@ public class ManufOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void updateStockMovesEstimatedDate(ActionRequest request, ActionResponse response) {
+    ManufOrder manufOrder = request.getContext().asType(ManufOrder.class);
+    Beans.get(ManufOrderPlanService.class).updateStockMovesEstimatedDate(manufOrder);
+    response.setValue("inStockMoveList", manufOrder.getInStockMoveList());
+    response.setValue("outStockMoveList", manufOrder.getOutStockMoveList());
   }
 }

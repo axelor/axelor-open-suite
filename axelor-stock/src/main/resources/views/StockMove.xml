@@ -585,12 +585,12 @@
           onClick="save,action-stock-move-method-generate-new-stock-move"
           showIf="statusSelect == 3 &amp;&amp; isReversion"/>
         <button if="__config__.app.getApp('supplychain')?.getValidStepForInvOutSM()"
-          name="delayedInvoice" title="Facturation ultérieure"
+          name="delayedInvoice" title="Deferred invoicing"
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 3"
           css="btn-warning"
           onClick="save,action-stock-move-method-set-invoicing-status-invoiced-delayed"/>
         <button if="__config__.app.getApp('supplychain')?.getValidStepForInvOutSM()"
-          name="validatedInvoice" title="Validé pour facturation"
+          name="validatedInvoice" title="Approved for invoicing"
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 4"
           css="btn-success"
           onClick="save,action-stock-move-method-set-invoicing-status-invoiced-validated"/>
@@ -681,10 +681,11 @@
             <field name="massStockMove" hidden="true" showIf="massStockMove != null"/>
           </panel>
           <field name="saleOrderSet" hidden="true"
-            showIf="saleOrderSet &amp;&amp; saleOrderSet.length > 0" colSpan="12" readonly="true"/>
+            showIf="saleOrderSet &amp;&amp; saleOrderSet.length > 0" colSpan="12" readonly="true"
+            grid-view="sale-order-grid" form-view="sale-order-form"/>
           <field name="purchaseOrderSet" hidden="true"
             showIf="purchaseOrderSet &amp;&amp; purchaseOrderSet.length > 0" colSpan="12"
-            readonly="true"/>
+            readonly="true" grid-view="purchase-order-grid" form-view="purchase-order-form"/>
           <field name="reversionOriginStockMove" readonly="true" grid-view="stock-move-form"
             form-view="stock-move-form" showIf="reversionOriginStockMove"/>
           <field name="invoiceSet" readonly="true" grid-view="invoice-grid"
@@ -1081,8 +1082,9 @@
       expr="eval: typeSelect == 3"/>
     <attribute for="stockMoveLineList.requestedReservedQty,reservationDateTime"
       name="hidden" expr="eval: typeSelect == 3"/>
-    <attribute name="hidden" for="stockMoveLineList.availableStatus"
-      expr="eval: typeSelect == 3"/>
+    <attribute name="hidden"
+      for="stockMoveLineList.availableStatus,stockMoveLineList.availableQty,stockMoveLineList.availableQtyForProduct"
+      expr="eval: statusSelect > 2 || typeSelect == 3"/>
   </action-attrs>
 
   <action-attrs name="action-stock-move-attrs-hide-avg-price">

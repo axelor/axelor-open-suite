@@ -225,19 +225,20 @@
 
   <search name="tracking-number-search" title="Tracking number search" limit="50">
     <search-fields>
-      <field name="product" type="reference" target="com.axelor.apps.base.db.Product"/>
-      <field name="trackingNumber" type="reference"
+      <field name="product" type="reference" target="com.axelor.apps.base.db.Product"
+        domain="self.dtype = 'Product'"/>
+      <field name="trackingNumberRef" type="reference"
         target="com.axelor.apps.stock.db.TrackingNumber" widget="SuggestBox"
         domain="self.product = :product"/>
     </search-fields>
 
     <result-fields>
       <field name="object" width="75"/>
-      <field name="trackingNumber" type="reference"
+      <field name="trackingNumberRef" type="reference"
         target="com.axelor.apps.stock.db.TrackingNumber"/>
       <field name="product" type="string"/>
-      <field name="futureQty" title="Expected/Future Quantity" type="decimal"/>
-      <field name="currentQty" title="Real/Current Quantity" type="decimal"/>
+      <field name="futureQtyVal" title="Expected/Future Quantity" type="decimal"/>
+      <field name="currentQtyVal" title="Real/Current Quantity" type="decimal"/>
       <field name="stockLocation" title="Stock location" type="string"/>
       <field name="moveLine" title="Stock move line" type="string"/>
       <field name="date" type="date"/>
@@ -245,25 +246,25 @@
 
     <select model="com.axelor.apps.stock.db.StockMove" title="Stock move"
       form-view="stock-move-form">
-      <field name="stockMoveLineList.trackingNumber" as="trackingNumber"/>
+      <field name="stockMoveLineList.trackingNumber" as="trackingNumberRef"/>
       <field name="stockMoveLineList.product.fullName" as="product"/>
       <field name="stockMoveLineList.productName" as="moveLine"/>
-      <field name="stockMoveLineList.realQty" as="currentQty"/>
-      <field name="stockMoveLineList.qty" as="futureQty"/>
+      <field name="stockMoveLineList.realQty" as="currentQtyVal"/>
+      <field name="stockMoveLineList.qty" as="futureQtyVal"/>
       <field name="stockMoveLineList.stockMove.realDate" as="date"/>
       <where>
-        <input name="trackingNumber" field="stockMoveLineList.trackingNumber"/>
+        <input name="trackingNumberRef" field="stockMoveLineList.trackingNumber"/>
       </where>
     </select>
-    <select model="com.axelor.apps.stock.db.StockLocation" title="Stock location"
-      form-view="stock-location-form">
-      <field name="detailsStockLocationLineList.trackingNumber" as="trackingNumber"/>
-      <field name="detailsStockLocationLineList.product.name" as="product"/>
-      <field name="detailsStockLocationLineList.detailsStockLocation.name" as="stockLocation"/>
-      <field name="detailsStockLocationLineList.currentQty" as="currentQty"/>
-      <field name="detailsStockLocationLineList.futureQty" as="futureQty"/>
+    <select model="com.axelor.apps.stock.db.StockLocationLine" title="Stock location"
+      form-view="stock-location-line-details-form">
+      <field name="trackingNumber" as="trackingNumberRef"/>
+      <field name="product.name" as="product"/>
+      <field name="detailsStockLocation.name" as="stockLocation"/>
+      <field name="currentQty" as="currentQtyVal"/>
+      <field name="futureQty" as="futureQtyVal"/>
       <where>
-        <input name="trackingNumber" field="detailsStockLocationLineList.trackingNumber"/>
+        <input name="trackingNumberRef" field="trackingNumber"/>
       </where>
     </select>
   </search>

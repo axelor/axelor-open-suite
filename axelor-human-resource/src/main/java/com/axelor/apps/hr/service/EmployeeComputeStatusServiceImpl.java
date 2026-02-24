@@ -55,9 +55,9 @@ public class EmployeeComputeStatusServiceImpl implements EmployeeComputeStatusSe
 
     if (employee.getLeavingDate() == null
         && employee.getHireDate() != null
-        && employee.getHireDate().compareTo(today.minusDays(30)) > 0) {
+        && employee.getHireDate().isAfter(today.minusDays(30))) {
       employeeStatus = NEW_EMPLOYEE;
-    } else if (leavingDate != null && leavingDate.compareTo(today) < 0) {
+    } else if (leavingDate != null && (leavingDate.isBefore(today) || leavingDate.isEqual(today))) {
       employeeStatus = FORMER_EMPLOYEE;
     } else {
       employeeStatus = ACTIVE_EMPLOYEE;

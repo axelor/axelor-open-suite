@@ -44,6 +44,7 @@ import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
+import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
@@ -394,15 +395,26 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     }
 
     for (SaleOrderLine saleOrderLine : saleOrderLineList) {
-      InvoiceLineGeneratorSupplyChain invoiceLineGenerator =
-          invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
-              invoice,
-              invoicingProduct,
-              percentToInvoice,
-              saleOrderLine,
-              null,
-              saleOrderLine.getExTaxTotal(),
-              saleOrderLine.getTaxLineSet());
+      InvoiceLineGeneratorSupplyChain invoiceLineGenerator = null;
+      if (saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
+        invoiceLineGenerator =
+            invoiceLineOrderService.getInvoiceLineGeneratorWithComputedTaxPrice(
+                invoice,
+                invoicingProduct,
+                percentToInvoice,
+                saleOrderLine,
+                null,
+                saleOrderLine.getExTaxTotal(),
+                saleOrderLine.getTaxLineSet());
+      } else {
+        invoiceLineGenerator =
+            invoiceLineOrderService.getInvoiceLineGeneratorForTitleLines(
+                invoice,
+                saleOrderLine.getProductName(),
+                saleOrderLine,
+                null,
+                saleOrderLine.getQty());
+      }
       createdInvoiceLineList.addAll(invoiceLineGenerator.creates());
     }
 
@@ -682,7 +694,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
 
     if (appSupplychainService.getAppSupplychain().getCompleteSaleOrderOnInvoicing()
         && amountInvoiced.compareTo(saleOrder.getExTaxTotal()) == 0
-        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED) {
+        && saleOrder.getStatusSelect() == SaleOrderRepository.STATUS_ORDER_CONFIRMED
+        && saleOrder.getSaleOrderTypeSelect() != SaleOrderRepository.SALE_ORDER_TYPE_SUBSCRIPTION) {
       saleOrderWorkflowService.completeSaleOrder(saleOrder);
     }
   }

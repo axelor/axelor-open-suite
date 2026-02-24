@@ -250,7 +250,9 @@
       <separator colSpan="12"/>
       <panel name="amountDatePanel" colSpan="12" itemSpan="4"
         readonlyIf="isPaid || $number(amountRemaining) != $number(amount) || paymentSession">
-        <field name="dueDate" readonly="true"/>
+        <field name="dueDate"
+          readonlyIf="invoice == null || !invoice.paymentCondition.isFree || isPaid || pfpValidateStatusSelect > 1"
+          onChange="action-invoice-term-record-update-customized-true"/>
         <field name="isHoldBack" readonly="true"
           onChange="action-invoice-term-group-holdback-change"/>
         <field name="estimatedPaymentDate"
@@ -297,7 +299,7 @@
         readonlyIf="isPaid || paymentSession || pfpValidateStatusSelect > 1">
         <field name="pfpValidatorUser" colSpan="12" canEdit="false"
           onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
-          onChange="action-invoice-term-method-check-pfp-validator-user"/>
+          onChange="action-invoice-term-group-pfp-validator-user-onchange"/>
       </panel>
       <panel name="actionPanel" itemSpan="12" colSpan="12"
         readonlyIf="isPaid || paymentSession"
@@ -471,7 +473,7 @@
         readonlyIf="isPaid || paymentSession || pfpValidateStatusSelect > 1" hidden="true">
         <field name="pfpValidatorUser" colSpan="12" canEdit="false"
           onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
-          onChange="action-invoice-term-method-check-pfp-validator-user"/>
+          onChange="action-invoice-term-group-pfp-validator-user-onchange"/>
       </panel>
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
@@ -654,7 +656,7 @@
         showIf="pfpValidateStatusSelect > 0 &amp;&amp; [1,2,3,5].includes(moveLine.move.statusSelect) &amp;&amp; (invoice == null || !(invoice.originDate == null &amp;&amp; $contains([1,2], invoice.operationTypeSelect) &amp;&amp; (invoice.statusSelect &lt;= 2 || invoice.operationSubTypeSelect == 2)))">
         <field name="pfpValidatorUser" colSpan="12" canEdit="false"
           onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
-          onChange="action-invoice-term-method-check-pfp-validator-user"/>
+          onChange="action-invoice-term-group-pfp-validator-user-onchange"/>
       </panel>
       <panel name="actionPanel"
         if="__config__.app.getApp('account').getActivatePassedForPayment()"
@@ -820,7 +822,7 @@
         readonlyIf="isPaid || paymentSession || pfpValidateStatusSelect > 1">
         <field name="pfpValidatorUser" colSpan="12" canEdit="false"
           onSelect="action-invoice-term-method-domain-pfp-validator-user-on-select"
-          onChange="action-invoice-term-method-check-pfp-validator-user"/>
+          onChange="action-invoice-term-group-pfp-validator-user-onchange"/>
       </panel>
       <panel name="actionPanel" itemSpan="12" colSpan="12"
         readonlyIf="isPaid || paymentSession"
@@ -951,6 +953,15 @@
     <action name="action-invoice-term-method-set-due-date"/>
   </action-group>
 
+  <action-group name="action-invoice-term-group-pfp-validator-user-onchange">
+    <action name="action-invoice-term-method-check-pfp-validator-user"/>
+    <action name="action-invoice-term-method-sync-pfp-validator-to-invoice"/>
+  </action-group>
+
+  <action-method name="action-invoice-term-method-sync-pfp-validator-to-invoice">
+    <call class="com.axelor.apps.account.web.InvoiceTermController"
+      method="syncPfpValidatorToInvoice"/>
+  </action-method>
 
   <action-record name="action-invoice-term-record-update-customized-true"
     model="com.axelor.apps.account.db.InvoiceTerm">

@@ -294,9 +294,11 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || this.shouldBeProcessed(invoiceTerm)) {
 
-          if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) > 0) {
-            offset++;
+          // FIX: Increment offset BEFORE the paymentAmount check to avoid infinite loop with
+          // refunds
+          offset++;
 
+          if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) != 0) {
             this.processInvoiceTerm(
                 paymentSession,
                 invoiceTerm,
@@ -1002,8 +1004,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         JPA.em()
             .createQuery(
                 "SELECT DISTINCT Partner FROM Partner Partner "
-                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner "
-                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
+                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner.id "
+                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine.id "
                     + " WHERE InvoiceTerm.paymentSession = :paymentSession "
                     + " AND InvoiceTerm.isSelectedOnPaymentSession = true"
                     + " GROUP BY Partner.id "
@@ -1025,7 +1027,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         JPA.em()
             .createQuery(
                 "SELECT InvoiceTerm FROM InvoiceTerm InvoiceTerm "
-                    + " WHERE InvoiceTerm.paymentSession = :paymentSession",
+                    + " WHERE InvoiceTerm.paymentSession = :paymentSession"
+                    + " AND InvoiceTerm.isSelectedOnPaymentSession = true",
                 InvoiceTerm.class);
     invoiceTermQuery.setParameter("paymentSession", paymentSession);
 

@@ -172,10 +172,10 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        offset++;
+
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || paymentSessionValidateService.shouldBeProcessed(invoiceTerm)) {
-
+          offset++;
           this.processInvoiceTermBillOfExchange(
               paymentSession,
               invoiceTerm,
@@ -392,8 +392,11 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
     Move move =
         paymentAmountMap.size() == 1 ? paymentAmountMap.keySet().stream().findFirst().get() : null;
 
-    if (move == null) {
-
+    if (move != null) {
+      BigDecimal amount = paymentAmountMap.remove(move);
+      move = moveRepo.find(move.getId());
+      paymentAmountMap.put(move, amount);
+    } else {
       move =
           paymentSessionValidateService.createMove(
               paymentSession,

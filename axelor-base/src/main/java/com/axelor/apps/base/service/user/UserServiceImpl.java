@@ -178,11 +178,11 @@ public class UserServiceImpl implements UserService {
     if (company == null) {
       return null;
     }
-
     MetaFile logo =
         switch (metaThemeFetchService.getCurrentThemeLogoMode(user)) {
-          case DARK, NONE -> company.getDarkLogo();
+          case DARK -> company.getDarkLogo();
           case LIGHT -> company.getLightLogo();
+          case NONE -> company.getLogo();
         };
     return Optional.ofNullable(logo).orElse(company.getLogo());
   }

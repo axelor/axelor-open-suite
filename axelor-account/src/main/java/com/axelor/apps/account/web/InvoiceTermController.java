@@ -31,6 +31,7 @@ import com.axelor.apps.account.service.invoice.BankDetailsServiceAccount;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpService;
 import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidateService;
+import com.axelor.apps.account.service.invoice.InvoiceTermPfpValidatorSyncService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.account.service.invoiceterm.InvoiceTermGroupService;
 import com.axelor.apps.base.AxelorException;
@@ -106,19 +107,15 @@ public class InvoiceTermController {
   public void computeAmountPaid(ActionRequest request, ActionResponse response) {
     try {
       InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
-      if (invoiceTerm == null
-          || (invoiceTerm.getApplyFinancialDiscount()
-              && invoiceTerm.getIsSelectedOnPaymentSession())) {
+      if (invoiceTerm == null) {
         return;
       }
 
-      BigDecimal amountPaid = BigDecimal.ZERO;
-      if (invoiceTerm.getApplyFinancialDiscount() && !invoiceTerm.getIsSelectedOnPaymentSession()) {
-        amountPaid =
-            invoiceTerm.getPaymentAmount().subtract(invoiceTerm.getFinancialDiscountAmount());
-      } else if (!invoiceTerm.getApplyFinancialDiscount()
-          && invoiceTerm.getIsSelectedOnPaymentSession()) {
-        amountPaid = invoiceTerm.getPaymentAmount();
+      BigDecimal amountPaid = invoiceTerm.getPaymentAmount();
+      if (invoiceTerm.getApplyFinancialDiscount()
+          && invoiceTerm.getIsSelectedOnPaymentSession()
+          && invoiceTerm.getApplyFinancialDiscountOnPaymentSession()) {
+        amountPaid = amountPaid.subtract(invoiceTerm.getFinancialDiscountAmount());
       }
       response.setValue("amountPaid", amountPaid);
 
@@ -453,6 +450,21 @@ public class InvoiceTermController {
       throws AxelorException {
     InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
     Beans.get(InvoiceTermPfpService.class).refreshInvoicePfpStatus(invoiceTerm.getInvoice());
+  }
+
+  public void syncPfpValidatorToInvoice(ActionRequest request, ActionResponse response) {
+    InvoiceTerm invoiceTerm = request.getContext().asType(InvoiceTerm.class);
+
+    Invoice invoice = invoiceTerm.getInvoice();
+    if (invoice == null && request.getContext().getParent() != null) {
+      invoice = request.getContext().getParent().asType(Invoice.class);
+      invoiceTerm.setInvoice(invoice);
+    }
+
+    if (invoice != null) {
+      Beans.get(InvoiceTermPfpValidatorSyncService.class)
+          .syncPfpValidatorFromTermToInvoice(invoiceTerm);
+    }
   }
 
   @ErrorException

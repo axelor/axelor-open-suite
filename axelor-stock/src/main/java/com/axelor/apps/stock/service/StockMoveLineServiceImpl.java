@@ -1339,7 +1339,6 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             (BigDecimal)
                 productCompanyService.get(
                     stockMoveLine.getProduct(), "purchasePrice", stockMove.getCompany());
-        ;
         unitPriceUntaxed = companyPurchasePrice.multiply(shippingCoef);
       } else if (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INTERNAL
           && stockMoveLine.getFromStockLocation() != null
@@ -1358,6 +1357,33 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     stockMoveLine.setUnitPriceUntaxed(unitPriceUntaxed);
     stockMoveLine.setUnitPriceTaxed(unitPriceUntaxed);
     stockMoveLine.setCompanyUnitPriceUntaxed(unitPriceUntaxed);
+    return stockMoveLine;
+  }
+
+  @Override
+  public StockMoveLine qtyOnChange(StockMoveLine stockMoveLine, StockMove stockMove)
+      throws AxelorException {
+    BigDecimal companyPurchasePrice = BigDecimal.ZERO;
+    if (stockMoveLine.getProduct() != null && stockMove != null) {
+      if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && stockMove.getIsReversion())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && !stockMove.getIsReversion())) {
+        BigDecimal wapPrice =
+            computeFromStockLocation(stockMoveLine, stockMoveLine.getToStockLocation());
+        stockMoveLine.setWapPrice(wapPrice);
+      } else if ((stockMove.getTypeSelect() == StockMoveRepository.TYPE_OUTGOING
+              && stockMove.getIsReversion())
+          || (stockMove.getTypeSelect() == StockMoveRepository.TYPE_INCOMING
+              && !stockMove.getIsReversion())) {
+        // supplier return or supplier delivery
+        companyPurchasePrice =
+            (BigDecimal)
+                productCompanyService.get(
+                    stockMoveLine.getProduct(), "purchasePrice", stockMove.getCompany());
+      }
+    }
+    stockMoveLine.setCompanyPurchasePrice(companyPurchasePrice);
     return stockMoveLine;
   }
 
@@ -1612,6 +1638,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
       throws AxelorException {
     BigDecimal availableQty = BigDecimal.ZERO;
     BigDecimal availableQtyForProduct = BigDecimal.ZERO;
+    Unit targetUnit = getStockUnit(stockMoveLine);
 
     TrackingNumberConfiguration trackingNumberConfiguration =
         (TrackingNumberConfiguration)
@@ -1631,7 +1658,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                   stockLocation, stockMoveLine.getProduct(), stockMoveLine.getTrackingNumber());
 
           if (stockLocationLine != null) {
-            availableQty = stockLocationLine.getCurrentQty();
+            availableQty =
+                computeAvailableQtyInMoveLineUnit(stockMoveLine, stockLocationLine, targetUnit);
           }
         }
 
@@ -1641,7 +1669,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                   stockLocation, stockMoveLine.getProduct());
 
           if (stockLocationLineForProduct != null) {
-            availableQtyForProduct = stockLocationLineForProduct.getCurrentQty();
+            availableQtyForProduct =
+                computeAvailableQtyInMoveLineUnit(
+                    stockMoveLine, stockLocationLineForProduct, targetUnit);
           }
         }
       } else {
@@ -1650,12 +1680,31 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
                 stockLocation, stockMoveLine.getProduct());
 
         if (stockLocationLine != null) {
-          availableQty = stockLocationLine.getCurrentQty();
+          availableQty =
+              computeAvailableQtyInMoveLineUnit(stockMoveLine, stockLocationLine, targetUnit);
         }
       }
     }
     stockMoveLine.setAvailableQty(availableQty);
     stockMoveLine.setAvailableQtyForProduct(availableQtyForProduct);
+  }
+
+  protected BigDecimal computeAvailableQtyInMoveLineUnit(
+      StockMoveLine stockMoveLine, StockLocationLine stockLocationLine, Unit targetUnit)
+      throws AxelorException {
+    return convertQtyToMoveLineUnit(
+        stockMoveLine, stockLocationLine.getCurrentQty(), stockLocationLine.getUnit(), targetUnit);
+  }
+
+  protected BigDecimal convertQtyToMoveLineUnit(
+      StockMoveLine stockMoveLine, BigDecimal qty, Unit sourceUnit, Unit targetUnit)
+      throws AxelorException {
+    return unitConversionService.convertWithAutoFlushFalse(
+        sourceUnit,
+        targetUnit,
+        qty,
+        appBaseService.getNbDecimalDigitForQty(),
+        stockMoveLine.getProduct());
   }
 
   @Override
@@ -1685,7 +1734,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     if (stockMoveLine.getFilterOnAvailableProducts()
         && stockMoveLine.getFromStockLocation() != null
         && stockMoveLine.getFromStockLocation().getTypeSelect() != 3) {
-      return " AND self.id in (select sll.product.id from StockLocation sl inner join sl.stockLocationLineList sll WHERE sl.id = "
+      return " AND self.id in (select sll.product.id from StockLocationLine sll WHERE sll.stockLocation.id = "
           + stockMoveLine.getFromStockLocation().getId()
           + " AND sll.currentQty > 0)";
     }
@@ -1693,9 +1742,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
   }
 
   @Override
-  public Map<String, Object> setAvailableStatus(StockMoveLine stockMoveLine)
+  public Map<String, Object> setAvailableStatus(StockMoveLine stockMoveLine, StockMove stockMove)
       throws AxelorException {
-    if (stockMoveLine.getStockMove() != null) {
+    if (stockMove != null) {
       this.updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
     }
     Map<String, Object> availabilityMap = new HashMap<>();
@@ -1813,6 +1862,7 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     line.setConformitySelect(conformitySelect);
     line.setIsRealQtyModifiedByUser(true);
     stockMoveLineRepository.save(line);
+    stockMove.setExTaxTotal(stockMoveToolService.computeFromContext(stockMove));
     return line;
   }
 
@@ -1849,6 +1899,8 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         if (description != null) {
           stockMoveLine.setDescription(description);
         }
+        StockMove stockMove = stockMoveLine.getStockMove();
+        stockMove.setExTaxTotal(stockMoveToolService.computeFromContext(stockMove));
       }
     }
   }

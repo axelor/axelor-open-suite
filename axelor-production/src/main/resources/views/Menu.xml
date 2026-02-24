@@ -229,6 +229,7 @@
     <view type="grid" name="purchase-order-grid"/>
     <view type="form" name="purchase-order-form"/>
     <domain>self.outsourcingOrder = true</domain>
+    <context name="_isOutsourcingOrder" expr="true"/>
   </action-view>
 
   <menuitem name="manufacturing-root-raw-material-requirement" parent="manufacturing-root"

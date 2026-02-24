@@ -179,7 +179,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
       return productionOrder;
     }
 
-    return productionOrderService.createProductionOrder(saleOrder, null);
+    return productionOrderRepo.save(productionOrderService.createProductionOrder(saleOrder, null));
   }
 
   @Override
@@ -198,7 +198,7 @@ public class ProductionOrderSaleOrderServiceImpl implements ProductionOrderSaleO
             .filter("self.saleOrder = :saleOrder")
             .bind("saleOrder", saleOrder)
             .fetchOne();
-    if (productionOrder != null) {
+    if (productionOrder != null && CollectionUtils.isNotEmpty(productionOrder.getManufOrderSet())) {
       return productionOrder.getManufOrderSet().size();
     }
 

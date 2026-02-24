@@ -242,6 +242,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   public ManufOrder partialFinish(ManufOrder manufOrder) throws AxelorException {
     if (manufOrder.getIsConsProOnOperation()) {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        operationOrder = JpaModelHelper.ensureManaged(operationOrder);
         if (operationOrder.getStatusSelect() == OperationOrderRepository.STATUS_IN_PROGRESS) {
           Beans.get(OperationOrderStockMoveService.class).partialFinish(operationOrder);
         }
@@ -297,6 +298,9 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     if (stockMoveToRealize.isPresent()) {
       finishStockMove(stockMoveToRealize.get());
       manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+      company = JpaModelHelper.ensureManaged(company);
+      fromStockLocation = JpaModelHelper.ensureManaged(fromStockLocation);
+      toStockLocation = JpaModelHelper.ensureManaged(toStockLocation);
     }
 
     // generate new stock move
@@ -322,7 +326,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     if (!newStockMove.getStockMoveLineList().isEmpty()) {
       // plan the stockmove
       stockMoveProductionService.plan(newStockMove);
-
+      manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+      newStockMove = JpaModelHelper.ensureManaged(newStockMove);
       if (inOrOut == PART_FINISH_IN) {
         manufOrder.addInStockMoveListItem(newStockMove);
         newStockMove.getStockMoveLineList().forEach(manufOrder::addConsumedStockMoveLineListItem);
@@ -338,10 +343,11 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   public void cancel(ManufOrder manufOrder) throws AxelorException {
 
     for (StockMove stockMove : manufOrder.getInStockMoveList()) {
-      this.cancel(stockMove);
+      this.cancel(JpaModelHelper.ensureManaged(stockMove));
     }
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
     for (StockMove stockMove : manufOrder.getOutStockMoveList()) {
-      this.cancel(stockMove);
+      this.cancel(JpaModelHelper.ensureManaged(stockMove));
     }
   }
 
@@ -350,6 +356,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     if (stockMove != null) {
 
       stockMoveProductionService.cancelFromManufOrder(stockMove);
+      stockMove = JpaModelHelper.ensureManaged(stockMove);
 
       for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
 
