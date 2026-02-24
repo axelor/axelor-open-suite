@@ -559,6 +559,7 @@
       <field name="thirdPartyPayerPartner" colSpan="4" domain="self.isThirdPartyPayer IS TRUE"
         showIf="[1,3].includes(operationTypeSelect)" form-view="partner-form"
         x-image-field="picture" grid-view="partner-grid"
+        onSelect="action-invoice-method-set-third-party-payer-domain"
         onChange="action-invoice-method-update-subrogation-partner"
         if="__config__.app.getApp('base')?.activatePartnerRelations"/>
       <field name="paymentMode" colSpan="4" canEdit="false" widget="SuggestBox"
@@ -2545,6 +2546,11 @@
   <action-method name="action-invoice-method-manage-pfp-status">
     <call class="com.axelor.apps.account.web.InvoiceController"
       method="managePfpStatusOnInvoiceTerm"/>
+  </action-method>
+
+  <action-method name="action-invoice-method-set-third-party-payer-domain">
+    <call class="com.axelor.apps.account.web.InvoiceController"
+      method="setThirdPartyPayerPartnerDomain"/>
   </action-method>
 
   <action-method name="action-invoice-method-update-subrogation-partner">
