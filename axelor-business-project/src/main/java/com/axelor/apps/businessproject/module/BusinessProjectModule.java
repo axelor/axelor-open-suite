@@ -22,6 +22,7 @@ import com.axelor.app.AxelorModule;
 import com.axelor.apps.account.service.invoice.InvoiceTermDateComputeServiceImpl;
 import com.axelor.apps.account.service.invoice.print.InvoicePrintServiceImpl;
 import com.axelor.apps.account.service.invoice.workflow.validate.WorkflowValidationServiceImpl;
+import com.axelor.apps.account.service.moveline.MoveLineCreateServiceImpl;
 import com.axelor.apps.bankpayment.service.invoice.payment.InvoicePaymentValidateServiceBankPayImpl;
 import com.axelor.apps.businessproject.db.repo.AppBusinessProjectManagementRepository;
 import com.axelor.apps.businessproject.db.repo.InvoiceProjectRepository;
@@ -104,6 +105,7 @@ import com.axelor.apps.businessproject.service.config.BusinessProjectConfigServi
 import com.axelor.apps.businessproject.service.invoice.InvoiceMergingServiceBusinessProjectImpl;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectService;
 import com.axelor.apps.businessproject.service.invoice.InvoicePrintBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.moveline.MoveLineCreateBusinessProjectServiceImpl;
 import com.axelor.apps.businessproject.service.observer.SaleOrderLineProjectObserver;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorSaleService;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorSaleServiceImpl;
@@ -249,5 +251,6 @@ public class BusinessProjectModule extends AxelorModule {
         .to(ProjectTaskComputeBusinessProjectServiceImpl.class);
     bind(ProjectTaskComputeServiceImpl.class)
         .to(ProjectTaskComputeBusinessProjectServiceImpl.class);
+    bind(MoveLineCreateServiceImpl.class).to(MoveLineCreateBusinessProjectServiceImpl.class);
   }
 }
