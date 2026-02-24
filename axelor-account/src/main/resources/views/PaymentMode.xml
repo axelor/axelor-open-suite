@@ -7,6 +7,8 @@
     model="com.axelor.apps.account.db.PaymentMode" id="account-payment-mode-form" extension="true">
     <extend target="/">
       <attribute name="onLoad" value="action-payment-mode-group-onload"/>
+      <attribute name="onSave"
+        value="action-payment-mode-method-check-account-management-uniqueness"/>
     </extend>
 
     <extend target="//panel[@name='mainPanel']/field[@name='typeSelect']">
@@ -117,6 +119,11 @@
   <action-method name="action-payment-mode-method-save-interest-rate-history">
     <call class="com.axelor.apps.account.web.PaymentModeController"
       method="saveInterestRateToHistory"/>
+  </action-method>
+
+  <action-method name="action-payment-mode-method-check-account-management-uniqueness">
+    <call class="com.axelor.apps.account.web.PaymentModeController"
+      method="checkAccountManagementUniqueness"/>
   </action-method>
 
 </object-views>
