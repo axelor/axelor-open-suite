@@ -83,7 +83,6 @@
         title="Vehicle Contract" colSpan="12">
         <field name="costFrequencySelect"/>
         <field name="activationCost"/>
-        <field name="vehicleOdometer"/>
       </panel-related>
       <panel-related name="vehicleCostListPanel" field="vehicleCostList"
         title="Vehicle Cost" colSpan="12">
