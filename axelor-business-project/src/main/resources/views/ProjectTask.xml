@@ -422,12 +422,15 @@
         <panel name="reportingPanel" showIf="!parentTask" title="Reporting" colSpan="12"
           canCollapse="true" collapseIf="false">
           <panel-dashlet action="action-project-task-view-percentage-progress-custom"
-            colSpan="3" showTitle="false" height="125"/>
+            colSpan="3" showTitle="false" height="125"
+            help="% progress is the ratio of spent time on updated time on the task and all of it's sub tasks for which there is an updated time."/>
           <panel-dashlet
             action="action-project-task-view-percentage-consumption-custom" colSpan="3"
-            showTitle="false" height="125"/>
+            showTitle="false" height="125"
+            help="% consumption is the ratio of spent time on sold time on the task and all of it's sub tasks for which there is a sold time."/>
           <panel-dashlet action="action-project-task-view-remaining-to-do-custom"
-            colSpan="3" showTitle="false" height="125"/>
+            colSpan="3" showTitle="false" height="125"
+            help="Remaining amount is the subtraction of the spent time from the updated time on the task and all of it's sub tasks. It is allowed for a task or a sub task not to have an updated time or a spent time."/>
           <field name="project.isBusinessProject" hidden="true"/>
         </panel>
       </insert>
