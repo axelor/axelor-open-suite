@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed bill of exchange validation when session contains isolated refunds or invoice terms with prior partial payments."
+module: axelor-account

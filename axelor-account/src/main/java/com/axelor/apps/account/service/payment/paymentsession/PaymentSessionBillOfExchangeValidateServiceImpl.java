@@ -163,7 +163,7 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo
             .all()
-            .filter("self.paymentSession = :paymentSession")
+            .filter("self.paymentSession = :paymentSession AND self.paymentAmount != 0")
             .bind("paymentSession", paymentSession)
             .order("id");
 
@@ -176,12 +176,14 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || paymentSessionValidateService.shouldBeProcessed(invoiceTerm)) {
           offset++;
-          this.processInvoiceTermBillOfExchange(
-              paymentSession,
-              invoiceTerm,
-              moveDateMap,
-              paymentAmountMap,
-              invoiceTermLinkWithRefund);
+          if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) != 0) {
+            this.processInvoiceTermBillOfExchange(
+                paymentSession,
+                invoiceTerm,
+                moveDateMap,
+                paymentAmountMap,
+                invoiceTermLinkWithRefund);
+          }
         } else {
           paymentSessionValidateService.releaseInvoiceTerm(invoiceTerm);
         }
