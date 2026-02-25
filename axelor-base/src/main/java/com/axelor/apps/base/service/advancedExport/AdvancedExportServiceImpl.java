@@ -107,15 +107,9 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     msi = 0;
     mt = 0;
     int col = 0;
-    language = Optional.ofNullable(AuthUtils.getUser()).map(User::getLanguage).orElse(null);
+    language = getAdvancedExportLanguage(advancedExport);
 
     try {
-      if (language == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_MISSING_FIELD,
-            I18n.get("Please select a language on user form."));
-      }
-
       for (AdvancedExportLine advancedExportLine : advancedExport.getAdvancedExportLineList()) {
         String[] splitField = advancedExportLine.getTargetField().split("\\.");
         String alias = "Col_" + col;
@@ -139,6 +133,23 @@ public class AdvancedExportServiceImpl implements AdvancedExportService {
     }
     return createQuery(
         createQueryBuilder(advancedExport, selectFieldBuilder, recordIds, orderByFieldBuilder));
+  }
+
+  protected String getAdvancedExportLanguage(AdvancedExport advancedExport) throws AxelorException {
+    String language = getExportLanguage(advancedExport);
+    if (Strings.isNullOrEmpty(language)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD,
+          I18n.get("Please select a language on advanced export or user form."));
+    }
+    return language;
+  }
+
+  protected String getExportLanguage(AdvancedExport advancedExport) {
+    if (!Strings.isNullOrEmpty(advancedExport.getLanguage())) {
+      return advancedExport.getLanguage();
+    }
+    return Optional.ofNullable(AuthUtils.getUser()).map(User::getLanguage).orElse(null);
   }
 
   /**

@@ -7,6 +7,7 @@
 
   <entity name="AdvancedExport">
     <string name="name"/>
+    <string name="language" title="Language" selection="select.language" default="en"/>
     <many-to-one name="metaModel" ref="com.axelor.meta.db.MetaModel"
       title="Target model" required="true"/>
     <one-to-many name="advancedExportLineList"
