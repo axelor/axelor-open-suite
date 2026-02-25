@@ -465,12 +465,10 @@ public class CostSheetServiceImpl implements CostSheetService {
             : workCenter.getHrCostAmount();
 
     if (hrCostType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
+      BigDecimal nbCycles =
+          prodProcessLineComputationService.getNbCycle(prodProcessLine, producedQty);
       BigDecimal durationHours =
-          BigDecimal.valueOf(humanDuration)
-              .divide(
-                  BigDecimal.valueOf(3600),
-                  appProductionService.getNbDecimalDigitForUnitPrice(),
-                  RoundingMode.HALF_UP);
+          prodProcessLineComputationService.getHourHumanDuration(prodProcessLine, nbCycles);
 
       costSheetLineService.createWorkCenterHRCostSheetLine(
           workCenter,
