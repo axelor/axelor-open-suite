@@ -58,6 +58,8 @@ public final class HumanResourceExceptionMessage {
       "Please configure the refused extra hours template in HR config for the company %s" /*)*/;
   public static final String HR_CONFIG_CANCELED_EXTRA_HOURS_TEMPLATE = /*$$(*/
       "Please configure the canceled extra hours template in HR config for the company %s" /*)*/;
+  public static final String NO_SUBORDINATE_EXTRA_HOURS_TO_VALIDATE = /*$$(*/
+      "No extra hours to be validated by your subordinates" /*)*/;
   public static final String HR_CONFIG_LEAVE_REASON = /*$$(*/
       "Please configure the unjustified absence reason in HR config for the company %s" /*)*/;
   public static final String HR_CONFIG_LUNCH_VOUCHER_EXPORT_PATH = /*$$(*/
