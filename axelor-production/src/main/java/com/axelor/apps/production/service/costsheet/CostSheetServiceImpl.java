@@ -278,17 +278,42 @@ public class CostSheetServiceImpl implements CostSheetService {
       int origin,
       UnitCostCalculation unitCostCalculation)
       throws AxelorException {
+    _computeCostPrice(
+        company,
+        billOfMaterial,
+        bomLevel,
+        parentCostSheetLine,
+        origin,
+        unitCostCalculation,
+        billOfMaterial.getQty());
+  }
+
+  protected void _computeCostPrice(
+      Company company,
+      BillOfMaterial billOfMaterial,
+      int bomLevel,
+      CostSheetLine parentCostSheetLine,
+      int origin,
+      UnitCostCalculation unitCostCalculation,
+      BigDecimal calculationQty)
+      throws AxelorException {
 
     bomLevel++;
 
     // Cout des composants
     this._computeToConsumeProduct(
-        company, billOfMaterial, bomLevel, parentCostSheetLine, origin, unitCostCalculation);
+        company,
+        billOfMaterial,
+        bomLevel,
+        parentCostSheetLine,
+        origin,
+        unitCostCalculation,
+        getQtyRatio(billOfMaterial.getQty(), calculationQty));
 
     // Cout des operations
     this._computeProcess(
         billOfMaterial.getProdProcess(),
-        billOfMaterial.getQty(),
+        calculationQty,
         billOfMaterial.getProduct().getUnit(),
         bomLevel,
         parentCostSheetLine);
@@ -300,7 +325,8 @@ public class CostSheetServiceImpl implements CostSheetService {
       int bomLevel,
       CostSheetLine parentCostSheetLine,
       int origin,
-      UnitCostCalculation unitCostCalculation)
+      UnitCostCalculation unitCostCalculation,
+      BigDecimal qtyRatio)
       throws AxelorException {
 
     if (billOfMaterial.getBillOfMaterialLineList() != null) {
@@ -311,6 +337,8 @@ public class CostSheetServiceImpl implements CostSheetService {
 
         if (product != null) {
 
+          BigDecimal qty = billOfMaterialLine.getQty().multiply(qtyRatio);
+
           CostSheetLine costSheetLine =
               costSheetLineService.createConsumedProductCostSheetLine(
                   company,
@@ -318,7 +346,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                   billOfMaterialLine.getUnit(),
                   bomLevel,
                   parentCostSheetLine,
-                  billOfMaterialLine.getQty(),
+                  qty,
                   origin,
                   unitCostCalculation);
 
@@ -331,7 +359,7 @@ public class CostSheetServiceImpl implements CostSheetService {
                 billOfMaterialLine.getUnit(),
                 bomLevel,
                 parentCostSheetLine,
-                billOfMaterialLine.getQty(),
+                qty,
                 wasteRate,
                 origin,
                 unitCostCalculation);
@@ -344,11 +372,20 @@ public class CostSheetServiceImpl implements CostSheetService {
                 bomLevel,
                 costSheetLine,
                 origin,
-                unitCostCalculation);
+                unitCostCalculation,
+                qty);
           }
         }
       }
     }
+  }
+
+  protected BigDecimal getQtyRatio(BigDecimal bomQty, BigDecimal calculationQty) {
+    if (bomQty.compareTo(BigDecimal.ZERO) == 0) {
+      return BigDecimal.ZERO;
+    }
+    return calculationQty.divide(
+        bomQty, appProductionService.getNbDecimalDigitForBomQty(), RoundingMode.HALF_UP);
   }
 
   protected void _computeProcess(
