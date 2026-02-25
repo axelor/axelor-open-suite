@@ -24,6 +24,7 @@ import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
 import com.axelor.apps.account.db.repo.AnalyticLine;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -316,5 +317,9 @@ public class AnalyticLineModel implements AnalyticLine {
     this.purchaseOrderLine.setAxis4AnalyticAccount(this.axis4AnalyticAccount);
     this.purchaseOrderLine.setAxis5AnalyticAccount(this.axis5AnalyticAccount);
     this.purchaseOrderLine.setAnalyticMoveLineList(this.analyticMoveLineList);
+  }
+
+  public int getTypeSelect() {
+    return AnalyticMoveLineRepository.STATUS_FORECAST_ORDER;
   }
 }
