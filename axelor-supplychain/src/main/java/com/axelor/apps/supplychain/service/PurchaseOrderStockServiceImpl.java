@@ -68,6 +68,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +100,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
   protected AppStockService appStockService;
   protected StockMoveLineStockLocationService stockMoveLineStockLocationService;
   protected StockMoveRepository stockMoveRepository;
+  protected AppSupplychainService appSupplychainService;
 
   @Inject
   public PurchaseOrderStockServiceImpl(
@@ -115,7 +117,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       TaxService taxService,
       AppStockService appStockService,
       StockMoveLineStockLocationService stockMoveLineStockLocationService,
-      StockMoveRepository stockMoveRepository) {
+      StockMoveRepository stockMoveRepository,
+      AppSupplychainService appSupplychainService) {
 
     this.unitConversionService = unitConversionService;
     this.stockMoveLineRepository = stockMoveLineRepository;
@@ -131,6 +134,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     this.appStockService = appStockService;
     this.stockMoveLineStockLocationService = stockMoveLineStockLocationService;
     this.stockMoveRepository = stockMoveRepository;
+    this.appSupplychainService = appSupplychainService;
   }
 
   /**
@@ -159,6 +163,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
     Map<Pair<StockLocation, LocalDate>, List<PurchaseOrderLine>> purchaseOrderLineMap =
         getPurchaseOrderLineMap(purchaseOrder);
 
+    boolean isTitleLine = purchaseOrderLineMap.entrySet().size() == 1 ? true : false;
+
     for (Entry<Pair<StockLocation, LocalDate>, List<PurchaseOrderLine>> entry :
         purchaseOrderLineMap.entrySet()) {
 
@@ -170,7 +176,11 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       StockLocation stockLocation = JpaModelHelper.ensureManaged(pair.getLeft());
       List<Long> stockMoveId =
           createStockMove(
-              purchaseOrder, stockLocation, estimatedDeliveryDate, purchaseOrderLineList);
+              purchaseOrder,
+              stockLocation,
+              estimatedDeliveryDate,
+              purchaseOrderLineList,
+              isTitleLine);
 
       if (stockMoveId != null && !stockMoveId.isEmpty()) {
 
@@ -184,7 +194,8 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
       PurchaseOrder purchaseOrder,
       StockLocation stockLocation,
       LocalDate estimatedDeliveryDate,
-      List<PurchaseOrderLine> purchaseOrderLineList)
+      List<PurchaseOrderLine> purchaseOrderLineList,
+      boolean isTitleLine)
       throws AxelorException {
 
     List<Long> stockMoveIdList = new ArrayList<>();
@@ -274,18 +285,40 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
               .plusDays(supplychainConfig.getNumberOfDaysForPurchaseOrder().longValue()));
     }
 
-    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
+    List<PurchaseOrderLine> purchaseOrderLines = new ArrayList<>(purchaseOrderLineList);
+
+    if (isTitleLine && appSupplychainService.getAppSupplychain().getIsTitleLineManaged()) {
+      purchaseOrderLines.addAll(
+          purchaseOrder.getPurchaseOrderLineList().stream()
+              .filter(line -> line.getIsTitleLine())
+              .collect(Collectors.toList()));
+    }
+    purchaseOrderLines.sort(Comparator.comparing(PurchaseOrderLine::getSequence));
+    for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLines) {
       purchaseOrderLine = JpaModelHelper.ensureManaged(purchaseOrderLine);
 
-      BigDecimal qty =
-          purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
-
-      if (qty.signum() > 0 && !existActiveStockMoveForPurchaseOrderLine(purchaseOrderLine)) {
+      if (existActiveStockMoveForPurchaseOrderLine(purchaseOrderLine)) {
+        continue;
+      }
+      if (purchaseOrderLine.getProduct() != null) {
+        BigDecimal qty =
+            purchaseOrderLineServiceSupplychainImpl.computeUndeliveredQty(purchaseOrderLine);
+        if (qty.signum() > 0) {
+          StockMoveLine stockMoveLine =
+              createStockMoveLine(
+                  stockMove, qualityStockMove, purchaseOrderLine, qty, startLocation, endLocation);
+          if (stockMoveLine != null) {
+            stockMove.addStockMoveLineListItem(stockMoveLine);
+            stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
+          }
+        }
+      } else if (purchaseOrderLine.getIsTitleLine()) {
         StockMoveLine stockMoveLine =
-            this.createStockMoveLine(
-                stockMove, qualityStockMove, purchaseOrderLine, qty, startLocation, endLocation);
+            stockMoveLineServiceSupplychain.createStockMoveTitleLine(
+                stockMove, null, purchaseOrderLine);
         if (stockMoveLine != null) {
-          stockMoveLine.getStockMove().addStockMoveLineListItem(stockMoveLine);
+          stockMove.addStockMoveLineListItem(stockMoveLine);
+          stockMoveLine.setSequence(stockMove.getStockMoveLineList().size());
         }
       }
     }

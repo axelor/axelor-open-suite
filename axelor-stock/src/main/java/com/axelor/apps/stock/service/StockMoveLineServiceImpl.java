@@ -2081,4 +2081,16 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
         .bind("stockMoveId", stockMove.getId())
         .count();
   }
+
+  @Override
+  public StockMoveLine createStockMoveLine(
+      String productName, int lineTypeSelect, StockMove stockMove) {
+    StockMoveLine stockMoveLine = new StockMoveLine();
+    stockMoveLine.setStockMove(stockMove);
+    stockMoveLine.setProductName(productName);
+    stockMoveLine.setLineTypeSelect(lineTypeSelect);
+    stockMoveLine.setFromStockLocation(stockMove.getFromStockLocation());
+    stockMoveLine.setToStockLocation(stockMove.getToStockLocation());
+    return stockMoveLine;
+  }
 }

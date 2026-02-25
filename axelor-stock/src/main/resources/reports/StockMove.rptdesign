@@ -1840,7 +1840,7 @@ StockMoveLine.real_qty as qty,
 StockMoveLine.unit_price_untaxed,
 Currency.code as currencyCode,
 StockMoveLine.sequence,
-(SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine",
+(COALESCE(StockMoveLine.line_type_select = 1, false) or COALESCE(SaleOrderLine.type_select = 1, false) OR COALESCE(PurchaseOrderLine.is_title_line, false)) AS "isTitleLine",
 Product.code as product_code,
 ProductCategory.code as product_category_code,
 CustomerCatalog.product_customer_code as "customerProductCode",
@@ -1889,7 +1889,8 @@ left outer join stock_stock_location_line as ToStockLocationLine on (ToLocation.
 left join supplychain_un_code as UNCode on (Product.un_code = UNCode.id)
 left join meta_select as MetaSelect on MetaSelect.name = 'base.product.packaging.group.select'
 left join meta_select_item as MetaSelectItem on (MetaSelectItem.value = cast(Product.packaging_group_select as text) and MetaSelectItem.select_id = MetaSelect.id)
-where StockMove.id = ? and StockMoveLine.real_qty > 0
+left join studio_app_supplychain as AppSupplyChain on true
+where StockMove.id = ? and (StockMoveLine.real_qty > 0 or AppSupplyChain.is_title_line_managed = true)
 order by StockMoveLine.sequence)
 
 SELECT 
@@ -4348,11 +4349,6 @@ row["first_name"]
                             <property name="hideDetail">false</property>
                             <list-property name="sort">
                                 <structure>
-                                    <expression name="key" type="javascript">row["producttype"]</expression>
-                                    <property name="direction">desc</property>
-                                    <property name="strength">-1</property>
-                                </structure>
-                                <structure>
                                     <expression name="key" type="javascript">row["sequence"]</expression>
                                     <property name="direction">asc</property>
                                     <property name="strength">-1</property>
@@ -4458,6 +4454,12 @@ row["first_name"]
                                         <property name="borderTopWidth">thin</property>
                                         <text id="5350">
                                             <property name="textAlign">right</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>
 row["total_qty_per_product"]
@@ -4476,6 +4478,12 @@ row["total_qty_per_product"]
                                             <property name="marginLeft">0pt</property>
                                             <property name="textAlign">left</property>
                                             <property name="dataSet">TranslateDS</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <list-property name="paramBindings">
                                                 <structure>
                                                     <property name="paramName">param_1</property>
@@ -4512,6 +4520,12 @@ row["unit_code"]
                                         <property name="textAlign">left</property>
                                         <text id="5399">
                                             <property name="textAlign">right</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["unit_price_untaxed"]</VALUE-OF>]]></text-property>
                                         </text>
@@ -4528,6 +4542,12 @@ row["unit_code"]
                                             <property name="marginLeft">0pt</property>
                                             <property name="textAlign">left</property>
                                             <property name="dataSet">TranslateDS</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row._outer["isTitleLine"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <list-property name="paramBindings">
                                                 <structure>
                                                     <property name="paramName">param_1</property>
@@ -4796,6 +4816,12 @@ row["to_rack"]
                                     <property name="borderTopWidth">thin</property>
                                     <text id="5368">
                                         <property name="textAlign">right</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>
 row["qty"]
@@ -4813,6 +4839,12 @@ row["qty"]
                                         <property name="marginLeft">0pt</property>
                                         <property name="textAlign">left</property>
                                         <property name="dataSet">TranslateDS</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                            </structure>
+                                        </list-property>
                                         <list-property name="paramBindings">
                                             <structure>
                                                 <property name="paramName">param_1</property>
@@ -4848,6 +4880,12 @@ row["unit_code"]
                                     <property name="borderTopWidth">thin</property>
                                     <text id="5402">
                                         <property name="textAlign">right</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["unit_price_untaxed"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -4863,6 +4901,12 @@ row["unit_code"]
                                         <property name="marginLeft">0pt</property>
                                         <property name="textAlign">left</property>
                                         <property name="dataSet">TranslateDS</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row._outer["isTitleLine"]</expression>
+                                            </structure>
+                                        </list-property>
                                         <list-property name="paramBindings">
                                             <structure>
                                                 <property name="paramName">param_1</property>

@@ -96,6 +96,8 @@
 
     <many-to-one name="cancelReasonOnChangingPurchaseOrder"
       title="Cancel reason on changing purchase order" ref="com.axelor.apps.base.db.CancelReason"/>
+    <boolean name="isTitleLineManaged" title="Include title lines on stock move"
+      default="false"/>
 
     <track>
       <field name="custStockMoveMgtOnSO" on="UPDATE"/>
@@ -143,6 +145,7 @@
       <field name="autoFillReceiptRealQty" on="UPDATE"/>
       <field name="stockLocationToCartLimit" on="UPDATE"/>
       <field name="cancelReasonOnChangingPurchaseOrder" on="UPDATE"/>
+      <field name="isTitleLineManaged" on="UPDATE"/>
     </track>
   </entity>
 

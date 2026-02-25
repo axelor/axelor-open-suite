@@ -1195,7 +1195,10 @@ public class StockMoveServiceImpl implements StockMoveService {
 
     modifiedStockMoveLines =
         modifiedStockMoveLines.stream()
-            .filter(stockMoveLine -> stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0)
+            .filter(
+                stockMoveLine ->
+                    stockMoveLine.getQty().compareTo(BigDecimal.ZERO) != 0
+                        && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_NORMAL)
             .collect(Collectors.toList());
     for (StockMoveLine moveLine : modifiedStockMoveLines) {
 

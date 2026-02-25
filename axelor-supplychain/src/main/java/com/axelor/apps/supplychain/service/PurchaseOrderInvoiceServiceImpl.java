@@ -68,6 +68,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -678,6 +679,7 @@ public class PurchaseOrderInvoiceServiceImpl implements PurchaseOrderInvoiceServ
     if (ObjectUtils.isEmpty(purchaseOrderLineList)) {
       return createdInvoiceLineList;
     }
+    purchaseOrderLineList.sort(Comparator.comparing(PurchaseOrderLine::getSequence));
 
     for (PurchaseOrderLine purchaseOrderLine : purchaseOrderLineList) {
       InvoiceLineGeneratorSupplyChain invoiceLineGenerator = null;

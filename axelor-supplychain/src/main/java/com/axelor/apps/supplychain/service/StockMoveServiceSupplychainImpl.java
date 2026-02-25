@@ -269,8 +269,9 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
         stockMoveLineRepo
             .all()
             .filter(
-                "self.stockMove.id = :stockMoveId AND self.realQty = 0 AND self.id > :lastSeenId")
+                "self.stockMove.id = :stockMoveId AND self.realQty = 0 AND self.id > :lastSeenId AND self.saleOrderLine.typeSelect = :typeSelect")
             .bind("stockMoveId", stockMove.getId())
+            .bind("typeSelect", SaleOrderLineRepository.TYPE_NORMAL)
             .order("id");
 
     BatchProcessorHelper.builder()
@@ -378,7 +379,8 @@ public class StockMoveServiceSupplychainImpl extends StockMoveServiceImpl
     }
     Map<SaleOrderLine, BigDecimal> saleOrderLineQtyMap = new HashMap<>();
     for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
-      if (stockMoveLine.getSaleOrderLine() != null) {
+      if (stockMoveLine.getSaleOrderLine() != null
+          && stockMoveLine.getLineTypeSelect() == StockMoveLineRepository.TYPE_NORMAL) {
         SaleOrderLine saleOrderLine = stockMoveLine.getSaleOrderLine();
 
         BigDecimal realQty =
