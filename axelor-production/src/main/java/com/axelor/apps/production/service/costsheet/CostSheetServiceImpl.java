@@ -883,9 +883,19 @@ public class CostSheetServiceImpl implements CostSheetService {
       consumptionQty = producedQty.multiply(ratio);
       unit = pieceUnit;
     } else if (costType == WorkCenterRepository.COST_TYPE_PER_HOUR) {
-      consumptionQty =
-          getHumanResourceCostDuration(
-              operationOrder, parentCostSheetLine, previousCostSheetDate, ratio);
+      if (workCenter.getIsRevaluationAtActualPrices()) {
+        consumptionQty =
+            new BigDecimal(operationOrder.getRealDuration())
+                .divide(
+                    new BigDecimal(3600),
+                    appProductionService.getNbDecimalDigitForUnitPrice(),
+                    RoundingMode.HALF_UP)
+                .multiply(ratio);
+      } else {
+        consumptionQty =
+            getHumanResourceCostDuration(
+                operationOrder, parentCostSheetLine, previousCostSheetDate, ratio);
+      }
       unit = hourUnit;
     }
 
@@ -917,15 +927,8 @@ public class CostSheetServiceImpl implements CostSheetService {
               parentCostSheetLine.getCostSheet().getCalculationDate(),
               realDuration);
     } else if (calculationType == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS) {
-      BigDecimal plannedDuration =
-          BigDecimal.valueOf(
-                  DurationHelper.getSecondsDuration(
-                      Duration.between(
-                          operationOrder.getPlannedStartDateT(),
-                          operationOrder.getPlannedEndDateT())))
-              .multiply(ratio);
-
       BigDecimal totalPlannedDuration = BigDecimal.valueOf(operationOrder.getPlannedDuration());
+      BigDecimal plannedDuration = totalPlannedDuration.multiply(ratio);
       duration = totalPlannedDuration.subtract(plannedDuration).abs();
     }
     return duration.divide(
@@ -947,6 +950,9 @@ public class CostSheetServiceImpl implements CostSheetService {
 
     Duration computedDuration = DurationHelper.computeDuration(startDateTime, endDateTime);
     long seconds = DurationHelper.getSecondsDuration(computedDuration);
+    if (seconds == 0) {
+      return operationOrderDuration;
+    }
     return BigDecimal.valueOf(seconds);
   }
 
