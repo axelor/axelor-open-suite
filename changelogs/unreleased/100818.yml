@@ -1,0 +1,3 @@
+---
+title: "Manuf order: fixed creation of unusable manuf order and blocking at planned status in multi level planning."
+module: axelor-production
