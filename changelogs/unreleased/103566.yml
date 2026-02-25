@@ -1,0 +1,3 @@
+---
+title : "Expense: fixed the empty check on analytic move lines during expense ventilation."
+module: axelor-human-resource
