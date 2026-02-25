@@ -80,6 +80,8 @@
     <boolean name="teamManagement" title="Team Management" default="true"/>
 
     <boolean name="activateSendingEmail" title="Activate sending email" default="true"/>
+    <boolean name="activateStreamEmailSending" title="Activate stream email sending"
+      default="false"/>
 
     <boolean name="activateBarCodeGeneration"
       title="Activate bar code generation for products" default="false"/>
@@ -252,6 +254,7 @@
 
       <field name="teamManagement" on="UPDATE"/>
       <field name="activateSendingEmail" on="UPDATE"/>
+      <field name="activateStreamEmailSending" on="UPDATE"/>
 
       <field name="activateBarCodeGeneration" on="UPDATE"/>
       <field name="enableMultiBarcodeOnProducts" on="UPDATE"/>
