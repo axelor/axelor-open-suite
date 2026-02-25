@@ -55,13 +55,12 @@ import com.axelor.apps.hr.service.expense.ExpenseRefusalService;
 import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseVentilateService;
+import com.axelor.apps.hr.service.expense.ExpenseViewService;
 import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
+import com.axelor.apps.hr.service.expense.KilometricComputationResult;
 import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
-import com.axelor.common.ObjectUtils;
-import com.axelor.db.JPA;
-import com.axelor.db.Query;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -73,15 +72,13 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.axelor.utils.db.Wizard;
-import com.axelor.utils.helpers.StringHelper;
-import com.google.common.base.Strings;
 import jakarta.inject.Singleton;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -108,10 +105,8 @@ public class ExpenseController {
   public void computeAnalyticDistribution(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-    Expense expense = expenseLine.getExpense();
-    if (expense == null) {
-      setExpense(request, expenseLine);
-    }
+    Beans.get(ExpenseViewService.class).setExpense(request, expenseLine);
+
     if (Beans.get(AppAccountService.class).getAppAccount().getManageAnalyticAccounting()) {
       expenseLine =
           Beans.get(ExpenseAnalyticService.class).computeAnalyticDistribution(expenseLine);
@@ -120,48 +115,8 @@ public class ExpenseController {
   }
 
   public void editExpense(ActionRequest request, ActionResponse response) {
-
     User user = AuthUtils.getUser();
-    Company activeCompany = user.getActiveCompany();
-
-    List<Expense> expenseList =
-        Beans.get(ExpenseRepository.class)
-            .all()
-            .filter(
-                "self.employee.user.id = ?1 AND self.company = ?2 AND self.statusSelect = 1",
-                user.getId(),
-                activeCompany)
-            .fetch();
-    if (expenseList.isEmpty()) {
-      response.setView(
-          ActionView.define(I18n.get("Expense"))
-              .model(Expense.class.getName())
-              .add("form", "complete-my-expense-form")
-              .context("_payCompany", Beans.get(UserHrService.class).getPayCompany(user))
-              .context("_isEmployeeReadOnly", true)
-              .map());
-    } else if (expenseList.size() == 1) {
-      response.setView(
-          ActionView.define(I18n.get("Expense"))
-              .model(Expense.class.getName())
-              .add("form", "complete-my-expense-form")
-              .param("forceEdit", "true")
-              .context("_showRecord", String.valueOf(expenseList.get(0).getId()))
-              .context("_isEmployeeReadOnly", true)
-              .map());
-    } else {
-      response.setView(
-          ActionView.define(I18n.get("Expense"))
-              .model(Wizard.class.getName())
-              .add("form", "popup-expense-form")
-              .param("forceEdit", "true")
-              .param("popup", "true")
-              .param("show-toolbar", "false")
-              .param("show-confirm", "false")
-              .param("forceEdit", "true")
-              .param("popup-save", "false")
-              .map());
-    }
+    response.setView(Beans.get(ExpenseViewService.class).buildEditExpenseView(user).map());
   }
 
   @SuppressWarnings("unchecked")
@@ -175,15 +130,9 @@ public class ExpenseController {
     }
     Long expenseId = Long.valueOf((Integer) expenseMap.get("id"));
     response.setCanClose(true);
+
     response.setView(
-        ActionView.define(I18n.get("Expense"))
-            .model(Expense.class.getName())
-            .add("form", "complete-my-expense-form")
-            .param("forceEdit", "true")
-            .domain("self.id = " + expenseId)
-            .context("_showRecord", expenseId)
-            .context("_isEmployeeReadOnly", true)
-            .map());
+        Beans.get(ExpenseViewService.class).buildEditSelectedExpenseView(expenseId).map());
   }
 
   public void validateExpense(ActionRequest request, ActionResponse response) {
@@ -207,26 +156,8 @@ public class ExpenseController {
 
     User user = AuthUtils.getUser();
     Employee employee = user.getEmployee();
-
-    ActionViewBuilder actionView =
-        ActionView.define(I18n.get("Historic colleague Expenses"))
-            .model(Expense.class.getName())
-            .add("grid", "expense-grid")
-            .add("form", "expense-form")
-            .param("search-filters", "expense-filters");
-
-    actionView
-        .domain(
-            "self.company = :_activeCompany AND (self.statusSelect = 3 OR self.statusSelect = 4)")
-        .context("_activeCompany", user.getActiveCompany());
-
-    if (employee == null || !employee.getHrManager()) {
-      actionView
-          .domain(actionView.get().getDomain() + " AND self.employee.managerUser = :_user")
-          .context("_user", user);
-    }
-
-    response.setView(actionView.map());
+    response.setView(
+        Beans.get(ExpenseViewService.class).buildHistoricExpenseView(user, employee).map());
   }
 
   public void showSubordinateExpenses(ActionRequest request, ActionResponse response) {
@@ -240,31 +171,12 @@ public class ExpenseController {
     }
 
     ActionViewBuilder actionView =
-        ActionView.define(I18n.get("Expenses to be Validated by your subordinates"))
-            .model(Expense.class.getName())
-            .add("grid", "expense-grid")
-            .add("form", "expense-form")
-            .param("search-filters", "expense-filters");
+        Beans.get(ExpenseViewService.class).buildSubordinateExpensesView(user, activeCompany);
 
-    String domain =
-        "self.employee.managerUser.employee.managerUser = :_user AND self.company = :_activeCompany AND self.statusSelect = 2";
-
-    long nbExpenses =
-        Query.of(Expense.class)
-            .filter(domain)
-            .bind("_user", user)
-            .bind("_activeCompany", activeCompany)
-            .count();
-
-    if (nbExpenses == 0) {
+    if (actionView == null) {
       response.setNotify(I18n.get("No expense to be validated by your subordinates"));
     } else {
-      response.setView(
-          actionView
-              .domain(domain)
-              .context("_user", user)
-              .context("_activeCompany", activeCompany)
-              .map());
+      response.setView(actionView.map());
     }
   }
 
@@ -336,10 +248,7 @@ public class ExpenseController {
   }
 
   public String expenseVentilateMenuTag() {
-    Long total =
-        JPA.all(Expense.class).filter("self.statusSelect = 3 AND self.ventilated = false").count();
-
-    return String.format("%s", total);
+    return Beans.get(HRMenuTagService.class).computeExpenseVentilateMenuTag();
   }
 
   public void cancel(ActionRequest request, ActionResponse response) {
@@ -564,10 +473,8 @@ public class ExpenseController {
       return;
     }
 
+    Beans.get(ExpenseViewService.class).setExpense(request, expenseLine);
     Long empId = expenseLine.getEmployee().getId();
-    if (expenseLine.getExpense() != null) {
-      setExpense(request, expenseLine);
-    }
     Expense expense = expenseLine.getExpense();
 
     if (empId == null) {
@@ -595,56 +502,23 @@ public class ExpenseController {
   public void updateKAPOfKilometricAllowance(ActionRequest request, ActionResponse response)
       throws AxelorException {
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-
-    if (expenseLine.getExpense() == null) {
-      setExpense(request, expenseLine);
-    }
+    ExpenseViewService expenseViewService = Beans.get(ExpenseViewService.class);
+    expenseViewService.setExpense(request, expenseLine);
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     try {
+      ExpenseKilometricService expenseKilometricService = Beans.get(ExpenseKilometricService.class);
       List<KilometricAllowParam> kilometricAllowParamList =
-          Beans.get(ExpenseKilometricService.class)
-              .getListOfKilometricAllowParamVehicleFilter(expenseLine);
-      if (kilometricAllowParamList == null || kilometricAllowParamList.isEmpty()) {
-        response.setAttr("kilometricAllowParam", "domain", "self.id IN (0)");
-      } else {
-        response.setAttr(
-            "kilometricAllowParam",
-            "domain",
-            "self.id IN (" + StringHelper.getIdListString(kilometricAllowParamList) + ")");
-      }
+          expenseViewService.domainOnSelectOnKAP(expenseLine, attrsMap);
+      response.setAttrs(attrsMap);
 
-      KilometricAllowParam currentKilometricAllowParam = expenseLine.getKilometricAllowParam();
-      boolean vehicleOk = false;
-
-      if (kilometricAllowParamList != null && kilometricAllowParamList.size() == 1) {
-        response.setValue("kilometricAllowParam", kilometricAllowParamList.get(0));
-      } else if (kilometricAllowParamList != null) {
-        for (KilometricAllowParam kilometricAllowParam : kilometricAllowParamList) {
-          if (currentKilometricAllowParam != null
-              && currentKilometricAllowParam.equals(kilometricAllowParam)) {
-            expenseLine.setKilometricAllowParam(kilometricAllowParam);
-            vehicleOk = true;
-            break;
-          }
-        }
-        if (!vehicleOk) {
-          response.setValue("kilometricAllowParam", null);
-        } else {
-          response.setValue("kilometricAllowParam", expenseLine.getKilometricAllowParam());
-        }
-      }
+      KilometricAllowParam kilometricAllowParam =
+          expenseKilometricService.updateKAPOfKilometricAllowance(
+              expenseLine, kilometricAllowParamList);
+      response.setValue("kilometricAllowParam", kilometricAllowParam);
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
-    }
-  }
-
-  protected void setExpense(ActionRequest request, ExpenseLine expenseLine) {
-
-    Context parent = request.getContext().getParent();
-
-    if (parent != null && parent.get("_model").equals(Expense.class.getName())) {
-      expenseLine.setExpense(parent.asType(Expense.class));
     }
   }
 
@@ -652,19 +526,13 @@ public class ExpenseController {
       throws AxelorException {
 
     ExpenseLine expenseLine = request.getContext().asType(ExpenseLine.class);
-
-    if (expenseLine.getExpense() == null) {
-      setExpense(request, expenseLine);
-    }
+    ExpenseViewService expenseViewService = Beans.get(ExpenseViewService.class);
+    expenseViewService.setExpense(request, expenseLine);
+    Map<String, Map<String, Object>> attrsMap = new HashMap<>();
 
     try {
-      List<KilometricAllowParam> kilometricAllowParamList =
-          Beans.get(ExpenseKilometricService.class)
-              .getListOfKilometricAllowParamVehicleFilter(expenseLine);
-      response.setAttr(
-          "kilometricAllowParam",
-          "domain",
-          "self.id IN (" + StringHelper.getIdListString(kilometricAllowParamList) + ")");
+      expenseViewService.domainOnSelectOnKAP(expenseLine, attrsMap);
+      response.setAttrs(attrsMap);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -673,7 +541,6 @@ public class ExpenseController {
   public void computeDistanceAndKilometricExpense(ActionRequest request, ActionResponse response)
       throws AxelorException {
 
-    // Compute distance.
     try {
 
       if (!Beans.get(AppHumanResourceService.class)
@@ -684,44 +551,13 @@ public class ExpenseController {
 
       Context context = request.getContext();
       ExpenseLine expenseLine = context.asType(ExpenseLine.class);
-      BigDecimal distance = BigDecimal.ZERO;
-      BigDecimal amount = BigDecimal.ZERO;
 
-      if (Strings.isNullOrEmpty(expenseLine.getFromCity())
-          || Strings.isNullOrEmpty(expenseLine.getToCity())
-          || expenseLine.getKilometricTypeSelect() == null
-          || expenseLine.getKilometricTypeSelect() == 0) {
-        response.setValue("distance", distance);
-        response.setValue("totalAmount", amount);
-        response.setValue("untaxedAmount", amount);
-        return;
-      }
+      KilometricComputationResult result =
+          Beans.get(KilometricService.class).computeDistanceAndExpense(expenseLine);
 
-      KilometricService kilometricService = Beans.get(KilometricService.class);
-      distance = kilometricService.computeDistance(expenseLine);
-      expenseLine.setDistance(distance);
-      response.setValue("distance", distance);
-
-      // Compute kilometric expense.
-
-      if (expenseLine.getKilometricAllowParam() == null || expenseLine.getExpenseDate() == null) {
-        return;
-      }
-
-      Employee employee = expenseLine.getEmployee();
-
-      if (employee == null) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            I18n.get(HumanResourceExceptionMessage.LEAVE_USER_EMPLOYEE),
-            AuthUtils.getUser().getName());
-      }
-
-      amount =
-          Beans.get(KilometricExpenseService.class).computeKilometricExpense(expenseLine, employee);
-      response.setValue("totalAmount", amount);
-      response.setValue("untaxedAmount", amount);
-
+      response.setValue("distance", result.getDistance());
+      response.setValue("totalAmount", result.getAmount());
+      response.setValue("untaxedAmount", result.getAmount());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -738,21 +574,9 @@ public class ExpenseController {
   public void updateGeneralAndKilometricExpenseLineEmployee(
       ActionRequest request, ActionResponse response) {
     Expense expense = request.getContext().asType(Expense.class);
-    Employee employee = expense.getEmployee();
-    if (ObjectUtils.notEmpty(employee)) {
-
-      List<ExpenseLine> generalExpenseLineList = expense.getGeneralExpenseLineList();
-      if (ObjectUtils.notEmpty(generalExpenseLineList)) {
-        generalExpenseLineList.forEach(genexpLine -> genexpLine.setEmployee(employee));
-      }
-      List<ExpenseLine> kilometricExpenseLineList = expense.getKilometricExpenseLineList();
-      if (ObjectUtils.notEmpty(kilometricExpenseLineList)) {
-        kilometricExpenseLineList.forEach(kilexpLine -> kilexpLine.setEmployee(employee));
-      }
-
-      response.setValue("generalExpenseLineList", generalExpenseLineList);
-      response.setValue("kilometricExpenseLineList", kilometricExpenseLineList);
-    }
+    Beans.get(ExpenseLineUpdateService.class).updateEmployeeOnLines(expense);
+    response.setValue("generalExpenseLineList", expense.getGeneralExpenseLineList());
+    response.setValue("kilometricExpenseLineList", expense.getKilometricExpenseLineList());
   }
 
   public void checkAnalyticAxis(ActionRequest request, ActionResponse response)

@@ -16,18 +16,25 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.hr.service;
+package com.axelor.apps.hr.service.expense;
 
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.hr.db.ExpenseLine;
-import com.axelor.apps.hr.service.expense.KilometricComputationResult;
 import java.math.BigDecimal;
 
-public interface KilometricService {
-  BigDecimal computeDistance(ExpenseLine expenseLine) throws AxelorException;
+public class KilometricComputationResult {
 
-  BigDecimal computeDistance(String fromCity, String toCity) throws AxelorException;
+  private BigDecimal distance;
+  private BigDecimal amount;
 
-  KilometricComputationResult computeDistanceAndExpense(ExpenseLine expenseLine)
-      throws AxelorException;
+  public KilometricComputationResult(BigDecimal distance, BigDecimal amount) {
+    this.distance = distance;
+    this.amount = amount;
+  }
+
+  public BigDecimal getDistance() {
+    return distance;
+  }
+
+  public BigDecimal getAmount() {
+    return amount;
+  }
 }
