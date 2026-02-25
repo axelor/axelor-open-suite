@@ -50,7 +50,6 @@ import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -234,11 +233,15 @@ public class SaleOrderCreateServiceImpl implements SaleOrderCreateService {
             saleOrderLinePriceService.resetPrice(saleOrderLine);
           }
           AppSale appSale = appSaleService.getAppSale();
-          if (appSale.getIsSOLPriceTotalOfSubLines()
-              && appSale.getListDisplayTypeSelect()
-                  == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
-              && CollectionUtils.isNotEmpty(saleOrderLine.getSubSaleOrderLineList())) {
-            subSaleOrderLineComputeService.computeSumSubLineList(saleOrderLine, saleOrder);
+          if (appSale.getListDisplayTypeSelect()
+              == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI) {
+            subSaleOrderLineComputeService.updateSubSaleOrderLineList(saleOrderLine, saleOrder);
+            if (appSale.getIsSOLPriceTotalOfSubLines()) {
+              subSaleOrderLineComputeService.computeSumSubLineList(saleOrderLine, saleOrder);
+            } else {
+              saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
+              saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
+            }
           } else {
             saleOrderLineProductService.fillPrice(saleOrderLine, saleOrder);
             saleOrderLineComputeService.computeValues(saleOrder, saleOrderLine);
