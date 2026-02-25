@@ -1362,7 +1362,7 @@
 
   <action-method
     name="action-business-project-method-set-domain-analytic-distribution-template">
-    <call class="com.axelor.apps.hr.web.expense.ProjectController"
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 
