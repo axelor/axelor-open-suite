@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,12 +69,12 @@ public class MoveLineConsolidateServiceImpl implements MoveLineConsolidateServic
     List<AnalyticMoveLine> list2 = moveLine.getAnalyticMoveLineList();
 
     // Both null = consolidate
-    if (list1 == null && list2 == null) {
+    if (CollectionUtils.isEmpty(list1) && CollectionUtils.isEmpty(list2)) {
       return moveLineIt;
     }
 
     // One null = don't consolidate
-    if (list1 == null || list2 == null) {
+    if (CollectionUtils.isEmpty(list1) || CollectionUtils.isEmpty(list2)) {
       return null;
     }
 
