@@ -365,6 +365,9 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
               false);
 
       BigDecimal price;
+      BigDecimal priceCoef =
+          (BigDecimal)
+              productCompanyService.get(product, "managPriceCoef", purchaseOrder.getCompany());
       if (purchaseOrder.getInAti()
           != (Boolean) productCompanyService.get(product, "inAti", purchaseOrder.getCompany())) {
         price =
@@ -374,9 +377,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
                 ((BigDecimal)
                         productCompanyService.get(product, "salePrice", purchaseOrder.getCompany()))
                     .divide(
-                        product.getManagPriceCoef().signum() == 0
-                            ? BigDecimal.ONE
-                            : product.getManagPriceCoef(),
+                        priceCoef.signum() == 0 ? BigDecimal.ONE : priceCoef,
                         appBaseService.getNbDecimalDigitForUnitPrice(),
                         RoundingMode.HALF_UP),
                 AppBaseService.COMPUTATION_SCALING);
@@ -385,9 +386,7 @@ public class PurchaseOrderLineServiceImpl implements PurchaseOrderLineService {
             ((BigDecimal)
                     productCompanyService.get(product, "salePrice", purchaseOrder.getCompany()))
                 .divide(
-                    product.getManagPriceCoef().signum() == 0
-                        ? BigDecimal.ONE
-                        : product.getManagPriceCoef(),
+                    priceCoef.signum() == 0 ? BigDecimal.ONE : priceCoef,
                     appBaseService.getNbDecimalDigitForUnitPrice(),
                     RoundingMode.HALF_UP);
       }
