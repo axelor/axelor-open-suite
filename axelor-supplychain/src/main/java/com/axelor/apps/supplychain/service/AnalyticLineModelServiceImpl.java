@@ -22,7 +22,6 @@ import com.axelor.apps.account.db.AnalyticAccount;
 import com.axelor.apps.account.db.AnalyticDistributionTemplate;
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.InvoiceLine;
-import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.account.service.AccountManagementAccountService;
 import com.axelor.apps.account.service.analytic.AnalyticMoveLineService;
 import com.axelor.apps.account.service.analytic.AnalyticToolService;
@@ -125,7 +124,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
     analyticMoveLine.setAmount(
         currencyScaleService.getScaledValue(
             analyticMoveLine, analyticLineModel.getCompanyExTaxTotal()));
-    analyticMoveLine.setTypeSelect(AnalyticMoveLineRepository.STATUS_FORECAST_ORDER);
+    analyticMoveLine.setTypeSelect(analyticLineModel.getTypeSelect());
 
     return analyticMoveLine;
   }
@@ -217,7 +216,7 @@ public class AnalyticLineModelServiceImpl implements AnalyticLineModelService {
             analyticLineModel.getAnalyticDistributionTemplate(),
             currencyScaleService.getCompanyScaledValue(
                 analyticLineModel.getCompany(), analyticLineModel.getCompanyExTaxTotal()),
-            AnalyticMoveLineRepository.STATUS_FORECAST_ORDER,
+            analyticLineModel.getTypeSelect(),
             appBaseService.getTodayDate(this.getCompany(analyticLineModel)));
 
     analyticLineModel.clearAnalyticMoveLineList();
