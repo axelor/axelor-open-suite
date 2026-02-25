@@ -21,6 +21,7 @@ package com.axelor.apps.account.web;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.PaymentModeControlService;
+import com.axelor.apps.account.service.payment.PaymentModeInitService;
 import com.axelor.apps.account.service.payment.PaymentModeInterestRateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
@@ -29,6 +30,16 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 
 public class PaymentModeController {
+
+  public void setDefaults(ActionRequest request, ActionResponse response) {
+    try {
+      response.setValue(
+          "accountManagementList",
+          Beans.get(PaymentModeInitService.class).getAccountManagementDefaults());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
   public void setReadOnly(ActionRequest request, ActionResponse response) {
 

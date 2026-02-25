@@ -7,6 +7,7 @@
     model="com.axelor.apps.account.db.PaymentMode" id="account-payment-mode-form" extension="true">
     <extend target="/">
       <attribute name="onLoad" value="action-payment-mode-group-onload"/>
+      <attribute name="onNew" value="action-payment-mode-set-default"/>
     </extend>
 
     <extend target="//panel[@name='mainPanel']/field[@name='typeSelect']">
@@ -100,6 +101,10 @@
 
   <action-method name="action-method-account-set-read-only-if-in-move">
     <call class="com.axelor.apps.account.web.PaymentModeController" method="setReadOnly"/>
+  </action-method>
+
+  <action-method name="action-payment-mode-set-default">
+    <call class="com.axelor.apps.account.web.PaymentModeController" method="setDefaults"/>
   </action-method>
 
   <action-validate name="action-payment-mode-validate-check-bank-order-file-format">

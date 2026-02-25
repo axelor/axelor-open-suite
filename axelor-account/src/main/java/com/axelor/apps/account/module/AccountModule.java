@@ -392,6 +392,8 @@ import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServi
 import com.axelor.apps.account.service.moveline.massentry.MoveLineMassEntryServiceImpl;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateService;
 import com.axelor.apps.account.service.notebills.NoteBillsCreateServiceImpl;
+import com.axelor.apps.account.service.payment.PaymentModeInitService;
+import com.axelor.apps.account.service.payment.PaymentModeInitServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeInterestRateService;
 import com.axelor.apps.account.service.payment.PaymentModeInterestRateServiceImpl;
 import com.axelor.apps.account.service.payment.PaymentModeService;
@@ -563,6 +565,8 @@ public class AccountModule extends AxelorModule {
     bind(AccountingSituationAttrsService.class).to(AccountingSituationAttrsServiceImpl.class);
 
     bind(AccountingSituationCheckService.class).to(AccountingSituationCheckServiceImpl.class);
+
+    bind(PaymentModeInitService.class).to(PaymentModeInitServiceImpl.class);
 
     bind(PaymentModeService.class).to(PaymentModeServiceImpl.class);
 

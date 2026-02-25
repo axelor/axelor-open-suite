@@ -16,28 +16,39 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.service;
+package com.axelor.apps.account.service.payment;
 
 import com.axelor.apps.account.db.AccountManagement;
 import com.axelor.apps.account.db.repo.AccountManagementRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.repo.CompanyRepository;
-import com.axelor.inject.Beans;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PaymentModeServiceImpl implements PaymentModeService {
+public class PaymentModeInitServiceImpl implements PaymentModeInitService {
+
+  protected CompanyRepository companyRepository;
+
+  @Inject
+  public PaymentModeInitServiceImpl(CompanyRepository companyRepository) {
+    this.companyRepository = companyRepository;
+  }
 
   @Override
   public List<AccountManagement> getAccountManagementDefaults() {
     List<AccountManagement> accountManagementList = new ArrayList<>();
-    List<Company> companyList = Beans.get(CompanyRepository.class).all().fetch();
+    List<Company> companyList = companyRepository.all().fetch();
     for (Company company : companyList) {
-      AccountManagement accountManagement = new AccountManagement();
-      accountManagement.setCompany(company);
-      accountManagement.setTypeSelect(AccountManagementRepository.TYPE_PAYMENT);
-      accountManagementList.add(accountManagement);
+      accountManagementList.add(createAccountManagement(company));
     }
     return accountManagementList;
+  }
+
+  protected AccountManagement createAccountManagement(Company company) {
+    AccountManagement accountManagement = new AccountManagement();
+    accountManagement.setCompany(company);
+    accountManagement.setTypeSelect(AccountManagementRepository.TYPE_PAYMENT);
+    return accountManagement;
   }
 }
