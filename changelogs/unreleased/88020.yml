@@ -1,0 +1,3 @@
+---
+title: "Cost calculation: fixed an issue where the child BOM quantity was not correctly multiplied when the BOM calculation quantity was greater than 1."
+module: axelor-production
