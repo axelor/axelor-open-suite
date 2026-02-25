@@ -600,9 +600,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       updateDiffProdProductList(manufOrder);
     } else {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        operationOrder = JpaModelHelper.ensureManaged(operationOrder);
         Beans.get(OperationOrderStockMoveService.class)
             .createNewConsumedStockMoveLineList(operationOrder, qtyToUpdate);
+        operationOrder = JpaModelHelper.ensureManaged(operationOrder);
         operationOrderService.updateDiffProdProductList(operationOrder);
+        manufOrder = JpaModelHelper.ensureManaged(manufOrder);
       }
     }
 
