@@ -24,6 +24,8 @@ import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
+import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineProductService;
 import com.axelor.apps.sale.service.saleorderline.subline.SubSaleOrderLineComputeServiceImpl;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -36,8 +38,15 @@ public class SubSaleOrderLineComputeServiceProductionImpl
   public SubSaleOrderLineComputeServiceProductionImpl(
       SaleOrderLineComputeService saleOrderLineComputeService,
       AppSaleService appSaleService,
-      CurrencyScaleService currencyScaleService) {
-    super(saleOrderLineComputeService, appSaleService, currencyScaleService);
+      CurrencyScaleService currencyScaleService,
+      SaleOrderLinePriceService saleOrderLinePriceService,
+      SaleOrderLineProductService saleOrderLineProductService) {
+    super(
+        saleOrderLineComputeService,
+        appSaleService,
+        currencyScaleService,
+        saleOrderLinePriceService,
+        saleOrderLineProductService);
   }
 
   @Override
@@ -50,9 +59,32 @@ public class SubSaleOrderLineComputeServiceProductionImpl
       return;
     }
     saleOrderLine.setPrice(computeTotalPrice(saleOrderLine));
+    saleOrderLine.setInTaxPrice(computeTotalInTaxPrice(saleOrderLine));
     saleOrderLine.setSubTotalCostPrice(
         currencyScaleService.getCompanyScaledValue(
             saleOrder, computeTotalCostPrice(saleOrderLine)));
+  }
+
+  protected BigDecimal computeTotalInTaxPrice(SaleOrderLine saleOrderLine) {
+    BigDecimal totalInTaxPrice = BigDecimal.ZERO;
+    List<SaleOrderLine> subSaleOrderLineList = saleOrderLine.getSubSaleOrderLineList();
+    List<SaleOrderLineDetails> saleOrderLineDetailsList =
+        saleOrderLine.getSaleOrderLineDetailsList();
+    if (CollectionUtils.isNotEmpty(subSaleOrderLineList)) {
+      totalInTaxPrice =
+          totalInTaxPrice.add(
+              subSaleOrderLineList.stream()
+                  .map(SaleOrderLine::getInTaxTotal)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+    if (CollectionUtils.isNotEmpty(saleOrderLineDetailsList)) {
+      totalInTaxPrice =
+          totalInTaxPrice.add(
+              saleOrderLineDetailsList.stream()
+                  .map(SaleOrderLineDetails::getTotalPrice)
+                  .reduce(BigDecimal.ZERO, BigDecimal::add));
+    }
+    return totalInTaxPrice;
   }
 
   protected BigDecimal computeTotalPrice(SaleOrderLine saleOrderLine) {
