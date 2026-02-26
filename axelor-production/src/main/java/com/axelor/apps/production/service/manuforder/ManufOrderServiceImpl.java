@@ -1162,6 +1162,21 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 manufOrder.getPlannedEndDateT(),
                 ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
 
+        if (appProductionService.getAppProduction().getManageWorkshop()
+            && manufOrder.getWorkshopStockLocation() == null) {
+          StockLocation parentWorkshop = null;
+          if (parentMOId != null) {
+            ManufOrder dbParentMO = manufOrderRepo.find(parentMOId);
+            parentWorkshop = dbParentMO.getWorkshopStockLocation();
+          } else {
+            ManufOrder generatedParentMO = seqMOMap.get(parentMO.getManualMOSeq());
+            if (generatedParentMO != null) {
+              parentWorkshop = generatedParentMO.getWorkshopStockLocation();
+            }
+          }
+          manufOrder.setWorkshopStockLocation(parentWorkshop);
+        }
+
         manufOrder.setClientPartner(clientPartner);
         manufOrder.setManualMOSeq(backupSeq);
         seqMOMap.put(backupSeq, manufOrder);
