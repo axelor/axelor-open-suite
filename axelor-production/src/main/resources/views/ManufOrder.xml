@@ -1073,8 +1073,9 @@
     model="com.axelor.apps.production.db.ManufOrder">
     <view type="grid" name="manuf-order-grid"/>
     <view type="form" name="manuf-order-form"/>
-    <domain>self.parentMO.id = :_id</domain>
-    <context name="_id" expr="eval: id"/>
+    <domain>self.id in :_allChildMOIds</domain>
+    <context name="_allChildMOIds"
+      expr="eval: id ? __bean__(com.axelor.apps.production.service.manuforder.ManufOrderQueryService.class).getAllDescendantManufOrderIds(__self__) ?: [0L] : [0L]"/>
   </action-view>
 
   <action-view name="action-manuf-order-view-control-entry"
