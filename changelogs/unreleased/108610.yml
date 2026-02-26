@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed duplicated sale order line details for semi-finished BOM components in editable tree mode."
+module: axelor-production
