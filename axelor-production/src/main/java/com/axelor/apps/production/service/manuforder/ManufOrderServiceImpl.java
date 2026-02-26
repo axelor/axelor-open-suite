@@ -1125,58 +1125,76 @@ public class ManufOrderServiceImpl implements ManufOrderService {
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public List<Long> planSelectedOrdersAndDiscardOthers(List<Map<String, Object>> manufOrders)
       throws AxelorException {
     List<Long> ids = new ArrayList<>();
-    Map<String, String> sequenceParentSeqMap = new HashMap<>();
-    Map<String, ManufOrder> seqMOMap = new HashMap<>();
-    List<ManufOrder> generatedMOList = new ArrayList<>();
+    // Maps each draft MO's BOM ID to the ID of the real ManufOrder generated from it.
+    // Used to resolve parent links for grandchildren, whose draft parentMO has id=null
+    // but whose parentMO.billOfMaterial.id is preserved across the wizard round-trip.
+    // Storing IDs (not entity references) avoids detached-entity errors caused by JPA
+    // flush/clear operations inside generateManufOrder.
+    Map<Long, Long> bomIdToGeneratedMOId = new HashMap<>();
 
     for (Map<String, Object> manufOrderMap : manufOrders) {
-      ManufOrder manufOrder = Mapper.toBean(ManufOrder.class, manufOrderMap);
-      Product product = Beans.get(ProductRepository.class).find(manufOrder.getProduct().getId());
+      ManufOrder draftMO = Mapper.toBean(ManufOrder.class, manufOrderMap);
 
-      String backupSeq = manufOrder.getManualMOSeq();
-
-      ManufOrder parentMO = manufOrder.getParentMO();
-      Long parentMOId = parentMO.getId();
-      if (parentMOId != null) {
-        if (!seqMOMap.containsKey(parentMOId.toString())) {
-          seqMOMap.put(parentMOId.toString(), parentMO);
-        }
-        sequenceParentSeqMap.put(backupSeq, parentMOId.toString());
-      } else {
-        sequenceParentSeqMap.put(backupSeq, parentMO.getManualMOSeq());
+      if (!(boolean) manufOrderMap.get("selected")) {
+        continue;
       }
 
-      if ((boolean) manufOrderMap.get("selected")) {
-        BillOfMaterial billOfMaterial = manufOrder.getBillOfMaterial();
-        billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(billOfMaterial.getId());
-        Partner clientPartner = manufOrder.getClientPartner();
-        if (ObjectUtils.notEmpty(clientPartner)) {
-          clientPartner = partnerRepository.find(clientPartner.getId());
-        }
-        manufOrder =
-            generateManufOrder(
-                product,
-                manufOrder.getQty().multiply(billOfMaterial.getQty()),
-                manufOrder.getPrioritySelect(),
-                IS_TO_INVOICE,
-                billOfMaterial,
-                manufOrder.getPlannedStartDateT(),
-                manufOrder.getPlannedEndDateT(),
-                ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
+      Product product = Beans.get(ProductRepository.class).find(draftMO.getProduct().getId());
 
-        manufOrder.setClientPartner(clientPartner);
-        manufOrder.setManualMOSeq(backupSeq);
-        seqMOMap.put(backupSeq, manufOrder);
-        ids.add(manufOrder.getId());
-        generatedMOList.add(manufOrder);
+      BillOfMaterial billOfMaterial = draftMO.getBillOfMaterial();
+      Long draftBomId = billOfMaterial != null ? billOfMaterial.getId() : null;
+      billOfMaterial = Beans.get(BillOfMaterialRepository.class).find(draftBomId);
+
+      Partner clientPartner = draftMO.getClientPartner();
+      if (ObjectUtils.notEmpty(clientPartner)) {
+        clientPartner = partnerRepository.find(clientPartner.getId());
+      }
+
+      ManufOrder generated =
+          generateManufOrder(
+              product,
+              draftMO.getQty().multiply(billOfMaterial.getQty()),
+              draftMO.getPrioritySelect(),
+              IS_TO_INVOICE,
+              billOfMaterial,
+              draftMO.getPlannedStartDateT(),
+              draftMO.getPlannedEndDateT(),
+              ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
+
+      generated.setClientPartner(clientPartner);
+
+      setParentMo(draftMO, generated, bomIdToGeneratedMOId);
+
+      if (draftBomId != null) {
+        bomIdToGeneratedMOId.put(draftBomId, generated.getId());
+      }
+
+      ids.add(generated.getId());
+    }
+    return ids;
+  }
+
+  protected void setParentMo(
+      ManufOrder draftMO, ManufOrder generated, Map<Long, Long> bomIdToGeneratedMOId) {
+    // Set parentMO: for root children the draft parentMO has a real id (saved entity);
+    // for deeper levels the draft parentMO has id=null but its billOfMaterial.id identifies
+    // the previously generated ManufOrder that acts as the parent.
+    ManufOrder draftParentMO = draftMO.getParentMO();
+    if (draftParentMO != null && draftParentMO.getId() != null) {
+      generated.setParentMO(manufOrderRepo.find(draftParentMO.getId()));
+    } else if (draftParentMO != null) {
+      BillOfMaterial parentBom = draftParentMO.getBillOfMaterial();
+      if (parentBom != null) {
+        Long parentMOId = bomIdToGeneratedMOId.get(parentBom.getId());
+        if (parentMOId != null) {
+          generated.setParentMO(manufOrderRepo.find(parentMOId));
+        }
       }
     }
-    this.setParentMos(sequenceParentSeqMap, seqMOMap, generatedMOList);
-    return ids;
   }
 
   protected List<ManufOrder> generateChildMOs(
