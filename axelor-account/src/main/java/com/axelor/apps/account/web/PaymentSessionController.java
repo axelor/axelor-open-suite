@@ -132,7 +132,16 @@ public class PaymentSessionController {
           Beans.get(PaymentSessionValidateService.class).checkValidTerms(paymentSession);
 
       if (errorCode == 1) {
-        response.setAlert(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
+        ActionView.ActionViewBuilder actionViewBuilder =
+            ActionView.define(I18n.get("Invoice terms"))
+                .model(PaymentSession.class.getName())
+                .add("form", "payment-session-financial-discount-confirm-wizard")
+                .param("popup", "reload")
+                .param("popup-save", "false")
+                .param("show-toolbar", "false")
+                .context("_showRecord", paymentSession.getId());
+
+        response.setView(actionViewBuilder.map());
       } else if (errorCode == 2) {
         ActionView.ActionViewBuilder actionViewBuilder =
             ActionView.define(I18n.get("Invoice terms"))

@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed payments not being generated after user confirms expired financial discount warning."
+module: axelor-account
