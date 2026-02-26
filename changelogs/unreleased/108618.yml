@@ -1,0 +1,3 @@
+---
+title: "Sale/Manuf order: fixed NPE when clearing the cancel reason field in the cancellation popup."
+module: axelor-sale
