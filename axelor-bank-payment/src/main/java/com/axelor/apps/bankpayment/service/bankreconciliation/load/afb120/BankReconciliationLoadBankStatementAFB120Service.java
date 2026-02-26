@@ -64,17 +64,30 @@ public class BankReconciliationLoadBankStatementAFB120Service
   }
 
   protected void setBalance(BankReconciliation bankReconciliation, boolean includeBankStatement) {
-    BankStatementLine initialBalanceBankStatementLine =
-        getInitialBalanceBankStatementLine(bankReconciliation, includeBankStatement);
+    BankReconciliation previousBankReconciliation =
+        bankReconciliationRepository
+            .all()
+            .filter(
+                "self.bankDetails = :bankDetails AND self.id != :id AND self.statusSelect = :statusSelect")
+            .bind("bankDetails", bankReconciliation.getBankDetails())
+            .bind("id", bankReconciliation.getId())
+            .bind("statusSelect", BankReconciliationRepository.STATUS_VALIDATED)
+            .order("-id")
+            .fetchOne();
+
+    if (previousBankReconciliation == null) {
+      BankStatementLine initialBalanceBankStatementLine =
+          getInitialBalanceBankStatementLine(bankReconciliation, includeBankStatement);
+      if (initialBalanceBankStatementLine != null) {
+        bankReconciliation.setStartingBalance(
+            initialBalanceBankStatementLine
+                .getCredit()
+                .subtract(initialBalanceBankStatementLine.getDebit()));
+      }
+    }
+
     BankStatementLine finalBalanceBankStatementLine =
         getFinalBalanceBankStatementLine(bankReconciliation, includeBankStatement);
-
-    if (initialBalanceBankStatementLine != null) {
-      bankReconciliation.setStartingBalance(
-          initialBalanceBankStatementLine
-              .getCredit()
-              .subtract(initialBalanceBankStatementLine.getDebit()));
-    }
     if (finalBalanceBankStatementLine != null) {
       bankReconciliation.setEndingBalance(
           finalBalanceBankStatementLine
