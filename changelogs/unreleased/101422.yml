@@ -1,0 +1,3 @@
+---
+title: "Purchase order: fixed max purchase price computation."
+module: axelor-purchase

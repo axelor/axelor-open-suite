@@ -62,6 +62,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.helpers.StringHelper;
 import com.google.common.collect.Sets;
+import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
@@ -143,6 +144,7 @@ public class PurchaseOrderStockServiceImpl implements PurchaseOrderStockService 
    * @param purchaseOrder une commande
    * @throws AxelorException Aucune séquence de StockMove n'a été configurée
    */
+  @Transactional(rollbackOn = Exception.class)
   public List<Long> createStockMoveFromPurchaseOrder(PurchaseOrder purchaseOrder)
       throws AxelorException {
 
