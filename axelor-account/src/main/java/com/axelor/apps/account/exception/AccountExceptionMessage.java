@@ -1427,9 +1427,6 @@ public final class AccountExceptionMessage {
 
   public static final String PAYMENT_SESSION_EMAIL_SENT = /*$$(*/ "%d email(s) sent." /*)*/;
 
-  public static final String PAYMENT_SESSION_INVALID_INVOICE_TERMS = /*$$(*/
-      "One or more invoice terms are presenting a financial discount calculation which is not applicable. Do you wish to proceed ?" /*)*/;
-
   public static final String PAYMENT_SESSION_GENERATED_MOVES = /*$$(*/
       "%d accounting move(s) successfully generated." /*)*/;
 
