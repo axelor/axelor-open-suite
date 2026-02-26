@@ -343,14 +343,16 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
           }
           break;
         case StockMoveLineService.TYPE_PURCHASES:
-          if (trackingNumberConfiguration.getIsPurchaseTrackingManaged()
-              && trackingNumberConfiguration.getGeneratePurchaseAutoTrackingNbr()) {
-            // Générer numéro de série si case cochée
-            this.generateTrackingNumber(
-                stockMoveLine,
-                trackingNumberConfiguration,
-                product,
-                trackingNumberConfiguration.getPurchaseQtyByTracking());
+          if (trackingNumberConfiguration.getIsPurchaseTrackingManaged()) {
+            BigDecimal purchaseQtyByTracking =
+                trackingNumberConfiguration.getPurchaseQtyByTracking();
+            if (trackingNumberConfiguration.getGeneratePurchaseAutoTrackingNbr()) {
+              // Générer numéro de série si case cochée
+              this.generateTrackingNumber(
+                  stockMoveLine, trackingNumberConfiguration, product, purchaseQtyByTracking);
+            } else {
+              this.splitStockMoveLineByQtyByTracking(stockMoveLine, purchaseQtyByTracking);
+            }
           }
           break;
         case StockMoveLineService.TYPE_OUT_PRODUCTIONS:
@@ -434,6 +436,29 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
               stockMove.getOrigin(),
               supplier));
       fillOriginTrackingNumber(stockMoveLine);
+    }
+  }
+
+  protected void splitStockMoveLineByQtyByTracking(
+      StockMoveLine stockMoveLine, BigDecimal qtyByTracking) throws AxelorException {
+    if (qtyByTracking == null || qtyByTracking.compareTo(BigDecimal.ZERO) <= 0) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(StockExceptionMessage.STOCK_MOVE_QTY_BY_TRACKING));
+    }
+
+    int splitCounter = 0;
+    while (stockMoveLine.getQty().compareTo(qtyByTracking) > 0) {
+      BigDecimal minQty = stockMoveLine.getQty().min(qtyByTracking);
+      StockMoveLine newStockMoveLine = this.splitStockMoveLine(stockMoveLine, minQty, null);
+      stockMoveLineRepository.save(newStockMoveLine);
+      splitCounter++;
+
+      if (splitCounter == 1000) {
+        throw new AxelorException(
+            TraceBackRepository.CATEGORY_INCONSISTENCY,
+            I18n.get(StockExceptionMessage.STOCK_MOVE_TOO_MANY_ITERATION));
+      }
     }
   }
 
