@@ -79,6 +79,8 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
       query += "AND self.amountRemaining != 0 ";
     } else if (moveLineQuery.getProcessSelect() == MoveLineQueryRepository.PROCESS_UNRECONCILE) {
       query += "AND self.amountRemaining != debit + credit ";
+      query +=
+          "AND (self.debitReconcileList IS NOT EMPTY OR self.creditReconcileList IS NOT EMPTY) ";
     }
 
     query +=
