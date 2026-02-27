@@ -35,6 +35,7 @@ import com.axelor.apps.gdpr.service.GdprAnonymizeService;
 import com.axelor.apps.gdpr.service.GdprErasureLogService;
 import com.axelor.apps.gdpr.service.app.AppGdprService;
 import com.axelor.auth.db.AuditableModel;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
@@ -263,15 +264,6 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
       // o2m : break link if config, anonymization if config (if not breaking link)
       List<Object> relatedObjects = (List<Object>) currentValue;
 
-      String mappedBy = metaField.getMappedBy();
-
-      if (StringUtils.isBlank(mappedBy)) {
-        throw new AxelorException(
-            TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-            String.format(
-                I18n.get(GdprExceptionMessage.MODEL_FIELD_NO_MAPPED_BY), metaField.getName()));
-      }
-
       Optional<RelationshipAnonymizer> relationshipAnonymizer =
           relationshipAnonymizers.stream()
               .filter(
@@ -292,9 +284,10 @@ public class GdprResponseErasureServiceImpl implements GdprResponseErasureServic
         anonymizationResult.append("\n");
         return;
       }
+      String mappedBy = metaField.getMappedBy();
 
       for (Object relatedObject : relatedObjects) {
-        if (relationshipAnonymizer.isPresent()) {
+        if (relationshipAnonymizer.isPresent() && ObjectUtils.notEmpty(mappedBy)) {
           breakO2MRelationship(metaField, relationshipAnonymizers, mappedBy, relatedObject);
         } else {
           anonymizeRelatedObject(
