@@ -350,6 +350,11 @@
       method="computeHazardPhrases"/>
   </action-method>
 
+  <action-method name="action-prod-process-method-compute-hazard-phrases">
+    <call class="com.axelor.apps.production.web.ProdProcessController"
+      method="computeHazardPhrases"/>
+  </action-method>
+
   <action-record name="action-prod-process-record-reset-product"
     model="com.axelor.apps.production.db.ProdProcess">
     <field name="product" expr="eval: null" if="isEnabledForAllProducts"/>
