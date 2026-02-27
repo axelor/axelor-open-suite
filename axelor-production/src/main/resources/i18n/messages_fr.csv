@@ -362,7 +362,7 @@
 "Human resources","Ressources humaines",,
 "Human times","Temps humain",,
 "Hundredth of an hour input","Saisie en centième d'heure",,
-"If true, the components will be automatically requested for reservation on planning manufacturing orders.","Si coché, la réservation sera faite automatiquement pour les composants lors de la planification d'ordres de fabrication.",,
+"If checked, reservation will be automatically made for components when planning manufacturing orders.","Si coche, la reservation sera faite automatiquement pour les composants lors de la planification d'ordres de fabrication.",,
 "Image",,,
 "Import",,,
 "Import CSV","CSV d'import",,

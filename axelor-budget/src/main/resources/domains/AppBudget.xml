@@ -9,14 +9,16 @@
 
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
-    <boolean name="checkAvailableBudget" title="Check Available Budget"/>
-    <boolean name="manageMultiBudget" title="Manage multi budgets on lines"/>
+    <boolean name="checkAvailableBudget" title="Check Available Budget"
+      help="If this option is enabled, when linking a purchase order or purchase order line to a budget, the system automatically checks that based on the total planned budget amount there is still available budget and that everything has not yet been committed, or that the order will not exceed the planned amount. The user is alerted in case of overrun."/>
+    <boolean name="manageMultiBudget" title="Manage multi budgets on lines"
+      help="If enabled, this configuration allows at the purchase order line level to distribute the amount across multiple budgets."/>
     <integer name="missingBudgetCheckSelect" title="Missing budget alert" default="0"
       selection="app.budget.check.missing.select"
-      help="Depending on the level chosen, the user will receive no alert ('None'), a warning message ('Optional') or will be obliged to fill in the budget information for the rest of the process ('Required')."/>
+      help="Depending on the level chosen, the user will receive no alert (None), a warning message (Optional) or will be required to fill in the budget information to continue the process (Required)."/>
     <integer name="orderBudgetExceedSelect" title="Budget exceed alert for orders"
       default="0" selection="app.budget.check.exceed.order.select"
-      help="Depending on the level chosen, the user will receive no alert ('None'), a warning message ('Optional') or an error ('Required') if one of the budget exceed the budget value."/>
+      help="Depending on the level chosen, the user will receive no alert (None), a warning message (Optional) or an error (Required) if one of the budgets exceeds the available amount."/>
 
     <extra-code>
       <![CDATA[

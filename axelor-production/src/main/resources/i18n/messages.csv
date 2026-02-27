@@ -362,7 +362,7 @@
 "Human resources",,,
 "Human times",,,
 "Hundredth of an hour input",,,
-"If true, the components will be automatically requested for reservation on planning manufacturing orders.",,,
+"If checked, reservation will be automatically made for components when planning manufacturing orders.",,,
 "Image",,,
 "Import",,,
 "Import CSV",,,
