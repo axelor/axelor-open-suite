@@ -8,21 +8,25 @@
   <entity name="CrmConfig" cacheable="true">
 
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      required="true" unique="true"/>
+      required="true" unique="true" help="Company concerned by the configurations."/>
     <many-to-one name="eventTemplate" ref="com.axelor.message.db.Template"
-      title="Event reminder template"/>
+      title="Event reminder template" help="Email template that will be sent for event reminders."/>
     <many-to-one name="taskTemplate" ref="com.axelor.message.db.Template"
-      title="Task reminder template"/>
+      title="Task reminder template" help="Email template that will be sent for task reminders."/>
     <many-to-one name="meetingTemplate" ref="com.axelor.message.db.Template"
-      title="Meeting reminder template"/>
+      title="Meeting reminder template"
+      help="Email template that will be sent for meeting reminders."/>
     <many-to-one name="callTemplate" ref="com.axelor.message.db.Template"
-      title="Call reminder template"/>
+      title="Call reminder template" help="Email template that will be sent for call reminders."/>
     <many-to-one name="meetingDateChangeTemplate" ref="com.axelor.message.db.Template"
-      title="Meeting's date changed template"/>
+      title="Meeting's date changed template"
+      help="Email template that will be sent for meeting date changes."/>
     <many-to-one name="meetingGuestAddedTemplate" ref="com.axelor.message.db.Template"
-      title="Meeting's guest added template"/>
+      title="Meeting's guest added template"
+      help="Email template that will be sent when guests are added to meetings."/>
     <many-to-one name="meetingGuestDeletedTemplate" ref="com.axelor.message.db.Template"
-      title="Meeting's guest deleted template"/>
+      title="Meeting's guest deleted template"
+      help="Email template that will be sent when guests are removed from meetings."/>
 
     <track>
       <field name="company" on="UPDATE"/>

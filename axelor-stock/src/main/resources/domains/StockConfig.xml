@@ -8,115 +8,160 @@
   <entity name="StockConfig" cacheable="true">
 
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      required="true" unique="true"/>
+      required="true" unique="true" help="Company for which the configurations are set."/>
 
     <many-to-one name="receiptDefaultStockLocation"
-      ref="com.axelor.apps.stock.db.StockLocation" title="Receipt default stock location"/>
+      ref="com.axelor.apps.stock.db.StockLocation" title="Receipt default stock location"
+      help="This configuration defines the default destination location for supplier receipt stock moves, i.e. the location where supplier receipts will be received."/>
     <many-to-one name="pickupDefaultStockLocation"
-      ref="com.axelor.apps.stock.db.StockLocation" title="Pickup default stock location"/>
+      ref="com.axelor.apps.stock.db.StockLocation" title="Pickup default stock location"
+      help="This configuration defines the default shipping location for customer deliveries. Customer deliveries will be shipped from this source location."/>
     <many-to-one name="qualityControlDefaultStockLocation"
-      ref="com.axelor.apps.stock.db.StockLocation" title="Quality control default stock location"/>
+      ref="com.axelor.apps.stock.db.StockLocation" title="Quality control default stock location"
+      help="This configuration defines the default quality control location for the company."/>
 
     <many-to-one name="customerVirtualStockLocation"
-      ref="com.axelor.apps.stock.db.StockLocation" title="Customer virtual stock location"/>
+      ref="com.axelor.apps.stock.db.StockLocation" title="Customer virtual stock location"
+      help="This configuration defines the default customer location for the company. Customer delivery stock moves will have this destination location by default (or source location for customer returns)."/>
     <many-to-one name="supplierVirtualStockLocation"
-      ref="com.axelor.apps.stock.db.StockLocation" title="Supplier virtual stock location"/>
+      ref="com.axelor.apps.stock.db.StockLocation" title="Supplier virtual stock location"
+      help="This configuration defines the default supplier location for the company. Supplier receipt stock moves will have this source location by default."/>
     <many-to-one name="inventoryVirtualStockLocation"
-      ref="com.axelor.apps.stock.db.StockLocation" title="Inventory virtual stock location"/>
+      ref="com.axelor.apps.stock.db.StockLocation" title="Inventory virtual stock location"
+      help="This configuration defines the default inventory virtual location for the company."/>
 
     <many-to-one name="virtualOutsourcingStockLocation"
-      ref="com.axelor.apps.stock.db.StockLocation" title="Virtual outsourcing stock location"/>
+      ref="com.axelor.apps.stock.db.StockLocation" title="Virtual outsourcing stock location"
+      help="This configuration defines the default outsourcing virtual location for the company. This location will be used for production outsourcing."/>
     <many-to-one name="outsourcingReceiptStockLocation"
       ref="com.axelor.apps.stock.db.StockLocation" title="Outsourcing receipt stock location"/>
 
     <many-to-one name="customsMassUnit" ref="com.axelor.apps.base.db.Unit"
-      title="Unit of mass"/>
+      title="Unit of mass"
+      help="This configuration defines the unit of mass used for customs controls. This is not a default value that can be overridden, it is a common value for all moves that can only be modified via this field."/>
 
     <boolean name="realizeStockMovesUponParcelPalletCollection"
       title="Realize stock moves upon parcel/pallet collection"/>
 
     <boolean name="plannedStockMoveAutomaticMail"
-      title="Send email when planning stock move" default="false"/>
+      title="Send email when planning stock move" default="false"
+      help="This configuration defines whether an email will be sent to the customer when a customer delivery stock move changes from Draft to Planned status. On the Configuration tab of a delivery note for this company, the Send email when planning stock move checkbox will be automatically checked, with the associated email template."/>
     <boolean name="realStockMoveAutomaticMail" title="Send email on stock move realization"
-      default="false"/>
+      default="false"
+      help="This configuration defines whether an email will be sent to the customer when a customer delivery stock move changes from Planned to Realized status. On the Configuration tab of a delivery note for this company, the Send email on stock move realization checkbox will be automatically checked, with the associated email template."/>
     <many-to-one name="plannedStockMoveMessageTemplate" title="Message template"
-      ref="com.axelor.message.db.Template"/>
+      ref="com.axelor.message.db.Template"
+      help="This configuration defines the email template sent to the customer when a stock move changes from Draft to Planned status."/>
     <many-to-one name="realStockMoveMessageTemplate" title="Message template"
-      ref="com.axelor.message.db.Template"/>
+      ref="com.axelor.message.db.Template"
+      help="This configuration defines the email template sent to the customer when a stock move changes from Planned to Realized status."/>
 
     <boolean name="supplierArrivalCancellationAutomaticMail"
-      title="Send email on supplier arrival cancellation" default="false"/>
+      title="Send email on supplier arrival cancellation" default="false"
+      help="This configuration defines whether an email will be sent to the supplier when a supplier receipt stock move is cancelled."/>
     <many-to-one name="supplierArrivalCancellationMessageTemplate"
-      title="Message template" ref="com.axelor.message.db.Template"/>
+      title="Message template" ref="com.axelor.message.db.Template"
+      help="This configuration defines the email template sent to the supplier when a supplier receipt is cancelled."/>
 
     <boolean name="logisticalFormAutomaticEmail"
-      title="Send email when saving logistical form" default="false"/>
+      title="Send email when saving logistical form" default="false"
+      help="This configuration defines whether an email will be sent when saving a logistical form."/>
     <many-to-one name="logisticalFormMessageTemplate" title="Message template"
-      ref="com.axelor.message.db.Template"/>
+      ref="com.axelor.message.db.Template"
+      help="This configuration defines the message template used when saving a logistical form."/>
 
     <one-to-many name="freightCarrierCustomerAccountNumberList"
       ref="com.axelor.apps.stock.db.FreightCarrierCustomerAccountNumber"
-      title="Customer account numbers to carriers" mappedBy="stockConfig"/>
+      title="Customer account numbers to carriers" mappedBy="stockConfig"
+      help="This configuration allows indicating the company customer account number with the various carriers it uses. This number will be automatically filled in on logistical forms based on the selected carrier."/>
 
     <string name="conformityCertificateTitle" title="Certificate of conformity title"
-      translatable="true"/>
+      translatable="true"
+      help="This configuration defines the title that will appear on certificate of conformity printings for this company."/>
     <string name="conformityCertificateDescription" title="Text in certificate of conformity"
-      large="true" translatable="true"/>
+      large="true" translatable="true"
+      help="This configuration defines the text that will appear on certificate of conformity printings for this company."/>
     <many-to-one name="signatoryUser" ref="com.axelor.auth.db.User"
-      title="Default signatory user"/>
+      title="Default signatory user"
+      help="This configuration defines the default signatory for certificates of conformity, whose name will appear on printings, along with the associated electronic signature if configured on the user record."/>
 
     <boolean name="displayTrackNbrOnPickingPrinting"
-      title="Display tracking number details on Picking printing" default="true"/>
+      title="Display tracking number details on Picking printing" default="true"
+      help="This configuration defines whether tracking numbers are displayed on picking order printings."/>
     <boolean name="displayBarcodeOnPickingPrinting"
-      title="Display barcode on Picking printing" default="true"/>
+      title="Display barcode on Picking printing" default="true"
+      help="This configuration defines whether barcodes are displayed on picking order printings."/>
     <boolean name="displayCustomerCodeOnPickingPrinting"
-      title="Display customer code on picking printing" default="true"/>
+      title="Display customer code on picking printing" default="true"
+      help="This configuration defines whether the customer code is displayed on picking order printings."/>
 
     <boolean name="displayPartnerSeqOnPrinting" title="Display partner sequence on printing"
-      default="true"/>
+      default="true"
+      help="This configuration defines whether the partner reference is displayed on stock move printings."/>
 
     <boolean name="displayLineDetailsOnPrinting" title="Display line details on printing"
-      default="true"/>
-    <boolean name="isWithReturnSurplus" title="Return Surplus"/>
-    <boolean name="isWithBackorder" title="Manage backorder"/>
+      default="true"
+      help="This configuration defines whether line details are displayed on stock move printings."/>
+    <boolean name="isWithReturnSurplus" title="Return Surplus"
+      help="When enabled, if during a stock move the actual quantity is greater than the planned quantity, a complementary stock move will be automatically generated so that the delivered quantity equals the planned quantity."/>
+    <boolean name="isWithBackorder" title="Manage backorder"
+      help="When enabled, this activates automatic backorder management on delivery notes by checking the Manage backorder checkbox on each delivery note. When realizing a stock move, if the order has not been fully delivered, you will have the option to automatically generate a backorder stock move with the undelivered products."/>
 
     <boolean name="pickingOrderPrintingDetailed" title="Picking order printing detailed"
-      default="true"/>
+      default="true"
+      help="When enabled, picking order printings include additional detailed information."/>
     <boolean name="isDisplaySaleValueInPrinting"
-      title="Display sale value in location financial data printing" default="false"/>
+      title="Display sale value in location financial data printing" default="false"
+      help="This configuration defines whether the sale value is displayed on location financial data printings."/>
     <boolean name="isDisplayAccountingValueInPrinting"
-      title="Display accounting value in location financial data printing" default="false"/>
+      title="Display accounting value in location financial data printing" default="false"
+      help="This configuration defines whether the accounting value is displayed on location financial data printings."/>
     <boolean name="isDisplayAgPriceInPrinting" title="Display average price in printing"
-      default="true"/>
+      default="true"
+      help="This configuration defines whether the WAP value is displayed on location financial data printings."/>
     <boolean name="isDisplayPurchaseValueInPrinting"
-      title="Display purchase value in location financial data printing" default="false"/>
+      title="Display purchase value in location financial data printing" default="false"
+      help="This configuration defines whether the purchase value is displayed on location financial data printings."/>
     <integer name="stockValuationTypeSelect" title="Stock location value on form view"
-      selection="stock.stock.location.value.type" default="5"/>
+      selection="stock.stock.location.value.type" default="5"
+      help="This configuration defines the default method for stock valuation (among WAP, stock location WAP value, accounting value, purchase value and sale value)."/>
     <integer name="inventoryValuationTypeSelect" title="Inventory valuation type"
-      selection="stock.stock.location.value.type"/>
+      selection="stock.stock.location.value.type"
+      help="This configuration defines the default method for inventory valuation (among WAP, stock location WAP value, accounting value, purchase value and sale value)."/>
 
     <boolean name="displayTrackNbrOnCertificateOfConformityPrinting"
-      title="Display tracking number details on certificate of conformity printing" default="true"/>
+      title="Display tracking number details on certificate of conformity printing" default="true"
+      help="This configuration defines whether tracking numbers are displayed on certificate of conformity printings."/>
     <boolean name="displayExtRefOnCertificateOfConformityPrinting"
-      title="Display external ref. on certificate of conformity printing" default="true"/>
+      title="Display external ref. on certificate of conformity printing" default="true"
+      help="This configuration defines whether the customer reference is displayed on certificate of conformity printings."/>
     <many-to-one name="stockRuleMessageTemplate" ref="com.axelor.message.db.Template"
-      title="Message template for stock rules"/>
+      title="Message template for stock rules"
+      help="This configuration defines the message template sent when a defined stock rule triggers an email alert indicating that the product quantity in stock is insufficient."/>
     <boolean name="displayProductCodeOnPrinting" title="Display product code on printing"
-      default="true"/>
-    <boolean name="displayPriceOnPrinting" title="Display price on printing" default="true"/>
+      default="true"
+      help="This configuration defines whether the product code is displayed on stock move printings."/>
+    <boolean name="displayPriceOnPrinting" title="Display price on printing" default="true"
+      help="This configuration defines whether prices are displayed on delivery note printings."/>
     <boolean name="displayOrderReferenceAndOrderDate"
-      title="Display order reference and order date" default="true"/>
+      title="Display order reference and order date" default="true"
+      help="This configuration defines whether the customer order number and order date are displayed on delivery note printings."/>
 
     <integer name="percentToleranceForWapChange" title="Tolerance on WAP changes (%)"
-      min="0" nullable="true"/>
+      min="0" nullable="true"
+      help="This configuration allows you to define a tolerance threshold for WAP calculation. If the WAP change exceeds the defined percentage, the user will be alerted."/>
     <many-to-one name="pickingStockMovePrintTemplate"
-      title="Picking stock move template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+      title="Picking stock move template" ref="com.axelor.apps.base.db.PrintingTemplate"
+      help="You can select here the default picking order print template for the company."/>
     <many-to-one name="conformityCertificatePrintTemplate"
-      title="Conformity certificate template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+      title="Conformity certificate template" ref="com.axelor.apps.base.db.PrintingTemplate"
+      help="You can select here the default certificate of conformity print template for the company."/>
     <many-to-one name="inventoryPrintTemplate" title="Inventory template"
-      ref="com.axelor.apps.base.db.PrintingTemplate"/>
+      ref="com.axelor.apps.base.db.PrintingTemplate"
+      help="You can select here the default inventory print template for the company."/>
     <many-to-one name="stockLocationPrintTemplate" title="Stock location template"
-      ref="com.axelor.apps.base.db.PrintingTemplate"/>
+      ref="com.axelor.apps.base.db.PrintingTemplate"
+      help="You can select here the default stock location print template for the company."/>
 
     <many-to-one name="cartStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
       title="Transition location (cart)"/>
@@ -151,7 +196,8 @@
 
       <field name="customsMassUnit" on="UPDATE"/>
 
-      <field name="realizeStockMovesUponParcelPalletCollection" on="UPDATE"/>
+      <field name="realizeStockMovesUponParcelPalletCollection" on="UPDATE"
+        help="This configuration defines whether, when a logistical form moves to Collected status, the related delivery note(s) automatically move to Realized status."/>
 
       <field name="plannedStockMoveAutomaticMail" on="UPDATE"/>
       <field name="realStockMoveAutomaticMail" on="UPDATE"/>

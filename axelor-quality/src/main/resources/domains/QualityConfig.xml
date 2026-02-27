@@ -8,15 +8,19 @@
   <entity name="QualityConfig" cacheable="true">
 
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      required="true" unique="true"/>
+      required="true" unique="true" help="Company for which the configurations are set."/>
     <many-to-one name="qiActionDistributionPrintTemplate"
-      title="Action distribution template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+      title="Action distribution template" ref="com.axelor.apps.base.db.PrintingTemplate"
+      help="You can select here the print template that will be used to generate action distributions."/>
     <many-to-one name="qiActionDistributionSequence"
-      title="Action distribution sequence" ref="com.axelor.apps.base.db.Sequence"/>
+      title="Action distribution sequence" ref="com.axelor.apps.base.db.Sequence"
+      help="You can select and define here the sequence that will be used for action distributions."/>
     <many-to-one ref="com.axelor.apps.base.db.PrintingTemplate"
-      name="qiDecisionDistributionPrintTemplate" title="Decision distribution template"/>
+      name="qiDecisionDistributionPrintTemplate" title="Decision distribution template"
+      help="You can select here the print template that will be used to generate decision distributions."/>
     <many-to-one ref="com.axelor.apps.base.db.Sequence"
-      name="qiDecisionDistributionSequence" title="Decision distribution sequence"/>
+      name="qiDecisionDistributionSequence" title="Decision distribution sequence"
+      help="You can select and define here the sequence that will be used for decision distributions."/>
 
     <track>
       <field name="company" on="UPDATE"/>
