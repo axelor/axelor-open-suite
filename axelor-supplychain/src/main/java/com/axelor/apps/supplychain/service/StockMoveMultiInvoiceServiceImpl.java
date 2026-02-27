@@ -57,6 +57,7 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -875,8 +876,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    */
   protected void fillReferenceInvoiceFromMultiOutStockMove(
       List<StockMove> stockMoveList, Invoice dummyInvoice) {
-    // Concat sequence, internal ref and external ref from all saleOrder
-    StringJoiner externalRef = new StringJoiner("|");
+    Set<SaleOrder> allSaleOrders = new LinkedHashSet<>();
     StringJoiner internalRef = new StringJoiner("|");
 
     for (StockMove stockMove : stockMoveList) {
@@ -885,11 +885,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       if (ObjectUtils.isEmpty(saleOrderSet)) {
         continue;
       }
-      String externalReference =
-          stockMoveInvoiceService.fillExternalReferenceInvoiceFromOutStockMove(saleOrderSet);
-      if (StringUtils.notEmpty(externalReference)) {
-        externalRef.add(externalReference);
-      }
+      allSaleOrders.addAll(saleOrderSet);
       String internalReference =
           stockMoveInvoiceService.fillInternalReferenceInvoiceFromOutStockMove(
               stockMove, saleOrderSet);
@@ -897,7 +893,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         internalRef.add(internalReference);
       }
     }
-    dummyInvoice.setExternalReference(externalRef.toString());
+    dummyInvoice.setExternalReference(
+        stockMoveInvoiceService.fillExternalReferenceInvoiceFromOutStockMove(allSaleOrders));
     dummyInvoice.setInternalReference(internalRef.toString());
   }
 
@@ -909,8 +906,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
    */
   protected void fillReferenceInvoiceFromMultiInStockMove(
       List<StockMove> stockMoveList, Invoice dummyInvoice) {
-    // Concat sequence, internal ref and external ref from all purchaseOrder
-    StringJoiner externalRef = new StringJoiner("|");
+    Set<PurchaseOrder> allPurchaseOrders = new LinkedHashSet<>();
     StringJoiner internalRef = new StringJoiner("|");
 
     for (StockMove stockMove : stockMoveList) {
@@ -919,11 +915,7 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
       if (ObjectUtils.isEmpty(purchaseOrderSet)) {
         continue;
       }
-      String externalReference =
-          stockMoveInvoiceService.fillExternalReferenceInvoiceFromInStockMove(purchaseOrderSet);
-      if (StringUtils.notEmpty(externalReference)) {
-        externalRef.add(externalReference);
-      }
+      allPurchaseOrders.addAll(purchaseOrderSet);
       String internalReference =
           stockMoveInvoiceService.fillInternalReferenceInvoiceFromInStockMove(
               stockMove, purchaseOrderSet);
@@ -931,7 +923,8 @@ public class StockMoveMultiInvoiceServiceImpl implements StockMoveMultiInvoiceSe
         internalRef.add(internalReference);
       }
     }
-    dummyInvoice.setExternalReference(externalRef.toString());
+    dummyInvoice.setExternalReference(
+        stockMoveInvoiceService.fillExternalReferenceInvoiceFromInStockMove(allPurchaseOrders));
     dummyInvoice.setInternalReference(internalRef.toString());
   }
 
