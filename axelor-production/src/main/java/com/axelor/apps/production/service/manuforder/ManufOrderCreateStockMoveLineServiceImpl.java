@@ -35,6 +35,7 @@ import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ManufOrderCreateStockMoveLineServiceImpl
@@ -256,6 +257,19 @@ public class ManufOrderCreateStockMoveLineServiceImpl
     for (ProdProduct prodProduct : manufOrder.getToProduceProdProductList()) {
       BigDecimal qty =
           manufOrderStockMoveService.getFractionQty(manufOrder, prodProduct, qtyToUpdate);
+      BigDecimal realizedQty =
+          manufOrder.getProducedStockMoveLineList().stream()
+              .filter(
+                  sml ->
+                      sml.getProduct() != null
+                          && sml.getProduct().equals(prodProduct.getProduct())
+                          && sml.getStockMove() != null
+                          && sml.getStockMove().getStatusSelect()
+                              == StockMoveRepository.STATUS_REALIZED)
+              .map(StockMoveLine::getRealQty)
+              .filter(Objects::nonNull)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      qty = qty.subtract(realizedQty).max(BigDecimal.ZERO);
       BigDecimal productCostPrice =
           prodProduct.getProduct() != null
               ? (BigDecimal)
@@ -368,8 +382,17 @@ public class ManufOrderCreateStockMoveLineServiceImpl
     // find planned stock move
     Optional<StockMove> stockMoveOpt =
         manufOrderGetStockMoveService.getPlannedStockMove(manufOrder.getInStockMoveList());
+
     if (!stockMoveOpt.isPresent()) {
-      return;
+      // After a partial finish, the consumed stock move is REALIZED.
+      // Create a new planned stock move for the remaining quantity.
+      StockMove newStockMove =
+          manufOrderGetStockMoveService.getConsumedStockMoveFromManufOrder(manufOrder);
+      if (newStockMove == null) {
+        return;
+      }
+      manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+      stockMoveOpt = Optional.of(newStockMove);
     }
 
     StockMove stockMove = stockMoveOpt.get();
@@ -392,6 +415,19 @@ public class ManufOrderCreateStockMoveLineServiceImpl
     for (ProdProduct prodProduct : manufOrder.getToConsumeProdProductList()) {
       BigDecimal qty =
           manufOrderStockMoveService.getFractionQty(manufOrder, prodProduct, qtyToUpdate);
+      BigDecimal realizedQty =
+          manufOrder.getConsumedStockMoveLineList().stream()
+              .filter(
+                  sml ->
+                      sml.getProduct() != null
+                          && sml.getProduct().equals(prodProduct.getProduct())
+                          && sml.getStockMove() != null
+                          && sml.getStockMove().getStatusSelect()
+                              == StockMoveRepository.STATUS_REALIZED)
+              .map(StockMoveLine::getRealQty)
+              .filter(Objects::nonNull)
+              .reduce(BigDecimal.ZERO, BigDecimal::add);
+      qty = qty.subtract(realizedQty).max(BigDecimal.ZERO);
       _createStockMoveLine(
           prodProduct,
           stockMove,
