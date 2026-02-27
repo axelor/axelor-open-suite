@@ -21,6 +21,7 @@
     <field name="typeSelect"/>
     <field name="stockLocationValue"/>
     <field name="serialNumber"/>
+    <field name="isValued" hidden="true"/>
   </grid>
 
   <grid name="stock-location-light-grid" title="Stock Locations"
@@ -35,6 +36,7 @@
     <field name="typeSelect"/>
     <field name="stockLocationValue"/>
     <field name="serialNumber"/>
+    <field name="isValued" hidden="true"/>
   </grid>
 
 
