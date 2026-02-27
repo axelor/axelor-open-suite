@@ -1390,7 +1390,8 @@
   </action-attrs>
 
   <action-attrs name="action-attrs-sale-other-reason">
-    <attribute for="cancelReasonStr" name="hidden" expr="cancelReason.freeText == false"/>
+    <attribute for="cancelReasonStr" name="hidden"
+      expr="eval: !cancelReason || !cancelReason.freeText"/>
   </action-attrs>
 
   <action-attrs name="action-sale-order-supplychain-attrs-fiscal-position-domain">
