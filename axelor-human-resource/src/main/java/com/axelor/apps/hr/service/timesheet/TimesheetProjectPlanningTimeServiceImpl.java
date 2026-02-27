@@ -97,6 +97,10 @@ public class TimesheetProjectPlanningTimeServiceImpl
   @Override
   public void generateLinesFromExpectedProjectPlanning(Timesheet timesheet) throws AxelorException {
     List<ProjectPlanningTime> planningList = getExpectedProjectPlanningTimeList(timesheet);
+    if (CollectionUtils.isEmpty(planningList)) {
+      return;
+    }
+    planningList.sort(Comparator.comparing(ProjectPlanningTime::getStartDateTime));
     for (ProjectPlanningTime projectPlanningTime : planningList) {
       createTimeSheetLinesFromPPT(timesheet, projectPlanningTime);
     }
