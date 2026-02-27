@@ -131,6 +131,9 @@
       <field name="prodProcessLine.outsourcing" hidden="true"/>
       <field name="manufOrder.outsourcing" hidden="true"/>
     </panel>
+    <panel-related field="prodProcessLine.hazardPhraseSet" name="safetyPanel"
+      title="Safety"
+      showIf="prodProcessLine &amp;&amp; prodProcessLine.hazardPhraseSet.length &gt; 0" colSpan="12"/>
     <panel name="datesPanel" title="Dates" colSpan="12" readonlyIf="statusSelect == 6">
       <panel name="plannedDates" title="Planned dates" colSpan="6">
         <field name="plannedStartDateT"
