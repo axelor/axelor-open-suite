@@ -20,6 +20,7 @@ package com.axelor.apps.account.service.batch;
 
 import com.axelor.apps.account.db.AccountingBatch;
 import com.axelor.apps.account.db.AccountingReport;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.AccountingReportRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
 import com.axelor.apps.account.service.MoveLineExportService;
@@ -35,6 +36,7 @@ import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -105,11 +107,16 @@ public class BatchMoveLineExport extends BatchStrategy {
 
         moveLineDone =
             moveLineRepo.all().filter("self.move.accountingReport = ?1", accountingReport).count();
-        moveDone = moveRepo.all().filter("self.accountingReport = ?1", accountingReport).count();
+        List<Move> moves =
+            moveRepo.all().filter("self.accountingReport = ?1", accountingReport).fetch();
+        moveDone = moves.size();
         debit = accountingReport.getTotalDebit();
         credit = accountingReport.getTotalCredit();
         balance = accountingReport.getBalance();
 
+        for (Move move : moves) {
+          updateAccountMove(move, false);
+        }
         updateAccountingReport(accountingReport);
 
       } catch (AxelorException e) {
