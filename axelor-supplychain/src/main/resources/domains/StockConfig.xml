@@ -7,7 +7,8 @@
 
   <entity name="StockConfig" cacheable="true">
     <many-to-one name="directOrderStockLocation"
-      ref="com.axelor.apps.stock.db.StockLocation" title="Direct order default stock location"/>
+      ref="com.axelor.apps.stock.db.StockLocation" title="Direct order default stock location"
+      help="This configuration defines the default stock location used for direct order (drop shipment) type orders."/>
 
     <track>
       <field name="directOrderStockLocation" on="UPDATE"/>

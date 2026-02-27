@@ -7,7 +7,7 @@
 
   <entity name="BankPaymentConfig" cacheable="true">
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      required="true" unique="true"/>
+      required="true" unique="true" help="Company for which the configurations are set."/>
 
     <many-to-one name="defaultSignatoryUser" ref="com.axelor.auth.db.User"
       title="Default signatory"/>
@@ -19,27 +19,35 @@
       title="Bank to bank account for external order (multiple company)"/>
 
     <many-to-one name="sepaCreditTransSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="SEPA credit transfers"/>
+      title="SEPA credit transfers"
+      help="You can configure here the sequence that will be used for SEPA credit transfers of this company."/>
     <many-to-one name="sepaDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="SEPA direct debits"/>
+      title="SEPA direct debits"
+      help="You can configure here the sequence that will be used for SEPA direct debits of this company."/>
     <many-to-one name="intCreditTransSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="International credit transfers"/>
+      title="International credit transfers"
+      help="You can configure here the sequence that will be used for international credit transfers of this company."/>
     <many-to-one name="intDirectDebitSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="International direct debits"/>
+      title="International direct debits"
+      help="You can configure here the sequence that will be used for international direct debits of this company."/>
     <many-to-one ref="com.axelor.apps.base.db.Sequence" name="billOfExchangeSequence"
-      title="Bill of exchanges"/>
+      title="Bill of exchanges"
+      help="You can configure here the sequence that will be used for bills of exchange of this company."/>
 
     <many-to-one name="intTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="International treasury transfers"/>
+      title="International treasury transfers"
+      help="You can configure here the sequence that will be used for international treasury transfers of this company."/>
     <many-to-one name="natTreasuryTransSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="National treasury transfer"/>
+      title="National treasury transfer"
+      help="You can configure here the sequence that will be used for national treasury transfers of this company."/>
     <many-to-one name="otherBankOrderSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="Other bank order types"/>
+      title="Other bank order types"
+      help="You can configure here the sequence that will be used for other bank order types of this company."/>
 
     <boolean name="hasAutomaticReconciliation" title="Automatic pointing"
-      help="Field allowing to enable automatic pointing during reconciliation. Pointing can still be done manually when incomplete"/>
+      help="This field, when checked, enables the automatic pointing function during bank reconciliation sessions. Pointing can also be done manually as a complement."/>
     <boolean name="hasAutoMoveFromStatementRule" title="Automatic accounting ?"
-      help="If actived, on the bankReconciliation form, once the button Load Statement will be clicked, accounting of entries will be executed"/>
+      help="If enabled, on the bank reconciliation form, when the Load statement button is clicked, automatic accounting will be executed."/>
 
     <decimal name="bnkStmtAutoReconcileAmountMargin"
       title="Amount of the semi-interval of confidence for the amounts" min="0.000" max="1000.000"
@@ -51,9 +59,11 @@
     <string name="icsNumber" title="ICS Number" min="13" max="13"/>
 
     <many-to-one name="bankStatementLinesPrintTemplate"
-      title="Bank statement lines template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+      title="Bank statement lines template" ref="com.axelor.apps.base.db.PrintingTemplate"
+      help="You can select here the template used for bank statement lines printings."/>
     <many-to-one name="bankReconciliationStatementPrintTemplate"
-      title="Bank reconciliation statement template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
+      title="Bank reconciliation statement template" ref="com.axelor.apps.base.db.PrintingTemplate"
+      help="You can select here the template used for bank reconciliation statement printings."/>
 
     <track>
       <field name="company" on="UPDATE"/>

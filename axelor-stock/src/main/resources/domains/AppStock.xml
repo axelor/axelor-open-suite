@@ -9,32 +9,43 @@
 
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
-    <boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
+    <boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"
+      help="This configuration controls whether the product description from the product record is displayed on stock move lines in a description field."/>
     <boolean name="requireToFillConformityOnReceipt"
-      title="Require to fill conformity for products ticked 'Control on Receipt'" default="true"/>
-    <boolean name="isSeparateShipmentOperations" title="Separate the shipment operations"/>
+      title="Require to fill conformity for products ticked 'Control on Receipt'" default="true"
+      help="When enabled, this configuration makes it mandatory to fill in the Conformity field on stock move lines of receipt orders, requiring a conformity check before a product enters stock. This applies to products with the Control on receipt checkbox ticked in the stock tab of their product record."/>
+    <boolean name="isSeparateShipmentOperations" title="Separate the shipment operations"
+      help="When enabled, this option adds two menu entries (Availability request in Sales and Customer shipments to prepare in Stock / Deliveries) as well as 2 checkboxes on stock moves (Availability request and Picking order printed). Sales representatives can indicate to preparers which orders need to be prepared for shipment. Once the order is prepared, sales representatives will be informed."/>
     <boolean name="isRequiredShipmentSupplierDetails"
-      title="Require to fill the shipment information"/>
-    <many-to-one name="economicArea" ref="com.axelor.apps.base.db.EconomicArea"/>
+      title="Require to fill the shipment information"
+      help="When enabled, this configuration requires filling in the Supplier shipment date and Supplier shipment reference when realizing a supplier receipt."/>
+    <many-to-one name="economicArea" ref="com.axelor.apps.base.db.EconomicArea"
+      help="This field is only useful for customs duties related to a stock move. It defines in which economic area the company is located."/>
     <many-to-one name="stockUnit" title="Default unit"
-      ref="com.axelor.apps.base.db.Unit"/>
+      ref="com.axelor.apps.base.db.Unit" help="Default unit when creating a new product."/>
     <boolean name="activateTrackingNumberBarCodeGeneration"
-      title="Activate bar code generation for tracking number" default="false"/>
+      title="Activate bar code generation for tracking number" default="false"
+      help="When enabled, it becomes possible to generate barcodes for tracking numbers."/>
     <boolean name="editTrackingNumberBarcodeType"
-      title="Specify the barcode type by tracking number configuration" default="false"/>
+      title="Specify the barcode type by tracking number configuration" default="false"
+      help="When enabled, you can specify at the tracking number configuration level the barcode type that will be generated for tracking numbers linked to this configuration. When disabled, the default barcode type will be the one defined in the adjacent field Tracking number barcode type."/>
     <many-to-one name="trackingNumberBarcodeTypeConfig"
       title="Tracking number barcode type" ref="com.axelor.apps.base.db.BarcodeTypeConfig"
-      default="EAN_13"/>
+      default="EAN_13" help="Barcode type that will be used by default on tracking numbers."/>
     <boolean name="activateStockLocationBarCodeGeneration"
-      title="Activate bar code generation for stock location" default="false"/>
+      title="Activate bar code generation for stock location" default="false"
+      help="When enabled, it becomes possible to generate barcodes for stock locations."/>
     <boolean name="editStockLocationBarcodeType"
-      title="Specify the barcode type by stock location" default="false"/>
+      title="Specify the barcode type by stock location" default="false"
+      help="When enabled, you can specify at each stock location level the barcode type that will be generated for that location. When disabled, the default barcode type will be the one defined in the adjacent field Stock location barcode type."/>
     <many-to-one name="stockLocationBarcodeTypeConfig"
       title="Stock location barcode type" ref="com.axelor.apps.base.db.BarcodeTypeConfig"
-      default="EAN_13"/>
+      default="EAN_13" help="Barcode type that will be used by default on stock locations."/>
     <boolean name="isManageStockLocationOnStockMoveLine"
-      title="Manage stock location on stock move lines"/>
-    <boolean name="isIncotermEnabled" title="Enable incoterm" default="true"/>
+      title="Manage stock location on stock move lines"
+      help="When enabled, it is possible to manage stock locations at the stock move line level, not just globally on the stock move. Note that on a stock move line, only sub-locations of the parent location selected in the stock move header can be selected."/>
+    <boolean name="isIncotermEnabled" title="Enable incoterm" default="true"
+      help="This checkbox enables the incoterms feature, which can be configured in the corresponding menu entry under the configuration menu of the stock module."/>
     <boolean name="isMassStockMoveManaged" title="Mass move enabled"/>
 
     <track>

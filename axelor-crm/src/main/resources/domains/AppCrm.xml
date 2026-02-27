@@ -9,41 +9,60 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <integer name="assignableUsers" title="Assignable Users"
-      selection="crm.app.crm.assignable.user.select"/>
+      selection="crm.app.crm.assignable.user.select"
+      help="This configuration defines whether clients can be assigned to all software users, or only to users belonging to certain groups. These groups can be selected when choosing the Certain user groups option."/>
     <many-to-many name="groupsAssignable" title="Groups Assignable"
       ref="com.axelor.auth.db.Group"/>
     <boolean name="displayCustomerDescriptionInOpportunity"
-      title="Display customer description in opportunity"/>
-    <boolean name="isManageRecurrent" title="Manage recurring opportunities"/>
-    <integer name="defaultRecurringDuration" title="Default recurring duration (in months)"/>
-    <boolean name="isManageCatalogs" title="Manage catalogs" default="false"/>
-    <boolean name="agenciesManagement" title="Agencies management"/>
+      title="Display customer description in opportunity"
+      help="If this box is checked, the content of the description field from a lead or a customer record will be automatically copied to newly created opportunities linked to this lead or customer."/>
+    <boolean name="isManageRecurrent" title="Manage recurring opportunities"
+      help="When enabled, this configuration displays a Recurring tab on opportunities, which allows indicating that a recurring revenue amount is expected for this opportunity, as well as the expected start date and duration of the recurring revenue."/>
+    <integer name="defaultRecurringDuration" title="Default recurring duration (in months)"
+      help="This field defines a default value in months for the expected recurring revenue duration on opportunities."/>
+    <boolean name="isManageCatalogs" title="Manage catalogs" default="false"
+      help="This configuration enables catalog management. It allows adding sales catalogs in PDF format that can be viewed from the application."/>
+    <boolean name="agenciesManagement" title="Agencies management"
+      help="This configuration enables agency management. These are commercial agencies, allowing leads and customers to be linked to agencies."/>
     <boolean name="crmProcessOnPartner" title="Manage statuses on prospect partner"
-      default="false"/>
+      default="false"
+      help="This configuration enables status management on prospects. It will then be possible to create customizable statuses (which can be created from the Configuration/Custom statuses menu of the CRM) for prospects, allowing prospects to be associated with statuses."/>
     <boolean name="isSearchFunctionalityEnabled" title="Enable search functionality"
-      default="false"/>
+      default="false"
+      help="This configuration enables a search tool in the CRM, which allows querying multiple object types (opportunities, leads, events, etc.) using keywords and a configurable mapping."/>
     <boolean name="isCorporatePartnerEnabled" title="Enable corporate partner"
-      default="false"/>
+      default="false"
+      help="This configuration enables corporate partner management in the CRM. It will then be possible to create partner-type third parties, useful when managing a partner network."/>
     <many-to-one name="closedWinOpportunityStatus"
-      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed win opportunity status"/>
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed win opportunity status"
+      help="You can define here which status opportunities are considered as won. Opportunity statuses are customizable and can be created from the Configuration/Custom statuses/Opportunity statuses menu of the CRM."/>
     <many-to-one name="closedLostOpportunityStatus"
-      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed lost opportunity status"/>
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Closed lost opportunity status"
+      help="You can define here which status opportunities are considered as lost. Opportunity statuses are customizable and can be created from the Configuration/Custom statuses/Opportunity statuses menu of the CRM."/>
     <many-to-one name="salesPropositionStatus"
-      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Sales proposition step"/>
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Sales proposition step"
+      help="You can define here which status opportunities move to a sales proposition stage. Opportunity statuses are customizable and can be created from the Configuration/Custom statuses/Opportunity statuses menu of the CRM."/>
     <many-to-one name="convertedLeadStatus" ref="com.axelor.apps.crm.db.LeadStatus"
-      title="Converted lead status"/>
+      title="Converted lead status"
+      help="You can define here which status leads are converted to a third party (customer or prospect). Lead statuses are customizable and can be created from the Configuration/Custom statuses/Lead statuses menu of the CRM."/>
     <many-to-one name="lostLeadStatus" ref="com.axelor.apps.crm.db.LeadStatus"
-      title="Lost lead status"/>
+      title="Lost lead status"
+      help="You can define here which status leads are considered as lost. Lead statuses are customizable and can be created from the Configuration/Custom statuses/Lead statuses menu of the CRM."/>
     <many-to-one name="closedWinPartnerStatus"
-      ref="com.axelor.apps.crm.db.PartnerStatus" title="Closed win partner status"/>
+      ref="com.axelor.apps.crm.db.PartnerStatus" title="Closed win partner status"
+      help="You can define here which status prospect partners are considered as won. Prospect statuses are customizable and can be created from the Configuration/Custom statuses/Partner statuses menu of the CRM."/>
     <many-to-one name="closedLostPartnerStatus"
-      ref="com.axelor.apps.crm.db.PartnerStatus" title="Closed lost partner status"/>
+      ref="com.axelor.apps.crm.db.PartnerStatus" title="Closed lost partner status"
+      help="You can define here which status prospect partners are considered as lost. Prospect statuses are customizable and can be created from the Configuration/Custom statuses/Partner statuses menu of the CRM."/>
     <many-to-one name="leadDefaultStatus" ref="com.axelor.apps.crm.db.LeadStatus"
-      title="Default lead status"/>
+      title="Default lead status"
+      help="You can define here which status leads are created with. Lead statuses are customizable and can be created from the Configuration/Custom statuses/Lead statuses menu of the CRM."/>
     <many-to-one name="opportunityDefaultStatus"
-      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Default opportunity status"/>
+      ref="com.axelor.apps.crm.db.OpportunityStatus" title="Default opportunity status"
+      help="You can define here which status opportunities are created with. Opportunity statuses are customizable and can be created from the Configuration/Custom statuses/Opportunity statuses menu of the CRM."/>
     <many-to-one name="partnerDefaultStatus" ref="com.axelor.apps.crm.db.PartnerStatus"
-      title="Default partner status"/>
+      title="Default partner status"
+      help="You can define here which status prospect partners are created with. Prospect statuses are customizable and can be created from the Configuration/Custom statuses/Partner statuses menu of the CRM."/>
 
     <string name="emailDomainToIgnore" title="Email domain to ignore"
       help="In order to make this field working a format is needed, see example: example1.com,example2.fr,example.exemple.com"/>

@@ -7,7 +7,7 @@
 
   <entity name="ProjectConfig" cacheable="true">
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      required="true" unique="true"/>
+      required="true" unique="true" help="Company for which the configurations are set."/>
 
     <track>
       <field name="company" on="UPDATE"/>
