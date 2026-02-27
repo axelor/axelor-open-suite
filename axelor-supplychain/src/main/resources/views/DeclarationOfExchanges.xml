@@ -115,20 +115,20 @@
       self.stockMove.statusSelect = 3
       AND self.stockMove.company = :_company
       AND
-      (COALESCE(self.stockMove.fromAddress.country.id,
-      self.fromStockLocation.address.country.id)
-      =
-      :_country
-      OR
-      COALESCE(self.stockMove.toAddress.country.id,
-      self.toStockLocation.address.country.id) =
-      :_country)
+      ((self.stockMove.typeSelect = :_incomingStockMove AND (self.stockMove.fromAddress.country =
+      :_country OR
+      self.toStockLocation.address.country = :_country))
+      OR (self.stockMove.typeSelect =
+      :_outgoingStockMove AND (self.stockMove.toAddress.country = :_country OR
+      self.fromStockLocation.address.country =
+      :_country)))
       AND
-      COALESCE(self.stockMove.fromAddress.country.id,
-      self.fromStockLocation.address.country.id)
-      !=
-      COALESCE(self.stockMove.toAddress.country.id,
-      self.toStockLocation.address.country.id)
+      (self.stockMove.typeSelect =
+      :_incomingStockMove AND self.stockMove.fromAddress.country !=
+      self.toStockLocation.address.country
+      OR self.stockMove.typeSelect = :_outgoingStockMove AND
+      self.stockMove.toAddress.country !=
+      self.fromStockLocation.address.country)
       AND
       COALESCE(self.stockMove.fromAddress.country.economicArea.id,
       self.fromStockLocation.address.country.economicArea.id)
@@ -154,8 +154,10 @@
     <context name="_toDate" expr="eval: period?.toDate"/>
     <context name="_productTypeSelect" expr="eval: productTypeSelect"/>
     <context name="_stockMoveTypeSelect" expr="eval: stockMoveTypeSelect"/>
-    <context name="_country" expr="eval: country.id"/>
+    <context name="_country" expr="eval: country"/>
     <context name="_company" expr="eval: company"/>
+    <context name="_incomingStockMove" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
+    <context name="_outgoingStockMove" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
   </action-view>
 
   <action-attrs name="action-declaration-of-exchanges-attrs-show-price">
