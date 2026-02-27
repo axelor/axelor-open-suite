@@ -10,85 +10,121 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="custStockMoveMgtOnSO" title="Customer deliveries management"
-      default="false"/>
+      default="false"
+      help="This configuration enables the generation of delivery notes from sale orders. A Generate delivery note button will appear on sale orders and allow to manually generate delivery notes. For automatic generation, you need to enable the Generate customer deliveries automatically configuration."/>
     <boolean name="customerStockMoveGenerationAuto"
-      title="Generate customer deliveries automatically" default="false"/>
+      title="Generate customer deliveries automatically" default="false"
+      help="When this configuration is enabled, when sale orders move to Confirmed order status, delivery notes are automatically generated, without having to click the Generate delivery note button from orders."/>
     <boolean name="supplStockMoveMgtOnPO" title="Supplier arrivals management"
-      default="false"/>
+      default="false"
+      help="This configuration enables the generation of receipt notes from purchase orders. A Generate receipt note button will appear on purchase orders and allow to manually generate receipt notes. For automatic generation, you need to enable the Generate supplier arrivals automatically configuration."/>
     <boolean name="supplierStockMoveGenerationAuto"
-      title="Generate supplier arrivals automatically" default="false"/>
+      title="Generate supplier arrivals automatically" default="false"
+      help="When this configuration is enabled, when purchase orders move to Validated status, receipt notes are automatically generated, without having to click the Generate receipt note button from orders."/>
     <boolean name="allowSusbcriptionSaleOrder" title="Allow Subscriptions for Sale orders"
-      default="false"/>
-    <boolean name="checkSaleStocks" title="Check stocks in a sale order" default="false"/>
+      default="false"
+      help="This configuration enables subscription-type sale orders (with recurring invoicing)."/>
+    <boolean name="checkSaleStocks" title="Check stocks in a sale order" default="false"
+      help="When this configuration is enabled, the stock level of a product is checked when creating a quotation/order line, and a warning message is displayed if the selected product is not available in sufficient quantity in stock."/>
     <boolean name="generateInvoiceFromStockMove" title="Generate invoice from stock move"
-      default="false"/>
+      default="false"
+      help="When this configuration is enabled, you will be able to generate invoices from delivery notes and receipt notes using a Generate invoice button."/>
 
     <boolean name="validStepForInvOutSM"
-      title="Validation step for invoicing outgoing stock move" default="false"/>
+      title="Validation step for invoicing outgoing stock move" default="false"
+      help="When this configuration is enabled, this adds a validation step when generating an invoice from a delivery note."/>
 
     <boolean name="terminateSaleOrderOnDelivery" title="Terminate sale order on delivery"
-      default="false"/>
+      default="false"
+      help="When this configuration is enabled, a sale order will automatically move to Completed order status when all delivery notes linked to this order are realized."/>
     <boolean name="completeSaleOrderOnInvoicing"
-      title="Complete sale order when all has been invoiced"/>
+      title="Complete sale order when all has been invoiced"
+      help="When this configuration is enabled, the order will automatically move to Completed order status once the Invoiced excl. tax amount equals the Total excl. tax of the order. This will happen when all invoices linked to the order move to Ventilated status."/>
     <boolean name="terminatePurchaseOrderOnReceipt"
-      title="Terminate purchase order on Receipt" default="false"/>
+      title="Terminate purchase order on Receipt" default="false"
+      help="When this configuration is enabled, a purchase order will automatically move to Terminated status when all receipt notes linked to this order are realized."/>
 
     <boolean name="allowCompleteManuallySaleOrder"
-      title="Allow complete manually sale order"/>
+      title="Allow complete manually sale order"
+      help="When this configuration is enabled, a Manually complete sale order button appears on sale orders and allows to manually move orders to Confirmed order status."/>
 
     <boolean name="purchaseOrderGenerationAuto"
-      title="Generate purchase orders automatically" default="false"/>
+      title="Generate purchase orders automatically" default="false"
+      help="When this configuration is enabled, when a sale order is confirmed, if it contains lines with products whose procurement method is Purchase type, a purchase order is automatically generated in draft status."/>
 
     <boolean name="allowFinishManuallyPurchaseOrder"
-      title="Allow finish manually purchase order" default="false"/>
+      title="Allow finish manually purchase order" default="false"
+      help="When this configuration is enabled, a Terminate order button appears on purchase orders and allows to manually move orders to Terminated status."/>
 
     <boolean name="generateInvoiceFromSaleOrder" title="Generate invoice from sale order"
-      default="false"/>
+      default="false"
+      help="This configuration enables invoice generation from sale orders. A Generate invoice button will appear on sale orders and allow to generate invoices from orders."/>
     <boolean name="generateInvoiceFromPurchaseOrder"
-      title="Generate invoice from purchase order" default="false"/>
+      title="Generate invoice from purchase order" default="false"
+      help="This configuration enables invoice generation from purchase orders. A Generate control invoice button will appear on orders and allow to generate invoices from orders."/>
     <boolean name="allowTimetableInvoicing" title="Allow timetable invoicing"
-      default="false"/>
+      default="false"
+      help="This configuration enables the ability to invoice timetables of sale orders."/>
 
-    <boolean name="intercoFromPurchase" title="Interco from purchase" default="false"/>
-    <boolean name="intercoFromSale" title="Interco from sale" default="false"/>
-    <boolean name="intercoFromInvoice" title="Interco from invoice" default="false"/>
+    <boolean name="intercoFromPurchase" title="Interco from purchase" default="false"
+      help="This configuration enables interco management from purchase orders. Interco is an intercompany flow, when company A places an order with company B. In the case of this configuration, when a purchase quotation/order is created by company A, an equivalent sale quotation/order for company B will be automatically created."/>
+    <boolean name="intercoFromSale" title="Interco from sale" default="false"
+      help="This configuration enables interco management from sale orders. Interco is an intercompany flow, when company A places an order with company B. In the case of this configuration, when a sale quotation/order is created by company B, an equivalent purchase quotation/order for company A will be automatically created."/>
+    <boolean name="intercoFromInvoice" title="Interco from invoice" default="false"
+      help="This configuration enables interco management from invoices. Interco is an intercompany flow, when company A invoices company B. In the case of this configuration, when a sale invoice is created by company B, a purchase invoice for company B will be automatically created."/>
 
     <integer name="intercoPurchaseCreatingStatusSelect"
       title="Create purchase counterpart on this status"
-      selection="purchase.purchase.order.status.select"/>
+      selection="purchase.purchase.order.status.select"
+      help="You can select here at which status of a purchase order the equivalent sale order is generated for the other company."/>
     <integer name="intercoSaleCreatingStatusSelect"
-      title="Create sale counterpart on this status" selection="sale.order.status.select"/>
-    <boolean name="manageStockReservation" title="Manage stock reservation"/>
+      title="Create sale counterpart on this status" selection="sale.order.status.select"
+      help="You can select here at which status of a sale order the equivalent purchase order is generated for the other company."/>
+    <boolean name="manageStockReservation" title="Manage stock reservation"
+      help="This configuration enables stock reservation. In case of insufficient stock, this allows to make a stock reservation that will trigger a future allocation request once the items become available in stock again."/>
     <many-to-one name="cancelReasonOnChangingSaleOrder"
-      ref="com.axelor.apps.base.db.CancelReason"/>
+      ref="com.axelor.apps.base.db.CancelReason"
+      help="You can select here a default cancel reason for sale orders that will be displayed when cancelling an order."/>
     <boolean name="intercoSaleOrderCreateFinalized"
-      title="Create interco sale quotation as finalized"/>
+      title="Create interco sale quotation as finalized"
+      help="When this configuration is enabled, a sale quotation automatically generated via interco will be created in Finalized status."/>
     <boolean name="intercoPurchaseOrderCreateRequested"
-      title="Create interco purchase quotation as requested"/>
+      title="Create interco purchase quotation as requested"
+      help="When this configuration is enabled, a purchase quotation automatically generated via interco will be created in Finalized status."/>
     <boolean name="intercoInvoiceCreateValidated"
-      title="Create interco invoice as validated"/>
+      title="Create interco invoice as validated"
+      help="When this configuration is enabled, an invoice automatically generated via interco will be created in Validated status."/>
     <boolean name="blockDeallocationOnAvailabilityRequest"
-      title="Block deallocation on availability request"/>
+      title="Block deallocation on availability request"
+      help="If this configuration is enabled, it is not possible to deallocate quantities on a delivery note that is in availability request."/>
 
     <string name="sOFilterOnStockDetailStatusSelect"
       title="Status considered to filter a sale order" selection="sale.order.status.select"
-      default="3"/>
+      default="3"
+      help="You can define here at which status(es) sale quotations/orders are taken into account in the stock details of a product, at the Customer order quantity indicator level."/>
     <string name="pOFilterOnStockDetailStatusSelect"
       title="Status considered to filter a purchase order"
-      selection="purchase.purchase.order.status.select" default="3"/>
+      selection="purchase.purchase.order.status.select" default="3"
+      help="You can define here at which status(es) purchase quotations/orders are taken into account in the stock details of a product, at the Supplier order quantity indicator level."/>
     <boolean name="isVerifyProductStock"
-      title="Verify product stock before availabity request"/>
+      title="Verify product stock before availabity request"
+      help="If this configuration is enabled, when an availability request is made from a delivery note, a product stock check will be performed, and a warning message will appear if the stock quantities are insufficient."/>
     <boolean name="isSaleOrderWithoutOutgoingStockMove"
-      title="Sale order without outgoing stock move"/>
+      title="Sale order without outgoing stock move"
+      help="When this configuration is enabled, a new menu entry Orders awaiting delivery note appears in the Sales module, and allows to view all orders that do not yet have generated delivery notes. This configuration is not available if the Generate customer deliveries automatically configuration is enabled."/>
     <boolean name="isPurchaseOrderWithoutIncomingStockMove"
-      title="Purchase order without incoming stock move"/>
+      title="Purchase order without incoming stock move"
+      help="When this configuration is enabled, a new menu entry Orders awaiting receipt note appears in the Purchases module, and allows to view all orders that do not yet have generated receipt notes. This configuration is not available if the Generate supplier arrivals automatically configuration is enabled."/>
     <boolean name="manageAdvancePaymentsFromPaymentConditions"
-      title="Manage advance payments from payment conditions" default="false"/>
+      title="Manage advance payments from payment conditions" default="false"
+      help="When this configuration is enabled, advance payment management is done at the payment conditions level. It becomes possible to define an advance payment percentage on payment conditions, and if the payment condition of an order requires an advance payment, the order can only be confirmed if an advance payment has been recorded."/>
 
     <boolean name="autoFillDeliveryRealQty" title="Auto fill delivery real quantity"
-      default="true"/>
+      default="true"
+      help="Once this configuration is enabled, on delivery notes, real quantities are automatically filled based on planned quantities. If the configuration is disabled, real quantities must be filled manually upon shipment."/>
     <boolean name="autoFillReceiptRealQty" title="Auto fill receipt real quantity"
-      default="true"/>
+      default="true"
+      help="Once this configuration is enabled, on receipt notes, real quantities are automatically filled based on planned quantities. If the configuration is disabled, real quantities must be filled manually upon receipt."/>
 
     <integer name="stockLocationToCartLimit"
       title="Limit of stock location line to add to the cart."
