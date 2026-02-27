@@ -10,8 +10,10 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <many-to-one name="qualityControlTemplate" title="Model for quality control"
-      ref="com.axelor.message.db.Template"/>
-    <boolean name="automaticMail" title="Automatic mail by completing quality control"/>
+      ref="com.axelor.message.db.Template"
+      help="You can select here the email template sent by default when a quality control is completed."/>
+    <boolean name="automaticMail" title="Automatic mail by completing quality control"
+      help="When this configuration is enabled, an email will be sent automatically each time a quality control is completed."/>
 
     <track>
       <field name="qualityControlTemplate" on="UPDATE"/>

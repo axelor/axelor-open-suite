@@ -764,6 +764,7 @@
 "There is no analytic distribution on %s sale order line","Veuillez renseigner un modèle de répartition analytique dans les lignes de commandes des produits %s",,
 "There is no configured sequence for the Packaging",,,
 "There is no supplier catalog for this product","Il n'y a pas de catalogue fournisseur pour ce produit",,
+"This configuration defines the default stock location used for direct order (drop shipment) type orders.","Cette configuration permet de définir l'emplacement par défaut de la société utilisé lors des commandes de type contremarque.",,
 "This operation cannot be performed. Available stock for product %s: %s, stock needed: %s. Please deallocate.","Cette opération ne peut pas être réalisée. Stock disponible pour le produit %s : %s, stock nécessaire : %s. Veuillez désallouer.",,
 "This option prevents adding by mistake too many products in carts from a stock location.","Cette configuration vous empêche d'ajouter par erreur trop de produits dans les paniers depuis les emplacements de stock.",,
 "This packaging is different from real packagings defined during shipping process. Design for only shipping cost estimation.","Ce colisage est une estimation du colisage final. Il est donc différent des colisages réels définis lors de lors de l’expédition au niveau des BL ou fiche logistique.",,
