@@ -106,14 +106,17 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
 
     initProjectStatus(project);
     ProjectStatus status = getProjectStatus(statusName);
-    String currentStatusName = project.getProjectStatus().getName();
-    project.setProjectStatus(status);
-    projectRepo.save(project);
-    log.info(
-        "Project {} status changed from {} to {}",
-        project.getCode(),
-        currentStatusName,
-        statusName);
+    ProjectStatus currentStatusName = project.getProjectStatus();
+
+    if (!Objects.equals(currentStatusName, status)) {
+      project.setProjectStatus(status);
+      projectRepo.save(project);
+      log.info(
+          "Project {} status changed from {} to {}",
+          project.getCode(),
+          currentStatusName.getName(),
+          statusName);
+    }
   }
 
   protected void initProjectStatus(Project project) throws AxelorAlertException {
@@ -165,6 +168,7 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
     }
 
     return project.getProjectTaskList().stream()
+        .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
         .allMatch(task -> Beans.get(TaskMemberReportService.class).hasTaskMemberReport(task));
   }
 
@@ -175,8 +179,9 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
 
     String taskNewStatus = getTaskStatus(TASK_STATUS_NEW).getName();
 
-    // Project should be in progress if any task is nto New
+    // Project should be in progress if any task is not New
     return project.getProjectTaskList().stream()
+        .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
         .anyMatch(task -> !taskNewStatus.equals(task.getStatus().getName()));
   }
 

@@ -12,6 +12,7 @@
     <integer name="invoicingSequenceSelect" title="Invoicing sequence"
       selection="business.project.invoicing.sequence.select"/>
     <string name="invoicingComment" title="Invoicing comment" large="true"/>
+    <string name="contactPerson" title="Contact Person"/>
     <many-to-one name="priceList" ref="com.axelor.apps.base.db.PriceList"
       title="Price list"/>
 
@@ -122,6 +123,10 @@
     <one-to-many name="projectHoldBackLineList" mappedBy="project"
       ref="com.axelor.apps.businessproject.db.ProjectHoldBackLine"/>
 
+    <!-- MGM-110 -->
+    <integer name="projectTypeSelect" title="Project type"
+      selection="business.project.project.type.select" default="0"/>
+
     <!-- Analytic fields -->
     <many-to-one name="analyticDistributionTemplate"
       title="Analytic distribution template"
@@ -141,6 +146,10 @@
    			public static final int COMPUTATION_METHOD_SALE_ORDER = 1;
    			public static final int COMPUTATION_METHOD_PRODUCT = 2;
    			public static final int COMPUTATION_METHOD_EMPLOYEE = 3;
+
+	  		public static final int STANDARD_PROJECT_TYPE = 0;
+	  		public static final int FEES_PROJECT_TYPE = 1;
+	  		public static final int CUMULATIVE_PROJECT_TYPE = 2;
 		]]></extra-code>
 
 

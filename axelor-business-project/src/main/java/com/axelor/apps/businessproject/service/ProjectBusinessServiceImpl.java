@@ -29,9 +29,11 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskReportingValuesComputingService;
+import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
@@ -66,9 +68,6 @@ import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.MetaFile;
-import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.utils.helpers.date.LocalDateHelper;
 import com.google.inject.Inject;
@@ -309,9 +308,10 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
   @Override
   public boolean readyToInvoice(Project project) {
-    return allExpensesValidated(project)
-        && allTasksHaveTimesheetLines(project)
-        && allTimesheetLinesValidated(project);
+    return (hasExpense(project) || hasTimesheetLine(project))
+        && (allExpensesValidated(project)
+            && allTasksHaveTimesheetLines(project)
+            && allTimesheetLinesValidated(project));
   }
 
   @Override
@@ -319,8 +319,6 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     if (project == null) return false;
 
     List<TimesheetLine> timesheetLines = getAllTimesheetLines(project);
-
-    if (timesheetLines.isEmpty()) return false;
 
     return timesheetLines.stream().allMatch(tsl -> Boolean.TRUE.equals(tsl.getIsValidated()));
   }
@@ -342,9 +340,11 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
   @Override
   public boolean allTasksHaveTimesheetLines(Project project) {
-    if (project == null
-        || project.getProjectTaskList() == null
-        || project.getProjectTaskList().isEmpty()) return false;
+    if (project == null) return false;
+
+    if (project.getProjectTaskList() == null || project.getProjectTaskList().isEmpty()) return true;
+
+    // At this point we are sure the project has tasks and thus they must have timesheet lines
 
     List<TimesheetLine> timesheetLines = getAllTimesheetLines(project);
 
@@ -360,6 +360,7 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
     // Every task must have at least one timesheet line
     return project.getProjectTaskList().stream()
+        .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
         .allMatch(task -> tasksWithTimesheets.contains(task.getId()));
   }
 
@@ -369,6 +370,24 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
         .filter("self.project.id = :projectId OR self.projectTask.project.id = :projectId")
         .bind("projectId", project.getId())
         .fetch();
+  }
+
+  protected boolean hasExpense(Project project) {
+    return Beans.get(ExpenseRepository.class)
+            .all()
+            .filter("self.project.id = :projectId")
+            .bind("projectId", project.getId())
+            .count()
+        > 0;
+  }
+
+  protected boolean hasTimesheetLine(Project project) {
+    return Beans.get(TimesheetLineRepository.class)
+            .all()
+            .filter("self.project.id = :projectId")
+            .bind("projectId", project.getId())
+            .count()
+        > 0;
   }
 
   protected void computeTimeFollowUp(Project project, List<ProjectTask> projectTaskList)
@@ -945,42 +964,32 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     }
   }
 
+  @Transactional(rollbackOn = {Exception.class})
   @Override
-  @Transactional
-  public void attachMetaFileToModel(Long modelId, String modelClassName, MetaFile metaFile) {
-    log.debug("Got request from model {}", modelClassName);
-    Model model = findModel(modelClassName, modelId);
-    if (model == null) {
-      throw new IllegalArgumentException(
-          String.format("Model not found - Class: %s, ID: %s", modelClassName, modelId));
+  public void syncTaskReportToProject(Project project) {
+    if (project == null) {
+      return;
     }
 
-    metaFile = Beans.get(MetaFileRepository.class).find(metaFile.getId());
-
-    if (metaFile == null) {
-      throw new IllegalStateException("Metafile not persisted yet");
+    TaskReport taskReport = Beans.get(TaskReportService.class).getTaskReport(project);
+    if (taskReport == null) {
+      return;
     }
 
-    Beans.get(MetaFiles.class).attach(metaFile, metaFile.getFileName(), model);
-    log.debug("Attached file '{}' to {} [ID: {}]", metaFile.getFileName(), modelClassName, modelId);
-  }
+    boolean hasChanged = false;
 
-  /**
-   * Finds and returns a model instance by its class name and ID.
-   *
-   * @param modelClassName Fully qualified class name of the model
-   * @param modelId The ID of the model instance to find
-   * @return The model instance, or null if not found or class doesn't exist
-   */
-  @SuppressWarnings("all")
-  protected Model findModel(String modelClassName, Long modelId) {
-    log.debug("Currently working with model {}", modelClassName);
-    try {
-      Class<? extends Model> clazz = (Class<? extends Model>) Class.forName(modelClassName);
-      return JpaRepository.of(clazz).find(modelId);
-    } catch (ClassNotFoundException e) {
-      log.error("Model Class not found: {}", modelClassName, e);
-      return null;
+    if (!Objects.equals(project.getClientPartner(), taskReport.getCustomer())) {
+      taskReport.setCustomer(project.getClientPartner());
+      hasChanged = true;
+    }
+
+    if (!Objects.equals(project.getCustomerAddress(), taskReport.getLocation())) {
+      taskReport.setLocation(project.getCustomerAddress());
+      hasChanged = true;
+    }
+
+    if (hasChanged) {
+      JpaRepository.of(TaskReport.class).persist(taskReport);
     }
   }
 }

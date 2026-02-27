@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="approval-item-grid" title="Approval Items"
+    model="com.axelor.apps.businessproject.db.ApprovalItem" groupBy="project" edit-icon="false">
+    <button name="openLinkedValidationItemBtn" title="Open validation item"
+      onClick="action-group-approval-item-open-linked-validation-item" icon="fa-pencil-o"/>
+    <field name="itemTypeSelect"/>
+    <field name="project"/>
+    <field name="employee"/>
+    <field name="itemDateTime"/>
+    <field name="amount"/>
+    <field name="unit"/>
+    <field name="description"/>
+  </grid>
+
+  <form name="approval-item-form" title="Approvals item"
+    model="com.axelor.apps.businessproject.db.ApprovalItem"
+    onLoad="action-method-approval-item-open-linked-validation-item">
+    <panel name="mainPanel">
+      <field name="itemTypeSelect"/>
+      <field name="project"/>
+      <field name="employee"/>
+      <field name="itemDateTime"/>
+      <field name="amount"/>
+      <field name="unit"/>
+      <field name="description"/>
+    </panel>
+  </form>
+
+
+  <action-record name="action-record-set-can-close-parent-form-false"
+    model="com.axelor.apps.businessproject.db.ApprovalItem">
+    <field name="_canCloseParentForm" expr="eval: false"/>
+  </action-record>
+
+  <action-method name="action-method-approval-item-open-linked-validation-item">
+    <call class="com.axelor.apps.businessproject.web.ApprovalItemController"
+      method="openLinkedValidationItem"/>
+  </action-method>
+
+  <action-group name="action-group-approval-item-open-linked-validation-item">
+    <action name="action-record-set-can-close-parent-form-false"/>
+    <action name="action-method-approval-item-open-linked-validation-item"/>
+  </action-group>
+
+</object-views>

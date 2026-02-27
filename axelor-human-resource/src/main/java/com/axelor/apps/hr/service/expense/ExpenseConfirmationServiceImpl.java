@@ -80,6 +80,14 @@ public class ExpenseConfirmationServiceImpl implements ExpenseConfirmationServic
     Set<String> invitedDates = new HashSet<>();
     DateTimeFormatter dateFormat = companyDateService.getDateFormat(expense.getCompany());
 
+    // skip hr logic if employee is null
+    if (employee == null) {
+      expense.setStatusSelect(ExpenseRepository.STATUS_CONFIRMED);
+      expense.setSentDateTime(
+          appAccountService.getTodayDateTime(expense.getCompany()).toLocalDateTime());
+      expenseRepository.save(expense);
+      return;
+    }
     for (ExpenseLine expenseLine : expense.getGeneralExpenseLineList()) {
       LocalDate expenseDate = expenseLine.getExpenseDate();
       if (!expenseLine.getExpenseProduct().getDeductLunchVoucher()) {

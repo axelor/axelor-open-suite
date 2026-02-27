@@ -90,7 +90,7 @@ public class ExpenseValidateServiceImpl implements ExpenseValidateService {
 
     kilometricExpenseService.updateExpenseLineKilometricLog(expense);
 
-    if (expense.getEmployee().getContactPartner() != null) {
+    if (expense.getEmployee() != null && expense.getEmployee().getContactPartner() != null) {
       PaymentMode paymentMode = expense.getEmployee().getContactPartner().getOutPaymentMode();
       expense.setPaymentMode(paymentMode);
     }

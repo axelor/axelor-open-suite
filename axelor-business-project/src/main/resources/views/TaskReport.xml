@@ -48,6 +48,7 @@
     </toolbar>
     <panel colSpan="12" name="taskReportMainPanel">
       <panel colSpan="12" name="parentPanel" showFrame="true">
+        <panel-include view="task-report-header-form"/>
         <panel title="General Information" showFrame="false">
           <field name="project" title="Order" canView="false"
             domain-function="eval: ( (__user__.group.code == 'CUSTOM-PM' || __user__.group.code == 'CUSTOM-OM')
@@ -56,7 +57,7 @@
             onChange="action-task-report-on-change-project" required="true"/>
           <field name="customer" hidden="true"/>
           <field name="customer" readonly="true" canView="false"/>
-          <field name="location" canEdit="true" canView="false"/>
+          <field name="location" readonly="true" canView="false"/>
         </panel>
 
         <!-- Panel for Task Member Reports -->
@@ -91,7 +92,7 @@
           <panel colSpan="12">
             <help css="alert-info">
               <![CDATA[
-                The Sign-Off section will show once all project tasks have been reported.
+                The Sign-Off section will show once all project tasks have been reported
               ]]>
             </help>
           </panel>
@@ -142,6 +143,31 @@
       <field name="taskCategory" title="Task Category" readonly="true"/>
       <field name="workHours"/>
       <field name="breakTimeHours" hidden="true"/>
+    </panel>
+  </form>
+
+  <form name="task-report-header-form" title="mgm report header"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <panel name="companyHeaderPanel" colSpan="12" showFrame="false">
+      <static name="headerStatic" colSpan="12">
+        <![CDATA[
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; padding: 20px 0; margin-bottom: 10px; font-family: sans-serif;">
+
+          <div style="flex: 1; display: flex; flex-direction: column;">
+            <img src="ws/public/app/logo" alt="Logo" style="width: 350px; height: auto;" />
+          </div>
+
+          <div style="flex: 1; text-align: center; padding-top: 40px;">
+            <h1 style="margin: 0; font-size: 24px; font-weight: 500; color: #000; text-transform: uppercase; letter-spacing: 2px;">
+              MGM Rapport
+            </h1>
+          </div>
+
+          <div style="flex: 1;"></div>
+
+        </div>
+      ]]>
+      </static>
     </panel>
   </form>
 

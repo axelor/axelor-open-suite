@@ -3,7 +3,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
-  <grid name="mgm-expense-grid" title="Project Expenses" canNew="false"
+  <grid name="mgm-expense-grid" title="Project Expenses" canNew="false" canDelete="true"
     model="com.axelor.apps.hr.db.Expense">
     <toolbar>
       <button name="addExpenseBtn" title="New Expense" colSpan="2" css="btn-custom text-left"
@@ -15,15 +15,40 @@
     <field name="employee"/>
     <field name="sentDateTime"/>
     <field name="period"/>
-    <field name="inTaxTotal" aggregate="sum"/>
-    <field name="currency" colSpan="2" required="true"/>
+    <field name="totalAmountToInvoice" aggregate="sum"/>
     <field name="statusSelect"/>
     <field name="ventilated"/>
   </grid>
 
+  <grid name="mgm-expense-line-grid" title="Expense lines"
+    model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate"
+    onNew="action-expense-line-group-onnew">
+    <field name="projectTask"/>
+    <field name="expenseProduct"/>
+    <field name="expenseDate"/>
+    <field name="totalAmount" aggregate="sum"/>
+    <field name="totalTax" aggregate="sum"/>
+    <field name="toInvoice"/>
+    <field name="justificationMetaFile" widget="binary-link"/>
+    <field name="comments"/>
+    <field name="expense.statusSelect"/>
+  </grid>
+
+  <grid name="mgm-fees-expense-line-grid" title="Expense lines"
+    model="com.axelor.apps.hr.db.ExpenseLine" orderBy="-expenseDate">
+    <field name="expenseProduct"/>
+    <field name="expenseDate"/>
+    <field name="totalAmountToInvoice" aggregate="sum"/>
+    <field name="toInvoice"/>
+    <field name="justificationMetaFile" widget="binary-link"/>
+    <field name="comments"/>
+    <field name="expense.statusSelect"/>
+  </grid>
+
   <form name="mgm-expense-form" title="Project Expenses" model="com.axelor.apps.hr.db.Expense"
-    width="large" onSave="action-expense-method-validate-and-compute" canNew="false"
-    onNew="mgm-action-project-expense-group-form-onNew" canDelete="ventilated == false">
+    width="large" onSave="mgm-action-expense-method-validate-and-compute" canNew="false"
+    onNew="mgm-action-project-expense-group-form-onNew" canDelete="ventilated == false"
+    canAttach="false">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printAll" title="Print report and files"
@@ -38,7 +63,7 @@
 
 				<>
 					<h3>
-						<span>{_t('Expense')} {expenseSeq}</span>
+						<span>{_t('Expense')} </span>
 					</h3>
 				</>
 
@@ -51,24 +76,30 @@
         ]]></viewer>
         </field>
         <panel name="generalInfoPanel" colSpan="12">
-          <field name="typeSelect" readonly="true"/>
-          <spacer/>
-          <field name="company" canEdit="false" required="true" form-view="company-form"
+          <field name="typeSelect" readonlyIf="_isExpenseDeclaration || statusSelect > 1"/>
+          <field name="categorySelect" onChange="action-mgm-expense-attrs-category-change"/>
+          <field name="company" canEdit="false" readonly="true" form-view="company-form"
             grid-view="company-grid"/>
-          <field name="employee" canNew="false" canView="false" required="true"
-            form-view="employee-form" grid-view="employee-grid"
+          <field name="employee" canNew="false" canView="false"
+            requiredIf="categorySelect == 1" hideIf="categorySelect == 2" form-view="employee-form"
+            grid-view="employee-grid" onChange="action-expense-record-employee-onchange"
             domain="self.user IN (SELECT m FROM Project p JOIN p.membersUserSet m WHERE p = :project) OR self.user IN (SELECT p.assignedTo FROM Project p WHERE p = :project)"/>
-          <field name="currency" readonlyIf="statusSelect != 1 &amp;&amp; statusSelect != 2"
-            colSpan="6" canEdit="false" onChange="action-expense-attrs-kilometric-panel-visibility"
-            required="true"/>
-          <field name="period" canView="false" canEdit="false"
-            onSelect="action-expense-attrs-domain-period" form-view="period-form"
-            grid-view="period-grid"/>
+          <field name="period" canEdit="false" onSelect="action-expense-attrs-domain-period"
+            form-view="period-form" grid-view="period-grid" canView="false"/>
+          <field name="companyCbSelect" hideIf="categorySelect == 2"
+            onChange="action-expense-attrs-expense-company-cb" readonlyIf="statusSelect != 1"/>
+          <field name="withdrawnCash" hidden="true" showIf="companyCbSelect > 1"
+            readonlyIf="statusSelect != 1"/>
+          <field name="employee.companyCbDetails" hidden="true"
+            showIf="employee != null &amp;&amp; companyCbSelect &gt; 1"/>
+          <field name="currency" hidden="true"/>
           <field name="personalExpenseAmount" hidden="true"/>
           <field name="advanceAmount" hidden="true"/>
+          <field name="bankDetails" hidden="true"/>
         </panel>
-        <panel name="projectPanel" colSpan="12" itemSpan="12">
-          <field name="project" readonly="true" canView="false"/>
+        <panel name="projectPanel" colSpan="12" itemSpan="12" hidden="true">
+          <field name="project" form-view="business-project-form" grid-view="project-grid"
+            readonly="true" canView="true"/>
         </panel>
       </panel>
       <panel name="sidePanel" colSpan="3" itemSpan="12">
@@ -80,13 +111,13 @@
             name="ventilateBtn" title="Ventilate" hidden="true"
             onClick="save,action-expense-method-ventilate"/>
           <button
-            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
+            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT'].any(g -> __user__.group.code.contains(g)))"
             name="validateBtn" title="Validate" onClick="action-expense-group-validate"/>
           <button
             if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
             name="refuseBtn" title="Refuse" onClick="action-expense-group-refuse"/>
           <button
-            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
+            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT'].any(g -> __user__.group.code.contains(g)))"
             name="cancelBtn" title="Cancel" css="btn-danger" icon="fa-times-circle"
             onClick="action-expense-group-cancel"/>
           <button name="draftBtn" title="Return to draft status" showIf="statusSelect > 4 "
@@ -101,47 +132,48 @@
         <panel name="inTaxTotalPanel" readonly="true">
           <field name="inTaxTotal" showTitle="false" colSpan="12" x-currency="currency.symbol">
             <viewer
-              depends="exTaxTotal,taxTotal,personalExpenseAmount,withdrawnCash,advanceAmount,statusSelect,paymentAmount,paymentStatusSelect,$totalToRefund"><![CDATA[
-
-	                  <>
-	                      <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
-	                          <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
-	                     	  <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
-	                     	  <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
-	                     	  <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
-	                     	  <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('Total A.T.I.')}</Box>
-	                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('inTaxTotal')}</Box>
-	                     	  {personalExpenseAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Personal expense')}</Box>}
-	                     	  {personalExpenseAmount != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('personalExpenseAmount')}</Box>}
-	                     	  {withdrawnCash != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Withdrawn cash')}</Box>}
-	                     	  {withdrawnCash != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('withdrawnCash')}</Box>}
-	                     	  {advanceAmount != 0 && <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Advance')}</Box>}
-	                     	  {advanceAmount != 0 && <Box as="dd" m={0} px={3} py={1}>-{$fmt('paymentAmount')}</Box>}
-	                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dt" m={0} px={3} py={1} fontWeight="normal" color="primary">{_t('Payment')}</Box>}
-	                     	  {(statusSelect == 3 || statusSelect == 4 && paymentAmount != 0) && (paymentStatusSelect == 1 || paymentStatusSelect == 3) && <Box as="dd" m={0} px={3} py={1} color="primary">-{$fmt('paymentAmount')}</Box>}
-	                          <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="normal" fontSize={5}>{_t('TotalToRefund')}</Box>
-	                     	  <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold" fontSize={5}>{$fmt('$totalToRefund')}</Box>
-	                      </Box>
-	                  </>
-
-          ]]></viewer>
+              depends="exTaxTotal,taxTotal,inTaxTotal,$totalToRefund,totalAmountToInvoice"><![CDATA[
+                <>
+                  <Box as="dl" d="grid" gridTemplateColumns="1fr 1fr" textAlign="end">
+                    <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total W.T.')}</Box>
+                    <Box as="dd" m={0} px={3} py={1}>{$fmt('exTaxTotal')}</Box>
+                    <Box as="dt" m={0} px={3} py={1} fontWeight="normal">{_t('Total tax')}</Box>
+                    <Box as="dd" m={0} px={3} py={1}>{$fmt('taxTotal')}</Box>
+                    <Box as="dt" m={0} px={3} py={1} borderTop fontWeight="bold">{_t('Total to Refund')}</Box>
+                    <Box as="dd" m={0} px={3} py={1} borderTop fontWeight="bold">{$fmt('inTaxTotal')}</Box>
+                    <Box as="dt" m={0} px={3} py={1} color="info" borderTop>{_t('Total to Invoice')}</Box>
+                    <Box as="dd" m={0} px={3} py={1} color="info" fontWeight="bold" borderTop>{$fmt('totalAmountToInvoice')}</Box>
+                  </Box>
+                </>
+              ]]></viewer>
           </field>
-          <field name="$totalToRefund" title="Total to refund" hidden="true" type="decimal"
-            x-currency="currency.symbol"/>
           <field name="exTaxTotal" hidden="true" x-currency="currency.symbol"/>
+          <field name="inTaxTotal" hidden="true" x-currency="currency.symbol"/>
           <field name="taxTotal" hidden="true" x-currency="currency.symbol"/>
         </panel>
       </panel>
     </panel>
     <panel-tabs name="mainPanelTab">
-      <panel name="generalExpenseLineListMainPanel" title="General expenses">
+      <panel name="employeeExpensePanelMainPanel" title="General expenses"
+        showIf="categorySelect == 1">
         <static name="overAmountLimitText" hidden="true" colSpan="12"><![CDATA[
         <><Badge bg="warning">At least one line of this expense exceeds the authorised amount for its type of expense.</Badge></>
       ]]></static>
-        <panel-related name="generalExpenseLineListPanel" title="General expenses"
+        <panel-related name="employeeExpenseLineListPanel" title="Employee expenses"
           onNew="mgm-action-project-expense-line-group-onnew" colSpan="12"
-          field="generalExpenseLineList" form-view="expense-line-form" grid-view="expense-line-grid"
-          onChange="action-expense-group-expense-line-on-change,action-expense-method-check-total-amount"/>
+          field="generalExpenseLineList" form-view="mgm-expense-line-form"
+          grid-view="mgm-expense-line-grid"
+          onChange="action-expense-method-compute,mgm-action-expense-method-sum-invoice-total"/>
+      </panel>
+      <panel name="feeExpensePanelMainPanel" title="General expenses"
+        showIf="categorySelect == 2">
+        <static name="overAmountLimitText" hidden="true" colSpan="12"><![CDATA[
+        <><Badge bg="warning">At least one line of this expense exceeds the authorised amount for its type of expense.</Badge></>
+      ]]></static>
+        <panel-related name="feeExpenseLineListPanel" title="Project fees"
+          onNew="mgm-fees-action-project-expense-line-group-onnew" colSpan="12"
+          field="generalExpenseLineList" form-view="mgm-fees-expense-line-form"
+          grid-view="mgm-fees-expense-line-grid" onChange="action-expense-method-compute"/>
       </panel>
     </panel-tabs>
     <panel name="followupPanel" title="Follow-up" showIf="sentDateTime" colSpan="12"
@@ -158,14 +190,114 @@
     </panel>
   </form>
 
+  <form name="mgm-expense-line-form" title="Expense line"
+    model="com.axelor.apps.hr.db.ExpenseLine" onNew="mgm-action-expense-line-default-onNew"
+    onSave="action-expense-line-validate-expenseDate" width="large">
+
+    <panel name="mainPanel" title="Main" colSpan="12" readonlyIf="expense.statusSelect &gt; 1">
+      <field name="project" edit-icon="false" canEdit="false"
+        onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
+        form-view="business-project-form" grid-view="project-grid" readonly="true"
+        requiredIf="toInvoice"/>
+      <field name="projectTask" edit-icon="false" canEdit="false"
+        onSelect="custom-mgm-action-expense-line-method-compute-project-task-domain"
+        onChange="action-expense-line-attrs-on-project-task-change"
+        form-view="business-project-task-form" grid-view="business-project-task-grid"/>
+      <field name="site" form-view="site-form" grid-view="site-grid"
+        onSelect="action-expense-line-attrs-set-site-domain"
+        if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+      <field name="expenseProduct" edit-icon="false" canEdit="false"
+        onSelect="mgm-action-expense-line-attrs-set-product-domain" widget="SuggestBox"
+        form-view="product-expense-form" grid-view="product-expense-grid"
+        onChange="action-expense-line-group-expense-product-on-change"/>
+      <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
+      <field name="untaxedAmount"
+        onChange="mgm-action-expense-line-record-apply-standard-tax,mgm-action-expense-line-record-calculate-totals"/>
+      <field name="totalTax" title="Total tax (€)"
+        onChange="mgm-action-expense-line-record-calculate-totals" colSpan="6"/>
+      <field name="fee" title="Fee (%)" colSpan="6"
+        onChange="mgm-action-expense-line-group-amount-change"/>
+      <field name="totalAmountToInvoice" readonly="true" colSpan="6"/>
+      <field name="totalAmountToInvoice" hidden="true" colSpan="6"/>
+      <field name="totalAmount" title="Total to refund" readonly="true" colSpan="6">
+        <hilite color="danger"
+          if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"/>
+      </field>
+      <field name="justificationMetaFile" widget="binary-link"
+        onChange="action-expense-line-group-justification-line-onchange"/>
+      <field name="toInvoice" colSpan="3"/>
+      <field name="invoiced" showTitle="false"
+        showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" colSpan="3">
+        <viewer><![CDATA[
+        <><Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge></>
+      ]]></viewer>
+      </field>
+      <field name="isJustificationFileDigitallySigned" hidden="true"/>
+      <field name="isAloneMeal" hidden="true" showIf="expenseProduct.deductLunchVoucher"
+        onChange="action-expense-line-record-alone-meal-on-change"/>
+      <field name="invitedCollaboratorSet" hidden="true"
+        showIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal" widget="TagSelect"
+        onSelect="action-expense-line-method-set-invited-collaborators-domain"
+        requiredIf="expenseProduct.deductLunchVoucher &amp;&amp; !isAloneMeal"
+        form-view="employee-form" grid-view="employee-grid"/>
+      <field name="comments" colSpan="12"/>
+      <field name="expense" hidden="true"/>
+      <field name="expense.companyCbSelect" hidden="true"/>
+      <field name="expenseProduct.deductLunchVoucher" hidden="true"/>
+      <field name="expenseProduct.blockExpenseTax" hidden="true"/>
+      <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"
+        onSelect="action-expense-line-attrs-company" canNew="false" canEdit="false" canView="false"/>
+    </panel>
+  </form>
+
+  <form name="mgm-fees-expense-line-form" title="Expense line"
+    model="com.axelor.apps.hr.db.ExpenseLine" onNew="mgm-fees-action-expense-line-default-onNew"
+    onSave="action-expense-line-validate-expenseDate" width="large">
+    <panel name="mainPanel" title="Main" colSpan="12" readonlyIf="expense.statusSelect &gt; 1">
+      <field name="project" edit-icon="false" canEdit="false"
+        onSelect="action-expense-line-attrs-domain-project" widget="SuggestBox"
+        form-view="business-project-form" grid-view="project-grid" readonly="true"
+        requiredIf="toInvoice"/>
+      <field name="project" hidden="true"/>
+      <field name="expenseProduct" edit-icon="false" canEdit="false"
+        onSelect="mgm-action-expense-line-attrs-set-product-domain" widget="SuggestBox"
+        form-view="product-expense-form" grid-view="product-expense-grid"
+        onChange="action-expense-line-group-expense-product-on-change"/>
+      <field name="expenseDate" onChange="action-expense-line-validate-expenseDate"/>
+      <field name="untaxedAmount" colSpan="6"
+        onChange="mgm-fees-action-expense-line-record-calculate-totals"/>
+      <field name="fee" title="Fee (%)" colSpan="6"
+        onChange="mgm-fees-action-expense-line-record-calculate-totals"/>
+      <field name="invoiceFeeOnly" colSpan="6"
+        onChange="mgm-fees-action-expense-line-record-calculate-totals"/>
+      <field name="totalAmountToInvoice" readonly="true" colSpan="6"/>
+      <field name="justificationMetaFile" widget="binary-link"
+        onChange="action-expense-line-group-justification-line-onchange"/>
+      <field name="toInvoice" colSpan="3"/>
+      <field name="invoiced" showTitle="false"
+        showIf="toInvoice &amp;&amp; id &amp;&amp; $readonly()" colSpan="3">
+        <viewer><![CDATA[
+        <><Badge bg={invoiced ? "success" : "danger"}>{invoiced ? _t('Invoiced') : _t('Not invoiced')}</Badge></>
+      ]]></viewer>
+      </field>
+      <field name="isJustificationFileDigitallySigned" hidden="true"/>
+      <field name="comments" colSpan="12"/>
+      <field name="expense" hidden="true"/>
+    </panel>
+  </form>
+
   <action-group name="mgm-action-project-expense-group-form-onNew">
     <action name="mgm-action-project-expense-record-default"/>
     <action name="mgm-action-expense-attrs-hide-button-readonly-field"/>
-    <action name="action-expense-attrs-set-total-to-refund"/>
   </action-group>
 
   <action-group name="mgm-action-project-expense-line-group-onnew">
     <action name="action-expense-line-group-onnew"/>
+    <action name="mgm-action-project-expense-line-record-fill-project"/>
+  </action-group>
+
+  <action-group name="mgm-fees-action-project-expense-line-group-onnew">
+    <action name="mgm-fees-action-expense-line-default-onNew"/>
     <action name="mgm-action-project-expense-line-record-fill-project"/>
   </action-group>
 
@@ -174,11 +306,25 @@
     <field name="project" expr="eval: _projectRef"/>
     <field name="company" expr="eval: _projectCompany"/>
     <field name="currency" expr="eval: _projectCurrency"/>
-
+    <field name="companyCbSelect" expr="eval: __user__.employee?.companyCbSelect"/>
+    <field name="bankDetails"
+      expr="eval: __user__?.employee?.mainEmploymentContract?.payCompany ? __user__.employee.mainEmploymentContract.payCompany.defaultBankDetails : __user__.activeCompany?.defaultBankDetails"/>
     <field name="employee" expr="eval: __user__.employee"
       if="eval: _projectRef != null &amp;&amp; (_projectRef.assignedTo?.id == __user__.id || __repo__(Project).all().filter('self.id = ?1 AND ?2 MEMBER OF self.membersUserSet', _projectRef.id, __user__).fetchOne() != null)"/>
-
-    <field name="typeSelect" expr="eval: 1"/>
+    <field name="period"
+      expr="eval: __repo__(Period).all().filter(
+    'self.fromDate &lt;= ?1
+     AND self.toDate &gt;= ?1
+     AND self.allowExpenseCreation = true
+     AND self.year.company = ?2
+     AND self.year.typeSelect = 1',
+    __config__.date,
+    _projectCompany).fetchOne()"/>
+    <field name="typeSelect"
+      expr="eval: _isExpenseDeclaration ? com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE_DECLARATION : com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE"/>
+    <field name="categorySelect"
+      expr="eval: __repo__(Project).all().filter('self.id = ?1', _projectId).fetchOne()?.projectTypeSelect == 1 ? 2 : 1"
+      if="_projectId != null"/>
     <field name="statusSelect" expr="eval: 1"/>
   </action-record>
 
@@ -189,6 +335,53 @@
       if="eval: project == null &amp;&amp; _projectRef != null"/>
     <field name="toInvoice" expr="eval: project?.isInvoicingExpenses"
       if="eval: project != null"/>
+  </action-record>
+
+  <action-record name="mgm-action-expense-line-default-onNew"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="employee" expr="eval: __parent__?.employee" if="__parent__"/>
+    <field name="employee" expr="eval: __user__?.employee" if="!__parent__"/>
+    <field name="toInvoice" expr="eval: true"/>
+  </action-record>
+
+  <action-record name="mgm-fees-action-expense-line-default-onNew"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="project" expr="eval: __parent__?.project"
+      if="eval: __parent__?.project != null"/>
+    <field name="toInvoice" expr="eval: true"/>
+  </action-record>
+
+  <action-method name="mgm-action-expense-method-validate-and-compute">
+    <call class="com.axelor.apps.hr.web.expense.ExpenseController" method="customCompute"/>
+  </action-method>
+
+  <action-record name="mgm-action-expense-line-record-fetch-tax"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="totalTax"
+      expr="eval: expenseProduct?.accountManagementList?.find{ it.company == (expense?.company ?: __user__.activeCompany) }?.saleTaxSet?.find{ it != null }?.taxRate ?: 0"
+      if="eval: expenseProduct != null"/>
+  </action-record>
+
+  <action-record name="mgm-action-expense-line-record-calculate-totals"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="totalAmount" expr="eval: (untaxedAmount ?: 0) + (totalTax ?: 0)"/>
+    <field name="totalAmountToInvoice"
+      expr="eval: (untaxedAmount ?: 0) + ((untaxedAmount ?: 0) * ((fee ?: 0) / 100.0))"/>
+  </action-record>
+
+  <action-record name="mgm-fees-action-expense-line-record-calculate-totals"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="totalAmountToInvoice"
+      expr="eval:
+      (invoiceFeeOnly ?
+        ((untaxedAmount ?: 0) * ((fee ?: 0) / 100.0)) :
+        ((untaxedAmount ?: 0) * (1 + (fee ?: 0) / 100.0))
+      )"/>
+  </action-record>
+
+  <action-record name="mgm-action-expense-line-record-apply-standard-tax"
+    model="com.axelor.apps.hr.db.ExpenseLine">
+    <field name="totalTax" expr="eval: (untaxedAmount ?: 0) * 0.19"/>
   </action-record>
 
   <action-attrs name="mgm-action-expense-attrs-hide-button-readonly-field">
@@ -204,6 +397,17 @@
       if="__user__.employee?.hrManager"/>
   </action-attrs>
 
+  <action-attrs name="mgm-action-expense-line-attrs-set-product-domain">
+    <attribute name="domain" for="expenseProduct"
+      expr="self.expense = true
+              AND self.dtype = 'Product'
+              AND self.code NOT IN ('25KM','11KM','TOOLUSAGE','DIRTALLOWANCE')"/>
+  </action-attrs>
+
+  <action-attrs name="action-mgm-expense-attrs-category-change">
+    <attribute name="value" for="employee" expr="eval: null" if="categorySelect == 2"/>
+  </action-attrs>
+
   <action-view name="mgm-action-project-expense-dashlet"
     model="com.axelor.apps.hr.db.Expense" title="Project Expenses">
     <view name="mgm-expense-grid" type="grid"/>
@@ -212,6 +416,7 @@
     <view-param name="can-edit" value="true"/>
     <domain>self.project.id = :id</domain>
     <context name="_projectRef" expr="eval: __self__"/>
+    <context name="_projectId" expr="eval: __self__.id"/>
     <context name="_projectCompany" expr="eval: company"/>
     <context name="_projectCurrency" expr="eval: currency"/>
   </action-view>
@@ -231,4 +436,9 @@
     <context name="_projectId" expr="eval: _projectRef?.id"/>
   </action-view>
 
+  <action-group name="mgm-action-expense-line-group-product-change">
+    <action name="action-expense-line-group-expense-product-on-change"/>
+    <action name="mgm-action-expense-line-record-fetch-tax"/>
+    <action name="mgm-action-expense-line-record-calculate-all-totals"/>
+  </action-group>
 </object-views>

@@ -177,7 +177,7 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
     String origin = expense.getExpenseSeq();
     String description = expense.getFullName();
     Company company = expense.getCompany();
-    Partner partner = expense.getEmployee().getContactPartner();
+    Partner partner = resolvePartner(expense);
 
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
 
@@ -390,5 +390,31 @@ public class ExpenseVentilateServiceImpl implements ExpenseVentilateService {
       moveLine.setAnalyticMoveLineList(analyticMoveLineList);
     }
     return moveLine;
+  }
+
+  protected Partner resolvePartner(Expense expense) throws AxelorException {
+
+    if (expense.getEmployee() != null) {
+      Partner partner = expense.getEmployee().getContactPartner();
+      if (partner != null) {
+        return partner;
+      }
+      throw new AxelorException(
+          expense,
+          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+          I18n.get(AccountExceptionMessage.EMPLOYEE_PARTNER),
+          expense.getEmployee().getName());
+    }
+
+    // use company partner
+    Partner companyPartner = expense.getCompany().getPartner();
+
+    if (companyPartner != null) {
+      return companyPartner;
+    }
+    throw new AxelorException(
+        expense,
+        TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
+        "No partner defined for expense without employee.");
   }
 }

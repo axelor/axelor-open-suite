@@ -9,7 +9,7 @@
     <field name="isCompleted"/>
     <field name="defaultProgress"
       if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask"/>
-    <field name="sequence" hidden="true"/>
+    <field name="sequence"/>
   </grid>
 
   <form name="task-status-form" title="Task status"
@@ -20,7 +20,7 @@
       <field name="defaultProgress"
         onChange="action-task-status-group-default-progress-onchange"
         if="__config__.app.getApp('project')?.selectAutoProgressOnProjectTask"/>
-      <field name="sequence" hidden="true"/>
+      <field name="sequence"/>
     </panel>
   </form>
 

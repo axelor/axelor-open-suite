@@ -1,6 +1,7 @@
 package com.axelor.apps.businessproject.service;
 
 import com.axelor.apps.base.AxelorAlertException;
+import com.axelor.apps.businessproject.service.approvalitem.ApprovalItemManagementService;
 import com.axelor.apps.businessproject.service.statuschange.ProjectStatusChangeService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
@@ -13,6 +14,9 @@ import javax.persistence.PersistenceException;
 
 public class TimesheetLineRemoveBusinessProjectServiceImpl extends TimesheetLineRemoveServiceImpl {
 
+  @Inject protected ProjectStatusChangeService projectStatusChangeService;
+  @Inject protected ApprovalItemManagementService approvalItemManagementService;
+
   @Inject
   public TimesheetLineRemoveBusinessProjectServiceImpl(
       TimesheetLineRepository timeSheetLineRepository) {
@@ -23,6 +27,8 @@ public class TimesheetLineRemoveBusinessProjectServiceImpl extends TimesheetLine
   @Transactional
   protected void removeTimesheetLine(TimesheetLine timesheetLine) {
     Project project = timesheetLine.getProject();
+    approvalItemManagementService.deleteApprovalItem(timesheetLine);
+
     super.removeTimesheetLine(timesheetLine);
 
     // When a timesheet line is deleted, the project's status should update to reflect that.

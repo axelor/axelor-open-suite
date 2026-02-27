@@ -441,11 +441,30 @@
                     grid-view="address-grid" canSelect="false" required="true"
                     if="!__config__.app.getApp('base')?.getIsSharedAddress()"/>
                   <field name="isInvoicingAddr" widget="toggle" hideIf="$readonly()"
-                    x-icon="fa-list-alt"/>
+                    x-icon="fa-list-alt">
+                    <tooltip>
+                      <![CDATA[Rechnungsadresse]]>
+                    </tooltip>
+                  </field>
                   <field name="isDeliveryAddr" widget="toggle" hideIf="$readonly()"
-                    x-icon="fa-shopping-cart"/>
+                    x-icon="fa-shopping-cart">
+                    <tooltip>
+                      <![CDATA[Einsatzort]]>
+                    </tooltip>
+                  </field>
                   <field name="isDefaultAddr" widget="toggle" hideIf="$readonly()"
-                    x-icon="fa-star-o"/>
+                    x-icon="fa-star-o">
+                    <tooltip>
+                      <![CDATA[Standardadresse]]>
+                    </tooltip>
+                  </field>
+                  <panel colSpan="12"
+                    hideIf="!$readonly() || (isInvoicingAddr &amp;&amp; isDeliveryAddr &amp;&amp; isDefaultAddr)">
+                    <label title="Rechnungsadresse" showIf="isInvoicingAddr" colSpan="12"
+                      css="label-bold text-primary d-block"/>
+                    <label title="Einsatzort" colSpan="12" showIf="isDeliveryAddr"
+                      css="label-bold text-primary d-block"/>
+                  </panel>
                   <field name="address.addressL4" hidden="true"/>
                 </panel>
               </panel>

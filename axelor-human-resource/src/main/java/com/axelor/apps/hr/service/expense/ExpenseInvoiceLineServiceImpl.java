@@ -64,9 +64,9 @@ public class ExpenseInvoiceLineServiceImpl implements ExpenseInvoiceLineService 
               invoice,
               product,
               product.getName(),
-              expenseLine.getUntaxedAmount(),
-              expenseLine.getTotalAmount(),
-              expenseLine.getUntaxedAmount(),
+              expenseLine.getTotalAmountToInvoice(),
+              expenseLine.getTotalAmountToInvoice(),
+              expenseLine.getTotalAmountToInvoice(),
               expenseLine.getComments(),
               BigDecimal.ONE,
               product.getUnit(),
@@ -74,8 +74,8 @@ public class ExpenseInvoiceLineServiceImpl implements ExpenseInvoiceLineService 
               priority,
               BigDecimal.ZERO,
               PriceListLineRepository.AMOUNT_TYPE_NONE,
-              expenseLine.getUntaxedAmount(),
-              expenseLine.getTotalAmount(),
+              expenseLine.getTotalAmountToInvoice(),
+              expenseLine.getTotalAmountToInvoice(),
               false) {
 
             @Override
@@ -95,9 +95,9 @@ public class ExpenseInvoiceLineServiceImpl implements ExpenseInvoiceLineService 
               invoice,
               product,
               product.getName(),
-              expenseLine.getUntaxedAmount(),
-              expenseLine.getTotalAmount(),
-              expenseLine.getTotalAmount(),
+              expenseLine.getTotalAmountToInvoice(),
+              expenseLine.getTotalAmountToInvoice(),
+              expenseLine.getTotalAmountToInvoice(),
               expenseLine.getComments(),
               BigDecimal.ONE,
               product.getUnit(),
@@ -105,8 +105,8 @@ public class ExpenseInvoiceLineServiceImpl implements ExpenseInvoiceLineService 
               priority,
               BigDecimal.ZERO,
               PriceListLineRepository.AMOUNT_TYPE_NONE,
-              expenseLine.getUntaxedAmount(),
-              expenseLine.getTotalAmount(),
+              expenseLine.getTotalAmountToInvoice(),
+              expenseLine.getTotalAmountToInvoice(),
               false) {
 
             @Override

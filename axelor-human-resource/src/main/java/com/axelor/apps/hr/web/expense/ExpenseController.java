@@ -583,6 +583,39 @@ public class ExpenseController {
     Beans.get(ExpenseAnalyticService.class).checkAnalyticAxisByCompany(expense);
   }
 
+  public void customCompute(ActionRequest request, ActionResponse response) {
+    Expense expense = request.getContext().asType(Expense.class);
+
+    BigDecimal exTaxTotal = BigDecimal.ZERO;
+    BigDecimal taxTotal = BigDecimal.ZERO;
+    BigDecimal inTaxTotal = BigDecimal.ZERO;
+    BigDecimal invoiceTotal = BigDecimal.ZERO;
+
+    if (expense.getGeneralExpenseLineList() != null) {
+      for (ExpenseLine line : expense.getGeneralExpenseLineList()) {
+        BigDecimal untaxed =
+            line.getUntaxedAmount() != null ? line.getUntaxedAmount() : BigDecimal.ZERO;
+        BigDecimal taxValue = line.getTotalTax() != null ? line.getTotalTax() : BigDecimal.ZERO;
+        BigDecimal lineInvoiceAmount =
+            line.getTotalAmountToInvoice() != null
+                ? line.getTotalAmountToInvoice()
+                : BigDecimal.ZERO;
+
+        // Accumulate totals
+        exTaxTotal = exTaxTotal.add(untaxed);
+        taxTotal = taxTotal.add(taxValue);
+        inTaxTotal =
+            inTaxTotal.add(line.getTotalAmount() != null ? line.getTotalAmount() : BigDecimal.ZERO);
+        invoiceTotal = invoiceTotal.add(lineInvoiceAmount);
+      }
+    }
+
+    response.setValue("exTaxTotal", exTaxTotal);
+    response.setValue("taxTotal", taxTotal);
+    response.setValue("inTaxTotal", inTaxTotal);
+    response.setValue("totalAmountToInvoice", invoiceTotal);
+  }
+
   public void computeKilometricExpense(ActionRequest request, ActionResponse response)
       throws AxelorException {
 

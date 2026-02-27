@@ -555,6 +555,7 @@
     <action name="action-project-method-check-resource-availibility"/>
     <action name="action-project-method-check-sprint-overlap"/>
     <action name="action-project-validate-toDate"/>
+    <action name="action-method-task-report-sync-project-with-task-report"/>
   </action-group>
 
   <action-group name="action-project-group-finish-project">

@@ -119,4 +119,20 @@
     <option value="SURCHARGE">Surcharge</option>
   </selection>
 
+  <selection name="business.project.approval.item.type.select">
+    <option value="TIMESHEET_LINE">Timesheet Line</option>
+    <option value="EXPENSE">Expense</option>
+  </selection>
+
+  <selection name="business.project.project.type.select">
+    <option value="0">Standard Project</option>
+    <option value="1">Fees Project</option>
+    <option value="2">Cumulative Project</option>
+  </selection>
+
+  <selection name="hr.expense.category.select">
+    <option value="1">Employee Expense</option>
+    <option value="2">Fees / Project Expense</option>
+  </selection>
+
 </object-views>

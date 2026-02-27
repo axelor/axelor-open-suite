@@ -53,12 +53,7 @@
   <form name="expense-form" title="Expense" model="com.axelor.apps.hr.db.Expense" width="large"
     onNew="action-expense-group-form-onNew" onLoad="action-expense-group-form-onLoad"
     onSave="action-expense-method-validate-and-compute" canDelete="ventilated == false"
-    canCopy="false" canAttach="project == null">
-
-    <toolbar>
-      <button name="projectFilesBtn" title="Project Files" icon="fa-paperclip"
-        showIf="project &amp;&amp; id" onClick="action-method-project-find-project-files"/>
-    </toolbar>
+    canCopy="false" canAttach="false">
     <menubar>
       <menu name="expenseReportsMenu" title="Reports" icon="fa-files-o">
         <item name="printAll" title="Print report and files"

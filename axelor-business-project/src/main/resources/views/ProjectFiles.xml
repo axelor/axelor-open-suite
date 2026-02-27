@@ -16,22 +16,33 @@
     <field name="metaFile.sizeText" title="Size" width="80"/>
   </grid>
 
-  <form name="dms-file-project-upload-form" title="File upload"
+  <form name="custom-mgm-dms-file-project-files-upload-form" title="File upload"
     model="com.axelor.dms.db.DMSFile" canAttach="false">
     <panel name="mainPanel">
       <field name="fileName" hidden="true" colSpan="4"/>
-      <field name="metaFile" widget="binary-link" required="true" title="File upload"
-        onChange="action-project-method-attach-metafile-to-project" colSpan="2"/>
+      <field name="metaFile" title="File upload" colSpan="8" widget="binary-link"
+        onChange="action-project-method-attach-metafile-to-project" required="true"/>
+    </panel>
+    <panel name="labelPanel" showFrame="false" showIf="metaFile">
+      <label name="duplicateFileWarning"
+        title="This file already exists in this folder. Upload anyway?" showIf="_fileAlreadyExists"
+        colSpan="12" css="label-important text-center"/>
+    </panel>
+    <panel name="actionButtonsPanel" showFrame="false" showIf="metaFile">
+      <button name="uploadAnywayBtn" title="Upload Anyway" showIf="_fileAlreadyExists"
+        colSpan="6" onClick="action-group-project-project-files-upload-anyway"/>
+      <button name="cancelUploadBtn" title="Cancel" showIf="_fileAlreadyExists" colSpan="6"
+        onClick="action-method-project-project-files-cancel-upload"/>
     </panel>
   </form>
 
   <action-view name="action-project-view-upload-project-file" title="File upload"
     model="com.axelor.dms.db.DMSFile">
-    <view type="form" name="dms-file-project-upload-form"/>
+    <view type="form" name="custom-mgm-dms-file-project-files-upload-form"/>
     <view-param name="popup" value="reload"/>
     <view-param name="show-toolbar" value="false"/>
     <view-param name="show-confirm" value="true"/>
-    <view-param name="popup-save" value="true"/>
+    <view-param name="popup-save" value="false"/>
     <context name="_modelIdForAttachment" expr="eval: _modelIdForAttachment"/>
     <context name="_modelForAttachment" expr="eval: _modelForAttachment"/>
     <context name="isDirectory" expr="eval: false"/>
@@ -41,5 +52,25 @@
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="attachMetaFileToModel"/>
   </action-method>
+
+  <action-record name="action-record-project-project-files-set-upload-on-duplicate"
+    model="com.axelor.dms.db.DMSFile">
+    <field name="_uploadOnDuplicateFile" expr="eval: true"/>
+  </action-record>
+
+  <action-method name="action-method-project-project-files-upload-anyway">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="attachMetaFileToModel"/>
+  </action-method>
+
+  <action-method name="action-method-project-project-files-cancel-upload">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="cancelFileUpload"/>
+  </action-method>
+
+  <action-group name="action-group-project-project-files-upload-anyway">
+    <action name="action-record-project-project-files-set-upload-on-duplicate"/>
+    <action name="action-method-project-project-files-upload-anyway"/>
+  </action-group>
 
 </object-views>

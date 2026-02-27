@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models
+  http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="business-project" package="com.axelor.apps.businessproject.db"/>
+
+  <entity name="ApprovalItem">
+    <many-to-one name="project" ref="com.axelor.apps.project.db.Project" title="Project"/>
+    <many-to-one name="employee" ref="com.axelor.apps.hr.db.Employee" title="Employee"/>
+    <string name="description" title="Description" large="true"/>
+    <string name="unit" title="Unit"/>
+    <datetime name="itemDateTime" title="Date"/>
+    <string name="itemTypeSelect" title="Approval item type"
+      selection="business.project.approval.item.type.select"/>
+    <decimal name="amount" title="Amount"/>
+    <long name="linkedItemToValidateId" title="Linked item to validate id"/>
+
+    <extra-code>
+            <![CDATA[
+      		//Item Type Select
+	  		public static final String TIMESHEET_LINE_APPROVAL_ITEM = "TIMESHEET_LINE";
+	  		public static final String EXPENSE_APPROVAL_ITEM = "EXPENSE";
+	  ]]>
+    </extra-code>
+  </entity>
+
+</domain-models>

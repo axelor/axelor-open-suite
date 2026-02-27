@@ -32,6 +32,8 @@ import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateS
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateServiceImpl;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectServiceImpl;
+import com.axelor.apps.businessproject.service.approvalitem.ApprovalItemManagementService;
+import com.axelor.apps.businessproject.service.approvalitem.ApprovalItemManagementServiceImpl;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigService;
 import com.axelor.apps.businessproject.service.config.BusinessProjectConfigServiceImpl;
 import com.axelor.apps.businessproject.service.extracharges.InvoiceBreakdownDisplayService;
@@ -204,5 +206,7 @@ public class BusinessProjectModule extends AxelorModule {
         .to(TimesheetLineRemoveBusinessProjectServiceImpl.class);
     bind(TaskStatusRepository.class).to(TaskStatusBusinessProjectRepository.class);
     bind(ProjectStatusRepository.class).to(ProjectStatusBusinessProjectRepository.class);
+    bind(ApprovalItemManagementService.class).to(ApprovalItemManagementServiceImpl.class);
+    bind(ProjectFilesService.class).to(ProjectFilesServiceImpl.class);
   }
 }

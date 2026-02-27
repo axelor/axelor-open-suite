@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <action-view name="accountant.home.action" title="Accountant Dashboard"
+    model="com.axelor.apps.project.db.Project">
+    <view type="dashboard" name="accountant.dashboard"/>
+  </action-view>
+
+  <dashboard name="accountant.dashboard" title="Accountant Dashboard">
+    <dashlet name="accountant.projects.overview.chart.by.status"
+      action="action.accountant.projects.overview.chart.by.status" colSpan="12" height="250"/>
+
+    <dashlet name="accountant.projects.to.invoice"
+      action="action.accountant.view.projects.to.invoice" colSpan="12" height="350" canSearch="true"/>
+
+    <dashlet name="accountant.projects.invoiced"
+      action="action.accountant.view.projects.invoiced" colSpan="6" height="350" canSearch="true"/>
+
+    <dashlet name="accountant.projects.paid" action="action.accountant.view.projects.paid"
+      colSpan="6" height="350" canSearch="true"/>
+
+  </dashboard>
+
+  <action-view name="action.accountant.projects.overview.chart.by.status"
+    title="Projects Overview" model="com.axelor.apps.project.db.Project">
+    <view type="chart" name="accountant-business-project-status-chart"/>
+    <domain>UPPER(self.projectStatus.name) IN ('TO INVOICE', 'INVOICED', 'PAID')</domain>
+  </action-view>
+
+  <action-view name="action.accountant.view.projects.to.invoice"
+    title="Projects to Invoice" model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="business-project-grid"/>
+    <view type="form" name="business-project-form"/>
+    <domain>UPPER(self.projectStatus.name) = 'TO INVOICE'</domain>
+  </action-view>
+
+  <action-view name="action.accountant.view.projects.invoiced" title="Projects Invoiced"
+    model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="business-project-grid"/>
+    <view type="form" name="business-project-form"/>
+    <domain>UPPER(self.projectStatus.name) = 'INVOICED'</domain>
+  </action-view>
+
+  <action-view name="action.accountant.view.projects.paid" title="Projects Paid"
+    model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="business-project-grid"/>
+    <view type="form" name="business-project-form"/>
+    <domain>UPPER(self.projectStatus.name) = 'PAID'</domain>
+  </action-view>
+
+
+  <chart name="accountant-business-project-status-chart" title="Projects Overview">
+    <dataset type="rpc">
+      com.axelor.apps.businessproject.web.ApprovalItemController:buildAccountantProjectChartDataSet
+    </dataset>
+    <category key="status" type="text" title="Status"/>
+    <series key="count" type="donut" title="Number of Projects"/>
+    <config name="colors" value="#ffc107,#17a2b8,#28a745"/>
+  </chart>
+
+</object-views>

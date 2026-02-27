@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <action-view name="operations.manager.home.action"
+    title="Operations Manager Dashboard">
+    <view type="dashboard" name="operations.manager.dashboard"/>
+  </action-view>
+
+  <dashboard name="operations.manager.dashboard" title="Operations Manager Dashboard">
+
+    <dashlet name="operations.manager.chart.projects.overview"
+      action="action.operations.manager.chart.projects.overview" colSpan="12" height="250"/>
+
+    <dashlet name="operations.manager.approval.items"
+      action="action.operations.manager.view.approval.items" colSpan="12" height="450"
+      canSearch="true"/>
+
+    <dashlet name="operations.mananager.my.ongoing.projects"
+      action="action.view.operations.manager.my.ongoing.projects" colSpan="6" height="400"
+      canSearch="true"/>
+
+    <dashlet name="operations.manager.my.ongoing.tasks"
+      action="action.view.my.ongoing.tasks" colSpan="6" height="400" canSearch="true"/>
+
+    <dashlet name="operations.manager.all.projects"
+      action="action.view.operations.manager.all.projects" colSpan="12" height="400"
+      canSearch="true"/>
+
+  </dashboard>
+
+
+  <chart name="chart-ops-projects-overview" title="Projects Overview">
+    <dataset type="rpc">
+      com.axelor.apps.businessproject.web.ApprovalItemController:buildProjectChartDataSet
+    </dataset>
+    <category key="status" type="text" title="Status"/>
+    <series key="count" type="donut" title="Number of Projects"/>
+    <config name="colors" value="material"/>
+  </chart>
+
+  <action-view name="action.operations.manager.chart.projects.overview"
+    title="Projects Overview">
+    <view type="chart" name="chart-ops-projects-overview"/>
+  </action-view>
+
+  <action-view name="action.view.operations.manager.my.ongoing.projects"
+    title="My Ongoing Projects" model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="business-project-grid"/>
+    <view type="form" name="business-project-form"/>
+    <domain><![CDATA[
+      (self.assignedTo = :__user__ OR :__user__ MEMBER OF self.membersUserSet)
+      AND self.projectStatus.isCompleted = false
+    ]]></domain>
+  </action-view>
+
+  <action-view name="action.view.my.ongoing.tasks" title="My Ongoing Tasks"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <view type="grid" name="business-project-task-grid"/>
+    <view type="form" name="business-project-task-form"/>
+    <domain><![CDATA[
+      self.assignedTo = :__user__ AND self.status.isCompleted = false
+    ]]></domain>
+  </action-view>
+
+  <action-view name="action.view.operations.manager.all.projects" title="All Projects"
+    model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="business-project-grid"/>
+    <view type="form" name="business-project-form"/>
+  </action-view>
+
+  <action-view name="action.operations.manager.view.approval.items"
+    title="Approvals items" model="com.axelor.apps.businessproject.db.ApprovalItem">
+    <view type="grid" name="approval-item-grid"/>
+    <view type="form" name="approval-item-form"/>
+    <view-param name="popup" value="true"/>
+  </action-view>
+
+</object-views>

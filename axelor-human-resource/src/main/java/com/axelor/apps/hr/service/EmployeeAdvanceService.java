@@ -25,8 +25,6 @@ import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.repo.EmployeeAdvanceRepository;
 import com.axelor.apps.hr.db.repo.EmployeeAdvanceUsageRepository;
 import com.axelor.apps.hr.db.repo.EmployeeHRRepository;
-import com.axelor.apps.hr.db.repo.EmployeeRepository;
-import com.axelor.inject.Beans;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -41,7 +39,11 @@ public class EmployeeAdvanceService {
   @Transactional
   public void fillExpenseWithAdvances(Expense expense) {
 
-    Employee employee = Beans.get(EmployeeRepository.class).find(expense.getEmployee().getId());
+    Employee employee = expense.getEmployee();
+
+    if (employee == null) {
+      return;
+    }
 
     if (EmployeeHRRepository.isEmployeeFormerNewOrArchived(employee)) {
       return;

@@ -20,8 +20,10 @@ package com.axelor.apps.businessproject.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Address;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.dms.DMSFileService;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -29,11 +31,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
-import com.axelor.apps.businessproject.service.BusinessProjectClosingControlService;
-import com.axelor.apps.businessproject.service.BusinessProjectService;
-import com.axelor.apps.businessproject.service.InvoicingProjectService;
-import com.axelor.apps.businessproject.service.ProjectBusinessService;
-import com.axelor.apps.businessproject.service.ProjectHistoryService;
+import com.axelor.apps.businessproject.service.*;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.translation.ITranslation;
@@ -48,10 +46,13 @@ import com.axelor.db.JPA;
 import com.axelor.dms.db.DMSFile;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaFileRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -64,6 +65,11 @@ import org.slf4j.LoggerFactory;
 public class ProjectController {
 
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+
+  @Inject protected ProjectFilesService projectFilesService;
+  @Inject protected ProjectBusinessService projectService;
+  @Inject protected DMSFileService dmsFileService;
+  @Inject protected MetaFileRepository metaFileRepository;
 
   public void generateQuotation(ActionRequest request, ActionResponse response) {
     try {
@@ -149,11 +155,34 @@ public class ProjectController {
 
     project = Beans.get(BusinessProjectService.class).computePartnerData(project, partner);
 
+    List<PartnerAddress> partnerAddresses = partner.getPartnerAddressList();
+    Address deliveryAddress = null;
+
     if (project != null) {
+      if (partnerAddresses != null && !partnerAddresses.isEmpty()) {
+        // get a delivery address marked as default
+        deliveryAddress =
+            partnerAddresses.stream()
+                .filter(pa -> pa.getIsDeliveryAddr() && pa.getIsDefaultAddr())
+                .map(PartnerAddress::getAddress)
+                .findFirst()
+                .orElse(null);
+
+        // if no addr is marked as default we just get a random delivery addr
+        if (deliveryAddress == null) {
+          deliveryAddress =
+              partnerAddresses.stream()
+                  .filter(PartnerAddress::getIsDeliveryAddr)
+                  .map(PartnerAddress::getAddress)
+                  .findFirst()
+                  .orElse(null);
+        }
+      }
+
       response.setValue("analyticDistributionTemplate", project.getAnalyticDistributionTemplate());
       response.setValue("currency", project.getCurrency());
       response.setValue("priceList", project.getPriceList());
-
+      response.setValue("customerAddress", deliveryAddress);
       response.setValue(
           "contactPartner",
           partner.getContactPartnerSet().size() == 1
@@ -314,21 +343,21 @@ public class ProjectController {
     String model = (String) request.getContext().get("_model");
     if (id == null || model == null) {
       logger.debug("No model found");
-      response.setAlert("Please save before viewing project files");
+      response.setAlert(I18n.get("Please save before viewing project files"));
       return;
     }
 
     Project project = Beans.get(ProjectBusinessService.class).findProjectFromModel(model, id);
     if (project == null) {
       logger.debug("No project found");
-      response.setAlert("No project found");
+      response.setAlert(I18n.get("No project found"));
       return;
     }
 
     // If the home does not exist we create it as this ensures that after uploading
     // a file, it should reuse the domain filter so it shows the uploaded file directly and
     // does not require closing and opening back
-    DMSFile home = Beans.get(DMSFileService.class).findOrCreateHome(project);
+    DMSFile home = dmsFileService.findOrCreateHome(project);
 
     if (home != null) {
       response.setView(
@@ -344,7 +373,7 @@ public class ProjectController {
               .context("parentId", home.getId())
               .map());
     } else {
-      response.setAlert("Could not create a home folder for this project");
+      response.setAlert(I18n.get("Could not create a home folder for this project"));
     }
   }
 
@@ -382,11 +411,17 @@ public class ProjectController {
       return;
     }
 
-    project.setIsInvoicingExpenses(true);
-    project.setIsInvoicingTimesheet(true);
-    project.setIsInvoicingPurchases(true);
+    if (!Boolean.TRUE.equals(project.getIsInvoicingExpenses())) {
+      response.setValue("isInvoicingExpenses", true);
+    }
 
-    response.setValues(project);
+    if (!Boolean.TRUE.equals(project.getIsInvoicingTimesheet())) {
+      response.setValue("isInvoicingTimesheet", true);
+    }
+
+    if (!Boolean.TRUE.equals(project.getIsInvoicingPurchases())) {
+      response.setValue("isInvoicingPurchases", true);
+    }
   }
 
   public void attachMetaFileToModel(ActionRequest request, ActionResponse response) {
@@ -394,21 +429,66 @@ public class ProjectController {
       DMSFile dmsFile = request.getContext().asType(DMSFile.class);
 
       if (dmsFile.getMetaFile() == null) {
-        response.setError("Please upload a file");
+        response.setError(I18n.get("Please upload a file"));
         return;
       }
 
       Long modelId = ((Number) request.getContext().get("_modelIdForAttachment")).longValue();
       String model = (String) request.getContext().get("_modelForAttachment");
 
-      Beans.get(ProjectBusinessService.class)
-          .attachMetaFileToModel(modelId, model, dmsFile.getMetaFile());
+      boolean uploadDuplicateFile =
+          Boolean.TRUE.equals(request.getContext().get("_uploadOnDuplicateFile"));
+
+      Project project = projectService.findProjectFromModel(model, modelId);
+      DMSFile projectFilesHome = dmsFileService.findOrCreateHome(project);
+
+      MetaFile metaFile = metaFileRepository.find(dmsFile.getMetaFile().getId());
+      String originalFileName = metaFile.getFileName();
+
+      if (!uploadDuplicateFile) {
+        if (projectFilesService.fileExistsInProjectFiles(projectFilesHome, originalFileName)) {
+          response.setValue("_fileAlreadyExists", true);
+          response.setValue("_metaFileId", metaFile.getId());
+          return;
+        }
+      }
+
+      if (uploadDuplicateFile) {
+        metaFile = projectFilesService.renameMetaFileToAvailableName(metaFile, projectFilesHome);
+      }
+
+      projectFilesService.attachMetaFileToModel(modelId, model, metaFile);
 
       response.setCanClose(true);
-      response.setNotify("File uploaded successfully");
+      response.setNotify(I18n.get("File uploaded successfully"));
 
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void cancelFileUpload(ActionRequest request, ActionResponse response) {
+    try {
+      Number metaFileContextId = (Number) request.getContext().get("_metaFileId");
+
+      if (metaFileContextId != null) {
+        Long metaFileId = metaFileContextId.longValue();
+        MetaFile metaFile = metaFileRepository.find(metaFileId);
+        projectFilesService.cancelFileUpload(metaFile);
+      }
+      response.setCanClose(true);
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void syncTaskReportWithProject(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+
+    if (project == null) {
+      return;
+    }
+
+    projectService.syncTaskReportToProject(project);
   }
 }

@@ -31,8 +31,9 @@
       grid-view="product-expense-grid" width="200"/>
     <field name="expenseDate" width="120"/>
     <field name="employee" hidden="true" form-view="employee-form" grid-view="employee-grid"/>
-    <field name="totalAmount" aggregate="sum" width="170"/>
-    <field name="totalTax" aggregate="sum" width="80"/>
+    <field name="totalAmountToInvoice" title="Total Amount" aggregate="sum"/>
+    <!-- <field name="totalAmount" aggregate="sum" width="170"/> -->
+    <!-- <field name="totalTax" aggregate="sum" width="80"/> -->
     <field name="toInvoice"/>
     <field name="comments" width="400"/>
     <field name="untaxedAmount" hidden="true"/>

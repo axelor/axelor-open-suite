@@ -14,7 +14,7 @@
     <many-to-one name="period" ref="com.axelor.apps.base.db.Period" title="Period"/>
     <integer name="statusSelect" title="Status" selection="hrs.expenses.status.select"
       default="1" readonly="true"/>
-    <many-to-one name="employee" ref="Employee" title="Employee" required="true"/>
+    <many-to-one name="employee" ref="Employee" title="Employee" required="false"/>
     <many-to-one name="currency" ref="com.axelor.apps.base.db.Currency" title="Currency"/>
 
     <one-to-many name="generalExpenseLineList" ref="com.axelor.apps.hr.db.ExpenseLine"
@@ -25,6 +25,8 @@
     <decimal name="exTaxTotal" title="Total W.T." scale="2" precision="20" readonly="true"/>
     <decimal name="taxTotal" title="Total tax" scale="2" precision="20" readonly="true"/>
     <decimal name="inTaxTotal" title="Total A.T.I." scale="2" precision="20" readonly="true"/>
+    <decimal name="totalAmountToInvoice" title="Total to invoice" scale="2" precision="20"
+      readonly="true"/>
     <many-to-one name="company" ref="com.axelor.apps.base.db.Company" required="true"/>
     <date name="moveDate" title="Move Date"/>
     <many-to-one name="validatedBy" ref="com.axelor.auth.db.User" title="Validated by"
@@ -59,6 +61,8 @@
 
     <!-- MGM Customisation: Make Expenses project specific -->
     <one-to-one name="project" ref="com.axelor.apps.project.db.Project" title="project"/>
+    <integer name="categorySelect" title="Category" selection="hr.expense.category.select"
+      default="1"/>
 
     <string name="fullName" namecolumn="true" readonly="true">
       <![CDATA[
