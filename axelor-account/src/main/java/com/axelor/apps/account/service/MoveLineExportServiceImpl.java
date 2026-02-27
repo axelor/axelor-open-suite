@@ -423,10 +423,10 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       moveLineQueryList.add("self.move.period = :period");
     } else {
       if (accountingReport.getDateFrom() != null) {
-        moveLineQueryList.add("self.date >= :toDate");
+        moveLineQueryList.add("self.date >= :fromDate");
       }
       if (accountingReport.getDateTo() != null) {
-        moveLineQueryList.add("self.date <= :fromDate");
+        moveLineQueryList.add("self.date <= :toDate");
       }
     }
 
@@ -458,38 +458,38 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
       AccountingReport accountingReport, boolean administration, boolean replay, Company company) {
     Map<String, Object> moveLineBindingMap = new HashMap<>();
 
-    moveLineBindingMap.put(":accountedStatus", MoveRepository.STATUS_ACCOUNTED);
+    moveLineBindingMap.put("accountedStatus", MoveRepository.STATUS_ACCOUNTED);
     moveLineBindingMap.put(
-        ":daybookStatus",
+        "daybookStatus",
         administration ? MoveRepository.STATUS_ACCOUNTED : MoveRepository.STATUS_DAYBOOK);
 
-    moveLineBindingMap.put(":company", company);
+    moveLineBindingMap.put("company", company);
     if (accountingReport.getYear() != null) {
-      moveLineBindingMap.put(":year", accountingReport.getYear());
+      moveLineBindingMap.put("year", accountingReport.getYear());
     }
 
     if (accountingReport.getPeriod() != null) {
-      moveLineBindingMap.put(":period", accountingReport.getPeriod());
+      moveLineBindingMap.put("period", accountingReport.getPeriod());
     } else {
       if (accountingReport.getDateFrom() != null) {
-        moveLineBindingMap.put(":fromDate'", accountingReport.getDateFrom());
+        moveLineBindingMap.put("fromDate", accountingReport.getDateFrom());
       }
       if (accountingReport.getDateTo() != null) {
-        moveLineBindingMap.put(":toDate", accountingReport.getDateTo());
+        moveLineBindingMap.put("toDate", accountingReport.getDateTo());
       }
     }
 
     if (accountingReport.getDate() != null) {
-      moveLineBindingMap.put(":date", accountingReport.getDate());
+      moveLineBindingMap.put("date", accountingReport.getDate());
     }
 
     if (!administration) {
       if (accountingReport.getJournal() != null) {
-        moveLineBindingMap.put(":journal", accountingReport.getJournal());
+        moveLineBindingMap.put("journal", accountingReport.getJournal());
       }
 
       if (replay) {
-        moveLineBindingMap.put(":accountingReport", accountingReport);
+        moveLineBindingMap.put("accountingReport", accountingReport);
       }
     }
 
