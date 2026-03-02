@@ -194,6 +194,8 @@ import com.axelor.apps.hr.service.extra.hours.ExtraHoursViewService;
 import com.axelor.apps.hr.service.extra.hours.ExtraHoursViewServiceImpl;
 import com.axelor.apps.hr.service.leave.IncrementLeaveService;
 import com.axelor.apps.hr.service.leave.IncrementLeaveServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveBusinessService;
+import com.axelor.apps.hr.service.leave.LeaveBusinessServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveExportService;
 import com.axelor.apps.hr.service.leave.LeaveExportServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveLineService;
@@ -232,6 +234,8 @@ import com.axelor.apps.hr.service.leave.LeaveRequestValidateService;
 import com.axelor.apps.hr.service.leave.LeaveRequestValidateServiceImpl;
 import com.axelor.apps.hr.service.leave.LeaveValueProrataService;
 import com.axelor.apps.hr.service.leave.LeaveValueProrataServiceImpl;
+import com.axelor.apps.hr.service.leave.LeaveViewService;
+import com.axelor.apps.hr.service.leave.LeaveViewServiceImpl;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationService;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDayDurationServiceImpl;
 import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeDurationService;
@@ -543,5 +547,7 @@ public class HumanResourceModule extends AxelorModule {
     bind(ExpenseViewService.class).to(ExpenseViewServiceImpl.class);
     bind(TimesheetViewService.class).to(TimesheetViewServiceImpl.class);
     bind(TimesheetBusinessService.class).to(TimesheetBusinessServiceImpl.class);
+    bind(LeaveViewService.class).to(LeaveViewServiceImpl.class);
+    bind(LeaveBusinessService.class).to(LeaveBusinessServiceImpl.class);
   }
 }
