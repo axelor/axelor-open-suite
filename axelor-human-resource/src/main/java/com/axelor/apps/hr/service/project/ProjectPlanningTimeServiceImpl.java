@@ -399,7 +399,7 @@ public class ProjectPlanningTimeServiceImpl implements ProjectPlanningTimeServic
       throws AxelorException {
     ProjectConfig projectConfig = getProjectConfig(projectPlanningTime);
     if (projectConfig != null) {
-      projectConfig.getValueByDefaultOnDisplayPlannedTime();
+      return projectConfig.getValueByDefaultOnDisplayPlannedTime();
     }
     return BigDecimal.ZERO;
   }
