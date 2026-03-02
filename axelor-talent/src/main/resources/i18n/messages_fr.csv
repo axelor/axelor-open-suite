@@ -253,6 +253,7 @@
 "Validity duration","Durée de validité",,
 "Widowed","Veuf / Veuve",,
 "Work experience","Expérience professionnelle",,
+"You can define here at which application status the candidate will be indicated as being hired. At this status, the software will propose to create an employee record for this candidate.","Vous pouvez definir ici a quel statut d'une candidature on va indiquer que le candidat va etre embauche. A ce statut le logiciel proposera de creer une fiche employe pour ce candidat.",,
 "experience.company","Entreprise",,
 "experience.jobDescription","Description du poste",,
 "experience.jobtitle","Intitulé du poste",,
