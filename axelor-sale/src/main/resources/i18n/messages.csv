@@ -1,6 +1,7 @@
 "key","message","comment","context"
 "%s : You must configure Sales module for company %s",,,
 "%s has been added to your cart.",,,
+"<>Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.</>",,,
 "A JavaScript boolean expression against the current form values.",,,
 "A cancel reason must be selected",,,
 "ABC analysis",,,
@@ -652,7 +653,6 @@
 "Split quotations and orders",,,
 "Standard",,,
 "Standard operation like +, -, *, / can be used and will work correctly with BigDecimal.",,,
-"Standard: Display sale order lines the classic way.<br>Editable: This configuration enables you to activate an editable grid on quotation / sales order lines, allowing you to quickly add and complete quotation lines from the grid view.<br>Editable tree: Activate multi-level sale order lines.",,,
 "Standard: Display the classic order line list. Editable: This configuration enables an editable list on quotation/order lines, allowing quick addition and completion of lines from the list view. Editable tree: Activate multi-level customer order lines.",,,
 "Start date",,,
 "Status",,,
