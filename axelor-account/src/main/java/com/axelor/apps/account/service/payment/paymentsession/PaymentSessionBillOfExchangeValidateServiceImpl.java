@@ -361,7 +361,10 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
     invoiceTermService.payInvoiceTerms(invoiceTermListToPay);
 
     invoiceTermReplaceService.replaceInvoiceTerms(
-        invoiceTerm.getInvoice(), counterPartMoveLine.getInvoiceTermList(), List.of(invoiceTerm));
+        invoiceTerm.getInvoice(),
+        counterPartMoveLine.getInvoiceTermList(),
+        List.of(invoiceTerm),
+        paymentSession);
   }
 
   protected String getMoveDescription(

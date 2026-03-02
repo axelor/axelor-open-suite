@@ -1,3 +1,6 @@
 ---
 title: "Payment session: fixed bill of exchange validation when session contains isolated refunds or invoice terms with prior partial payments."
 module: axelor-account
+developer: |
+  - Changed InvoiceTermReplaceService.replaceInvoiceTerms parameters from 
+  (invoice, newInvoiceTermList, invoiceTermListToRemove) to (invoice, newInvoiceTermList, invoiceTermListToRemove, paymentSession)

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
@@ -64,7 +65,7 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
     List<InvoiceTerm> invoiceTermListToRemove = new ArrayList<>();
     copyInvoiceTerms(invoice, move, newInvoiceTermList, invoiceTermListToRemove);
     reconcilesMoves(move, invoiceMoveLineList, invoice, partnerAccount);
-    replaceInvoiceTerms(invoice, newInvoiceTermList, invoiceTermListToRemove);
+    replaceInvoiceTerms(invoice, newInvoiceTermList, invoiceTermListToRemove, null);
   }
 
   /**
@@ -187,7 +188,8 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
   public void replaceInvoiceTerms(
       Invoice invoice,
       List<InvoiceTerm> newInvoiceTermList,
-      List<InvoiceTerm> invoiceTermListToRemove) {
+      List<InvoiceTerm> invoiceTermListToRemove,
+      PaymentSession paymentSession) {
     if (invoice == null
         || ObjectUtils.isEmpty(newInvoiceTermList)
         || ObjectUtils.isEmpty(invoiceTermListToRemove)) {
@@ -195,6 +197,7 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
     }
 
     for (InvoiceTerm invoiceTerm : newInvoiceTermList) {
+      selectOnPaymentSession(invoiceTerm, paymentSession);
       invoice.addInvoiceTermListItem(invoiceTerm);
     }
 
@@ -207,6 +210,17 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
 
     replaceInvoiceTermsToRemoveWithCopy(invoiceTermListToRemove);
     invoiceRepo.save(invoice);
+  }
+
+  protected void selectOnPaymentSession(InvoiceTerm invoiceTerm, PaymentSession paymentSession) {
+    if (paymentSession == null) {
+      return;
+    }
+
+    invoiceTerm.setPaymentSession(paymentSession);
+    invoiceTerm.setIsSelectedOnPaymentSession(true);
+    invoiceTerm.setPaymentAmount(invoiceTerm.getAmount());
+    invoiceTerm.setAmountPaid(invoiceTerm.getAmount());
   }
 
   protected boolean hasPriorPartialPayment(InvoiceTerm invoiceTerm) {
