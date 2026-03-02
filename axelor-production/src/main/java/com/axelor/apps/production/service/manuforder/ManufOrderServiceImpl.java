@@ -600,9 +600,12 @@ public class ManufOrderServiceImpl implements ManufOrderService {
       updateDiffProdProductList(manufOrder);
     } else {
       for (OperationOrder operationOrder : manufOrder.getOperationOrderList()) {
+        operationOrder = JpaModelHelper.ensureManaged(operationOrder);
         Beans.get(OperationOrderStockMoveService.class)
             .createNewConsumedStockMoveLineList(operationOrder, qtyToUpdate);
+        operationOrder = JpaModelHelper.ensureManaged(operationOrder);
         operationOrderService.updateDiffProdProductList(operationOrder);
+        manufOrder = JpaModelHelper.ensureManaged(manufOrder);
       }
     }
 
@@ -1164,6 +1167,21 @@ public class ManufOrderServiceImpl implements ManufOrderService {
                 manufOrder.getPlannedStartDateT(),
                 manufOrder.getPlannedEndDateT(),
                 ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
+
+        if (appProductionService.getAppProduction().getManageWorkshop()
+            && manufOrder.getWorkshopStockLocation() == null) {
+          StockLocation parentWorkshop = null;
+          if (parentMOId != null) {
+            ManufOrder dbParentMO = manufOrderRepo.find(parentMOId);
+            parentWorkshop = dbParentMO.getWorkshopStockLocation();
+          } else {
+            ManufOrder generatedParentMO = seqMOMap.get(parentMO.getManualMOSeq());
+            if (generatedParentMO != null) {
+              parentWorkshop = generatedParentMO.getWorkshopStockLocation();
+            }
+          }
+          manufOrder.setWorkshopStockLocation(parentWorkshop);
+        }
 
         manufOrder.setClientPartner(clientPartner);
         manufOrder.setManualMOSeq(backupSeq);

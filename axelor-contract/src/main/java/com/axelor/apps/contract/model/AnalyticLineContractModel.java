@@ -20,6 +20,7 @@ package com.axelor.apps.contract.model;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -162,5 +163,13 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
     this.contractLine.setAxis4AnalyticAccount(this.axis4AnalyticAccount);
     this.contractLine.setAxis5AnalyticAccount(this.axis5AnalyticAccount);
     this.contractLine.setAnalyticMoveLineList(this.analyticMoveLineList);
+  }
+
+  @Override
+  public int getTypeSelect() {
+    if (this.contractLine != null) {
+      return AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT;
+    }
+    return super.getTypeSelect();
   }
 }

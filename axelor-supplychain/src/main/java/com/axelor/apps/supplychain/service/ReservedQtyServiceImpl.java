@@ -88,7 +88,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
     Query<StockMoveLine> query = getManagedStockMoveLineQuery(stockMove.getId());
 
-    BatchProcessorHelper helper = BatchProcessorHelper.builder().build();
+    BatchProcessorHelper helper = BatchProcessorHelper.builder().clearEveryNBatch(0).build();
 
     helper.<StockMoveLine, AxelorException>forEachByQuery(
         query,

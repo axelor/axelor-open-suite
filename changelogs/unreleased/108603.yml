@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed error when canceling with a cancel reason and stock reservation enabled."
+module: axelor-production

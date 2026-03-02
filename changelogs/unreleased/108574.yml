@@ -1,0 +1,3 @@
+---
+title: "Manufacturing order: fixed a blocking error when updating planned or real quantities with consumption on operation."
+module: axelor-production
