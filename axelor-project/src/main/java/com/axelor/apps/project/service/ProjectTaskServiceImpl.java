@@ -32,6 +32,7 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
+import com.axelor.utils.api.SecurityCheck;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.time.LocalDate;
@@ -236,6 +237,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
   @Transactional
   public void deleteProjectTask(ProjectTask projectTask) {
+    new SecurityCheck().removeAccess(ProjectTask.class, projectTask.getId()).check();
     projectTaskRepo.remove(projectTask);
   }
 
