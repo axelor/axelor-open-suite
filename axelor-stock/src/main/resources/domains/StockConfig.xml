@@ -41,7 +41,8 @@
       help="This configuration defines the unit of mass used for customs controls. This is not a default value that can be overridden, it is a common value for all moves that can only be modified via this field."/>
 
     <boolean name="realizeStockMovesUponParcelPalletCollection"
-      title="Realize stock moves upon parcel/pallet collection"/>
+      title="Realize stock moves upon parcel/pallet collection"
+      help="This configuration defines whether, when a logistical form moves to Collected status, the related delivery note(s) automatically move to Realized status."/>
 
     <boolean name="plannedStockMoveAutomaticMail"
       title="Send email when planning stock move" default="false"
@@ -196,8 +197,7 @@
 
       <field name="customsMassUnit" on="UPDATE"/>
 
-      <field name="realizeStockMovesUponParcelPalletCollection" on="UPDATE"
-        help="This configuration defines whether, when a logistical form moves to Collected status, the related delivery note(s) automatically move to Realized status."/>
+      <field name="realizeStockMovesUponParcelPalletCollection" on="UPDATE"/>
 
       <field name="plannedStockMoveAutomaticMail" on="UPDATE"/>
       <field name="realStockMoveAutomaticMail" on="UPDATE"/>

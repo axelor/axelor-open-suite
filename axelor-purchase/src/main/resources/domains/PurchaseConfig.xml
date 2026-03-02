@@ -11,7 +11,8 @@
       required="true" unique="true" help="Company for which the configurations are made."/>
 
     <integer name="purchaseOrderInAtiSelect" title="Purchase orders ATI/WT"
-      selection="base.in.ati.select" default="1"/>
+      selection="base.in.ati.select" default="1"
+      help="It is possible to choose whether quotations/orders are always established excluding tax, always including tax, by default excluding tax, or by default including tax. The by default excluding tax and by default including tax options allow case-by-case modification (via a checkbox)."/>
     <string name="purchaseOrderSupplierBox" large="true" multiline="true"
       title="Supplier box in purchase order"
       help="This field allows you to customize a box with information of your choice on quotation/order printings using an HTML field."/>
@@ -51,8 +52,7 @@
 
     <track>
       <field name="company" on="UPDATE"/>
-      <field name="purchaseOrderInAtiSelect" on="UPDATE"
-        help="It is possible to choose whether quotations/orders are always established excluding tax, always including tax, by default excluding tax, or by default including tax. The by default excluding tax and by default including tax options allow case-by-case modification (via a checkbox)."/>
+      <field name="purchaseOrderInAtiSelect" on="UPDATE"/>
       <field name="purchaseOrderSupplierBox" on="UPDATE"/>
       <field name="displayBuyerOnPrinting" on="UPDATE"/>
       <field name="displayProductCodeOnPrinting" on="UPDATE"/>
