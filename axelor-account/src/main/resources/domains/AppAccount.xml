@@ -12,45 +12,62 @@
     <!-- Comptabilité -->
     <many-to-one name="transferAndDirectDebitInterbankCode"
       ref="com.axelor.apps.account.db.InterbankCode"
-      title="Code list for rejects/return of Direct debit, Wire Transfers and IPO"/>
+      title="Code list for rejects/return of Direct debit, Wire Transfers and IPO"
+      help="You can select the codes and reasons that will be selectable for rejection reasons of wire transfers, direct debits, IPO, and SEPA direct debits."/>
     <many-to-one name="chequeInterbankCode"
-      ref="com.axelor.apps.account.db.InterbankCode" title="Code list for rejects/return of Cheques"/>
+      ref="com.axelor.apps.account.db.InterbankCode" title="Code list for rejects/return of Cheques"
+      help="You can select the codes and reasons that will be selectable for cheque rejection reasons."/>
     <one-to-many name="payerQualityConfigLineList"
       ref="com.axelor.apps.account.db.PayerQualityConfigLine" title="Weight table (Payer quality)"/>
 
-    <boolean name="manageCustomerCredit" title="Manage customerCredit"/>
-    <boolean name="manageAnalyticAccounting" title="Manage analytic accounting"/>
-    <boolean name="manageFactors"/>
-    <boolean name="manageCutOffPeriod" title="Manage Cut off period"/>
+    <boolean name="manageCustomerCredit" title="Manage customerCredit"
+      help="This option enables managing customer credit levels and setting a maximum amount. A default maximum accepted credit amount for all customers can be set in the sales configurations per company. The accepted credit amount can also be configured per customer in the accounting information of customer records. You can also view the credit currently used by each customer."/>
+    <boolean name="manageAnalyticAccounting" title="Manage analytic accounting"
+      help="This configuration enables analytic accounting in the software. Analytic accounting is configurable from the dedicated menus in the accounting module configurations."/>
+    <boolean name="manageFactors"
+      help="This configuration enables factor management and the factoring process."/>
+    <boolean name="manageCutOffPeriod" title="Manage Cut off period"
+      help="This configuration enables from an accounting perspective the application periods of invoices in order to allow end-of-year adjustments (prepaid expenses/deferred revenue) and spread charges across multiple fiscal years based on the application dates entered on invoices/accounting entries."/>
 
     <integer name="partnerBalConfigSelect" title="Partner balance viewer configuration"
-      selection="account.partner.bal.config.select" default="1"/>
+      selection="account.partner.bal.config.select" default="1"
+      help="You can configure here the balance viewer widget that appears on partner forms in the top right corner by indicating whether you want to see the total partner balance, the due balance, or the recoverable due balance."/>
 
     <boolean name="manageAdvancePaymentInvoice" title="Manage advance payment invoice"
-      default="true"/>
-    <boolean name="paymentVouchersOnSupplierInvoice"/>
-    <boolean name="paymentVouchersOnCustomerInvoice"/>
+      default="true"
+      help="This configuration enables the advance payment invoice generation feature."/>
+    <boolean name="paymentVouchersOnSupplierInvoice"
+      help="This configuration enables the payment assistant when entering a supplier payment on a supplier invoice/credit note. Otherwise, the standard payment registration form on the invoice will open."/>
+    <boolean name="paymentVouchersOnCustomerInvoice"
+      help="This configuration enables the payment assistant when entering a customer payment on a customer invoice/credit note. Otherwise, the standard payment registration form on the invoice will open."/>
 
-    <boolean name="activatePassedForPayment" title="Activate passed for payment"/>
+    <boolean name="activatePassedForPayment" title="Activate passed for payment"
+      help="This configuration enables Passed for Payment (PFP) management on purchase invoices."/>
     <boolean name="manageFinancialDiscount" title="Manage financial discount"
-      help="Field allowing to activate the financial discounts"/>
-    <boolean name="allowMultiInvoiceTerms" title="Allow multi invoice terms"/>
+      help="Configuration enabling the activation of financial discounts."/>
+    <boolean name="allowMultiInvoiceTerms" title="Allow multi invoice terms"
+      help="This configuration enables for the financial part the management of payment configurations with multiple payment terms. If the payment conditions used are standard (15 days Net, 30 days End of month) then this option does not need to be activated. However, if more specific conditions are used (e.g. 30% Cash, 70% at 30 days) this option must be activated to display the terms table on the relevant documents (Invoices, Move lines...)."/>
 
     <!-- DAS2 - N4DS -->
     <many-to-one name="defaultServiceTypeTypology"
       ref="com.axelor.apps.account.db.ServiceType" title="Default service type"/>
-    <string name="dasActiveNorm" title="Current version of N4DS standard"/>
+    <string name="dasActiveNorm" title="Current version of N4DS standard"
+      help="Version that will be indicated on the N4DS file for the DAS."/>
 
     <boolean name="activateFixedAssetBarCodeGeneration"
-      title="Activate bar code generation for fixed asset" default="false"/>
+      title="Activate bar code generation for fixed asset" default="false"
+      help="This configuration enables barcode printing on fixed assets (based on the reference field)."/>
     <boolean name="editFixedAssetBarcodeType"
-      title="Specify the barcode type by fixed asset" default="false"/>
+      title="Specify the barcode type by fixed asset" default="false"
+      help="Displayed only if fixed asset barcodes are enabled."/>
     <many-to-one name="fixedAssetBarcodeTypeConfig" title="Fixed asset barcode type"
-      ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"/>
+      ref="com.axelor.apps.base.db.BarcodeTypeConfig" default="EAN_13"
+      help="You can select the barcode type that will be used by default for all fixed assets. If you want different types per fixed asset, you must enable the Specify the barcode type by fixed asset configuration."/>
     <integer name="dsoComputationPeriod" title="DSO computation period"
-      help="Duration (in days) for the DSO (Days Sales Outstanding) calculation. This calculation is based on invoices only. Formula: DSO = (Accounts receivable / Revenue) x Number of days in the period."/>
+      help="Duration (in days) used for the DSO (Days Sales Outstanding) calculation. This calculation is based on invoices only. Formula: DSO = (Accounts receivable / Revenue) x Number of days in the period."/>
 
-    <boolean name="enableLatePaymentInterest" title="Enable late payment interest"/>
+    <boolean name="enableLatePaymentInterest" title="Enable late payment interest"
+      help="This configuration enables late payment interest management in case of non-payment."/>
     <decimal name="latePaymentInterestFlatFee" title="Late payment interest flat fee"
       min="0"/>
     <many-to-one name="flatFeeProduct" ref="com.axelor.apps.base.db.Product"
@@ -58,7 +75,7 @@
     <many-to-one name="latePaymentInterestProduct" ref="com.axelor.apps.base.db.Product"
       title="Late payment product"/>
     <decimal name="thresholdAmount" title="Threshold amount"
-      help="Threshold amount to generate late interest invoice"/>
+      help="Threshold amount to generate late payment interest invoices."/>
 
     <extra-code><![CDATA[
 
