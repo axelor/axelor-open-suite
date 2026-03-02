@@ -337,6 +337,16 @@ public class MoveLineExportServiceImpl implements MoveLineExportService {
             "%s %s%s.csv", I18n.get("General balance"), accountingReport.getRef(), dateStr);
     writeMoveLineToCsvFile(
         accountingReport.getCompany(), fileName, null, allMoveLineData, accountingReport);
+
+    @SuppressWarnings("unchecked")
+    List<Move> moveList =
+        JPA.em()
+            .createQuery(
+                "SELECT DISTINCT self.move FROM MoveLine self WHERE " + filterStr, Move.class)
+            .getResultList();
+    if (!moveList.isEmpty()) {
+      updateMoveList(moveList, accountingReport, accountingReport.getDate(), null);
+    }
   }
 
   /**
