@@ -42,6 +42,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.service.ProjectServiceImpl;
@@ -70,6 +71,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoicingProjectService {
 
@@ -174,6 +176,19 @@ public class InvoicingProjectService {
     taskQueryMap.put("project", project);
     taskQueryMap.put("invoicingTypePackage", ProjectTaskRepository.INVOICING_TYPE_PACKAGE);
     taskQueryMap.put("invoicingTypeProgress", ProjectTaskRepository.INVOICING_TYPE_ON_PROGRESS);
+
+    AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
+    int invoicingSequenceSelect = project.getInvoicingSequenceSelect();
+    if (invoicingSequenceSelect != ProjectRepository.INVOICING_SEQ_EMPTY) {
+      Set<TaskStatus> taskStatusSet =
+          invoicingSequenceSelect == ProjectRepository.INVOICING_SEQ_INVOICE_PRE_TASK
+              ? appBusinessProject.getPreTaskStatusSet()
+              : appBusinessProject.getPostTaskStatusSet();
+      if (CollectionUtils.isNotEmpty(taskStatusSet)) {
+        taskQueryBuilder.append(" AND self.status IN :statusSet");
+        taskQueryMap.put("statusSet", taskStatusSet);
+      }
+    }
 
     if (invoicingProject.getDeadlineDate() != null) {
       solQueryBuilder.append(" AND self.saleOrder.creationDate <= :deadlineDate");
