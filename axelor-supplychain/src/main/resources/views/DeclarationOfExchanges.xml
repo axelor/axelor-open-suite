@@ -115,20 +115,20 @@
       self.stockMove.statusSelect = 3
       AND self.stockMove.company = :_company
       AND
-      (COALESCE(self.stockMove.fromAddress.country,
-      self.fromStockLocation.address.country)
-      =
-      :_country
-      OR
-      COALESCE(self.stockMove.toAddress.country,
-      self.toStockLocation.address.country) =
-      :_country)
+      ((self.stockMove.typeSelect = :_incomingStockMove AND (self.stockMove.fromAddress.country =
+      :_country OR
+      self.toStockLocation.address.country = :_country))
+      OR (self.stockMove.typeSelect =
+      :_outgoingStockMove AND (self.stockMove.toAddress.country = :_country OR
+      self.fromStockLocation.address.country =
+      :_country)))
       AND
-      COALESCE(self.stockMove.fromAddress.country,
+      (self.stockMove.typeSelect =
+      :_incomingStockMove AND self.stockMove.fromAddress.country !=
+      self.toStockLocation.address.country
+      OR self.stockMove.typeSelect = :_outgoingStockMove AND
+      self.stockMove.toAddress.country !=
       self.fromStockLocation.address.country)
-      !=
-      COALESCE(self.stockMove.toAddress.country,
-      self.toStockLocation.address.country)
       AND
       COALESCE(self.stockMove.fromAddress.country.economicArea,
       self.fromStockLocation.address.country.economicArea)
@@ -156,6 +156,8 @@
     <context name="_stockMoveTypeSelect" expr="eval: stockMoveTypeSelect"/>
     <context name="_country" expr="eval: country"/>
     <context name="_company" expr="eval: company"/>
+    <context name="_incomingStockMove" expr="eval: __repo__(StockMove).TYPE_INCOMING"/>
+    <context name="_outgoingStockMove" expr="eval: __repo__(StockMove).TYPE_OUTGOING"/>
   </action-view>
 
   <action-attrs name="action-declaration-of-exchanges-attrs-show-price">
