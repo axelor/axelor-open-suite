@@ -21,6 +21,8 @@
     <many-to-one name="productFamily" ref="com.axelor.apps.base.db.ProductFamily"
       title="Accounting family"/>
 
+    <unique-constraint columns="tax,company"/>
+
     <extra-code><![CDATA[
 
 		   	// TYPE SELECT
