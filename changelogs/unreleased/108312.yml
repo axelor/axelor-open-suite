@@ -1,0 +1,3 @@
+---
+title: "Invoice : fixed VAT on advance payments are not included in cash VAT declaration report."
+module: axelor-account
