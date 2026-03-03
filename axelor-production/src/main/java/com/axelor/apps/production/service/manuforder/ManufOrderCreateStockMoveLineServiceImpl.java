@@ -284,17 +284,17 @@ public class ManufOrderCreateStockMoveLineServiceImpl
           productCostPrice,
           stockMove.getFromStockLocation(),
           stockMove.getToStockLocation());
-
-      // Update produced StockMoveLineList with created stock move lines
-      List<StockMoveLine> stockMoveLineList = stockMove.getStockMoveLineList();
-      for (StockMoveLine stockMoveLine : stockMoveLineList) {
-        if (!manufOrder.getProducedStockMoveLineList().contains(stockMoveLine)) {
-          manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
-        }
-      }
     }
     stockMoveService.goBackToDraft(stockMove);
     stockMoveService.plan(stockMove);
+
+    stockMove = JpaModelHelper.ensureManaged(stockMove);
+    manufOrder = JpaModelHelper.ensureManaged(manufOrder);
+    for (StockMoveLine stockMoveLine : stockMove.getStockMoveLineList()) {
+      if (!manufOrder.getProducedStockMoveLineList().contains(stockMoveLine)) {
+        manufOrder.addProducedStockMoveLineListItem(stockMoveLine);
+      }
+    }
   }
 
   protected void clearTrackingNumberOriginStockMoveLine(StockMove stockMove) {
