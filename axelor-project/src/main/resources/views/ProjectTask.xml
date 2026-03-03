@@ -89,6 +89,14 @@
     x-tree-field="projectTaskList" x-tree-field-title="Add sub tasks"
     model="com.axelor.apps.project.db.ProjectTask" editable="true"
     orderBy="-priority.technicalTypeSelect" onNew="action-project-task-group-onnew">
+    <toolbar>
+      <button name="newLineBtn" title="New line" icon="plus-lg" showIf="_showTaskBtn"
+        onClick="action-project-add-task"/>
+      <button name="removeLineBtn" title="Remove lines" icon="trash" showIf="_showTaskBtn"
+        onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/>
+      <button name="allTaskBtn" title="All tasks" colSpan="2" showIf="_showTaskBtn"
+        icon="list-task" onClick="save,action-project-view-show-related-tasks"/>
+    </toolbar>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
     <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
@@ -112,6 +120,8 @@
     <field name="createdBy"/>
     <field name="progress" onChange="action-project-task-group-progress-onchange"
       widget="Progress" min="0" max="100"/>
+    <button name="deleteTaskBtn" icon="x-circle-fill" showIf="_showTaskBtn"
+      onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
     <field name="project" hidden="true"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
     <field name="project.completedTaskStatus.id" hidden="true"/>
