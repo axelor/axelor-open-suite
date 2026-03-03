@@ -1,0 +1,5 @@
+---
+title: "Bank reconciliation: fixed original move reappearing in entries to reconcile after its reversal is deleted or archived."
+module: axelor-bank-payment
+developer: |
+  ALTER TABLE account_move ADD COLUMN IF NOT EXISTS reverse_origin_move BIGINT;
