@@ -19,13 +19,23 @@
 package com.axelor.apps.project.service;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskTemplate;
+import jakarta.inject.Inject;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 public class TaskTemplateServiceImpl implements TaskTemplateService {
+
+  protected AppBaseService appBaseService;
+
+  @Inject
+  public TaskTemplateServiceImpl(AppBaseService appBaseService) {
+    this.appBaseService = appBaseService;
+  }
 
   @Override
   public Set<TaskTemplate> getParentTaskTemplateFromTaskTemplate(
@@ -56,6 +66,15 @@ public class TaskTemplateServiceImpl implements TaskTemplateService {
   @Override
   public void manageTemplateFields(ProjectTask task, TaskTemplate taskTemplate, Project project)
       throws AxelorException {
+    LocalDateTime dateWithDelay =
+        appBaseService
+            .getTodayDate(project.getCompany())
+            .atStartOfDay()
+            .plusHours(
+                taskTemplate.getDelayToStart() != null
+                    ? taskTemplate.getDelayToStart().longValue()
+                    : 0L);
+    task.setTaskDate(dateWithDelay.toLocalDate());
     task.setDescription(taskTemplate.getDescription());
     task.setTaskDuration(taskTemplate.getDuration().intValue());
 
