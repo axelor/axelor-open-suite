@@ -26,6 +26,7 @@ import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.service.FiscalPositionAccountService;
+import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
@@ -107,6 +108,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
   protected CurrencyScaleService currencyScaleService;
   protected OrderInvoiceService orderInvoiceService;
   protected InvoiceTaxService invoiceTaxService;
+  protected PartnerAccountService partnerAccountService;
 
   @Inject
   public SaleOrderInvoiceServiceImpl(
@@ -124,7 +126,8 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       SaleInvoicingStateService saleInvoicingStateService,
       CurrencyScaleService currencyScaleService,
       OrderInvoiceService orderInvoiceService,
-      InvoiceTaxService invoiceTaxService) {
+      InvoiceTaxService invoiceTaxService,
+      PartnerAccountService partnerAccountService) {
     this.appBaseService = appBaseService;
     this.appStockService = appStockService;
     this.appSupplychainService = appSupplychainService;
@@ -140,6 +143,7 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
     this.currencyScaleService = currencyScaleService;
     this.orderInvoiceService = orderInvoiceService;
     this.invoiceTaxService = invoiceTaxService;
+    this.partnerAccountService = partnerAccountService;
   }
 
   @Override
@@ -574,6 +578,10 @@ public class SaleOrderInvoiceServiceImpl implements SaleOrderInvoiceService {
       public Invoice generate() throws AxelorException {
         Invoice invoice = super.createInvoiceHeader();
         invoice.setHeadOfficeAddress(saleOrder.getClientPartner().getHeadOfficeAddress());
+        if (appBaseService.getAppBase().getActivatePartnerRelations()) {
+          invoice.setThirdPartyPayerPartner(
+              partnerAccountService.getPayedByPartner(invoice.getPartner()));
+        }
         return invoice;
       }
     };
