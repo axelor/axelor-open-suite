@@ -24,7 +24,7 @@ import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.app.AppSaleService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderSplitService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineSplitService;
 import com.axelor.apps.supplychain.db.MrpLineType;
 import com.axelor.studio.db.AppSale;
 import com.axelor.utils.helpers.StringHelper;
@@ -36,16 +36,16 @@ import org.apache.commons.collections.CollectionUtils;
 public class MrpLineSaleOrderServiceImpl implements MrpLineSaleOrderService {
 
   protected final AppSaleService appSaleService;
-  protected final SaleOrderSplitService saleOrderSplitService;
+  protected final SaleOrderLineSplitService saleOrderLineSplitService;
   protected final UnitConversionService unitConversionService;
 
   @Inject
   public MrpLineSaleOrderServiceImpl(
       AppSaleService appSaleService,
-      SaleOrderSplitService saleOrderSplitService,
+      SaleOrderLineSplitService saleOrderLineSplitService,
       UnitConversionService unitConversionService) {
     this.appSaleService = appSaleService;
-    this.saleOrderSplitService = saleOrderSplitService;
+    this.saleOrderLineSplitService = saleOrderLineSplitService;
     this.unitConversionService = unitConversionService;
   }
 
@@ -64,7 +64,7 @@ public class MrpLineSaleOrderServiceImpl implements MrpLineSaleOrderService {
         && isStatusCompatible
         && saleOrderLine.getSaleOrder().getStatusSelect()
             == SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
-      qty = saleOrderSplitService.getQtyToOrderLeft(saleOrderLine);
+      qty = saleOrderLineSplitService.getQtyToOrderLeft(saleOrderLine);
     }
 
     if (!unit.equals(saleOrderLine.getUnit())) {

@@ -33,6 +33,7 @@ import com.axelor.apps.sale.service.saleorder.SaleOrderSplitServiceImpl;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineSplitService;
 import com.axelor.apps.supplychain.exception.SupplychainExceptionMessage;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
@@ -57,6 +58,7 @@ public class SaleOrderSplitSupplychainServiceImpl extends SaleOrderSplitServiceI
       SaleOrderComputeService saleOrderComputeService,
       AppBaseService appBaseService,
       SaleOrderOrderingStatusService saleOrderOrderingStatusService,
+      SaleOrderLineSplitService saleOrderLineSplitService,
       InvoiceRepository invoiceRepository,
       AppSupplychainService appSupplychainService,
       SaleOrderAdvancePaymentFetchService saleOrderAdvancePaymentFetchService) {
@@ -68,7 +70,8 @@ public class SaleOrderSplitSupplychainServiceImpl extends SaleOrderSplitServiceI
         saleOrderConfirmService,
         saleOrderComputeService,
         appBaseService,
-        saleOrderOrderingStatusService);
+        saleOrderOrderingStatusService,
+        saleOrderLineSplitService);
     this.invoiceRepository = invoiceRepository;
     this.appSupplychainService = appSupplychainService;
     this.saleOrderAdvancePaymentFetchService = saleOrderAdvancePaymentFetchService;

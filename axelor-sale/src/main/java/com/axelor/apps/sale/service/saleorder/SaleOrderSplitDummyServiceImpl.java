@@ -22,6 +22,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineSplitService;
 import com.axelor.db.mapper.Mapper;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
@@ -33,16 +34,16 @@ public class SaleOrderSplitDummyServiceImpl implements SaleOrderSplitDummyServic
 
   protected final AppBaseService appBaseService;
   protected final SaleOrderLineRepository saleOrderLineRepository;
-  protected final SaleOrderSplitService saleOrderSplitService;
+  protected final SaleOrderLineSplitService saleOrderLineSplitService;
 
   @Inject
   public SaleOrderSplitDummyServiceImpl(
       AppBaseService appBaseService,
       SaleOrderLineRepository saleOrderLineRepository,
-      SaleOrderSplitService saleOrderSplitService) {
+      SaleOrderLineSplitService saleOrderLineSplitService) {
     this.appBaseService = appBaseService;
     this.saleOrderLineRepository = saleOrderLineRepository;
-    this.saleOrderSplitService = saleOrderSplitService;
+    this.saleOrderLineSplitService = saleOrderLineSplitService;
   }
 
   @Override
@@ -59,7 +60,7 @@ public class SaleOrderSplitDummyServiceImpl implements SaleOrderSplitDummyServic
           Mapper.toMap(saleOrderLineRepository.copy(saleOrderLine, true));
       saleOrderLineMap.put("$solId", saleOrderLine.getId());
       saleOrderLineMap.put(
-          "$qtyToOrderLeft", saleOrderSplitService.getQtyToOrderLeft(saleOrderLine));
+          "$qtyToOrderLeft", saleOrderLineSplitService.getQtyToOrderLeft(saleOrderLine));
       saleOrderLineMap.put("$nbDecimalDigitForUnitPrice", nbOfDecimalForPrice);
       saleOrderLineMap.put("$nbDecimalDigitForQty", nbOfDecimalForQty);
       saleOrderLineMapList.add(saleOrderLineMap);
