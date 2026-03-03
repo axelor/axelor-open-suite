@@ -74,7 +74,8 @@ public class ProdProductProductionRepository extends ProdProductRepository {
       toProduceManufOrderIdFromView =
           Optional.ofNullable(context.get("_parent"))
               .map(o -> (Map<String, Object>) o)
-              .map(parentMap -> Long.parseLong(parentMap.get("id").toString()))
+              .map(parentMap -> parentMap.get("id"))
+              .map(id -> Long.parseLong(id.toString()))
               .orElse(null);
     }
     if (productFromView == null || qtyFromView == null || toProduceManufOrderIdFromView == null) {
