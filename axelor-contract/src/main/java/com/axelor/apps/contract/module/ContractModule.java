@@ -23,8 +23,6 @@ import com.axelor.apps.account.service.AccountManagementServiceAccountImpl;
 import com.axelor.apps.contract.db.repo.AbstractContractRepository;
 import com.axelor.apps.contract.db.repo.ConsumptionLineManagementRepository;
 import com.axelor.apps.contract.db.repo.ConsumptionLineRepository;
-import com.axelor.apps.contract.db.repo.ContractBatchContractRepository;
-import com.axelor.apps.contract.db.repo.ContractBatchRepository;
 import com.axelor.apps.contract.db.repo.ContractLineManagementRepository;
 import com.axelor.apps.contract.db.repo.ContractLineRepository;
 import com.axelor.apps.contract.db.repo.ContractRepository;
@@ -94,7 +92,6 @@ public class ContractModule extends AxelorModule {
     bind(ContractVersionService.class).to(ContractVersionServiceImpl.class);
     bind(ContractLineService.class).to(ContractLineServiceImpl.class);
     bind(ConsumptionLineService.class).to(ConsumptionLineServiceImpl.class);
-    bind(ContractBatchRepository.class).to(ContractBatchContractRepository.class);
     bind(AnalyticMoveLineSupplychainServiceImpl.class)
         .to(AnalyticMoveLineContractServiceImpl.class);
     bind(InvoiceLineAnalyticSupplychainServiceImpl.class)
