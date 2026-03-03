@@ -47,6 +47,8 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   protected final BillOfMaterialLineService billOfMaterialLineService;
   protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
   protected final SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService;
+  protected final SolDetailsBomUpdateService solDetailsBomUpdateService;
+
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -57,7 +59,8 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       BillOfMaterialLineRepository billOfMaterialLineRepository,
       BillOfMaterialLineService billOfMaterialLineService,
       SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
-      SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService) {
+      SaleOrderLineDetailsProdProcessService saleOrderLineDetailsProdProcessService,
+      SolDetailsBomUpdateService solDetailsBomUpdateService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.appSaleService = appSaleService;
     this.billOfMaterialRepository = billOfMaterialRepository;
@@ -65,6 +68,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
     this.billOfMaterialLineService = billOfMaterialLineService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
     this.saleOrderLineDetailsProdProcessService = saleOrderLineDetailsProdProcessService;
+    this.solDetailsBomUpdateService = solDetailsBomUpdateService;
   }
 
   @Override
@@ -84,7 +88,9 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
           saleOrderLineBomLineMappingService.mapToSaleOrderLine(billOfMaterialLine, saleOrder);
       if (saleOrderLine != null) {
         BillOfMaterial lineBom = saleOrderLine.getBillOfMaterial();
-        if (saleOrderLine.getIsToProduce()) {
+        if (saleOrderLine.getIsToProduce()
+            && !solDetailsBomUpdateService.isSolDetailsUpdated(
+                saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList())) {
           saleOrderLineDetailsBomService
               .createSaleOrderLineDetailsFromBom(lineBom, saleOrder, saleOrderLine)
               .stream()
