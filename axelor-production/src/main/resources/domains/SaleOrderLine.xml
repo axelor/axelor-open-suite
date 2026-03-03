@@ -21,6 +21,8 @@
       ref="com.axelor.apps.production.db.SaleOrderLineDetails" mappedBy="saleOrderLine"/>
     <decimal name="qtyToProduce" title="Quantity to produce" readonly="true"/>
     <decimal name="qtyProduced" title="Quantity produced" readonly="true"/>
+    <string name="productionWarningMessage" title="Production warning message"
+      transient="true"/>
     <boolean name="isToProduce" transient="true">
       <![CDATA[
 		return this.saleSupplySelect != null && (this.saleSupplySelect == 3 || this.saleSupplySelect == 4) && this.billOfMaterial != null;

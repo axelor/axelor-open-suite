@@ -174,6 +174,7 @@ public class SaleOrderLineProductProductionServiceImpl
           saleOrderLineMap.put("prodProcess", billOfMaterial.getProdProcess());
         }
       }
+      saleOrderLineMap.put("productionWarningMessage", saleOrderLine.getProductionWarningMessage());
       saleOrderLineMap.put("subSaleOrderLineList", saleOrderLine.getSubSaleOrderLineList());
       saleOrderLineMap.put("saleOrderLineDetailsList", saleOrderLine.getSaleOrderLineDetailsList());
     }
@@ -184,10 +185,19 @@ public class SaleOrderLineProductProductionServiceImpl
       throws AxelorException {
     AppProduction appProduction = appProductionService.getAppProduction();
     AppSale appSale = appSaleService.getAppSale();
+    boolean shouldGenerateLines =
+        Boolean.TRUE.equals(saleOrderLine.getIsToProduce())
+            && appSale.getListDisplayTypeSelect()
+                == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
+            && !appProduction.getIsBomLineGenerationInSODisabled();
+    String warningMessage = null;
+    if (shouldGenerateLines) {
+      warningMessage = saleOrderLineBomService.getMissingProdProcessWarningMessage(saleOrderLine);
+    }
+    saleOrderLine.setProductionWarningMessage(warningMessage);
+
     BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
-    if (saleOrderLine.getIsToProduce()
-        && appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
-        && !appProduction.getIsBomLineGenerationInSODisabled()) {
+    if (shouldGenerateLines) {
       if (!solBomUpdateService.isUpdated(saleOrderLine)) {
         saleOrderLineBomService.createSaleOrderLinesFromBom(billOfMaterial, saleOrder).stream()
             .filter(Objects::nonNull)
@@ -201,14 +211,17 @@ public class SaleOrderLineProductProductionServiceImpl
             .filter(Objects::nonNull)
             .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
       }
-      saleOrderLineDetailsProdProcessService.addSaleOrderLineDetailsFromProdProcess(
-          billOfMaterial.getProdProcess(), saleOrder, saleOrderLine);
+      if (billOfMaterial.getProdProcess() != null) {
+        saleOrderLineDetailsProdProcessService.addSaleOrderLineDetailsFromProdProcess(
+            billOfMaterial.getProdProcess(), saleOrder, saleOrderLine);
+      }
     }
   }
 
   @Override
   protected Map<String, Object> resetProductInformationMap(SaleOrderLine line) {
     Map<String, Object> saleOrderLineMap = super.resetProductInformationMap(line);
+    saleOrderLineMap.put("productionWarningMessage", null);
     if (CollectionUtils.isNotEmpty(line.getSaleOrderLineDetailsList())) {
       line.clearSaleOrderLineDetailsList();
       saleOrderLineMap.put("saleOrderLineDetailsList", line.getSaleOrderLineDetailsList());

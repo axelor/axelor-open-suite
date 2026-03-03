@@ -13,6 +13,11 @@
     </extend>
     <extend target="//field[@name='availableStatus']">
       <insert position="after">
+        <field name="productionWarningMessage" readonly="true"
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI &amp;&amp; !__config__.app.getApp('production')?.isBomLineGenerationInSODisabled"
+          showIf="productionWarningMessage">
+          <hilite color="warning" strong="true" if="productionWarningMessage"/>
+        </field>
         <field name="billOfMaterialLine" hidden="true"/>
         <field name="saleSupplySelect" hidden="true"/>
       </insert>
@@ -21,6 +26,19 @@
 
   <form name="sale-order-line-form" id="production-sale-order-line-form" title="SO line"
     model="com.axelor.apps.sale.db.SaleOrderLine" width="large" extension="true">
+    <extend target="//field[@name='$differentLanguageMessage']">
+      <insert position="after">
+        <field name="productionWarningMessage" showTitle="false" colSpan="12"
+          if="__config__.app.isApp('production') &amp;&amp; __config__.app.getApp('sale')?.getListDisplayTypeSelect() == __repo__(AppSale).APP_SALE_LINE_DISPLAY_TYPE_MULTI &amp;&amp; !__config__.app.getApp('production')?.isBomLineGenerationInSODisabled"
+          showIf="productionWarningMessage" readonly="true">
+          <viewer depends="productionWarningMessage"><![CDATA[
+              <>
+                {productionWarningMessage && <Badge bg="warning">{productionWarningMessage}</Badge>}
+              </>
+            ]]></viewer>
+        </field>
+      </insert>
+    </extend>
     <extend target="//field[@name='supplierPartner']">
       <insert position="after">
         <spacer colSpan="6"/>
