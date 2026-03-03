@@ -6,14 +6,14 @@
   <grid name="quality-corrective-action-grid" title="Corrective actions"
     model="com.axelor.apps.quality.db.QualityCorrectiveAction" edit-icon="true">
     <field name="name" width="200"/>
-    <field name="details" width="650"/>
+    <field name="details" width="650" widget="html"/>
     <field name="isApplicable" width="150"/>
   </grid>
 
   <grid name="quality-corrective-action-model-grid" title="Corrective actions"
     model="com.axelor.apps.quality.db.QualityCorrectiveAction" edit-icon="true">
     <field name="name"/>
-    <field name="details"/>
+    <field name="details" widget="html"/>
   </grid>
 
   <form name="quality-corrective-action-form" title="Corrective actions"
