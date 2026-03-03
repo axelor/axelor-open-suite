@@ -45,6 +45,7 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   protected final BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected final BillOfMaterialLineService billOfMaterialLineService;
   protected final SaleOrderLineDetailsBomService saleOrderLineDetailsBomService;
+  protected final SolDetailsBomUpdateService solDetailsBomUpdateService;
   private final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   @Inject
@@ -54,13 +55,15 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       BillOfMaterialRepository billOfMaterialRepository,
       BillOfMaterialLineRepository billOfMaterialLineRepository,
       BillOfMaterialLineService billOfMaterialLineService,
-      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService) {
+      SaleOrderLineDetailsBomService saleOrderLineDetailsBomService,
+      SolDetailsBomUpdateService solDetailsBomUpdateService) {
     this.saleOrderLineBomLineMappingService = saleOrderLineBomLineMappingService;
     this.appSaleService = appSaleService;
     this.billOfMaterialRepository = billOfMaterialRepository;
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
     this.billOfMaterialLineService = billOfMaterialLineService;
     this.saleOrderLineDetailsBomService = saleOrderLineDetailsBomService;
+    this.solDetailsBomUpdateService = solDetailsBomUpdateService;
   }
 
   @Override
@@ -79,8 +82,9 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       var saleOrderLine =
           saleOrderLineBomLineMappingService.mapToSaleOrderLine(billOfMaterialLine, saleOrder);
       if (saleOrderLine != null) {
-
-        if (saleOrderLine.getIsToProduce()) {
+        if (saleOrderLine.getIsToProduce()
+            && !solDetailsBomUpdateService.isSolDetailsUpdated(
+                saleOrderLine, saleOrderLine.getSaleOrderLineDetailsList())) {
           saleOrderLineDetailsBomService
               .createSaleOrderLineDetailsFromBom(saleOrderLine.getBillOfMaterial(), saleOrder)
               .stream()
