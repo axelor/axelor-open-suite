@@ -1,0 +1,3 @@
+---
+title: "Sale order / Prod process: added inline warning for missing BoM production process."
+module: axelor-production

@@ -45,10 +45,12 @@ public class SaleOrderLineViewProductionServiceImpl implements SaleOrderLineView
     boolean hideProdProcess =
         saleSupplySelect != ProductRepository.SALE_SUPPLY_PRODUCE
             || productTypeSelect.equals(ProductRepository.PRODUCT_TYPE_SERVICE);
+    boolean hideProductionWarning = hideBom || saleOrderLine.getProductionWarningMessage() == null;
     attrs.put("billOfMaterial", Map.of(HIDDEN_ATTR, hideBom));
     attrs.put("customizeBOMBtn", Map.of(HIDDEN_ATTR, hideBom));
     attrs.put("prodProcess", Map.of(HIDDEN_ATTR, hideProdProcess));
     attrs.put("customizeProdProcessBtn", Map.of(HIDDEN_ATTR, hideProdProcess));
+    attrs.put("productionWarningMessage", Map.of(HIDDEN_ATTR, hideProductionWarning));
     attrs.put(
         "qtyToProduce",
         Map.of(HIDDEN_ATTR, saleSupplySelect != SaleOrderLineRepository.SALE_SUPPLY_PRODUCE));

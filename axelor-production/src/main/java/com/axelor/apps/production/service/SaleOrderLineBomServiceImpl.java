@@ -24,9 +24,11 @@ import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.db.repo.BillOfMaterialLineRepository;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.SaleOrderLineDetailsRepository;
+import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.i18n.I18n;
 import com.axelor.studio.db.repo.AppSaleRepository;
 import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
@@ -68,6 +70,18 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
   }
 
   @Override
+  public String getMissingProdProcessWarningMessage(SaleOrderLine saleOrderLine) {
+    if (saleOrderLine == null
+        || !Boolean.TRUE.equals(saleOrderLine.getIsToProduce())
+        || saleOrderLine.getBillOfMaterial() == null
+        || saleOrderLine.getBillOfMaterial().getProdProcess() != null) {
+      return null;
+    }
+
+    return I18n.get(ProductionExceptionMessage.SALE_ORDER_LINE_PROD_PROCESS_WARNING);
+  }
+
+  @Override
   public List<SaleOrderLine> createSaleOrderLinesFromBom(
       BillOfMaterial billOfMaterial, SaleOrder saleOrder) throws AxelorException {
     Objects.requireNonNull(billOfMaterial);
@@ -83,20 +97,27 @@ public class SaleOrderLineBomServiceImpl implements SaleOrderLineBomService {
       var saleOrderLine =
           saleOrderLineBomLineMappingService.mapToSaleOrderLine(billOfMaterialLine, saleOrder);
       if (saleOrderLine != null) {
+        saleOrderLine.setProductionWarningMessage(
+            getMissingProdProcessWarningMessage(saleOrderLine));
         BillOfMaterial lineBom = saleOrderLine.getBillOfMaterial();
         if (saleOrderLine.getIsToProduce()) {
-          saleOrderLineDetailsBomService
-              .createSaleOrderLineDetailsFromBom(lineBom, saleOrder, saleOrderLine)
-              .stream()
-              .filter(Objects::nonNull)
-              .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
-          saleOrderLineDetailsProdProcessService
-              .createSaleOrderLineDetailsFromProdProcess(
-                  lineBom.getProdProcess(), saleOrder, saleOrderLine)
-              .stream()
-              .filter(Objects::nonNull)
-              .filter(line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
-              .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+          if (lineBom != null) {
+            saleOrderLineDetailsBomService
+                .createSaleOrderLineDetailsFromBom(lineBom, saleOrder, saleOrderLine)
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+            if (lineBom.getProdProcess() != null) {
+              saleOrderLineDetailsProdProcessService
+                  .createSaleOrderLineDetailsFromProdProcess(
+                      lineBom.getProdProcess(), saleOrder, saleOrderLine)
+                  .stream()
+                  .filter(Objects::nonNull)
+                  .filter(
+                      line -> line.getTypeSelect() == SaleOrderLineDetailsRepository.TYPE_OPERATION)
+                  .forEach(saleOrderLine::addSaleOrderLineDetailsListItem);
+            }
+          }
         }
         saleOrderLinesList.add(saleOrderLine);
       }
