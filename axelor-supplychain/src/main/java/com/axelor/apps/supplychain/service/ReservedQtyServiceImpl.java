@@ -585,6 +585,10 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
       StockLocationLine stockLocationLine, StockMoveLine stockMoveLine, int toStatus)
       throws AxelorException {
 
+    if (stockMoveLine.getStockMove() != null
+        && stockMoveLine.getStockMove().getTypeSelect() == StockMoveRepository.TYPE_INCOMING) {
+      return;
+    }
     if (((toStatus == StockMoveRepository.STATUS_REALIZED)
             || toStatus == StockMoveRepository.STATUS_CANCELED)
         && stockLocationLine.getReservedQty().compareTo(stockLocationLine.getCurrentQty()) > 0) {
