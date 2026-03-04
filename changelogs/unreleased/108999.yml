@@ -1,0 +1,3 @@
+---
+title: "Contract: fixed an error that could occur when invoicing contracts in batch with high volume."
+module: axelor-contract
