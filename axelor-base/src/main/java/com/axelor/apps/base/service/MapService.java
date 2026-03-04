@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.app.AppSettings;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
@@ -178,6 +179,9 @@ public class MapService {
       mapResponse.put("path", "/search");
       mapResponse.put("accept", ContentType.JSON);
       mapResponse.put("query", mapQuery);
+      mapResponse.put(
+          "headers",
+          Map.of("User-Agent", AppSettings.get().get("application.name", "Axelor Open Suite")));
       mapResponse.put("connectTimeout", 10000);
       mapResponse.put("readTimeout", 10000);
       mapResponse.put("followRedirects", false);
