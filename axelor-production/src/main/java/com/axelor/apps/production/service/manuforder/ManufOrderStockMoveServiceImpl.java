@@ -84,6 +84,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
   protected ManufOrderGetStockMoveService manufOrderGetStockMoveService;
   protected ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService;
   protected StockMoveToolService stockMoveToolService;
+  protected StockMoveRepository stockMoveRepository;
 
   @Inject
   public ManufOrderStockMoveServiceImpl(
@@ -99,7 +100,8 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       ManufOrderOutgoingStockMoveService manufOrderOutgoingStockMoveService,
       ManufOrderGetStockMoveService manufOrderGetStockMoveService,
       ManufOrderCreateStockMoveLineService manufOrderCreateStockMoveLineService,
-      StockMoveToolService stockMoveToolService) {
+      StockMoveToolService stockMoveToolService,
+      StockMoveRepository stockMoveRepository) {
     this.supplyChainConfigService = supplyChainConfigService;
     this.stockMoveProductionService = stockMoveProductionService;
     this.stockMoveLineService = stockMoveLineService;
@@ -113,6 +115,7 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
     this.manufOrderGetStockMoveService = manufOrderGetStockMoveService;
     this.manufOrderCreateStockMoveLineService = manufOrderCreateStockMoveLineService;
     this.stockMoveToolService = stockMoveToolService;
+    this.stockMoveRepository = stockMoveRepository;
   }
 
   @Override
@@ -500,8 +503,12 @@ public class ManufOrderStockMoveServiceImpl implements ManufOrderStockMoveServic
       return;
     }
     for (StockMove stockMove : outStockMoveList) {
+      stockMove = JpaModelHelper.ensureManaged(stockMove);
       updatePrices(stockMove, costPrice);
-      stockMove.setExTaxTotal(stockMoveToolService.compute(stockMove));
+      BigDecimal exTaxTotal = stockMoveToolService.compute(stockMove);
+      stockMove = JpaModelHelper.ensureManaged(stockMove);
+      stockMove.setExTaxTotal(exTaxTotal);
+      stockMoveRepository.save(stockMove);
     }
   }
 

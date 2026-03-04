@@ -88,7 +88,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
 
     Query<StockMoveLine> query = getManagedStockMoveLineQuery(stockMove.getId());
 
-    BatchProcessorHelper helper = BatchProcessorHelper.builder().build();
+    BatchProcessorHelper helper = BatchProcessorHelper.builder().clearEveryNBatch(0).build();
 
     helper.<StockMoveLine, AxelorException>forEachByQuery(
         query,
@@ -129,7 +129,7 @@ public class ReservedQtyServiceImpl implements ReservedQtyService {
    */
   protected void changeRequestedQtyLowerThanQty(StockMoveLine stockMoveLine)
       throws AxelorException {
-    BigDecimal qty = stockMoveLine.getRealQty().max(BigDecimal.ZERO);
+    BigDecimal qty = stockMoveLine.getQty().max(BigDecimal.ZERO);
     BigDecimal requestedReservedQty = stockMoveLine.getRequestedReservedQty();
     if (requestedReservedQty.compareTo(qty) > 0) {
       Product product = stockMoveLine.getProduct();

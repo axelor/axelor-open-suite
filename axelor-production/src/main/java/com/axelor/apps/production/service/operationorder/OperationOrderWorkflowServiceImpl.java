@@ -239,6 +239,7 @@ public class OperationOrderWorkflowServiceImpl implements OperationOrderWorkflow
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public void finish(OperationOrder operationOrder) throws AxelorException {
+    operationOrder = JpaModelHelper.ensureManaged(operationOrder);
     operationOrder.setStatusSelect(OperationOrderRepository.STATUS_FINISHED);
     operationOrder.setRealEndDateT(appProductionService.getTodayDateTime().toLocalDateTime());
 
