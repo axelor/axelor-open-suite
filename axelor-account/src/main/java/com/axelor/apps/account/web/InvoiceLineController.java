@@ -189,18 +189,9 @@ public class InvoiceLineController {
                   invoice,
                   invoiceLine,
                   invoiceLine.getProduct().getInAti()
-                      ? Beans.get(InvoiceLineService.class)
-                          .getInTaxUnitPrice(
-                              invoice,
-                              invoiceLine,
-                              invoiceLine.getTaxLineSet(),
-                              InvoiceToolService.isPurchase(invoice))
-                      : Beans.get(InvoiceLineService.class)
-                          .getExTaxUnitPrice(
-                              invoice,
-                              invoiceLine,
-                              invoiceLine.getTaxLineSet(),
-                              InvoiceToolService.isPurchase(invoice)));
+                      ? invoiceLine.getInTaxPrice()
+                      : invoiceLine.getPrice());
+
       discounts.remove("price");
       for (Entry<String, Object> entry : discounts.entrySet()) {
         response.setValue(entry.getKey(), entry.getValue());
