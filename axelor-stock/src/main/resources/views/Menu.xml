@@ -130,7 +130,8 @@
   <menuitem name="stock-root-search" parent="stock-root" title="Tracking Number Search"
     action="stock.root.search" order="600"/>
 
-  <action-view name="stock.root.search" title="Search">
+  <action-view name="stock.root.search" title="Search"
+    model="com.axelor.script.ScriptBindings">
     <view name="tracking-number-search" type="search"/>
   </action-view>
 
