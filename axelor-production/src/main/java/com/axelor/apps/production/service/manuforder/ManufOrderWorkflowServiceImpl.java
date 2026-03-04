@@ -357,6 +357,7 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
     manufOrder.setStatusSelect(ManufOrderRepository.STATUS_CANCELED);
     if (cancelReason != null) {
+      cancelReason = JpaModelHelper.ensureManaged(cancelReason);
       manufOrder.setCancelReason(cancelReason);
       if (Strings.isNullOrEmpty(cancelReasonStr)) {
         manufOrder.setCancelReasonStr(cancelReason.getName());

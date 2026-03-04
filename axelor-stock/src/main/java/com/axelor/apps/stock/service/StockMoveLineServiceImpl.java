@@ -1007,7 +1007,9 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
     Boolean controlOnReceipt =
         (Boolean) productCompanyService.get(product, "controlOnReceipt", stockMove.getCompany());
     // check the stock move type
-    if (!controlOnReceipt || stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING) {
+    if (!controlOnReceipt
+        || stockMove.getTypeSelect() != StockMoveRepository.TYPE_INCOMING
+        || stockMoveLine.getRealQty().compareTo(BigDecimal.ZERO) == 0) {
       return;
     }
 

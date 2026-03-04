@@ -85,14 +85,18 @@ public class StockLocationStockRepository extends StockLocationRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    Long stocklocationId = (Long) json.get("id");
-    StockLocation stockLocation = find(stocklocationId);
+    Boolean isValued = (Boolean) json.get("isValued");
 
-    if (!stockLocation.getIsValued()) {
+    if (Boolean.FALSE.equals(isValued)) {
       return super.populate(json, context);
     }
 
-    json.put("stockLocationValue", stockLocationUtilsService.getStockLocationValue(stockLocation));
+    Long stockLocationId = (Long) json.get("id");
+    Map<String, Object> companyMap = (Map<String, Object>) json.get("company");
+    Long companyId = companyMap != null ? (Long) companyMap.get("id") : null;
+    json.put(
+        "stockLocationValue",
+        stockLocationUtilsService.getStockLocationValue(stockLocationId, companyId));
 
     return super.populate(json, context);
   }

@@ -1165,6 +1165,28 @@ public class ManufOrderServiceImpl implements ManufOrderService {
               draftMO.getPlannedEndDateT(),
               ManufOrderOriginTypeProduction.ORIGIN_TYPE_OTHER);
 
+      if (appProductionService.getAppProduction().getManageWorkshop()
+          && generated.getWorkshopStockLocation() == null) {
+        StockLocation parentWorkshop = null;
+        ManufOrder draftParentMO = draftMO.getParentMO();
+        if (draftParentMO != null) {
+          if (draftParentMO.getId() != null) {
+            ManufOrder dbParentMO = manufOrderRepo.find(draftParentMO.getId());
+            parentWorkshop = dbParentMO.getWorkshopStockLocation();
+          } else {
+            BillOfMaterial parentBom = draftParentMO.getBillOfMaterial();
+            if (parentBom != null) {
+              Long parentMOId = bomIdToGeneratedMOId.get(parentBom.getId());
+              if (parentMOId != null) {
+                ManufOrder generatedParentMO = manufOrderRepo.find(parentMOId);
+                parentWorkshop = generatedParentMO.getWorkshopStockLocation();
+              }
+            }
+          }
+        }
+        generated.setWorkshopStockLocation(parentWorkshop);
+      }
+
       generated.setClientPartner(clientPartner);
 
       setParentMo(draftMO, generated, bomIdToGeneratedMOId);
@@ -1237,32 +1259,6 @@ public class ManufOrderServiceImpl implements ManufOrderService {
 
   protected String getManualSequence() {
     return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date());
-  }
-
-  @Transactional
-  protected void setParentMos(
-      Map<String, String> sequenceParentSeqMap,
-      Map<String, ManufOrder> seqMOMap,
-      List<ManufOrder> generatedMOList) {
-    for (ManufOrder mo : generatedMOList) {
-      String seq = mo.getManualMOSeq();
-      ManufOrder parentMO = this.getParentMO(sequenceParentSeqMap, seqMOMap, seq);
-      mo.setParentMO(parentMO);
-    }
-  }
-
-  protected ManufOrder getParentMO(
-      Map<String, String> sequenceParentSeqMap, Map<String, ManufOrder> seqMOMap, String seq) {
-    ManufOrder parentMO = null;
-    String parentSeq = sequenceParentSeqMap.get(seq);
-
-    if (seqMOMap.containsKey(parentSeq)) {
-      parentMO = seqMOMap.get(parentSeq);
-      parentMO = manufOrderRepo.find(parentMO.getId());
-    } else {
-      parentMO = this.getParentMO(sequenceParentSeqMap, seqMOMap, parentSeq);
-    }
-    return parentMO;
   }
 
   @Override
