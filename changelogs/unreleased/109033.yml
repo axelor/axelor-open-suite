@@ -1,0 +1,3 @@
+---
+title: "Account: fixed payment session validation with credit notes (non-LCR) leaving incorrect payment amounts on invoice terms."
+module: axelor-account
