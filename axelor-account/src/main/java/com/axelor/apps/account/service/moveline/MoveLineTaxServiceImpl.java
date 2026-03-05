@@ -473,7 +473,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     }
 
     for (MoveLine moveLine : moveLineList) {
-      if (moveLineToolService.isMoveLineTaxAccount(moveLine)
+      if (this.isMoveLineTaxAccountRequired(moveLine)
           && ObjectUtils.isEmpty(moveLine.getTaxLineSet())) {
         moveLineWithoutTaxList.add(moveLine.getId());
       }
