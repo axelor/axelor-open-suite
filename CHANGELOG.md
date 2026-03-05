@@ -1,3 +1,48 @@
+## [8.2.38] (2026-03-05)
+
+### Fixes
+#### Account
+
+* Payment session: fixed bill of exchange validation when session contains isolated refunds or invoice terms with prior partial payments.
+* Account: fixed payment session validation with credit notes (non-LCR) leaving incorrect payment amounts on invoice terms.
+* Sale order: fixed third-party payer partner not set when generating an invoice from a sale order.
+* Pfp menu: fixed domain filter when origin date is missing on supplier invoices.
+
+#### Bank Payment
+
+* Bank reconciliation: fixed wrong starting balance when splitting reconciliation into multiple sessions.
+
+#### Contract
+
+* Contract: fixed analytic move lines forecast type incorrectly set to order forecast instead of contract forecast.
+
+#### Production
+
+* Cost calculation: fixed an issue where the child BOM quantity was not correctly multiplied when the BOM calculation quantity was greater than 1.
+
+#### Stock
+
+* Stock: fixed decimal points for different views.
+* Stock move: removed control on receipt for stock move line with no quantity.
+* Stock location: improved performance when fetching stock locations.
+
+
+### Developer
+
+#### Account
+
+- Changed InvoiceTermReplaceService.replaceInvoiceTerms parameters from 
+(invoice, newInvoiceTermList, invoiceTermListToRemove) to (invoice, newInvoiceTermList, invoiceTermListToRemove, paymentSession)
+
+---
+
+Added PartnerAccountService to SaleOrderInvoiceServiceImpl and services extending it.
+
+#### Contract
+
+-- script
+UPDATE  account_analytic_move_line SET type_select = 4 WHERE contract_line IS NOT NULL AND type_select = 1;
+
 ## [8.2.37] (2026-02-19)
 
 ### Fixes
@@ -2534,6 +2579,7 @@ A new configuration is now available in App Sale to choose the normal grid view 
 * Deposit slip: manage bank details in generated accounting entries.
 * Payment: use correctly the payment date instead of today date when computing currency rate.
 
+[8.2.38]: https://github.com/axelor/axelor-open-suite/compare/v8.2.37...v8.2.38
 [8.2.37]: https://github.com/axelor/axelor-open-suite/compare/v8.2.36...v8.2.37
 [8.2.36]: https://github.com/axelor/axelor-open-suite/compare/v8.2.35...v8.2.36
 [8.2.35]: https://github.com/axelor/axelor-open-suite/compare/v8.2.34...v8.2.35
