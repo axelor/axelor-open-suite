@@ -1,3 +1,0 @@
----
-title: "Manuf order: fixed an issue where child manufacturing orders did not appear in the children MO dashlet when multi-level planning generated more than one level of depth."
-module: axelor-production
