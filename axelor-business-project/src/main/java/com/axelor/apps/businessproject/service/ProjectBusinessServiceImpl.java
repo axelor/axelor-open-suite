@@ -23,8 +23,10 @@ import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.base.db.Language;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.base.db.repo.LanguageRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
@@ -57,8 +59,11 @@ import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
+import com.axelor.meta.db.repo.MetaTranslationRepository;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.utils.helpers.date.LocalDateHelper;
+import com.axelor.utils.service.TranslationService;
+import com.axelor.utils.service.translation.TranslationBaseService;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
@@ -87,6 +92,10 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
   protected SaleOrderStockLocationService saleOrderStockLocationService;
   protected ProjectTimeUnitService projectTimeUnitService;
   protected SaleOrderGeneratorService saleOrderGeneratorService;
+  protected LanguageRepository languageRepository;
+  protected TranslationBaseService translationBaseService;
+  protected TranslationService translationService;
+  protected MetaTranslationRepository metaTranslationRepository;
 
   public static final int BIG_DECIMAL_SCALE = 2;
   public static final String FA_LEVEL_UP = "arrow-90deg-up";
@@ -112,7 +121,11 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
       UnitConversionForProjectService unitConversionForProjectService,
       SaleOrderStockLocationService saleOrderStockLocationService,
       ProjectTimeUnitService projectTimeUnitService,
-      SaleOrderGeneratorService saleOrderGeneratorService) {
+      SaleOrderGeneratorService saleOrderGeneratorService,
+      LanguageRepository languageRepository,
+      TranslationBaseService translationBaseService,
+      TranslationService translationService,
+      MetaTranslationRepository metaTranslationRepository) {
     super(
         projectRepository,
         projectStatusRepository,
@@ -132,6 +145,10 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     this.saleOrderStockLocationService = saleOrderStockLocationService;
     this.projectTimeUnitService = projectTimeUnitService;
     this.saleOrderGeneratorService = saleOrderGeneratorService;
+    this.languageRepository = languageRepository;
+    this.translationBaseService = translationBaseService;
+    this.translationService = translationService;
+    this.metaTranslationRepository = metaTranslationRepository;
   }
 
   @Override
@@ -829,5 +846,24 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
                         == 0)
         .map(ProjectTask::getName)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public void createProjectNameTranslations(String name, String fullName) {
+    List<Language> languageList = languageRepository.all().fetch();
+    for (Language language : languageList) {
+      String languageCode = language.getCode();
+      String translation = translationService.getTranslation("_project", languageCode);
+
+      if (metaTranslationRepository.findByKey("value:" + name + "_project", languageCode) == null) {
+        translationBaseService.createValueTranslation(
+            languageCode, name + "_project", name + translation);
+      }
+      if (metaTranslationRepository.findByKey("value:" + fullName + "_project", languageCode)
+          == null) {
+        translationBaseService.createValueTranslation(
+            languageCode, fullName + "_project", fullName + translation);
+      }
+    }
   }
 }

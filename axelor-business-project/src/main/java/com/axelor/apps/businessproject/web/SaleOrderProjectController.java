@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
+import com.axelor.apps.businessproject.service.ProjectBusinessService;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticMoveLineService;
 import com.axelor.apps.businessproject.service.projectgenerator.ProjectGeneratorFactory;
 import com.axelor.apps.businessproject.service.projectgenerator.factory.ProjectGeneratorSaleService;
@@ -81,6 +82,9 @@ public class SaleOrderProjectController {
                 .map(id -> projectTemplateRepository.find(Long.valueOf(id.toString())))
                 .orElse(null);
         project = Beans.get(ProjectGeneratorSaleService.class).create(saleOrder, projectTemplate);
+        Beans.get(ProjectBusinessService.class)
+            .createProjectNameTranslations(
+                saleOrder.getFullName(), project.getCode() + " - " + saleOrder.getFullName());
       } else {
         ProjectGeneratorFactory factory = ProjectGeneratorFactory.getFactory(projectGeneratorType);
         project = factory.generate(saleOrder, startDate);

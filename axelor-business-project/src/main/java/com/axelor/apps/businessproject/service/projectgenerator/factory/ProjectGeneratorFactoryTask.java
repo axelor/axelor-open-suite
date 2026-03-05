@@ -102,6 +102,9 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
     List<ProjectTask> tasks = new ArrayList<>();
     projectRepository.save(project);
 
+    projectBusinessService.createProjectNameTranslations(
+        saleOrder.getFullName(), project.getCode() + " - " + saleOrder.getFullName());
+
     List<SaleOrderLine> saleOrderLineList = filterSaleOrderLinesForTasks(saleOrder);
 
     if (saleOrderLineList.isEmpty()) {
@@ -179,6 +182,8 @@ public class ProjectGeneratorFactoryTask implements ProjectGeneratorFactory {
     task.setUnitPrice(saleOrderLine.getPrice());
     task.setExTaxTotal(saleOrderLine.getExTaxTotal());
     projectTaskRepo.save(task);
+    projectTaskBusinessProjectService.createTaskNameTranslations(
+        saleOrderLine.getFullName(), "#" + task.getId() + " " + saleOrderLine.getFullName());
     return task;
   }
 

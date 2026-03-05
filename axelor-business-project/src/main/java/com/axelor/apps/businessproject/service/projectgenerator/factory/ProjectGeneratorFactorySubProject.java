@@ -91,6 +91,10 @@ public class ProjectGeneratorFactorySubProject implements ProjectGeneratorFactor
       throws AxelorException {
     List<Project> projects = new ArrayList<>();
     projectRepository.save(project);
+
+    projectBusinessService.createProjectNameTranslations(
+        saleOrder.getFullName(), project.getCode() + " - " + saleOrder.getFullName());
+
     for (SaleOrderLine saleOrderLine : saleOrder.getSaleOrderLineList()) {
 
       if (SaleOrderLineRepository.TYPE_NORMAL != saleOrderLine.getTypeSelect()) {
