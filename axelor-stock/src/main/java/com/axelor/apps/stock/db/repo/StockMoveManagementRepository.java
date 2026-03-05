@@ -31,6 +31,7 @@ import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import jakarta.persistence.PersistenceException;
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class StockMoveManagementRepository extends StockMoveRepository {
@@ -122,15 +123,14 @@ public class StockMoveManagementRepository extends StockMoveRepository {
         Beans.get(StockMoveLineService.class)
             .updateAvailableQty(stockMoveLine, stockMoveLine.getFromStockLocation());
         Product product = stockMoveLine.getProduct();
-        if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) >= 0
+        BigDecimal qty = stockMoveLine.getQty();
+        if (stockMoveLine.getAvailableQty().compareTo(qty) >= 0
             || product != null && !product.getStockManaged()) {
           available++;
-        } else if (stockMoveLine.getAvailableQtyForProduct().compareTo(stockMoveLine.getRealQty())
-            >= 0) {
+        } else if (stockMoveLine.getAvailableQtyForProduct().compareTo(qty) >= 0) {
           availableForProduct++;
-        } else if (stockMoveLine.getAvailableQty().compareTo(stockMoveLine.getRealQty()) < 0
-            && stockMoveLine.getAvailableQtyForProduct().compareTo(stockMoveLine.getRealQty())
-                < 0) {
+        } else if (stockMoveLine.getAvailableQty().compareTo(qty) < 0
+            && stockMoveLine.getAvailableQtyForProduct().compareTo(qty) < 0) {
           missing++;
         }
       }
