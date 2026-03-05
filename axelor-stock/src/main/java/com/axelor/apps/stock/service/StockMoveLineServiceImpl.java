@@ -599,6 +599,15 @@ public class StockMoveLineServiceImpl implements StockMoveLineService {
             stockMoveLine.getFromStockLocation(),
             stockMoveLine.getToStockLocation());
 
+    StockMove stockMove = newStockMoveLine.getStockMove();
+    if (stockMove != null) {
+      if (stockMove.getId() != null) {
+        stockMoveLineRepository.save(newStockMoveLine);
+      } else {
+        stockMove.addStockMoveLineListItem(newStockMoveLine);
+      }
+    }
+
     stockMoveLine.setQty(stockMoveLine.getQty().subtract(qty));
 
     this.fillRealQuantities(
