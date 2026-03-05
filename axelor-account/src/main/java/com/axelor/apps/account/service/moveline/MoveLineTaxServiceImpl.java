@@ -39,7 +39,6 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.common.collect.Lists;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
 import jakarta.inject.Inject;
@@ -474,9 +473,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     }
 
     for (MoveLine moveLine : moveLineList) {
-      if (moveLine.getMove() != null
-          && this.isMoveLineTaxAccountRequired(
-              moveLine, moveLine.getMove().getFunctionalOriginSelect())
+      if (this.isMoveLineTaxAccountRequired(moveLine)
           && ObjectUtils.isEmpty(moveLine.getTaxLineSet())) {
         moveLineWithoutTaxList.add(moveLine.getId());
       }
@@ -485,10 +482,11 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   }
 
   @Override
-  public boolean isMoveLineTaxAccountRequired(MoveLine moveLine, int functionalOriginSelect) {
+  public boolean isMoveLineTaxAccountRequired(MoveLine moveLine) {
     return moveLineToolService.isMoveLineTaxAccount(moveLine)
-        && Lists.newArrayList(
-                MoveRepository.FUNCTIONAL_ORIGIN_PURCHASE, MoveRepository.FUNCTIONAL_ORIGIN_SALE)
-            .contains(functionalOriginSelect);
+        && Optional.of(moveLine)
+            .map(MoveLine::getAccount)
+            .map(Account::getIsTaxAuthorizedOnMoveLine)
+            .orElse(false);
   }
 }
