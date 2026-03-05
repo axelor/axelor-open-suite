@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.stock.db.repo;
 
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -25,6 +26,7 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockMove;
 import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.exception.StockExceptionMessage;
+import com.axelor.apps.stock.service.StockMoveCurrencyService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveToolService;
 import com.axelor.i18n.I18n;
@@ -99,6 +101,16 @@ public class StockMoveManagementRepository extends StockMoveRepository {
     StockMove stockMove = find(stockMoveId);
 
     try {
+      StockMoveCurrencyService stockMoveCurrencyService = Beans.get(StockMoveCurrencyService.class);
+      boolean isMultiCurrency = stockMoveCurrencyService.isMultiCurrency(stockMove);
+      json.put("$isMultiCurrency", isMultiCurrency);
+      if (!isMultiCurrency) {
+        Currency currency = stockMoveCurrencyService.getCurrency(stockMove);
+        if (currency != null) {
+          json.put("$currencySymbol", currency.getSymbol());
+          json.put("$currencyNumberOfDecimals", currency.getNumberOfDecimals());
+        }
+      }
       if (stockMove.getStatusSelect() > STATUS_PLANNED
           || stockMove.getStockMoveLineList() == null) {
         return super.populate(json, context);
