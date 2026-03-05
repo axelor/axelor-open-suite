@@ -192,6 +192,8 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       boolean isGlobal)
       throws AxelorException {
 
+    BigDecimal originalAmountPaid = invoiceTerm.getAmountPaid();
+
     paymentSession =
         super.processInvoiceTerm(
             paymentSession,
@@ -204,11 +206,14 @@ public class PaymentSessionValidateBankPaymentServiceImpl
 
     if (paymentSession.getBankOrder() != null
         && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
+      BigDecimal postProcessAmountPaid = invoiceTerm.getAmountPaid();
+      invoiceTerm.setAmountPaid(originalAmountPaid);
       paymentSessionBankOrderService.createOrUpdateBankOrderLineFromInvoiceTerm(
           paymentSession,
           invoiceTerm,
           paymentSession.getBankOrder(),
           invoiceTermLinkWithRefundList);
+      invoiceTerm.setAmountPaid(postProcessAmountPaid);
     }
 
     return paymentSession;
