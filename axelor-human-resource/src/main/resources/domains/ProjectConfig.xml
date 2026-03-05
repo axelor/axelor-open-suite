@@ -9,11 +9,13 @@
 
     <boolean name="isSelectionOnDisplayPlannedTime"
       title="Selection on display planned time"
-      help="By activating this option, the user will only be able to enter a planned time from this selection. Be careful to define the associated values. If the configuration is not activated, no constraints will be applied to the time."/>
+      help="By defining a selection here, the user will only be able to enter a displayed planned time from this selection. Be careful to define a selection with integer or decimal type values for it to work. If no selection is defined or the configuration is not enabled, no constraints apply to the time."/>
     <one-to-many name="plannedTimeValueList" title="Planned time values"
-      ref="com.axelor.apps.project.db.PlannedTimeValue" mappedBy="projectConfig"/>
+      ref="com.axelor.apps.project.db.PlannedTimeValue" mappedBy="projectConfig"
+      help="Time values that users will be able to enter in planification."/>
     <decimal name="valueByDefaultOnDisplayPlannedTime"
-      title="Value by default on display planned time"/>
+      title="Value by default on display planned time"
+      help="You can define here the default value for planned times."/>
 
     <track>
       <field name="isSelectionOnDisplayPlannedTime" on="UPDATE"/>

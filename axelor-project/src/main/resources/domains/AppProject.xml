@@ -9,34 +9,45 @@
 
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
-    <string name="projectLabel" title="Project Label"/>
+    <string name="projectLabel" title="Project Label"
+      help="This configuration allows changing the name of the Project tab in sale order lines by replacing it with the label defined here."/>
     <boolean name="resourceManagement" title="Resource management"
-      help="This option enables resource reservation on projects. You can create resources that can be booked on projects."/>
-    <boolean name="checkResourceAvailibility" title="Check availability of resources"/>
-    <boolean name="isEnablePerProjectTaskSequence" title="Enable per project task sequence"/>
+      help="This configuration enables resource management and reservation (a resource being for example equipment, a room, a car, i.e. elements that can be used and reserved during a project). Dedicated menus appear and a Resources tab appears on projects. It is possible to create different types of resources and to reserve them."/>
+    <boolean name="checkResourceAvailibility" title="Check availability of resources"
+      help="If this configuration is enabled, when reserving a resource, a check of its availability at the requested time slot will be performed."/>
+    <boolean name="isEnablePerProjectTaskSequence" title="Enable per project task sequence"
+      help="This configuration enables the possibility to have a sequence for tasks that automatically increments a task number."/>
     <one-to-many name="taskCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField"
-      title="Task fields" mappedBy="appProject"/>
+      title="Task fields" mappedBy="appProject"
+      help="You can create here custom fields that will appear on tasks. You can also do this through the Studio."/>
     <one-to-many name="projectCustomFieldsList" ref="com.axelor.meta.db.MetaJsonField"
-      title="Project fields" orphanRemoval="true"/>
+      title="Project fields" orphanRemoval="true"
+      help="You can create here custom fields that will appear on projects. You can also do this through the Studio."/>
     <many-to-many name="defaultTaskStatusSet" title="Default task status"
-      ref="com.axelor.apps.project.db.TaskStatus"/>
+      ref="com.axelor.apps.project.db.TaskStatus"
+      help="You can select here the default task statuses. These statuses can then be customized per project."/>
     <many-to-many name="defaultPrioritySet" title="Default priorities"
-      ref="com.axelor.apps.project.db.ProjectPriority"/>
-    <boolean name="generateProjectSequence" title="Generate sequence for project"/>
+      ref="com.axelor.apps.project.db.ProjectPriority"
+      help="You can select here the default priorities that are selectable in tasks. These priorities can then be customized per project."/>
+    <boolean name="generateProjectSequence" title="Generate sequence for project"
+      help="This configuration enables the possibility to have a sequence for projects that automatically increments a project number/code."/>
     <many-to-one name="completedProjectStatus" title="Completed project status"
-      ref="com.axelor.apps.project.db.ProjectStatus"/>
+      ref="com.axelor.apps.project.db.ProjectStatus"
+      help="You can indicate which status projects move to once a project is completed. The status, configurable in the project status menu of the relevant module, must have the Completed? checkbox ticked to be selectable here."/>
     <many-to-one name="canceledProjectStatus" title="Canceled project status"
-      ref="com.axelor.apps.project.db.ProjectStatus"/>
+      ref="com.axelor.apps.project.db.ProjectStatus"
+      help="You can indicate which status projects move to once you click the Cancel button. The status, configurable in the project status menu of the relevant module, must have the Completed? checkbox ticked to be selectable here."/>
     <many-to-one name="completedTaskStatus" title="Completed task status"
       ref="com.axelor.apps.project.db.TaskStatus"
-      help="This task status will be used to define which status is flagged as completed for tasks."/>
+      help="You can indicate which status tasks move to once a task is completed. The status, configurable in the task status menu of the relevant module, must have the Completed? checkbox ticked to be selectable here. You can find this configuration on each project to change this status on a case-by-case basis."/>
     <string name="fullNameGroovyFormula" title="Full name groovy formula"
-      help="This formula allows you to define the composition of the fullName through a groovy formula"/>
+      help="This formula allows you to define the composition of a project name (fullName) through a groovy formula."/>
 
     <boolean name="selectAutoProgressOnProjectTask" title="Enable task progress by status"
-      help="This option is used to activate the automatic allocation of progress to project tasks. If it is enabled, the progress field will be available in the task statuses and will generate the progress when these change. The percentage defined by default in the statuses will apply to all tasks."/>
+      help="This option enables the automatic allocation of progress to project tasks. If enabled, the progress field will be available in task statuses and will change progress when statuses change. The percentage defined by default in statuses will apply to all tasks."/>
     <boolean name="enableStatusManagementByTaskCategory"
-      title="Enable status management by task category"/>
+      title="Enable status management by task category"
+      help="By enabling this option you will be able to manage task statuses by task category. You will thus be able to have different statuses on your tasks depending on their category."/>
 
     <track>
       <field name="projectLabel" on="UPDATE"/>

@@ -10,42 +10,61 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="manageSaleOrderVersion" title="Manage sale order versions"
-      default="false"/>
+      default="false"
+      help="This option enables the ability to create multiple versions of a quotation, allowing modification of a quotation to create a new version. Each version is stored as a PDF in the document management system. If you wish to recover a past quotation version, you must also enable the option Activate past versions recovery."/>
     <boolean name="printingOnSOFinalization"
-      title="Generate the pdf printing during sale order finalization" default="false"/>
-    <boolean name="isPastVersionRecovery" title="Activate past versions recovery"/>
-    <boolean name="manageSalesUnits" title="Manage sales unit on products"/>
-    <boolean name="enableConfigurator" title="Enable business configurator"/>
-    <boolean name="allowPendingOrderModification"/>
-    <boolean name="manageMultipleSaleQuantity" title="Manage multiple sale quantity"/>
-    <boolean name="printingConfigPerSaleOrder" title="Printing config per Sale Order"/>
+      title="Generate the pdf printing during sale order finalization" default="false"
+      help="If this option is enabled, when the quotation moves to finalized status, a PDF copy of the quotation is automatically saved in the document management system."/>
+    <boolean name="isPastVersionRecovery" title="Activate past versions recovery"
+      help="This option automatically saves each quotation version and allows recovering them at any time if you wish to revert to a previous version, by selecting the quotation lines you want to recover."/>
+    <boolean name="manageSalesUnits" title="Manage sales unit on products"
+      help="This function is useful when the units of purchase of a product from a supplier are different from your sales units (for example if you buy a product by the ton and resell it by the kilo). When creating a customer order, the selected product will be directly shown with its sales unit, avoiding manual conversions."/>
+    <boolean name="enableConfigurator" title="Enable business configurator"
+      help="Enables business configurators, accessible from the Configurations menu in the Sales module. Once configured, the configurator allows creating a custom product during quotation with guided options, specific characteristics, adaptive pricing, etc."/>
+    <boolean name="allowPendingOrderModification"
+      help="This option allows modification of a confirmed order. When an order is being modified, invoice and delivery note generation is blocked. If a delivery note is in planned status, it will remain blocked at that status as long as the order is being modified."/>
+    <boolean name="manageMultipleSaleQuantity" title="Manage multiple sale quantity"
+      help="This option allows defining multiple sale quantities on a product. You can specify that a product can only be sold in certain multiples (for example quantities of 5/10/15 if the multiple is 5). If the quantity selected on an order line differs, the line cannot be validated and a message will indicate the allowed quantities."/>
+    <boolean name="printingConfigPerSaleOrder" title="Printing config per Sale Order"
+      help="If this option is not enabled, the default printing settings for quotations/orders will be those of the company. By enabling this option, you can configure specific printing settings per quotation/order."/>
     <boolean name="closeOpportunityUponSaleOrderConfirmation"
-      title="Close opportunity when one of the linked sale orders is confirmed"/>
-    <boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
+      title="Close opportunity when one of the linked sale orders is confirmed"
+      help="When an order is linked to an opportunity, enabling this option will automatically move the opportunity to closed won status when the order is confirmed."/>
+    <boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"
+      help="Allows displaying on quotation lines the product description (description field from the product form)."/>
     <integer name="salespersonSelect" title="User to fill salesperson"
-      selection="sale.order.fill.salesperson.select" default="1"/>
-    <boolean name="enableCustomerCatalogMgt" title="Enable customer catalog management"/>
-    <boolean name="enablePackManagement" title="Pack Management"/>
-    <boolean name="isDisplaySaleOrderLineNumber" title="Display sale order line number"/>
+      selection="sale.order.fill.salesperson.select" default="1"
+      help="When creating a quotation, allows choosing whether it is automatically assigned to the active/connected user creating the quotation, or to the salesperson responsible for the customer."/>
+    <boolean name="enableCustomerCatalogMgt" title="Enable customer catalog management"
+      help="Enables the ability to manage customer catalogs, meaning the ability to indicate that certain products have different names for certain customers (different product name and/or code)."/>
+    <boolean name="enablePackManagement" title="Pack Management"
+      help="This option enables the ability to manage product packs. A pack groups products/services that are sold together. Once a pack is selected on a quotation, all products composing the pack are added to the quotation."/>
+    <boolean name="isDisplaySaleOrderLineNumber" title="Display sale order line number"
+      help="Allows assigning a number to quotation/order lines and displaying it on the quotation."/>
     <boolean name="enableSalesProductByTradName" title="Filter products by trading name"
-      default="false"/>
-    <many-to-one name="saleUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"/>
+      default="false"
+      help="If this option is enabled, a panel allowing to sell this product by trading name appears on product forms. This allows defining which products trading names can sell, and filtering only sellable products by trading name on quotations."/>
+    <many-to-one name="saleUnit" title="Default unit" ref="com.axelor.apps.base.db.Unit"
+      help="This is the default sales unit for a product when it is created."/>
     <boolean name="managePartnerComplementaryProduct"
-      title="Manage partner complementary product"/>
+      title="Manage partner complementary product"
+      help="Allows defining on a customer that specifically for this customer, if a certain product is sold, complementary products are either automatically added to the quotation or proposed as options. This configuration complements the standard complementary product management defined at the product level, which applies to all partners."/>
     <boolean name="isEnableCalculationEntireQuotation"
       title="Enable calculation of the entire quotation's prices"
-      help="This configuration enables you to recalculate line prices using a quotation. The recalculation will take into account pricing, if any, then the partner's price lists."/>
+      help="This configuration enables you to recalculate line prices using a quotation. The recalculation will take into account pricing, if any, then the partner price lists."/>
     <boolean name="considerZeroCost"
       title="Consider zero cost and zero price lines in the margin"
       help="When activated, the total margin of a sale order will take into account sale order lines where the cost price or the sale price is zero."/>
     <boolean name="isDiscountEnabledOnEditableGrid"
-      title="Enable discount on editable lines"/>
+      title="Enable discount on editable lines"
+      help="If you have set a line display type to editable or editable tree, you can manage discounts directly from the editable line list without having to open the line in a popup."/>
     <boolean name="isCartManagementEnabled" title="Enable cart management"
-      help="Allow the user to put products aside to generate an order at a later date."/>
+      help="Enabling this configuration allows the user to put products aside in a cart to generate an order at a later date."/>
     <integer name="listDisplayTypeSelect" title="Line list display type"
-      selection="sale.app.sale.line.display.type.select" default="0"/>
+      selection="sale.app.sale.line.display.type.select" default="0"
+      help="Standard: Display the classic order line list. Editable: This configuration enables an editable list on quotation/order lines, allowing quick addition and completion of lines from the list view. Editable tree: Activate multi-level customer order lines."/>
     <boolean name="isSOLPriceTotalOfSubLines"
-      help="When enabled, sale order lines price will be computed based on theirs sub lines"
+      help="When enabled, sale order lines price will be computed based on their sub lines."
       default="true"/>
     <boolean name="isGlobalDiscountEnabledOnSaleOrder"
       title="Enable global discount on sale order"

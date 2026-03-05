@@ -7,9 +7,11 @@
 
   <entity name="AppBase" cacheable="true">
     <boolean name="enableSiteManagementForProject"
-      title="Enable site management for project"/>
+      title="Enable site management for project"
+      help="This feature enables site management for projects, a site representing a physical location whether it is an administrative building, a customer building, a construction site, etc."/>
     <many-to-many name="defaultSitesSet" title="Default sites"
-      ref="com.axelor.apps.base.db.Site"/>
+      ref="com.axelor.apps.base.db.Site"
+      help="Allows defining a default site that will be linked to projects."/>
 
     <extra-code>
 	    <![CDATA[
