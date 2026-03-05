@@ -6,15 +6,22 @@
   <grid name="mass-stock-move-need-grid" title="Mass stock moves need"
     model="com.axelor.apps.stock.db.MassStockMoveNeed" onNew="action-mass-stock-move-method-on-new">
     <field name="productToMove" domain="self.productTypeSelect = 'storable'"/>
-    <field name="qtyToMove"/>
+    <field name="qtyToMove" x-scale="$nbDecimalDigitForQty"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <form title="Mass stock move need" name="mass-stock-move-need-form"
-    model="com.axelor.apps.stock.db.MassStockMoveNeed">
+    model="com.axelor.apps.stock.db.MassStockMoveNeed"
+    onNew="action-mass-stock-move-need-attrs-scale" onLoad="action-mass-stock-move-need-attrs-scale">
     <panel name="mainPanel">
       <field name="productToMove" domain="self.productTypeSelect = 'storable'"/>
       <field name="qtyToMove"/>
     </panel>
   </form>
+
+  <action-attrs name="action-mass-stock-move-need-attrs-scale">
+    <attribute name="scale" for="qtyToMove"
+      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+  </action-attrs>
 
 </object-views>
