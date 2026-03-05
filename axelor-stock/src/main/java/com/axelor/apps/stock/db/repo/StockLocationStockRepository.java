@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import com.axelor.apps.stock.service.app.AppStockService;
 import com.axelor.apps.stock.utils.StockLocationUtilsService;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.studio.db.AppStock;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class StockLocationStockRepository extends StockLocationRepository {
@@ -85,14 +85,18 @@ public class StockLocationStockRepository extends StockLocationRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    Long stocklocationId = (Long) json.get("id");
-    StockLocation stockLocation = find(stocklocationId);
+    Boolean isValued = (Boolean) json.get("isValued");
 
-    if (!stockLocation.getIsValued()) {
+    if (Boolean.FALSE.equals(isValued)) {
       return super.populate(json, context);
     }
 
-    json.put("stockLocationValue", stockLocationUtilsService.getStockLocationValue(stockLocation));
+    Long stockLocationId = (Long) json.get("id");
+    Map<String, Object> companyMap = (Map<String, Object>) json.get("company");
+    Long companyId = companyMap != null ? (Long) companyMap.get("id") : null;
+    json.put(
+        "stockLocationValue",
+        stockLocationUtilsService.getStockLocationValue(stockLocationId, companyId));
 
     return super.populate(json, context);
   }
@@ -102,8 +106,6 @@ public class StockLocationStockRepository extends StockLocationRepository {
 
     StockLocation copy = super.copy(entity, deep);
 
-    copy.clearDetailsStockLocationLineList();
-    copy.clearStockLocationLineList();
     copy.setBarCode(null);
     copy.setSerialNumber(null);
     return copy;

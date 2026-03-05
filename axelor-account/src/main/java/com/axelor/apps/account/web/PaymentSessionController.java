@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,7 +41,7 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -134,7 +134,16 @@ public class PaymentSessionController {
           Beans.get(PaymentSessionValidateService.class).checkValidTerms(paymentSession);
 
       if (errorCode == 1) {
-        response.setAlert(I18n.get(AccountExceptionMessage.PAYMENT_SESSION_INVALID_INVOICE_TERMS));
+        ActionView.ActionViewBuilder actionViewBuilder =
+            ActionView.define(I18n.get("Invoice terms"))
+                .model(PaymentSession.class.getName())
+                .add("form", "payment-session-financial-discount-confirm-wizard")
+                .param("popup", "reload")
+                .param("popup-save", "false")
+                .param("show-toolbar", "false")
+                .context("_showRecord", paymentSession.getId());
+
+        response.setView(actionViewBuilder.map());
       } else if (errorCode == 2) {
         ActionView.ActionViewBuilder actionViewBuilder =
             ActionView.define(I18n.get("Invoice terms"))

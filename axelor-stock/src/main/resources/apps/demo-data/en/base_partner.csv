@@ -1,5 +1,5 @@
-"importId";"partnerTypeSelect";"isContact";"isCustomer";"isSupplier";"isEmployee";"name";"firstName";"titleSelect";"address";"email";"fixedPhone";"mobilePhone";"invoiceSendingFormatSelect";"paymentMode.importId";"paymentCondition.importId";"partnerCategory.code";"currency.code";"blockingList.importId";"rejectCounter";"companySet_importId";"customerAccount_code";"supplierAccount_code";"mainPartner_importId";"customerTypeSelect";"supplierTypeSelect";"industrySector.importId";"user.importId";"team.importId";"source.id";"fiscalPosition.importId";"picture_fileName";"invoicesCopySelect";"localization.importId"
-8001;1;"false";"false";"false";"false";"TNT";;;;;;;;;;;;;;1;;;;;;;;;;;;;2
-8002;1;"false";"false";"false";"false";"La Poste";;;;;;;;;;;;;;1;;;;;;;;;;;;;2
-8003;1;"false";"false";"false";"false";"Mondial Relay";;;;;;;;;;;;;;1;;;;;;;;;;;;;2
-8004;1;"false";"false";"false";"false";"UPS";;;;;;;;;;;;;;1;;;;;;;;;;;;;2
+"importId";"partnerTypeSelect";"isContact";"isCustomer";"isSupplier";"isEmployee";"name";"firstName";"titleSelect";"address";"email";"fixedPhone";"mobilePhone";"invoiceSendingFormatSelect";"paymentMode.importId";"paymentCondition.importId";"partnerCategory.code";"currency.code";"rejectCounter";"companySet_importId";"customerAccount_code";"supplierAccount_code";"mainPartner_importId";"customerTypeSelect";"supplierTypeSelect";"industrySector.importId";"user.importId";"team.importId";"source.id";"fiscalPosition.importId";"picture_fileName";"invoicesCopySelect";"localization.importId"
+8001;1;"false";"false";"false";"false";"TNT";;;;;;;;;;;;;1;;;;;;;;;;;;;2
+8002;1;"false";"false";"false";"false";"La Poste";;;;;;;;;;;;;1;;;;;;;;;;;;;2
+8003;1;"false";"false";"false";"false";"Mondial Relay";;;;;;;;;;;;;1;;;;;;;;;;;;;2
+8004;1;"false";"false";"false";"false";"UPS";;;;;;;;;;;;;1;;;;;;;;;;;;;2

@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed subscription sale orders are completed while invoices are still to be generated."
+module: axelor-supplychain

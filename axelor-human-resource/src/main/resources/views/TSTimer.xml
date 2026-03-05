@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="ts-timer-grid" title="Start&amp;Stop Timer" model="com.axelor.apps.hr.db.TSTimer"
     editable="true" onNew="action-hr-ts-timer-record-default" canNew="false">
@@ -69,18 +69,18 @@
     </panel>
     <panel sidebar="true" name="actionsPanel" title="Actions" stacked="true">
       <button name="startBtn" title="Start" onClick="action-ts-timer-record-start,save"
-        showIf="statusSelect == 1" hidden="true" readonlyIf="product == null" icon="fa-play"
+        showIf="statusSelect == 1" hidden="true" readonlyIf="product == null" icon="play-fill"
         css="btn-success"/>
       <button name="resumeBtn" title="Resume" onClick="action-ts-timer-record-start,save"
-        showIf="statusSelect == 3" hidden="true" readonlyIf="product == null" icon="fa-play"
+        showIf="statusSelect == 3" hidden="true" readonlyIf="product == null" icon="play-fill"
         css="btn-success"/>
       <button name="pauseBtn" title="Pause" onClick="save,action-ts-timer-method-pause,save"
-        hideIf="statusSelect != 2" hidden="true" icon="fa-pause" css="btn-warning"/>
+        hideIf="statusSelect != 2" hidden="true" icon="pause-fill" css="btn-warning"/>
       <button name="stopBtn" title="Stop"
         onClick="save,action-ts-timer-method-stop,action-ts-timer-attrs-readonly-panel,save"
-        hideIf="statusSelect != 2" hidden="true" icon="fa-stop" css="btn-danger"/>
+        hideIf="statusSelect != 2" hidden="true" icon="stop-fill" css="btn-danger"/>
       <button name="newBtn" title="New" onClick="action-hr-ts-timer-record-new"
-        hideIf="statusSelect != 4" hidden="true" icon="fa-plus" css="btn-primary"/>
+        hideIf="statusSelect != 4" hidden="true" icon="plus-lg" css="btn-primary"/>
     </panel>
   </form>
 

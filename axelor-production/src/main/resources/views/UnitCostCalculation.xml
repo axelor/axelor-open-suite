@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="cost-calculations-grid" title="Cost price calculation"
     model="com.axelor.apps.production.db.UnitCostCalculation" orderBy="-statusSelect,-createdOn">
@@ -10,7 +10,7 @@
     <field name="calculationDateTime"/>
     <field name="updateCostDateTime"/>
     <field name="allBomLevels"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="cost-calculations-form" title="Cost price calculation"
@@ -25,7 +25,7 @@
       <field name="name" colSpan="8" required="true"/>
     </panel>
     <panel name="startFilterPanel" colSpan="12" showIf="statusSelect == 1">
-      <field name="companySet" widget="TagSelect" required="true"
+      <field name="companySet" widget="Tags" required="true"
         if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
       <field name="$company" title="Company" required="true" type="many-to-one"
         target="com.axelor.apps.base.db.Company"
@@ -33,10 +33,11 @@
       <field name="productSubTypeSelect" widget="MultiSelect" selection-in="1,2"
         required="true"/>
       <field name="allBomLevels"/>
-      <field name="productSet" widget="TagSelect"
-        onSelect="action-unit-cost-calculation-method-create-product-domain" colSpan="12"/>
-      <field name="productCategorySet" widget="TagSelect" colSpan="12"/>
-      <field name="productFamilySet" widget="TagSelect" colSpan="12"/>
+      <field name="productSet" widget="Tags"
+        onSelect="action-unit-cost-calculation-method-create-product-domain" canNew="false"
+        colSpan="12"/>
+      <field name="productCategorySet" widget="Tags" colSpan="12"/>
+      <field name="productFamilySet" widget="Tags" colSpan="12"/>
     </panel>
     <panel-tabs name="mainPanelTabs" colSpan="12">
       <panel name="descriptionPanel" title="Description">
@@ -44,7 +45,7 @@
       </panel>
       <panel name="filtersPanel" title="Filters" showIf="statusSelect != 1"
         readonlyIf="statusSelect == 3">
-        <field name="companySet" widget="TagSelect" required="true"
+        <field name="companySet" widget="Tags" required="true"
           if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'defaultBillOfMaterial'})"/>
         <field name="$company" title="Company" required="true" type="many-to-one"
           target="com.axelor.apps.base.db.Company"
@@ -52,10 +53,11 @@
         <field name="productSubTypeSelect" widget="MultiSelect" selection-in="1,2"
           required="true"/>
         <field name="allBomLevels"/>
-        <field name="productSet" widget="TagSelect"
-          onSelect="action-unit-cost-calculation-method-create-product-domain" colSpan="12"/>
-        <field name="productCategorySet" widget="TagSelect" colSpan="12"/>
-        <field name="productFamilySet" widget="TagSelect" colSpan="12"/>
+        <field name="productSet" widget="Tags"
+          onSelect="action-unit-cost-calculation-method-create-product-domain" canNew="false"
+          colSpan="12"/>
+        <field name="productCategorySet" widget="Tags" colSpan="12"/>
+        <field name="productFamilySet" widget="Tags" colSpan="12"/>
       </panel>
       <panel-related name="resultPanel" field="unitCostCalcLineList"
         grid-view="unit-cost-calc-line-grid" form-view="unit-cost-calc-line-form" height="20"

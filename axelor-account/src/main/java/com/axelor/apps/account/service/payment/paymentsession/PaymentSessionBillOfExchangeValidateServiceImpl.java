@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -48,8 +48,8 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -163,7 +163,7 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
     Query<InvoiceTerm> invoiceTermQuery =
         invoiceTermRepo
             .all()
-            .filter("self.paymentSession = :paymentSession")
+            .filter("self.paymentSession = :paymentSession AND self.paymentAmount != 0")
             .bind("paymentSession", paymentSession)
             .order("id");
 
@@ -172,16 +172,18 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        offset++;
+
         if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || paymentSessionValidateService.shouldBeProcessed(invoiceTerm)) {
-
-          this.processInvoiceTermBillOfExchange(
-              paymentSession,
-              invoiceTerm,
-              moveDateMap,
-              paymentAmountMap,
-              invoiceTermLinkWithRefund);
+          offset++;
+          if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) != 0) {
+            this.processInvoiceTermBillOfExchange(
+                paymentSession,
+                invoiceTerm,
+                moveDateMap,
+                paymentAmountMap,
+                invoiceTermLinkWithRefund);
+          }
         } else {
           paymentSessionValidateService.releaseInvoiceTerm(invoiceTerm);
         }
@@ -359,7 +361,10 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
     invoiceTermService.payInvoiceTerms(invoiceTermListToPay);
 
     invoiceTermReplaceService.replaceInvoiceTerms(
-        invoiceTerm.getInvoice(), counterPartMoveLine.getInvoiceTermList(), List.of(invoiceTerm));
+        invoiceTerm.getInvoice(),
+        counterPartMoveLine.getInvoiceTermList(),
+        List.of(invoiceTerm),
+        paymentSession);
   }
 
   protected String getMoveDescription(
@@ -392,8 +397,11 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
     Move move =
         paymentAmountMap.size() == 1 ? paymentAmountMap.keySet().stream().findFirst().get() : null;
 
-    if (move == null) {
-
+    if (move != null) {
+      BigDecimal amount = paymentAmountMap.remove(move);
+      move = moveRepo.find(move.getId());
+      paymentAmountMap.put(move, amount);
+    } else {
       move =
           paymentSessionValidateService.createMove(
               paymentSession,

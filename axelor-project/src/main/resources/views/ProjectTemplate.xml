@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="project-template-grid" model="com.axelor.apps.project.db.ProjectTemplate"
     title="Project template">
@@ -22,8 +22,7 @@
         </field>
       </panel>
       <panel name="actionPanel" colSpan="6">
-        <button name="createProjectBtn" icon="fa-copy"
-          title="Create project from this template"
+        <button name="createProjectBtn" icon="copy" title="Create project from this template"
           onClick="save,action-project-template-method-generate-project" colSpan="12"/>
       </panel>
     </panel>
@@ -38,7 +37,7 @@
 
     <panel-tabs name="mainPanelTab">
       <panel title="Task template" name="taskPanel">
-        <field name="taskTemplateSet" widget="TagSelect" canNew="false" canEdit="false"
+        <field name="taskTemplateSet" widget="Tags" canNew="false" canEdit="false"
           colSpan="12" onChange="action-project-template-method-add-parent-task-template,save"/>
       </panel>
 
@@ -46,30 +45,23 @@
         <field name="team" title="Team" readonlyIf="synchronize" colSpan="6" canNew="false"
           canEdit="false"/>
         <field name="synchronize" colSpan="2" widget="boolean-switch"/>
-        <field name="membersUserSet" colSpan="12" widget="TagSelect" canNew="false"
+        <field name="membersUserSet" colSpan="12" widget="Tags" canNew="false"
           form-view="user-form" grid-view="user-grid" hideIf="synchronize" canEdit="false"/>
-      </panel>
-
-      <panel title="Invoicing" name="invoicingPanel" showIf="isBusinessProject"
-        if="__config__.app.isApp('business-project')" if-module="axelor-business-project">
-        <field name="isInvoicingExpenses" colSpan="4"/>
-        <field name="isInvoicingPurchases" colSpan="4"/>
-        <field name="invoicingComment" colSpan="12"/>
       </panel>
 
       <panel-include view="incl-wiki-panel-form"/>
 
       <panel title="Configurations" name="configurationsPanel">
         <field if="__config__.app.isApp('employee')" if-module="axelor-human-resource"
-          name="productSet" colSpan="12" widget="TagSelect" canEdit="false"
+          name="productSet" colSpan="12" widget="Tags" canEdit="false"
           domain="self.isActivity = true AND self.dtype = 'Product'"
           form-view="product-activity-form" grid-view="product-activity-grid"/>
         <field name="taskStatusManagementSelect" widget="RadioSelect" colSpan="12"
           onChange="action-project-template-record-manage-task-status-set"/>
-        <field name="projectTaskStatusSet" widget="TagSelect" colSpan="12"
+        <field name="projectTaskStatusSet" widget="Tags" colSpan="12"
           showIf="taskStatusManagementSelect == 2" requiredIf="taskStatusManagementSelect == 2"
           canEdit="false"/>
-        <field name="projectTaskCategorySet" colSpan="12" widget="TagSelect" canEdit="false"
+        <field name="projectTaskCategorySet" colSpan="12" widget="Tags" canEdit="false"
           requiredIf="taskStatusManagementSelect == 4"/>
       </panel>
     </panel-tabs>
@@ -126,17 +118,6 @@
 
   <search-filters name="project-template-filters"
     model="com.axelor.apps.project.db.ProjectTemplate" title="Project template filters">
-    <field name="isInvoicingExpenses" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="isInvoicingPurchases" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="invoicingTypeSelect" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="invoicingComment" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="productSet" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="isBusinessProject" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
   </search-filters>
 
 </object-views>

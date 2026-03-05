@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -9,13 +9,18 @@
 
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
-    <boolean name="advanceManagement" default="true"/>
-    <boolean name="payrollPreparation" title="Payroll preparation"/>
-    <boolean name="lunchVoucher" title="Lunch Voucher"/>
-    <boolean name="employeeBonus" title="Employee bonus"/>
+    <boolean name="advanceManagement" default="true"
+      help="By enabling this configuration, you will be able to manage expense advances."/>
+    <boolean name="payrollPreparation" title="Payroll preparation"
+      help="By enabling this configuration, you will be able to manage payroll preparation. A dedicated menu will appear in the employee management module."/>
+    <boolean name="lunchVoucher" title="Lunch Voucher"
+      help="By enabling this configuration, you will be able to manage lunch vouchers. A dedicated menu will appear in the employee management module."/>
+    <boolean name="employeeBonus" title="Employee bonus"
+      help="By enabling this configuration, you will be able to manage employee bonuses. A dedicated menu will appear in the employee management module."/>
     <boolean name="isMyHrEnabled" title="Enable MyHR" default="true"
-      help="Activate MyHR enables the HR menu entries for employees."/>
-    <boolean name="isMedicalVisitEnabled" title="Medical visit"/>
+      help="Enabling MyHR activates an HR portal for employees, with menu entries giving them direct access to their HR data such as leave requests, expenses, timesheets, etc."/>
+    <boolean name="isMedicalVisitEnabled" title="Medical visit"
+      help="By enabling this configuration, you will be able to manage employee medical visits. A dedicated tab will appear on the employee form."/>
 
     <extra-code>
    		<![CDATA[
@@ -30,6 +35,7 @@
       <field name="lunchVoucher" on="UPDATE"/>
       <field name="employeeBonus" on="UPDATE"/>
       <field name="isMyHrEnabled" on="UPDATE"/>
+      <field name="isMedicalVisitEnabled" on="UPDATE"/>
     </track>
   </entity>
 

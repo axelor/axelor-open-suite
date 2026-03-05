@@ -1,4 +1,4 @@
-"code";"name";"importId";"group.code";"language";"homeAction";"companySet.importId";"activeCompany.importId";"partner.importId";"activeCashRegister.importId";"employee.importId";"activeTeam.importId";"picture_fileName";"localization.importId"
+"code";"name";"importId";"group.code";"language";"homeAction";"companySet.importId";"activeCompany.importId";"partner_importId";"activeCashRegister.importId";"employee_importId";"activeTeam.importId";"picture_fileName";"localization.importId"
 "admin";"Admin";1;"admins";"fr-fr";;1;1;90019;1;19;4;"img/user/1033_128px.png";2
 "demo";"Demo";2;"users";"fr-fr";;1;1;90020;1;;4;"img/user/1033_128px.png";2
 "dirg";"Yoann MARQUES";3;"MGT";"fr-fr";;1;1;90001;1;1;4;"img/user/1033_128px.png";2

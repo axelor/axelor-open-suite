@@ -1,0 +1,3 @@
+---
+title: "Accounting batch: fixed an issue occurring when launching cut-off accounting batch."
+module: axelor-account

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,9 +36,6 @@ public final class GdprExceptionMessage {
 
   public static final String RELATIONSHIP_ANONYMIZER_MISSING_REPLACEMENT = /*$$(*/
       "A replacement object is missing for model %s." /*)*/;
-
-  public static final String MODEL_FIELD_NO_MAPPED_BY = /*$$(*/
-      "Impossible to link with the children meta field %s, no mappedBy field found." /*)*/;
 
   public static final String RELATIONSHIP_ANONYMIZER_ONE_TO_MANY_REQUIRED_RESULT = /*$$(*/
       "Field %s of model %s has not been anonymized. Please check manually." /*)*/;

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,8 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.service.UnitConversionService;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.AccountManagementService;
+import com.axelor.apps.base.service.tax.FiscalPositionServiceImpl;
+import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
@@ -46,9 +47,10 @@ import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /** Classe de création de ligne de facture abstraite. */
@@ -104,6 +106,12 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     this.stockMoveLine = stockMoveLine;
     this.appBaseService = Beans.get(AppBaseService.class);
     this.unitConversionService = Beans.get(UnitConversionService.class);
+
+    if (saleOrderLine != null) {
+      this.typeSelect = saleOrderLine.getTypeSelect();
+    } else if (purchaseOrderLine != null && purchaseOrderLine.getIsTitleLine()) {
+      this.typeSelect = InvoiceLineRepository.TYPE_TITLE;
+    }
   }
 
   protected InvoiceLineGeneratorSupplyChain(
@@ -277,12 +285,16 @@ public abstract class InvoiceLineGeneratorSupplyChain extends InvoiceLineGenerat
     }
 
     // Determine and set the taxEquiv for the line
-    if (product != null) {
-      TaxEquiv taxEquiv =
-          Beans.get(AccountManagementService.class)
-              .getProductTaxEquiv(product, invoice.getCompany(), fiscalPosition, isPurchase);
+    TaxEquiv taxEquiv =
+        Beans.get(FiscalPositionServiceImpl.class)
+            .getTaxEquivFromOrToTaxSet(invoice.getFiscalPosition(), taxLineSet);
 
-      invoiceLine.setTaxEquiv(taxEquiv);
+    invoiceLine.setTaxEquiv(taxEquiv);
+
+    PurchaseOrder purchaseOrder = invoice.getPurchaseOrder();
+    if (purchaseOrder != null) {
+      computeCompanyTotal(
+          invoiceLine, Optional.ofNullable(purchaseOrder.getOrderDate()).orElse(today));
     }
 
     return invoiceLine;

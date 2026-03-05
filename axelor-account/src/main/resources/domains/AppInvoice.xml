@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -9,15 +9,20 @@
 
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
-    <boolean name="isVentilationSkipped" title="Skip ventilation"/>
+    <boolean name="isVentilationSkipped" title="Skip ventilation"
+      help="In standard, the invoicing workflow has a validation step and a ventilation step. At the ventilation step, accounting entries are generated and the invoice can no longer be modified. This configuration removes the ventilation step from the workflow, and in this case it is at validation that accounting entries are generated and the invoice becomes non-editable."/>
     <boolean name="isEnabledProductDescriptionCopyForCustomers"
-      title="Enable product description copy for customers"/>
+      title="Enable product description copy for customers"
+      help="Allows displaying on customer invoice lines the product description (description field from the product form)."/>
     <boolean name="isEnabledProductDescriptionCopyForSuppliers"
-      title="Enable product description copy for suppliers"/>
+      title="Enable product description copy for suppliers"
+      help="Allows displaying on supplier invoice lines the product description (description field from the product form)."/>
     <boolean name="autoGenerateInvoicePrintingFileOnSaleInvoice" default="true"
-      title="Auto generate invoice printing file on sale invoice"/>
+      title="Auto generate invoice printing file on sale invoice"
+      help="If this option is enabled, when the customer invoice moves to ventilated status (or validated if the Skip ventilation configuration is enabled), a PDF copy of the invoice is automatically saved in the DMS."/>
     <boolean name="autoGenerateInvoicePrintingFileOnPurchaseInvoice" default="false"
-      title="Auto generate invoice printing file on purchase invoice"/>
+      title="Auto generate invoice printing file on purchase invoice"
+      help="If this option is enabled, when the supplier invoice moves to ventilated status (or validated if the Skip ventilation configuration is enabled), a PDF copy of the invoice is automatically saved in the DMS."/>
 
     <track>
       <field name="isVentilationSkipped" on="UPDATE"/>

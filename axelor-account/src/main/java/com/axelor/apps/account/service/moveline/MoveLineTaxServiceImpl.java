@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -30,18 +30,18 @@ import com.axelor.apps.account.db.repo.JournalTypeRepository;
 import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.exception.AccountExceptionMessage;
+import com.axelor.apps.account.service.TaxAccountService;
 import com.axelor.apps.account.service.TaxPaymentMoveLineService;
 import com.axelor.apps.account.util.TaxAccountToolService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
 import com.google.inject.servlet.RequestScoped;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -53,6 +53,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
 @RequestScoped
@@ -65,7 +66,8 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
   protected MoveRepository moveRepository;
   protected TaxAccountToolService taxAccountToolService;
   protected MoveLineToolService moveLineToolService;
-  protected TaxService taxService;
+  protected TaxAccountService taxAccountService;
+  protected MoveLineCheckService moveLineCheckService;
 
   @Inject
   public MoveLineTaxServiceImpl(
@@ -76,7 +78,8 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
       MoveRepository moveRepository,
       TaxAccountToolService taxAccountToolService,
       MoveLineToolService moveLineToolService,
-      TaxService taxService) {
+      TaxAccountService taxAccountService,
+      MoveLineCheckService moveLineCheckService) {
     this.moveLineRepository = moveLineRepository;
     this.taxPaymentMoveLineService = taxPaymentMoveLineService;
     this.appBaseService = appBaseService;
@@ -84,7 +87,8 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     this.moveRepository = moveRepository;
     this.taxAccountToolService = taxAccountToolService;
     this.moveLineToolService = moveLineToolService;
-    this.taxService = taxService;
+    this.taxAccountService = taxAccountService;
+    this.moveLineCheckService = moveLineCheckService;
   }
 
   @Override
@@ -112,7 +116,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
 
       } else if (!moveLineToolService.isMoveLineTaxAccount(invoiceMoveLine)
           && CollectionUtils.isNotEmpty(invoiceMoveLine.getTaxLineSet())
-          && taxService
+          && taxAccountService
                   .getTotalTaxRateInPercentage(invoiceMoveLine.getTaxLineSet())
                   .compareTo(BigDecimal.ZERO)
               == 0) {
@@ -148,8 +152,15 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
     Set<TaxLine> taxLineSet = invoiceMoveLine.getTaxLineSet();
     List<TaxPaymentMoveLine> taxPaymentMoveLineList = new ArrayList<>();
 
+    BigDecimal taxTotal =
+        invoiceMoveLine.getTaxLineSet().stream()
+            .map(TaxLine::getValue)
+            .reduce(BigDecimal::add)
+            .orElse(BigDecimal.ZERO);
+
     if (paymentAmount.compareTo(BigDecimal.ZERO) == 0
-        || invoiceTotalAmount.compareTo(BigDecimal.ZERO) == 0) {
+        || invoiceTotalAmount.compareTo(BigDecimal.ZERO) == 0
+        || taxTotal.compareTo(BigDecimal.ZERO) == 0) {
       return taxPaymentMoveLineList;
     }
 
@@ -176,7 +187,7 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
           baseAmount =
               (invoiceMoveLine.getCredit().add(invoiceMoveLine.getDebit()))
                   .divide(
-                      vatRate.divide(BigDecimal.valueOf(100)),
+                      taxTotal.divide(BigDecimal.valueOf(100)),
                       AppBaseService.DEFAULT_NB_DECIMAL_DIGITS,
                       BigDecimal.ROUND_HALF_UP);
         } else {
@@ -319,20 +330,72 @@ public class MoveLineTaxServiceImpl implements MoveLineTaxService {
         continue;
       }
 
-      if (CollectionUtils.isNotEmpty(taxLineSet))
-        for (TaxLine taxLine : taxLineSet) {
-          if (taxLine != null && taxLine.getValue().signum() != 0) {
-            String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
+      taxAccountService.checkTaxLinesNotOnlyNonDeductibleTaxes(taxLineSet);
+      taxAccountService.checkSumOfNonDeductibleTaxesOnTaxLines(taxLineSet);
+      if (CollectionUtils.isNotEmpty(taxLineSet)) {
+        List<TaxLine> deductibleTaxList =
+            taxLineSet.stream()
+                .filter(it -> !this.isNonDeductibleTax(it))
+                .collect(Collectors.toList());
+        List<TaxLine> nonDeductibleTaxList =
+            taxLineSet.stream().filter(this::isNonDeductibleTax).collect(Collectors.toList());
 
-            if (this.isGenerateMoveLineForAutoTax(moveLine)) {
-              moveLineCreateService.createMoveLineForAutoTax(
-                  move, map, newMap, moveLine, taxLine, accountType, account, percentMoveTemplate);
-            }
-          }
-        }
+        this.computeMoveLineTax(
+            move,
+            map,
+            newMap,
+            moveLine,
+            account,
+            percentMoveTemplate,
+            nonDeductibleTaxList,
+            deductibleTaxList);
+        this.computeMoveLineTax(
+            move,
+            map,
+            newMap,
+            moveLine,
+            account,
+            percentMoveTemplate,
+            deductibleTaxList,
+            nonDeductibleTaxList);
+      }
     }
 
     moveLineList.addAll(newMap.values());
+  }
+
+  protected void computeMoveLineTax(
+      Move move,
+      Map<String, MoveLine> map,
+      Map<String, MoveLine> newMap,
+      MoveLine moveLine,
+      Account account,
+      boolean percentMoveTemplate,
+      List<TaxLine> taxLineList,
+      List<TaxLine> otherTaxLineList)
+      throws AxelorException {
+    for (TaxLine taxLine : taxLineList) {
+      if (taxLine != null && taxLine.getValue().signum() != 0) {
+        String accountType = moveLine.getAccount().getAccountType().getTechnicalTypeSelect();
+        if (this.isGenerateMoveLineForAutoTax(moveLine)) {
+          moveLineCheckService.nonDeductibleTaxAuthorized(move, moveLine);
+          moveLineCreateService.createMoveLineForAutoTax(
+              move,
+              map,
+              newMap,
+              moveLine,
+              taxLine,
+              accountType,
+              account,
+              percentMoveTemplate,
+              otherTaxLineList);
+        }
+      }
+    }
+  }
+
+  protected boolean isNonDeductibleTax(TaxLine taxLine) {
+    return Optional.of(taxLine.getTax().getIsNonDeductibleTax()).orElse(false);
   }
 
   @Override

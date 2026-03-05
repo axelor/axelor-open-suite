@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -10,17 +10,27 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="managePurchaseOrderVersion" title="Manage purchase order versions"
-      default="false"/>
-    <boolean name="managePurchasesUnits" title="Manage purchases unit on products"/>
-    <boolean name="manageMultiplePurchaseQuantity" title="Manage multiple purchase quantity"/>
-    <boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"/>
-    <boolean name="manageSupplierCatalog" title="Manage supplier catalog"/>
+      default="false"
+      help="This option enables the ability to create multiple versions of a supplier quotation, allowing modification of a quotation to create a new version and track its history."/>
+    <boolean name="managePurchasesUnits" title="Manage purchases unit on products"
+      help="This function is useful when the purchase units of a product from a supplier are different from your sales units (for example if you buy a product by the ton and resell it by the kilo). When creating supplier orders, the selected product will be directly shown with its purchase unit, avoiding manual conversions."/>
+    <boolean name="manageMultiplePurchaseQuantity" title="Manage multiple purchase quantity"
+      help="This option allows defining multiple purchase quantities on a product. You can specify that a product can only be purchased in certain multiples (for example quantities of 5 and 10 if the multiple is 5). If the quantity selected on an order line differs, the line cannot be validated and a message will indicate the allowed quantities."/>
+    <boolean name="isEnabledProductDescriptionCopy" title="Enable product description copy"
+      help="Displays the product description (description field from the product form) on purchase order lines."/>
+    <boolean name="manageSupplierCatalog" title="Manage supplier catalog"
+      help="Allows managing a product catalog for each supplier. It will be possible to link products to suppliers and manage a supplier product catalog."/>
     <boolean name="isDisplayPurchaseOrderLineNumber"
-      title="Display purchase order line number"/>
+      title="Display purchase order line number" help="Assigns a number to purchase order lines."/>
     <boolean name="enablePurchasesProductByTradName" title="Filter products by trading name"
-      default="false"/>
+      default="false"
+      help="If this option is enabled, a panel allowing to purchase this product by trading name appears on product forms. This allows defining which products trading names can purchase, and filtering only purchasable products by trading name on quotations."/>
     <many-to-one name="purchaseUnit" title="Default unit"
-      ref="com.axelor.apps.base.db.Unit"/>
+      ref="com.axelor.apps.base.db.Unit"
+      help="This is the default purchase unit for a product when it is created."/>
+    <boolean name="manageCallForTender" title="Manage call for tender"/>
+    <boolean name="allowValidatedOrderModification"
+      title="Allow validated order modification"/>
 
     <track>
       <field name="managePurchaseOrderVersion" on="UPDATE"/>
@@ -31,6 +41,8 @@
       <field name="isDisplayPurchaseOrderLineNumber" on="UPDATE"/>
       <field name="enablePurchasesProductByTradName" on="UPDATE"/>
       <field name="purchaseUnit" on="UPDATE"/>
+      <field name="manageCallForTender" on="UPDATE"/>
+      <field name="allowValidatedOrderModification" on="UPDATE"/>
     </track>
 
   </entity>

@@ -1,0 +1,2 @@
+"importId";"code";"actionSelect";"orphanReservationTimeoutMinutes";"confirmedReservationRetentionDays";"deleteOldConfirmedReservations"
+1;"RESERVED_SEQUENCE_CLEANUP";5;30;30;"true"

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -22,14 +22,16 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.AddressTemplate;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.CurrencyConversionLine;
-import com.axelor.studio.app.service.AppService;
+import com.axelor.apps.base.db.Unit;
+import com.axelor.studio.app.service.ScriptAppService;
 import com.axelor.studio.db.AppBase;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-public interface AppBaseService extends AppService {
+public interface AppBaseService extends ScriptAppService {
 
   public static final int DEFAULT_NB_DECIMAL_DIGITS = 2;
 
@@ -97,6 +99,14 @@ public interface AppBaseService extends AppService {
 
   public BigDecimal getGeneralDuration(BigDecimal duration);
 
+  Unit getUnitDays() throws AxelorException;
+
+  Unit getUnitHours() throws AxelorException;
+
+  Unit getUnitMinutes() throws AxelorException;
+
+  BigDecimal getDailyWorkHours() throws AxelorException;
+
   /**
    * Set the manageMultiBanks boolean in the general object.
    *
@@ -109,4 +119,8 @@ public interface AppBaseService extends AppService {
    * (10 seconds).
    */
   int getProcessTimeout();
+
+  String getSireneUrl() throws AxelorException;
+
+  String getImportErrorPath() throws IOException;
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <!-- ACCOUNTING REPORT -->
 
@@ -9,7 +9,7 @@
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="ref" width="120"/>
     <field name="date"/>
-    <field name="companySet" widget="TagSelect"/>
+    <field name="companySet" widget="Tags"/>
     <field name="currency"/>
     <field name="exportTypeSelect"/>
     <field name="reportType"/>
@@ -21,7 +21,7 @@
     <field name="totalDebit" aggregate="sum"/>
     <field name="totalCredit" aggregate="sum"/>
     <field name="balance"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
     <field name="publicationDateTime"/>
     <field name="company" hidden="true"/>
   </grid>
@@ -43,7 +43,8 @@
           onChange="action-group-account-accounting-report-company-onchange"
           form-view="company-form" grid-view="company-grid" readonlyIf="ref != null"/>
         <field name="companySet" form-view="company-form" grid-view="company-grid"
-          widget="TagSelect" onChange="action-accounting-report-record-empty-report-type"
+          widget="Tags"
+          onChange="action-attrs-accounting-report-attrs-move-status-domain,action-accounting-report-method-empty-report-type"
           showIf="_isCustom" validIf="companySet.length > 0" readonlyIf="statusSelect == 2"/>
       </panel>
       <field name="date" readonlyIf="statusSelect == 2 &amp;&amp; reportType.typeSelect != 18"
@@ -59,13 +60,13 @@
       <button name="searchBtn" title="Search"
         hideIf="([19,20].indexOf(reportType.typeSelect) == -1)"
         onClick="save,action-accounting-report-method-search-move-line,save"/>
-      <button name="exportBtn" title="Print" icon="fa-print"
+      <button name="exportBtn" title="Print" icon="printer"
         onClick="action-account-report-alert-typeselect,action-group-account-accounting-report-export-click"
         readonlyIf="!reportType"/>
-      <button name="createAccountingExportBtn" title="Create accounting export"
-        icon="fa-cogs" showIf="statusSelect == 2 &amp;&amp; reportType.typeSelect == 19"
+      <button name="createAccountingExportBtn" title="Create accounting export" icon="gear"
+        showIf="statusSelect == 2 &amp;&amp; reportType.typeSelect == 19"
         onClick="save,action-accounting-report-method-create-export-from-report"/>
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <field name="publicationDateTime" hideIf="[23,24].includes(reportType.typeSelect)"/>
     </panel>
     <panel name="periodPanel" title="Period"
@@ -108,7 +109,7 @@
       <panel name="filterPanel" title="Filter">
         <panel name="accountingPanel" title="Accounting" colSpan="12" canCollapse="true"
           hideIf="reportType.typeSelect == 25">
-          <field name="currency"/>
+          <field name="currency" requiredIf="reportType.typeSelect == 18"/>
           <field name="minAmountExcl"
             showIf="reportType.typeSelect == 19 || reportType.typeSelect == 20"/>
           <field name="journal"
@@ -118,7 +119,7 @@
             onChange="action-accounting-report-record-move-status-select"/>
           <field name="journalSet" if-module="axelor-bank-payment"
             if="__config__.app.isApp('bank-payment')" requiredIf="reportType.typeSelect == 18"
-            widget="TagSelect" canNew="false" showIf="reportType.typeSelect == 18" colSpan="12"
+            widget="Tags" canNew="false" showIf="reportType.typeSelect == 18" colSpan="12"
             domain="self.statusSelect = 1 AND self.company = :company" form-view="journal-form"
             grid-view="journal-grid" canEdit="false"/>
           <field name="paymentMode" grid-view="payment-mode-grid"
@@ -126,33 +127,33 @@
             hideIf="[1,2,3,4,5,7,10,11,12,13,14,15,16,17,19,20,21,22,23,24,2000,2001].indexOf(reportType.typeSelect) != -1"/>
           <field name="accountSet" requiredIf="reportType.typeSelect == 18"
             hideIf="[12,15,16,19,20,21,22,23,24,2000,2001].indexOf(reportType.typeSelect) != -1"
-            colSpan="12" form-view="account-form" grid-view="account-grid" widget="TagSelect"
+            colSpan="12" form-view="account-form" grid-view="account-grid" widget="Tags"
             canNew="false" onSelect="action-accounting-report-attrs-accountset-domain"/>
           <field name="partnerSet"
             hideIf="[12,15,16,17,18,19,20,21,22,23,24,2000,2001,3000].indexOf(reportType.typeSelect) != -1"
-            colSpan="12" form-view="partner-form" grid-view="partner-grid" widget="TagSelect"
+            colSpan="12" form-view="partner-form" grid-view="partner-grid" widget="Tags"
             canNew="false" domain=":company member of self.companySet AND self.isContact = false"/>
           <field name="accountTypeSet" colSpan="12" showIf="reportType.typeSelect == 6"
-            widget="TagSelect" canNew="false" form-view="account-type-form"
-            grid-view="account-type-grid"/>
+            widget="Tags" canNew="false" form-view="account-type-form" grid-view="account-type-grid"/>
           <field name="bankDetailsSet" if-module="axelor-bank-payment"
             if="__config__.app.isApp('bank-payment')" requiredIf="reportType.typeSelect == 18"
             showIf="reportType.typeSelect == 18" colSpan="12" form-view="bank-details-form"
-            grid-view="bank-details-grid" widget="TagSelect" canNew="false"
+            grid-view="bank-details-grid" widget="Tags" canNew="false"
             onSelect="action-accounting-report-method-set-bank-details-domain"/>
         </panel>
         <panel name="budgetPanel" title="Budget" canCollapse="true" colSpan="12"
           showIf="reportType.typeSelect == 25">
           <field name="budgetSet" if-module="axelor-bank-payment"
             if="__config__.app.isApp('budget')" form-view="global-budget-form"
-            grid-view="global-budget-grid" widget="TagSelect" canNew="false"
+            grid-view="global-budget-grid" widget="Tags" canNew="false"
             domain="self.statusSelect IN (1,2)"/>
         </panel>
         <panel name="fixedAssetPanel" title="Fixed asset" colSpan="12" canCollapse="true"
           collapseIf="true" showIf="reportType.typeSelect == 17">
           <field name="analyticDistributionTemplate" showIf="reportType.typeSelect == 17"
             form-view="analytic-distribution-template-form"
-            grid-view="analytic-distribution-template-grid"/>
+            grid-view="analytic-distribution-template-grid"
+            onSelect="action-accounting-report-method-set-domain-analytic-distribution-template"/>
           <field name="fixedAssetLineTypeSelect" requiredIf="reportType.typeSelect == 17"/>
         </panel>
         <panel name="analyticPanel" title="Analytic" colSpan="12" canCollapse="true"
@@ -163,17 +164,16 @@
             domain="self.company = :company" form-view="analytic-journal-form"
             grid-view="analytic-journal-grid"/>
           <field name="analyticAxisSet"
-            showIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001"
-            widget="TagSelect" canNew="false" form-view="analytic-axis-form"
-            grid-view="analytic-axis-grid"/>
+            showIf="reportType.typeSelect == 2000 || reportType.typeSelect == 2001" widget="Tags"
+            canNew="false" form-view="analytic-axis-form" grid-view="analytic-axis-grid"
+            domain="self.company = :company OR self.company IS NULL"/>
           <field name="analyticAccountSet"
-            showIf="[2000,2001,3000].includes(reportType.typeSelect)" colSpan="12"
-            widget="TagSelect" canNew="false" form-view="analytic-account-form"
-            grid-view="analytic-account-grid" domain="self.company = :company"/>
+            showIf="[2000,2001,3000].includes(reportType.typeSelect)" colSpan="12" widget="Tags"
+            canNew="false" form-view="analytic-account-form" grid-view="analytic-account-grid"
+            onSelect="action-accounting-report-attrs-analytic-account-set-domain"/>
           <field name="accountTypeSet"
-            showIf="[6,2000,2001].indexOf(reportType.typeSelect) != -1" colSpan="12"
-            widget="TagSelect" canNew="false" form-view="account-type-form"
-            grid-view="account-type-grid"/>
+            showIf="[6,2000,2001].indexOf(reportType.typeSelect) != -1" colSpan="12" widget="Tags"
+            canNew="false" form-view="account-type-form" grid-view="account-type-grid"/>
           <panel-related name="accountingReportAnalyticConfigLineListPanel"
             field="accountingReportAnalyticConfigLineList" colSpan="12" height="15"
             x-row-height="29" form-view="accounting-report-analytic-config-line-form"
@@ -182,10 +182,10 @@
         </panel>
         <panel name="tagsPanel" title="Tags"
           showIf="$contains([1,2,3,4,5,6,7,10,11,13,14,17,18], reportType.typeSelect)" colSpan="12">
-          <field name="partnerTagSet" widget="TagSelect" x-color-field="color"
+          <field name="partnerTagSet" widget="Tags" x-color-field="color"
             grid-view="tag-simplified-grid" form-view="tag-form"
             onSelect="action-accounting-report-attrs-set-partner-tag-domain"/>
-          <field name="accountTagSet" widget="TagSelect" x-color-field="color"
+          <field name="accountTagSet" widget="Tags" x-color-field="color"
             grid-view="tag-simplified-grid" form-view="tag-form"
             onSelect="action-account-attrs-set-account-tag-domain"/>
         </panel>
@@ -212,7 +212,6 @@
         <panel name="accountingMovesPanel" title="Moves" colSpan="12" canCollapse="true"
           hideIf="[17,23,24].indexOf(reportType.typeSelect) != -1" stacked="true">
           <field name="moveStatusSelect" widget="MultiSelect"
-            onSelect="action-attrs-accounting-report-attrs-move-status-domain" selection-in="[2,5]"
             hideIf="[1,2,3,4,5,6,7,10,11,12,13,14,15,16,17,20,21,22,2000,2001,3000].indexOf(reportType.typeSelect) == -1"/>
           <field name="displayClosingAccountingMoves" widget="inline-checkbox"
             hideIf="[5,10,12,15,16,17,21,22,23,24,1001,1010,2000,3000].indexOf(reportType.typeSelect) != -1"/>
@@ -272,7 +271,7 @@
     <field name="totalDebit" aggregate="sum"/>
     <field name="totalCredit" aggregate="sum"/>
     <field name="balance"/>
-    <field name="statusSelect"/>
+    <field name="statusSelect" widget="single-select"/>
   </grid>
 
   <form name="accounting-report-export-form" title="Accounting export"
@@ -307,7 +306,7 @@
     </panel>
 
     <panel sidebar="true" name="infoPanel" title="Info">
-      <field name="statusSelect"/>
+      <field name="statusSelect" widget="single-select"/>
       <button name="searchBtn" title="Search"
         showIf="(statusSelect != 2 &amp;&amp; reportType.typeSelect != 1011) || $contains([1000, 1010, 1001], reportType.typeSelect)"
         onClick="save,action-accounting-report-method-search-move-line,save"/>
@@ -368,7 +367,7 @@
     <action name="action-accounting-report-method-get-account"/>
     <action name="action-accounting-report-record-reset"/>
     <action name="action-attrs-accounting-report-attrs-move-status-domain"/>
-    <action name="action-accounting-report-record-empty-report-type"/>
+    <action name="action-accounting-report-method-empty-report-type"/>
   </action-group>
 
   <!-- ACTION ATTRS -->
@@ -376,10 +375,10 @@
   <action-attrs name="action-attrs-accounting-report-attrs-move-status-domain">
     <attribute name="selection-in" for="moveStatusSelect"
       if="_isCustom &amp;&amp; companySet"
-      expr="call: com.axelor.apps.account.service.move.MoveToolService:getMoveStatusSelectWithoutAccounted(moveStatusSelect, companySet)"/>
+      expr="eval: companySet.any{it.accountConfig?.accountingDaybook} &amp;&amp; companySet.any{it.accountConfig?.isActivateSimulatedMove} ? [1,2,3,4,5] : companySet.any{it.accountConfig?.accountingDaybook} ? [1,2,3,4] : companySet.any{it.accountConfig?.isActivateSimulatedMove} ? [1,3,4,5] : [1,3,4]"/>
     <attribute name="selection-in" for="moveStatusSelect"
       if="!_isCustom &amp;&amp; company"
-      expr="call: com.axelor.apps.account.service.move.MoveToolService:getMoveStatusSelectWithoutAccounted(moveStatusSelect, company)"/>
+      expr="eval: company.accountConfig?.accountingDaybook &amp;&amp; company.accountConfig?.isActivateSimulatedMove ? [1,2,3,4,5] : company.accountConfig?.accountingDaybook ? [1,2,3,4] : company.accountConfig?.isActivateSimulatedMove ? [1,3,4,5] : [1,3,4]"/>
     <attribute name="hidden" for="moveStatusSelect" expr="eval: true"
       if="!company || !companySet"/>
   </action-attrs>
@@ -423,7 +422,14 @@
 
   <action-attrs name="action-accounting-report-attrs-set-partner-tag-domain">
     <attribute name="domain" for="partnerTagSet"
-      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} MEMBER OF self.concernedModelSet OR self.concernedModelSet IS EMPTY) AND (:company IS NULL OR :company MEMBER OF self.companySet OR self.companySet IS EMPTY) &quot;"/>
+      expr="eval: &quot; (${__repo__(MetaModel).findByName('Partner')?.id} IN (self.concernedModelSet.id) OR self.concernedModelSet IS EMPTY) AND (:company IS NULL OR :company MEMBER OF self.companySet OR self.companySet IS EMPTY) &quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-accounting-report-attrs-analytic-account-set-domain">
+    <attribute name="domain" for="analyticAccountSet"
+      expr="eval: &quot; self.company = :company OR self.company IS NULL &quot;" if="!_isCustom"/>
+    <attribute name="domain" for="analyticAccountSet"
+      expr="eval: &quot; self.company IN :companySet OR self.company IS NULL &quot;" if="_isCustom"/>
   </action-attrs>
 
   <!-- ACTION RECORD -->
@@ -534,8 +540,8 @@
   <action-record name="action-accounting-report-record-move-status-select"
     model="com.axelor.apps.account.db.AccountingReport">
     <field name="moveStatusSelect"
-      expr="eval: !([1,2,3,4,5,6,7,10,11,12,13,14,15,16,17,20,21,22,2000,2001,3000].indexOf(reportType?.typeSelect) == -1) &amp;&amp; (!journal || journal?.allowAccountingDaybook) ? __repo__(Move).STATUS_DAYBOOK : null"
-      if="company.accountConfig.accountingDaybook"/>
+      expr="eval: company?.accountConfig?.accountingDaybook &amp;&amp; !([1,2,3,4,5,6,7,10,11,12,13,14,15,16,17,20,21,22,2000,2001,3000].indexOf(reportType?.typeSelect) == -1) &amp;&amp; (!journal || journal?.allowAccountingDaybook) ? __repo__(Move).STATUS_DAYBOOK : null"
+      if="!_isCustom"/>
   </action-record>
 
   <action-record name="action-accounting-report-record-journal"
@@ -544,12 +550,14 @@
       if="[0,1,2,3,5,10,12,13,14,15,16,17,18,19,20,21,22,23,24,3000].indexOf(reportType?.typeSelect) != -1"/>
   </action-record>
 
-  <action-record name="action-accounting-report-record-empty-report-type"
-    model="com.axelor.apps.account.db.AccountingReport">
-    <field name="reportType" expr="eval: null"/>
-  </action-record>
 
   <!-- ACTION METHOD -->
+
+  <action-method name="action-accounting-report-method-empty-report-type"
+    model="com.axelor.apps.account.db.AccountingReport">
+    <call class="com.axelor.apps.account.web.AccountingReportController"
+      method="emptyReportTypeField"/>
+  </action-method>
 
   <action-method
     name="action-accounting-report-method-get-values-from-report-type-accounting-report">
@@ -597,6 +605,12 @@
   <action-method name="action-accounting-report-method-set-report-type-domain">
     <call class="com.axelor.apps.account.web.AccountingReportController"
       method="setAccountingReportTypeDomain"/>
+  </action-method>
+
+  <action-method
+    name="action-accounting-report-method-set-domain-analytic-distribution-template">
+    <call class="com.axelor.apps.account.web.AccountingReportController"
+      method="setDomainAnalyticDistributionTemplate"/>
   </action-method>
 
   <action-validate name="action-accounting-report-date-change-validate">

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="product-expense-grid" title="Expense types"
     model="com.axelor.apps.base.db.Product" orderBy="name">
@@ -14,7 +14,7 @@
     <field name="saleSupplySelect"/>
     <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
     <field name="personalExpense"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -22,9 +22,9 @@
     title="Expense type" model="com.axelor.apps.base.db.Product"
     onLoad="action-product-attrs-scale-and-precision">
     <toolbar>
-      <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+      <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
         onClick="save,action-send-by-email-with-template"/>
-      <button name="printBtn" title="Product sheet" icon="fa-print"
+      <button name="printBtn" title="Product sheet" icon="printer"
         onClick="save,action-product-validate-user-active-company,action-method-print-template"/>
     </toolbar>
     <panel name="mainPanel">
@@ -78,7 +78,8 @@
         <panel name="trackingNumberConfigPanel" colSpan="12">
           <field name="trackingNumberConfiguration" canNew="true"
             grid-view="tracking-number-configuration-grid"
-            form-view="tracking-number-configuration-form"/>
+            form-view="tracking-number-configuration-form"
+            if="!__config__.app.getApp('base')?.companySpecificProductFieldsSet?.find({it.name == 'trackingNumberConfiguration'})"/>
         </panel>
       </panel>
     </panel-tabs>
@@ -88,7 +89,7 @@
     model="com.axelor.apps.base.db.Product" orderBy="name">
     <toolbar>
       <button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog"
-        icon="fa-book"/>
+        icon="book"/>
     </toolbar>
     <field name="picture" widget="Image"/>
     <field name="code" x-bind="{{code|unaccent|uppercase}}"/>
@@ -100,7 +101,7 @@
     <field name="productTypeSelect" width="100"/>
     <field name="saleSupplySelect"/>
     <field name="unit" width="70" form-view="unit-form" grid-view="unit-grid"/>
-    <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+    <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
       onClick="action-send-by-email-with-template"/>
   </grid>
 
@@ -109,9 +110,9 @@
     onNew="action-group-base-product-onnew, action-product-activity-record-default-activity"
     onLoad="action-product-attrs-scale-and-precision" width="large">
     <toolbar>
-      <button name="sendByEmailBtn" title="Send Email" icon="fa-envelope"
+      <button name="sendByEmailBtn" title="Send Email" icon="envelope-fill"
         onClick="save,action-send-by-email-with-template"/>
-      <button name="printBtn" title="Product sheet" icon="fa-print"
+      <button name="printBtn" title="Product sheet" icon="printer"
         onClick="save,action-product-validate-user-active-company,action-method-print-template"/>
     </toolbar>
     <panel name="mainPanel">
@@ -185,7 +186,7 @@
     title="Product Activities" orderBy="code,name" width="25%" css="rect-image">
     <toolbar>
       <button name="catalogBtn" title="Catalog" onClick="action-print-product-catalog"
-        icon="fa-book"/>
+        icon="book"/>
     </toolbar>
     <field name="picture"/>
     <field name="fullName"/>

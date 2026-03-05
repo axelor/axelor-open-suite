@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
@@ -10,16 +10,21 @@
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
     <boolean name="allowNegativeLeaveEmployees"
-      title="Allow negative values for employee leaves"/>
+      title="Allow negative values for employee leaves"
+      help="This option allows an employee to use leave days in advance that are not yet in their leave balance, resulting in a negative leave day balance."/>
     <integer name="useWeeklyPlanningCoefficientSelect"
       title="Use weekly planning coefficient"
-      selection="hr.app.leave.use.weekly.planning.coefficient.select" default="1"/>
+      selection="hr.app.leave.use.weekly.planning.coefficient.select" default="1"
+      help="On weekly plannings, the Activity percentage field indicates a coefficient taken into account in leave calculation based on the person activity. If the employee works part-time, the coefficient is set to 0.5 and the leave calculation is based on this value, earning fewer days than a full-time person whose coefficient is 1. Always: always uses the planning coefficient. Configurable: can be defined per leave type via the Use planning coefficient checkbox. No: the planning coefficient is not taken into account."/>
     <boolean name="isPayrollPreparationExportEnabled"
-      title="Enable payroll preparation export"/>
+      title="Enable payroll preparation export"
+      help="By checking this box, you enable leave management in payroll exports."/>
     <integer name="firstLeaveDayPeriod" title="First day of leave period" min="1" max="31"
-      default="1"/>
+      default="1"
+      help="Allows defining the first day of the leave period, i.e. from which day each year the new leave period starts. For example, if it starts on June 1st, enter 1 in this field and 6 in the First month of leave period field."/>
     <integer name="firstLeaveMonthPeriod" title="First month of leave period" min="1"
-      max="12" default="6"/>
+      max="12" default="6"
+      help="Allows defining the first month of the leave period, i.e. from which month each year the new leave period starts. For example, if it starts on June 1st, enter 6 in this field and 1 in the First day of leave period field."/>
     <many-to-one name="monthlySchedule" title="Monthly schedule"
       ref="com.axelor.meta.db.MetaSchedule"/>
     <many-to-one name="annualSchedule" title="Annual schedule"
@@ -39,6 +44,8 @@
       <field name="isPayrollPreparationExportEnabled" on="UPDATE"/>
       <field name="firstLeaveDayPeriod" on="UPDATE"/>
       <field name="firstLeaveMonthPeriod" on="UPDATE"/>
+      <field name="monthlySchedule" on="UPDATE"/>
+      <field name="annualSchedule" on="UPDATE"/>
     </track>
   </entity>
 

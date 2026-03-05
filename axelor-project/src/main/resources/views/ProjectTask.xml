@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="project-task-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" orderBy="-priority.technicalTypeSelect">
@@ -27,14 +27,14 @@
 
   <grid name="project-task-project-grid" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask" edit-icon="true"
-    orderBy="-priority.technicalTypeSelect">
+    orderBy="levelIndicator,-priority.technicalTypeSelect">
     <toolbar>
-      <button name="newLineBtn" title="New line" icon="fa-plus"
+      <button name="newLineBtn" title="New line" icon="plus-lg"
         onClick="action-project-add-task"/>
-      <button name="removeLineBtn" title="Remove lines" icon="fa-trash"
+      <button name="removeLineBtn" title="Remove lines" icon="trash"
         onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-tasks"/>
       <button name="allTaskBtn" title="All tasks" colSpan="2" css="btn-custom text-left"
-        icon="fa-tasks" onClick="save,action-project-view-show-related-tasks"/>
+        icon="list-task" onClick="save,action-project-view-show-related-tasks"/>
     </toolbar>
     <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
     <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
@@ -46,23 +46,87 @@
     <field name="taskDate" width="100"/>
     <field name="status" width="100"/>
     <field name="priority.technicalTypeSelect" hidden="true"/>
-    <button name="createSubtaskBtn" icon="fa-plus"
+    <button name="createSubtaskBtn" icon="plus-lg"
       onClick="save, action-project-view-add-subtask"/>
-    <button name="deleteTaskBtn" icon="fa-times-circle"
+    <button name="deleteTaskBtn" icon="x-circle-fill"
       onClick="action-project-task-validate-delete-team-task-confirmation, action-project-task-method-delete-project-task"/>
+  </grid>
+
+  <grid name="project-task-editable-grid" title="Tasks"
+    model="com.axelor.apps.project.db.ProjectTask" editable="true"
+    orderBy="-priority.technicalTypeSelect" onNew="action-project-task-group-onnew">
+    <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
+    <field name="project" width="200" onChange="action-project-task-group-project-onchange"
+      onSelect="action-project-task-editable-grid-attrs-project-on-select" form-view="project-form"
+      grid-view="project-grid" required="true"/>
+    <field name="assignedTo" readonlyIf="project == null" canNew="false" canView="false"
+      canEdit="false" onSelect="action-project-task-attrs-project-assigned-to-configurations"
+      required="true" form-view="user-form" grid-view="user-grid"
+      onChange="action-project-task-attrs-hide-time-spent-button" width="150"/>
+    <field name="name" width="200"/>
+    <field name="taskEndDate" onChange="action-project-task-attrs-set-task-duration"
+      width="150">
+      <hilite color="red"
+        if="(taskEndDate != null &amp;&amp; $moment().diff(taskEndDate,'days') &gt; 0) &amp;&amp; ($get('status.id') != $get('project.completedTaskStatus.id'))"/>
+    </field>
+    <field name="projectTaskCategory" width="150"/>
+    <field name="priority" onSelect="action-project-task-atts-priority-on-select"
+      canView="false" width="150"/>
+    <field name="status" widget="Tag" x-color-field="color"
+      onSelect="action-project-task-method-status-on-select"
+      hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
+      onChange="action-project-task-method-auto-change-progress" width="125"/>
+    <field name="createdOn" width="125"/>
+    <field name="createdBy" width="125"/>
+    <field name="progress" onChange="action-project-task-group-progress-onchange" min="0"
+      max="100" widget="Progress"/>
+    <field name="priority.technicalTypeSelect" hidden="true"/>
+    <field name="project.completedTaskStatus.id" hidden="true"/>
+  </grid>
+
+  <grid name="project-task-tree-project-grid" title="Tasks" widget="tree-grid"
+    x-tree-field="projectTaskList" x-tree-field-title="Add sub tasks"
+    model="com.axelor.apps.project.db.ProjectTask" editable="true"
+    orderBy="-priority.technicalTypeSelect" onNew="action-project-task-group-onnew">
+    <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
+    <field name="assignedTo" readonlyIf="project == null" canNew="false" canView="false"
+      canEdit="false" onSelect="action-project-task-attrs-project-assigned-to-configurations"
+      required="true" form-view="user-form" grid-view="user-grid"
+      onChange="action-project-task-attrs-hide-time-spent-button"/>
+    <field name="name" width="200"/>
+    <field name="taskEndDate" onChange="action-project-task-attrs-set-task-duration"
+      width="150">
+      <hilite color="red"
+        if="(taskEndDate != null &amp;&amp; $moment().diff(taskEndDate,'days') &gt; 0) &amp;&amp; ($get('status.id') != $get('project.completedTaskStatus.id'))"/>
+    </field>
+    <field name="projectTaskCategory"/>
+    <field name="priority" onSelect="action-project-task-atts-priority-on-select"
+      canView="false"/>
+    <field name="status" widget="Tag" x-color-field="color"
+      onSelect="action-project-task-method-status-on-select"
+      hideIf="project.taskStatusManagementSelect == 1 || (project.taskStatusManagementSelect == 4 &amp;&amp; !projectTaskCategory)"
+      onChange="action-project-task-method-auto-change-progress"/>
+    <field name="createdOn"/>
+    <field name="createdBy"/>
+    <field name="progress" onChange="action-project-task-group-progress-onchange"
+      widget="Progress" min="0" max="100"/>
+    <field name="project" hidden="true"/>
+    <field name="priority.technicalTypeSelect" hidden="true"/>
+    <field name="project.completedTaskStatus.id" hidden="true"/>
   </grid>
 
   <form name="project-task-form" title="Task" model="com.axelor.apps.project.db.ProjectTask"
     onNew="action-project-task-group-onnew" onLoad="action-project-task-group-timer-process"
     width="large">
     <toolbar>
-      <button name="grabEventBtn" icon="fa-suitcase" help="Take charge"
+      <button name="grabEventBtn" icon="briefcase-fill" help="Take charge"
         onClick="action-project-task-record-assigned-yourself,save"/>
-      <button name="doneBtn" icon="fa-check" onClick="action-project-task-group-click-done"
+      <button name="doneBtn" icon="check" onClick="action-project-task-group-click-done"
         showIf="project.taskStatusManagementSelect != 1"/>
-      <button name="showPlanningBtn" icon="calendar-week" title="Show planning"
-        onClick="save,action-project-task-view-show-planning" if="__config__.app.isApp('employee')"
-        if-module="axelor-human-resource" showIf="project.isShowPlanning"/>
     </toolbar>
     <menubar>
       <menu name="projectTaskMenu" title="Tools"
@@ -75,6 +139,7 @@
 
     <panel showIf="nextProjectTask">
       <field name="doApplyToAllNextTasks" widget="InlineCheckbox" colSpan="12"/>
+      <field name="project.isShowPlanning" hidden="true"/>
     </panel>
 
     <panel name="mainPanel" colSpan="12">
@@ -113,23 +178,11 @@
       <panel name="timeSpentPanel" title="Time Spent" if-module="axelor-human-resource"
         if="__config__.app.isApp('timesheet')" showIf="project.manageTimeSpent">
         <panel-include view="incl-log-times-projec-task-panel-form"/>
-
         <field name="project.manageTimeSpent" hidden="true"/>
-        <panel name="timerPanel" title="Timer" showIf="id" if-module="axelor-helpdesk"
-          if="__config__.app.isApp('helpdesk')" canCollapse="true" collapseIf="false">
-          <panel name="actionsPanel" title="Actions">
-            <button name="startTimerBtn" title="Start" icon="fa-play" colSpan="12"
-              hidden="true" onClick="action-project-task-method-start-timer"/>
-            <button name="stopTimerBtn" title="Stop" icon="fa-pause" colSpan="12"
-              hidden="true" onClick="action-project-task-method-stop-timer"/>
-            <button name="cancelTimerBtn" title="Cancel" icon="fa-times-circle" colSpan="12"
-              hidden="true" onClick="action-project-task-method-cancel-timer"/>
-          </panel>
-          <panel name="durationPanel">
-            <field name="$_totalTimerDuration" type="decimal" readonly="true"
-              title="Total duration (Hours)" colSpan="12"/>
-          </panel>
-        </panel>
+      </panel>
+
+      <panel name="timeFollowUpPanel" title="Time follow-up">
+        <panel-include view="incl-time-follow-task-panel-form"/>
       </panel>
 
       <panel name="taskPanel" title="Tasks" colSpan="12" showIf="id">
@@ -165,6 +218,7 @@
         grid-view="project-grid"/>
       <field name="parentTask" readonlyIf="project == null" colSpan="6"
         form-view="project-task-form" grid-view="project-task-grid"
+        onChange="action-project-task-record-get-parent-timeunit"
         onSelect="action-project-task-attrs-project-parent-task-configurations"/>
       <field name="assignedTo" readonlyIf="project == null" colSpan="6" canNew="false"
         canView="false" canEdit="false"
@@ -174,6 +228,8 @@
       <field name="site" onSelect="action-project-task-attrs-set-site-domain"
         form-view="site-form" grid-view="site-grid"
         if="__config__.app.getApp('base')?.enableSiteManagementForProject"/>
+      <field name="watcherUserSet" widget="Tags" canNew="false" colSpan="6"
+        form-view="user-form" grid-view="user-grid" canEdit="false"/>
 
       <panel name="characteristicsPanel" title="Characteristics" colSpan="12"
         collapseIf="false" canCollapse="true">
@@ -208,8 +264,6 @@
         requiredIf="project.isShowTaskCategory &amp;&amp; project.taskStatusManagementSelect == 4"
         onSelect="action-project-task-attrs-project-task-category-configurations"
         onChange="action-project-task-group-project-category-onchange"/>
-      <field name="projectTaskSection" colSpan="4" form-view="project-task-section-form"
-        grid-view="project-task-section-grid" showIf="project.isShowSection"/>
       <field name="priority" colSpan="4" showIf="project.isShowPriority"
         onSelect="action-project-task-atts-priority-on-select" requiredIf="project.isShowPriority"
         canView="false"/>
@@ -219,18 +273,26 @@
       <field name="taskEndDate" colSpan="4"
         onChange="action-project-task-attrs-set-task-duration"/>
       <field name="taskDeadline" title="Task deadline" colSpan="4"/>
-      <field name="tagSet" widget="TagSelect" x-color-field="color" form-view="tag-form"
+      <field name="tagSet" widget="Tags" x-color-field="color" form-view="tag-form"
         grid-view="tag-simplified-grid" colSpan="4"
         onSelect="action-project-task-method-set-tag-domain"/>
       <field name="progress" onChange="action-project-task-group-progress-onchange"
         showIf="project.isShowProgress" colSpan="4" min="0" max="100" widget="Slider" x-step="1"
         x-scale="0"/>
+      <field name="targetVersion" domain=":project member of self.projectSet" colSpan="4"
+        form-view="project-version-form" grid-view="project-version-grid"/>
+      <field name="activeSprint"
+        showIf="project.sprintManagementSelect == 'project' || (project.sprintManagementSelect == 'version' &amp;&amp; targetVersion)"
+        onSelect="action-project-task-method-compute-sprint-domain" colSpan="4"
+        form-view="sprint-form" grid-view="sprint-grid"/>
+      <field name="imputable"/>
       <field name="project.isShowProgress" hidden="true"/>
-      <field name="project.isShowSection" hidden="true"/>
       <field name="project.isShowStatus" hidden="true"/>
       <field name="project.isShowPriority" hidden="true"/>
       <field name="project.isShowTaskCategory" hidden="true"/>
       <field name="project.taskStatusManagementSelect" hidden="true"/>
+      <field name="project.sprintManagementSelect" hidden="true"/>
+      <field name="oldActiveSprint" hidden="true"/>
     </panel>
   </form>
 
@@ -293,20 +355,6 @@
     </panel>
   </form>
 
-  <form name="incl-planning-panel-task-form" title="Planning"
-    model="com.axelor.apps.project.db.ProjectTask" width="large">
-    <panel name="planningPanel" title="Planning" if="__config__.app.isApp('employee')"
-      if-module="axelor-human-resource" showIf="project.isShowPlanning">
-      <field name="budgetedTime" colSpan="4"/>
-      <spacer name="budgetedTimeSpacer" colSpan="4"/>
-      <panel-dashlet name="projectPlanningTimePanel" title="Planned Time Planning"
-        x-show-bars="false" action="action-project-task-dashlet-project-planning-time" colSpan="12"
-        canSearch="true"/>
-      <field name="plannedProgress" hidden="true" colSpan="12" widget="progress"/>
-      <field name="project.isShowPlanning" hidden="true"/>
-    </panel>
-  </form>
-
   <form name="incl-checklist-task-panel-form" title="Check list"
     model="com.axelor.apps.project.db.ProjectTask">
     <panel name="templatePanel" title="Check list" colSpan="12">
@@ -321,6 +369,34 @@
         form-view="project-check-list-item-form" grid-view="project-check-list-item-grid"
         widget="tree-grid" x-tree-field="projectCheckListItemList"
         x-tree-field-title="Add a new check list item" editable="true"/>
+    </panel>
+  </form>
+
+  <form name="incl-time-follow-task-panel-form" title="Time follow up"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <panel name="timesPanel" colSpan="12">
+      <field name="timeUnit" colSpan="4" readonlyIf="saleOrderLine || parentTask"
+        onSelect="action-project-task-attrs-set-time-unit-domain"
+        onChange="action-project-task-method-update-budgeted-time, save"/>
+      <field name="budgetedTime" colSpan="4"/>
+      <field name="plannedTime" readonly="true" colSpan="4"/>
+      <field name="spentTime" readonly="true" colSpan="4"/>
+    </panel>
+    <panel name="timerPanel" title="Timer" showIf="id" colSpan="12"
+      if-module="axelor-helpdesk" if="__config__.app.isApp('helpdesk')" canCollapse="true"
+      collapseIf="false">
+      <panel name="actionsPanel" title="Actions">
+        <button name="startTimerBtn" title="Start" icon="play-fill" colSpan="12"
+          hidden="true" onClick="action-project-task-method-start-timer"/>
+        <button name="stopTimerBtn" title="Stop" icon="pause-fill" colSpan="12" hidden="true"
+          onClick="action-project-task-method-stop-timer"/>
+        <button name="cancelTimerBtn" title="Cancel" icon="x-circle-fill" colSpan="12"
+          hidden="true" onClick="action-project-task-method-cancel-timer"/>
+      </panel>
+      <panel name="durationPanel">
+        <field name="$_totalTimerDuration" type="decimal" readonly="true"
+          title="Total duration (Hours)" colSpan="12"/>
+      </panel>
     </panel>
   </form>
 
@@ -435,7 +511,7 @@
     </template>
   </kanban>
 
-  <kanban name="task-per-section-kanban" columnBy="projectTaskSection" title="Tasks"
+  <kanban name="task-per-category-kanban" columnBy="projectTaskCategory" title="Tasks"
     limit="30" sequenceBy="sequence" model="com.axelor.apps.project.db.ProjectTask">
     <field name="name"/>
     <field name="project"/>
@@ -483,15 +559,35 @@
     </template>
   </kanban>
 
+  <kanban columnBy="activeSprint" model="com.axelor.apps.project.db.ProjectTask"
+    sequenceBy="sequence" title="Tasks per sprint" name="project-task-sprint-kanban"
+    draggable="true" limit="10">
+
+    <field name="name"/>
+    <field name="assignedTo.name"/>
+    <field name="totalPlannedHrs"/>
+
+    <template>
+      <![CDATA[
+			<>
+				<strong>{name}</strong><br /><br />
+				<strong>User:</strong> {assignedTo.name}<br />
+				<strong>Total planned time:</strong> {totalPlannedHrs}
+			</>
+		]]>
+    </template>
+
+  </kanban>
+
   <calendar name="project-task-per-status-calendar" title="Task Calendar"
     model="com.axelor.apps.project.db.ProjectTask" eventStart="taskDate" eventStop="taskEndDate"
     eventLength="1" mode="month" colorBy="status">
     <field name="fullName"/>
   </calendar>
 
-  <calendar name="project-task-per-section-calendar" title="Task Calendar"
+  <calendar name="project-task-per-category-calendar" title="Task Calendar"
     model="com.axelor.apps.project.db.ProjectTask" eventStart="taskDate" eventStop="taskEndDate"
-    eventLength="1" mode="month" colorBy="projectTaskSection">
+    eventLength="1" mode="month" colorBy="projectTaskCategory">
     <field name="fullName"/>
   </calendar>
 
@@ -503,13 +599,17 @@
 
   <action-group name="action-project-task-group-onnew">
     <action name="action-project-task-defaults"/>
+    <action name="action-project-task-attrs-set-time-unit-default"/>
     <action name="action-project-task-record-set-default"/>
     <action name="action-project-task-record-project-configurations" if="project != null"/>
     <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
+    <action name="action-project-task-group-reset-datas"/>
   </action-group>
 
   <action-group name="action-project-task-group-project-onchange">
+    <action name="action-project-task-group-reset-datas"/>
+    <action name="action-project-task-attrs-reset-parent-task"/>
     <action name="action-project-task-method-set-status-selection-in"/>
     <action name="action-project-task-record-project-configurations"/>
     <action name="action-project-task-attrs-hide-time-spent-button"/>
@@ -518,6 +618,10 @@
   <action-group name="action-project-task-group-generate-checklist-items">
     <action name="action-project-validate-checklist-items"/>
     <action name="action-project-task-method-generate-checklist-items-from-template"/>
+  </action-group>
+
+  <action-group name="action-project-task-group-reset-datas">
+    <action name="action-project-task-attrs-reset-version-and-sprint"/>
   </action-group>
 
   <action-method name="action-project-task-method-set-link-type-domain">
@@ -549,10 +653,19 @@
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="setTagDomain"/>
   </action-method>
 
+  <action-method name="action-project-task-method-compute-sprint-domain">
+    <call class="com.axelor.apps.project.web.ProjectTaskController"
+      method="computeSprintDomain"/>
+  </action-method>
+
   <action-method
     name="action-project-task-method-generate-checklist-items-from-template">
     <call class="com.axelor.apps.project.web.ProjectTaskController"
       method="generateCheckListFromTemplate"/>
+  </action-method>
+
+  <action-method name="action-project-task-method-update-budgeted-time">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="updateBudgetedTime"/>
   </action-method>
 
   <action-group name="action-project-task-group-click-done">
@@ -606,16 +719,10 @@
       if="_model == 'com.axelor.apps.project.db.Project'"/>
   </action-view>
 
-  <action-view name="action-project-task-view-show-planning" title="Planning"
-    model="com.axelor.apps.project.db.ProjectTask">
-    <view type="form" name="incl-planning-panel-task-form"/>
-    <context name="_showRecord" expr="eval: id"/>
-  </action-view>
-
   <action-record name="action-project-task-record-set-default"
     model="com.axelor.apps.project.db.ProjectTask">
     <field name="isFirst" expr="true"/>
-    <field name="typeSelect" expr="eval: _typeSelect"/>
+    <field name="typeSelect" expr="eval: _typeSelect?:'task'"/>
   </action-record>
 
   <action-record name="action-project-task-record-set-date-or-frequency-changed"
@@ -649,6 +756,10 @@
     <field name="taskDate" expr="#{__config__.date}"/>
     <field name="project" expr="eval:_project"/>
     <field name="project" expr="eval: __user__?.activeProject" if="!_project"/>
+    <field name="project" expr="eval: __repo__(Project).find(_parent?.id)"
+      if="_parent &amp;&amp; _parent?._model == 'com.axelor.apps.project.db.Project'"/>
+    <field name="project" expr="eval: __repo__(ProjectTask).find(_parent?.id)?.project"
+      if="_parent &amp;&amp; _parent?._model == 'com.axelor.apps.project.db.ProjectTask'"/>
     <field name="parentTask" expr="eval:_parentTask"/>
   </action-record>
 
@@ -664,20 +775,22 @@
   <action-attrs name="action-project-task-attrs-project-task-category-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain" for="projectTaskCategory"
-      expr="eval: (project?.projectTaskCategorySet !=  null &amp;&amp; project?.projectTaskCategorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectTaskCategorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"/>
+      expr="eval: (project?.projectTaskCategorySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectTaskCategorySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"/>
   </action-attrs>
 
   <action-attrs name="action-project-task-attrs-project-assigned-to-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain"
-      expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN(${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
-      for="assignedTo"/>
+      expr="eval: (project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN(${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
+      for="assignedTo" if="project &amp;&amp; !project.isAllowTaskToBeAssignedToAnyUser"/>
+    <attribute name="domain" expr="eval:null" for="assignedTo"
+      if="project &amp;&amp; project.isAllowTaskToBeAssignedToAnyUser"/>
   </action-attrs>
 
   <action-attrs name="action-project-task-attrs-parent-task-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain"
-      expr="eval: (project?.projectTaskList !=null &amp;&amp; project?.projectTaskList?.size() > 0 ) ? &quot;self.id != ${id} AND self.id IN(${project?.projectTaskList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
+      expr="eval: (project?.projectTaskList?.size() > 0 ) ? &quot;self.id != ${id} AND self.id IN(${project?.projectTaskList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
       for="parentTask"/>
   </action-attrs>
 
@@ -692,6 +805,33 @@
       expr="eval:taskDate.plus((taskDuration/86400).longValue(), java.time.temporal.ChronoUnit.DAYS)"
       if="taskDate != null"/>
   </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-set-time-unit-domain">
+    <attribute for="timeUnit" name="domain"
+      expr="eval: &quot; self.id = ${__config__.app.getApp('base')?.unitDays?.id} OR self.id = ${__config__.app.getApp('base')?.unitHours?.id}&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-reset-version-and-sprint">
+    <attribute for="activeSprint" name="value" expr="eval: project?.backlogSprint"/>
+  </action-attrs>
+
+  <action-attrs name="action-project-task-attrs-reset-parent-task">
+    <attribute for="parentTask" name="value" expr="eval: null"/>
+  </action-attrs>
+
+  <!-- get timeUnit value from configuration -->
+  <action-attrs name="action-project-task-attrs-set-time-unit-default">
+    <attribute for="timeUnit" name="value"
+      expr="eval: __config__.app.getApp('base')?.unitDays" if="!parentTask?.timeUnit"/>
+    <attribute for="timeUnit" name="value" expr="eval: parentTask?.timeUnit"
+      if="parentTask?.timeUnit"/>
+  </action-attrs>
+
+  <!-- fill timeUnit from parentTask -->
+  <action-record name="action-project-task-record-get-parent-timeunit"
+    model="com.axelor.apps.project.db.ProjectTask">
+    <field name="timeUnit" expr="eval: parentTask?.timeUnit" if="parentTask"/>
+  </action-record>
 
   <action-view name="action-project-task-book-resource" title="Book resource"
     model="com.axelor.apps.project.db.ResourceBooking">
@@ -737,14 +877,14 @@
 
   <action-attrs name="action-project-task-atts-priority-on-select">
     <attribute name="domain"
-      expr="eval: (project?.projectTaskPrioritySet !=  null &amp;&amp; project?.projectTaskPrioritySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectTaskPrioritySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
+      expr="eval: (project?.projectTaskPrioritySet?.size() &gt; 0) ? &quot;self.id IN (${project?.projectTaskPrioritySet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
       for="priority"/>
   </action-attrs>
 
   <action-attrs name="action-project-task-attrs-project-parent-task-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain"
-      expr="eval: (project?.projectTaskList !=null &amp;&amp; project?.projectTaskList?.size() > 0 ) ? &quot;self.id != ${id} AND self.id IN(${project?.projectTaskList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
+      expr="eval: (project?.projectTaskList?.size() &gt; 0) ? &quot;self.id != ${id} AND self.id IN(${project?.projectTaskList?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
       for="parentTask"/>
   </action-attrs>
 
@@ -752,7 +892,7 @@
     name="action-project-task-attrs-project-members-user-set-configurations"
     model="com.axelor.apps.project.db.ProjectTask">
     <attribute name="domain"
-      expr="eval: (project?.membersUserSet != null &amp;&amp; project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN (${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (null)&quot;"
+      expr="eval: (project?.membersUserSet?.size() &gt; 0) ? &quot;self.id IN (${project?.membersUserSet?.collect{it.id}?.join(',')})&quot; : &quot;self.id IN (0)&quot;"
       for="membersUserSet"/>
   </action-attrs>
 
@@ -783,13 +923,10 @@
     <call class="com.axelor.apps.project.web.ProjectTaskController" method="deleteProjectTasks"/>
   </action-method>
 
-  <action-view name="action-project-task-dashlet-project-planning-time"
-    title="Planned Time Planning" model="com.axelor.apps.project.db.ProjectPlanningTime">
-    <view type="grid" name="project-planning-time-grid"/>
-    <view type="form" name="project-planning-time-form"/>
-    <view-param name="popup" value="true"/>
-    <domain>self.projectTask.id = :id</domain>
-  </action-view>
+  <action-method name="action-project-task-method-status-on-select">
+    <call class="com.axelor.apps.project.web.ProjectTaskController" method="statusOnSelect"/>
+  </action-method>
+
 
   <action-view name="dashlet.task" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask">
@@ -797,9 +934,9 @@
     <view type="form" name="project-task-form"/>
   </action-view>
 
-  <action-view name="action-project-view-per-section-kanban" title="Tasks"
+  <action-view name="action-project-view-per-category-kanban" title="Tasks"
     model="com.axelor.apps.project.db.ProjectTask">
-    <view type="kanban" name="task-per-section-kanban"/>
+    <view type="kanban" name="task-per-category-kanban"/>
     <view type="form" name="project-task-form"/>
     <domain>self.typeSelect = :_typeSelect AND self.project.id = :_id</domain>
     <context name="_project" expr="eval:__this__"/>
@@ -815,9 +952,9 @@
     <context name="_typeSelect" expr="eval: __repo__(ProjectTask).TYPE_TASK"/>
   </action-view>
 
-  <action-view name="action-project-view-per-section-calendar" title="Task Calendar"
+  <action-view name="action-project-view-per-category-calendar" title="Task Calendar"
     model="com.axelor.apps.project.db.ProjectTask">
-    <view type="calendar" name="project-task-per-section-calendar"/>
+    <view type="calendar" name="project-task-per-category-calendar"/>
     <view type="form" name="project-task-form"/>
     <domain>self.typeSelect = :_typeSelect AND self.project.id = :_id</domain>
     <context name="_project" expr="eval:__this__"/>
@@ -843,6 +980,13 @@
       expr="eval: &quot;self.id IN (${project?.siteSet?.collect{it.id}.join(',')})&quot;"/>
   </action-attrs>
 
+  <action-attrs name="action-project-task-editable-grid-attrs-project-on-select">
+    <attribute for="project" name="domain"
+      expr="eval: &quot;self.id IN (${_projectIdList.join(',')})&quot;" if="_projectIdList"/>
+    <attribute for="project" name="domain"
+      expr="eval: &quot;self.projectStatus.isCompleted = false&quot;" if="!_projectIdList"/>
+  </action-attrs>
+
   <action-validate name="action-project-task-validate-finish-status">
     <error message="Please fill completed task status in Project configuration."
       if="!project?.completedTaskStatus"/>
@@ -850,39 +994,30 @@
 
   <search-filters name="project-task-filters"
     model="com.axelor.apps.project.db.ProjectTask" title="Project task filters">
-    <field name="targetVersion" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="team" hidden="true" if="__config__.app.isApp('business-support')"/>
-    <field name="customerReferral" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="isPrivate" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="isOrderAccepted" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="isOrderProposed" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="assignment" hidden="true" if="!__config__.app.isApp('business-support')"/>
-    <field name="internalDescription" hidden="true"
-      if="!__config__.app.isApp('business-support')"/>
     <field name="totalPlannedHrs" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="budgetedTime" hidden="true" if="!__config__.app.isApp('employee')"/>
     <field name="plannedProgress" hidden="true" if="!__config__.app.isApp('employee')"/>
-    <field name="invoicingType" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="toInvoice" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="isPaid" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="isTaskRefused" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="invoiced" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="project.invoicingSequenceSelect" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="saleOrderLine" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="product" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="quantity" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="invoicingUnit" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="unitPrice" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="currency" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="discountTypeSelect" hidden="true"
-      if="!__config__.app.isApp('business-project')"/>
-    <field name="discountAmount" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="priceDiscounted" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="exTaxTotal" hidden="true" if="!__config__.app.isApp('business-project')"/>
-    <field name="metaFile" hidden="true"
-      if="!__config__.app.getApp('project')?.isEnableSignature"/>
+    <filter title="My tasks" name="my-tasks">
+      <domain>self.assignedTo IS NOT NULL AND self.assignedTo = :__user__ AND
+        self.status.isCompleted = FALSE</domain>
+    </filter>
+    <filter title="My observed tasks" name="my-observed-tasks">
+      <domain>:__user__ MEMBER OF self.watcherUserSet AND self.status.isCompleted = FALSE</domain>
+    </filter>
+    <filter title="Tasks assigned to others" name="task-assigned-to-others">
+      <domain>self.createdBy = :__user__ AND (self.assignedTo IS NOT NULL AND self.assignedTo !=
+        :__user__) AND self.status.isCompleted = FALSE</domain>
+    </filter>
+    <filter title="All my tasks" name="all-my-tasks">
+      <domain>self.assignedTo IS NOT NULL AND self.assignedTo = :__user__</domain>
+    </filter>
+    <filter title="All my observed tasks" name="all-my-observed-tasks">
+      <domain>:__user__ MEMBER OF self.watcherUserSet</domain>
+    </filter>
+    <filter title="All tasks assigned to others" name="all-task-assigned-to-others">
+      <domain>self.createdBy = :__user__ AND (self.assignedTo IS NOT NULL AND self.assignedTo !=
+        :__user__)</domain>
+    </filter>
   </search-filters>
 
 </object-views>

@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="project" package="com.axelor.apps.project.db"/>
 
@@ -58,6 +58,8 @@
 
     <many-to-one name="site" title="Site" ref="com.axelor.apps.base.db.Site"/>
 
+    <many-to-one name="timeUnit" ref="com.axelor.apps.base.db.Unit" title="Time unit"/>
+
     <!-- Gantt view fields -->
 
     <decimal name="plannedProgress" title="Planned progress"/>
@@ -73,11 +75,8 @@
     <one-to-many name="timerList" ref="com.axelor.apps.base.db.Timer"/>
 
     <decimal name="budgetedTime" title="Estimated time"/>
-    <many-to-one name="metaFile" title="Signature" ref="com.axelor.meta.db.MetaFile"/>
 
     <many-to-many name="tagSet" ref="com.axelor.apps.base.db.Tag" title="Tags"/>
-    <many-to-one name="projectTaskSection"
-      ref="com.axelor.apps.project.db.ProjectTaskSection" title="Section"/>
 
     <string name="ticketNumber" title="Ticker number" readonly="true"/>
 
@@ -89,9 +88,25 @@
     <string name="projectJson" title="Project json" json="true"/>
     <string name="categoryJson" title="Category json" json="true"/>
 
+    <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batchs"/>
+
     <one-to-many name="projectCheckListItemList"
       ref="com.axelor.apps.project.db.ProjectCheckListItem" title="Check list"
       mappedBy="projectTask"/>
+
+    <many-to-one name="targetVersion" title="Target version"
+      ref="com.axelor.apps.project.db.ProjectVersion"/>
+    <many-to-one name="activeSprint" title="Active sprint"
+      ref="com.axelor.apps.project.db.Sprint"/>
+    <many-to-one name="oldActiveSprint" title="Old sprint"
+      ref="com.axelor.apps.project.db.Sprint" transient="true"/>
+    <decimal name="oldBudgetedTime" title="Old budgeted time" transient="true"/>
+
+    <boolean name="imputable" title="Imputable" default="true"/>
+
+    <many-to-many name="watcherUserSet" ref="com.axelor.auth.db.User"
+      title="User watchers"/>
+    <string name="levelIndicator" title="Level"/>
 
     <extra-code>
 
@@ -111,7 +126,12 @@
       <field name="projectTaskCategory"/>
       <field name="progress"/>
       <field name="assignedTo"/>
+      <field name="targetVersion"/>
+      <field name="activeSprint"/>
     </track>
+
+    <entity-listener class="com.axelor.apps.project.db.repo.ProjectTaskListener"/>
+
 
   </entity>
 

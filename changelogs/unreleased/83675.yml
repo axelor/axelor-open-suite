@@ -1,3 +1,0 @@
----
-title: "Purchase order: fixed an error occurring when generating purchase request if the order was not saved"
-module: axelor-purchase

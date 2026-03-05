@@ -1,0 +1,8 @@
+"importId";"typeSelect";"fieldTypeSelect";"concernedModel";"name";"formula";"fieldToPopulate";"scale";"operatorSelect"
+3;1;1;"FreightCarrierPricing";"Order weight";"def totalWeight = 0
+ saleOrder?.saleOrderLineList?.each { line ->
+ totalWeight += line.product?.grossMass * line.qty
+ }
+ return new BigDecimal(totalWeight)";;2;1
+4;2;0;"FreightCarrierPricing";"Prices";"pricingLine?.resultParam1";"pricingAmount";2;
+5;2;0;"FreightCarrierPricing";"Delay";"pricingLine?.resultParam1";"delay";2;

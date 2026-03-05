@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="supplychain" package="com.axelor.apps.supplychain.db"/>
 
@@ -9,7 +9,7 @@
 
     <boolean name="autoRequestReservedQtyOnManufOrder"
       title="Auto request qty for manuf orders"
-      help="If true, the components will be automatically requested for reservation on planning manufacturing orders."/>
+      help="If checked, reservation will be automatically made for components when planning manufacturing orders."/>
 
     <track>
       <field name="autoRequestReservedQtyOnManufOrder" on="UPDATE"/>

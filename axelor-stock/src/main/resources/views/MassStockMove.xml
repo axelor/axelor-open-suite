@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.2.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="mass-stock-move-grid" title="Mass stock moves"
     model="com.axelor.apps.stock.db.MassStockMove" onNew="action-mass-stock-move-method-on-new">
     <field name="sequence"/>
     <field name="company" onChange="action-mass-stock-move-record-company-on-change"/>
-    <field name="statusSelect" required="true"/>
+    <field name="statusSelect" required="true" widget="single-select"/>
     <field name="cartStockLocation" domain="self.company = :company AND self.typeSelect != 3"
       onChange="action-mass-stock-move-attrs-refresh-cart-content"/>
     <field name="commonFromStockLocation"
@@ -90,17 +90,17 @@
       <panel-related field="pickedProductList" grid-view="picked-product-grid"
         form-view="picked-product-form" colSpan="12" canNew="company != null" onChange="save"/>
       <button name="realizePickingBtn" title="Pick all / the rest"
-        onClick="save,action-mass-stock-move-method-realize-picking" icon="fa-play"/>
+        onClick="save,action-mass-stock-move-method-realize-picking" icon="play-fill"/>
       <button name="cancelPickingBtn" title="Cancel picking"
-        onClick="action-mass-stock-move-method-cancel-picking" icon="fa-undo"/>
+        onClick="action-mass-stock-move-method-cancel-picking" icon="arrow-counterclockwise"/>
     </panel>
     <panel name="storedProductPanel" hidden="true" showIf="stepSelect == 4">
       <panel-related field="storedProductList" grid-view="stored-product-grid"
         form-view="stored-product-form" colSpan="12" canNew="company != null" onChange="save"/>
       <button name="realizeStoringBtn" title="Store all / the rest"
-        onClick="save,action-mass-stock-move-method-realize-storing" icon="fa-play"/>
+        onClick="save,action-mass-stock-move-method-realize-storing" icon="play-fill"/>
       <button name="cancelStorageBtn" title="Cancel storage"
-        onClick="save,action-mass-stock-move-method-cancel-storing" icon="fa-undo"/>
+        onClick="save,action-mass-stock-move-method-cancel-storing" icon="arrow-counterclockwise"/>
     </panel>
   </form>
 
@@ -154,8 +154,13 @@
     <view type="grid" name="stock-location-line-mass-stock-move-cart-grid"/>
     <view type="form" name="stock-location-line-form"/>
     <view-param name="show-toolbar" value="false"/>
-    <domain>self.currentQty > 0 and (self.stockLocation = :cartStockLocation OR
-      self.detailsStockLocation = :cartStockLocation)</domain>
+    <domain>self.currentQty > 0 AND (self.stockLocation = :cartStockLocation OR
+      self.detailsStockLocation = :cartStockLocation)
+      AND (self.trackingNumber IS NOT NULL OR
+      (self.trackingNumber IS NULL
+      AND NOT EXISTS (SELECT line.id FROM StockLocationLine line WHERE
+      line.product.id = self.product.id AND line.trackingNumber IS NOT NULL)))
+    </domain>
     <context name="cartStockLocation" expr="eval: __this__?.cartStockLocation"/>
   </action-view>
 
