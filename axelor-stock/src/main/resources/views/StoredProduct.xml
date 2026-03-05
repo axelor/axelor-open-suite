@@ -17,7 +17,7 @@
       onSelect="action-stored-product-method-tracking-number-domain"
       onChange="action-stored-product-method-set-current-qty" readonlyIf="stockMoveLine"/>
     <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
-      readonly="true"/>
+      readonly="true" x-scale="nbDecimalQty"/>
     <field name="unit" readonly="true"/>
     <field name="storedQty" title="Stored qty / Qty to store" x-scale="nbDecimalQty"/>
     <button name="realizeStoringBtn" title="Realize storing"
@@ -44,7 +44,7 @@
         onSelect="action-stored-product-method-tracking-number-domain"
         onChange="action-stored-product-method-set-current-qty"/>
       <field name="currentQty" x-dirty="false" type="decimal" title="Current qty"
-        readonly="true"/>
+        readonly="true" x-scale="nbDecimalQty"/>
       <field name="unit" readonly="true"/>
       <field name="storedQty" x-scale="nbDecimalQty"/>
       <field name="stockMoveLine" showIf="stockMoveLine != null"/>
