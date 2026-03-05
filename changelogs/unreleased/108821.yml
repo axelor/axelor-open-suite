@@ -1,3 +1,0 @@
----
-title: "Reconciliation: fixed thresholdDistanceFromRegulation not taken into account when reconciling more than 2 move lines, and fixed RECONCILE_BY_AMOUNT proposing unbalanced sets."
-module: axelor-account

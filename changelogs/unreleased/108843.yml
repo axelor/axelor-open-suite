@@ -1,3 +1,0 @@
----
-title: "Manuf order: fixed an error occurring when finishing a manufacturing order with operation containing stock moves."
-module: axelor-production

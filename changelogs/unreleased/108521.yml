@@ -1,3 +1,0 @@
----
-title: "Operation order: fixed NPE on planned end with waiting date when prod process line is null."
-module: axelor-production

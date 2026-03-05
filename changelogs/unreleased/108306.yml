@@ -1,3 +1,0 @@
----
-title: "Sale order: fixed NPE when confirming sale order with production order having no manuf orders."
-module: axelor-production
