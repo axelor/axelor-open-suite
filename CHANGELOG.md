@@ -1,3 +1,145 @@
+## [8.3.30] (2026-03-05)
+
+### Fixes
+#### Base
+
+* Map: fixed an issue where filling in the 'PO Box' field in a customer address prevented the map from being displayed.
+* Partner: added value translations for all fields to get field name in user language in search.
+
+#### Account
+
+* Deposit slip: fixed PDF regeneration after BIRT template update.
+* Payment session: fixed payments not being generated after user confirms expired financial discount warning.
+* Invoice: fixed wrong invoice term calculation on change of partner with different fiscal position.
+* Move line query: fixed unreconcile process displaying move lines with no reconcile.
+* Payment session: fixed bill of exchange validation when session contains isolated refunds or invoice terms with prior partial payments.
+* Invoice: fixed price computation in A.T.I. invoice.
+* Account: fixed payment session validation with credit notes (non-LCR) leaving incorrect payment amounts on invoice terms.
+* Invoice: fixed note display on invoice report.
+* Reconciliation: fixed thresholdDistanceFromRegulation not taken into account when reconciling more than 2 move lines, and fixed RECONCILE_BY_AMOUNT proposing unbalanced sets.
+* Sale order: fixed third-party payer partner not set when generating an invoice from a sale order.
+* Pfp menu: fixed domain filter when origin date is missing on supplier invoices.
+
+#### Bank Payment
+
+* Bank order: fixed duplicate file upload when generating bank order file.
+* Bank reconciliation: fixed wrong starting balance when splitting reconciliation into multiple sessions.
+* Bank statement line: fixed bank statement line print wizard.
+
+#### Business Project
+
+* Invoicing business project: fixed invoicing sequences not being taken into account when generating elements to invoice.
+* Move line: fixed missing project on analytic move lines generated during invoicing business project.
+* Business project: fixed task template duration not multiplied by sale order quantity when unique task for multiple quantity is enabled.
+* Project task: added help tooltips on the percentage dashlets in the time follow-up panel.
+
+#### Contract
+
+* Contract: fixed analytic move lines forecast type incorrectly set to order forecast instead of contract forecast.
+* Contract: fixed an error that could occur when invoicing contracts in batch with high volume.
+
+#### Fleet
+
+* Vehicle: fixed inconsistency between list view and form view on vehicle contract.
+
+#### GDPR
+
+* GDPR: fixed erasure failing on OneToMany fields without mappedBy.
+
+#### Human Resource
+
+* Project task: fixed an error when searching sprints from project task due to incorrect context casting.
+* Expense: fixed distance computation in certain cases.
+* Expense: fixed the empty check on analytic move lines during expense ventilation.
+* Timesheet: fixed the order of timesheet lines generated from the expected planning.
+* Timesheet line: fixed project task not being cleared when changing the project.
+
+#### Maintenance
+
+* BOM/Prod process: fixed missing status change button for bill of material and production process.
+
+#### Marketing
+
+* Marketing: added English demo data translations.
+
+#### Production
+
+* Product: not setting purchasable to true by default when creating a new product from manufacturing menu entry.
+* Manuf order: fixed stock move generation when updating planned quantity.
+* Manuf order: fixed an issue where child manufacturing orders did not appear in the children MO dashlet when multi-level planning generated more than one level of depth.
+* Prod process line: fixed an error when adding consumed products on an unsaved prod process line.
+* Operation order: fixed NPE on planned end with waiting date when prod process line is null.
+* Manuf order: fixed an error occurring when clearing the cancel reason field in the cancellation popup.
+* Prod process: fixed the product display when the isEnabledForAllProducts boolean is set to true.
+* Sale order: fixed duplicated sale order line details for semi-finished BOM components in editable tree mode.
+* Manuf order: fixed creation of unusable manuf order and blocking at planned status in multi level planning.
+
+#### Project
+
+* Implemented security check on task removal from project.
+
+#### Purchase
+
+* Purchase order: fixed max purchase price computation.
+* Purchase order line: fixed an error when changing unit in certain cases.
+
+#### Quality
+
+* Quality control: fixed display of quality corrective action.
+
+#### Sale
+
+* Sale order: fixed price recomputation when editable tree is enabled.
+* Price list line: fixed decimal digits in amount and min qty.
+* Sale order: fixed wrong discount value with A.T.I configuration is enabled.
+
+#### Stock
+
+* Stock: fixed decimal points for different views.
+* Stock move: fixed the issue with reserved quantity management for partial supplier arrivals.
+* Stock move: removed control on receipt for stock move line with no quantity.
+* Stock move: fixed purchase tracking splits for manual tracking assignment.
+* Product: fixed quantity for external stock location in stock chart in product form view.
+* Stock move: fixed wrong address mapping when selecting a partner on incoming stock move.
+* Tracking number search: fixed error on select of product or tracking number.
+* Stock move: fixed stock apis' total without tax calculation.
+* Stock move line: fixed available quantity not displayed when selecting a tracking number from consumed products.
+* Stock location: fixed performance issue causing slow grid loading.
+
+#### Supply Chain
+
+* Invoice: fixed error in invoice generated from stock move.
+* Declaration of exchanges: fixed filter on stock move displayed.
+* Sale order: fixed subscription sale orders are completed while invoices are still to be generated.
+* Invoice: fixed duplicated external reference when invoicing multiple stock moves from the same order.
+* Stock reservation: requested reserved quantity is now based on expected quantity instead of real quantity.
+
+
+### Developer
+
+#### Account
+
+- Changed InvoiceTermReplaceService.replaceInvoiceTerms parameters from 
+(invoice, newInvoiceTermList, invoiceTermListToRemove) to (invoice, newInvoiceTermList, invoiceTermListToRemove, paymentSession)
+
+---
+
+Added PartnerAccountService to SaleOrderInvoiceServiceImpl and services extending it.
+
+#### Contract
+
+-- script
+UPDATE  account_analytic_move_line SET type_select = 4 WHERE contract_line IS NOT NULL AND type_select = 1;
+
+#### Production
+
+- Added SolDetailsBomUpdateService in the SaleOrderLineBomServiceImpl constructor
+
+#### Sale
+
+- Added SaleOrderLinePriceService and SaleOrderLineProductService to SubSaleOrderLineComputeServiceImpl constructor.
+- Added new method updateSubSaleOrderLineList(SaleOrderLine, SaleOrder) in SubSaleOrderLineComputeService class.
+
 ## [8.3.29] (2026-02-19)
 
 ### Fixes
@@ -2711,6 +2853,7 @@ DELETE FROM meta_action WHERE name = 'referential.conf.api.configuration';
 * App business project: removed configurations related to time management in app business project (time units and default hours per day) to use the configurations already present in app base.
 * Project financial data: added a link to the project in project financial data view.
 
+[8.3.30]: https://github.com/axelor/axelor-open-suite/compare/v8.3.29...v8.3.30
 [8.3.29]: https://github.com/axelor/axelor-open-suite/compare/v8.3.28...v8.3.29
 [8.3.28]: https://github.com/axelor/axelor-open-suite/compare/v8.3.27...v8.3.28
 [8.3.27]: https://github.com/axelor/axelor-open-suite/compare/v8.3.26...v8.3.27
