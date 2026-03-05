@@ -19,18 +19,10 @@
 package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.service.app.AppBaseService;
-import com.axelor.apps.stock.db.StockCorrection;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
-public class StockCorrectionStockRepository extends StockCorrectionRepository {
-
-  @Override
-  public StockCorrection copy(StockCorrection entity, boolean deep) {
-    StockCorrection copy = super.copy(entity, deep);
-    copy.setStatusSelect(STATUS_DRAFT);
-    return copy;
-  }
+public class MassStockMoveNeedManagementRepository extends MassStockMoveNeedRepository {
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
