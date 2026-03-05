@@ -15,26 +15,28 @@
       grid-view="product-grid"/>
     <field name="product.name" title="Product name" form-view="product-form"
       grid-view="product-grid"/>
-    <field name="minQty" aggregate="min" x-scale="2"/>
-    <field name="idealQty" aggregate="min" x-scale="2"/>
-    <field name="maxQty" aggregate="min" x-scale="2"/>
-    <field name="reOrderQty" aggregate="sum" x-scale="2"/>
+    <field name="minQty" aggregate="min" x-scale="$nbDecimalDigitForQty"/>
+    <field name="idealQty" aggregate="min" x-scale="$nbDecimalDigitForQty"/>
+    <field name="maxQty" aggregate="min" x-scale="$nbDecimalDigitForQty"/>
+    <field name="reOrderQty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="comments"/>
     <field name="useCaseSelect"/>
     <field name="typeSelect"/>
     <field name="orderAlertSelect"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <grid name="stock-rule-product-grid" title="Stock rules"
     model="com.axelor.apps.stock.db.StockRules" orderBy="stockLocation.name,useCaseSelect">
     <field name="stockLocation" form-view="stock-location-form"
       grid-view="stock-location-grid"/>
-    <field name="minQty" aggregate="min" x-scale="2"/>
-    <field name="idealQty" aggregate="min" x-scale="2"/>
-    <field name="maxQty" x-scale="2"/>
-    <field name="reOrderQty" aggregate="sum" x-scale="2"/>
+    <field name="minQty" aggregate="min" x-scale="$nbDecimalDigitForQty"/>
+    <field name="idealQty" aggregate="min" x-scale="$nbDecimalDigitForQty"/>
+    <field name="maxQty" x-scale="$nbDecimalDigitForQty"/>
+    <field name="reOrderQty" aggregate="sum" x-scale="$nbDecimalDigitForQty"/>
     <field name="useCaseSelect"/>
     <field name="orderAlertSelect"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <form name="stock-rules-form" title="Stock rules" model="com.axelor.apps.stock.db.StockRules"
