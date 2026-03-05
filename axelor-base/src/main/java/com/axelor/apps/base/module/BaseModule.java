@@ -59,6 +59,8 @@ import com.axelor.apps.base.db.repo.MapViewRepository;
 import com.axelor.apps.base.db.repo.PartnerAddressRepository;
 import com.axelor.apps.base.db.repo.PartnerBaseRepository;
 import com.axelor.apps.base.db.repo.PartnerRepository;
+import com.axelor.apps.base.db.repo.PriceListLineManagementRepository;
+import com.axelor.apps.base.db.repo.PriceListLineRepository;
 import com.axelor.apps.base.db.repo.ProductBaseRepository;
 import com.axelor.apps.base.db.repo.ProductCompanyBaseRepository;
 import com.axelor.apps.base.db.repo.ProductCompanyRepository;
@@ -636,5 +638,6 @@ public class BaseModule extends AxelorModule {
     mb.addBinding().to(JpqlExpressionEvaluator.class);
     bind(IndicatorMetaService.class).to(IndicatorMetaServiceImpl.class);
     bind(SequenceDateCheckService.class).to(SequenceDateCheckServiceImpl.class);
+    bind(PriceListLineRepository.class).to(PriceListLineManagementRepository.class);
   }
 }
