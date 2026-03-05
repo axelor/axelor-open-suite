@@ -1,3 +1,0 @@
----
-title: "Map: fixed an issue where filling in the 'PO Box' field in a customer address prevented the map from being displayed."
-module: axelor-base

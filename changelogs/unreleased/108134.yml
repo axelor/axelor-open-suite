@@ -1,3 +1,0 @@
----
-title: "Purchase order: fixed an error when cancelling planned stock moves while editing an order."
-module: axelor-supplychain

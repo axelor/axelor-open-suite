@@ -1,3 +1,0 @@
----
-title: "Purchase order line: fixed an error when changing unit in certain cases."
-module: axelor-purchase
