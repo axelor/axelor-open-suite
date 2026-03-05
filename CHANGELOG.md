@@ -1,3 +1,87 @@
+## [7.2.62] (2026-03-05)
+
+### Fixes
+#### Account
+
+* Payment session: fixed payments not being generated after user confirms expired financial discount warning.
+* Invoice: fixed wrong invoice term calculation on change of partner with different fiscal position.
+* Move line query: fixed unreconcile process displaying move lines with no reconcile.
+* Invoice: fixed price computation in A.T.I. invoice.
+* Invoice: fixed note display on invoice report.
+* Reconciliation: fixed thresholdDistanceFromRegulation not taken into account when reconciling more than 2 move lines, and fixed RECONCILE_BY_AMOUNT proposing unbalanced sets.
+* Pfp menu: fixed domain filter when origin date is missing on supplier invoices.
+
+#### Bank Payment
+
+* Bank order: fixed duplicate file upload when generating bank order file.
+* Bank statement line: fixed bank statement line print wizard.
+
+#### Business Project
+
+* Invoicing business project: fixed invoicing sequences not being taken into account when generating elements to invoice.
+* Business project: fixed task template duration not multiplied by sale order quantity when unique task for multiple quantity is enabled.
+
+#### Contract
+
+* Contract: fixed analytic move lines forecast type incorrectly set to order forecast instead of contract forecast.
+
+#### Fleet
+
+* Vehicle: fixed inconsistency between list view and form view on vehicle contract.
+
+#### GDPR
+
+* GDPR: fixed erasure failing on OneToMany fields without mappedBy.
+
+#### Human Resource
+
+* Expense: fixed distance computation in certain cases.
+* Expense: fixed the empty check on analytic move lines during expense ventilation.
+* Timesheet line: fixed project task not being cleared when changing the project.
+
+#### Maintenance
+
+* BOM/Prod process: fixed missing status change button for bill of material and production process.
+
+#### Production
+
+* Product: not setting purchasable to true by default when creating a new product from manufacturing menu entry.
+* Manuf order: fixed an error occurring when clearing the cancel reason field in the cancellation popup.
+* Manuf order: fixed creation of unusable manuf order and blocking at planned status in multi level planning.
+
+#### Project
+
+* Implemented security check on task removal from project.
+
+#### Purchase
+
+* Purchase order: fixed max purchase price computation.
+
+#### Quality
+
+* Quality control: fixed display of quality corrective action.
+
+#### Stock
+
+* Stock move: fixed the issue with reserved quantity management for partial supplier arrivals.
+* Stock move: removed control on receipt for stock move line with no quantity.
+* Stock move: fixed wrong address mapping when selecting a partner on incoming stock move.
+* Stock move: fixed stock apis' total without tax calculation.
+* Stock move line: fixed available quantity not displayed when selecting a tracking number from consumed products.
+
+#### Supply Chain
+
+* Sale order: fixed subscription sale orders are completed while invoices are still to be generated.
+* Stock reservation: requested reserved quantity is now based on expected quantity instead of real quantity.
+
+
+### Developer
+
+#### Contract
+
+-- script
+UPDATE  account_analytic_move_line SET type_select = 4 WHERE contract_line IS NOT NULL AND type_select = 1;
+
 ## [7.2.61] (2026-02-19)
 
 ### Fixes
@@ -2849,6 +2933,7 @@ New lunch voucher format "Both". Employee wil be able to choose the percentage o
 * Project: Using company currency symbols on reporting
 * Business Project: improved task management and reporting, added a new forecast section.
 
+[7.2.62]: https://github.com/axelor/axelor-open-suite/compare/v7.2.61...v7.2.62
 [7.2.61]: https://github.com/axelor/axelor-open-suite/compare/v7.2.60...v7.2.61
 [7.2.60]: https://github.com/axelor/axelor-open-suite/compare/v7.2.59...v7.2.60
 [7.2.59]: https://github.com/axelor/axelor-open-suite/compare/v7.2.58...v7.2.59

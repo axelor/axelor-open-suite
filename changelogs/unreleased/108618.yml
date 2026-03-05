@@ -1,3 +1,0 @@
----
-title: "Manuf order: fixed an error occurring when clearing the cancel reason field in the cancellation popup."
-module: axelor-production
