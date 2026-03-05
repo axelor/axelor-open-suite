@@ -8,30 +8,38 @@
   <entity name="SupplyChainConfig">
 
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      unique="true"/>
+      unique="true" help="Company for which the configurations are set."/>
 
     <boolean name="hasOutSmForStorableProduct" title="Generate out. moves for products"
-      default="true"/>
-    <boolean name="hasOutSmForNonStorableProduct" title="Generate out. moves for services"/>
-    <boolean name="hasInSmForStorableProduct" title="Generate inc. moves for products"/>
-    <boolean name="hasInSmForNonStorableProduct" title="Generate inc. moves for services"/>
+      default="true"
+      help="When this configuration is enabled, it will be possible to generate delivery notes via the stock module for storable products."/>
+    <boolean name="hasOutSmForNonStorableProduct" title="Generate out. moves for services"
+      help="When this configuration is enabled, it will be possible to generate delivery notes via the stock module for service-type products. Services will not be managed in stock but it will be possible to generate delivery notes for these services."/>
+    <boolean name="hasInSmForStorableProduct" title="Generate inc. moves for products"
+      help="When this configuration is enabled, it will be possible to generate receipt notes via the stock module for storable products."/>
+    <boolean name="hasInSmForNonStorableProduct" title="Generate inc. moves for services"
+      help="When this configuration is enabled, it will be possible to generate receipt notes via the stock module for service-type products. Services will not be managed in stock but it will be possible to generate receipt notes for these services."/>
 
-    <boolean name="autoAllocateOnReceipt" title="Auto allocate stock on receipt"/>
+    <boolean name="autoAllocateOnReceipt" title="Auto allocate stock on receipt"
+      help="When this configuration is enabled, this allows to complete the allocation quantity of a stock move in order to reach the reservation quantity upon product receipt. If there are multiple reservations on this product, the ERP will allocate in priority the reservation whose sale order date is the oldest."/>
     <boolean name="autoAllocateOnAllocation"
       title="Auto allocate stock on other stock moves"
-      help="If true, after allocating quantity for a given stock move we allocate the remaining quantity in others stock moves."/>
+      help="If checked, after the allocation of a stock move, the remaining quantity will be allocated on other stock moves."/>
     <boolean name="autoRequestReservedQty" title="Auto request reserved qty"
-      help="If true, the requested quantity for reservation will be equal to the quantity of the given sale order line."/>
+      help="If checked, the requested quantity will be equal to the quantity in the order lines."/>
     <boolean name="autoAllocateOnAvailabilityRequest"
-      title="Auto allocate during an availability request"/>
+      title="Auto allocate during an availability request"
+      help="If you have enabled the stock configuration Separate shipment operations, it is then possible to request automatic allocation during an availability request. If so, a warning message will be displayed asking if you want to allocate the goods. If you refuse, only a reservation request will be made. This configuration is incompatible with the Auto request reserved qty option."/>
 
     <integer name="saleOrderReservationDateSelect"
       selection="supplychain.sale.order.reservation.date.field"
-      title="Sale order date used for stock reservation" default="0"/>
+      title="Sale order date used for stock reservation" default="0"
+      help="You can define here which order date to take into account to prioritize reservation requests among confirmation date and estimated shipping date."/>
 
     <integer name="defaultEstimatedDate"
       title="Default estimated date in stock move from sale order"
-      selection="supplychain.estimated.date.select" default="1"/>
+      selection="supplychain.estimated.date.select" default="1"
+      help="This configuration defines how the estimated date of the delivery note should be filled when it is not specified in the order. You can define here whether the estimated date of the delivery note will be automatically filled with the current date, or if it will be filled taking into account the current date plus a delay in days (e.g. current date + 10 days), or if it is left empty, which will require manual entry."/>
 
     <decimal name="numberOfDays" title="Number of days" min="0"/>
 
@@ -42,16 +50,20 @@
     <decimal name="numberOfDaysForPurchaseOrder" title="Number of days" min="0"/>
 
     <boolean name="activateIncStockMovePartialInvoicing"
-      title="Activate partial invoicing for incoming moves" default="true"/>
+      title="Activate partial invoicing for incoming moves" default="true"
+      help="This configuration enables partial invoicing for receipt notes, offering the possibility to either generate an invoice for the entire stock move, or to generate a partial invoice by choosing the lines to invoice."/>
     <boolean name="activateOutStockMovePartialInvoicing"
-      title="Activate partial invoicing for outgoing moves" default="false"/>
+      title="Activate partial invoicing for outgoing moves" default="false"
+      help="This configuration enables partial invoicing for delivery notes, offering the possibility to either generate an invoice for the entire stock move, or to generate a partial invoice by choosing the lines to invoice."/>
 
     <many-to-one name="declarationOfExchGoodsPrintTemplate"
       title="Declaration of exchanges of goods template"
-      ref="com.axelor.apps.base.db.PrintingTemplate"/>
+      ref="com.axelor.apps.base.db.PrintingTemplate"
+      help="You can select here the BIRT template for the declaration of exchange of goods."/>
     <many-to-one name="declarationOfExchServicesPrintTemplate"
       title="Declaration of exchanges of services template"
-      ref="com.axelor.apps.base.db.PrintingTemplate"/>
+      ref="com.axelor.apps.base.db.PrintingTemplate"
+      help="You can select here the BIRT template for the declaration of exchange of services."/>
 
     <extra-code><![CDATA[
 

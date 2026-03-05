@@ -12,9 +12,11 @@
 
     <!-- ACCOUNT -->
     <many-to-one name="forecastedInvCustAccount"
-      ref="com.axelor.apps.account.db.Account" title="Forecasted invoice customer account"/>
+      ref="com.axelor.apps.account.db.Account" title="Forecasted invoice customer account"
+      help="Select the customer account for accrued revenue (usually 4181) for end-of-year adjustments."/>
     <many-to-one name="forecastedInvSuppAccount"
-      ref="com.axelor.apps.account.db.Account" title="Forecasted invoice supplier account"/>
+      ref="com.axelor.apps.account.db.Account" title="Forecasted invoice supplier account"
+      help="Select the supplier account for accrued expenses (usually 4081) for end-of-year adjustments."/>
 
     <track>
       <field name="company" on="UPDATE"/>

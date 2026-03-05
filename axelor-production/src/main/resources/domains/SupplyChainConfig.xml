@@ -9,7 +9,7 @@
 
     <boolean name="autoRequestReservedQtyOnManufOrder"
       title="Auto request qty for manuf orders"
-      help="If true, the components will be automatically requested for reservation on planning manufacturing orders."/>
+      help="If checked, reservation will be automatically made for components when planning manufacturing orders."/>
 
     <track>
       <field name="autoRequestReservedQtyOnManufOrder" on="UPDATE"/>

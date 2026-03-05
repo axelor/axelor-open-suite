@@ -9,15 +9,22 @@
 
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
-    <boolean name="isUnchangableContract" title="Unchangable contract"/>
-    <boolean name="isAmendmentManagement" title="Amendment management"/>
-    <boolean name="isRenewalManagement" title="Renewal management"/>
+    <boolean name="isUnchangableContract" title="Unchangable contract"
+      help="If this configuration is enabled, you can no longer modify the invoicing content and the contract configurations once it is active without having to create a new version."/>
+    <boolean name="isAmendmentManagement" title="Amendment management"
+      help="If this configuration is enabled, it is possible to create new contract versions, called amendments. If the Unchangable contract configuration is enabled, you must create a new version of a contract when you want to modify it."/>
+    <boolean name="isRenewalManagement" title="Renewal management"
+      help="If this configuration is enabled, it is possible to manage contract renewals. Without this, a contract ends at its end date."/>
 
-    <boolean name="isInvoicingManagement" title="Invoicing management"/>
-    <boolean name="isConsumptionManagement" title="Consumption management"/>
-    <boolean name="isAdditionalBenefitManagement" title="Additional Benefit Management"/>
+    <boolean name="isInvoicingManagement" title="Invoicing management"
+      help="This configuration enables contract invoicing, allowing you to generate invoices from contracts, either manually or automatically."/>
+    <boolean name="isConsumptionManagement" title="Consumption management"
+      help="This configuration enables consumption management on contracts, meaning you can add products or services during the contract that are used in addition to the standard invoicing content, and that you want to invoice at the next invoicing date."/>
+    <boolean name="isAdditionalBenefitManagement" title="Additional Benefit Management"
+      help="This configuration enables additional benefit management on contracts. These are benefits that can be added to the contract and will be invoiced on a one-time basis and not on a recurring basis."/>
 
-    <boolean name="isConfigContract" title="Configurable contract"/>
+    <boolean name="isConfigContract" title="Configurable contract"
+      help="This configuration is essential, it allows configuring contracts."/>
 
     <track>
       <field name="isUnchangableContract" on="UPDATE"/>
