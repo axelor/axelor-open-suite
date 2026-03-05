@@ -365,6 +365,8 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
         counterPartMoveLine.getInvoiceTermList(),
         List.of(invoiceTerm),
         paymentSession);
+
+    counterPartMoveLine.getInvoiceTermList().forEach(it -> it.setPaymentAmount(BigDecimal.ZERO));
   }
 
   protected String getMoveDescription(
