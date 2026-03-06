@@ -30,6 +30,7 @@ import com.axelor.apps.project.db.repo.ProjectStatusRepository;
 import com.axelor.apps.project.service.app.AppProjectService;
 import com.axelor.apps.purchase.db.repo.PurchaseOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.i18n.I18n;
 import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.inject.Inject;
@@ -47,6 +48,7 @@ public class BusinessProjectClosingControlServiceImpl
   protected ContractRepository contractRepository;
   protected TimesheetLineRepository timesheetLineRepository;
   protected ExpenseLineRepository expenseLineRepository;
+  protected AppSupplychainService appSupplychainService;
 
   @Inject
   public BusinessProjectClosingControlServiceImpl(
@@ -58,7 +60,8 @@ public class BusinessProjectClosingControlServiceImpl
       PurchaseOrderLineRepository purchaseOrderLineRepository,
       ContractRepository contractRepository,
       TimesheetLineRepository timesheetLineRepository,
-      ExpenseLineRepository expenseLineRepository) {
+      ExpenseLineRepository expenseLineRepository,
+      AppSupplychainService appSupplychainService) {
     this.appProjectService = appProjectService;
     this.appBusinessProjectService = appBusinessProjectService;
     this.projectRepository = projectRepository;
@@ -68,6 +71,7 @@ public class BusinessProjectClosingControlServiceImpl
     this.contractRepository = contractRepository;
     this.timesheetLineRepository = timesheetLineRepository;
     this.expenseLineRepository = expenseLineRepository;
+    this.appSupplychainService = appSupplychainService;
   }
 
   @Override
@@ -97,7 +101,8 @@ public class BusinessProjectClosingControlServiceImpl
                   BusinessProjectExceptionMessage
                       .PROJECT_CLOSING_PURCHASE_ORDER_LINE_NOT_INVOICED));
     }
-    if (!arePurchaseOrderLinesReceived(project)) {
+    if (appSupplychainService.getAppSupplychain().getSupplStockMoveMgtOnPO()
+        && !arePurchaseOrderLinesReceived(project)) {
       errorMessage
           .append("<br/>")
           .append(
