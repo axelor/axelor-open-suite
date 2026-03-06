@@ -99,10 +99,6 @@ public class ProjectPlanningTimeComputeServiceImpl implements ProjectPlanningTim
                 .map(PlannedTimeValue::getPlannedTime)
                 .orElse(BigDecimal.ZERO));
       }
-    } else {
-      projectPlanningTime.setDisplayPlannedTimeRestricted(
-          plannedTimeValueService.createPlannedTimeValue(
-              projectPlanningTime.getDisplayPlannedTime()));
     }
 
     projectPlanningTime.setEndDateTime(computeEndDateTime(projectPlanningTime, project));
