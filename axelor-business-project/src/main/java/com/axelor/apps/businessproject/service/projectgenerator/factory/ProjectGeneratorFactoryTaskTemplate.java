@@ -114,6 +114,9 @@ public class ProjectGeneratorFactoryTaskTemplate implements ProjectGeneratorFact
     List<SaleOrderLine> saleOrderLineList = filterSaleOrderLinesForTasks(saleOrder);
     projectRepository.save(project);
 
+    projectBusinessService.createProjectNameTranslations(
+        saleOrder.getFullName(), project.getCode() + " - " + saleOrder.getFullName());
+
     if (saleOrderLineList.isEmpty()) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_NO_VALUE,
