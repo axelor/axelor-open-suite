@@ -33,24 +33,22 @@
       if="statusSelect == 3 &amp;&amp; amountRemaining &gt; 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &gt;= 0 &amp;&amp; $moment(dueDate).diff(todayDate,'days') &lt;= 5"/>
     <hilite color="success" if="statusSelect == 3 &amp;&amp; amountRemaining == 0"/>
     <field name="invoiceId" width="120"/>
+    <field name="internalReference" width="120"/>
+    <field name="externalReference" width="120"/>
     <field name="company" form-view="company-form" grid-view="company-grid" width="200"
       if="__config__.app.getApp('base')?.getEnableMultiCompany()"/>
     <field name="tradingName" form-view="trading-name-form" grid-view="trading-name-grid"
       if="__config__.app.getApp('base')?.enableTradingNamesManagement" width="200"/>
     <field name="partner" form-view="partner-form" grid-view="partner-grid" width="200"
       x-image-field="picture"/>
-    <field name="operationSubTypeSelect" width="160"/>
     <field name="invoiceDate" width="120"/>
     <field name="dueDate" width="120"/>
     <field name="exTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
     <field name="inTaxTotal" aggregate="sum" width="120" x-scale="currency.numberOfDecimals"/>
     <field name="amountRemaining" aggregate="sum" width="120"
       x-scale="currency.numberOfDecimals"/>
-    <field name="currency" width="60"/>
     <field name="currency.numberOfDecimals" hidden="true"/>
     <field name="statusSelect" width="100" widget="single-select"/>
-    <field name="debtRecoveryBlockingOk"/>
-    <field name="paymentProgress" widget="Progress"/>
     <field name="paymentDelay"/>
     <button name="showInvoiceBtn" title="Print" icon="fa-print"
       onClick="action-invoice-method-show-invoice"/>
@@ -465,8 +463,7 @@
           </viewer>
         </field>
       </panel>
-      <field name="invoiceId" colSpan="12" css="label-bold bold large" showTitle="false"
-        showIf="id">
+      <field name="invoiceId" css="label-bold bold large" showTitle="false" showIf="id">
         <viewer>
                     <![CDATA[
                         <>
@@ -492,19 +489,18 @@
           readonlyIf="statusSelect != 1 || (invoiceLineList &amp;&amp; invoiceLineList.length != 0)"
           onChange="action-invoice-group-currency-onchange" form-view="currency-form"
           grid-view="currency-grid" colSpan="4"/>
-        <field name="priceList" readonlyIf="statusSelect != 1 || invoiceLineList.length > 0"
-          onChange="action-invoice-record-hide-discount"
+        <field name="priceList" onChange="action-invoice-record-hide-discount"
           onSelect="action-invoice-method-domain-priceList" form-view="price-list-form"
-          grid-view="price-list-grid" colSpan="4"/>
+          grid-view="price-list-grid" colSpan="4" if="__user__.group?.code == 'admins'"/>
         <spacer colSpan="4"/>
         <field name="companyTaxNumber" if-module="axelor-supplychain"
           if="__config__.app.getApp('base')?.getEnableTaxNumbers()" colSpan="4"
           onSelect="action-invoice-method-domain-company-tax-number"
           onChange="action-invoice-method-on-change-company-tax-number-set-fiscal-position"/>
-        <field name="fiscalPosition" readonlyIf="statusSelect > 1" colSpan="4"
+        <field name="fiscalPosition" colSpan="4"
           onChange="action-invoice-method-fiscal-position-on-change,action-invoice-group-invoice-line-list-on-change"
           onSelect="action-invoice-method-domain-fiscal-position" form-view="fiscal-position-form"
-          grid-view="fiscal-position-grid"/>
+          grid-view="fiscal-position-grid" if="__user__.group?.code == 'admins'"/>
       </panel>
       <panel name="invoiceMainThirdPanel" colSpan="12">
         <field name="companyBankDetails" colSpan="4"
@@ -958,7 +954,7 @@
           onClick="save,action-invoice-view-refusal-to-pay"
           if="__config__.app.getApp('account')?.getActivatePassedForPayment()" icon="person-x-fill"
           readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
-        <button name="cancelBtn" css="btn-danger" hidden="true" title="Cancel"
+        <button name="cancelBtn" css="btn-danger" hidden="true" title="Storno"
           onClick="save,action-invoice-method-cancel,save"
           prompt="Are you sure you want to cancel the invoice ?" icon="x"
           readonlyIf="!invoiceLineList || invoiceLineList.length == 0"/>
@@ -1151,8 +1147,8 @@
       </panel>
       <panel name="referenceDocumentsPanel" title="Reference documents" itemSpan="6"
         canCollapse="true" collapseIf="true">
-        <field name="internalReference" widget="string"/>
-        <field name="externalReference" widget="string"/>
+        <field name="internalReference" title="Order Number" widget="string"/>
+        <field name="externalReference" title="Datev" widget="string"/>
         <field name="latePaymentInterestSourceInvoice" grid-view="invoice-grid"
           form-view="invoice-form" showIf="operationSubTypeSelect == 9"
           if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>
@@ -1517,8 +1513,9 @@
         form-view="partner-contact-form" grid-view="partner-contact-grid"/>
       <field name="$priceList" title="Price List" type="many-to-one"
         target="com.axelor.apps.base.db.PriceList" colOffset="3"
-        domain="self.typeSelect = 1 and self.isActive = true" showIf="priceListToCheck"
-        canSelect="true" form-view="price-list-form" grid-view="price-list-grid"/>
+        domain="self.typeSelect = 1 and self.isActive = true"
+        showIf="priceListToCheck &amp;&amp; __user__.group?.code == 'admins'" canSelect="true"
+        form-view="price-list-form" grid-view="price-list-grid"/>
       <field name="$paymentMode" title="Payment Mode" type="many-to-one" colOffset="3"
         target="com.axelor.apps.account.db.PaymentMode" widget="SuggestBox"
         showIf="paymentModeToCheck" form-view="payment-mode-form" grid-view="payment-mode-grid"/>

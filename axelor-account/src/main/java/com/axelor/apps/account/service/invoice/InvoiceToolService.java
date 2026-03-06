@@ -179,14 +179,14 @@ public class InvoiceToolService {
         return Beans.get(AccountConfigService.class).getAccountConfig(company).getOutPaymentMode();
       }
     } else {
+      if (company != null) {
+        return Beans.get(AccountConfigService.class).getAccountConfig(company).getInPaymentMode();
+      }
       if (partner != null) {
         PaymentMode paymentMode = partner.getInPaymentMode();
         if (paymentMode != null) {
           return paymentMode;
         }
-      }
-      if (company != null) {
-        return Beans.get(AccountConfigService.class).getAccountConfig(company).getInPaymentMode();
       }
     }
     return null;

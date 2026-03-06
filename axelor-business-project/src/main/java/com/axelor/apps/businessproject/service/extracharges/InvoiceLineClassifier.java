@@ -25,6 +25,17 @@ public class InvoiceLineClassifier {
     return result;
   }
 
+  public List<InvoiceLine> getChargedFeeLines(List<InvoiceLine> lines) {
+    List<InvoiceLine> result = new ArrayList<>();
+    for (InvoiceLine line : lines) {
+      if (ExtraChargeConstants.EXPENSE_CHARGED_FEE_INVOICE_LINE_SOURCE_TYPE.equals(
+          line.getSourceType())) {
+        result.add(line);
+      }
+    }
+    return result;
+  }
+
   public List<InvoiceLine> getExtraChargeLines(List<InvoiceLine> lines) {
     List<InvoiceLine> result = new ArrayList<>();
     for (InvoiceLine line : lines) {

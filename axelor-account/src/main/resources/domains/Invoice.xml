@@ -13,7 +13,7 @@
       ref="com.axelor.apps.account.db.PaymentSchedule"/> <!-- Field not displayed, used to shift to irrecoverable a payment schedule -->
 
     <!-- HEADER -->
-    <string name="invoiceId" namecolumn="true" title="Invoice N°" readonly="true"/>
+    <string name="invoiceId" namecolumn="true" title="Invoice N°"/>
     <integer name="operationTypeSelect" title="Document Type" required="true"
       selection="iinvoice.operation.type.select"/>
     <integer name="operationSubTypeSelect" title="Document Subtype" required="true"

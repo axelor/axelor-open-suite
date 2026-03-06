@@ -352,6 +352,10 @@
     <many-to-one name="saleInvoicesDetailsPrintTemplate"
       title="Sale invoices details template" ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
+    <!-- MGM-13 Added to hold default Invoice Values -->
+    <many-to-one name="defaultFiscalPosition" title="Default fiscal position"
+      ref="com.axelor.apps.account.db.FiscalPosition"/>
+
     <finder-method name="findByCompany" using="company"/>
 
     <extra-code><![CDATA[

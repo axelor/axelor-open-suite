@@ -16,7 +16,7 @@ public class BusinessProjectManagementRepository extends ProjectHRRepository {
     boolean isNew = project.getVersion() == null || project.getVersion() == 0;
     Project savedProject = super.save(project);
 
-    if (isNew && project.getProjectTypeSelect() == ProjectRepository.STANDARD_PROJECT_TYPE) {
+    if (isNew && project.getProjectTypeSelect() != ProjectRepository.FEES_PROJECT_TYPE) {
       log.debug("Creating Task Report for project: " + project.getName());
       Beans.get(TaskReportService.class).createTaskReport(project);
     }

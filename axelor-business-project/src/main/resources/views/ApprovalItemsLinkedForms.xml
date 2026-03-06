@@ -18,14 +18,10 @@
         <panel name="headPanel" colSpan="12" hidden="true">
           <field name="isValidated" canView="false"/>
         </panel>
-        <field name="project" canView="true" canEdit="false"
-          onChange="action-timesheet-line-group-project-onchange"
-          onSelect="action-timesheet-line-attrs-domain-project" form-view="project-form"
-          grid-view="project-grid"/>
-        <field name="projectTask" canView="true" canEdit="false"
-          onChange="action-timesheet-line-group-project-task-on-change"
-          onSelect="action-timesheet-line-attrs-domain-project-task" form-view="project-task-form"
-          grid-view="project-task-grid"/>
+        <field name="project" canView="true" readonly="true" form-view="business-project-form"
+          grid-view="business-project-grid"/>
+        <field name="projectTask" canView="true" readonly="true"
+          form-view="business-project-task-form" grid-view="business-project-task-grid"/>
         <field if="__config__.app.getApp('base')?.enableSiteManagementForProject" name="site"
           onSelect="action-timesheet-line-attrs-set-site-domain" form-view="site-form"
           grid-view="site-grid"/>

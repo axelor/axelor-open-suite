@@ -37,6 +37,7 @@
     <boolean name="isSunday" title="Sunday" readonly="true"/>
     <boolean name="isPublicHoliday" title="Holiday" readonly="true"/>
     <boolean name="isEmergencyService" title="Emergency Service" readonly="true"/>
+    <boolean name="dirtAllowance" title="Dirt Allowance" readonly="true"/>
     <boolean name="isNightShift" title="Night Shift"/>
 
     <string name="extraChargeBreakdown" title="Extra Charge Time Breakdown" nullable="true"

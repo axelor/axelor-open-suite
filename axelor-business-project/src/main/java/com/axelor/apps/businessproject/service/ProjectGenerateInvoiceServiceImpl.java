@@ -64,13 +64,18 @@ import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBusinessProject;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoiceService {
 
+  private static final Logger log =
+      LoggerFactory.getLogger(ProjectGenerateInvoiceServiceImpl.class);
   protected InvoicingProjectService invoicingProjectService;
   protected PartnerService partnerService;
   protected InvoicingProjectRepository invoicingProjectRepo;
@@ -171,11 +176,22 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       throws AxelorException {
     Invoice invoice = invoiceGenerator.generate();
     AccountConfig accountConfig = accountConfigService.getAccountConfig(company);
+    Project project = invoicingProject.getProject();
+
     invoice.setDisplayTimesheetOnPrinting(accountConfig.getDisplayTimesheetOnPrinting());
     invoice.setDisplayExpenseOnPrinting(accountConfig.getDisplayExpenseOnPrinting());
     AppBusinessProject appBusinessProject = appBusinessProjectService.getAppBusinessProject();
     invoice.setIsExpenseLineOnInvoiceGrouped(appBusinessProject.getIsExpenseLineOnInvoiceGrouped());
     invoice.setGroupingPeriodSelect(appBusinessProject.getGroupingPeriodSelect());
+
+    if (accountConfig.getDefaultFiscalPosition() != null) {
+      invoice.setFiscalPosition(accountConfig.getDefaultFiscalPosition());
+    }
+
+    if (project != null && project.getCode() != null) {
+      invoice.setInternalReference(project.getCode());
+    }
+    invoice.setInvoiceDate(LocalDate.now());
 
     Partner companyPartner = company.getPartner();
     if (companyPartner != null && companyPartner.getTaxNbr() != null) {

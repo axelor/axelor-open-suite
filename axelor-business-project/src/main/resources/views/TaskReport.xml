@@ -34,6 +34,7 @@
     <field name="endTime" title="End Time"/>
     <field name="workHours" title="Work Hours (hours)"/>
     <field name="breakTimeHours" title="Break Time (hours)" hidden="true"/>
+    <field name="dirtAllowance" widget="checkbox"/>
   </grid>
 
   <!-- Form View -->
@@ -78,7 +79,7 @@
             <field name="toolsUsage" colSpan="6" widget="checkbox"/>
           </panel>
           <panel title="Additional Services" colSpan="6" showFrame="true">
-            <field name="dirtAllowance" colSpan="12" widget="checkbox"/>
+            <field name="dirtAllowance" colSpan="12" widget="checkbox" readonly="true"/>
           </panel>
           <panel title="Activity Details" colSpan="12" showTitle="false">
             <field name="material" colSpan="12" widget="textarea"/>
@@ -132,8 +133,9 @@
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <panel colSpan="12" canCollapse="true" collapseIf="false">
       <field name="task" title="Task" widget="Select"
-        onChange="action-task-member-report-on-change-task" required="true"/>
-      <field name="employee" title="Employee" readonly="true"/>
+        onChange="action-task-member-report-on-change-task" required="true" colSpan="4"/>
+      <field name="employee" title="Employee" readonly="true" colSpan="4"/>
+      <field name="dirtAllowance" widget="checkbox" colSpan="4"/>
       <field name="startTime"
         onChange="action-task-report-on-change-time, action-task-member-report-validate-start-time-after-end-time, action-validate-task-member-report-no-time-overlap"/>
       <field name="breakTimeMinutes" title="Break Time (minutes)"
@@ -306,6 +308,12 @@
       expr="eval: (taskMemberReports != null) ? taskMemberReports.stream().filter(r -> r != null &amp;&amp; r.workHours != null).map(r -> r.workHours).reduce(java.math.BigDecimal.ZERO, java.math.BigDecimal::add) : 0"/>
   </action-record>
 
+  <action-record name="mgm-action-sync-dirt-allowance-status"
+    model="com.axelor.apps.businessproject.db.TaskReport">
+    <field name="dirtAllowance"
+      expr="eval: (taskMemberReports != null) ? taskMemberReports.stream().anyMatch(r -> r != null &amp;&amp; Boolean.TRUE.equals(r.dirtAllowance)) : false"/>
+  </action-record>
+
   <action-record name="action-task-member-report-sync-minutes-to-hours"
     model="com.axelor.apps.businessproject.db.TaskMemberReport">
     <field name="breakTimeHours"
@@ -320,6 +328,7 @@
 
   <action-group name="action-task-report-group-on-save">
     <action name="mgm-action-update-total-work-hours"/>
+    <action name="mgm-action-sync-dirt-allowance-status"/>
     <action name="action-task-report-validate"/>
     <action name="action-task-report-set-flag"/>
     <action name="action-task-report-method-updated-reported-task-count"/>
@@ -344,6 +353,7 @@
   <action-group name="action-task-member-report-group-onChange">
     <action name="save"/>
     <action name="mgm-action-update-total-work-hours"/>
+    <action name="mgm-action-sync-dirt-allowance-status"/>
     <action name="action-task-report-method-updated-reported-task-count"/>
     <action name="action-task-report-set-flag"/>
   </action-group>

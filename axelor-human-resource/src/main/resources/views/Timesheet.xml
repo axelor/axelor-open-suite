@@ -445,12 +445,8 @@
 
   <action-record name="action-timesheet-record-to-date"
     model="com.axelor.apps.hr.db.Timesheet">
-    <field name="toDate"
-      expr="eval:(fromDate.dayOfWeek == java.time.DayOfWeek.SUNDAY ? fromDate.plusWeeks(1) : fromDate).with(java.time.DayOfWeek.SUNDAY)"
-      if="toDate == null &amp;&amp; fromDate != null &amp;&amp;
-          __config__.app.getApp('timesheet')?.getDefaultEndFormat() == 1"/>
-    <field name="toDate" expr="eval:fromDate.withDayOfMonth(fromDate.lengthOfMonth())"
-      if="toDate == null &amp;&amp; fromDate != null &amp;&amp;  __config__.app.getApp('timesheet')?.getDefaultEndFormat() == 2"/>
+    <field name="toDate" expr="eval: fromDate.withDayOfMonth(fromDate.lengthOfMonth())"
+      if="fromDate != null"/>
   </action-record>
 
   <action-validate name="action-timesheet-validate-timesheet-selected">

@@ -20,6 +20,7 @@
     <decimal name="totalAmountToInvoice" title="Total to invoice" min="0"/>
     <decimal name="fee" title="Fee (%)" precision="6" scale="2" default="0"/>
     <boolean name="invoiceFeeOnly" title="Invoice fee only" default="false"/>
+    <boolean name="showChargedFee" title="Show charged fee" default="false"/>
     <string name="comments" title="Comments" large="true"/>
     <boolean name="toInvoice"/>
     <boolean name="invoiced" readonly="true"/>

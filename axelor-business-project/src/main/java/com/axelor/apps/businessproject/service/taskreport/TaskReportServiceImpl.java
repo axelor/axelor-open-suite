@@ -158,6 +158,7 @@ public class TaskReportServiceImpl implements TaskReportService {
       line.setDate(date);
       line.setStartTime(report.getStartTime());
       line.setEndTime(report.getEndTime());
+      line.setDirtAllowance(report.getDirtAllowance());
       line.setToInvoice(true);
       line.setIsAutomaticallyGenerated(true);
       isNew = true;
@@ -169,7 +170,8 @@ public class TaskReportServiceImpl implements TaskReportService {
             || !Objects.equals(line.getEndTime(), report.getEndTime())
             || !Objects.equals(line.getDuration(), report.getWorkHours())
             || !Objects.equals(line.getBreakTimeMinutes(), report.getBreakTimeMinutes())
-            || !Objects.equals(line.getProduct(), task.getProduct());
+            || !Objects.equals(line.getProduct(), task.getProduct())
+            || !Objects.equals(line.getDirtAllowance(), report.getDirtAllowance());
 
     // save TSLine invalidation
     try {
@@ -191,6 +193,7 @@ public class TaskReportServiceImpl implements TaskReportService {
     line.setDate(date);
     line.setStartTime(report.getStartTime());
     line.setEndTime(report.getEndTime());
+    line.setDirtAllowance(report.getDirtAllowance());
 
     if (report.getWorkHours() != null) {
       BigDecimal duration = report.getWorkHours();

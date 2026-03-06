@@ -15,20 +15,27 @@ public final class ExtraChargeConstants {
   public static final String SUNDAY_PRODUCT_CODE = "SUNDAY";
   public static final String HOLIDAY_PRODUCT_CODE = "HOLIDAY";
   public static final String EMERGENCY_PRODUCT_CODE = "EMERGENCY";
+  public static final String DIRT_ALLOWANCE = "DIRTALLOWANCE";
   public static final String NIGHTSHIFT_PRODUCT_CODE = "NIGHTSHIFT";
 
   public static final String TIMESHEET_INVOICE_LINE_SOURCE_TYPE = "TIMESHEET";
   public static final String EXPENSE_INVOICE_LINE_SOURCE_TYPE = "EXPENSE";
+  public static final String EXPENSE_CHARGED_FEE_INVOICE_LINE_SOURCE_TYPE = "FEE";
   public static final String EXTRACHARGE_INVOICE_LINE_SOURCE_TYPE = "EXTRACHARGE";
 
   public static final List<String> INVOICE_LINE_SOURCE_TYPES =
       List.of(
           TIMESHEET_INVOICE_LINE_SOURCE_TYPE,
           EXPENSE_INVOICE_LINE_SOURCE_TYPE,
-          EXTRACHARGE_INVOICE_LINE_SOURCE_TYPE);
+          EXTRACHARGE_INVOICE_LINE_SOURCE_TYPE,
+          EXPENSE_CHARGED_FEE_INVOICE_LINE_SOURCE_TYPE);
   public static final List<String> EXTRA_CHARGE_CODES_EXCEPT_NIGHT =
       List.of(
-          SATURDAY_PRODUCT_CODE, SUNDAY_PRODUCT_CODE, HOLIDAY_PRODUCT_CODE, EMERGENCY_PRODUCT_CODE);
+          SATURDAY_PRODUCT_CODE,
+          SUNDAY_PRODUCT_CODE,
+          HOLIDAY_PRODUCT_CODE,
+          EMERGENCY_PRODUCT_CODE,
+          DIRT_ALLOWANCE);
 
   /** Get extra charge product code */
   public static String getExtraChargeProductCode(ExtrachargeType type) {

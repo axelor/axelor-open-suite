@@ -10,14 +10,14 @@
     <!-- <toolbar> <button name="logTimeBtn" icon="clock-history" onClick="action-timesheet-line-method-log-time"
       if="__config__.app.isApp('timesheet')"/> </toolbar> -->
 
-    <!-- MGM-84: highlighting priority in project grid view -->
-    <hilite if="priority.name == 'Urgent'" color="danger"/>
-
     <!-- MGM-103: Highlight INVOICED status in subtle blue -->
     <hilite if="projectStatus.name?.toLowerCase() == 'invoiced'" color="info"/>
 
     <!-- MGM-103: Highlight PAID status in subtle green -->
     <hilite if="projectStatus.name?.toLowerCase() == 'paid'" color="success"/>
+
+    <!-- MGM-84: highlighting priority in project grid view -->
+    <hilite if="priority.name == 'Urgent'" color="danger"/>
 
     <field name="fullName"/>
     <field name="company" form-view="company-form" grid-view="company-grid" canView="false"

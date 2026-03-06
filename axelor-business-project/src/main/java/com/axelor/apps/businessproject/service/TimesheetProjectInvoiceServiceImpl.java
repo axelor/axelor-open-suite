@@ -124,6 +124,12 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
         aggregator.addEmergencyAmount(totalHours.multiply(rate));
       }
 
+      // Process Dirt Allowance extra charge
+      if (Boolean.TRUE.equals(timesheetLine.getDirtAllowance())) {
+        aggregator.addDirtAllowanceSource(timesheetLine);
+        aggregator.addDirtAllowanceAmount(totalHours.multiply(rate));
+      }
+
       // Aggregate timesheet data
       aggregator.addTimesheetData(timesheetLine, product, employee, project, totalHours);
     }
@@ -250,6 +256,24 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       }
     }
 
+    // Dirt Allowance extra charge
+    BigDecimal dirtAmount = aggregator.getDirtAllowanceAmount();
+    if (dirtAmount.compareTo(BigDecimal.ZERO) > 0) {
+      InvoiceLine dirtLine =
+          createDirtAllowanceExtraChargeInvoiceLine(
+              invoice,
+              dirtAmount,
+              priority * 100 + count,
+              firstProject,
+              aggregator.getDirtAllowanceSources(),
+              dateRange);
+
+      if (dirtLine != null) {
+        invoiceLineList.add(dirtLine);
+        count++;
+      }
+    }
+
     return count;
   }
 
@@ -312,6 +336,40 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
             .map(this::calculateTotalHours)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
     log.debug("Emergency extra charge has total duration: {} hours", totalDuration);
+
+    return createExtraChargeInvoiceLineCommon(
+        invoice,
+        extraChargeProduct,
+        baseAmount,
+        totalDuration,
+        priority,
+        project,
+        sourceTimesheetLines,
+        ExtraChargeConstants.EXTRACHARGE_INVOICE_LINE_SOURCE_TYPE,
+        dateRange);
+  }
+
+  private InvoiceLine createDirtAllowanceExtraChargeInvoiceLine(
+      Invoice invoice,
+      BigDecimal baseAmount,
+      int priority,
+      Project project,
+      List<TimesheetLine> sourceTimesheetLines,
+      String dateRange)
+      throws AxelorException {
+
+    // Assuming DIRT_ALLOWANCE_PRODUCT_CODE is defined in ExtraChargeConstants
+    Product extraChargeProduct = productRepository.findByCode(ExtraChargeConstants.DIRT_ALLOWANCE);
+
+    if (extraChargeProduct == null) {
+      log.warn("No product found for {}", ExtraChargeConstants.DIRT_ALLOWANCE);
+      return null;
+    }
+
+    BigDecimal totalDuration =
+        sourceTimesheetLines.stream()
+            .map(this::calculateTotalHours)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
 
     return createExtraChargeInvoiceLineCommon(
         invoice,
@@ -511,6 +569,8 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
 
     private final List<TimesheetLine> emergencySources = new ArrayList<>();
     private BigDecimal emergencyAmount = BigDecimal.ZERO;
+    private final List<TimesheetLine> dirtAllowanceSources = new ArrayList<>();
+    private BigDecimal dirtAllowanceAmount = BigDecimal.ZERO;
 
     private TimesheetAggregator(boolean consolidate) {
       this.consolidate = consolidate;
@@ -576,6 +636,16 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       emergencyAmount = emergencyAmount.add(amount);
     }
 
+    public void addDirtAllowanceSource(TimesheetLine line) {
+      if (!dirtAllowanceSources.contains(line)) {
+        dirtAllowanceSources.add(line);
+      }
+    }
+
+    public void addDirtAllowanceAmount(BigDecimal amount) {
+      dirtAllowanceAmount = dirtAllowanceAmount.add(amount);
+    }
+
     private String generateKey(
         Product product,
         Employee employee,
@@ -614,6 +684,14 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
 
     public List<TimesheetLine> getEmergencySources() {
       return emergencySources;
+    }
+
+    public List<TimesheetLine> getDirtAllowanceSources() {
+      return dirtAllowanceSources;
+    }
+
+    public BigDecimal getDirtAllowanceAmount() {
+      return dirtAllowanceAmount;
     }
 
     public Project getFirstProject() {

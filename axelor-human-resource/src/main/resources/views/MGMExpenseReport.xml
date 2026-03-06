@@ -76,7 +76,8 @@
         ]]></viewer>
         </field>
         <panel name="generalInfoPanel" colSpan="12">
-          <field name="typeSelect" readonlyIf="_isExpenseDeclaration || statusSelect > 1"/>
+          <!-- <field name="typeSelect" readonlyIf="_isExpenseDeclaration || statusSelect > 1"/> -->
+          <field name="typeSelect" readonly="true"/>
           <field name="categorySelect" onChange="action-mgm-expense-attrs-category-change"/>
           <field name="company" canEdit="false" readonly="true" form-view="company-form"
             grid-view="company-grid"/>
@@ -111,7 +112,7 @@
             name="ventilateBtn" title="Ventilate" hidden="true"
             onClick="save,action-expense-method-ventilate"/>
           <button
-            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT'].any(g -> __user__.group.code.contains(g)))"
+            if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
             name="validateBtn" title="Validate" onClick="action-expense-group-validate"/>
           <button
             if="!(['CUSTOM-ACCOUNTANT','CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
@@ -190,7 +191,7 @@
     </panel>
   </form>
 
-  <form name="mgm-expense-line-form" title="Expense line"
+  <form name="mgm-expense-line-form" title="Expense line" canAttach="false"
     model="com.axelor.apps.hr.db.ExpenseLine" onNew="mgm-action-expense-line-default-onNew"
     onSave="action-expense-line-validate-expenseDate" width="large">
 
@@ -216,9 +217,10 @@
       <field name="totalTax" title="Total tax (€)"
         onChange="mgm-action-expense-line-record-calculate-totals" colSpan="6"/>
       <field name="fee" title="Fee (%)" colSpan="6"
-        onChange="mgm-action-expense-line-group-amount-change"/>
+        onChange="mgm-action-expense-line-record-calculate-totals"/>
       <field name="totalAmountToInvoice" readonly="true" colSpan="6"/>
-      <field name="totalAmountToInvoice" hidden="true" colSpan="6"/>
+      <field name="showChargedFee" title="Do you want to show charged fee on the invoice ?"
+        colSpan="6"/>
       <field name="totalAmount" title="Total to refund" readonly="true" colSpan="6">
         <hilite color="danger"
           if="expenseProduct != null &amp;&amp; $get('expenseProduct.amountLimit') != 0 &amp;&amp; $get('expenseProduct.amountLimit') &lt; totalAmount"/>
@@ -250,7 +252,7 @@
     </panel>
   </form>
 
-  <form name="mgm-fees-expense-line-form" title="Expense line"
+  <form name="mgm-fees-expense-line-form" canAttach="false" title="Expense line"
     model="com.axelor.apps.hr.db.ExpenseLine" onNew="mgm-fees-action-expense-line-default-onNew"
     onSave="action-expense-line-validate-expenseDate" width="large">
     <panel name="mainPanel" title="Main" colSpan="12" readonlyIf="expense.statusSelect &gt; 1">

@@ -40,6 +40,7 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
     sequence = processNightShiftSection(displayLines, classification, sequence);
     sequence = processExpenseSection(displayLines, classification.expenseLines, sequence);
     sequence = processOtherSection(displayLines, classification.otherLines, sequence);
+    sequence = processMaterialChargeSection(displayLines, classification.chargedFeeLines, sequence);
 
     addTotalsAndVAT(displayLines, invoice, sequence);
 
@@ -52,7 +53,8 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
         invoiceLineClassifier.getTimesheetLines(invoiceLines),
         invoiceLineClassifier.getExpenseLines(invoiceLines),
         invoiceLineClassifier.getExtraChargeLines(invoiceLines),
-        invoiceLineClassifier.getOtherLines(invoiceLines));
+        invoiceLineClassifier.getOtherLines(invoiceLines),
+        invoiceLineClassifier.getChargedFeeLines(invoiceLines));
   }
 
   /** Process timesheet section with base hours and extra charges */
@@ -167,6 +169,46 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
               null,
               line.getDescription()));
     }
+    return sequence;
+  }
+
+  /** Process charged fee lines into a Material Charge section */
+  private int processMaterialChargeSection(
+      List<Map<String, Object>> displayLines, List<InvoiceLine> chargedFeeLines, int sequence) {
+
+    if (chargedFeeLines == null || chargedFeeLines.isEmpty()) {
+      return sequence;
+    }
+
+    BigDecimal materialTotal = BigDecimal.ZERO;
+
+    for (InvoiceLine fee : chargedFeeLines) {
+      // Convert 0.25 to 25%
+      BigDecimal percentage = getAmountOrZero(fee.getQty()).multiply(new BigDecimal("100"));
+      String label =
+          Optional.ofNullable(fee.getProductName()).orElse(I18n.get("Material Fee Charge "));
+
+      // Override the generic "Billed for..." text to be more professional
+      String billingDetails =
+          String.format(I18n.get("Added fee of %.2f%% on material"), percentage);
+
+      displayLines.add(
+          createDisplayLine(
+              sequence++,
+              label,
+              percentage,
+              "%",
+              fee.getPrice(),
+              fee.getExTaxTotal(),
+              false,
+              null,
+              billingDetails));
+
+      materialTotal = materialTotal.add(getAmountOrZero(fee.getExTaxTotal()));
+    }
+
+    // Add the section-specific total line
+    displayLines.add(createTotalLine(I18n.get("Material Fee Charge Total"), materialTotal));
     return sequence;
   }
 
@@ -461,16 +503,19 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
     final List<InvoiceLine> expenseLines;
     final List<InvoiceLine> extraChargeLines;
     final List<InvoiceLine> otherLines;
+    final List<InvoiceLine> chargedFeeLines;
 
     InvoiceLineClassification(
         List<InvoiceLine> timesheetLines,
         List<InvoiceLine> expenseLines,
         List<InvoiceLine> extraChargeLines,
-        List<InvoiceLine> otherLines) {
+        List<InvoiceLine> otherLines,
+        List<InvoiceLine> chargedFeeLines) {
       this.timesheetLines = timesheetLines;
       this.expenseLines = expenseLines;
       this.extraChargeLines = extraChargeLines;
       this.otherLines = otherLines;
+      this.chargedFeeLines = chargedFeeLines;
     }
   }
 }

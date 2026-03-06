@@ -261,6 +261,9 @@
           <field name="defPaymentCondition" grid-view="payment-condition-grid"
             form-view="payment-condition-form"/>
         </panel>
+        <panel name="defaultFiscalPositionPanel" title="Default fiscal position" colSpan="12">
+          <field name="defaultFiscalPosition"/>
+        </panel>
         <panel name="paymentSessionPanel" title="Payment sessions" showIf="accountingDaybook"
           colSpan="12">
           <field name="retrieveDaybookMovesInPaymentSession" showIf="accountingDaybook"/>

@@ -1385,10 +1385,7 @@ public class InvoiceController {
     try {
       Map<String, Object> map = getParamsMap(request);
       Invoice invoice = (Invoice) map.get("invoice");
-      Integer reportType = (Integer) map.get("reportType");
-      if (reportType != null && reportType == 1) {
-        return;
-      }
+
       PrintingTemplate invoicePrintTemplate =
           Beans.get(AccountConfigService.class).getInvoicePrintTemplate(invoice.getCompany());
       response.setValue("$invoicePrintTemplate", invoicePrintTemplate);

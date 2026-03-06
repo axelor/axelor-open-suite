@@ -22,7 +22,6 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
   // Product codes
   public static final String CODE_TRAVEL_EXPENSES = "11KM";
   public static final String CODE_TOOLS_USAGE = "TOOLUSAGE";
-  public static final String CODE_DIRT_ALLOWANCE = "DIRTALLOWANCE";
 
   protected ProductRepository productRepo;
 
@@ -50,7 +49,6 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
     Map<String, Boolean> requiredExpenses = new HashMap<>();
     requiredExpenses.put(CODE_TRAVEL_EXPENSES, taskReport.getTravelExpenses());
     requiredExpenses.put(CODE_TOOLS_USAGE, taskReport.getToolsUsage());
-    requiredExpenses.put(CODE_DIRT_ALLOWANCE, taskReport.getDirtAllowance());
 
     if (taskReport.getExtraExpenseLineList() == null) {
       taskReport.setExtraExpenseLineList(new ArrayList<>());
@@ -85,10 +83,6 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
 
     if (taskReport.getToolsUsage() && !existingProductCodes.contains(CODE_TOOLS_USAGE)) {
       addExpenseLine(taskReport, project, CODE_TOOLS_USAGE);
-    }
-
-    if (taskReport.getDirtAllowance() && !existingProductCodes.contains(CODE_DIRT_ALLOWANCE)) {
-      addExpenseLine(taskReport, project, CODE_DIRT_ALLOWANCE);
     }
 
     log.info("Total extra expense lines: {}", taskReport.getExtraExpenseLineList().size());
