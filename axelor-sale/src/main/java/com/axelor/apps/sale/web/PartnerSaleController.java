@@ -25,6 +25,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.service.PartnerSaleService;
+import com.axelor.common.StringUtils;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -66,6 +67,10 @@ public class PartnerSaleController {
       HashMap<String, BigDecimal> qtyAndPrice;
 
       for (Product product : productList) {
+        String name = product.getName();
+        if (StringUtils.isEmpty(name)) {
+          continue;
+        }
         qtyAndPrice = partnerSaleService.getTotalSaleQuantityAndPrice(customer, product);
         BigDecimal qty = qtyAndPrice.get("qty");
         BigDecimal averagePrice = BigDecimal.ZERO;
@@ -76,7 +81,7 @@ public class PartnerSaleController {
                   .divide(qty, AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
         }
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("name", product.getName());
+        map.put("name", name);
         map.put("$quantitySold", qty);
         map.put("$totalPrice", qtyAndPrice.get("price"));
         map.put("$averagePrice", averagePrice);
