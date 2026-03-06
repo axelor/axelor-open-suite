@@ -11,7 +11,8 @@
 
     <string name="lastEmailId" title="Last email sync id"/>
     <many-to-one name="hiringStatus" ref="com.axelor.apps.talent.db.HiringStage"
-      title="Hiring status"/>
+      title="Hiring status"
+      help="You can define here at which application status the candidate will be indicated as being hired. At this status, the software will propose to create an employee record for this candidate."/>
     <many-to-one name="defaultHiringStatus" ref="com.axelor.apps.talent.db.HiringStage"
       title="Default hiring status"/>
 

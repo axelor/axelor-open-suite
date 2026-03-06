@@ -16,9 +16,10 @@
       onSelect="action-inventory-line-method-set-stock-location-domain"
       onChange="action-inventory-line-group-on-change-product-stock-location"
       readonlyIf="inventory.statusSelect >= 5" required="true"/>
-    <field name="currentQty" readonly="true" aggregate="sum" width="120" x-scale="2"/>
+    <field name="currentQty" readonly="true" aggregate="sum" width="120"
+      x-scale="$nbDecimalDigitForQty"/>
     <field name="realQty" onChange="action-inventory-line-method-compute" aggregate="sum"
-      width="120" x-scale="2" min="0"
+      width="120" x-scale="$nbDecimalDigitForQty" min="0"
       readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" canEdit="false"
       readonlyIf="inventory.statusSelect >= 5 || inventory.stockLocation == null"/>
@@ -43,6 +44,7 @@
     <field name="nbDecimalDigitForUnitPrice" x-dirty="false" hidden="true" type="integer"/>
     <field name="inventory.statusSelect"/>
     <field name="inventory.stockLocation"/>
+    <field name="$nbDecimalDigitForQty" hidden="true"/>
   </grid>
 
   <form name="inventory-line-form" title="Inventory line"

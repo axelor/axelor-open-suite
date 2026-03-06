@@ -206,8 +206,10 @@ public class BatchAutoMoveLettering extends BatchStrategy {
         BigDecimal credit = creditMoveLine.getCredit();
         BigDecimal nextCreditRemaining = creditRemaining.subtract(debit);
         BigDecimal nextDebitRemaining = debitRemaining.get(debitMoveLine).subtract(credit);
-        if (reconcileMethodSelect
-                == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_MOVE
+        if ((reconcileMethodSelect
+                    == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_MOVE
+                || reconcileMethodSelect
+                    == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_AMOUNT)
             && !isBalanced
             && (nextCreditRemaining.signum() < 0 || nextDebitRemaining.signum() < 0)) {
           continue;
@@ -218,11 +220,23 @@ public class BatchAutoMoveLettering extends BatchStrategy {
             debitMoveLine = moveLineRepository.find(debitMoveLine.getId());
             creditMoveLine = moveLineRepository.find(creditMoveLine.getId());
 
+            BigDecimal reconciledAmount = BigDecimal.ZERO;
+            if (debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0) {
+              reconciledAmount =
+                  debitMoveLine
+                      .getMaxAmountToReconcile()
+                      .min(creditMoveLine.getAmountRemaining().abs());
+            } else {
+              reconciledAmount =
+                  creditMoveLine.getAmountRemaining().abs().min(debitMoveLine.getAmountRemaining());
+            }
             reconcile(debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
             creditRemaining = nextCreditRemaining;
             debitRemaining.replace(debitMoveLine, nextDebitRemaining);
             moveLineReconciledSet.add(debitMoveLine);
             moveLineReconciledSet.add(creditMoveLine);
+            debitTotalRemaining = debitTotalRemaining.subtract(reconciledAmount);
+            creditTotalRemaining = creditTotalRemaining.subtract(reconciledAmount);
           } catch (Exception e) {
             TraceBackService.trace(
                 new Exception(

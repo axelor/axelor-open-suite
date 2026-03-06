@@ -35,4 +35,6 @@ public interface StockLocationUtilsService {
       Long productId, List<Long> stockLocationIds, Long companyId) throws AxelorException;
 
   public BigDecimal getStockLocationValue(StockLocation stockLocation);
+
+  public BigDecimal getStockLocationValue(Long stockLocationId, Long companyId);
 }
