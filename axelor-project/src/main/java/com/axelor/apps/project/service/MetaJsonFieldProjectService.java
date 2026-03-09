@@ -28,4 +28,6 @@ public interface MetaJsonFieldProjectService {
 
   Map<String, Object> computeContextValues(
       Map<String, Object> contextValues, Context parentContext);
+
+  boolean isMetaJsonFieldUsedOnTasks(MetaJsonField jsonField);
 }
