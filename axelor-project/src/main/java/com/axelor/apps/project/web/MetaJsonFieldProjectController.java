@@ -119,8 +119,10 @@ public class MetaJsonFieldProjectController {
       widget = "MultiSelect";
     }
 
-    String selection =
-        Beans.get(MetaJsonFieldProjectService.class).computeSelectName(jsonField, typeSelect);
+    MetaJsonFieldProjectService metaJsonFieldProjectService =
+        Beans.get(MetaJsonFieldProjectService.class);
+
+    String selection = metaJsonFieldProjectService.computeSelectName(jsonField, typeSelect);
 
     if (selection != null && jsonField.getSelectionRef() == null) {
       MetaSelectRepository selectRepo = Beans.get(MetaSelectRepository.class);
@@ -130,7 +132,7 @@ public class MetaJsonFieldProjectController {
         select = new MetaSelect(selection);
         select.setModule("axelor-project");
       }
-      Beans.get(MetaJsonFieldProjectService.class).saveSelection(select);
+      metaJsonFieldProjectService.saveSelection(select);
       jsonField.setSelectionRef(select);
     }
 

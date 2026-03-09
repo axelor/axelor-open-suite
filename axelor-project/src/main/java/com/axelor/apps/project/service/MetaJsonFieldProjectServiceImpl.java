@@ -126,10 +126,14 @@ public class MetaJsonFieldProjectServiceImpl implements MetaJsonFieldProjectServ
     if (items != null) {
       int order = 0;
       for (Map<String, Object> itemMap : items) {
+        String itemTitle = (String) itemMap.get("title");
+        if (StringUtils.isEmpty(itemTitle)) {
+          continue;
+        }
         MetaSelectItem item = new MetaSelectItem();
-        item.setTitle((String) itemMap.get("title"));
+        item.setTitle(itemTitle);
         String value = (String) itemMap.get("value");
-        item.setValue(value != null ? value : (String) itemMap.get("title"));
+        item.setValue(StringUtils.notEmpty(value) ? value : itemTitle);
         item.setColor((String) itemMap.get("color"));
         item.setOrder(
             itemMap.get("order") != null ? ((Number) itemMap.get("order")).intValue() : order);
