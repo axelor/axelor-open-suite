@@ -33,7 +33,9 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.helpers.ModelHelper;
 import jakarta.inject.Singleton;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Singleton
@@ -83,6 +85,18 @@ public class MetaJsonFieldProjectController {
     response.setValue("select", jsonField.getSelectionRef());
   }
 
+  @SuppressWarnings("unchecked")
+  public void saveSelection(ActionRequest request, ActionResponse response) {
+    MetaJsonField jsonField = request.getContext().asType(MetaJsonField.class);
+    MetaSelect selectionRef = jsonField.getSelectionRef();
+    if (selectionRef == null || selectionRef.getId() == null) {
+      return;
+    }
+    List<Map<String, Object>> items =
+        (List<Map<String, Object>>) request.getContext().get("selectionItems");
+    Beans.get(MetaJsonFieldProjectService.class).saveSelectionItems(selectionRef.getId(), items);
+  }
+
   public void computeFields(ActionRequest request, ActionResponse response) {
 
     MetaJsonField jsonField = request.getContext().asType(MetaJsonField.class);
@@ -116,6 +130,7 @@ public class MetaJsonFieldProjectController {
         select = new MetaSelect(selection);
         select.setModule("axelor-project");
       }
+      Beans.get(MetaJsonFieldProjectService.class).saveSelection(select);
       jsonField.setSelectionRef(select);
     }
 
@@ -123,5 +138,11 @@ public class MetaJsonFieldProjectController {
     response.setValue("name", name);
     response.setValue("selection", selection);
     response.setValue("selectionRef", jsonField.getSelectionRef());
+    MetaSelect selRef = jsonField.getSelectionRef();
+    response.setValue(
+        "$selectionItems",
+        selRef != null && selRef.getItems() != null
+            ? new ArrayList<>(selRef.getItems())
+            : new ArrayList<>());
   }
 }
