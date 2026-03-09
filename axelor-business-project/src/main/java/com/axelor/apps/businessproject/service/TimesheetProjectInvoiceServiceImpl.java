@@ -35,13 +35,16 @@ import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.service.UnitConversionForProjectService;
+import com.axelor.apps.sale.db.SaleOrderLine;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceImpl {
 
@@ -84,7 +87,7 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
     boolean consolidate = appHumanResourceService.getAppTimesheet().getConsolidateTSLine();
 
     for (TimesheetLine timesheetLine : timesheetLineList) {
-      Object[] tabInformations = new Object[8];
+      Object[] tabInformations = new Object[9];
       Product product = timesheetLine.getProduct();
       if (product == null) {
         product = timesheetLineService.getDefaultProduct(timesheetLine);
@@ -115,6 +118,12 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       tabInformations[5] = timesheetLine.getProject();
       tabInformations[6] = forcedUnitPrice;
       tabInformations[7] = forcedPriceDiscounted;
+      // Index 8: Set<ProjectTask> for traceability links on the generated InvoiceLine
+      Set<ProjectTask> projectTaskSet = new HashSet<>();
+      if (projectTask != null) {
+        projectTaskSet.add(projectTask);
+      }
+      tabInformations[8] = projectTaskSet;
 
       String key = null;
       if (consolidate) {
@@ -139,6 +148,11 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
                       timesheetLine.getDurationForCustomer() != null
                           ? timesheetProjectService.computeDurationForCustomer(timesheetLine)
                           : timesheetLine.getHoursDuration());
+          // Merge task into the existing set for this consolidated group
+          if (projectTask != null) {
+            Set<ProjectTask> existingSet = (Set<ProjectTask>) tabInformations[8];
+            existingSet.add(projectTask);
+          }
         } else {
           timeSheetInformationsMap.put(key, tabInformations);
         }
@@ -159,6 +173,7 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
       Project project = (Project) timesheetInformations[5];
       BigDecimal forcedUnitPrice = (BigDecimal) timesheetInformations[6];
       BigDecimal forcedPriceDiscounted = (BigDecimal) timesheetInformations[7];
+      Set<ProjectTask> projectTaskSet = (Set<ProjectTask>) timesheetInformations[8];
       PriceList priceList = project.getPriceList();
       if (consolidate) {
         if (startDate != null && endDate != null) {
@@ -182,7 +197,22 @@ public class TimesheetProjectInvoiceServiceImpl extends TimesheetInvoiceServiceI
               priceList,
               forcedUnitPrice,
               forcedPriceDiscounted));
-      invoiceLineList.get(invoiceLineList.size() - 1).setProject(project);
+      InvoiceLine invoiceLine = invoiceLineList.get(invoiceLineList.size() - 1);
+      invoiceLine.setProject(project);
+      if (projectTaskSet != null && !projectTaskSet.isEmpty()) {
+        for (ProjectTask task : projectTaskSet) {
+          invoiceLine.addProjectTaskSetItem(task);
+        }
+        Set<SaleOrderLine> saleOrderLines = new HashSet<>();
+        for (ProjectTask task : projectTaskSet) {
+          if (task.getSaleOrderLine() != null) {
+            saleOrderLines.add(task.getSaleOrderLine());
+          }
+        }
+        if (saleOrderLines.size() == 1) {
+          invoiceLine.setSaleOrderLine(saleOrderLines.iterator().next());
+        }
+      }
       count++;
     }
 
