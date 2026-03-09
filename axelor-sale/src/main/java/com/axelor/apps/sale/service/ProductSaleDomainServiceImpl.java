@@ -73,7 +73,7 @@ public class ProductSaleDomainServiceImpl implements ProductSaleDomainService {
     // But here, we have to do this because overriding a sale service in hr module will prevent the
     // override in supplychain module.
     if (ModuleManager.isInstalled("axelor-human-resource")) {
-      domain += " AND self.expense = false OR self.expense IS NULL";
+      domain += " AND (self.expense = false OR self.expense IS NULL)";
     }
 
     return domain;
