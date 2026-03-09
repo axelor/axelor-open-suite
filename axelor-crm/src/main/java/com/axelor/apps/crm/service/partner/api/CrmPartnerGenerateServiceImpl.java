@@ -20,6 +20,7 @@ package com.axelor.apps.crm.service.partner.api;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.repo.AddressRepository;
 import com.axelor.apps.base.db.repo.CityRepository;
 import com.axelor.apps.base.db.repo.CountryRepository;
 import com.axelor.apps.base.db.repo.MainActivityRepository;
@@ -52,7 +53,8 @@ public class CrmPartnerGenerateServiceImpl extends PartnerGenerateServiceImpl {
       PartnerApiFetchService partnerApiFetchService,
       MainActivityRepository mainActivityRepository,
       PartnerService partnerService,
-      AppBaseService appBaseService) {
+      AppBaseService appBaseService,
+      AddressRepository addressRepository) {
     super(
         partnerRepository,
         partnerCategoryRepository,
@@ -61,7 +63,8 @@ public class CrmPartnerGenerateServiceImpl extends PartnerGenerateServiceImpl {
         partnerApiFetchService,
         mainActivityRepository,
         partnerService,
-        appBaseService);
+        appBaseService,
+        addressRepository);
   }
 
   @Override
