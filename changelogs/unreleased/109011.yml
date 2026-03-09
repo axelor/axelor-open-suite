@@ -1,0 +1,11 @@
+---
+title: "Sale order: sale quotations now keep ordered quantities aligned with edited split orders."
+module: axelor-sale
+developer: |
+  Split-generated sale order lines now keep an `originSaleQuotationLine` reference to their
+  source quotation line.
+  When a split order line quantity is edited, its ordered quantity is synchronized and the
+  source quotation line ordered quantity is recomputed during order change validation.
+  Legacy orders without `originSaleQuotationLine` set are skipped to preserve existing data.
+  The qty < orderedQty warning is suppressed for generated order lines since their
+  orderedQty is always kept equal to qty.
