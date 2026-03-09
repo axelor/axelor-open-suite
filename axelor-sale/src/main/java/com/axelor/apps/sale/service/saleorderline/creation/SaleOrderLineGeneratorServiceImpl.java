@@ -95,9 +95,6 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       throws AxelorException {
     checkSaleOrderAndProduct(saleOrder, product);
     SaleOrderLine saleOrderLine = new SaleOrderLine();
-    saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine, null);
-    checkProduct(saleOrder, saleOrderLine, product);
-    saleOrderLine.setProduct(product);
     if (appSaleService.getAppSale().getManageMultipleSaleQuantity()) {
       productMultipleQtyService.checkMultipleQty(product.getSaleProductMultipleQtyList(), qty);
     }
@@ -105,6 +102,9 @@ public class SaleOrderLineGeneratorServiceImpl implements SaleOrderLineGenerator
       qty = BigDecimal.ONE;
     }
     saleOrderLine.setQty(qty);
+    saleOrderLineInitValueService.onNewInitValues(saleOrder, saleOrderLine, null);
+    checkProduct(saleOrder, saleOrderLine, product);
+    saleOrderLine.setProduct(product);
     saleOrderLineOnProductChangeService.computeLineFromProduct(saleOrder, saleOrderLine);
 
     saleOrderLineRepository.save(saleOrderLine);
