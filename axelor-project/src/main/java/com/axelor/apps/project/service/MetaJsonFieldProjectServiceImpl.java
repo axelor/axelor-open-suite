@@ -105,13 +105,13 @@ public class MetaJsonFieldProjectServiceImpl implements MetaJsonFieldProjectServ
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void saveSelection(MetaSelect metaSelect) {
     metaSelectRepository.save(metaSelect);
   }
 
   @Override
-  @Transactional
+  @Transactional(rollbackOn = {Exception.class})
   public void saveSelectionItems(Long metaSelectId, List<Map<String, Object>> items) {
     MetaSelect select = metaSelectRepository.find(metaSelectId);
     if (select == null) {

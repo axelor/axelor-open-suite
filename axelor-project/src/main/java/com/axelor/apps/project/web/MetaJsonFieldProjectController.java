@@ -85,13 +85,13 @@ public class MetaJsonFieldProjectController {
     response.setValue("select", jsonField.getSelectionRef());
   }
 
-  @SuppressWarnings("unchecked")
   public void saveSelection(ActionRequest request, ActionResponse response) {
     MetaJsonField jsonField = request.getContext().asType(MetaJsonField.class);
     MetaSelect selectionRef = jsonField.getSelectionRef();
     if (selectionRef == null || selectionRef.getId() == null) {
       return;
     }
+    @SuppressWarnings("unchecked")
     List<Map<String, Object>> items =
         (List<Map<String, Object>>) request.getContext().get("selectionItems");
     Beans.get(MetaJsonFieldProjectService.class).saveSelectionItems(selectionRef.getId(), items);
