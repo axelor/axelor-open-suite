@@ -1,0 +1,3 @@
+---
+title: "Invoice: fixed the financial discount account configuration error on payment when no financial discount is used."
+module: axelor-account
