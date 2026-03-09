@@ -38,9 +38,8 @@ public class TaskReportServiceImpl implements TaskReportService {
   @Inject TimesheetLineRepository timesheetLineRepository;
 
   @Override
-  public boolean checkIfAllTasksReported(TaskReport report) {
+  public boolean allTasksReported(TaskReport taskReport) {
 
-    TaskReport taskReport = fetchTaskReport(report);
     if (taskReport == null) {
       return false;
     }
@@ -247,6 +246,8 @@ public class TaskReportServiceImpl implements TaskReportService {
       log.info("Found timesheet: {}", timesheet);
       return timesheet;
     }
+
+    log.debug("Timesheet is not there will have to create one");
 
     // Create timesheet for the month of the given date
     LocalDate fromDate = date.withDayOfMonth(1);

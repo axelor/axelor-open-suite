@@ -15,8 +15,10 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +78,17 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
       ProjectTask task = taskMemberReport.getTask();
 
       revertUnreportedTaskStatus(task, inProgressStatus);
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void setTaskStatusFeedback(ProjectTask task) throws AxelorAlertException {
+    TaskStatus feedbackStatus = getTaskStatus(TASK_STATUS_FEEDBACK);
+
+    if (!Objects.equals(task.getStatus(), feedbackStatus)) {
+      task.setStatus(feedbackStatus);
+      projectTaskRepo.save(task);
     }
   }
 

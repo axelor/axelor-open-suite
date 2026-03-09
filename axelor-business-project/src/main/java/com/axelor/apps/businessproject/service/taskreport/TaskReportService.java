@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public interface TaskReportService {
 
   /** Check if all tasks for a project habe been reported in this task report. */
-  boolean checkIfAllTasksReported(TaskReport report);
+  boolean allTasksReported(TaskReport report);
 
   void createTaskReport(Project project);
 

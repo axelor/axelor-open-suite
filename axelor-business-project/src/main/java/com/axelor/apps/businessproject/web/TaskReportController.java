@@ -98,7 +98,8 @@ public class TaskReportController {
   public void setReportedAllProjectTaskFlag(ActionRequest request, ActionResponse response) {
     TaskReport taskReport = request.getContext().asType(TaskReport.class);
 
-    boolean allTasksReported = taskReportService.checkIfAllTasksReported(taskReport);
+    taskReport = Beans.get(TaskReportRepository.class).find(taskReport.getId());
+    boolean allTasksReported = taskReportService.allTasksReported(taskReport);
 
     response.setValue("reportedAllTasks", allTasksReported);
   }

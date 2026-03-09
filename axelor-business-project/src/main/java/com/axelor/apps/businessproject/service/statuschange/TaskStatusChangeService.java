@@ -23,4 +23,6 @@ public interface TaskStatusChangeService {
   void changeTaskStatusToDone(ProjectTask task) throws AxelorAlertException;
 
   void revertTaskStatusOnTimesheetLineCancel(ProjectTask task) throws AxelorAlertException;
+
+  void setTaskStatusFeedback(ProjectTask task) throws AxelorAlertException;
 }
