@@ -153,13 +153,13 @@ public class PaymentSessionBillOfExchangeValidateBankPaymentServiceImpl
     paymentSessionBankOrderService.manageInvoicePayment(
         paymentSession, invoiceTerm, invoiceTerm.getAmountPaid());
 
-    super.processInvoiceTermBillOfExchange(
-        paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, invoiceTermLinkWithRefund);
-
     if (paymentSession.getBankOrder() != null
         && paymentSession.getStatusSelect() != PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
       paymentSessionBankOrderService.createOrUpdateBankOrderLineFromInvoiceTerm(
           paymentSession, invoiceTerm, paymentSession.getBankOrder(), invoiceTermLinkWithRefund);
     }
+
+    super.processInvoiceTermBillOfExchange(
+        paymentSession, invoiceTerm, moveDateMap, paymentAmountMap, invoiceTermLinkWithRefund);
   }
 }

@@ -404,7 +404,8 @@ public class AccountingReportServiceImpl implements AccountingReportService {
 
     // FOR EXPORT ONLY :
     if (accountingReportType != null) {
-      if (typeSelect > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY) {
+      if (typeSelect > AccountingReportRepository.EXPORT_PAYROLL_JOURNAL_ENTRY
+          && accountingReport.getId() != null) {
         this.addParams(
             "(self.move.accountingOk = false OR (self.move.accountingOk = true and self.move.accountingReport.id = ?%d))",
             accountingReport.getId());

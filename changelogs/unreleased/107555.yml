@@ -1,3 +1,0 @@
----
-title: "Cart: fixed performance issue when generating sale order from cart."
-module: axelor-sale

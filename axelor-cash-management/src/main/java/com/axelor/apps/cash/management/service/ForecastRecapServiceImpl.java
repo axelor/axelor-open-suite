@@ -445,7 +445,7 @@ public class ForecastRecapServiceImpl implements ForecastRecapService {
             + "AND self.timetableList IS EMPTY "
             + "AND EXISTS ( "
             + "    SELECT 1 FROM PurchaseOrderLine pol "
-            + "    WHERE pol.purchaseOrder = self.id "
+            + "    WHERE pol.purchaseOrder.id = self.id "
             + "    AND ( "
             + "         (pol.estimatedReceiptDate IS NOT NULL AND pol.estimatedReceiptDate BETWEEN :fromDate AND :toDate) "
             + "      OR (pol.estimatedReceiptDate IS NULL AND self.expectedRealisationDate IS NOT NULL AND self.expectedRealisationDate BETWEEN :fromDate AND :toDate) "

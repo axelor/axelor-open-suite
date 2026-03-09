@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
 import com.axelor.apps.account.db.repo.InvoiceTermRepository;
@@ -64,7 +65,7 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
     List<InvoiceTerm> invoiceTermListToRemove = new ArrayList<>();
     copyInvoiceTerms(invoice, move, newInvoiceTermList, invoiceTermListToRemove);
     reconcilesMoves(move, invoiceMoveLineList, invoice, partnerAccount);
-    replaceInvoiceTerms(invoice, newInvoiceTermList, invoiceTermListToRemove);
+    replaceInvoiceTerms(invoice, newInvoiceTermList, invoiceTermListToRemove, null);
   }
 
   /**
@@ -187,7 +188,8 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
   public void replaceInvoiceTerms(
       Invoice invoice,
       List<InvoiceTerm> newInvoiceTermList,
-      List<InvoiceTerm> invoiceTermListToRemove) {
+      List<InvoiceTerm> invoiceTermListToRemove,
+      PaymentSession paymentSession) {
     if (invoice == null
         || ObjectUtils.isEmpty(newInvoiceTermList)
         || ObjectUtils.isEmpty(invoiceTermListToRemove)) {
@@ -195,26 +197,52 @@ public class InvoiceTermReplaceServiceImpl implements InvoiceTermReplaceService 
     }
 
     for (InvoiceTerm invoiceTerm : newInvoiceTermList) {
+      selectOnPaymentSession(invoiceTerm, paymentSession);
       invoice.addInvoiceTermListItem(invoiceTerm);
     }
 
     for (InvoiceTerm invoiceTerm : invoiceTermListToRemove) {
-      invoice.removeInvoiceTermListItem(invoiceTerm);
-      invoiceTerm.setInvoice(null);
+      if (!invoiceTerm.getIsPaid() || !hasPriorPartialPayment(invoiceTerm)) {
+        invoice.removeInvoiceTermListItem(invoiceTerm);
+        invoiceTerm.setInvoice(null);
+      }
     }
 
     replaceInvoiceTermsToRemoveWithCopy(invoiceTermListToRemove);
     invoiceRepo.save(invoice);
   }
 
+  protected void selectOnPaymentSession(InvoiceTerm invoiceTerm, PaymentSession paymentSession) {
+    if (paymentSession == null) {
+      return;
+    }
+
+    invoiceTerm.setPaymentSession(paymentSession);
+    invoiceTerm.setIsSelectedOnPaymentSession(true);
+    invoiceTerm.setPaymentAmount(invoiceTerm.getAmount());
+    invoiceTerm.setAmountPaid(invoiceTerm.getAmount());
+  }
+
+  protected boolean hasPriorPartialPayment(InvoiceTerm invoiceTerm) {
+    return invoiceTerm.getAmountPaid().signum() > 0
+        && invoiceTerm.getAmountPaid().compareTo(invoiceTerm.getAmount()) < 0;
+  }
+
   @Transactional(rollbackOn = {Exception.class})
   protected void replaceInvoiceTermsToRemoveWithCopy(List<InvoiceTerm> invoiceTermListToRemove) {
     for (InvoiceTerm invoiceTerm : invoiceTermListToRemove) {
-      InvoiceTerm newInvoiceTerm = invoiceTermRepo.copy(invoiceTerm, true);
       invoiceTerm.setPaymentSession(null);
+      if (invoiceTerm.getIsPaid() && hasPriorPartialPayment(invoiceTerm)) {
+        BigDecimal priorPaidAmount = invoiceTerm.getAmount().subtract(invoiceTerm.getAmountPaid());
+        invoiceTerm.setAmount(priorPaidAmount);
+        invoiceTerm.setCompanyAmount(priorPaidAmount);
+        continue;
+      }
+      InvoiceTerm newInvoiceTerm = invoiceTermRepo.copy(invoiceTerm, true);
       MoveLine moveLine = invoiceTerm.getMoveLine();
       moveLine.addInvoiceTermListItem(newInvoiceTerm);
       moveLine.removeInvoiceTermListItem(invoiceTerm);
+      invoiceTerm.setMoveLine(null);
       invoiceTermRepo.remove(invoiceTerm);
     }
   }

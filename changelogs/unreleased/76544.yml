@@ -1,3 +1,0 @@
----
-title: "Bill of material: fixed component product filter to prevent infinite loop error."
-module: axelor-production

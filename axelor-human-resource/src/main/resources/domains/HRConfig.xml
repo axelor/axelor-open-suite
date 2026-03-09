@@ -7,102 +7,132 @@
 
   <entity name="HRConfig" cacheable="true">
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      required="true" unique="true"/>
+      required="true" unique="true" help="Company for which the configurations are made."/>
     <many-to-one name="kilometricExpenseProduct" ref="com.axelor.apps.base.db.Product"
-      title="Kilometric expense product"/>
+      title="Kilometric expense product"
+      help="When you create a kilometric expense line, an expense line will be created with the expense type you define here. Expense types are created and configured via the Configuration/Expense type menu in the Expenses module."/>
     <decimal name="lunchVoucherWageShare" title="Lunch Voucher Wage Share" scale="2"
-      precision="20"/>
+      precision="20"
+      help="You can define here the employee share amount deducted from the nominal value of the lunch voucher."/>
     <decimal name="lunchVoucherEmployersShare" title="Lunch Voucher Employer's Share"
-      scale="2" precision="20"/>
+      scale="2" precision="20"
+      help="You can define here the employer share amount covered by the company on the nominal value of the lunch voucher."/>
     <many-to-one name="toJustifyLeaveReason" title="Leave Reason for Leave to justify"
-      ref="com.axelor.apps.hr.db.LeaveReason"/>
-    <string name="exportCodeForExtraHours" title="Export code for extra hour management"/>
-    <string name="exportCodeForDuration" title="Export code for duration"/>
+      ref="com.axelor.apps.hr.db.LeaveReason"
+      help="Allows defining a default leave reason for absences to justify."/>
+    <string name="exportCodeForExtraHours" title="Export code for extra hour management"
+      help="Code used in payroll exports for extra hours."/>
+    <string name="exportCodeForDuration" title="Export code for duration"
+      help="Code used in payroll exports for the number of working days."/>
 
     <!-- LUNCH VOUCHERS MANAGEMENT -->
 
-    <integer name="minStockLunchVoucher" title="Minimum Stock of Lunch Vouchers"/>
-    <integer name="availableStockLunchVoucher" title="Available Stock of Lunch Vouchers"/>
+    <integer name="minStockLunchVoucher" title="Minimum Stock of Lunch Vouchers"
+      help="Allows indicating a minimum stock of lunch vouchers that you always want to have in stock."/>
+    <integer name="availableStockLunchVoucher" title="Available Stock of Lunch Vouchers"
+      help="Allows defining how many lunch vouchers you have left in stock."/>
     <many-to-one name="supplierLunchVoucher" ref="com.axelor.apps.base.db.Partner"
-      title="Lunch voucher supplier"/>
+      title="Lunch voucher supplier" help="You can select here the lunch voucher supplier."/>
     <integer name="lunchVoucherFormatSelect" title="Lunch Voucher Format"
-      selection="hr.lunch.voucher.mgt.line.lunch.voucher.format.select"/>
+      selection="hr.lunch.voucher.mgt.line.lunch.voucher.format.select"
+      help="Allows indicating the format of lunch vouchers used in the company."/>
 
     <string name="exportCodeForLunchVoucherManagement"
-      title="Export code for lunch voucher management"/>
+      title="Export code for lunch voucher management"
+      help="Code used in payroll exports for lunch vouchers."/>
 
     <!-- LEAVE REQUEST MAIL NOTIFICATION -->
-    <boolean name="leaveMailNotification" title="Leave Request Notification Mail"/>
+    <boolean name="leaveMailNotification" title="Leave Request Notification Mail"
+      help="By checking this box you can define notification email templates for leave requests. These are notification emails sent to users when they submit leave requests. Different templates can be configured for various scenarios (confirmation, refusal, validation, etc.)."/>
     <many-to-one name="sentLeaveTemplate" ref="com.axelor.message.db.Template"
-      title="Sent Leave Request Template"/>
+      title="Sent Leave Request Template" help="Email template sent when a leave request is sent."/>
     <many-to-one name="validatedLeaveTemplate" ref="com.axelor.message.db.Template"
-      title="Validated Leave Request Template"/>
+      title="Validated Leave Request Template"
+      help="Email template sent when a leave request is validated."/>
     <many-to-one name="refusedLeaveTemplate" ref="com.axelor.message.db.Template"
-      title="Refused Leave Request Template"/>
+      title="Refused Leave Request Template"
+      help="Email template sent when a leave request is refused."/>
     <many-to-one name="canceledLeaveTemplate" ref="com.axelor.message.db.Template"
-      title="Canceled Leave Request Template"/>
+      title="Canceled Leave Request Template"
+      help="Email template sent when a leave request is canceled."/>
 
     <one-to-many name="kilometricAllowanceRateList"
       ref="com.axelor.apps.hr.db.KilometricAllowanceRate" title="Kilometric allowance rates"
-      mappedBy="hrConfig"/>
+      mappedBy="hrConfig"
+      help="Allows defining the different kilometric allowance rates. You can enter different fiscal horsepower values with a custom rate for each."/>
 
     <!-- TIMESHEET MAIL NOTIFICATION -->
-    <boolean name="timesheetMailNotification" title="Timesheet Notification Mail"/>
+    <boolean name="timesheetMailNotification" title="Timesheet Notification Mail"
+      help="By checking this box you can define notification email templates for timesheets. These are notification emails sent to users when they submit a timesheet. Different templates can be configured for various scenarios (confirmation, refusal, validation, etc.)."/>
     <many-to-one name="sentTimesheetTemplate" ref="com.axelor.message.db.Template"
-      title="Confirmed Timesheet Template"/>
+      title="Confirmed Timesheet Template" help="Email template sent when a timesheet is confirmed."/>
     <many-to-one name="validatedTimesheetTemplate" ref="com.axelor.message.db.Template"
-      title="Validated Timesheet Template"/>
+      title="Validated Timesheet Template" help="Email template sent when a timesheet is validated."/>
     <many-to-one name="refusedTimesheetTemplate" ref="com.axelor.message.db.Template"
-      title="Refused Timesheet Template"/>
+      title="Refused Timesheet Template" help="Email template sent when a timesheet is refused."/>
     <many-to-one name="canceledTimesheetTemplate" ref="com.axelor.message.db.Template"
-      title="Canceled Timesheet Template"/>
+      title="Canceled Timesheet Template" help="Email template sent when a timesheet is canceled."/>
 
     <!-- EXPENSE MAIL NOTIFICATION -->
-    <boolean name="expenseMailNotification" title="Expense Notification Mail"/>
+    <boolean name="expenseMailNotification" title="Expense Notification Mail"
+      help="By checking this box you can define notification email templates for expenses. These are notification emails sent to users when they submit expenses. Different templates can be configured for various scenarios (confirmation, refusal, validation, etc.)."/>
     <many-to-one name="sentExpenseTemplate" ref="com.axelor.message.db.Template"
-      title="Sent Expense Template"/>
+      title="Sent Expense Template" help="Email template sent when expenses are sent."/>
     <many-to-one name="validatedExpenseTemplate" ref="com.axelor.message.db.Template"
-      title="Validated Expense Template"/>
+      title="Validated Expense Template" help="Email template sent when expenses are validated."/>
     <many-to-one name="refusedExpenseTemplate" ref="com.axelor.message.db.Template"
-      title="Refused Expense Template"/>
+      title="Refused Expense Template" help="Email template sent when expenses are refused."/>
     <many-to-one name="canceledExpenseTemplate" ref="com.axelor.message.db.Template"
-      title="Canceled Expense Template"/>
+      title="Canceled Expense Template" help="Email template sent when expenses are canceled."/>
 
     <many-to-one name="expenseSequence" ref="com.axelor.apps.base.db.Sequence"
-      title="Expense Sequence"/>
+      title="Expense Sequence" help="Allows defining a standard sequence for expenses."/>
 
     <!-- EXTRA HOURS MAIL NOTIFICATION -->
-    <boolean name="extraHoursMailNotification" title="Extra Hours Notification Mail"/>
+    <boolean name="extraHoursMailNotification" title="Extra Hours Notification Mail"
+      help="By checking this box you can define notification email templates for extra hours. These are notification emails sent to users when they submit extra hours. Different templates can be configured for various scenarios (confirmation, refusal, validation, etc.)."/>
     <many-to-one name="sentExtraHoursTemplate" ref="com.axelor.message.db.Template"
-      title="Confirmed Extra Hours Template"/>
+      title="Confirmed Extra Hours Template"
+      help="Email template sent when extra hours are confirmed."/>
     <many-to-one name="validatedExtraHoursTemplate" ref="com.axelor.message.db.Template"
-      title="Validated Extra Hours Template"/>
+      title="Validated Extra Hours Template"
+      help="Email template sent when extra hours are validated."/>
     <many-to-one name="refusedExtraHoursTemplate" ref="com.axelor.message.db.Template"
-      title="Refused Extra Hours Template"/>
+      title="Refused Extra Hours Template" help="Email template sent when extra hours are refused."/>
     <many-to-one name="canceledExtraHoursTemplate" ref="com.axelor.message.db.Template"
-      title="Canceled Extra Hours Template"/>
+      title="Canceled Extra Hours Template"
+      help="Email template sent when extra hours are canceled."/>
 
     <!-- Seniority Leave Management Batch -->
     <one-to-many name="leaveManagementBatchRuleList"
       ref="com.axelor.apps.hr.db.LeaveManagementBatchRule" title="Leave management batch rule list"
       mappedBy="hrConfig"/>
-    <string name="seniorityVariableName" title="Name for seniority variable"/>
-    <string name="ageVariableName" title="Name for age variable"/>
+    <string name="seniorityVariableName" title="Name for seniority variable"
+      help="You can configure here the variable used in formulas for calculating seniority leave or bonuses."/>
+    <string name="ageVariableName" title="Name for age variable"
+      help="You can configure here the variable used in formulas for calculating seniority leave or bonuses."/>
 
-    <string name="workingDaysVariableName" title="Name for working day variable"/>
+    <string name="workingDaysVariableName" title="Name for working day variable"
+      help="You can configure here the variable used in formulas for calculating seniority leave or bonuses."/>
     <string name="totalWorkingDaysVariableName"
-      title="Name for total working day in a period variable"/>
+      title="Name for total working day in a period variable"
+      help="You can configure here the variable used in formulas for calculating seniority leave or bonuses."/>
 
     <!-- Unique product for the timesheet -->
-    <boolean name="useUniqueProductForTimesheet" title="Use unique product for timesheet"/>
+    <boolean name="useUniqueProductForTimesheet" title="Use unique product for timesheet"
+      help="If this configuration is enabled, a single product will be used on timesheets (in the activity field of the timesheet, for example a project manager product, consultant, etc.). This product is used in business financial reports to determine costs associated with time spent, and can be used when invoicing time spent to clients."/>
     <many-to-one name="uniqueTimesheetProduct" ref="com.axelor.apps.base.db.Product"
-      title="Unique product for timesheet"/>
+      title="Unique product for timesheet"
+      help="Selection of the product that will be used on timesheet lines by default."/>
 
     <!-- DPAE -->
-    <boolean name="enableDPAE" title="Enable DPAE" default="false"/>
-    <string name="healthService" title="Health service"/>
+    <boolean name="enableDPAE" title="Enable DPAE" default="false"
+      help="This configuration enables the management of DPAE (pre-employment declaration)."/>
+    <string name="healthService" title="Health service"
+      help="You can indicate here the occupational health service of the company. It will be automatically used on DPAE generated from an employee form, in the dedicated tab."/>
     <many-to-one name="healthServiceAddress" title="Health service address"
-      ref="com.axelor.apps.base.db.Address"/>
+      ref="com.axelor.apps.base.db.Address"
+      help="You can indicate here the address of the occupational health service of the company. It will be automatically used on DPAE generated from an employee form, in the dedicated tab."/>
 
     <many-to-one name="employeeAnnualReportPrintTemplate"
       title="Employee annual report template" ref="com.axelor.apps.base.db.PrintingTemplate"/>

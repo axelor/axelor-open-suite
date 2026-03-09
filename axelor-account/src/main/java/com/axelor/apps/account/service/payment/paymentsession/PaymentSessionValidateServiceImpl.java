@@ -286,16 +286,23 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
             .bind("paymentSession", paymentSession)
             .order("id");
 
+    Set<Long> compensatedRefundIds =
+        invoiceTermLinkWithRefund.stream()
+            .map(p -> p.getRight().getLeft().getId())
+            .collect(Collectors.toSet());
+
     while (!(invoiceTermList = invoiceTermQuery.fetch(AbstractBatch.FETCH_LIMIT, offset))
         .isEmpty()) {
       paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
       for (InvoiceTerm invoiceTerm : invoiceTermList) {
-        if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
+        if (compensatedRefundIds.contains(invoiceTerm.getId())) {
+          invoiceTerm.setPaymentAmount(BigDecimal.ZERO);
+          invoiceTerm.setAmountPaid(BigDecimal.ZERO);
+          invoiceTermRepo.save(invoiceTerm);
+        } else if (paymentSession.getStatusSelect()
+                == PaymentSessionRepository.STATUS_AWAITING_PAYMENT
             || this.shouldBeProcessed(invoiceTerm)) {
-
-          // FIX: Increment offset BEFORE the paymentAmount check to avoid infinite loop with
-          // refunds
           offset++;
 
           if (invoiceTerm.getPaymentAmount().compareTo(BigDecimal.ZERO) != 0) {
@@ -315,6 +322,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
 
       JPA.clear();
     }
+
+    this.updatePaymentAmountsAfterCompensation(invoiceTermLinkWithRefund);
   }
 
   @Override
@@ -1004,8 +1013,8 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
         JPA.em()
             .createQuery(
                 "SELECT DISTINCT Partner FROM Partner Partner "
-                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner "
-                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine "
+                    + " FULL JOIN MoveLine MoveLine on Partner.id = MoveLine.partner.id "
+                    + " FULL JOIN InvoiceTerm InvoiceTerm on  MoveLine.id = InvoiceTerm.moveLine.id "
                     + " WHERE InvoiceTerm.paymentSession = :paymentSession "
                     + " AND InvoiceTerm.isSelectedOnPaymentSession = true"
                     + " GROUP BY Partner.id "
@@ -1261,6 +1270,28 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
           .map(InvoiceTerm::getPaymentAmount)
           .reduce(BigDecimal::add)
           .ifPresent(moveLine::setAmountPaid);
+    }
+  }
+
+  @Transactional(rollbackOn = {Exception.class})
+  protected void updatePaymentAmountsAfterCompensation(
+      List<Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>>> invoiceTermLinkWithRefund) {
+    if (CollectionUtils.isEmpty(invoiceTermLinkWithRefund)) {
+      return;
+    }
+
+    Map<Long, BigDecimal> reconciledByInvoiceTermId = new HashMap<>();
+    for (Pair<InvoiceTerm, Pair<InvoiceTerm, BigDecimal>> pair : invoiceTermLinkWithRefund) {
+      reconciledByInvoiceTermId.merge(
+          pair.getLeft().getId(), pair.getRight().getRight(), BigDecimal::add);
+    }
+
+    for (Map.Entry<Long, BigDecimal> entry : reconciledByInvoiceTermId.entrySet()) {
+      InvoiceTerm invoiceTerm = invoiceTermRepo.find(entry.getKey());
+      if (invoiceTerm != null) {
+        invoiceTerm.setPaymentAmount(invoiceTerm.getPaymentAmount().subtract(entry.getValue()));
+        invoiceTermRepo.save(invoiceTerm);
+      }
     }
   }
 }

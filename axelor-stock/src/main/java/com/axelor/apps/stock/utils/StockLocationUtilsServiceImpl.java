@@ -132,8 +132,15 @@ public class StockLocationUtilsServiceImpl implements StockLocationUtilsService 
 
   @Override
   public BigDecimal getStockLocationValue(StockLocation stockLocation) {
-    String purchasePriceQuery = getCompanySpecificQuery(stockLocation, "lastPurchasePrice");
-    String avgPriceQuery = getCompanySpecificQuery(stockLocation, "avgPrice");
+    return getStockLocationValue(
+        stockLocation.getId(),
+        stockLocation.getCompany() != null ? stockLocation.getCompany().getId() : null);
+  }
+
+  @Override
+  public BigDecimal getStockLocationValue(Long stockLocationId, Long companyId) {
+    String purchasePriceQuery = getCompanySpecificQuery(companyId, "lastPurchasePrice");
+    String avgPriceQuery = getCompanySpecificQuery(companyId, "avgPrice");
 
     Query query =
         JPA.em()
@@ -159,7 +166,7 @@ public class StockLocationUtilsServiceImpl implements StockLocationUtilsService 
                     + "  WHERE h2.stockLocationLine = self"
                     + ")"
                     + "AND history.qty <> 0");
-    query.setParameter("id", stockLocation.getId());
+    query.setParameter("id", stockLocationId);
 
     List<?> result = query.getResultList();
     return (result.get(0) == null || ((BigDecimal) result.get(0)).signum() == 0)
@@ -167,9 +174,10 @@ public class StockLocationUtilsServiceImpl implements StockLocationUtilsService 
         : ((BigDecimal) result.get(0)).setScale(2, BigDecimal.ROUND_HALF_UP);
   }
 
-  private String getCompanySpecificQuery(StockLocation stockLocation, String price) {
+  private String getCompanySpecificQuery(Long companyId, String price) {
     String purchasePriceQuery = String.format("self.product.%s ", price);
-    if (appBaseService.getAppBase().getCompanySpecificProductFieldsSet() != null
+    if (companyId != null
+        && appBaseService.getAppBase().getCompanySpecificProductFieldsSet() != null
         && appBaseService.getAppBase().getCompanySpecificProductFieldsSet().stream()
             .anyMatch(it -> price.equals(it.getName()))) {
       purchasePriceQuery =
@@ -178,7 +186,7 @@ public class StockLocationUtilsServiceImpl implements StockLocationUtilsService 
               + " FROM ProductCompany productCompany "
               + "WHERE productCompany.product.id = self.product.id "
               + "AND productCompany.company.id = "
-              + stockLocation.getCompany().getId()
+              + companyId
               + ") ";
     }
     return purchasePriceQuery;

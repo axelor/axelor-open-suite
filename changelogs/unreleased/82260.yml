@@ -1,3 +1,0 @@
----
-title : "Invoice: fixed the duplication of budget distribution on invoice line after the move duplication."
-module: axelor-budget

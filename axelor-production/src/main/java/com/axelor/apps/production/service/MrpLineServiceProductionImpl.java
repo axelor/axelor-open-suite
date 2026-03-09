@@ -196,6 +196,7 @@ public class MrpLineServiceProductionImpl extends MrpLineServiceImpl {
                 .ORIGIN_TYPE_MRP); // TODO compute the time to produce to put the manuf order at the
     // correct day
 
+    mrpLine = mrpLineRepo.find(mrpLine.getId());
     linkToOrder(mrpLine, manufOrder);
   }
 

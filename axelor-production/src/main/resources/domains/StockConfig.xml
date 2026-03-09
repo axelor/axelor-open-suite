@@ -7,13 +7,17 @@
 
   <entity name="StockConfig" cacheable="true">
     <many-to-one name="productionVirtualStockLocation"
-      ref="com.axelor.apps.stock.db.StockLocation" title="Production virtual stock location"/>
+      ref="com.axelor.apps.stock.db.StockLocation" title="Production virtual stock location"
+      help="This configuration defines the default production virtual location for the company. Internal stock moves made during a manufacturing order (input moves for manufacturing and output moves once manufacturing is done) will use this location for production by default."/>
     <many-to-one name="wasteStockLocation" ref="com.axelor.apps.stock.db.StockLocation"
-      title="Waste stock location"/>
+      title="Waste stock location"
+      help="This configuration defines the default waste location for the company for production waste. In case of waste output stock moves during manufacturing, they will be sent to this stock location by default."/>
     <many-to-one name="componentDefaultStockLocation"
-      ref="com.axelor.apps.stock.db.StockLocation" title="Components default stock location"/>
+      ref="com.axelor.apps.stock.db.StockLocation" title="Components default stock location"
+      help="This configuration defines the default component stock location for the company. Received components will be stored there, and components needed for production will be picked from there."/>
     <many-to-one name="finishedProductsDefaultStockLocation"
-      ref="com.axelor.apps.stock.db.StockLocation" title="Finished products default stock location"/>
+      ref="com.axelor.apps.stock.db.StockLocation" title="Finished products default stock location"
+      help="This configuration defines the default finished products location for the company. Finished products will be stored there."/>
     <many-to-one name="residualProductsDefaultStockLocation"
       title="Residual products default stock location" ref="com.axelor.apps.stock.db.StockLocation"/>
 
