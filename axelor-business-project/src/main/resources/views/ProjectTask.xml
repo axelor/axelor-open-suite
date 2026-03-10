@@ -30,6 +30,23 @@
     <!-- mgm-fix-gk: Don't show financial status in the grid -->
     <!-- <button name="showFinancialReport" title="Show financial reports" icon="bar-chart-fill" onClick="action-project-task-view-show-financial-datas-panel"/> -->
   </grid>
+
+  <grid name="mgm-tm-dashboard-business-project-task-grid" title="Tasks"
+    model="com.axelor.apps.project.db.ProjectTask" edit-icon="false"
+    orderBy="-priority.technicalTypeSelect">
+    <hilite if="$get('status.id') == $get('project.completedTaskStatus.id')" color="success"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 4" color="danger"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 3" color="warning"/>
+    <hilite if="$get('priority.technicalTypeSelect') == 1" color="grey"/>
+    <field name="name"/>
+    <field name="project"/>
+    <field name="assignedTo"/>
+    <field name="startTime"/>
+    <field name="endTime"/>
+    <field name="status"/>
+    <field name="priority"/>
+  </grid>
+
   <!-- <grid name="business-project-task-project-grid" title="Tasks" model="com.axelor.apps.project.db.ProjectTask"
     edit-icon="true" groupBy="typeSelect" orderBy="-priority.technicalTypeSelect"> -->
   <grid name="business-project-task-project-grid" title="Tasks"
