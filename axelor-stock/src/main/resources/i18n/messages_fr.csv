@@ -952,6 +952,7 @@
 "There's no source stock location selected for the stock's movement %s","Aucun emplacement source selectionné pour le mouvement de stock %s",,
 "This batch will recompute stock location quantities and reset all WAP history lines, are you sure you want to continue ?","Ce batch re-calculera les quantités des emplacements de stocks et effacera toutes les lignes historiques du PMP, voulez-vous continuer ?",,
 "This field can have one of the following values (Purchase, Manufacturing, Inventory, Sale, Manual). The value is fixed when the tracking number is created.","Ce champ peut avoir l'une des valeurs suivantes: Achat, Vente, Manuel, Production ou Inventaire. Cette valeur est déterminée lors de la création du numéro de suivi.",,
+"This stock move is linked to orders with different currencies.","Ce mouvement de stock est lié à des commandes avec des devises différentes.",,
 "This stock move will have a huge impact (more than","Ce mouvement va avoir un énorme impact (plus de",,
 "Time before expiry (in days)","Durée avant péremption (Jours)",,
 "Title","Libellé",,
