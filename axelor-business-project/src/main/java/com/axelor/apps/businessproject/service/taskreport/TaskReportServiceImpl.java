@@ -14,10 +14,12 @@ import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
+import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collections;
@@ -281,6 +283,24 @@ public class TaskReportServiceImpl implements TaskReportService {
         .filter("self.project.id = :projectId")
         .bind("projectId", project.getId())
         .fetchOne();
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void updateAllTaskReported(ProjectTask task) {
+    if (task == null || task.getProject() == null) {
+      return;
+    }
+
+    TaskReport taskReport = getTaskReport(task.getProject());
+    if (taskReport == null) {
+      return;
+    }
+
+    taskReport.setReportedAllTasks(allTasksReported(taskReport));
+
+    // bypass task report repository extension logic
+    JPA.save(taskReport);
   }
 
   /** Validates report and fetch entity from repository */

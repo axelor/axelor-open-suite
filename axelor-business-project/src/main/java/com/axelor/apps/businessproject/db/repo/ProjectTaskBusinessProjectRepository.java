@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskProgressUpdateService;
 import com.axelor.apps.businessproject.service.statuschange.ProjectStatusChangeService;
+import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
 import com.axelor.apps.hr.db.repo.ProjectTaskHRRepository;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -65,7 +66,15 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
 
     if (isNew) {
       if (hasMultipleUsers(projectTask)) {
-        return createTemplateAndIndividualTask(projectTask);
+        ProjectTask templateTask = createTemplateAndIndividualTask(projectTask);
+        Beans.get(TaskReportService.class).updateAllTaskReported(templateTask);
+        try {
+          Beans.get(ProjectStatusChangeService.class)
+              .updateProjectStatus(templateTask.getProject());
+        } catch (AxelorAlertException e) {
+          throw new PersistenceException(e.getMessage(), e);
+        }
+        return templateTask;
       } else {
         // We give priority to the Assigned Employees field if it's set
         if (projectTask.getAssignedEmployees() != null) {
@@ -88,6 +97,10 @@ public class ProjectTaskBusinessProjectRepository extends ProjectTaskHRRepositor
     }
 
     ProjectTask savedTask = super.save(projectTask);
+    if (isNew) {
+      Beans.get(TaskReportService.class).updateAllTaskReported(savedTask);
+    }
+
     try {
       savedTask =
           projectTaskProgressUpdateService.updateChildrenProgress(

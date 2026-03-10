@@ -5,6 +5,7 @@ import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.auth.db.User;
 import java.time.LocalDate;
 
@@ -31,4 +32,6 @@ public interface TaskReportService {
   Timesheet findOrCreateMonthlyTimesheet(Employee employee, LocalDate date);
 
   TaskReport getTaskReport(Project project);
+
+  void updateAllTaskReported(ProjectTask task);
 }
