@@ -61,6 +61,7 @@ import com.google.inject.servlet.RequestScoped;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -557,14 +558,46 @@ public class InvoiceTermServiceImpl implements InvoiceTermService {
     if (CollectionUtils.isEmpty(moveLine.getInvoiceTermList())) {
       return moveLine;
     }
-
-    for (InvoiceTerm invoiceTerm : moveLine.getInvoiceTermList()) {
-      if (!invoiceTerm.getIsCustomized()) {
-        computeDueDateValues(invoiceTerm, dueDate);
+    List<InvoiceTerm> nonCustomizedTerms =
+        moveLine.getInvoiceTermList().stream()
+            .filter(it -> !it.getIsCustomized())
+            .sorted(Comparator.comparing(InvoiceTerm::getSequence))
+            .collect(Collectors.toList());
+    if (CollectionUtils.isEmpty(nonCustomizedTerms)) {
+      return moveLine;
+    }
+    if (nonCustomizedTerms.size() == 1) {
+      setInvoiceTermDueDate(nonCustomizedTerms.get(0), dueDate);
+    } else {
+      InvoiceTerm lastTerm = nonCustomizedTerms.get(nonCustomizedTerms.size() - 1);
+      LocalDate lastDueDate = lastTerm.getDueDate();
+      if (lastDueDate == null) {
+        for (InvoiceTerm invoiceTerm : nonCustomizedTerms) {
+          computeDueDateValues(invoiceTerm, dueDate);
+        }
+        lastDueDate = lastTerm.getDueDate();
+      }
+      if (lastDueDate != null) {
+        long days = ChronoUnit.DAYS.between(lastDueDate, dueDate);
+        for (InvoiceTerm invoiceTerm : nonCustomizedTerms) {
+          LocalDate currentDueDate = invoiceTerm.getDueDate();
+          setInvoiceTermDueDate(
+              invoiceTerm, currentDueDate != null ? currentDueDate.plusDays(days) : dueDate);
+        }
       }
     }
 
     return moveLine;
+  }
+
+  protected void setInvoiceTermDueDate(InvoiceTerm invoiceTerm, LocalDate dueDate) {
+    invoiceTerm.setDueDate(dueDate);
+    if (appAccountService.getAppAccount().getManageFinancialDiscount()
+        && invoiceTerm.getApplyFinancialDiscount()
+        && invoiceTerm.getFinancialDiscount() != null) {
+      invoiceTerm.setFinancialDiscountDeadlineDate(
+          invoiceTermFinancialDiscountService.computeFinancialDiscountDeadlineDate(invoiceTerm));
+    }
   }
 
   @Override
