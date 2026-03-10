@@ -655,7 +655,7 @@
       </panel>
       <panel name="invoiceTermsPanel" title="Terms" showTitle="true"
         if="__config__.app.getApp('account').allowMultiInvoiceTerms"
-        showIf="invoiceTermList != null">
+        showIf="invoiceTermList != null &amp;&amp; operationSubTypeSelect != 2">
         <button name="showInvoiceTermsBtn" title="Show related invoice term(s)"
           onClick="save,action-invoice-view-show-related-invoice-terms"
           readonlyIf="!invoiceTermList.length"/>
