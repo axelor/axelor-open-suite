@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -41,7 +41,7 @@ import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.CallMethod;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.util.HashMap;
 import java.util.List;
@@ -202,10 +202,13 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
 
       if (account != null
           && account.getAnalyticDistributionAuthorized()
-          && accountConfigService
-                  .getAccountConfig(account.getCompany())
-                  .getAnalyticDistributionTypeSelect()
-              == AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT) {
+          && List.of(
+                  AccountConfigRepository.DISTRIBUTION_TYPE_PRODUCT,
+                  AccountConfigRepository.DISTRIBUTION_TYPE_FREE)
+              .contains(
+                  accountConfigService
+                      .getAccountConfig(account.getCompany())
+                      .getAnalyticDistributionTypeSelect())) {
         analyticDistributionTemplate = account.getAnalyticDistributionTemplate();
       }
     }
@@ -317,7 +320,8 @@ public class AccountManagementServiceAccountImpl extends AccountManagementServic
       Account account = null;
       String error = AccountExceptionMessage.ACCOUNT_MANAGEMENT_ACCOUNT_MISSING_TAX;
       if (!isFixedAssets) {
-        if (functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_SALE) {
+        if (functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_SALE
+            || functionalOrigin == MoveRepository.FUNCTIONAL_ORIGIN_LATE_PAYMENT_INTEREST) {
           if (vatSystemSelect == MoveLineRepository.VAT_COMMON_SYSTEM) {
             account = accountManagement.getSaleTaxVatSystem1Account();
             error =

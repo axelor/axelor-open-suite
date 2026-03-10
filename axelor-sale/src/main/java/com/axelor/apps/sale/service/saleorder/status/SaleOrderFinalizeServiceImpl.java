@@ -1,11 +1,27 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.service.saleorder.status;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Blocking;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.BlockingRepository;
-import com.axelor.apps.base.db.repo.SequenceRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.BlockingService;
 import com.axelor.apps.base.service.administration.SequenceService;
@@ -17,12 +33,13 @@ import com.axelor.apps.sale.exception.BlockedSaleOrderException;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderSequenceService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class SaleOrderFinalizeServiceImpl implements SaleOrderFinalizeService {
 
@@ -33,6 +50,7 @@ public class SaleOrderFinalizeServiceImpl implements SaleOrderFinalizeService {
   protected SaleConfigService saleConfigService;
   protected AppSaleService appSaleService;
   protected AppCrmService appCrmService;
+  protected SaleOrderSequenceService saleOrderSequenceService;
 
   @Inject
   public SaleOrderFinalizeServiceImpl(
@@ -42,7 +60,8 @@ public class SaleOrderFinalizeServiceImpl implements SaleOrderFinalizeService {
       SaleOrderPrintService saleOrderPrintService,
       SaleConfigService saleConfigService,
       AppSaleService appSaleService,
-      AppCrmService appCrmService) {
+      AppCrmService appCrmService,
+      SaleOrderSequenceService saleOrderSequenceService) {
     this.saleOrderRepository = saleOrderRepository;
     this.sequenceService = sequenceService;
     this.saleOrderService = saleOrderService;
@@ -50,6 +69,7 @@ public class SaleOrderFinalizeServiceImpl implements SaleOrderFinalizeService {
     this.saleConfigService = saleConfigService;
     this.appSaleService = appSaleService;
     this.appCrmService = appCrmService;
+    this.saleOrderSequenceService = saleOrderSequenceService;
   }
 
   @Override
@@ -85,7 +105,7 @@ public class SaleOrderFinalizeServiceImpl implements SaleOrderFinalizeService {
     }
 
     if (sequenceService.isEmptyOrDraftSequenceNumber(saleOrder.getSaleOrderSeq())) {
-      saleOrder.setSaleOrderSeq(this.getSequence(saleOrder.getCompany(), saleOrder));
+      saleOrder.setSaleOrderSeq(saleOrderSequenceService.getQuotationSequence(saleOrder));
     }
 
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_FINALIZED_QUOTATION);
@@ -109,21 +129,6 @@ public class SaleOrderFinalizeServiceImpl implements SaleOrderFinalizeService {
    */
   protected void checkSaleOrderBeforeFinalization(SaleOrder saleOrder) throws AxelorException {
     saleOrderService.checkUnauthorizedDiscounts(saleOrder);
-  }
-
-  protected String getSequence(Company company, SaleOrder saleOrder) throws AxelorException {
-
-    String seq =
-        sequenceService.getSequenceNumber(
-            SequenceRepository.SALES_ORDER, company, SaleOrder.class, "saleOrderSeq", saleOrder);
-    if (seq == null) {
-      throw new AxelorException(
-          company,
-          TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
-          I18n.get(SaleExceptionMessage.SALES_ORDER_1),
-          company.getName());
-    }
-    return seq;
   }
 
   protected void saveSaleOrderPDFAsAttachment(SaleOrder saleOrder) throws AxelorException {

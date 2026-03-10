@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
@@ -68,6 +68,34 @@
 		public static final String IS_SUPPLIER = "isSupplier";
 		public static final String IS_FACTOR = "isFactor";
 	]]></extra-code>
+
+    <track>
+      <field name="code" on="UPDATE"/>
+      <field name="name" on="UPDATE"/>
+      <field name="journalType" on="UPDATE"/>
+      <field name="exportCode" on="UPDATE"/>
+      <field name="excessPaymentOk" on="UPDATE"/>
+      <field name="editReceiptOk" on="UPDATE"/>
+      <field name="descriptionModel" on="UPDATE"/>
+      <field name="descriptionIdentificationOk" on="UPDATE"/>
+      <field name="notExportOk" on="UPDATE"/>
+      <field name="statusSelect" on="UPDATE"/>
+      <field name="isInvoiceMoveConsolidated" on="UPDATE"/>
+      <field name="sequence" on="UPDATE"/>
+      <field name="company" on="UPDATE"/>
+      <field name="validAccountTypeSet" on="UPDATE"/>
+      <field name="validAccountSet" on="UPDATE"/>
+      <field name="compatiblePartnerTypeSelect" on="UPDATE"/>
+      <field name="authorizeSimulatedMove" on="UPDATE"/>
+      <field name="allowAccountingDaybook" on="UPDATE"/>
+      <field name="authorizedFunctionalOriginSelect" on="UPDATE"/>
+      <field name="hasDuplicateDetectionOnOrigin" on="UPDATE"/>
+      <field name="hasRequiredOrigin" on="UPDATE"/>
+      <field name="prefixOrigin" on="UPDATE"/>
+      <field name="isFillOriginDate" on="UPDATE"/>
+      <field name="allowAccountingNewOnMassEntry" on="UPDATE"/>
+      <field name="authorizedRoleSet" on="UPDATE"/>
+    </track>
 
   </entity>
 

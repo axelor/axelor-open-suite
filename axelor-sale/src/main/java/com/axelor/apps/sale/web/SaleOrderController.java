@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -39,6 +39,7 @@ import com.axelor.apps.base.service.PricedOrderDomainService;
 import com.axelor.apps.base.service.TradingNameService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.crm.translation.ITranslation;
 import com.axelor.apps.sale.db.Pack;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
@@ -47,16 +48,21 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorCheckService;
+import com.axelor.apps.sale.service.configurator.ConfiguratorSaleOrderDuplicateService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCheckService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderComplementaryProductService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderComputeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderCreateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDateService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderDomainService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderInitValueService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnChangeService;
-import com.axelor.apps.sale.service.saleorder.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderVersionService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeService;
 import com.axelor.apps.sale.service.saleorder.print.SaleOrderPrintService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
@@ -67,7 +73,7 @@ import com.axelor.apps.sale.service.saleorder.views.SaleOrderGroupService;
 import com.axelor.apps.sale.service.saleorder.views.SaleOrderViewService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineContextHelper;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineFiscalPositionService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePackService;
+import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
@@ -78,9 +84,11 @@ import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.axelor.utils.db.Wizard;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
-import com.google.inject.Singleton;
+import jakarta.annotation.Nullable;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -91,7 +99,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
-import javax.annotation.Nullable;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -310,9 +318,12 @@ public class SaleOrderController {
   public void checkBeforeConfirm(ActionRequest request, ActionResponse response)
       throws AxelorException {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
-    String alert = Beans.get(SaleOrderCheckService.class).confirmCheckAlert(saleOrder);
-    if (StringUtils.notEmpty(alert)) {
-      response.setAlert(alert);
+    List<String> alertList = Beans.get(SaleOrderCheckService.class).confirmCheckAlert(saleOrder);
+    if (!CollectionUtils.isEmpty(alertList)) {
+      String msg =
+          alertList.size() == 1 ? alertList.get(0) : StringHtmlListBuilder.formatMessage(alertList);
+      response.setAlert(
+          msg + " " + I18n.get(SaleExceptionMessage.SALE_ORDER_DO_YOU_WANT_TO_PROCEED));
     }
   }
 
@@ -427,7 +438,7 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
 
     try {
-      saleOrder = Beans.get(SaleOrderService.class).computeEndOfValidityDate(saleOrder);
+      saleOrder = Beans.get(SaleOrderDateService.class).computeEndOfValidityDate(saleOrder);
       response.setValue("endOfValidityDate", saleOrder.getEndOfValidityDate());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -637,7 +648,8 @@ public class SaleOrderController {
 
     try {
       List<SaleOrderLine> saleOrderLineList =
-          Beans.get(SaleOrderOnLineChangeService.class).handleComplementaryProducts(saleOrder);
+          Beans.get(SaleOrderComplementaryProductService.class)
+              .handleComplementaryProducts(saleOrder);
       response.setValue("saleOrderLineList", saleOrderLineList);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
@@ -679,6 +691,7 @@ public class SaleOrderController {
     SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
     SaleOrder copiedSO =
         Beans.get(SaleOrderService.class).separateInNewQuotation(saleOrder, saleOrderLines);
+    response.setReload(true);
     response.setView(
         ActionView.define(I18n.get("Sale order"))
             .model(SaleOrder.class.getName())
@@ -755,7 +768,10 @@ public class SaleOrderController {
         return;
       }
 
-      Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
+      String alert = Beans.get(SaleOrderOnLineChangeService.class).onLineChange(saleOrder);
+      if (StringUtils.notEmpty(alert)) {
+        response.setInfo(alert);
+      }
 
       response.setValues(Mapper.toMap(saleOrder));
       response.setAttrs(Beans.get(SaleOrderGroupService.class).onChangeSaleOrderLine(saleOrder));
@@ -835,5 +851,59 @@ public class SaleOrderController {
     saleOrderMap.putAll(Beans.get(SaleOrderOnChangeService.class).companyOnChange(saleOrder));
     response.setValues(saleOrderMap);
     response.setAttrs(Beans.get(SaleOrderViewService.class).getCompanyAttrs(saleOrder));
+  }
+
+  public void fillIncoterm(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    boolean isIncotermRequired = Beans.get(SaleOrderService.class).isIncotermRequired(saleOrder);
+    if (isIncotermRequired) {
+      response.setView(
+          ActionView.define(I18n.get("Fill incoterm"))
+              .model(SaleOrder.class.getName())
+              .add("form", "sale-order-incoterm-wizard-form")
+              .param("popup", "reload")
+              .param("forceEdit", "true")
+              .param("show-toolbar", "false")
+              .param("show-confirm", "false")
+              .context("_showRecord", saleOrder.getId())
+              .map());
+    }
+  }
+
+  public void updateSaleOrderLinesDeliveryAddress(ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    List<SaleOrderLine> saleOrderLineList =
+        Beans.get(SaleOrderDeliveryAddressService.class)
+            .updateSaleOrderLinesDeliveryAddress(saleOrder);
+    response.setValue("saleOrderLineList", saleOrderLineList);
+  }
+
+  public void updateSaleOrderLinesDeliveryAddressStr(
+      ActionRequest request, ActionResponse response) {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+    List<SaleOrderLine> saleOrderLineList =
+        Beans.get(SaleOrderDeliveryAddressService.class)
+            .updateSaleOrderLinesDeliveryAddressStr(saleOrder);
+    response.setValue("saleOrderLineList", saleOrderLineList);
+  }
+
+  public void duplicateWithConfigurator(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    SaleOrder saleOrder = request.getContext().asType(SaleOrder.class);
+
+    Beans.get(ConfiguratorCheckService.class).checkHaveConfigurator(saleOrder);
+
+    var copySaleOrder =
+        Beans.get(ConfiguratorSaleOrderDuplicateService.class)
+            .duplicateSaleOrder(Beans.get(SaleOrderRepository.class).find(saleOrder.getId()));
+
+    response.setView(
+        ActionView.define(I18n.get(ITranslation.SALE_QUOTATION))
+            .model(SaleOrder.class.getName())
+            .add("form", "sale-order-form")
+            .param("forceEdit", "true")
+            .param("forceTitle", "true")
+            .context("_showRecord", String.valueOf(copySaleOrder.getId()))
+            .map());
   }
 }

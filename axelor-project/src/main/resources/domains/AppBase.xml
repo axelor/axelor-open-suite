@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="studio" package="com.axelor.studio.db"/>
 
   <entity name="AppBase" cacheable="true">
     <boolean name="enableSiteManagementForProject"
-      title="Enable site management for project"/>
+      title="Enable site management for project"
+      help="This feature enables site management for projects, a site representing a physical location whether it is an administrative building, a customer building, a construction site, etc."/>
     <many-to-many name="defaultSitesSet" title="Default sites"
-      ref="com.axelor.apps.base.db.Site"/>
+      ref="com.axelor.apps.base.db.Site"
+      help="Allows defining a default site that will be linked to projects."/>
+
+    <extra-code>
+	    <![CDATA[
+	        public static final String SHORTCUT_ACTIVE_PROJECT = "2";
+	    ]]>
+    </extra-code>
+
+    <track>
+      <field name="enableSiteManagementForProject" on="UPDATE"/>
+    </track>
 
   </entity>
-
 </domain-models>

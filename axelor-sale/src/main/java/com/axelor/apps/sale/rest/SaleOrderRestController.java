@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,27 +25,32 @@ import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.rest.dto.SaleOrderAddLinePutRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderLineResponse;
 import com.axelor.apps.sale.rest.dto.SaleOrderPostRequest;
+import com.axelor.apps.sale.rest.dto.SaleOrderPutRequest;
 import com.axelor.apps.sale.rest.dto.SaleOrderResponse;
-import com.axelor.apps.sale.service.SaleOrderRestService;
 import com.axelor.apps.sale.service.saleorder.SaleOrderGeneratorService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineGeneratorService;
+import com.axelor.apps.sale.service.saleorder.SaleOrderRestService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderConfirmService;
+import com.axelor.apps.sale.service.saleorder.status.SaleOrderFinalizeService;
+import com.axelor.apps.sale.service.saleorderline.creation.SaleOrderLineGeneratorService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
+import com.axelor.web.ITranslation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.math.BigDecimal;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 @Path("/aos/sale-order")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -71,6 +76,7 @@ public class SaleOrderRestController {
         Beans.get(SaleOrderGeneratorService.class)
             .createSaleOrder(
                 requestBody.fetchClientPartner(),
+                requestBody.fetchDeliveredPartner(),
                 requestBody.fetchCompany(),
                 requestBody.fetchContact(),
                 requestBody.fetchCurrency(),
@@ -97,7 +103,7 @@ public class SaleOrderRestController {
         .createAccess(SaleOrderLine.class)
         .writeAccess(SaleOrder.class, saleOrderId)
         .check();
-    SaleOrder saleOrder = ObjectFinder.find(SaleOrder.class, saleOrderId, ObjectFinder.NO_VERSION);
+    SaleOrder saleOrder = ObjectFinder.find(SaleOrder.class, saleOrderId, requestBody.getVersion());
     SaleOrderLineGeneratorService saleorderLineCreateService =
         Beans.get(SaleOrderLineGeneratorService.class);
     Product product = requestBody.getSaleOrderLine().fetchProduct();
@@ -106,5 +112,27 @@ public class SaleOrderRestController {
         saleorderLineCreateService.createSaleOrderLine(saleOrder, product, quantity);
     return ResponseConstructor.buildCreateResponse(
         saleOrderLine, new SaleOrderLineResponse(saleOrderLine));
+  }
+
+  @Operation(
+      summary = "Update sale order status",
+      tags = {"Sale order"})
+  @Path("/status/{saleOrderId}")
+  @PUT
+  @HttpExceptionHandler
+  public Response changeSaleOrderStatus(
+      SaleOrderPutRequest requestBody, @PathParam("saleOrderId") Long saleOrderId)
+      throws AxelorException {
+    new SecurityCheck().writeAccess(SaleOrder.class, saleOrderId).check();
+    RequestValidator.validateBody(requestBody);
+    String toStatus = requestBody.getToStatus();
+    SaleOrder saleOrder = ObjectFinder.find(SaleOrder.class, saleOrderId, requestBody.getVersion());
+    if (SaleOrderPutRequest.SALE_ORDER_UPDATE_FINALIZE.equals(toStatus)) {
+      Beans.get(SaleOrderFinalizeService.class).finalizeQuotation(saleOrder);
+    }
+    if (SaleOrderPutRequest.SALE_ORDER_UPDATE_CONFIRM.equals(toStatus)) {
+      Beans.get(SaleOrderConfirmService.class).confirmSaleOrder(saleOrder);
+    }
+    return ResponseConstructor.build(Response.Status.OK, I18n.get(ITranslation.STATUS_CHANGE));
   }
 }

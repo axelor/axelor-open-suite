@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -35,7 +35,7 @@
     <many-to-one name="parentPartner" ref="com.axelor.apps.base.db.Partner"
       title="Mother company" massUpdate="true" index="false"/>
     <one-to-many name="partnerAddressList" ref="com.axelor.apps.base.db.PartnerAddress"
-      title="Addresses" mappedBy="partner"/>
+      title="Addresses" mappedBy="partner" copy="false"/>
 
     <many-to-many name="contactPartnerSet" ref="com.axelor.apps.base.db.Partner"
       title="Contacts"/>
@@ -57,7 +57,7 @@
       title="Companies associated to"/>
 
     <one-to-many name="bankDetailsList" ref="com.axelor.apps.base.db.BankDetails"
-      mappedBy="partner" title="Bank Details list"/>
+      mappedBy="partner" title="Bank Details list" copy="false"/>
 
     <!-- Page règle de facturation/paiement -->
     <!-- <many-to-one name="bankDetails" ref="com.axelor.apps.base.db.BankDetails" title="Default Bank
@@ -75,7 +75,7 @@
 
     <!-- PAGE Blocage -->
     <one-to-many name="blockingList" ref="com.axelor.apps.base.db.Blocking"
-      title="Blocking follow-up List" mappedBy="partner" orderBy="-blockingToDate"/>
+      title="Blocking follow-up List" mappedBy="partner" orderBy="-blockingToDate" copy="false"/>
 
     <many-to-many name="batchSet" ref="com.axelor.apps.base.db.Batch" title="Batches"/>
 
@@ -97,8 +97,8 @@
     <string name="taxNbr" title="Tax N°"/>
     <string name="siren" title="Short registration number"/>
     <string name="nic" title="Internal Classification Number"/>
-    <many-to-one name="tradingName" ref="com.axelor.apps.base.db.TradingName"
-      title="Agency"/>
+    <many-to-many name="tradingNameSet" ref="com.axelor.apps.base.db.TradingName"
+      title="Agencies"/>
     <boolean name="isInternal" title="Internal partner" default="false"/>
 
     <string name="fullName" title="Name" namecolumn="true"/>
@@ -126,11 +126,11 @@
       title="Roles"/>
 
     <one-to-many name="managedByPartnerLinkList"
-      ref="com.axelor.apps.base.db.PartnerLink" title="Managed by" mappedBy="partner1"/>
+      ref="com.axelor.apps.base.db.PartnerLink" title="Managed by" mappedBy="partner1" copy="false"/>
     <one-to-many name="managedForPartnerLinkList"
-      ref="com.axelor.apps.base.db.PartnerLink" title="Managed for" mappedBy="partner2"/>
+      ref="com.axelor.apps.base.db.PartnerLink" title="Managed for" mappedBy="partner2" copy="false"/>
 
-    <many-to-many ref="com.axelor.apps.base.db.Tag" name="partnerTagSet" title="Tags"/>
+    <many-to-many ref="com.axelor.apps.base.db.Tag" name="tagSet" title="Tags"/>
 
     <!-- -Json fields -->
     <string name="partnerAttrs" title="Fields" json="true"/>
@@ -145,8 +145,7 @@
 
 		public static final int PARTNER_TITLE_M = 1;
 		public static final int PARTNER_TITLE_MS = 2;
-		public static final int PARTNER_TITLE_DR = 3;
-		public static final int PARTNER_TITLE_PROF = 4;
+		public static final int PARTNER_TITLE_MX = 3;
 	]]>
     </extra-code>
 

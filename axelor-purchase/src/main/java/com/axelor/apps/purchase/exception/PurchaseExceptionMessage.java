@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -52,6 +52,8 @@ public final class PurchaseExceptionMessage {
       "The trading name must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_ERROR_FISCAL_POSITION = /*$$(*/
       "The fiscal position must be the same for all purchase orders" /*)*/;
+  public static final String PURCHASE_ORDER_MERGE_ERROR_ATI_CONFIG = /*$$(*/
+      "The ATI configuration must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_CONFIRMATION_NEEDED = /*$$(*/
       "The contact partner and price list must be the same for all purchase orders." /*)*/;
 
@@ -93,9 +95,22 @@ public final class PurchaseExceptionMessage {
       "Can not cancel already canceled purchase request." /*)*/;
   public static final String PURCHASE_REQUEST_DRAFT_WRONG_STATUS = /*$$(*/
       "Can only return to draft from canceled purchase request." /*)*/;
+  public static final String PURCHASE_REQUEST_PO_ALREADY_LINKED = /*$$(*/
+      "The purchase request %s is already linked to a purchaseOrder" /*)*/;
+  public static final String PURCHASE_REQUEST_NOT_ACCEPTED_FOR_PO = /*$$(*/
+      "The purchase request %s must be accepted before proceeding with the purchase." /*)*/;
 
   public static final String DIFFERENT_SUPPLIER = /*$$(*/
       "The supplier of the purchase order is different from the default supplier of the product." /*)*/;
   public static final String PURCHASE_ORDER_CANNOT_DELETE_VALIDATED_ORDER = /*$$(*/
       "It is not possible to delete a validated order." /*)*/;
+
+  public static final String CALL_FOR_TENDER_MISSING_TEMPLATE = /*$$(*/
+      "A message template is needed to send a mail" /*)*/;
+  public static final String CALL_FOR_TENDER_NO_SEQ = /*$$(*/
+      "The company %s doesn't have any configured sequence for the call for tenders" /*)*/;
+
+  public static final String PURCHASE_ORDER_FINISHED = /*$$(*/
+      "This purchase order is finished." /*)*/;
+  public static final String CALL_FOR_TENDER_NO_PO_SELECTED = /*$$(*/ "No selected offer." /*)*/;
 }

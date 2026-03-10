@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,15 +19,17 @@
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.service.administration.SequenceService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderLineRepository;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
-import com.google.inject.Inject;
+import com.axelor.apps.sale.service.app.AppSaleService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnLineChangeService;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 public class SaleOrderVersionServiceImpl implements SaleOrderVersionService {
@@ -36,7 +38,7 @@ public class SaleOrderVersionServiceImpl implements SaleOrderVersionService {
   protected SaleOrderLineRepository saleOrderLineRepository;
   protected AppBaseService appBaseService;
   protected SaleOrderOnLineChangeService saleOrderOnLineChangeService;
-  protected SequenceService sequenceService;
+  protected AppSaleService appSaleService;
 
   @Inject
   public SaleOrderVersionServiceImpl(
@@ -44,35 +46,58 @@ public class SaleOrderVersionServiceImpl implements SaleOrderVersionService {
       SaleOrderLineRepository saleOrderLineRepository,
       AppBaseService appBaseService,
       SaleOrderOnLineChangeService saleOrderOnLineChangeService,
-      SequenceService sequenceService) {
+      AppSaleService appSaleService) {
     this.saleOrderRepository = saleOrderRepository;
     this.saleOrderLineRepository = saleOrderLineRepository;
     this.appBaseService = appBaseService;
     this.saleOrderOnLineChangeService = saleOrderOnLineChangeService;
-    this.sequenceService = sequenceService;
+    this.appBaseService = appSaleService;
+    this.appSaleService = appSaleService;
   }
 
   @Override
   @Transactional(rollbackOn = {Exception.class})
-  public void createNewVersion(SaleOrder saleOrder) throws AxelorException {
-    saleOrder
-        .getSaleOrderLineList()
-        .forEach(saleOrderLine -> historizeSaleOrderLine(saleOrder, saleOrderLine));
+  public void createNewVersion(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    saleOrderLineList.sort(Comparator.comparing(SaleOrderLine::getId));
+    saleOrderLineList.forEach(saleOrderLine -> historizeSaleOrderLine(saleOrder, saleOrderLine));
     saleOrder.setStatusSelect(SaleOrderRepository.STATUS_DRAFT_QUOTATION);
     saleOrder.setVersionNumber(saleOrder.getVersionNumber() + 1);
-    saleOrder.setSaleOrderSeq(sequenceService.getDraftSequenceNumber(saleOrder));
   }
 
   @Transactional(rollbackOn = {Exception.class})
   protected void historizeSaleOrderLine(SaleOrder saleOrder, SaleOrderLine saleOrderLine) {
-    SaleOrderLine oldVersionSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, true);
+    SaleOrderLine oldVersionSaleOrderLine = saleOrderLineRepository.copy(saleOrderLine, false);
     oldVersionSaleOrderLine.setSaleOrder(null);
     oldVersionSaleOrderLine.setOldVersionSaleOrder(saleOrder);
     oldVersionSaleOrderLine.setVersionNumber(saleOrder.getVersionNumber());
     oldVersionSaleOrderLine.setVersionDateT(
         appBaseService.getTodayDateTime(saleOrder.getCompany()).toLocalDateTime());
     oldVersionSaleOrderLine.setArchived(true);
+    historizeMainSaleOrderLine(
+        saleOrder, saleOrderLine.getMainSaleOrderLine(), oldVersionSaleOrderLine);
     saleOrderLineRepository.save(oldVersionSaleOrderLine);
+  }
+
+  protected void historizeMainSaleOrderLine(
+      SaleOrder saleOrder, SaleOrderLine mainSaleOrderLine, SaleOrderLine oldVersionSaleOrderLine) {
+    if (mainSaleOrderLine == null
+        || appSaleService.getAppSale() == null
+        || !appSaleService.getAppSale().getManagePartnerComplementaryProduct()) {
+      return;
+    }
+    SaleOrderLine line =
+        saleOrderLineRepository
+            .all()
+            .filter(
+                "self.product = :product AND self.id != :id AND self.oldVersionSaleOrder = :saleOrder AND self.versionNumber = :versionNumber")
+            .bind("product", mainSaleOrderLine.getProduct())
+            .bind("id", mainSaleOrderLine.getId())
+            .bind("saleOrder", saleOrder)
+            .bind("versionNumber", saleOrder.getVersionNumber())
+            .order("id")
+            .fetchOne();
+    oldVersionSaleOrderLine.setMainSaleOrderLine(line);
   }
 
   @Override
@@ -117,9 +142,10 @@ public class SaleOrderVersionServiceImpl implements SaleOrderVersionService {
     }
     createNewVersion(saleOrder);
     saleOrder.clearSaleOrderLineList();
-    getOldVersionSaleOrderLines(saleOrder, versionNumber)
-        .forEach(
-            oldVersionSaleOrderLine -> recoverSaleOrderLine(saleOrder, oldVersionSaleOrderLine));
+    List<SaleOrderLine> saleOrderLines = getOldVersionSaleOrderLines(saleOrder, versionNumber);
+    saleOrderLines.sort(Comparator.comparing(SaleOrderLine::getId));
+    saleOrderLines.forEach(
+        oldVersionSaleOrderLine -> recoverSaleOrderLine(saleOrder, oldVersionSaleOrderLine));
     if (!isNewVersion) {
       saleOrder.setVersionNumber(saleOrder.getVersionNumber() - 1);
     }
@@ -128,10 +154,33 @@ public class SaleOrderVersionServiceImpl implements SaleOrderVersionService {
   }
 
   protected void recoverSaleOrderLine(SaleOrder saleOrder, SaleOrderLine oldVersionSaleOrderLine) {
-    SaleOrderLine saleOrderLine = saleOrderLineRepository.copy(oldVersionSaleOrderLine, true);
+    SaleOrderLine saleOrderLine = saleOrderLineRepository.copy(oldVersionSaleOrderLine, false);
     saleOrderLine.setOldVersionSaleOrder(null);
     saleOrderLine.setSaleOrder(saleOrder);
     saleOrder.setArchived(null);
+    recoverMainSaleOrderLine(
+        saleOrder, oldVersionSaleOrderLine.getMainSaleOrderLine(), saleOrderLine);
     saleOrder.addSaleOrderLineListItem(saleOrderLine);
+  }
+
+  protected void recoverMainSaleOrderLine(
+      SaleOrder saleOrder, SaleOrderLine mainSaleOrderLine, SaleOrderLine saleOrderLine) {
+    if (mainSaleOrderLine == null
+        || appSaleService.getAppSale() == null
+        || !appSaleService.getAppSale().getManagePartnerComplementaryProduct()) {
+      return;
+    }
+    SaleOrderLine line =
+        saleOrderLineRepository
+            .all()
+            .filter(
+                "self.product = :product AND self.id != :id AND self.saleOrder = :saleOrder AND self.versionNumber = :versionNumber")
+            .bind("product", mainSaleOrderLine.getProduct())
+            .bind("id", mainSaleOrderLine.getId())
+            .bind("saleOrder", saleOrder)
+            .bind("versionNumber", saleOrderLine.getVersionNumber())
+            .order("id")
+            .fetchOne();
+    saleOrderLine.setMainSaleOrderLine(line);
   }
 }

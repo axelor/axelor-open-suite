@@ -1,4 +1,4 @@
-"code";"name";"password";"group.code";"language";"homeAction";"importId";"companySet.importId";"activeCompany.id";"partner.importId";"activeCashRegister.id";"activeTeam.importId";"picture_fileName";"blocked";"stepStatusSelect";"localization.importId"
+"code";"name";"password";"group.code";"language";"homeAction";"importId";"companySet.importId";"activeCompany.id";"partner_importId";"activeCashRegister.id";"activeTeam.importId";"picture_fileName";"blocked";"stepStatusSelect";"localization.importId"
 "admin";"Admin";"admin";"admins";"en-gb";;1;1;1;90019;1;4;"img/user/1033_128px.png";"false";"5";1
 "demo";"Demo";"demo";"users";"en-gb";;2;1;1;90020;1;4;"img/user/1033_128px.png";"false";"5";1
 "psdt";"Yoann MARQUES";"psdt";"MNGT";"en-gb";;3;1;1;90001;1;4;"img/user/1033_128px.png";"false";"5";1

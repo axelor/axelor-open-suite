@@ -1,15 +1,34 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.project.service;
 
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.TaskStatusProgressByCategory;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ProjectTaskCategoryServiceImpl implements ProjectTaskCategoryService {
@@ -61,7 +80,12 @@ public class ProjectTaskCategoryServiceImpl implements ProjectTaskCategoryServic
     BigDecimal oldValue = BigDecimal.ZERO;
     for (TaskStatusProgressByCategory taskStatusProgressByCategory :
         projectTaskCategory.getTaskStatusProgressByCategoryList().stream()
-            .filter(progress -> !progress.getTaskStatus().getIsCompleted())
+            .filter(
+                progress ->
+                    !Optional.ofNullable(progress)
+                        .map(TaskStatusProgressByCategory::getTaskStatus)
+                        .map(TaskStatus::getIsCompleted)
+                        .orElse(true))
             .sorted(Comparator.comparing(progress -> progress.getTaskStatus().getSequence()))
             .collect(Collectors.toList())) {
       if (taskStatusProgressByCategory.getProgress().compareTo(oldValue) < 0) {

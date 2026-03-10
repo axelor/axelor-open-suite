@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
+
+  <grid id="production-control-plan-line-grid" name="control-plan-line-grid"
+    title="Control plan lines" model="com.axelor.apps.quality.db.ControlEntryPlanLine"
+    extension="true">
+    <extend target="//field[@name='characteristic']">
+      <insert position="after">
+        <field name="machineType" if="__config__.app.isApp('production')"/>
+      </insert>
+    </extend>
+  </grid>
+
+  <form id="production-control-plan-line-form" name="control-plan-line-form"
+    title="Control plan line" model="com.axelor.apps.quality.db.ControlEntryPlanLine"
+    extension="true">
+    <extend target="//panel[@mainPanel]/field[@name='name']">
+      <insert position="after">
+        <field name="machineType" colSpan="6" if="__config__.app.isApp('production')"/>
+      </insert>
+    </extend>
+  </form>
+
+</object-views>

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,20 +21,21 @@ package com.axelor.apps.account.service;
 import com.axelor.apps.account.db.ClosureAssistant;
 import com.axelor.apps.account.db.ClosureAssistantLine;
 import com.axelor.apps.account.db.repo.ClosureAssistantRepository;
+import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Year;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.auth.AuthUtils;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.TypedQuery;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.TypedQuery;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ClosureAssistantServiceImpl implements ClosureAssistantService {
@@ -145,5 +146,24 @@ public class ClosureAssistantServiceImpl implements ClosureAssistantService {
       }
     }
     return false;
+  }
+
+  @Override
+  public Long getDaybookMovesCount(Year year, String accountType, Company company) {
+    if (company != null && !company.getAccountConfig().getAccountingDaybook()) {
+      return 0l;
+    }
+    return JPA.em()
+        .createQuery(
+            "SELECT COUNT(DISTINCT ml.move.id) "
+                + "FROM MoveLine ml "
+                + "WHERE ml.move.period.year = :year "
+                + "AND ml.account.accountType.technicalTypeSelect = :accountType "
+                + "AND ml.move.statusSelect = :statusSelect",
+            Long.class)
+        .setParameter("year", year)
+        .setParameter("accountType", accountType)
+        .setParameter("statusSelect", MoveRepository.STATUS_DAYBOOK)
+        .getSingleResult();
   }
 }

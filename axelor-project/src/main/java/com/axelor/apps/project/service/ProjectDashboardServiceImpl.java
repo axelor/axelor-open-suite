@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,12 +21,14 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.TaskStatus;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskCategoryRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
-import com.google.inject.Inject;
+import com.axelor.db.JPA;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -51,7 +53,6 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   public Map<String, Object> getData(Project project) {
     Map<String, Object> dataMap = new HashMap<>();
     dataMap.put("$projectId", project.getId());
-    dataMap.put("$name", project.getFullName());
 
     if (StringUtils.notEmpty(project.getDescription())) {
       dataMap.put("$description", Jsoup.parse(project.getDescription()).text());
@@ -97,7 +98,14 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
       ProjectTaskCategory category = entry.getKey();
       int totalCount = projectTaskList.size();
       long closedCount =
-          projectTaskList.stream().filter(task -> task.getStatus().getIsCompleted()).count();
+          projectTaskList.stream()
+              .filter(
+                  task ->
+                      Optional.ofNullable(task)
+                          .map(ProjectTask::getStatus)
+                          .map(TaskStatus::getIsCompleted)
+                          .orElse(false))
+              .count();
 
       categoryMap.put(
           "categoryId", Optional.ofNullable(category).map(ProjectTaskCategory::getId).orElse(0L));
@@ -121,23 +129,24 @@ public class ProjectDashboardServiceImpl implements ProjectDashboardService {
   }
 
   protected Set<User> getMembers(Project project) {
-    Set<User> membersSet = new HashSet<>();
-    projectRepo
-        .all()
-        .filter("self.id IN ?1", projectToolService.getRelatedProjectIds(project))
-        .fetch()
-        .stream()
-        .forEach(subProject -> membersSet.addAll(subProject.getMembersUserSet()));
-    return membersSet;
+    List<User> users =
+        JPA.em()
+            .createQuery(
+                "SELECT DISTINCT new User(user.code, user.name) FROM Project self JOIN self.membersUserSet user WHERE self.id IN :ids",
+                User.class)
+            .setParameter("ids", projectToolService.getRelatedProjectIds(project))
+            .getResultList();
+    return new HashSet<>(users);
   }
 
   protected List<Project> getSubprojects(Project project) {
-    Set<Long> contextProjectIds = projectToolService.getRelatedProjectIds(project);
-    contextProjectIds.remove(project.getId());
-    if (contextProjectIds.isEmpty()) {
+    Set<Long> projectIdsSet = new HashSet<>();
+    projectToolService.getChildProjectIds(projectIdsSet, project);
+    projectIdsSet.remove(project.getId());
+    if (projectIdsSet.isEmpty()) {
       return new ArrayList<>();
     }
-    return projectRepo.all().filter("self.id IN ?1", contextProjectIds).fetch();
+    return projectRepo.all().filter("self.id IN ?1", projectIdsSet).fetch();
   }
 
   protected Comparator<ProjectTask> getTaskComparator() {

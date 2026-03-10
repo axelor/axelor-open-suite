@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,7 +25,7 @@ import com.axelor.apps.base.db.Unit;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService {
@@ -53,7 +53,7 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
     }
 
     return createBillOfMaterialLine(
-        product, bom, BigDecimal.ONE, billOfMaterial.getUnit(), priority, false);
+        product, bom, BigDecimal.ONE, billOfMaterial.getUnit(), priority, false, BigDecimal.ZERO);
   }
 
   @Override
@@ -63,7 +63,8 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
       BigDecimal qty,
       Unit unit,
       Integer priority,
-      boolean hasNoManageStock) {
+      boolean hasNoManageStock,
+      BigDecimal wasteRate) {
 
     BillOfMaterialLine billOfMaterialLine = new BillOfMaterialLine();
 
@@ -71,6 +72,7 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
     billOfMaterialLine.setQty(qty);
     billOfMaterialLine.setUnit(unit);
     billOfMaterialLine.setPriority(priority);
+    billOfMaterialLine.setWasteRate(wasteRate);
 
     if (billOfMaterial != null) {
       billOfMaterialLine.setBillOfMaterial(billOfMaterial);
@@ -88,7 +90,13 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
     boolean hasNoManageStock = billOfMaterial.getHasNoManageStock();
 
     return createBillOfMaterialLine(
-        product, billOfMaterial, qty, billOfMaterial.getUnit(), null, hasNoManageStock);
+        product,
+        billOfMaterial,
+        qty,
+        billOfMaterial.getUnit(),
+        null,
+        hasNoManageStock,
+        BigDecimal.ZERO);
   }
 
   @Override
@@ -101,6 +109,8 @@ public class BillOfMaterialLineServiceImpl implements BillOfMaterialLineService 
             .getProductSubTypeSelect()
             .equals(ProductRepository.PRODUCT_SUB_TYPE_SEMI_FINISHED_PRODUCT)) {
       billOfMaterialLine.setBillOfMaterial(billOfMaterialService.getBOM(product, company));
+    } else {
+      billOfMaterialLine.setBillOfMaterial(null);
     }
   }
 

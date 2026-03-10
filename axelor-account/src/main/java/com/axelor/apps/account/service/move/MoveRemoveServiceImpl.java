@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,8 +35,8 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.service.ArchivingService;
 import com.google.common.collect.Lists;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.Map;
 
@@ -131,7 +131,7 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
     String moveModelError = null;
     for (Map.Entry<String, String> entry : objectsLinkToMoveMap.entrySet()) {
       String modelName = I18n.get(archivingService.getModelTitle(entry.getKey()));
-      if (!entry.getKey().equals("MoveLine")) {
+      if (!entry.getKey().equals("MoveLine") && !entry.getKey().equals("MoveLineMassEntry")) {
         if (moveModelError == null) {
           moveModelError = modelName;
         } else {
@@ -194,7 +194,12 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   @Override
   public List<String> getModelsToIgnoreList() {
     return Lists.newArrayList(
-        "Move", "Reconcile", "InvoiceTerm", "AnalyticMoveLine", "TaxPaymentMoveLine");
+        "Move",
+        "Reconcile",
+        "InvoiceTerm",
+        "AnalyticMoveLine",
+        "TaxPaymentMoveLine",
+        "MoveLineMassEntry");
   }
 
   @Override
@@ -219,7 +224,6 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
         if (move.getStatusSelect().equals(MoveRepository.STATUS_NEW)
             || move.getStatusSelect().equals(MoveRepository.STATUS_SIMULATED)) {
           this.deleteMove(move);
-          JPA.flush();
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_DAYBOOK)) {
           this.archiveDaybookMove(move);
         } else if (move.getStatusSelect().equals(MoveRepository.STATUS_CANCELED)) {
@@ -239,5 +243,6 @@ public class MoveRemoveServiceImpl implements MoveRemoveService {
   @Transactional
   public void deleteMove(Move move) {
     moveRepo.remove(move);
+    JPA.flush();
   }
 }

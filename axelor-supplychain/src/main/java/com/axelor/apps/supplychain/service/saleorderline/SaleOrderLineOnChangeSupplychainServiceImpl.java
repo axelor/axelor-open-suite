@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.supplychain.service.saleorderline;
 
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -8,13 +26,13 @@ import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineDiscountService;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineOnChangeServiceImpl;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePriceService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineTaxService;
 import com.axelor.apps.sale.service.saleorderline.product.SaleOrderLineComplementaryProductService;
+import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.apps.supplychain.model.AnalyticLineModel;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.studio.db.AppSupplychain;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,8 +42,6 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
   protected AppAccountService appAccountService;
   protected SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain;
   protected AppSupplychainService appSupplychainService;
-  protected SaleOrderLineProductSupplychainService saleOrderLineProductSupplychainService;
-  protected SaleOrderLineAnalyticService saleOrderLineAnalyticService;
 
   @Inject
   public SaleOrderLineOnChangeSupplychainServiceImpl(
@@ -37,9 +53,7 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
       AnalyticLineModelService analyticLineModelService,
       AppAccountService appAccountService,
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
-      AppSupplychainService appSupplychainService,
-      SaleOrderLineProductSupplychainService saleOrderLineProductSupplychainService,
-      SaleOrderLineAnalyticService saleOrderLineAnalyticService) {
+      AppSupplychainService appSupplychainService) {
     super(
         saleOrderLineDiscountService,
         saleOrderLineComputeService,
@@ -50,30 +64,20 @@ public class SaleOrderLineOnChangeSupplychainServiceImpl extends SaleOrderLineOn
     this.appAccountService = appAccountService;
     this.saleOrderLineServiceSupplyChain = saleOrderLineServiceSupplyChain;
     this.appSupplychainService = appSupplychainService;
-    this.saleOrderLineProductSupplychainService = saleOrderLineProductSupplychainService;
-    this.saleOrderLineAnalyticService = saleOrderLineAnalyticService;
   }
 
   @Override
-  public Map<String, Object> qtyOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
+  public Map<String, Object> qtyOnChange(
+      SaleOrderLine saleOrderLine, SaleOrder saleOrder, SaleOrderLine parentSol)
       throws AxelorException {
     AppSupplychain appSupplychain = appSupplychainService.getAppSupplychain();
-    Map<String, Object> saleOrderLineMap = super.qtyOnChange(saleOrderLine, saleOrder);
+    Map<String, Object> saleOrderLineMap = super.qtyOnChange(saleOrderLine, saleOrder, parentSol);
     if (appSupplychain.getManageStockReservation()) {
       saleOrderLineMap.putAll(
           saleOrderLineServiceSupplyChain.updateRequestedReservedQty(saleOrderLine));
     }
     saleOrderLineMap.putAll(checkInvoicedOrDeliveredOrderQty(saleOrderLine, saleOrder));
 
-    return saleOrderLineMap;
-  }
-
-  @Override
-  public Map<String, Object> productOnChange(SaleOrderLine saleOrderLine, SaleOrder saleOrder)
-      throws AxelorException {
-    Map<String, Object> saleOrderLineMap = super.productOnChange(saleOrderLine, saleOrder);
-    saleOrderLineMap.putAll(
-        saleOrderLineAnalyticService.printAnalyticAccounts(saleOrder, saleOrderLine));
     return saleOrderLineMap;
   }
 

@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.account.service.invoice;
 
 import com.axelor.apps.account.db.AccountingSituation;
@@ -10,11 +28,12 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.auth.db.User;
 import com.axelor.common.ObjectUtils;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.collections.CollectionUtils;
 
 public class InvoiceTermPfpToolServiceImpl implements InvoiceTermPfpToolService {
 
@@ -118,5 +137,29 @@ public class InvoiceTermPfpToolServiceImpl implements InvoiceTermPfpToolService 
             || (invoiceTerm != null
                 && invoiceTerm.getPfpValidatorUser() != null
                 && user.equals(invoiceTerm.getPfpValidatorUser())));
+  }
+
+  @Override
+  public Integer checkOtherInvoiceTerms(List<InvoiceTerm> invoiceTermList) {
+    if (CollectionUtils.isEmpty(invoiceTermList)) {
+      return null;
+    }
+    InvoiceTerm firstInvoiceTerm = invoiceTermList.get(0);
+    int pfpStatus = getPfpValidateStatusSelect(firstInvoiceTerm);
+    int otherPfpStatus;
+    for (InvoiceTerm otherInvoiceTerm : invoiceTermList) {
+      if (otherInvoiceTerm.getId() != null
+          && firstInvoiceTerm.getId() != null
+          && !otherInvoiceTerm.getId().equals(firstInvoiceTerm.getId())) {
+        otherPfpStatus = getPfpValidateStatusSelect(otherInvoiceTerm);
+
+        if (otherPfpStatus != pfpStatus) {
+          pfpStatus = InvoiceTermRepository.PFP_STATUS_AWAITING;
+          break;
+        }
+      }
+    }
+
+    return pfpStatus;
   }
 }

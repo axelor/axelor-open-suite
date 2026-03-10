@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -28,10 +28,13 @@ import com.axelor.apps.base.db.PriceList;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.service.PurchaseOrderCreateServiceImpl;
+import com.axelor.apps.purchase.service.PurchaseOrderTaxService;
+import com.axelor.apps.purchase.service.PurchaseOrderTypeSelectService;
 import com.axelor.apps.purchase.service.config.PurchaseConfigService;
 import com.axelor.apps.stock.db.StockLocation;
+import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.auth.db.User;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import org.slf4j.Logger;
@@ -43,12 +46,52 @@ public class PurchaseOrderCreateServiceSupplychainImpl extends PurchaseOrderCrea
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected AccountConfigService accountConfigService;
+  protected final AppSupplychainService appSupplychainService;
+  protected final IntercoService intercoService;
 
   @Inject
   public PurchaseOrderCreateServiceSupplychainImpl(
-      PurchaseConfigService purchaseConfigService, AccountConfigService accountConfigService) {
-    super(purchaseConfigService);
+      PurchaseConfigService purchaseConfigService,
+      AccountConfigService accountConfigService,
+      PurchaseOrderTypeSelectService purchaseOrderTypeSelectService,
+      PurchaseOrderTaxService purchaseOrderTaxService,
+      AppSupplychainService appSupplychainService,
+      IntercoService intercoService) {
+    super(purchaseConfigService, purchaseOrderTypeSelectService, purchaseOrderTaxService);
     this.accountConfigService = accountConfigService;
+    this.appSupplychainService = appSupplychainService;
+    this.intercoService = intercoService;
+  }
+
+  @Override
+  public PurchaseOrder createPurchaseOrder(
+      User buyerUser,
+      Company company,
+      Partner contactPartner,
+      Currency currency,
+      LocalDate deliveryDate,
+      String internalReference,
+      String externalReference,
+      LocalDate orderDate,
+      PriceList priceList,
+      Partner supplierPartner,
+      TradingName tradingName)
+      throws AxelorException {
+    PurchaseOrder purchaseOrder =
+        super.createPurchaseOrder(
+            buyerUser,
+            company,
+            contactPartner,
+            currency,
+            deliveryDate,
+            internalReference,
+            externalReference,
+            orderDate,
+            priceList,
+            supplierPartner,
+            tradingName);
+    setIntercoOnPurchaseOrder(purchaseOrder, supplierPartner);
+    return purchaseOrder;
   }
 
   @Override
@@ -138,5 +181,12 @@ public class PurchaseOrderCreateServiceSupplychainImpl extends PurchaseOrderCrea
     purchaseOrder.setTradingName(tradingName);
 
     return purchaseOrder;
+  }
+
+  protected void setIntercoOnPurchaseOrder(PurchaseOrder purchaseOrder, Partner supplierPartner) {
+    if (appSupplychainService.getAppSupplychain().getIntercoFromPurchase()) {
+      Company intercoCompany = intercoService.findIntercoCompany(supplierPartner);
+      purchaseOrder.setInterco(intercoCompany != null);
+    }
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,13 +19,15 @@
 package com.axelor.apps.production.web;
 
 import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.ProdProcessLine;
 import com.axelor.apps.production.db.WorkCenter;
+import com.axelor.apps.production.service.ProdProcessLineService;
 import com.axelor.apps.production.service.WorkCenterService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 
 @Singleton
 public class ProdProcessLineController {
@@ -57,5 +59,13 @@ public class ProdProcessLineController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void setHazardPhraseDomain(ActionRequest request, ActionResponse response) {
+    ProdProcess prodProcess = request.getContext().getParent().asType(ProdProcess.class);
+    response.setAttr(
+        "hazardPhraseSet",
+        "domain",
+        Beans.get(ProdProcessLineService.class).getHazardPhraseDomain(prodProcess));
   }
 }

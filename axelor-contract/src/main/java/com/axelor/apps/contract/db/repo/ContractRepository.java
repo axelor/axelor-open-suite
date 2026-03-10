@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -29,8 +29,9 @@ import com.axelor.apps.contract.db.ContractVersion;
 import com.axelor.apps.contract.service.ContractLineService;
 import com.axelor.apps.contract.service.ContractVersionService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
+import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
 public class ContractRepository extends AbstractContractRepository {
@@ -49,7 +50,7 @@ public class ContractRepository extends AbstractContractRepository {
     this.contractLineService = contractLineService;
     this.contractVersionService = contractVersionService;
     this.sequenceService = sequenceService;
-    this.contractLineService = contractLineService;
+    this.contractVersionRepository = contractVersionRepository;
   }
 
   @Override
@@ -113,6 +114,16 @@ public class ContractRepository extends AbstractContractRepository {
     contract.setCurrentContractVersion(version);
     contract.setContractId(null);
     contract.setVersionHistory(null);
+    contract.setConsumptionLineList(null);
     return contract;
+  }
+
+  @Override
+  public void remove(Contract entity) {
+    super.remove(entity);
+    Optional.ofNullable(entity.getCurrentContractVersion())
+        .ifPresent(contractVersion -> contractVersionRepository.remove(contractVersion));
+    Optional.ofNullable(entity.getNextVersion())
+        .ifPresent(contractVersion -> contractVersionRepository.remove(contractVersion));
   }
 }

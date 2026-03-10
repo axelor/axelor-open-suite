@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.service.saleorder;
 
 import com.axelor.apps.base.AxelorException;
@@ -7,23 +25,29 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
+import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
+import com.axelor.studio.db.AppSale;
+import jakarta.inject.Inject;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 public class SaleOrderCheckServiceImpl implements SaleOrderCheckService {
 
   protected AppBaseService appBaseService;
+  protected AppSaleService appSaleService;
 
   @Inject
-  public SaleOrderCheckServiceImpl(AppBaseService appBaseService) {
+  public SaleOrderCheckServiceImpl(AppBaseService appBaseService, AppSaleService appSaleService) {
     this.appBaseService = appBaseService;
+    this.appSaleService = appSaleService;
   }
 
   @Override
-  public String finalizeCheckAlert(SaleOrder saleOrder) {
+  public String finalizeCheckAlert(SaleOrder saleOrder) throws AxelorException {
+    checkSaleOrderLineList(saleOrder);
     if (productSoldAtLoss(saleOrder)) {
       return I18n.get(SaleExceptionMessage.SALE_ORDER_FINALIZE_PRODUCT_SOLD_AT_LOSS);
     }
@@ -32,15 +56,18 @@ public class SaleOrderCheckServiceImpl implements SaleOrderCheckService {
       return I18n.get(SaleExceptionMessage.SALE_ORDER_FINALIZE_PRICE_LIST_NOT_VALID);
     }
 
+    checkLinesOrderedQty(saleOrder);
+
     return "";
   }
 
   @Override
-  public String confirmCheckAlert(SaleOrder saleOrder) throws AxelorException {
+  public List<String> confirmCheckAlert(SaleOrder saleOrder) throws AxelorException {
+    List<String> alertList = new ArrayList<>();
     if (isTotalAmountZero(saleOrder)) {
-      return I18n.get(SaleExceptionMessage.SALE_ORDER_CONFIRM_TOTAL_AMOUNT_ZERO);
+      alertList.add(I18n.get(SaleExceptionMessage.SALE_ORDER_CONFIRM_TOTAL_AMOUNT_ZERO));
     }
-    return "";
+    return alertList;
   }
 
   protected boolean isTotalAmountZero(SaleOrder saleOrder) {
@@ -67,16 +94,42 @@ public class SaleOrderCheckServiceImpl implements SaleOrderCheckService {
   @Override
   public boolean priceListIsNotValid(SaleOrder saleOrder) {
     PriceList priceList = saleOrder.getPriceList();
+
     if (priceList == null) {
       return false;
     }
     LocalDate todayDate = appBaseService.getTodayDate(null);
     LocalDate priceListBeginDate = priceList.getApplicationBeginDate();
     LocalDate priceListEndDate = priceList.getApplicationEndDate();
+    if (priceListBeginDate == null && priceListEndDate == null) {
+      return false;
+    }
 
-    boolean beginDateNotValid =
-        priceListBeginDate == null || priceListBeginDate.isBefore(todayDate);
-    boolean endDateNotValid = priceListEndDate == null || priceListEndDate.isAfter(todayDate);
-    return beginDateNotValid && endDateNotValid;
+    boolean beginDateNotValid = false;
+    boolean endDateNotValid = false;
+    if (priceListBeginDate != null) {
+      beginDateNotValid = todayDate.isBefore(priceListBeginDate);
+    }
+    if (priceListEndDate != null) {
+      endDateNotValid = todayDate.isAfter(priceListEndDate);
+    }
+
+    return !priceList.getIsActive() || beginDateNotValid || endDateNotValid;
+  }
+
+  protected void checkLinesOrderedQty(SaleOrder saleOrder) throws AxelorException {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    AppSale appSale = appSaleService.getAppSale();
+    if (CollectionUtils.isEmpty(saleOrderLineList)
+        || !appSale.getIsQuotationAndOrderSplitEnabled()) {
+      return;
+    }
+
+    if (saleOrderLineList.stream()
+        .anyMatch(line -> line.getQty().compareTo(line.getOrderedQty()) < 0)) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(SaleExceptionMessage.SALE_QUOTATION_CONFIRM_CHECK_ORDERED_QTY));
+    }
   }
 }

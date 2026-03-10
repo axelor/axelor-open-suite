@@ -1,9 +1,28 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.sale.service.saleorder.status;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.repo.PartnerRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
+import com.axelor.apps.base.exceptions.ObserverBaseException;
 import com.axelor.apps.base.service.user.UserService;
 import com.axelor.apps.crm.db.Opportunity;
 import com.axelor.apps.crm.service.app.AppCrmService;
@@ -13,9 +32,10 @@ import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.event.SaleOrderConfirm;
 import com.axelor.event.Event;
+import com.axelor.event.ObserverException;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +69,11 @@ public class SaleOrderConfirmServiceImpl implements SaleOrderConfirmService {
   @Override
   public String confirmSaleOrder(SaleOrder saleOrder) {
     SaleOrderConfirm saleOrderConfirm = new SaleOrderConfirm(saleOrder);
-    saleOrderConfirmEvent.fire(saleOrderConfirm);
+    try {
+      saleOrderConfirmEvent.fire(saleOrderConfirm);
+    } catch (ObserverException e) {
+      throw new ObserverBaseException(e.getCause(), e.getCause().getMessage());
+    }
     return saleOrderConfirm.getNotifyMessage();
   }
 

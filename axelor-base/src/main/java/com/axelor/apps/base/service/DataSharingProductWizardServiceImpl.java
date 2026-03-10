@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,8 +23,10 @@ import com.axelor.apps.base.db.DataSharingReferential;
 import com.axelor.apps.base.db.DataSharingReferentialLine;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.ProductCategory;
+import com.axelor.apps.base.db.repo.DataSharingReferentialLineRepository;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -33,16 +35,22 @@ import org.apache.commons.collections.CollectionUtils;
 public class DataSharingProductWizardServiceImpl implements DataSharingProductWizardService {
 
   protected DataSharingReferentialLineService dataSharingReferentialLineService;
+  protected DataSharingReferentialLineRepository dataSharingReferentialLineRepository;
 
   @Inject
   public DataSharingProductWizardServiceImpl(
-      DataSharingReferentialLineService dataSharingReferentialLineService) {
+      DataSharingReferentialLineService dataSharingReferentialLineService,
+      DataSharingReferentialLineRepository dataSharingReferentialLineRepository) {
     this.dataSharingReferentialLineService = dataSharingReferentialLineService;
+    this.dataSharingReferentialLineRepository = dataSharingReferentialLineRepository;
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
   public List<DataSharingReferentialLine> generateDataSharingReferentialLines(
       DataSharingProductWizard dataSharingProductWizard) {
+    dataSharingReferentialLineService.removeDataSharingReferentialLines(dataSharingProductWizard);
+
     Set<Product> productSet = dataSharingProductWizard.getProductSet();
     Set<ProductCategory> productCategorySet = dataSharingProductWizard.getProductCategorySet();
     DataSharingReferential dataSharingReferential =

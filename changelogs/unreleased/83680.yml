@@ -1,3 +1,0 @@
----
-title: "Project: prevented an error during project totals computation when spent time percentages were too low."
-module: axelor-business-project

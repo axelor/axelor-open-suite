@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,18 +20,17 @@ package com.axelor.apps.base.service.batch;
 
 import com.axelor.apps.base.db.BaseBatch;
 import com.axelor.apps.base.db.repo.BaseBatchRepository;
-import com.axelor.apps.base.db.repo.BatchRepository;
 import com.axelor.apps.base.db.repo.ExceptionOriginRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.base.service.user.UserService;
+import com.axelor.auth.db.Group;
 import com.axelor.auth.db.User;
 import com.axelor.auth.db.repo.UserRepository;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -78,13 +77,17 @@ public class BatchPasswordChange extends BatchStrategy {
     queryParameters.put("date", date);
 
     if (!baseBatch.getAllUsers()) {
-      filter += " AND (self.group IN (:groupSet) OR self IN (:userSet))";
+      filter += " AND (self.group.id IN (:groupSet) OR self.id IN (:userSet))";
       queryParameters.put(
           "groupSet",
-          CollectionUtils.isNotEmpty(baseBatch.getGroupSet()) ? baseBatch.getGroupSet() : 0L);
+          CollectionUtils.isNotEmpty(baseBatch.getGroupSet())
+              ? baseBatch.getGroupSet().stream().map(Group::getId).collect(Collectors.toSet())
+              : 0L);
       queryParameters.put(
           "userSet",
-          CollectionUtils.isNotEmpty(baseBatch.getUserSet()) ? baseBatch.getUserSet() : 0L);
+          CollectionUtils.isNotEmpty(baseBatch.getUserSet())
+              ? baseBatch.getUserSet().stream().map(User::getId).collect(Collectors.toSet())
+              : 0L);
     }
 
     int offset = 0;
@@ -104,7 +107,7 @@ public class BatchPasswordChange extends BatchStrategy {
                 .filter("self.id IN :userIds")
                 .bind("userIds", userIdList)
                 .order("id")
-                .fetch(AbstractBatch.FETCH_LIMIT, offset))
+                .fetch(getFetchLimit(), offset))
         .isEmpty()) {
       for (User user : userList) {
         ++offset;
@@ -155,10 +158,5 @@ public class BatchPasswordChange extends BatchStrategy {
 
     super.stop();
     addComment(comment);
-  }
-
-  @Override
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_BASE_BATCH);
   }
 }

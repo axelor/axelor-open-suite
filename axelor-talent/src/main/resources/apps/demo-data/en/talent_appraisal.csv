@@ -1,4 +1,4 @@
-"importId";"isTemplate";"appraisalType.importId";"description"
+"importId";"isTemplate";"appraisalType_importId";"description"
 1;true;1;"
     <img style=""margin-bottom: 30px; margin-top: 20px;"" src=""img/axelor.png"" alt="""">
     <div style=""color: #010165; display: grid; grid-template-columns: 20% 20%; grid-template-rows: 20% 20%; justify-content: space-between; gap: 40px; padding-left: 6px;"" class=""header"">

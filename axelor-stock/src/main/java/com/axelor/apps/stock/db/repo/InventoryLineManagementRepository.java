@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,7 @@ package com.axelor.apps.stock.db.repo;
 
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.InventoryLine;
-import com.axelor.apps.stock.service.InventoryLineService;
+import com.axelor.apps.stock.service.inventory.InventoryLineService;
 import com.axelor.inject.Beans;
 import java.util.Map;
 
@@ -46,6 +46,7 @@ public class InventoryLineManagementRepository extends InventoryLineRepository {
       json.put(
           "nbDecimalDigitForUnitPrice",
           Beans.get(AppBaseService.class).getNbDecimalDigitForUnitPrice());
+      json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
     }
     return super.populate(json, context);
   }

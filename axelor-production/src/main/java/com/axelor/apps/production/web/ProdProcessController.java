@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,11 +20,15 @@ package com.axelor.apps.production.web;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.ProdProcess;
 import com.axelor.apps.production.db.repo.BillOfMaterialRepository;
 import com.axelor.apps.production.db.repo.ProdProcessRepository;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseService;
+import com.axelor.apps.production.service.ProdProcessComputationService;
+import com.axelor.apps.production.service.ProdProcessHazardPhraseService;
 import com.axelor.apps.production.service.ProdProcessService;
 import com.axelor.apps.production.service.ProdProcessWorkflowService;
 import com.axelor.apps.production.service.app.AppProductionService;
@@ -33,8 +37,9 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.common.collect.Lists;
-import com.google.inject.Singleton;
+import com.axelor.utils.helpers.StringHtmlListBuilder;
+import jakarta.inject.Singleton;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Singleton
@@ -97,8 +102,7 @@ public class ProdProcessController {
     ProdProcess prodProcess =
         prodProcessRepository.find(request.getContext().asType(ProdProcess.class).getId());
 
-    List<ProdProcess> prodProcessSet = Lists.newArrayList();
-    prodProcessSet =
+    List<ProdProcess> prodProcessSet =
         prodProcessRepository
             .all()
             .filter("self.originalProdProcess = :origin")
@@ -108,15 +112,14 @@ public class ProdProcessController {
 
     if (!prodProcessSet.isEmpty()) {
 
-      String existingVersions = "";
-      for (ProdProcess prodProcessVersion : prodProcessSet) {
-        existingVersions += "<li>" + prodProcessVersion.getFullName() + "</li>";
-      }
+      StringHtmlListBuilder builder = new StringHtmlListBuilder();
+      prodProcessSet.stream().map(ProdProcess::getFullName).forEach(builder::append);
+
       message =
           String.format(
               I18n.get(
-                  "This production process already has the following versions : <br/><ul> %s </ul>And these versions may also have ones. Do you still wish to create a new one ?"),
-              existingVersions);
+                  "This production process already has the following versions : <br/> %s And these versions may also have ones. Do you still wish to create a new one ?"),
+              builder.toString());
     } else {
       message = I18n.get("Do you really wish to create a new version of this production process ?");
     }
@@ -187,5 +190,31 @@ public class ProdProcessController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
+  }
+
+  public void recomputeLeadTime(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+    BigDecimal qty =
+        prodProcess.getLaunchQty() != null
+                && prodProcess.getLaunchQty().compareTo(BigDecimal.ZERO) > 0
+            ? prodProcess.getLaunchQty()
+            : BigDecimal.ONE;
+    if (prodProcess.getCompany() != null) {
+      response.setValue(
+          "leadTime", Beans.get(ProdProcessComputationService.class).getLeadTime(prodProcess, qty));
+    }
+  }
+
+  public void computeHazardPhrases(ActionRequest request, ActionResponse response) {
+    ProdProcess prodProcess = request.getContext().asType(ProdProcess.class);
+
+    List<Product> allLineProducts =
+        Beans.get(BillOfMaterialHazardPhraseService.class)
+            .getLineProductsForProdProcess(prodProcess);
+
+    Beans.get(ProdProcessHazardPhraseService.class)
+        .computeHazardPhrases(prodProcess, allLineProducts);
+    response.setValue("hazardPhraseSet", prodProcess.getHazardPhraseSet());
   }
 }

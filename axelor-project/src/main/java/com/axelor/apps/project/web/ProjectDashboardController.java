@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,7 +35,7 @@ import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.util.Optional;
 
 @Singleton
@@ -101,14 +101,18 @@ public class ProjectDashboardController {
 
   protected Project getProject(ActionRequest request) {
     Project project = null;
-    Long projectId =
-        Optional.ofNullable(request.getContext().get("_id"))
-            .map(Object::toString)
-            .map(Long::valueOf)
-            .orElse(0l);
-    project = Beans.get(ProjectRepository.class).find(projectId);
-    if (project == null) {
-      project = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
+    if (Project.class.equals(request.getContext().getContextClass())) {
+      project = request.getContext().asType(Project.class);
+    } else {
+      Long projectId =
+          Optional.ofNullable(request.getContext().get("_id"))
+              .map(Object::toString)
+              .map(Long::valueOf)
+              .orElse(0l);
+      project = Beans.get(ProjectRepository.class).find(projectId);
+      if (project == null) {
+        project = Optional.ofNullable(AuthUtils.getUser()).map(User::getActiveProject).orElse(null);
+      }
     }
 
     return project;

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+
+  <module name="base" package="com.axelor.apps.base.db"/>
+
+  <entity name="ReservedSequence" table="BASE_RESERVED_SEQUENCE">
+
+    <many-to-one name="sequence" title="Sequence" ref="com.axelor.apps.base.db.Sequence"
+      required="true"/>
+    <many-to-one name="sequenceVersion" title="Sequence Version"
+      ref="com.axelor.apps.base.db.SequenceVersion" required="true"/>
+    <long name="reservedNum" title="Reserved Number" required="true"/>
+    <string name="generatedSequence" title="Generated Sequence" required="true" large="true"/>
+    <datetime name="reservedAt" title="Reserved At" required="true"/>
+    <integer name="status" title="Status" selection="reserved.sequence.status.select"
+      default="0"/>
+    <string name="callerClass" title="Caller Class"/>
+    <string name="callerField" title="Caller Field"/>
+
+    <index columns="sequence,sequenceVersion,status"
+      name="idx_reserved_seq_seq_version_status"/>
+    <index columns="status,reservedAt" name="idx_reserved_seq_status_reserved_at"/>
+
+    <extra-code><![CDATA[
+
+        // Status constants
+        public static final int STATUS_PENDING = 0;
+        public static final int STATUS_CONFIRMED = 1;
+        public static final int STATUS_RELEASED = 2;
+
+     ]]></extra-code>
+
+  </entity>
+
+</domain-models>

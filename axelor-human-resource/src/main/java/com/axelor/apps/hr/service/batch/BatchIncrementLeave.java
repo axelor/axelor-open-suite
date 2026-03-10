@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,8 +19,6 @@
 package com.axelor.apps.hr.service.batch;
 
 import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.LeaveReason;
@@ -32,12 +30,12 @@ import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.StringHelper;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 
-public class BatchIncrementLeave extends AbstractBatch {
+public class BatchIncrementLeave extends BatchStrategy {
 
   protected LeaveReasonRepository leaveReasonRepository;
   protected EmployeeRepository employeeRepository;
@@ -83,14 +81,16 @@ public class BatchIncrementLeave extends AbstractBatch {
     int offset = 0;
     LeaveReason leaveReason = leaveReasonRepository.find(id);
     Query<Employee> query = getEmployeeQuery(leaveReason);
-    while (!(employeeList = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
+    while (!(employeeList = query.fetch(getFetchLimit(), offset)).isEmpty()) {
+      leaveReason = leaveReasonRepository.find(id);
       for (Employee employee : employeeList) {
         ++offset;
         employee = employeeRepository.find(employee.getId());
         incrementLeaveService.updateEmployeeLeaveLines(leaveReason, employee);
       }
+      JPA.clear();
+      findBatch();
     }
-    JPA.clear();
   }
 
   protected Query<Employee> getEmployeeQuery(LeaveReason leaveReason) {
@@ -106,11 +106,6 @@ public class BatchIncrementLeave extends AbstractBatch {
     query.filter(filter);
 
     return query;
-  }
-
-  @Override
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_HR_BATCH);
   }
 
   @Override

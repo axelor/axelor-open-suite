@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -33,6 +33,7 @@ import com.axelor.apps.contract.service.AccountManagementContractServiceImpl;
 import com.axelor.apps.contract.service.AnalyticLineModelFromContractService;
 import com.axelor.apps.contract.service.AnalyticLineModelFromContractServiceImpl;
 import com.axelor.apps.contract.service.AnalyticMoveLineContractServiceImpl;
+import com.axelor.apps.contract.service.AnalyticMoveLineParentContractServiceImpl;
 import com.axelor.apps.contract.service.ConsumptionLineService;
 import com.axelor.apps.contract.service.ConsumptionLineServiceImpl;
 import com.axelor.apps.contract.service.ContractFileService;
@@ -62,7 +63,11 @@ import com.axelor.apps.contract.service.IndexRevaluationServiceImpl;
 import com.axelor.apps.contract.service.InvoiceLineAnalyticContractServiceImpl;
 import com.axelor.apps.contract.service.InvoiceLinePricingService;
 import com.axelor.apps.contract.service.InvoiceLinePricingServiceImpl;
+import com.axelor.apps.contract.service.InvoicePaymentToolServiceContractImpl;
+import com.axelor.apps.contract.service.PurchaseOrderInvoiceContractServiceImpl;
+import com.axelor.apps.contract.service.SaleOrderInvoiceContractServiceImpl;
 import com.axelor.apps.contract.service.WorkflowCancelServiceContractImpl;
+import com.axelor.apps.contract.service.WorkflowVentilationContractServiceImpl;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsService;
 import com.axelor.apps.contract.service.attributes.ContractLineAttrsServiceImpl;
 import com.axelor.apps.contract.service.pricing.ContractPricingService;
@@ -71,9 +76,14 @@ import com.axelor.apps.contract.service.pricing.PricingGroupContractServiceImpl;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetService;
 import com.axelor.apps.contract.service.record.ContractLineRecordSetServiceImpl;
 import com.axelor.apps.supplychain.service.AnalyticMoveLineSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.InvoicePaymentToolServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.PurchaseOrderInvoiceServiceImpl;
+import com.axelor.apps.supplychain.service.analytic.AnalyticMoveLineParentSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.invoice.InvoiceLineAnalyticSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.pricing.PricingGroupSupplychainServiceImpl;
+import com.axelor.apps.supplychain.service.saleorder.SaleOrderInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.workflow.WorkflowCancelServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.workflow.WorkflowVentilationServiceSupplychainImpl;
 
 public class ContractModule extends AxelorModule {
 
@@ -110,5 +120,13 @@ public class ContractModule extends AxelorModule {
     bind(AccountManagementContractService.class).to(AccountManagementContractServiceImpl.class);
     bind(ContractLineContextToolService.class).to(ContractLineContextToolServiceImpl.class);
     bind(ContractInvoicingService.class).to(ContractInvoicingServiceImpl.class);
+    bind(WorkflowVentilationServiceSupplychainImpl.class)
+        .to(WorkflowVentilationContractServiceImpl.class);
+    bind(InvoicePaymentToolServiceSupplychainImpl.class)
+        .to(InvoicePaymentToolServiceContractImpl.class);
+    bind(SaleOrderInvoiceServiceImpl.class).to(SaleOrderInvoiceContractServiceImpl.class);
+    bind(PurchaseOrderInvoiceServiceImpl.class).to(PurchaseOrderInvoiceContractServiceImpl.class);
+    bind(AnalyticMoveLineParentSupplychainServiceImpl.class)
+        .to(AnalyticMoveLineParentContractServiceImpl.class);
   }
 }

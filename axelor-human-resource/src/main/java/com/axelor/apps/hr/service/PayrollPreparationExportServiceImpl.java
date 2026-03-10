@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,12 +36,13 @@ import com.axelor.apps.hr.db.repo.HrBatchRepository;
 import com.axelor.apps.hr.db.repo.PayrollPreparationRepository;
 import com.axelor.apps.hr.service.config.HRConfigService;
 import com.axelor.common.StringUtils;
+import com.axelor.file.temp.TempFiles;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.utils.helpers.file.CsvHelper;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -106,7 +107,7 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
     }
 
     String fileName = this.getPayrollPreparationExportName();
-    File file = MetaFiles.createTempFile(fileName, ".csv").toFile();
+    File file = TempFiles.createTempFile(fileName, ".csv").toFile();
 
     CsvHelper.csvWriter(file.getParent(), file.getName(), ';', headerLine, list);
 
@@ -142,6 +143,7 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
     exportNibelisEmployeeBonus(payrollPreparation, list);
     exportNibelisExtraHours(payrollPreparation, list);
     exportNibelisExpense(payrollPreparation, list);
+    exportNibelisDuration(payrollPreparation, list, hrConfig);
     exportNibelisOtherCosts(payrollPreparation, list);
   }
 
@@ -254,6 +256,15 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
     }
   }
 
+  protected void exportNibelisDuration(
+      PayrollPreparation payrollPreparation, List<String[]> list, HRConfig hrConfig) {
+    // DURATION
+    String[] durationLine = createExportFileLine(payrollPreparation);
+    durationLine[3] = hrConfig.getExportCodeForDuration();
+    durationLine[6] = String.valueOf(payrollPreparation.getDuration());
+    list.add(durationLine);
+  }
+
   protected void exportNibelisOtherCosts(
       PayrollPreparation payrollPreparation, List<String[]> list) {
     for (OtherCostsEmployee otherCostsEmployee : payrollPreparation.getOtherCostsEmployeeSet()) {
@@ -305,6 +316,8 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
     exportSilaeDuration(payrollPrep, exportLineList, hrConfig);
     exportSilaeExtraHour(payrollPrep, exportLineList, hrConfig);
     exportSilaeExpense(payrollPrep, exportLineList);
+    exportSilaeLunchVoucher(payrollPrep, exportLineList, hrConfig);
+    exportSilaeEmployeeBonus(payrollPrep, exportLineList);
     exportSilaeOtherCosts(payrollPrep, exportLineList);
 
     return exportLineList;
@@ -360,6 +373,48 @@ public class PayrollPreparationExportServiceImpl implements PayrollPreparationEx
           leaveLine[4] = payrollLeave.getToDate().format(SILAE_EXPORT_DATE_FORMATTER);
           exportLineList.add(leaveLine);
         }
+      }
+    }
+  }
+
+  protected void exportSilaeLunchVoucher(
+      PayrollPreparation payrollPreparation, List<String[]> list, HRConfig hrConfig) {
+    // Payroll lunch voucher
+    if (payrollPreparation.getLunchVoucherNumber().compareTo(BigDecimal.ZERO) > 0) {
+      String[] lunchVoucherLine = createSilaeExportFileLine(payrollPreparation);
+      lunchVoucherLine[1] = hrConfig.getExportCodeForLunchVoucherManagement();
+      lunchVoucherLine[2] = payrollPreparation.getLunchVoucherNumber().toString();
+      list.add(lunchVoucherLine);
+    }
+  }
+
+  protected void exportSilaeEmployeeBonus(
+      PayrollPreparation payrollPreparation, List<String[]> list) {
+    // Payroll bonus
+    if (payrollPreparation.getEmployeeBonusAmount().compareTo(BigDecimal.ZERO) > 0) {
+      Map<String, BigDecimal> map = new HashMap<>();
+      for (EmployeeBonusMgtLine bonus : payrollPreparation.getEmployeeBonusMgtLineList()) {
+        if (bonus.getEmployeeBonusMgt().getEmployeeBonusType().getPayrollPreparationExport()) {
+          if (map.containsKey(bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode())) {
+            map.put(
+                bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode(),
+                bonus
+                    .getAmount()
+                    .add(
+                        map.get(
+                            bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode())));
+          } else {
+            map.put(
+                bonus.getEmployeeBonusMgt().getEmployeeBonusType().getExportCode(),
+                bonus.getAmount());
+          }
+        }
+      }
+      for (Map.Entry<String, BigDecimal> entry : map.entrySet()) {
+        String[] employeeBonusLine = createSilaeExportFileLine(payrollPreparation);
+        employeeBonusLine[1] = entry.getKey();
+        employeeBonusLine[2] = entry.getValue().toString();
+        list.add(employeeBonusLine);
       }
     }
   }

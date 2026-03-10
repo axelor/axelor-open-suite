@@ -33,11 +33,9 @@
 6260;"paymentVoucher";"N° de paiement dec. autres moyens ";"NUMBERS";"UPPERCASE";1;4;"DECAUT%YY";;1;1
 6300;"paymentVoucherReceiptNo";"N° de reçu";"NUMBERS";"UPPERCASE";1;4;"RECU%YY";;1;1
 7000;"debit";"Prélèvement (facture et echeanciers hors mensu)";"NUMBERS";"UPPERCASE";1;4;"PRLFAC%YY";;1;1
-7100;"debitReject";"Rejet des prélèvements";"NUMBERS";"UPPERCASE";1;4;"PRLREJ%YY";;1;1
 8000;"depositSlip";"Bordereau de remise";"NUMBERS";"UPPERCASE";1;4;"BR%YY%FM";;1;1
 8100;"chequeReject";"Rejet chèques";"NUMBERS";"UPPERCASE";1;4;"REJCHQ%YY";;1;1
 8200;"debit";"Prélèvement (facture et echeanciers hors mensu)";"NUMBERS";"UPPERCASE";1;4;"PRLFAC%YY";;1;1
-8210;"debitReject";"Rejet des prélèvements";"NUMBERS";"UPPERCASE";1;4;"PRLREJ%YY";;1;1
 8300;"paymentSchedule";"N° écheancier";"NUMBERS";"UPPERCASE";1;4;"ECH%YY";;1;1
 9000;"subrogationRelease";"Quittance subrogative";"NUMBERS";"UPPERCASE";1;4;"QS%YY%FM";;1;1
 10000;"irrecoverable";"Passage en irrécouvrable";"NUMBERS";"UPPERCASE";1;4;"IRRECO%YY";;1;1

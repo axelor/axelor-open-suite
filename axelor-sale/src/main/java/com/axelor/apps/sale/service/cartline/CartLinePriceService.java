@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,11 +19,17 @@
 package com.axelor.apps.sale.service.cartline;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface CartLinePriceService {
 
-  BigDecimal getSalePrice(Cart cart, CartLine cartLine) throws AxelorException;
+  BigDecimal getSalePrice(Product product, Company company, Partner partner) throws AxelorException;
+
+  List<CartLine> updatePrice(Cart cart) throws AxelorException;
 }

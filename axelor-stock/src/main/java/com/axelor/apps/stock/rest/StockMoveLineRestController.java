@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,8 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.rest.dto.StockMoveLinePutRequest;
 import com.axelor.apps.stock.rest.dto.StockMoveLineResponse;
 import com.axelor.apps.stock.service.StockMoveLineService;
+import com.axelor.apps.stock.translation.ITranslation;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
 import com.axelor.utils.api.ObjectFinder;
@@ -31,13 +33,14 @@ import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
 import io.swagger.v3.oas.annotations.Operation;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 @Path("/aos/stock-move-line")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -70,10 +73,13 @@ public class StockMoveLineRestController {
             requestBody.getConformity(),
             requestBody.fetchUnit(),
             requestBody.fetchFromStockLocation(),
-            requestBody.fetchToStockLocation());
+            requestBody.fetchToStockLocation(),
+            requestBody.getDescription());
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Line successfully updated.", new StockMoveLineResponse(stockmoveLine));
+        Response.Status.OK,
+        I18n.get(ITranslation.STOCK_MOVE_LINE_UPDATED),
+        new StockMoveLineResponse(stockmoveLine));
   }
 
   @Operation(
@@ -97,6 +103,27 @@ public class StockMoveLineRestController {
         .splitIntoFulfilledMoveLineAndUnfulfilledOne(stockmoveLine);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Line successfully split.", new StockMoveLineResponse(stockmoveLine));
+        Response.Status.OK,
+        I18n.get(ITranslation.STOCK_MOVE_LINE_SPLIT),
+        new StockMoveLineResponse(stockmoveLine));
+  }
+
+  @Operation(
+      summary = "Stock move line quantity availability",
+      tags = {"Stock move line"})
+  @Path("check-quantity/{stockMoveLineId}")
+  @GET
+  @HttpExceptionHandler
+  public Response checkStockMoveLineQty(@PathParam("stockMoveLineId") long stockMoveLineId)
+      throws AxelorException {
+    new SecurityCheck().readAccess(StockMoveLine.class, stockMoveLineId).check();
+    StockMoveLine stockMoveLine =
+        ObjectFinder.find(StockMoveLine.class, stockMoveLineId, ObjectFinder.NO_VERSION);
+
+    return ResponseConstructor.build(
+        Response.Status.OK,
+        I18n.get(ITranslation.STOCK_MOVE_LINE_QUANTITY_AVAILABILITY),
+        Beans.get(StockMoveLineService.class)
+            .setAvailableStatus(stockMoveLine, stockMoveLine.getStockMove()));
   }
 }

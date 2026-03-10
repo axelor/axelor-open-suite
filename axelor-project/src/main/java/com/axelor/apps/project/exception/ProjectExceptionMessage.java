@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -70,18 +70,57 @@ public final class ProjectExceptionMessage {
   public static final String LINK_TYPE_UNAVAILABLE_IN_PROJECT_CONFIG = /*$$(*/
       "Please configure the project %s with project task link type %s if you want to create this link." /*)*/;
 
-  public static final String PROJECT_COMPLETED_TASK_STATUS_MISSING_WITH_DEFAULT_STATUS = /*$$(*/
-      "Your completed task status is configure by project but the completed task status on the project is empty, do you want to use the one from the app project : %s ? Else you need to configure the project config field." /*)*/;
-
   public static final String PROJECT_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS = /*$$(*/
       "Please configure the completed task status in the project config panel." /*)*/;
-
-  public static final String CATEGORY_COMPLETED_TASK_STATUS_MISSING_WITH_DEFAULT_STATUS = /*$$(*/
-      "Your completed task status is configure by category but the project task category or it completed task status is empty, do you want to use this one : %s ? Else you need to configure the project task category config field." /*)*/;
 
   public static final String CATEGORY_COMPLETED_TASK_STATUS_MISSING_WITHOUT_DEFAULT_STATUS = /*$$(*/
       "Please configure the completed task status of the project task category." /*)*/;
 
   public static final String TASK_STATUS_USED_ON_PROJECT_TASK_CATEGORY = /*$$(*/
       "This task status is used on project task category for the auto progress process. Do you want to update all unmodified values with this one ?" /*)*/;
+
+  public static final String BATCH_TASK_STATUS_UPDATE_TASK = /*$$(*/ "Task %s" /*)*/;
+
+  public static final String BATCH_TASK_STATUS_UPDATE_PROJECT = /*$$(*/ "Project %s" /*)*/;
+
+  public static final String BATCH_TASK_STATUS_UPDATE_PROJECT_TASK_CATEGORY = /*$$(*/
+      "Project task category %s" /*)*/;
+
+  public static final String BATCH_TASK_STATUS_UPDATE_2 = /*$$(*/
+      "Tasks status update completed:" /*)*/;
+
+  public static final String BATCH_TASK_STATUS_UPDATE_DONE = /*$$(*/
+      "* %s project task updated" /*)*/;
+  public static final String PROJECT_TASK_NO_UNIT_FOUND = /*$$(*/
+      "Please set the unit for the task %s." /*)*/;
+
+  public static final String PROJECT_NO_UNIT_FOUND = /*$$(*/
+      "Please set the unit for the project %s." /*)*/;
+
+  public static final String PROJECT_CONFIG_DEFAULT_HOURS_PER_DAY_MISSING = /*$$(*/
+      "Please set the default number of hours per day in the project configuration." /*)*/;
+
+  public static final String SPRINT_GENERATED = /*$$(*/ "%s sprints have been generated" /*)*/;
+
+  public static final String SPRINT_FIELDS_MISSING =
+      /*$$(*/ "Please fill all dates and the number of days in a sprint with valid values." /*)*/;
+
+  public static final String PROJECT_VERSION_WITH_SAME_PROJECT_ALREADY_EXISTS = /*$$(*/
+      "Warning, at least 2 versions with the title %s are used on the project(s) %s." /*)*/;
+
+  public static final String PROJECT_SPRINTS_OVERLAPPED =
+      /*$$(*/ "The project contains overlapping sprints. Please correct the date ranges." /*)*/;
+
+  public static final String PROJECT_CHECK_LIST_ITEM_API_UPDATE_OK =
+      /*$$(*/ "Project check list item has been successfully updated." /*)*/;
+
+  public static final String
+      PROJECT_CHECK_LIST_ITEM_INVALID_PROJECT_PARENT_OR_PROJECT_TASK = /*$$(*/
+          "Project, project task and parent can not be null together." /*)*/;
+
+  public static final String PROJECT_CHECK_LIST_ITEM_INVALID_PARENT = /*$$(*/
+      "Only root level project check list items can have children." /*)*/;
+
+  public static final String PROJECT_CHECK_LIST_ITEM_CHOOSE_PROJECT_OR_TASK = /*$$(*/
+      "Project and project task must not be chosen together." /*)*/;
 }

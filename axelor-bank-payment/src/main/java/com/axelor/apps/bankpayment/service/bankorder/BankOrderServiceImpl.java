@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,6 +25,7 @@ import com.axelor.apps.bankpayment.db.BankOrderLine;
 import com.axelor.apps.bankpayment.db.repo.BankOrderFileFormatRepository;
 import com.axelor.apps.bankpayment.db.repo.BankOrderRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
+import com.axelor.apps.bankpayment.service.app.AppBankPaymentService;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800101Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile00800102Service;
 import com.axelor.apps.bankpayment.service.bankorder.file.directdebit.BankOrderFile008Service;
@@ -44,8 +45,8 @@ import com.axelor.inject.Beans;
 import com.axelor.meta.MetaFiles;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,13 +61,20 @@ public class BankOrderServiceImpl implements BankOrderService {
 
   protected BankOrderRepository bankOrderRepository;
   protected BankDetailsService bankDetailsService;
+  protected AppBankPaymentService appBankPaymentService;
+  protected BankOrderEncryptionService bankOrderEncryptionService;
 
   @Inject
   public BankOrderServiceImpl(
-      BankOrderRepository bankOrderRepository, BankDetailsService bankDetailsService) {
+      BankOrderRepository bankOrderRepository,
+      BankDetailsService bankDetailsService,
+      AppBankPaymentService appBankPaymentService,
+      BankOrderEncryptionService bankOrderEncryptionService) {
 
     this.bankOrderRepository = bankOrderRepository;
     this.bankDetailsService = bankDetailsService;
+    this.appBankPaymentService = appBankPaymentService;
+    this.bankOrderEncryptionService = bankOrderEncryptionService;
   }
 
   public void processBankOrderStatus(BankOrder bankOrder, PaymentMode paymentMode)
@@ -198,11 +206,14 @@ public class BankOrderServiceImpl implements BankOrderService {
           bankOrder.getBankOrderSeq());
     }
 
+    if (appBankPaymentService.getAppBankPayment().getEnableBankOrderFileEncryption()) {
+      file = bankOrderEncryptionService.encryptFile(file);
+    }
+
     MetaFiles metaFiles = Beans.get(MetaFiles.class);
 
     try (InputStream is = new FileInputStream(file)) {
-      metaFiles.attach(is, file.getName(), bankOrder);
-      bankOrder.setGeneratedMetaFile(metaFiles.upload(file));
+      bankOrder.setGeneratedMetaFile(metaFiles.attach(is, file.getName(), bankOrder).getMetaFile());
     }
 
     return file;

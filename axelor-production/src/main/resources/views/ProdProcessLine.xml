@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="prod-process-line-grid" title="Phases"
     model="com.axelor.apps.production.db.ProdProcessLine" orderBy="priority">
@@ -16,8 +16,7 @@
 
   <form name="prod-process-line-form" title="Phase"
     model="com.axelor.apps.production.db.ProdProcessLine"
-    onNew="action-prod-process-line-record-default, action-prod-process-line-attrs-default,action-prod-process-line-attrs-outsourcing"
-    onLoad="action-prod-process-line-attrs-default,action-prod-process-line-attrs-hide-duration,action-prod-process-line-attrs-outsourcing"
+    onNew="action-prod-process-line-group-onnew" onLoad="action-prod-process-line-group-onload"
     width="large">
     <panel name="mainPanel">
       <field name="name"/>
@@ -53,7 +52,7 @@
 
       <field name="machineTool" onSelect="action-prod-process-line-attrs-machine-tool-domain"
         if="__config__.app.getApp('production')?.getEnableToolManagement()"/>
-      <field name="stockLocation"/>
+      <field name="stockLocation" domain="self.usableOnProduction is true"/>
       <panel name="capacitySettingsPanel" title="Capacity settings" colSpan="12"
         hideIf="outsourcing">
         <field name="minCapacityPerCycle" colSpan="4"/>
@@ -107,7 +106,15 @@
         </panel>
         <field name="workCenter.workCenterTypeSelect" hidden="true"/>
       </panel>
+      <panel name="qualityPanel" title="Quality" if="__config__.app.isApp('quality')"
+        colSpan="12">
 
+        <button name="addControlPlanBtn" title="Add a control plan"
+          onClick="save,action-prod-process-line-view-add-control-plan" colOffset="6"/>
+        <panel-dashlet action="action-prod-process-line-view-control-plan"
+          colSpan="12"/>
+
+      </panel>
       <panel name="descriptionPanel" title="Description" colSpan="12">
         <field name="description" showTitle="false" height="5" colSpan="12"/>
       </panel>
@@ -119,6 +126,12 @@
       <panel name="descriptionPanel" title="Descriptions">
         <field name="objectDescriptionList" form-view="object-description-form"
           grid-view="object-description-grid" colSpan="12"/>
+      </panel>
+      <panel name="hazardPhrasePanel" title="Hazard phrases"
+        if="__config__.app.getApp('base')?.getEnableProductsSafety()">
+        <panel-related field="hazardPhraseSet" colSpan="12"
+          form-view="base-hazard-phrase-form" grid-view="base-hazard-phrase-grid"
+          onSelect="action-prod-process-line-method-set-hazard-phrase-domain"/>
       </panel>
     </panel-tabs>
 
@@ -146,13 +159,9 @@
       if="workCenter?.workCenterTypeSelect == 2 || workCenter?.workCenterTypeSelect == 3"/>
     <field name="humanDuration" expr="eval: workCenter?.hrDurationPerCycle"
       if="workCenter?.workCenterTypeSelect == 1 || workCenter?.workCenterTypeSelect == 3"/>
-    <field name="product" expr="eval: workCenter?.product"
-      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
     <field name="costTypeSelect" expr="eval: workCenter?.costTypeSelect"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
     <field name="costAmount" expr="eval: workCenter?.costAmount"
-      if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
-    <field name="hrProduct" expr="eval: workCenter?.hrProduct"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
     <field name="hrCostTypeSelect" expr="eval: workCenter?.hrCostTypeSelect"
       if="__config__.app.getApp('production')?.getIsCostPerProcessLine()"/>
@@ -173,6 +182,20 @@
     <field name="workCenter" expr="eval: null"
       if="workCenter?.workCenterTypeSelect != workCenterTypeSelect"/>
   </action-record>
+
+  <action-group name="action-prod-process-line-group-onnew">
+    <action name="action-prod-process-line-record-default"/>
+    <action name="action-prod-process-line-attrs-default"/>
+    <action name="action-prod-process-line-attrs-outsourcing"/>
+    <action name="action-prod-process-line-attrs-hide-safety-panel"/>
+  </action-group>
+
+  <action-group name="action-prod-process-line-group-onload">
+    <action name="action-prod-process-line-attrs-default"/>
+    <action name="action-prod-process-line-attrs-hide-duration"/>
+    <action name="action-prod-process-line-attrs-outsourcing"/>
+    <action name="action-prod-process-line-attrs-hide-safety-panel"/>
+  </action-group>
 
   <action-group name="action-prod-process-line-group-work-center-onchange">
     <action name="action-prod-process-line-record-update-from-workcenter"/>
@@ -251,6 +274,34 @@
       if="__config__.app.getApp('production')?.getManageWorkCenterGroup() &amp;&amp; (!workCenterGroup || !workCenterGroup.workCenterSet  || workCenterGroup.workCenterSet.isEmpty())"/>
   </action-attrs>
 
+  <action-view name="action-prod-process-line-view-control-plan"
+    model="com.axelor.apps.quality.db.ControlPlan" title="Control plans">
+    <view type="grid" name="control-plan-grid"/>
+    <view type="form" name="control-plan-form"/>
+    <domain>self.relatedToSelectId = :prodProcessLineId AND self.relatedToSelect =
+      'com.axelor.apps.production.db.ProdProcessLine'</domain>
+    <context name="prodProcessLineId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-view name="action-prod-process-line-view-add-control-plan"
+    model="com.axelor.apps.quality.db.ControlPlan" title="Control plans">
+    <view type="form" name="control-plan-form"/>
+    <view type="grid" name="control-plan-grid"/>
+    <view-param name="popup" value="reload"/>
+    <context name="relatedTo" expr="eval: 'com.axelor.apps.production.db.ProdProcessLine'"/>
+    <context name="relatedToId" expr="eval:__self__?.id"/>
+  </action-view>
+
+  <action-attrs name="action-prod-process-line-attrs-hide-safety-panel">
+    <attribute for="hazardPhrasePanel" name="hidden"
+      expr="eval: __parent__?.hazardPhraseSet == null || __parent__?.hazardPhraseSet?.size() == 0"/>
+  </action-attrs>
+
+  <action-method name="action-prod-process-line-method-set-hazard-phrase-domain"
+    model="com.axelor.apps.production.db.ProdProcessLine">
+    <call class="com.axelor.apps.production.web.ProdProcessLineController"
+      method="setHazardPhraseDomain"/>
+  </action-method>
 
 </object-views>
 

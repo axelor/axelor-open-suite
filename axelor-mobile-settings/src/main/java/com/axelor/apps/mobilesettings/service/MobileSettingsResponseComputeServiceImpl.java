@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -34,7 +34,7 @@ import com.axelor.auth.db.User;
 import com.axelor.common.StringUtils;
 import com.axelor.studio.db.AppMobileSettings;
 import com.axelor.studio.db.repo.AppMobileSettingsRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,6 +66,7 @@ public class MobileSettingsResponseComputeServiceImpl
         getApps(appMobileSettings),
         appMobileSettings.getIsLoginUserQrcodeEnabled(),
         appMobileSettings.getIsTrackerMessageEnabled(),
+        appMobileSettings.getIsInboxAccessEnabled(),
         checkConfigWithRoles(
             appMobileSettings.getIsInventoryValidationEnabled(),
             appMobileSettings.getInventoryValidationRoleSet()),
@@ -100,6 +101,7 @@ public class MobileSettingsResponseComputeServiceImpl
         appMobileSettings.getIsEditionOfDateAllowed(),
         appMobileSettings.getIsTimesheetProjectInvoicingEnabled(),
         appMobileSettings.getIsStockLocationManagementEnabled(),
+        appMobileSettings.getIsSimplifiedStockMoveLineDisplayEnabled(),
         appMobileSettings.getIsOneLineShortcut(),
         appMobileSettings.getMinimalRequiredMobileAppVersion(),
         getFieldsToShowOnTimesheet(appMobileSettings.getFieldsToShowOnTimesheet()),
@@ -107,7 +109,18 @@ public class MobileSettingsResponseComputeServiceImpl
         getAuthorizedShortcutList(appMobileSettings),
         appMobileSettings.getIsGenericProductShown(),
         appMobileSettings.getIsConfiguratorProductShown(),
-        getProductTypesToDisplay(appMobileSettings));
+        getProductTypesToDisplay(appMobileSettings),
+        getReportingTypesToDisplay(appMobileSettings),
+        appMobileSettings.getCurrentApkFile(),
+        appMobileSettings.getDefaultDmsRoot(),
+        appMobileSettings.getIsFavoritesManagementEnabled(),
+        appMobileSettings.getIsDownloadAllowed(),
+        appMobileSettings.getIsRenamingAllowed(),
+        appMobileSettings.getIsFolderCreationAllowed(),
+        appMobileSettings.getIsFileCreationAllowed(),
+        appMobileSettings.getIsFileDeletionAllowed(),
+        getFreightCarrierModeTrackingIds(appMobileSettings.getFreightCarrierModeTrackingIds()),
+        appMobileSettings.getDefaultQiDetectionId());
   }
 
   protected List<Long> getAuthorizedDashboardIdList(AppMobileSettings appMobileSettings) {
@@ -241,13 +254,40 @@ public class MobileSettingsResponseComputeServiceImpl
                     .getAuthorizedRoles()),
             getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_PROJECT)
                 .getIsCustomizeMenuEnabled(),
-            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_PROJECT)));
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_PROJECT)),
+        new MobileConfigResponse(
+            MobileConfigRepository.APP_SEQUENCE_DMS,
+            checkConfigWithRoles(
+                appMobileSettings.getIsDMSAppEnabled(),
+                getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_DMS)
+                    .getAuthorizedRoles()),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_DMS)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_DMS)),
+        new MobileConfigResponse(
+            MobileConfigRepository.APP_SEQUENCE_PURCHASE,
+            checkConfigWithRoles(
+                appMobileSettings.getIsPurchaseAppEnabled(),
+                getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_PURCHASE)
+                    .getAuthorizedRoles()),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_PURCHASE)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_PURCHASE)),
+        new MobileConfigResponse(
+            MobileConfigRepository.APP_SEQUENCE_MAINTENANCE,
+            checkConfigWithRoles(
+                appMobileSettings.getIsMaintenanceAppEnabled(),
+                getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_MAINTENANCE)
+                    .getAuthorizedRoles()),
+            getMobileConfigFromAppSequence(MobileConfigRepository.APP_SEQUENCE_MAINTENANCE)
+                .getIsCustomizeMenuEnabled(),
+            getAccessibleMenusFromApp(MobileConfigRepository.APP_SEQUENCE_MAINTENANCE)));
   }
 
   protected List<MobileMenuResponse> getAccessibleMenusFromApp(String appSequence) {
     MobileConfig mobileConfig = getMobileConfigFromAppSequence(appSequence);
     if (mobileConfig.getIsCustomizeMenuEnabled()) {
-      return mobileConfig.getMenus().stream()
+      return mobileConfig.getMenuList().stream()
           .filter(
               mobileMenu ->
                   mobileMenu.getAuthorizedRoles().isEmpty()
@@ -284,5 +324,27 @@ public class MobileSettingsResponseComputeServiceImpl
           ProductRepository.PRODUCT_TYPE_STORABLE, ProductRepository.PRODUCT_TYPE_SERVICE);
     }
     return Arrays.stream(productTypesToDisplay.split(",")).collect(Collectors.toList());
+  }
+
+  protected List<Long> getFreightCarrierModeTrackingIds(String freightCarrierModeTrackingIds) {
+    if (StringUtils.isEmpty(freightCarrierModeTrackingIds)) {
+      return List.of();
+    }
+    return Arrays.stream(freightCarrierModeTrackingIds.split(","))
+        .map(String::trim)
+        .filter(token -> !token.isEmpty())
+        .map(Long::valueOf)
+        .collect(Collectors.toList());
+  }
+
+  protected List<String> getReportingTypesToDisplay(AppMobileSettings appMobileSettings) {
+    String reportingTypesToDisplay = appMobileSettings.getReportingTypesToDisplaySelect();
+    if (StringUtils.isEmpty(reportingTypesToDisplay)) {
+      return List.of(
+          AppMobileSettingsRepository.REPORTING_TYPE_DISPLAY_INDICATORS,
+          AppMobileSettingsRepository.REPORTING_TYPE_DISPLAY_ACTIVITIES,
+          AppMobileSettingsRepository.REPORTING_TYPE_DISPLAY_NONE);
+    }
+    return Arrays.stream(reportingTypesToDisplay.split(",")).collect(Collectors.toList());
   }
 }

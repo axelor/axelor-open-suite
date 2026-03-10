@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -32,10 +32,10 @@ import com.axelor.apps.sale.db.repo.SaleOrderRepository;
 import com.axelor.apps.sale.exception.SaleExceptionMessage;
 import com.axelor.apps.sale.service.app.AppSaleService;
 import com.axelor.apps.sale.service.config.SaleConfigService;
+import com.axelor.apps.sale.service.saleorder.onchange.SaleOrderOnChangeService;
 import com.axelor.i18n.I18n;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 
 public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService {
   protected SaleOrderRepository saleOrderRepository;
@@ -71,11 +71,12 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   @Override
   public SaleOrder createSaleOrder(
       Partner clientPartner,
+      Partner deliveredPartner,
       Company company,
       Partner contactPartner,
       Currency currency,
       Boolean inAti)
-      throws AxelorException, JsonProcessingException {
+      throws AxelorException {
     SaleOrder saleOrder = new SaleOrder();
     boolean isTemplate = false;
     saleOrderInitValueService.setIsTemplate(saleOrder, isTemplate);
@@ -102,13 +103,19 @@ public class SaleOrderGeneratorServiceImpl implements SaleOrderGeneratorService 
   protected void checkClientPartner(Partner clientPartner, SaleOrder saleOrder)
       throws AxelorException {
     Company company = saleOrder.getCompany();
-    String domain = saleOrderDomainService.getPartnerBaseDomain(saleOrder.getCompany());
-    if (!partnerRepository
-        .all()
-        .filter(domain)
-        .bind("company", company)
-        .fetch()
-        .contains(clientPartner)) {
+    String domain =
+        saleOrderDomainService.getPartnerBaseDomain(saleOrder.getCompany())
+            + " AND self.id = :clientPartnerId";
+    boolean isValidPartner =
+        clientPartner != null
+            && partnerRepository
+                    .all()
+                    .filter(domain)
+                    .bind("company", company)
+                    .bind("clientPartnerId", clientPartner.getId())
+                    .fetchOne()
+                != null;
+    if (!isValidPartner) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(SaleExceptionMessage.CLIENT_PROVIDED_DOES_NOT_RESPECT_DOMAIN_RESTRICTIONS),

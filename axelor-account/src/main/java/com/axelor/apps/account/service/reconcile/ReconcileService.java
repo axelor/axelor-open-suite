@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.reconcile;
 
 import com.axelor.apps.account.db.InvoicePayment;
+import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.Reconcile;
 import com.axelor.apps.base.AxelorException;
@@ -61,6 +62,15 @@ public interface ReconcileService {
       boolean updateInvoicePayments)
       throws AxelorException;
 
+  Reconcile reconcile(
+      MoveLine debitMoveLine,
+      MoveLine creditMoveLine,
+      InvoicePayment invoicePayment,
+      Move foreignExchangeMove,
+      boolean canBeZeroBalanceOk,
+      boolean updateInvoicePayments)
+      throws AxelorException;
+
   /**
    * Procédure permettant de gérer les écarts de règlement, check sur la case à cocher 'Peut être
    * soldé' Alors nous utilisons la règle de gestion consitant à imputer l'écart sur un compte
@@ -73,8 +83,6 @@ public interface ReconcileService {
       throws AxelorException;
 
   public void balanceCredit(MoveLine creditMoveLine) throws AxelorException;
-
-  public List<Reconcile> getReconciles(MoveLine moveLine);
 
   public static boolean isReconcilable(MoveLine acc1, MoveLine acc2) {
     return acc1.getAccount().getReconcileOk()

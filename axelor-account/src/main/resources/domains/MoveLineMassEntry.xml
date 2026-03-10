@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="account" package="com.axelor.apps.account.db"/>
 
   <entity name="MoveLineMassEntry" extends="MoveLine">
 
-    <many-to-one name="moveMassEntry" ref="Move" title="Mass entry" initParam="true"/>
+    <many-to-one name="moveMassEntry" ref="com.axelor.apps.account.db.Move"
+      title="Mass entry" initParam="true"/>
     <integer name="temporaryMoveNumber" title="N°"/>
     <integer name="inputAction" title="Input action"
       selection="iaccount.move.line.mass.entry.input.action.select"/>
@@ -29,6 +30,7 @@
     <one-to-many name="analyticMoveLineMassEntryList"
       ref="com.axelor.apps.account.db.AnalyticMoveLine" title="Analytic distribution lines"
       mappedBy="moveLineMassEntry"/>
+    <boolean name="isGenerated" title="Is generated"/>
 
     <extra-code><![CDATA[
 

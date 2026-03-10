@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceTerm;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
+import com.axelor.apps.account.db.PaymentSession;
 import com.axelor.apps.base.AxelorException;
 import java.util.List;
 
@@ -42,5 +43,6 @@ public interface InvoiceTermReplaceService {
   void replaceInvoiceTerms(
       Invoice invoice,
       List<InvoiceTerm> newInvoiceTermList,
-      List<InvoiceTerm> invoiceTermListToRemove);
+      List<InvoiceTerm> invoiceTermListToRemove,
+      PaymentSession paymentSession);
 }

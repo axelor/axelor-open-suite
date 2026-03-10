@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,8 +20,6 @@ package com.axelor.apps.supplychain.service.batch;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
-import com.axelor.apps.base.db.repo.BatchRepository;
-import com.axelor.apps.base.service.administration.AbstractBatch;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.stock.db.StockLocation;
 import com.axelor.apps.stock.db.StockLocationLine;
@@ -34,17 +32,17 @@ import com.axelor.apps.supplychain.db.SupplychainBatch;
 import com.axelor.apps.supplychain.service.StockRulesSupplychainService;
 import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import javax.persistence.TypedQuery;
 
-public class BatchCheckStockComplianceWithStockRules extends AbstractBatch {
+public class BatchCheckStockComplianceWithStockRules extends BatchStrategy {
 
   protected final StockRulesService stockRulesService;
   protected final StockRulesSupplychainService stockRulesSupplychainService;
@@ -72,11 +70,12 @@ public class BatchCheckStockComplianceWithStockRules extends AbstractBatch {
     int offset = 0;
     Map<StockRules, List<StockLocationLine>> stockLocationLinesByStockRules;
     while ((stockLocationLinesByStockRules =
-            getNonCompliantStockLocationLinesByStockRules(AbstractBatch.FETCH_LIMIT, offset))
+            getNonCompliantStockLocationLinesByStockRules(getFetchLimit(), offset))
         != null) {
       if (ObjectUtils.isEmpty(stockLocationLinesByStockRules)) {
-        offset += AbstractBatch.FETCH_LIMIT;
+        offset += getFetchLimit();
         JPA.clear();
+        findBatch();
         continue;
       }
       for (Map.Entry<StockRules, List<StockLocationLine>> stockLocationsByStockRule :
@@ -92,9 +91,10 @@ public class BatchCheckStockComplianceWithStockRules extends AbstractBatch {
             TraceBackService.trace(e, null, batch.getId());
           }
         }
-        offset += AbstractBatch.FETCH_LIMIT;
-        JPA.clear();
       }
+      offset += getFetchLimit();
+      JPA.clear();
+      findBatch();
     }
   }
 
@@ -202,10 +202,5 @@ public class BatchCheckStockComplianceWithStockRules extends AbstractBatch {
     /* Don't change the groupingBy lambda expression to a method reference, it will throw a ClassNotFoundException */
     return typedQuery.getResultList().stream()
         .collect(Collectors.groupingBy(sll -> sll.getStockLocation()));
-  }
-
-  @Override
-  protected void setBatchTypeSelect() {
-    this.batch.setBatchTypeSelect(BatchRepository.BATCH_TYPE_SUPPLYCHAIN_BATCH);
   }
 }

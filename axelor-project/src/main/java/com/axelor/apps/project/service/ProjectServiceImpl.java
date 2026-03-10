@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -46,16 +46,16 @@ import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
 import com.axelor.studio.db.AppProject;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ProjectServiceImpl implements ProjectService {
 
@@ -67,6 +67,7 @@ public class ProjectServiceImpl implements ProjectService {
   protected ProjectCreateTaskService projectCreateTaskService;
   protected WikiRepository wikiRepo;
   protected ResourceBookingService resourceBookingService;
+  protected ProjectNameComputeService projectNameComputeService;
 
   @Inject
   public ProjectServiceImpl(
@@ -75,13 +76,15 @@ public class ProjectServiceImpl implements ProjectService {
       AppProjectService appProjectService,
       ProjectCreateTaskService projectCreateTaskService,
       WikiRepository wikiRepo,
-      ResourceBookingService resourceBookingService) {
+      ResourceBookingService resourceBookingService,
+      ProjectNameComputeService projectNameComputeService) {
     this.projectRepository = projectRepository;
     this.projectStatusRepository = projectStatusRepository;
     this.appProjectService = appProjectService;
     this.projectCreateTaskService = projectCreateTaskService;
     this.wikiRepo = wikiRepo;
     this.resourceBookingService = resourceBookingService;
+    this.projectNameComputeService = projectNameComputeService;
   }
 
   @Override
@@ -90,7 +93,8 @@ public class ProjectServiceImpl implements ProjectService {
       String fullName,
       User assignedTo,
       Company company,
-      Partner clientPartner) {
+      Partner clientPartner)
+      throws AxelorException {
     Project project;
     project = projectRepository.findByName(fullName);
     if (project != null) {
@@ -105,11 +109,13 @@ public class ProjectServiceImpl implements ProjectService {
       fullName = "project";
     }
     project.setName(fullName);
-    project.setFullName(project.getName());
+    project.setFullName(projectNameComputeService.setProjectFullName(project));
     project.setClientPartner(clientPartner);
     project.setAssignedTo(assignedTo);
     project.setProjectStatus(getDefaultProjectStatus());
-
+    if (clientPartner != null) {
+      setPartnerData(project, clientPartner);
+    }
     manageTaskStatus(project, parentProject);
 
     project.setProjectTaskPrioritySet(
@@ -126,7 +132,7 @@ public class ProjectServiceImpl implements ProjectService {
 
   @Override
   @Transactional
-  public Project generateProject(Partner partner) {
+  public Project generateProject(Partner partner) throws AxelorException {
     Preconditions.checkNotNull(partner);
     User user = AuthUtils.getUser();
     Project project =
@@ -139,7 +145,11 @@ public class ProjectServiceImpl implements ProjectService {
   protected String getUniqueProjectName(Partner partner) {
     String baseName = String.format(I18n.get("%s project"), partner.getName());
     long count =
-        projectRepository.all().filter(String.format("self.name LIKE '%s%%'", baseName)).count();
+        projectRepository
+            .all()
+            .filter("self.name LIKE :baseName")
+            .bind("baseName", baseName + "%")
+            .count();
 
     if (count == 0) {
       return baseName;
@@ -181,9 +191,11 @@ public class ProjectServiceImpl implements ProjectService {
                 ? 1
                 : taskTemplatet1.getParentTaskTemplate().equals(taskTemplate2) ? -1 : 1);
 
-    taskTemplateList.forEach(
-        taskTemplate ->
-            projectCreateTaskService.createTask(taskTemplate, project, taskTemplateSet));
+    if (!ObjectUtils.isEmpty(taskTemplateList)) {
+      for (TaskTemplate taskTemplate : taskTemplateList) {
+        projectCreateTaskService.createTask(taskTemplate, project, taskTemplateSet);
+      }
+    }
     return project;
   }
 
@@ -198,9 +210,9 @@ public class ProjectServiceImpl implements ProjectService {
             .domain(domain)
             .param("details-view", "true");
 
-    if (project.getIsShowKanbanPerSection() && project.getIsShowCalendarPerSection()) {
-      builder.add("kanban", "task-per-section-kanban");
-      builder.add("calendar", "project-task-per-section-calendar");
+    if (project.getIsShowKanbanPerCategory() && project.getIsShowCalendarPerCategory()) {
+      builder.add("kanban", "task-per-category-kanban");
+      builder.add("calendar", "project-task-per-category-calendar");
     } else {
       builder.add("kanban", "project-task-kanban");
       builder.add("calendar", "project-task-per-status-calendar");
@@ -238,15 +250,14 @@ public class ProjectServiceImpl implements ProjectService {
     project.setMembersUserSet(new HashSet<>(projectTemplate.getMembersUserSet()));
     project.setProductSet(new HashSet<>(projectTemplate.getProductSet()));
     project.setProjectStatus(getDefaultProjectStatus());
-
+    if (clientPartner != null) {
+      setPartnerData(project, clientPartner);
+    }
     manageTaskStatus(project, projectTemplate);
 
     project.setProjectTaskPrioritySet(
         new HashSet<>(appProjectService.getAppProject().getDefaultPrioritySet()));
     project.setCompletedTaskStatus(appProjectService.getAppProject().getCompletedTaskStatus());
-    if (clientPartner != null && ObjectUtils.notEmpty(clientPartner.getContactPartnerSet())) {
-      project.setContactPartner(clientPartner.getContactPartnerSet().iterator().next());
-    }
     return project;
   }
 
@@ -304,25 +315,41 @@ public class ProjectServiceImpl implements ProjectService {
   }
 
   protected void manageTaskStatus(Project project, ProjectTemplate projectTemplate) {
-    Set<TaskStatus> taskStatusSet =
-        Optional.ofNullable(projectTemplate)
-            .map(ProjectTemplate::getProjectTaskStatusSet)
-            .orElse(null);
     Integer taskStatusManagement =
         Optional.ofNullable(projectTemplate)
             .map(ProjectTemplate::getTaskStatusManagementSelect)
-            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_APP);
+            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT);
+
+    Set<TaskStatus> taskStatusSet = null;
+    if (taskStatusManagement == ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT) {
+      taskStatusSet =
+          Optional.ofNullable(projectTemplate)
+              .map(ProjectTemplate::getProjectTaskStatusSet)
+              .orElse(
+                  Optional.ofNullable(appProjectService.getAppProject())
+                      .map(AppProject::getDefaultTaskStatusSet)
+                      .orElse(null));
+    }
 
     initTaskStatus(project, taskStatusManagement, taskStatusSet);
   }
 
   protected void manageTaskStatus(Project project, Project parentProject) {
-    Set<TaskStatus> taskStatusSet =
-        Optional.ofNullable(parentProject).map(Project::getProjectTaskStatusSet).orElse(null);
     Integer taskStatusManagement =
         Optional.ofNullable(parentProject)
             .map(Project::getTaskStatusManagementSelect)
-            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_APP);
+            .orElse(ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT);
+
+    Set<TaskStatus> taskStatusSet = null;
+    if (taskStatusManagement == ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT) {
+      taskStatusSet =
+          Optional.ofNullable(parentProject)
+              .map(Project::getProjectTaskStatusSet)
+              .orElse(
+                  Optional.ofNullable(appProjectService.getAppProject())
+                      .map(AppProject::getDefaultTaskStatusSet)
+                      .orElse(null));
+    }
 
     initTaskStatus(project, taskStatusManagement, taskStatusSet);
   }
@@ -331,18 +358,16 @@ public class ProjectServiceImpl implements ProjectService {
       Project project, Integer taskStatusManagement, Set<TaskStatus> taskStatusSet) {
     project.setTaskStatusManagementSelect(taskStatusManagement);
 
-    switch (taskStatusManagement) {
-      case ProjectRepository.TASK_STATUS_MANAGEMENT_APP:
-        project.setProjectTaskStatusSet(
-            new HashSet<>(
-                Objects.requireNonNull(
-                    Optional.ofNullable(appProjectService.getAppProject())
-                        .map(AppProject::getDefaultTaskStatusSet)
-                        .orElse(null))));
-        break;
-      case ProjectRepository.TASK_STATUS_MANAGEMENT_PROJECT:
-        project.setProjectTaskStatusSet(new HashSet<>(taskStatusSet));
-        break;
+    if (!ObjectUtils.isEmpty(taskStatusSet)) {
+      project.setProjectTaskStatusSet(new HashSet<>(taskStatusSet));
+    }
+  }
+
+  @Override
+  public void setPartnerData(Project project, Partner clientPartner) {
+    Set<Partner> contactPartnerSet = clientPartner.getContactPartnerSet();
+    if (CollectionUtils.isNotEmpty(contactPartnerSet)) {
+      project.setContactPartner(contactPartnerSet.iterator().next());
     }
   }
 }

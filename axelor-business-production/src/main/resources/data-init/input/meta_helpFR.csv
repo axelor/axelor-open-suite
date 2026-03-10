@@ -1,2 +1,0 @@
-"module";"object";"view";"field";"help"
-"axelor-business-production";"TimesheetLine";"timesheet-line-timesheet-manuf-order-form";"enableEditor";"Lorsque ce champ est VRAI, l'édition de cette entrée (même date) sur l'éditeur de feuille de temps va modifier cette ligne de temps passé. Si ce champ est FAUX, l'édition via l'éditeur va créer une nouvelle ligne de temps."

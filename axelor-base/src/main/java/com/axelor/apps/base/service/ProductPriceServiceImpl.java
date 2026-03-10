@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.base.service;
 
 import com.axelor.apps.account.db.FiscalPosition;
@@ -11,7 +29,7 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.AccountManagementService;
 import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -25,6 +43,7 @@ public class ProductPriceServiceImpl implements ProductPriceService {
 
   protected TaxService taxService;
   protected AccountManagementService accountManagementService;
+  protected ProductPriceListService productPriceListService;
 
   @Inject
   public ProductPriceServiceImpl(
@@ -33,14 +52,15 @@ public class ProductPriceServiceImpl implements ProductPriceService {
       TaxService taxService,
       AppBaseService appBaseService,
       AccountManagementService accountManagementService,
-      FiscalPositionService fiscalPositionService) {
-
+      FiscalPositionService fiscalPositionService,
+      ProductPriceListService productPriceListService) {
     this.currencyService = currencyService;
     this.productCompanyService = productCompanyService;
     this.appBaseService = appBaseService;
     this.taxService = taxService;
     this.accountManagementService = accountManagementService;
     this.fiscalPositionService = fiscalPositionService;
+    this.productPriceListService = productPriceListService;
   }
 
   @Override
@@ -74,7 +94,10 @@ public class ProductPriceServiceImpl implements ProductPriceService {
     Set<TaxLine> taxLineSet =
         accountManagementService.getTaxLineSet(todayDate, product, company, fiscalPosition, false);
 
-    return getSaleUnitPrice(company, product, taxLineSet, inAti, todayDate, toCurrency);
+    BigDecimal price = getSaleUnitPrice(company, product, taxLineSet, inAti, todayDate, toCurrency);
+
+    return productPriceListService.applyPriceList(
+        product, partner, company, currency, price, inAti);
   }
 
   @Override

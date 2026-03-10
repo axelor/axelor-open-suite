@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,30 +20,23 @@ package com.axelor.apps.base.service.address;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.City;
-import com.axelor.apps.base.db.Country;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerAddress;
 import com.axelor.apps.base.db.PickListEntry;
-import com.axelor.apps.base.db.Street;
-import com.axelor.apps.base.db.repo.CityRepository;
-import com.axelor.apps.base.db.repo.StreetRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.MapService;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.common.StringUtils;
 import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.utils.helpers.address.AddressHelper;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -51,17 +44,11 @@ import java.util.function.Function;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import wslite.json.JSONException;
 
 @Singleton
 public class AddressServiceImpl implements AddressService {
   private static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
   protected AddressHelper ads;
-  protected CityRepository cityRepository;
-  protected StreetRepository streetRepository;
-  protected AppBaseService appBaseService;
-  protected AddressAttrsService addressAttrsService;
-
   protected MapService mapService;
   protected static final Set<Function<Long, Boolean>> checkUsedFuncs = new LinkedHashSet<>();
 
@@ -70,19 +57,9 @@ public class AddressServiceImpl implements AddressService {
   }
 
   @Inject
-  public AddressServiceImpl(
-      AddressHelper ads,
-      MapService mapService,
-      CityRepository cityRepository,
-      StreetRepository streetRepository,
-      AppBaseService appBaseService,
-      AddressAttrsService addressAttrsService) {
+  public AddressServiceImpl(AddressHelper ads, MapService mapService) {
     this.ads = ads;
     this.mapService = mapService;
-    this.cityRepository = cityRepository;
-    this.streetRepository = streetRepository;
-    this.appBaseService = appBaseService;
-    this.addressAttrsService = addressAttrsService;
   }
 
   @Override
@@ -98,29 +75,6 @@ public class AddressServiceImpl implements AddressService {
   @Override
   public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker) {
     return ads.doGetAddress(wsdlUrl, moniker);
-  }
-
-  @Override
-  public Address createAddress(
-      String room,
-      String floor,
-      String streetName,
-      String postBox,
-      String zip,
-      City city,
-      Country country) {
-
-    Address address = new Address();
-    address.setRoom(room);
-    address.setFloor(floor);
-    address.setStreetName(streetName);
-    address.setPostBox(postBox);
-    address.setCity(city);
-    address.setZip(zip);
-    address.setCountry(country);
-    autocompleteAddress(address);
-
-    return address;
   }
 
   @Override
@@ -144,7 +98,7 @@ public class AddressServiceImpl implements AddressService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
-      throws AxelorException, JSONException {
+      throws AxelorException {
     Preconditions.checkNotNull(address, I18n.get(BaseExceptionMessage.ADDRESS_CANNOT_BE_NULL));
     Optional<Pair<BigDecimal, BigDecimal>> latLong = getLatLong(address);
 
@@ -158,11 +112,12 @@ public class AddressServiceImpl implements AddressService {
   @Override
   @Transactional(rollbackOn = {Exception.class})
   public Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address)
-      throws AxelorException, JSONException {
+      throws AxelorException {
     Preconditions.checkNotNull(address, I18n.get(BaseExceptionMessage.ADDRESS_CANNOT_BE_NULL));
 
-    if (mapService.isConfigured() && StringUtils.notBlank(address.getFullName())) {
-      Map<String, Object> result = mapService.getMap(address.getFullName());
+    String qString = mapService.getAddressString(address);
+    if (mapService.isConfigured() && StringUtils.notBlank(qString)) {
+      Map<String, Object> result = mapService.getMap(qString);
       if (result == null) {
         address.setIsValidLatLong(false);
         return Optional.empty();
@@ -217,37 +172,5 @@ public class AddressServiceImpl implements AddressService {
       return null;
     }
     return address.getFormattedFullName();
-  }
-
-  @Override
-  public void autocompleteAddress(Address address) {
-    String zip = address.getZip();
-    if (zip == null) {
-      return;
-    }
-    Country country = address.getCountry();
-
-    City city = address.getCity();
-    if (city == null) {
-      List<City> cities = cityRepository.findByZipAndCountry(zip, country).fetch();
-      city = cities.size() == 1 ? cities.get(0) : null;
-      address.setCity(city);
-    }
-    address.setAddressL6(city != null ? zip + " " + city.getName() : null);
-
-    if (appBaseService.getAppBase().getStoreStreets()) {
-      List<Street> streets =
-          streetRepository.all().filter("self.city = :city").bind("city", city).fetch();
-      if (streets.size() == 1) {
-        Street street = streets.get(0);
-        address.setStreet(street);
-        String name = street.getName();
-        String num = address.getBuildingNumber();
-        address.setAddressL4(num != null ? num + " " + name : name);
-      } else {
-        address.setStreet(null);
-        address.setAddressL4(null);
-      }
-    }
   }
 }

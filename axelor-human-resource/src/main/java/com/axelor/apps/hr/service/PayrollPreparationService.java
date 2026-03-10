@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,7 +20,6 @@ package com.axelor.apps.hr.service;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
-import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.weeklyplanning.WeeklyPlanningService;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.EmployeeBonusMgtLine;
@@ -32,17 +31,15 @@ import com.axelor.apps.hr.db.LunchVoucherMgtLine;
 import com.axelor.apps.hr.db.PayrollLeave;
 import com.axelor.apps.hr.db.PayrollPreparation;
 import com.axelor.apps.hr.db.repo.EmployeeBonusMgtLineRepository;
-import com.axelor.apps.hr.db.repo.EmployeeBonusMgtRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.db.repo.ExtraHoursLineRepository;
 import com.axelor.apps.hr.db.repo.LeaveRequestRepository;
 import com.axelor.apps.hr.db.repo.LunchVoucherMgtLineRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.hr.service.config.HRConfigService;
-import com.axelor.apps.hr.service.leave.LeaveRequestComputeDurationService;
+import com.axelor.apps.hr.service.leave.compute.LeaveRequestComputeLeaveDaysService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -52,21 +49,17 @@ import org.apache.commons.collections.CollectionUtils;
 
 public class PayrollPreparationService {
 
-  protected LeaveRequestComputeDurationService leaveRequestComputeDurationService;
+  protected LeaveRequestComputeLeaveDaysService leaveRequestComputeLeaveDaysService;
   protected LeaveRequestRepository leaveRequestRepo;
   protected WeeklyPlanningService weeklyPlanningService;
 
-  @Inject protected AppBaseService appBaseService;
-
-  @Inject HRConfigService hrConfigService;
-
   @Inject
   public PayrollPreparationService(
-      LeaveRequestComputeDurationService leaveRequestComputeDurationService,
+      LeaveRequestComputeLeaveDaysService leaveRequestComputeLeaveDaysService,
       LeaveRequestRepository leaveRequestRepo,
       WeeklyPlanningService weeklyPlanningService) {
 
-    this.leaveRequestComputeDurationService = leaveRequestComputeDurationService;
+    this.leaveRequestComputeLeaveDaysService = leaveRequestComputeLeaveDaysService;
     this.leaveRequestRepo = leaveRequestRepo;
     this.weeklyPlanningService = weeklyPlanningService;
   }
@@ -148,7 +141,7 @@ public class PayrollPreparationService {
       }
 
       payrollLeave.setDuration(
-          leaveRequestComputeDurationService.computeLeaveDaysByLeaveRequest(
+          leaveRequestComputeLeaveDaysService.computeLeaveDaysByLeaveRequest(
               fromDate, toDate, leaveRequest, employee));
       payrollLeave.setLeaveReason(leaveRequest.getLeaveReason());
       payrollLeave.setLeaveRequest(leaveRequest);
@@ -193,7 +186,7 @@ public class PayrollPreparationService {
         Beans.get(ExtraHoursLineRepository.class)
             .all()
             .filter(
-                "self.employee = ?1 AND self.extraHours.statusSelect = 3 AND self.date BETWEEN ?2 AND ?3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?4)",
+                "self.employee = ?1 AND self.extraHours.statusSelect = 3 AND self.date BETWEEN ?2 AND ?3 AND (self.payrollPreparation IS null OR self.payrollPreparation.id = ?4)",
                 payrollPreparation.getEmployee(),
                 fromDate,
                 toDate,
@@ -242,7 +235,7 @@ public class PayrollPreparationService {
         Beans.get(LunchVoucherMgtLineRepository.class)
             .all()
             .filter(
-                "self.employee = ?1 AND self.lunchVoucherMgt.statusSelect = 3 AND (self.payrollPreparation = null OR self.payrollPreparation.id = ?2) AND self.lunchVoucherMgt.payPeriod = ?3",
+                "self.employee = ?1 AND self.lunchVoucherMgt.statusSelect = 3 AND (self.payrollPreparation IS null OR self.payrollPreparation.id = ?2) AND self.lunchVoucherMgt.payPeriod = ?3",
                 payrollPreparation.getEmployee(),
                 payrollPreparation.getId(),
                 payrollPreparation.getPeriod())
@@ -267,14 +260,14 @@ public class PayrollPreparationService {
             .all()
             .filter(
                 "self.employee = ?1"
-                    + " AND self.employeeBonusMgt.statusSelect = ?4"
+                    + " AND self.statusSelect = ?4"
                     + " AND (self.payrollPreparation = null"
                     + " OR self.payrollPreparation.id = ?2)"
                     + " AND self.employeeBonusMgt.payPeriod = ?3",
                 payrollPreparation.getEmployee(),
                 payrollPreparation.getId(),
                 payrollPreparation.getPeriod(),
-                EmployeeBonusMgtRepository.STATUS_CALCULATED)
+                EmployeeBonusMgtLineRepository.STATUS_CALCULATED)
             .fetch();
     for (EmployeeBonusMgtLine employeeBonusMgtLine : employeeBonusList) {
       payrollPreparation.addEmployeeBonusMgtLineListItem(employeeBonusMgtLine);

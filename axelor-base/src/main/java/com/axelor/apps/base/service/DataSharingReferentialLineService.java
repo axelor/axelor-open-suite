@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,6 +18,8 @@
  */
 package com.axelor.apps.base.service;
 
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.DataSharingProductWizard;
 import com.axelor.apps.base.db.DataSharingReferential;
 import com.axelor.apps.base.db.DataSharingReferentialLine;
 import com.axelor.db.Model;
@@ -25,7 +27,10 @@ import com.axelor.db.Query;
 
 public interface DataSharingReferentialLineService {
 
-  Query<? extends Model> getQuery(Class<? extends Model> modelClass);
+  <T extends Model> Query<T> getQuery(
+      DataSharingReferential dataSharingReferential, Class<T> modelClass);
+
+  <T extends Model> Query<T> getQuery(Class<T> modelClass);
 
   DataSharingReferentialLine createDataSharingReferentialLine(
       DataSharingReferential dataSharingReferential,
@@ -33,4 +38,9 @@ public interface DataSharingReferentialLineService {
       String condition,
       String wizardModelName,
       Long wizardRefId);
+
+  void removeDataSharingReferentialLines(DataSharingProductWizard dataSharingProductWizard);
+
+  void testQueryCondition(DataSharingReferentialLine dataSharingReferentialLine)
+      throws AxelorException;
 }

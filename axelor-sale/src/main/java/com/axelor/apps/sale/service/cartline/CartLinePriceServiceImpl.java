@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.sale.service.cartline;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.ProductPriceService;
 import com.axelor.apps.sale.db.Cart;
@@ -27,8 +28,9 @@ import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.SaleConfig;
 import com.axelor.apps.sale.db.repo.SaleConfigRepository;
 import com.axelor.apps.sale.service.config.SaleConfigService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class CartLinePriceServiceImpl implements CartLinePriceService {
 
@@ -43,10 +45,8 @@ public class CartLinePriceServiceImpl implements CartLinePriceService {
   }
 
   @Override
-  public BigDecimal getSalePrice(Cart cart, CartLine cartLine) throws AxelorException {
-    Company company = cart.getCompany();
-    Product product =
-        cartLine.getVariantProduct() != null ? cartLine.getVariantProduct() : cartLine.getProduct();
+  public BigDecimal getSalePrice(Product product, Company company, Partner partner)
+      throws AxelorException {
     if (company == null || product == null) {
       return BigDecimal.ZERO;
     }
@@ -55,6 +55,19 @@ public class CartLinePriceServiceImpl implements CartLinePriceService {
     boolean inAti =
         saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_ALWAYS
             || saleOrderInAtiSelect == SaleConfigRepository.SALE_ATI_DEFAULT;
-    return productPriceService.getSaleUnitPrice(company, product, inAti, cart.getPartner());
+    return productPriceService.getSaleUnitPrice(company, product, inAti, partner);
+  }
+
+  @Override
+  public List<CartLine> updatePrice(Cart cart) throws AxelorException {
+    List<CartLine> cartLineList = cart.getCartLineList();
+    for (CartLine cartLine : cartLineList) {
+      Product product =
+          cartLine.getVariantProduct() != null
+              ? cartLine.getVariantProduct()
+              : cartLine.getProduct();
+      cartLine.setPrice(getSalePrice(product, cart.getCompany(), cart.getPartner()));
+    }
+    return cartLineList;
   }
 }

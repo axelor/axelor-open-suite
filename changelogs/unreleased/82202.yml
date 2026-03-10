@@ -1,3 +1,0 @@
----
-title: "Address: in form view, do not empty the ZIP code when filling the city, and automatically fill the city when the ZIP code is filled."
-module: axelor-base

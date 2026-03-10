@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,6 +26,7 @@ import com.axelor.apps.base.db.repo.PricingRuleRepository;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.exceptions.BaseExceptionMessage;
 import com.axelor.apps.base.service.metajsonattrs.MetaJsonAttrsBuilder;
+import com.axelor.common.ObjectUtils;
 import com.axelor.db.EntityHelper;
 import com.axelor.db.Model;
 import com.axelor.db.mapper.Mapper;
@@ -177,7 +178,9 @@ public class PricingComputer extends AbstractObservablePricing {
    */
   protected Optional<PricingLine> applyPricing(Pricing pricing) throws AxelorException {
     LOG.debug("Applying pricing {} with model {}", pricing, this.model);
-    if (pricing.getClass1PricingRule() != null && pricing.getResult1PricingRule() != null) {
+    if (pricing.getClass1PricingRule() != null
+        && pricing.getResult1PricingRule() != null
+        && ObjectUtils.notEmpty(pricingService.appendFormulaFilter(List.of(pricing), this.model))) {
 
       notifyPricing(pricing);
       List<PricingLine> pricingLines = getMatchedPricingLines(pricing);
@@ -210,8 +213,6 @@ public class PricingComputer extends AbstractObservablePricing {
       if (resultPricingRule != null) {
         MetaField fieldToPopulate = resultPricingRule.getFieldToPopulate();
         Object result = scriptHelper.eval(resultPricingRule.getFormula());
-        notifyResultPricingRule(resultPricingRule, result);
-        notifyFieldToPopulate(fieldToPopulate);
         String typeName = getTypeNameFieldToPopulate(resultPricingRule);
         if (fieldToPopulate != null) {
           if (typeName.equals("BigDecimal")) {
@@ -228,6 +229,8 @@ public class PricingComputer extends AbstractObservablePricing {
             putInContext(fieldToPopulate.getName(), result);
           }
         }
+        notifyResultPricingRule(resultPricingRule, result);
+        notifyFieldToPopulate(fieldToPopulate);
         if (!StringUtils.isBlank(resultPricingRule.getTempVarName())) {
           LOG.debug(
               "Adding result temp variable {} in context", resultPricingRule.getTempVarName());

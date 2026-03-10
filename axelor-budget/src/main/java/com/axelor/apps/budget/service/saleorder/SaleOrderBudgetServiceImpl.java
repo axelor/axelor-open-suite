@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,6 +21,7 @@ package com.axelor.apps.budget.service.saleorder;
 import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Product;
@@ -34,11 +35,11 @@ import com.axelor.apps.budget.service.BudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
 import com.axelor.apps.budget.service.invoice.InvoiceToolBudgetService;
 import com.axelor.apps.budget.service.saleorderline.SaleOrderLineBudgetService;
-import com.axelor.apps.businessproject.service.SaleOrderInvoiceProjectServiceImpl;
-import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.contract.service.SaleOrderInvoiceContractServiceImpl;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.saleorder.SaleOrderDeliveryAddressService;
 import com.axelor.apps.sale.service.saleorder.status.SaleOrderWorkflowService;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.apps.stock.service.app.AppStockService;
@@ -46,13 +47,15 @@ import com.axelor.apps.supplychain.service.CommonInvoiceService;
 import com.axelor.apps.supplychain.service.SaleInvoicingStateService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.invoice.InvoiceServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.invoice.InvoiceTaxService;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineOrderService;
+import com.axelor.apps.supplychain.service.order.OrderInvoiceService;
 import com.axelor.common.StringUtils;
 import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBudget;
 import com.google.common.base.Strings;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
@@ -63,7 +66,7 @@ import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.collections.CollectionUtils;
 
-public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceImpl
+public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceContractServiceImpl
     implements SaleOrderBudgetService {
 
   protected AppBudgetService appBudgetService;
@@ -82,13 +85,16 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
       InvoiceRepository invoiceRepo,
       InvoiceServiceSupplychainImpl invoiceService,
       StockMoveRepository stockMoveRepository,
-      InvoiceTermService invoiceTermService,
       SaleOrderWorkflowService saleOrderWorkflowService,
+      InvoiceTermService invoiceTermService,
       CommonInvoiceService commonInvoiceService,
       InvoiceLineOrderService invoiceLineOrderService,
       SaleInvoicingStateService saleInvoicingStateService,
       CurrencyScaleService currencyScaleService,
-      AppBusinessProjectService appBusinessProjectService,
+      OrderInvoiceService orderInvoiceService,
+      InvoiceTaxService invoiceTaxService,
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
+      PartnerAccountService partnerAccountService,
       AppBudgetService appBudgetService,
       BudgetDistributionService budgetDistributionService,
       SaleOrderLineBudgetService saleOrderLineBudgetService,
@@ -103,13 +109,16 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         invoiceRepo,
         invoiceService,
         stockMoveRepository,
-        invoiceTermService,
         saleOrderWorkflowService,
+        invoiceTermService,
         commonInvoiceService,
         invoiceLineOrderService,
         saleInvoicingStateService,
         currencyScaleService,
-        appBusinessProjectService);
+        orderInvoiceService,
+        invoiceTaxService,
+        saleOrderDeliveryAddressService,
+        partnerAccountService);
     this.appBudgetService = appBudgetService;
     this.budgetDistributionService = budgetDistributionService;
     this.saleOrderLineBudgetService = saleOrderLineBudgetService;
@@ -214,6 +223,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
         invoiceLine.setBudget(saleOrderLine.getBudget());
         invoiceLine.setBudgetRemainingAmountToAllocate(
             saleOrderLine.getBudgetRemainingAmountToAllocate());
+        invoiceLine.setBudgetFromDate(saleOrderLine.getBudgetFromDate());
+        invoiceLine.setBudgetToDate(saleOrderLine.getBudgetToDate());
         invoiceToolBudgetService.copyBudgetDistributionList(
             saleOrderLine.getBudgetDistributionList(),
             invoiceLine,
@@ -282,10 +293,8 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
           }
         } else {
           Budget budget = saleOrderLine.getBudget();
-          if (budget != null) {
-            budgetToolsService.fillAmountPerBudgetMap(
-                budget, saleOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
-          }
+          budgetToolsService.fillAmountPerBudgetMap(
+              budget, saleOrderLine.getCompanyExTaxTotal(), amountPerBudgetMap);
         }
       }
 
@@ -299,6 +308,7 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
   }
 
   @Override
+  @Transactional(rollbackOn = Exception.class)
   public void autoComputeBudgetDistribution(SaleOrder saleOrder) throws AxelorException {
     LocalDate date =
         saleOrder.getOrderDate() != null ? saleOrder.getOrderDate() : saleOrder.getCreationDate();
@@ -320,5 +330,22 @@ public class SaleOrderBudgetServiceImpl extends SaleOrderInvoiceProjectServiceIm
               saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));
       saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, true);
     }
+    saleOrderRepo.save(saleOrder);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void fillBudgetStrOnLine(SaleOrder saleOrder) {
+    List<SaleOrderLine> saleOrderLineList = saleOrder.getSaleOrderLineList();
+    if (CollectionUtils.isEmpty(saleOrderLineList)) {
+      return;
+    }
+    boolean multiBudget =
+        appBudgetService.getAppBudget() != null
+            && appBudgetService.getAppBudget().getManageMultiBudget();
+    for (SaleOrderLine saleOrderLine : saleOrderLineList) {
+      saleOrderLineBudgetService.fillBudgetStrOnLine(saleOrderLine, multiBudget);
+    }
+    saleOrderRepo.save(saleOrder);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,11 +19,12 @@
 package com.axelor.apps.supplychain.db.repo;
 
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.sale.db.Cart;
 import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.repo.CartLineManagementRepository;
 import com.axelor.apps.supplychain.service.cartline.CartLineAvailabilityService;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class CartLineSupplychainRepository extends CartLineManagementRepository {
@@ -39,11 +40,18 @@ public class CartLineSupplychainRepository extends CartLineManagementRepository 
 
   @Override
   public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
-    if (json != null && json.get("id") != null) {
-      CartLine cartLine = find((Long) json.get("id"));
-      Cart cart = cartLine.getCart();
-      json.putAll(cartLineAvailabilityService.setAvailableStatus(cart, cartLine));
+    try {
+      if (json != null && json.get("id") != null) {
+        CartLine cartLine = find((Long) json.get("id"));
+        if (cartLine != null) {
+          Cart cart = cartLine.getCart();
+          json.putAll(cartLineAvailabilityService.setAvailableStatus(cart, cartLine));
+        }
+      }
+      return super.populate(json, context);
+    } catch (Exception e) {
+      TraceBackService.trace(e);
+      throw new RuntimeException(e.getMessage(), e);
     }
-    return super.populate(json, context);
   }
 }

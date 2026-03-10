@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -36,14 +36,14 @@ import com.axelor.apps.hr.service.user.UserHrService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -142,7 +142,8 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
         }
         return duration.multiply(dailyWorkHrs);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
-        return duration.divide(new BigDecimal(60), 2, RoundingMode.HALF_UP);
+        return duration.divide(
+            new BigDecimal(60), AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
       default:
         return duration;
     }
@@ -157,11 +158,12 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
               TraceBackRepository.CATEGORY_CONFIGURATION_ERROR,
               I18n.get(HumanResourceExceptionMessage.TIMESHEET_DAILY_WORK_HOURS));
         }
-        return duration.divide(dailyWorkHrs, 2, RoundingMode.HALF_UP);
+        return duration.divide(
+            dailyWorkHrs, AppBaseService.COMPUTATION_SCALING, RoundingMode.HALF_UP);
       case EmployeeRepository.TIME_PREFERENCE_MINUTES:
-        return duration.multiply(new BigDecimal(60));
+        return duration.multiply(new BigDecimal(60)).setScale(2, RoundingMode.HALF_UP);
       default:
-        return duration;
+        return duration.setScale(2, RoundingMode.HALF_UP);
     }
   }
 
@@ -234,7 +236,11 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   protected BigDecimal calculateTotalHoursDuration(
       Timesheet timesheet, TimesheetLine currentTimesheetLine) {
-    return timesheet.getTimesheetLineList().stream()
+    List<TimesheetLine> timesheetLineList = timesheet.getTimesheetLineList();
+    if (CollectionUtils.isEmpty(timesheetLineList)) {
+      return BigDecimal.ZERO;
+    }
+    return timesheetLineList.stream()
         .filter(
             l ->
                 !l.equals(currentTimesheetLine)
@@ -261,17 +267,7 @@ public class TimesheetLineServiceImpl implements TimesheetLineService {
 
   @Override
   public Product getDefaultProduct(TimesheetLine timesheetLine) {
-    if (timesheetLine == null) {
-      return null;
-    }
-
-    if (timesheetLine.getProduct() == null) {
-      return Optional.of(timesheetLine)
-          .map(TimesheetLine::getEmployee)
-          .map(Employee::getProduct)
-          .orElse(null);
-    }
-    return timesheetLine.getProduct();
+    return userHrService.getTimesheetProduct(timesheetLine.getEmployee(), null);
   }
 
   @Override

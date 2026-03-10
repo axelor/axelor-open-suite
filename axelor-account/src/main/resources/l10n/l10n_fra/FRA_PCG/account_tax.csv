@@ -1,4 +1,4 @@
-"importId";"code";"name";"_activeTaxLine";"taxType.importId"
+"importId";"code";"name";"_activeTaxLine";"taxType_importId"
 "FRA_PCG1";"N_C";"TVA Coll. (V) taux normal";"11";"FRA_PCG1"
 "FRA_PCG2";"R1_C";"TVA Coll. (V) taux réduit 10%";"12";"FRA_PCG1"
 "FRA_PCG3";"R2_C";"TVA Coll. (V) taux réduit 5.5%";"3";"FRA_PCG1"

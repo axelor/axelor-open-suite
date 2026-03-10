@@ -1,3 +1,21 @@
+/*
+ * Axelor Business Solutions
+ *
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
 package com.axelor.apps.budget.service.saleorderline;
 
 import com.axelor.apps.account.service.app.AppAccountService;
@@ -10,15 +28,18 @@ import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.budget.service.AppBudgetService;
 import com.axelor.apps.budget.service.BudgetToolsService;
+import com.axelor.apps.budget.service.compute.BudgetDistributionComputeService;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
-import com.axelor.apps.sale.service.saleorder.SaleOrderMarginService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLinePackService;
+import com.axelor.apps.sale.db.repo.SaleOrderRepository;
+import com.axelor.apps.sale.service.MarginComputeService;
+import com.axelor.apps.sale.service.saleorderline.SaleOrderLineCostPriceComputeService;
+import com.axelor.apps.sale.service.saleorderline.pack.SaleOrderLinePackService;
 import com.axelor.apps.supplychain.service.AnalyticLineModelService;
 import com.axelor.apps.supplychain.service.app.AppSupplychainService;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineComputeSupplychainServiceImpl;
 import com.axelor.apps.supplychain.service.saleorderline.SaleOrderLineServiceSupplyChain;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 
 public class SaleOrderLineComputeBudgetServiceImpl
@@ -26,31 +47,35 @@ public class SaleOrderLineComputeBudgetServiceImpl
 
   protected BudgetToolsService budgetToolsService;
   protected AppBudgetService appBudgetService;
+  protected BudgetDistributionComputeService budgetDistributionComputeService;
 
   @Inject
   public SaleOrderLineComputeBudgetServiceImpl(
       TaxService taxService,
       CurrencyScaleService currencyScaleService,
       ProductCompanyService productCompanyService,
-      SaleOrderMarginService saleOrderMarginService,
+      MarginComputeService marginComputeService,
       CurrencyService currencyService,
       PriceListService priceListService,
       SaleOrderLinePackService saleOrderLinePackService,
+      SaleOrderLineCostPriceComputeService saleOrderLineCostPriceComputeService,
       AppBaseService appBaseService,
       AppSupplychainService appSupplychainService,
       AppAccountService appAccountService,
       AnalyticLineModelService analyticLineModelService,
       SaleOrderLineServiceSupplyChain saleOrderLineServiceSupplyChain,
       BudgetToolsService budgetToolsService,
-      AppBudgetService appBudgetService) {
+      AppBudgetService appBudgetService,
+      BudgetDistributionComputeService budgetDistributionComputeService) {
     super(
         taxService,
         currencyScaleService,
         productCompanyService,
-        saleOrderMarginService,
+        marginComputeService,
         currencyService,
         priceListService,
         saleOrderLinePackService,
+        saleOrderLineCostPriceComputeService,
         appBaseService,
         appSupplychainService,
         appAccountService,
@@ -58,6 +83,7 @@ public class SaleOrderLineComputeBudgetServiceImpl
         saleOrderLineServiceSupplyChain);
     this.budgetToolsService = budgetToolsService;
     this.appBudgetService = appBudgetService;
+    this.budgetDistributionComputeService = budgetDistributionComputeService;
   }
 
   @Override
@@ -66,6 +92,13 @@ public class SaleOrderLineComputeBudgetServiceImpl
     Map<String, Object> saleOrderLineMap = super.computeValues(saleOrder, saleOrderLine);
 
     if (appBudgetService.isApp("budget")) {
+
+      if (saleOrder.getStatusSelect() <= SaleOrderRepository.STATUS_FINALIZED_QUOTATION) {
+        budgetDistributionComputeService.updateMonoBudgetAmounts(
+            saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal());
+        saleOrderLineMap.put("budgetDistributionList", saleOrderLine.getBudgetDistributionList());
+      }
+
       saleOrderLine.setBudgetRemainingAmountToAllocate(
           budgetToolsService.getBudgetRemainingAmountToAllocate(
               saleOrderLine.getBudgetDistributionList(), saleOrderLine.getCompanyExTaxTotal()));

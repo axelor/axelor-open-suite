@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -40,10 +40,10 @@ import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.message.db.repo.MessageRepository;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
-import javax.persistence.Table;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BatchDebtRecovery extends BatchStrategy {
@@ -131,8 +131,7 @@ public class BatchDebtRecovery extends BatchStrategy {
     int offset = 0;
     List<Partner> partnerList;
 
-    while (!(partnerList = query.fetch(FETCH_LIMIT, offset)).isEmpty()) {
-      findBatch();
+    while (!(partnerList = query.fetch(getFetchLimit(), offset)).isEmpty()) {
 
       for (Partner partner : partnerList) {
         ++offset;
@@ -211,6 +210,7 @@ public class BatchDebtRecovery extends BatchStrategy {
       }
 
       JPA.clear();
+      findBatch();
     }
   }
 
@@ -231,7 +231,7 @@ public class BatchDebtRecovery extends BatchStrategy {
 
     // Insert using native query for performance reasons in case of big batch set.
     String sqlString = String.format("INSERT INTO %s VALUES (:modelId, :batchId)", tableName);
-    javax.persistence.Query query = JPA.em().createNativeQuery(sqlString);
+    jakarta.persistence.Query query = JPA.em().createNativeQuery(sqlString);
     query.setParameter("modelId", model.getId());
     query.setParameter("batchId", batch.getId());
     JPA.runInTransaction(query::executeUpdate);

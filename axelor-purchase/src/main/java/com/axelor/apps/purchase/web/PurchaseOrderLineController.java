@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -19,6 +19,7 @@
 package com.axelor.apps.purchase.web;
 
 import com.axelor.apps.account.db.TaxLine;
+import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.Product;
@@ -29,21 +30,22 @@ import com.axelor.apps.base.service.InternationalService;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.base.service.exception.TraceBackService;
-import com.axelor.apps.base.service.tax.FiscalPositionService;
 import com.axelor.apps.base.service.tax.TaxService;
 import com.axelor.apps.purchase.db.PurchaseOrder;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.purchase.db.SupplierCatalog;
 import com.axelor.apps.purchase.service.PurchaseOrderLineService;
+import com.axelor.apps.purchase.service.PurchaseOrderLineWarningService;
 import com.axelor.apps.purchase.service.SupplierCatalogService;
 import com.axelor.apps.purchase.service.app.AppPurchaseService;
+import com.axelor.apps.purchase.service.purchaseorderline.view.PurchaseOrderLineViewService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.common.base.Strings;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Set;
@@ -59,13 +61,13 @@ public class PurchaseOrderLineController {
       PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
       PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
 
-      Map<String, BigDecimal> map =
+      Map<String, Object> map =
           Beans.get(PurchaseOrderLineService.class).compute(purchaseOrderLine, purchaseOrder);
       response.setValues(map);
       response.setAttr(
           "priceDiscounted",
           "hidden",
-          map.getOrDefault("priceDiscounted", BigDecimal.ZERO)
+          new BigDecimal(String.valueOf(map.getOrDefault("priceDiscounted", BigDecimal.ZERO)))
                   .compareTo(
                       purchaseOrder.getInAti()
                           ? purchaseOrderLine.getInTaxPrice()
@@ -107,25 +109,16 @@ public class PurchaseOrderLineController {
   }
 
   public void getTaxEquiv(ActionRequest request, ActionResponse response) {
+    try {
+      Context context = request.getContext();
+      PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+      PurchaseOrder purchaseOrder = getPurchaseOrder(context);
 
-    Context context = request.getContext();
-    PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
-    PurchaseOrder purchaseOrder = getPurchaseOrder(context);
-
-    response.setValue("taxEquiv", null);
-
-    Set<TaxLine> taxLineSet = purchaseOrderLine.getTaxLineSet();
-    if (purchaseOrder == null
-        || purchaseOrderLine == null
-        || purchaseOrder.getSupplierPartner() == null
-        || CollectionUtils.isEmpty(taxLineSet)) return;
-
-    FiscalPositionService fiscalPositionService = Beans.get(FiscalPositionService.class);
-    TaxService taxService = Beans.get(TaxService.class);
-    response.setValue(
-        "taxEquiv",
-        fiscalPositionService.getTaxEquiv(
-            purchaseOrder.getFiscalPosition(), taxService.getTaxSet(taxLineSet)));
+      response.setValues(
+          Beans.get(PurchaseOrderLineService.class).recomputeTax(purchaseOrder, purchaseOrderLine));
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
   }
 
   public void updateProductInformation(ActionRequest request, ActionResponse response) {
@@ -407,7 +400,7 @@ public class PurchaseOrderLineController {
       domain += "self.id = 0";
     }
 
-    domain += " AND " + company.getId() + " in (SELECT id FROM self.companySet)";
+    domain += " AND " + company.getId() + " in (SELECT c.id FROM self.companySet c)";
 
     response.setAttr("supplierPartner", "domain", domain);
   }
@@ -454,6 +447,32 @@ public class PurchaseOrderLineController {
         }
       }
 
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  public void differentUnitMessage(ActionRequest request, ActionResponse response)
+      throws AxelorException {
+    Context context = request.getContext();
+    PurchaseOrderLine purchaseOrderLine = context.asType(PurchaseOrderLine.class);
+    PurchaseOrder purchaseOrder = this.getPurchaseOrder(context);
+
+    response.setAttr(
+        "$unitWarningMessage",
+        "hidden",
+        !Beans.get(PurchaseOrderLineWarningService.class)
+            .checkSupplierCatalogUnit(purchaseOrderLine, purchaseOrder));
+  }
+
+  public void updateDeliveryPanelVisibility(ActionRequest request, ActionResponse response) {
+    try {
+      PurchaseOrderLine purchaseOrderLine = request.getContext().asType(PurchaseOrderLine.class);
+
+      Map<String, Map<String, Object>> attrs =
+          Beans.get(PurchaseOrderLineViewService.class).hideDeliveryPanel(purchaseOrderLine);
+
+      response.setAttrs(attrs);
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,8 +20,8 @@ package com.axelor.apps.sale.service.cartline;
 
 import com.axelor.apps.sale.db.CartLine;
 import com.axelor.apps.sale.db.repo.CartLineRepository;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 
 public class CartLineUpdateServiceImpl implements CartLineUpdateService {
@@ -35,8 +35,17 @@ public class CartLineUpdateServiceImpl implements CartLineUpdateService {
 
   @Override
   @Transactional(rollbackOn = Exception.class)
-  public void updateCartLine(CartLine cartLine) {
-    cartLine.setQty(cartLine.getQty().add(BigDecimal.ONE));
+  public void updateCartLine(CartLine cartLine, BigDecimal qty) {
+    if (qty == null) {
+      qty = BigDecimal.ONE;
+    }
+    cartLine.setQty(cartLine.getQty().add(qty));
     cartLineRepository.save(cartLine);
+  }
+
+  @Override
+  @Transactional(rollbackOn = Exception.class)
+  public void updateCartLine(CartLine cartLine) {
+    updateCartLine(cartLine, null);
   }
 }

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,8 +37,8 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -206,8 +206,10 @@ public class BatchAutoMoveLettering extends BatchStrategy {
         BigDecimal credit = creditMoveLine.getCredit();
         BigDecimal nextCreditRemaining = creditRemaining.subtract(debit);
         BigDecimal nextDebitRemaining = debitRemaining.get(debitMoveLine).subtract(credit);
-        if (reconcileMethodSelect
-                == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_MOVE
+        if ((reconcileMethodSelect
+                    == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_BALANCED_MOVE
+                || reconcileMethodSelect
+                    == AccountingBatchRepository.AUTO_MOVE_LETTERING_RECONCILE_BY_AMOUNT)
             && !isBalanced
             && (nextCreditRemaining.signum() < 0 || nextDebitRemaining.signum() < 0)) {
           continue;
@@ -218,11 +220,23 @@ public class BatchAutoMoveLettering extends BatchStrategy {
             debitMoveLine = moveLineRepository.find(debitMoveLine.getId());
             creditMoveLine = moveLineRepository.find(creditMoveLine.getId());
 
+            BigDecimal reconciledAmount = BigDecimal.ZERO;
+            if (debitMoveLine.getMaxAmountToReconcile().compareTo(BigDecimal.ZERO) > 0) {
+              reconciledAmount =
+                  debitMoveLine
+                      .getMaxAmountToReconcile()
+                      .min(creditMoveLine.getAmountRemaining().abs());
+            } else {
+              reconciledAmount =
+                  creditMoveLine.getAmountRemaining().abs().min(debitMoveLine.getAmountRemaining());
+            }
             reconcile(debitMoveLine, creditMoveLine, debitTotalRemaining, creditTotalRemaining);
             creditRemaining = nextCreditRemaining;
             debitRemaining.replace(debitMoveLine, nextDebitRemaining);
             moveLineReconciledSet.add(debitMoveLine);
             moveLineReconciledSet.add(creditMoveLine);
+            debitTotalRemaining = debitTotalRemaining.subtract(reconciledAmount);
+            creditTotalRemaining = creditTotalRemaining.subtract(reconciledAmount);
           } catch (Exception e) {
             TraceBackService.trace(
                 new Exception(
@@ -331,11 +345,13 @@ public class BatchAutoMoveLettering extends BatchStrategy {
     }
     // End gestion du passage en 580
 
-    reconcileService.confirmReconcile(reconcile, true, true);
-    debitMoveLine.addBatchSetItem(batch);
-    creditMoveLine.addBatchSetItem(batch);
-    moveLineRepository.save(debitMoveLine);
-    moveLineRepository.save(creditMoveLine);
+    if (reconcile != null) {
+      reconcileService.confirmReconcile(reconcile, true, true);
+      debitMoveLine.addBatchSetItem(batch);
+      creditMoveLine.addBatchSetItem(batch);
+      moveLineRepository.save(debitMoveLine);
+      moveLineRepository.save(creditMoveLine);
+    }
 
     LOG.debug("Reconcile : {}", reconcile);
   }

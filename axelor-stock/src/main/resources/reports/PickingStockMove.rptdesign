@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">odaURL</property>
@@ -183,11 +183,11 @@ else row["last_modified_by"]</expression>
                     <text-property name="heading">id</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="alias">logo_path</property>
+                    <property name="columnName">logo_id</property>
+                    <property name="alias">logo_id</property>
                     <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <text-property name="heading">logo_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
@@ -432,8 +432,8 @@ else row["last_modified_by"]</expression>
                     </structure>
                     <structure>
                         <property name="position">2</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">3</property>
@@ -596,7 +596,7 @@ else row["last_modified_by"]</expression>
                         <property name="dataType">string</property>
                     </structure>
                     <structure>
-                        <property name="position">37</property>
+                        <property name="position">35</property>
                         <property name="name">user_name</property>
                         <property name="dataType">string</property>
                     </structure>
@@ -613,9 +613,9 @@ else row["last_modified_by"]</expression>
                 </structure>
                 <structure>
                     <property name="position">2</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
@@ -845,7 +845,7 @@ else row["last_modified_by"]</expression>
             </list-property>
             <xml-property name="queryText"><![CDATA[select 
 StockMove.id,
-MetaFile.file_path as logo_path,
+MetaFile.id as logo_id,
 Company.height as logo_height,
 Company.width as logo_width,
 StockMove.real_date,
@@ -1210,7 +1210,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <structure>
                         <property name="position">5</property>
                         <property name="name">barcode_picture</property>
-                        <property name="dataType">string</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">6</property>
@@ -1293,7 +1293,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <property name="position">5</property>
                     <property name="name">barcode_picture</property>
                     <property name="nativeName">barcode_picture</property>
-                    <property name="dataType">string</property>
+                    <property name="dataType">decimal</property>
                     <property name="nativeDataType">12</property>
                 </structure>
                 <structure>
@@ -1361,11 +1361,11 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 </structure>
             </list-property>
             <xml-property name="queryText"><![CDATA[select StockMove.id as stock_move_id, StockMoveLine.id, Product.code as product_code, StockMoveLine.product_name as product_name,
-BarCodeFile.file_path as barcode_picture,Product.bar_code as bar_code,
+BarCodeFile.id as barcode_picture,Product.bar_code as bar_code,
 StockMoveLine.real_qty, Unit.label_to_printing as unit_code, TrackingNumber.tracking_number_seq,
 StockMoveLine.description, StockLocationLine.rack, SaleOrderLine.picking_order_info,
 StockMoveLine.sequence,
-( SaleOrderLine.type_select = 2 or PurchaseOrderLine.is_title_line) as "isTitleLine"
+(COALESCE(StockMoveLine.line_type_select = 1, false) or COALESCE(SaleOrderLine.type_select = 1, false) OR COALESCE(PurchaseOrderLine.is_title_line, false)) AS "isTitleLine"
 from stock_stock_move as StockMove
 inner join stock_stock_move_line as StockMoveLine on (StockMoveLine.stock_move = StockMove.id)
 left join base_product as Product on (StockMoveLine.product = Product.id)
@@ -1376,7 +1376,8 @@ left outer join sale_sale_order_line as SaleOrderLine on (SaleOrderLine.id = Sto
 left outer join purchase_purchase_order_line as PurchaseOrderLine on (PurchaseOrderLine.id = StockMoveLine.purchase_order_line)
 left join stock_stock_location as Location on (Location.id = StockMove.from_stock_location)
 left join stock_stock_location_line as StockLocationLine on (Location.id = StockLocationLine.stock_location AND StockLocationLine.product = Product.id)
-where StockMove.id = ?
+left join studio_app_supplychain as AppSupplyChain on true
+where StockMove.id = ? and (StockMoveLine.real_qty > 0 or AppSupplyChain.is_title_line_managed = true)
 order by StockMoveLine.sequence]]></xml-property>
         </oda-data-set>
     </data-sets>
@@ -1465,10 +1466,10 @@ order by StockMoveLine.sequence]]></xml-property>
                     <property name="dataType">decimal</property>
                 </structure>
                 <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                    <property name="dataType">decimal</property>
                 </structure>
                 <structure>
                     <property name="name">real_date</property>
@@ -1727,13 +1728,17 @@ order by StockMoveLine.sequence]]></xml-property>
                         <list-property name="visibility">
                             <structure>
                                 <property name="format">all</property>
-                                <expression name="valueExpr" type="javascript">row["logo_path"] == null</expression>
+                                <expression name="valueExpr" type="javascript">row["logo_id"] == null</expression>
                             </structure>
                         </list-property>
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
                         <method name="onRender"><![CDATA[this.width=row["logo_width"];
 this.height=row["logo_height"];]]></method>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                        <property name="source">expr</property>
                     </image>
                 </cell>
                 <cell id="4221">
@@ -2545,7 +2550,7 @@ row._outer["first_name"]
                                 <property name="name">barcode_picture</property>
                                 <text-property name="displayName">barcode_picture</text-property>
                                 <expression name="expression" type="javascript">dataSetRow["barcode_picture"]</expression>
-                                <property name="dataType">string</property>
+                                <property name="dataType">decimal</property>
                                 <property name="allowExport">true</property>
                             </structure>
                             <structure>
@@ -3054,8 +3059,12 @@ rowNumD=0;]]></method>
                                         <property name="textAlign">center</property>
                                         <image id="4110">
                                             <expression name="altText">""</expression>
-                                            <property name="source">file</property>
-                                            <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                            <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["barcode_picture"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                            <property name="source">expr</property>
                                         </image>
                                     </cell>
                                     <cell id="3807">
@@ -3103,6 +3112,12 @@ rowNumD=0;]]></method>
                                         <text id="3459">
                                             <property name="fontSize">9pt</property>
                                             <property name="textAlign">right</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <property name="contentType">html</property>
                                             <text-property name="content"><![CDATA[<VALUE-OF>row["Aggregation"]</VALUE-OF>]]></text-property>
                                         </text>
@@ -3120,6 +3135,12 @@ rowNumD=0;]]></method>
                                             <property name="marginLeft">0pt</property>
                                             <property name="textAlign">left</property>
                                             <property name="dataSet">TranslateDS</property>
+                                            <list-property name="visibility">
+                                                <structure>
+                                                    <property name="format">all</property>
+                                                    <expression name="valueExpr" type="javascript">row._outer["isTitleLine"]</expression>
+                                                </structure>
+                                            </list-property>
                                             <list-property name="paramBindings">
                                                 <structure>
                                                     <property name="paramName">param_1</property>
@@ -3207,7 +3228,7 @@ rowNumD=0;]]></method>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || row._outer["display_line_details_on_printing"]</expression>
+                                            <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || row._outer["display_line_details_on_printing"] || row["isTitleLine"]</expression>
                                         </structure>
                                     </list-property>
                                     <cell id="4151">
@@ -3693,7 +3714,7 @@ rowNumD=0;]]></method>
                                     <list-property name="visibility">
                                         <structure>
                                             <property name="format">all</property>
-                                            <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || row._outer["display_line_details_on_printing"]</expression>
+                                            <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || row._outer["display_line_details_on_printing"] || row["isTitleLine"]</expression>
                                         </structure>
                                     </list-property>
                                     <cell id="4152">
@@ -3942,8 +3963,12 @@ rowNumD=0;]]></method>
                                     <property name="textAlign">center</property>
                                     <image id="4375">
                                         <expression name="altText">""</expression>
-                                        <property name="source">file</property>
-                                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["barcode_picture"]</expression>
+                                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["barcode_picture"], true);
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
+                                        <property name="source">expr</property>
                                     </image>
                                 </cell>
                                 <cell id="4290">
@@ -3996,6 +4021,12 @@ rowNumD=0;]]></method>
                                         <property name="fontSize">9pt</property>
                                         <property name="fontWeight">bold</property>
                                         <property name="textAlign">right</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[<VALUE-OF>row["real_qty"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -4012,6 +4043,12 @@ rowNumD=0;]]></method>
                                         <property name="fontWeight">bold</property>
                                         <property name="marginLeft">0pt</property>
                                         <property name="textAlign">left</property>
+                                        <list-property name="visibility">
+                                            <structure>
+                                                <property name="format">all</property>
+                                                <expression name="valueExpr" type="javascript">row["isTitleLine"]</expression>
+                                            </structure>
+                                        </list-property>
                                         <property name="contentType">html</property>
                                         <text-property name="content"><![CDATA[- <VALUE-OF>row["unit_code"]</VALUE-OF>]]></text-property>
                                     </text>
@@ -4080,7 +4117,7 @@ rowNumD=0;]]></method>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || !row._outer["display_line_details_on_printing"]</expression>
+                                        <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || !row._outer["display_line_details_on_printing"] || row["isTitleLine"]</expression>
                                     </structure>
                                 </list-property>
                                 <cell id="4301">
@@ -4560,7 +4597,7 @@ rowNumD=0;]]></method>
                                 <list-property name="visibility">
                                     <structure>
                                         <property name="format">all</property>
-                                        <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || !row._outer["display_line_details_on_printing"]</expression>
+                                        <expression name="valueExpr" type="javascript">!row._outer["picking_order_printing_detailed"] || !row._outer["display_line_details_on_printing"] || row["isTitleLine"]</expression>
                                     </structure>
                                 </list-property>
                                 <cell id="4314">

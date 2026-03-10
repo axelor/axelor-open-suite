@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -21,7 +21,8 @@ package com.axelor.apps.production.db.repo;
 import com.axelor.apps.production.db.BillOfMaterial;
 import com.axelor.apps.production.db.BillOfMaterialLine;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
-import com.google.inject.Inject;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseRefreshService;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -29,20 +30,29 @@ public class BillOfMaterialManagementRepository extends BillOfMaterialRepository
 
   protected BillOfMaterialLineRepository billOfMaterialLineRepository;
   protected BillOfMaterialComputeNameService billOfMaterialComputeNameService;
+  protected BillOfMaterialHazardPhraseRefreshService billOfMaterialHazardPhraseRefreshService;
 
   @Inject
   public BillOfMaterialManagementRepository(
       BillOfMaterialLineRepository billOfMaterialLineRepository,
-      BillOfMaterialComputeNameService billOfMaterialComputeNameService) {
-
+      BillOfMaterialComputeNameService billOfMaterialComputeNameService,
+      BillOfMaterialHazardPhraseRefreshService billOfMaterialHazardPhraseRefreshService) {
     this.billOfMaterialLineRepository = billOfMaterialLineRepository;
     this.billOfMaterialComputeNameService = billOfMaterialComputeNameService;
+    this.billOfMaterialHazardPhraseRefreshService = billOfMaterialHazardPhraseRefreshService;
   }
 
   @Override
   public BillOfMaterial save(BillOfMaterial billOfMaterial) {
+    // Capture the id before save: null for new BOMs, used by the service to read the old state.
+    Long oldBomId = billOfMaterial.getId();
+
     billOfMaterial = super.save(billOfMaterial);
     billOfMaterial.setFullName(billOfMaterialComputeNameService.computeFullName(billOfMaterial));
+
+    billOfMaterialHazardPhraseRefreshService.refreshProdProcessHazardPhrases(
+        oldBomId, billOfMaterial);
+
     return billOfMaterial;
   }
 

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,14 +20,11 @@ package com.axelor.apps.base.service.address;
 
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Address;
-import com.axelor.apps.base.db.City;
-import com.axelor.apps.base.db.Country;
 import com.axelor.meta.CallMethod;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
-import wslite.json.JSONException;
 
 public interface AddressService {
 
@@ -37,15 +34,6 @@ public interface AddressService {
 
   public com.qas.web_2005_02.Address select(String wsdlUrl, String moniker);
 
-  public Address createAddress(
-      String room,
-      String floor,
-      String streetName,
-      String postBox,
-      String zip,
-      City city,
-      Country country);
-
   @CallMethod
   public boolean checkAddressUsed(Long addressId);
 
@@ -54,21 +42,17 @@ public interface AddressService {
    *
    * @param address
    * @return
-   * @throws JSONException
    * @throws AxelorException
    */
-  Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address)
-      throws AxelorException, JSONException;
+  Optional<Pair<BigDecimal, BigDecimal>> getOrUpdateLatLong(Address address) throws AxelorException;
 
   /**
    * Update latitude and longitude.
    *
    * @param address
    * @throws AxelorException
-   * @throws JSONException
    */
-  Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address)
-      throws AxelorException, JSONException;
+  Optional<Pair<BigDecimal, BigDecimal>> updateLatLong(Address address) throws AxelorException;
 
   /**
    * Reset latitude and longitude.
@@ -87,11 +71,4 @@ public interface AddressService {
    */
   @CallMethod
   String computeAddressStr(Address address);
-
-  /**
-   * Auto-completes some fields of the address thanks to the input zip.
-   *
-   * @param address
-   */
-  public void autocompleteAddress(Address address);
 }

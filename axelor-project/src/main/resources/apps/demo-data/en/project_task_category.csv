@@ -1,0 +1,6 @@
+"importId";"name";"projectTaskStatusSet";"completedTaskStatus.importId";"defaultProduct.importId";"defaultInvoicingType"
+1;"Anomaly";1|2|3|4|5|6;5;411;4
+2;"Feature";1|2|3|4|5|6;5;411;2
+3;"Support";1|2|5|6;5;411;1
+4;"Intervention";1|2|5|6;5;411;1
+5;"Proposal";1|2|5;5;411;3

@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,6 +31,7 @@ import com.axelor.apps.hr.service.timesheet.TimesheetPeriodComputationService;
 import com.axelor.apps.hr.service.timesheet.TimesheetService;
 import com.axelor.apps.hr.service.timesheet.TimesheetWorkflowService;
 import com.axelor.apps.hr.service.timesheet.timer.TimerTimesheetGenerationService;
+import com.axelor.apps.hr.translation.ITranslation;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.utils.api.HttpExceptionHandler;
@@ -38,21 +39,20 @@ import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestValidator;
 import com.axelor.utils.api.ResponseConstructor;
 import com.axelor.utils.api.SecurityCheck;
-import com.axelor.web.ITranslation;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import wslite.json.JSONException;
+import org.apache.commons.collections.CollectionUtils;
 
 @Path("/aos/timesheet")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -65,8 +65,13 @@ public class TimesheetRestController {
   @POST
   @HttpExceptionHandler
   public Response createTimesheet(TimesheetPostRequest requestBody) throws AxelorException {
-    Long[] timerIds = requestBody.getTimerIdList().toArray(new Long[0]);
-    new SecurityCheck().createAccess(Timesheet.class).readAccess(TSTimer.class, timerIds).check();
+    SecurityCheck securityCheck = new SecurityCheck();
+    List<Long> timersId = requestBody.getTimerIdList();
+    if (CollectionUtils.isNotEmpty(timersId)) {
+      Long[] timerIds = timersId.toArray(new Long[0]);
+      securityCheck = securityCheck.readAccess(TSTimer.class, timerIds);
+    }
+    securityCheck.createAccess(Timesheet.class).check();
     RequestValidator.validateBody(requestBody);
 
     List<TSTimer> tsTimerList = requestBody.fetchTSTimers();
@@ -88,11 +93,13 @@ public class TimesheetRestController {
   public Response addTimersToTimesheet(
       @PathParam("timesheetId") Long timesheetId, TimesheetPutRequest requestBody)
       throws AxelorException {
-    Long[] timerIds = requestBody.getTimerIdList().toArray(new Long[0]);
-    new SecurityCheck()
-        .writeAccess(Timesheet.class, timesheetId)
-        .readAccess(TSTimer.class, timerIds)
-        .check();
+    SecurityCheck securityCheck = new SecurityCheck();
+    List<Long> timersId = requestBody.getTimerIdList();
+    if (CollectionUtils.isNotEmpty(timersId)) {
+      Long[] timerIds = timersId.toArray(new Long[0]);
+      securityCheck = securityCheck.readAccess(TSTimer.class, timerIds);
+    }
+    securityCheck.writeAccess(Timesheet.class, timesheetId).check();
     RequestValidator.validateBody(requestBody);
 
     Timesheet timesheet = ObjectFinder.find(Timesheet.class, timesheetId, requestBody.getVersion());
@@ -101,7 +108,9 @@ public class TimesheetRestController {
     Beans.get(TimesheetPeriodComputationService.class).setComputedPeriodTotal(timesheet);
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Timesheet successfully updated.", new TimesheetResponse(timesheet));
+        Response.Status.OK,
+        I18n.get(ITranslation.TIMESHEET_UPDATED),
+        new TimesheetResponse(timesheet));
   }
 
   @Operation(
@@ -112,7 +121,7 @@ public class TimesheetRestController {
   @HttpExceptionHandler
   public Response updateTimesheetStatus(
       @PathParam("timesheetId") Long timesheetId, TimesheetPutRequest requestBody)
-      throws AxelorException, JSONException, IOException, ClassNotFoundException {
+      throws AxelorException, IOException, ClassNotFoundException {
     new SecurityCheck().writeAccess(Timesheet.class, timesheetId).check();
     RequestValidator.validateBody(requestBody);
 
@@ -138,7 +147,9 @@ public class TimesheetRestController {
     }
 
     return ResponseConstructor.build(
-        Response.Status.OK, "Timesheet successfully updated.", new TimesheetResponse(timesheet));
+        Response.Status.OK,
+        I18n.get(ITranslation.TIMESHEET_UPDATED),
+        new TimesheetResponse(timesheet));
   }
 
   @Operation(
@@ -171,7 +182,7 @@ public class TimesheetRestController {
 
     return ResponseConstructor.build(
         Response.Status.OK,
-        "Timesheet converted period total.",
+        I18n.get(ITranslation.TIMESHEET_CONVERTED_PERIOD_TOTAL),
         Map.of(
             "periodTotalConvertTitle",
             Beans.get(TimesheetService.class).getPeriodTotalConvertTitle(timesheet),

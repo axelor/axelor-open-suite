@@ -1,3 +1,0 @@
----
-title: "Ticket API: fixed an issue where condition in permission were not evaluated correctly to update tickets."
-module: axelor-helpdesk

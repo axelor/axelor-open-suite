@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -18,12 +18,16 @@
  */
 package com.axelor.csv.script;
 
+import com.axelor.apps.account.db.TaxLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.sale.service.saleorderline.SaleOrderLineComputeService;
-import com.axelor.apps.sale.service.saleorderline.SaleOrderLineTaxService;
+import com.axelor.apps.sale.service.saleorderline.tax.SaleOrderLineTaxService;
 import com.axelor.inject.Beans;
 import java.util.Map;
+import java.util.Set;
+import org.apache.commons.collections.CollectionUtils;
 
 public class ImportSaleOrderLine {
 
@@ -33,11 +37,28 @@ public class ImportSaleOrderLine {
 
     SaleOrderLine saleOrderLine = (SaleOrderLine) bean;
     SaleOrderLineTaxService saleOrderLineTaxService = Beans.get(SaleOrderLineTaxService.class);
-    saleOrderLine.setTaxLineSet(
-        saleOrderLineTaxService.getTaxLineSet(saleOrderLine.getSaleOrder(), saleOrderLine));
-    Beans.get(SaleOrderLineComputeService.class)
-        .computeValues(saleOrderLine.getSaleOrder(), saleOrderLine);
+    SaleOrder saleOrder = saleOrderLine.getSaleOrder();
+    if (saleOrder == null) {
+      saleOrder = getSaleOrder(saleOrderLine);
+    }
+    Set<TaxLine> taxLineSet = saleOrderLineTaxService.getTaxLineSet(saleOrder, saleOrderLine);
+    if (CollectionUtils.isNotEmpty(taxLineSet)) {
+      saleOrderLine.setTaxLineSet(taxLineSet);
+    }
+
+    Beans.get(SaleOrderLineComputeService.class).computeValues(saleOrder, saleOrderLine);
 
     return saleOrderLine;
+  }
+
+  protected SaleOrder getSaleOrder(SaleOrderLine saleOrderLine) {
+    SaleOrderLine parentSaleOrderLine = saleOrderLine.getParentSaleOrderLine();
+    if (parentSaleOrderLine != null) {
+      return getSaleOrder(parentSaleOrderLine);
+    }
+    if (saleOrderLine.getSaleOrder() != null) {
+      return saleOrderLine.getSaleOrder();
+    }
+    return null;
   }
 }

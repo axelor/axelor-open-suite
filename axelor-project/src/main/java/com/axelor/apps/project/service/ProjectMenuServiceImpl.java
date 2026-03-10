@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -26,7 +26,7 @@ import com.axelor.auth.db.User;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.meta.schema.actions.ActionView.ActionViewBuilder;
-import com.google.inject.Inject;
+import jakarta.inject.Inject;
 import java.util.Map;
 import java.util.Optional;
 
@@ -103,9 +103,8 @@ public class ProjectMenuServiceImpl implements ProjectMenuService {
     ActionViewBuilder builder =
         ActionView.define(I18n.get("Related Tasks"))
             .model(ProjectTask.class.getName())
-            .add("tree", "project-project-task-tree")
-            .add("kanban", "project-task-kanban")
             .add("grid", "project-task-grid")
+            .add("kanban", "project-task-kanban")
             .add("form", "project-task-form")
             .param("details-view", "true")
             .domain("self.typeSelect = :_typeSelect AND self.project.id = :_id")

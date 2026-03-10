@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.23" id="1">
-    <property name="createdBy">Eclipse BIRT Designer Version 4.7.0.v201706222054</property>
+<report xmlns="http://www.eclipse.org/birt/2005/design" version="3.2.27" id="1">
+    <property name="createdBy">Eclipse BIRT Designer Version 4.21.0.v202508021620</property>
     <list-property name="propertyBindings">
         <structure>
             <property name="name">queryText</property>
@@ -374,11 +374,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     <text-property name="heading">logoPosition</text-property>
                 </structure>
                 <structure>
-                    <property name="columnName">logo_path</property>
-                    <property name="alias">logo_path</property>
-                    <property name="analysis">dimension</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <text-property name="heading">logo_path</text-property>
+                    <property name="columnName">logo_id</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <text-property name="heading">logo_id</text-property>
                 </structure>
                 <structure>
                     <property name="columnName">logo_height</property>
@@ -488,8 +487,8 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                     </structure>
                     <structure>
                         <property name="position">15</property>
-                        <property name="name">logo_path</property>
-                        <property name="dataType">string</property>
+                        <property name="name">logo_id</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                     <structure>
                         <property name="position">16</property>
@@ -596,9 +595,10 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
                 </structure>
                 <structure>
                     <property name="position">15</property>
-                    <property name="name">logo_path</property>
-                    <property name="nativeName">logo_path</property>
-                    <property name="dataType">string</property>
+                    <property name="name">logo_id</property>
+                    <property name="nativeName">logo_id</property>
+                    <property name="dataType">decimal</property>
+                    <property name="nativeDataType">-5</property>
                 </structure>
                 <structure>
                     <property name="position">16</property>
@@ -633,7 +633,7 @@ where LangTranslate.message_key = ? and LangTranslate.language = substring(?, '^
 		PrintingSettings.pdf_header as "header", 
 		PrintingSettings.pdf_footer as "footer",
 		PrintingSettings.logo_position_select as "logoPosition",
-		MetaFile.file_path as logo_path,
+		MetaFile.id as logo_id,
 		Company.height as "logo_height",
 		Company.width as "logo_width",
 		Meta.select_title
@@ -809,12 +809,6 @@ where TraceBack.id = ?
                     <property name="dataType">integer</property>
                 </structure>
                 <structure>
-                    <property name="name">logo_path</property>
-                    <text-property name="displayName">logo_path</text-property>
-                    <expression name="expression" type="javascript">dataSetRow["logo_path"]</expression>
-                    <property name="dataType">string</property>
-                </structure>
-                <structure>
                     <property name="name">logo_height</property>
                     <text-property name="displayName">logo_height</text-property>
                     <expression name="expression" type="javascript">if(dataSetRow["logo_height"]>0){dataSetRow["logo_height"]+'px'}else{'60px'}</expression>
@@ -827,6 +821,12 @@ where TraceBack.id = ?
                     <expression name="expression" type="javascript">if(dataSetRow["logo_width"]>0){dataSetRow["logo_width"]+'px'}else{'100%'}</expression>
                     <property name="dataType">integer</property>
                     <property name="allowExport">true</property>
+                </structure>
+                <structure>
+                    <property name="name">logo_id</property>
+                    <text-property name="displayName">logo_id</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["logo_id"]</expression>
+                    <property name="dataType">decimal</property>
                 </structure>
             </list-property>
             <column id="6076"/>
@@ -857,12 +857,17 @@ if (logoPosition == 2) {
                                 <expression name="valueExpr" type="javascript">row["logoPosition"] == 0</expression>
                             </structure>
                         </list-property>
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
                         <method name="onRender"><![CDATA[if(row["logo_width"] &amp;&amp; row["logo_height"]){
     this.width=row["logo_width"]+'px';
     this.height=row["logo_height"]+'px';
 }]]></method>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                        <property name="source">expr</property>
                     </image>
                 </cell>
                 <cell id="6082">
@@ -902,12 +907,17 @@ if (logoPosition == 2) {
                     <property name="textAlign">right</property>
                     <property name="verticalAlign">middle</property>
                     <image id="6071">
+                        <method name="onCreate"><![CDATA[var imgData = com.axelor.report.tool.ImageTool.getImageBytes(row["logo_id"], true);
+
+this.altText = "";
+if (imgData != null) {
+  this.data = imgData;
+}]]></method>
                         <method name="onRender"><![CDATA[if(row["logo_width"] &amp;&amp; row["logo_height"]){
     this.width=row["logo_width"]+'px';
     this.height=row["logo_height"]+'px';
 }]]></method>
-                        <property name="source">file</property>
-                        <expression name="uri" type="javascript">params["AttachmentPath"].value+row["logo_path"]</expression>
+                        <property name="source">expr</property>
                     </image>
                 </cell>
             </row>

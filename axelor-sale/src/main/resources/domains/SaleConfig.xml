@@ -1,41 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="sale" package="com.axelor.apps.sale.db"/>
 
   <entity name="SaleConfig" cacheable="true">
     <one-to-one name="company" ref="com.axelor.apps.base.db.Company" title="Company"
-      required="true" unique="true"/>
+      required="true" unique="true" help="Company for which the configurations are made."/>
 
-    <decimal name="acceptedCredit" title="Accepted Credit"/>
+    <decimal name="acceptedCredit" title="Accepted Credit"
+      help="Allows defining a maximum accepted credit amount by default for all customers. If a customer exceeds this amount, a salesperson will not be able to confirm a new order. An administrator can manually unblock the customer. This credit amount is found on customer forms (Accounting information tab). It can be modified on a case-by-case basis for each customer."/>
     <integer name="saleOrderInAtiSelect" title="Sale orders ATI/WT"
-      selection="base.in.ati.select" default="1"/>
+      selection="base.in.ati.select" default="1"
+      help="It is possible to choose whether quotations/orders are always established excluding tax, always including tax, by default excluding tax, or by default including tax. The by default excluding tax and by default including tax options allow case-by-case modification (via a checkbox)."/>
     <string name="saleOrderClientBox" large="true" multiline="true"
-      title="Client box in sale order"/>
+      title="Client box in sale order" translatable="true"
+      help="This field allows you to customize a customer box with information of your choice on quotation/order printings using an HTML field."/>
     <string name="saleOrderLegalNote" large="true" multiline="true"
-      title="Legal note on sale order" help="Short legal note to be displayed on sales order"/>
-    <boolean name="displaySalemanOnPrinting" title="Display saleman on printing"/>
-    <boolean name="displayDelCondOnPrinting" title="Display delivery condition on printing"/>
-    <boolean name="displayProductCodeOnPrinting" title="Display product code on printing"/>
-    <boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"/>
+      title="Legal note on sale order"
+      help="You can add your legal notices in this field, which will appear on quotation and order printings."
+      translatable="true"/>
+    <boolean name="displaySalemanOnPrinting" title="Display saleman on printing"
+      help="On quotation/order printing, displays the salesperson name."/>
+    <boolean name="displayDelCondOnPrinting" title="Display delivery condition on printing"
+      help="On a quotation/order, in the Delivery information tab, there is a Delivery conditions text field. If this option is enabled, the content of this field will appear on the printing."/>
+    <boolean name="displayProductCodeOnPrinting" title="Display product code on printing"
+      help="On quotation/order printing, displays the product code."/>
+    <boolean name="displayTaxDetailOnPrinting" title="Display tax detail on printing"
+      help="On quotation/order printing, displays the tax details (name, rate, and amount)."/>
     <boolean name="displayEstimShipDateOnPrinting"
-      title="Display estimated shipping dates on printing"/>
-    <boolean name="displayCustomerCodeOnPrinting" title="Display customer code on printing"/>
+      title="Display estimated shipping dates on printing"
+      help="On quotation/order printing, displays the estimated shipping dates, adding an extra column."/>
+    <boolean name="displayCustomerCodeOnPrinting" title="Display customer code on printing"
+      help="On quotation/order printing, displays the customer code."/>
     <boolean name="displayProductPictureOnPrinting"
-      title="Display product picture on printing"/>
+      title="Display product picture on printing"
+      help="On quotation/order printing, displays the product picture. This is the image visible on the product form."/>
     <many-to-one name="defaultValidityDuration" ref="com.axelor.apps.base.db.Duration"
-      title="Validity duration per default"/>
+      title="Validity duration per default"
+      help="This is the default validity duration for quotations that will be automatically filled in when creating a quotation."/>
     <boolean name="isAnalyticDistributionRequired"
-      title="Analytic distribution required on sale order line"/>
-    <decimal name="defaultHoldBackPercentage" title="Default holdback percentage"/>
+      title="Analytic distribution required on sale order line"
+      help="If this option is enabled, it is mandatory that on each order line (Analytics tab), the Analytic distribution template field is filled in."/>
+    <decimal name="defaultHoldBackPercentage" title="Default holdback percentage"
+      help="Allows defining the default holdback percentage applied by the company. This default rate can be modified at the payment conditions level or on a case-by-case basis on invoices."/>
     <many-to-one name="saleOrderPrintTemplate" title="Sale order template"
-      ref="com.axelor.apps.base.db.PrintingTemplate"/>
+      ref="com.axelor.apps.base.db.PrintingTemplate"
+      help="You can define here the default printing template for the company quotations/orders."/>
     <integer name="cartOrderCreationModeSelect"
-      title="Order creation mode from cart if stock is missing"
+      title="Order creation for cart when stock is missing"
       selection="cart.order.creation.mode.select" default="0"
-      help="This configuration blocks the creation of orders, or ignores missing products, if there are products missing from the cart."/>
+      help="This configuration allows choosing whether, in case of missing stock for products in the cart, you want to create the order with the missing products, block order creation, or ignore the missing products."/>
 
     <extra-code>
       <![CDATA[
@@ -68,6 +84,8 @@
       <field name="saleOrderLegalNote" on="UPDATE"/>
       <field name="isAnalyticDistributionRequired" on="UPDATE"/>
       <field name="saleOrderPrintTemplate" on="UPDATE"/>
+      <field name="defaultHoldBackPercentage" on="UPDATE"/>
+      <field name="cartOrderCreationModeSelect" on="UPDATE"/>
     </track>
   </entity>
 

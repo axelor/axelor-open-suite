@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -31,8 +31,8 @@ import com.axelor.apps.production.exceptions.ProductionExceptionMessage;
 import com.axelor.apps.production.service.manuforder.ManufOrderService.ManufOrderOriginTypeProduction;
 import com.axelor.apps.sale.db.SaleOrder;
 import com.axelor.i18n.I18n;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -62,13 +62,19 @@ public class ProductionOrderServiceImpl implements ProductionOrderService {
       throws AxelorException {
 
     ProductionOrder productionOrder = new ProductionOrder();
+    Company company =
+        Optional.ofNullable(billOfMaterial).map(BillOfMaterial::getCompany).orElse(null);
     if (saleOrder != null) {
       productionOrder.setClientPartner(saleOrder.getClientPartner());
       productionOrder.setSaleOrder(saleOrder);
+      productionOrder.setProductionOrderSeq(
+          String.format(
+              "%s - %s",
+              saleOrder.getFullName(), this.getProductionOrderSeq(productionOrder, company)));
+    } else {
+      productionOrder.setProductionOrderSeq(this.getProductionOrderSeq(productionOrder, company));
     }
-    Company company =
-        Optional.ofNullable(billOfMaterial).map(BillOfMaterial::getCompany).orElse(null);
-    productionOrder.setProductionOrderSeq(this.getProductionOrderSeq(productionOrder, company));
+
     return productionOrder;
   }
 

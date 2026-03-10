@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -35,4 +35,6 @@ public interface ITranslation {
   public static final String PROJECT_PRIORITY_LOW = /*$$(*/ "value:Low"; /*)*/
 
   public static final String PROJECT_PRIORITY_HIGH = /*$$(*/ "value:High"; /*)*/
+
+  public static final String ADD_CHECK_LIST_ITEM_TREE = /*$$(*/ "Add a new check list item"; /*)*/
 }

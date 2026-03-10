@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -37,13 +37,13 @@ import com.axelor.db.JPA;
 import com.axelor.i18n.I18n;
 import com.axelor.meta.schema.actions.ActionView;
 import com.axelor.utils.db.Wizard;
-import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import jakarta.inject.Inject;
+import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.persistence.TypedQuery;
 
 public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineService {
 
@@ -104,6 +104,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
           I18n.get(BaseExceptionMessage.PRODUCT_NO_ACTIVE_COMPANY));
     }
     AccountingBatch accountingBatch = new AccountingBatch();
+    ClosureAssistant closureAssistant = closureAssistantLine.getClosureAssistant();
     switch (closureAssistantLine.getActionSelect()) {
       case ClosureAssistantLineRepository.ACTION_CUT_OF_GENERATION:
         accountingBatch =
@@ -141,7 +142,8 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
         return ActionView.define(I18n.get("Outrun result"))
             .model(Wizard.class.getName())
             .add("form", "closure-assistant-line-outrun-wizard")
-            .context("_year", closureAssistantLine.getClosureAssistant().getFiscalYear().getId())
+            .context("_year", closureAssistant.getFiscalYear().getId())
+            .context("_company", closureAssistant.getCompany().getId())
             .map();
       case ClosureAssistantLineRepository.ACTION_CLOSURE_AND_OPENING_OF_FISCAL_YEAR_BATCH:
         accountingBatch =
@@ -156,8 +158,7 @@ public class ClosureAssistantLineServiceImpl implements ClosureAssistantLineServ
         return ActionView.define(I18n.get("Fiscal year"))
             .model(Year.class.getName())
             .add("form", "year-account-form")
-            .context(
-                "_showRecord", closureAssistantLine.getClosureAssistant().getFiscalYear().getId())
+            .context("_showRecord", closureAssistant.getFiscalYear().getId())
             .map();
       default:
         return null;

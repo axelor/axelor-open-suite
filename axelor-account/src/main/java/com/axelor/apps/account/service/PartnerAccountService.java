@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -23,6 +23,7 @@ import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PartnerLink;
 import com.axelor.apps.base.db.repo.PartnerLinkTypeRepository;
 import com.axelor.meta.CallMethod;
+import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 
 public class PartnerAccountService {
@@ -43,14 +44,19 @@ public class PartnerAccountService {
       return null;
     }
 
-    return partner.getManagedByPartnerLinkList().stream()
-        .filter(
-            it ->
-                it.getPartnerLinkType()
-                    .getTypeSelect()
-                    .equals(PartnerLinkTypeRepository.TYPE_SELECT_PAYED_BY))
-        .map(PartnerLink::getPartner2)
-        .findFirst()
-        .orElse(null);
+    List<Partner> payedByPartners =
+        partner.getManagedByPartnerLinkList().stream()
+            .filter(
+                it ->
+                    it.getPartnerLinkType()
+                        .getTypeSelect()
+                        .equals(PartnerLinkTypeRepository.TYPE_SELECT_PAYED_BY))
+            .map(PartnerLink::getPartner2)
+            .toList();
+
+    if (payedByPartners.size() != 1) {
+      return null;
+    }
+    return payedByPartners.getFirst();
   }
 }

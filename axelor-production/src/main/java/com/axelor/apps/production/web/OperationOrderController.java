@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -25,15 +25,17 @@ import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.production.db.OperationOrder;
 import com.axelor.apps.production.db.repo.ManufOrderRepository;
 import com.axelor.apps.production.db.repo.OperationOrderRepository;
+import com.axelor.apps.production.service.OperationOrderHazardPhraseService;
 import com.axelor.apps.production.service.operationorder.OperationOrderPlanningService;
 import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderStockMoveService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
-import com.google.inject.Singleton;
+import jakarta.inject.Singleton;
 import java.lang.invoke.MethodHandles;
 import java.time.LocalDateTime;
 import org.slf4j.Logger;
@@ -115,6 +117,13 @@ public class OperationOrderController {
       operationOrder = Beans.get(OperationOrderRepository.class).find(operationOrder.getId());
       Beans.get(OperationOrderWorkflowService.class).start(operationOrder);
       response.setReload(true);
+      String hazardPhraseAlert =
+          Beans.get(OperationOrderHazardPhraseService.class)
+              .getOperationOrderHazardPhrases(operationOrder);
+      if (StringUtils.notBlank(hazardPhraseAlert)) {
+        response.setInfo(hazardPhraseAlert);
+      }
+
     } catch (Exception e) {
       TraceBackService.trace(response, e);
     }
@@ -200,6 +209,17 @@ public class OperationOrderController {
     } catch (Exception e) {
       TraceBackService.trace(response, e);
       response.setReload(true);
+    }
+  }
+
+  public void setConsumedStockMoveLineStockLocation(
+      ActionRequest request, ActionResponse response) {
+    try {
+      OperationOrder operationOrder = request.getContext().asType(OperationOrder.class);
+      Beans.get(OperationOrderService.class).setConsumedStockMoveLineStockLocation(operationOrder);
+      response.setValue("consumedStockMoveLineList", operationOrder.getConsumedStockMoveLineList());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
     }
   }
 

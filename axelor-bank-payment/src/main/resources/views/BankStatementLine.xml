@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <object-views xmlns="http://axelor.com/xml/ns/object-views"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.1.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_8.0.xsd">
 
   <grid name="bank-statement-line-grid" title="Bank Statement lines"
     model="com.axelor.apps.bankpayment.db.BankStatementLine" orderBy="-operationDate,-sequence">
@@ -82,7 +82,7 @@
       <field name="$fromDate" title="From" type="date" required="true"/>
       <field name="$toDate" title="To" type="date" required="true"/>
       <field name="$bankDetails" title="Bank details" type="many-to-one"
-        x-target="com.axelor.apps.base.db.BankDetails" x-target-name="fullName" required="true"
+        target="com.axelor.apps.base.db.BankDetails" target-name="fullName" required="true"
         domain="self.company IS NOT null"/>
       <field name="$bankStatementLinesPrintTemplate" title="Bank statement lines template"
         type="many-to-one" target="com.axelor.apps.base.db.PrintingTemplate"

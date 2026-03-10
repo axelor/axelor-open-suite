@@ -1,7 +1,7 @@
 /*
  * Axelor Business Solutions
  *
- * Copyright (C) 2005-2024 Axelor (<http://axelor.com>).
+ * Copyright (C) 2005-2026 Axelor (<http://axelor.com>).
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as
@@ -20,6 +20,7 @@ package com.axelor.apps.contract.model;
 
 import com.axelor.apps.account.db.AnalyticMoveLine;
 import com.axelor.apps.account.db.FiscalPosition;
+import com.axelor.apps.account.db.repo.AnalyticMoveLineRepository;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Partner;
@@ -77,6 +78,7 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
     this.product = contractLine.getProduct();
 
     this.exTaxTotal = contractLine.getExTaxTotal();
+    this.companyExTaxTotal = contractLine.getExTaxTotal();
   }
 
   @Override
@@ -161,5 +163,13 @@ public class AnalyticLineContractModel extends AnalyticLineModel {
     this.contractLine.setAxis4AnalyticAccount(this.axis4AnalyticAccount);
     this.contractLine.setAxis5AnalyticAccount(this.axis5AnalyticAccount);
     this.contractLine.setAnalyticMoveLineList(this.analyticMoveLineList);
+  }
+
+  @Override
+  public int getTypeSelect() {
+    if (this.contractLine != null) {
+      return AnalyticMoveLineRepository.STATUS_FORECAST_CONTRACT;
+    }
+    return super.getTypeSelect();
   }
 }
