@@ -490,6 +490,8 @@ public class AccountModule extends AxelorModule {
 
     bind(AccountManagementAttrsService.class).to(AccountManagementAttrsServiceImpl.class);
 
+    bind(AccountManagementCheckService.class).to(AccountManagementCheckServiceImpl.class);
+
     bind(AccountManagementServiceImpl.class).to(AccountManagementServiceAccountImpl.class);
 
     bind(AccountManagementAccountService.class).to(AccountManagementServiceAccountImpl.class);
