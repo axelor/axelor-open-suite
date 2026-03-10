@@ -94,6 +94,7 @@ import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockHistoryServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineFetchServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineServiceImpl;
+import com.axelor.apps.stock.service.StockMoveCurrencyServiceImpl;
 import com.axelor.apps.stock.service.StockMoveLineServiceImpl;
 import com.axelor.apps.stock.service.StockMoveMergingServiceImpl;
 import com.axelor.apps.stock.service.StockMoveServiceImpl;
@@ -197,6 +198,7 @@ import com.axelor.apps.supplychain.service.StockLocationLineFetchServiceSupplych
 import com.axelor.apps.supplychain.service.StockLocationLineReservationService;
 import com.axelor.apps.supplychain.service.StockLocationLineReservationServiceImpl;
 import com.axelor.apps.supplychain.service.StockLocationLineServiceSupplychainImpl;
+import com.axelor.apps.supplychain.service.StockMoveCurrencyServiceSupplychainImpl;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceService;
 import com.axelor.apps.supplychain.service.StockMoveInvoiceServiceImpl;
 import com.axelor.apps.supplychain.service.StockMoveLineServiceSupplychain;
@@ -556,5 +558,6 @@ public class SupplychainModule extends AxelorModule {
         .to(SaleOrderLineViewServiceSupplychainImpl.class);
     bind(SaleOrderCheckBlockingSupplychainService.class)
         .to(SaleOrderCheckBlockingSupplychainServiceImpl.class);
+    bind(StockMoveCurrencyServiceImpl.class).to(StockMoveCurrencyServiceSupplychainImpl.class);
   }
 }
