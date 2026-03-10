@@ -185,9 +185,10 @@ public class SaleOrderLineBudgetServiceImpl implements SaleOrderLineBudgetServic
               saleOrder.getFiscalPosition(),
               false,
               false);
-      if (account.getCode().startsWith("2")
-          || account.getCode().startsWith("4")
-          || account.getCode().startsWith("7")) {
+      if (account != null
+          && (account.getCode().startsWith("2")
+              || account.getCode().startsWith("4")
+              || account.getCode().startsWith("7"))) {
         values.put("account", account);
         saleOrderLine.setAccount(account);
       }

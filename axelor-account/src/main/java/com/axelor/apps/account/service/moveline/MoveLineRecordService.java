@@ -21,6 +21,7 @@ package com.axelor.apps.account.service.moveline;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import java.time.LocalDate;
 
 public interface MoveLineRecordService {
@@ -31,6 +32,8 @@ public interface MoveLineRecordService {
   void setIsCutOffGeneratedFalse(MoveLine moveLine);
 
   void refreshAccountInformation(MoveLine moveLine, Move move) throws AxelorException;
+
+  void refreshVatSystemSelect(MoveLine moveLine, Company company);
 
   void setParentFromMove(MoveLine moveLine, Move move);
 

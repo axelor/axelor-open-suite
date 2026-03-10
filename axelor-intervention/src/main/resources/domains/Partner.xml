@@ -9,7 +9,7 @@
 
     <one-to-many name="interventionNoteList"
       ref="com.axelor.apps.intervention.db.InterventionNote" title="Intervention notes"
-      mappedBy="partner"/>
+      mappedBy="partner" copy="false"/>
 
   </entity>
 

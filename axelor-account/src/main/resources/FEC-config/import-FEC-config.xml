@@ -24,6 +24,18 @@
       <bind column="DateLet" to="letteringDateTime"
         eval="DateLet ? java.time.LocalDate.parse(DateLet,'yyyyMMdd').atTime(java.time.LocalTime.NOON) : null"/>
     </bind>
+    <bind to="analyticDistributionTemplate" column="RepartAnalytique"
+      search="self.name = :RepartAnalytique" update="true"/>
+    <bind to="axis1AnalyticAccount" column="CompteAnalytique1"
+      search="self.code = :CompteAnalytique1" update="true"/>
+    <bind to="axis2AnalyticAccount" column="CompteAnalytique2"
+      search="self.code = :CompteAnalytique2" update="true"/>
+    <bind to="axis3AnalyticAccount" column="CompteAnalytique3"
+      search="self.code = :CompteAnalytique3" update="true"/>
+    <bind to="axis4AnalyticAccount" column="CompteAnalytique4"
+      search="self.code = :CompteAnalytique4" update="true"/>
+    <bind to="axis5AnalyticAccount" column="CompteAnalytique5"
+      search="self.code = :CompteAnalytique5" update="true"/>
   </input>
 
 </csv-inputs>

@@ -54,7 +54,9 @@
       <field name="year" title="Fiscal year" type="many-to-one"
         target="com.axelor.apps.base.db.Year"/>
       <field name="income" title="Income total" type="decimal"/>
+      <label name="incomeLabel" title="" hidden="true" css="label-danger"/>
       <field name="charge" title="Charge total" type="decimal"/>
+      <label name="chargeLabel" title="" hidden="true" css="label-danger"/>
       <field name="profit" title="Profit" type="decimal"/>
     </panel>
   </form>

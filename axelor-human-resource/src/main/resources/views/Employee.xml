@@ -134,8 +134,7 @@
 
       <panel colSpan="12">
         <field name="weeklyPlanning" title="Weekly planning" canNew="true" colSpan="4"
-          form-view="weekly-planning-form" grid-view="weekly-planning-grid"
-          domain="self.typeSelect = 1"/>
+          form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
         <field name="publicHolidayEventsPlanning" canEdit="false" colSpan="4"
           form-view="events-planning-form" grid-view="events-planning-grid"/>
         <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4"
@@ -428,8 +427,7 @@
           <panel name="planningPanel" title="Plannings" colSpan="12" canCollapse="true"
             collapseIf="true">
             <field name="weeklyPlanning" title="Weekly planning" canNew="true" colSpan="4"
-              form-view="weekly-planning-form" grid-view="weekly-planning-grid"
-              domain="self.typeSelect = 1"/>
+              form-view="weekly-planning-form" grid-view="weekly-planning-grid"/>
             <field name="publicHolidayEventsPlanning" canEdit="false" colSpan="4"
               form-view="events-planning-form" grid-view="events-planning-grid"/>
             <field name="imposedDayEventsPlanning" canEdit="false" colSpan="4"

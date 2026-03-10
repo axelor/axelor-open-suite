@@ -34,4 +34,6 @@ public interface GlobalDiscounter {
   BigDecimal getExTaxTotal();
 
   Currency getCurrency();
+
+  Boolean getInAti();
 }

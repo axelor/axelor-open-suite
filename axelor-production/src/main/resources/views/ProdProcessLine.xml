@@ -16,8 +16,7 @@
 
   <form name="prod-process-line-form" title="Phase"
     model="com.axelor.apps.production.db.ProdProcessLine"
-    onNew="action-prod-process-line-record-default, action-prod-process-line-attrs-default,action-prod-process-line-attrs-outsourcing"
-    onLoad="action-prod-process-line-attrs-default,action-prod-process-line-attrs-hide-duration,action-prod-process-line-attrs-outsourcing"
+    onNew="action-prod-process-line-group-onnew" onLoad="action-prod-process-line-group-onload"
     width="large">
     <panel name="mainPanel">
       <field name="name"/>
@@ -128,6 +127,12 @@
         <field name="objectDescriptionList" form-view="object-description-form"
           grid-view="object-description-grid" colSpan="12"/>
       </panel>
+      <panel name="hazardPhrasePanel" title="Hazard phrases"
+        if="__config__.app.getApp('base')?.getEnableProductsSafety()">
+        <panel-related field="hazardPhraseSet" colSpan="12"
+          form-view="base-hazard-phrase-form" grid-view="base-hazard-phrase-grid"
+          onSelect="action-prod-process-line-method-set-hazard-phrase-domain"/>
+      </panel>
     </panel-tabs>
 
     <panel-mail name="mailPanel">
@@ -177,6 +182,20 @@
     <field name="workCenter" expr="eval: null"
       if="workCenter?.workCenterTypeSelect != workCenterTypeSelect"/>
   </action-record>
+
+  <action-group name="action-prod-process-line-group-onnew">
+    <action name="action-prod-process-line-record-default"/>
+    <action name="action-prod-process-line-attrs-default"/>
+    <action name="action-prod-process-line-attrs-outsourcing"/>
+    <action name="action-prod-process-line-attrs-hide-safety-panel"/>
+  </action-group>
+
+  <action-group name="action-prod-process-line-group-onload">
+    <action name="action-prod-process-line-attrs-default"/>
+    <action name="action-prod-process-line-attrs-hide-duration"/>
+    <action name="action-prod-process-line-attrs-outsourcing"/>
+    <action name="action-prod-process-line-attrs-hide-safety-panel"/>
+  </action-group>
 
   <action-group name="action-prod-process-line-group-work-center-onchange">
     <action name="action-prod-process-line-record-update-from-workcenter"/>
@@ -272,6 +291,17 @@
     <context name="relatedTo" expr="eval: 'com.axelor.apps.production.db.ProdProcessLine'"/>
     <context name="relatedToId" expr="eval:__self__?.id"/>
   </action-view>
+
+  <action-attrs name="action-prod-process-line-attrs-hide-safety-panel">
+    <attribute for="hazardPhrasePanel" name="hidden"
+      expr="eval: __parent__?.hazardPhraseSet == null || __parent__?.hazardPhraseSet?.size() == 0"/>
+  </action-attrs>
+
+  <action-method name="action-prod-process-line-method-set-hazard-phrase-domain"
+    model="com.axelor.apps.production.db.ProdProcessLine">
+    <call class="com.axelor.apps.production.web.ProdProcessLineController"
+      method="setHazardPhraseDomain"/>
+  </action-method>
 
 </object-views>
 

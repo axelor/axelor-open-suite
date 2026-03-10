@@ -585,12 +585,12 @@
           onClick="save,action-stock-move-method-generate-new-stock-move"
           showIf="statusSelect == 3 &amp;&amp; isReversion"/>
         <button if="__config__.app.getApp('supplychain')?.getValidStepForInvOutSM()"
-          name="delayedInvoice" title="Facturation ultérieure"
+          name="delayedInvoice" title="Deferred invoicing"
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 3"
           css="btn-warning"
           onClick="save,action-stock-move-method-set-invoicing-status-invoiced-delayed"/>
         <button if="__config__.app.getApp('supplychain')?.getValidStepForInvOutSM()"
-          name="validatedInvoice" title="Validé pour facturation"
+          name="validatedInvoice" title="Approved for invoicing"
           showIf="statusSelect == 3 &amp;&amp; typeSelect == 2 &amp;&amp; invoicingStatusSelect != 2 &amp;&amp; invoicingStatusSelect != 4"
           css="btn-success"
           onClick="save,action-stock-move-method-set-invoicing-status-invoiced-validated"/>
@@ -606,8 +606,7 @@
       <panel-related name="stockMoveLineListPanel" field="stockMoveLineList"
         title="Stock move lines" height="12"
         readonlyIf="company == null || fromStockLocation == null || toStockLocation == null || statusSelect == 3"
-        onChange="action-stock-move-line-change-group"
-        onNew="action-stock-move-line-record-filter-on-available-products, action-stock-move-line-record-fill-stock-location"
+        onChange="action-stock-move-line-change-group" onNew="action-stock-move-line-onnew-group"
         grid-view="stock-move-line-grid" form-view="stock-move-line-form" canMove="true"
         orderBy="sequence" canRemove="!(statusSelect == 2 &amp;&amp; pickingIsEdited)" canNew="true"/>
       <panel name="freightCarrierPanel" title="Freight Carrier" itemSpan="12">
@@ -681,10 +680,11 @@
             <field name="massStockMove" hidden="true" showIf="massStockMove != null"/>
           </panel>
           <field name="saleOrderSet" hidden="true"
-            showIf="saleOrderSet &amp;&amp; saleOrderSet.length > 0" colSpan="12" readonly="true"/>
+            showIf="saleOrderSet &amp;&amp; saleOrderSet.length > 0" colSpan="12" readonly="true"
+            grid-view="sale-order-grid" form-view="sale-order-form"/>
           <field name="purchaseOrderSet" hidden="true"
             showIf="purchaseOrderSet &amp;&amp; purchaseOrderSet.length > 0" colSpan="12"
-            readonly="true"/>
+            readonly="true" grid-view="purchase-order-grid" form-view="purchase-order-form"/>
           <field name="reversionOriginStockMove" readonly="true" grid-view="stock-move-form"
             form-view="stock-move-form" showIf="reversionOriginStockMove"/>
           <field name="invoiceSet" readonly="true" grid-view="invoice-grid"
@@ -1081,8 +1081,9 @@
       expr="eval: typeSelect == 3"/>
     <attribute for="stockMoveLineList.requestedReservedQty,reservationDateTime"
       name="hidden" expr="eval: typeSelect == 3"/>
-    <attribute name="hidden" for="stockMoveLineList.availableStatus"
-      expr="eval: typeSelect == 3"/>
+    <attribute name="hidden"
+      for="stockMoveLineList.availableStatus,stockMoveLineList.availableQty,stockMoveLineList.availableQtyForProduct"
+      expr="eval: statusSelect > 2 || typeSelect == 3"/>
   </action-attrs>
 
   <action-attrs name="action-stock-move-attrs-hide-avg-price">
@@ -1203,9 +1204,12 @@
 
   <action-record name="action-stock-move-record-set-address-from-partner"
     model="com.axelor.apps.stock.db.StockMove">
+    <field name="fromAddress"
+      expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(partner)"
+      if="partner != null &amp;&amp; typeSelect == 3"/>
     <field name="toAddress"
       expr="call:com.axelor.apps.base.service.PartnerService:getDeliveryAddress(partner)"
-      if="partner != null"/>
+      if="partner != null &amp;&amp; typeSelect == 2"/>
   </action-record>
 
   <action-record name="action-stock-move-record-set-pfp-status"

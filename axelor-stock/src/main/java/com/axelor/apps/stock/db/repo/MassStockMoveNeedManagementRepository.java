@@ -16,23 +16,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.base.web;
+package com.axelor.apps.stock.db.repo;
 
-import com.axelor.apps.base.service.PaymentModeService;
-import com.axelor.apps.base.service.exception.TraceBackService;
+import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.inject.Beans;
-import com.axelor.rpc.ActionRequest;
-import com.axelor.rpc.ActionResponse;
+import java.util.Map;
 
-public class PaymentModeController {
+public class MassStockMoveNeedManagementRepository extends MassStockMoveNeedRepository {
 
-  public void setDefaults(ActionRequest request, ActionResponse response) {
-    try {
-      response.setValue(
-          "accountManagementList",
-          Beans.get(PaymentModeService.class).getAccountManagementDefaults());
-    } catch (Exception e) {
-      TraceBackService.trace(response, e);
-    }
+  @Override
+  public Map<String, Object> populate(Map<String, Object> json, Map<String, Object> context) {
+    json.put("$nbDecimalDigitForQty", Beans.get(AppBaseService.class).getNbDecimalDigitForQty());
+    return super.populate(json, context);
   }
 }

@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.AccountManagementCheckService;
 import com.axelor.apps.account.service.PaymentModeControlService;
+import com.axelor.apps.account.service.payment.PaymentModeInitService;
 import com.axelor.apps.account.service.payment.PaymentModeInterestRateService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.service.exception.ErrorException;
@@ -33,6 +34,16 @@ import com.axelor.rpc.ActionResponse;
 import java.util.List;
 
 public class PaymentModeController {
+
+  public void setDefaults(ActionRequest request, ActionResponse response) {
+    try {
+      response.setValue(
+          "accountManagementList",
+          Beans.get(PaymentModeInitService.class).getAccountManagementDefaults());
+    } catch (Exception e) {
+      TraceBackService.trace(response, e);
+    }
+  }
 
   public void setReadOnly(ActionRequest request, ActionResponse response) {
 
@@ -76,8 +87,7 @@ public class PaymentModeController {
         Beans.get(AccountManagementCheckService.class);
 
     for (AccountManagement accountManagement : accountManagementList) {
-      accountManagementCheckService.checkDuplicateAccountManagement(
-          accountManagement, paymentMode);
+      accountManagementCheckService.checkDuplicateAccountManagement(accountManagement, paymentMode);
     }
   }
 }

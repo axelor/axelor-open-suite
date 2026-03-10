@@ -30,6 +30,7 @@ import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.app.AppAccountService;
 import com.axelor.apps.account.service.move.MoveLoadDefaultConfigService;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
@@ -133,10 +134,11 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
   public void refreshAccountInformation(MoveLine moveLine, Move move) throws AxelorException {
     Account accountingAccount = moveLine.getAccount();
 
+    refreshVatSystemSelect(moveLine, move.getCompany());
+
     if (accountingAccount == null || !accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
       moveLine.setTaxLineSet(Sets.newHashSet());
       moveLine.setTaxLineBeforeReverseSet(Sets.newHashSet());
-      moveLine.setVatSystemSelect(AccountRepository.VAT_SYSTEM_DEFAULT);
       return;
     }
 
@@ -156,14 +158,23 @@ public class MoveLineRecordServiceImpl implements MoveLineRecordService {
     }
     moveLine.setTaxLineSet(taxLineSet);
     moveLine.setTaxEquiv(taxEquiv);
+  }
+
+  @Override
+  public void refreshVatSystemSelect(MoveLine moveLine, Company company) {
+    Account accountingAccount = moveLine.getAccount();
+
+    if (accountingAccount == null || !accountingAccount.getIsTaxAuthorizedOnMoveLine()) {
+      moveLine.setVatSystemSelect(AccountRepository.VAT_SYSTEM_DEFAULT);
+      return;
+    }
 
     if (accountingAccount.getVatSystemSelect() != null
         && accountingAccount.getVatSystemSelect() != AccountRepository.VAT_SYSTEM_DEFAULT) {
       moveLine.setVatSystemSelect(accountingAccount.getVatSystemSelect());
     } else {
       AccountingSituation accountingSituation =
-          accountingSituationRepository.findByCompanyAndPartner(
-              move.getCompany(), moveLine.getPartner());
+          accountingSituationRepository.findByCompanyAndPartner(company, moveLine.getPartner());
       if (accountingSituation != null
           && accountingSituation.getVatSystemSelect() == AccountingSituationRepository.VAT_DELIVERY)
         moveLine.setVatSystemSelect(AccountRepository.VAT_SYSTEM_GOODS);

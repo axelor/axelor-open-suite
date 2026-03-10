@@ -55,7 +55,7 @@
     <field name="typeSelect" expr="eval: 1"
       if="!supplierPartner || !supplierPartner.isSubcontractor"/>
     <field name="typeSelect" expr="eval: 2"
-      if="supplierPartner &amp;&amp; supplierPartner.isSubcontractor"/>
+      if="_isOutsourcingOrder &amp;&amp; supplierPartner &amp;&amp; supplierPartner.isSubcontractor"/>
   </action-record>
 
   <search-filters name="purchase-order-filters"

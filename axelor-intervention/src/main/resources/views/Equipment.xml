@@ -114,7 +114,7 @@
     </toolbar>
     <panel name="mainPanel">
       <field name="sequence" showTitle="false" readonly="true">
-        <viewer depends="sequence"><![CDATA[<h3>{{sequence}}</h3>]]></viewer>
+        <viewer depends="sequence"><![CDATA[<><h3>{{sequence}}</h3></>]]></viewer>
       </field>
       <field name="$viewerTags" showTitle="false" readonly="true">
         <viewer depends="indicatorSelect">
@@ -251,7 +251,7 @@
     <view type="grid" name="intervention-grid"/>
     <view type="form" name="intervention-form"/>
     <domain>
-      :id in self.equipmentSet.id
+      :id MEMBER OF self.equipmentSet
     </domain>
   </action-view>
 

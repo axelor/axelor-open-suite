@@ -56,7 +56,7 @@ public class ProdProductAttrsServiceImpl implements ProdProductAttrsService {
 
     String domain =
         "self.product.id = %d AND"
-            + " (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine WHERE stockLocationLine.detailsStockLocation = %d AND stockLocationLine.currentQty > 0))";
+            + " (self IN (SELECT stockLocationLine.trackingNumber FROM StockLocationLine stockLocationLine WHERE stockLocationLine.detailsStockLocation.id = %d AND stockLocationLine.currentQty > 0))";
     return String.format(domain, prodProduct.getProduct().getId(), productionStockLocation.getId());
   }
 }

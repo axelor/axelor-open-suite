@@ -60,8 +60,7 @@ public class AccountManagementCheckServiceImpl implements AccountManagementCheck
                 .bind("paymentMode", paymentMode)
                 .bind("company", accountManagement.getCompany())
                 .bind(
-                    "currentId",
-                    accountManagement.getId() != null ? accountManagement.getId() : 0L)
+                    "currentId", accountManagement.getId() != null ? accountManagement.getId() : 0L)
                 .count()
             > 0;
 

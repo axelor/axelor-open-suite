@@ -63,8 +63,11 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
       query += " AND self.move.tradingName.id = " + moveLineQuery.getTradingName().getId();
     }
 
-    query += String.format(" AND self.date >= '%s'", moveLineQuery.getFromDate().toString());
-    query += String.format(" AND self.date <= '%s'", moveLineQuery.getToDate().toString());
+    query +=
+        String.format(
+            " AND self.date >= CAST('%s' AS date)", moveLineQuery.getFromDate().toString());
+    query +=
+        String.format(" AND self.date <= CAST('%s' AS date)", moveLineQuery.getToDate().toString());
 
     query += " AND self.account.id = " + moveLineQuery.getAccount().getId();
 
@@ -75,7 +78,7 @@ public class MoveLineQueryServiceImpl implements MoveLineQueryService {
     if (moveLineQuery.getProcessSelect() == MoveLineQueryRepository.PROCESS_RECONCILE) {
       query += "AND self.amountRemaining != 0 ";
     } else if (moveLineQuery.getProcessSelect() == MoveLineQueryRepository.PROCESS_UNRECONCILE) {
-      query += "AND self.amountRemaining != debit + credit ";
+      query += "AND self.amountRemaining != debit - credit ";
     }
 
     query +=

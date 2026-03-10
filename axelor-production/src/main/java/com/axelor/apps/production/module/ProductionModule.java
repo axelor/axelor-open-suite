@@ -61,6 +61,10 @@ import com.axelor.apps.production.service.BillOfMaterialComputeNameService;
 import com.axelor.apps.production.service.BillOfMaterialComputeNameServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialDummyService;
 import com.axelor.apps.production.service.BillOfMaterialDummyServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseRefreshService;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseRefreshServiceImpl;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseService;
+import com.axelor.apps.production.service.BillOfMaterialHazardPhraseServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialLineService;
 import com.axelor.apps.production.service.BillOfMaterialLineServiceImpl;
 import com.axelor.apps.production.service.BillOfMaterialMrpLineService;
@@ -73,6 +77,8 @@ import com.axelor.apps.production.service.BomLineCreationService;
 import com.axelor.apps.production.service.BomLineCreationServiceImpl;
 import com.axelor.apps.production.service.BomTreeRemoveService;
 import com.axelor.apps.production.service.BomTreeRemoveServiceImpl;
+import com.axelor.apps.production.service.ManufOrderMessageService;
+import com.axelor.apps.production.service.ManufOrderMessageServiceImpl;
 import com.axelor.apps.production.service.MpsChargeService;
 import com.axelor.apps.production.service.MpsChargeServiceImpl;
 import com.axelor.apps.production.service.MpsWeeklyScheduleService;
@@ -81,8 +87,12 @@ import com.axelor.apps.production.service.MrpForecastProductionService;
 import com.axelor.apps.production.service.MrpForecastProductionServiceImpl;
 import com.axelor.apps.production.service.MrpLineServiceProductionImpl;
 import com.axelor.apps.production.service.MrpServiceProductionImpl;
+import com.axelor.apps.production.service.OperationOrderHazardPhraseService;
+import com.axelor.apps.production.service.OperationOrderHazardPhraseServiceImpl;
 import com.axelor.apps.production.service.ProdProcessComputationService;
 import com.axelor.apps.production.service.ProdProcessComputationServiceImpl;
+import com.axelor.apps.production.service.ProdProcessHazardPhraseService;
+import com.axelor.apps.production.service.ProdProcessHazardPhraseServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineComputationService;
 import com.axelor.apps.production.service.ProdProcessLineComputationServiceImpl;
 import com.axelor.apps.production.service.ProdProcessLineHourlyCostComputeService;
@@ -230,6 +240,8 @@ import com.axelor.apps.production.service.manuforder.ManufOrderPlanService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveService;
 import com.axelor.apps.production.service.manuforder.ManufOrderPlanStockMoveServiceImpl;
+import com.axelor.apps.production.service.manuforder.ManufOrderQueryService;
+import com.axelor.apps.production.service.manuforder.ManufOrderQueryServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyService;
 import com.axelor.apps.production.service.manuforder.ManufOrderReservedQtyServiceImpl;
 import com.axelor.apps.production.service.manuforder.ManufOrderResidualProductService;
@@ -445,8 +457,6 @@ public class ProductionModule extends AxelorModule {
     bind(SaleOrderLineBomSyncService.class).to(SaleOrderLineBomSyncServiceImpl.class);
     bind(SaleOrderLineDetailsService.class).to(SaleOrderLineDetailsServiceImpl.class);
     bind(SaleOrderLineDetailsRepository.class).to(SaleOrderLineDetailsManagementRepository.class);
-    bind(SaleOrderLineDetailsService.class).to(SaleOrderLineDetailsServiceImpl.class);
-    bind(SaleOrderLineDetailsRepository.class).to(SaleOrderLineDetailsManagementRepository.class);
     bind(SaleOrderLineDetailsBomService.class).to(SaleOrderLineDetailsBomServiceImpl.class);
     bind(SaleOrderLineDetailsBomLineMappingService.class)
         .to(SaleOrderLineDetailsBomLineMappingServiceImpl.class);
@@ -519,5 +529,12 @@ public class ProductionModule extends AxelorModule {
         .to(QualityImprovementUpdateProductionServiceImpl.class);
     bind(QualityImprovementParseServiceImpl.class)
         .to(QualityImprovementParseProductionServiceImpl.class);
+    bind(ProdProcessHazardPhraseService.class).to(ProdProcessHazardPhraseServiceImpl.class);
+    bind(BillOfMaterialHazardPhraseService.class).to(BillOfMaterialHazardPhraseServiceImpl.class);
+    bind(BillOfMaterialHazardPhraseRefreshService.class)
+        .to(BillOfMaterialHazardPhraseRefreshServiceImpl.class);
+    bind(OperationOrderHazardPhraseService.class).to(OperationOrderHazardPhraseServiceImpl.class);
+    bind(ManufOrderMessageService.class).to(ManufOrderMessageServiceImpl.class);
+    bind(ManufOrderQueryService.class).to(ManufOrderQueryServiceImpl.class);
   }
 }

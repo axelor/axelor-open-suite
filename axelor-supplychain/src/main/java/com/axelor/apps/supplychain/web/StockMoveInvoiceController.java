@@ -281,10 +281,11 @@ public class StockMoveInvoiceController {
                 response.setView(
                     ActionView.define(I18n.get("Invoice"))
                         .model(Invoice.class.getName())
-                        .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                         .add("form", "invoice-form")
+                        .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                         .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
                         .param("forceEdit", "true")
+                        .domain("self.id = " + inv.getId())
                         .context("_operationTypeSelect", inv.getOperationTypeSelect())
                         .context(
                             "todayDate",
@@ -362,10 +363,11 @@ public class StockMoveInvoiceController {
               response.setView(
                   ActionView.define(I18n.get("Invoice"))
                       .model(Invoice.class.getName())
-                      .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                       .add("form", "invoice-form")
+                      .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                       .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
                       .param("forceEdit", "true")
+                      .domain("self.id = " + inv.getId())
                       .context("_showRecord", String.valueOf(inv.getId()))
                       .context("_operationTypeSelect", inv.getOperationTypeSelect())
                       .context(
@@ -455,10 +457,11 @@ public class StockMoveInvoiceController {
                 response.setView(
                     ActionView.define(I18n.get("Invoice"))
                         .model(Invoice.class.getName())
-                        .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                         .add("form", "invoice-form")
+                        .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                         .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
                         .param("forceEdit", "true")
+                        .domain("self.id = " + inv.getId())
                         .context("_showRecord", String.valueOf(inv.getId()))
                         .context("_operationTypeSelect", inv.getOperationTypeSelect())
                         .context(
@@ -531,10 +534,11 @@ public class StockMoveInvoiceController {
               response.setView(
                   ActionView.define(I18n.get("Invoice"))
                       .model(Invoice.class.getName())
-                      .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                       .add("form", "invoice-form")
+                      .add("grid", InvoiceViewService.computeInvoiceGridName(inv))
                       .param("search-filters", InvoiceViewService.computeInvoiceFilterName(inv))
                       .param("forceEdit", "true")
+                      .domain("self.id = " + inv.getId())
                       .context("_showRecord", String.valueOf(inv.getId()))
                       .context("_operationTypeSelect", inv.getOperationTypeSelect())
                       .context(

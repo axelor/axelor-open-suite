@@ -24,6 +24,6 @@ import com.axelor.apps.base.AxelorException;
 
 public interface AccountManagementCheckService {
 
-  void checkDuplicateAccountManagement(
-      AccountManagement accountManagement, PaymentMode paymentMode) throws AxelorException;
+  void checkDuplicateAccountManagement(AccountManagement accountManagement, PaymentMode paymentMode)
+      throws AxelorException;
 }

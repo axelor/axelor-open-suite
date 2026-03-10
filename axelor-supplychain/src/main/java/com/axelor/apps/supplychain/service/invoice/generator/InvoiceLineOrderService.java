@@ -35,4 +35,11 @@ public interface InvoiceLineOrderService {
       PurchaseOrderLine purchaseOrderLine,
       BigDecimal exTaxTotal,
       Set<TaxLine> taxLineSet);
+
+  InvoiceLineGeneratorSupplyChain getInvoiceLineGeneratorForTitleLines(
+      Invoice invoice,
+      String productTitle,
+      SaleOrderLine saleOrderLine,
+      PurchaseOrderLine purchaseOrderLine,
+      BigDecimal qty);
 }

@@ -45,9 +45,6 @@ public interface StockLocationService {
 
   List<Long> getAllLocationAndSubLocation(Long stockLocationId, boolean isVirtualInclude);
 
-  public List<Long> getAllLocationAndSubLocationId(
-      StockLocation stockLocation, boolean isVirtualInclude);
-
   public boolean isConfigMissing(StockLocation stockLocation, int printType);
 
   void changeProductLocker(StockLocation stockLocation, Product product, String newLocker)

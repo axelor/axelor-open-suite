@@ -196,9 +196,12 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
     BigDecimal exTaxPrice;
     BigDecimal inTaxPrice;
     if (saleOrderLine.getProduct().getInAti()) {
-      inTaxPrice =
-          saleOrderLinePriceService.getInTaxUnitPrice(
-              saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+      inTaxPrice = saleOrderLine.getPrice();
+      if (inTaxPrice == null || inTaxPrice.compareTo(BigDecimal.ZERO) == 0) {
+        inTaxPrice =
+            saleOrderLinePriceService.getInTaxUnitPrice(
+                saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+      }
       saleOrderLineMap.putAll(
           saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, inTaxPrice));
       inTaxPrice =
@@ -213,9 +216,12 @@ public class SaleOrderLineProductServiceImpl implements SaleOrderLineProductServ
         saleOrderLine.setInTaxPrice(inTaxPrice);
       }
     } else {
-      exTaxPrice =
-          saleOrderLinePriceService.getExTaxUnitPrice(
-              saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+      exTaxPrice = saleOrderLine.getPrice();
+      if (exTaxPrice == null || exTaxPrice.compareTo(BigDecimal.ZERO) == 0) {
+        exTaxPrice =
+            saleOrderLinePriceService.getExTaxUnitPrice(
+                saleOrder, saleOrderLine, saleOrderLine.getTaxLineSet());
+      }
       saleOrderLineMap.putAll(
           saleOrderLineDiscountService.fillDiscount(saleOrderLine, saleOrder, exTaxPrice));
       exTaxPrice =

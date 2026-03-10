@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models https://axelor.com/xml/ns/domain-models/domain-models_8.0.xsd">
 
   <module name="base" package="com.axelor.apps.base.db"/>
 
@@ -29,8 +29,6 @@
               public static final Integer REMINDER_BLOCKING = 1;
               public static final Integer INVOICING_BLOCKING = 2;
               public static final Integer REIMBURSEMENT_BLOCKING = 3;
-
-              public static final int PURCHASE_BLOCKING = 6;
           ]]>
     </extra-code>
 

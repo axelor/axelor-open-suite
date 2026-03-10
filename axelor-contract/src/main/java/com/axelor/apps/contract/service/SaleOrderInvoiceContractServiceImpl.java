@@ -23,6 +23,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.PaymentCondition;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoiceRepository;
+import com.axelor.apps.account.service.PartnerAccountService;
 import com.axelor.apps.account.service.invoice.InvoiceTermService;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Company;
@@ -71,7 +72,8 @@ public class SaleOrderInvoiceContractServiceImpl extends SaleOrderInvoiceService
       CurrencyScaleService currencyScaleService,
       OrderInvoiceService orderInvoiceService,
       InvoiceTaxService invoiceTaxService,
-      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService) {
+      SaleOrderDeliveryAddressService saleOrderDeliveryAddressService,
+      PartnerAccountService partnerAccountService) {
     super(
         appBaseService,
         appStockService,
@@ -88,7 +90,8 @@ public class SaleOrderInvoiceContractServiceImpl extends SaleOrderInvoiceService
         currencyScaleService,
         orderInvoiceService,
         invoiceTaxService,
-        saleOrderDeliveryAddressService);
+        saleOrderDeliveryAddressService,
+        partnerAccountService);
   }
 
   @Transactional(rollbackOn = {Exception.class})

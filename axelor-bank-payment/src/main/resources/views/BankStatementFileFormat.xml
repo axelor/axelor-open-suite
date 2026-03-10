@@ -16,7 +16,8 @@
       <field name="statementFileFormatSelect" required="true"
         onChange="action-bank-statement-file-format-record-compute-name"/>
       <field name="name" required="true"/>
-      <field name="bindingFile" widget="binary-link"/>
+      <field name="bindingFile" widget="binary-link"
+        hideIf="statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb120&quot;) == 0 || statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb560&quot;) == 0 || statementFileFormatSelect.indexOf(&quot;camt.fin.mt940&quot;) == 0 || statementFileFormatSelect.indexOf(&quot;camt.xxx.cfonb240&quot;) == 0"/>
     </panel>
   </form>
 

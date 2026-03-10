@@ -28,14 +28,9 @@ import com.axelor.apps.project.db.ProjectStatus;
 import com.axelor.apps.project.db.repo.ProjectConfigRepository;
 import com.axelor.apps.project.exception.ProjectExceptionMessage;
 import com.axelor.i18n.I18n;
-import com.axelor.meta.MetaFiles;
-import com.axelor.meta.db.repo.MetaFileRepository;
-import com.axelor.meta.db.repo.MetaModuleRepository;
-import com.axelor.meta.loader.AppVersionService;
+import com.axelor.studio.app.service.AppService;
 import com.axelor.studio.db.AppProject;
 import com.axelor.studio.db.repo.AppProjectRepository;
-import com.axelor.studio.db.repo.AppRepository;
-import com.axelor.studio.service.AppSettingsStudioService;
 import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -50,16 +45,11 @@ public class AppProjectServiceImpl extends AppBaseServiceImpl implements AppProj
 
   @Inject
   public AppProjectServiceImpl(
-      AppRepository appRepo,
-      MetaFiles metaFiles,
-      AppVersionService appVersionService,
-      AppSettingsStudioService appSettingsService,
-      MetaModuleRepository metaModuleRepo,
-      MetaFileRepository metaFileRepo,
+      AppService appService,
       AppProjectRepository appProjectRepo,
       CompanyRepository companyRepo,
       ProjectConfigRepository projectConfigRepo) {
-    super(appRepo, metaFiles, appVersionService, appSettingsService, metaModuleRepo, metaFileRepo);
+    super(appService);
     this.appProjectRepo = appProjectRepo;
     this.companyRepo = companyRepo;
     this.projectConfigRepo = projectConfigRepo;
