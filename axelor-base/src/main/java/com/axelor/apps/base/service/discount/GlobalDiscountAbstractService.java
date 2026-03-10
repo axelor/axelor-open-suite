@@ -140,15 +140,31 @@ public abstract class GlobalDiscountAbstractService {
   }
 
   protected void adjustFixedDiscountOnLastLine(GlobalDiscounter globalDiscounter) {
-    BigDecimal priceDiscountedByLine =
-        globalDiscounter
-            .getExTaxTotal()
-            .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
-
-    BigDecimal priceDiscountedOnTotal =
-        globalDiscounter
-            .getPriceBeforeGlobalDiscount()
-            .subtract(globalDiscounter.getDiscountAmount());
+    boolean inAti = Boolean.TRUE.equals(globalDiscounter.getInAti());
+    BigDecimal priceDiscountedByLine;
+    BigDecimal priceDiscountedOnTotal;
+    if (inAti) {
+      priceDiscountedByLine =
+          globalDiscounter
+              .getInTaxTotal()
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      BigDecimal inTaxTotalBeforeDiscount =
+          getGlobalDiscounterLines(globalDiscounter).stream()
+              .map(line -> line.getInTaxPrice().multiply(line.getQty()))
+              .reduce(BigDecimal::add)
+              .orElse(BigDecimal.ZERO);
+      priceDiscountedOnTotal =
+          inTaxTotalBeforeDiscount.subtract(globalDiscounter.getDiscountAmount());
+    } else {
+      priceDiscountedByLine =
+          globalDiscounter
+              .getExTaxTotal()
+              .setScale(AppBaseService.DEFAULT_NB_DECIMAL_DIGITS, RoundingMode.HALF_UP);
+      priceDiscountedOnTotal =
+          globalDiscounter
+              .getPriceBeforeGlobalDiscount()
+              .subtract(globalDiscounter.getDiscountAmount());
+    }
     if (priceDiscountedByLine.compareTo(priceDiscountedOnTotal) == 0) {
       return;
     }
