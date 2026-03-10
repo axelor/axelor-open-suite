@@ -1007,6 +1007,7 @@
 "This feature enables site management for stock, a site representing a physical location whether it is an administrative building, a customer building, a warehouse, etc. The site can be linked to a stock location.",,,
 "This field can have one of the following values (Purchase, Manufacturing, Inventory, Sale, Manual). The value is fixed when the tracking number is created.",,,
 "This field is only useful for customs duties related to a stock move. It defines in which economic area the company is located.",,,
+"This stock move is linked to orders with different currencies.",,,
 "This stock move will have a huge impact (more than",,,
 "This value is the packed gross mass, that is, the total gross mass of all packaged products plus the gross mass of their packagings (as defined in its logistical form).",,,
 "Time before expiry (in days)",,,
