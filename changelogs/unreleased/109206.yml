@@ -1,0 +1,3 @@
+---
+title: "Sale order: fixed global discount calculation when sale order has total tax included."
+module: axelor-sale
