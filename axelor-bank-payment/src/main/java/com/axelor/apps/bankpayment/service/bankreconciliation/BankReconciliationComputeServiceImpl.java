@@ -23,6 +23,7 @@ import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementLineRepository;
+import com.axelor.apps.bankpayment.service.BankReconciliationToolService;
 import com.axelor.apps.base.db.BankDetails;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.common.ObjectUtils;
@@ -118,11 +119,15 @@ public class BankReconciliationComputeServiceImpl implements BankReconciliationC
         bankReconciliation.getBankReconciliationLineList()) {
       amount = BigDecimal.ZERO;
       if (bankReconciliationLine.getMoveLine() != null) {
-        amount =
-            bankReconciliationLine
-                .getMoveLine()
-                .getDebit()
-                .subtract(bankReconciliationLine.getMoveLine().getCredit());
+        if (BankReconciliationToolService.isForeignCurrency(bankReconciliation)) {
+          amount = bankReconciliationLine.getMoveLine().getCurrencyAmount();
+        } else {
+          amount =
+              bankReconciliationLine
+                  .getMoveLine()
+                  .getDebit()
+                  .subtract(bankReconciliationLine.getMoveLine().getCredit());
+        }
       }
       endingBalance = endingBalance.add(amount);
     }
