@@ -1,0 +1,5 @@
+---
+title: "Cart: filtered product selection to only show sellable products."
+module: axelor-sale
+developer: |
+  - Replaced AppBaseService and AppSaleService with ProductSaleDomainService in SaleOrderLineDomainServiceImpl constructor.
