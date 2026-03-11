@@ -14,8 +14,11 @@
       action="action.technician.manager.chart.approval.items.overview" colSpan="12" height="250"/>
 
     <dashlet name="technician.manager.approval.items"
-      action="action.technician.manager.view.approval.items" colSpan="12" height="450"
+      action="action.technician.manager.view.approval.items" colSpan="6" height="450"
       canSearch="true"/>
+
+    <dashlet name="mgm.technician.manager.my.projects.to.review"
+      action="action.view.my.ongoing.projects.to.review" colSpan="6" height="450" canSearch="true"/>
 
     <dashlet name="technician.manager.my.ongoing.projects.tasks"
       action="action.view.technician.manager.my.projects.tasks" colSpan="6" height="400"
@@ -72,6 +75,22 @@
     (self.project.assignedTo = :__user__ OR :__user__ MEMBER OF self.project.membersUserSet)
     AND self.status.isCompleted = false
   ]]></domain>
+  </action-view>
+
+  <action-view name="action.view.my.ongoing.projects.to.review"
+    title="Projects to review" model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="business-project-grid"/>
+    <view type="form" name="business-project-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="true"/>
+    <domain>
+      (self.assignedTo = :__user__ OR :__user__ MEMBER OF self.membersUserSet)
+      AND
+      self.projectStatus.isCompleted = false AND self.isReadyForReview = true AND
+      (self.isConfirmedForInvoicing = false OR self.isConfirmedForInvoicing IS NULL)
+    </domain>
+    <context name="_fromDashboard" expr="eval: true"/>
+
   </action-view>
 
 </object-views>

@@ -36,16 +36,19 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
   protected ProjectRepository projectRepo;
   protected TaskStatusBusinessProjectRepository taskStatusRepo;
   protected ProjectTaskRepository projectTaskRepo;
+  protected ProjectBusinessService projectService;
 
   @Inject
   public ProjectStatusChangeServiceImpl(
       ProjectStatusBusinessProjectRepository projectStatusRepository,
       ProjectRepository projectRepo,
       TaskStatusBusinessProjectRepository taskStatusRepo,
-      ProjectTaskRepository projectTaskRepo) {
+      ProjectTaskRepository projectTaskRepo,
+      ProjectBusinessService projectService) {
     super(taskStatusRepo, projectTaskRepo);
     this.projectStatusRepository = projectStatusRepository;
     this.projectRepo = projectRepo;
+    this.projectService = projectService;
   }
 
   @Override
@@ -58,7 +61,12 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
     if (project.getProjectStatus().getIsCompleted()) return;
 
     String appropriateStatus = determineAppropriateStatus(project);
+    Boolean isReadyForReview = projectService.isProjectReadyForReview(project);
 
+    if (!Objects.equals(project.getIsReadyForReview(), isReadyForReview)) {
+      project.setIsReadyForReview(isReadyForReview);
+    }
+    log.debug("project is ready for review: {}", project.getIsReadyForReview());
     if (!Objects.equals(appropriateStatus, project.getProjectStatus().getName())) {
       setStatus(project, appropriateStatus);
     }
@@ -81,7 +89,7 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
 
   @Override
   public void setToInvoiceStatus(Project project) throws AxelorAlertException {
-    if (Beans.get(ProjectBusinessService.class).readyToInvoice(project)) {
+    if (projectService.readyToInvoice(project)) {
       setStatus(project, PROJECT_STATUS_TO_INVOICE);
     }
   }
@@ -144,7 +152,7 @@ public class ProjectStatusChangeServiceImpl extends TaskStatusChangeServiceImpl
     // Check the hierachy downward to determine the right status for the project
 
     // Check if it is ready to invoice
-    if (Beans.get(ProjectBusinessService.class).readyToInvoice(project)) {
+    if (projectService.readyToInvoice(project)) {
       return PROJECT_STATUS_TO_INVOICE;
     }
 

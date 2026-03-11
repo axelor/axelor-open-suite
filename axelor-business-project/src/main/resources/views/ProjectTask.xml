@@ -365,7 +365,7 @@
       <field name="project" colSpan="6" form-view="business-project-form"
         grid-view="business-project-grid"
         onChange="action-business-project-task-group-project-onchange"
-        domain="self.projectStatus.isCompleted = false" required="true" canView="false"
+        domain="self.projectStatus.isCompleted = false" required="true" canView="true"
         readonlyIf="id != null || _project != null"/>
       <field if="__config__.app.isApp('business-project')" name="project.customerAddress"
         readonly="true" colSpan="6" showIf="project"

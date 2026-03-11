@@ -18,6 +18,7 @@
  */
 package com.axelor.apps.businessproject.web;
 
+import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.ResponseMessageType;
 import com.axelor.apps.base.db.Address;
@@ -29,11 +30,15 @@ import com.axelor.apps.base.service.dms.DMSFileService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.db.TaskMemberReport;
+import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.*;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateService;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
+import com.axelor.apps.businessproject.service.statuschange.ProjectStatusChangeService;
+import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
 import com.axelor.apps.businessproject.translation.ITranslation;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
@@ -55,6 +60,7 @@ import com.axelor.studio.db.repo.AppBusinessProjectRepository;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -70,6 +76,7 @@ public class ProjectController {
   @Inject protected ProjectBusinessService projectService;
   @Inject protected DMSFileService dmsFileService;
   @Inject protected MetaFileRepository metaFileRepository;
+  @Inject protected TaskReportService taskReportService;
 
   public void generateQuotation(ActionRequest request, ActionResponse response) {
     try {
@@ -490,5 +497,53 @@ public class ProjectController {
     }
 
     projectService.syncTaskReportToProject(project);
+  }
+
+  public void showProjectSummary(ActionRequest request, ActionResponse response) {
+    Project project = getProjectFromRequest(request);
+    if (project == null) return;
+
+    TaskReport taskReport = taskReportService.getTaskReport(project);
+
+    String taskCount =
+        taskReport != null ? taskReportService.getReportedTaskCount(taskReport) : "0/0";
+
+    BigDecimal totalHours = BigDecimal.ZERO;
+
+    long dirtAllowanceCount = 0;
+
+    if (taskReport != null && taskReport.getTaskMemberReports() != null) {
+      totalHours = taskReport.getTotalWorkHours();
+      for (TaskMemberReport tmr : taskReport.getTaskMemberReports()) {
+        if (Boolean.TRUE.equals(tmr.getDirtAllowance())) {
+          dirtAllowanceCount++;
+        }
+      }
+    }
+
+    long expenseCount = projectService.getProjectExpenseCount(project);
+
+    response.setValue("$totalTasksReported", taskCount);
+    response.setValue("$totalHoursReported", totalHours);
+    response.setValue("$totalDirtAllowance", dirtAllowanceCount);
+    response.setValue("$totalExpensesReported", expenseCount);
+  }
+
+  public void updateProjectStatus(ActionRequest request, ActionResponse response) {
+    Project project = getProjectFromRequest(request);
+
+    try {
+      Beans.get(ProjectStatusChangeService.class).updateProjectStatus(project);
+      response.setReload(true);
+    } catch (AxelorAlertException e) {
+      TraceBackService.trace(response, e);
+    }
+  }
+
+  private Project getProjectFromRequest(ActionRequest request) {
+    Project project = request.getContext().asType(Project.class);
+
+    if (project == null || project.getId() == null) return null;
+    return Beans.get(ProjectRepository.class).find(project.getId());
   }
 }

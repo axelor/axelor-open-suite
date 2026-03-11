@@ -311,7 +311,8 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     return (hasExpense(project) || hasTimesheetLine(project))
         && (allExpensesValidated(project)
             && allTasksHaveTimesheetLines(project)
-            && allTimesheetLinesValidated(project));
+            && allTimesheetLinesValidated(project)
+            && project.getIsConfirmedForInvoicing());
   }
 
   @Override
@@ -362,6 +363,26 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
     return project.getProjectTaskList().stream()
         .filter(task -> !Boolean.TRUE.equals(task.getIsTemplate()))
         .allMatch(task -> tasksWithTimesheets.contains(task.getId()));
+  }
+
+  @Override
+  public long getProjectExpenseCount(Project project) {
+    return Beans.get(ExpenseRepository.class)
+        .all()
+        .filter("self.project.id = :projectId")
+        .bind("projectId", project.getId())
+        .count();
+  }
+
+  @Override
+  public Boolean isProjectReadyForReview(Project project) {
+    if (project == null) return false;
+
+    if (Objects.equals(project.getProjectTypeSelect(), ProjectRepository.FEES_PROJECT_TYPE)) {
+      return allExpensesValidated(project);
+    }
+
+    return (allTimesheetLinesValidated(project) && allExpensesValidated(project));
   }
 
   protected List<TimesheetLine> getAllTimesheetLines(Project project) {
