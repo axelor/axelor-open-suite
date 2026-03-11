@@ -16,23 +16,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.service;
+package com.axelor.apps.stock.service;
 
-import com.axelor.apps.account.db.Account;
-import com.axelor.apps.account.db.FinancialDiscount;
-import com.axelor.apps.base.AxelorException;
-import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
-import java.math.BigDecimal;
+import com.axelor.apps.stock.db.StockMove;
 
-public interface FinancialDiscountService {
-  BigDecimal computeFinancialDiscountTotalAmount(
-      FinancialDiscount financialDiscount,
-      BigDecimal inTaxTotal,
-      BigDecimal taxTotal,
-      Currency currency);
+public class StockMoveCurrencyServiceImpl implements StockMoveCurrencyService {
 
-  Account getFinancialDiscountAccount(Company company, boolean isPurchase) throws AxelorException;
+  @Override
+  public Currency getCurrency(StockMove stockMove) {
+    if (stockMove.getCompany() != null) {
+      return stockMove.getCompany().getCurrency();
+    }
+    return null;
+  }
 
-  Account getFinancialDiscountAccountOrNull(Company company, boolean isPurchase);
+  @Override
+  public boolean isMultiCurrency(StockMove stockMove) {
+    return false;
+  }
 }
