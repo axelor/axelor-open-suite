@@ -9,17 +9,23 @@
 
     <one-to-one ref="com.axelor.studio.db.App" name="app" unique="true"/>
 
-    <boolean name="isSla" title="SLA" default="false"/>
-    <boolean name="manageTimer" title="Manage Timer" default="false"/>
+    <boolean name="isSla" title="SLA" default="false"
+      help="This option enables the Service Level Agreement, which defines service quality by setting indicators on the maximum resolution time for a ticket, or the transition to a certain stage within a given time. If enabled, your teams will be alerted of the indicators to meet, and you will have access to detailed reports showing SLA performance and service level."/>
+    <boolean name="manageTimer" title="Manage Timer" default="false"
+      help="This enables the Timer tab on a ticket, which allows starting a stopwatch to precisely track the time spent on resolving a ticket."/>
 
     <many-to-one name="resolvedTicketStatus"
-      ref="com.axelor.apps.helpdesk.db.TicketStatus" title="Resolved status"/>
+      ref="com.axelor.apps.helpdesk.db.TicketStatus" title="Resolved status"
+      help="You can define here which status tickets are considered as resolved. Ticket statuses are customizable and can be created from the Configuration/Ticket statuses menu of the Helpdesk module."/>
     <many-to-one name="closedTicketStatus"
-      ref="com.axelor.apps.helpdesk.db.TicketStatus" title="Closed status"/>
+      ref="com.axelor.apps.helpdesk.db.TicketStatus" title="Closed status"
+      help="You can define here which status tickets are considered as closed. Ticket statuses are customizable and can be created from the Configuration/Ticket statuses menu of the Helpdesk module."/>
     <many-to-one name="inProgressTicketStatus"
-      ref="com.axelor.apps.helpdesk.db.TicketStatus" title="On going status"/>
+      ref="com.axelor.apps.helpdesk.db.TicketStatus" title="On going status"
+      help="You can define here which status tickets are considered as in progress. Ticket statuses are customizable and can be created from the Configuration/Ticket statuses menu of the Helpdesk module."/>
     <many-to-one name="defaultTicketStatus"
-      ref="com.axelor.apps.helpdesk.db.TicketStatus" title="Default status"/>
+      ref="com.axelor.apps.helpdesk.db.TicketStatus" title="Default status"
+      help="You can define here which status tickets are created with. Ticket statuses are customizable and can be created from the Configuration/Ticket statuses menu of the Helpdesk module."/>
 
     <track>
       <field name="isSla" on="UPDATE"/>

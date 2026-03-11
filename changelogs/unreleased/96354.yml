@@ -1,3 +1,0 @@
----
-title: "GDPR: fixed erasure failing on OneToMany fields without mappedBy."
-module: axelor-gdpr

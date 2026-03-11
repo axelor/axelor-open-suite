@@ -1,3 +1,203 @@
+## [9.0.4] (2026-03-05)
+
+### Fixes
+#### Base
+
+* Update Axelor Open Platform to 8.1.0
+* Partner: fixed an error on the email dashlet when retrieving sent emails.
+* Partner: added value translations for all fields to get field name in user language in search.
+
+#### Account
+
+* Deposit slip: fixed PDF regeneration after BIRT template update.
+* Payment session: fixed payments not being generated after user confirms expired financial discount warning.
+* Invoice: fixed wrong invoice term calculation on change of partner with different fiscal position.
+* Accounting batch: fixed error on move export.
+* Move line query: fixed unreconcile process displaying move lines with no reconcile.
+* Payment session: fixed bill of exchange validation when session contains isolated refunds or invoice terms with prior partial payments.
+* Invoice: fixed price computation in A.T.I. invoice.
+* Accounting batch: fixed an issue occurring when launching cut-off accounting batch.
+* Sale order: fixed third-party payer partner not set when generating an invoice from a sale order.
+* Account: fixed payment session validation with credit notes (non-LCR) leaving incorrect payment amounts on invoice terms.
+* Invoice: fixed note display on invoice report.
+* Reconciliation: fixed thresholdDistanceFromRegulation not taken into account when reconciling more than 2 move lines, and fixed RECONCILE_BY_AMOUNT proposing unbalanced sets.
+* Pfp menu: fixed domain filter when origin date is missing on supplier invoices.
+* Accounting export: fixed 'Export journal entry -> Acc. Soft.' generating an empty CSV file when move lines are found.
+
+#### Bank Payment
+
+* Bank order: fixed duplicate file upload when generating bank order file.
+* Bank reconciliation: fixed wrong starting balance when splitting reconciliation into multiple sessions.
+* Bank statement line: fixed bank statement line print wizard.
+* Invoice term: fixed the issue in bank payment on form view override.
+
+#### Budget
+
+* Budget : fixed issue where realized with po is not imputed when using invoice generated from stock move of sale/purchase order.
+
+#### Cash Management
+
+* Forecast recap: fixed error when populating with purchase orders.
+
+#### Contract
+
+* Contract: fixed analytic move lines forecast type incorrectly set to order forecast instead of contract forecast.
+* Opportunity: fixed the issue in contract on form view override.
+* Contract: fixed an error that could occur when invoicing contracts in batch with high volume.
+
+#### Fleet
+
+* Vehicle: fixed inconsistency between list view and form view on vehicle contract.
+
+#### GDPR
+
+* GDPR: fixed erasure failing on OneToMany fields without mappedBy.
+
+#### Human Resource
+
+* Project task: fixed an error when searching sprints from project task due to incorrect context casting.
+* Expense: fixed the empty check on analytic move lines during expense ventilation.
+* Timesheet: fixed the order of timesheet lines generated from the expected planning.
+* Timesheet line: fixed project task not being cleared when changing the project.
+
+#### Maintenance
+
+* BOM/Prod process: fixed missing status change button for bill of material and production process.
+
+#### Marketing
+
+* Marketing: added English demo data translations.
+
+#### Production
+
+* Product: not setting purchasable to true by default when creating a new product from manufacturing menu entry.
+* Manuf order: fixed stock move generation when updating planned quantity.
+* Manuf order: fixed an issue where child manufacturing orders did not appear in the children MO dashlet when multi-level planning generated more than one level of depth.
+* Prod process line: fixed an error when adding consumed products on an unsaved prod process line.
+* Operation order: fixed NPE on planned end with waiting date when prod process line is null.
+* Manuf order: fixed an error occurring when clearing the cancel reason field in the cancellation popup.
+* Manufacturing order: fixed error when canceling with a cancel reason and stock reservation enabled.
+* Manufacturing order: fixed a blocking error when updating planned or real quantities with consumption on operation.
+* Sale order: fixed NPE when confirming sale order with production order having no manuf orders.
+* Manuf order: fixed an error occurring when finishing a manufacturing order with operation containing stock moves.
+* Prod process: fixed the product display when the isEnabledForAllProducts boolean is set to true.
+* Sale order: fixed duplicated sale order line details for semi-finished BOM components in editable tree mode.
+* Manuf order: fixed creation of unusable manuf order and blocking at planned status in multi level planning.
+
+#### Project
+
+* Implemented security check on task removal from project.
+
+#### Purchase
+
+* Purchase order: fixed max purchase price computation.
+* Purchase order line: fixed an error when changing unit in certain cases.
+* Purchase request: fixed auto completion of trading name on creation of request.
+
+#### Quality
+
+* Quality control: fixed display of quality corrective action.
+* Quality: fixed an issue on QI Identification demo data.
+
+#### Sale
+
+* Sale order: fixed price recomputation when editable tree is enabled.
+* Price list line: fixed decimal digits in amount and min qty.
+* Sale order: fixed wrong discount value with A.T.I configuration is enabled.
+
+#### Stock
+
+* Stock: fixed decimal points for different views.
+* Stock move: fixed the issue with reserved quantity management for partial supplier arrivals.
+* Stock move: removed control on receipt for stock move line with no quantity.
+* Stock move: fixed purchase tracking splits for manual tracking assignment.
+* Stock move: fixed wrong address mapping when selecting a partner on incoming stock move.
+* Stock correction: fixed the error message related to the tracking number check.
+* Stock move: fixed stock apis' total without tax calculation.
+* Stock move line: fixed available quantity not displayed when selecting a tracking number from consumed products.
+* Stock location: fixed performance issue causing slow grid loading.
+
+#### Supply Chain
+
+* MRP: fixed an error occurring when generating manufacturing proposals.
+* Invoice: fixed error in invoice generated from stock move.
+* Demo data import: fixed errors occurring when importing supplychain demo data.
+* Stock move: fixed stock moves generation with tracking number from sale order.
+* Declaration of exchanges: fixed filter on stock move displayed.
+* Sale order: fixed subscription sale orders are completed while invoices are still to be generated.
+* Purchase order: fixed an error when cancelling planned stock moves while editing an order.
+* Invoice: fixed duplicated external reference when invoicing multiple stock moves from the same order.
+* Stock reservation: requested reserved quantity is now based on expected quantity instead of real quantity.
+* Purchase order: fixed an error occurring when generation stock move with product controlled at reception.
+
+
+### Developer
+
+#### Base
+
+Migration scripts needed to be executed for the update.
+
+For new AuditLog object :
+
+```sql
+CREATE SEQUENCE audit_log_seq START WITH 1 INCREMENT BY 100;
+CREATE TABLE audit_log
+(
+    id             bigint       not null    primary key,
+    archived       boolean,
+    version        integer,
+    created_on     timestamp(6),
+    updated_on     timestamp(6),
+    current_state  text,
+    error_message  text,
+    event_type     varchar(255) not null,
+    previous_state text,
+    processed      boolean,
+    related_id     bigint       not null,
+    related_model  varchar(255) not null,
+    retry_count    integer,
+    tx_id          varchar(255) not null,
+    created_by     bigint   constraint fk_ru17orlmi6rjhpojmeqrxbiok references auth_user,
+    updated_by     bigint   constraint fk_tbhw331n3l89dk629vmpxg4de references auth_user,
+    user_id        bigint   constraint fk_pyjqqm7hglp6pnwp3h8whian8 references auth_user
+);
+
+CREATE INDEX audit_log_idx_processing
+    ON audit_log (processed, tx_id, related_model, related_id, event_type, created_on, retry_count);
+```
+For new field receivedOn in MailMessage object :
+
+```sql
+ALTER TABLE mail_message ADD COLUMN received_on timestamp(6);
+CREATE INDEX mail_message_received_on_idx ON mail_message (received_on);
+UPDATE mail_message set received_on = created_on;
+```
+
+For more information, see https://docs.axelor.com/axelor-open-platform/8.1/migration-guide.html
+
+#### Account
+
+- Changed InvoiceTermReplaceService.replaceInvoiceTerms parameters from 
+(invoice, newInvoiceTermList, invoiceTermListToRemove) to (invoice, newInvoiceTermList, invoiceTermListToRemove, paymentSession)
+
+---
+
+Added PartnerAccountService to SaleOrderInvoiceServiceImpl and services extending it.
+
+#### Contract
+
+-- script
+UPDATE  account_analytic_move_line SET type_select = 4 WHERE contract_line IS NOT NULL AND type_select = 1;
+
+#### Production
+
+- Added SolDetailsBomUpdateService in the SaleOrderLineBomServiceImpl constructor
+
+#### Sale
+
+- Added SaleOrderLinePriceService and SaleOrderLineProductService to SubSaleOrderLineComputeServiceImpl constructor.
+- Added new method updateSubSaleOrderLineList(SaleOrderLine, SaleOrder) in SubSaleOrderLineComputeService class.
+
 ## [9.0.3] (2026-02-19)
 
 ### Fixes
@@ -390,6 +590,7 @@ Replaced the attrs action `action-purchase-order-line-attrs-delivery-panel` with
 
 * Project: improve task tree management.
 
+[9.0.4]: https://github.com/axelor/axelor-open-suite/compare/v9.0.3...v9.0.4
 [9.0.3]: https://github.com/axelor/axelor-open-suite/compare/v9.0.2...v9.0.3
 [9.0.2]: https://github.com/axelor/axelor-open-suite/compare/v9.0.1...v9.0.2
 [9.0.1]: https://github.com/axelor/axelor-open-suite/compare/v9.0.0...v9.0.1

@@ -1,3 +1,0 @@
----
-title: "Accounting export: fixed 'Export journal entry -> Acc. Soft.' generating an empty CSV file when move lines are found."
-module: axelor-account

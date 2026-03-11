@@ -1,3 +1,0 @@
----
-title: "Invoice: fixed duplicated external reference when invoicing multiple stock moves from the same order."
-module: axelor-supplychain

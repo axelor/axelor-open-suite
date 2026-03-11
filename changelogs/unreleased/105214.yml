@@ -1,3 +1,0 @@
----
-title: "Stock reservation: requested reserved quantity is now based on expected quantity instead of real quantity."
-module: axelor-supplychain

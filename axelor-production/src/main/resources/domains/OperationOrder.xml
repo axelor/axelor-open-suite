@@ -45,7 +45,7 @@
     <datetime name="plannedEndWithWaitingDateT" readonly="true">
       <![CDATA[
       if (plannedEndDateT != null) {
-        return plannedEndDateT.plusSeconds(prodProcessLine.getTimeBeforeNextOperation());
+        return plannedEndDateT.plusSeconds(prodProcessLine != null ? prodProcessLine.getTimeBeforeNextOperation() : 0);
       }
       return null;
       ]]>

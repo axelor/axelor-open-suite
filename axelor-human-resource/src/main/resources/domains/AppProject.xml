@@ -8,15 +8,15 @@
   <entity name="AppProject" cacheable="true">
 
     <boolean name="enableEventCreation" title="Enable event creation"
-      help="This will attach an event to a project planning time"/>
+      help="When this configuration is enabled, an event will be associated with planned times, meaning that when time is planned for a user, an event linked to this planned time appears on their calendar."/>
     <string name="eventSubjectGroovyFormula" title="Event subject groovy formula"
-      help="This will customize the event subject."/>
+      help="This formula allows customizing the subject of the event that will be created. For example the formula project.fullName + ' - ' + projectTask.fullName which will display the project name and the task name on which time is planned as the event title."/>
 
     <boolean name="enablePlanification" title="Enable planification" default="true"
-      help="If enabled, planification will be available on project and project task views and some planning lines auto generation will be added to generation via project template, and change of sprint on project tasks."/>
+      help="If this option is enabled, planification will be available on project and project task views and some auto-generated planning lines will be added when generating via the project template, as well as sprint change on project tasks."/>
 
     <boolean name="blockPPTGeneration" title="Block project planning time generation"
-      help="Disable project planning time generation if there is no active sprint." default="true"/>
+      help="Block project planning time generation." default="true"/>
 
     <track>
       <field name="enablePlanification" on="UPDATE"/>

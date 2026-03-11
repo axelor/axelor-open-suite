@@ -1,3 +1,0 @@
----
-title: "Bank order: fixed duplicate file upload when generating bank order file."
-module: axelor-bank-payment

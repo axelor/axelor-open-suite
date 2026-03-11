@@ -1,3 +1,0 @@
----
-title: "Purchase order: fixed an error occurring when generation stock move with product controlled at reception."
-module: axelor-supplychain
