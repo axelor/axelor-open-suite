@@ -1,0 +1,3 @@
+---
+title: "Manufacturing Order: fixed incorrect unit price computed on outgoing stock move when produced quantity differs from planned quantity."
+module: axelor-production
