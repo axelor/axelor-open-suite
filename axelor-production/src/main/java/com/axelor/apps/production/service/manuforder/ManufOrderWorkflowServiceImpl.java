@@ -48,6 +48,8 @@ import com.axelor.apps.production.service.operationorder.OperationOrderService;
 import com.axelor.apps.production.service.operationorder.OperationOrderWorkflowService;
 import com.axelor.apps.production.service.productionorder.ProductionOrderService;
 import com.axelor.apps.stock.db.StockMove;
+import com.axelor.apps.stock.db.StockMoveLine;
+import com.axelor.apps.stock.db.repo.StockMoveRepository;
 import com.axelor.common.ObjectUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -269,13 +271,32 @@ public class ManufOrderWorkflowServiceImpl implements ManufOrderWorkflowService 
 
   /** Return the cost price for one unit in a manufacturing order. */
   protected BigDecimal computeOneUnitProductionPrice(ManufOrder manufOrder) {
-    BigDecimal qty = manufOrder.getQty();
+    BigDecimal qty = computeRealProducedQty(manufOrder);
     if (qty.signum() != 0) {
       int scale = Beans.get(AppProductionService.class).getNbDecimalDigitForUnitPrice();
       return manufOrder.getCostPrice().divide(qty, scale, RoundingMode.HALF_UP);
     } else {
       return BigDecimal.ZERO;
     }
+  }
+
+  protected BigDecimal computeRealProducedQty(ManufOrder manufOrder) {
+    if (ObjectUtils.isEmpty(manufOrder.getProducedStockMoveLineList())) {
+      return manufOrder.getQty();
+    }
+    BigDecimal realQty =
+        manufOrder.getProducedStockMoveLineList().stream()
+            .filter(
+                sml ->
+                    sml.getProduct() != null
+                        && sml.getProduct().equals(manufOrder.getProduct())
+                        && sml.getStockMove() != null
+                        && sml.getStockMove().getStatusSelect()
+                            == StockMoveRepository.STATUS_REALIZED)
+            .map(StockMoveLine::getRealQty)
+            .filter(Objects::nonNull)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+    return realQty.signum() != 0 ? realQty : manufOrder.getQty();
   }
 
   /**
