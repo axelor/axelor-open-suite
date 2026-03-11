@@ -335,20 +335,6 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
             paymentSessionValidateService.getMoveLineDescription(paymentSession),
             out);
 
-    Account counterPartAccount = accountConfigService.getBillOfExchReceivAccount(accountConfig);
-
-    MoveLine counterPartMoveLine =
-        paymentSessionValidateService.generateMoveLine(
-            move,
-            invoiceTermMoveLine.getPartner(),
-            counterPartAccount,
-            invoiceTerm.getAmountPaid(),
-            invoiceTermMoveLine.getOrigin(),
-            paymentSessionValidateService.getMoveLineDescription(paymentSession),
-            !out);
-
-    invoiceTerm.setPlacementMoveLine(counterPartMoveLine);
-
     move.setDescription(
         this.getMoveDescription(paymentSession, moveLine.getCurrencyAmount(), false));
 
@@ -360,13 +346,29 @@ public class PaymentSessionBillOfExchangeValidateServiceImpl
     List<InvoiceTerm> invoiceTermListToPay = moveLine.getInvoiceTermList();
     invoiceTermService.payInvoiceTerms(invoiceTermListToPay);
 
-    invoiceTermReplaceService.replaceInvoiceTerms(
-        invoiceTerm.getInvoice(),
-        counterPartMoveLine.getInvoiceTermList(),
-        List.of(invoiceTerm),
-        paymentSession);
+    if (invoiceTerm.getAmountPaid().signum() != 0) {
+      Account counterPartAccount = accountConfigService.getBillOfExchReceivAccount(accountConfig);
 
-    counterPartMoveLine.getInvoiceTermList().forEach(it -> it.setPaymentAmount(BigDecimal.ZERO));
+      MoveLine counterPartMoveLine =
+          paymentSessionValidateService.generateMoveLine(
+              move,
+              invoiceTermMoveLine.getPartner(),
+              counterPartAccount,
+              invoiceTerm.getAmountPaid(),
+              invoiceTermMoveLine.getOrigin(),
+              paymentSessionValidateService.getMoveLineDescription(paymentSession),
+              !out);
+
+      invoiceTerm.setPlacementMoveLine(counterPartMoveLine);
+
+      invoiceTermReplaceService.replaceInvoiceTerms(
+          invoiceTerm.getInvoice(),
+          counterPartMoveLine.getInvoiceTermList(),
+          List.of(invoiceTerm),
+          paymentSession);
+
+      counterPartMoveLine.getInvoiceTermList().forEach(it -> it.setPaymentAmount(BigDecimal.ZERO));
+    }
   }
 
   protected String getMoveDescription(
