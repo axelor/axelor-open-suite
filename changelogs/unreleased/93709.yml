@@ -1,0 +1,3 @@
+---
+title: "Expense: fixed payment move not being generated immediately when the payment mode uses bank order with immediate accounting trigger."
+module: axelor-human-resource
