@@ -1,0 +1,3 @@
+---
+title: "Intervention: fixed error when generating an intervention from a contract when the intervention type is configured to automatically generate a customer request."
+module: axelor-intervention
