@@ -33,4 +33,6 @@ public interface TimesheetLineBusinessService {
   public QueryBuilder<TimesheetLine> getTimesheetLineInvoicingFilter();
 
   public void timsheetLineInvoicing(Project project);
+
+  boolean isReferencedInInvoicingProject(TimesheetLine tsl);
 }

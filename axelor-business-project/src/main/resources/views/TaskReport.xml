@@ -59,6 +59,7 @@
           <field name="customer" hidden="true"/>
           <field name="customer" readonly="true" canView="false"/>
           <field name="location" readonly="true" canView="false"/>
+          <field name="$tslDeleteWarningState" readonly="true" hidden="true"/>
         </panel>
 
         <!-- Panel for Task Member Reports -->
@@ -198,6 +199,22 @@
       action="action-task-member-report-reset-invalid-time"/>
   </action-validate>
 
+  <action-validate name="action-task-report-validate-deleted-tmr-tsl-state">
+    <error
+      message="A timesheet line linked to a deleted task member report entry has already been invoiced and cannot be deleted. Please review your changes."
+      if="tslDeleteWarningState == 'invoiced'"/>
+    <error
+      message="A timesheet line linked to a deleted task member report is already validated. Please invalidate the timesheet line before removing the entry."
+      if="tslDeleteWarningState == 'validated'"/>
+    <error
+      message="A timesheet line linked to a deleted task member report is referenced in an invoicing project. Please remove it from the invoicing project before deleting this entry."
+      if="tslDeleteWarningState == 'referenced_in_invoicing_project'"/>
+    <alert
+      message="Removing this task member report will also delete the associated timesheet line. Do you want to continue?"
+      if="tslDeleteWarningState == 'deletable'" confirm-btn-title="Continue"
+      cancel-btn-title="Cancel"/>
+  </action-validate>
+
   <action-method name="action-task-report-method-preview">
     <call class="com.axelor.apps.businessproject.web.TaskReportController"
       method="previewTaskReport"/>
@@ -231,6 +248,16 @@
   <action-method name="action-validate-task-member-report-no-time-overlap">
     <call class="com.axelor.apps.businessproject.web.TaskReportController"
       method="checkTimeOverlap"/>
+  </action-method>
+
+  <action-method name="action-task-report-check-deleted-tmr-tsl-state">
+    <call class="com.axelor.apps.businessproject.web.TaskReportController"
+      method="checkDeletedTMRTimesheetLineState"/>
+  </action-method>
+
+  <action-method name="action-task-report-method-delete-tmr-timesheet-lines">
+    <call class="com.axelor.apps.businessproject.web.TaskReportController"
+      method="deleteRemovedTMRTimesheetLines"/>
   </action-method>
 
   <!-- Action when project changes - autofill all related fields -->
@@ -351,6 +378,9 @@
   </action-group>
 
   <action-group name="action-task-member-report-group-onChange">
+    <action name="action-task-report-check-deleted-tmr-tsl-state"/>
+    <action name="action-task-report-validate-deleted-tmr-tsl-state"/>
+    <action name="action-task-report-method-delete-tmr-timesheet-lines"/>
     <action name="save"/>
     <action name="mgm-action-update-total-work-hours"/>
     <action name="mgm-action-sync-dirt-allowance-status"/>

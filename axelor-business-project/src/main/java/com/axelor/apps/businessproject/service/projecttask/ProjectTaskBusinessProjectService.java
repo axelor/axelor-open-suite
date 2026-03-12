@@ -22,6 +22,7 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
@@ -83,4 +84,10 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   boolean isTimeUnitValid(Unit unit) throws AxelorException;
 
   BigDecimal verifiedLimitFollowUp(BigDecimal value, BigDecimal limit);
+
+  TimesheetLine getTimesheetLine(ProjectTask task);
+
+  boolean hasTimesheetLine(ProjectTask task);
+
+  void deleteTimesheetLine(ProjectTask task);
 }

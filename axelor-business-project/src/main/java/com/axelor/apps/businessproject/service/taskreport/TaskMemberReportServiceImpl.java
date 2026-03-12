@@ -2,6 +2,8 @@ package com.axelor.apps.businessproject.service.taskreport;
 
 import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
+import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.inject.Beans;
 import java.math.BigDecimal;
@@ -50,5 +52,12 @@ public class TaskMemberReportServiceImpl implements TaskMemberReportService {
     return duration
         .subtract(breakTimeInHours != null ? breakTimeInHours : BigDecimal.ZERO)
         .max(BigDecimal.ZERO);
+  }
+
+  @Override
+  public TimesheetLine getTimesheetLine(TaskMemberReport report) {
+    if (report == null) return null;
+
+    return Beans.get(ProjectTaskBusinessProjectService.class).getTimesheetLine(report.getTask());
   }
 }

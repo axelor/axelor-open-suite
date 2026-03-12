@@ -7,6 +7,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.TaskStatusBusinessProjectRepository;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.taskreport.TaskMemberReportService;
 import com.axelor.apps.businessproject.service.taskreport.TaskMemberReportServiceImpl;
 import com.axelor.apps.project.db.ProjectTask;
@@ -37,6 +38,7 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
   protected ProjectTaskRepository projectTaskRepo;
   protected TaskMemberReportService taskMemberReportRepo =
       Beans.get(TaskMemberReportServiceImpl.class);
+  @Inject protected ProjectTaskBusinessProjectService projectTaskService;
 
   @Inject
   public TaskStatusChangeServiceImpl(
@@ -78,6 +80,7 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
       ProjectTask task = taskMemberReport.getTask();
 
       revertUnreportedTaskStatus(task, inProgressStatus);
+      projectTaskService.deleteTimesheetLine(task);
     }
   }
 

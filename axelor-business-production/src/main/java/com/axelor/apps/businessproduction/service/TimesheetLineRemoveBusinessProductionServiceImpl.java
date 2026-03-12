@@ -36,7 +36,7 @@ public class TimesheetLineRemoveBusinessProductionServiceImpl
 
   @Override
   @Transactional
-  protected void removeTimesheetLine(TimesheetLine timesheetLine) {
+  public void removeTimesheetLine(TimesheetLine timesheetLine) {
     if (timesheetLine == null) {
       return;
     }

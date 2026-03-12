@@ -7,7 +7,11 @@ import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.ExtraExpenseLineRepository;
 import com.axelor.apps.businessproject.db.repo.TaskReportRepository;
+import com.axelor.apps.businessproject.service.TimesheetLineBusinessService;
+import com.axelor.apps.businessproject.service.taskreport.TaskMemberReportService;
 import com.axelor.apps.businessproject.service.taskreport.TaskReportService;
+import com.axelor.apps.hr.db.TimesheetLine;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveService;
 import com.axelor.apps.project.db.Project;
 import com.axelor.auth.AuthUtils;
 import com.axelor.auth.db.User;
@@ -19,14 +23,19 @@ import com.axelor.rpc.ActionResponse;
 import com.axelor.rpc.Context;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 public class TaskReportController {
 
+  private static final Logger log = LoggerFactory.getLogger(TaskReportController.class);
   @Inject private ExtraExpenseLineRepository extraExpenseLineRepo;
   private final TaskReportService taskReportService = Beans.get(TaskReportService.class);
+
+  @Inject protected TaskMemberReportService taskMemberReportService;
 
   public void previewTaskReport(ActionRequest request, ActionResponse response)
       throws AxelorException {
@@ -166,6 +175,118 @@ public class TaskReportController {
           I18n.get("This time range overlaps with an existing task report for this employee"));
       response.setValue("startTime", null);
       response.setValue("endTime", null);
+    }
+  }
+
+  public void checkDeletedTMRTimesheetLineState(ActionRequest request, ActionResponse response) {
+    TaskReport taskReport = request.getContext().asType(TaskReport.class);
+
+    if (taskReport.getId() == null) {
+      response.setValue("$tslDeleteWarningState", "none");
+      return;
+    }
+
+    TaskReport existingTaskReport = Beans.get(TaskReportRepository.class).find(taskReport.getId());
+    if (existingTaskReport == null) {
+      response.setValue("$tslDeleteWarningState", "none");
+      return;
+    }
+
+    List<TaskMemberReport> contextTMRs =
+        Optional.ofNullable(taskReport.getTaskMemberReports()).orElse(Collections.emptyList());
+    List<TaskMemberReport> existingTMRs =
+        Optional.ofNullable(existingTaskReport.getTaskMemberReports())
+            .orElse(Collections.emptyList());
+
+    Set<Long> contextIds =
+        contextTMRs.stream()
+            .map(TaskMemberReport::getId)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+
+    List<TaskMemberReport> deletedTaskMemberReports =
+        existingTMRs.stream()
+            .filter(tmr -> !contextIds.contains(tmr.getId()))
+            .collect(Collectors.toList());
+
+    if (deletedTaskMemberReports.isEmpty()) {
+      response.setValue("$tslDeleteWarningState", "none");
+      return;
+    }
+
+    String worstState = "none";
+    for (TaskMemberReport tmr : deletedTaskMemberReports) {
+      TimesheetLine tsl = taskMemberReportService.getTimesheetLine(tmr);
+      if (tsl == null) continue;
+
+      if (Boolean.TRUE.equals(tsl.getInvoiced())) {
+        response.setValue("$tslDeleteWarningState", "invoiced");
+        log.debug("Deleted TMR id={} has invoiced TSL id={}", tmr.getId(), tsl.getId());
+        return;
+      }
+
+      if (Boolean.TRUE.equals(tsl.getIsValidated())) {
+        worstState = "validated";
+        log.debug("Deleted TMR id={} has validated TSL id={}", tmr.getId(), tsl.getId());
+        continue;
+      }
+
+      if (!"validated".equals(worstState)
+          && Beans.get(TimesheetLineBusinessService.class).isReferencedInInvoicingProject(tsl)) {
+        worstState = "referenced_in_invoicing_project";
+        log.debug(
+            "Deleted TMR id={} has TSL id={} referenced in an invoicing project",
+            tmr.getId(),
+            tsl.getId());
+        continue;
+      }
+
+      if ("none".equals(worstState)) {
+        worstState = "deletable";
+        log.debug("Deleted TMR id={} has deletable TSL id={}", tmr.getId(), tsl.getId());
+      }
+    }
+
+    response.setValue("$tslDeleteWarningState", worstState);
+    log.debug("Resolved worst TSL delete state: {}", worstState);
+  }
+
+  /** Deletes the timesheet line associated to the deleted task member report */
+  public void deleteRemovedTMRTimesheetLines(ActionRequest request, ActionResponse response) {
+    TaskReport taskReport = request.getContext().asType(TaskReport.class);
+
+    if (taskReport.getId() == null) return;
+
+    TaskReport existingTaskReport = Beans.get(TaskReportRepository.class).find(taskReport.getId());
+    if (existingTaskReport == null) return;
+
+    List<TaskMemberReport> contextTMRs =
+        Optional.ofNullable(taskReport.getTaskMemberReports()).orElse(Collections.emptyList());
+    List<TaskMemberReport> existingTMRs =
+        Optional.ofNullable(existingTaskReport.getTaskMemberReports())
+            .orElse(Collections.emptyList());
+
+    Set<Long> contextIds =
+        contextTMRs.stream()
+            .map(TaskMemberReport::getId)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+
+    List<TaskMemberReport> deletedTaskMemberReports =
+        existingTMRs.stream()
+            .filter(tmr -> !contextIds.contains(tmr.getId()))
+            .collect(Collectors.toList());
+
+    if (deletedTaskMemberReports.isEmpty()) return;
+
+    for (TaskMemberReport tmr : deletedTaskMemberReports) {
+      TimesheetLine tsl = taskMemberReportService.getTimesheetLine(tmr);
+      if (tsl == null) {
+        log.debug("No TSL found for deleted TMR id={}, skipping", tmr.getId());
+        continue;
+      }
+      log.debug("Deleting TSL id={} for deleted TMR id={}", tsl.getId(), tmr.getId());
+      Beans.get(TimesheetLineRemoveService.class).removeTimesheetLine(tsl);
     }
   }
 }
