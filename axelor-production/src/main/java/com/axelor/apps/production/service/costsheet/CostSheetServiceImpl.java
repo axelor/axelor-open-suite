@@ -723,7 +723,7 @@ public class CostSheetServiceImpl implements CostSheetService {
       if ((calculationType == CostSheetRepository.CALCULATION_PARTIAL_END_OF_PRODUCTION
               || calculationType == CostSheetRepository.CALCULATION_END_OF_PRODUCTION)
           && previousCostSheetDate != null
-          && !previousCostSheetDate.isBefore(stockMove.getRealDate())) {
+          && previousCostSheetDate.isAfter(stockMove.getRealDate())) {
         continue;
 
       } else if (calculationType == CostSheetRepository.CALCULATION_WORK_IN_PROGRESS
