@@ -10,14 +10,14 @@
     <!-- <toolbar> <button name="logTimeBtn" icon="clock-history" onClick="action-timesheet-line-method-log-time"
       if="__config__.app.isApp('timesheet')"/> </toolbar> -->
 
-    <!-- MGM-84: highlighting priority in project grid view -->
-    <hilite if="priority.name == 'Urgent'" color="danger"/>
-
     <!-- MGM-103: Highlight INVOICED status in subtle blue -->
     <hilite if="projectStatus.name?.toLowerCase() == 'invoiced'" color="info"/>
 
     <!-- MGM-103: Highlight PAID status in subtle green -->
     <hilite if="projectStatus.name?.toLowerCase() == 'paid'" color="success"/>
+
+    <!-- MGM-84: highlighting priority in project grid view -->
+    <hilite if="priority.name == 'Urgent'" color="danger"/>
 
     <field name="fullName"/>
     <field name="company" form-view="company-form" grid-view="company-grid" canView="false"
@@ -407,7 +407,7 @@
 
   <form title="Business project" model="com.axelor.apps.project.db.Project" width="large"
     name="business-project-financial-datas-form"
-    onLoad="action-business-project-method-set-analytic-distribution-template-required,mgm-action-record-default-invoice-flags-true, save">
+    onLoad="action-business-project-method-set-analytic-distribution-template-required,mgm-action-record-default-invoice-flags-true,save">
     <panel name="fullNamePanel" readonly="true">
       <field name="fullName"/>
     </panel>
@@ -765,7 +765,6 @@
 
       <field name="isConfirmedForInvoicing"
         onChange="mgm-action-group-business-project-confimred-project-on-change"/>
-      <field name="isReadyForReview" if="__user__.group?.code == 'admins'"/>
     </panel>
   </form>
 
@@ -852,7 +851,6 @@
     <action name="action-project-group-on-save"/>
     <action name="save"/>
     <action name="mgm-action-method-business-project-update-project-status"/>
-    <action name="mgm-action-method-refresh-tab" if="eval: _fromDashboard"/>
   </action-group>
 
   <action-validate name="action-validate-unset-project">
