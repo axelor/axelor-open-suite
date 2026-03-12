@@ -40,6 +40,9 @@
     <string name="unitOnPrinting" selection="hr.time.logging.preference.select"
       title="Invoicing unit"/>
 
+    <!-- MGM-125 add reference number to project for invoice -->
+    <string name="referenceNumber" title="Reference number"/>
+
     <one-to-many name="purchaseOrderLineList"
       ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order lines"
       mappedBy="project" orphanRemoval="false"/>

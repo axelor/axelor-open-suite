@@ -190,6 +190,7 @@
             domain="self IN (SELECT pa.address FROM PartnerAddress pa WHERE pa.partner = :clientPartner AND pa.isDeliveryAddr = true)"
             colSpan="6"/>
           <field name="contactPerson" colSpan="6" canEdit="true"/>
+          <field name="referenceNumber"/>
           <field name="currency" colSpan="6" if="__config__.app.isApp('business-project')"
             if-module="axelor-business-project" canEdit="false" canView="false" hidden="true"/>
           <button name="projectFilesBtn" title="Project Files" hidden="true"
