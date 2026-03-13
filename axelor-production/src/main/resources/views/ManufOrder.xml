@@ -1025,7 +1025,7 @@
     <view type="grid" name="manuf-order-grid"/>
     <view type="form" name="manuf-order-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.statusSelect = 7 and self.manufOrderMergeResult = :id</domain>
+    <domain>self.statusSelect = 7 and self.manufOrderMergeResult.id = :id</domain>
   </action-view>
 
   <action-view name="action-manuf-order-view-mo-tree" title="Multi Level MO tree"
