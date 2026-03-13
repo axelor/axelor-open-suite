@@ -621,8 +621,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
     jpql.append(
         "SELECT new com.axelor.apps.stock.utils.StockLocationLineQtyView("
             + " self.unit, "
-            + " SUM(CASE WHEN self.toStockLocation.id = :stockLocationId THEN COALESCE(self.realQty, 0) ELSE 0 END), "
-            + " SUM(CASE WHEN self.fromStockLocation.id = :stockLocationId THEN COALESCE(self.realQty, 0) ELSE 0 END) "
+            + " SUM(CASE WHEN self.toStockLocation.id = :stockLocationId THEN COALESCE(self.qty, 0) ELSE 0 END), "
+            + " SUM(CASE WHEN self.fromStockLocation.id = :stockLocationId THEN COALESCE(self.qty, 0) ELSE 0 END) "
             + ") "
             + " FROM StockMoveLine self "
             + " WHERE (self.stockMove.archived IS NULL OR self.archived IS FALSE) "
