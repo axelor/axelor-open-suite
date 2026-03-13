@@ -18,12 +18,12 @@
 
   <grid name="mgm-extra-expense-line-project-grid" title="Extra Expense Lines" canEdit="true"
     model="com.axelor.apps.businessproject.db.ExtraExpenseLine">
-    <field name="extraExpenseLineTypeSelect"/>
     <field name="expenseProduct" form-view="product-form" grid-view="product-grid"/>
     <field name="expenseDate"/>
     <field name="price"/>
     <field name="quantity"/>
     <field name="totalAmount" aggregate="sum"/>
+    <field name="extraExpenseLineTypeSelect" hidden="true"/>
   </grid>
 
   <form name="extra-expense-line-form" title="Extra Expense Line"
@@ -47,7 +47,6 @@
     model="com.axelor.apps.businessproject.db.ExtraExpenseLine" width="large"
     onNew="mgm-action-method-extra-expense-set-defaults-on-new">
     <panel showFrame="false">
-      <field name="extraExpenseLineTypeSelect" readonly="true"/>
       <field name="expenseProduct" form-view="product-expense-form"
         grid-view="product-expense-grid"
         domain="self.expense = true AND self.dtype = 'Product' AND self.code IN ('25KM','11KM','TOOLUSAGE')"
@@ -58,6 +57,7 @@
       <field name="toInvoice"/>
       <field name="project" form-view="business-project-form"
         grid-view="business-project-grid" readonly="true" canView="false"/>
+      <field name="extraExpenseLineTypeSelect" readonly="true" hidden="true"/>
     </panel>
     <panel name="comments">
       <field name="comments" showTitle="false" colSpan="12"/>

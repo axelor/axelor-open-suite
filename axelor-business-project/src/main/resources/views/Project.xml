@@ -249,7 +249,7 @@
         <panel-dashlet name="otherExpensesReportDashlet"
           title="Project extra expenses" canEdit="true" readonly="false"
           action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true"
-          x-show-bars="true"/>
+          canDelete="true" x-show-bars="true"/>
         <panel-include view="incl-project-summary-panel-form"/>
       </panel>
 
@@ -738,7 +738,7 @@
         <field name="$totalTasksReported" title="Total Number of Tasks reported"
           readonly="true" depends="id" colSpan="6">
           <viewer depends="$totalTasksReported"><![CDATA[
-    <span style="color: {{ !record.$totalTasksReported || parseInt(record.$totalTasksReported.split('/')[0]) < parseInt(record.$totalTasksReported.split('/')[1]) ? 'red' : 'inherit' }}">
+    <span style="color: {{ !record.$totalTasksReported || parseInt(record.$totalTasksReported.split('/')[0]) < parseInt(record.$totalTasksReported.split('/')[1]) ? 'red' : 'green' }}">
         {{ record.$totalTasksReported || '0/0' }}
     </span>
   ]]></viewer>
