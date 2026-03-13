@@ -171,7 +171,11 @@ public class SaleOrderLineProductProductionServiceImpl
       throws AxelorException {
     AppProduction appProduction = appProductionService.getAppProduction();
     AppSale appSale = appSaleService.getAppSale();
-    if (saleOrderLine.getIsToProduce()
+    BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
+    boolean shouldGenerate =
+        saleOrderLine.getIsToProduce()
+            || (billOfMaterial != null && saleOrderLine.getBillOfMaterialLine() != null);
+    if (shouldGenerate
         && appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
         && !appProduction.getIsBomLineGenerationInSODisabled()) {
       if (!solBomUpdateService.isUpdated(saleOrderLine)) {
