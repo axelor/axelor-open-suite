@@ -31,6 +31,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Partner;
 import com.axelor.apps.base.db.PriceList;
+import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.TradingName;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.app.AppBaseService;
@@ -195,5 +196,27 @@ public class SaleOrderInvoiceProjectServiceImpl extends SaleOrderInvoiceContract
       }
     }
     return filteredSaleOrderLineList;
+  }
+
+  @Override
+  public List<InvoiceLine> createInvoiceLines(
+      Invoice invoice,
+      List<SaleOrderLine> saleOrderLineList,
+      Product invoicingProduct,
+      BigDecimal percentToInvoice)
+      throws AxelorException {
+    List<InvoiceLine> invoiceLineList =
+        super.createInvoiceLines(invoice, saleOrderLineList, invoicingProduct, percentToInvoice);
+    if (!appBusinessProjectService.isApp("business-project")) {
+      return invoiceLineList;
+    }
+    for (InvoiceLine invoiceLine : invoiceLineList) {
+      SaleOrderLine saleOrderLine = invoiceLine.getSaleOrderLine();
+      if (saleOrderLine != null
+          && saleOrderLine.getTypeSelect() == SaleOrderLineRepository.TYPE_NORMAL) {
+        invoiceLine.setProject(saleOrderLine.getProject());
+      }
+    }
+    return invoiceLineList;
   }
 }
