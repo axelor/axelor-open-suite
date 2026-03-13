@@ -16,24 +16,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
+package com.axelor.apps.sale.service;
 
-import com.axelor.meta.db.MetaJsonField;
-import com.axelor.meta.db.MetaSelect;
-import com.axelor.rpc.Context;
-import java.util.List;
-import java.util.Map;
+import com.axelor.apps.base.db.Company;
+import com.axelor.apps.base.db.TradingName;
 
-public interface MetaJsonFieldProjectService {
-
-  String computeSelectName(MetaJsonField jsonField, String typeSelect);
-
-  Map<String, Object> computeContextValues(
-      Map<String, Object> contextValues, Context parentContext);
-
-  boolean isMetaJsonFieldUsedOnTasks(MetaJsonField jsonField);
-
-  void saveSelection(MetaSelect metaSelect);
-
-  void saveSelectionItems(Long metaSelectId, List<Map<String, Object>> items);
+public interface ProductSaleDomainService {
+  String computeProductDomain(Company company, TradingName tradingName);
 }

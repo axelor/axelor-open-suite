@@ -16,24 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.project.service;
+package com.axelor.apps.stock.service;
 
-import com.axelor.meta.db.MetaJsonField;
-import com.axelor.meta.db.MetaSelect;
-import com.axelor.rpc.Context;
-import java.util.List;
-import java.util.Map;
+import com.axelor.apps.base.db.Currency;
+import com.axelor.apps.stock.db.StockMove;
 
-public interface MetaJsonFieldProjectService {
+public interface StockMoveCurrencyService {
 
-  String computeSelectName(MetaJsonField jsonField, String typeSelect);
+  Currency getCurrency(StockMove stockMove);
 
-  Map<String, Object> computeContextValues(
-      Map<String, Object> contextValues, Context parentContext);
-
-  boolean isMetaJsonFieldUsedOnTasks(MetaJsonField jsonField);
-
-  void saveSelection(MetaSelect metaSelect);
-
-  void saveSelectionItems(Long metaSelectId, List<Map<String, Object>> items);
+  boolean isMultiCurrency(StockMove stockMove);
 }

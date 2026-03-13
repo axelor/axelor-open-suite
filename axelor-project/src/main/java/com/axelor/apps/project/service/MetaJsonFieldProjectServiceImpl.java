@@ -27,18 +27,27 @@ import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.db.mapper.Property;
 import com.axelor.meta.db.MetaJsonField;
+import com.axelor.meta.db.MetaSelect;
+import com.axelor.meta.db.MetaSelectItem;
+import com.axelor.meta.db.repo.MetaSelectRepository;
 import com.axelor.rpc.Context;
 import com.axelor.studio.db.AppProject;
+import com.google.inject.persist.Transactional;
 import jakarta.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class MetaJsonFieldProjectServiceImpl implements MetaJsonFieldProjectService {
 
   protected final ProjectTaskRepository projectTaskRepository;
+  protected final MetaSelectRepository metaSelectRepository;
 
   @Inject
-  public MetaJsonFieldProjectServiceImpl(ProjectTaskRepository projectTaskRepository) {
+  public MetaJsonFieldProjectServiceImpl(
+      ProjectTaskRepository projectTaskRepository, MetaSelectRepository metaSelectRepository) {
     this.projectTaskRepository = projectTaskRepository;
+    this.metaSelectRepository = metaSelectRepository;
   }
 
   @Override
@@ -114,5 +123,46 @@ public class MetaJsonFieldProjectServiceImpl implements MetaJsonFieldProjectServ
             .bind("fieldPattern", "%\"" + fieldName + "\"%")
             .count()
         > 0;
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void saveSelection(MetaSelect metaSelect) {
+    metaSelectRepository.save(metaSelect);
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void saveSelectionItems(Long metaSelectId, List<Map<String, Object>> items) {
+    MetaSelect select = metaSelectRepository.find(metaSelectId);
+    if (select == null) {
+      return;
+    }
+
+    List<MetaSelectItem> currentItems = new ArrayList<>(select.getItems());
+    for (MetaSelectItem item : currentItems) {
+      select.removeItem(item);
+    }
+
+    if (items != null) {
+      int order = 0;
+      for (Map<String, Object> itemMap : items) {
+        String itemTitle = (String) itemMap.get("title");
+        if (StringUtils.isEmpty(itemTitle)) {
+          continue;
+        }
+        MetaSelectItem item = new MetaSelectItem();
+        item.setTitle(itemTitle);
+        String value = (String) itemMap.get("value");
+        item.setValue(StringUtils.notEmpty(value) ? value : itemTitle);
+        item.setColor((String) itemMap.get("color"));
+        item.setOrder(
+            itemMap.get("order") != null ? ((Number) itemMap.get("order")).intValue() : order);
+        select.addItem(item);
+        order++;
+      }
+    }
+
+    metaSelectRepository.save(select);
   }
 }

@@ -416,14 +416,14 @@
 	        <![CDATA[<><Badge bg="warning">Warning : Delivery address is missing.</Badge></>]]>
           </static>
           <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
-            showTitle="false" x-currency="company.currency.symbol"
-            x-scale="company.currency.numberOfDecimals">
+            showTitle="false" x-currency="$currencySymbol" x-scale="$currencyNumberOfDecimals">
             <viewer><![CDATA[
 						<>
 							<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
 								<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
 								<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
 							</Box>
+							{$isMultiCurrency && <Badge bg="warning">{_t('This stock move is linked to orders with different currencies.')}</Badge>}
 						</>
 	                    ]]>
             </viewer>
@@ -493,8 +493,7 @@
             </field>
 
             <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
-              showTitle="false" x-currency="company.currency.symbol"
-              x-scale="company.currency.numberOfDecimals">
+              showTitle="false" x-currency="$currencySymbol" x-scale="$currencyNumberOfDecimals">
               <viewer>
                           <![CDATA[
 							<>
@@ -502,6 +501,7 @@
 									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
 									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
 								</Box>
+								{$isMultiCurrency && <Badge bg="warning">{_t('This stock move is linked to orders with different currencies.')}</Badge>}
 							</>
                           ]]>
               </viewer>
@@ -537,22 +537,23 @@
               <viewer><![CDATA[<>{fromAddressStr}</>]]></viewer>
             </field>
             <field name="exTaxTotal" showIf="statusSelect &gt; 1" readonly="true"
-              showTitle="false" x-currency="company.currency.symbol"
-              x-scale="company.currency.numberOfDecimals">
+              showTitle="false" x-currency="$currencySymbol" x-scale="$currencyNumberOfDecimals">
               <viewer><![CDATA[
 							<>
 								<Box as="dl" d="grid" gridTemplateColumns="1fr 1fr">
 									<Box as="dt" m={0} py={1} fontWeight="normal" fontSize={5}>{_t('Total W.T.')}</Box>
 									<Box as="dd" m={0} py={1} fontWeight="bold" fontSize={5}>{$fmt('exTaxTotal')}</Box>
 								</Box>
+								{$isMultiCurrency && <Badge bg="warning">{_t('This stock move is linked to orders with different currencies.')}</Badge>}
 							</>
                           ]]>
               </viewer>
             </field>
           </panel>
         </panel>
-        <field name="company.currency.symbol" hidden="true"/>
-        <field name="company.currency.numberOfDecimals" hidden="true"/>
+        <field name="$currencySymbol" type="string" hidden="true"/>
+        <field name="$currencyNumberOfDecimals" type="integer" hidden="true"/>
+        <field name="$isMultiCurrency" type="boolean" hidden="true"/>
       </panel>
       <panel name="actionPanel" colSpan="3" itemSpan="12">
         <button name="planBtn" title="Plan" icon="calendar" showIf="statusSelect == 1"
@@ -921,6 +922,7 @@
       if="__config__.app.getApp('account')?.getActivatePassedForPayment()"/>
     <action name="action-stock-move-attrs-show-stock-location"/>
     <action name="action-stock-move-attrs-stock-location-readonly"/>
+    <action name="action-stock-move-method-set-currency-info"/>
   </action-group>
 
   <action-group name="action-group-stock-stockmove-onload">
@@ -936,6 +938,7 @@
     <action name="action-stock-move-attrs-show-stock-location"/>
     <action name="action-stock-move-attrs-stock-location-readonly"/>
     <action name="action-stock-move-attrs-show-send-notif-button"/>
+    <action name="action-stock-move-method-set-currency-info"/>
   </action-group>
 
   <action-group name="action-stock-move-line-change-group">
@@ -1714,6 +1717,10 @@
   <action-method name="action-stock-move-method-add-stock-moves-to-logistical-form">
     <call class="com.axelor.apps.stock.web.StockMoveController"
       method="addStockMovesToLogisticalForm"/>
+  </action-method>
+
+  <action-method name="action-stock-move-method-set-currency-info">
+    <call class="com.axelor.apps.stock.web.StockMoveController" method="setCurrencyInfo"/>
   </action-method>
 
 </object-views>

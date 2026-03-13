@@ -1,0 +1,3 @@
+---
+title: "Move: fixed tax validation exception raised when reversing a move with reverse charge tax."
+module: axelor-account

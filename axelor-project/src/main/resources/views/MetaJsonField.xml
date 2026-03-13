@@ -20,9 +20,10 @@
           onChange="action-group-project-json-field-type-select-onchange"/>
         <field name="required"/>
         <field name="scale" showIf="$typeSelect == 'decimal'"/>
-        <field name="selectionRef" showIf="['select','multiselect'].includes($typeSelect)"/>
-        <panel-related readonly="false" field="selectionRef.items"
-          showIf="['select','multiselect'].includes($typeSelect)"
+        <panel-related field="$selectionItems" title="Items" readonly="false"
+          target="com.axelor.meta.db.MetaSelectItem"
+          showIf="$typeSelect == 'select' || $typeSelect == 'multiselect'"
+          onChange="action-method-project-json-field-save-selection"
           form-view="project-meta-select-item-form" colSpan="12">
           <field name="title"/>
           <field name="color"/>
@@ -33,14 +34,14 @@
 
   <form name="project-project-meta-json-field-form" title="Custom fields"
     model="com.axelor.meta.db.MetaJsonField"
-    onLoad="action-attrs-project-json-field-set-type-select,action-method-project-json-field-set-type-select-readonly"
+    onLoad="action-attrs-project-json-field-set-type-select,action-record-project-json-field-set-selection-items,action-method-project-json-field-set-type-select-readonly"
     onNew="action-method-project-json-field-on-new-project">
     <panel-include view="project-meta-json-field-form"/>
   </form>
 
   <form name="project-task-meta-json-field-form" title="Custom fields"
     model="com.axelor.meta.db.MetaJsonField"
-    onLoad="action-attrs-project-json-field-set-type-select,action-method-project-json-field-set-type-select-readonly"
+    onLoad="action-attrs-project-json-field-set-type-select,action-record-project-json-field-set-selection-items,action-method-project-json-field-set-type-select-readonly"
     onNew="action-method-project-json-field-on-new-task">
     <panel-include view="project-meta-json-field-form"/>
   </form>
@@ -62,6 +63,12 @@
       <field name="color"/>
     </panel>
   </form>
+
+  <action-group name="action-meta-json-field-group-project-onload">
+    <action name="action-attrs-project-json-field-set-type-select,,"/>
+    <action name="action-record-project-json-field-set-selection-items"/>
+    <action name="action-method-project-json-field-set-type-select-readonly"/>
+  </action-group>
 
   <action-record name="action-record-project-json-field-set-type"
     model="com.axelor.meta.db.MetaJsonField">
@@ -87,6 +94,11 @@
     <call class="com.axelor.apps.project.web.MetaJsonFieldProjectController" method="onNew"/>
   </action-method>
 
+  <action-record name="action-record-project-json-field-set-selection-items"
+    model="com.axelor.meta.db.MetaJsonField">
+    <field name="$selectionItems" expr="eval: selectionRef?.items?.toList()"/>
+  </action-record>
+
   <action-method name="action-method-project-json-field-select-set-selection">
     <call class="com.axelor.apps.project.web.MetaJsonFieldProjectController"
       method="setSelection"/>
@@ -106,6 +118,11 @@
   <action-method name="action-method-project-json-field-on-type-select-change">
     <call class="com.axelor.apps.project.web.MetaJsonFieldProjectController"
       method="onTypeSelectChange"/>
+  </action-method>
+
+  <action-method name="action-method-project-json-field-save-selection">
+    <call class="com.axelor.apps.project.web.MetaJsonFieldProjectController"
+      method="saveSelection"/>
   </action-method>
 
   <action-method name="action-method-project-json-field-compute-fields">
