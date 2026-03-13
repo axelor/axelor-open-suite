@@ -182,7 +182,10 @@ public class SaleOrderLineProductProductionServiceImpl
     AppProduction appProduction = appProductionService.getAppProduction();
     AppSale appSale = appSaleService.getAppSale();
     BillOfMaterial billOfMaterial = saleOrderLine.getBillOfMaterial();
-    if (saleOrderLine.getIsToProduce()
+    boolean shouldGenerate =
+        saleOrderLine.getIsToProduce()
+            || (billOfMaterial != null && saleOrderLine.getBillOfMaterialLine() != null);
+    if (shouldGenerate
         && appSale.getListDisplayTypeSelect() == AppSaleRepository.APP_SALE_LINE_DISPLAY_TYPE_MULTI
         && !appProduction.getIsBomLineGenerationInSODisabled()) {
       if (!solBomUpdateService.isUpdated(saleOrderLine)) {
