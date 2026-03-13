@@ -1,0 +1,3 @@
+---
+title: "Project: made custom field type readonly when already used on existing tasks, and reset selection when changing to a non-select type."
+module: axelor-project

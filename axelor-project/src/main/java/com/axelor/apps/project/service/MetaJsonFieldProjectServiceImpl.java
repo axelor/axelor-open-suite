@@ -21,6 +21,7 @@ package com.axelor.apps.project.service;
 import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
+import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.common.Inflector;
 import com.axelor.common.StringUtils;
 import com.axelor.db.mapper.Mapper;
@@ -39,10 +40,13 @@ import java.util.Map;
 
 public class MetaJsonFieldProjectServiceImpl implements MetaJsonFieldProjectService {
 
+  protected final ProjectTaskRepository projectTaskRepository;
   protected final MetaSelectRepository metaSelectRepository;
 
   @Inject
-  public MetaJsonFieldProjectServiceImpl(MetaSelectRepository metaSelectRepository) {
+  public MetaJsonFieldProjectServiceImpl(
+      ProjectTaskRepository projectTaskRepository, MetaSelectRepository metaSelectRepository) {
+    this.projectTaskRepository = projectTaskRepository;
     this.metaSelectRepository = metaSelectRepository;
   }
 
@@ -102,6 +106,23 @@ public class MetaJsonFieldProjectServiceImpl implements MetaJsonFieldProjectServ
     contextValues.put("modelField", modelField);
 
     return contextValues;
+  }
+
+  @Override
+  public boolean isMetaJsonFieldUsedOnTasks(MetaJsonField jsonField) {
+    String fieldName = jsonField.getName();
+    String modelField = jsonField.getModelField();
+
+    if (StringUtils.isEmpty(fieldName) || StringUtils.isEmpty(modelField)) {
+      return false;
+    }
+
+    return projectTaskRepository
+            .all()
+            .filter("CAST(self." + modelField + " AS string) LIKE :fieldPattern")
+            .bind("fieldPattern", "%\"" + fieldName + "\"%")
+            .count()
+        > 0;
   }
 
   @Override
