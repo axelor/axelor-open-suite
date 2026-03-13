@@ -85,6 +85,24 @@ public class MetaJsonFieldProjectController {
     response.setValue("select", jsonField.getSelectionRef());
   }
 
+  public void onTypeSelectChange(ActionRequest request, ActionResponse response) {
+    String typeSelect = (String) request.getContext().get("typeSelect");
+
+    if (!"select".equals(typeSelect) && !"multiselect".equals(typeSelect)) {
+      response.setValue("selectionRef", null);
+      response.setValue("selection", null);
+    }
+  }
+
+  public void setTypeSelectReadonly(ActionRequest request, ActionResponse response) {
+    MetaJsonField jsonField = request.getContext().asType(MetaJsonField.class);
+
+    if (jsonField.getId() != null
+        && Beans.get(MetaJsonFieldProjectService.class).isMetaJsonFieldUsedOnTasks(jsonField)) {
+      response.setAttr("$typeSelect", "readonly", true);
+    }
+  }
+
   public void saveSelection(ActionRequest request, ActionResponse response) {
     MetaJsonField jsonField = request.getContext().asType(MetaJsonField.class);
     MetaSelect selectionRef = jsonField.getSelectionRef();
