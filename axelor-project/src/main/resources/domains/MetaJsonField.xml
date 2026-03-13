@@ -7,8 +7,7 @@
 
   <entity name="MetaJsonField" table="META_JSON_FIELD">
 
-    <many-to-one name="selectionRef" title="Select" ref="com.axelor.meta.db.MetaSelect"
-      readonly="true"/>
+    <many-to-one name="selectionRef" title="Select" ref="com.axelor.meta.db.MetaSelect"/>
 
     <many-to-one name="project" title="Project" ref="com.axelor.apps.project.db.Project"
       readonly="true"/>
