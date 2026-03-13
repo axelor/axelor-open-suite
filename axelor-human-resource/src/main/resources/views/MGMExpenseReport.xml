@@ -408,7 +408,7 @@
     <attribute name="domain" for="expenseProduct"
       expr="self.expense = true
               AND self.dtype = 'Product'
-              AND self.code NOT IN ('25KM','11KM','TOOLUSAGE','DIRTALLOWANCE','FEE')"/>
+              AND self.code NOT IN ('25KM','11KM','TOOLUSAGE','DIRTALLOWANCE','CFEE')"/>
   </action-attrs>
 
   <action-attrs name="action-mgm-expense-attrs-category-change">
