@@ -169,7 +169,7 @@
     <field name="vatSystemSelect"
       validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax' || !account.isTaxAuthorizedOnMoveLine"
       requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"
-      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
+      readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
       width="80"/>
     <field name="account.useForPartnerBalance" hidden="true"/>
     <field name="account.accountType.technicalTypeSelect" hidden="true"/>
@@ -522,7 +522,7 @@
             onChange="account-move-line-update-tax-equiv" widget="Tags"/>
           <field name="vatSystemSelect"
             validIf="vatSystemSelect &gt; 0 || account.accountType.technicalTypeSelect != 'tax' || !account.isTaxAuthorizedOnMoveLine"
-            readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || ![1,5].includes(move.statusSelect)"
+            readonlyIf="account.useForPartnerBalance || !account.isTaxAuthorizedOnMoveLine || move.statusSelect == 3"
             requiredIf="account.accountType.technicalTypeSelect == 'tax' &amp;&amp; !account.useForPartnerBalance &amp;&amp; account.isTaxAuthorizedOnMoveLine"/>
         </panel>
         <panel name="das2Panel" title="DAS2" colSpan="6">
