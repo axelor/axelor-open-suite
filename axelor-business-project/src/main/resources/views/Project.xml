@@ -58,7 +58,7 @@
 
   <form name="business-project-form" title="Business project"
     model="com.axelor.apps.project.db.Project" width="large"
-    onLoad="action-business-project-project-group-on-load"
+    onLoad="mgm-action-group-project-form-on-load"
     onNew="action-business-project-project-group-on-new" onSave="action-project-group-on-save"
     canAttach="false">
     <!-- MGM-80 @gkouete- showing planning and financial data not required -->
@@ -131,7 +131,7 @@
       <field name="$viewerProjectTags" showTitle="false" colSpan="2" readonly="true"
         if="__user__.group.code == 'admins' || __user__.group.code == 'CUSTOM-ACCOUNTANT'">
         <viewer depends="isBusinessProject,$toInvoiceCounter,id">
-                    <![CDATA[
+          <![CDATA[
 								<>
 									<Box d="flex" justifyContent="flex-end" gap="4" alignItems="center">
 										<Box>
@@ -190,6 +190,7 @@
             domain="self IN (SELECT pa.address FROM PartnerAddress pa WHERE pa.partner = :clientPartner AND pa.isDeliveryAddr = true)"
             colSpan="6"/>
           <field name="contactPerson" colSpan="6" canEdit="true"/>
+          <field name="referenceNumber"/>
           <field name="currency" colSpan="6" if="__config__.app.isApp('business-project')"
             if-module="axelor-business-project" canEdit="false" canView="false" hidden="true"/>
           <button name="projectFilesBtn" title="Project Files" hidden="true"
@@ -240,6 +241,25 @@
         <panel-dashlet name="projectExpenseDashlet" title="Project Expenses"
           canEdit="true" readonly="false" action="mgm-action-project-expense-dashlet" colSpan="12"
           canNew="true" x-show-bars="true"/>
+      </panel>
+
+      <!-- MGM-114 -->
+      <panel title="5 Review and Confirmation" name="otherExpensesReportPanel"
+        showIf="projectTypeSelect == 0 || projectTypeSelect == 2">
+        <panel-dashlet name="otherExpensesReportDashlet"
+          title="Project extra expenses" canEdit="true" readonly="false"
+          action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true"
+          canDelete="true" x-show-bars="true"/>
+        <panel-include view="incl-project-summary-panel-form"/>
+      </panel>
+
+      <panel title="3 Review and Confirmation" name="otherExpensesReportPanel"
+        showIf="projectTypeSelect == 1">
+        <panel-dashlet name="otherExpensesReportDashlet"
+          title="Project extra expenses" canEdit="true" readonly="false"
+          action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true"
+          x-show-bars="true"/>
+        <panel-include view="incl-project-summary-panel-form"/>
       </panel>
 
       <panel title="Configurations" name="configurationsPanel"
@@ -368,13 +388,13 @@
         if="__user__.group.code == 'admins'"/>
       <!--- MGM-66: display panel to only selected group e.g admins -->
       <panel onTabSelect="mgm-action-business-project-set-default-invoice-flags"
-        title="5 Invoicing" name="invoicingPanel"
+        title="6 Invoicing" name="invoicingPanel"
         if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
         showIf="projectTypeSelect == 0 || projectTypeSelect == 2">
         <panel-include view="custom-mgm-incl-project-invoicing-panel-content"/>
       </panel>
       <panel onTabSelect="mgm-action-business-project-set-default-invoice-flags"
-        title="3 Invoicing" name="invoicingPanel"
+        title="4 Invoicing" name="invoicingPanel"
         if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
         showIf="projectTypeSelect == 1">
         <panel-include view="custom-mgm-incl-project-invoicing-panel-content"/>
@@ -700,6 +720,55 @@
     </panel>
   </form>
 
+  <form name="incl-project-summary-panel-form" model="com.axelor.apps.project.db.Project"
+    title="project summary">
+    <panel name="projectSummaryPanel" title="Dirt Allowance" colSpan="12">
+
+      <field name="$totalDirtAllowance" title="Reported Dirt Allowance" readonly="true"
+        depends="id" colSpan="6">
+        <viewer depends="$totalDirtAllowance"><![CDATA[
+                <span style="color: {{ record.$totalDirtAllowance ? (record.$totalDirtAllowance == 0 ? 'red' : 'inherit') : 'red' }}">
+                    {{ record.$totalDirtAllowance || '0' }}
+                </span>
+            ]]></viewer>
+      </field>
+
+      <panel name="validatedItemsPanel" title="Validated Items" colSpan="12">
+
+        <field name="$totalTasksReported" title="Total Number of Tasks reported"
+          readonly="true" depends="id" colSpan="6">
+          <viewer depends="$totalTasksReported"><![CDATA[
+    <span style="color: {{ !record.$totalTasksReported || parseInt(record.$totalTasksReported.split('/')[0]) < parseInt(record.$totalTasksReported.split('/')[1]) ? 'red' : 'green' }}">
+        {{ record.$totalTasksReported || '0/0' }}
+    </span>
+  ]]></viewer>
+        </field>
+
+        <field name="$totalHoursReported" title="Total Number of hours reported"
+          readonly="true" depends="id" colSpan="6">
+          <viewer depends="$totalHoursReported"><![CDATA[
+                    <span style="color: {{ record.$totalHoursReported ? (record.$totalHoursReported == 0 ? 'red' : 'inherit') : 'red' }}">
+                        {{ record.$totalHoursReported || '0' }}
+                    </span>
+                ]]></viewer>
+        </field>
+
+        <field name="$totalExpensesReported" title="Total Expenses to invoice reported"
+          readonly="true" depends="id" colSpan="6">
+          <viewer depends="$totalExpensesReported"><![CDATA[
+                    <span style="color: {{ record.$totalExpensesReported ? (record.$totalExpensesReported == 0 ? 'red' : 'inherit') : 'red' }}">
+                        {{ record.$totalExpensesReported || '0' }}
+                    </span>
+                ]]></viewer>
+        </field>
+
+      </panel>
+
+      <field name="isConfirmedForInvoicing"
+        onChange="mgm-action-group-business-project-confimred-project-on-change"/>
+    </panel>
+  </form>
+
   <action-group name="action-business-project-project-group-on-new">
     <action name="action-project-group-on-new-project"/>
     <action name="action-attrs-project-set-project-type"
@@ -727,6 +796,13 @@
     <action name="action-method-validate-code-and-get-next"/>
     <action name="action-method-task-report-sync-project-with-task-report"/>
   </action-group>
+
+  <action-group name="mgm-action-group-project-form-on-load">
+    <action name="action-business-project-project-group-on-load"/>
+    <action name="mgm-action-method-project-show-project-summary"/>
+    <action name="mgm-business-projectaction-attrs-navigate-to-review-tab"/>
+  </action-group>
+
   <action-record name="action-set-default-project-priority"
     model="com.axelor.apps.project.db.Project">
     <field name="priority" if="!priority"
@@ -761,6 +837,22 @@
     <call class="com.axelor.apps.businessproject.web.ProjectController"
       method="findProjectFiles"/>
   </action-method>
+
+  <action-method name="mgm-action-method-project-show-project-summary">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="showProjectSummary"/>
+  </action-method>
+
+  <action-method name="mgm-action-method-business-project-update-project-status">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="updateProjectStatus"/>
+  </action-method>
+
+  <action-group name="mgm-action-group-business-project-confimred-project-on-change">
+    <action name="action-project-group-on-save"/>
+    <action name="save"/>
+    <action name="mgm-action-method-business-project-update-project-status"/>
+  </action-group>
 
   <action-validate name="action-validate-unset-project">
     <alert message="Are you sure to unlink project from selected lines?"/>
@@ -805,6 +897,11 @@
       expr="eval: &quot;self.id IN (0)&quot;"/>
     <attribute for="contactPartner" if="clientPartner == null" name="domain"
       expr="eval: &quot;self.isContact = true AND :company member of self.companySet&quot;"/>
+  </action-attrs>
+
+  <action-attrs name="mgm-business-projectaction-attrs-navigate-to-review-tab">
+    <attribute for="otherExpensesReportPanel" name="active" if="eval: _fromDashboard"
+      expr="eval: true"/>
   </action-attrs>
 
   <action-record name="action-project-null-toDate"

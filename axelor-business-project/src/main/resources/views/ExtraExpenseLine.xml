@@ -5,14 +5,25 @@
 
   <grid name="extra-expense-line-grid" title="Extra Expense Lines" canEdit="true"
     groupBy="expenseDate" model="com.axelor.apps.businessproject.db.ExtraExpenseLine">
-    <field name="project" hidden="true"/>
+    <field name="extraExpenseLineTypeSelect"/>
     <field name="expenseProduct" form-view="product-form" grid-view="product-grid"/>
     <field name="expenseDate"/>
     <field name="price"/>
     <field name="quantity"/>
     <field name="totalAmount" aggregate="sum"/>
     <field name="toInvoice"/>
+    <field name="project" hidden="true"/>
     <field name="comments"/>
+  </grid>
+
+  <grid name="mgm-extra-expense-line-project-grid" title="Extra Expense Lines" canEdit="true"
+    model="com.axelor.apps.businessproject.db.ExtraExpenseLine">
+    <field name="expenseProduct" form-view="product-form" grid-view="product-grid"/>
+    <field name="expenseDate"/>
+    <field name="price"/>
+    <field name="quantity"/>
+    <field name="totalAmount" aggregate="sum"/>
+    <field name="extraExpenseLineTypeSelect" hidden="true"/>
   </grid>
 
   <form name="extra-expense-line-form" title="Extra Expense Line"
@@ -32,6 +43,33 @@
     </panel>
   </form>
 
+  <form name="mgm-extra-expense-line-business-project-form" title="Extra Expense Line"
+    model="com.axelor.apps.businessproject.db.ExtraExpenseLine" width="large"
+    onNew="mgm-action-method-extra-expense-set-defaults-on-new">
+    <panel showFrame="false">
+      <field name="expenseProduct" form-view="product-expense-form"
+        grid-view="product-expense-grid"
+        domain="self.expense = true AND self.dtype = 'Product' AND self.code IN ('25KM','11KM','TOOLUSAGE')"
+        onChange="mgm-action-group-extra-expense-product-on-change"/>
+      <field name="quantity" canEdit="true" canNew="true" onChange="compute-total-amount"/>
+      <field name="price" readonly="true"/>
+      <field name="totalAmount" readonly="true"/>
+      <field name="toInvoice"/>
+      <field name="project" form-view="business-project-form"
+        grid-view="business-project-grid" readonly="true" canView="false"/>
+      <field name="extraExpenseLineTypeSelect" readonly="true" hidden="true"/>
+    </panel>
+    <panel name="comments">
+      <field name="comments" showTitle="false" colSpan="12"/>
+    </panel>
+  </form>
+
+  <action-method name="mgm-action-method-extra-expense-set-defaults-on-new">
+    <call class="com.axelor.apps.businessproject.web.ExtraExpenseLineController"
+      method="setExtraExpenseLineDefaults"/>
+  </action-method>
+
+
   <action-view name="extra-expense-form-view-action"
     model="com.axelor.apps.businessproject.db.ExtraExpenseLine"
     title="Extra Expense Form View Action">
@@ -41,10 +79,39 @@
     <view-param name="popup-save" value="true"/>
     <view-param name="show-toolbar" value="false"/>
   </action-view>
+
+  <action-group name="mgm-action-group-extra-expense-product-on-change">
+    <action name="mgm-action-method-extra-expense-line-set-type-select"/>
+    <action name="mgm-action-record-extra-expense-line-set-price"/>
+  </action-group>
+
+  <action-method name="mgm-action-method-extra-expense-line-set-type-select">
+    <call class="com.axelor.apps.businessproject.web.ExtraExpenseLineController"
+      method="setExtraExpenseLineTypeSelect"/>
+  </action-method>
+
+  <action-record name="mgm-action-record-extra-expense-line-set-price"
+    model="com.axelor.apps.businessproject.db.ExtraExpenseLine">
+    <field name="price"
+      expr="eval: (expenseProduct != null &amp;&amp; expenseProduct.salePrice != null) ? expenseProduct.salePrice : java.math.BigDecimal.ZERO"/>
+  </action-record>
+
   <action-record name="compute-total-amount"
     model="com.axelor.apps.businessproject.db.ExtraExpenseLine">
     <field name="totalAmount"
       expr="eval: (price != null &amp;&amp; quantity != null) ? price.multiply(quantity) : java.math.BigDecimal.ZERO"/>
   </action-record>
+
+  <action-view name="mgm-action-project-extra-expense-line-dashlet"
+    model="com.axelor.apps.businessproject.db.ExtraExpenseLine" title="Project extra expense">
+    <view type="grid" name="mgm-extra-expense-line-project-grid"/>
+    <view type="form" name="mgm-extra-expense-line-business-project-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="true"/>
+    <domain>
+      self.project.id = :_projectId
+    </domain>
+    <context name="_projectId" expr="eval: __this__.id"/>
+  </action-view>
 
 </object-views>

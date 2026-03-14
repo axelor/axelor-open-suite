@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://axelor.com/xml/ns/object-views
   http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
 
-  <grid name="approval-item-grid" title="Approval Items"
+  <grid name="approval-item-grid" title="Projects to approve"
     model="com.axelor.apps.businessproject.db.ApprovalItem" groupBy="project" edit-icon="false">
     <button name="openLinkedValidationItemBtn" title="Open validation item"
       onClick="action-group-approval-item-open-linked-validation-item" icon="fa-pencil-o"/>

@@ -716,7 +716,7 @@
     <field name="team" expr="eval: __repo__(Project).find(project?.parentProject?.id)?.team"
       if="(!project?.synchronize || project.team == null) &amp;&amp; project?.extendsMembersFromParent &amp;&amp; __repo__(Project).find(project?.parentProject?.id)?.synchronize"/>
     <field name="priority"
-      expr="call: com.axelor.apps.project.service.ProjectTaskService:getPriority(project)"
+      expr="call: com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService:getProjectPriorityForTask(project)"
       if="project?.isShowPriority"/>
     <field name="status"
       expr="call: com.axelor.apps.project.service.ProjectTaskService:getStatus(project, __this__)"

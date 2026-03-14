@@ -47,6 +47,12 @@ public interface ProjectTaskService {
   @CallMethod
   public TaskStatus getStatus(Project project, ProjectTask projectTask);
 
+  /**
+   * Get the normal priority type in the authorized priorities of the project
+   *
+   * @param project Project to get teh authorized task priorities from
+   * @return Returns the normal priority type in the authorized task priorities of project
+   */
   @CallMethod
   public ProjectPriority getPriority(Project project);
 

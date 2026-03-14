@@ -1149,6 +1149,10 @@
         canCollapse="true" collapseIf="true">
         <field name="internalReference" title="Order Number" widget="string"/>
         <field name="externalReference" title="Datev" widget="string"/>
+        <!-- MGM-125 -->
+        <field name="referenceNumber" title="Reference number" widget="string"
+          showIf="project &amp;&amp; referenceNumber &amp;&amp; referenceNumber.trim() != ''"/>
+
         <field name="latePaymentInterestSourceInvoice" grid-view="invoice-grid"
           form-view="invoice-form" showIf="operationSubTypeSelect == 9"
           if="__config__.app.getApp('account')?.enableLatePaymentInterest"/>

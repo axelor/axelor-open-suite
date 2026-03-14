@@ -22,12 +22,15 @@ import com.axelor.apps.account.db.Invoice;
 import com.axelor.apps.account.db.InvoiceLine;
 import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.base.db.Unit;
+import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.project.db.Project;
+import com.axelor.apps.project.db.ProjectPriority;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.TaskTemplate;
 import com.axelor.apps.project.service.ProjectTaskService;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.auth.db.User;
+import com.axelor.meta.CallMethod;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.inject.persist.Transactional;
@@ -83,4 +86,20 @@ public interface ProjectTaskBusinessProjectService extends ProjectTaskService {
   boolean isTimeUnitValid(Unit unit) throws AxelorException;
 
   BigDecimal verifiedLimitFollowUp(BigDecimal value, BigDecimal limit);
+
+  TimesheetLine getTimesheetLine(ProjectTask task);
+
+  boolean hasTimesheetLine(ProjectTask task);
+
+  void deleteTimesheetLine(ProjectTask task);
+
+  /**
+   * Gets the priority of a project
+   *
+   * @param project
+   * @return Returns the priority of a project if the priority is among the list of authorized task
+   *     priorities for that project if not returns null
+   */
+  @CallMethod
+  ProjectPriority getProjectPriorityForTask(Project project);
 }

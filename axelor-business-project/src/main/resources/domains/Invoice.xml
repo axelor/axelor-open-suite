@@ -14,6 +14,8 @@
       help="This configuration allows you to group expenses by period on the project's invoice and to attach separate receipts for these expenses."/>
     <string name="groupingPeriodSelect" title="Grouping period"
       selection="business.project.invoice.grouping.period.select" default="month"/>
+    <!-- MGM-125 add reference number to invoice which depends on project reference number -->
+    <string name="referenceNumber" title="Reference number"/>
 
 
     <extra-code>

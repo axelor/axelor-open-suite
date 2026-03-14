@@ -273,6 +273,9 @@
       <field name="invoiceFeeOnly" colSpan="6"
         onChange="mgm-fees-action-expense-line-record-calculate-totals"/>
       <field name="totalAmountToInvoice" readonly="true" colSpan="6"/>
+      <field name="showChargedFee" title="Do you want to show charged fee on the invoice ?"
+        colSpan="6" hideIf="invoiceFeeOnly"/>
+      <field name="toInvoice" hidden="true"/>
       <field name="justificationMetaFile" widget="binary-link"
         onChange="action-expense-line-group-justification-line-onchange"/>
       <field name="toInvoice" colSpan="3"/>
@@ -381,6 +384,8 @@
       )"/>
   </action-record>
 
+
+
   <action-record name="mgm-action-expense-line-record-apply-standard-tax"
     model="com.axelor.apps.hr.db.ExpenseLine">
     <field name="totalTax" expr="eval: (untaxedAmount ?: 0) * 0.19"/>
@@ -403,7 +408,7 @@
     <attribute name="domain" for="expenseProduct"
       expr="self.expense = true
               AND self.dtype = 'Product'
-              AND self.code NOT IN ('25KM','11KM','TOOLUSAGE','DIRTALLOWANCE')"/>
+              AND self.code NOT IN ('25KM','11KM','TOOLUSAGE','DIRTALLOWANCE','CFEE')"/>
   </action-attrs>
 
   <action-attrs name="action-mgm-expense-attrs-category-change">

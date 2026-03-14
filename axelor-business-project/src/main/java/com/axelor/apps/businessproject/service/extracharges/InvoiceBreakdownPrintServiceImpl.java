@@ -208,6 +208,14 @@ public class InvoiceBreakdownPrintServiceImpl implements InvoiceBreakdownPrintSe
         .append(":</strong> ")
         .append(invoice.getProject().getName())
         .append("<br/>");
+    if (invoice.getReferenceNumber() != null
+        && StringUtils.notEmpty(invoice.getReferenceNumber())) {
+      html.append("<strong>")
+          .append(I18n.get("Reference number"))
+          .append(":</strong> ")
+          .append(invoice.getReferenceNumber())
+          .append("<br/>");
+    }
     html.append("<strong>")
         .append(I18n.get("Creation Date"))
         .append(":</strong> ")

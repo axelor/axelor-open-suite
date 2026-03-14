@@ -14,8 +14,11 @@
       action="action.operations.manager.chart.projects.overview" colSpan="12" height="250"/>
 
     <dashlet name="operations.manager.approval.items"
-      action="action.operations.manager.view.approval.items" colSpan="12" height="500"
+      action="action.operations.manager.view.approval.items" colSpan="6" height="500"
       canSearch="true"/>
+
+    <dashlet name="mgm.all.ongoing.projects.to.review"
+      action="action.view.ongoing.projects.to.review" colSpan="6" height="500" canSearch="true"/>
 
     <dashlet name="operations.mananager.my.ongoing.projects"
       action="action.view.operations.manager.my.ongoing.projects" colSpan="6" height="400"
@@ -60,6 +63,19 @@
     ]]></domain>
   </action-view>
 
+  <action-view name="action.view.ongoing.projects.to.review" title="Projects to review"
+    model="com.axelor.apps.project.db.Project">
+    <view type="grid" name="business-project-grid"/>
+    <view type="form" name="business-project-form"/>
+    <view-param name="popup" value="true"/>
+    <view-param name="show-toolbar" value="true"/>
+    <domain>
+      self.projectStatus.isCompleted = false AND self.isReadyForReview = true AND
+      (self.isConfirmedForInvoicing = false OR self.isConfirmedForInvoicing IS NULL)
+    </domain>
+    <context name="_fromDashboard" expr="eval: true"/>
+  </action-view>
+
   <action-view name="action.view.operations.manager.all.projects" title="All Projects"
     model="com.axelor.apps.project.db.Project">
     <view type="grid" name="business-project-grid"/>
@@ -67,7 +83,7 @@
   </action-view>
 
   <action-view name="action.operations.manager.view.approval.items"
-    title="Approvals items" model="com.axelor.apps.businessproject.db.ApprovalItem">
+    title="Projects to approve" model="com.axelor.apps.businessproject.db.ApprovalItem">
     <view type="grid" name="approval-item-grid"/>
     <view type="form" name="approval-item-form"/>
     <view-param name="popup" value="true"/>

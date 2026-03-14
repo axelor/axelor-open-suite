@@ -40,6 +40,9 @@
     <string name="unitOnPrinting" selection="hr.time.logging.preference.select"
       title="Invoicing unit"/>
 
+    <!-- MGM-125 add reference number to project for invoice -->
+    <string name="referenceNumber" title="Reference number"/>
+
     <one-to-many name="purchaseOrderLineList"
       ref="com.axelor.apps.purchase.db.PurchaseOrderLine" title="Purchase order lines"
       mappedBy="project" orphanRemoval="false"/>
@@ -62,6 +65,12 @@
       help="When this checkbox is true: will set field 'To invoice' as true by default on all purchases orders associated to the project."/>
     <boolean name="consolidatePhaseWhenInvoicing" title="Consolidate phase invoicing"
       default="true"/>
+    <!-- MGM-114 -->
+    <boolean name="isConfirmedForInvoicing"
+      title="I confirm the accuracy of the data provided"
+      help="Confirm and acknowledge that the information provided by this project is correct and the project is ready to be invoiced."/>
+    <!-- MGM-122, Related to MGM-114 just a follow up -->
+    <boolean name="isReadyForReview" title="Is ready for review" default="false"/>
 
     <many-to-one name="customerAddress" title="Address"
       ref="com.axelor.apps.base.db.Address"/>

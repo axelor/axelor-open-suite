@@ -7,6 +7,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.TaskStatusBusinessProjectRepository;
+import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
 import com.axelor.apps.businessproject.service.taskreport.TaskMemberReportService;
 import com.axelor.apps.businessproject.service.taskreport.TaskMemberReportServiceImpl;
 import com.axelor.apps.project.db.ProjectTask;
@@ -15,8 +16,10 @@ import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
+import com.google.inject.persist.Transactional;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +38,7 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
   protected ProjectTaskRepository projectTaskRepo;
   protected TaskMemberReportService taskMemberReportRepo =
       Beans.get(TaskMemberReportServiceImpl.class);
+  @Inject protected ProjectTaskBusinessProjectService projectTaskService;
 
   @Inject
   public TaskStatusChangeServiceImpl(
@@ -76,6 +80,18 @@ public class TaskStatusChangeServiceImpl implements TaskStatusChangeService {
       ProjectTask task = taskMemberReport.getTask();
 
       revertUnreportedTaskStatus(task, inProgressStatus);
+      projectTaskService.deleteTimesheetLine(task);
+    }
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void setTaskStatusFeedback(ProjectTask task) throws AxelorAlertException {
+    TaskStatus feedbackStatus = getTaskStatus(TASK_STATUS_FEEDBACK);
+
+    if (!Objects.equals(task.getStatus(), feedbackStatus)) {
+      task.setStatus(feedbackStatus);
+      projectTaskRepo.save(task);
     }
   }
 

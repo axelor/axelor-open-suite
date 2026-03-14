@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorAlertException;
 import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.apps.base.service.administration.AbstractBatch;
+import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
 import com.axelor.apps.businessproject.service.statuschange.TaskStatusChangeService;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.EmployeeRepository;
@@ -173,5 +174,15 @@ public class TimesheetLineProjectServiceImpl extends TimesheetLineServiceImpl
     super.cancelTimesheetLineValidation(line);
     Beans.get(TaskStatusChangeService.class)
         .revertTaskStatusOnTimesheetLineCancel(line.getProjectTask());
+  }
+
+  @Override
+  public boolean isReferencedInInvoicingProject(TimesheetLine timesheetLine) {
+    return Beans.get(InvoicingProjectRepository.class)
+            .all()
+            .filter("self.logTimesSet.id = :tslId")
+            .bind("tslId", timesheetLine.getId())
+            .count()
+        > 0;
   }
 }

@@ -18,8 +18,11 @@
  */
 package com.axelor.apps.hr.service.timesheet;
 
+import com.axelor.apps.hr.db.TimesheetLine;
 import java.util.List;
 
 public interface TimesheetLineRemoveService {
   void removeTimesheetLines(List<Integer> projectTimesheetLineIds);
+
+  void removeTimesheetLine(TimesheetLine timesheetLine);
 }

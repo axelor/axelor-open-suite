@@ -4,6 +4,7 @@ import com.axelor.apps.base.db.Product;
 import com.axelor.apps.base.db.repo.ProductRepository;
 import com.axelor.apps.businessproject.db.ExtraExpenseLine;
 import com.axelor.apps.businessproject.db.TaskReport;
+import com.axelor.apps.businessproject.service.extraexpense.ExtraExpenseLineService;
 import com.axelor.apps.project.db.Project;
 import com.google.inject.Inject;
 import java.math.BigDecimal;
@@ -20,14 +21,17 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
   private static final Logger log = LoggerFactory.getLogger(TaskReportExpenseServiceImpl.class);
 
   // Product codes
-  public static final String CODE_TRAVEL_EXPENSES = "11KM";
-  public static final String CODE_TOOLS_USAGE = "TOOLUSAGE";
+  protected static final String CODE_TRAVEL_EXPENSES = "11KM";
+  protected static final String CODE_TOOLS_USAGE = "TOOLUSAGE";
 
   protected ProductRepository productRepo;
+  protected ExtraExpenseLineService extraExpenseLineService;
 
   @Inject
-  public TaskReportExpenseServiceImpl(ProductRepository productRepo) {
+  public TaskReportExpenseServiceImpl(
+      ProductRepository productRepo, ExtraExpenseLineService extraExpenseLineService) {
     this.productRepo = productRepo;
+    this.extraExpenseLineService = extraExpenseLineService;
   }
 
   @Override
@@ -119,6 +123,7 @@ public class TaskReportExpenseServiceImpl implements TaskReportExpenseService {
     line.setExpenseDate(LocalDate.now());
     line.setQuantity(BigDecimal.ONE);
     line.setTotalAmount(line.getPrice().multiply(line.getQuantity()));
+    line.setExtraExpenseLineTypeSelect(extraExpenseLineService.getTypeSelectFromCode(productCode));
 
     // handles the bidirectional relationship
     taskReport.addExtraExpenseLineListItem(line);

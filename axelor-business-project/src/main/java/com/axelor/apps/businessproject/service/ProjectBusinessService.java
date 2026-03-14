@@ -57,4 +57,8 @@ public interface ProjectBusinessService extends ProjectService {
   boolean allTasksHaveTimesheetLines(Project project);
 
   void syncTaskReportToProject(Project project);
+
+  long getProjectExpenseCount(Project project);
+
+  Boolean isProjectReadyForReview(Project project);
 }

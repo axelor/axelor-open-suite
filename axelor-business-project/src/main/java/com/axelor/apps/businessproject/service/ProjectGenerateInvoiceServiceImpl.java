@@ -59,6 +59,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.purchase.db.PurchaseOrderLine;
 import com.axelor.apps.sale.db.SaleOrderLine;
 import com.axelor.apps.supplychain.service.invoice.generator.InvoiceLineGeneratorSupplyChain;
+import com.axelor.common.StringUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBusinessProject;
@@ -188,8 +189,17 @@ public class ProjectGenerateInvoiceServiceImpl implements ProjectGenerateInvoice
       invoice.setFiscalPosition(accountConfig.getDefaultFiscalPosition());
     }
 
-    if (project != null && project.getCode() != null) {
-      invoice.setInternalReference(project.getCode());
+    if (project != null) {
+      log.debug("reference number: {}", project.getReferenceNumber());
+      if (project.getReferenceNumber() != null
+          && StringUtils.notEmpty(project.getReferenceNumber())) {
+        log.debug("setting reference number...");
+        invoice.setReferenceNumber(project.getReferenceNumber());
+      }
+
+      if (project.getCode() != null && StringUtils.notEmpty(project.getCode())) {
+        invoice.setInternalReference(project.getCode());
+      }
     }
     invoice.setInvoiceDate(LocalDate.now());
 

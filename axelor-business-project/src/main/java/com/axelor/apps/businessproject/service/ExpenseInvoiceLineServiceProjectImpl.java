@@ -131,6 +131,9 @@ public class ExpenseInvoiceLineServiceProjectImpl extends ExpenseInvoiceLineServ
     line.setInvoice(invoice);
     line.setProduct(chargedFeeProduct);
     line.setProductName(chargedFeeProduct.getName());
+    if (expenseLine.getExpenseProduct() != null) {
+      line.setDescription(expenseLine.getExpenseProduct().getName());
+    }
     line.setQty(qty);
     line.setPrice(unitPrice);
     line.setUnit(chargedFeeProduct.getUnit());

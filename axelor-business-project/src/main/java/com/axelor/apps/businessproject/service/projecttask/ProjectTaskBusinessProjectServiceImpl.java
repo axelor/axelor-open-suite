@@ -46,12 +46,8 @@ import com.axelor.apps.hr.db.repo.EmployeeRepository;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
-import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectPlanningTime;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.ProjectTaskCategory;
-import com.axelor.apps.project.db.TaskStatus;
-import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveService;
+import com.axelor.apps.project.db.*;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
@@ -67,6 +63,7 @@ import com.axelor.common.ObjectUtils;
 import com.axelor.db.JPA;
 import com.axelor.db.Query;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.axelor.studio.db.AppBusinessProject;
 import com.axelor.utils.helpers.QueryBuilder;
 import com.google.common.base.Strings;
@@ -83,11 +80,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImpl
     implements ProjectTaskBusinessProjectService {
 
   public static final int BIG_DECIMAL_SCALE = 2;
+  private static final Logger log =
+      LoggerFactory.getLogger(ProjectTaskBusinessProjectServiceImpl.class);
   protected PriceListLineRepository priceListLineRepo;
   protected PriceListService priceListService;
   protected PartnerPriceListService partnerPriceListService;
@@ -226,6 +227,21 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       }
     }
     return projectTask;
+  }
+
+  @Override
+  public ProjectPriority getProjectPriorityForTask(Project project) {
+    if (project == null || project.getPriority() == null) {
+      return null;
+    }
+
+    Set<ProjectPriority> authorizedPriorities = project.getProjectTaskPrioritySet();
+
+    if (ObjectUtils.isEmpty(authorizedPriorities)) {
+      return null;
+    }
+
+    return authorizedPriorities.contains(project.getPriority()) ? project.getPriority() : null;
   }
 
   protected void emptyDiscounts(ProjectTask projectTask) {
@@ -590,6 +606,35 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       computeProjectTaskReporting(projectTask);
     }
     projectTaskRepo.save(projectTask);
+  }
+
+  @Override
+  public void deleteTimesheetLine(ProjectTask task) {
+    if (hasTimesheetLine(task)) {
+      log.info("Deleting timesheet line for task {}", task.getId());
+      Beans.get(TimesheetLineRemoveService.class).removeTimesheetLine(getTimesheetLine(task));
+    } else {
+      log.debug("Task {} does not have any timesheet line skipping it", task.getId());
+    }
+  }
+
+  @Override
+  public boolean hasTimesheetLine(ProjectTask task) {
+    return getTimesheetLine(task) != null;
+  }
+
+  @Override
+  public TimesheetLine getTimesheetLine(ProjectTask task) {
+    if (task == null
+        || task.getId() == null
+        || task.getProject() == null
+        || task.getProject().getId() == null) return null;
+
+    return Query.of(TimesheetLine.class)
+        .filter("self.projectTask.id = :projectTaskId AND self.project.id = :projectId")
+        .bind("projectTaskId", task.getId())
+        .bind("projectId", task.getProject().getId())
+        .fetchOne();
   }
 
   protected BigDecimal convertTimesheetLineDurationToProjectTaskUnit(

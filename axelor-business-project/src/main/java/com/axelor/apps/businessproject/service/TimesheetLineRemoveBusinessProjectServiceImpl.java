@@ -25,7 +25,7 @@ public class TimesheetLineRemoveBusinessProjectServiceImpl extends TimesheetLine
 
   @Override
   @Transactional
-  protected void removeTimesheetLine(TimesheetLine timesheetLine) {
+  public void removeTimesheetLine(TimesheetLine timesheetLine) {
     Project project = timesheetLine.getProject();
     approvalItemManagementService.deleteApprovalItem(timesheetLine);
 
