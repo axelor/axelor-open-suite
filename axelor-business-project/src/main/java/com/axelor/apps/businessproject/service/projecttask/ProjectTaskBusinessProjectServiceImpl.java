@@ -47,12 +47,7 @@ import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
 import com.axelor.apps.hr.db.repo.TimesheetRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineRemoveService;
-import com.axelor.apps.project.db.Project;
-import com.axelor.apps.project.db.ProjectPlanningTime;
-import com.axelor.apps.project.db.ProjectTask;
-import com.axelor.apps.project.db.ProjectTaskCategory;
-import com.axelor.apps.project.db.TaskStatus;
-import com.axelor.apps.project.db.TaskTemplate;
+import com.axelor.apps.project.db.*;
 import com.axelor.apps.project.db.repo.ProjectRepository;
 import com.axelor.apps.project.db.repo.ProjectTaskRepository;
 import com.axelor.apps.project.db.repo.TaskStatusProgressByCategoryRepository;
@@ -232,6 +227,21 @@ public class ProjectTaskBusinessProjectServiceImpl extends ProjectTaskServiceImp
       }
     }
     return projectTask;
+  }
+
+  @Override
+  public ProjectPriority getProjectPriorityForTask(Project project) {
+    if (project == null || project.getPriority() == null) {
+      return null;
+    }
+
+    Set<ProjectPriority> authorizedPriorities = project.getProjectTaskPrioritySet();
+
+    if (ObjectUtils.isEmpty(authorizedPriorities)) {
+      return null;
+    }
+
+    return authorizedPriorities.contains(project.getPriority()) ? project.getPriority() : null;
   }
 
   protected void emptyDiscounts(ProjectTask projectTask) {
