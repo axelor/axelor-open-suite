@@ -188,9 +188,14 @@ public class InvoiceBreakdownDisplayServiceImpl implements InvoiceBreakdownDispl
       String label =
           Optional.ofNullable(fee.getProductName()).orElse(I18n.get("Material Fee Charge "));
 
-      // Override the generic "Billed for..." text to be more professional
+      // Use the description (original product name) if available as product name fee is
+      String originalProductName =
+          (fee.getDescription() != null && !fee.getDescription().isEmpty())
+              ? fee.getDescription()
+              : I18n.get("material");
+
       String billingDetails =
-          String.format(I18n.get("Added fee of %.2f%% on material"), percentage);
+          String.format(I18n.get("Added fee of %.2f%% on %s"), percentage, originalProductName);
 
       displayLines.add(
           createDisplayLine(
