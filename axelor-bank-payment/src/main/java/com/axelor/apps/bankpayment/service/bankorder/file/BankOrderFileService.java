@@ -63,6 +63,7 @@ public class BankOrderFileService {
   protected BankDetails senderBankDetails;
   protected Company senderCompany;
   protected Currency bankOrderCurrency;
+  protected Currency companyCurrency;
   protected BigDecimal bankOrderTotalAmount;
   protected BigDecimal arithmeticTotal;
   protected int nbOfLines;
@@ -84,6 +85,7 @@ public class BankOrderFileService {
     this.senderBankDetails = bankOrder.getSenderBankDetails();
     this.senderCompany = bankOrder.getSenderCompany();
     this.bankOrderCurrency = bankOrder.getBankOrderCurrency();
+    this.companyCurrency = bankOrder.getCompanyCurrency();
     this.bankOrderTotalAmount = bankOrder.getBankOrderTotalAmount();
     this.arithmeticTotal = bankOrder.getArithmeticTotal();
     this.nbOfLines = bankOrder.getNbOfLines();
