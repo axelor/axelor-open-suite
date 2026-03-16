@@ -269,10 +269,13 @@ public class ManufOrderPlanServiceImpl implements ManufOrderPlanService {
     } else if (manufOrder.getPlannedStartDateT() == null
         && manufOrder.getPlannedEndDateT() != null) {
       long duration = 0;
-      for (OperationOrder order : manufOrder.getOperationOrderList()) {
-        duration +=
-            operationOrderService.computeEntireCycleDuration(
-                order, order.getManufOrder().getQty()); // in seconds
+      List<OperationOrder> operationOrderList = manufOrder.getOperationOrderList();
+      if (CollectionUtils.isNotEmpty(operationOrderList)) {
+        for (OperationOrder order : operationOrderList) {
+          duration +=
+              operationOrderService.computeEntireCycleDuration(
+                  order, order.getManufOrder().getQty()); // in seconds
+        }
       }
       // This is a estimation only, it will be updated later
       // It does not take into configuration such as machine planning etc...
