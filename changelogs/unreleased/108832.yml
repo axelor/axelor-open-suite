@@ -1,0 +1,3 @@
+---
+title: "Production process: fixed number of decimals digits for BOM not taken into account while managing consumed product on phases."
+module: axelor-production
