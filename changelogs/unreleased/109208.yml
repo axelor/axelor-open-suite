@@ -1,0 +1,3 @@
+---
+title: "Manuf order: fixed error when planning an order that has no operations."
+module: axelor-production
