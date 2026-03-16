@@ -160,7 +160,6 @@
   <action-record name="action-work-center-record-type-select-onchange"
     model="com.axelor.apps.production.db.WorkCenter">
     <field name="machine" expr="eval: null" if="workCenterTypeSelect == 1"/>
-    <field name="hrSkillSet" expr="eval: null" if="workCenterTypeSelect == 2"/>
     <field name="hrCostTypeSelect,hrDurationPerCycle" expr="eval: 0"
       if="workCenterTypeSelect == 2"/>
     <field name="hrCostAmount" expr="eval: 0.00" if="workCenterTypeSelect == 2"/>
@@ -173,4 +172,3 @@
   </search-filters>
 
 </object-views>
-
