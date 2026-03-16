@@ -20,11 +20,16 @@ package com.axelor.apps.bankpayment.service.bankreconciliation;
 
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.base.AxelorException;
+import java.time.LocalDate;
 import java.util.Map;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface BankReconciliationQueryService {
   String getRequestMoveLines();
 
   Map<String, Object> getBindRequestMoveLine(BankReconciliation bankReconciliation)
+      throws AxelorException;
+
+  Pair<LocalDate, LocalDate> getDateRange(BankReconciliation bankReconciliation)
       throws AxelorException;
 }

@@ -1,0 +1,13 @@
+---
+title: "Bank reconciliation: fixed computed balances for unreconciled and ongoing amounts with multi-currency accounts."
+module: axelor-bank-payment
+developer: |
+  BankReconciliationBalanceComputationServiceImpl:
+  - constructor: no longer takes AccountService, BankReconciliationLineRepository, CurrencyService, DateService; now takes BankReconciliationQueryService.
+  - computeBalances(BankReconciliation, boolean): now throws AxelorException; date filter also checks dueDate and widens by bnkStmtAutoReconcileDateMargin.
+  - computeMovesOngoingReconciledLineBalance: added boolean and Currency parameters.
+  - computeAccountBalance: added; replaces AccountService.computeBalance, using the same currency rule as movesTheoreticalBalance.
+  - getConvertedAmount: removed.
+
+  BankReconciliationQueryService:
+  - getDateRange: added; shares the margin-widened date range between getBindRequestMoveLine and computeBalances.
