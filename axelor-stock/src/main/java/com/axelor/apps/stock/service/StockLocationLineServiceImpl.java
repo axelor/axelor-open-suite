@@ -733,8 +733,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
           unitConversionService.convert(
               incomingStockMoveLine.getUnit(),
               stockLocationLine.getUnit(),
-              incomingStockMoveLine.getRealQty(),
-              incomingStockMoveLine.getRealQty().scale(),
+              incomingStockMoveLine.getQty(),
+              incomingStockMoveLine.getQty().scale(),
               product);
       futureQty = futureQty.add(qtyToAdd);
     }
@@ -744,8 +744,8 @@ public class StockLocationLineServiceImpl implements StockLocationLineService {
           unitConversionService.convert(
               outgoingStockMoveLine.getUnit(),
               stockLocationLine.getUnit(),
-              outgoingStockMoveLine.getRealQty(),
-              outgoingStockMoveLine.getRealQty().scale(),
+              outgoingStockMoveLine.getQty(),
+              outgoingStockMoveLine.getQty().scale(),
               product);
       futureQty = futureQty.subtract(qtyToSubtract);
     }
