@@ -40,7 +40,7 @@
     <field name="product"
       domain="self.productTypeSelect = 'storable' AND self.dtype = 'Product'"
       form-view="product-form" grid-view="product-grid" required="true"/>
-    <field name="qty" aggregate="sum" required="true" x-scale="2"/>
+    <field name="qty" aggregate="sum" required="true"/>
     <field name="unit" form-view="unit-form" grid-view="unit-grid" required="true"/>
   </grid>
 
@@ -100,7 +100,7 @@
 
   <action-attrs name="action-prod-product-attrs-scale-and-precision">
     <attribute name="scale" for="qty"
-      expr="eval: __config__.app.getNbDecimalDigitForQty()"/>
+      expr="eval: __config__.app.getApp('production')?.nbDecimalDigitForBomQty"/>
   </action-attrs>
 
 </object-views>
