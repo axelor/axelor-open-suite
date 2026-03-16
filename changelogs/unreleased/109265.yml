@@ -1,0 +1,3 @@
+---
+title: "Move line: ensure partner is required in grid view when account uses partner balance, consistent with form view."
+module: axelor-account
