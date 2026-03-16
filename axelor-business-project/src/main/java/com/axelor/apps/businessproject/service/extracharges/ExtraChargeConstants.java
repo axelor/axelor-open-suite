@@ -20,7 +20,7 @@ public final class ExtraChargeConstants {
 
   public static final String TIMESHEET_INVOICE_LINE_SOURCE_TYPE = "TIMESHEET";
   public static final String EXPENSE_INVOICE_LINE_SOURCE_TYPE = "EXPENSE";
-  public static final String EXPENSE_CHARGED_FEE_INVOICE_LINE_SOURCE_TYPE = "FEE";
+  public static final String EXPENSE_CHARGED_FEE_INVOICE_LINE_SOURCE_TYPE = "CFEE";
   public static final String EXTRACHARGE_INVOICE_LINE_SOURCE_TYPE = "EXTRACHARGE";
 
   public static final List<String> INVOICE_LINE_SOURCE_TYPES =
