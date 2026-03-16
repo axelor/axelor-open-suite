@@ -171,12 +171,16 @@ public class PaymentSessionValidateBankPaymentServiceImpl
       if (paymentSession.getPaymentMode().getAutoConfirmBankOrder()
           && bankOrder.getStatusSelect() == BankOrderRepository.STATUS_DRAFT) {
         try {
+          super.postProcessPaymentSession(
+              paymentSession, moveDateMap, paymentAmountMap, out, isGlobal);
           bankOrderValidationService.confirm(bankOrder);
+          super.updateStatus(paymentSession);
         } catch (JAXBException | IOException | DatatypeConfigurationException e) {
           throw new AxelorException(
               TraceBackRepository.CATEGORY_INCONSISTENCY, e.getLocalizedMessage());
         }
       }
+      return;
     }
 
     super.postProcessPaymentSession(paymentSession, moveDateMap, paymentAmountMap, out, isGlobal);
