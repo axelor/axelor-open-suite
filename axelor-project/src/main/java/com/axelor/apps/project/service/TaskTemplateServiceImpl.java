@@ -24,7 +24,7 @@ import com.axelor.apps.project.db.Project;
 import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.apps.project.db.ProjectTaskCategory;
 import com.axelor.apps.project.db.TaskTemplate;
-import jakarta.inject.Inject;
+import com.google.inject.Inject;
 import java.time.LocalDateTime;
 import java.util.Set;
 
