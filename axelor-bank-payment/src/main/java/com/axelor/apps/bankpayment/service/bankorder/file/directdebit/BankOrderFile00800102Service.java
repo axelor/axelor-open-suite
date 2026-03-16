@@ -517,8 +517,8 @@ public class BankOrderFile00800102Service extends BankOrderFile008Service {
        */
       ActiveOrHistoricCurrencyAndAmount activeOrHistoricCurrencyAndAmount =
           factory.createActiveOrHistoricCurrencyAndAmount();
-      activeOrHistoricCurrencyAndAmount.setCcy(CURRENCY_CODE);
-      activeOrHistoricCurrencyAndAmount.setValue(bankOrderLine.getBankOrderAmount());
+      activeOrHistoricCurrencyAndAmount.setCcy(companyCurrency.getCodeISO());
+      activeOrHistoricCurrencyAndAmount.setValue(bankOrderLine.getCompanyCurrencyAmount());
       directDebitTransactionInformation9.setInstdAmt(activeOrHistoricCurrencyAndAmount);
 
       /*
