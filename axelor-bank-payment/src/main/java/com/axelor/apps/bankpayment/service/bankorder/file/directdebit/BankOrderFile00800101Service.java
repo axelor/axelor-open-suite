@@ -479,8 +479,8 @@ public class BankOrderFile00800101Service extends BankOrderFile008Service {
        * Usage  : Amount must be between 0.01 and 999999999.99
        */
       CurrencyAndAmount currencyAndAmount = factory.createCurrencyAndAmount();
-      currencyAndAmount.setCcy(CURRENCY_CODE);
-      currencyAndAmount.setValue(bankOrderLine.getBankOrderAmount());
+      currencyAndAmount.setCcy(companyCurrency.getCodeISO());
+      currencyAndAmount.setValue(bankOrderLine.getCompanyCurrencyAmount());
       directDebitTransactionInformation1.setInstdAmt(currencyAndAmount);
 
       /*
