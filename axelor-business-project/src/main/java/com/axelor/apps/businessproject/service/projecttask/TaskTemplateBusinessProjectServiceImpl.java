@@ -52,8 +52,8 @@ public class TaskTemplateBusinessProjectServiceImpl extends TaskTemplateHrServic
       ProductCompanyService productCompanyService,
       ProjectTaskBusinessProjectService projectTaskBusinessProjectService) {
     super(
-        projectPlanningTimeCreateService,
         appBaseService,
+        projectPlanningTimeCreateService,
         projectPlanningTimeComputeService,
         appProjectService,
         projectPlanningTimeRepository);
