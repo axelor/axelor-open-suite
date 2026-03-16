@@ -22,7 +22,6 @@ public final class PurchaseExceptionMessage {
 
   private PurchaseExceptionMessage() {}
 
-  public static final String PURCHASE_ORDER_LINE_TAX_LINE = /*$$(*/ "A tax line is missing" /*)*/;
   public static final String PURCHASE_ORDER_LINE_MIN_QTY = /*$$(*/
       "The minimum order quantity of %s to the supplier is not respected. Unit price might be different than the supplier catalog one." /*)*/;
   public static final String PURCHASE_ORDER_LINE_MAX_QTY = /*$$(*/
@@ -54,8 +53,6 @@ public final class PurchaseExceptionMessage {
       "The fiscal position must be the same for all purchase orders" /*)*/;
   public static final String PURCHASE_ORDER_MERGE_ERROR_ATI_CONFIG = /*$$(*/
       "The ATI configuration must be the same for all purchase orders" /*)*/;
-  public static final String PURCHASE_ORDER_MERGE_CONFIRMATION_NEEDED = /*$$(*/
-      "The contact partner and price list must be the same for all purchase orders." /*)*/;
 
   public static final String PURCHASE_ORDER_REQUEST_WRONG_STATUS = /*$$(*/
       "Can only request drafted purchase order." /*)*/;

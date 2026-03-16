@@ -23,11 +23,9 @@ public final class BankPaymentExceptionMessage {
   private BankPaymentExceptionMessage() {}
 
   /** Bank statement service */
-  public static final String BANK_STATEMENT_1 = /*$$(*/
-      "%s : Computed balance and Ending Balance must be equal" /*)*/;
-
   public static final String BANK_STATEMENT_2 = /*$$(*/
       "%s : MoveLine amount is not equals with bank statement line %s" /*)*/;
+
   public static final String BANK_STATEMENT_3 = /*$$(*/
       "%s : Bank statement line %s amount can't be null" /*)*/;
 
@@ -74,12 +72,8 @@ public final class BankPaymentExceptionMessage {
       "Please fill the sender company" /*)*/;
   public static final String BANK_ORDER_BANK_DETAILS_MISSING = /*$$(*/
       "Please fill the bank details" /*)*/;
-  public static final String BANK_ORDER_AMOUNT_NEGATIVE = /*$$(*/
-      "Amount value of the bank order is not valid" /*)*/;
   public static final String BANK_ORDER_PAYMENT_MODE_MISSING = /*$$(*/
       "Please select a payment mode" /*)*/;
-  public static final String BANK_ORDER_SIGNATORY_MISSING = /*$$(*/
-      "Please select a signatory" /*)*/;
   public static final String BANK_ORDER_WRONG_SENDER_RECORD = /*$$(*/
       "Anomaly has been detected during file generation for the sender record of the bank order %s" /*)*/;
   public static final String BANK_ORDER_WRONG_MAIN_DETAIL_RECORD = /*$$(*/
@@ -108,8 +102,6 @@ public final class BankPaymentExceptionMessage {
       "The sender bank details currency is not compatible with the currency in bank order." /*)*/;
   public static final String BANK_ORDER_BANK_DETAILS_MISSING_CURRENCY = /*$$(*/
       "Please fill the sender bank details currency." /*)*/;
-  public static final String BANK_ORDER_NOT_PROPERLY_SIGNED = /*$$(*/
-      "The bank order is not properly signed. Please correct it and sign it again." /*)*/;
   public static final String BANK_ORDER_CANNOT_REMOVE = /*$$(*/
       "Bank orders can only be deleted at draft or canceled status." /*)*/;
   public static final String BANK_ORDER_NO_SENDER_CURRENCY = /*$$(*/
@@ -194,8 +186,6 @@ public final class BankPaymentExceptionMessage {
       "The password is incorrect." /*)*/;
 
   /** Batch bank statement */
-  public static final String BATCH_BANK_STATEMENT_RETRIEVED_BANK_STATEMENT_COUNT = /*$$(*/
-      "Number of retrieved bank statements: %d." /*)*/;
 
   /** BankStatement import */
   public static final String BANK_STATEMENT_FILE_UNKNOWN_FORMAT = /*$$(*/
@@ -233,9 +223,6 @@ public final class BankPaymentExceptionMessage {
       "Please add an Active UMR to the partner %s for the bank details %s." /*)*/;
 
   /** Generate bank order from invoices */
-  public static final String INVOICE_BANK_ORDER_ALREADY_EXIST = /*$$(*/
-      "A bank order %s already exist for the invoice %s." /*)*/;
-
   public static final String
       MOVE_LINE_ARCHIVE_NOT_OK_BECAUSE_OF_BANK_RECONCILIATION_AMOUNT = /*$$(*/
           "This move line %s can not be archived because its bank reconciliation amount is superior to 0." /*)*/;
@@ -250,11 +237,6 @@ public final class BankPaymentExceptionMessage {
   /** Bank reconciliation */
   public static final String BANK_RECONCILIATION_MISSING_CASH_ACCOUNT = /*$$(*/
       "Some entries from the reconciliation have an empty moveLine and an account filled. The cash account is required to generate automatically the counterpart Move Lines for those entries." /*)*/;
-
-  public static final String BANK_RECONCILIATION_UNRECONCILE_NO_SELECT = /*$$(*/
-      "Please select a reconciliation line" /*)*/;
-  public static final String BANK_RECONCILIATION_INCOMPLETE_LINE = /*$$(*/
-      "To validate the reconciliation, each line must be marked with one or more move line, either existing or configured (Account, Third party). A move line will be generated automatically on the account and journal associated with the reconciliation session." /*)*/;
 
   public static final String
       BANK_RECONCILIATION_SELECT_MOVE_LINE_AND_BANK_RECONCILIATION_LINE = /*$$(*/
@@ -273,9 +255,6 @@ public final class BankPaymentExceptionMessage {
       "Selected bank reconciliation is under correction and can not be deleted" /*)*/;
   public static final String BANK_RECONCILIATION_BANK_DETAILS_CURRENCY_NOT_COMPATIBLE = /*$$(*/
       "The bank reconciliation currency is different from the bank details currency so the reconciliation cannot be initiated. Please select a currency which is equal to the bank statement currency." /*)*/;
-
-  public static final String BANK_RECONCILIATION_NO_DISTRIBUTION_GENERATED_MOVE_LINE = /*$$(*/
-      "The analytic distribution is required in the move lines for account %s but no template has been set in the account configuration" /*)*/;
 
   /** Bank Statement Query */
   public static final String BANK_STATEMENT_QUERY_SEQUENCE_USED = /*$$(*/
