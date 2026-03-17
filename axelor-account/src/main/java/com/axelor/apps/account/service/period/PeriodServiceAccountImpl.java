@@ -19,6 +19,7 @@
 package com.axelor.apps.account.service.period;
 
 import com.axelor.apps.account.db.AccountConfig;
+import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.config.AccountConfigService;
@@ -40,6 +41,8 @@ import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -97,14 +100,23 @@ public class PeriodServiceAccountImpl extends PeriodServiceImpl implements Perio
   }
 
   public Query<Move> getMoveListByPeriodAndStatusQuery(Period period, int status) {
-    return moveRepository
-        .all()
-        .filter(
-            "self.period.id = ?1 AND self.statusSelect = ?2 AND (self.archived = false OR self.archived is null)",
-            period.getId(),
-            status)
-        .order("date")
-        .order("id");
+    String filter =
+        "self.period.id = :periodId AND self.statusSelect = :status AND (self.archived = false OR self.archived is null)";
+
+    Set<Journal> closedJournalSet = period.getClosedJournalSet();
+    if (!CollectionUtils.isEmpty(closedJournalSet)) {
+      filter += " AND self.journal.id IN :journalIdList";
+    }
+    Query<Move> query =
+        moveRepository.all().filter(filter).bind("periodId", period.getId()).bind("status", status);
+
+    if (!CollectionUtils.isEmpty(closedJournalSet)) {
+      query =
+          query.bind(
+              "journalIdList",
+              closedJournalSet.stream().map(Journal::getId).collect(Collectors.toList()));
+    }
+    return query.order("date").order("id");
   }
 
   public boolean isManageClosedPeriod(Period period, User user) throws AxelorException {
