@@ -25,6 +25,7 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Timesheet;
 import com.axelor.apps.hr.db.TimesheetLine;
 import com.axelor.apps.hr.db.repo.TimesheetLineRepository;
+import com.axelor.apps.hr.service.app.AppHumanResourceService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCheckService;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineCreateServiceImpl;
 import com.axelor.apps.hr.service.timesheet.TimesheetLineService;
@@ -44,14 +45,16 @@ public class TimesheetLineCreateProjectServiceImpl extends TimesheetLineCreateSe
       UserHrService userHrService,
       TimesheetLineCheckService timesheetLineCheckService,
       AppBaseService appBaseService,
-      ProjectPlanningTimeRepository projectPlanningTimeRepository) {
+      ProjectPlanningTimeRepository projectPlanningTimeRepository,
+      AppHumanResourceService appHumanResourceService) {
     super(
         timesheetLineService,
         timesheetLineRepository,
         userHrService,
         timesheetLineCheckService,
         appBaseService,
-        projectPlanningTimeRepository);
+        projectPlanningTimeRepository,
+        appHumanResourceService);
   }
 
   @Override
