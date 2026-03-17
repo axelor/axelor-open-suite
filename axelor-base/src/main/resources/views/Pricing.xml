@@ -283,7 +283,7 @@
     <view-param name="show-toolbar" value="false"/>
     <view-param name="popup" value="reload"/>
     <view-param name="showArchived" value="true"/>
-    <domain>self.currentPricing = :id </domain>
+    <domain>self.currentPricing.id = :id </domain>
   </action-view>
 
   <action-method name="action-pricing-method-check-dates">

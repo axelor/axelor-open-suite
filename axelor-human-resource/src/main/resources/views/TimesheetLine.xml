@@ -521,7 +521,7 @@
     <view type="grid" name="timesheet-line-project-task-grid"/>
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.timesheet.statusSelect = 3 and self.projectTask = :id</domain>
+    <domain>self.timesheet.statusSelect = 3 and self.projectTask.id = :id</domain>
     <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
 
@@ -530,7 +530,7 @@
     <view type="grid" name="timesheet-line-project-task-grid"/>
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.timesheet.statusSelect &lt; 3 and self.projectTask = :id</domain>
+    <domain>self.timesheet.statusSelect &lt; 3 and self.projectTask.id = :id</domain>
     <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
 
@@ -539,7 +539,7 @@
     <view type="grid" name="timesheet-line-project-task-grid"/>
     <view type="form" name="timesheet-line-timesheet-project-task-form"/>
     <view-param name="popup" value="true"/>
-    <domain>self.projectTask = :id</domain>
+    <domain>self.projectTask.id = :id</domain>
     <context name="_projectTaskId" expr="eval: id"/>
   </action-view>
 

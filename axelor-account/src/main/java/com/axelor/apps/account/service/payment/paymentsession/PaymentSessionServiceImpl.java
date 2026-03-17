@@ -232,7 +232,7 @@ public class PaymentSessionServiceImpl implements PaymentSessionService {
   protected Query<InvoiceTerm> getTermsBySession(PaymentSession paymentSession) {
     return invoiceTermRepository
         .all()
-        .filter("self.paymentSession = :paymentSession ")
+        .filter("self.paymentSession.id = :paymentSession ")
         .bind("paymentSession", paymentSession.getId());
   }
 
