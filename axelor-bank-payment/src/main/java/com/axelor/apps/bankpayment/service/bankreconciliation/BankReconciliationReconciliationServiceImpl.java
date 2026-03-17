@@ -23,31 +23,41 @@ import com.axelor.apps.account.db.repo.MoveLineRepository;
 import com.axelor.apps.bankpayment.db.BankReconciliation;
 import com.axelor.apps.bankpayment.db.BankReconciliationLine;
 import com.axelor.apps.bankpayment.db.BankStatementLine;
-import com.axelor.apps.bankpayment.db.BankStatementLineAFB120;
 import com.axelor.apps.bankpayment.db.BankStatementQuery;
 import com.axelor.apps.bankpayment.db.repo.BankReconciliationRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementQueryRepository;
 import com.axelor.apps.bankpayment.db.repo.BankStatementRuleRepository;
 import com.axelor.apps.bankpayment.exception.BankPaymentExceptionMessage;
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.CurrencyScaleService;
 import com.axelor.apps.base.service.CurrencyService;
 import com.axelor.apps.base.service.DateService;
 import com.axelor.db.mapper.Mapper;
 import com.axelor.i18n.I18n;
-import com.axelor.rpc.Context;
 import com.axelor.script.GroovyScriptHelper;
+import com.axelor.script.ScriptBindings;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BankReconciliationReconciliationServiceImpl
     implements BankReconciliationReconciliationService {
+
+  protected static final Logger LOG = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
   protected BankStatementQueryRepository bankStatementQueryRepository;
   protected MoveLineRepository moveLineRepository;
@@ -56,6 +66,9 @@ public class BankReconciliationReconciliationServiceImpl
   protected CurrencyService currencyService;
   protected DateService dateService;
   protected CurrencyScaleService currencyScaleService;
+
+  private final Cache<String, BigDecimal> exchangeRateCache =
+      CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).maximumSize(100).build();
 
   @Inject
   public BankReconciliationReconciliationServiceImpl(
@@ -79,6 +92,7 @@ public class BankReconciliationReconciliationServiceImpl
   @Transactional(rollbackOn = {Exception.class})
   public BankReconciliation reconciliateAccordingToQueries(BankReconciliation bankReconciliation)
       throws AxelorException {
+    long startTime = System.nanoTime();
     List<BankStatementQuery> bankStatementQueries =
         bankStatementQueryRepository
             .findByRuleTypeSelect(BankStatementRuleRepository.RULE_TYPE_RECONCILIATION_AUTO)
@@ -94,6 +108,16 @@ public class BankReconciliationReconciliationServiceImpl
         bankReconciliation.getBankReconciliationLineList().stream()
             .filter(line -> line.getMoveLine() == null)
             .collect(Collectors.toList());
+    int initialQueryCount = bankStatementQueries.size();
+    int initialMoveLineCount = moveLines.size();
+    int initialReconciliationLineCount = bankReconciliationLines.size();
+    int initialEligibleLineCount =
+        (int)
+            bankReconciliationLines.stream()
+                .filter(line -> line.getBankStatementLine() != null)
+                .count();
+    int remainingEligibleLineCount = initialEligibleLineCount;
+    int totalMatchedLineCount = 0;
 
     BigInteger dateMargin =
         BigInteger.valueOf(
@@ -105,25 +129,50 @@ public class BankReconciliationReconciliationServiceImpl
     BigDecimal amountMarginLow = this.getAmountMarginLow(bankReconciliation);
     BigDecimal amountMarginHigh = BigDecimal.ONE;
 
-    Context scriptContext;
+    int queryIndex = 0;
+    Set<Long> matchedMoveLineIds = new HashSet<>();
+
+    LOG.info(
+        "Starting automatic reconciliation for bank reconciliation {}: {} queries, {} candidate move lines, {} unreconciled lines ({} eligible)",
+        bankReconciliation.getId(),
+        initialQueryCount,
+        initialMoveLineCount,
+        initialReconciliationLineCount,
+        initialEligibleLineCount);
 
     for (BankStatementQuery bankStatementQuery : bankStatementQueries) {
+      queryIndex++;
+      int matchedLineCount = 0;
+      String query =
+          computeQuery(bankStatementQuery, dateMargin, amountMarginLow, amountMarginHigh);
+
       for (BankReconciliationLine bankReconciliationLine : bankReconciliationLines) {
         BankStatementLine bankStatementLine = bankReconciliationLine.getBankStatementLine();
         if (bankReconciliationLine.getMoveLine() != null || bankStatementLine == null) {
           continue;
         }
-        for (MoveLine moveLine : moveLines) {
-          bankStatementLine.setMoveLine(moveLine);
 
-          scriptContext =
-              this.getScriptContext(
-                  bankReconciliation, bankStatementLine, bankReconciliationLine, moveLine);
-          String query =
-              computeQuery(bankStatementQuery, dateMargin, amountMarginLow, amountMarginHigh);
-          Boolean result = (Boolean) new GroovyScriptHelper(scriptContext).eval(query);
+        bankStatementLine.setMoveLine(null);
+        ScriptBindings sb =
+            this.getScriptBinding(bankReconciliation, bankStatementLine, bankReconciliationLine);
+        BigDecimal debit = (BigDecimal) sb.get("debit");
+        BigDecimal credit = (BigDecimal) sb.get("credit");
+        BigDecimal baseAmount = debit.compareTo(BigDecimal.ZERO) == 0 ? credit : debit;
+
+        for (MoveLine moveLine : moveLines) {
+          if (matchedMoveLineIds.contains(moveLine.getId())) {
+            continue;
+          }
+
+          sb.put("moveLine", moveLine);
+          sb.put(
+              "currencyAmount",
+              getConvertedCurrencyAmount(bankReconciliation, moveLine, baseAmount));
+
+          Boolean result = (Boolean) new GroovyScriptHelper(sb).eval(query);
 
           if (result) {
+            bankStatementLine.setMoveLine(moveLine);
             bankReconciliationLine =
                 updateBankReconciliationLine(bankReconciliationLine, moveLine, bankStatementQuery);
             boolean isUnderCorrection =
@@ -137,14 +186,37 @@ public class BankReconciliationReconciliationServiceImpl
             }
 
             moveLine.setPostedNbr(bankReconciliationLine.getPostedNbr());
-            moveLines.remove(moveLine);
+            matchedMoveLineIds.add(moveLine.getId());
+            matchedLineCount++;
+            totalMatchedLineCount++;
+            remainingEligibleLineCount--;
             break;
           }
-
-          bankStatementLine.setMoveLine(null);
         }
       }
+
+      LOG.info(
+          "Automatic reconciliation query {}/{} for bank reconciliation {} (query id {}): matched {} lines, {} eligible lines remaining, {} candidate move lines remaining",
+          queryIndex,
+          initialQueryCount,
+          bankReconciliation.getId(),
+          bankStatementQuery.getId(),
+          matchedLineCount,
+          remainingEligibleLineCount,
+          initialMoveLineCount - matchedMoveLineIds.size());
     }
+
+    LOG.info(
+        "Completed automatic reconciliation for bank reconciliation {} in {} ms: {} queries, {} initial candidate move lines, {} initial unreconciled lines ({} eligible), {} matched lines, {} eligible lines remaining, {} candidate move lines remaining",
+        bankReconciliation.getId(),
+        (System.nanoTime() - startTime) / 1_000_000,
+        initialQueryCount,
+        initialMoveLineCount,
+        initialReconciliationLineCount,
+        initialEligibleLineCount,
+        totalMatchedLineCount,
+        remainingEligibleLineCount,
+        initialMoveLineCount - matchedMoveLineIds.size());
     return bankReconciliation;
   }
 
@@ -265,33 +337,47 @@ public class BankReconciliationReconciliationServiceImpl
     return BigDecimal.ONE.subtract(amountMargin);
   }
 
-  protected Context getScriptContext(
+  protected ScriptBindings getScriptBinding(
       BankReconciliation bankReconciliation,
       BankStatementLine bankStatementLine,
-      BankReconciliationLine bankReconciliationLine,
-      MoveLine moveLine)
+      BankReconciliationLine bankReconciliationLine)
       throws AxelorException {
-    Context scriptContext =
-        new Context(Mapper.toMap(bankStatementLine), BankStatementLineAFB120.class);
+    ScriptBindings sb = new ScriptBindings(Mapper.toMap(bankStatementLine));
 
     BigDecimal debit =
         currencyScaleService.getScaledValue(bankReconciliation, bankReconciliationLine.getDebit());
     BigDecimal credit =
         currencyScaleService.getScaledValue(bankReconciliation, bankReconciliationLine.getCredit());
 
-    BigDecimal currencyAmount = debit.compareTo(BigDecimal.ZERO) == 0 ? credit : debit;
-    currencyAmount =
-        currencyService.getAmountCurrencyConvertedAtDate(
-            bankReconciliation.getCurrency(),
-            moveLine.getMove().getCurrency(),
-            currencyAmount,
-            dateService.date());
+    sb.put("debit", debit);
+    sb.put("credit", credit);
 
-    scriptContext.put("debit", debit);
-    scriptContext.put("credit", credit);
-    scriptContext.put("currencyAmount", currencyAmount);
+    return sb;
+  }
 
-    return scriptContext;
+  protected BigDecimal getExchangeRate(Currency startCurrency, Currency endCurrency)
+      throws AxelorException {
+    if (startCurrency.equals(endCurrency)) {
+      return BigDecimal.ONE;
+    }
+    String key = startCurrency.getId() + "_" + endCurrency.getId();
+    BigDecimal rate = exchangeRateCache.getIfPresent(key);
+    if (rate != null) {
+      return rate;
+    }
+    rate =
+        currencyService.getCurrencyConversionRate(startCurrency, endCurrency, dateService.date());
+    exchangeRateCache.put(key, rate);
+    return rate;
+  }
+
+  protected BigDecimal getConvertedCurrencyAmount(
+      BankReconciliation bankReconciliation, MoveLine moveLine, BigDecimal baseAmount)
+      throws AxelorException {
+    BigDecimal exchangeRate =
+        getExchangeRate(bankReconciliation.getCurrency(), moveLine.getMove().getCurrency());
+    return currencyService.getAmountCurrencyConvertedUsingExchangeRate(
+        baseAmount, exchangeRate, moveLine.getMove().getCurrency());
   }
 
   protected BankReconciliationLine updateBankReconciliationLine(
