@@ -50,7 +50,6 @@ import com.axelor.apps.stock.db.StockMoveLine;
 import com.axelor.apps.stock.db.TrackingNumber;
 import com.axelor.apps.stock.db.TrackingNumberConfiguration;
 import com.axelor.apps.stock.db.repo.InventoryLineRepository;
-import com.axelor.apps.stock.db.repo.InventoryRepository;
 import com.axelor.apps.stock.db.repo.StockLocationRepository;
 import com.axelor.apps.stock.db.repo.StockMoveLineRepository;
 import com.axelor.apps.stock.db.repo.StockMoveRepository;
@@ -715,11 +714,9 @@ public class StockMoveServiceImpl implements StockMoveService {
         inventoryLineRepo
             .all()
             .filter(
-                "self.inventory.statusSelect BETWEEN :startStatus AND :endStatus\n"
+                "self.inventory.isStockMoveBlocked = true\n"
                     + "AND self.inventory.stockLocation.id IN (:stockLocationIds)\n"
                     + "AND self.product.id IN (:productList)")
-            .bind("startStatus", InventoryRepository.STATUS_IN_PROGRESS)
-            .bind("endStatus", InventoryRepository.STATUS_COMPLETED)
             .bind("stockLocationIds", stockLocationIds)
             .bind("productList", productIds)
             .fetchOne();

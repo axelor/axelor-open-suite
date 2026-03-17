@@ -120,6 +120,7 @@ public class InventoryValidateServiceImpl implements InventoryValidateService {
     inventory.setValidatedOn(
         appBaseService.getTodayDateTime(inventory.getCompany()).toLocalDateTime());
     inventory.setStatusSelect(InventoryRepository.STATUS_VALIDATED);
+    inventory.setIsStockMoveBlocked(false);
     inventory.setValidatedBy(AuthUtils.getUser());
 
     generateStockMoves(inventory, true);

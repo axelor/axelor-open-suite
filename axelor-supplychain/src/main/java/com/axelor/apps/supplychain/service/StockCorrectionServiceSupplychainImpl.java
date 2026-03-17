@@ -21,11 +21,12 @@ package com.axelor.apps.supplychain.service;
 import com.axelor.apps.base.service.ProductCompanyService;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.stock.db.StockLocationLine;
-import com.axelor.apps.stock.db.repo.InventoryRepository;
+import com.axelor.apps.stock.db.repo.InventoryLineRepository;
 import com.axelor.apps.stock.db.repo.StockCorrectionRepository;
 import com.axelor.apps.stock.service.StockCorrectionServiceImpl;
 import com.axelor.apps.stock.service.StockLocationLineFetchService;
 import com.axelor.apps.stock.service.StockLocationLineService;
+import com.axelor.apps.stock.service.StockLocationService;
 import com.axelor.apps.stock.service.StockMoveLineService;
 import com.axelor.apps.stock.service.StockMoveService;
 import com.axelor.apps.stock.service.config.StockConfigService;
@@ -44,7 +45,8 @@ public class StockCorrectionServiceSupplychainImpl extends StockCorrectionServic
       StockMoveLineService stockMoveLineService,
       StockCorrectionRepository stockCorrectionRepository,
       StockLocationLineFetchService stockLocationLineFetchService,
-      InventoryRepository inventoryRepository) {
+      InventoryLineRepository inventoryLineRepository,
+      StockLocationService stockLocationService) {
     super(
         stockConfigService,
         productCompanyService,
@@ -54,7 +56,8 @@ public class StockCorrectionServiceSupplychainImpl extends StockCorrectionServic
         stockMoveLineService,
         stockCorrectionRepository,
         stockLocationLineFetchService,
-        inventoryRepository);
+        inventoryLineRepository,
+        stockLocationService);
   }
 
   @Override

@@ -38,6 +38,8 @@
     <integer name="typeSelect" title="Type" selection="product.inventory.type.select"
       required="true"/>
     <boolean name="includeSubStockLocation" title="Incl. sub location stock" default="true"/>
+    <boolean name="isStockMoveBlocked" title="Block stock moves?"
+      help="Block all stock movements on the selected stock location and its sub locations."/>
     <many-to-one name="inventoryPrintTemplate" title="Inventory template"
       ref="com.axelor.apps.base.db.PrintingTemplate"/>
 
