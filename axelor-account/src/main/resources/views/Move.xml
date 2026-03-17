@@ -867,7 +867,7 @@
     title="Related cut off moves" model="com.axelor.apps.account.db.Move">
     <view type="grid" name="move-grid"/>
     <view type="form" name="move-form"/>
-    <domain>self.cutOffOriginMove = :id</domain>
+    <domain>self.cutOffOriginMove.id = :id</domain>
   </action-view>
 
   <action-view name="action-move-view-refusal-to-pay" title="Cancellation"

@@ -26,7 +26,7 @@
     model="com.axelor.apps.helpdesk.db.Ticket">
     <view type="grid" name="ticket-grid"/>
     <view type="form" name="ticket-form"/>
-    <domain>self.ticketType = :id </domain>
+    <domain>self.ticketType.id = :id </domain>
     <context name="_user" expr="eval: __user__"/>
   </action-view>
 

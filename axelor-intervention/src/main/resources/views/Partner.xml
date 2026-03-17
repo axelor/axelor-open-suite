@@ -39,14 +39,14 @@
     model="com.axelor.apps.intervention.db.Equipment" title="Equipments">
     <view type="grid" name="equipment-partner-grid"/>
     <view type="form" name="equipment-form"/>
-    <domain>self.partner = :id</domain>
+    <domain>self.partner.id = :id</domain>
   </action-view>
 
   <action-view name="action-intervention-view-interventions"
     model="com.axelor.apps.intervention.db.Intervention" title="Interventions">
     <view type="grid" name="intervention-partner-grid"/>
     <view type="form" name="intervention-form"/>
-    <domain>self.deliveredPartner = :id</domain>
+    <domain>self.deliveredPartner.id = :id</domain>
   </action-view>
 
   <action-record name="action-partner-record-change-trading-name-set"
