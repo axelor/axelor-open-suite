@@ -16,18 +16,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-package com.axelor.apps.account.db.repo;
+package com.axelor.apps.account.service.move.template;
 
-import com.axelor.apps.account.db.AnalyticMoveLine;
+import com.axelor.apps.account.db.MoveTemplateLine;
+import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.base.db.Company;
 
-public class AnalyticMoveLineMngtRepository extends AnalyticMoveLineRepository {
-  @Override
-  public AnalyticMoveLine copy(AnalyticMoveLine entity, boolean deep) {
-    AnalyticMoveLine copy = super.copy(entity, deep);
-    copy.setMoveLine(null);
-    copy.setInvoiceLine(null);
-    copy.setMoveLineMassEntry(null);
-    copy.setMoveTemplateLine(null);
-    return copy;
-  }
+public interface MoveTemplateLineComputeAnalyticService {
+
+  MoveTemplateLine computeAnalyticDistribution(MoveTemplateLine moveTemplateLine);
+
+  MoveTemplateLine createAnalyticDistributionWithTemplate(MoveTemplateLine moveTemplateLine);
+
+  MoveTemplateLine analyzeMoveTemplateLine(MoveTemplateLine moveTemplateLine, Company company)
+      throws AxelorException;
+
+  MoveTemplateLine clearAnalyticAccounting(MoveTemplateLine moveTemplateLine);
+
+  MoveTemplateLine clearAnalyticAccountingIfEmpty(MoveTemplateLine moveTemplateLine);
 }

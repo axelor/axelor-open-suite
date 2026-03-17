@@ -30,4 +30,6 @@ public interface AnalyticGroupService {
 
   Map<String, Object> getAnalyticAccountValueMap(AnalyticLine analyticLine, Company company)
       throws AxelorException;
+
+  Map<String, Object> createAnalyticValuesMap(AnalyticLine analyticLine);
 }

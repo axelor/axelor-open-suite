@@ -24,7 +24,6 @@ import com.axelor.apps.account.db.Journal;
 import com.axelor.apps.account.db.Move;
 import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.repo.AccountRepository;
-import com.axelor.apps.account.db.repo.AccountTypeRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
 import com.axelor.apps.account.service.JournalService;
 import com.axelor.apps.account.service.analytic.AnalyticAttrsService;
@@ -40,7 +39,6 @@ import jakarta.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
@@ -90,15 +88,7 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       MoveLine moveLine, Move move, Map<String, Map<String, Object>> attrsMap)
       throws AxelorException {
     Company company = move != null ? move.getCompany() : null;
-
-    for (int i = startAxisPosition; i <= endAxisPosition; i++) {
-      this.addAttr(
-          "axis".concat(Integer.toString(i)).concat("AnalyticAccount"),
-          "required",
-          analyticLineService.isAxisRequired(moveLine, company, i)
-              && !analyticLineService.checkAnalyticLinesByAxis(moveLine, i, company),
-          attrsMap);
-    }
+    analyticAttrsService.addAnalyticAccountRequired(moveLine, company, attrsMap);
   }
 
   @Override
@@ -250,25 +240,8 @@ public class MoveLineAttrsServiceImpl implements MoveLineAttrsService {
       return;
     }
 
-    String technicalTypeSelect =
-        Optional.of(moveLine)
-            .map(MoveLine::getAccount)
-            .map(Account::getAccountType)
-            .map(AccountType::getTechnicalTypeSelect)
-            .orElse(null);
-
-    boolean isPurchase = !AccountTypeRepository.TYPE_INCOME.equals(technicalTypeSelect);
-
-    String domain =
-        analyticAttrsService.getAnalyticDistributionTemplateDomain(
-            moveLine.getPartner(),
-            null,
-            move.getCompany(),
-            move.getTradingName(),
-            moveLine.getAccount(),
-            isPurchase);
-
-    this.addAttr("analyticDistributionTemplate", "domain", domain, attrsMap);
+    analyticAttrsService.addAnalyticDistributionTemplateDomain(
+        moveLine, moveLine.getPartner(), null, move.getCompany(), move.getTradingName(), attrsMap);
   }
 
   @Override
