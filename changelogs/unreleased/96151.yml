@@ -1,0 +1,3 @@
+---
+title: "Accounting config template: fixed sequences not being linked to journals when importing chart of accounts for a new company."
+module: axelor-account
