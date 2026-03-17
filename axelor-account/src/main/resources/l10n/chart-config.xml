@@ -132,6 +132,8 @@
       search="self.code in :validAccounts and self.company.id = :_companyId"
       eval="validAccounts.split('\\|') as List"/>
     <bind to="company" search="self.id = :_companyId"/>
+    <bind search="self.importId = (:_companyCode || '-' || :sequence_importId)" to="sequence"
+      update="true" if="sequence_importId"/>
   </input>
 
   <input file="account_paymentMode.csv" separator=";"
