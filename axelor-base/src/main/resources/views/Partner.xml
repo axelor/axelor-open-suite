@@ -472,6 +472,7 @@
           <field name="description" colSpan="12" height="8" showTitle="false" widget="Html"/>
         </panel>
       </panel>
+      <panel-include view="incl-blocking-partner-form"/>
       <panel name="eventPanel" title="Events" showIf="id != null &amp;&amp; !isEmployee"
         if-module="axelor-crm" hidden="true" if="__config__.app.isApp('crm')">
         <button name="meetingBtn" title="Create a meeting" link="" icon="pencil-square"
