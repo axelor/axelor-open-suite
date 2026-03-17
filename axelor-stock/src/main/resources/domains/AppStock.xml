@@ -47,6 +47,11 @@
     <boolean name="isIncotermEnabled" title="Enable incoterm" default="true"
       help="This checkbox enables the incoterms feature, which can be configured in the corresponding menu entry under the configuration menu of the stock module."/>
     <boolean name="isMassStockMoveManaged" title="Mass move enabled"/>
+    <boolean name="activateStockMoveBarcodeGeneration"
+      title="Activate bar code generation for stock move" default="false"
+      help="The bar code holds the stock move's sequence information"/>
+    <many-to-one name="stockMoveBarcodeTypeConfig" title="Stock move barcode type"
+      ref="com.axelor.apps.base.db.BarcodeTypeConfig"/>
 
     <track>
       <field name="isEnabledProductDescriptionCopy" on="UPDATE"/>
@@ -64,6 +69,8 @@
       <field name="isManageStockLocationOnStockMoveLine" on="UPDATE"/>
       <field name="isMassStockMoveManaged" on="UPDATE"/>
       <field name="isIncotermEnabled" on="UPDATE"/>
+      <field name="activateStockMoveBarcodeGeneration" on="UPDATE"/>
+      <field name="stockMoveBarcodeTypeConfig" on="UPDATE"/>
     </track>
   </entity>
 
