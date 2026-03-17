@@ -1,0 +1,3 @@
+---
+title: "Fixed internal errors caused by invalid relation-id query comparisons in multiple references."
+module: axelor-base

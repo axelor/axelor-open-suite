@@ -787,7 +787,7 @@
     model="com.axelor.apps.hr.db.Timesheet">
     <view type="grid" name="my-timesheets-grid"/>
     <view type="form" name="timesheet-form"/>
-    <domain>self.employee = :id</domain>
+    <domain>self.employee.id = :id</domain>
   </action-view>
 
   <action-method name="action-employee-method-show-annual-report">

@@ -1,0 +1,3 @@
+---
+title: "Expense type: fixed an error when creating an expense product while product codes are generated from categories."
+module: axelor-human-resource
