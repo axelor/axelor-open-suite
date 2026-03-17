@@ -19,6 +19,7 @@
 package com.axelor.apps.hr.rest;
 
 import com.axelor.apps.base.AxelorException;
+import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.rest.dto.ExpensePostRequest;
@@ -34,6 +35,7 @@ import com.axelor.apps.hr.service.expense.ExpenseToolService;
 import com.axelor.apps.hr.service.expense.ExpenseValidateService;
 import com.axelor.apps.hr.service.expense.ExpenseWorkflowService;
 import com.axelor.apps.hr.translation.ITranslation;
+import com.axelor.apps.project.db.Project;
 import com.axelor.auth.AuthUtils;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -54,11 +56,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("/aos/expense")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ExpenseRestController {
+  private static final Logger log = LoggerFactory.getLogger(ExpenseRestController.class);
+
   @Operation(
       summary = "Create an expense",
       tags = {"Expense"})
@@ -80,6 +86,28 @@ public class ExpenseRestController {
                 requestBody.fetchProject(),
                 requestBody.getCompanyCbSelect(),
                 requestBody.fetchExpenseLines());
+
+    return ResponseConstructor.buildCreateResponse(expense, new ExpenseResponse(expense));
+  }
+
+  @Operation(
+      summary = "Create or update project expense",
+      tags = {"Expense"})
+  @Path("/project-expense")
+  @POST
+  @HttpExceptionHandler
+  public Response createOrUpdateProjectExpense(ExpensePostRequest requestBody)
+      throws AxelorException {
+    RequestValidator.validateBody(requestBody);
+    new SecurityCheck().createAccess(Expense.class).check();
+    Employee employee = requestBody.fetchEmployee();
+    Project project = requestBody.fetchProject();
+    List<ExpenseLine> expenseLines = requestBody.fetchExpenseLines();
+
+    Expense expense =
+        Beans.get(ExpenseCreateService.class)
+            .createOrUpdateProjectExpense(project, employee, expenseLines);
+    log.info("creating a project expense for employee {} and project {}", employee, project);
 
     return ResponseConstructor.buildCreateResponse(expense, new ExpenseResponse(expense));
   }

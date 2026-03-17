@@ -22,6 +22,7 @@ import com.axelor.apps.base.AxelorException;
 import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
+import com.axelor.apps.project.db.Project;
 import java.util.List;
 
 public interface ExpenseToolService {
@@ -33,6 +34,8 @@ public interface ExpenseToolService {
    * @return
    */
   public Expense getOrCreateExpense(Employee employee);
+
+  public Expense getOrCreateExpense(Employee employee, Project project);
 
   public void setDraftSequence(Expense expense) throws AxelorException;
 
@@ -52,4 +55,7 @@ public interface ExpenseToolService {
   boolean hasSeveralCurrencies(List<ExpenseLine> expenseLineList);
 
   boolean hasSeveralEmployees(List<ExpenseLine> expenseLineList);
+
+  void addOrUpdateProjectExpenseLines(Expense expense, List<ExpenseLine> expenseLineList)
+      throws AxelorException;
 }

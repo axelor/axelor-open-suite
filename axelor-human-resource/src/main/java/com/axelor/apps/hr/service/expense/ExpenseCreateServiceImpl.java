@@ -24,6 +24,7 @@ import com.axelor.apps.base.db.Company;
 import com.axelor.apps.base.db.Currency;
 import com.axelor.apps.base.db.Period;
 import com.axelor.apps.base.db.repo.PeriodRepository;
+import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.db.repo.YearRepository;
 import com.axelor.apps.base.service.app.AppBaseService;
 import com.axelor.apps.hr.db.Employee;
@@ -97,6 +98,21 @@ public class ExpenseCreateServiceImpl implements ExpenseCreateService {
 
     return createExpense(
         company, employee, currency, bankDetails, null, null, companyCbSelect, List.of());
+  }
+
+  @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public Expense createOrUpdateProjectExpense(
+      Project project, Employee employee, List<ExpenseLine> expenseLines) throws AxelorException {
+    if (employee == null || project == null) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_MISSING_FIELD, "Employee and Project must be provided");
+    }
+
+    Expense expense = expenseToolService.getOrCreateExpense(employee, project);
+    expenseToolService.addOrUpdateProjectExpenseLines(expense, expenseLines);
+
+    return expense;
   }
 
   protected void setExpenseInfo(

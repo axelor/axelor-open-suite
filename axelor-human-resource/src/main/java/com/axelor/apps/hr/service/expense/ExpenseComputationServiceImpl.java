@@ -24,6 +24,7 @@ import com.axelor.apps.hr.db.ExpenseLine;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 @Singleton
@@ -72,6 +73,32 @@ public class ExpenseComputationServiceImpl implements ExpenseComputationService 
     expense.setInTaxTotal(inTaxTotal);
     expense.setTotalAmountToInvoice(totalToInvoice);
     return expense;
+  }
+
+  @Override
+  public void computeLine(ExpenseLine line) {
+    line.setToInvoice(true);
+    line.setEmployee(line.getExpense().getEmployee());
+    line.setProject(line.getExpense().getProject());
+
+    if (line.getCurrency() != null && line.getExpense() != null) {
+      line.setExpense(line.getExpense());
+    }
+
+    if (line.getUntaxedAmount() != null) {
+      BigDecimal untaxed = line.getUntaxedAmount();
+
+      // Check if tax is not provided by the user
+      if (line.getTotalTax() == null || line.getTotalTax().compareTo(BigDecimal.ZERO) == 0) {
+        BigDecimal calculatedTax =
+            untaxed.multiply(new BigDecimal("0.19")).setScale(2, RoundingMode.HALF_UP);
+        line.setTotalTax(calculatedTax);
+      }
+
+      line.setTotalAmount(untaxed.add(line.getTotalTax()));
+    }
+
+    line.setTotalAmountToInvoice(line.getTotalAmount());
   }
 
   @Override

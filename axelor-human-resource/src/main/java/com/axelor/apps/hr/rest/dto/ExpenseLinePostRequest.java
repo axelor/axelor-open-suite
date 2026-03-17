@@ -28,6 +28,7 @@ import com.axelor.apps.project.db.ProjectTask;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.utils.api.ObjectFinder;
 import com.axelor.utils.api.RequestPostStructure;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -42,12 +43,17 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
   public static final String EXPENSE_LINE_TYPE_KILOMETRIC = "kilometric";
 
   @Min(0)
+  private Long expenseLineId;
+
+  @Min(0)
   private Long projectId;
 
   @Min(0)
   private Long expenseProductId;
 
-  @NotNull private LocalDate expenseDate;
+  @NotNull
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+  private LocalDate expenseDate;
 
   @NotNull
   @Min(0)
@@ -55,6 +61,9 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
 
   @Min(0)
   private BigDecimal totalAmount;
+
+  @Min(0)
+  private BigDecimal untaxedAmount;
 
   @Min(0)
   private BigDecimal totalTax;
@@ -101,6 +110,14 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
     this.invitedCollaboratorList = invitedCollaboratorList;
   }
 
+  public Long getExpenseLineId() {
+    return expenseLineId;
+  }
+
+  public void setExpenseLineId(Long expenseLineId) {
+    this.expenseLineId = expenseLineId;
+  }
+
   public Long getProjectId() {
     return projectId;
   }
@@ -139,6 +156,14 @@ public class ExpenseLinePostRequest extends RequestPostStructure {
 
   public void setTotalAmount(BigDecimal totalAmount) {
     this.totalAmount = totalAmount;
+  }
+
+  public BigDecimal getUntaxedAmount() {
+    return untaxedAmount;
+  }
+
+  public void setUntaxedAmount(BigDecimal untaxedAmount) {
+    this.untaxedAmount = untaxedAmount;
   }
 
   public BigDecimal getTotalTax() {

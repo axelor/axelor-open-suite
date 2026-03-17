@@ -32,9 +32,12 @@ import com.axelor.apps.hr.db.Employee;
 import com.axelor.apps.hr.db.Expense;
 import com.axelor.apps.hr.db.ExpenseLine;
 import com.axelor.apps.hr.db.KilometricAllowParam;
+import com.axelor.apps.hr.db.repo.ExpenseLineRepository;
 import com.axelor.apps.hr.db.repo.ExpenseRepository;
 import com.axelor.apps.hr.exception.HumanResourceExceptionMessage;
+import com.axelor.apps.project.db.Project;
 import com.axelor.i18n.I18n;
+import com.axelor.inject.Beans;
 import com.google.common.base.Strings;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -43,7 +46,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.apache.commons.collections.CollectionUtils;
@@ -57,6 +59,7 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
   protected PeriodRepository periodRepository;
   protected ExpenseComputationService expenseComputationService;
   protected ExpenseLineToolService expenseLineToolService;
+  protected ExpenseProofFileService expenseProofFileService;
 
   @Inject
   public ExpenseToolServiceImpl(
@@ -120,6 +123,54 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
   }
 
   @Override
+  public Expense getOrCreateExpense(Employee employee, Project project) {
+    if (employee == null) {
+      return null;
+    }
+
+    Expense expense =
+        expenseRepository
+            .all()
+            .filter(
+                "self.statusSelect = :status AND self.employee.id = :employeeId AND self.project.id = :projectId")
+            .bind("status", ExpenseRepository.STATUS_DRAFT)
+            .bind("employeeId", employee.getId())
+            .bind("projectId", project.getId())
+            .order("-id")
+            .fetchOne();
+
+    if (expense == null) {
+      expense = new Expense();
+      expense.setEmployee(employee);
+      expense.setProject(project);
+      Company company = null;
+      if (employee.getMainEmploymentContract() != null) {
+        company = employee.getMainEmploymentContract().getPayCompany();
+      } else if (employee.getUser() != null) {
+        company = employee.getUser().getActiveCompany();
+      }
+
+      Period period =
+          periodRepository
+              .all()
+              .filter(
+                  "self.fromDate <= ?1 AND self.toDate >= ?1 AND self.allowExpenseCreation = true AND self.year.company = ?2 AND self.year.typeSelect = ?3",
+                  appBaseService.getTodayDate(company),
+                  company,
+                  YearBaseRepository.STATUS_OPENED)
+              .fetchOne();
+
+      expense.setCompany(company);
+      assert company != null;
+      expense.setCurrency(company.getCurrency());
+      expense.setTypeSelect(1);
+      expense.setPeriod(period);
+      expense.setStatusSelect(ExpenseRepository.STATUS_DRAFT);
+    }
+    return expense;
+  }
+
+  @Override
   public void setDraftSequence(Expense expense) throws AxelorException {
     if (expense.getId() != null && Strings.isNullOrEmpty(expense.getExpenseSeq())) {
       expense.setExpenseSeq(sequenceService.getDraftSequenceNumber(expense));
@@ -164,6 +215,59 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
   }
 
   @Override
+  @Transactional(rollbackOn = {Exception.class})
+  public void addOrUpdateProjectExpenseLines(Expense expense, List<ExpenseLine> expenseLineList)
+      throws AxelorException {
+    if (expense.getStatusSelect() != ExpenseRepository.STATUS_DRAFT) {
+      throw new AxelorException(
+          TraceBackRepository.CATEGORY_INCONSISTENCY,
+          I18n.get(HumanResourceExceptionMessage.EXPENSE_ADD_LINE_WRONG_STATUS));
+    }
+
+    if (CollectionUtils.isEmpty(expenseLineList)) {
+      return;
+    }
+
+    checkCurrency(expense, expenseLineList);
+
+    for (ExpenseLine incomingLine : expenseLineList) {
+      if (incomingLine.getId() != null) {
+        ExpenseLine managedLine = Beans.get(ExpenseLineRepository.class).find(incomingLine.getId());
+
+        if (managedLine != null) {
+          managedLine.setProjectTask(incomingLine.getProjectTask());
+          managedLine.setExpenseProduct(incomingLine.getExpenseProduct());
+          managedLine.setExpenseDate(incomingLine.getExpenseDate());
+          managedLine.setUntaxedAmount(incomingLine.getUntaxedAmount());
+          managedLine.setTotalTax(incomingLine.getTotalTax());
+          managedLine.setComments(incomingLine.getComments());
+          managedLine.setJustificationMetaFile(incomingLine.getJustificationMetaFile());
+
+          expenseComputationService.computeLine(managedLine);
+
+          // Remove the incoming detached version from the expense collection
+          if (expense.getGeneralExpenseLineList() != null) {
+            expense
+                .getGeneralExpenseLineList()
+                .removeIf(l -> l.getId() != null && l.getId().equals(managedLine.getId()));
+            expense.getGeneralExpenseLineList().add(managedLine);
+          }
+        }
+      } else {
+        incomingLine.setExpense(expense);
+        expenseComputationService.computeLine(incomingLine);
+        if (expenseLineToolService.isKilometricExpenseLine(incomingLine)) {
+          expense.addKilometricExpenseLineListItem(incomingLine);
+        } else {
+          expense.addGeneralExpenseLineListItem(incomingLine);
+        }
+      }
+    }
+
+    expenseRepository.save(expense);
+  }
+
+  @Override
   public void addExpenseLineToExpense(Expense expense, ExpenseLine expenseLine)
       throws AxelorException {
     checkCurrency(expense, expenseLine);
@@ -177,16 +281,36 @@ public class ExpenseToolServiceImpl implements ExpenseToolService {
   protected void checkCurrency(Expense expense, List<ExpenseLine> expenseLineList)
       throws AxelorException {
     Set<Currency> currencySet =
-        expenseLineList.stream().map(ExpenseLine::getCurrency).collect(Collectors.toSet());
-    Optional<Currency> expenseLineCurrency = currencySet.stream().findFirst();
+        expenseLineList.stream()
+            .map(ExpenseLine::getCurrency)
+            .filter(Objects::nonNull) // CRITICAL: ignore nulls during validation
+            .collect(Collectors.toSet());
 
-    if (hasSeveralCurrencies(expenseLineList)
-        || (expenseLineCurrency.isPresent()
-            && !expense.getCurrency().equals(expenseLineCurrency.get()))) {
+    if (currencySet.isEmpty()) {
+      return;
+    }
+
+    Currency firstLineCurrency = currencySet.iterator().next();
+
+    if (currencySet.size() > 1
+        || (expense.getCurrency() != null && !expense.getCurrency().equals(firstLineCurrency))) {
       throw new AxelorException(
           TraceBackRepository.CATEGORY_INCONSISTENCY,
           I18n.get(HumanResourceExceptionMessage.EXPENSE_LINE_CURRENCY_NOT_EQUAL));
     }
+  }
+
+  private ExpenseLine findExistingLine(Expense expense, ExpenseLine incoming) {
+    List<ExpenseLine> allLines = expense.getGeneralExpenseLineList();
+    if (allLines == null) return null;
+
+    return allLines.stream()
+        .filter(l -> l.getProjectTask() != null && incoming.getProjectTask() != null)
+        .filter(l -> l.getProjectTask().getId().equals(incoming.getProjectTask().getId()))
+        .filter(l -> l.getExpenseProduct() != null && incoming.getExpenseProduct() != null)
+        .filter(l -> l.getExpenseProduct().getId().equals(incoming.getExpenseProduct().getId()))
+        .findFirst()
+        .orElse(null);
   }
 
   protected void checkCurrency(Expense expense, ExpenseLine expenseLine) throws AxelorException {
