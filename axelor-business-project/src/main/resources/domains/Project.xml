@@ -135,6 +135,8 @@
     <!-- MGM-110 -->
     <integer name="projectTypeSelect" title="Project type"
       selection="business.project.project.type.select" default="0"/>
+    <many-to-one name="projectType" title="Project type"
+      ref="com.axelor.apps.businessproject.db.ProjectType"/>
 
     <!-- Analytic fields -->
     <many-to-one name="analyticDistributionTemplate"

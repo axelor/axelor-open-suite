@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/object-views http://axelor.com/xml/ns/object-views/object-views_7.4.xsd">
+
+  <grid name="project-type-grid" title="Project Types"
+    model="com.axelor.apps.businessproject.db.ProjectType" orderBy="sequence">
+    <field name="name"/>
+    <field name="requiresTask"/>
+    <field name="requiresExpense"/>
+    <field name="requiresTaskReport"/>
+    <field name="requiresValidation"/>
+    <field name="requiresInvoicing"/>
+    <field name="sequence"/>
+  </grid>
+
+  <form name="project-type-form" title="Project Type"
+    model="com.axelor.apps.businessproject.db.ProjectType">
+    <panel name="mainPanel" title="General">
+      <field name="name" required="true"/>
+      <field name="sequence" readonlyIf="id"/>
+    </panel>
+    <panel name="flagsPanel" title="Behavior">
+      <field name="requiresTask" colSpan="6"/>
+      <field name="requiresExpense" colSpan="6"/>
+      <field name="requiresTaskReport" colSpan="6"/>
+      <field name="requiresValidation" colSpan="6"/>
+      <field name="requiresInvoicing" colSpan="6"/>
+    </panel>
+    <panel name="configurations" title="Mapping configurations" colSpan="12">
+      <field name="defaultExpenseCategory" colSpan="6"/>
+    </panel>
+  </form>
+
+</object-views>

@@ -29,6 +29,7 @@ import com.axelor.apps.base.db.repo.TraceBackRepository;
 import com.axelor.apps.base.service.PartnerService;
 import com.axelor.apps.base.service.address.AddressService;
 import com.axelor.apps.base.service.app.AppBaseService;
+import com.axelor.apps.businessproject.db.ProjectType;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.service.app.AppBusinessProjectService;
 import com.axelor.apps.businessproject.service.projecttask.ProjectTaskBusinessProjectService;
@@ -376,9 +377,14 @@ public class ProjectBusinessServiceImpl extends ProjectServiceImpl
 
   @Override
   public Boolean isProjectReadyForReview(Project project) {
-    if (project == null) return false;
+    if (project == null || project.getProjectType() == null) return Boolean.FALSE;
+    ProjectType projectType = project.getProjectType();
 
-    if (Objects.equals(project.getProjectTypeSelect(), ProjectRepository.FEES_PROJECT_TYPE)) {
+    if (!Boolean.TRUE.equals(projectType.getRequiresValidation())) {
+      return Boolean.TRUE;
+    }
+
+    if (!Boolean.TRUE.equals(projectType.getRequiresTask())) {
       return allExpensesValidated(project);
     }
 

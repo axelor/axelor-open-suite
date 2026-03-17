@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domain-models xmlns="http://axelor.com/xml/ns/domain-models"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://axelor.com/xml/ns/domain-models http://axelor.com/xml/ns/domain-models/domain-models_7.4.xsd">
+
+  <module name="business-project" package="com.axelor.apps.businessproject.db"/>
+
+  <entity name="ProjectType">
+
+    <string name="name" title="Name" required="true" translatable="true"/>
+    <integer name="sequence" title="Sequence" unique="true"/>
+
+    <!-- Behavior flags -->
+    <boolean name="requiresTask" title="Requires Task" default="false"/>
+    <boolean name="requiresExpense" title="Requires Expense" default="false"/>
+    <boolean name="requiresTaskReport" title="Requires Task Report" default="false"/>
+    <boolean name="requiresValidation" title="Requires Validation" default="false"/>
+    <boolean name="requiresInvoicing" title="Requires Invoicing" default="true"/>
+    <boolean name="requiresConfirmation" title="Requires confirmation" default="false"/>
+    <integer name="defaultExpenseCategory" selection="hr.expense.category.select"
+      default="1"/>
+
+    <finder-method name="findBySequence" using="sequence"/>
+  </entity>
+
+</domain-models>

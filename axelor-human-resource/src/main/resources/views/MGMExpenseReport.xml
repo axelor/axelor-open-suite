@@ -328,7 +328,7 @@
     <field name="typeSelect"
       expr="eval: _isExpenseDeclaration ? com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE_DECLARATION : com.axelor.apps.hr.db.repo.ExpenseRepository.TYPE_EXPENSE"/>
     <field name="categorySelect"
-      expr="eval: __repo__(Project).all().filter('self.id = ?1', _projectId).fetchOne()?.projectTypeSelect == 1 ? 2 : 1"
+      expr="eval: __repo__(Project).all().filter('self.id = ?1', _projectId).fetchOne()?.projectType?.defaultExpenseCategory"
       if="_projectId != null"/>
     <field name="statusSelect" expr="eval: 1"/>
   </action-record>

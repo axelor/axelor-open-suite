@@ -171,8 +171,9 @@
           canCollapse="true" collapseIf="false">
           <field name="projectStatus" showTitle="false" widget="NavSelect" x-order="sequence"
             onChange="action-business-project-group-project-status-on-change" colSpan="12"/>
-          <field name="projectTypeSelect" colSpan="6"/>
-          <field name="projectTypeSelect" colSpan="6" hidden="true"/>
+          <field name="projectType" colSpan="6"
+            onChange="mgm-action-method-set-dynamic-panel-attrs" canView="false"/>
+          <field name="projectType" colSpan="6" hidden="true"/>
           <field name="fromDate" colSpan="6"/>
           <field name="toDate" onChange="action-project-group-to-date-onchange" colSpan="6"/>
           <field name="company" form-view="company-form" grid-view="company-grid" colSpan="6"
@@ -206,12 +207,12 @@
         <field name="priority"/>
         <field name="priority.technicalTypeSelect" hidden="true"/>
         <panel-include view="incl-project-overview-panel-form"/>
+        <field name="projectTypeSelect" colSpan="6" hidden="true"/>
       </panel>
 
       <!-- MGM-80: Moving task panel next to overview to get configs done faster -->
       <panel title="2 Tasks" name="taskTreePanel"
-        onTabSelect="action-method-business-project-open-task-form-for-empty-task-list"
-        showIf="projectTypeSelect == 0 || projectTypeSelect == 2">
+        onTabSelect="action-method-business-project-open-task-form-for-empty-task-list">
         <panel-dashlet name="projectTaskTreeDashletPanel" title="Task Tree"
           showTitle="false" height="200%" colSpan="12"
           action="action-view-show-business-project-task" x-show-bars="true" canSearch="true"/>
@@ -222,30 +223,27 @@
       </panel>
 
       <!-- MGM-66 task reports -->
-      <panel title="3 Task Report" name="taskReportsPanel"
-        showIf="projectTypeSelect == 0 || projectTypeSelect == 2">
+      <panel title="3 Task Report" name="taskReportsPanel">
         <panel-dashlet name="taskReportsDashlet" title="Task Reports"
           action="action-task-report-dashlet" colSpan="12" canNew="true" x-show-bars="true"
           reload-dotted="true"/>
       </panel>
 
       <!-- MGM-100 expense reporting -->
-      <panel title="4 Expense Report" name="expenseReportsPanel"
-        showIf="projectTypeSelect == 0 || projectTypeSelect == 2">
+      <panel title="4 Expense Report" name="expenseReportsPanel">
         <panel-dashlet name="projectExpenseDashlet" title="Project Expenses"
           canEdit="true" readonly="false" action="mgm-action-project-expense-dashlet" colSpan="12"
           canNew="true" x-show-bars="true"/>
       </panel>
-      <panel title="2 Expense Report" name="expenseReportsPanel"
-        showIf="projectTypeSelect == 1">
-        <panel-dashlet name="projectExpenseDashlet" title="Project Expenses"
-          canEdit="true" readonly="false" action="mgm-action-project-expense-dashlet" colSpan="12"
-          canNew="true" x-show-bars="true"/>
-      </panel>
+      <!-- <panel title="2 Expense Report" name="expenseReportsPanel" -->
+      <!-- showIf="projectTypeSelect == 1"> -->
+      <!-- <panel-dashlet name="projectExpenseDashlet" title="Project Expenses" -->
+      <!-- canEdit="true" readonly="false" action="mgm-action-project-expense-dashlet" colSpan="12" -->
+      <!-- canNew="true" x-show-bars="true"/> -->
+      <!-- </panel> -->
 
       <!-- MGM-114 -->
-      <panel title="5 Review and Confirmation" name="otherExpensesReportPanel"
-        showIf="projectTypeSelect == 0 || projectTypeSelect == 2">
+      <panel title="5 Review and Confirmation" name="otherExpensesReportPanel">
         <panel-dashlet name="otherExpensesReportDashlet"
           title="Project extra expenses" canEdit="true" readonly="false"
           action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true"
@@ -253,14 +251,14 @@
         <panel-include view="incl-project-summary-panel-form"/>
       </panel>
 
-      <panel title="3 Review and Confirmation" name="otherExpensesReportPanel"
-        showIf="projectTypeSelect == 1">
-        <panel-dashlet name="otherExpensesReportDashlet"
-          title="Project extra expenses" canEdit="true" readonly="false"
-          action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true"
-          x-show-bars="true"/>
-        <panel-include view="incl-project-summary-panel-form"/>
-      </panel>
+      <!-- <panel title="3 Review and Confirmation" name="otherExpensesReportPanel" -->
+      <!-- showIf="projectTypeSelect == 1"> -->
+      <!-- <panel-dashlet name="otherExpensesReportDashlet" -->
+      <!-- title="Project extra expenses" canEdit="true" readonly="false" -->
+      <!-- action="mgm-action-project-extra-expense-line-dashlet" colSpan="12" canNew="true" -->
+      <!-- x-show-bars="true"/> -->
+      <!-- <panel-include view="incl-project-summary-panel-form"/> -->
+      <!-- </panel> -->
 
       <panel title="Configurations" name="configurationsPanel"
         if="['admins' ].any(g -> __user__.group.code.contains(g))">
@@ -389,16 +387,15 @@
       <!--- MGM-66: display panel to only selected group e.g admins -->
       <panel onTabSelect="mgm-action-business-project-set-default-invoice-flags"
         title="6 Invoicing" name="invoicingPanel"
-        if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
-        showIf="projectTypeSelect == 0 || projectTypeSelect == 2">
+        if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))">
         <panel-include view="custom-mgm-incl-project-invoicing-panel-content"/>
       </panel>
-      <panel onTabSelect="mgm-action-business-project-set-default-invoice-flags"
-        title="4 Invoicing" name="invoicingPanel"
-        if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))"
-        showIf="projectTypeSelect == 1">
-        <panel-include view="custom-mgm-incl-project-invoicing-panel-content"/>
-      </panel>
+      <!-- <panel onTabSelect="mgm-action-business-project-set-default-invoice-flags" -->
+      <!-- title="4 Invoicing" name="invoicingPanel" -->
+      <!-- if="!(['CUSTOM-PT','CUSTOM-TM','CUSTOM-PM'].any(g -> __user__.group.code.contains(g)))" -->
+      <!-- showIf="projectTypeSelect == 1"> -->
+      <!-- <panel-include view="custom-mgm-incl-project-invoicing-panel-content"/> -->
+      <!-- </panel> -->
     </panel-tabs>
     <panel-mail name="mailPanel" if="__user__.group.code == 'admins'">
       <mail-messages limit="4"/>
@@ -777,6 +774,7 @@
     <action name="action-business-project-method-set-analytic-distribution-template-required"/>
     <action name="action-project-attrs-sale-order-panel-display"/>
     <action name="action-record-business-project-set-default-priority"/>
+    <action name="mgm-action-record-business-project-set-default-project-type"/>
   </action-group>
 
   <action-group name="action-business-project-project-group-on-load">
@@ -801,6 +799,8 @@
     <action name="action-business-project-project-group-on-load"/>
     <action name="mgm-action-method-project-show-project-summary"/>
     <action name="mgm-business-projectaction-attrs-navigate-to-review-tab"/>
+    <action name="mgm-action-migrate-project-type"/>
+    <action name="mgm-action-method-set-dynamic-panel-attrs"/>
   </action-group>
 
   <action-record name="action-set-default-project-priority"
@@ -813,6 +813,12 @@
     model="com.axelor.apps.project.db.Project">
     <field name="priority"
       expr="eval: __repo__(ProjectPriority).all().filter('self.technicalTypeSelect = ?', 2).fetchOne()"/>
+  </action-record>
+
+  <action-record name="mgm-action-record-business-project-set-default-project-type"
+    model="com.axelor.apps.project.db.Project">
+    <field name="projectType" if="projectType == null"
+      expr="eval: __config__.app.getApp('project')?.defaultProjectType"/>
   </action-record>
 
   <action-method name="action-project-method-generate-quotation">
@@ -848,6 +854,16 @@
       method="updateProjectStatus"/>
   </action-method>
 
+  <action-method name="mgm-action-migrate-project-type">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="migrateProjectType"/>
+  </action-method>
+
+  <action-method name="mgm-action-method-set-dynamic-panel-attrs">
+    <call class="com.axelor.apps.businessproject.web.ProjectController"
+      method="setDynamicPanelAttrs"/>
+  </action-method>
+
   <action-group name="mgm-action-group-business-project-confimred-project-on-change">
     <action name="action-project-group-on-save"/>
     <action name="save"/>
@@ -866,7 +882,9 @@
 
   <action-validate name="action-business-project-validate-task-report-exists">
     <error message="You can not set a project without a Task Report to done"
-      if="id != null &amp;&amp; __repo__(TaskReport).all().filter('self.project.id = ?1', id).count() == 0"/>
+      if="id != null
+        &amp;&amp; projectType?.requiresTaskReport
+        &amp;&amp; __repo__(TaskReport).all().filter('self.project.id = ?1', id).count() == 0"/>
   </action-validate>
 
   <action-attrs id="business-project-action-project-project-default"

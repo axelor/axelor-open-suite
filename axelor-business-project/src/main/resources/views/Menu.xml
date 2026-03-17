@@ -163,4 +163,13 @@
     <view-param name="show-confirm" value="false"/>
   </action-view>
 
+  <menuitem name="project-configurations-project-type" parent="project-configurations"
+    title="Project type" action="mgm.action.view.business.project.project.type.configuration"
+    order="400"/>
+  <action-view name="mgm.action.view.business.project.project.type.configuration"
+    title="Project Types" model="com.axelor.apps.businessproject.db.ProjectType">
+    <view type="grid" name="project-type-grid"/>
+    <view type="form" name="project-type-form"/>
+  </action-view>
+
 </object-views>

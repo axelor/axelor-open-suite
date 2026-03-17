@@ -30,9 +30,12 @@ import com.axelor.apps.base.service.dms.DMSFileService;
 import com.axelor.apps.base.service.exception.ErrorException;
 import com.axelor.apps.base.service.exception.TraceBackService;
 import com.axelor.apps.businessproject.db.InvoicingProject;
+import com.axelor.apps.businessproject.db.ProjectType;
 import com.axelor.apps.businessproject.db.TaskMemberReport;
 import com.axelor.apps.businessproject.db.TaskReport;
 import com.axelor.apps.businessproject.db.repo.InvoicingProjectRepository;
+import com.axelor.apps.businessproject.db.repo.ProjectTypeBusinessProjectRepository;
+import com.axelor.apps.businessproject.db.repo.ProjectTypeRepository;
 import com.axelor.apps.businessproject.exception.BusinessProjectExceptionMessage;
 import com.axelor.apps.businessproject.service.*;
 import com.axelor.apps.businessproject.service.analytic.ProjectAnalyticTemplateService;
@@ -545,5 +548,72 @@ public class ProjectController {
 
     if (project == null || project.getId() == null) return null;
     return Beans.get(ProjectRepository.class).find(project.getId());
+  }
+
+  public void migrateProjectType(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+
+    if (project.getProjectType() != null) {
+      return;
+    }
+
+    Integer typeSelect = project.getProjectTypeSelect();
+    if (typeSelect == null) {
+      typeSelect = ProjectTypeBusinessProjectRepository.STANDARD_PROJECT_TYPE;
+    }
+
+    ProjectType matched =
+        Beans.get(ProjectTypeRepository.class)
+            .all()
+            .filter("self.sequence = :sel")
+            .bind("sel", typeSelect)
+            .fetchOne();
+
+    if (matched != null) {
+      response.setValue("projectType", matched);
+    }
+  }
+
+  /** Set the appropriate names for the project form panel based on the project type. */
+  public void setDynamicPanelAttrs(ActionRequest request, ActionResponse response) {
+    Project project = request.getContext().asType(Project.class);
+    ProjectType projectType = project.getProjectType();
+
+    if (projectType == null) {
+      return;
+    }
+
+    List<Object[]> panels =
+        List.of(
+            new Object[] {
+              "taskTreePanel", "Tasks", Boolean.TRUE.equals(projectType.getRequiresTask())
+            },
+            new Object[] {
+              "taskReportsPanel",
+              "Task Report",
+              Boolean.TRUE.equals(projectType.getRequiresTaskReport())
+            },
+            new Object[] {
+              "expenseReportsPanel",
+              "Expense Report",
+              Boolean.TRUE.equals(projectType.getRequiresExpense())
+            },
+            new Object[] {
+              "otherExpensesReportPanel",
+              "Review and Confirmation",
+              Boolean.TRUE.equals(projectType.getRequiresValidation())
+            },
+            new Object[] {
+              "invoicingPanel", "Invoicing", Boolean.TRUE.equals(projectType.getRequiresInvoicing())
+            });
+
+    int tab = 1;
+    for (Object[] panel : panels) {
+      boolean visible = (boolean) panel[2];
+      response.setAttr((String) panel[0], "hidden", !visible);
+      if (visible) {
+        response.setAttr((String) panel[0], "title", ++tab + " " + panel[1]);
+      }
+    }
   }
 }
