@@ -66,7 +66,8 @@ public class TimesheetLineGenerationServiceImpl implements TimesheetLineGenerati
       LocalDate toGenerationDate,
       BigDecimal logTime,
       Project project,
-      Product product)
+      Product product,
+      boolean showActivity)
       throws AxelorException {
 
     Employee employee = timesheet.getEmployee();
@@ -83,7 +84,7 @@ public class TimesheetLineGenerationServiceImpl implements TimesheetLineGenerati
           TraceBackRepository.CATEGORY_MISSING_FIELD,
           I18n.get(HumanResourceExceptionMessage.TIMESHEET_TO_DATE));
     }
-    if (product == null) {
+    if (product == null && showActivity) {
       throw new AxelorException(
           timesheet,
           TraceBackRepository.CATEGORY_MISSING_FIELD,
