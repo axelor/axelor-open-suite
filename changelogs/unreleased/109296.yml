@@ -1,0 +1,3 @@
+---
+title: "Payment session: fixed payment moves not generated when auto-confirm bank order is enabled with bank order confirmation accounting trigger."
+module: axelor-bank-payment
