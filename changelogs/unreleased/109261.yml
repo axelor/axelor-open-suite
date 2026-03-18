@@ -1,0 +1,5 @@
+---
+title: "Timesheet: fixed missing product field in lines generation wizard when activity is disabled."
+module: axelor-human-resource
+developer: |
+  TimesheetLineGenerationService.generateLines() now takes an additional boolean showActivity parameter.

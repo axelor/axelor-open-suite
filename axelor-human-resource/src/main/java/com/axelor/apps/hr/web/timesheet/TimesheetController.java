@@ -135,14 +135,21 @@ public class TimesheetController {
             Beans.get(ProductRepository.class)
                 .find(((Integer) productContext.get("id")).longValue());
       }
-      if (context.get("showActivity") == null || !(Boolean) context.get("showActivity")) {
+      boolean showActivity = Boolean.TRUE.equals(context.get("showActivity"));
+      if (product == null && !showActivity) {
         product = Beans.get(UserHrService.class).getTimesheetProduct(timesheet.getEmployee(), null);
       }
 
       timesheet =
           Beans.get(TimesheetLineGenerationService.class)
               .generateLines(
-                  timesheet, fromGenerationDate, toGenerationDate, logTime, project, product);
+                  timesheet,
+                  fromGenerationDate,
+                  toGenerationDate,
+                  logTime,
+                  project,
+                  product,
+                  showActivity);
       response.setValue("timesheetLineList", timesheet.getTimesheetLineList());
     } catch (Exception e) {
       TraceBackService.trace(response, e);
