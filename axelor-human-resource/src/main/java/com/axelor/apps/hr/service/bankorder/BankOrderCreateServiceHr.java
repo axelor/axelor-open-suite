@@ -111,6 +111,7 @@ public class BankOrderCreateServiceHr extends BankOrderCreateService {
   protected int getAccountingTriggerSelect(PaymentMode paymentMode) {
     int accountingTriggerSelect = paymentMode.getAccountingTriggerSelect();
     switch (accountingTriggerSelect) {
+      case PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE:
       case PaymentModeRepository.ACCOUNTING_TRIGGER_CONFIRMATION:
       case PaymentModeRepository.ACCOUNTING_TRIGGER_REALIZATION:
         return accountingTriggerSelect;

@@ -25,6 +25,7 @@ import com.axelor.apps.account.db.MoveLine;
 import com.axelor.apps.account.db.PaymentMode;
 import com.axelor.apps.account.db.repo.InvoicePaymentRepository;
 import com.axelor.apps.account.db.repo.MoveRepository;
+import com.axelor.apps.account.db.repo.PaymentModeRepository;
 import com.axelor.apps.account.service.ReconcileService;
 import com.axelor.apps.account.service.config.AccountConfigService;
 import com.axelor.apps.account.service.move.MoveCancelService;
@@ -118,7 +119,17 @@ public class ExpensePaymentServiceImpl implements ExpensePaymentService {
       BankOrder bankOrder = bankOrderCreateServiceHr.createBankOrder(expense, bankDetails);
       expense.setBankOrder(bankOrder);
       bankOrderRepository.save(bankOrder);
-      expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
+      if (paymentMode.getAccountingTriggerSelect()
+              == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE
+          && accountConfigService
+              .getAccountConfig(expense.getCompany())
+              .getGenerateMoveForInvoicePayment()) {
+        this.createMoveForExpensePayment(expense);
+        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
+        expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
+      } else {
+        expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_PENDING);
+      }
     } else {
       if (accountConfigService
           .getAccountConfig(expense.getCompany())

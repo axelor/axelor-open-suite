@@ -110,7 +110,9 @@ public class BankOrderServiceHRImpl extends BankOrderServiceImpl {
       if (expense != null && expense.getStatusSelect() != ExpenseRepository.STATUS_REIMBURSED) {
         expense.setStatusSelect(ExpenseRepository.STATUS_REIMBURSED);
         expense.setPaymentStatusSelect(InvoicePaymentRepository.STATUS_VALIDATED);
-        expensePaymentService.createMoveForExpensePayment(expense);
+        if (expense.getPaymentMove() == null) {
+          expensePaymentService.createMoveForExpensePayment(expense);
+        }
       }
     }
 
