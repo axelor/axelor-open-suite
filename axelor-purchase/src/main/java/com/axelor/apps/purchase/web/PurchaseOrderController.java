@@ -309,7 +309,8 @@ public class PurchaseOrderController {
     try {
       PurchaseOrder purchaseOrder = request.getContext().asType(PurchaseOrder.class);
       Company company = purchaseOrder.getCompany();
-      String domain = Beans.get(PurchaseOrderDomainService.class).getPartnerBaseDomain(company);
+      String domain =
+          Beans.get(PurchaseOrderDomainService.class).getPartnerBaseDomain(company, purchaseOrder);
 
       String blockedPartnerQuery =
           Beans.get(BlockingService.class)
