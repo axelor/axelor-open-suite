@@ -33,7 +33,9 @@ import com.axelor.apps.bankpayment.service.move.MoveCancelBankPaymentService;
 import com.axelor.apps.base.AxelorException;
 import com.google.inject.Inject;
 import com.google.inject.persist.Transactional;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.collections.CollectionUtils;
 
 public class BankOrderCancelServiceImpl implements BankOrderCancelService {
@@ -98,35 +100,50 @@ public class BankOrderCancelServiceImpl implements BankOrderCancelService {
   }
 
   protected void cancelMoves(BankOrder bankOrder) throws AxelorException {
-    this.cancelBankOrderLinesMove(bankOrder);
-    this.cancelInvoicePaymentMove(bankOrder);
-    this.cancelPaymentSessionMoves(bankOrder);
+    Set<Move> moveSet = new HashSet<>();
+    this.getBankOrderLinesMoves(bankOrder, moveSet);
+    this.getInvoicePaymentMoves(bankOrder, moveSet);
+    this.getPaymentSessionMoves(bankOrder, moveSet);
+    if (CollectionUtils.isEmpty(moveSet)) {
+      return;
+    }
+    for (Move move : moveSet) {
+      moveCancelBankPaymentService.cancelGeneratedMove(moveRepository.find(move.getId()));
+    }
   }
 
-  protected void cancelBankOrderLinesMove(BankOrder bankOrder) throws AxelorException {
+  protected void getBankOrderLinesMoves(BankOrder bankOrder, Set<Move> moveSet) {
     if (CollectionUtils.isEmpty(bankOrder.getBankOrderLineList())) {
       return;
     }
 
     for (BankOrderLine bankOrderLine : bankOrder.getBankOrderLineList()) {
-      moveCancelBankPaymentService.cancelGeneratedMove(bankOrderLine.getSenderMove());
-      moveCancelBankPaymentService.cancelGeneratedMove(bankOrderLine.getReceiverMove());
+      if (bankOrderLine.getSenderMove() != null) {
+        moveSet.add(bankOrderLine.getSenderMove());
+      }
+      if (bankOrderLine.getReceiverMove() != null) {
+        moveSet.add(bankOrderLine.getReceiverMove());
+      }
     }
   }
 
-  protected void cancelInvoicePaymentMove(BankOrder bankOrder) throws AxelorException {
+  protected void getInvoicePaymentMoves(BankOrder bankOrder, Set<Move> moveSet) {
     for (InvoicePayment invoicePayment :
         invoicePaymentRepository.findByBankOrder(bankOrder).fetch()) {
-      moveCancelBankPaymentService.cancelGeneratedMove(invoicePayment.getMove());
+      if (invoicePayment.getMove() != null) {
+        moveSet.add(invoicePayment.getMove());
+      }
     }
   }
 
-  protected void cancelPaymentSessionMoves(BankOrder bankOrder) throws AxelorException {
+  protected void getPaymentSessionMoves(BankOrder bankOrder, Set<Move> moveSet) {
     PaymentSession paymentSession = paymentSessionRepository.findByBankOrder(bankOrder);
 
     if (paymentSession != null) {
       for (Move move : moveRepository.findByPaymentSession(paymentSession).fetch()) {
-        moveCancelBankPaymentService.cancelGeneratedMove(move);
+        if (move != null) {
+          moveSet.add(move);
+        }
       }
     }
   }
