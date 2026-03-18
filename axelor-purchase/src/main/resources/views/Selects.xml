@@ -47,4 +47,9 @@
     <option value="1" color="blue">Standard</option>
   </selection>
 
+  <selection name="message.related.to.select" id="purchase.message.related.to.select">
+    <option value="com.axelor.apps.purchase.db.PurchaseOrder" data-grid="purchase-order-grid"
+      data-form="purchase-order-form">Purchase order</option>
+  </selection>
+
 </object-views>
