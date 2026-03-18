@@ -871,6 +871,9 @@ public class PaymentSessionValidateServiceImpl implements PaymentSessionValidate
   public void updateStatus(PaymentSession paymentSession) {
     paymentSession = paymentSessionRepo.find(paymentSession.getId());
 
+    if (paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_CLOSED) {
+      return;
+    }
     if (paymentSession.getAccountingTriggerSelect()
             == PaymentModeRepository.ACCOUNTING_TRIGGER_IMMEDIATE
         || paymentSession.getStatusSelect() == PaymentSessionRepository.STATUS_AWAITING_PAYMENT) {
